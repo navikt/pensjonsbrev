@@ -3,10 +3,9 @@ package no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimuleringSelectors.vedGradertUttak
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimuleringSelectors.vedHeltUttak
-import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligTidsbegrensetSimuleringSelectors.vedGradertUttak
-import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligTidsbegrensetSimuleringSelectors.vedHeltUttak
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimuleringSelectors.vedGradertUttak
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimuleringSelectors.vedHeltUttak
+import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimuleringSelectors.vedNormertPensjonsalder
 import no.nav.pensjon.brev.planleggepensjon.simulering.AlderSelectors.aar
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.forbehold
@@ -83,11 +82,24 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         )
     }
 
+    ifNotNull(simulering.afpOffentligTidsbegrenset) { afp ->
+        ifNotNull(simuleringsinformasjon.gradertUttaksalder) { alder ->
+            title1 {
+                text(bokmal { +"Din estimerte månedlige pensjon før skatt ved " + alder.aar.format() + " år" })
+            }
+        }.orShow {
+            title1 {
+                text(bokmal { +"Din estimerte månedlige pensjon før skatt ved gradert uttak" })
+            }
+        }
+        includePhrase(AfpOffentligTidsbegrensetTabell(afp))
+    }
+
     ifNotNull(simulering.maanedligAlderspensjonForKnekkpunkter) { knekkpunkter ->
         ifNotNull(knekkpunkter.vedGradertUttak) { gradertUttak ->
             ifNotNull(simuleringsinformasjon.gradertUttaksalder) { alder ->
                 title1 {
-                    text(bokmal { +"Din estimerte månedlige pensjon før skatt ved " + alder.aar.format() + " år (gradert uttak)" })
+                    text(bokmal { +"Din estimerte månedlige pensjon før skatt ved " + alder.aar.format() + " år" })
                 }
             }.orShow {
                 title1 {
@@ -108,21 +120,29 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
                     includePhrase(SumOffentligLivsvarigTabell(gradertUttak, afp))
                 }
             }
-            ifNotNull(simulering.afpOffentligTidsbegrenset) { afpTidsbegrensetSim ->
-                ifNotNull(afpTidsbegrensetSim.vedGradertUttak) { afp ->
-                    includePhrase(AfpOffentligTidsbegrensetTabell(afp))
-                    includePhrase(SumOffentligTidsbegrensetTabell(gradertUttak, afp))
-                }
-            }
         }
+
+        ifNotNull(knekkpunkter.vedNormertPensjonsalder) {
+
 
         ifNotNull(simuleringsinformasjon.normertPensjonsalderPlassering) { plassering ->
             showIf(plassering.isOneOf(NormertPensjonsalderPlassering.MELLOM_GRADERT_OG_HELT)) {
                 title1 {
-                    text(bokmal { +"Din estimerte månedlige pensjon før skatt ved 67 år (normert pensjonsalder)" })
+                    text(bokmal { +"Din estimerte månedlige pensjon før skatt ved 67 år" })
                 }
-                includePhrase(AlderspensjonTabell(knekkpunkter.vedNormertPensjonsalder))
+                ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
+                    includePhrase(AlderspensjonTabell(normPensjonsalder))
+                }
+                ifNotNull(simulering.afpPrivat) { afpPrivatSim ->
+                    ifNotNull(afpPrivatSim.vedNormertPensjonsalder) { afp ->
+                        includePhrase(AfpPrivatTabell(afp))
+                        ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
+                            includePhrase(SumTabell(normPensjonsalder, afp))
+                        }
+                    }
+                }
             }
+        }
         }
 
         title1 {
@@ -138,17 +158,15 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
             includePhrase(AfpOffentligLivsvarigTabell(afpLivsvarigSim.vedHeltUttak))
             includePhrase(SumOffentligLivsvarigTabell(knekkpunkter.vedHeltUttak, afpLivsvarigSim.vedHeltUttak))
         }
-        ifNotNull(simulering.afpOffentligTidsbegrenset) { afpTidsbegrensetSim ->
-            includePhrase(AfpOffentligTidsbegrensetTabell(afpTidsbegrensetSim.vedHeltUttak))
-            includePhrase(SumOffentligTidsbegrensetTabell(knekkpunkter.vedHeltUttak, afpTidsbegrensetSim.vedHeltUttak))
-        }
 
         ifNotNull(simuleringsinformasjon.normertPensjonsalderPlassering) { plassering ->
             showIf(plassering.isOneOf(NormertPensjonsalderPlassering.ETTER_HELT)) {
                 title1 {
-                    text(bokmal { +"Din estimerte månedlige pensjon før skatt ved 67 år (normert pensjonsalder)" })
+                    text(bokmal { +"Din estimerte månedlige pensjon før skatt ved 67 år" })
                 }
-                includePhrase(AlderspensjonTabell(knekkpunkter.vedNormertPensjonsalder))
+                ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
+                    includePhrase(AlderspensjonTabell(normPensjonsalder))
+                }
             }
         }
     }

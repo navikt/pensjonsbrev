@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimulering
-import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligTidsbegrensetSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.Alder
 import no.nav.pensjon.brev.planleggepensjon.simulering.Alderspensjon
@@ -85,27 +84,20 @@ object Fixtures : LetterDataFactory {
 
     fun createBrevDtoMedAfpOffentligTidsbegrenset() = ApSimuleringBrevDto(
         saksbehandlerValg = createLagreSimuleringDto().copy(
+            simuleringsinformasjon = createSimuleringsinformasjon().copy(
+                heltUttaksalder = Alder(67,0),
+                gradertUttaksalder = null
+            ),
             simulering = createSimulering().copy(
+                maanedligAlderspensjonForKnekkpunkter = SimuleringV1MaanedligAlderspensjonForKnekkpunkter(
+                    vedHeltUttak = createSimuleringV1MaanedligAlderspensjon(),
+                    vedGradertUttak = null,
+                    vedNormertPensjonsalder = null
+                ),
                 afpPrivat = null,
-                afpOffentligTidsbegrenset = AfpOffentligTidsbegrensetSimulering(
-                    vedGradertUttak = TidsbegrensetOffentligAfp(
-                        alderAar = 62,
-                        totaltAfpBeloep = Kroner(8500),
-                        tidligereArbeidsinntekt = Kroner(550000),
-                        grunnbeloep = Kroner(130160),
-                        sluttpoengtall = 4.73,
-                        trygdetid = 40,
-                        poengaarTom1991 = 4,
-                        poengaarFom1992 = 36,
-                        grunnpensjon = Kroner(3500),
-                        tilleggspensjon = Kroner(2800),
-                        afpTillegg = Kroner(1600),
-                        saertillegg = Kroner(600),
-                        afpGrad = Percent(100),
-                        erAvkortet = false,
-                    ),
-                    vedHeltUttak = TidsbegrensetOffentligAfp(
-                        alderAar = 67,
+                afpOffentligTidsbegrenset =
+                    TidsbegrensetOffentligAfp(
+                        alderAar = 63,
                         totaltAfpBeloep = Kroner(10200),
                         tidligereArbeidsinntekt = Kroner(550000),
                         grunnbeloep = Kroner(130160),
@@ -122,7 +114,6 @@ object Fixtures : LetterDataFactory {
                     ),
                 ),
             ),
-        ),
         pesysData = EmptyFagsystemdata,
     )
 
@@ -188,11 +179,7 @@ object Fixtures : LetterDataFactory {
     )
 
     private fun createSimulering() = Simulering(
-        alderspensjonListe = listOf(
-            Alderspensjon(alderAar = 62, beloep = Kroner(18500), gjenlevendetillegg = null),
-            Alderspensjon(alderAar = 67, beloep = Kroner(25000), gjenlevendetillegg = null),
-            Alderspensjon(alderAar = 70, beloep = Kroner(29133), gjenlevendetillegg = Kroner(3000)),
-        ),
+        alderspensjonListe = emptyList(),
         maanedligAlderspensjonForKnekkpunkter = SimuleringV1MaanedligAlderspensjonForKnekkpunkter(
             vedGradertUttak = createSimuleringV1MaanedligAlderspensjon().copy(
                 beloep = Kroner(18500),
@@ -215,10 +202,18 @@ object Fixtures : LetterDataFactory {
                 maanedligBeloep = Kroner(4000),
             ),
             vedHeltUttak = PrivatAfp(
+                alderAar = 70,
+                aarligBeloep = Kroner(60000),
+                kompensasjonstillegg = Kroner(1500),
+                kronetillegg = null,
+                livsvarig = Kroner(2500),
+                maanedligBeloep = Kroner(5000),
+            ),
+            vedNormertPensjonsalder = PrivatAfp(
                 alderAar = 67,
                 aarligBeloep = Kroner(60000),
                 kompensasjonstillegg = Kroner(1500),
-                kronetillegg = Kroner(1000),
+                kronetillegg = null,
                 livsvarig = Kroner(2500),
                 maanedligBeloep = Kroner(5000),
             ),
@@ -229,7 +224,7 @@ object Fixtures : LetterDataFactory {
 
     private fun createSimuleringsinformasjon() = Simuleringsinformasjon(
         gradertUttaksalder = Alder(aar = 62, maaneder = 0),
-        heltUttaksalder = Alder(aar = 67, maaneder = 0),
+        heltUttaksalder = Alder(aar = 70, maaneder = 0),
         sivilstatus = Sivilstatus.UGIFT,
         utenlandsperioder = listOf(
             SimuleringUtenlandsperiode(
@@ -246,7 +241,7 @@ object Fixtures : LetterDataFactory {
             ),
         ),
         kull = Kull.OVERGANG,
-        normertPensjonsalderPlassering = NormertPensjonsalderPlassering.ETTER_HELT,
+        normertPensjonsalderPlassering = NormertPensjonsalderPlassering.MELLOM_GRADERT_OG_HELT,
     )
 
     private fun createSimuleringV1MaanedligAlderspensjon() = SimuleringV1MaanedligAlderspensjon(
