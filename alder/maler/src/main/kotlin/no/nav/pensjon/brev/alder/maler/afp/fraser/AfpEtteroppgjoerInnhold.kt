@@ -98,10 +98,10 @@ object AfpEtteroppgjoerInnhold {
             paragraph {
                 text(
                     bokmal {
-                        +"Vedtaket er gjort etter lov om AFP for medlemmer av Apotekerne XXX."
+                        +"Vedtaket er gjort etter lov om AFP for apotekvirksomhet §3."
                     },
                     nynorsk {
-                        +"Vedtaket er gjort etter lov om AFP for medlemmer av  Apotekerne XXX."
+                        +"Vedtaket er gjort etter reglane om AFP for apotekvirksomhet §3."
                     },
                 )
             }
