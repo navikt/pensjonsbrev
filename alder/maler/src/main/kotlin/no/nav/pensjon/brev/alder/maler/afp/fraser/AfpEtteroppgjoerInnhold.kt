@@ -267,6 +267,147 @@ object AfpEtteroppgjoerInnhold {
     }
 
     /**
+     * Innledende paragraf for etterbetalingsbrevene (PE_AF_04_101) som forklarer at
+     * inntekter nedenfor vises, og at Skatteetaten-opplysninger ikke skiller
+     * før/etter AFP, covid-19, og Ukraina-inntekter kan unntas.
+     */
+    object NedenforInntekterBruktOgBeregnet : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Nedenfor kan du se nærmere hvilke inntekter som er brukt og hvordan vi har " +
+                            "beregnet din nye pensjon for denne perioden. Vi gjør oppmerksom på at " +
+                            "innrapporterte inntektsopplysninger fra Skatteetaten ikke skiller mellom hvor " +
+                            "stor del av inntekten din som er opptjent før og etter at du tok ut AFP. Nav " +
+                            "kan ikke se om noen av inntektene stammer fra arbeid i forbindelse med " +
+                            "covid-19. Vi kan heller ikke se om noen av inntektene er pensjonistlønn etter " +
+                            "særskilt sats for arbeid med fordrevne fra Ukraina. Noen slike inntekter kan " +
+                            "unntas fra inntektsavkortingen."
+                    },
+                    nynorsk {
+                        +"Nedanfor kan du sjå nærmare kva inntekter som er brukt, og korleis vi har " +
+                            "berekna den nye pensjonen din for denne perioden. Vi gjer merksam på at " +
+                            "innrapporterte inntektsopplysningar frå Skatteetaten ikkje skil mellom kor " +
+                            "stor del av inntekta di som er opptent før og etter at du tok ut AFP. Nav kan " +
+                            "heller ikkje sjå om nokre av inntektene stammar frå arbeid i samband med " +
+                            "covid-19. Vi kan heller ikkje sjå at noko av inntekta er pensjonistlønn etter " +
+                            "særskilt sats for arbeid med fordrivne frå Ukraina. Nokre slike inntekter kan " +
+                            "haldast utanfor inntektsavkortinga."
+                    },
+                )
+            }
+        }
+    }
+
+    /**
+     * Opplysning om at innrapporterte inntektsopplysninger fra Skatteetaten ikke
+     * skiller mellom inntekt opptjent før/etter AFP-uttak, og at covid-19/Ukraina-
+     * inntekter kan unntas. Brukes i PE_AF_04_100 og PE_AF_04_107.
+     */
+    object InnrapporterteInntektsopplysningerIkkeSkiller : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Vi gjør oppmerksom på at innrapporterte inntektsopplysninger fra Skatteetaten " +
+                            "ikke skiller mellom hvor stor del av inntekten din som er opptjent før og " +
+                            "etter at du tok ut AFP. Nav kan heller ikke se om noen av inntektene stammer " +
+                            "fra arbeid i forbindelse med covid-19 eller arbeid med fordrevne fra Ukraina. " +
+                            "Noen slike inntekter kan unntas fra inntektsavkortingen."
+                    },
+                    nynorsk {
+                        +"Vi gjer merksam på at innrapporterte inntektsopplysningar frå Skatteetaten ikkje " +
+                            "skil mellom kor stor del av inntekta di som er opptent før og etter at du tok " +
+                            "ut AFP. Nav kan heller ikkje sjå om nokre av inntektene stammar frå arbeid i " +
+                            "samband med covid-19 eller arbeid med fordrivne frå Ukraina. Enkelte slike " +
+                            "inntekter kan haldast utanfor inntektsavkortingen."
+                    },
+                )
+            }
+        }
+    }
+
+    /**
+     * Opplysning om at lavere pensjonsgivende inntekt i AFP-perioden kan gi rett
+     * til høyere AFP. Brukes i PE_AF_04_100 og PE_AF_04_107.
+     */
+    object LaverePgiKanGiHoyereAfp : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Hvis du har hatt lavere pensjonsgivende inntekt den tiden du har hatt AFP enn " +
+                            "det våre beregninger viser, kan du ha rett til høyere AFP."
+                    },
+                    nynorsk {
+                        +"Dersom du har hatt lågare pensjonsgivande inntekt i perioden med rett til AFP " +
+                            "enn det berekningane våre viser, kan du ha rett til høgare AFP."
+                    },
+                )
+            }
+        }
+    }
+
+    /**
+     * Liste over inntekter som skal holdes utenfor etteroppgjøret, med avsluttende
+     * henvisning til mer informasjon om covid-19/Ukraina. Brukes i PE_AF_04_100,
+     * PE_AF_04_101 og PE_AF_04_107.
+     */
+    object InntektUtenforEtteroppgjoerListe : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal { +"Inntekt som skal holdes utenfor etteroppgjøret:" },
+                    nynorsk { +"Inntekt som skal haldast utanfor etteroppgjeret:" },
+                )
+                list {
+                    item {
+                        text(
+                            bokmal { +"Feriepenger og lønn som er opptjent før første uttak av AFP." },
+                            nynorsk { +"Feriepengar og lønn som er opptente før første uttaket av AFP." },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal {
+                                +"Honorar, royalty, bonus eller andre inntekter som stammer fra arbeid " +
+                                    "eller virksomhet før første uttak av AFP."
+                            },
+                            nynorsk {
+                                +"Honorar, royalty, bonus eller andre inntekter som stammar frå arbeid " +
+                                    "eller verksemd før det første uttaket av AFP."
+                            },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"Etterbetaling av trygdeytelser som gjelder for tidsrom før AFP ble tatt ut." },
+                            nynorsk { +"Etterbetaling av trygdeytingar som gjeld for tidsrom før AFP vart tatt ut." },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"Feriepenger som stammer fra enkelte typer arbeid i forbindelse med covid-19." },
+                            nynorsk { +"Feriepengar som skriv seg frå enkelte typar arbeid i samband med covid-19." },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"Inntekt som stammer fra arbeid i forbindelse med fordrevne fra Ukraina." },
+                            nynorsk { +"Inntekt som skriv seg frå arbeid i samband med fordrivne frå Ukraina." },
+                        )
+                    }
+                }
+                text(
+                    bokmal { +"Se mer informasjon om arbeid i forbindelse med covid-19 og fordrevne fra Ukraina nedenfor." },
+                    nynorsk { +"Sjå meir informasjon om arbeid i samband med covid-19 og fordrivne frå Ukraina nedanfor." },
+                )
+            }
+        }
+    }
+
+    /**
      * Paragrafen «Annen inntekt som er opptjent samtidig med utbetaling av AFP...».
      * Identisk mellom PE_AF_04_100 og PE_AF_04_102.
      */
@@ -460,6 +601,144 @@ object AfpEtteroppgjoerInnhold {
                 }
             }
 
+        }
+    }
+
+    /**
+     * Covid-dokumentasjonskrav, variant med «inntekter» i første punkt og kort nynorsk-intro
+     * (uten «om korleis du sender dokumentasjon»).
+     * Brukes i PE_AF_04_100 (IngenEndringAuto) og PE_AF_04_108 (Toleransebeloep).
+     */
+    object CovidDokumentasjonskravInntekter : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"For at Nav skal kunne holde slike inntekter utenfor avkorting, må du sende " +
+                            "oss dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
+                            "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
+                    },
+                    nynorsk {
+                        +"For at Nav skal kunne halde slike inntekter utanfor avkorting, må du sende " +
+                            "oss dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL. Vi treng stadfesting " +
+                            "frå arbeidsgivaren din om følgjande:"
+                    },
+                )
+                list {
+                    item {
+                        text(
+                            bokmal { +"hvor mye du har hatt i inntekter fra slikt ekstra arbeid" },
+                            nynorsk { +"kor mykje du har hatt i feriepengar frå slikt ekstra arbeid" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"hvilken tidsperiode(-r) feriepengene er opptjent" },
+                            nynorsk { +"i kva for tidsperiode (-periodar) feriepengane er tent opp" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"om utbetalingen er gjort etter særskilt sats for pensjonistavlønning" },
+                            nynorsk { +"om utbetalinga er gjort etter særskilt sats for pensjonistavlønning" },
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Covid-dokumentasjonskrav, variant med «feriepenger» i første punkt og lang nynorsk-intro
+     * (med «om korleis du sender dokumentasjon»).
+     * Brukes i PE_AF_04_101 (EtterbetalingAuto og Etterbetaling).
+     */
+    object CovidDokumentasjonskravFeriepenger : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"For at Nav skal kunne holde slike inntekter utenfor avkorting, må du sende oss " +
+                            "dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
+                            "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
+                    },
+                    nynorsk {
+                        +"For at Nav skal kunne halde slike inntekter utanfor avkorting, må du sende oss " +
+                            "dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL om korleis du sender " +
+                            "dokumentasjon. Vi treng stadfesting frå arbeidsgivaren din om følgjande:"
+                    },
+                )
+                list {
+                    item {
+                        text(
+                            bokmal { +"hvor mye du har hatt i feriepenger fra slikt ekstra arbeid" },
+                            nynorsk { +"kor mykje du har hatt i feriepengar frå slikt ekstra arbeid" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"i hvilken tidsperiode(-r) feriepengene er opptjent" },
+                            nynorsk { +"i kva for tidsperiode (-periodar) feriepengane er tente opp" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"om utbetalingen er gjort etter særskilt sats for pensjonistavlønning" },
+                            nynorsk { +"om utbetalinga er gjort etter særskilt sats for pensjonistavlønning" },
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Covid-dokumentasjonskrav, 4-punkts variant med «inntekter» og «dette gjelder» + ekstra punkt
+     * om «beordret eller frivillig». Bruker «NAV» (uppercase).
+     * Brukes i PE_AF_04_102 (IngenEndring og IngenEndringAndreAvvikAuto).
+     */
+    object CovidDokumentasjonskravUtvidet : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"For at NAV skal kunne holde slike inntekter utenfor avkorting, må du sende " +
+                            "oss dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
+                            "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
+                    },
+                    nynorsk {
+                        +"For at NAV skal kunne halde slike inntekter utanfor avkorting, må du sende " +
+                            "oss dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL. Vi treng stadfesting " +
+                            "frå arbeidsgivaren din om følgjande:"
+                    },
+                )
+                list {
+                    item {
+                        text(
+                            bokmal { +"hvor mye du har hatt i inntekter fra slikt ekstra arbeid" },
+                            nynorsk { +"kor mykje du har hatt i feriepengar frå slikt ekstra arbeid" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"i hvilken tidsperiode(-r) dette gjelder" },
+                            nynorsk { +"i kva for tidsperiode (-periodar) feriepengane er tent opp" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"om arbeidet var beordret eller frivillig" },
+                            nynorsk { +"om arbeidet var beordra eller frivillig" },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"om utbetalingen er gjort etter særskilt sats for pensjonistavlønning" },
+                            nynorsk { +"om utbetalinga er gjort etter særskilt sats for pensjonistavlønning" },
+                        )
+                    }
+                }
+            }
         }
     }
 

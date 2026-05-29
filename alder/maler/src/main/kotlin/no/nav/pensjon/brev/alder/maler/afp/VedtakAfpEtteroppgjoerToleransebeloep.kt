@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
-import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_ETTEROPPGJOER_URL
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
@@ -73,130 +72,21 @@ object VedtakAfpEtteroppgjoerToleransebeloep : RedigerbarTemplate<VedtakAfpEtter
             includePhrase(AfpEtteroppgjoerInnhold.EtteroppgjoerIntro)
             includePhrase(AfpEtteroppgjoerInnhold.IkkeFunnetGrunnlagForAaEndre(pesysData.oppgjoersAar))
 
-            paragraph {
-                text(
-                    bokmal {
-                        +"Vi gjør oppmerksom på at innrapporterte inntektsopplysninger fra Skatteetaten " +
-                            "ikke skiller mellom hvor stor del av inntekten din som er opptjent før og " +
-                            "etter at du tok ut AFP. Nav kan heller ikke se om noen av inntektene stammer " +
-                            "fra arbeid i forbindelse med covid-19 eller arbeid med fordrevne fra Ukraina. " +
-                            "Noen slike inntekter kan unntas fra inntektsavkortingen."
-                    },
-                    nynorsk {
-                        +"Vi gjer merksam på at innrapporterte inntektsopplysningar frå Skatteetaten ikkje " +
-                            "skil mellom kor stor del av inntekta di som er opptent før og etter at du tok " +
-                            "ut AFP. Nav kan heller ikkje sjå om nokre av inntektene stammar frå arbeid i " +
-                            "samband med covid-19 eller arbeid med fordrivne frå Ukraina. Enkelte slike " +
-                            "inntekter kan haldast utanfor inntektsavkortingen."
-                    },
-                )
-            }
-
-            paragraph {
-                text(
-                    bokmal {
-                        +"Hvis du har hatt lavere pensjonsgivende inntekt den tiden du har hatt AFP enn " +
-                            "det våre beregninger viser, kan du ha rett til høyere AFP."
-                    },
-                    nynorsk {
-                        +"Dersom du har hatt lågare pensjonsgivande inntekt i perioden med rett til AFP " +
-                            "enn det berekningane våre viser, kan du ha rett til høgare AFP."
-                    },
-                )
-            }
+            includePhrase(AfpEtteroppgjoerInnhold.InnrapporterteInntektsopplysningerIkkeSkiller)
+            includePhrase(AfpEtteroppgjoerInnhold.LaverePgiKanGiHoyereAfp)
 
             includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
 
             includePhrase(AfpEtteroppgjoerInnhold.MeldingOmEndringerInnledning)
 
-            paragraph {
-                text(
-                    bokmal { +"Inntekt som skal holdes utenfor etteroppgjøret:" },
-                    nynorsk { +"Inntekt som skal haldast utanfor etteroppgjeret:" },
-                )
-                list {
-                    item {
-                        text(
-                            bokmal { +"Feriepenger og lønn som er opptjent før første uttak av AFP." },
-                            nynorsk { +"Feriepengar og lønn som er opptente før første uttaket av AFP." },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal {
-                                +"Honorar, royalty, bonus eller andre inntekter som stammer fra arbeid " +
-                                    "eller virksomhet før første uttak av AFP."
-                            },
-                            nynorsk {
-                                +"Honorar, royalty, bonus eller andre inntekter som stammar frå arbeid " +
-                                    "eller verksemd før det første uttaket av AFP."
-                            },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"Etterbetaling av trygdeytelser som gjelder for tidsrom før AFP ble tatt ut." },
-                            nynorsk { +"Etterbetaling av trygdeytingar som gjeld for tidsrom før AFP vart tatt ut." },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"Feriepenger som stammer fra enkelte typer arbeid i forbindelse med covid-19." },
-                            nynorsk { +"Feriepengar som skriv seg frå enkelte typar arbeid i samband med covid-19." },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"Inntekt som stammer fra arbeid i forbindelse med fordrevne fra Ukraina." },
-                            nynorsk { +"Inntekt som skriv seg frå arbeid i samband med fordrivne frå Ukraina." },
-                        )
-                    }
-                }
-                text(
-                    bokmal { +"Se mer informasjon om arbeid i forbindelse med covid-19 og fordrevne fra Ukraina nedenfor." },
-                    nynorsk { +"Sjå meir informasjon om arbeid i samband med covid-19 og fordrivne frå Ukraina nedanfor." },
-                )
-            }
+            includePhrase(AfpEtteroppgjoerInnhold.InntektUtenforEtteroppgjoerListe)
 
             includePhrase(AfpEtteroppgjoerInnhold.AnnenInntektInntektsproevd)
             includePhrase(AfpEtteroppgjoerInnhold.DokumenterInntekterUtenforAvkorting)
             includePhrase(AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon)
             includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmCovidInntekterInnledning)
 
-            paragraph {
-                text(
-                    bokmal {
-                        +"For at Nav skal kunne holde slike inntekter utenfor avkorting, må du sende " +
-                            "oss dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
-                            "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
-                    },
-                    nynorsk {
-                        +"For at Nav skal kunne halde slike inntekter utanfor avkorting, må du sende " +
-                            "oss dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL. Vi treng stadfesting " +
-                            "frå arbeidsgivaren din om følgjande:"
-                    },
-                )
-                list {
-                    item {
-                        text(
-                            bokmal { +"hvor mye du har hatt i inntekter fra slikt ekstra arbeid" },
-                            nynorsk { +"kor mykje du har hatt i feriepengar frå slikt ekstra arbeid" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"hvilken tidsperiode(-r) feriepengene er opptjent" },
-                            nynorsk { +"i kva for tidsperiode (-periodar) feriepengane er tent opp" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"om utbetalingen er gjort etter særskilt sats for pensjonistavlønning" },
-                            nynorsk { +"om utbetalinga er gjort etter særskilt sats for pensjonistavlønning" },
-                        )
-                    }
-                }
-            }
+            includePhrase(AfpEtteroppgjoerInnhold.CovidDokumentasjonskravInntekter)
 
             includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(pesysData.oppgjoersAar))

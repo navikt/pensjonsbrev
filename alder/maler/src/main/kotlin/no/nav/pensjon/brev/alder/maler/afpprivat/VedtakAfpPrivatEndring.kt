@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.AfpPrivatFraser
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
-import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndringSelectors.kompensasjonstillegg
@@ -24,9 +23,6 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -97,78 +93,14 @@ object VedtakAfpPrivatEndring : RedigerbarTemplate<VedtakAfpPrivatEndringDto> {
                 )
             }
 
-            paragraph {
-                text(
-                    bokmal { +"Din AFP per måned blir slik:" },
-                    nynorsk { +"Din AFP per månad blir slik:" },
+            includePhrase(
+                AfpPrivatFraser.AfpBeloepPerMaanedTabell(
+                    livsvarig = pesysData.beregning.livsvarig,
+                    kronetillegg = pesysData.beregning.kronetillegg,
+                    kompensasjonstillegg = pesysData.beregning.kompensasjonstillegg,
+                    sumAfpFoerSkatt = pesysData.beregning.sumAfpFoerSkatt,
                 )
-            }
-
-            paragraph {
-                table(
-                    header = {
-                        column { text(bokmal { +"" }, nynorsk { +"" }) }
-                        column(alignment = RIGHT) {
-                            text(
-                                bokmal { +"Beløp per måned" },
-                                nynorsk { +"Beløp per månad" },
-                            )
-                        }
-                    },
-                ) {
-                    ifNotNull(pesysData.beregning.livsvarig) { livsvarigBeloep ->
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"AFP livsvarig del" },
-                                    nynorsk { +"AFP livsvarig del" },
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(livsvarigBeloep))
-                            }
-                        }
-                    }
-                    ifNotNull(pesysData.beregning.kronetillegg) { kroneBeloep ->
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"AFP kronetillegg" },
-                                    nynorsk { +"AFP-kronetillegg" },
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(kroneBeloep))
-                            }
-                        }
-                    }
-                    ifNotNull(pesysData.beregning.kompensasjonstillegg) { kompBeloep ->
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"AFP kompensasjonstillegg (skattefritt)" },
-                                    nynorsk { +"AFP-kompensasjonstillegg (skattefritt)" },
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(kompBeloep))
-                            }
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"Sum AFP før skatt" },
-                                nynorsk { +"Sum AFP før skatt" },
-                                BOLD
-                            )
-                        }
-                        cell {
-                            includePhrase(KronerText(pesysData.beregning.sumAfpFoerSkatt, BOLD))
-                        }
-                    }
-                }
-            }
+            )
 
             includePhrase(AfpPrivatFraser.Levealdersjustering)
 

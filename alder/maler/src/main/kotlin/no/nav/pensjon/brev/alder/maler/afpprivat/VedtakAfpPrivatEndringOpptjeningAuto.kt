@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.afpprivat
 
 import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.AfpPrivatFraser
-import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
-import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndringSelectors.kompensasjonstillegg
 import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndringSelectors.kronetillegg
@@ -15,13 +13,11 @@ import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringOpptjenin
 import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringOpptjeningAutoDtoSelectors.brukerAlder
 import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringOpptjeningAutoDtoSelectors.virkningFom
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
-import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -75,78 +71,18 @@ object VedtakAfpPrivatEndringOpptjeningAuto : AutobrevTemplate<VedtakAfpPrivatEn
                 )
             }
 
-            paragraph {
-                text(
-                    bokmal { +"Din AFP per måned blir slik:" },
+            includePhrase(
+                AfpPrivatFraser.AfpBeloepPerMaanedTabell(
+                    livsvarig = beregning.livsvarig,
+                    kronetillegg = beregning.kronetillegg,
+                    kompensasjonstillegg = beregning.kompensasjonstillegg,
+                    sumAfpFoerSkatt = beregning.sumAfpFoerSkatt,
                 )
-            }
+            )
 
-            paragraph {
-                table(
-                    header = {
-                        column { text(bokmal { +"" }) }
-                        column { text(bokmal { +"Beløp per måned" }) }
-                    },
-                ) {
-                    ifNotNull(beregning.livsvarig) { livsvarigBeloep ->
-                        row {
-                            cell { text(bokmal { +"AFP livsvarig del" }) }
-                            cell { includePhrase(KronerText(livsvarigBeloep)) }
-                        }
-                    }
-                    ifNotNull(beregning.kronetillegg) { kroneBeloep ->
-                        row {
-                            cell { text(bokmal { +"AFP kronetillegg" }) }
-                            cell { includePhrase(KronerText(kroneBeloep)) }
-                        }
-                    }
-                    ifNotNull(beregning.kompensasjonstillegg) { kompBeloep ->
-                        row {
-                            cell { text(bokmal { +"AFP kompensasjonstillegg (skattefritt)" }) }
-                            cell { includePhrase(KronerText(kompBeloep)) }
-                        }
-                    }
-                    row {
-                        cell { text(bokmal { +"Sum AFP før skatt" }, BOLD) }
-                        cell { includePhrase(KronerText(beregning.sumAfpFoerSkatt, BOLD)) }
-                    }
-                }
-            }
-
-            ifNotNull(beregning.livsvarig) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"AFP livsvarig del er beregnet ut fra opptjeningen din. Grunnlaget er opptjening du har " +
-                                "hatt til og med det året du fylte 61 år."
-                        },
-                    )
-                }
-            }
-
-            ifNotNull(beregning.kronetillegg) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"AFP kronetillegg utbetales bare til og med den måneden du fyller 67 år. Opphør av " +
-                                "kronetillegget har sammenheng med at obligatorisk tjenestepensjon i private " +
-                                "arbeidsforhold blir utbetalt fra fylte 67 år."
-                        },
-                    )
-                }
-            }
-
-            ifNotNull(beregning.kompensasjonstillegg) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"AFP kompensasjonstillegg får du fordi du er født før 1963. Personer født før 1963 har " +
-                                "ved fortsatt arbeid ikke samme mulighet til å øke grunnlaget for sin alderspensjon " +
-                                "fra folketrygden som de som er født senere."
-                        },
-                    )
-                }
-            }
+            includePhrase(AfpPrivatFraser.KomponentLivsvarig(beregning.livsvarig))
+            includePhrase(AfpPrivatFraser.KomponentKronetillegg(beregning.kronetillegg))
+            includePhrase(AfpPrivatFraser.KomponentKompensasjonstillegg(beregning.kompensasjonstillegg))
 
             title1 {
                 text(
@@ -189,100 +125,23 @@ object VedtakAfpPrivatEndringOpptjeningAuto : AutobrevTemplate<VedtakAfpPrivatEn
                 )
             }
 
-            paragraph {
-                text(
-                    bokmal {
-                        +"AFP justeres i forhold til forventet levealder ved tidspunkt for uttak. Levealdersjustering er " +
-                            "en mekanisme som tar høyde for økt levealder i befolkningen og er innført for å sikre at " +
-                            "pensjonssystemet forblir bærekraftig. Du kan lese mer om levealdersjustering på " +
-                            Constants.NAV_URL + "."
-                    },
-                )
-            }
+            includePhrase(AfpPrivatFraser.Levealdersjustering)
 
-            title1 {
-                text(
-                    bokmal { +"AFP i privat sektor og alderspensjon fra folketrygden" },
-                )
-            }
-
-            paragraph {
-                text(
-                    bokmal {
-                        +"AFP i privat sektor gis sammen med alderspensjonen din. Størrelsen på din AFP er uavhengig av " +
-                            "uttaksgraden på alderspensjonen. Utbetaling av AFP vil fortsette også dersom du velger å " +
-                            "sette uttaksgraden av alderspensjonen din til null."
-                    },
-                )
-            }
+            includePhrase(AfpPrivatFraser.AfpOgAlderspensjon)
 
             showIf(brukerAlder.lessThan(70)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Din AFP er fastsatt på grunnlag av opptjening som du har hatt til og med det året du fylte " +
-                                "61 år. Senere opptjening vil ikke ha noen innvirkning på størrelsen på din AFP. Dersom " +
-                                "du har inntekt i årene etter uttak av alderspensjon kan alderspensjonen fra folketrygden " +
-                                "øke - dette gjelder til og med det året du fyller 75."
-                        },
-                    )
-                }
+                includePhrase(AfpPrivatFraser.OpptjeningEtter61Aar)
             }
 
-            paragraph {
-                text(
-                    bokmal { +"Som ved alderspensjon fra folketrygden kan du arbeide så mye du vil uten at din AFP blir redusert." },
-                )
-            }
+            includePhrase(AfpPrivatFraser.ArbeidUtenReduksjon)
 
-            title1 {
-                text(
-                    bokmal { +"Din AFP utbetales månedlig" },
-                )
-            }
-
-            paragraph {
-                text(
-                    bokmal {
-                        +"Din AFP blir vanligvis utbetalt den 20. hver måned. Når den 20. er en lørdag eller offentlig " +
-                            "fridag blir pensjonen utbetalt senest siste virkedag før den 20. Oversikt over " +
-                            "utbetalingsdatoer finner du på " + Constants.NAV_URL + "."
-                    },
-                )
-            }
+            includePhrase(AfpPrivatFraser.MaanedligUtbetaling)
 
             showIf(borIForNorge) {
-                showIf(beregning.kompensasjonstillegg.notNull()) {
-                    paragraph {
-                        text(
-                            bokmal {
-                                +"Med unntak av kompensasjonstillegget er din AFP skattepliktig. Du trenger ikke levere " +
-                                    "skattekort da skatteopplysningene dine sendes elektronisk fra skatteetaten til Nav. " +
-                                    "Ta kontakt med skattekontoret ditt hvis du har spørsmål om skatt og skattekort."
-                            },
-                        )
-                    }
-                }.orShow {
-                    paragraph {
-                        text(
-                            bokmal {
-                                +"Din AFP er skattepliktig. Du trenger ikke levere skattekort da skatteopplysningene dine " +
-                                    "sendes elektronisk fra skatteetaten til Nav. Ta kontakt med skattekontoret ditt hvis " +
-                                    "du har spørsmål om skatt og skattekort."
-                            },
-                        )
-                    }
-                }
+                includePhrase(AfpPrivatFraser.SkattINorge(beregning.kompensasjonstillegg))
             }
 
-            paragraph {
-                text(
-                    bokmal {
-                        +"På nettjenesten Din pensjon på " + Constants.NAV_URL + " kan du se hvilket skattetrekk som er " +
-                            "registrert hos Nav og legge inn eventuelt tilleggstrekk om du ønsker det."
-                    },
-                )
-            }
+            includePhrase(AfpPrivatFraser.DinPensjonSkattetrekk)
 
             title1 {
                 text(

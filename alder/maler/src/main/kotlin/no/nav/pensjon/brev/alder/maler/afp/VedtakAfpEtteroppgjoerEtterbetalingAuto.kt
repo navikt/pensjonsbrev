@@ -146,30 +146,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                 }
             }
 
-            paragraph {
-                text(
-                    bokmal {
-                        +"Nedenfor kan du se nærmere hvilke inntekter som er brukt og hvordan vi har " +
-                            "beregnet din nye pensjon for denne perioden. Vi gjør oppmerksom på at " +
-                            "innrapporterte inntektsopplysninger fra Skatteetaten ikke skiller mellom hvor " +
-                            "stor del av inntekten din som er opptjent før og etter at du tok ut AFP. Nav " +
-                            "kan ikke se om noen av inntektene stammer fra arbeid i forbindelse med " +
-                            "covid-19. Vi kan heller ikke se om noen av inntektene er pensjonistlønn etter " +
-                            "særskilt sats for arbeid med fordrevne fra Ukraina. Noen slike inntekter kan " +
-                            "unntas fra inntektsavkortingen."
-                    },
-                    nynorsk {
-                        +"Nedanfor kan du sjå nærmare kva inntekter som er brukt, og korleis vi har " +
-                            "berekna den nye pensjonen din for denne perioden. Vi gjer merksam på at " +
-                            "innrapporterte inntektsopplysningar frå Skatteetaten ikkje skil mellom kor " +
-                            "stor del av inntekta di som er opptent før og etter at du tok ut AFP. Nav kan " +
-                            "heller ikkje sjå om nokre av inntektene stammar frå arbeid i samband med " +
-                            "covid-19. Vi kan heller ikkje sjå at noko av inntekta er pensjonistlønn etter " +
-                            "særskilt sats for arbeid med fordrivne frå Ukraina. Nokre slike inntekter kan " +
-                            "haldast utanfor inntektsavkortinga."
-                    },
-                )
-            }
+            includePhrase(AfpEtteroppgjoerInnhold.NedenforInntekterBruktOgBeregnet)
 
             showIf(medlemAvApotekerordningen) {
                 includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
@@ -180,74 +157,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
             // Melding om endringer av inntekten + de to delte innledende paragrafene.
             includePhrase(AfpEtteroppgjoerInnhold.MeldingOmEndringerInnledning)
 
-            // Inlinet: «Inntekt som skal holdes utenfor etteroppgjøret»-liste.
-            // TODO ordlydsavvik vs PE_AF_04_100/102 i covid-19-punktet og
-            //  Ukraina-punktet. Avklar med fag om listen skal harmoniseres
-            //  på tvers av AFP etteroppgjør-brevene.
-            paragraph {
-                text(
-                    bokmal { +"Inntekt som skal holdes utenfor etteroppgjøret:" },
-                    nynorsk { +"Inntekt som skal haldast utanfor etteroppgjeret:" },
-                )
-                list {
-                    item {
-                        text(
-                            bokmal { +"Feriepenger og lønn som er opptjent før første uttak av AFP." },
-                            nynorsk { +"Feriepengar og lønn som er opptente før første uttaket av AFP." },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal {
-                                +"Honorar, royalty, bonus eller andre inntekter som stammer fra arbeid " +
-                                    "eller virksomhet før første uttak av AFP."
-                            },
-                            nynorsk {
-                                +"Honorar, royalty, bonus eller andre inntekter som stammar frå arbeid " +
-                                    "eller verksemd før det første uttaket av AFP."
-                            },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal {
-                                +"Etterbetaling av trygdeytelser som gjelder for tidsrom før AFP ble tatt ut."
-                            },
-                            nynorsk {
-                                +"Etterbetaling av trygdeytingar som gjeld for tidsrom før AFP vart tatt ut."
-                            },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal {
-                                +"Feriepenger som stammer fra enkelte typer arbeid i forbindelse med covid-19."
-                            },
-                            nynorsk {
-                                +"Feriepengar som skriv seg frå enkelte typar arbeid i samband med covid-19."
-                            },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal {
-                                +"Inntekt som stammer fra arbeid i forbindelse med fordrevne fra Ukraina."
-                            },
-                            nynorsk {
-                                +"Inntekt som skriv seg frå arbeid i forbindelse med fordrivne frå Ukraina."
-                            },
-                        )
-                    }
-                }
-                text(
-                    bokmal {
-                        +"Se mer informasjon om arbeid i forbindelse med covid-19 og fordrevne fra Ukraina nedenfor."
-                    },
-                    nynorsk {
-                        +"Sjå meir informasjon om arbeid i forbindelse med covid-19 og fordrivne frå Ukraina nedanfor."
-                    },
-                )
-            }
+            includePhrase(AfpEtteroppgjoerInnhold.InntektUtenforEtteroppgjoerListe)
 
             // Felles paragraf «Annen inntekt som er opptjent samtidig … inntektsprøves».
             // 101-originalen sier "etter uttak av AFP", fellesfrasen sier
@@ -267,40 +177,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
             //  101 har 3 punkter (feriepenger / tidsperiode / særskilt sats), 100 har
             //  3 lignende men med "inntekter" der 101 har "feriepenger", 102 har 4
             //  punkter. Avklar med fag.
-            paragraph {
-                text(
-                    bokmal {
-                        +"For at Nav skal kunne holde slike inntekter utenfor avkorting, må du sende oss " +
-                            "dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
-                            "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
-                    },
-                    nynorsk {
-                        +"For at Nav skal kunne halde slike inntekter utanfor avkorting, må du sende oss " +
-                            "dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL om korleis du sender " +
-                            "dokumentasjon. Vi treng stadfesting frå arbeidsgivaren din om følgjande:"
-                    },
-                )
-                list {
-                    item {
-                        text(
-                            bokmal { +"hvor mye du har hatt i feriepenger fra slikt ekstra arbeid" },
-                            nynorsk { +"kor mykje du har hatt i feriepengar frå slikt ekstra arbeid" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"i hvilken tidsperiode(-r) feriepengene er opptjent" },
-                            nynorsk { +"i kva for tidsperiode (-periodar) feriepengane er tente opp" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"om utbetalingen er gjort etter særskilt sats for pensjonistavlønning" },
-                            nynorsk { +"om utbetalinga er gjort etter særskilt sats for pensjonistavlønning" },
-                        )
-                    }
-                }
-            }
+            includePhrase(AfpEtteroppgjoerInnhold.CovidDokumentasjonskravFeriepenger)
 
             // Ukraina-seksjon: tittel + forklarende paragraf (felles), så
             // 101-spesifikk bekreftelseliste.

@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
-import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_ETTEROPPGJOER_URL
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDto.Scenario
@@ -226,46 +225,7 @@ object VedtakAfpEtteroppgjoerIngenEndring : RedigerbarTemplate<VedtakAfpEtteropp
                 includePhrase(AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon)
                 includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmCovidInntekterInnledning)
 
-                paragraph {
-                    text(
-                        bokmal {
-                            +"For at NAV skal kunne holde slike inntekter utenfor avkorting, må du sende " +
-                                "oss dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
-                                "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
-                        },
-                        nynorsk {
-                            +"For at NAV skal kunne halde slike inntekter utanfor avkorting, må du sende " +
-                                "oss dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL. Vi treng stadfesting " +
-                                "frå arbeidsgivaren din om følgjande:"
-                        },
-                    )
-                    list {
-                        item {
-                            text(
-                                bokmal { +"hvor mye du har hatt i inntekter fra slikt ekstra arbeid" },
-                                nynorsk { +"kor mykje du har hatt i feriepengar frå slikt ekstra arbeid" },
-                            )
-                        }
-                        item {
-                            text(
-                                bokmal { +"i hvilken tidsperiode(-r) dette gjelder" },
-                                nynorsk { +"i kva for tidsperiode (-periodar) feriepengane er tent opp" },
-                            )
-                        }
-                        item {
-                            text(
-                                bokmal { +"om arbeidet var beordret eller frivillig" },
-                                nynorsk { +"om arbeidet var beordra eller frivillig" },
-                            )
-                        }
-                        item {
-                            text(
-                                bokmal { +"om utbetalingen er gjort etter særskilt sats for pensjonistavlønning" },
-                                nynorsk { +"om utbetalinga er gjort etter særskilt sats for pensjonistavlønning" },
-                            )
-                        }
-                    }
-                }
+                includePhrase(AfpEtteroppgjoerInnhold.CovidDokumentasjonskravUtvidet)
 
                 includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
             }
