@@ -31,10 +31,10 @@ object AfpEtteroppgjoerInnhold {
             paragraph {
                 text(
                     bokmal {
-                        +"Hvert år foretar NAV en kontroll av AFP når resultatet av skatteoppgjøret " +
-                            "foreligger. Hvis du har hatt en annen pensjonsgivende inntekt fra arbeid eller " +
+                        +"Hvert år gjør Nav en kontroll av AFP når skatteoppgjøret er klart. " +
+                            "Hvis du har hatt en annen pensjonsgivende inntekt fra arbeid eller " +
                             "næring enn den forventede inntekten som ble lagt til grunn ved utbetalingen, skal " +
-                            "vi foreta en ny beregning av pensjonen på grunnlag av inntektsopplysningene fra " +
+                            "vi gjøre en ny beregning av pensjonen på grunnlag av inntektsopplysningene fra " +
                             "Skatteetaten."
                     },
                     nynorsk {
@@ -79,9 +79,7 @@ object AfpEtteroppgjoerInnhold {
             paragraph {
                 text(
                     bokmal {
-                        +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3 " +
-                            "bokstav d, og tilhørende forskrift om kombinasjon av avtalefestet pensjon for " +
-                            "medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende inntekt)."
+                        +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3 bokstav d, og tilhørende forskrift om kombinasjon av avtalefestet pensjon for medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende inntekt)."
                     },
                     nynorsk {
                         +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3 " +
@@ -98,7 +96,7 @@ object AfpEtteroppgjoerInnhold {
             paragraph {
                 text(
                     bokmal {
-                        +"Vedtaket er gjort etter lov om AFP for apotekvirksomhet §3."
+                        +"Vedtaket er gjort etter lov om AFP for apotekvirksomhet §3 og lov om AFP for medlemmer av Statens pensjonskasse § 3 bokstav d, og tilhørende forskrift om kombinasjon av avtalefestet pensjon for medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende inntekt)."
                     },
                     nynorsk {
                         +"Vedtaket er gjort etter reglane om AFP for apotekvirksomhet §3."
@@ -416,10 +414,9 @@ object AfpEtteroppgjoerInnhold {
             paragraph {
                 text(
                     bokmal {
-                        +"Annen inntekt som er opptjent samtidig med utbetaling av AFP, vil bli " +
-                            "inntektsprøvd mot pensjonen. Vi gjør for ordens skyld oppmerksom på at " +
-                            "feriepenger opptjent etter første uttak av AFP skal inntektsprøves mot " +
-                            "pensjonen."
+                        +"Annen inntekt som er opptjent samtidig med utbetaling av AFP skal redusere pensjonen. " +
+                            "Feriepenger opptjent etter første uttak av AFP skal også redusere " +
+                            "pensjonen hvis de ikke kommer fra arbeid med fordrevne fra Ukraina som beskrevet over."
                     },
                     nynorsk {
                         +"Anna inntekt som er opptent samtidig med utbetaling av AFP, vil bli " +
@@ -437,9 +434,9 @@ object AfpEtteroppgjoerInnhold {
             paragraph {
                 text(
                     bokmal {
-                        +"Du må dokumentere hvilke av inntektene dine som skal holdes utenfor avkorting " +
-                            "av AFP. Hvis du ikke sender inn ny dokumentasjon innen fristen, benytter vi " +
-                            "de opplysningene vi har, og etteroppgjøret vil bli vurdert som avsluttet."
+                        +"Du må dokumentere hvilke av inntektene dine som ikke skal redusere " +
+                            "AFP. Hvis du ikke sender inn ny dokumentasjon innen fristen, bruker vi " +
+                            "de opplysningene vi har og avslutter etteroppgjøret."
                     },
                     nynorsk {
                         +"Du må dokumentere kva delar av inntektene dine som skal haldast utanfor " +
@@ -460,8 +457,8 @@ object AfpEtteroppgjoerInnhold {
             paragraph {
                 text(
                     bokmal {
-                        +"På $AFP_ETTEROPPGJOER_URL finner du et skjema som du eller arbeidsgiver kan " +
-                            "benytte ved innsending av dokumentasjon."
+                        +"På $AFP_ETTEROPPGJOER_URL finner du et skjema som du kan " +
+                            "bruke ved innsending av dokumentasjon."
                     },
                     nynorsk {
                         +"På $AFP_ETTEROPPGJOER_URL finn du eit skjema som du eller arbeidsgivaren kan " +
@@ -778,9 +775,9 @@ object AfpEtteroppgjoerInnhold {
                 paragraph {
                     text(
                         bokmal {
-                            +"Fordi du har tatt ut AFP fra " + uttaksdato.format() + " benytter vi en " +
-                                "standardberegning for å beregne fordelingen av inntekten din før og etter " +
-                                "AFP-uttaket. Denne beregningen kan endres dersom du kan dokumentere en " +
+                            +"Fordi du har tatt ut AFP fra " + uttaksdato.format() + " bruker vi en " +
+                                "standardberegning for å fordele inntekten din før og etter " +
+                                "AFP-uttaket. Denne beregningen kan endres hvis du dokumenterer en " +
                                 "annen fordeling av inntekten."
                         },
                         nynorsk {
@@ -815,8 +812,8 @@ object AfpEtteroppgjoerInnhold {
                     paragraph {
                         text(
                             bokmal {
-                                +"Fordi AFP har opphørt fra " + opphor.format() + " benytter vi en " +
-                                    "standardberegning for å beregne fordelingen av inntekten din i " +
+                                +"Fordi AFP har opphørt fra " + opphor.format() + " bruker vi en " +
+                                    "standardberegning for å fordele inntekten din i " +
                                     "perioder med og uten AFP. Denne beregningen kan endres dersom du kan " +
                                     "dokumentere en annen fordeling av inntekten."
                             },
@@ -836,7 +833,7 @@ object AfpEtteroppgjoerInnhold {
                                 "over fra AFP til annen pensjon, eventuelt etter opphør av AFP. Dette " +
                                 "beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() +
                                 ". Den delen av inntekten som regnes for å være opptjent i den perioden du " +
-                                "har mottatt AFP, er beregnet til " + inntektIAfpPerioden.format() + "."
+                                "har mottatt AFP, er " + inntektIAfpPerioden.format() + "."
                         },
                         nynorsk {
                             +"Vi har lagt til grunn at " + inntektEtterOpphoer.format() + " er opptente etter at du gjekk " +
@@ -852,8 +849,8 @@ object AfpEtteroppgjoerInnhold {
                 paragraph {
                     text(
                         bokmal {
-                            +"Fordi du ikke har hatt rett til AFP hele året benytter vi en " +
-                                "standardberegning for å beregne fordelingen av inntekten din i perioder " +
+                            +"Fordi du ikke har hatt rett til AFP hele året bruker vi en " +
+                                "standardberegning for å fordele inntekten din i perioder " +
                                 "med og uten AFP i det aktuelle året. Denne beregningen kan endres dersom " +
                                 "du kan dokumentere en annen fordeling av inntekten."
                         },
@@ -869,10 +866,10 @@ object AfpEtteroppgjoerInnhold {
                     text(
                         bokmal {
                             +"Vi har lagt til grunn at du tjente " + inntektFoerUttak.format() + " før du tok ut AFP og " +
-                                inntektEtterOpphoer.format() + " etter at du gikk over fra AFP til annen pensjon, " +
+                                inntektEtterOpphoer.format() + " etter at du gikk over fra AFP til en annen ytelse, " +
                                 "eventuelt etter opphør av AFP. Det samlede beløpet holdes utenfor " +
-                                "etteroppgjøret. Den delen av inntekten som regnes for å være opptjent i " +
-                                "den perioden du har mottatt AFP, er beregnet til " + inntektIAfpPerioden.format() + "."
+                                "etteroppgjøret. Den delen av inntekten som etter standardberegningen regnes for å være opptjent i " +
+                                "den perioden du har mottatt AFP, er " + inntektIAfpPerioden.format() + "."
                         },
                         nynorsk {
                             +"Vi har lagt til grunn at du tente " + inntektFoerUttak.format() + " før du tok ut AFP og " +
@@ -918,7 +915,7 @@ object AfpEtteroppgjoerInnhold {
                 paragraph {
                     text(
                         bokmal {
-                            +"Nedenfor følger en beregning som viser hva du skulle ha fått utbetalt i " +
+                            +"Nedenfor ser du en beregning som viser hva du skulle ha fått utbetalt i " +
                                 oppgjoersAar.format() + ":"
                         },
                         nynorsk {
@@ -932,7 +929,7 @@ object AfpEtteroppgjoerInnhold {
                 paragraph {
                     text(
                         bokmal {
-                            +"Nedenfor følger en beregning som viser hva du skulle ha fått utbetalt i " +
+                            +"Nedenfor ser du en beregning som viser hva du skulle ha fått utbetalt i " +
                                 "perioden " + uttaksdato.format() + " til 31. desember " +
                                 oppgjoersAar.format() + ":"
                         },
@@ -949,7 +946,7 @@ object AfpEtteroppgjoerInnhold {
                     paragraph {
                         text(
                             bokmal {
-                                +"Nedenfor følger en beregning som viser hva du skulle ha fått utbetalt i " +
+                                +"Nedenfor ser du en beregning som viser hva du skulle ha fått utbetalt i " +
                                     "perioden 1. januar " + oppgjoersAar.format() + " til " +
                                     opphor.format() + ":"
                             },
@@ -967,7 +964,7 @@ object AfpEtteroppgjoerInnhold {
                     paragraph {
                         text(
                             bokmal {
-                                +"Nedenfor følger en beregning som viser hva du skulle ha fått utbetalt i " +
+                                +"Nedenfor ser du en beregning som viser hva du skulle ha fått utbetalt i " +
                                     "perioden " + uttaksdato.format() + " til " + opphor.format() + ":"
                             },
                             nynorsk {
@@ -1033,10 +1030,7 @@ object AfpEtteroppgjoerInnhold {
             paragraph {
                 text(
                     bokmal {
-                        +"Hvis du har rett til annen samordningspliktig pensjon, må vi ta forbehold om " +
-                            "mulige refusjonskrav fra andre pensjonsordninger i etterbetalingen av AFP. Ny " +
-                            "samordning mellom to eller flere pensjoner tilbake i tid kan føre til at den " +
-                            "aktuelle etterbetalingen av AFP blir vesentlig redusert eller faller helt bort."
+                        +"Hvis du har rett til annen samordningspliktig pensjon, kan andre pensjonsordninger kreve refusjon i etterbetalingen. Da kan etterbetalingen bli redusert eller ikke bli utbetalt."
                     },
                     nynorsk {
                         +"Dersom du har rett til annan samordningspliktig pensjon, må vi ta atterhald om " +
