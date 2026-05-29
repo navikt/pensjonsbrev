@@ -105,6 +105,72 @@ object AfpPrivatFraser {
     }
 
     /**
+     * Informasjon til brukeren om muligheten for ny søknad om AFP privat
+     * ved eventuell senere rett til alderspensjon. Brukes i avslagsbrev
+     * for AFP privat (PE_AF_04_112, PE_AF_04_116).
+     */
+    object NySoknadVedSenereRettTilAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Hvis du ved eventuell senere rett til alderspensjon fra folketrygden " +
+                            "også ønsker å ta ut AFP i privat sektor, må du sende inn ny søknad om " +
+                            "AFP. Vi gjør oppmerksom på at du på uttakstidspunktet for AFP må være " +
+                            "reell arbeidstaker i en bedrift som omfattes av AFP-ordningen."
+                    },
+                    nynorsk {
+                        +"Dersom du ved eventuell seinare rett til alderspensjon frå folketrygda " +
+                            "òg ønskjer å ta ut AFP i privat sektor, må du sende inn ny søknad om " +
+                            "AFP. Vi gjer merksam på at du på uttakstidspunktet for AFP må vere " +
+                            "reell arbeidstakar i ei verksemd som er omfatta av AFP-ordninga."
+                    },
+                    english {
+                        +"If, in the event of a possible right to national insurance retirement " +
+                            "pension, you also want to draw contractual pension in the private " +
+                            "sector, you will need to submit a new application for contractual " +
+                            "pension. We wish to point out that on the pension date for contractual " +
+                            "pension, you must be an actual employee of an enterprise that is " +
+                            "covered by the contractual pension scheme."
+                    },
+                )
+            }
+        }
+    }
+
+    /**
+     * Klagerett-paragraf for avslagsbrev med henvisning til folketrygdloven § 21-12.
+     * Forskjell fra [KlagerettFolketrygdloven2112]: Denne sier "klage på avslaget" (ikke
+     * "klage på vedtaket") og inkluderer setningen om vedlagt orientering om klage-
+     * og ankebehandling.
+     *
+     * Brukes i avslag AFP privat (PE_AF_04_112, PE_AF_04_116).
+     */
+    object KlagerettAvslagFolketrygdloven2112 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Du kan klage på avslaget etter bestemmelsene i folketrygdloven paragraf 21-12. " +
+                            "Fristen for å klage er seks uker fra du mottar dette brevet. Vedlagt finner du " +
+                            "en orientering om klage- og ankebehandling."
+                    },
+                    nynorsk {
+                        +"Du kan klage på avslaget etter føresegnene i folketrygdlova paragraf 21-12. Fristen " +
+                            "for å klage er seks veker frå du får dette brevet. Vedlagt finn du ei " +
+                            "orientering om klage- og ankebehandling."
+                    },
+                    english {
+                        +"You can appeal the rejection, pursuant to the terms in section 21-12 of the " +
+                            "National Insurance Act. The time limit for filing an appeal is six weeks from " +
+                            "the date you received this letter. We enclose information about the appeal process."
+                    },
+                )
+            }
+        }
+    }
+
+    /**
      * Bold-ledet forklaring av AFP livsvarig del. Rendres bare når
      * [livsvarigBrutto] er satt.
      */

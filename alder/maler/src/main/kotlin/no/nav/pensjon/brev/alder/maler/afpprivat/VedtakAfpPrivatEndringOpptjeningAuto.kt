@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.afpprivat
 
+import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.AfpPrivatFraser
 import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.KronerText
@@ -289,24 +290,8 @@ object VedtakAfpPrivatEndringOpptjeningAuto : AutobrevTemplate<VedtakAfpPrivatEn
                 )
             }
 
-            paragraph {
-                text(
-                    bokmal {
-                        +"Du har som hovedregel rett til å se sakens dokumenter etter bestemmelsene i forvaltningsloven " +
-                            "paragraf 18."
-                    },
-                )
-            }
-
-            paragraph {
-                text(
-                    bokmal {
-                        +"Hvis du mener at vedtaket ikke er i samsvar med det du har søkt om, kan du klage på vedtaket " +
-                            "etter bestemmelsene i folketrygdloven paragraf 21-12. Fristen for å klage er seks uker fra " +
-                            "du mottar dette brevet."
-                    },
-                )
-            }
+            includePhrase(AfpPrivatFraser.InnsynForvaltningsloven18)
+            includePhrase(AfpPrivatFraser.KlagerettFolketrygdloven2112)
 
             paragraph {
                 text(

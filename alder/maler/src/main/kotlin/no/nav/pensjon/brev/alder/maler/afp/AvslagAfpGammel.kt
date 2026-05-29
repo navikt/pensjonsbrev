@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.alder.maler.afp
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggFolketrygden
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.AvslagAfpGammelDto
@@ -18,6 +19,8 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.NavEnhetSelectors.navn
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 /**
@@ -80,15 +83,14 @@ object AvslagAfpGammel : RedigerbarTemplate<AvslagAfpGammelDto> {
             // FRITEKST i originalen: «Vedtaket er gjort etter lov av 23. desember 1988 om
             // statstilskott til ordninger for avtalefestet pensjon (tilskottsloven) paragraf …»
             paragraph {
-                val paragrafReferanse = fritekst("…")
                 text(
                     bokmal {
                         +"Vedtaket er gjort etter lov av 23. desember 1988 om statstilskott til ordninger for " +
-                            "avtalefestet pensjon (tilskottsloven) paragraf " + paragrafReferanse + "."
+                                "avtalefestet pensjon (tilskottsloven) paragraf " + fritekst("…") + "."
                     },
                     nynorsk {
                         +"Vedtaket er gjort etter lov av 23. desember 1988 om statstilskot til ordningar for " +
-                            "avtalefesta pensjon (tilskotslova) paragraf " + paragrafReferanse + "."
+                                "avtalefesta pensjon (tilskotslova) paragraf " + fritekst("…") + "."
                     },
                 )
             }
@@ -104,14 +106,41 @@ object AvslagAfpGammel : RedigerbarTemplate<AvslagAfpGammelDto> {
                 text(
                     bokmal {
                         +"Du kan klage på avslaget. Fristen for å klage er seks uker fra du mottar dette brevet. " +
-                            "Klagen skal sendes til avsenderadressen som står øverst i brevet. Sammen med dette " +
-                            "brevet sender vi deg også en orientering om klage- og ankebehandling."
+                            "Klagen skal sendes til:"
                     },
                     nynorsk {
                         +"Du kan klage på avslaget. Fristen for å klage er seks veker frå du får dette brevet. " +
-                            "Klaga skal sendast til avsendaradressa som står øvst i brevet. Saman med dette " +
-                            "brevet sender vi deg òg ei orientering om klage- og ankebehandling."
+                            "Klaga skal sendast til:"
                     },
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +felles.avsenderEnhet.navn },
+                    nynorsk { +felles.avsenderEnhet.navn },
+                )
+                newline()
+                text(
+                    bokmal { +"Postboks 6600 Etterstad" },
+                    nynorsk { +"Postboks 6600 Etterstad" },
+                )
+                newline()
+                text(
+                    bokmal { +"0607 Oslo" },
+                    nynorsk { +"0607 Oslo" },
+                )
+                newline()
+                text(
+                    bokmal { +"NORWAY" },
+                    nynorsk { +"NORWAY" },
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Sammen med dette brevet sender vi deg også en orientering om klage- og ankebehandling." },
+                    nynorsk { +"Saman med dette brevet sender vi deg òg ei orientering om klage- og ankebehandling." },
                 )
             }
 
@@ -121,8 +150,8 @@ object AvslagAfpGammel : RedigerbarTemplate<AvslagAfpGammelDto> {
                     nynorsk { +"Vi gjer merksam på at du etter forvaltningslova paragraf 18 har rett til å sjå saksdokumenta." },
                 )
             }
-
             includePhrase(HarDuSpoersmaal.alder)
         }
+        includeAttachment(vedleggFolketrygden)
     }
 }
