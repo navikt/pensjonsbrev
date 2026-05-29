@@ -37,7 +37,7 @@ class VedtakOmEtterbetalingOpphor2026 {
                         +"Du får en etterbetaling i juli fordi Stortinget har vedtatt en lovendring som gir deg en lavere reduksjonsprosent. Den nye reduksjonsprosenten skal gjelde fra 1. januar 2026. "
                     },
                     nynorsk {
-                        +"Du får ei etterbetaling i juli fordi Stortinget har vedteke ein lovendring som gir deg ein lågare reduksjonsprosent. Den nye reduksjonsprosenten skal gjelde frå 1. januar 2026. "
+                        +"Du får ei etterbetaling i juli fordi Stortinget har vedteke ei lovendring som gir deg ein lågare reduksjonsprosent. Den nye reduksjonsprosenten skal gjelde frå 1. januar 2026. "
                     },
                 )
             }
