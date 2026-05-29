@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.Alder
-import no.nav.pensjon.brev.planleggepensjon.simulering.Alderspensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdAvsnitt
@@ -86,7 +85,7 @@ object Fixtures : LetterDataFactory {
         saksbehandlerValg = createLagreSimuleringDto().copy(
             simuleringsinformasjon = createSimuleringsinformasjon().copy(
                 heltUttaksalder = Alder(67,0),
-                gradertUttaksalder = null
+                gradertUttaksalder = Alder(63,2)
             ),
             simulering = createSimulering().copy(
                 maanedligAlderspensjonForKnekkpunkter = SimuleringV1MaanedligAlderspensjonForKnekkpunkter(
