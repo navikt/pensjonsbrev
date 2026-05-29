@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.fraser
 import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtak.fritekst
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
@@ -92,7 +92,7 @@ class VedtakOmEtterbetalingOpphor2026 {
                     bokmal { +"I vedlegget " },
                     nynorsk { +"I vedlegget " },
                 )
-                namedReference(vedleggDineRettigheterOgPlikterUfoere)
+                namedReference(vedleggDineRettigheterOgPlikterUfore)
                 text(
                     bokmal { +" får du vite mer om hvordan du går fram for å klage." },
                     nynorsk { +" får du vite meir om korleis du går fram for å klage." },
