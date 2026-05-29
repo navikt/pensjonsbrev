@@ -47,6 +47,7 @@ interface PenClient {
 
 class PenServiceException(message: String) : ServiceException(message)
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
+class PenFeilIDatabyggerException(message: String) : ServiceException(message)
 
 class PentHttpClient(config: Config, authService: AuthService) : PenClient, ServiceStatus {
     private val penUrl = config.getString("url")
@@ -156,6 +157,7 @@ class PentHttpClient(config: Config, authService: AuthService) : PenClient, Serv
         when {
             status.isSuccess() -> body<BrevdataResponseWrapper<Data>>().data
             status == HttpStatusCode.UnprocessableEntity -> throw PenDataException(body<BrevdataFeilResponse>().feil)
+            status == HttpStatusCode.InternalServerError -> throw PenFeilIDatabyggerException("Feil ved henting av brevdata i sak ${saksId.id}${vedtaksId?.let { " for vedtak ${it.id}" } ?: ""}. ${bodyAsText()}")
             else -> throw PenServiceException("Feil ved kall til PEN: ${status.value} - ${bodyAsText()}. Saksid: ${saksId.id} ${vedtaksId?.let { ", vedtaksId: ${it.id}" }}")
         }
 

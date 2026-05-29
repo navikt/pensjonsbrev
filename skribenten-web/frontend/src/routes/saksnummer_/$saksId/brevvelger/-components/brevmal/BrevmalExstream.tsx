@@ -41,7 +41,7 @@ export default function BrevmalForExstream({
   saksId: string;
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) {
-  const { vedtaksId, idTSSEkstern } = Route.useSearch();
+  const { enhetsId: urlEnhetsId, vedtaksId, idTSSEkstern } = Route.useSearch();
   const formRef = useRef<HTMLFormElement>(null);
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
     mutationFn: (payload) => orderExstreamLetter(saksId, payload),
@@ -71,13 +71,15 @@ export default function BrevmalForExstream({
     resolver: zodResolver(validationSchema),
   });
 
-  const { reset: resetMutation } = orderLetterMutation;
-  const { reset: resetForm } = methods;
+  const { getValues, setValue } = methods;
+
   useEffect(() => {
-    //ved template endring vil vi resette formet - men beholde preferredLanguage hvis den finnes
-    resetForm(defaultValues);
-    resetMutation();
-  }, [templateId, defaultValues, resetForm, resetMutation]);
+    const enhetsId = urlEnhetsId ?? "";
+
+    if (getValues("enhetsId") !== enhetsId) {
+      setValue("enhetsId", enhetsId);
+    }
+  }, [urlEnhetsId, getValues, setValue]);
 
   return (
     <>
