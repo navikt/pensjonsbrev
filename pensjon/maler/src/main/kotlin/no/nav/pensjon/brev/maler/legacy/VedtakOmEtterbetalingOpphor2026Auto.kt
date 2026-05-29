@@ -7,10 +7,12 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDto
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.dineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.hjemler
 import no.nav.pensjon.brev.maler.fraser.VedtakOmEtterbetalingOpphor2026
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -39,5 +41,6 @@ object VedtakOmEtterbetalingOpphor2026Auto : AutobrevTemplate<VedtakOmEtterbetal
             includePhrase(Felles.RettTilInnsynRedigerbarebrev)
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
+        includeAttachment(vedleggDineRettigheterOgPlikterUfore, dineRettigheterOgPlikterUfore)
     }
 }

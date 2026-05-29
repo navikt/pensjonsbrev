@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 class VedtakOmEtterbetalingOpphor2026 {
@@ -84,6 +85,17 @@ class VedtakOmEtterbetalingOpphor2026 {
                         +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen vedtaket har kome fram til deg. Du finn skjema og informasjon på " +
                                 "${Constants.KLAGE_URL}."
                     },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"I vedlegget " },
+                    nynorsk { +"I vedlegget " },
+                )
+                namedReference(vedleggDineRettigheterOgPlikterUfoere)
+                text(
+                    bokmal { +" får du vite mer om hvordan du går fram for å klage." },
+                    nynorsk { +" får du vite meir om korleis du går fram for å klage." },
                 )
             }
         }

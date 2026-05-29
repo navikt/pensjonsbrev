@@ -5,8 +5,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmIFUReduksjonsprosentRedigerbarDto
+import no.nav.pensjon.brev.fixtures.createDineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.fixtures.createMaanedligUfoeretrygdFoerSkattDto
-import no.nav.pensjon.brev.fixtures.createOrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.fixtures.createPEgruppe10
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
@@ -33,7 +33,7 @@ fun createVedtakOmIFUReduksjonsprosentAutoDto() =
             hjemler = setOf("12-13", "12-16", "12-18", "22-12"),
             pe = createPEgruppe10(),
             maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
-            orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
+            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto()
         )
     )
 
@@ -60,7 +60,7 @@ fun createVedtakOmIFUReduksjonsprosentRedigerbarDto() =
                 hjemler = setOf("12-13", "12-16", "12-18", "22-12"),
                 pe = createPEgruppe10(),
                 maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
-                orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
+                dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto()
             )
         )
     )
