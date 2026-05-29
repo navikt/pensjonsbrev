@@ -4,6 +4,8 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -38,6 +40,7 @@ object OppgittSamboer : RedigerbarTemplate<InnhentingOpplysningerSamboerDto> {
     )
     {
         val ukjentSamboer = saksbehandlervalg("ukjentSamboer", "Ukjent samboer").bool()
+        val vilkaarlegInt = saksbehandlervalg("vilkaarlegInt", "Vilkaarleg int").int(1)
 
         title {
             text (bokmal { + "Du må sende flere opplysninger" })
@@ -45,6 +48,13 @@ object OppgittSamboer : RedigerbarTemplate<InnhentingOpplysningerSamboerDto> {
         outline {
             paragraph {
                 text(bokmal { +"Vi har mottatt melding om at du har blitt samboer. " })
+            }
+            ifNotNull(vilkaarlegInt) { i ->
+                showIf(i.greaterThan(0)) {
+                    paragraph {
+                        text(bokmal { +"teeeeest" + i.format() })
+                    }
+                }
             }
 
             showIf(ukjentSamboer) {

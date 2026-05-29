@@ -74,7 +74,11 @@ object Fixtures : LetterDataFactory {
         pesysData = EmptyFagsystemdata,
         saksbehandlerValg = object : SaksbehandlervalgIDSL {
             override val verdier = emptyMap<String, SaksbehandlervalgVerdi>()
-            override fun <T : SaksbehandlervalgVerdi> get(key: String): T= SaksbehandlervalgVerdi.Bool(false, "tull") as T
+            override fun <T : SaksbehandlervalgVerdi> get(key: String): T = when (key) {
+                "ukjentSamboer" -> SaksbehandlervalgVerdi.Bool (false, "tull") as T
+                "vilkaarlegInt" -> SaksbehandlervalgVerdi.Integer(4, "tøys") as T
+                else -> throw NoSuchElementException("Mangler oppsett")
+            }
         }
     )
 
