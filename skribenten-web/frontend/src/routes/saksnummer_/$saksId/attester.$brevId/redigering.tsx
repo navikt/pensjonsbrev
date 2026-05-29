@@ -155,24 +155,26 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const [forbidReason, setForbidReason] = useState<AttestForbiddenReason | null>(null);
   const [unexpectedError, setUnexpectedError] = useState<AxiosError | null>(null);
 
-  const lastSeenIdsRef = useRef<ReadonlySet<number>>(collectAllIds(props.brev.redigertBrev));
-  const previousValgRef = useRef(props.brev.saksbehandlerValg);
-  const previousIdsRef = useRef<ReadonlySet<number> | null>(null);
-  const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [highlightedIds, setHighlightedIds] = useState<ReadonlySet<number>>(() => new Set<number>());
+  const lastSeenLetterIdsRef = useRef<ReadonlySet<number>>(collectAllIds(props.brev.redigertBrev));
+  const previousTekstvalgRef = useRef(props.brev.saksbehandlerValg);
+  const idsBeforeTekstvalgToggleRef = useRef<ReadonlySet<number> | null>(null);
+  const tekstvalgHighlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [highlightedInsertedTekstvalgIds, setHighlightedInsertedTekstvalgIds] = useState<ReadonlySet<number>>(
+    () => new Set<number>(),
+  );
 
   useEffect(() => {
-    lastSeenIdsRef.current = collectAllIds(props.brev.redigertBrev);
+    lastSeenLetterIdsRef.current = collectAllIds(props.brev.redigertBrev);
   }, [props.brev.redigertBrev]);
 
   useEffect(() => {
-    previousValgRef.current = editorState.saksbehandlerValg;
+    previousTekstvalgRef.current = editorState.saksbehandlerValg;
   }, [editorState.saksbehandlerValg]);
 
   useEffect(
     () => () => {
-      if (highlightTimerRef.current) {
-        clearTimeout(highlightTimerRef.current);
+      if (tekstvalgHighlightTimerRef.current) {
+        clearTimeout(tekstvalgHighlightTimerRef.current);
       }
     },
     [],
@@ -216,9 +218,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       });
     },
     onSuccess: (response, variables) => {
-      const previousIds = previousIdsRef.current;
+      const idsBeforeTekstvalgToggle = idsBeforeTekstvalgToggleRef.current;
       const historySnapshot = variables.historySnapshot;
-      previousIdsRef.current = null;
+      idsBeforeTekstvalgToggleRef.current = null;
 
       onSaveSuccess(
         response,
@@ -235,22 +237,25 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         responseWasApplied = current.saveStatus !== "DIRTY";
         return current;
       });
-      if (!previousIds || !responseWasApplied) return;
+      if (!idsBeforeTekstvalgToggle || !responseWasApplied) return;
 
-      const lastSeenIds = lastSeenIdsRef.current;
-      const newIds = new Set<number>();
-      for (const id of collectNewIds(previousIds, response.redigertBrev)) {
-        if (!lastSeenIds.has(id)) newIds.add(id);
+      const lastSeenLetterIds = lastSeenLetterIdsRef.current;
+      const newlyInsertedTekstvalgIds = new Set<number>();
+      for (const id of collectNewIds(idsBeforeTekstvalgToggle, response.redigertBrev)) {
+        if (!lastSeenLetterIds.has(id)) newlyInsertedTekstvalgIds.add(id);
       }
-      if (newIds.size === 0) return;
+      if (newlyInsertedTekstvalgIds.size === 0) return;
 
-      setHighlightedIds(newIds);
-      const focus = findLastInsertedFocus(response.redigertBrev, newIds);
+      setHighlightedInsertedTekstvalgIds(newlyInsertedTekstvalgIds);
+      const focus = findLastInsertedFocus(response.redigertBrev, newlyInsertedTekstvalgIds);
       if (focus) {
         setEditorState((s) => ({ ...s, focus }));
       }
-      if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
-      highlightTimerRef.current = setTimeout(() => setHighlightedIds(new Set<number>()), 2200);
+      if (tekstvalgHighlightTimerRef.current) clearTimeout(tekstvalgHighlightTimerRef.current);
+      tekstvalgHighlightTimerRef.current = setTimeout(
+        () => setHighlightedInsertedTekstvalgIds(new Set<number>()),
+        2200,
+      );
     },
     onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
@@ -389,10 +394,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   brevkode={props.brev.info.brevkode}
                   submitOnChange={() => {
                     const updatedValg = form.getValues("saksbehandlerValg");
-                    if (hasAnyTekstvalgBeenToggledOn(previousValgRef.current, updatedValg)) {
-                      previousIdsRef.current = collectAllIds(editorState.redigertBrev);
+                    if (hasAnyTekstvalgBeenToggledOn(previousTekstvalgRef.current, updatedValg)) {
+                      idsBeforeTekstvalgToggleRef.current = collectAllIds(editorState.redigertBrev);
                     }
-                    previousValgRef.current = updatedValg;
+                    previousTekstvalgRef.current = updatedValg;
                     oppdaterBrevMutation.mutate({
                       redigertBrev: editorState.redigertBrev,
                       saksbehandlerValg: updatedValg,
@@ -407,7 +412,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         }
         right={
           <>
-            <InsertedTekstValgHighlightProvider ids={highlightedIds}>
+            <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
               <ManagedLetterEditor
                 brev={props.brev}
                 error={error}
