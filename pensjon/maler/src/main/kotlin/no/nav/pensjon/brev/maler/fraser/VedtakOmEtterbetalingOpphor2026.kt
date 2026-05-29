@@ -44,7 +44,7 @@ class VedtakOmEtterbetalingOpphor2026 {
             paragraph {
                 text(
                     bokmal { +"Fra 1. januar 2026 og frem til uføretrygden din opphørte, hadde du inntekt over inntektsgrensen. I denne perioden brukte vi den gamle reduksjonsprosenten din. Det har ført til at vi har redusert uføretrygden for mye, og du har fått utbetalt for lite uføretrygd." },
-                    nynorsk { +"Frå 1. januar 2026 og fram til uføretrygda di opphørte, hadde du inntekt over inntektsgrensa. I denne perioden brukte vi den gamle reduksjonsprosenten din. Det har ført til at vi har redusert uføretrygda for mykje, og du har fått utbetalt for lite uføretrygd." }
+                    nynorsk { +"Frå 1. januar 2026 og fram til uføretrygda di opphøyrde, hadde du inntekt over inntektsgrensa. I denne perioden brukte vi den gamle reduksjonsprosenten din. Det har ført til at vi har redusert uføretrygda for mykje, og du har fått utbetalt for lite uføretrygd." }
                 )
             }
             paragraph {
