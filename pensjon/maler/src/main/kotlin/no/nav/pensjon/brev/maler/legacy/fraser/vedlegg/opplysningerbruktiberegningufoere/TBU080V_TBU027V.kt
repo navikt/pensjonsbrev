@@ -29,21 +29,51 @@ data class TBU080V_TBU027V(
                     )
                 }
 
-                showIf(pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyLessThan(LocalDate.of(2024, 7, 1))) {
+                //[TBU080V-TBU027V] Block 1: fom < 2016-09-01 AND virkningsdato >= 2024-07-01
+                showIf(
+                    pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().legacyLessThan(LocalDate.of(2016, 9, 1))
+                            and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyGreaterThanOrEqual(LocalDate.of(2024, 7, 1))
+                ) {
+                    paragraph {
+                        text(
+                            bokmal { +"Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Minste årlige ytelse er 2,329 ganger folketrygdens grunnbeløp for personer som lever sammen med ektefelle, partner eller er i et samboerforhold som har vart i minst 12 av de siste 18 månedene. Er du enslig utgjør minste årlige ytelse 2,529 ganger grunnbeløpet. " },
+                            nynorsk { +"Du er sikra minsteyting fordi berekninga ut frå den eigenopptente inntekta di er lågare enn minstenivået for uføretrygd. Minste årlege yting er 2,329 gonger grunnbeløpet i folketrygda for personar som lever saman med ektefelle, partnar eller er i eit sambuarforhold som har vart i minst 12 av dei siste 18 månadene. Er du einsleg, utgjer minste årlege yting 2,529 gonger grunnbeløpet. " },
+                        )
+
+                        showIf(ungUforUnder20) {
+                            text(
+                                bokmal { +"Er du innvilget rettighet som ung ufør, er minste årlige ytelse, fra fylte 20 år, 2,709 ganger folketrygdens grunnbeløp hvis du lever sammen med ektefelle, partner eller er i et samboerforhold som har vart i minst 12 av de siste 18 månedene. Er du enslig utgjør minste årlige ytelse 2,959 ganger grunnbeløpet." },
+                                nynorsk { +"Er du innvilga rett som ung ufør, er minste årlege yting, frå fylte 20 år, 2,709 gonger grunnbeløpet i folketrygda dersom du lever saman med ektefelle, partnar eller er i eit sambuarforhold som har vart i minst 12 av de siste 18 månadene. Er du einsleg, utgjer minste årlege yting 2,959 gonger grunnbeløpet." },
+                            )
+                        }
+                    }
+                }
+
+                //[TBU080V-TBU027V] Block 2: fom < 2016-09-01 AND virkningsdato < 2024-07-01
+                showIf(
+                    pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().legacyLessThan(LocalDate.of(2016, 9, 1))
+                            and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyLessThan(LocalDate.of(2024, 7, 1))
+                ) {
                     paragraph {
                         text(
                             bokmal { +"Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Minste årlige ytelse er 2,28 ganger folketrygdens grunnbeløp for personer som lever sammen med ektefelle, partner eller er i et samboerforhold som har vart i minst 12 av de siste 18 månedene. Fra 1. juli 2024 øker denne til 2,329. Er du enslig utgjør minste årlige ytelse 2,48 ganger grunnbeløpet. Fra 1. juli 2024 øker denne til 2,529. " },
                             nynorsk { +"Du er sikra minsteyting fordi berekninga ut frå den eigenopptente inntekta di er lågare enn minstenivået for uføretrygd. Minste årlege yting er 2,28 gonger grunnbeløpet i folketrygda for personar som lever saman med ektefelle, partnar eller er i eit sambuarforhold som har vart i minst 12 av dei siste 18 månadene. Frå 1. juli 2024 aukar denne til 2,329. Er du einsleg, utgjer minste årlege yting 2,48 gonger grunnbeløpet. Frå 1. juli 2024 aukar denne til 2,529. " },
                         )
 
-                        showIf((ungUforUnder20)) {
+                        showIf(ungUforUnder20) {
                             text(
                                 bokmal { +"Er du innvilget rettighet som ung ufør, er minste årlige ytelse, fra fylte 20 år, 2,66 ganger folketrygdens grunnbeløp hvis du lever sammen med ektefelle, partner eller er i et samboerforhold som har vart i minst 12 av de siste 18 månedene. Fra 1. juli 2024 øker denne til 2,709. Er du enslig utgjør minste årlige ytelse 2,91 ganger grunnbeløpet. Fra 1. juli øker denne til 2,959." },
                                 nynorsk { +"Er du innvilga rett som ung ufør, er minste årlege yting, frå fylte 20 år, 2,66 gonger grunnbeløpet i folketrygda dersom du lever saman med ektefelle, partnar eller er i eit sambuarforhold som har vart i minst 12 av de siste 18 månadene. Frå 1. juli 2024 aukar denne til 2,709. Er du einsleg, utgjer minste årlege yting 2,91 gonger grunnbeløpet. Frå 1. juli 2024 aukar denne til 2,959." },
                             )
                         }
                     }
-                }.orShow {
+                }
+
+                //[TBU080V-TBU027V] Block 3: fom >= 2016-09-01 AND virkningsdato >= 2024-07-01
+                showIf(
+                    pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().legacyGreaterThanOrEqual(LocalDate.of(2016, 9, 1))
+                            and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyGreaterThanOrEqual(LocalDate.of(2024, 7, 1))
+                ) {
                     paragraph {
                         text(
                             bokmal { +"Du er sikret minsteytelse, fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Din sivilstatus påvirker minstesatsen. " },
@@ -77,7 +107,7 @@ data class TBU080V_TBU027V(
                         }
                     }
 
-                    showIf((ungUforUnder20)) {
+                    showIf(ungUforUnder20) {
                         paragraph {
                             text(
                                 bokmal { +"Er du innvilget rettighet som ung ufør og lever sammen med ektefelle, partner eller er i et samboerforhold som har vart i minst 12 av de siste 18 månedene, utgjør minste årlige ytelse 2,709 ganger folketrygdens grunnbeløp fra fylte 20 år. Er du enslig og innvilget rettighet som ung ufør, utgjør minste årlige ytelse 2,959 ganger folketrygdens grunnbeløp fra fylte 20 år." },
@@ -87,15 +117,18 @@ data class TBU080V_TBU027V(
                     }
                 }
 
-                //IF( PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom >= DateValue("01/09/2016") AND PE_Vedtaksdata_Kravhode_onsketVirkningsDato <  DateValue("01/07/2024") AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true OR ( PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_OppfyltUngUfor = true  AND  PE_UT_VilkarGjelderPersonAlder < 20  AND  PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true ))   ) THEN      INCLUDE ENDIF
-                showIf(pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyLessThan(LocalDate.of(2024, 7, 1))) {
+                //[TBU080V-TBU027V] Block 4: fom >= 2016-09-01 AND virkningsdato < 2024-07-01
+                showIf(
+                    pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().legacyGreaterThanOrEqual(LocalDate.of(2016, 9, 1))
+                            and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyLessThan(LocalDate.of(2024, 7, 1))
+                ) {
                     paragraph {
                         text(
                             bokmal { +"Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Bor du sammen med ektefelle, partner eller er i et samboerforhold som har vart i minst 12 av de siste 18 månedene, utgjør minste årlige ytelse 2,28 ganger folketrygdens grunnbeløp. Hvis du får barn med samboeren din, skal uføretrygden utgjøre 2,28 ganger folketrygdens grunnbeløp fra måneden etter at barnet er født. Fra 1. juli 2024 øker denne til 2,329. Bor du sammen med ektefelle, partner eller er i et samboerforhold som har vart i minst 12 av de siste 18 månedene og har uføretrygd beregnet ut fra uførepensjon per 31. desember 2014, utgjør minste årlige ytelse 2,33 ganger folketrygdens grunnbeløp. Fra 1. juli 2024 øker denne til 2,379. Er du enslig, utgjør minste årlige ytelse 2,48 ganger folketrygdens grunnbeløp. Fra 1. juli 2024 øker denne til 2,529. " },
                             nynorsk { +"Du er sikra minsteyting fordi berekninga ut frå den eigenopptente inntekta di er lågare enn minstenivået for uføretrygd. Bur du saman med ektefelle, partnar eller er i eit sambuarforhold som har vart i minst 12 av dei siste 18 månadene, utgjer minste årlege yting 2,28 gonger grunnbeløpet i folketrygda. Dersom du får barn med sambuaren din, skal uføretrygda utgjere 2,28 gonger folketrygdas grunnbeløp frå månaden etter at barnet er født. Frå 1. juli 2024 aukar denne til 2,329. Bur du saman med ektefelle, partnar eller er i eit sambuarforhold som har vart i minst 12 av dei siste 18 månadene og har uføretrygd berekna ut frå uførepensjon per 31. desember 2014, utgjer minste årlege yting 2,33 gonger grunnbeløpet i folketrygda. Frå 1. juli 2024 aukar denne til 2,379. Er du einsleg, utgjer minste årlege yting 2,48 gonger grunnbeløpet. Frå 1. juli 2024 aukar denne til 2,529. " },
                         )
 
-                        showIf((ungUforUnder20)) {
+                        showIf(ungUforUnder20) {
                             text(
                                 bokmal { +"Er du innvilget rettighet som ung ufør og lever sammen med ektefelle, partner eller er i et samboerforhold som har vart i minst 12 av de siste 18 månedene, utgjør minste årlige ytelse 2,66 ganger folketrygdens grunnbeløp fra fylte 20 år. Fra 1. juli 2024 øker denne til 2,709. Er du enslig og innvilget rettighet som ung ufør, utgjør minste årlige ytelse 2,91 ganger folketrygdens grunnbeløp fra fylte 20 år. Fra 1. juli øker denne til 2,959." },
                                 nynorsk { +"Er du innvilga rett som ung ufør og lever saman med ektefelle, partnar eller er i eit sambuarforhold som har vart i minst 12 av dei siste 18 månadene, utgjer minste årlege yting 2,66 gonger grunnbeløpet i folketrygda frå fylte 20 år. Frå 1. juli 2024 aukar denne til 2,709. Er du einsleg og innvilga rett som ung ufør, utgjer minste årlege yting 2,91 gonger grunnbeløpet i folketrygda frå fylte 20 år.  Frå 1. juli 2024 aukar denne til 2,959." },
