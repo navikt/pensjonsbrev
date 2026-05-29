@@ -133,27 +133,25 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
             }
         }
 
-        ifNotNull(knekkpunkter.vedNormertPensjonsalder) {
+        ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
+            ifNotNull(simuleringsinformasjon.normertPensjonsalderPlassering) { plassering ->
+                showIf(plassering.isOneOf(NormertPensjonsalderPlassering.MELLOM_GRADERT_OG_HELT)) {
+                    title1 {
+                        text(bokmal { +"Din estimerte månedlige pensjon før skatt ved 67 år" })
+                    }
 
-
-        ifNotNull(simuleringsinformasjon.normertPensjonsalderPlassering) { plassering ->
-            showIf(plassering.isOneOf(NormertPensjonsalderPlassering.MELLOM_GRADERT_OG_HELT)) {
-                title1 {
-                    text(bokmal { +"Din estimerte månedlige pensjon før skatt ved 67 år" })
-                }
-                ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
                     includePhrase(AlderspensjonTabell(normPensjonsalder))
-                }
-                ifNotNull(simulering.afpPrivat) { afpPrivatSim ->
-                    ifNotNull(afpPrivatSim.vedNormertPensjonsalder) { afp ->
-                        includePhrase(AfpPrivatTabell(afp))
-                        ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
-                            includePhrase(SumTabell(normPensjonsalder, afp))
+
+                    ifNotNull(simulering.afpPrivat) { afpPrivatSim ->
+                        ifNotNull(afpPrivatSim.vedNormertPensjonsalder) { afp ->
+                            includePhrase(AfpPrivatTabell(afp))
+                            ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
+                                includePhrase(SumTabell(normPensjonsalder, afp))
+                            }
                         }
                     }
                 }
             }
-        }
         }
 
         title1 {
