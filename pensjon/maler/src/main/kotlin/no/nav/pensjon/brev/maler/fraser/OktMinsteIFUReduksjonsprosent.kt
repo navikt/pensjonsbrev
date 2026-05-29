@@ -14,8 +14,8 @@ import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -23,6 +23,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 object OktMinsteIFUReduksjonsprosent {
 
     data class Brevdata(
+        val totalbelop: Expression<Kroner>,
         val nettoUforetrygdUtenTillegg: Expression<Kroner>,
         val nettoBarnetillegg: Expression<Kroner?>,
         val nettoGjenlevendetillegg: Expression<Kroner?>,
@@ -33,9 +34,8 @@ object OktMinsteIFUReduksjonsprosent {
         val endringNettoUforetrygdUtenTillegg: Expression<Boolean>,
         val endringNettoBarnetillegg: Expression<Boolean>,
         val endringNettoGjenlevendetillegg: Expression<Boolean>,
-        val endringReduksjonsprosent: Expression<Boolean>,
         val endringInntektstak: Expression<Boolean>,
-        val endringIfu: Expression<Boolean>,
+        val erInntektsavkortet: Expression<Boolean>,
         val tillegg: Expression<Collection<UTTillegg>>,
         val hjemler: Expression<Set<String>>,
         val visOktMinsteIFU: Expression<Boolean>,
@@ -44,7 +44,6 @@ object OktMinsteIFUReduksjonsprosent {
 
     data class Outline(val data: Brevdata) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            val sumUtOgTillegg = data.nettoUforetrygdUtenTillegg + data.nettoBarnetillegg.ifNull(Kroner(0)) + data.nettoGjenlevendetillegg.ifNull(Kroner(0))
 
             title1 {
                 text(
@@ -94,20 +93,34 @@ object OktMinsteIFUReduksjonsprosent {
                             }
                         }
                     }
-                    showIf(data.endringReduksjonsprosent) {
+                    showIf(data.endringNettoGjenlevendetillegg) {
                         row {
                             cell {
                                 text(
-                                    bokmal { +"Ny reduksjonsprosent" },
-                                    nynorsk { +"Ny reduksjonsprosent" },
+                                    bokmal { +"Nytt gjenlevendetillegg" },
+                                    nynorsk { +"Nytt gjenlevendetillegg" },
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +data.reduksjonsprosent.format() + " prosent" },
-                                    nynorsk { +data.reduksjonsprosent.format() + " prosent" },
+                                    bokmal { +data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
+                                    nynorsk { +data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
                                 )
                             }
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Ny reduksjonsprosent" },
+                                nynorsk { +"Ny reduksjonsprosent" },
+                            )
+                        }
+                        cell {
+                            text(
+                                bokmal { +data.reduksjonsprosent.format() + " prosent" },
+                                nynorsk { +data.reduksjonsprosent.format() + " prosent" },
+                            )
                         }
                     }
                     showIf(data.endringInntektstak) {
@@ -126,7 +139,7 @@ object OktMinsteIFUReduksjonsprosent {
                             }
                         }
                     }
-                    showIf(data.endringIfu) {
+                    showIf(data.visOktMinsteIFU) {
                         row {
                             cell {
                                 text(
@@ -142,18 +155,20 @@ object OktMinsteIFUReduksjonsprosent {
                             }
                         }
                     }
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"Etterbetaling i juli" },
-                                nynorsk { +"Etterbetaling i juli" },
-                            )
-                        }
-                        cell {
-                            text(
-                                bokmal { +data.etterbetalingJuli.format() },
-                                nynorsk { +data.etterbetalingJuli.format() },
-                            )
+                    showIf(data.etterbetalingJuli.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Etterbetaling i juli" },
+                                    nynorsk { +"Etterbetaling i juli" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +data.etterbetalingJuli.format() },
+                                    nynorsk { +data.etterbetalingJuli.format() },
+                                )
+                            }
                         }
                     }
                 }
@@ -161,19 +176,33 @@ object OktMinsteIFUReduksjonsprosent {
             paragraph {
                 text(
                     bokmal {
-                        +"Du får " + sumUtOgTillegg.format() + " i " + data.tillegg.format(UTOgTilleggMapper)
-                        +" per måned før skatt fra 1. juli 2026."
+                        +"Du får " + data.totalbelop.format() + " i " + data.tillegg.format(UTOgTilleggMapper) + " per måned før skatt fra 1. juli 2026."
                     },
                     nynorsk {
-                        +"Du får " + sumUtOgTillegg.format() + " i " + data.tillegg.format(UTOgTilleggMapper)
-                        +" per månad før skatt frå 1. juli 2026."
+                        +"Du får " + data.totalbelop.format() + " i " + data.tillegg.format(UTOgTilleggMapper) + " per månad før skatt frå 1. juli 2026."
                     },
                 )
             }
+            showIf(data.etterbetalingJuli.greaterThan(0)) {
+                paragraph {
+                    text(
+                        bokmal { +"Regelendringene har ført til at du har fått utbetalt for lite, og du får derfor en etterbetaling i juli. I tabellen over, kan du se hvor mye du får i etterbetaling." },
+                        nynorsk { +"Regelendringane har ført til at du har fått utbetalt for lite, og du får derfor ei etterbetaling i juli. I tabellen over, kan du sjå kor mykje du får i etterbetaling." },
+                    )
+                }
+            }
+            showIf(data.totalbelop.greaterThan(0)) {
+                paragraph {
+                    text(
+                        bokmal { +"Uføretrygden blir utbetalt senest den 20. hver måned." },
+                        nynorsk { +"Uføretrygda blir utbetalt seinast den 20. kvar månad." },
+                    )
+                }
+            }
             paragraph {
                 text(
-                    bokmal { +"Uføretrygden blir utbetalt senest den 20. hver måned." },
-                    nynorsk { +"Uføretrygda blir utbetalt seinast den 20. kvar månad." },
+                    bokmal { +"Vedtaket har vi gjort etter " + data.hjemler.format(HjemmelFormatter(true)) + "." },
+                    nynorsk { +"Vedtaket har vi gjort etter " + data.hjemler.format(HjemmelFormatter(true)) + "." },
                 )
             }
             paragraph {
@@ -194,7 +223,6 @@ object OktMinsteIFUReduksjonsprosent {
                     nynorsk { +"Dette endres for deg" },
                 )
             }
-
             showIf(data.visOktMinsteIFU) {
                 title2 {
                     text(
@@ -210,22 +238,14 @@ object OktMinsteIFUReduksjonsprosent {
                 }
                 paragraph {
                     text(
-                        bokmal { +"Fram til 1. juli i år har vi brukt din gamle IFU i beregningene av uføretrygd. Når lovendringen trer i kraft, skal den ha virkning tilbake i tid fra 1. januar i år. Det kan føre til at du har fått utbetalt for lite uføretrygd. Har du fått for lite utbetalt frem til 1. juli, vil du få etterbetalt i juli. " },
-                        nynorsk { +"Fram til 1. juli i år har vi brukt din gamle IFU i berekningane av uføretrygd. Når lovendringa trer i kraft, skal den ha verknad tilbake i tid frå 1. januar i år. Det kan føre til at du har fått utbetalt for lite uføretrygd. Har du fått for lite utbetalt fram til 1. juli, vil du få etterbetalt i juli. " },
+                        bokmal { +"Fram til 1. juli i år har vi brukt din gamle IFU i beregningene av uføretrygd. Når lovendringen trer i kraft, skal den ha virkning tilbake i tid fra 1. januar i år." },
+                        nynorsk { +"Fram til 1. juli i år har vi brukt din gamle IFU i berekningane av uføretrygd. Når lovendringa trer i kraft, skal regelen ha tilbakeverkande kraft frå 1. januar i år." },
                     )
-                    list {
-                        item {
-                            text(
-                                bokmal { +"Hvis du får en etterbetaling i juli, vil beløpet stå i tabellen øverst i dette brevet. " },
-                                nynorsk { +"Om du får ein etterbetaling i juli, vil beløpet stå i tabellen øverst i dette brevet. " },
-                            )
-                        }
-                    }
                 }
                 paragraph {
                     text(
-                        bokmal { +"Minste IFU bruker vi for å sikre et inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførhet. " },
-                        nynorsk { +"Minste IFU brukar vi for å sikre eit inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførhet. " },
+                        bokmal { +"Minste IFU bruker vi for å sikre et inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførhet. IFU brukes og for å fastsette en reduksjonsprosent." },
+                        nynorsk { +"Minste IFU brukar vi for å sikre eit inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførhet. IFU blir òg brukt for å fastsetje ein reduksjonsprosent." },
                     )
                 }
             }
@@ -271,7 +291,7 @@ object OktMinsteIFUReduksjonsprosent {
                         item {
                             text(
                                 bokmal { +"Reduksjonsprosent har bare betydning for deg som har inntekt over inntektsgrensen ved siden av uføretrygden. " },
-                                nynorsk { +"Reduksjonsprosent har berre tyding for deg som har inntekt over inntektsgrensa ved sida av uføretrygda. " },
+                                nynorsk { +"Reduksjonsprosenten er berre relevant for deg som har inntekt over inntektsgrensa i tillegg til uføretrygda. " },
                             )
                         }
                         item {
@@ -294,30 +314,44 @@ object OktMinsteIFUReduksjonsprosent {
                     )
                 }
 
-                // TODO: Logikk for når dette skal vises - dersom bruker har inntekt og reduksjonsprosent er endret
-                title2 {
-                    text(
-                        bokmal { +"For deg som har hatt inntekt over inntektsgrensen " },
-                        nynorsk { +"For deg som har hatt inntekt over inntektsgrensa " },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i beregningene av uføretrygden din. Når lovendringen trer i kraft, skal den ha virkning tilbake i tid fra 1. januar i år. " },
-                        nynorsk { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal den ha verknad tilbake i tid frå 1. januar i år. " },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Det kan føre til at vi har trukket for mye av uføretrygden din, og at du har fått utbetalt for lite uføretrygd. " },
-                        nynorsk { +"Det kan føre til at vi har trekt for mykje av uføretrygda di, og at du har fått utbetalt for lite uføretrygd. " },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Har du fått for lite utbetalt frem til 1. juli, vil du få etterbetalt i juli. Hvis du får en etterbetaling i juli, vil beløpet stå i tabellen øverst i dette brevet. " },
-                        nynorsk { +"Har du fått for lite utbetalt fram til 1. juli, vil du få etterbetalt i juli. Om du får ein etterbetaling i juli, vil beløpet stå i tabellen øverst i dette brevet. " },
-                    )
+                showIf(data.erInntektsavkortet) {
+                    title2 {
+                        text(
+                            bokmal { +"Fordi du har hatt inntekt over inntektsgrensen" },
+                            nynorsk { +"Fordi du har hatt inntekt over inntektsgrensa" },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i beregningene av uføretrygden din hvis du har hatt inntekt over inntektsgrensen. Når lovendringen trer i kraft, skal den ha virkning tilbake i tid fra 1. januar i år." },
+                            nynorsk { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i berekningane av uføretrygda di dersom du har hatt inntekt over inntektsgrensa. Når lovendringa trer i kraft, skal regelen ha tilbakeverkande kraft frå 1. januar i år." },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Det kan føre til at vi har trukket for mye av uføretrygden din, og at du har fått utbetalt for lite uføretrygd." },
+                            nynorsk { +"Det kan føre til at vi har trekt for mykje av uføretrygda di, og at du har fått utbetalt for lite uføretrygd." },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Har du fått for lite utbetalt frem til 1. juli, vil du få etterbetalt i juli. Hvis du får en etterbetaling i juli, vil beløpet stå i tabellen øverst i dette brevet." },
+                            nynorsk { +"Har du fått for lite utbetalt fram til 1. juli, vil du få etterbetalt i juli. Om du får ei etterbetaling i juli, vil beløpet stå i tabellen øvst i dette brevet." },
+                        )
+                    }
+                }.orShow {
+                    title2 {
+                        text(
+                            bokmal { +"Fordi du ikke har hatt inntekt over inntektsgrensen" },
+                            nynorsk { +"Fordi du ikkje har hatt inntekt over inntektsgrensa" },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Fordi du ikke har hatt inntekt over inntektsgrensen, vil ikke regelendringene føre til at du har fått utbetalt for lite uføretrygd." },
+                            nynorsk { +"Fordi du ikkje har hatt inntekt over inntektsgrensa, vil ikkje regelendringane føre til at du har fått utbetalt for lite uføretrygd." },
+                        )
+                    }
                 }
             }
 
@@ -332,20 +366,14 @@ object OktMinsteIFUReduksjonsprosent {
                     text(
                         bokmal {
                             +"Regelverksendringene fører til at du får en endret utbetaling av uføretrygd. Uføretrygden regnes med som inntekt når vi beregner barnetillegg. " +
-                                    "Derfor får du en endret utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er " + data.nettoBarnetillegg.ifNull(Kroner(0)).format() + "."
+                                    "Derfor får du en endret utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er " + data.nettoBarnetillegg.ifNull(Kroner(0)).format() + " per måned."
                         },
                         nynorsk {
                             +"Regelverksendringane fører til at du får ei endra utbetaling av uføretrygd. Uføretrygda vert rekna med som inntekt når vi reknar ut barnetillegg. " +
-                                    "Difor får du ei endra utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er " + data.nettoBarnetillegg.ifNull(Kroner(0)).format() + "."
+                                    "Difor får du ei endra utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er " + data.nettoBarnetillegg.ifNull(Kroner(0)).format() + " per månad."
                         },
                     )
                 }
-            }
-            paragraph {
-                text(
-                    bokmal { +"Vedtaket har vi gjort etter " + data.hjemler.format(HjemmelFormatter(true)) + "." },
-                    nynorsk { +"Vedtaket har vi gjort etter " + data.hjemler.format(HjemmelFormatter(true)) + "." },
-                )
             }
 
             title1 {
