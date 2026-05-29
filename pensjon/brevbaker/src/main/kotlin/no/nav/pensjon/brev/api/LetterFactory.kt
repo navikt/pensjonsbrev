@@ -85,12 +85,18 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         saksbehandlervalg.putAll(template.saksbehandlervalg)
         if (letterData is Map<*, *> && letterData.containsKey("saksbehandlerValg")) {
             (letterData["saksbehandlerValg"] as Map<String, Any?>).entries.forEach { nye ->
-                when (nye.value) {
-                    // Display text her blir i praksis ikke brukt, så det er ikke så farlig at den er uformatert
-                    is Boolean -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Bool(nye.value as Boolean, nye.key)
-                    is Int -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Integer(nye.value as Int, nye.key)
-//                  is Enum<*> -> saksbehandlervalg[it.key] = SaksbehandlervalgVerdi.Enum<Any>(it.value as Enum<String>) // TODO: typing
-                    else -> throw IllegalArgumentException("Unsupported type for saksbehandlervalg: ${nye.value?.javaClass}")
+                when (template.saksbehandlervalg[nye.key]) {
+                    is SaksbehandlervalgVerdi.Bool -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Bool(nye.value as Boolean, nye.key)
+                    is SaksbehandlervalgVerdi.Enum<*> -> TODO()
+                    is SaksbehandlervalgVerdi.Integer -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Integer((nye.value as String).toInt(), nye.key)
+                    null -> // Dette kan skje hvis malen kombinerer ny og gammel løsning
+                        when (nye.value) {
+                            // Display text her blir i praksis ikke brukt, så det er ikke så farlig at den er uformatert
+                            is Boolean -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Bool(nye.value as Boolean, nye.key)
+                            is Int -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Integer(nye.value as Int, nye.key)
+        //                  is Enum<*> -> saksbehandlervalg[it.key] = SaksbehandlervalgVerdi.Enum<Any>(it.value as Enum<String>) // TODO: typing
+                            else -> throw IllegalArgumentException("Unsupported type for saksbehandlervalg: ${nye.value?.javaClass}")
+                        }
                 }
             }
         }
