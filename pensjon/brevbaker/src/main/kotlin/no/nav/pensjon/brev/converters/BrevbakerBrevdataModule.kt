@@ -35,16 +35,11 @@ object BrevbakerBrevdataModule : SimpleModule() {
     }
     private object SaksbehandlervalgIDSLDeserializer : JsonDeserializer<SaksbehandlervalgIDSL>() {
         override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgIDSL {
-            val verdier = ctxt.readValue(parser, Map::class.java) as Map<String, Map<String, Any>>
-            val typa = verdier.map { it.key to
-                when (it.value["type"]) {
-                    "BOOL" -> SaksbehandlervalgVerdi.Bool(it.value["bool"] as Boolean, it.value["displayText"] as String)
-                    "INTEGER" -> SaksbehandlervalgVerdi.Integer(it.value["integer"] as Int, it.value["displayText"] as String)
-//                    "ENUM" -> SaksbehandlervalgVerdi.Enum(it.value["enum"] as String // TODO for enkel
-                    else -> throw IllegalArgumentException("Ukjent type: ${it.value["type"]}")
-                }
-            }.associate { it.first to it.second }
-            return SaksbehandlervalgIDSLImpl(typa)
+            val root = parser.codec.readTree<JsonNode>(parser)
+            val verdier = root.properties().associate { (key, node) ->
+                key to parser.codec.treeToValue(node, SaksbehandlervalgVerdi::class.java)
+            }
+            return SaksbehandlervalgIDSLImpl(verdier)
         }
     }
 
