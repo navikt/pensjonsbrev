@@ -17,13 +17,18 @@ import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDataSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
+
+data class OmstillingstoenadAvslagData(
+    val bosattUtland: Boolean,
+)
 
 data class OmstillingstoenadAvslagDTO(
     override val innhold: List<Element>,
-    val bosattUtland: Boolean,
+    override val data: OmstillingstoenadAvslagData,
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
@@ -55,9 +60,9 @@ object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>
         }
 
         // Nasjonal
-        includeAttachment(klageOgAnke(bosattUtland = false), bosattUtland.not())
+        includeAttachment(klageOgAnke(bosattUtland = false), data.bosattUtland.not())
 
         // Bosatt utland
-        includeAttachment(klageOgAnke(bosattUtland = true), bosattUtland)
+        includeAttachment(klageOgAnke(bosattUtland = true), data.bosattUtland)
     }
 }

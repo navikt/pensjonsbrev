@@ -74,8 +74,8 @@ object UforetrygdLovendringer2026Fraser {
                 list {
                     item {
                         text(
-                            bokmal { +"Reduksjonsprosent har bare betydning for deg som har inntekt ved siden av uføretrygden." },
-                            nynorsk { +"Reduksjonsprosent har berre tyding for deg som har inntekt ved sida av uføretrygda." })
+                            bokmal { +"Reduksjonsprosent har bare betydning for deg som har inntekt over inntektsgrensen ved siden av uføretrygden." },
+                            nynorsk { +"Reduksjonsprosenten er berre relevant for deg som har inntekt over inntektsgrensa i tillegg til uføretrygda." })
                     }
                     item {
                         text(
@@ -158,11 +158,6 @@ object UforetrygdLovendringer2026Fraser {
                     nynorsk { +"IFU kan ha tyding for:" },
                 )
                 list {
-                    item {
-                        text(
-                            bokmal { +"Uføregrad" },
-                            nynorsk { +"Uføregrad" })
-                    }
                     item {
                         text(
                             bokmal { +"Reduksjonsprosent" },

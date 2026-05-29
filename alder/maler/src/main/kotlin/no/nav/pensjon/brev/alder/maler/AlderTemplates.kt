@@ -13,6 +13,19 @@ import no.nav.pensjon.brev.alder.maler.adhoc.AdhocTidligereUfoereGradertAP
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling
 import no.nav.pensjon.brev.alder.maler.adhoc.FeilUtsendingAvGjenlevenderett
+import no.nav.pensjon.brev.alder.maler.afpprivat.AvslagAfpPrivat
+import no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfp
+import no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpAuto
+import no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfpOffentligSektor
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEtterbetalingAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerTilbakekrevingAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakEndringAfpOffentligSektor
 import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061
 import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061Utland
 import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6270
@@ -89,6 +102,7 @@ object AlderTemplates : AllTemplates {
             EndringAvAlderspensjonFordiDuFyller75AarAuto,
             OmregningAlderUfore2016Auto,
             FeilUtsendingAvGjenlevenderett,
+            InnvilgelseAvAfpAuto,
             VarselGjpForlengetArskull6061,
             VarselGjpForlengetArskull6061Utland,
             VarselGjpForlengetArskull6270,
@@ -105,6 +119,13 @@ object AlderTemplates : AllTemplates {
             InfoAldersovergangEps62AarAuto,
             InfoAldersovergang67AarAuto,
             InfoFyller67AarSaerskiltSats,
+            VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto,
+            VedtakAfpEtteroppgjoerEtterbetalingAuto,
+            VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto,
+            VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto,
+            VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto,
+            VedtakAfpEtteroppgjoerTilbakekrevingAuto,
+            VedtakAfpEtteroppgjoerIngenEndringAuto,
             VedtakAldersovergang67AarGarantitilleggAuto,
             VedtakEndringAFPEndretOpptjeningAuto,
             VedtakOmregningAFPTilEnsligPensjonistAuto,
@@ -113,6 +134,7 @@ object AlderTemplates : AllTemplates {
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> =
         setOf(
+            AvslagAfpPrivat,
             AvslagGradsendringFoerNormertPensjonsalder,
             AvslagGradsendringFoerNormertPensjonsalderAP2016,
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
@@ -120,6 +142,10 @@ object AlderTemplates : AllTemplates {
             AvslagUttakFoerNormertPensjonsalderAP2016,
             BekreftelseAvUtsendtKravTilUtlandet,
             EndringAvAlderspensjonPgaGarantitillegg,
+            InnvilgelseAvAfp,
+            InnvilgelseAvAfpOffentligSektor,
+            VedtakEndringAfpOffentligSektor,
+            VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger,
             EndringAvAlderspensjonSivilstand,
             EndringAvAlderspensjonSivilstandSaerskiltSats,
             OmregningAlderUfore2016,

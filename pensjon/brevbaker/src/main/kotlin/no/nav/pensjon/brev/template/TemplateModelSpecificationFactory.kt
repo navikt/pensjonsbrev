@@ -67,18 +67,17 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     }
 
     private fun createObjectTypeSpecification(type: KClass<*>): ObjectTypeSpecification =
-        type.primaryConstructor?.parameters?.associate { it.name!! to it.type.toFieldType(it.annotations, type.isSubclassOf(SaksbehandlerValgBrevdata::class)) }
+        type.primaryConstructor?.parameters?.associate { it.name!! to it.type.toFieldType(it.annotations, type.isSubclassOf(SaksbehandlerValgBrevdata::class), it.name!!) }
             ?: emptyMap()
 
-    private fun KType.toFieldType(annotations: List<Annotation>, paakrevDisplayText: Boolean): FieldType {
+    private fun KType.toFieldType(annotations: List<Annotation>, paakrevDisplayText: Boolean, name: String): FieldType {
         val theClassifier = classifier
         return if (theClassifier is KClass<*>) {
             val displayText = annotations.filterIsInstance<DisplayText>().map { it.text }
-            val displayedText = if (paakrevDisplayText) {
-                displayText.first()
-            } else {
-                displayText.firstOrNull()
-            }
+            val displayedText = displayText.firstOrNull()
+            if (paakrevDisplayText && displayedText == null) {
+                throw TemplateModelSpecificationError("Missing required DisplayText annotation on $name")
+                }
 
             when (val qname = theClassifier.qualifiedName) {
                 "kotlin.String" ->
@@ -94,7 +93,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                     FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.BOOLEAN, displayText = displayedText)
 
                 "kotlin.collections.List" -> {
-                    FieldType.Array(isMarkedNullable, arguments.first().type!!.toFieldType(listOf(), false))
+                    FieldType.Array(isMarkedNullable, arguments.first().type!!.toFieldType(listOf(), false, name))
                 }
 
                 "java.time.LocalDate" ->
@@ -111,7 +110,8 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
 
                 else -> {
                     if (theClassifier.isValue) {
-                        theClassifier.primaryConstructor!!.parameters.first().type.toFieldType(annotations, paakrevDisplayText)
+                        val parameter = theClassifier.primaryConstructor!!.parameters.first()
+                        parameter.type.toFieldType(annotations, paakrevDisplayText, parameter.name!!)
                             .takeIf { it is FieldType.Scalar } ?: throw TemplateModelSpecificationError("Expected value class to be scalar, but was not")
                     }
                     else if (theClassifier.isData || theClassifier.java.isInterface) {

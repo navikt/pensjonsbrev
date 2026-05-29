@@ -33,7 +33,7 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     if: ${{
-      (inputs.cluster == 'dev-gcp' && ((github.event_name == 'push' && github.ref == 'refs/heads/main' )  || github.event_name == 'workflow_dispatch' )) ||
+      (inputs.cluster == 'dev-gcp' && (((github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main' )  || github.event_name == 'workflow_dispatch')) ||
       (inputs.cluster == 'prod-gcp' && (github.ref == 'refs/heads/main' && (github.event_name == 'push' || inputs.redeployProd))) }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2

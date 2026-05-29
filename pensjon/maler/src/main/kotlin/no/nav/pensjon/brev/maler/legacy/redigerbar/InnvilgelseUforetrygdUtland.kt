@@ -23,7 +23,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Innvilgelse
-import no.nav.pensjon.brev.maler.fraser.ufoer.Innvilgelse.UnntaksregelMedlemskap
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -108,7 +107,7 @@ object InnvilgelseUforetrygdUtland : RedigerbarTemplate<InnvilgelseUfoeretrygdUt
         title {
             text(
                 bokmal { +"Nav har innvilget søknaden din om uføretrygd" },
-                nynorsk { +"Nav har innvilget søknaden din om uføretrygd " },
+                nynorsk { +"Nav har innvilga søknaden din om uføretrygd " },
             )
         }
 
@@ -202,14 +201,30 @@ object InnvilgelseUforetrygdUtland : RedigerbarTemplate<InnvilgelseUfoeretrygdUt
             title1 {
                 text (
                     bokmal { + "Uføretrygd for deg som er bosatt i utlandet" },
-                    nynorsk { + "Uføretrygd for deg som er busett i utlandet" },
+                    nynorsk { +"Uføretrygd for deg som er busett i utlandet" },
                 )
             }
-            showIf( oppfyltvedsammenlegging) {
+            showIf(oppfyltvedsammenlegging) {
+
                 paragraph {
                     text(
-                        bokmal { +"Du må som hovedregel være bosatt i Norge for å ha rett til uføretrygd. Etter reglene i " + fritekst("trygdeavtale") + " mellom Norge og " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse() + " kan imidlertid uføretrygden din utbetales helt eller delvis selv om du ikke bor i Norge." },
-                        nynorsk { +"Du må som hovudregel vere busett i Noreg for å ha rett til uføretrygd. Etter reglane i " + fritekst("Trygdeavtale") + " mellom Noreg og " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse() + " kan likevel uføretrygda di betalast ut heilt eller delvis sjølv om du ikkje bur i Noreg." },
+                        bokmal { +"Du må som hovedregel være bosatt i Norge for å ha rett til uføretrygd. Etter reglene i " },
+                        nynorsk { +"Du må som hovudregel vere busett i Noreg for å ha rett til uføretrygd. Etter reglane i " },
+                    )
+                    showIf(avtaletypeEos) {
+                        text(
+                            bokmal { +"EØS-avtalen/Nordisk konvensjon" },
+                            nynorsk { +"EØS-avtala/Nordisk konvensjon" },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"trygdeavtalen" },
+                            nynorsk { +"trygdeavtala" },
+                        )
+                    }
+                    text(
+                        bokmal { +" mellom Norge og " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse() + " kan imidlertid uføretrygden din utbetales helt eller delvis selv om du ikke bor i Norge." },
+                        nynorsk { +" mellom Noreg og " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse() + " kan likevel uføretrygda di betalast ut heilt eller delvis sjølv om du ikkje bur i Noreg." },
                     )
                 }
             }

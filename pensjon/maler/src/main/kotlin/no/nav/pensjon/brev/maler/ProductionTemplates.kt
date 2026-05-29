@@ -20,6 +20,9 @@ import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereMinstesatsAuto
+import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereReduksjonsprosentAuto
+import no.nav.pensjon.brev.maler.legacy.VedtakOmOktMinsteIFUAuto
+import no.nav.pensjon.brev.maler.legacy.VedtakOmOktMinsteIFULavereReduksjonsprosentAuto
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjonUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoerepensjon
@@ -38,6 +41,9 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.OpphoerGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheter
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmLavereMinstesatsRedigerbar
+import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmLavereReduksjonsprosentRedigerbar
+import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar
+import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmOktMinsteIFURedigerbar
 import no.nav.pensjon.brev.maler.redigerbar.AvslagForLiteTrygdetidAP
 import no.nav.pensjon.brev.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
@@ -117,6 +123,9 @@ object ProductionTemplates : AllTemplates {
         HvilendeRettOppHoer,
         HvilendeRettVarselOpphoer,
         VedtakOmLavereMinstesatsAuto,
+        VedtakOmOktMinsteIFUAuto,
+        VedtakOmLavereReduksjonsprosentAuto,
+        VedtakOmOktMinsteIFULavereReduksjonsprosentAuto,
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
@@ -172,6 +181,9 @@ object ProductionTemplates : AllTemplates {
         VedtakOmFjerningAvOmsorgsopptjening,
         VedtakOmInnvilgelseAvOmsorgspoeng,
         VedtakOmLavereMinstesatsRedigerbar,
+        VedtakOmOktMinsteIFURedigerbar,
+        VedtakOmLavereReduksjonsprosentRedigerbar,
+        VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar,
     )
 
     override fun hentAutobrevmaler() = autobrev

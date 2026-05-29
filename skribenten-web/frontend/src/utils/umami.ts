@@ -12,6 +12,7 @@ export type UmamiEventName =
   | "brev distribusjonstype endret"
   | "brev klar status endret"
   | "brev opprettet"
+  | "exstream brev valgt"
   | "brev sendt"
   | "endre mottaker klikket"
   | "pesys feil"

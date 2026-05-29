@@ -48,14 +48,22 @@ export const LetterEditor = ({
 
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
 
-  const canUndo = editorState.history.entryPointer >= 0;
-  const canRedo = editorState.history.entryPointer < editorState.history.entries.length - 1;
+  const canUndo = !freeze && editorState.history.entryPointer >= 0;
+  const canRedo = !freeze && editorState.history.entryPointer < editorState.history.entries.length - 1;
 
   const undo = useCallback(() => {
-    if (!canUndo) return;
     setEditorState((current) => {
-      const { inversePatches } = current.history.entries[current.history.entryPointer];
-      const previous = applyPatches(current, inversePatches);
+      if (freeze || current.saveStatus === "SAVE_PENDING" || current.history.entryPointer < 0) return current;
+      const entry = current.history.entries[current.history.entryPointer];
+      const previous =
+        entry.type === "SAKSBEHANDLERVALG_ENDRET"
+          ? {
+              ...current,
+              redigertBrev: structuredClone(entry.before.redigertBrev),
+              redigertBrevHash: entry.before.redigertBrevHash,
+              saksbehandlerValg: structuredClone(entry.before.saksbehandlerValg),
+            }
+          : applyPatches(current, entry.inversePatches);
       return {
         ...previous,
         saveStatus: "DIRTY",
@@ -65,14 +73,27 @@ export const LetterEditor = ({
         },
       };
     });
-  }, [canUndo, setEditorState]);
+  }, [freeze, setEditorState]);
 
   const redo = useCallback(() => {
-    if (!canRedo) return;
     setEditorState((current) => {
+      if (
+        freeze ||
+        current.saveStatus === "SAVE_PENDING" ||
+        current.history.entryPointer >= current.history.entries.length - 1
+      )
+        return current;
       const nextPointer = current.history.entryPointer + 1;
-      const { patches } = current.history.entries[nextPointer];
-      const next = applyPatches(current, patches);
+      const entry = current.history.entries[nextPointer];
+      const next =
+        entry.type === "SAKSBEHANDLERVALG_ENDRET"
+          ? {
+              ...current,
+              redigertBrev: structuredClone(entry.after.redigertBrev),
+              redigertBrevHash: entry.after.redigertBrevHash,
+              saksbehandlerValg: structuredClone(entry.after.saksbehandlerValg),
+            }
+          : applyPatches(current, entry.patches);
       return {
         ...next,
         saveStatus: "DIRTY",
@@ -82,7 +103,7 @@ export const LetterEditor = ({
         },
       };
     });
-  }, [canRedo, setEditorState]);
+  }, [freeze, setEditorState]);
 
   return (
     <VStack overflowY="hidden">

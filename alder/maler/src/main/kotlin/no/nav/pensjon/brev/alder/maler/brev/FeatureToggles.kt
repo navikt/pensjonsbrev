@@ -6,7 +6,12 @@ enum class FeatureToggles(
     private val key: String,
 ) {
     omregningAlderUfore2016("omregningAlderUfore2016"),
-    afpPrivatUfore("afpPrivatUfore");
+    afpPrivatUfore("afpPrivatUfore"),
+    innvilgelseAvAfpOffentligSektor("innvilgelseAvAfpOffentligSektor"),
+    innvilgelseAvAfp("innvilgelseAvAfp"),
+    vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger("vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger"),
+    avslagAfpPrivat("avslagAfpPrivat"),
+    vedtakEndringAfpOffentligSektor("vedtakEndringAfpOffentligSektor");
 
     val toggle = FeatureToggle(key)
 }

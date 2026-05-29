@@ -1,4 +1,4 @@
-import { BodyLong, Box, Button, Heading, HGrid, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
+import { Alert, Box, Button, Heading, HGrid, HStack, Label, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
@@ -8,6 +8,7 @@ import { z } from "zod";
 
 import { getBrev, getBrevmetadata, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
+import { createLetterSnapshot, createSaksbehandlerValgEndretHistoryEntry } from "~/Brevredigering/LetterEditor/history";
 import {
   collectAllIds,
   collectNewIds,
@@ -20,12 +21,14 @@ import {
   usePartitionedModelSpecification,
 } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
+import { CenteredLoader } from "~/components/CenteredLoader";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
   ManagedLetterEditorContextProvider,
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
+import ReservertBrevError from "~/components/ReservertBrevError";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import {
@@ -34,6 +37,7 @@ import {
   type ReservasjonResponse,
   type SaksbehandlerValg,
 } from "~/types/brev";
+import { getErrorMessage } from "~/utils/errorUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
 
@@ -43,6 +47,23 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
   },
   component: () => <RedigerBrevPage />,
 });
+
+const queryRetries = 3;
+const specialCaseErrorStatuses = [404, 409, 423] as const;
+
+const getErrorStatus = (error: AxiosError) => error.response?.status;
+const isSpecialCaseErrorStatus = (status: number | undefined): status is (typeof specialCaseErrorStatuses)[number] =>
+  status != null && specialCaseErrorStatuses.includes(status as (typeof specialCaseErrorStatuses)[number]);
+const shouldRetryBrevQuery = (failureCount: number, error: AxiosError) =>
+  failureCount < queryRetries && !isSpecialCaseErrorStatus(getErrorStatus(error));
+const shouldThrowBrevQueryError = (error: AxiosError) => !isSpecialCaseErrorStatus(getErrorStatus(error));
+const formatRetryErrorMessage = (error: AxiosError) => {
+  const errorMessage = getErrorMessage(error).trim();
+  if (!errorMessage || errorMessage === "Noe gikk galt") {
+    return undefined;
+  }
+  return /[.!?]$/.test(errorMessage) ? errorMessage : `${errorMessage}.`;
+};
 
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
@@ -55,8 +76,8 @@ function RedigerBrevPage() {
     queryKey: getBrev.queryKey(brevId),
     queryFn: () => getBrev.queryFn(saksId, brevId),
     staleTime: Number.POSITIVE_INFINITY,
-    retry: (_, error: AxiosError) => error && error.response?.status !== 423 && error.response?.status !== 409,
-    throwOnError: (error: AxiosError) => error.response?.status !== 423 && error.response?.status !== 409,
+    retry: shouldRetryBrevQuery,
+    throwOnError: shouldThrowBrevQueryError,
   });
 
   useEffect(() => {
@@ -85,18 +106,39 @@ function RedigerBrevPage() {
     pending: () => (
       <Box asChild background="default" marginInline="auto" maxWidth="1106px" minWidth="945px">
         <HStack align="stretch" flexGrow="1" gap="space-16" justify="space-around" padding="space-16" wrap={false}>
-          <Skeleton height="auto" variant="rectangle" width="33%" />
-          <Skeleton height="auto" variant="rectangle" width="66%" />
+          <CenteredLoader label="Henter brev..." />
         </HStack>
       </Box>
     ),
+    retrying: (failureCount, failureReason) => {
+      const retryErrorMessage = formatRetryErrorMessage(failureReason);
+
+      return (
+        <Box asChild background="default" marginInline="auto" maxWidth="1106px" minWidth="945px">
+          <VStack align="center" flexGrow="1" gap="space-8" justify="center" padding="space-16">
+            <CenteredLoader label="Henter brev..." />
+            <Alert size="small" variant="warning">
+              Klarte ikke hente brevet (forsøk {failureCount} av {queryRetries}).{" "}
+              {retryErrorMessage ? `${retryErrorMessage} ` : ""}
+              Prøver på nytt...
+            </Alert>
+          </VStack>
+        </Box>
+      );
+    },
     error: (error) => {
-      if (error.response?.status === 423 && error.response?.data) {
+      const errorStatus = getErrorStatus(error);
+
+      if (errorStatus === 423 && error.response?.data) {
         return (
-          <ReservertBrevError doRetry={brevQuery.refetch} reservasjon={error.response.data as ReservasjonResponse} />
+          <ReservertBrevError
+            doRetry={brevQuery.refetch}
+            onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
+            reservasjon={error.response.data as ReservasjonResponse}
+          />
         );
       }
-      if (error.response?.status === 409) {
+      if (errorStatus === 409) {
         return (
           <Box asChild background="default">
             <VStack align="start" flexGrow="1" gap="space-8" padding="space-24">
@@ -120,6 +162,41 @@ function RedigerBrevPage() {
           </Box>
         );
       }
+      if (errorStatus === 404) {
+        return (
+          <VStack align="center" flexGrow="1" gap="space-8" padding="space-24">
+            <ApiError error={error} title="Finner ikke brevet i databasen" />
+            <HStack gap="space-8">
+              <Button
+                onClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevvelger",
+                    params: { saksId },
+                    search: { enhetsId, vedtaksId },
+                  })
+                }
+                size="small"
+                variant="secondary"
+              >
+                Gå til brevvelger
+              </Button>
+              <Button
+                onClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevbehandler",
+                    params: { saksId },
+                    search: { enhetsId, vedtaksId },
+                  })
+                }
+                size="small"
+                variant="secondary"
+              >
+                Gå til brevbehandler
+              </Button>
+            </HStack>
+          </VStack>
+        );
+      }
       return <ApiError error={error} title="En feil skjedde ved henting av brev" />;
     },
     success: (brev) => (
@@ -130,52 +207,14 @@ function RedigerBrevPage() {
   });
 }
 
-const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: ReservasjonResponse; doRetry: () => void }) => {
-  const navigate = useNavigate({ from: Route.fullPath });
-  const { enhetsId, vedtaksId } = Route.useSearch();
-  if (reservasjon) {
-    return (
-      <Modal
-        header={{
-          heading: "Brevet redigeres av noen andre",
-          closeButton: false,
-        }}
-        onClose={() => {}}
-        open={!reservasjon.vellykket}
-        width={478}
-      >
-        <Modal.Body>
-          <BodyLong>
-            Brevet er utilgjengelig for deg fordi {reservasjon.reservertAv.navn} har brevet åpent. Ønsker du å forsøke å
-            åpne brevet på nytt?
-          </BodyLong>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={doRetry} type="button">
-            Ja, åpne på nytt
-          </Button>
-          <Button
-            onClick={() =>
-              navigate({
-                to: BrevvelgerRoute.fullPath,
-                search: { enhetsId, vedtaksId },
-              })
-            }
-            type="button"
-            variant="tertiary"
-          >
-            Nei, gå til brevbehandler
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
-};
-
 interface RedigerBrevSidemenyFormData {
   signatur: string;
   saksbehandlerValg: SaksbehandlerValg;
 }
+
+type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
+  historySnapshot?: ReturnType<typeof createLetterSnapshot>;
+};
 
 function RedigerBrev({
   brev,
@@ -211,8 +250,11 @@ function RedigerBrev({
 
   useEffect(() => {
     lastSeenIdsRef.current = collectAllIds(brev.redigertBrev);
-    previousValgRef.current = brev.saksbehandlerValg;
-  }, [brev.redigertBrev, brev.saksbehandlerValg]);
+  }, [brev.redigertBrev]);
+
+  useEffect(() => {
+    previousValgRef.current = editorState.saksbehandlerValg;
+  }, [editorState.saksbehandlerValg]);
 
   useEffect(
     () => () => {
@@ -240,7 +282,7 @@ function RedigerBrev({
     select: (search: Record<string, unknown>) => search?.debug === "true" || search?.debug === true,
   });
 
-  const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
+  const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevMutationVariables>({
     mutationFn: (values) => {
       // Mark the editor as saving so onSaveSuccess will apply the response
       // (it ignores responses while the editor is DIRTY).
@@ -254,11 +296,20 @@ function RedigerBrev({
         },
       });
     },
-    onSuccess: (response) => {
+    onSuccess: (response, variables) => {
       const previousIds = previousIdsRef.current;
+      const historySnapshot = variables.historySnapshot;
       previousIdsRef.current = null;
 
-      onSaveSuccess(response);
+      onSaveSuccess(
+        response,
+        historySnapshot
+          ? {
+              createHistoryEntry: () =>
+                createSaksbehandlerValgEndretHistoryEntry(historySnapshot, createLetterSnapshot(response)),
+            }
+          : undefined,
+      );
 
       // The editor went DIRTY while the request was in flight (user typed);
       // onSaveSuccess discarded the response, so do not flash or move the cursor based on a letter the user is not seeing.
@@ -285,15 +336,16 @@ function RedigerBrev({
       if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
       highlightTimerRef.current = setTimeout(() => setHighlightedIds(new Set<number>()), 2200);
     },
+    onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
 
   const defaultValuesModelEditor = useMemo(
     () => ({
       saksbehandlerValg: {
-        ...brev.saksbehandlerValg,
+        ...editorState.saksbehandlerValg,
       },
     }),
-    [brev.saksbehandlerValg],
+    [editorState.saksbehandlerValg],
   );
 
   const form = useForm<RedigerBrevSidemenyFormData>({
@@ -319,6 +371,7 @@ function RedigerBrev({
         oppdaterBrevMutation.mutate({
           redigertBrev: editorState.redigertBrev,
           saksbehandlerValg: updatedValg,
+          historySnapshot: createLetterSnapshot(editorState),
         });
       }
     });
@@ -366,9 +419,25 @@ function RedigerBrev({
     form.reset(defaultValuesModelEditor);
   }, [defaultValuesModelEditor, form]);
 
-  const freeze = oppdaterBrevMutation.isPending;
+  const freeze = oppdaterBrevMutation.isPending || editorState.saveStatus === "SAVE_PENDING";
 
   const error = oppdaterBrevMutation.isError;
+
+  const saveDirtyLetter = (state: {
+    redigertBrev: typeof editorState.redigertBrev;
+    saksbehandlerValg: typeof editorState.saksbehandlerValg;
+  }) =>
+    oppdaterBrev({
+      saksId: Number.parseInt(saksId, 10),
+      brevId: brev.info.id,
+      frigiReservasjon: false,
+      request: {
+        redigertBrev: state.redigertBrev,
+        saksbehandlerValg: state.saksbehandlerValg,
+      },
+    });
+
+  // TODO: disable SaksbehandlerValgModelEditor during SAVE_PENDING
 
   // TODO: Trenger form å være helt ytterst her? Kunne vi hatt det lenger inn i hierarkiet, f.eks i OpprettetBrevSidemenyForm.
   return (
@@ -390,7 +459,11 @@ function RedigerBrev({
               }}
               open={warnOpen}
             />
-            <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
+            <ReservertBrevError
+              doRetry={doReload}
+              onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
+              reservasjon={reservasjonQuery.data}
+            />
             <HGrid columns="minmax(304px, 384px) minmax(640px, 694px)" height="var(--main-page-content-height)">
               <Box
                 asChild
@@ -408,7 +481,13 @@ function RedigerBrev({
                 </VStack>
               </Box>
               <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
+                <ManagedLetterEditor
+                  brev={brev}
+                  error={error}
+                  freeze={freeze}
+                  saveDirtyLetter={saveDirtyLetter}
+                  showDebug={showDebug}
+                />
               </InsertedTekstValgHighlightProvider>
             </HGrid>
             <Box

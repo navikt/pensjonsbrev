@@ -168,7 +168,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                             cell {
                                 text(
                                     bokmal { +"Gjenlevendetillegg" },
-                                    nynorsk { +"Gjenlevandetillegg" },
+                                    nynorsk { +"Attlevandetillegg" },
                                 )
                             }
                             cell {
@@ -394,13 +394,13 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 title1 {
                     text(
                         bokmal { +"Ditt gjenlevendetillegg" },
-                        nynorsk { +"Ditt gjenlevandetillegg" }
+                        nynorsk { +"Ditt attlevandetillegg" }
                     )
                 }
                 paragraph {
                     text(
                         bokmal { +"Du får gjenlevendetillegg i uføretrygden din. Oppjusteringen av din inntekt påvirker utbetalingen av ditt gjenlevendetillegg. Gjenlevendetillegget endres med samme prosent som uføretrygden." },
-                        nynorsk { +"Du får gjenlevandetillegg i uføretrygda di. Oppjusteringa i di inntekt påverkar utbetalinga av gjenlevandetillegg. Gjenlevandetillegget endrast med same prosent som uføretrygda." }
+                        nynorsk { +"Du får attlevandetillegg i uføretrygda di. Oppjusteringa i di inntekt påverkar utbetalinga av attlevandetillegg. Attlevandetillegget endrast med same prosent som uføretrygda." }
                     )
                 }
             }

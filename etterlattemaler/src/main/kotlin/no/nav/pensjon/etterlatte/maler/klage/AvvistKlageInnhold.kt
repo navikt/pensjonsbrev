@@ -13,17 +13,22 @@ import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.datoForVedtaketKlagenGjelder
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.klageDato
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.sakType
+import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDataSelectors.datoForVedtaketKlagenGjelder
+import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDataSelectors.klageDato
+import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDataSelectors.sakType
 import java.time.LocalDate
 
 
-data class AvvistKlageInnholdDTO(
+data class AvvistKlageInnholdData(
     val sakType: SakType,
     val klageDato: LocalDate,
     val datoForVedtaketKlagenGjelder: LocalDate?,
     val bosattUtland: Boolean = false,
+)
+
+data class AvvistKlageInnholdDTO(
+    override val data: AvvistKlageInnholdData,
     ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -49,15 +54,15 @@ object AvvistKlageInnhold : EtterlatteTemplate<AvvistKlageInnholdDTO>, Delmal {
         outline {
             paragraph {
                 text(
-                    bokmal { +"Vi viser til klagen din av " + klageDato.format() },
-                    nynorsk { +"Vi viser til klaga di av " + klageDato.format() },
-                    english { +"We refer you to your appeal of " + klageDato.format() }
+                    bokmal { +"Vi viser til klagen din av " + data.klageDato.format() },
+                    nynorsk { +"Vi viser til klaga di av " + data.klageDato.format() },
+                    english { +"We refer you to your appeal of " + data.klageDato.format() }
                 )
-                ifNotNull(datoForVedtaketKlagenGjelder) { paaklagdVedtakDato ->
+                ifNotNull(data.datoForVedtaketKlagenGjelder) { paaklagdVedtakDato ->
                     text(
-                        bokmal { +" på vedtak om " + sakType.format() + " av " + paaklagdVedtakDato.format() },
-                        nynorsk { +" på vedtak om" + sakType.format() + " av " + paaklagdVedtakDato.format() },
-                        english { +"on our decision concerning" + sakType.format() + " of " + paaklagdVedtakDato.format() },
+                        bokmal { +" på vedtak om " + data.sakType.format() + " av " + paaklagdVedtakDato.format() },
+                        nynorsk { +" på vedtak om" + data.sakType.format() + " av " + paaklagdVedtakDato.format() },
+                        english { +"on our decision concerning" + data.sakType.format() + " of " + paaklagdVedtakDato.format() },
                     )
                 }
                 text(
