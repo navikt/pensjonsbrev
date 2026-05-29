@@ -212,7 +212,7 @@ data class TBU080V_TBU027V(
                                 )
                             }
                             text(
-                                bokmal { +" ganger folketrygdens grunnbeløp. Denne minsteytelsen vil også bli justert ut fra uføregraden din. Fra 1.juli 2024 vil beregningen tilsvare 2,709/2,959 ganger folketrygdens grunnbeløp." },
+                                bokmal { +" ganger folketrygdens grunnbeløp. Denne minsteytelsen vil også bli justert ut fra uføregraden din. Fra 1. juli 2024 vil beregningen tilsvare 2,709/2,959 ganger folketrygdens grunnbeløp." },
                                 nynorsk { +" gonger grunnbeløpet i folketrygda. Denne minsteytinga vil også bli justert ut frå uføregraden din. Frå 1. juli 2024 aukar denne til 2,709/2,959 gonger grunnbeløpet i folketrygda." },
                             )
                         }
