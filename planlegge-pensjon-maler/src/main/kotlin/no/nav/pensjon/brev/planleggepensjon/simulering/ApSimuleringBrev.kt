@@ -8,16 +8,11 @@ import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.forbehold
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.simulering
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.simuleringsinformasjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringSelectors.afpOffentligLivsvarig
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringSelectors.afpOffentligTidsbegrenset
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringSelectors.afpPrivat
-import no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg.forbeholdVedlegg
-import no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg.grunnlagVedlegg
 import no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg.simuleringVedlegg
-import no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg.opptjeningVedlegg
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -97,18 +92,6 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
         includeAttachment(
             simuleringVedlegg,
             saksbehandlerValg,
-        )
-
-        includeAttachment(
-            opptjeningVedlegg,
-            saksbehandlerValg,
-        )
-
-        includeAttachment(forbeholdVedlegg, saksbehandlerValg.forbehold)
-
-        includeAttachment(
-            grunnlagVedlegg,
-            saksbehandlerValg.simuleringsinformasjon,
         )
     }
 }

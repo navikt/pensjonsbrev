@@ -23,7 +23,7 @@ data class AfpOffentligTidsbegrensetTabell(
         paragraph {
             table(header = {
                 column(columnSpan = 3) {
-                    text(bokmal { +"AFP i offentlig sektor (tidsbegrenset)" })
+                    text(bokmal { +"AFP i offentlig sektor" })
                 }
                 column(alignment = RIGHT, columnSpan = 1) {
                     text(bokmal { +"Kr per måned" })
