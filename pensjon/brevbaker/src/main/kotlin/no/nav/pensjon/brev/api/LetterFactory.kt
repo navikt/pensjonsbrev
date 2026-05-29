@@ -85,13 +85,12 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         saksbehandlervalg.putAll(template.saksbehandlervalg)
         if (letterData is Map<*, *> && letterData.containsKey("saksbehandlerValg")) {
             (letterData["saksbehandlerValg"] as Map<String, Any?>).entries.forEach { nye ->
-                val nyKey = nye.key.replace(Regex("(?<!^)([A-Z])"), " $1").lowercase().replaceFirstChar { it.uppercase() } // TODO: Dette tar frontend sin ukjentSamboer og gjer om til Ukjent samboer
                 when (nye.value) {
-                    is Boolean -> saksbehandlervalg[nyKey] = SaksbehandlervalgVerdi.Bool(nye.value as Boolean)
-                    is Int -> saksbehandlervalg[nyKey] = SaksbehandlervalgVerdi.Integer(nye.value as Int)
+                    is Boolean -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Bool(nye.value as Boolean, nye.key) // TODO: displaytext
+                    is Int -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Integer(nye.value as Int, nye.key)
 //                  is Enum<*> -> saksbehandlervalg[it.key] = SaksbehandlervalgVerdi.Enum<Any>(it.value as Enum<String>) // TODO: typing
                     else -> throw IllegalArgumentException("Unsupported type for saksbehandlervalg: ${nye.value?.javaClass}")
-                }.let { saksbehandlervalg[nye.key] = saksbehandlervalg[nyKey]!! }
+                }
             }
         }
         return saksbehandlervalg

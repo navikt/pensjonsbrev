@@ -37,7 +37,7 @@ object OppgittSamboer : RedigerbarTemplate<InnhentingOpplysningerSamboerDto> {
         ),
     )
     {
-        val ukjentSamboer = saksbehandlervalg("Ukjent samboer").bool()
+        val ukjentSamboer = saksbehandlervalg("ukjentSamboer", "Ukjent samboer").bool()
 
         title {
             text (bokmal { + "Du må sende flere opplysninger" })

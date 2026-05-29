@@ -6,23 +6,23 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import kotlin.also
 
-class SaksbehandlervalgWrapper<LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>>(val displayText: String, val scope: TemplateRootScope<*, LetterData>) {
-    private fun <T : SaksbehandlervalgVerdi> TemplateRootScope<*, LetterData>.saksbehandlervalg(verdi: T) { saksbehandlervalg[displayText] = verdi }
+class SaksbehandlervalgWrapper<LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>>(val id: String, val displayText: String, val scope: TemplateRootScope<*, LetterData>) {
+    private fun <T : SaksbehandlervalgVerdi> TemplateRootScope<*, LetterData>.saksbehandlervalg(verdi: T) { saksbehandlervalg[id] = verdi }
 
-    fun bool(default: Boolean = false): Expression<Boolean> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(displayText)))
+    fun bool(default: Boolean = false): Expression<Boolean> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
         .bool()
-        .also { scope.saksbehandlervalg(SaksbehandlervalgVerdi.Bool(default)) }
+        .also { scope.saksbehandlervalg(SaksbehandlervalgVerdi.Bool(default, displayText)) }
 
-    fun int(default: Int? = null): Expression<Int> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(displayText)))
+    fun int(default: Int? = null): Expression<Int> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
         .int()
-        .also { scope.saksbehandlervalg(SaksbehandlervalgVerdi.Integer(default)) }
+        .also { scope.saksbehandlervalg(SaksbehandlervalgVerdi.Integer(default, displayText)) }
 }
-fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg(displayText: String) = SaksbehandlervalgWrapper(displayText, this)
+fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg(id: String, displayText: String) = SaksbehandlervalgWrapper(id, displayText, this)
 
-private fun <T : SaksbehandlervalgVerdi, D : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> selector(displayText: String) = SaksbehandlervalgSelector<D, T>(
-    propertyName = displayText,
+private fun <T : SaksbehandlervalgVerdi, D : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> selector(id: String) = SaksbehandlervalgSelector<D, T>(
+    propertyName = id,
     propertyType = SaksbehandlervalgVerdi::class.qualifiedName!!,
-    selector = { saksbehandlerValg.get(displayText) }
+    selector = { saksbehandlerValg.get(id) }
 )
 
 fun Expression<SaksbehandlervalgVerdi>.bool(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, Boolean> =

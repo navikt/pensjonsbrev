@@ -38,8 +38,8 @@ object BrevbakerBrevdataModule : SimpleModule() {
             val verdier = ctxt.readValue(parser, Map::class.java) as Map<String, Map<String, Any>>
             val typa = verdier.map { it.key to
                 when (it.value["type"]) {
-                    "BOOL" -> SaksbehandlervalgVerdi.Bool(it.value["bool"] as Boolean)
-                    "INTEGER" -> SaksbehandlervalgVerdi.Integer(it.value["integer"] as Int)
+                    "BOOL" -> SaksbehandlervalgVerdi.Bool(it.value["bool"] as Boolean, it.value["displayText"] as String)
+                    "INTEGER" -> SaksbehandlervalgVerdi.Integer(it.value["integer"] as Int, it.value["displayText"] as String)
 //                    "ENUM" -> SaksbehandlervalgVerdi.Enum(it.value["enum"] as String // TODO for enkel
                     else -> throw IllegalArgumentException("Ukjent type: ${it.value["type"]}")
                 }

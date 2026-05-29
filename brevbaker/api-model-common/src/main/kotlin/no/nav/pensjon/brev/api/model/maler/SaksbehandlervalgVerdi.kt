@@ -10,8 +10,9 @@ sealed interface SaksbehandlervalgVerdi {
         is Enum<*> -> enum
     }
     val type: Type
+    val displayText: String
 
-    class Bool(val bool: Boolean) : SaksbehandlervalgVerdi {
+    class Bool(val bool: Boolean, override val displayText: String) : SaksbehandlervalgVerdi {
         override val type = Type.BOOL
         override fun toString() = "SaksbehandlervalgVerdi.Bool(bool=$bool)"
         override fun equals(other: Any?): Boolean {
@@ -20,7 +21,7 @@ sealed interface SaksbehandlervalgVerdi {
         }
         override fun hashCode() = bool.hashCode()
     }
-    class Integer(val int: Int?) : SaksbehandlervalgVerdi {
+    class Integer(val int: Int?, override val displayText: String) : SaksbehandlervalgVerdi {
         override val type = Type.INTEGER
         override fun toString() = "SaksbehandlervalgVerdi.Integer(int=$int)"
         override fun equals(other: Any?): Boolean {
@@ -29,7 +30,7 @@ sealed interface SaksbehandlervalgVerdi {
         }
         override fun hashCode() = int.hashCode()
     }
-    class Enum<T : SaksbehandlerValgEnum>(val enum: T?) : SaksbehandlervalgVerdi {
+    class Enum<T : SaksbehandlerValgEnum>(val enum: T?, override val displayText: String) : SaksbehandlervalgVerdi {
         override val type = Type.ENUM
         override fun toString() = "SaksbehandlervalgVerdi.Enum(enum=$enum)"
         override fun equals(other: Any?): Boolean {

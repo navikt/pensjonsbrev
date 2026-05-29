@@ -49,7 +49,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                             SaksbehandlervalgVerdi.Type.ENUM -> Enum::class
                         }.createType(),
                         annotations = listOf(),
-                        displayText = it.key,
+                        displayText = it.value.displayText,
                     ) }, false) + (objectTypes[name] ?: emptyMap())
                 }
             }
