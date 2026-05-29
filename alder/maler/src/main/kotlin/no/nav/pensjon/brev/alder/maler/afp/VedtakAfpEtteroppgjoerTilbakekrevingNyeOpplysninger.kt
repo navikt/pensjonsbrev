@@ -109,10 +109,10 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
                 paragraph {
                     text(
                         bokmal {
-                            +"Vedtaket er gjort etter lov om AFP for medlemmer av Apotekerne XXX."
+                            +"Vedtaket er gjort etter lov om AFP for apotekvirksomhet §3."
                         },
                         nynorsk {
-                            +"Vedtaket er fatta etter reglane om kombinasjon av AFP og arbeidsinntekt i lov " + "om AFP for medlemmer av Apotekerne XXX."
+                            +"Vedtaket er gjort etter reglane om AFP for apotekvirksomhet §3."
                         },
                     )
                 }
