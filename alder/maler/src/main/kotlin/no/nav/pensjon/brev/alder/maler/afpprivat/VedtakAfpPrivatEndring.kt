@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.alder.maler.afpprivat
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.AfpPrivatFraser
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOversiktOverPensjonenAfpPrivat
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndringSelectors.kompensasjonstillegg
@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDto
 import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDtoSelectors.PesysDataSelectors.beregning
 import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDtoSelectors.PesysDataSelectors.borIForNorge
 import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDtoSelectors.PesysDataSelectors.brukerAlder
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDtoSelectors.PesysDataSelectors.oversiktOverPensjonen
 import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDtoSelectors.PesysDataSelectors.virkningFom
 import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -22,7 +23,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -139,5 +139,7 @@ object VedtakAfpPrivatEndring : RedigerbarTemplate<VedtakAfpPrivatEndringDto> {
                 )
             }
         }
+
+        includeAttachmentIfNotNull(vedleggOversiktOverPensjonenAfpPrivat, pesysData.oversiktOverPensjonen)
     }
 }

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
+import no.nav.pensjon.brev.alder.maler.vedlegg.createOversiktOverPensjonenAfpPrivatDto
 import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndring
 import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringOpptjeningAutoDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -16,4 +17,5 @@ fun createVedtakAfpPrivatEndringOpptjeningAutoDto(): VedtakAfpPrivatEndringOpptj
             sumAfpFoerSkatt = Kroner(10_000),
         ),
         borIForNorge = true,
+        oversiktOverPensjonen = createOversiktOverPensjonenAfpPrivatDto(),
     )

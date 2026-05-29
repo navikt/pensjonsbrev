@@ -32,7 +32,7 @@ val beregningsDetaljer = createAttachment<LangBokmalNynorsk, BeregningDto>(
 |---|---|
 | `title` | A `PlainTextScope` block — text only, no formatting. Shown as the heading on the vedlegg's first page. |
 | `includeSakspart` | If `true`, the vedlegg gets its own sakspart-info header (recipient name, address, etc.). Set `false` for purely informational vedlegg that don't need to re-state the recipient. |
-| Type parameters `<Lang, Data>` | `Lang` is the language type (e.g. `LangBokmalNynorsk`) — must be a subset of the parent template's languages. `Data` is the vedlegg's own data type, separate from the letter's Dto. |
+| Type parameters `<Lang, Data>` | `Lang` is the language type (e.g. `LangBokmalNynorsk`). It must cover **at least** the parent template's languages (more is fine — `LanguageSupport` is covariant, so a `LangBokmalNynorskEnglish` vedlegg can be included in a `LangBokmal` template). Picking *fewer* languages than the template is a compile error. `Data` is the vedlegg's own data type, separate from the letter's Dto. |
 
 `@TemplateModelHelpers` triggers KSP to generate selectors for the `Data` type, just like for a template. The body has access to those generated selectors.
 
@@ -100,7 +100,7 @@ Cross-cutting vedlegg (e.g. a generic "Dine rettigheter og plikter" used by many
 ## Common mistakes
 
 - Forgetting `@TemplateModelHelpers` on the vedlegg `val` — the body's selectors won't be generated.
-- Declaring a `Lang` for the vedlegg that is not a subset of the parent template's languages — compile error when including. Mirror the parent's languages or pick a subset.
+- Declaring a `Lang` for the vedlegg that does **not** cover all the parent template's languages — compile error when including. The vedlegg's languages must be a *superset* (or equal) of the template's. Going wider (e.g. trilingual vedlegg in a bokmal-only template) is allowed and useful for reuse; going narrower is not.
 - Using `EmptyVedleggData` as a type but forgetting to pass `EmptyVedleggData` (the singleton) to `includeAttachment` — compile error.
 - Setting `includeSakspart = true` on a generic informational vedlegg — adds noise the reader doesn't need; the main letter already has it.
 - Authoring large repeated content directly in the template body when it should be a vedlegg — vedlegg start a new page and are easier to skip; long appendices belong there, not in `outline`.
