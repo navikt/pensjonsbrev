@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.afp.fraser
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants.KLAGE_URL
-import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -120,7 +119,7 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
             paragraph {
                 text(
                     bokmal {
-                        +"Du kan som nevnt sende inn dokumentasjon på inntekter som du mener skal holdes " +
+                        +"Du kan sende inn dokumentasjon på inntekter som du mener skal holdes " +
                             "utenfor etteroppgjøret. Nav vil foreta et nytt etteroppgjør dersom du har sendt " +
                             "ny dokumentasjon for inntekt innen fristen på fire uker. Du vil da motta et " +
                             "nytt vedtak."
