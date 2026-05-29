@@ -21,8 +21,9 @@ const ReservertBrevError = ({
       >
         <Modal.Body>
           <BodyLong>
-            Brevet er utilgjengelig for deg fordi {reservasjon.reservertAv.navn} har brevet åpent. Ønsker du å forsøke å
-            åpne brevet på nytt?
+            Brevet er utilgjengelig for deg fordi{" "}
+            {reservasjon.reservertAv?.navn || reservasjon.reservertAv?.id || "noen andre"} har brevet åpent. Ønsker du å
+            forsøke å åpne brevet på nytt?
           </BodyLong>
         </Modal.Body>
         <Modal.Footer>

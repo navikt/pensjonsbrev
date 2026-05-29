@@ -1,4 +1,4 @@
-import { Alert, BodyLong, Box, Button, Heading, HGrid, HStack, Label, Modal, Tabs, VStack } from "@navikt/ds-react";
+import { Alert, Box, Button, Heading, HGrid, HStack, Label, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
@@ -28,6 +28,7 @@ import {
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
+import ReservertBrevError from "~/components/ReservertBrevError";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import {
@@ -130,7 +131,11 @@ function RedigerBrevPage() {
 
       if (errorStatus === 423 && error.response?.data) {
         return (
-          <ReservertBrevError doRetry={brevQuery.refetch} reservasjon={error.response.data as ReservasjonResponse} />
+          <ReservertBrevError
+            doRetry={brevQuery.refetch}
+            onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
+            reservasjon={error.response.data as ReservasjonResponse}
+          />
         );
       }
       if (errorStatus === 409) {
@@ -201,48 +206,6 @@ function RedigerBrevPage() {
     ),
   });
 }
-
-const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: ReservasjonResponse; doRetry: () => void }) => {
-  const navigate = useNavigate({ from: Route.fullPath });
-  const { enhetsId, vedtaksId } = Route.useSearch();
-  if (reservasjon) {
-    return (
-      <Modal
-        header={{
-          heading: "Brevet redigeres av noen andre",
-          closeButton: false,
-        }}
-        onClose={() => {}}
-        open={!reservasjon.vellykket}
-        width={478}
-      >
-        <Modal.Body>
-          <BodyLong>
-            Brevet er utilgjengelig for deg fordi {reservasjon.reservertAv.navn} har brevet åpent. Ønsker du å forsøke å
-            åpne brevet på nytt?
-          </BodyLong>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={doRetry} type="button">
-            Ja, åpne på nytt
-          </Button>
-          <Button
-            onClick={() =>
-              navigate({
-                to: BrevvelgerRoute.fullPath,
-                search: { enhetsId, vedtaksId },
-              })
-            }
-            type="button"
-            variant="tertiary"
-          >
-            Nei, gå til brevbehandler
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
-};
 
 interface RedigerBrevSidemenyFormData {
   signatur: string;
@@ -496,7 +459,11 @@ function RedigerBrev({
               }}
               open={warnOpen}
             />
-            <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
+            <ReservertBrevError
+              doRetry={doReload}
+              onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
+              reservasjon={reservasjonQuery.data}
+            />
             <HGrid columns="minmax(304px, 384px) minmax(640px, 694px)" height="var(--main-page-content-height)">
               <Box
                 asChild
