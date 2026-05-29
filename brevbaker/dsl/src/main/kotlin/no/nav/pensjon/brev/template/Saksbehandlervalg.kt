@@ -13,7 +13,7 @@ class SaksbehandlervalgWrapper<LetterData : RedigerbarBrevdata<Saksbehandlervalg
         .bool()
         .also { scope.saksbehandlervalg(SaksbehandlervalgVerdi.Bool(default, displayText)) }
 
-    fun int(default: Int? = null): Expression<Int> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
+    fun int(default: Int? = null): Expression<Int?> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
         .int()
         .also { scope.saksbehandlervalg(SaksbehandlervalgVerdi.Integer(default, displayText)) }
 }
@@ -33,10 +33,10 @@ fun Expression<SaksbehandlervalgVerdi>.bool(): Expression.UnaryInvoke<Saksbehand
         override val selector: SaksbehandlervalgVerdi.() -> Boolean = { this.unwrap() as Boolean }
     }))
 
-fun Expression<SaksbehandlervalgVerdi>.int(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, Int> =
-    Expression.UnaryInvoke(this, UnaryOperation.Select(object : TemplateModelSelector<SaksbehandlervalgVerdi, Int> {
+fun Expression<SaksbehandlervalgVerdi>.int(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, Int?> =
+    Expression.UnaryInvoke(this, UnaryOperation.Select(object : TemplateModelSelector<SaksbehandlervalgVerdi, Int?> {
         override val className = SaksbehandlervalgVerdi::class.qualifiedName!!
         override val propertyName = "int"
         override val propertyType = "Int"
-        override val selector: SaksbehandlervalgVerdi.() -> Int = { this.unwrap() as Int }
+        override val selector: SaksbehandlervalgVerdi.() -> Int? = { this.unwrap() as Int? }
     }))
