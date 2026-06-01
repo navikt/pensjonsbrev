@@ -34,17 +34,11 @@ class VedtakOmEtterbetalingOpphor2026 {
             paragraph {
                 text(
                     bokmal {
-                        +"Du får en etterbetaling i juli fordi Stortinget har vedtatt en lovendring som gir deg en lavere reduksjonsprosent. Den nye reduksjonsprosenten skal gjelde fra 1. januar 2026. "
+                        +"Stortinget har vedtatt en lovendring som gir deg en lavere reduksjonsprosent. Dette er til fordel for deg. Den nye reduksjonsprosenten skal gjelde fra 1. januar 2026. Siden du har hatt inntekt over inntektsgrensen i perioden etterpå, fører det til at du får en etterbetaling. "
                     },
                     nynorsk {
-                        +"Du får ei etterbetaling i juli fordi Stortinget har vedteke ei lovendring som gir deg ein lågare reduksjonsprosent. Den nye reduksjonsprosenten skal gjelde frå 1. januar 2026. "
+                        +"Stortinget har vedteke ei lovendring som gir deg ein lågare reduksjonsprosent. Dette er til fordel for deg. Den nye reduksjonsprosenten skal gjelde frå 1. januar 2026. Sidan du har hatt inntekt over inntektsgrensa i perioden etterpå, fører det til at du får ei etterbetaling. "
                     },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Fra 1. januar 2026 og frem til uføretrygden din opphørte, hadde du inntekt over inntektsgrensen. I denne perioden brukte vi den gamle reduksjonsprosenten din. Det har ført til at vi har redusert uføretrygden for mye, og du har fått utbetalt for lite uføretrygd." },
-                    nynorsk { +"Frå 1. januar 2026 og fram til uføretrygda di opphøyrde, hadde du inntekt over inntektsgrensa. I denne perioden brukte vi den gamle reduksjonsprosenten din. Det har ført til at vi har redusert uføretrygda for mykje, og du har fått utbetalt for lite uføretrygd." }
                 )
             }
             paragraph {
