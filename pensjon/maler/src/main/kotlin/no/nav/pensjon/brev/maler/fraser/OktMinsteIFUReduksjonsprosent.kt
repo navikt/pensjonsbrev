@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
+import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtak.fritekst
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
@@ -24,6 +25,7 @@ import java.time.LocalDate
 object OktMinsteIFUReduksjonsprosent {
 
     data class Brevdata(
+        val redigerbar: Expression<Boolean>,
         val beregningFomDato: Expression<LocalDate>,
         val totalbelop: Expression<Kroner>,
         val nettoUforetrygdUtenTillegg: Expression<Kroner>,
@@ -165,10 +167,18 @@ object OktMinsteIFUReduksjonsprosent {
                                 )
                             }
                             cell {
-                                text(
-                                    bokmal { +data.etterbetalingJuli.format() },
-                                    nynorsk { +data.etterbetalingJuli.format() },
-                                )
+                                showIf(data.redigerbar) {
+                                    text(
+                                        bokmal { +fritekst("Beløp etterbetaling") },
+                                        nynorsk { +fritekst("Beløp etterbetaling") },
+                                    )
+
+                                }.orShow {
+                                    text(
+                                        bokmal { +data.etterbetalingJuli.format() },
+                                        nynorsk { +data.etterbetalingJuli.format() },
+                                    )
+                                }
                             }
                         }
                     }

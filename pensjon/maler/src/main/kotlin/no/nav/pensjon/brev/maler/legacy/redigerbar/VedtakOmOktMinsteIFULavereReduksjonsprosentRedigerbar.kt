@@ -72,6 +72,7 @@ object VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar : RedigerbarTemplat
             includePhrase(
                 OktMinsteIFUReduksjonsprosent.Outline(
                     OktMinsteIFUReduksjonsprosent.Brevdata(
+                        redigerbar = true.expr(),
                         beregningFomDato = data.beregningFomDato,
                         totalbelop = data.totalbelop,
                         nettoUforetrygdUtenTillegg = data.nettoUforetrygdUtenTillegg,
