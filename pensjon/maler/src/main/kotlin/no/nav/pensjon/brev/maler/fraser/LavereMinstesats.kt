@@ -18,6 +18,8 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -256,13 +258,13 @@ object LavereMinstesats {
                     bokmal { +"I vedlegget " },
                     nynorsk { +"I vedlegget " },
                 )
-                namedReference(vedleggDineRettigheterOgPlikterUfoere)
+                namedReference(vedleggDineRettigheterOgPlikterUfore)
                 text(
                     bokmal { +" får du vite mer om hvordan du går fram for å klage." },
                     nynorsk { +" får du vite meir om korleis du går fram for å klage." },
                 )
             }
-            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
+            includePhrase(Ufoeretrygd.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfore))
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
     }

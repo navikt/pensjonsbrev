@@ -11,6 +11,11 @@ enum class FeatureToggles(
     innvilgelseAvAfp("innvilgelseAvAfp"),
     vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger("vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger"),
     avslagAfpPrivat("avslagAfpPrivat"),
+    avslagAfpGammel("avslagAfpGammel"),
+    vedtakAfpPrivatEndring("vedtakAfpPrivatEndring"),
+    vedtakAfpEtteroppgjoerToleransebeloep("vedtakAfpEtteroppgjoerToleransebeloep"),
+    vedtakAfpEtteroppgjoerEtterbetaling("vedtakAfpEtteroppgjoerEtterbetaling"),
+    vedtakAfpEtteroppgjoerIngenEndring("vedtakAfpEtteroppgjoerIngenEndring"),
     vedtakEndringAfpOffentligSektor("vedtakEndringAfpOffentligSektor");
 
     val toggle = FeatureToggle(key)

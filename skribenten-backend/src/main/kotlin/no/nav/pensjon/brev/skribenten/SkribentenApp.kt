@@ -34,6 +34,7 @@ import no.nav.pensjon.brev.skribenten.common.updateBrevredigeringJson
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Exception
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenDataException
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenFeilIDatabyggerException
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
@@ -136,6 +137,11 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         exception<PenDataException> { call, cause ->
             logger.info("${cause.status} - Feil ved oppdatering av brev: ${cause.message}")
             call.respond(status = cause.status, cause.feil)
+        }
+        exception<PenFeilIDatabyggerException> { call, cause ->
+            logger.info("${cause.status} - Feil ved henting av brevdata: ${cause.message}")
+            call.respond(status = cause.status, "Teknisk feil ved henting av brevdata, prøv igjen litt senere")
+
         }
         exception<ServiceException> { call, cause ->
             logger.error(cause.message, cause)

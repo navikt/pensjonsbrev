@@ -123,3 +123,18 @@
 .inserted-flash-block .inserted-flash-text {
   animation: none;
 }
+
+/* Brukere som har aktivert "prefers-reduced-motion" (f.eks. i virtuelle miljøer eller av
+   tilgjengelighetsgrunner) ser ikke keyframe-animasjonen over. Vi erstatter den med en statisk
+   bakgrunnsfarge som vises til JS-timeren fjerner klassen etter ~2,2 sekunder. */
+@media (prefers-reduced-motion: reduce) {
+  .inserted-flash-block,
+  .inserted-flash-text {
+    animation: none;
+    background-color: var(--ax-bg-accent-moderate-pressed, rgb(0 102 204 / 18%));
+  }
+
+  .inserted-flash-block .inserted-flash-text {
+    background-color: transparent;
+  }
+}

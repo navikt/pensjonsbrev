@@ -12,8 +12,10 @@ import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 
 data class AfpPrivatTabell(
     val privatAfp: Expression<PrivatAfp>,
@@ -34,10 +36,12 @@ data class AfpPrivatTabell(
                         cell { text(bokmal { +privatAfp.kompensasjonstillegg.format() }) }
                     }
                 }
-                showIf(privatAfp.kronetillegg.greaterThan(0)) {
-                    row {
-                        cell { text(bokmal { +"Kronetillegg" }) }
-                        cell { text(bokmal { +privatAfp.kronetillegg.format() }) }
+                ifNotNull(privatAfp.kronetillegg) { kronetillegg ->
+                    showIf(kronetillegg.greaterThan(0)) {
+                        row {
+                            cell { text(bokmal { +"Kronetillegg" }) }
+                            cell { text(bokmal { +kronetillegg.format() }) }
+                        }
                     }
                 }
                 showIf(privatAfp.livsvarig.greaterThan(0)) {
@@ -51,7 +55,7 @@ data class AfpPrivatTabell(
                     cell { text(bokmal { +"Sum AFP" }, fontType = BOLD) }
                     cell {
                         val sum = privatAfp.kompensasjonstillegg +
-                                privatAfp.kronetillegg +
+                                privatAfp.kronetillegg.ifNull(BrevbakerType.Kroner(0)) +
                                 privatAfp.livsvarig
                         text(bokmal { +sum.format() }, fontType = BOLD)
                     }

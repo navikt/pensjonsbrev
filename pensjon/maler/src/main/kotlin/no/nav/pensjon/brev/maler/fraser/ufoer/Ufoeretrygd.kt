@@ -412,6 +412,31 @@ object Ufoeretrygd {
         }
     }
 
+    data class RettTilInnsyn(
+        val vedlegg: AttachmentTemplate<LangBokmalNynorsk, *>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { + "Du har rett til innsyn" },
+                    nynorsk { + "Du har rett til innsyn" },
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { + "Du har rett til å se dokumentene i saken din. Se vedlegg " },
+                    nynorsk { + "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg " },
+                )
+                namedReference(vedlegg)
+                text(
+                    bokmal { + " for informasjon om hvordan du går fram." },
+                    nynorsk { + " for informasjon om korleis du går fram." },
+                )
+            }
+        }
+    }
+
     data class OpphorBarnetillegg(val barnetilleggOpphort: Expression<List<BarnetilleggUTDto>>) :
         RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {

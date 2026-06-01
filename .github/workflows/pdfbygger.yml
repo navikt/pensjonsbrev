@@ -69,7 +69,7 @@ jobs:
           name: pdf-bygger-jar
           path: brevbaker/pdf-bygger/build/install/pdf-bygger/lib
       - name: Docker login
-        uses: docker/login-action@4907a6ddec9925e35a0a9e82d7399ccc52663121 # v4.1.0
+        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
         with:
           registry: "https://ghcr.io"
           username: ${{ github.repository }}
@@ -145,7 +145,7 @@ jobs:
           "TESTCONTAINERS_REUSE_ENABLE": "true"
       - name: Publish Test Report
         if: ${{ always() }}
-        uses: scacap/action-surefire-report@5609ce4db72c09db044803b344a8968fd1f315da # v1.9.1
+        uses: ScalableCapital/action-surefire-report@v2.0.3
         with:
           fail_if_no_tests: true
           fail_on_test_failures: true
@@ -194,7 +194,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         run: npm install --no-save reg-suit reg-publish-gcs-plugin reg-notify-github-with-api-plugin reg-simple-keygen-plugin
       - name: Authenticate to Google Cloud
-        uses: nais/login@c88ada9ce583928e1c84d2fd5c45cfacdd18d5de # v0
+        uses: nais/login@d0fcfa8591d10b57312f58e7f6269de58bdab1df # v0
         with:
           team: pensjonsbrev
       - name: Run reg-suit

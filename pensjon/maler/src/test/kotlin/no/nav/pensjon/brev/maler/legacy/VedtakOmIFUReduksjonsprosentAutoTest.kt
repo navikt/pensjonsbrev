@@ -7,13 +7,15 @@ import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentData
+import no.nav.pensjon.brev.fixtures.createDineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.fixtures.createMaanedligUfoeretrygdFoerSkattDto
-import no.nav.pensjon.brev.fixtures.createOrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.fixtures.createPEgruppe10
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
+import java.time.Month
 
 /**
  * Felles testklasse for brev om endring i IFU (inntektsfradrag for uføretrygd) og reduksjonsprosent fom 1. juli 2026.
@@ -33,6 +35,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
     private fun fullDataDto() =
         VedtakOmIFUReduksjonsprosentAutoDto(
             vedtakData = VedtakOmIFUReduksjonsprosentData(
+                beregningFomDato = LocalDate.of(2026, Month.JULY, 1),
                 nettoUforetrygdUtenTillegg = Kroner(28066),
                 nettoBarnetillegg = Kroner(4000),
                 nettoGjenlevendetillegg = Kroner(1461),
@@ -50,7 +53,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
                 hjemler = setOf("12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14", "22-12"),
                 pe = createPEgruppe10(),
                 maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
-                orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
+                dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto()
             )
         )
 
@@ -58,6 +61,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
     private fun inntektsavkortetDto() =
         VedtakOmIFUReduksjonsprosentAutoDto(
             vedtakData = VedtakOmIFUReduksjonsprosentData(
+                beregningFomDato = LocalDate.of(2026, Month.JULY, 1),
                 nettoUforetrygdUtenTillegg = Kroner(20000),
                 nettoBarnetillegg = Kroner(3000),
                 nettoGjenlevendetillegg = Kroner(0),
@@ -75,7 +79,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
                 hjemler = setOf("12-8", "12-13", "12-16", "22-12"),
                 pe = createPEgruppe10(),
                 maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
-                orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
+                dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto()
             )
         )
 

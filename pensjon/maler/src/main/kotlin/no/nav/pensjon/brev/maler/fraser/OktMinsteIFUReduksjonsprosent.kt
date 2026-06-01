@@ -19,10 +19,12 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import java.time.LocalDate
 
 object OktMinsteIFUReduksjonsprosent {
 
     data class Brevdata(
+        val beregningFomDato: Expression<LocalDate>,
         val totalbelop: Expression<Kroner>,
         val nettoUforetrygdUtenTillegg: Expression<Kroner>,
         val nettoBarnetillegg: Expression<Kroner?>,
@@ -57,8 +59,7 @@ object OktMinsteIFUReduksjonsprosent {
                     nynorsk { +"Vi endrar uføretrygda di fordi Stortinget har vedteke lovendringar som trer i kraft 1. juli 2026, men gjeld frå 1. januar 2026. " },
                 )
                 table(header = {
-                    // TODO: Hva skal kolonnene hete?
-                    column { text(bokmal { +"" }, nynorsk { +"" }) }
+                    column { text(bokmal { +"Ny beregning fra " + data.beregningFomDato.format() }, nynorsk { +"Ny berekning frå " + data.beregningFomDato.format() }) }
                     column(alignment = RIGHT) {}
                 }) {
                     showIf(data.endringNettoUforetrygdUtenTillegg) {
@@ -245,7 +246,7 @@ object OktMinsteIFUReduksjonsprosent {
                 paragraph {
                     text(
                         bokmal { +"Minste IFU bruker vi for å sikre et inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførhet. IFU brukes og for å fastsette en reduksjonsprosent." },
-                        nynorsk { +"Minste IFU brukar vi for å sikre eit inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførhet. IFU blir òg brukt for å fastsetje ein reduksjonsprosent." },
+                        nynorsk { +"Minste IFU brukar vi for å sikre eit inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførleik. IFU blir òg brukt for å fastsetje ein reduksjonsprosent." }
                     )
                 }
             }
