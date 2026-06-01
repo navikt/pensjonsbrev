@@ -194,7 +194,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         run: npm install --no-save reg-suit reg-publish-gcs-plugin reg-notify-github-with-api-plugin reg-simple-keygen-plugin
       - name: Authenticate to Google Cloud
-        uses: nais/login@c88ada9ce583928e1c84d2fd5c45cfacdd18d5de # v0
+        uses: nais/login@d0fcfa8591d10b57312f58e7f6269de58bdab1df # v0
         with:
           team: pensjonsbrev
       - name: Run reg-suit
