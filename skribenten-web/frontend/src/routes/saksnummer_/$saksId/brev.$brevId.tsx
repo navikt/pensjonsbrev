@@ -48,23 +48,6 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
   component: () => <RedigerBrevPage />,
 });
 
-const queryRetries = 3;
-const specialCaseErrorStatuses = [404, 409, 423] as const;
-
-const getErrorStatus = (error: AxiosError) => error.response?.status;
-const isSpecialCaseErrorStatus = (status: number | undefined): status is (typeof specialCaseErrorStatuses)[number] =>
-  status != null && specialCaseErrorStatuses.includes(status as (typeof specialCaseErrorStatuses)[number]);
-const shouldRetryBrevQuery = (failureCount: number, error: AxiosError) =>
-  failureCount < queryRetries && !isSpecialCaseErrorStatus(getErrorStatus(error));
-const shouldThrowBrevQueryError = (error: AxiosError) => !isSpecialCaseErrorStatus(getErrorStatus(error));
-const formatRetryErrorMessage = (error: AxiosError) => {
-  const errorMessage = getErrorMessage(error).trim();
-  if (!errorMessage || errorMessage === "Noe gikk galt") {
-    return undefined;
-  }
-  return /[.!?]$/.test(errorMessage) ? errorMessage : `${errorMessage}.`;
-};
-
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
   const { enhetsId, vedtaksId } = Route.useSearch();
@@ -72,12 +55,17 @@ function RedigerBrevPage() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
 
+  const isSpecialCaseErrorStatus = (status: number | undefined) => [404, 409, 423].includes(Number(status));
+  const queryRetries = 3;
   const brevQuery = useQuery({
     queryKey: getBrev.queryKey(brevId),
     queryFn: () => getBrev.queryFn(saksId, brevId),
     staleTime: Number.POSITIVE_INFINITY,
-    retry: shouldRetryBrevQuery,
-    throwOnError: shouldThrowBrevQueryError,
+    retry: (failureCount: number, error: AxiosError) => {
+      // console.log(failureCount, error.response?.status);
+      return failureCount < queryRetries && !isSpecialCaseErrorStatus(error.response?.status);
+    },
+    throwOnError: (error: AxiosError) => !isSpecialCaseErrorStatus(error.response?.status),
   });
 
   useEffect(() => {
@@ -111,14 +99,20 @@ function RedigerBrevPage() {
       </Box>
     ),
     retrying: (failureCount, failureReason) => {
-      const retryErrorMessage = formatRetryErrorMessage(failureReason);
+      const errorMessage = getErrorMessage(failureReason).trim();
+      const retryErrorMessage =
+        !errorMessage || errorMessage === "Noe gikk galt"
+          ? undefined
+          : /[.!?]$/.test(errorMessage)
+            ? errorMessage
+            : `${errorMessage}.`;
 
       return (
         <Box asChild background="default" marginInline="auto" maxWidth="1106px" minWidth="945px">
           <VStack align="center" flexGrow="1" gap="space-8" justify="center" padding="space-16">
             <CenteredLoader label="Henter brev..." />
             <Alert size="small" variant="warning">
-              Klarte ikke hente brevet (forsøk {failureCount} av {queryRetries}).{" "}
+              Klarte ikke hente brevet (forsøk {failureCount} av {queryRetries + 1}).{" "}
               {retryErrorMessage ? `${retryErrorMessage} ` : ""}
               Prøver på nytt...
             </Alert>
@@ -127,7 +121,7 @@ function RedigerBrevPage() {
       );
     },
     error: (error) => {
-      const errorStatus = getErrorStatus(error);
+      const errorStatus = error.response?.status;
 
       if (errorStatus === 423 && error.response?.data) {
         return (
