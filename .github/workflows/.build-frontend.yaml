@@ -57,7 +57,7 @@ jobs:
         run: npm run build
 
       - name: Build and push Docker container
-        uses: nais/docker-build-push@078e460885ed0424b60d45ce9220b4be1748be9d # v0
+        uses: nais/docker-build-push@751a312f0803eb96a05a41fadf51be19b7be362c # v0
         id: docker-build-push
         with:
           team: pensjonsbrev
