@@ -4,6 +4,7 @@ export type IndexableTemplate = {
   id: string;
   malType: "autobrev" | "redigerbar";
   name: string;
+  displayTitle: string;
   language: string;
 };
 
@@ -13,7 +14,7 @@ type CachedTextIndex = {
   cachedAt: number;
 };
 
-const CACHE_KEY = "brevoppskrift.textindex.v3";
+const CACHE_KEY = "brevoppskrift.textindex.v4";
 const CACHE_TTL_MS = 5 * 60 * 1000;
 
 /** Signature of the index inputs (templates + languages). A change invalidates a

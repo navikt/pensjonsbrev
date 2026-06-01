@@ -1,8 +1,14 @@
+export type TemplateMetadata = {
+  displayTitle?: string;
+  distribusjonstype?: string;
+  brevtype?: string;
+};
+
 export type TemplateDescription = {
   name: string;
   letterDataClass: string;
   languages: string[];
-  metadata: unknown;
+  metadata?: TemplateMetadata | null;
 };
 
 export type TemplateDocumentation = {

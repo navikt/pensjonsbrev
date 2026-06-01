@@ -66,6 +66,7 @@ export function useTextIndex(templates: IndexableTemplate[], reindexNonce: numbe
     // The batch endpoint returns brevkode + language, but not the display name, so
     // resolve it from the templates derived from the description endpoints.
     const nameByKey = new Map(items.map((t) => [`${t.malType}/${t.id}`, t.name]));
+    const displayTitleByKey = new Map(items.map((t) => [`${t.malType}/${t.id}`, t.displayTitle]));
     const malTypes = [...new Set(items.map((t) => t.malType))] as MalType[];
 
     setState({ entries: [], status: "indexing", indexed: 0, total, failed: 0 });
@@ -84,6 +85,7 @@ export function useTextIndex(templates: IndexableTemplate[], reindexNonce: numbe
           id: item.brevkode,
           malType,
           name: nameByKey.get(`${malType}/${item.brevkode}`) ?? item.brevkode,
+          displayTitle: displayTitleByKey.get(`${malType}/${item.brevkode}`),
           language: item.language,
           // Body lines only, so occurrence ordinals align 1:1 with the rendered
           // document on the detail page. Name/brevkode are matched separately in

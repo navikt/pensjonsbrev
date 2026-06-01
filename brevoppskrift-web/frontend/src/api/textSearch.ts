@@ -22,6 +22,7 @@ export type TextIndexEntry = {
   id: string;
   malType: MalType;
   name: string;
+  displayTitle?: string;
   language: string;
   lines: Line[];
 };
@@ -746,6 +747,9 @@ export function searchFuzzy(context: FuzzySearchContext, rawQuery: string): Snip
     }
     if (entry.id.toLowerCase().includes(query)) {
       metaLines.push(textLine(entry.id));
+    }
+    if (entry.displayTitle?.toLowerCase().includes(query)) {
+      metaLines.push(textLine(entry.displayTitle));
     }
     if (metaLines.length > 0) {
       results.push({

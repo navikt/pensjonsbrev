@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
-import { BodyShort, Button, Detail, Heading, HStack, Search, VStack } from "@navikt/ds-react";
+import { BodyShort, Button, Detail, Heading, HStack, Pagination, Search, Tabs, Tag, VStack } from "@navikt/ds-react";
 import { type QueryClient, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { Fragment, useDeferredValue, useMemo, useState } from "react";
+import { Fragment, type ReactNode, useDeferredValue, useEffect, useMemo, useState } from "react";
 
 import {
   brevkoderKeys,
@@ -30,12 +30,22 @@ import {
 import { invalidateTextIndexCache, useTextIndex } from "~/components/useTextIndex";
 
 const MIN_QUERY_LENGTH = 2;
-const MAX_RESULTS = 50;
+const PAGE_SIZE = 20;
+const SNIPPET_CHARS = 160;
 
 const LANGUAGE_LABELS: Record<string, string> = { BOKMAL: "Bokmål", NYNORSK: "Nynorsk", ENGLISH: "Engelsk" };
 
 function languageLabel(language: string): string {
   return LANGUAGE_LABELS[language] ?? language;
+}
+
+/** The human-readable title from metadata, falling back to the technical name/brevkode. */
+function displayTitleOf(
+  description: { name: string; metadata?: { displayTitle?: string } | null },
+  id: string,
+): string {
+  const title = description.metadata?.displayTitle;
+  return title?.trim() ? title : description.name || id;
 }
 
 export const Route = createFileRoute("/templates")({
@@ -111,7 +121,7 @@ function TemplateList({ templates, malType }: { templates: TemplateWithDescripti
     <VStack gap="space-8">
       {templates.map(({ id, description }) => (
         <Link key={id} params={{ malType, templateId: id }} preload="intent" to="/template/$malType/$templateId">
-          {description.name || id}
+          {displayTitleOf(description, id)}
         </Link>
       ))}
     </VStack>
@@ -166,57 +176,240 @@ function HighlightedLine({ line, ranges, metaNeedle }: { line: Line; ranges: Hig
   );
 }
 
-function SearchResult({ result }: { result: SnippetResult }) {
+/** Visible length of one line, counting variable chips by their label length. */
+function lineLength(line: Line): number {
+  return line.reduce(
+    (sum, segment) => sum + (segment.kind === "text" ? segment.value.length : segment.label.length),
+    0,
+  );
+}
+
+/** Lowercased plain text of a line; variable chips contribute their label so that
+ * indices line up with {@link clampLine}'s segment-based slicing. */
+function linePlain(line: Line): string {
+  return line
+    .map((segment) => (segment.kind === "text" ? segment.value : segment.label))
+    .join("")
+    .toLowerCase();
+}
+
+/** Character index to center truncation on: the middle of the first occurrence of
+ * `needle` in the line, or null when it is not found. */
+function indexOfNeedleCenter(line: Line, needle: string): number | null {
+  if (!needle) {
+    return null;
+  }
+  const idx = linePlain(line).indexOf(needle.toLowerCase());
+  return idx < 0 ? null : idx + Math.floor(needle.length / 2);
+}
+
+/** Trim a line to about `maxChars`, centered on `center` (or the head when null),
+ * keeping variable chips atomic and adding "…" sentinels where text was removed. */
+function clampLine(line: Line, center: number | null, maxChars: number): Line {
+  if (lineLength(line) <= maxChars) {
+    return line;
+  }
+  const half = Math.floor(maxChars / 2);
+  const windowStart = center == null ? 0 : Math.max(0, center - half);
+  const windowEnd = windowStart + maxChars;
+
+  const result: Line = [];
+  let pos = 0;
+  let trimmedEnd = false;
+  for (const segment of line) {
+    const segLen = segment.kind === "text" ? segment.value.length : segment.label.length;
+    const segStart = pos;
+    const segEnd = pos + segLen;
+    pos = segEnd;
+    if (segEnd <= windowStart || segStart >= windowEnd) {
+      if (segStart >= windowEnd) {
+        trimmedEnd = true;
+      }
+      continue;
+    }
+    if (segment.kind === "var") {
+      result.push(segment);
+      continue;
+    }
+    const from = Math.max(0, windowStart - segStart);
+    const to = Math.min(segment.value.length, windowEnd - segStart);
+    if (to < segment.value.length) {
+      trimmedEnd = true;
+    }
+    result.push({ kind: "text", value: segment.value.slice(from, to) });
+  }
+
+  const trimmedStart = windowStart > 0;
+  if (trimmedStart) {
+    const first = result[0];
+    if (first && first.kind === "text") {
+      result[0] = { kind: "text", value: `… ${first.value.replace(/^\s+/, "")}` };
+    } else {
+      result.unshift({ kind: "text", value: "… " });
+    }
+  }
+  if (trimmedEnd) {
+    const last = result[result.length - 1];
+    if (last && last.kind === "text") {
+      result[result.length - 1] = { kind: "text", value: `${last.value.replace(/\s+$/, "")} …` };
+    } else {
+      result.push({ kind: "text", value: " …" });
+    }
+  }
+  return result;
+}
+
+function SearchResult({ result, title }: { result: SnippetResult; title: string }) {
+  const primaryIndex = result.highlightLineIndex;
+  // Show only the matched line plus the line before and after (max three lines).
+  const start = primaryIndex === undefined ? 0 : Math.max(0, primaryIndex - 1);
+  const end =
+    primaryIndex === undefined ? Math.min(result.lines.length, 3) : Math.min(result.lines.length, primaryIndex + 2);
+  const visibleLines = result.lines.slice(start, end);
+  const needle = result.anchorQuery;
+
   return (
     <div
       css={css`
-        padding: var(--ax-space-12) var(--ax-space-16);
-        border: 1px solid var(--ax-border-subtle);
-        border-radius: var(--ax-radius-8);
-        background: var(--ax-bg-default);
+        padding: var(--ax-space-4) 0;
       `}
     >
       <HStack align="baseline" gap="space-8" wrap>
         <Link
+          css={css`
+            font-weight: var(--ax-font-weight-bold);
+          `}
           params={{ malType: result.malType, templateId: result.id }}
           preload="intent"
           search={{ language: result.language, q: result.anchorQuery, qi: result.matchOrdinal }}
           to="/template/$malType/$templateId"
         >
-          {result.name}
+          {title}
         </Link>
         <Detail textColor="subtle">
-          {result.id} · {languageLabel(result.language)}
-          {result.meta ? " · treff i navn eller brevkode" : ` · ${result.templateMatchCount} treff i malen`}
+          {result.id} · {languageLabel(result.language)} · {result.templateMatchCount} treff i malen
         </Detail>
       </HStack>
       <div
         css={css`
-          margin-top: var(--ax-space-8);
-          padding-left: var(--ax-space-12);
-          border-left: 2px solid var(--ax-border-accent-subtle);
-          white-space: pre-wrap;
+          margin-top: var(--ax-space-2);
 
           mark {
-            background: var(--ax-warning-300);
+            background: transparent;
             color: inherit;
+            font-weight: var(--ax-font-weight-bold);
           }
         `}
       >
-        {result.lines.map((line, lineIndex) => {
-          const isPrimary = result.highlightLineIndex === undefined || lineIndex === result.highlightLineIndex;
+        {visibleLines.map((line, i) => {
+          const lineIndex = start + i;
+          const isPrimary = lineIndex === primaryIndex;
+          const center = isPrimary ? indexOfNeedleCenter(line, needle) : null;
           return (
-            <BodyShort key={lineIndex} size="small" textColor="subtle">
+            <BodyShort
+              css={css`
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+              `}
+              key={lineIndex}
+              size="small"
+              textColor={isPrimary ? "default" : "subtle"}
+            >
               <HighlightedLine
-                line={line}
-                metaNeedle={result.metaNeedle}
-                ranges={isPrimary ? result.highlightRanges : []}
+                line={clampLine(line, center, SNIPPET_CHARS)}
+                metaNeedle={isPrimary ? needle : undefined}
+                ranges={[]}
               />
             </BodyShort>
           );
         })}
       </div>
     </div>
+  );
+}
+
+/** Distinct templates whose name/brevkode/title matched the query (one row per template). */
+function BrevList({
+  results,
+  getTitle,
+}: {
+  results: SnippetResult[];
+  getTitle: (malType: MalType, id: string) => string;
+}) {
+  const rows = useMemo(() => {
+    const byTemplate = new Map<string, { result: SnippetResult; languages: string[] }>();
+    for (const result of results) {
+      const key = `${result.malType}/${result.id}`;
+      const existing = byTemplate.get(key);
+      if (existing) {
+        if (!existing.languages.includes(result.language)) {
+          existing.languages.push(result.language);
+        }
+      } else {
+        byTemplate.set(key, { result, languages: [result.language] });
+      }
+    }
+    return [...byTemplate.values()];
+  }, [results]);
+
+  return (
+    <VStack gap="space-8">
+      {rows.map(({ result, languages }) => (
+        <HStack align="baseline" gap="space-8" key={`${result.malType}/${result.id}`} wrap>
+          <Link
+            params={{ malType: result.malType, templateId: result.id }}
+            preload="intent"
+            search={{ language: result.language, q: result.anchorQuery }}
+            to="/template/$malType/$templateId"
+          >
+            <HighlightedLine
+              line={[{ kind: "text", value: getTitle(result.malType, result.id) }]}
+              metaNeedle={result.metaNeedle}
+              ranges={[]}
+            />
+          </Link>
+          <Detail textColor="subtle">
+            {result.id} · {languages.map(languageLabel).join(", ")}
+          </Detail>
+        </HStack>
+      ))}
+    </VStack>
+  );
+}
+
+function SearchTabPanel({
+  page,
+  pageCount,
+  setPage,
+  summary,
+  children,
+}: {
+  page: number;
+  pageCount: number;
+  setPage: (page: number) => void;
+  summary?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <VStack
+      css={css`
+        margin-top: var(--ax-space-16);
+      `}
+      gap="space-12"
+    >
+      {summary ? (
+        <Detail aria-live="polite" textColor="subtle">
+          {summary}
+        </Detail>
+      ) : null}
+      {children}
+      {pageCount > 1 ? (
+        <HStack justify="center">
+          <Pagination count={pageCount} onPageChange={setPage} page={page} size="small" />
+        </HStack>
+      ) : null}
+    </VStack>
   );
 }
 
@@ -230,12 +423,31 @@ function AllTemplates() {
   const indexable = useMemo<IndexableTemplate[]>(() => {
     const toIndexable = (templates: TemplateWithDescription[], malType: MalType) =>
       templates.flatMap(({ id, description }) =>
-        description.languages.map((language) => ({ id, malType, name: description.name || id, language })),
+        description.languages.map((language) => ({
+          id,
+          malType,
+          name: description.name || id,
+          displayTitle: displayTitleOf(description, id),
+          language,
+        })),
       );
     return [...toIndexable(autobrev, "autobrev"), ...toIndexable(redigerbar, "redigerbar")];
   }, [autobrev, redigerbar]);
 
   const index = useTextIndex(indexable, reindexNonce);
+
+  const titleByKey = useMemo(() => {
+    const map = new Map<string, string>();
+    const add = (templates: TemplateWithDescription[], malType: MalType) => {
+      for (const { id, description } of templates) {
+        map.set(`${malType}/${id}`, displayTitleOf(description, id));
+      }
+    };
+    add(autobrev, "autobrev");
+    add(redigerbar, "redigerbar");
+    return map;
+  }, [autobrev, redigerbar]);
+  const getTitle = (malType: MalType, id: string) => titleByKey.get(`${malType}/${id}`) ?? id;
 
   const templateTotal = useMemo(() => new Set(indexable.map((t) => `${t.malType}/${t.id}`)).size, [indexable]);
   const languageTotal = useMemo(() => new Set(indexable.map((t) => t.language)).size, [indexable]);
@@ -258,35 +470,73 @@ function AllTemplates() {
     router.invalidate();
   };
 
-  const visibleResults = results.slice(0, MAX_RESULTS);
-  const templateCount = useMemo(
-    () => new Set(results.map((result) => `${result.malType}/${result.id}`)).size,
-    [results],
+  const contentResults = useMemo(() => results.filter((result) => !result.meta), [results]);
+  const brevResults = useMemo(() => results.filter((result) => result.meta), [results]);
+
+  const contentTemplateCount = useMemo(
+    () => new Set(contentResults.map((result) => `${result.malType}/${result.id}`)).size,
+    [contentResults],
+  );
+  const brevTemplateCount = useMemo(
+    () => new Set(brevResults.map((result) => `${result.malType}/${result.id}`)).size,
+    [brevResults],
   );
 
+  const [activeTab, setActiveTab] = useState<"innhold" | "brev">("innhold");
+  const [page, setPage] = useState(1);
+
+  // Reset pagination on a new search, but never auto-switch the active tab — the
+  // user stays on whichever tab they have selected while typing.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: trimmedQuery is the intentional trigger; the effect resets pagination whenever the query changes.
+  useEffect(() => {
+    setPage(1);
+  }, [trimmedQuery]);
+
+  const activeResults = activeTab === "innhold" ? contentResults : brevResults;
+  const pageCount = Math.max(1, Math.ceil(activeResults.length / PAGE_SIZE));
+  const safePage = Math.min(page, pageCount);
+  const pageItems = activeResults.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const innholdPageItems = activeTab === "innhold" ? pageItems : contentResults.slice(0, PAGE_SIZE);
+  const brevPageItems = activeTab === "brev" ? pageItems : brevResults.slice(0, PAGE_SIZE);
+
+  const changeTab = (tab: string) => {
+    setActiveTab(tab === "brev" ? "brev" : "innhold");
+    setPage(1);
+  };
+
   return (
-    <div>
+    <div
+      css={css`
+        flex: 1;
+        margin: 0 -24px;
+        padding: var(--ax-space-24) 24px var(--ax-space-32);
+        background: var(--ax-bg-default);
+      `}
+    >
+      <Heading level="1" size="small">
+        Brevoppskrift
+      </Heading>
       <div
         css={css`
           display: flex;
-          gap: var(--ax-space-16);
+          gap: var(--ax-space-12);
           align-items: flex-end;
-          margin-top: 28px;
+          margin-top: var(--ax-space-16);
         `}
       >
         <Search
           css={css`
-            flex: 1;
+            width: 100%;
+            max-width: 480px;
           `}
           hideLabel={false}
           label="Søk i innholdet i alle maler"
           onChange={setQuery}
           onClear={() => setQuery("")}
-          size="medium"
+          size="small"
           value={query}
-          variant="simple"
         />
-        <Button onClick={refresh} size="medium" type="button" variant="secondary">
+        <Button onClick={refresh} size="small" type="button" variant="secondary">
           Oppdater
         </Button>
       </div>
@@ -302,61 +552,124 @@ function AllTemplates() {
           ? `Indekserer innhold … ${index.indexed}/${index.total}`
           : `Søker i innholdet til ${templateTotal} maler på ${languageTotal} språk${index.failed > 0 ? ` (${index.failed} feilet)` : ""}`}
       </Detail>
-      {isSearching ? (
-        <div
-          css={css`
-            margin-top: var(--ax-space-16);
-          `}
-        >
-          <Detail
-            aria-live="polite"
-            css={css`
-              margin-bottom: var(--ax-space-8);
-            `}
+
+      <Tabs
+        css={css`
+          margin-top: var(--ax-space-16);
+        `}
+        onChange={changeTab}
+        value={activeTab}
+      >
+        <Tabs.List>
+          <Tabs.Tab
+            label={
+              <span
+                css={css`
+                  display: inline-flex;
+                  align-items: center;
+                  gap: var(--ax-space-8);
+                `}
+              >
+                Innhold
+                {isSearching ? (
+                  <Tag data-color="neutral" size="xsmall" variant="moderate">
+                    {contentTemplateCount}
+                  </Tag>
+                ) : null}
+              </span>
+            }
+            value="innhold"
+          />
+          <Tabs.Tab
+            label={
+              <span
+                css={css`
+                  display: inline-flex;
+                  align-items: center;
+                  gap: var(--ax-space-8);
+                `}
+              >
+                Brev
+                {isSearching ? (
+                  <Tag data-color="neutral" size="xsmall" variant="moderate">
+                    {brevTemplateCount}
+                  </Tag>
+                ) : null}
+              </span>
+            }
+            value="brev"
+          />
+        </Tabs.List>
+
+        <Tabs.Panel value="innhold">
+          <SearchTabPanel
+            page={safePage}
+            pageCount={activeTab === "innhold" ? pageCount : 1}
+            setPage={setPage}
+            summary={
+              isSearching && contentResults.length > 0 ? (
+                <>
+                  Frasen du søker på er brukt i <b>{contentTemplateCount} maler</b> i {contentResults.length} avsnitt
+                </>
+              ) : undefined
+            }
           >
-            {results.length} tekstutdrag i {templateCount} maler
-            {results.length > visibleResults.length ? ` (viser ${visibleResults.length})` : ""}
-            {index.status === "indexing" ? " – fulltekstsøk indekseres fortsatt …" : ""}
-          </Detail>
-          {visibleResults.length === 0 ? (
-            <BodyShort>Ingen treff</BodyShort>
-          ) : (
-            <VStack gap="space-12">
-              {visibleResults.map((result) => (
+            {!isSearching ? (
+              <BodyShort textColor="subtle">
+                Skriv minst {MIN_QUERY_LENGTH} tegn for å søke i innholdet i malene.
+              </BodyShort>
+            ) : contentResults.length === 0 ? (
+              <BodyShort>Ingen treff i innholdet</BodyShort>
+            ) : (
+              innholdPageItems.map((result) => (
                 <SearchResult
                   key={`${result.malType}/${result.id}/${result.language}/${result.startLine}`}
                   result={result}
+                  title={getTitle(result.malType, result.id)}
                 />
-              ))}
-            </VStack>
-          )}
-        </div>
-      ) : (
-        <>
-          <Heading
-            css={css`
-              margin-top: 28px;
-              margin-bottom: 10px;
-            `}
-            level="2"
-            size="large"
+              ))
+            )}
+          </SearchTabPanel>
+        </Tabs.Panel>
+
+        <Tabs.Panel value="brev">
+          <SearchTabPanel
+            page={safePage}
+            pageCount={activeTab === "brev" ? pageCount : 1}
+            setPage={setPage}
+            summary={
+              isSearching && brevResults.length > 0 ? (
+                <>
+                  Søket traff tittel, navn eller brevkode i <b>{brevTemplateCount} maler</b>
+                </>
+              ) : undefined
+            }
           >
-            Automatiske brev
-          </Heading>
-          <TemplateList malType={"autobrev"} templates={autobrev} />
-          <Heading
-            css={css`
-              margin-top: 28px;
-              margin-bottom: 10px;
-            `}
-            level="2"
-            size="large"
-          >
-            Redigerbare brev
-          </Heading>
-          <TemplateList malType={"redigerbar"} templates={redigerbar} />
-        </>
-      )}
+            {isSearching ? (
+              brevResults.length === 0 ? (
+                <BodyShort>Ingen treff i tittel, navn eller brevkode</BodyShort>
+              ) : (
+                <BrevList getTitle={getTitle} results={brevPageItems} />
+              )
+            ) : (
+              <VStack gap="space-20">
+                <VStack gap="space-8">
+                  <Heading level="2" size="xsmall">
+                    Automatiske brev
+                  </Heading>
+                  <TemplateList malType={"autobrev"} templates={autobrev} />
+                </VStack>
+                <VStack gap="space-8">
+                  <Heading level="2" size="xsmall">
+                    Redigerbare brev
+                  </Heading>
+                  <TemplateList malType={"redigerbar"} templates={redigerbar} />
+                </VStack>
+              </VStack>
+            )}
+          </SearchTabPanel>
+        </Tabs.Panel>
+      </Tabs>
     </div>
   );
 }
