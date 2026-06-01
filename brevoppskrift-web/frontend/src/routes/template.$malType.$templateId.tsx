@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import { BodyLong, Heading, Select, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
+import { useEffect, useRef } from "react";
 
 import {
   getBrevkoder,
@@ -65,17 +66,160 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
   },
   validateSearch: (
     search: Record<string, unknown>,
-  ): { language?: string; highlightedDataClass?: string; highlightedDataField?: string } => ({
-    language: search.language?.toString(),
-    highlightedDataClass: search.highlightedDataClass?.toString(),
-    highlightedDataField: search.highlightedDataField?.toString(),
-  }),
+  ): {
+    language?: string;
+    highlightedDataClass?: string;
+    highlightedDataField?: string;
+    q?: string;
+    qi?: number;
+  } => {
+    const qiRaw = search.qi !== undefined ? Number(search.qi) : Number.NaN;
+    return {
+      language: search.language?.toString(),
+      highlightedDataClass: search.highlightedDataClass?.toString(),
+      highlightedDataField: search.highlightedDataField?.toString(),
+      q: search.q?.toString(),
+      qi: Number.isInteger(qiRaw) && qiRaw >= 0 ? qiRaw : undefined,
+    };
+  },
   component: TemplateExplorer,
 });
+
+/** Removes any previous search highlight by unwrapping the inserted <mark>s. */
+function clearSearchHighlights(container: HTMLElement): void {
+  for (const mark of container.querySelectorAll("mark.search-target")) {
+    const parent = mark.parentNode;
+    if (!parent) {
+      continue;
+    }
+    while (mark.firstChild) {
+      parent.insertBefore(mark.firstChild, mark);
+    }
+    parent.removeChild(mark);
+    parent.normalize();
+  }
+}
+
+/** True when a text node lives inside a variable/control-structure subtree
+ * (`.expression` wrappers or `<code>` labels). Those are excluded from the
+ * search index, so the highlighter must skip them to keep occurrence ordinals
+ * aligned with the indexed literal text. */
+function isExcludedTextNode(node: Node, container: HTMLElement): boolean {
+  let element = node.parentElement;
+  while (element && element !== container) {
+    if (element.tagName === "CODE" || element.classList.contains("expression")) {
+      return true;
+    }
+    element = element.parentElement;
+  }
+  return false;
+}
+
+/** Collapses whitespace the same way the search index does (`\s+` → " ", then
+ * trim), while keeping a map from each collapsed-string index back to the raw
+ * offset in the node. This lets multi-word/whitespace-containing queries match
+ * the same way they were indexed, then resolve to a precise DOM range. */
+function collapseWithMap(raw: string): { text: string; map: number[] } {
+  const chars: string[] = [];
+  const map: number[] = [];
+  let pendingSpace = false;
+  for (let i = 0; i < raw.length; i++) {
+    const ch = raw[i];
+    if (/\s/.test(ch)) {
+      if (chars.length > 0) {
+        pendingSpace = true;
+      }
+      continue;
+    }
+    if (pendingSpace) {
+      chars.push(" ");
+      map.push(i); // the space maps to the start of the following word
+      pendingSpace = false;
+    }
+    chars.push(ch);
+    map.push(i);
+  }
+  return { text: chars.join(""), map };
+}
+
+type Occurrence = { node: Text; start: number; end: number };
+
+/** Wraps a single-text-node range in a <mark> and scrolls it into view. */
+function markOccurrence(occurrence: Occurrence): void {
+  const range = document.createRange();
+  range.setStart(occurrence.node, occurrence.start);
+  range.setEnd(occurrence.node, occurrence.end);
+  const mark = document.createElement("mark");
+  mark.className = "search-target";
+  range.surroundContents(mark);
+  mark.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+/** Highlights the `ordinal`-th (0-based) occurrence of the query within the
+ * indexed literal text, and scrolls it into view. Occurrences are counted in
+ * document order over text nodes, skipping variable/control-structure subtrees,
+ * with per-node whitespace collapsing so counting matches the index. If the
+ * ordinal is out of range we clamp to the last occurrence (deterministic and
+ * close), so a click always lands somewhere sensible. */
+function highlightOccurrence(container: HTMLElement, query: string, ordinal: number): void {
+  const needle = query.trim().toLowerCase();
+  if (!needle) {
+    return;
+  }
+  clearSearchHighlights(container);
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) => (isExcludedTextNode(node, container) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
+  });
+
+  let seen = 0;
+  let last: Occurrence | null = null;
+  let node = walker.nextNode() as Text | null;
+  while (node) {
+    const raw = node.nodeValue ?? "";
+    const { text, map } = collapseWithMap(raw);
+    const haystack = text.toLowerCase();
+    let at = haystack.indexOf(needle);
+    while (at >= 0) {
+      const start = map[at];
+      const end = map[at + needle.length - 1] + 1;
+      const occurrence: Occurrence = { node, start, end };
+      if (seen === ordinal) {
+        markOccurrence(occurrence);
+        return;
+      }
+      last = occurrence;
+      seen++;
+      at = haystack.indexOf(needle, at + needle.length);
+    }
+    node = walker.nextNode() as Text | null;
+  }
+
+  // Requested ordinal was out of range: clamp to the last occurrence found.
+  if (last) {
+    markOccurrence(last);
+  }
+}
 
 function TemplateExplorer() {
   const { documentation } = Route.useLoaderData();
   const { templateId } = Route.useParams();
+  const { q, qi } = Route.useSearch();
+  const previewRef = useRef<HTMLDivElement>(null);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: documentation is an intentional trigger so we re-highlight when navigating between templates with the same query.
+  useEffect(() => {
+    const container = previewRef.current;
+    if (!container) {
+      return;
+    }
+    if (!q) {
+      clearSearchHighlights(container);
+      return;
+    }
+    // Wait a frame so the freshly rendered document is laid out before scrolling.
+    const raf = requestAnimationFrame(() => highlightOccurrence(container, q, qi ?? 0));
+    return () => cancelAnimationFrame(raf);
+  }, [q, qi, documentation]);
 
   return (
     <>
@@ -85,10 +229,23 @@ function TemplateExplorer() {
           Oppskrift for {templateId}
         </Heading>
         <SelectLanguage />
-        <Document templateDocumentation={documentation} />
-        {documentation.attachments.map((attachment, index) => (
-          <Document key={index} templateDocumentation={attachment} />
-        ))}
+        <div
+          css={css`
+            width: 100%;
+
+            mark.search-target {
+              background: var(--ax-warning-300);
+              color: inherit;
+              scroll-margin-top: var(--ax-space-64);
+            }
+          `}
+          ref={previewRef}
+        >
+          <Document templateDocumentation={documentation} />
+          {documentation.attachments.map((attachment, index) => (
+            <Document key={index} templateDocumentation={attachment} />
+          ))}
+        </div>
       </VStack>
     </>
   );

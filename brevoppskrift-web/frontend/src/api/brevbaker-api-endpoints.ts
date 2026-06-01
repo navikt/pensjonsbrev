@@ -45,8 +45,30 @@ export const getTemplateDocumentation = {
     ).data,
 };
 
+/** One template's documentation for a single language, as returned by the batch
+ * documentation endpoint. The batch omits the (large) `templateModelSpecification`
+ * to keep the single response small; it is only used to build the full-text index. */
+export type TemplateDocumentationBatchEntry = {
+  brevkode: string;
+  language: string;
+  documentation: TemplateDocumentation;
+};
+
+export const getAllTemplateDocumentation = {
+  queryKey: (malType: MalType) => [...templateDocumentationKeys.all, malType, "BATCH"] as const,
+  queryFn: async (malType: MalType) =>
+    (await axios.get<TemplateDocumentationBatchEntry[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}/doc`)).data,
+};
+
 export const getBrevkoder = {
   queryKey: brevkoderKeys.malType,
   queryFn: async (malType: MalType) =>
     (await axios.get<string[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}`)).data,
+};
+
+export const getBrevkoderMedMetadata = {
+  queryKey: (malType: MalType) => [...brevkoderKeys.malType(malType), "METADATA"] as const,
+  queryFn: async (malType: MalType) =>
+    (await axios.get<TemplateDescription[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}?includeMetadata=true`))
+      .data,
 };

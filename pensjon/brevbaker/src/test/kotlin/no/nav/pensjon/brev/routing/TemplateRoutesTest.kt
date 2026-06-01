@@ -14,7 +14,9 @@ import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.render.TemplateDocumentation
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
+import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brev.testBrevbakerApp
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -142,6 +144,31 @@ class TemplateRoutesTest {
             ), response.body<TemplateDocumentation>()
         )
     }
+
+    @Test
+    fun `batch doc endpoint returns one entry per autobrev template per supported language`() =
+        testBrevbakerApp(isIntegrationTest = false) { client ->
+            val response = client.get("/templates/autobrev/doc")
+            assertEquals(HttpStatusCode.OK, response.status)
+            val body = response.body<List<TemplateDocumentationBatchEntry>>()
+
+            val expected = alleAutobrevmaler.flatMap { mal ->
+                mal.template.language.all().map { mal.kode.kode() to it.toCode() }
+            }.toSet()
+            assertEquals(expected, body.map { it.brevkode to it.language }.toSet())
+
+            // Documentation content matches the per-template endpoint (the batch only
+            // omits the model specification, which is empty here).
+            val sample = body.first { it.brevkode == ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.kode.name && it.language == LanguageCode.BOKMAL }
+            assertEquals(
+                TemplateDocumentationRenderer.render(
+                    ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
+                    Language.Bokmal,
+                    TemplateModelSpecification(types = emptyMap(), letterModelTypeName = null),
+                ),
+                sample.documentation,
+            )
+        }
 
     @Test
     fun `filtrerer bort deaktiverte maler`() = runBlocking {

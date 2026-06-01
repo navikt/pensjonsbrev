@@ -20,6 +20,15 @@ export default defineConfig({
   },
   server: {
     origin: "http://localhost:5173",
+    proxy: {
+      // Lets `npm run dev` on :5173 talk to a locally running brevbaker without going through the BFF.
+      // Override the target with BREVBAKER_API_URL (e.g. when brevbaker runs on another host/port).
+      "/brevbaker": {
+        target: process.env.BREVBAKER_API_URL ?? "http://localhost:8080",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/brevbaker/, ""),
+      },
+    },
   },
   test: {
     environment: "jsdom",
