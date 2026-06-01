@@ -191,8 +191,8 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
             includePhrase(Ufoeretrygd.Etteroppgjor)
-            includePhrase(Ufoeretrygd.RettTilAKlage(vedleggDineRettigheterOgPlikterUfore))
-            includePhrase(Ufoeretrygd.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfore))
+            includePhrase(Ufoeretrygd.RettTilAKlage)
+            includePhrase(Ufoeretrygd.RettTilInnsyn)
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)

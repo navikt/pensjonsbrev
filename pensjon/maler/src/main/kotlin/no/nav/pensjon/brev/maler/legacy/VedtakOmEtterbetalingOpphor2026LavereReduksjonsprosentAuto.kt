@@ -40,7 +40,7 @@ object VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto : AutobrevTemp
         outline {
             includePhrase(VedtakOmEtterbetalingOpphor2026.Outline(etterbetaling = etterbetaling, hjemler = hjemler))
             includePhrase(VedtakOmEtterbetalingOpphor2026.RettTilAAKlage)
-            includePhrase(Ufoeretrygd.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfore))
+            includePhrase(Ufoeretrygd.RettTilInnsyn)
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
         includeAttachment(vedleggDineRettigheterOgPlikterUfore, dineRettigheterOgPlikterUfore)

@@ -412,9 +412,7 @@ object Ufoeretrygd {
         }
     }
 
-    data class RettTilInnsyn(
-        val vedlegg: AttachmentTemplate<LangBokmalNynorsk, *>,
-    ) : OutlinePhrase<LangBokmalNynorsk>() {
+    object RettTilInnsyn : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
                 text(
@@ -428,7 +426,7 @@ object Ufoeretrygd {
                     bokmal { + "Du har rett til å se dokumentene i saken din. Se vedlegg " },
                     nynorsk { + "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg " },
                 )
-                namedReference(vedlegg)
+                namedReference(vedleggDineRettigheterOgPlikterUfore)
                 text(
                     bokmal { + " for informasjon om hvordan du går fram." },
                     nynorsk { + " for informasjon om korleis du går fram." },
@@ -490,9 +488,7 @@ object Ufoeretrygd {
         }
     }
 
-    data class RettTilAKlage(
-        val vedlegg: AttachmentTemplate<LangBokmalNynorsk, *>,
-    ) : OutlinePhrase<LangBokmalNynorsk>() {
+    object RettTilAKlage : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
                 text(
