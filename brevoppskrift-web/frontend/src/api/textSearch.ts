@@ -669,7 +669,6 @@ export function searchFuzzy(context: FuzzySearchContext, rawQuery: string): Snip
   const chunks = queryChunks(query, maxEdits + 1);
 
   const results: SnippetResult[] = [];
-  const matchedEntries = new Set<number>();
 
   for (let entryIndex = 0; entryIndex < entries.length; entryIndex++) {
     const entry = entries[entryIndex];
@@ -683,7 +682,6 @@ export function searchFuzzy(context: FuzzySearchContext, rawQuery: string): Snip
     if (lineMatches.size === 0) {
       continue;
     }
-    matchedEntries.add(entryIndex);
 
     // Seed snippet windows from the best (lowest-distance) matched lines.
     const seeds = [...lineMatches.keys()].sort(
@@ -738,12 +736,11 @@ export function searchFuzzy(context: FuzzySearchContext, rawQuery: string): Snip
     }
   }
 
-  // Exact name/brevkode matches for templates with no body hit, so a brevkode
-  // search still surfaces its template.
+  // Name/brevkode/displayTitle matches power the "Brev" tab: a letter is listed
+  // whenever its identity (not just its body) matches, independent of any content
+  // hit, so e.g. searching the brevkode "P1" still surfaces its letter here even
+  // though its body also mentions "P1".
   for (let entryIndex = 0; entryIndex < entries.length; entryIndex++) {
-    if (matchedEntries.has(entryIndex)) {
-      continue;
-    }
     const entry = entries[entryIndex];
     const metaLines: Line[] = [];
     if (entry.name.toLowerCase().includes(query)) {

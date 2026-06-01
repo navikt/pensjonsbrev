@@ -441,7 +441,7 @@ function BrevList({
           <Link
             params={{ malType: result.malType, templateId: result.id }}
             preload="intent"
-            search={{ language: result.language, q: result.anchorQuery }}
+            search={{ language: result.language }}
             to="/template/$malType/$templateId"
           >
             <HighlightedLine
@@ -466,6 +466,7 @@ function SearchTabPanel({
   summary,
   children,
   contentRef,
+  bodyHeight,
 }: {
   page: number;
   pageCount: number;
@@ -473,6 +474,7 @@ function SearchTabPanel({
   summary?: ReactNode;
   children: ReactNode;
   contentRef?: Ref<HTMLDivElement>;
+  bodyHeight?: number;
 }) {
   return (
     <VStack
@@ -493,6 +495,7 @@ function SearchTabPanel({
           gap: var(--ax-space-12);
         `}
         ref={contentRef}
+        style={bodyHeight ? { height: bodyHeight, overflow: "auto", scrollbarGutter: "stable" } : undefined}
       >
         {children}
       </div>
@@ -577,12 +580,16 @@ function AllTemplates() {
   const [activeTab, setActiveTab] = useState<"innhold" | "brev">("innhold");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(PAGE_SIZE);
+  const [bodyHeight, setBodyHeight] = useState<number | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
   // Fit the page size to the viewport so the active list plus its pagination
   // control fit without scrolling. Measured from the live DOM (list top + the
   // first item's real height) and recomputed on resize / tab / result changes.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: re-measure whenever the rendered list could change height or position.
+  // The list body is also given a fixed height (the available viewport space,
+  // independent of the items' own heights) so the pagination bar stays pinned to
+  // the bottom and never jumps between pages with differently sized content.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: re-measure whenever the rendered list could change height or position. pageSize is intentionally excluded — the effect writes it, so depending on it would loop.
   useLayoutEffect(() => {
     const measure = () => {
       const region = listRef.current;
@@ -594,14 +601,19 @@ function AllTemplates() {
       if (itemHeight <= ROW_GAP_PX) {
         return;
       }
-      const available = window.innerHeight - region.getBoundingClientRect().top - PAGINATION_RESERVE_PX;
+      const available = Math.max(0, window.innerHeight - region.getBoundingClientRect().top - PAGINATION_RESERVE_PX);
       const fit = Math.max(MIN_PAGE_SIZE, Math.floor(available / itemHeight));
+      // Reserve the full available viewport block for the list regardless of how
+      // tall the current page's items are, so the pagination bar sits in the same
+      // place on every page (including a short last page).
+      const reserved = Math.round(available);
       setPageSize((current) => (current === fit ? current : fit));
+      setBodyHeight((current) => (current === reserved ? current : reserved));
     };
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
-  }, [activeTab, isSearching, contentResults.length, brevResults.length, pageSize]);
+  }, [activeTab, isSearching, contentResults.length, brevResults.length]);
 
   // Reset pagination on a new search, but never auto-switch the active tab — the
   // user stays on whichever tab they have selected while typing.
@@ -721,6 +733,7 @@ function AllTemplates() {
 
         <Tabs.Panel value="innhold">
           <SearchTabPanel
+            bodyHeight={activeTab === "innhold" && pageCount > 1 ? (bodyHeight ?? undefined) : undefined}
             contentRef={listRef}
             page={safePage}
             pageCount={activeTab === "innhold" ? pageCount : 1}
@@ -753,6 +766,7 @@ function AllTemplates() {
 
         <Tabs.Panel value="brev">
           <SearchTabPanel
+            bodyHeight={activeTab === "brev" && pageCount > 1 ? (bodyHeight ?? undefined) : undefined}
             contentRef={listRef}
             page={safePage}
             pageCount={activeTab === "brev" ? pageCount : 1}
