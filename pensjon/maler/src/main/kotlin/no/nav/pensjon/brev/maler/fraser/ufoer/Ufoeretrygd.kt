@@ -1,38 +1,22 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.ANNEN_FORLD_RETT_BT
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BARN_OPPH_IKKE_AVT_LAND
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BRK_FORSO_IKKE_BARN
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BRUKER_FLYTTET_IKKE_AVT_LAND
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BT_GITT_TIL_ANNEN
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BT_INNT_OVER_1G
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BT_OVER_18
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.MINDRE_ETT_AR_BT_FLT
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDtoSelectors.antallBarn
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDtoSelectors.begrunnelse
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDtoSelectors.fom
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.IKKE_MOTTATT_DOK
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.OPPHOR_ANNEN_FORLD_RETT_BT
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.OPPHOR_BARN_FLYTTET_IKKE_AVT_LAND
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.OPPHOR_BARN_OPPH_IKKE_AVT_LAND
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.OPPHOR_BRK_FORSO_IKKE_BARN
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.OPPHOR_BRUKER_FLYTTET_IKKE_AVT_LAND
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.OPPHOR_BT_GITT_TIL_ANNEN
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.OPPHOR_BT_INNT_OVER_1G
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.OPPHOR_BT_OVER_18
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.OPPHOR_IKKE_MOTTATT_DOK
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
 import no.nav.pensjon.brev.maler.legacy.BarnetilleggFormatter
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
@@ -452,6 +436,63 @@ object Ufoeretrygd {
                         nynorsk { +" Vilkåra for barnetillegg er derfor ikkje lenger oppfylte, og barnetillegget opphøyrer frå " + barnetillegg.fom.format() + "." },
                     )
                 }
+            }
+        }
+    }
+
+    object Etteroppgjor : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { + "Etteroppgjør" },
+                    nynorsk { + "Etteroppgjer" },
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { + "Hvert år sjekker vi inntektsopplysningene i skatteoppgjøret ditt for å se om du har fått utbetalt riktig beløp fra oss året før. Viser skatteoppgjøret at du har hatt en annen inntekt enn den inntekten vi brukte da vi beregnet utbetalingene dine, gjør vi en ny beregning. Dette kalles etteroppgjør. " },
+                    nynorsk { + "Kvart år sjekkar vi inntektsopplysningane i skatteoppgjeret ditt for å sjå om du fekk utbetalt rett beløp frå oss året før. Viser skatteoppgjeret at du har hatt ei anna inntekt enn den inntekta vi brukte då vi rekna ut utbetalingane dine, vil vi gjere ei ny utrekning. Dette vert kalla etteroppgjer. " }
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { + "Hvis du har fått for lite utbetalt, får du en etterbetaling fra oss. Har du fått for mye utbetalt, må du betale tilbake. " },
+                    nynorsk { + "Dersom du har fått for lite utbetalt, får du ei etterbetaling frå oss. Har du fått for mykje utbetalt, må du betale tilbake. " }
+                )
+            }
+        }
+    }
+
+    data class RettTilAKlage(
+        val vedlegg: AttachmentTemplate<LangBokmalNynorsk, *>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { +"Du har rett til å klage" },
+                    nynorsk { +"Du har rett til å klage" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen vedtaket har kommet fram til deg. Du finner skjema og informasjon på " +
+                            "${Constants.KLAGE_URL}." },
+                    nynorsk { +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen vedtaket har kome fram til deg. Du finn skjema og informasjon på " +
+                            "${Constants.KLAGE_URL}." },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"I vedlegget " },
+                    nynorsk { +"I vedlegget " },
+                )
+                namedReference(vedleggDineRettigheterOgPlikterUfore)
+                text(
+                    bokmal { +" får du vite mer om hvordan du går fram for å klage." },
+                    nynorsk { +" får du vite meir om korleis du går fram for å klage." },
+                )
             }
         }
     }
