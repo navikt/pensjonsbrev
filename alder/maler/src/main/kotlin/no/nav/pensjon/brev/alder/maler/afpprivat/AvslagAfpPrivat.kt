@@ -173,30 +173,7 @@ object AvslagAfpPrivat : RedigerbarTemplate<AvslagAfpPrivatDto> {
             // TODO denne kan komme dobbelt opp i exstream i dag dersom
             //   PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, 1) = "bruker_ikke_ap
             //   Her må vi ta stilling til når teksten skal komme, enten med eller uten betingelsen.
-            paragraph {
-                text(
-                    bokmal {
-                        +"Hvis du ved eventuell senere rett til alderspensjon fra folketrygden " +
-                            "også ønsker å ta ut AFP i privat sektor, må du sende inn ny søknad om " +
-                            "AFP. Vi gjør oppmerksom på at du på uttakstidspunktet for AFP må være " +
-                            "reell arbeidstaker i en bedrift som omfattes av AFP-ordningen."
-                    },
-                    nynorsk {
-                        +"Dersom du ved eventuell seinare rett til alderspensjon frå folketrygda " +
-                            "òg ønskjer å ta ut AFP i privat sektor, må du sende inn ny søknad om " +
-                            "AFP. Vi gjer merksam på at du på uttakstidspunktet for AFP må vere " +
-                            "reell arbeidstakar i ei verksemd som er omfatta av AFP-ordninga."
-                    },
-                    english {
-                        +"If, in the event of a possible right to national insurance retirement " +
-                            "pension, you also want to draw contractual pension in the private " +
-                            "sector, you will need to submit a new application for contractual " +
-                            "pension. We wish to point out that on the pension date for contractual " +
-                            "pension, you must be an actual employee of an enterprise that is " +
-                            "covered by the contractual pension scheme."
-                    },
-                )
-            }
+            includePhrase(AfpPrivatFraser.NySoknadVedSenereRettTilAlderspensjon)
 
             showIf(pesysData.begrunnelse.isOneOf(Begrunnelse.BRUKER_IKKE_AP)) {
                 paragraph {
@@ -328,25 +305,7 @@ object AvslagAfpPrivat : RedigerbarTemplate<AvslagAfpPrivatDto> {
 
             includePhrase(AfpPrivatFraser.InnsynForvaltningsloven18)
 
-            paragraph {
-                text(
-                    bokmal {
-                        +"Du kan klage på avslaget etter bestemmelsene i folketrygdloven paragraf 21-12. " +
-                            "Fristen for å klage er seks uker fra du mottar dette brevet. Vedlagt finner du " +
-                            "en orientering om klage- og ankebehandling."
-                    },
-                    nynorsk {
-                        +"Du kan klage på avslaget etter reglane i folketrygdlova paragraf 21-12. Fristen " +
-                            "for å klage er seks veker frå du får dette brevet. Vedlagt finn du ei " +
-                            "orientering om klage- og ankebehandling."
-                    },
-                    english {
-                        +"You can appeal the rejection, pursuant to the terms in section 21-12 of the " +
-                            "National Insurance Act. The time limit for filing an appeal is six weeks from " +
-                            "the date you received this letter. We enclose information about the appeal process."
-                    },
-                )
-            }
+            includePhrase(AfpPrivatFraser.KlagerettAvslagFolketrygdloven2112)
 
             includePhrase(HarDuSpoersmaal.afpPrivat)
         }

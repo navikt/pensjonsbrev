@@ -14,6 +14,13 @@ import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerForsoergingstil
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling
 import no.nav.pensjon.brev.alder.maler.adhoc.FeilUtsendingAvGjenlevenderett
 import no.nav.pensjon.brev.alder.maler.afpprivat.AvslagAfpPrivat
+import no.nav.pensjon.brev.alder.maler.afp.AvslagAfpGammel
+import no.nav.pensjon.brev.alder.maler.afpprivat.AvslagAfpPrivatAuto
+import no.nav.pensjon.brev.alder.maler.afpprivat.VedtakAfpPrivatEndring
+import no.nav.pensjon.brev.alder.maler.afpprivat.VedtakAfpPrivatEndringOpptjeningAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerToleransebeloep
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEtterbetaling
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndring
 import no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfp
 import no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpAuto
 import no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfpOffentligSektor
@@ -126,6 +133,8 @@ object AlderTemplates : AllTemplates {
             VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto,
             VedtakAfpEtteroppgjoerTilbakekrevingAuto,
             VedtakAfpEtteroppgjoerIngenEndringAuto,
+            AvslagAfpPrivatAuto,
+            VedtakAfpPrivatEndringOpptjeningAuto,
             VedtakAldersovergang67AarGarantitilleggAuto,
             VedtakEndringAFPEndretOpptjeningAuto,
             VedtakOmregningAFPTilEnsligPensjonistAuto,
@@ -135,6 +144,11 @@ object AlderTemplates : AllTemplates {
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> =
         setOf(
             AvslagAfpPrivat,
+            AvslagAfpGammel,
+            VedtakAfpPrivatEndring,
+            VedtakAfpEtteroppgjoerToleransebeloep,
+            VedtakAfpEtteroppgjoerEtterbetaling,
+            VedtakAfpEtteroppgjoerIngenEndring,
             AvslagGradsendringFoerNormertPensjonsalder,
             AvslagGradsendringFoerNormertPensjonsalderAP2016,
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,

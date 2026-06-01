@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpInnhold
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOversiktOverPensjonenAfpPrivat
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.AfpBeregningSelectors.kompensasjonstilleggBrutto
@@ -14,6 +15,7 @@ import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelector
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.bosattINorge
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.brukerUnder70Aar
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.kravMottattDato
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.oversiktOverPensjonen
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.virkningFom
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpDtoSelectors.pesysData
@@ -81,5 +83,12 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
             )
             includePhrase(HarDuSpoersmaal.alder)
         }
+
+        // PE_AF_oversikt_over_pensjonen_RTF — inkluderes når vedtaket har flere
+        // beregningsperioder (i Exstream: BeregningAntallPerioder > 1).
+        includeAttachmentIfNotNull(
+            vedleggOversiktOverPensjonenAfpPrivat,
+            pesysData.oversiktOverPensjonen,
+        )
     }
 }
