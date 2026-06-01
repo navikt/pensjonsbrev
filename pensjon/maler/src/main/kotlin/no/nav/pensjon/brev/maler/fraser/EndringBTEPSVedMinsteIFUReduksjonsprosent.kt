@@ -164,8 +164,8 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
 
                 paragraph {
                     text(
-                        bokmal { +"Du har rett til en årlig utbetaling av barnetillegg for fellesbarn på " + data.nettoBarnetilleggFB.format() + ". Siden du allerede har fått utbetalt " + data.utbetaltBarnetilleggHittilIAr.format() + " i barnetillegg hittil i år, har du rett til utbetaling på " + data.utbetalingBarnetilleggResten.format() + " resten av året. Derfor får du " + data.nyttBarnetillegg.format() + " i måneden før skatt i barnetillegg resten av året. " },
-                        nynorsk { +"Du har rett til ei årleg utbetaling av barnetillegg for fellesbarn på " + data.nettoBarnetilleggFB.format() + ". Sidan du allereie har fått utbetalt " + data.utbetaltBarnetilleggHittilIAr.format() + " i barnetillegg hittil i år, har du rett til utbetaling på " + data.utbetalingBarnetilleggResten.format() + " resten av året. Derfor får du " + data.nyttBarnetillegg.format() + " i månaden før skatt i barnetillegg resten av året. " },
+                        bokmal { +"Du har rett til en årlig utbetaling av barnetillegg for fellesbarn på " + data.arligUtbetalingBarnetilleggFB.format() + ". Siden du allerede har fått utbetalt " + data.utbetaltBarnetilleggHittilIAr.format() + " i barnetillegg hittil i år, har du rett til utbetaling på " + data.utbetalingBarnetilleggResten.format() + " resten av året. Derfor får du " + data.nyttBarnetillegg.format() + " i måneden før skatt i barnetillegg resten av året. " },
+                        nynorsk { +"Du har rett til ei årleg utbetaling av barnetillegg for fellesbarn på " + data.arligUtbetalingBarnetilleggFB.format() + ". Sidan du allereie har fått utbetalt " + data.utbetaltBarnetilleggHittilIAr.format() + " i barnetillegg hittil i år, har du rett til utbetaling på " + data.utbetalingBarnetilleggResten.format() + " resten av året. Derfor får du " + data.nyttBarnetillegg.format() + " i månaden før skatt i barnetillegg resten av året. " },
                     )
                 }
             }
@@ -192,7 +192,7 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
             includePhrase(Ufoeretrygd.Etteroppgjor)
             includePhrase(Ufoeretrygd.RettTilAKlage(vedleggDineRettigheterOgPlikterUfore))
-            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
+            includePhrase(Ufoeretrygd.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfore))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
