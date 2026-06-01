@@ -41,7 +41,7 @@
     "zod": "4.3.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.13",
+    "@biomejs/biome": "2.4.15",
     "@navikt/aksel-stylelint": "8.10.2",
     "@playwright/test": "^1.58.2",
     "@tanstack/react-query-devtools": "5.100.5",
@@ -58,7 +58,7 @@
     "jsdom": "29.1.0",
     "lint-staged": "16.4.0",
     "postcss-styled-syntax": "0.7.1",
-    "stylelint": "17.9.0",
+    "stylelint": "17.12.0",
     "stylelint-config-standard": "40.0.0",
     "typescript": "6.0.3",
     "vite": "8.0.10",
