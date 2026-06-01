@@ -2,7 +2,17 @@ import { css } from "@emotion/react";
 import { BodyShort, Button, Detail, Heading, HStack, Pagination, Search, Tabs, Tag, VStack } from "@navikt/ds-react";
 import { type QueryClient, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { Fragment, type ReactNode, useDeferredValue, useEffect, useMemo, useState } from "react";
+import {
+  Fragment,
+  type ReactNode,
+  type Ref,
+  useDeferredValue,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import {
   brevkoderKeys,
@@ -32,6 +42,13 @@ import { invalidateTextIndexCache, useTextIndex } from "~/components/useTextInde
 const MIN_QUERY_LENGTH = 2;
 const PAGE_SIZE = 20;
 const SNIPPET_CHARS = 160;
+/** Fewest results to show per page even on a short viewport. */
+const MIN_PAGE_SIZE = 3;
+/** Vertical space (px) kept free below the results list for the pagination
+ * control and the page's bottom padding, so the list never forces a scroll. */
+const PAGINATION_RESERVE_PX = 72;
+/** Row gap (px) between result items; matches the list's `space-12` gap. */
+const ROW_GAP_PX = 12;
 
 const LANGUAGE_LABELS: Record<string, string> = { BOKMAL: "Bokmål", NYNORSK: "Nynorsk", ENGLISH: "Engelsk" };
 
@@ -203,20 +220,46 @@ function indexOfNeedleCenter(line: Line, needle: string): number | null {
   return idx < 0 ? null : idx + Math.floor(needle.length / 2);
 }
 
+/** Global character offset (counting variable labels) at the centre of the matched
+ * span described by `ranges`, used to centre {@link clampLine} on the match. */
+function rangesCenter(line: Line, ranges: HighlightRange[]): number | null {
+  if (ranges.length === 0) {
+    return null;
+  }
+  const globalOffset = (segmentIndex: number, offset: number): number => {
+    let global = 0;
+    for (let i = 0; i < segmentIndex; i++) {
+      const segment = line[i];
+      global += segment.kind === "text" ? segment.value.length : segment.label.length;
+    }
+    return global + offset;
+  };
+  const first = ranges[0];
+  const last = ranges[ranges.length - 1];
+  return Math.floor((globalOffset(first.segmentIndex, first.start) + globalOffset(last.segmentIndex, last.end)) / 2);
+}
+
+type ClampedLine = { line: Line; ranges: HighlightRange[] };
+
 /** Trim a line to about `maxChars`, centered on `center` (or the head when null),
- * keeping variable chips atomic and adding "…" sentinels where text was removed. */
-function clampLine(line: Line, center: number | null, maxChars: number): Line {
+ * keeping variable chips atomic and adding "…" sentinels where text was removed.
+ * `highlight` ranges (in the original line's coordinates) are remapped onto the
+ * trimmed output so the full match — even when it spans several segments — stays
+ * highlighted. */
+function clampLine(line: Line, center: number | null, maxChars: number, highlight: HighlightRange[]): ClampedLine {
   if (lineLength(line) <= maxChars) {
-    return line;
+    return { line, ranges: highlight };
   }
   const half = Math.floor(maxChars / 2);
   const windowStart = center == null ? 0 : Math.max(0, center - half);
   const windowEnd = windowStart + maxChars;
 
-  const result: Line = [];
+  type Piece = { seg: Line[number]; srcIndex: number; srcFrom: number; srcTo: number };
+  const pieces: Piece[] = [];
   let pos = 0;
   let trimmedEnd = false;
-  for (const segment of line) {
+  for (let srcIndex = 0; srcIndex < line.length; srcIndex++) {
+    const segment = line[srcIndex];
     const segLen = segment.kind === "text" ? segment.value.length : segment.label.length;
     const segStart = pos;
     const segEnd = pos + segLen;
@@ -228,7 +271,7 @@ function clampLine(line: Line, center: number | null, maxChars: number): Line {
       continue;
     }
     if (segment.kind === "var") {
-      result.push(segment);
+      pieces.push({ seg: segment, srcIndex, srcFrom: 0, srcTo: 0 });
       continue;
     }
     const from = Math.max(0, windowStart - segStart);
@@ -236,27 +279,67 @@ function clampLine(line: Line, center: number | null, maxChars: number): Line {
     if (to < segment.value.length) {
       trimmedEnd = true;
     }
-    result.push({ kind: "text", value: segment.value.slice(from, to) });
+    pieces.push({ seg: { kind: "text", value: segment.value.slice(from, to) }, srcIndex, srcFrom: from, srcTo: to });
   }
+
+  // Per-piece offset bookkeeping so highlight ranges can be remapped: `lead` is the
+  // number of sentinel chars prepended to the piece's visible content; `strip` is the
+  // number of leading whitespace chars removed.
+  const leadByPiece = pieces.map(() => 0);
+  const stripByPiece = pieces.map(() => 0);
 
   const trimmedStart = windowStart > 0;
   if (trimmedStart) {
-    const first = result[0];
-    if (first && first.kind === "text") {
-      result[0] = { kind: "text", value: `… ${first.value.replace(/^\s+/, "")}` };
+    const first = pieces[0];
+    if (first && first.seg.kind === "text") {
+      const stripped = first.seg.value.replace(/^\s+/, "");
+      stripByPiece[0] = first.seg.value.length - stripped.length;
+      leadByPiece[0] = 2; // "… " prefix length
+      first.seg = { kind: "text", value: `… ${stripped}` };
     } else {
-      result.unshift({ kind: "text", value: "… " });
+      pieces.unshift({ seg: { kind: "text", value: "… " }, srcIndex: -1, srcFrom: 0, srcTo: 0 });
+      leadByPiece.unshift(0);
+      stripByPiece.unshift(0);
     }
   }
   if (trimmedEnd) {
-    const last = result[result.length - 1];
-    if (last && last.kind === "text") {
-      result[result.length - 1] = { kind: "text", value: `${last.value.replace(/\s+$/, "")} …` };
+    const last = pieces[pieces.length - 1];
+    if (last && last.seg.kind === "text") {
+      last.seg = { kind: "text", value: `${last.seg.value.replace(/\s+$/, "")} …` };
     } else {
-      result.push({ kind: "text", value: " …" });
+      pieces.push({ seg: { kind: "text", value: " …" }, srcIndex: -1, srcFrom: 0, srcTo: 0 });
+      leadByPiece.push(0);
+      stripByPiece.push(0);
     }
   }
-  return result;
+
+  const ranges: HighlightRange[] = [];
+  for (let outIndex = 0; outIndex < pieces.length; outIndex++) {
+    const piece = pieces[outIndex];
+    if (piece.seg.kind !== "text" || piece.srcIndex < 0) {
+      continue;
+    }
+    const strip = stripByPiece[outIndex];
+    const lead = leadByPiece[outIndex];
+    const contentStart = piece.srcFrom + strip;
+    const contentEnd = piece.srcTo;
+    for (const range of highlight) {
+      if (range.segmentIndex !== piece.srcIndex) {
+        continue;
+      }
+      const overlapStart = Math.max(range.start, contentStart);
+      const overlapEnd = Math.min(range.end, contentEnd);
+      if (overlapStart < overlapEnd) {
+        ranges.push({
+          segmentIndex: outIndex,
+          start: lead + (overlapStart - piece.srcFrom - strip),
+          end: lead + (overlapEnd - piece.srcFrom - strip),
+        });
+      }
+    }
+  }
+
+  return { line: pieces.map((piece) => piece.seg), ranges };
 }
 
 function SearchResult({ result, title }: { result: SnippetResult; title: string }) {
@@ -304,7 +387,9 @@ function SearchResult({ result, title }: { result: SnippetResult; title: string 
         {visibleLines.map((line, i) => {
           const lineIndex = start + i;
           const isPrimary = lineIndex === primaryIndex;
-          const center = isPrimary ? indexOfNeedleCenter(line, needle) : null;
+          const highlight = isPrimary ? result.highlightRanges : [];
+          const center = isPrimary ? (rangesCenter(line, highlight) ?? indexOfNeedleCenter(line, needle)) : null;
+          const clamped = clampLine(line, center, SNIPPET_CHARS, highlight);
           return (
             <BodyShort
               css={css`
@@ -316,11 +401,7 @@ function SearchResult({ result, title }: { result: SnippetResult; title: string 
               size="small"
               textColor={isPrimary ? "default" : "subtle"}
             >
-              <HighlightedLine
-                line={clampLine(line, center, SNIPPET_CHARS)}
-                metaNeedle={isPrimary ? needle : undefined}
-                ranges={[]}
-              />
+              <HighlightedLine line={clamped.line} ranges={clamped.ranges} />
             </BodyShort>
           );
         })}
@@ -384,12 +465,14 @@ function SearchTabPanel({
   setPage,
   summary,
   children,
+  contentRef,
 }: {
   page: number;
   pageCount: number;
   setPage: (page: number) => void;
   summary?: ReactNode;
   children: ReactNode;
+  contentRef?: Ref<HTMLDivElement>;
 }) {
   return (
     <VStack
@@ -403,7 +486,16 @@ function SearchTabPanel({
           {summary}
         </Detail>
       ) : null}
-      {children}
+      <div
+        css={css`
+          display: flex;
+          flex-direction: column;
+          gap: var(--ax-space-12);
+        `}
+        ref={contentRef}
+      >
+        {children}
+      </div>
       {pageCount > 1 ? (
         <HStack justify="center">
           <Pagination count={pageCount} onPageChange={setPage} page={page} size="small" />
@@ -484,6 +576,32 @@ function AllTemplates() {
 
   const [activeTab, setActiveTab] = useState<"innhold" | "brev">("innhold");
   const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(PAGE_SIZE);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  // Fit the page size to the viewport so the active list plus its pagination
+  // control fit without scrolling. Measured from the live DOM (list top + the
+  // first item's real height) and recomputed on resize / tab / result changes.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: re-measure whenever the rendered list could change height or position.
+  useLayoutEffect(() => {
+    const measure = () => {
+      const region = listRef.current;
+      const firstItem = region?.firstElementChild;
+      if (!region || !firstItem) {
+        return;
+      }
+      const itemHeight = firstItem.getBoundingClientRect().height + ROW_GAP_PX;
+      if (itemHeight <= ROW_GAP_PX) {
+        return;
+      }
+      const available = window.innerHeight - region.getBoundingClientRect().top - PAGINATION_RESERVE_PX;
+      const fit = Math.max(MIN_PAGE_SIZE, Math.floor(available / itemHeight));
+      setPageSize((current) => (current === fit ? current : fit));
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [activeTab, isSearching, contentResults.length, brevResults.length, pageSize]);
 
   // Reset pagination on a new search, but never auto-switch the active tab — the
   // user stays on whichever tab they have selected while typing.
@@ -493,11 +611,11 @@ function AllTemplates() {
   }, [trimmedQuery]);
 
   const activeResults = activeTab === "innhold" ? contentResults : brevResults;
-  const pageCount = Math.max(1, Math.ceil(activeResults.length / PAGE_SIZE));
+  const pageCount = Math.max(1, Math.ceil(activeResults.length / pageSize));
   const safePage = Math.min(page, pageCount);
-  const pageItems = activeResults.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
-  const innholdPageItems = activeTab === "innhold" ? pageItems : contentResults.slice(0, PAGE_SIZE);
-  const brevPageItems = activeTab === "brev" ? pageItems : brevResults.slice(0, PAGE_SIZE);
+  const pageItems = activeResults.slice((safePage - 1) * pageSize, safePage * pageSize);
+  const innholdPageItems = activeTab === "innhold" ? pageItems : contentResults.slice(0, pageSize);
+  const brevPageItems = activeTab === "brev" ? pageItems : brevResults.slice(0, pageSize);
 
   const changeTab = (tab: string) => {
     setActiveTab(tab === "brev" ? "brev" : "innhold");
@@ -603,6 +721,7 @@ function AllTemplates() {
 
         <Tabs.Panel value="innhold">
           <SearchTabPanel
+            contentRef={listRef}
             page={safePage}
             pageCount={activeTab === "innhold" ? pageCount : 1}
             setPage={setPage}
@@ -634,6 +753,7 @@ function AllTemplates() {
 
         <Tabs.Panel value="brev">
           <SearchTabPanel
+            contentRef={listRef}
             page={safePage}
             pageCount={activeTab === "brev" ? pageCount : 1}
             setPage={setPage}

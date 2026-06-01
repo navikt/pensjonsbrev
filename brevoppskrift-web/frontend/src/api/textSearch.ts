@@ -333,6 +333,9 @@ export type SnippetResult = {
   matchOrdinal?: number;
   /** Relevance score (higher is better); used to rank results. */
   score: number;
+  /** Lowest edit distance of any match in this snippet (0 = exact). Primary sort
+   * key so the most similar matches rank first, regardless of match count. */
+  bestDistance: number;
   /** Concrete literal substring to scroll to on the detail page. With fuzzy
    * search the raw query may not appear verbatim (typos, variable slots), so
    * navigation anchors on a real matched document substring instead. */
@@ -727,6 +730,7 @@ export function searchFuzzy(context: FuzzySearchContext, rawQuery: string): Snip
         // Rank fuller matches first, then prefer the window with the lowest edit
         // distance among equal coverage.
         score: windowScore - bestDistance * 0.001,
+        bestDistance,
         anchorQuery,
         highlightRanges: ranges,
         highlightLineIndex: primaryLine - window.start,
@@ -762,6 +766,7 @@ export function searchFuzzy(context: FuzzySearchContext, rawQuery: string): Snip
         templateMatchCount: 0,
         lines: metaLines,
         score: 0,
+        bestDistance: 0,
         anchorQuery: query,
         highlightRanges: [],
         meta: true,
@@ -772,6 +777,7 @@ export function searchFuzzy(context: FuzzySearchContext, rawQuery: string): Snip
 
   results.sort(
     (a, b) =>
+      a.bestDistance - b.bestDistance ||
       b.score - a.score ||
       b.templateMatchCount - a.templateMatchCount ||
       a.name.localeCompare(b.name, "no") ||
