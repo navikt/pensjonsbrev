@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { UNSAFE_Combobox } from "@navikt/ds-react";
 import { type FieldError } from "react-hook-form";
 
@@ -19,12 +18,6 @@ export const SamhandlerTypeSelect = ({
 
   return (
     <UNSAFE_Combobox
-      //begrenser høyden så en ikke faller utenfor modalen og forårsaker scrolling
-      css={css`
-        .aksel-combobox__list {
-          max-height: 200px;
-        }
-      `}
       description={description}
       error={error?.message}
       label="Samhandlertype"
