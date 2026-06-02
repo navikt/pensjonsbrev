@@ -8,8 +8,8 @@ import {
   invalidateTextIndexCache,
   loadTextIndexCache,
   saveTextIndexCache,
-} from "~/api/textIndexCache";
-import { extractDocumentationLines, type TextIndexEntry } from "~/api/textSearch";
+} from "~/search/textIndexCache";
+import { extractDocumentationLines, type TextIndexEntry } from "~/search/textSearch";
 
 export type TextIndexStatus = "idle" | "indexing" | "ready";
 

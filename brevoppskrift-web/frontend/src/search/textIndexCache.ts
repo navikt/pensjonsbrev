@@ -1,4 +1,4 @@
-import { type TextIndexEntry } from "~/api/textSearch";
+import { type TextIndexEntry } from "~/search/textSearch";
 
 export type IndexableTemplate = {
   id: string;
