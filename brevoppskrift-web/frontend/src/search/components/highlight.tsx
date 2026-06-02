@@ -27,10 +27,6 @@ function VariableChip({ label }: { label: string }) {
   );
 }
 
-/** Renders a {@link Line}, drawing variable segments as chips and wrapping matched
- * spans in `<mark>`. Pass either `ranges` (per-segment offsets, e.g. from a snippet
- * match) or `metaNeedle` (a literal substring highlighted on every text segment, used
- * for name/brevkode/title matches). */
 export function HighlightedLine({
   line,
   ranges,
@@ -63,7 +59,6 @@ export function HighlightedLine({
   );
 }
 
-/** Visible length of one line, counting variable chips by their label length. */
 function lineLength(line: Line): number {
   return line.reduce(
     (sum, segment) => sum + (segment.kind === "text" ? segment.value.length : segment.label.length),
@@ -71,27 +66,21 @@ function lineLength(line: Line): number {
   );
 }
 
-/** Lowercased plain text of a line; variable chips contribute their label so that
- * indices line up with {@link clampLine}'s segment-based slicing. */
-function linePlain(line: Line): string {
+function linePlainText(line: Line): string {
   return line
     .map((segment) => (segment.kind === "text" ? segment.value : segment.label))
     .join("")
     .toLowerCase();
 }
 
-/** Character index to center truncation on: the middle of the first occurrence of
- * `needle` in the line, or null when it is not found. */
 export function indexOfNeedleCenter(line: Line, needle: string): number | null {
   if (!needle) {
     return null;
   }
-  const idx = linePlain(line).indexOf(needle.toLowerCase());
+  const idx = linePlainText(line).indexOf(needle.toLowerCase());
   return idx < 0 ? null : idx + Math.floor(needle.length / 2);
 }
 
-/** Global character offset (counting variable labels) at the centre of the matched
- * span described by `ranges`, used to centre {@link clampLine} on the match. */
 export function rangesCenter(line: Line, ranges: HighlightRange[]): number | null {
   if (ranges.length === 0) {
     return null;
@@ -111,20 +100,13 @@ export function rangesCenter(line: Line, ranges: HighlightRange[]): number | nul
 
 type ClampedLine = { line: Line; ranges: HighlightRange[] };
 
-/** Trim a line to about `maxChars` from the start, keeping variable chips atomic
- * and adding "…" only at the end where text was removed. The window is extended
- * when necessary to fully cover all highlight ranges so matched content is never
- * truncated. `highlight` ranges (in the original line's coordinates) are remapped
- * onto the trimmed output. */
 export function clampLine(
   line: Line,
   _center: number | null,
   maxChars: number,
   highlight: HighlightRange[],
 ): ClampedLine {
-  // Compute the end of the last highlight (in global character offset) so we can
-  // extend the window to cover all matched content.
-  let highlightEnd = 0;
+  let lastHighlightEnd = 0;
   if (highlight.length > 0) {
     let pos = 0;
     for (let i = 0; i < line.length; i++) {
@@ -132,14 +114,14 @@ export function clampLine(
       const segLen = segment.kind === "text" ? segment.value.length : segment.label.length;
       for (const range of highlight) {
         if (range.segmentIndex === i) {
-          highlightEnd = Math.max(highlightEnd, pos + range.end);
+          lastHighlightEnd = Math.max(lastHighlightEnd, pos + range.end);
         }
       }
       pos += segLen;
     }
   }
 
-  const effectiveMax = Math.max(maxChars, highlightEnd);
+  const effectiveMax = Math.max(maxChars, lastHighlightEnd);
   if (lineLength(line) <= effectiveMax) {
     return { line, ranges: highlight };
   }

@@ -6,15 +6,10 @@ import { languageLabel } from "~/search/components/format";
 import { clampLine, HighlightedLine } from "~/search/components/highlight";
 import { type SnippetResult } from "~/search/textSearch";
 
-/** Max characters of a snippet line before it is truncated around the match. */
 const SNIPPET_CHARS = 160;
 
-/** A single content (body) search hit: the matched paragraph with its neighbouring
- * lines, the matched phrase bold-highlighted, linking to the template at the matched
- * occurrence. */
 export function SearchSnippet({ result, title }: { result: SnippetResult; title: string }) {
   const primaryIndex = result.highlightLineIndex;
-  // Show only the matched line plus the line before and after (max three lines).
   const start = primaryIndex === undefined ? 0 : Math.max(0, primaryIndex - 1);
   const end =
     primaryIndex === undefined ? Math.min(result.lines.length, 3) : Math.min(result.lines.length, primaryIndex + 2);

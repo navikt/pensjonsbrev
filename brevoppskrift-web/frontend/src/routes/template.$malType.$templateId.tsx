@@ -48,7 +48,7 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     }
 
     if (!deps.language && !preload) {
-      redirect({
+      throw redirect({
         to: "/template/$malType/$templateId",
         search: { language: defaultLanguage },
         params,
@@ -85,7 +85,6 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
   component: TemplateExplorer,
 });
 
-/** Removes any previous search highlight by unwrapping the inserted <mark>s. */
 function clearSearchHighlights(container: HTMLElement): void {
   for (const mark of container.querySelectorAll("mark.search-target")) {
     const parent = mark.parentNode;
@@ -100,11 +99,7 @@ function clearSearchHighlights(container: HTMLElement): void {
   }
 }
 
-/** True when a text node lives inside a variable/control-structure subtree
- * (`.expression` wrappers or `<code>` labels). Those are excluded from the
- * search index, so the highlighter must skip them to keep occurrence ordinals
- * aligned with the indexed literal text. */
-function isExcludedTextNode(node: Node, container: HTMLElement): boolean {
+function isInsideExpressionOrCodeSubtree(node: Node, container: HTMLElement): boolean {
   let element = node.parentElement;
   while (element && element !== container) {
     if (element.tagName === "CODE" || element.classList.contains("expression")) {
@@ -115,11 +110,7 @@ function isExcludedTextNode(node: Node, container: HTMLElement): boolean {
   return false;
 }
 
-/** Collapses whitespace the same way the search index does (`\s+` → " ", then
- * trim), while keeping a map from each collapsed-string index back to the raw
- * offset in the node. This lets multi-word/whitespace-containing queries match
- * the same way they were indexed, then resolve to a precise DOM range. */
-function collapseWithMap(raw: string): { text: string; map: number[] } {
+function collapseWhitespaceWithOffsetMap(raw: string): { text: string; map: number[] } {
   const chars: string[] = [];
   const map: number[] = [];
   let pendingSpace = false;
@@ -133,7 +124,7 @@ function collapseWithMap(raw: string): { text: string; map: number[] } {
     }
     if (pendingSpace) {
       chars.push(" ");
-      map.push(i); // the space maps to the start of the following word
+      map.push(i);
       pendingSpace = false;
     }
     chars.push(ch);
@@ -144,8 +135,7 @@ function collapseWithMap(raw: string): { text: string; map: number[] } {
 
 type Occurrence = { node: Text; start: number; end: number };
 
-/** Wraps a single-text-node range in a <mark> and scrolls it into view. */
-function markOccurrence(occurrence: Occurrence): void {
+function markAndScrollToOccurrence(occurrence: Occurrence): void {
   const range = document.createRange();
   range.setStart(occurrence.node, occurrence.start);
   range.setEnd(occurrence.node, occurrence.end);
@@ -155,20 +145,15 @@ function markOccurrence(occurrence: Occurrence): void {
   mark.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
-/** Highlights the `ordinal`-th (0-based) occurrence of the query within the
- * indexed literal text, and scrolls it into view. Occurrences are counted in
- * document order over text nodes, skipping variable/control-structure subtrees,
- * with per-node whitespace collapsing so counting matches the index. If the
- * ordinal is out of range we clamp to the last occurrence (deterministic and
- * close), so a click always lands somewhere sensible. */
-function highlightOccurrence(container: HTMLElement, query: string, ordinal: number): void {
+function highlightNthOccurrence(container: HTMLElement, query: string, ordinal: number): void {
   const needle = query.trim().toLowerCase();
   if (!needle) {
     return;
   }
   clearSearchHighlights(container);
   const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
-    acceptNode: (node) => (isExcludedTextNode(node, container) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
+    acceptNode: (node) =>
+      isInsideExpressionOrCodeSubtree(node, container) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
   });
 
   let seen = 0;
@@ -176,7 +161,7 @@ function highlightOccurrence(container: HTMLElement, query: string, ordinal: num
   let node = walker.nextNode() as Text | null;
   while (node) {
     const raw = node.nodeValue ?? "";
-    const { text, map } = collapseWithMap(raw);
+    const { text, map } = collapseWhitespaceWithOffsetMap(raw);
     const haystack = text.toLowerCase();
     let at = haystack.indexOf(needle);
     while (at >= 0) {
@@ -184,7 +169,7 @@ function highlightOccurrence(container: HTMLElement, query: string, ordinal: num
       const end = map[at + needle.length - 1] + 1;
       const occurrence: Occurrence = { node, start, end };
       if (seen === ordinal) {
-        markOccurrence(occurrence);
+        markAndScrollToOccurrence(occurrence);
         return;
       }
       last = occurrence;
@@ -194,9 +179,8 @@ function highlightOccurrence(container: HTMLElement, query: string, ordinal: num
     node = walker.nextNode() as Text | null;
   }
 
-  // Requested ordinal was out of range: clamp to the last occurrence found.
   if (last) {
-    markOccurrence(last);
+    markAndScrollToOccurrence(last);
   }
 }
 
@@ -216,8 +200,7 @@ function TemplateExplorer() {
       clearSearchHighlights(container);
       return;
     }
-    // Wait a frame so the freshly rendered document is laid out before scrolling.
-    const raf = requestAnimationFrame(() => highlightOccurrence(container, q, qi ?? 0));
+    const raf = requestAnimationFrame(() => highlightNthOccurrence(container, q, qi ?? 0));
     return () => cancelAnimationFrame(raf);
   }, [q, qi, documentation]);
 

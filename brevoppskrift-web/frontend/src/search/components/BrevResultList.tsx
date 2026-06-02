@@ -7,8 +7,6 @@ import { languageLabel } from "~/search/components/format";
 import { HighlightedLine } from "~/search/components/highlight";
 import { type SnippetResult } from "~/search/textSearch";
 
-/** Distinct templates whose name/brevkode/title matched the query (one row per
- * template, collapsing the per-language hits), linking to the template. */
 export function BrevResultList({
   results,
   getTitle,

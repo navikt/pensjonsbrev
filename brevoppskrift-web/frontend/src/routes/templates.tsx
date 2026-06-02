@@ -21,7 +21,6 @@ import {
   useTemplateSearch,
 } from "~/search";
 
-/** The human-readable title from metadata, falling back to the technical name/brevkode. */
 function displayTitleOf(
   description: { name: string; metadata?: { displayTitle?: string } | null },
   id: string,
@@ -75,9 +74,7 @@ async function fetchAllDescriptions(queryClient: QueryClient, malType: MalType):
     );
   }
 
-  // The metadata list does not carry the brevkode, but the backend derives both lists from the
-  // same template map in the same order, so they align by index. Fall back to per-template fetches
-  // if that assumption ever fails to break.
+  // Metadata and brevkode lists share the same order; fall back to per-template fetches if misaligned.
   const templates: TemplateWithDescription[] =
     Array.isArray(descriptions) && descriptions.length === ids.length
       ? ids.map((id, index) => ({ id, description: descriptions[index] }))
@@ -107,6 +104,25 @@ function TemplateList({ templates, malType }: { templates: TemplateWithDescripti
         </Link>
       ))}
     </VStack>
+  );
+}
+
+function TabLabelWithCount({ label, count, isSearching }: { label: string; count: number; isSearching: boolean }) {
+  return (
+    <span
+      css={css`
+        display: inline-flex;
+        align-items: center;
+        gap: var(--ax-space-8);
+      `}
+    >
+      {label}
+      {isSearching ? (
+        <Tag data-color="neutral" size="xsmall" variant="moderate">
+          {count}
+        </Tag>
+      ) : null}
+    </span>
   );
 }
 
@@ -147,9 +163,7 @@ function AllTemplates() {
   const [activeTab, setActiveTab] = useState<"innhold" | "brev">("innhold");
   const [page, setPage] = useState(1);
 
-  // Reset pagination on a new search, but never auto-switch the active tab — the
-  // user stays on whichever tab they have selected while typing.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: search.query is the intentional trigger; the effect resets pagination whenever the query changes.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: resets pagination when query changes.
   useEffect(() => {
     setPage(1);
   }, [search.query]);
@@ -227,41 +241,11 @@ function AllTemplates() {
       >
         <Tabs.List>
           <Tabs.Tab
-            label={
-              <span
-                css={css`
-                  display: inline-flex;
-                  align-items: center;
-                  gap: var(--ax-space-8);
-                `}
-              >
-                Innhold
-                {isSearching ? (
-                  <Tag data-color="neutral" size="xsmall" variant="moderate">
-                    {contentTemplateCount}
-                  </Tag>
-                ) : null}
-              </span>
-            }
+            label={<TabLabelWithCount count={contentTemplateCount} isSearching={isSearching} label="Innhold" />}
             value="innhold"
           />
           <Tabs.Tab
-            label={
-              <span
-                css={css`
-                  display: inline-flex;
-                  align-items: center;
-                  gap: var(--ax-space-8);
-                `}
-              >
-                Brev
-                {isSearching ? (
-                  <Tag data-color="neutral" size="xsmall" variant="moderate">
-                    {brevTemplateCount}
-                  </Tag>
-                ) : null}
-              </span>
-            }
+            label={<TabLabelWithCount count={brevTemplateCount} isSearching={isSearching} label="Brev" />}
             value="brev"
           />
         </Tabs.List>

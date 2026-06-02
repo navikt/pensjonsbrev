@@ -2,13 +2,8 @@ import { css } from "@emotion/react";
 import { Detail, HStack, Pagination } from "@navikt/ds-react";
 import { type ReactNode } from "react";
 
-/** Results per page. Sized to roughly fill a normal laptop/desktop screen so a full
- * page needs little or no scrolling, while keeping pagination simple (no viewport
- * measuring). */
 export const PAGE_SIZE = 10;
 
-/** A search results tab: an optional summary line, the results list, and a centered
- * pagination control pinned to the bottom of the panel. */
 export function SearchResultsPanel({
   page,
   pageCount,
