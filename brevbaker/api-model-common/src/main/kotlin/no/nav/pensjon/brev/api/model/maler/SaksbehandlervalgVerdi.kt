@@ -31,6 +31,8 @@ sealed interface SaksbehandlervalgVerdi {
         }
         override fun hashCode() = int.hashCode()
     }
+    // TODO: T er fort eit interface, og det kan vi ikkje enkelt deserialisere til whatever enum
+    // Så må derfor lage noko custom-greier
     class Enum<T : SaksbehandlerValgEnum>(val enum: T?, override val displayText: String) : SaksbehandlervalgVerdi {
         override val type = Type.ENUM
         override fun toString() = "SaksbehandlervalgVerdi.Enum(enum=$enum)"
