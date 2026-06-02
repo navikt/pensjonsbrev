@@ -288,14 +288,14 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((not(instoppholdanvendt) and instoppholdtype.equalTo("reduksjon_hs"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har mottatt opplysninger om at du er innlagt på institusjon. Dette får ikke betydning for uføretrygden din, og du vil få utbetalt det samme som før." },
-                        nynorsk { +"Vi har fått opplysningar om at du er innlagd på institusjon. Dette får ikkje noko å seie for uføretrygda di, og du får utbetalt det same som før." },
+                        bokmal { +"Vi har mottatt opplysninger om at du er innlagt på institusjon." },
+                        nynorsk { +"Vi har fått opplysningar om at du er innlagd på institusjon." },
                     )
 
                     showIf((instoppholdtype.equalTo("reduksjon_hs") and not(instoppholdanvendt) and pe.ut_forsorgeransvar_ingen_er_false() and kravarsak.equalTo("instopphold") and barnetilleggFellesInnvilget and btFellesNetto0)) {
                         text(
                             bokmal { +" Fra og med måneden etter at du ble innlagt på institusjon vil du bli vurdert med sivilstand som enslig. Det betyr at barnetillegget kun vil bli beregnet ut fra den samlede inntekten din fra samme tidspunkt." },
-                            nynorsk { +" Frå og med månaden etter at du blei innlagd på institusjon vil du bli vurdert med ein sivilstand som einsleg. Det betyr at barnetillegget berre blir berekna ut frå den samla inntekta di frå same tidspunkt. " },
+                            nynorsk { +" Frå og med månaden etter at du blei innlagd på institusjon vil du bli vurdert med ein sivilstand som einsleg. Det betyr at barnetillegget berre blir berekna ut frå den samla inntekta di frå same tidspunkt." },
                         )
                     }
                 }
@@ -304,8 +304,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((kravarsak.equalTo("instopphold") and not(instoppholdanvendt) and instoppholdtype.equalTo("reduksjon_fo"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har mottatt opplysninger om at du er under straffegjennomføring. Dette får ikke betydning for uføretrygden din, og du vil få utbetalt det samme som før." },
-                        nynorsk { +"Vi har fått opplysningar om at du er under straffegjennomføring. Dette får ikkje noko å seie for uføretrygda di, og du får utbetalt det same som før." },
+                        bokmal { +"Vi har mottatt opplysninger om at du er under straffegjennomføring."  },
+                        nynorsk { +"Vi har fått opplysningar om at du er under straffegjennomføring."  },
                     )
                     //TODO masse forenklinger i uttrykk i instopphold, som feks showif under vs showif over
                     showIf((instoppholdtype.equalTo("reduksjon_fo") and not(instoppholdanvendt) and pe.ut_forsorgeransvar_ingen_er_false() and kravarsak.equalTo("instopphold") and barnetilleggInnvilget)) {
