@@ -49,11 +49,15 @@ class AttesterBrevHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
-    suspend fun `kan ikke attestere brev som ikke er klar`() {
+    suspend fun `kan attestere brev som ikke er klar ved aa markere det som klar automatisk`() {
         val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = VedtaksId(1234)).resultOrFail()
 
         val resultat = attester(brev, attestant = attestant1Principal)
-        assertThat(resultat).isFailure<AttesterBrevPolicy.KanIkkeAttestere.IkkeKlarTilAttestering, _, _>()
+        assertThat(resultat).isSuccess {
+            assertThat(it.info.status).isEqualTo(Dto.BrevStatus.KLAR)
+            assertThat(it.info.attestertAv).isEqualTo(attestant1Principal.navIdent)
+            assertThat(it.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
+        }
     }
 
     @Test
