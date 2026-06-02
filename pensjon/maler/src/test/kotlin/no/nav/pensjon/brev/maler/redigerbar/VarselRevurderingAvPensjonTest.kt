@@ -6,6 +6,8 @@ import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.template.Language
@@ -17,9 +19,7 @@ import org.junit.jupiter.api.Test
 class VarselRevurderingAvPensjonTest {
 
     private val data = VarselRevurderingAvPensjonDto(
-        saksbehandlerValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg(
-            tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett
-        ),
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = VarselRevurderingAvPensjonDto.PesysData(sakstype = Sakstype.FAM_PL)
         )
 
@@ -27,7 +27,7 @@ class VarselRevurderingAvPensjonTest {
     fun `med revurdering av rett`() {
         writeAllLanguages(
             "revurdering av rett",
-            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett))
+            data.copy(saksbehandlerValg = data.saksbehandlerValg)
         )
     }
 
@@ -35,7 +35,11 @@ class VarselRevurderingAvPensjonTest {
     fun `med revurdering av reduksjon`() {
         writeAllLanguages(
             "revurdering reduksjon",
-            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon))
+            data.copy(saksbehandlerValg = lagSaksbehandlervalg(
+                SaksbehandlervalgVerdi.Enum(
+                VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon,
+                "tittelValg",
+                VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg::class.java)))
         )
     }
 
@@ -60,4 +64,18 @@ class VarselRevurderingAvPensjonTest {
         ).renderTestHtml(VarselRevurderingAvPensjon.kode.name)
     }
 
+}
+
+
+
+private fun lagSaksbehandlervalg(defaultverdi: SaksbehandlervalgVerdi = SaksbehandlervalgVerdi.Enum(
+    VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett,
+    "Tittelvalg",
+    VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg::class.java,
+)): SaksbehandlervalgIDSL = object : SaksbehandlervalgIDSL {
+    override val verdier: Map<String, SaksbehandlervalgVerdi> = emptyMap()
+
+    override fun <T : SaksbehandlervalgVerdi> get(key: String): T {
+        return defaultverdi as T
+    }
 }

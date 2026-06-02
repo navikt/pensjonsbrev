@@ -46,7 +46,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                         type = when (it.value.type) {
                             SaksbehandlervalgVerdi.Type.BOOL -> Boolean::class
                             SaksbehandlervalgVerdi.Type.INTEGER -> Int::class
-                            SaksbehandlervalgVerdi.Type.ENUM -> Enum::class
+                            SaksbehandlervalgVerdi.Type.ENUM -> (it.value as SaksbehandlervalgVerdi.Enum).clazz.kotlin
                             SaksbehandlervalgVerdi.Type.TEXT -> String::class
                         }.createType(),
                         annotations = listOf(),
