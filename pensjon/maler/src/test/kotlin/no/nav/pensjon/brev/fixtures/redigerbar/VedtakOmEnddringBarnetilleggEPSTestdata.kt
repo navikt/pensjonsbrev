@@ -23,6 +23,6 @@ fun createVedtakOmEndringBarnetilleggEPSAutoDto() =
             utbetalingBarnetilleggResten = Kroner(6000),
             pe = Fixtures.create(),
             maanedligUfoeretrygdFoerSkatt = Fixtures.createVedlegg(),
-            orienteringOmRettigheterUfoere = Fixtures.createVedlegg(),
+            dineRettigheterOgPlikterUfore = Fixtures.createVedlegg(),
         )
     )

@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSAutoDtoSelectors.vedtakData
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.arligUtbetalingBarnetilleggFB
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.dineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.fribelop
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.gInntil
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.samletInntektsgrenseBarnetillegg
@@ -13,7 +14,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPS
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nettoBarnetilleggFB
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nettoUforetrygdUtenTillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nyttBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.samletInntekt
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.totalbelop
@@ -21,7 +21,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPS
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.utbetaltBarnetilleggHittilIAr
 import no.nav.pensjon.brev.maler.fraser.EndringBTEPSVedMinsteIFUReduksjonsprosent
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
@@ -77,6 +77,6 @@ object VedtakOmEndringBarnetilleggEPSAuto : AutobrevTemplate<VedtakOmEndringBarn
         }
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, data.maanedligUfoeretrygdFoerSkatt)
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, data.pe, data.pe.inkluderopplysningerbruktiberegningen())
-        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, data.orienteringOmRettigheterUfoere)
+        includeAttachment(vedleggDineRettigheterOgPlikterUfore, data.dineRettigheterOgPlikterUfore)
     }
 }
