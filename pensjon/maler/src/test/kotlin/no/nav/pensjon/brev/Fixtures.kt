@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdD
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto
 import no.nav.pensjon.brev.api.model.maler.legacy.OversiktOverPensjonensStoerrelseGjenlevendepensjonDto
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
@@ -28,6 +29,7 @@ import no.nav.pensjon.brev.fixtures.alder.createEndringAvUttaksgradAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createEndringPgaOpptjeningAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createInnvilgelseAvAlderspensjonAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmEtterbetalingOpphor2026AutoDto
 import no.nav.pensjon.brev.fixtures.legacy.createOpplysningerOmBeregningGPUtlandDto
 import no.nav.pensjon.brev.fixtures.legacy.createOversiktOverPensjonensStoerrelseGjenlevendepensjonDto
 import no.nav.pensjon.brev.fixtures.redigerbar.*
@@ -127,6 +129,11 @@ object Fixtures : LetterDataFactory {
             VedtakOmLavereMinstesatsAutoDto::class -> createVedtakOmLavereMinstesatsAutoDto() as T
             VedtakOmIFUReduksjonsprosentRedigerbarDto::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
             VedtakOmLavereMinstesatsRedigerbarDto::class -> createVedtakOmLavereMinstesatsRedigerbarDto() as T
+            InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto::class -> createInnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto() as T
+            HvilendeRettUforetrygdDto::class -> createHvilendeRettUforetrygdDto() as T
+            AvslagUfoerepensjonDto::class -> createAvslagUfoerepensjonDto() as T
+            VedtakOmEtterbetalingOpphor2026AutoDto::class -> createVedtakOmEtterbetalingOpphor2026AutoDto() as T
+            VedtakOmEtterbetalingOpphor2026RedigerbarDto::class -> createVedtakOmEtterbetalingOpphor2026RedigerbarDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

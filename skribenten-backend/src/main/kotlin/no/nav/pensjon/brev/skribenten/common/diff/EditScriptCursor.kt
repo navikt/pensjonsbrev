@@ -9,6 +9,13 @@ class EditScriptCursor<T : Any>(private val tokens: List<T>, edits: List<EditOpe
     val hasNext: Boolean get() = currentIndex < tokens.size
 
     fun peek(): T? = tokens.getOrNull(currentIndex)
+    fun peekEdit(): EditOperation<T>? = edits[currentIndex]
+
+    inline fun <reified E : T> peekBoth(): Pair<E, EditOperation<E>?>? {
+        val token = peek() as? E ?: return null
+        @Suppress("UNCHECKED_CAST")
+        return Pair(token, peekEdit() as EditOperation<E>?)
+    }
 
     fun consume(): Pair<T, EditOperation<T>?> = Pair(tokens[currentIndex], edits[currentIndex++]).also {
         require(it.second == null || it.second?.value == it.first) {
@@ -29,22 +36,4 @@ class EditScriptCursor<T : Any>(private val tokens: List<T>, edits: List<EditOpe
         return Pair(token as E, edit as EditOperation<E>?)
     }
 
-    inline fun <reified E : T, R> fold(initial: R, action: (R, E, EditOperation<E>?) -> R): R {
-        var accumulator = initial
-        while (true) {
-            val (token, edit) = consumeIf<E>() ?: break
-            accumulator = action(accumulator, token, edit)
-        }
-        return accumulator
-    }
-
-    inline fun <reified E : T, R> flatMapIndexed(action: (Int, E, EditOperation<E>?) -> List<R>): List<R> {
-        val result = mutableListOf<R>()
-        var index = 0
-        while (true) {
-            val (token, edit) = consumeIf<E>() ?: break
-            result.addAll(action(index++, token, edit))
-        }
-        return result
-    }
 }

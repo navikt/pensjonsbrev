@@ -18,6 +18,9 @@ import no.nav.pensjon.brev.maler.alder.InnvilgelseAvAlderspensjonAuto
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
+import no.nav.pensjon.brev.maler.legacy.VedtakOmEtterbetalingOpphor2026Auto
+import no.nav.pensjon.brev.maler.legacy.VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto
+import no.nav.pensjon.brev.maler.legacy.VedtakOmEtterbetalingOpphor2026OktIfuAuto
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereMinstesatsAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereReduksjonsprosentAuto
@@ -29,6 +32,7 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoerepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.DelvisEksportAvUforetrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.EndringUforetrygd
+import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026Redigerbar
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygdBosattNorgeEtterUtland
@@ -108,6 +112,9 @@ object ProductionTemplates : AllTemplates {
         EndretUforetrygdPGAOpptjeningLegacy,
         EndringPgaOpptjeningAuto,
         EndringAvUttaksgradAuto,
+        VedtakOmEtterbetalingOpphor2026Auto,
+        VedtakOmEtterbetalingOpphor2026OktIfuAuto,
+        VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto,
         EtteroppgjoerEtterbetalingAutoLegacy,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
         InnvilgelseAvAlderspensjonAuto,
@@ -142,6 +149,7 @@ object ProductionTemplates : AllTemplates {
         BrukerTestBrev,
         DelvisEksportAvUforetrygd,
         EndringUforetrygd,
+        VedtakOmEtterbetalingOpphor2026Redigerbar,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
         InformasjonOmGjenlevenderettigheter,

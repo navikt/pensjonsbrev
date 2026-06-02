@@ -3,8 +3,8 @@ package no.nav.pensjon.brev.planleggepensjon.simulering.tabeller
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.delingstall
+import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.garantipensjonBeloep
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.garantipensjonsnivaaBeloep
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.garantitilleggBeloep
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.kapittel20AndelTeller
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.kapittel20Trygdetid
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.pensjonsbeholdningEtterUttakBeloep
@@ -48,9 +48,9 @@ data class OpptjeningKapittel20Tabell(
                         cell { text(bokmal { +it.format() }) }
                     }
                 }
-                ifNotNull(alderspensjon.garantitilleggBeloep) {
+                ifNotNull(alderspensjon.garantipensjonBeloep) {
                     row {
-                        cell { text(bokmal { +"Garantitillegg" }) }
+                        cell { text(bokmal { +"Garantipensjon" }) }
                         cell { text(bokmal { +it.format() }) }
                     }
                 }

@@ -14,14 +14,14 @@
   "author": "Nav",
   "license": "MIT",
   "dependencies": {
-    "@navikt/vite-mode": "0.13.7",
+    "@navikt/vite-mode": "0.16.1",
     "express": "5.2.1",
-    "http-proxy-middleware": "3.0.5"
+    "http-proxy-middleware": "4.0.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.13",
+    "@biomejs/biome": "2.4.15",
     "@types/express": "5.0.6",
-    "lint-staged": "16.4.0",
+    "lint-staged": "17.0.5",
     "typescript": "6.0.3"
   }
 }
