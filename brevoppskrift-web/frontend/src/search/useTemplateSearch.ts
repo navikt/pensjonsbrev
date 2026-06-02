@@ -3,7 +3,13 @@ import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
 
 import { templateDocumentationKeys } from "~/api/brevbaker-api-endpoints";
 import { invalidateTemplateCache } from "~/api/templateCache";
-import { buildContentIndex, type ContentIndex, type SnippetResult, searchContent } from "~/search/textSearch";
+import {
+  buildContentIndex,
+  type ContentIndex,
+  type SnippetResult,
+  searchContent,
+  type TextIndexEntry,
+} from "~/search/textSearch";
 import { type IndexableTemplate, useTextCorpus } from "~/search/useTextCorpus";
 
 export const MIN_QUERY_LENGTH = 2;
@@ -34,6 +40,27 @@ export type TemplateSearch = {
   refresh: () => void;
 };
 
+let cachedIndex: ContentIndex | null = null;
+let cachedIndexFingerprint = "";
+
+function entriesFingerprint(entries: TextIndexEntry[]): string {
+  return entries.map((e) => `${e.malType}/${e.id}/${e.language}/${e.lines.length}`).join(",");
+}
+
+function getOrBuildIndex(entries: TextIndexEntry[]): ContentIndex | null {
+  if (entries.length === 0) return null;
+  const fingerprint = entriesFingerprint(entries);
+  if (fingerprint === cachedIndexFingerprint && cachedIndex) return cachedIndex;
+  cachedIndex = buildContentIndex(entries);
+  cachedIndexFingerprint = fingerprint;
+  return cachedIndex;
+}
+
+export function clearIndexCache(): void {
+  cachedIndex = null;
+  cachedIndexFingerprint = "";
+}
+
 export function useTemplateSearch(templates: IndexableTemplate[]): TemplateSearch {
   const queryClient = useQueryClient();
   const { entries, isLoading, failed } = useTextCorpus(templates);
@@ -52,9 +79,17 @@ export function useTemplateSearch(templates: IndexableTemplate[]): TemplateSearc
       setIndexStatus("idle");
       return;
     }
+
+    const fingerprint = entriesFingerprint(entries);
+    if (fingerprint === cachedIndexFingerprint && cachedIndex) {
+      indexRef.current = cachedIndex;
+      setIndexStatus("ready");
+      return;
+    }
+
     setIndexStatus("indexing");
     const handle = requestAnimationFrame(() => {
-      indexRef.current = buildContentIndex(entries);
+      indexRef.current = getOrBuildIndex(entries);
       setIndexStatus("ready");
     });
     return () => cancelAnimationFrame(handle);
@@ -81,6 +116,7 @@ export function useTemplateSearch(templates: IndexableTemplate[]): TemplateSearc
   const languageTotal = useMemo(() => new Set(templates.map((t) => t.language)).size, [templates]);
 
   const refresh = () => {
+    clearIndexCache();
     invalidateTemplateCache();
     queryClient.invalidateQueries({ queryKey: templateDocumentationKeys.all });
   };

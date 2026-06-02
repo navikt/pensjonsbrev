@@ -35,7 +35,11 @@ declare module "@tanstack/react-router" {
   }
 }
 
-ReactDOM.createRoot(document.querySelector("#root") as HTMLElement).render(
+const container = document.querySelector("#root") as HTMLElement;
+const root = (container as unknown as { _root?: ReactDOM.Root })._root ?? ReactDOM.createRoot(container);
+(container as unknown as { _root?: ReactDOM.Root })._root = root;
+
+root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools buttonPosition="bottom-left" initialIsOpen={false} />
