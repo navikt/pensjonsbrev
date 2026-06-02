@@ -45,7 +45,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
-        val tittelValg = saksbehandlervalg("revurderingAv", "Revurdering av").enum<TittelValg>(null)
+        val tittelValg = saksbehandlervalg("tittelValg", "Revurdering av").enum<TittelValg>(null)
         val sakstype = pesysData.sakstype
         val sakstypeText = sakstype.format().ifNull(fritekst("ytelse"))
         title {
