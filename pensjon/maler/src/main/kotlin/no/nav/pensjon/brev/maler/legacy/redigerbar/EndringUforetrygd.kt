@@ -129,9 +129,11 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             }
         }
         outline {
-            showIf(gjenlevendetilleggInnvilget.not() and
+            showIf(
+                gjenlevendetilleggInnvilget.not() and
                         pe.vedtaksdata_kravhode_kravgjelder().isNotAnyOf("sok_uu", "sok_ys") and
-                        kravarsak.isNotAnyOf("endring_ifu", "endret_inntekt", "barn_endret_inntekt", "eps_endret_inntekt", "begge_for_end_inn", "soknad_bt", "instopphold", "omgj_etter_klage", "omgj_etter_anke")) {
+                        kravarsak.isNotAnyOf("endring_ifu", "endret_inntekt", "barn_endret_inntekt", "eps_endret_inntekt", "begge_for_end_inn", "soknad_bt", "instopphold", "omgj_etter_klage", "omgj_etter_anke")
+            ) {
                 paragraph {
                     text(
                         bokmal { +"Vi har endret uføretrygden din fra " + onsketvirkningsdato.format() + "." },
@@ -140,7 +142,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((pesysData.nyeInnvilgedeBarnetillegg.isNotEmpty())){
+            showIf((pesysData.nyeInnvilgedeBarnetillegg.isNotEmpty())) {
                 paragraph {
                     showIf(kravarsak.equalTo("soknad_bt")) {
                         text(
@@ -155,14 +157,14 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     }
                     includePhrase(Felles.TextOrList(pesysData.nyeInnvilgedeBarnetillegg.map(BarnetilleggFormatter), 0))
 
-                    showIf(barnetilleggFellesInnvilget and btFellesNetto0 and (not(barnetilleggSerkullInnvilget) or btSerkullNetto0)){
+                    showIf(barnetilleggFellesInnvilget and btFellesNetto0 and (not(barnetilleggSerkullInnvilget) or btSerkullNetto0)) {
                         text(
                             bokmal { +" Tillegget blir ikke utbetalt fordi inntekten til deg og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " er over grensen for å få utbetalt barnetillegg." },
                             nynorsk { +" Tillegget blir ikkje utbetalt, fordi inntekta til deg og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din er over grensa for å få utbetalt barnetillegg." },
                         )
                     }
 
-                    showIf((barnetilleggSerkullInnvilget and btSerkullNetto0 and not(barnetilleggFellesInnvilget))){
+                    showIf((barnetilleggSerkullInnvilget and btSerkullNetto0 and not(barnetilleggFellesInnvilget))) {
                         text(
                             bokmal { +" Tillegget blir ikke utbetalt fordi inntekten din er over grensen for å få utbetalt barnetillegg." },
                             nynorsk { +"Tillegget blir ikkje utbetalt fordi inntekta di er over grensa for å få utbetalt barnetillegg." }
@@ -203,7 +205,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 paragraph {
                     text(
                         bokmal { +"Vi har vedtatt at barnetillegget i uføretrygden din opphører for" },
-                        nynorsk { +"Vi har stansa barnetillegget i uføretrygda di for"},
+                        nynorsk { +"Vi har stansa barnetillegget i uføretrygda di for" },
                     )
                     includePhrase(Felles.TextOrList(pesysData.nyeOpphorteBarnetillegg.map(BarnetilleggOpphorFormatter), 0))
                 }
@@ -304,8 +306,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((kravarsak.equalTo("instopphold") and not(instoppholdanvendt) and instoppholdtype.equalTo("reduksjon_fo"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har mottatt opplysninger om at du er under straffegjennomføring."  },
-                        nynorsk { +"Vi har fått opplysningar om at du er under straffegjennomføring."  },
+                        bokmal { +"Vi har mottatt opplysninger om at du er under straffegjennomføring." },
+                        nynorsk { +"Vi har fått opplysningar om at du er under straffegjennomføring." },
                     )
                     //TODO masse forenklinger i uttrykk i instopphold, som feks showif under vs showif over
                     showIf((instoppholdtype.equalTo("reduksjon_fo") and not(instoppholdanvendt) and pe.ut_forsorgeransvar_ingen_er_false() and kravarsak.equalTo("instopphold") and barnetilleggInnvilget)) {
@@ -520,7 +522,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
                     //har gått fra minsteytelse til egenopptjent(beløpet ville ikke vært redusert hvis det tidligere var egenopptjent)
                     //dekker resten av mulige caser
-                    .orShowIf( pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().isOneOf("bormed 1-5", "bormed 3-2", "bormed ektefelle", "bormed registrert partner")) {
+                    .orShowIf(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().isOneOf("bormed 1-5", "bormed 3-2", "bormed ektefelle", "bormed registrert partner")) {
                         paragraph {
                             text(
                                 bokmal { +"Vi har mottatt opplysninger om at du " + fritekst("sivilstandsendring") + ". Du har minsteytelse i uføretrygden din. Den endrede sivilstanden din medfører nå at du får uføretrygd på grunnlag av egen opptjening." },
@@ -1045,13 +1047,13 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             paragraph {
                 showIf(kravarsak.notEqualTo("endring_ifu")) {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven " + pesysData.hjemler.format(HjemmelFormatter(true)) +"."},
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova " + pesysData.hjemler.format(HjemmelFormatter(true)) +"."},
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven " + pesysData.hjemler.format(HjemmelFormatter(true)) + "." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova " + pesysData.hjemler.format(HjemmelFormatter(true)) + "." },
                     )
                 }.orShow {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven " + pesysData.hjemler.format(HjemmelFormatter(false)) +" og forskrift om uføretrygd fra folketrygden § 2-3."},
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova " + pesysData.hjemler.format(HjemmelFormatter(false)) +" og forskrift om uføretrygd frå folketrygda § 2-3."},
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven " + pesysData.hjemler.format(HjemmelFormatter(false)) + " og forskrift om uføretrygd fra folketrygden § 2-3." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova " + pesysData.hjemler.format(HjemmelFormatter(false)) + " og forskrift om uføretrygd frå folketrygda § 2-3." },
                     )
                 }
             }
