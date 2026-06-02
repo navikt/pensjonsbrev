@@ -68,6 +68,7 @@ export type BrevType = "VEDTAKSBREV" | "INFORMASJONSBREV";
 
 export type BrevInfo = {
   id: number;
+  erAttestant: boolean;
   opprettetAv: NavAnsatt;
   opprettet: string;
   sistredigertAv: NavAnsatt;

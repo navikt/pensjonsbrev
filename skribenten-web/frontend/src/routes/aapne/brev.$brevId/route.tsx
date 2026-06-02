@@ -45,7 +45,38 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
     const isOriginalCreator = currentUser.navident === brevInfo.opprettetAv.id;
 
     switch (brevInfo.status.type) {
-      case "Kladd":
+      case "Kladd": {
+        if (!isOriginalCreator && brevInfo.erAttestant) {
+          trackEvent("pesys omdirigering", {
+            brevStatus: brevInfo.status.type,
+            destinasjon: "attestering",
+            erForfatter: false,
+            rolle: "attestant",
+            enhetsId: brevInfo.avsenderEnhet.enhetNr,
+            brevkode: brevInfo.brevkode,
+          });
+          throw redirect({
+            to: "/saksnummer/$saksId/attester/$brevId/redigering",
+            params: {
+              saksId: String(brevInfo.saksId),
+              brevId: String(brevIdNum),
+            },
+          });
+        }
+
+        trackEvent("pesys omdirigering", {
+          brevStatus: brevInfo.status.type,
+          destinasjon: "brev-redigering",
+          erForfatter: isOriginalCreator,
+          enhetsId: brevInfo.avsenderEnhet.enhetNr,
+          brevkode: brevInfo.brevkode,
+        });
+        throw redirect({
+          to: "/saksnummer/$saksId/brev/$brevId",
+          params: { saksId: String(brevInfo.saksId), brevId: brevIdNum },
+        });
+      }
+
       case "UnderRedigering":
         trackEvent("pesys omdirigering", {
           brevStatus: brevInfo.status.type,
