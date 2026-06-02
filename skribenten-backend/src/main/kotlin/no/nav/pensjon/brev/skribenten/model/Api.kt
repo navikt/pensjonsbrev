@@ -99,8 +99,8 @@ object Api {
         JsonSubTypes.Type(OverstyrtMottaker.NorskAdresse::class, name = "NorskAdresse"),
         JsonSubTypes.Type(OverstyrtMottaker.UtenlandskAdresse::class, name = "UtenlandskAdresse"),
     )
-    sealed class OverstyrtMottaker {
-        data class Samhandler(val tssId: String, val navn: String?) : OverstyrtMottaker()
+    sealed interface OverstyrtMottaker {
+        data class Samhandler(val tssId: String, val navn: String?) : OverstyrtMottaker
         data class NorskAdresse(
             val navn: String,
             val postnummer: NorskPostnummer,
@@ -109,7 +109,7 @@ object Api {
             val adresselinje2: String?,
             val adresselinje3: String?,
             val manueltAdressertTil: ManueltAdressertTil?,
-            ) : OverstyrtMottaker()
+        ) : OverstyrtMottaker
 
         // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
         data class UtenlandskAdresse(
@@ -119,7 +119,7 @@ object Api {
             val adresselinje3: String?,
             val landkode: Landkode,
             val manueltAdressertTil: ManueltAdressertTil?
-            ) : OverstyrtMottaker()
+        ) : OverstyrtMottaker
     }
 
     data class BrevResponse(

@@ -1,10 +1,14 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.typesafe.config.Config
+import io.ktor.http.*
+import io.ktor.openapi.*
+import io.ktor.openapi.reflect.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.routing.*
+import io.ktor.server.routing.openapi.*
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceHttp
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
@@ -62,7 +66,24 @@ fun Application.configureRouting(
 
     routing {
         healthRoute()
+
         swaggerUI("/swagger", "openapi/external-api.yaml")
+        swaggerUI("/swagger-internal") {
+            info = OpenApiInfo("Skribenten Internal API", "1.0")
+            source = OpenApiDocSource.Routing(
+                contentType = ContentType.Application.Json,
+                schemaInference = ReflectionJsonSchemaInference.Default,
+                routes = {
+                    val excludedRoutePrefixes = listOf("/external/", "/swagger", "/isAlive", "/isReady")
+                    routingRoot.descendants()
+                        .filter { route ->
+                            val path = route.path()
+                            excludedRoutePrefixes.none { path.startsWith(it) }
+                        }
+                },
+            )
+            remotePath = "documentation.json"
+        }
 
         authenticate(authConfig.name) {
             install(PrincipalInContext)

@@ -5,6 +5,14 @@ val javaTarget: String by System.getProperties()
 plugins {
     application
     kotlin("jvm")
+    id("io.ktor.plugin") version "3.5.0"
+}
+
+ktor {
+    openApi {
+        enabled = true
+        codeInferenceEnabled = true
+    }
 }
 
 group = "no.nav.pensjon.brev.skribenten"
@@ -64,6 +72,7 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.swagger)
+    implementation(libs.bundles.ktor.openapi)
 
     // Exposed
     implementation(libs.exposed.core)

@@ -1,7 +1,7 @@
 [versions]
 kotlinVersion = "2.3.21"
 kotlinKspVersion = "2.3.8"
-ktorVersion = "3.4.3"
+ktorVersion = "3.5.0"
 assertJVersion = "3.27.7"
 binaryCompatibilityValidatorVersion = "0.18.1"
 classGraphVersion = "4.8.184"
@@ -58,6 +58,7 @@ ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorVer
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorVersion" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorVersion" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktorVersion" }
+ktor-openapi-schema-reflect = { module = "io.ktor:ktor-openapi-schema-reflect", version.ref = "ktorVersion" }
 ktor-serialization-jackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktorVersion" }
 ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktorVersion" }
 ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktorVersion" }
@@ -70,6 +71,7 @@ ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktorVer
 ktor-server-metrics = { module = "io.ktor:ktor-server-metrics", version.ref = "ktorVersion" }
 ktor-server-metrics-micrometer = { module = "io.ktor:ktor-server-metrics-micrometer", version.ref = "ktorVersion" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktorVersion" }
+ktor-server-routing-openapi = { module = "io.ktor:ktor-server-routing-openapi", version.ref = "ktorVersion" }
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktorVersion" }
 ktor-server-swagger = { module = "io.ktor:ktor-server-swagger", version.ref = "ktorVersion" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktorVersion" }
@@ -96,3 +98,4 @@ testcontainers-core = { module = "org.testcontainers:testcontainers", version.re
 junit = ["junit-jupiter", "junit-platform-launcher", "assertJ"]
 logging = ["logback-classic", "logback-encoder"]
 metrics = ["micrometer-prometheus", "ktor-server-metrics", "ktor-server-metrics-micrometer"]
+ktor-openapi = ["ktor-server-routing-openapi", "ktor-openapi-schema-reflect"]
