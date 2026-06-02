@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 
@@ -24,6 +25,7 @@ object BrevbakerBrevdataModule : SimpleModule() {
         addDeserializer(RedigerbarBrevdata::class.java, RedigerbarBrevdataDeserializer)
         addDeserializer(SaksbehandlervalgIDSL::class.java, SaksbehandlervalgIDSLDeserializer)
         addDeserializer(SaksbehandlervalgVerdi::class.java, SaksbehandlervalgDeserializer)
+        addDeserializer(SaksbehandlervalgVerdi.Enum::class.java, SaksbehandlervalgEnumDeserializer)
     }
 
     private object BrevdataDeserializer : JsonDeserializer<BrevbakerBrevdata>() {
@@ -55,6 +57,21 @@ object BrevbakerBrevdataModule : SimpleModule() {
                 return p.codec.treeToValue(node, type)
             }
         }
+
+    private object SaksbehandlervalgEnumDeserializer : JsonDeserializer<SaksbehandlervalgVerdi.Enum>() {
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgVerdi.Enum {
+            val node = p.codec.readTree<JsonNode>(p)
+            val clazz = Class.forName(node.get("clazz").textValue()!!)
+            val textValue = node.get("enum").textValue()!!
+            val enumerated: SaksbehandlerValgEnum? = java.lang.Enum.valueOf(clazz as Class<out Enum<*>?>, textValue) as SaksbehandlerValgEnum?
+            return SaksbehandlervalgVerdi.Enum(
+                enum = enumerated,
+                displayText = node.get("displayText").textValue()!!,
+                clazz = clazz,
+            )
+        }
+
+    }
 }
 
 class SaksbehandlervalgIDSLImpl(override val verdier: Map<String, SaksbehandlervalgVerdi>) : SaksbehandlervalgIDSL {

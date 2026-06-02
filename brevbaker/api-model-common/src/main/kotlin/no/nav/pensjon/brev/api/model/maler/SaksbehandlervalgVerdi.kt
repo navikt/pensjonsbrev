@@ -7,7 +7,7 @@ sealed interface SaksbehandlervalgVerdi {
     fun unwrap(): Any? = when (this) {
         is Bool -> bool
         is Integer -> int
-        is Enum<*> -> enum
+        is Enum -> enum
         is Text -> text
     }
     val type: Type
@@ -33,14 +33,19 @@ sealed interface SaksbehandlervalgVerdi {
     }
     // TODO: T er fort eit interface, og det kan vi ikkje enkelt deserialisere til whatever enum
     // Så må derfor lage noko custom-greier
-    class Enum<T : SaksbehandlerValgEnum>(val enum: T?, override val displayText: String) : SaksbehandlervalgVerdi {
+    class Enum(val enum: SaksbehandlerValgEnum?, override val displayText: String, val clazz: Class<*>) : SaksbehandlervalgVerdi {
         override val type = Type.ENUM
         override fun toString() = "SaksbehandlervalgVerdi.Enum(enum=$enum)"
         override fun equals(other: Any?): Boolean {
-            if (other !is Enum<*>) return false
+            if (other !is Enum) return false
             return enum == other.enum
         }
         override fun hashCode() = enum.hashCode()
+        fun <V : kotlin.Enum<V>> kopier(enumverdi: kotlin.Enum<V>?) = Enum(
+            enum = enumverdi as SaksbehandlerValgEnum?,
+            displayText = displayText,
+            clazz = clazz
+        )
     }
     class Text(val text: String?, override val displayText: String) : SaksbehandlervalgVerdi {
         override val type = Type.TEXT

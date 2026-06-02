@@ -22,7 +22,7 @@ class SaksbehandlervalgWrapper<LetterData : RedigerbarBrevdata<Saksbehandlervalg
 
     inline fun <reified T : SaksbehandlerValgEnum> enum(default: T? = null): Expression<T?> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
         .enum<T?>()
-        .also { scope.saksbehandlervalg[id] = SaksbehandlervalgVerdi.Enum(default, displayText) }
+        .also { scope.saksbehandlervalg[id] = SaksbehandlervalgVerdi.Enum(default, displayText, T::class.java) }
 }
 fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg(id: String, displayText: String) = SaksbehandlervalgWrapper(id, displayText, this)
 

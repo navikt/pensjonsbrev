@@ -305,12 +305,14 @@ public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$De
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Enum : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
-	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum;Ljava/lang/String;)V
+	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum;Ljava/lang/String;Ljava/lang/Class;)V
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClazz ()Ljava/lang/Class;
 	public fun getDisplayText ()Ljava/lang/String;
 	public final fun getEnum ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum;
 	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
 	public fun hashCode ()I
+	public final fun kopier (Ljava/lang/Enum;)Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Enum;
 	public fun toString ()Ljava/lang/String;
 	public fun unwrap ()Ljava/lang/Object;
 }

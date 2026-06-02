@@ -86,9 +86,17 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         if (letterData is Map<*, *> && letterData.containsKey("saksbehandlerValg")) {
             (letterData["saksbehandlerValg"] as Map<String, Any?>).entries.forEach { nye ->
                 when (template.saksbehandlervalg[nye.key]) {
-                    is SaksbehandlervalgVerdi.Bool -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Bool(nye.value as Boolean, nye.key)
-                    is SaksbehandlervalgVerdi.Enum<*> -> TODO()
-                    is SaksbehandlervalgVerdi.Integer -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Integer((nye.value as String).toInt(), nye.key)
+                    is SaksbehandlervalgVerdi.Bool -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Bool(nye.value as? Boolean ?: false, nye.key)
+                    is SaksbehandlervalgVerdi.Enum -> {
+                        val eksisterendeVerdi: SaksbehandlervalgVerdi.Enum? = template.saksbehandlervalg[nye.key] as SaksbehandlervalgVerdi.Enum?
+                        val enumverdi = eksisterendeVerdi?.let {
+                            val clz = eksisterendeVerdi.clazz
+                            java.lang.Enum.valueOf(clz as Class<out Enum<*>?>, nye.value as String)
+                        }
+                        val kopi = eksisterendeVerdi?.kopier(enumverdi)
+                        saksbehandlervalg[nye.key] = kopi!!
+                    }
+                    is SaksbehandlervalgVerdi.Integer -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Integer((nye.value as? String)?.toInt(), nye.key)
                     is SaksbehandlervalgVerdi.Text -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Text(nye.value as String, nye.key)
                     null -> // Dette kan skje hvis malen kombinerer ny og gammel løsning
                         when (nye.value) {
