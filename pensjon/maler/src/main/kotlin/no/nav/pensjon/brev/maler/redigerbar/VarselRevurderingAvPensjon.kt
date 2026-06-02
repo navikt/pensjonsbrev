@@ -45,11 +45,11 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
-        val revurdering = saksbehandlervalg("revurderingAv", "Revurdering av").enum<TittelValg>(null)
+        val tittelValg = saksbehandlervalg("revurderingAv", "Revurdering av").enum<TittelValg>(null)
         val sakstype = pesysData.sakstype
         val sakstypeText = sakstype.format().ifNull(fritekst("ytelse"))
         title {
-            ifNotNull(revurdering) { t ->
+            ifNotNull(tittelValg) { t ->
                 showIf(t.isOneOf(TittelValg.RevurderingAvRett)) {
                     text(
                         bokmal { +"Vi vurderer om du fortsatt har rett til " + sakstypeText },
@@ -67,7 +67,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
         }
 
         outline {
-            ifNotNull(revurdering) { t ->
+            ifNotNull(tittelValg) { t ->
                 showIf(t.isOneOf(TittelValg.RevurderingAvRett)) {
                     paragraph {
                         text(
