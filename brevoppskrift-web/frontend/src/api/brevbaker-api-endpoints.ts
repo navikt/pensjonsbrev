@@ -3,7 +3,7 @@
 
 import axios from "axios";
 
-import { type TemplateDescription, type TemplateDocumentation } from "~/api/brevbakerTypes";
+import { type Line, type TemplateDescription, type TemplateDocumentation } from "~/api/brevbakerTypes";
 
 const BREVBAKER_API_BASE_PATH = "/brevbaker";
 
@@ -45,19 +45,20 @@ export const getTemplateDocumentation = {
     ).data,
 };
 
-/** One template's documentation for a single language, as returned by the batch
- * documentation endpoint. The batch omits the (large) `templateModelSpecification`
- * to keep the single response small; it is only used to build the full-text index. */
-export type TemplateDocumentationBatchEntry = {
+/** One template's searchable lines for a single language, as returned by the batch
+ * documentation endpoint. The server flattens the documentation tree into ordered
+ * `Line`s (text/variable segments) so the full-text index can be built without
+ * the client re-flattening the documentation. */
+export type TemplateDocumentationSearchEntry = {
   brevkode: string;
   language: string;
-  documentation: TemplateDocumentation;
+  lines: Line[];
 };
 
 export const getAllTemplateDocumentation = {
   queryKey: (malType: MalType) => [...templateDocumentationKeys.all, malType, "BATCH"] as const,
   queryFn: async (malType: MalType) =>
-    (await axios.get<TemplateDocumentationBatchEntry[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}/doc`)).data,
+    (await axios.get<TemplateDocumentationSearchEntry[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}/doc`)).data,
 };
 
 export const getBrevkoder = {

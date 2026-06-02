@@ -3,7 +3,7 @@ import { BodyShort, Detail, HStack } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
 
 import { languageLabel } from "~/search/components/format";
-import { clampLine, HighlightedLine, indexOfNeedleCenter, rangesCenter } from "~/search/components/highlight";
+import { clampLine, HighlightedLine } from "~/search/components/highlight";
 import { type SnippetResult } from "~/search/textSearch";
 
 /** Max characters of a snippet line before it is truncated around the match. */
@@ -19,7 +19,6 @@ export function SearchSnippet({ result, title }: { result: SnippetResult; title:
   const end =
     primaryIndex === undefined ? Math.min(result.lines.length, 3) : Math.min(result.lines.length, primaryIndex + 2);
   const visibleLines = result.lines.slice(start, end);
-  const needle = result.anchorQuery;
 
   return (
     <div
@@ -58,14 +57,12 @@ export function SearchSnippet({ result, title }: { result: SnippetResult; title:
           const lineIndex = start + i;
           const isPrimary = lineIndex === primaryIndex;
           const highlight = isPrimary ? result.highlightRanges : [];
-          const center = isPrimary ? (rangesCenter(line, highlight) ?? indexOfNeedleCenter(line, needle)) : null;
-          const clamped = clampLine(line, center, SNIPPET_CHARS, highlight);
+          const clamped = clampLine(line, null, SNIPPET_CHARS, highlight);
           return (
             <BodyShort
               css={css`
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+                white-space: normal;
+                word-break: break-word;
               `}
               key={lineIndex}
               size="small"

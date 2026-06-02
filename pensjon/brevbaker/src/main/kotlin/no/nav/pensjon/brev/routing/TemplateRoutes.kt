@@ -1,40 +1,41 @@
 package no.nav.pensjon.brev.routing
 
 import io.ktor.http.*
-import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.api.TemplateResource
-import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.TemplateModelSpecificationFactory
-import no.nav.pensjon.brev.template.render.TemplateDocumentation
+import no.nav.pensjon.brev.template.render.DocumentationLineExtractor
+import no.nav.pensjon.brev.template.render.SearchLine
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
-// The documentation batch endpoint omits the (large, per-language identical) model
-// specification to keep the single response small; consumers that need it use
-// /{kode}/modelSpecification or /{kode}/doc/{language}.
-@PublishedApi
+// The documentation batch endpoint renders each template into searchable lines
+// (and omits the large, per-language identical model specification), so a search
+// client can build its index directly without re-flattening the documentation
+// tree itself. Consumers that need the full documentation tree use
+// /{kode}/doc/{language}; those that need the model specification use
+// /{kode}/modelSpecification.
 internal val EMPTY_MODEL_SPECIFICATION = TemplateModelSpecification(types = emptyMap(), letterModelTypeName = null)
 
-/** One template's documentation for a single language, as returned by the batch
- * documentation endpoint. */
-data class TemplateDocumentationBatchEntry(
+/** One template's searchable lines for a single language, as returned by the batch
+ * documentation endpoint. Each line is an ordered list of text/variable segments
+ * (see [SearchLine]). */
+data class TemplateDocumentationSearchEntry(
     val brevkode: String,
     val language: LanguageCode,
-    val documentation: TemplateDocumentation,
+    val lines: List<SearchLine>,
 )
 
-inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>> Route.templateRoutes(resource: TemplateResource<Kode, T, *>) =
+fun <Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>> Route.templateRoutes(resource: TemplateResource<Kode, T, *>) =
     route("/${resource.name}") {
 
         get {
@@ -52,10 +53,12 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
             val entries = resource.listTemplatekeys().flatMap { key ->
                 val template = resource.getTemplate(resource.kodeOf(key))?.template ?: return@flatMap emptyList()
                 template.language.all().map { language ->
-                    TemplateDocumentationBatchEntry(
+                    TemplateDocumentationSearchEntry(
                         brevkode = key,
                         language = language.toCode(),
-                        documentation = TemplateDocumentationRenderer.render(template, language, EMPTY_MODEL_SPECIFICATION),
+                        lines = DocumentationLineExtractor.extract(
+                            TemplateDocumentationRenderer.render(template, language, EMPTY_MODEL_SPECIFICATION),
+                        ),
                     )
                 }
             }
@@ -64,7 +67,7 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
 
         route("/{kode}") {
             get {
-                val template = call.kode(resource)
+                val template = resource.kodeOf(call.parameters.getOrFail("kode"))
                     .let { resource.getTemplate(it) }
                     ?.description()
 
@@ -78,7 +81,7 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
             get("/doc/{language}") {
                 val language = call.parameters.getOrFail<LanguageCode>("language").toLanguage()
 
-                val template = call.kode(resource)
+                val template = resource.kodeOf(call.parameters.getOrFail("kode"))
                     .let { resource.getTemplate(it)?.template }
                     ?.takeIf { it.language.supports(language) }
 
@@ -90,7 +93,7 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
             }
 
             get("/modelSpecification") {
-                val template = call.kode(resource)
+                val template = resource.kodeOf(call.parameters.getOrFail("kode"))
                     .let { resource.getTemplate(it)?.template }
 
                 if (template != null) {
@@ -103,12 +106,3 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
     }
 
 fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactory(this.letterDataType).build()
-
-/** Builds the resource-specific [Brevkode] for a raw brevkode string. */
-@Suppress("UNCHECKED_CAST")
-fun <Kode : Brevkode<Kode>> TemplateResource<Kode, *, *>.kodeOf(key: String): Kode =
-    (if (name == "autobrev") AutomatiskBrevkode(key) else RedigerbarBrevkode(key)) as Kode
-
-// TODO: Med riktig typing burde heile denne metoden vera unødvendig
-fun <Kode: Brevkode<Kode>> ApplicationCall.kode(resource: TemplateResource<Kode,*,*>): Kode =
-    resource.kodeOf(parameters.getOrFail<String>("kode"))

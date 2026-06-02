@@ -1,23 +1,16 @@
 import { css } from "@emotion/react";
-import { BodyShort, Button, Detail, Heading, Search, Tabs, Tag, VStack } from "@navikt/ds-react";
-import { type QueryClient, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { BodyShort, Detail, Heading, Loader, Search, Tabs, Tag, VStack } from "@navikt/ds-react";
+import { type QueryClient } from "@tanstack/react-query";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 
 import {
-  brevkoderKeys,
   getBrevkoder,
   getBrevkoderMedMetadata,
   getTemplateDescription,
   type MalType,
-  templateDescriptionKeys,
 } from "~/api/brevbaker-api-endpoints";
-import {
-  invalidateTemplateCache,
-  loadTemplateCache,
-  saveTemplateCache,
-  type TemplateWithDescription,
-} from "~/api/templateCache";
+import { loadTemplateCache, saveTemplateCache, type TemplateWithDescription } from "~/api/templateCache";
 import {
   BrevResultList,
   type IndexableTemplate,
@@ -119,8 +112,6 @@ function TemplateList({ templates, malType }: { templates: TemplateWithDescripti
 
 function AllTemplates() {
   const { autobrev, redigerbar } = Route.useLoaderData();
-  const router = useRouter();
-  const queryClient = useQueryClient();
 
   const indexable = useMemo<IndexableTemplate[]>(() => {
     const toIndexable = (templates: TemplateWithDescription[], malType: MalType) =>
@@ -150,14 +141,6 @@ function AllTemplates() {
     return map;
   }, [autobrev, redigerbar]);
   const getTitle = (malType: MalType, id: string) => titleByKey.get(`${malType}/${id}`) ?? id;
-
-  const refresh = () => {
-    invalidateTemplateCache();
-    queryClient.removeQueries({ queryKey: brevkoderKeys.all });
-    queryClient.removeQueries({ queryKey: templateDescriptionKeys.all });
-    search.refresh();
-    router.invalidate();
-  };
 
   const { isSearching, contentResults, brevResults, contentTemplateCount, brevTemplateCount, indexProgress } = search;
 
@@ -199,7 +182,7 @@ function AllTemplates() {
         css={css`
           display: flex;
           gap: var(--ax-space-12);
-          align-items: flex-end;
+          align-items: center;
           margin-top: var(--ax-space-16);
         `}
       >
@@ -214,10 +197,11 @@ function AllTemplates() {
           onClear={() => search.setQuery("")}
           size="small"
           value={search.query}
+          variant="simple"
         />
-        <Button onClick={refresh} size="small" type="button" variant="secondary">
-          Oppdater
-        </Button>
+        {indexProgress && indexProgress.status === "indexing" ? (
+          <Loader size="small" title="Indekserer innhold…" />
+        ) : null}
       </div>
 
       <Detail

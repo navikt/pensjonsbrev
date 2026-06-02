@@ -4,6 +4,12 @@ export type TemplateMetadata = {
   brevtype?: string;
 };
 
+/** A searchable line, as flattened server-side from a template's documentation and
+ * returned by the batch documentation endpoint. A line is a sequence of segments:
+ * literal text (searchable) and variables (shown as a placeholder, never searchable). */
+export type LineSegment = { kind: "text"; value: string } | { kind: "var"; label: string };
+export type Line = LineSegment[];
+
 export type TemplateDescription = {
   name: string;
   letterDataClass: string;

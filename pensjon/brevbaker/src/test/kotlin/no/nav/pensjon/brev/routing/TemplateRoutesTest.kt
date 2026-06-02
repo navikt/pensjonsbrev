@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.render.DocumentationLineExtractor
 import no.nav.pensjon.brev.template.render.TemplateDocumentation
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brev.template.toCode
@@ -20,6 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Isolated
 
@@ -150,24 +152,27 @@ class TemplateRoutesTest {
         testBrevbakerApp(isIntegrationTest = false) { client ->
             val response = client.get("/templates/autobrev/doc")
             assertEquals(HttpStatusCode.OK, response.status)
-            val body = response.body<List<TemplateDocumentationBatchEntry>>()
+            val body = response.body<List<TemplateDocumentationSearchEntry>>()
 
             val expected = alleAutobrevmaler.flatMap { mal ->
                 mal.template.language.all().map { mal.kode.kode() to it.toCode() }
             }.toSet()
             assertEquals(expected, body.map { it.brevkode to it.language }.toSet())
 
-            // Documentation content matches the per-template endpoint (the batch only
-            // omits the model specification, which is empty here).
+            // Lines match the server-side extraction of the per-template documentation.
             val sample = body.first { it.brevkode == ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.kode.name && it.language == LanguageCode.BOKMAL }
             assertEquals(
-                TemplateDocumentationRenderer.render(
-                    ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
-                    Language.Bokmal,
-                    TemplateModelSpecification(types = emptyMap(), letterModelTypeName = null),
+                DocumentationLineExtractor.extract(
+                    TemplateDocumentationRenderer.render(
+                        ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
+                        Language.Bokmal,
+                        TemplateModelSpecification(types = emptyMap(), letterModelTypeName = null),
+                    ),
                 ),
-                sample.documentation,
+                sample.lines,
             )
+            // Every segment is a text or var segment (no empty lines).
+            assertTrue(sample.lines.all { it.isNotEmpty() })
         }
 
     @Test
