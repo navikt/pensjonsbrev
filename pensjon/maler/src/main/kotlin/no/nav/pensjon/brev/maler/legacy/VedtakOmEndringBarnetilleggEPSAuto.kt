@@ -71,6 +71,8 @@ object VedtakOmEndringBarnetilleggEPSAuto : AutobrevTemplate<VedtakOmEndringBarn
                         arligUtbetalingBarnetilleggFB = data.arligUtbetalingBarnetilleggFB,
                         utbetaltBarnetilleggHittilIAr = data.utbetaltBarnetilleggHittilIAr,
                         utbetalingBarnetilleggResten = data.utbetalingBarnetilleggResten,
+                        epsBokmalTxt = data.pe.sivilstand_ektefelle_partner_samboer_bormed_ut(),
+                        epsNynorskTxt = data.pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall()
                     )
                 )
             )

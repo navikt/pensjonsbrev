@@ -32,6 +32,9 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
         val arligUtbetalingBarnetilleggFB: Expression<Kroner>,
         val utbetaltBarnetilleggHittilIAr: Expression<Kroner>,
         val utbetalingBarnetilleggResten: Expression<Kroner>,
+
+        val epsBokmalTxt: Expression<String>,
+        val epsNynorskTxt: Expression<String>,
     )
 
     data class Outline(val data: Brevdata) : OutlinePhrase<LangBokmalNynorsk>() {
@@ -133,10 +136,9 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
 
             paragraph {
                 text(
-                    // TODO: Finn ut hva vi gjør med "EPS" i teksten her
-                    bokmal { +"Vi har beregnet barnetillegg på nytt ut fra inntekten din på " + data.inntektBruker.format() + " og inntekten til din EPS på " + data.inntektEPS.format() + ". " +
+                    bokmal { +"Vi har beregnet barnetillegg på nytt ut fra inntekten din på " + data.inntektBruker.format() + " og inntekten til din " + data.epsBokmalTxt + " på " + data.inntektEPS.format() + ". " +
                             "Folketrygdens grunnbeløp på inntil " + data.gInntil.format() + " er holdt utenfor den andre forelderens inntekt. Til sammen utgjør disse inntektene " + data.samletInntekt.format() + " . " },
-                    nynorsk { +"Vi har berekna barnetillegg på nytt ut fra inntekta di på " + data.inntektBruker.format() + " og inntekta til din EPS på " + data.inntektEPS.format() + ". " +
+                    nynorsk { +"Vi har berekna barnetillegg på nytt ut fra inntekta di på " + data.inntektBruker.format() + " og inntekta til " + data.epsNynorskTxt + " din på " + data.inntektEPS.format() + ". " +
                             "Folketrygdas grunnbeløp på inntil " + data.gInntil.format() + " er halde utanfor den andre forelderen sin inntekt. Til saman utgjer desse inntektene " + data.samletInntekt.format() + " . " },
                 )
             }
