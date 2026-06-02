@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -18,29 +19,62 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 class VedtakOmEtterbetalingOpphor2026 {
     data class Outline(private val etterbetaling: Expression<Kroner>, private val hjemler: Expression<Collection<String>>, private val erRedigerbar: Expression<Boolean> = false.expr()) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            showIf(etterbetaling.greaterThan(0)) {
+                paragraph {
+                    text(
+                        bokmal { +"Du får en etterbetaling fra oss på " + etterbetaling.format() + ". Den utbetales senest 20. juli." },
+                        nynorsk { +"Du får ei etterbetaling frå oss på " + etterbetaling.format() + ". Den blir utbetalt seinast 20. juli." },
+                    )
+                }
+                title1 {
+                    text(
+                        bokmal { +"Derfor får du en etterbetaling" },
+                        nynorsk { +"Derfor får du ei etterbetaling" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Stortinget har vedtatt en lovendring som gir deg en lavere reduksjonsprosent. Dette er til fordel for deg. Den nye reduksjonsprosenten skal gjelde fra 1. januar 2026. Siden du har hatt inntekt over inntektsgrensen i perioden etterpå, fører det til at du får en etterbetaling. "
+                        },
+                        nynorsk {
+                            +"Stortinget har vedteke ei lovendring som gir deg ein lågare reduksjonsprosent. Dette er til fordel for deg. Den nye reduksjonsprosenten skal gjelde frå 1. januar 2026. Sidan du har hatt inntekt over inntektsgrensa i perioden etterpå, fører det til at du får ei etterbetaling. "
+                        },
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Stortinget har vedtatt en lovendring som gir deg en lavere reduksjonsprosent. Den nye reduksjonsprosenten skal gjelde fra 1. januar 2026. "
+                        },
+                        nynorsk {
+                            +"Stortinget har vedteke ei lovendring som gir deg ein lågare reduksjonsprosent. Den nye reduksjonsprosenten skal gjelde frå 1. januar 2026. "
+                        },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Dersom du har hatt inntekt over inntektsgrensen, vil dette være til fordel for deg, fordi du vil få en mindre avkortning av uføretrygden i etteroppgjøret. "
+                        },
+                        nynorsk {
+                            +"Dersom du har hatt inntekt over inntektsgrensa, vil dette vere til fordel for deg, fordi du vil få ei mindre avkorting av uføretrygda i etteroppgjeret. "
+                        },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Dersom du ikke har hatt inntekt over inntektsgrensen, vil ikke endringen ha noen betydning for utbetalingen av uføretrygden din."
+                        },
+                        nynorsk {
+                            +"Dersom du ikkje har hatt inntekt over inntektsgrensa, vil ikkje endringa ha nokon betydning for utbetalinga av uføretrygda di."
+                        },
+                    )
+                }
+            }
 
-            paragraph {
-                text(
-                    bokmal { +"Du får en etterbetaling fra oss på " + etterbetaling.format() + ". Den utbetales senest 20. juli." },
-                    nynorsk { +"Du får ei etterbetaling frå oss på " + etterbetaling.format() + ". Den blir utbetalt seinast 20. juli." },
-                )
-            }
-            title1 {
-                text(
-                    bokmal { +"Derfor får du en etterbetaling" },
-                    nynorsk { +"Derfor får du ei etterbetaling" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Stortinget har vedtatt en lovendring som gir deg en lavere reduksjonsprosent. Dette er til fordel for deg. Den nye reduksjonsprosenten skal gjelde fra 1. januar 2026. Siden du har hatt inntekt over inntektsgrensen i perioden etterpå, fører det til at du får en etterbetaling. "
-                    },
-                    nynorsk {
-                        +"Stortinget har vedteke ei lovendring som gir deg ein lågare reduksjonsprosent. Dette er til fordel for deg. Den nye reduksjonsprosenten skal gjelde frå 1. januar 2026. Sidan du har hatt inntekt over inntektsgrensa i perioden etterpå, fører det til at du får ei etterbetaling. "
-                    },
-                )
-            }
             paragraph {
                 text(
                     bokmal { +"Vedtaket har vi gjort etter " },
