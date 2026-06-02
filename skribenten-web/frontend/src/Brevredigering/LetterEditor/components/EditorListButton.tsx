@@ -27,7 +27,7 @@ const EditorListButton = ({ listType }: EditorListButtonProps) => {
     ) : (
       <BulletListIcon fontSize="1.5rem" title="punktliste-ikon" />
     );
-  const dataTestId = listType === ListType.NUMMERERT_LISTE ? "editor-number-list" : "editor-bullet-list";
+  const dataTestId = listType === ListType.NUMMERERT_LISTE ? "number-list-button" : "bullet-list-button";
   const tooltip = listType === ListType.NUMMERERT_LISTE ? tooltipText.numberList : tooltipText.bulletList;
 
   return (

@@ -18,6 +18,7 @@ export const EditorUndoRedo: React.FC<EditorUndoRedoProps> = ({ undo, redo, canU
         <Button
           aria-label="Angre (Undo)"
           data-color="neutral"
+          data-testid="undo-button"
           disabled={!canUndo}
           icon={<ArrowUndoIcon fontSize="1.5rem" title="Angre (Undo)" />}
           onClick={undo}
@@ -32,6 +33,7 @@ export const EditorUndoRedo: React.FC<EditorUndoRedoProps> = ({ undo, redo, canU
         <Button
           aria-label="Gjør om (Redo)"
           data-color="neutral"
+          data-testid="redo-button"
           disabled={!canRedo}
           icon={<ArrowRedoIcon fontSize="1.5rem" title="Gjør om (Redo)" />}
           onClick={redo}

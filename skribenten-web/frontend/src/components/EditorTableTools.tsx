@@ -20,7 +20,7 @@ const EditorTableTools = () => {
         <Tooltip content={tooltipText.table}>
           <Button
             data-color="neutral"
-            data-testid="toolbar-table-btn"
+            data-testid="toolbar-table-button"
             disabled={freeze || editorState.focus.blockIndex < 0}
             icon={<TableIcon fontSize="1.5rem" title="Sett inn tabell" />}
             onClick={() => {

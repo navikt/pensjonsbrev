@@ -14,7 +14,7 @@ test.describe.configure({ mode: "serial" });
 
 // Helpers
 const openInsertTableModal = async (page: Page) => {
-  await page.getByTestId("toolbar-table-btn").click();
+  await page.getByTestId("toolbar-table-button").click();
   await expect(page.getByTestId("insert-table-modal")).toBeVisible();
 };
 

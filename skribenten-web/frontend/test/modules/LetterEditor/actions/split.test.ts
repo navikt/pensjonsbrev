@@ -383,8 +383,6 @@ describe("LetterEditorActions.split", () => {
       expect(select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 1 }).id).toStrictEqual(item1.id);
     });
 
-    test("merging");
-
     describe("break out of empty item", () => {
       test("empty first item creates blank block before remaining list", () => {
         const state = letter(

@@ -142,7 +142,7 @@ test.describe("toggle number-list", () => {
 
     await expect(page.locator("ol")).toHaveCount(0);
     await page.getByText("Et avsnitt").click();
-    await page.getByTestId("editor-number-list").click();
+    await page.getByTestId("number-list-button").click();
     await expect(page.locator("ol li span").filter({ hasText: "Et avsnitt" })).toBeVisible();
     await expect(page.locator("ol")).toHaveCount(1);
     await expect(page.locator("ul")).toHaveCount(0);
@@ -154,8 +154,8 @@ test.describe("toggle number-list", () => {
     await navigateToEditor(page);
 
     await page.locator("ol li span").filter({ hasText: "punkt" }).click();
-    await expect(page.getByTestId("editor-number-list")).toHaveAttribute("data-variant", "primary");
-    await expect(page.getByTestId("editor-bullet-list")).toHaveAttribute("data-variant", "tertiary");
+    await expect(page.getByTestId("number-list-button")).toHaveAttribute("data-variant", "primary");
+    await expect(page.getByTestId("bullet-list-button")).toHaveAttribute("data-variant", "tertiary");
   });
 
   test("bullet-list button is active when focus is on a bullet list", async ({ page }) => {
@@ -164,8 +164,8 @@ test.describe("toggle number-list", () => {
     await navigateToEditor(page);
 
     await page.locator("ul li span").filter({ hasText: "punkt" }).click();
-    await expect(page.getByTestId("editor-bullet-list")).toHaveAttribute("data-variant", "primary");
-    await expect(page.getByTestId("editor-number-list")).toHaveAttribute("data-variant", "tertiary");
+    await expect(page.getByTestId("bullet-list-button")).toHaveAttribute("data-variant", "primary");
+    await expect(page.getByTestId("number-list-button")).toHaveAttribute("data-variant", "tertiary");
   });
 
   test("toggles off a numbered list with the number-list button", async ({ page }) => {
@@ -177,7 +177,7 @@ test.describe("toggle number-list", () => {
 
     await expect(page.locator("ol li")).toHaveCount(2);
     await page.locator("ol li span").filter({ hasText: "punkt1" }).click();
-    await page.getByTestId("editor-number-list").click();
+    await page.getByTestId("number-list-button").click();
     await expect(page.locator("ol li")).toHaveCount(1);
     await expect(page.getByText("punkt1")).toBeVisible();
     await expect(page.locator("ol").getByText("punkt1")).toHaveCount(0);
@@ -192,7 +192,7 @@ test.describe("toggle number-list", () => {
     await navigateToEditor(page);
 
     await page.locator("ol li span").filter({ hasText: "punkt1" }).click();
-    await page.getByTestId("editor-bullet-list").click();
+    await page.getByTestId("bullet-list-button").click();
     await expect(page.locator("ol")).toHaveCount(0);
     await expect(page.locator("ul")).toHaveCount(1);
     await expect(page.locator("ul li")).toHaveCount(2);
@@ -206,7 +206,7 @@ test.describe("toggle number-list", () => {
     await navigateToEditor(page);
 
     await page.locator("ul li span").filter({ hasText: "punkt1" }).click();
-    await page.getByTestId("editor-number-list").click();
+    await page.getByTestId("number-list-button").click();
     await expect(page.locator("ul")).toHaveCount(0);
     await expect(page.locator("ol")).toHaveCount(1);
     await expect(page.locator("ol li")).toHaveCount(2);
@@ -227,14 +227,14 @@ test.describe("mixed list types", () => {
 
     // Step 1: toggle item2 off to regular text
     await page.locator("ul li span").filter({ hasText: "item2" }).click();
-    await page.getByTestId("editor-bullet-list").click();
+    await page.getByTestId("bullet-list-button").click();
     // Now: bulletList[item1] | text(item2) | bulletList[item3]
     await expect(page.locator("ul")).toHaveCount(2);
     await expect(page.locator("ul li")).toHaveCount(2);
 
     // Step 2: toggle item2 to number list
     await page.getByText("item2").click();
-    await page.getByTestId("editor-number-list").click();
+    await page.getByTestId("number-list-button").click();
     // Now: bulletList[item1] | numberList[item2] | bulletList[item3]
     await expect(page.locator("ul")).toHaveCount(2);
     await expect(page.locator("ol")).toHaveCount(1);
@@ -242,7 +242,7 @@ test.describe("mixed list types", () => {
 
     // Step 3: toggle item3 from bullet list to number list
     await page.locator("ul li span").filter({ hasText: "item3" }).click();
-    await page.getByTestId("editor-number-list").click();
+    await page.getByTestId("number-list-button").click();
     // item3 converts to number list and merges with item2's number list
     await expect(page.locator("ul")).toHaveCount(1);
     await expect(page.locator("ul li")).toHaveCount(1);
@@ -274,7 +274,7 @@ test.describe("mixed list types", () => {
     await expect(page.locator("ul li")).toHaveCount(5);
 
     await page.locator("ul li span").filter({ hasText: "item3" }).click();
-    await page.getByTestId("editor-number-list").click();
+    await page.getByTestId("number-list-button").click();
 
     await expect(page.locator("ul")).toHaveCount(0);
     await expect(page.locator("ol")).toHaveCount(1);
@@ -293,7 +293,7 @@ test.describe("mixed list types", () => {
 
     // toggle off the first bullet item
     await page.locator("ul li span").filter({ hasText: "item1" }).click();
-    await page.getByTestId("editor-bullet-list").click();
+    await page.getByTestId("bullet-list-button").click();
 
     // "item1" is now regular text; "item2" is still in the bullet list
     await expect(page.locator("ul li")).toHaveCount(1);
@@ -301,7 +301,7 @@ test.describe("mixed list types", () => {
 
     // toggle "item1" as a number list
     await page.getByText("item1").click();
-    await page.getByTestId("editor-number-list").click();
+    await page.getByTestId("number-list-button").click();
 
     // item1 should be in an ordered list, item2 should still be in an unordered list
     await expect(page.locator("ol")).toHaveCount(1);
@@ -329,7 +329,7 @@ test.describe("mixed list types", () => {
     await expect(page.locator("ol li")).toHaveCount(4);
 
     await page.getByText("middle").click();
-    await page.getByTestId("editor-number-list").click();
+    await page.getByTestId("number-list-button").click();
 
     await expect(page.locator("ol")).toHaveCount(1);
     await expect(page.locator("ol li")).toHaveCount(5);
@@ -349,7 +349,7 @@ test.describe("undo/redo of list type conversion", () => {
     await navigateToEditor(page);
 
     await page.locator("ul li span").filter({ hasText: "punkt1" }).click();
-    await page.getByTestId("editor-number-list").click();
+    await page.getByTestId("number-list-button").click();
     await expect(page.locator("ol")).toHaveCount(1);
     await expect(page.locator("ul")).toHaveCount(0);
 
@@ -365,7 +365,7 @@ test.describe("undo/redo of list type conversion", () => {
     await navigateToEditor(page);
 
     await page.locator("ul li span").filter({ hasText: "punkt1" }).click();
-    await page.getByTestId("editor-number-list").click();
+    await page.getByTestId("number-list-button").click();
     await expect(page.locator("ol")).toHaveCount(1);
 
     await page.keyboard.press(undoShortcut);
@@ -393,7 +393,7 @@ test.describe("cross-block merge with numbered lists", () => {
     await expect(page.locator("ol")).toHaveCount(2);
 
     await page.getByText("middle text").click();
-    await page.getByTestId("editor-number-list").click();
+    await page.getByTestId("number-list-button").click();
 
     // All items should merge into one numbered list
     await expect(page.locator("ol")).toHaveCount(1);
@@ -415,7 +415,7 @@ test.describe("cross-block merge with numbered lists", () => {
     await navigateToEditor(page);
 
     await page.getByText("standalone").click();
-    await page.getByTestId("editor-number-list").click();
+    await page.getByTestId("number-list-button").click();
 
     // The standalone block should merge with the numbered list in the previous block
     await expect(page.locator("ol")).toHaveCount(1);
