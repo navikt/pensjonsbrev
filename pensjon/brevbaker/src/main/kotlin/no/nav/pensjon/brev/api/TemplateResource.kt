@@ -15,6 +15,8 @@ interface TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brevbaker
 
     val name: String
 
+    fun kodeOf(key: String): Kode
+
     suspend fun renderPDF(brevbestilling: Request): LetterResponse
 
     fun renderHTML(brevbestilling: Request): LetterResponse
