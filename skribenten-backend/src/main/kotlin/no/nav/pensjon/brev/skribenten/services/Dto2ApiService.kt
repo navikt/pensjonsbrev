@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
@@ -38,6 +39,7 @@ class Dto2ApiService(
         return Api.BrevInfo(
             id = info.id,
             saksId = info.saksId,
+            erAttestant = PrincipalInContext.get()?.isAttestant() == true,
             opprettetAv = hentNavAnsatt(info.opprettetAv),
             opprettet = info.opprettet,
             sistredigertAv = hentNavAnsatt(info.sistredigertAv),
