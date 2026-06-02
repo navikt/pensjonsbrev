@@ -52,6 +52,7 @@ Step-by-step recipes for common authoring tasks live under [`.github/skills/`](.
 |---|---|
 | Add a new letter template (autobrev or redigerbar) — module selection, brevkode rules, Dto, DSL body, fixture, registration, verification | [`.github/skills/write-template/SKILL.md`](.github/skills/write-template/SKILL.md) |
 | Deltas specific to a `RedigerbarTemplate` — `Saksbehandlervalg` / fagsystem split, `kategori` / `brevkontekst` / `sakstyper`, `fritekst(...)` | [`.github/skills/write-template/write-redigerbar-template.md`](.github/skills/write-template/write-redigerbar-template.md) |
+| Write or refactor LetterEditor actions in `skribenten-web/frontend/src/Brevredigering/LetterEditor/actions` — focus/index safety, `deleted*` bookkeeping, table/list invariants, utility-first edits | [`.github/skills/letter-editor-actions/SKILL.md`](.github/skills/letter-editor-actions/SKILL.md) |
 
 ## Do NOT Edit By Hand
 
@@ -207,4 +208,3 @@ Use in templates: `override val featureToggle = FeatureToggles.myFeature.toggle`
 - **AP**: Alderspensjon (retirement pension)
 - **PEN/PESYS**: Pension and disability benefits systems
 - **TSS**: Tjenestebasert Samhandler Service (external recipients)
-

@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy
 
-import no.nav.pensjon.brev.api.model.maler.legacy.Tillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode
 import no.nav.pensjon.brev.template.Language
@@ -56,8 +56,8 @@ class AntallBarnFormatter(private val storBokstav: Boolean = false) : LocalizedF
     override fun stableHashCode(): Int = "AntallBarnFormatter($storBokstav)".hashCode()
 }
 
-object UTOgTilleggMapper : LocalizedFormatter<Collection<Tillegg>>() {
-    override fun apply(first: Collection<Tillegg>, second: Language): String {
+object UTOgTilleggMapper : LocalizedFormatter<Collection<UTTillegg>>() {
+    override fun apply(first: Collection<UTTillegg>, second: Language): String {
         val tillegg = first.map {
             when (second) {
                 Bokmal -> it.bokmal

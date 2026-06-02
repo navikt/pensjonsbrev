@@ -12,17 +12,22 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.avdoedNavn
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.borIutland
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.erOver18aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDataSelectors.avdoedNavn
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDataSelectors.borIutland
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallDataSelectors.erOver18aar
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.BARNEPENSJON_URL
 
-data class BarnepensjonInformasjonDoedsfallDTO(
+data class BarnepensjonInformasjonDoedsfallData(
     val avdoedNavn: String,
     val borIutland: Boolean,
     val erOver18aar: Boolean,
+)
+
+data class BarnepensjonInformasjonDoedsfallDTO(
+    override val data: BarnepensjonInformasjonDoedsfallData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -50,9 +55,9 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
             outline {
                 paragraph {
                     text(
-                        bokmal { +"Vi skriver til deg fordi vi har fått melding om at " + avdoedNavn + " er død, og du kan ha rett til barnepensjon." },
-                        nynorsk { +"Vi skriv til deg fordi vi har fått melding om at " + avdoedNavn + " er død, og du kan ha rett til barnepensjon. " },
-                        english { +"We are writing to you because we have received notice that " + avdoedNavn + " has died, and we would like to inform you about children's pension." },
+                        bokmal { +"Vi skriver til deg fordi vi har fått melding om at " + data.avdoedNavn + " er død, og du kan ha rett til barnepensjon." },
+                        nynorsk { +"Vi skriv til deg fordi vi har fått melding om at " + data.avdoedNavn + " er død, og du kan ha rett til barnepensjon. " },
+                        english { +"We are writing to you because we have received notice that " + data.avdoedNavn + " has died, and we would like to inform you about children's pension." },
                     )
                 }
 
@@ -78,7 +83,7 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                         english { +"How do you apply?" },
                     )
                 }
-                showIf(borIutland.not().and(erOver18aar.not())) {
+                showIf(data.borIutland.not().and(data.erOver18aar.not())) {
                     paragraph {
                         text(
                             bokmal { +"Du finner informasjon og søknad på $BARNEPENSJON_URL." },
@@ -95,7 +100,7 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                     }
                 }
 
-                showIf(borIutland.and(erOver18aar.not())) {
+                showIf(data.borIutland.and(data.erOver18aar.not())) {
                     paragraph {
                         text(
                             bokmal { +"Vi har informasjon om at du bor i utlandet. Du finner informasjon om hvordan du søker på $BARNEPENSJON_URL." },
@@ -128,7 +133,7 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                     }
                 }
 
-                showIf(borIutland.not().and(erOver18aar)) {
+                showIf(data.borIutland.not().and(data.erOver18aar)) {
                     paragraph {
                         text(
                             bokmal { +"Du finner informasjon og søknad på $BARNEPENSJON_URL." },
@@ -138,7 +143,7 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                     }
                 }
 
-                showIf(borIutland.and(erOver18aar)) {
+                showIf(data.borIutland.and(data.erOver18aar)) {
                     paragraph {
                         text(
                             bokmal { +"Vi har informasjon om at du bor i utlandet. Du finner informasjon om hvordan du søker på $BARNEPENSJON_URL." },
@@ -185,7 +190,7 @@ object BarnepensjonInformasjonDoedsfall : EtterlatteTemplate<BarnepensjonInforma
                     )
                 }
 
-                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(erOver18aar.not(), borIutland))
+                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(data.erOver18aar.not(), data.borIutland))
             }
         }
 }

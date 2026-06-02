@@ -14,8 +14,8 @@
     "lint:write": "biome check --write .",
     "lint-and-check-types": "${npm_execpath} run format && ${npm_execpath} run lint && ${npm_execpath} run stylelint && ${npm_execpath} run check-types",
     "preview": "vite preview",
-    "stylelint": "stylelint '**/*.{tsx,css}'",
-    "stylelint:fix": "stylelint --fix '**/*.{tsx,css}'",
+    "stylelint": "stylelint 'src/**/*.{tsx,css}'",
+    "stylelint:fix": "stylelint --fix 'src/**/*.{tsx,css}'",
     "test": "vitest --config ./vite.config.ts",
     "tsc:watch": "tsc --watch",
     "verify": "${npm_execpath} run lint-and-check-types && vitest run --config ./vite.config.ts && ${npm_execpath} run e2e"

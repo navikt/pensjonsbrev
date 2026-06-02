@@ -14,14 +14,19 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadAktivitetspliktFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTOSelectors.halvtGrunnbeloep
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTOSelectors.nasjonalEllerUtland
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTOSelectors.redusertEtterInntekt
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDataSelectors.redusertEtterInntekt
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDataSelectors.nasjonalEllerUtland
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDataSelectors.halvtGrunnbeloep
 
-data class OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO(
+data class OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdData(
     val redusertEtterInntekt: Boolean,
     val nasjonalEllerUtland: NasjonalEllerUtland,
     val halvtGrunnbeloep: Kroner
+)
+
+data class OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO(
+    override val data: OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -54,7 +59,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon6mndInnhold : EtterlatteTempl
                         english { +"You are receiving an adjustment allowance." },
                     )
                 }
-                showIf(redusertEtterInntekt) {
+                showIf(data.redusertEtterInntekt) {
                     paragraph {
                         text(
                             bokmal { +"Omstillingsstønaden din er redusert etter en arbeidsinntekt på " +
@@ -109,10 +114,10 @@ object OmstillingsstoenadAktivitetspliktInformasjon6mndInnhold : EtterlatteTempl
                     )
                 }
 
-                includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesInfoOmInntektsendring(redusertEtterInntekt, halvtGrunnbeloep))
+                includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesInfoOmInntektsendring(data.redusertEtterInntekt, data.halvtGrunnbeloep))
                 includePhrase(OmstillingsstoenadAktivitetspliktFraser.TrengerDuHjelpTilAaFaaNyJobb)
                 includePhrase(OmstillingsstoenadAktivitetspliktFraser.HarDuHelseutfordringer)
-                includePhrase(OmstillingsstoenadAktivitetspliktFraser.DuMaaMeldeFraOmEndringer(nasjonalEllerUtland))
+                includePhrase(OmstillingsstoenadAktivitetspliktFraser.DuMaaMeldeFraOmEndringer(data.nasjonalEllerUtland))
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
         }

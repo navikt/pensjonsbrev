@@ -28,9 +28,6 @@ object Vedtak {
             }
     }
 
-    /**
-     * TBU1092
-     */
     object BegrunnelseOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =

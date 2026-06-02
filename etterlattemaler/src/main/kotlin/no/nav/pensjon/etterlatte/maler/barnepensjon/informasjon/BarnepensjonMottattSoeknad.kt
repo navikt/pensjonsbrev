@@ -13,18 +13,23 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTOSelectors.borINorgeEllerIkkeAvtaleland
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTOSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTOSelectors.erOver18aar
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTOSelectors.mottattDato
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDataSelectors.borINorgeEllerIkkeAvtaleland
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDataSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDataSelectors.erOver18aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDataSelectors.mottattDato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import java.time.LocalDate
 
-data class BarnepensjonMottattSoeknadDTO(
+data class BarnepensjonMottattSoeknadData(
     val mottattDato: LocalDate,
     val erOver18aar: Boolean,
     val bosattUtland: Boolean,
     val borINorgeEllerIkkeAvtaleland: Boolean,
+)
+
+data class BarnepensjonMottattSoeknadDTO(
+    override val data: BarnepensjonMottattSoeknadData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -51,12 +56,12 @@ object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoekna
             outline {
                 paragraph {
                     text(
-                        bokmal { +"Vi viser til søknaden din som vi mottok " + mottattDato.format() + "." },
-                        nynorsk { +"Vi fekk søknad frå deg " + mottattDato.format() + "." },
-                        english { +"We refer to your application that we received " + mottattDato.format() + "." },
+                        bokmal { +"Vi viser til søknaden din som vi mottok " + data.mottattDato.format() + "." },
+                        nynorsk { +"Vi fekk søknad frå deg " + data.mottattDato.format() + "." },
+                        english { +"We refer to your application that we received " + data.mottattDato.format() + "." },
                     )
                 }
-                showIf(borINorgeEllerIkkeAvtaleland) {
+                showIf(data.borINorgeEllerIkkeAvtaleland) {
                     title2 {
                         text(
                             bokmal { +"Behandlingstid" },
@@ -106,7 +111,7 @@ object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoekna
                     }
                 }
 
-                showIf(borINorgeEllerIkkeAvtaleland) {
+                showIf(data.borINorgeEllerIkkeAvtaleland) {
                     title2 {
                         text(
                             bokmal { +"Du må melde fra om endringer" },
@@ -150,7 +155,7 @@ object BarnepensjonMottattSoeknad : EtterlatteTemplate<BarnepensjonMottattSoekna
                     }
                 }
 
-                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(erOver18aar.not(), bosattUtland))
+                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(data.erOver18aar.not(), data.bosattUtland))
             }
         }
 }

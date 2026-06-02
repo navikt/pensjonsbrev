@@ -54,7 +54,7 @@ data class OmstillingsstoenadInnvilgelseData(
 
 data class OmstillingsstoenadInnvilgelseDTO(
     override val innhold: List<Element>,
-    val data: OmstillingsstoenadInnvilgelseData,
+    override val data: OmstillingsstoenadInnvilgelseData,
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers

@@ -9,6 +9,7 @@ body {
   --header-height: 49px;
   --breadcrumbs-height: 44px;
   --nav-bar-height: 49px;
+
   /*
     Hovedinnholdet i hver page skal ha en max høyde som er 'hele skjermen' minus
     høyden av header, breadcrumbs og nav-bar. Dette er for at hovedinnholdet

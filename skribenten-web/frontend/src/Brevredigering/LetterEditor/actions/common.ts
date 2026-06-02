@@ -254,6 +254,7 @@ export function create(brev: BrevResponse): LetterEditorState {
     info: brev.info,
     redigertBrev: normalizeTableSeparators(brev.redigertBrev),
     redigertBrevHash: brev.redigertBrevHash,
+    saksbehandlerValg: brev.saksbehandlerValg,
     saveStatus: "SAVED",
     focus: { blockIndex: 0, contentIndex: 0 },
     history: { entries: [], entryPointer: -1 },

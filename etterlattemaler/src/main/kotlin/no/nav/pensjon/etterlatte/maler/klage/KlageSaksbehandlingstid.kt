@@ -20,17 +20,22 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.SAKSBEHANDLINGSTI
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjonExpr
-import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTOSelectors.borIUtlandet
-import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTOSelectors.datoForVedtak
-import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTOSelectors.datoMottatKlage
-import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTOSelectors.sakType
+import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDataSelectors.borIUtlandet
+import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDataSelectors.datoForVedtak
+import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDataSelectors.datoMottatKlage
+import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDataSelectors.sakType
 import java.time.LocalDate
 
-data class KlageSaksbehandlingstidDTO(
+data class KlageSaksbehandlingstidData(
     val sakType: SakType,
     val borIUtlandet: Boolean,
     val datoMottatKlage: LocalDate,
     val datoForVedtak: LocalDate,
+)
+
+data class KlageSaksbehandlingstidDTO(
+    override val data: KlageSaksbehandlingstidData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -49,9 +54,9 @@ object KlageSaksbehandlingstid : EtterlatteTemplate<KlageSaksbehandlingstidDTO> 
         ) {
             title {
                 text(
-                    bokmal { +"Klage -" + sakType.format() + " - orientering om saksbehandlingstid " },
-                    nynorsk { +"Klage -" + sakType.format() + " - orientering om saksbehandlingstid " },
-                    english { +"Appeals –" + sakType.format() + " - Information about processing time  " },
+                    bokmal { +"Klage -" + data.sakType.format() + " - orientering om saksbehandlingstid " },
+                    nynorsk { +"Klage -" + data.sakType.format() + " - orientering om saksbehandlingstid " },
+                    english { +"Appeals –" + data.sakType.format() + " - Information about processing time  " },
                 )
             }
 
@@ -74,9 +79,9 @@ object KlageSaksbehandlingstid : EtterlatteTemplate<KlageSaksbehandlingstidDTO> 
 
                 paragraph {
                     text(
-                        bokmal { +"Vi har " + datoMottatKlage.format() + " fått klagen over vårt vedtak av " + datoForVedtak.format() + "." },
-                        nynorsk { +"Klaga på vedtaket vårt av " + datoMottatKlage.format() + " blei motteken " + datoForVedtak.format() + "." },
-                        english { +"We received a complaint about " + datoMottatKlage.format() + " our decision of " + datoForVedtak.format() + "." }
+                        bokmal { +"Vi har " + data.datoMottatKlage.format() + " fått klagen over vårt vedtak av " + data.datoForVedtak.format() + "." },
+                        nynorsk { +"Klaga på vedtaket vårt av " + data.datoMottatKlage.format() + " blei motteken " + data.datoForVedtak.format() + "." },
+                        english { +"We received a complaint about " + data.datoMottatKlage.format() + " our decision of " + data.datoForVedtak.format() + "." }
                     )
                 }
 
@@ -91,13 +96,13 @@ object KlageSaksbehandlingstid : EtterlatteTemplate<KlageSaksbehandlingstidDTO> 
                 paragraph {
                     text(
                         bokmal { +"Du kan finne vår saksbehandlingstid på " + ifElse(
-                            sakType.equalTo(SakType.BARNEPENSJON), SAKSBEHANDLINGSTIDER_BP.expr(), SAKSBEHANDLINGSTIDER_OMS.expr()
+                            data.sakType.equalTo(SakType.BARNEPENSJON), SAKSBEHANDLINGSTIDER_BP.expr(), SAKSBEHANDLINGSTIDER_OMS.expr()
                         ) + "." },
                         nynorsk { +"Du finn saksbehandlingstida vår på " + ifElse(
-                            sakType.equalTo(SakType.BARNEPENSJON), SAKSBEHANDLINGSTIDER_BP.expr(), SAKSBEHANDLINGSTIDER_OMS.expr()
+                            data.sakType.equalTo(SakType.BARNEPENSJON), SAKSBEHANDLINGSTIDER_BP.expr(), SAKSBEHANDLINGSTIDER_OMS.expr()
                         ) + "." },
                         english { +"You can find more information about case processing time here: " + ifElse(
-                            sakType.equalTo(SakType.BARNEPENSJON), SAKSBEHANDLINGSTIDER_BP.expr(), SAKSBEHANDLINGSTIDER_OMS.expr()
+                            data.sakType.equalTo(SakType.BARNEPENSJON), SAKSBEHANDLINGSTIDER_BP.expr(), SAKSBEHANDLINGSTIDER_OMS.expr()
                         ) + "." },
                     )
                 }
@@ -158,14 +163,14 @@ object KlageSaksbehandlingstid : EtterlatteTemplate<KlageSaksbehandlingstidDTO> 
 
                 paragraph {
                     text(
-                        bokmal { +"Du kan finne svar på " + sakUrl(sakType) + "." +
-                        " Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon " + kontakttelefonPensjonExpr(borIUtlandet) + " hverdager mellom klokken 09.00-15.00." +
+                        bokmal { +"Du kan finne svar på " + sakUrl(data.sakType) + "." +
+                        " Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon " + kontakttelefonPensjonExpr(data.borIUtlandet) + " hverdager mellom klokken 09.00-15.00." +
                                 " Om du oppgir <fødselsnummer ditt/fødselsnummer til barnet/ fødselsnummer til den du er verge for>, kan vi lettere gi deg rask og god hjelp." },
-                        nynorsk { +"Du finn meir informasjon på " + sakUrl(sakType) + "." +
-                                " Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon " + kontakttelefonPensjonExpr(borIUtlandet) + " kvardagar mellom klokka 09.00–15.00." +
+                        nynorsk { +"Du finn meir informasjon på " + sakUrl(data.sakType) + "." +
+                                " Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon " + kontakttelefonPensjonExpr(data.borIUtlandet) + " kvardagar mellom klokka 09.00–15.00." +
                                 " Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir  <fødselsnummeret ditt / fødselsnummeret til barnet / fødselsnummeret til den du er verje for>." },
-                        english { +"For more information, visit us online: " + sakUrl(sakType) + "." +
-                                " If you cannot find the answer to your question, you can call us by phone at " + kontakttelefonPensjonExpr(borIUtlandet) + " Monday to Friday between 9:00 AM and 3:00 PM." + "" +
+                        english { +"For more information, visit us online: " + sakUrl(data.sakType) + "." +
+                                " If you cannot find the answer to your question, you can call us by phone at " + kontakttelefonPensjonExpr(data.borIUtlandet) + " Monday to Friday between 9:00 AM and 3:00 PM." + "" +
                                 " If you state <your national identity number/child's national identity number/ for guardians, the national identity number of your ward >, we will be able to provide you with fast and adequate help." },
                     )
                 }
