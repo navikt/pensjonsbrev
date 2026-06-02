@@ -1,19 +1,15 @@
 package no.nav.pensjon.brev.maler.fraser
 
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -28,12 +24,9 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
         val inntektBruker: Expression<Kroner>,
         val inntektEPS: Expression<Kroner>,
 
-        val redusertBarnetillegg: Expression<Boolean>,
-        val nullBarnetillegg: Expression<Boolean>,
-
         val gInntil: Expression<Kroner>,
         val samletInntekt: Expression<Kroner>,
-        val grenseUtbetaltBarnetillegg: Expression<Kroner>,
+        val samletInntektsgrenseBarnetillegg: Expression<Kroner>,
         val nyttBarnetillegg: Expression<Kroner>,
         val fribelop: Expression<Kroner>,
         val arligUtbetalingBarnetilleggFB: Expression<Kroner>,
@@ -140,6 +133,7 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
 
             paragraph {
                 text(
+                    // TODO: Finn ut hva vi gjør med "EPS" i teksten her
                     bokmal { +"Vi har beregnet barnetillegg på nytt ut fra inntekten din på " + data.inntektBruker.format() + " og inntekten til din EPS på " + data.inntektEPS.format() + ". " +
                             "Folketrygdens grunnbeløp på inntil " + data.gInntil.format() + " er holdt utenfor den andre forelderens inntekt. Til sammen utgjør disse inntektene " + data.samletInntekt.format() + " . " },
                     nynorsk { +"Vi har berekna barnetillegg på nytt ut fra inntekta di på " + data.inntektBruker.format() + " og inntekta til din EPS på " + data.inntektEPS.format() + ". " +
@@ -147,14 +141,14 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
                 )
             }
 
-            showIf (data.nullBarnetillegg) {
+            showIf (data.nettoBarnetilleggFB.equalTo(Kroner(0))) {
                 paragraph {
                     text(
-                        bokmal { +"Barnetillegg for fellesbarn blir ikke utbetalt fordi den samlede inntekten til deg og barnets andre forelder er høyere enn " + data.grenseUtbetaltBarnetillegg.format() +", som er grensen for å få utbetalt barnetillegg. Får dere lavere inntekt i fremtiden, kan du få utbetalt barnetillegg igjen. " },
-                        nynorsk { +"Barnetillegg for fellesbarn blir ikkje utbetalt fordi den samla inntekta til deg og barnets andre forelder er høgare enn " + data.grenseUtbetaltBarnetillegg.format() +", som er grensa for å få utbetalt barnetillegg. Får dere lågare inntekt i framtida, kan du få utbetalt barnetillegg igjen. " },
+                        bokmal { +"Barnetillegg for fellesbarn blir ikke utbetalt fordi den samlede inntekten til deg og barnets andre forelder er høyere enn " + data.samletInntektsgrenseBarnetillegg.format() +", som er grensen for å få utbetalt barnetillegg. Får dere lavere inntekt i fremtiden, kan du få utbetalt barnetillegg igjen. " },
+                        nynorsk { +"Barnetillegg for fellesbarn blir ikkje utbetalt fordi den samla inntekta til deg og barnets andre forelder er høgare enn " + data.samletInntektsgrenseBarnetillegg.format() +", som er grensa for å få utbetalt barnetillegg. Får dere lågare inntekt i framtida, kan du få utbetalt barnetillegg igjen. " },
                     )
                 }
-            }.orShowIf(data.redusertBarnetillegg) {
+            }.orShow {
                 paragraph {
                     text(
                         bokmal { +"Barnetillegg for fellesbarn blir redusert til " + data.nyttBarnetillegg.format() + " per måned, fordi den samlede inntekten til deg og barnets andre forelder er høyere enn fribeløpet på " + data.fribelop.format() + ". " },

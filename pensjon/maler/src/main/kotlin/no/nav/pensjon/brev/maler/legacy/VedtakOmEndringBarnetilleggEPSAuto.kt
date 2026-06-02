@@ -6,17 +6,15 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPS
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.arligUtbetalingBarnetilleggFB
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.fribelop
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.gInntil
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.grenseUtbetaltBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.samletInntektsgrenseBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.inntektBruker
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.inntektEPS
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nettoBarnetilleggFB
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nettoUforetrygdUtenTillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nullBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nyttBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.redusertBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.samletInntekt
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.totalbelop
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.utbetalingBarnetilleggResten
@@ -65,11 +63,9 @@ object VedtakOmEndringBarnetilleggEPSAuto : AutobrevTemplate<VedtakOmEndringBarn
                         totalbelop = data.totalbelop,
                         inntektBruker = data.inntektBruker,
                         inntektEPS = data.inntektEPS,
-                        redusertBarnetillegg = data.redusertBarnetillegg,
-                        nullBarnetillegg = data.nullBarnetillegg,
                         gInntil = data.gInntil,
                         samletInntekt = data.samletInntekt,
-                        grenseUtbetaltBarnetillegg = data.grenseUtbetaltBarnetillegg,
+                        samletInntektsgrenseBarnetillegg = data.samletInntektsgrenseBarnetillegg,
                         nyttBarnetillegg = data.nyttBarnetillegg,
                         fribelop = data.fribelop,
                         arligUtbetalingBarnetilleggFB = data.arligUtbetalingBarnetilleggFB,
