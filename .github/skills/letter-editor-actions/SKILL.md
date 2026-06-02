@@ -22,7 +22,89 @@ The goal is to keep action logic safe and consistent for:
 3. Update `draft.focus` deterministically after mutation; never leave focus pointing at deleted content.
 4. Guard early with type/index checks (`isValidIndex`, `isItemContentIndex`, `isTableCellIndex`, etc.).
 5. Ensure valid end structure: if a block/item/cell becomes empty, it should normally receive `newLiteral()`.
-6. Preserve semantics for existing IDs and `deleted*` arrays during move/split/merge.
+6. Preserve semantics for existing IDs and `deleted*` arrays during move/split/merge (see **ID and deletion semantics** below).
+
+## ID and deletion semantics
+
+Every element in the `EditedLetter` model (`AnyBlock`, content items, list items, table rows/cells, …) implements `Identifiable`:
+
+```ts
+type Identifiable = { id: number | null; parentId: number | null };
+```
+
+Understanding `id` and `parentId` is critical because the **backend uses them to merge user edits with fresh template renders** after saksbehandlerValg changes.
+
+### `id`: template origin vs. user-created
+
+| Value | Meaning |
+|---|---|
+| `number` | Element originated from the brevbaker template render. Stable per logical template element. |
+| `null` | Element was created by the saksbehandler (new paragraph, literal, list item, …). Never has a template counterpart. |
+
+**Rules:**
+- **Always set `id: null`** when creating new elements. Never fabricate or copy an existing ID. All `new*` factory functions in `common.ts` do this correctly — use them.
+- **Never mutate `id`** on an element received from the server.
+- The backend's `isNew()` check (`id == null`) is the sole sentinel for "user-created". These elements are always kept verbatim during re-merge.
+
+### `parentId`: tracking element origin
+
+`parentId` records the `id` of the **containing parent at the time the element was placed** (set during `toEdit()` on the backend when converting a fresh render to an edit model).
+
+The backend uses `parentId` for two things:
+1. **`isEdited()` on a container** — if any child has `parentId != parent.id`, the container is considered edited (the child was moved in from another parent).
+2. **Moved-element preservation during re-merge** — if a template element is no longer in the fresh render but `child.parentId != current parent.id`, the backend infers it was intentionally moved and preserves it.
+
+**Rules:**
+- **Always set `parentId: null`** on newly created elements. The `new*` factories do this.
+- **Never mutate `parentId`** on elements received from the server — it is a read-only tracking field.
+- When you *move* a template element to a different parent (e.g. reordering across blocks), its `parentId` will legitimately differ from its new parent's `id`. This is correct behavior and is how the backend detects intentional moves.
+
+### `deleted*` arrays: tracking deleted template elements
+
+Each container has a companion array for tracking deleted template elements:
+
+| Container | Companion array |
+|---|---|
+| `EditedLetter` | `deletedBlocks` |
+| `AnyBlock` | `deletedContent` |
+| `ItemList` | `deletedItems` |
+| `Item` | `deletedContent` |
+| `Table` | `deletedRows` |
+
+These arrays hold **integer IDs only** — never `null`. The backend uses them to filter template elements out of fresh renders so deleted content stays deleted after re-merge.
+
+**Rules — when removing an element:**
+- Use `removeElements(index, count, parent)` — it calls `deleteElement()` internally, which handles all the guards below.
+- If you must remove manually, push `element.id` to the parent's `deleted*` array **only if all** of these hold:
+  1. `element.id !== null` — don't track user-created elements.
+  2. `element.parentId === parent.id` — element genuinely belongs to this parent (not moved in from elsewhere).
+  3. The `id` is not already in `deleted*` and not still present in the content array.
+
+**Rules — when re-adding an element:**
+- Use `addElements(elements, at, parent.content, parent.deletedContent)` — it removes matching IDs from `deleted*` automatically.
+- If you must add manually, remove the element's `id` from `deleted*` to un-mark it as deleted.
+
+**When splitting a container (e.g. splitting a list into two):**
+- Decide which `deleted*` entries logically belong to each half. When it is ambiguous (e.g. `deletedItems` after splitting a list at an unknown original position), propagate all deleted entries to the half that is most likely to have owned them — or to both, since the backend prunes stale IDs after re-merge anyway.
+- **Do not silently drop `deleted*` entries** — a missing deletion record means the backend will re-introduce the deleted element from the fresh render.
+
+### Edit overlay fields
+
+These fields store user modifications **alongside** the original template value — never replace the original:
+
+| Field | Type | Original | Edited |
+|---|---|---|---|
+| `LiteralValue.text` | `string` | template text (read-only) | `editedText: string \| null` |
+| `LiteralValue.fontType` | `FontType` | template font (read-only) | `editedFontType: FontType \| null` |
+| `ItemList.listType` | `ListType` | template list type (read-only) | `editedListType: ListType \| null` |
+
+`null` means "unmodified; use original". The `text()` helper reads `editedText ?? text`. The backend's `toMarkup()` applies the same overlay pattern.
+
+**Rule:** To edit text/font/list-type, set the `edited*` field. Never write to `text`, `fontType`, or `listType` directly.
+
+### `mergeLiteralsIfPossible`
+
+Two adjacent literals can only be merged into one when **at least one has `id: null`** (is user-created). Two template literals (both with non-null IDs) are always kept separate — merging them would discard an ID the backend needs for re-merge matching. `addElements()` calls this automatically at insertion boundaries.
 
 ## Utility-first: preferred building blocks
 
@@ -90,6 +172,8 @@ Avoid ad hoc slicing that duplicates `editedText`/`text` rules.
 - [ ] The change follows the `withPatches` pattern.
 - [ ] Focus is valid after all branches.
 - [ ] `saveStatus` is set only on real model changes.
-- [ ] `deleted*` arrays remain consistent.
+- [ ] `deleted*` arrays remain consistent (see ID and deletion semantics above).
+- [ ] New elements use `id: null` and `parentId: null`; no existing IDs are mutated.
+- [ ] Edit overlays (`editedText`, `editedFontType`, `editedListType`) are set instead of overwriting originals.
 - [ ] Empty container cases are handled (`newLiteral()` when needed).
 - [ ] Table-separator invariants are still satisfied.
