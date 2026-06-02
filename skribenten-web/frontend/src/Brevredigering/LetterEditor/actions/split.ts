@@ -166,6 +166,11 @@ function splitContentArrayAtLiteral<T extends Content | TextContent>(
     if (offset > 0) {
       const newLiteral = splitLiteralAtOffset(content, offset);
 
+      // removeElements marks the moved elements as deleted in from.deletedContent. This is
+      // intentional: the "deleted" records in the source block prevent the backend from
+      // re-introducing those template elements back into the source during re-merge. The
+      // after-block is user-created (id: null) and kept verbatim by the backend. This is how
+      // splits persist across fresh template renders (see letter-editor-actions SKILL.md).
       contentAfterSplit = removeElements(atIndex + 1, from.content.length, from);
       if (text(newLiteral).length > 0 || isVariable(contentAfterSplit[0]) || contentAfterSplit.length === 0) {
         addElements([newLiteral as T], 0, contentAfterSplit, []);

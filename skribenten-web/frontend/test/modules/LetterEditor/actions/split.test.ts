@@ -502,6 +502,27 @@ describe("LetterEditorActions.split", () => {
         const result = Actions.split(state, { blockIndex: 1, contentIndex: 0 }, 0);
         expect(result.redigertBrev.blocks).toHaveLength(3);
       });
+
+      test("pre-existing deletedItems are propagated to both the before-list and the after-list", () => {
+        const deletedId = 9001;
+        const state = letter(
+          paragraph([
+            itemList({
+              items: [item(literal({ text: "item1" })), item(literal({ text: "" })), item(literal({ text: "item3" }))],
+              deletedItems: [deletedId],
+            }),
+          ]),
+        );
+
+        const result = Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 }, 0);
+
+        // [block: list(item1)] [block: newLiteral()] [block: list(item3)]
+        expect(result.redigertBrev.blocks).toHaveLength(3);
+        const beforeList = select<ItemList>(result, { blockIndex: 0, contentIndex: 0 });
+        const afterList = select<ItemList>(result, { blockIndex: 2, contentIndex: 0 });
+        expect(beforeList.deletedItems).toContain(deletedId);
+        expect(afterList.deletedItems).toContain(deletedId);
+      });
     });
   });
 });

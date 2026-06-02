@@ -100,7 +100,6 @@ const toggleListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralInde
     id: block.id,
   }).filter(isItemList);
 
-  // TODO(stw): May this fail if there are no list with ID?
   // Collect all items from the lists to merge, preserving order.
   // Identify a list with a non-null id to keep (so the backend can track it),
   // falling back to the last list in the sequence.
@@ -108,6 +107,11 @@ const toggleListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralInde
   const allItems = itemLists.flatMap((l) => [...l.items]);
   const allDeletedItems = itemLists.flatMap((l) => [...l.deletedItems]);
 
+  // INTENTIONAL ID COPY: the merged list is given listWithId.id even though it is a new object.
+  // This preserves the backend's merge-tracking identity for this list across re-renders — without
+  // it the backend would both "delete" and "re-add" the list from the fresh template render.
+  // addElements below will un-delete that id from block.deletedContent if it was marked deleted.
+  // Rule 1 exception: ID preservation during merge (see letter-editor-actions SKILL.md).
   const mergedList = newItemList({
     id: listWithId.id,
     listType: listWithId.listType,
@@ -169,6 +173,8 @@ const mergeAdjacentListsInBlock = (
   const allItems = itemLists.flatMap((l) => [...l.items]);
   const allDeletedItems = itemLists.flatMap((l) => [...l.deletedItems]);
 
+  // INTENTIONAL ID COPY — same rationale as in toggleListOn above.
+  // Rule 1 exception: ID preservation during merge (see letter-editor-actions SKILL.md).
   const mergedList = newItemList({
     id: listWithId.id,
     listType: listWithId.listType,
@@ -231,6 +237,10 @@ const mergeListWithAdjacentBlocks = (
         }
 
         const curList = blocks[blockIndex].content[contentIndex] as Draft<ItemList>;
+        // Direct mutation (not addElements): items from the prev list have parentId pointing to
+        // the prev list's id, not curList.id, so they cannot be in curList.deletedItems — no
+        // un-delete step is needed. addElements would also try to merge adjacent literals at the
+        // item boundary, which does not apply to Item[].
         curList.items.unshift(...(prevItems as ItemList["items"]));
         curList.deletedItems.push(...(prevDeletedItems as ItemList["deletedItems"]));
         draft.focus.blockIndex = blockIndex;
@@ -266,6 +276,7 @@ const mergeListWithAdjacentBlocks = (
         }
 
         const curList = blocks[blockIndex].content[contentIndex] as Draft<ItemList>;
+        // Direct mutation — same reasoning as the unshift case above.
         curList.items.push(...(nextItems as ItemList["items"]));
         curList.deletedItems.push(...(nextDeletedItems as ItemList["deletedItems"]));
       }
@@ -304,6 +315,11 @@ const toggleListOff = (draft: Draft<LetterEditorState>, literalIndex: ItemConten
       // since we've already removed the item, then if we're removing the last item the index will be equal to `thisItemList.items.length`.
       addElements(itemContent, insertItemContentIndex, block.content, block.deletedContent);
     } else {
+      // removeElements marks the moved items as deleted in itemList.deletedItems. This is
+      // intentional (the split-persistence mechanism): those deletion records prevent the backend
+      // from re-introducing the items into the original list on re-merge. The new user-created
+      // list (id: null) that receives them is kept verbatim by the backend.
+      // See letter-editor-actions SKILL.md for the split-persistence pattern.
       const itemsAfter = removeElements(literalIndex.itemIndex, itemList.items.length, {
         content: itemList.items,
         deletedContent: itemList.deletedItems,

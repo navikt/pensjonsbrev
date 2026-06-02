@@ -42,9 +42,15 @@ Understanding `id` and `parentId` is critical because the **backend uses them to
 | `null` | Element was created by the saksbehandler (new paragraph, literal, list item, …). Never has a template counterpart. |
 
 **Rules:**
-- **Always set `id: null`** when creating new elements. Never fabricate or copy an existing ID. All `new*` factory functions in `common.ts` do this correctly — use them.
+- **Always set `id: null`** when creating new elements. Never fabricate or guess IDs. All `new*` factory functions in `common.ts` do this correctly — use them.
 - **Never mutate `id`** on an element received from the server.
 - The backend's `isNew()` check (`id == null`) is the sole sentinel for "user-created". These elements are always kept verbatim during re-merge.
+
+**Exception — ID preservation during merge**: When merging several nodes into one (e.g., merging adjacent item lists into a single list), it is correct to give the resulting merged node the `id` of one of the original nodes. This preserves the backend's merge-tracking identity — without it the backend would see the node as both deleted and re-added from the fresh render. The pattern only applies when:
+1. The source node with the copied `id` is removed via `removeElements` first (so its `id` enters `deleted*`), AND
+2. `addElements` is used to insert the merged node (which removes the id from `deleted*` again).
+
+Always mark such sites with a comment: `// INTENTIONAL ID COPY — ID preservation during merge (see letter-editor-actions SKILL.md).`
 
 ### `parentId`: tracking element origin
 
@@ -84,8 +90,11 @@ These arrays hold **integer IDs only** — never `null`. The backend uses them t
 - Use `addElements(elements, at, parent.content, parent.deletedContent)` — it removes matching IDs from `deleted*` automatically.
 - If you must add manually, remove the element's `id` from `deleted*` to un-mark it as deleted.
 
+**Split-persistence mechanism — `removeElements` on moved content is intentional:**
+When splitting a block or list (user presses Enter, or toggles off a middle list item), the content moving to the new user-created block/list is removed from the source via `removeElements`. This marks those IDs as deleted in the source's `deleted*` array — which looks like a "false deletion" but is intentionally correct: those deletion records prevent the backend from re-introducing the content back into the source block/list on the next re-merge. The new block/list has `id: null` (user-created) and is preserved verbatim by the backend, retaining the moved content. Do NOT replace `removeElements` with raw `splice` here — the deletion record is required.
+
 **When splitting a container (e.g. splitting a list into two):**
-- Decide which `deleted*` entries logically belong to each half. When it is ambiguous (e.g. `deletedItems` after splitting a list at an unknown original position), propagate all deleted entries to the half that is most likely to have owned them — or to both, since the backend prunes stale IDs after re-merge anyway.
+- Decide which `deleted*` entries logically belong to each half. When it is ambiguous (e.g. `deletedItems` after splitting a list at an unknown original position), propagate all deleted entries to **both** halves — the backend prunes stale IDs after re-merge anyway, so having extras is safe; missing entries would let the backend re-introduce deleted items.
 - **Do not silently drop `deleted*` entries** — a missing deletion record means the backend will re-introduce the deleted element from the fresh render.
 
 ### Edit overlay fields

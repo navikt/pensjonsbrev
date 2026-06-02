@@ -639,6 +639,10 @@ export function breakOutEmptyItem(
             listType: itemList.listType,
             editedListType: itemList.editedListType,
             items: itemsBefore as Item[],
+            // Copy all deletedItems to both halves: we can't know which deleted IDs
+            // belonged to which half, and the backend prunes stale IDs after re-merge,
+            // so having extras is safe. Missing entries would let the backend re-introduce
+            // previously deleted items.
             deletedItems: [...itemList.deletedItems],
           }),
         ],
@@ -659,6 +663,8 @@ export function breakOutEmptyItem(
             listType: itemList.listType,
             editedListType: itemList.editedListType,
             items: itemsAfter as Item[],
+            // See comment on the before-list above.
+            deletedItems: [...itemList.deletedItems],
           }),
         ],
       }),
