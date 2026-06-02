@@ -39,7 +39,7 @@ object InfoEndretUforetrygdPgaInntekt : AutobrevTemplate<InfoEndretUTPgaInntektD
             }
             paragraph {
                 text(
-                    bokmal { +"Hvis du fortsetter å ha like mye inntekt som du har hatt hittil i år, vil du få utbetalt for mye uføretrygd. Hvis inntekten din blir høyere enn " + belopsgrense.format() + " kroner i år, vil du få en lavere utbetaling av uføretrygd."}
+                    bokmal { +"Hvis du fortsetter å ha like mye inntekt som du har hatt hittil i år, vil du få utbetalt for mye uføretrygd. Hvis inntekten din blir høyere enn " + belopsgrense.format() + " i år, vil du få en lavere utbetaling av uføretrygd."}
                 )
             }
             paragraph {
@@ -60,10 +60,10 @@ object InfoEndretUforetrygdPgaInntekt : AutobrevTemplate<InfoEndretUTPgaInntektD
             }
             paragraph {
                 list {
-                    item { text(bokmal { +"Hvis du ikke forventer at inntekten din blir høyere enn " + belopsgrense.format() + " kroner i år, trenger du ikke gjøre noe." }) }
+                    item { text(bokmal { +"Hvis du ikke forventer at inntekten din blir høyere enn " + belopsgrense.format() + " i år, trenger du ikke gjøre noe." }) }
                 }
                 list {
-                    item { text(bokmal { +"Forventer du at inntekten din blir høyere enn " + belopsgrense.format() + " kroner, bør du melde fra til oss så fort som mulig." }) }
+                    item { text(bokmal { +"Forventer du at inntekten din blir høyere enn " + belopsgrense.format() + ", bør du melde fra til oss så fort som mulig." }) }
                 }
                 list {
                     item { text(bokmal { +"Har du barnetillegg og bor sammen med barnets andre forelder, bør du melde fra om både din og den andre forelderens inntekt." }) }
@@ -77,7 +77,7 @@ object InfoEndretUforetrygdPgaInntekt : AutobrevTemplate<InfoEndretUTPgaInntektD
             }
             paragraph {
                 text(
-                    bokmal { +"Du kan få dette brevet fordi du har fått en større utbetaling av feriepenger. Så lenge inntekten din for året ikke blir høyere enn " + belopsgrense.format() + " kroner blir ikke utbetalingen av uføretrygden din påvirket."}
+                    bokmal { +"Du kan få dette brevet fordi du har fått en større utbetaling av feriepenger. Så lenge inntekten din for året ikke blir høyere enn " + belopsgrense.format() + " blir ikke utbetalingen av uføretrygden din påvirket."}
                 )
             }
             paragraph {
