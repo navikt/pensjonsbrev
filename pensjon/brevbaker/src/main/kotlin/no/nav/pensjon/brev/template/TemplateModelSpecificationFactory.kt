@@ -47,6 +47,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                             SaksbehandlervalgVerdi.Type.BOOL -> Boolean::class
                             SaksbehandlervalgVerdi.Type.INTEGER -> Int::class
                             SaksbehandlervalgVerdi.Type.ENUM -> Enum::class
+                            SaksbehandlervalgVerdi.Type.TEXT -> String::class
                         }.createType(),
                         annotations = listOf(),
                         displayText = it.value.displayText,

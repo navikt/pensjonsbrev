@@ -2,12 +2,13 @@ package no.nav.pensjon.brev.api.model.maler
 
 sealed interface SaksbehandlervalgVerdi {
     enum class Type {
-        BOOL, INTEGER, ENUM
+        BOOL, INTEGER, ENUM, TEXT
     }
     fun unwrap(): Any? = when (this) {
         is Bool -> bool
         is Integer -> int
         is Enum<*> -> enum
+        is Text -> text
     }
     val type: Type
     val displayText: String
@@ -38,6 +39,15 @@ sealed interface SaksbehandlervalgVerdi {
             return enum == other.enum
         }
         override fun hashCode() = enum.hashCode()
+    }
+    class Text(val text: String?, override val displayText: String) : SaksbehandlervalgVerdi {
+        override val type = Type.TEXT
+        override fun toString() = "SaksbehandlervalgVerdi.Text(text=$text)"
+        override fun equals(other: Any?): Boolean {
+            if (other !is Text) return false
+            return text == other.text
+        }
+        override fun hashCode() = text.hashCode()
     }
 }
 

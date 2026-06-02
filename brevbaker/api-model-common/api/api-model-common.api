@@ -326,10 +326,22 @@ public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$In
 	public fun unwrap ()Ljava/lang/Object;
 }
 
+public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Text : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDisplayText ()Ljava/lang/String;
+	public final fun getText ()Ljava/lang/String;
+	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public fun unwrap ()Ljava/lang/Object;
+}
+
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type : java/lang/Enum {
 	public static final field BOOL Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
 	public static final field ENUM Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
 	public static final field INTEGER Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
+	public static final field TEXT Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
 	public static fun values ()[Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;

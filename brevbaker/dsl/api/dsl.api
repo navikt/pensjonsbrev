@@ -931,6 +931,7 @@ public final class no/nav/pensjon/brev/template/SaksbehandlervalgKt {
 	public static final fun int (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
 	public static final fun saksbehandlervalg (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brev/template/SaksbehandlervalgWrapper;
 	public static final fun selector (Ljava/lang/String;)Lno/nav/pensjon/brev/template/SaksbehandlervalgSelector;
+	public static final fun text (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
 }
 
 public final class no/nav/pensjon/brev/template/SaksbehandlervalgSelector : no/nav/pensjon/brev/template/TemplateModelSelector {
@@ -961,6 +962,7 @@ public final class no/nav/pensjon/brev/template/SaksbehandlervalgWrapper {
 	public final fun getScope ()Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;
 	public final fun int (Ljava/lang/Integer;)Lno/nav/pensjon/brev/template/Expression;
 	public static synthetic fun int$default (Lno/nav/pensjon/brev/template/SaksbehandlervalgWrapper;Ljava/lang/Integer;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun text (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/SimpleSelector : no/nav/pensjon/brev/template/TemplateModelSelector {

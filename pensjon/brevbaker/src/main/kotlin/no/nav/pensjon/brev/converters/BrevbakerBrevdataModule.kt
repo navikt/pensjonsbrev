@@ -50,6 +50,7 @@ object BrevbakerBrevdataModule : SimpleModule() {
                     SaksbehandlervalgVerdi.Type.BOOL -> SaksbehandlervalgVerdi.Bool::class.java
                     SaksbehandlervalgVerdi.Type.INTEGER -> SaksbehandlervalgVerdi.Integer::class.java
                     SaksbehandlervalgVerdi.Type.ENUM -> SaksbehandlervalgVerdi.Enum::class.java
+                    SaksbehandlervalgVerdi.Type.TEXT -> SaksbehandlervalgVerdi.Text::class.java
                 }
                 return p.codec.treeToValue(node, type)
             }

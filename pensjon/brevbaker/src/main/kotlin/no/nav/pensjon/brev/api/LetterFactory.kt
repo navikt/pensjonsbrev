@@ -89,12 +89,14 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
                     is SaksbehandlervalgVerdi.Bool -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Bool(nye.value as Boolean, nye.key)
                     is SaksbehandlervalgVerdi.Enum<*> -> TODO()
                     is SaksbehandlervalgVerdi.Integer -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Integer((nye.value as String).toInt(), nye.key)
+                    is SaksbehandlervalgVerdi.Text -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Text(nye.value as String, nye.key)
                     null -> // Dette kan skje hvis malen kombinerer ny og gammel løsning
                         when (nye.value) {
                             // Display text her blir i praksis ikke brukt, så det er ikke så farlig at den er uformatert
                             is Boolean -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Bool(nye.value as Boolean, nye.key)
                             is Int -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Integer(nye.value as Int, nye.key)
         //                  is Enum<*> -> saksbehandlervalg[it.key] = SaksbehandlervalgVerdi.Enum<Any>(it.value as Enum<String>) // TODO: typing
+                            is String -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Text(nye.value as String, nye.key)
                             else -> throw IllegalArgumentException("Unsupported type for saksbehandlervalg: ${nye.value?.javaClass}")
                         }
                 }

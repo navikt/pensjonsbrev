@@ -16,6 +16,10 @@ class SaksbehandlervalgWrapper<LetterData : RedigerbarBrevdata<Saksbehandlervalg
         .int()
         .also { scope.saksbehandlervalg[id] = SaksbehandlervalgVerdi.Integer(default, displayText) }
 
+    fun text(default: String?): Expression<String?> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
+        .text()
+        .also { scope.saksbehandlervalg[id] = SaksbehandlervalgVerdi.Text(default, displayText) }
+
     inline fun <reified T : SaksbehandlerValgEnum> enum(default: T? = null): Expression<T?> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
         .enum<T?>()
         .also { scope.saksbehandlervalg[id] = SaksbehandlervalgVerdi.Enum(default, displayText) }
@@ -42,6 +46,14 @@ fun Expression<SaksbehandlervalgVerdi>.int(): Expression.UnaryInvoke<Saksbehandl
         override val propertyName = "int"
         override val propertyType = "Int"
         override val selector: SaksbehandlervalgVerdi.() -> Int? = { this.unwrap() as Int? }
+    }))
+
+fun Expression<SaksbehandlervalgVerdi>.text(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, String?> =
+    Expression.UnaryInvoke(this, UnaryOperation.Select(object : TemplateModelSelector<SaksbehandlervalgVerdi, String?> {
+        override val className = SaksbehandlervalgVerdi::class.qualifiedName!!
+        override val propertyName = "string"
+        override val propertyType = "kotlin.String"
+        override val selector: SaksbehandlervalgVerdi.() -> String? = { this.unwrap() as String? }
     }))
 
 inline fun <reified T : SaksbehandlerValgEnum?> Expression<SaksbehandlervalgVerdi>.enum(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, T?> =
