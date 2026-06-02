@@ -27,7 +27,6 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
         val gInntil: Expression<Kroner>,
         val samletInntekt: Expression<Kroner>,
         val samletInntektsgrenseBarnetillegg: Expression<Kroner>,
-        val nyttBarnetillegg: Expression<Kroner>,
         val fribelop: Expression<Kroner>,
         val arligUtbetalingBarnetilleggFB: Expression<Kroner>,
         val utbetaltBarnetilleggHittilIAr: Expression<Kroner>,
@@ -153,15 +152,15 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
             }.orShow {
                 paragraph {
                     text(
-                        bokmal { +"Barnetillegg for fellesbarn blir redusert til " + data.nyttBarnetillegg.format() + " per måned, fordi den samlede inntekten til deg og barnets andre forelder er høyere enn fribeløpet på " + data.fribelop.format() + ". " },
-                        nynorsk { +"Barnetillegg for fellesbarn blir redusert til " + data.nyttBarnetillegg.format() + " per månad, fordi den samla inntekta til deg og barnets andre forelder er høgare enn fribeløpet på " + data.fribelop.format() + ". " },
+                        bokmal { +"Barnetillegg for fellesbarn blir redusert til " + data.nettoBarnetilleggFB.format() + " per måned, fordi den samlede inntekten til deg og barnets andre forelder er høyere enn fribeløpet på " + data.fribelop.format() + ". " },
+                        nynorsk { +"Barnetillegg for fellesbarn blir redusert til " + data.nettoBarnetilleggFB.format() + " per månad, fordi den samla inntekta til deg og barnets andre forelder er høgare enn fribeløpet på " + data.fribelop.format() + ". " },
                     )
                 }
 
                 paragraph {
                     text(
-                        bokmal { +"Du har rett til en årlig utbetaling av barnetillegg for fellesbarn på " + data.arligUtbetalingBarnetilleggFB.format() + ". Siden du allerede har fått utbetalt " + data.utbetaltBarnetilleggHittilIAr.format() + " i barnetillegg hittil i år, har du rett til utbetaling på " + data.utbetalingBarnetilleggResten.format() + " resten av året. Derfor får du " + data.nyttBarnetillegg.format() + " i måneden før skatt i barnetillegg resten av året. " },
-                        nynorsk { +"Du har rett til ei årleg utbetaling av barnetillegg for fellesbarn på " + data.arligUtbetalingBarnetilleggFB.format() + ". Sidan du allereie har fått utbetalt " + data.utbetaltBarnetilleggHittilIAr.format() + " i barnetillegg hittil i år, har du rett til utbetaling på " + data.utbetalingBarnetilleggResten.format() + " resten av året. Derfor får du " + data.nyttBarnetillegg.format() + " i månaden før skatt i barnetillegg resten av året. " },
+                        bokmal { +"Du har rett til en årlig utbetaling av barnetillegg for fellesbarn på " + data.arligUtbetalingBarnetilleggFB.format() + ". Siden du allerede har fått utbetalt " + data.utbetaltBarnetilleggHittilIAr.format() + " i barnetillegg hittil i år, har du rett til utbetaling på " + data.utbetalingBarnetilleggResten.format() + " resten av året. Derfor får du " + data.nettoBarnetilleggFB.format() + " i måneden før skatt i barnetillegg resten av året. " },
+                        nynorsk { +"Du har rett til ei årleg utbetaling av barnetillegg for fellesbarn på " + data.arligUtbetalingBarnetilleggFB.format() + ". Sidan du allereie har fått utbetalt " + data.utbetaltBarnetilleggHittilIAr.format() + " i barnetillegg hittil i år, har du rett til utbetaling på " + data.utbetalingBarnetilleggResten.format() + " resten av året. Derfor får du " + data.nettoBarnetilleggFB.format() + " i månaden før skatt i barnetillegg resten av året. " },
                     )
                 }
             }

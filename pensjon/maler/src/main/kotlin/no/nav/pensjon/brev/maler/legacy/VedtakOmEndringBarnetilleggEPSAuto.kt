@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPS
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nettoBarnetilleggFB
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nettoUforetrygdUtenTillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nyttBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.samletInntekt
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.totalbelop
@@ -66,7 +65,6 @@ object VedtakOmEndringBarnetilleggEPSAuto : AutobrevTemplate<VedtakOmEndringBarn
                         gInntil = data.gInntil,
                         samletInntekt = data.samletInntekt,
                         samletInntektsgrenseBarnetillegg = data.samletInntektsgrenseBarnetillegg,
-                        nyttBarnetillegg = data.nyttBarnetillegg,
                         fribelop = data.fribelop,
                         arligUtbetalingBarnetilleggFB = data.arligUtbetalingBarnetilleggFB,
                         utbetaltBarnetilleggHittilIAr = data.utbetaltBarnetilleggHittilIAr,

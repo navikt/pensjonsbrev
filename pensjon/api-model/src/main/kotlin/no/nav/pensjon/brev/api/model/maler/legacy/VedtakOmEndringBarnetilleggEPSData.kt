@@ -16,7 +16,6 @@ data class VedtakOmEndringBarnetilleggEPSData(
     val gInntil: Kroner,
     val samletInntekt: Kroner,
     val samletInntektsgrenseBarnetillegg: Kroner,
-    val nyttBarnetillegg: Kroner,
     val fribelop: Kroner,
     val arligUtbetalingBarnetilleggFB: Kroner,
     val utbetaltBarnetilleggHittilIAr: Kroner,

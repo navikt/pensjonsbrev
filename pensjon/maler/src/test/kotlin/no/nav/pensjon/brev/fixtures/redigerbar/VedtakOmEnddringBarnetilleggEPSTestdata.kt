@@ -16,7 +16,6 @@ fun createVedtakOmEndringBarnetilleggEPSAutoDto() =
             gInntil = Kroner(600000),
             samletInntekt = Kroner(350000),
             samletInntektsgrenseBarnetillegg = Kroner(24000),
-            nyttBarnetillegg = Kroner(2000),
             fribelop = Kroner(50000),
             arligUtbetalingBarnetilleggFB = Kroner(24000),
             utbetaltBarnetilleggHittilIAr = Kroner(12000),
