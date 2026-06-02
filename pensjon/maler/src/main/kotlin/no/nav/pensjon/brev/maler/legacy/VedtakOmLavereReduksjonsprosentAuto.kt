@@ -60,6 +60,7 @@ object VedtakOmLavereReduksjonsprosentAuto : AutobrevTemplate<VedtakOmIFUReduksj
             includePhrase(
                 OktMinsteIFUReduksjonsprosent.Outline(
                     OktMinsteIFUReduksjonsprosent.Brevdata(
+                        redigerbar = false.expr(),
                         beregningFomDato = data.beregningFomDato,
                         totalbelop = data.totalbelop,
                         nettoUforetrygdUtenTillegg = data.nettoUforetrygdUtenTillegg,
