@@ -87,8 +87,8 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
             (letterData["saksbehandlerValg"] as Map<String, Any?>).entries.forEach { nye ->
                 when (template.saksbehandlervalg[nye.key]) {
                     is SaksbehandlervalgVerdi.Bool -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Bool(nye.value as? Boolean ?: false, nye.key)
-                    is SaksbehandlervalgVerdi.Enum -> {
-                        val eksisterendeVerdi: SaksbehandlervalgVerdi.Enum? = template.saksbehandlervalg[nye.key] as SaksbehandlervalgVerdi.Enum?
+                    is SaksbehandlervalgVerdi.Enum<*> -> {
+                        val eksisterendeVerdi: SaksbehandlervalgVerdi.Enum<*>? = template.saksbehandlervalg[nye.key] as SaksbehandlervalgVerdi.Enum<*>?
                         val enumverdi = eksisterendeVerdi?.let {
                             val clz = eksisterendeVerdi.clazz
                             java.lang.Enum.valueOf(clz as Class<out Enum<*>?>, nye.value as String)
