@@ -84,27 +84,20 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         val saksbehandlervalg = mutableMapOf<String, SaksbehandlervalgVerdi>()
         saksbehandlervalg.putAll(template.saksbehandlervalg)
         if (letterData is Map<*, *> && letterData.containsKey("saksbehandlerValg")) {
-            (letterData["saksbehandlerValg"] as Map<String, Any?>).entries.forEach { nye ->
-                when (template.saksbehandlervalg[nye.key]) {
-                    is SaksbehandlervalgVerdi.Bool -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Bool(nye.value as? Boolean ?: false, nye.key)
-                    is SaksbehandlervalgVerdi.Enum<*> -> {
-                        val eksisterendeVerdi: SaksbehandlervalgVerdi.Enum<*>? = template.saksbehandlervalg[nye.key] as SaksbehandlervalgVerdi.Enum<*>?
-                        val enumverdi = eksisterendeVerdi?.let {
-                            val clz = eksisterendeVerdi.clazz
-                            java.lang.Enum.valueOf(clz as Class<out Enum<*>?>, nye.value as String)
-                        }
-                        val kopi = eksisterendeVerdi?.kopier(enumverdi)
-                        saksbehandlervalg[nye.key] = kopi!!
-                    }
-                    is SaksbehandlervalgVerdi.Integer -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Integer((nye.value as? String)?.toInt(), nye.key)
-                    is SaksbehandlervalgVerdi.Text -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Text(nye.value as String, nye.key)
+            (letterData["saksbehandlerValg"] as Map<String, Any?>).entries.forEach { nye -> // TODO: kva er eigentleg typen her?
+                saksbehandlervalg[nye.key] = when (val eksisterende = template.saksbehandlervalg[nye.key]) {
+                    is SaksbehandlervalgVerdi.Bool -> SaksbehandlervalgVerdi.Bool(nye.value as? Boolean ?: false, nye.key)
+                    is SaksbehandlervalgVerdi.Enum<*> -> eksisterende.kopier(java.lang.Enum.valueOf(eksisterende.clazz, nye.value as String))
+                    is SaksbehandlervalgVerdi.Integer -> SaksbehandlervalgVerdi.Integer((nye.value as? String)?.toInt(), nye.key)
+                    is SaksbehandlervalgVerdi.Text -> SaksbehandlervalgVerdi.Text(nye.value as String, nye.key)
                     null -> // Dette kan skje hvis malen kombinerer ny og gammel løsning
                         when (nye.value) {
+                            // TODO: lurer på om vi kkal støtte det her i det heile tatt, innfører ein del ekstra kompleksitet
                             // Display text her blir i praksis ikke brukt, så det er ikke så farlig at den er uformatert
-                            is Boolean -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Bool(nye.value as Boolean, nye.key)
-                            is Int -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Integer(nye.value as Int, nye.key)
-        //                  is Enum<*> -> saksbehandlervalg[it.key] = SaksbehandlervalgVerdi.Enum<Any>(it.value as Enum<String>) // TODO: typing
-                            is String -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Text(nye.value as String, nye.key)
+                            is Boolean -> SaksbehandlervalgVerdi.Bool(nye.value as Boolean, nye.key)
+                            is Int -> SaksbehandlervalgVerdi.Integer(nye.value as Int, nye.key)
+                            //is Enum<*> -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Enum<*>(nye.value as Enum<String>) // TODO: typing
+                            is String -> SaksbehandlervalgVerdi.Text(nye.value as String, nye.key)
                             else -> throw IllegalArgumentException("Unsupported type for saksbehandlervalg: ${nye.value?.javaClass}")
                         }
                 }
