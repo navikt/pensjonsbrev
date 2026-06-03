@@ -43,11 +43,11 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                 if (isSaksbehandlervalg) {
                     objectTypes[name] = createObjectTypeSpecification(saksbehandlervalg.map { Parameter(
                         name = it.key,
-                        type = when (it.value.type) {
-                            SaksbehandlervalgVerdi.Type.BOOL -> Boolean::class
-                            SaksbehandlervalgVerdi.Type.INTEGER -> Int::class
-                            SaksbehandlervalgVerdi.Type.ENUM -> (it.value as SaksbehandlervalgVerdi.Enum<*>).clazz.kotlin
-                            SaksbehandlervalgVerdi.Type.TEXT -> String::class
+                        type = when (val v = it.value) {
+                            is SaksbehandlervalgVerdi.Bool -> Boolean::class
+                            is SaksbehandlervalgVerdi.Integer -> Int::class
+                            is SaksbehandlervalgVerdi.Enum<*> -> v.clazz.kotlin
+                            is SaksbehandlervalgVerdi.Text -> String::class
                         }.createType(),
                         annotations = listOf(),
                         displayText = it.value.displayText,

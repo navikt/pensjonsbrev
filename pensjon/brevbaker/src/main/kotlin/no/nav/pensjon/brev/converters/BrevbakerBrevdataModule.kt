@@ -61,12 +61,10 @@ object BrevbakerBrevdataModule : SimpleModule() {
     private object SaksbehandlervalgEnumDeserializer : JsonDeserializer<SaksbehandlervalgVerdi.Enum<*>>() {
         override fun deserialize(p: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgVerdi.Enum<*> {
             val node = p.codec.readTree<JsonNode>(p)
-            val clazz = Class.forName(node.get("clazz").textValue()!!)
-            val textValue = node.get("enum").textValue()!!
-            val enumerated: SaksbehandlerValgEnum? = java.lang.Enum.valueOf(clazz as Class<out Enum<*>?>, textValue) as SaksbehandlerValgEnum?
+            val clazz = Class.forName(node.get("clazz").textValue())
             return SaksbehandlervalgVerdi.Enum(
-                enum = enumerated,
-                displayText = node.get("displayText").textValue()!!,
+                enum = java.lang.Enum.valueOf(clazz as Class<out Enum<*>?>, node.get("enum").textValue()) as SaksbehandlerValgEnum?,
+                displayText = node.get("displayText").textValue(),
                 clazz = clazz,
             )
         }
