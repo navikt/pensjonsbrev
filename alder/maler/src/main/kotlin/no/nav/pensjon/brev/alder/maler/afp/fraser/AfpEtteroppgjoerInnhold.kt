@@ -32,16 +32,16 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Hvert år gjør Nav en kontroll av AFP når skatteoppgjøret er klart. " +
-                            "Hvis du har hatt en annen pensjonsgivende inntekt fra arbeid eller " +
-                            "næring enn den forventede inntekten som ble lagt til grunn ved utbetalingen, skal " +
-                            "vi gjøre en ny beregning av pensjonen på grunnlag av inntektsopplysningene fra " +
-                            "Skatteetaten."
+                                "Hvis du har hatt en annen pensjonsgivende inntekt fra arbeid eller " +
+                                "næring enn den forventede inntekten som ble lagt til grunn ved utbetalingen, skal " +
+                                "vi gjøre en ny beregning av pensjonen på grunnlag av inntektsopplysningene fra " +
+                                "Skatteetaten."
                     },
                     nynorsk {
-                        +"Kvart år gjennomfører NAV ein kontroll av AFP når resultatet av skatteoppgjeret er " +
-                            "klart. Dersom du har hatt ei anna pensjonsgivande inntekt frå arbeid eller næring " +
-                            "enn den framtidige inntekta som blei lagd til grunn ved utbetalinga, skal vi " +
-                            "berekne pensjonen på nytt på grunnlag av inntektsopplysningane frå Skatteetaten."
+                        +"Kvart år gjennomfører Nav ein kontroll av AFP når resultatet av skatteoppgjeret er " +
+                                "klart. Dersom du har hatt ei anna pensjonsgivande inntekt frå arbeid eller næring " +
+                                "enn den framtidige inntekta som blei lagd til grunn ved utbetalinga, skal vi " +
+                                "berekne pensjonen på nytt på grunnlag av inntektsopplysningane frå Skatteetaten."
                     },
                 )
             }
@@ -60,11 +60,11 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Vi har ikke funnet grunnlag for å endre beregningen av pensjonen din i " +
-                            oppgjoersAar.format() + " på bakgrunn av inntektsopplysningene fra Skatteetaten."
+                                oppgjoersAar.format() + " på bakgrunn av inntektsopplysningene fra Skatteetaten."
                     },
                     nynorsk {
                         +"Vi har ikkje funne grunnlag for å endre berekninga av pensjonen din i " +
-                            oppgjoersAar.format() + " på bakgrunn av inntektsopplysningane frå Skatteetaten."
+                                oppgjoersAar.format() + " på bakgrunn av inntektsopplysningane frå Skatteetaten."
                     },
                 )
             }
@@ -82,9 +82,9 @@ object AfpEtteroppgjoerInnhold {
                         +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3 bokstav d, og tilhørende forskrift om kombinasjon av avtalefestet pensjon for medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende inntekt)."
                     },
                     nynorsk {
-                        +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3 " +
-                            "bokstav d og tilhøyrande forskrift om kombinasjon av avtalefestet pensjon for " +
-                            "medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende inntekt)."
+                        +"Vedtaket er gjort etter lov om AFP for medlemmar av Statens pensjonskasse § 3 " +
+                                "bokstav d og tilhøyrande forskrift om kombinasjon av avtalefesta pensjon for " +
+                                "medlemmar av Statens pensjonskasse og arbeidsinntekt (pensjonsgivande inntekt)."
                     },
                 )
             }
@@ -99,7 +99,7 @@ object AfpEtteroppgjoerInnhold {
                         +"Vedtaket er gjort etter lov om AFP for apotekvirksomhet §3 og lov om AFP for medlemmer av Statens pensjonskasse § 3 bokstav d, og tilhørende forskrift om kombinasjon av avtalefestet pensjon for medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende inntekt)."
                     },
                     nynorsk {
-                        +"Vedtaket er gjort etter reglane om AFP for apotekvirksomhet §3."
+                        +"Vedtaket er gjort etter lov om AFP for apotekverksemd §3 og lov om AFP for medlemmar av Statens pensjonskasse § 3 bokstav d, og tilhøyrande forskrift om kombinasjon av avtalefesta pensjon for medlemmar av Statens pensjonskasse og arbeidsinntekt (pensjonsgivande inntekt)."
                     },
                 )
             }
@@ -134,11 +134,11 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Opplysninger fra Skatteetaten viser at du har hatt en samlet pensjonsgivende " +
-                            "inntekt på " + pensjonsgivendeInntekt.format() + " i inntektsåret " + oppgjoersAar.format() + "."
+                                "inntekt på " + pensjonsgivendeInntekt.format() + " i inntektsåret " + oppgjoersAar.format() + "."
                     },
                     nynorsk {
                         +"Opplysningar frå Skatteetaten viser at du har hatt ei samla pensjonsgivande " +
-                            "inntekt på " + pensjonsgivendeInntekt.format() + " i inntektsåret " + oppgjoersAar.format() + "."
+                                "inntekt på " + pensjonsgivendeInntekt.format() + " i inntektsåret " + oppgjoersAar.format() + "."
                     },
                 )
             }
@@ -172,17 +172,17 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Vi viser til tidligere brev om etteroppgjør av avtalefestet pensjon (AFP) for " +
-                            oppgjoersAar.format() + ". Resultatet av etteroppgjøret for " +
-                            oppgjoersAar.format() + " viser at utbetalingen av AFP i " +
-                            oppgjoersAar.format() + " har vært riktig. Etteroppgjøret for " +
-                            oppgjoersAar.format() + " er derfor avsluttet."
+                                oppgjoersAar.format() + ". Resultatet av etteroppgjøret for " +
+                                oppgjoersAar.format() + " viser at utbetalingen av AFP i " +
+                                oppgjoersAar.format() + " har vært riktig. Etteroppgjøret for " +
+                                oppgjoersAar.format() + " er derfor avsluttet."
                     },
                     nynorsk {
                         +"Vi viser til tidlegare brev om etteroppgjer av avtalefesta pensjon (AFP) for " +
-                            oppgjoersAar.format() + ". Resultatet av etteroppgjeret for " +
-                            oppgjoersAar.format() + " viser at utbetalinga av AFP i " +
-                            oppgjoersAar.format() + " har vore rett. Etteroppgjeret for " +
-                            oppgjoersAar.format() + " er derfor avslutta."
+                                oppgjoersAar.format() + ". Resultatet av etteroppgjeret for " +
+                                oppgjoersAar.format() + " viser at utbetalinga av AFP i " +
+                                oppgjoersAar.format() + " har vore rett. Etteroppgjeret for " +
+                                oppgjoersAar.format() + " er derfor avslutta."
                     },
                 )
             }
@@ -201,11 +201,11 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Ny beregning av etteroppgjøret for " + oppgjoersAar.format() +
-                            " fører til at det ikke blir tilbakekreving."
+                                " fører til at det ikke blir tilbakekreving."
                     },
                     nynorsk {
                         +"Ny berekning av etteroppgjeret for " + oppgjoersAar.format() +
-                            " fører til at det ikkje blir tilbakekrevjing."
+                                " fører til at det ikkje blir tilbakekrevjing."
                     },
                 )
             }
@@ -228,11 +228,11 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Hvis du mener at inntekten som ligger til grunn for beregningen er feil, må du " +
-                            "melde fra til oss innen "
+                                "melde fra til oss innen "
                     },
                     nynorsk {
                         +"Dersom du meiner at inntekta som ligg til grunn for berekninga, er feil, må du " +
-                            "melde frå til oss innan "
+                                "melde frå til oss innan "
                     },
                 )
                 text(
@@ -249,15 +249,15 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Inntekt fra arbeid eller virksomhet som er opptjent før første uttak av AFP " +
-                            "skal holdes utenfor etteroppgjøret. Dette gjelder også hvis inntekten er " +
-                            "utbetalt etter at du tok ut AFP. Med første uttak menes første gang du tok " +
-                            "ut AFP, uavhengig av om du har tatt ut gradert eller hel pensjon."
+                                "skal holdes utenfor etteroppgjøret. Dette gjelder også hvis inntekten er " +
+                                "utbetalt etter at du tok ut AFP. Med første uttak menes første gang du tok " +
+                                "ut AFP, uavhengig av om du har tatt ut gradert eller hel pensjon."
                     },
                     nynorsk {
                         +"Inntekt frå arbeid eller verksemd som er opptent før det første uttaket av AFP, " +
-                            "skal haldast utanfor etteroppgjeret. Det gjeld også dersom inntekta er " +
-                            "utbetalt etter at du tok ut AFP. Med første uttak meiner vi første gong du " +
-                            "tok ut AFP, uavhengig av om du har teke ut gradert eller heil pensjon."
+                                "skal haldast utanfor etteroppgjeret. Det gjeld også dersom inntekta er " +
+                                "utbetalt etter at du tok ut AFP. Med første uttak meiner vi første gong du " +
+                                "tok ut AFP, uavhengig av om du har teke ut gradert eller heil pensjon."
                     },
                 )
             }
@@ -275,23 +275,15 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Nedenfor kan du se nærmere hvilke inntekter som er brukt og hvordan vi har " +
-                            "beregnet din nye pensjon for denne perioden. Vi gjør oppmerksom på at " +
-                            "innrapporterte inntektsopplysninger fra Skatteetaten ikke skiller mellom hvor " +
-                            "stor del av inntekten din som er opptjent før og etter at du tok ut AFP. Nav " +
-                            "kan ikke se om noen av inntektene stammer fra arbeid i forbindelse med " +
-                            "covid-19. Vi kan heller ikke se om noen av inntektene er pensjonistlønn etter " +
-                            "særskilt sats for arbeid med fordrevne fra Ukraina. Noen slike inntekter kan " +
-                            "unntas fra inntektsavkortingen."
+                                "beregnet din nye pensjon for denne perioden. Vi gjør oppmerksom på at " +
+                                "innrapporterte inntektsopplysninger fra Skatteetaten ikke skiller mellom hvor " +
+                                "stor del av inntekten din som er opptjent før og etter at du tok ut AFP."
                     },
                     nynorsk {
                         +"Nedanfor kan du sjå nærmare kva inntekter som er brukt, og korleis vi har " +
-                            "berekna den nye pensjonen din for denne perioden. Vi gjer merksam på at " +
-                            "innrapporterte inntektsopplysningar frå Skatteetaten ikkje skil mellom kor " +
-                            "stor del av inntekta di som er opptent før og etter at du tok ut AFP. Nav kan " +
-                            "heller ikkje sjå om nokre av inntektene stammar frå arbeid i samband med " +
-                            "covid-19. Vi kan heller ikkje sjå at noko av inntekta er pensjonistlønn etter " +
-                            "særskilt sats for arbeid med fordrivne frå Ukraina. Nokre slike inntekter kan " +
-                            "haldast utanfor inntektsavkortinga."
+                                "berekna den nye pensjonen din for denne perioden. Vi gjer merksam på at " +
+                                "innrapporterte inntektsopplysningar frå Skatteetaten ikkje skil mellom kor " +
+                                "stor del av inntekta di som er opptent før og etter at du tok ut AFP."
                     },
                 )
             }
@@ -309,17 +301,17 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Vi gjør oppmerksom på at innrapporterte inntektsopplysninger fra Skatteetaten " +
-                            "ikke skiller mellom hvor stor del av inntekten din som er opptjent før og " +
-                            "etter at du tok ut AFP. Nav kan heller ikke se om noen av inntektene stammer " +
-                            "fra arbeid i forbindelse med covid-19 eller arbeid med fordrevne fra Ukraina. " +
-                            "Noen slike inntekter kan unntas fra inntektsavkortingen."
+                                "ikke skiller mellom hvor stor del av inntekten din som er opptjent før og " +
+                                "etter at du tok ut AFP. Nav kan heller ikke se om noen av inntektene stammer " +
+                                "fra arbeid i forbindelse med covid-19 eller arbeid med fordrevne fra Ukraina. " +
+                                "Noen slike inntekter kan unntas fra inntektsavkortingen."
                     },
                     nynorsk {
                         +"Vi gjer merksam på at innrapporterte inntektsopplysningar frå Skatteetaten ikkje " +
-                            "skil mellom kor stor del av inntekta di som er opptent før og etter at du tok " +
-                            "ut AFP. Nav kan heller ikkje sjå om nokre av inntektene stammar frå arbeid i " +
-                            "samband med covid-19 eller arbeid med fordrivne frå Ukraina. Enkelte slike " +
-                            "inntekter kan haldast utanfor inntektsavkortingen."
+                                "skil mellom kor stor del av inntekta di som er opptent før og etter at du tok " +
+                                "ut AFP. Nav kan heller ikkje sjå om nokre av inntektene stammar frå arbeid i " +
+                                "samband med covid-19 eller arbeid med fordrivne frå Ukraina. Enkelte slike " +
+                                "inntekter kan haldast utanfor inntektsavkortingen."
                     },
                 )
             }
@@ -336,11 +328,11 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Hvis du har hatt lavere pensjonsgivende inntekt den tiden du har hatt AFP enn " +
-                            "det våre beregninger viser, kan du ha rett til høyere AFP."
+                                "det våre beregninger viser, kan du ha rett til høyere AFP."
                     },
                     nynorsk {
                         +"Dersom du har hatt lågare pensjonsgivande inntekt i perioden med rett til AFP " +
-                            "enn det berekningane våre viser, kan du ha rett til høgare AFP."
+                                "enn det berekningane våre viser, kan du ha rett til høgare AFP."
                     },
                 )
             }
@@ -362,44 +354,74 @@ object AfpEtteroppgjoerInnhold {
                 list {
                     item {
                         text(
-                            bokmal { +"Feriepenger og lønn som er opptjent før første uttak av AFP." },
-                            nynorsk { +"Feriepengar og lønn som er opptente før første uttaket av AFP." },
+                            bokmal { +"feriepenger og lønn som er opptjent før første uttak av AFP" },
+                            nynorsk { +"feriepengar og lønn som er opptente før første uttaket av AFP" },
                         )
                     }
                     item {
                         text(
                             bokmal {
-                                +"Honorar, royalty, bonus eller andre inntekter som stammer fra arbeid " +
-                                    "eller virksomhet før første uttak av AFP."
+                                +"honorar, royalty, bonus eller andre inntekter som kommer fra arbeid " +
+                                        "eller virksomhet før første uttak av AFP"
                             },
                             nynorsk {
-                                +"Honorar, royalty, bonus eller andre inntekter som stammar frå arbeid " +
-                                    "eller verksemd før det første uttaket av AFP."
+                                +"honorar, royalty, bonus eller andre inntekter som kjem frå arbeid " +
+                                        "eller verksemd før det første uttaket av AFP"
                             },
                         )
                     }
                     item {
                         text(
-                            bokmal { +"Etterbetaling av trygdeytelser som gjelder for tidsrom før AFP ble tatt ut." },
-                            nynorsk { +"Etterbetaling av trygdeytingar som gjeld for tidsrom før AFP vart tatt ut." },
+                            bokmal {
+                                +"etterbetaling av trygdeytelser som gjelder for tidsrom før AFP ble tatt ut"
+                            },
+                            nynorsk {
+                                +"etterbetaling av trygdeytingar som gjeld for tidsrom før AFP blei tatt ut"
+                            },
                         )
                     }
                     item {
                         text(
-                            bokmal { +"Feriepenger som stammer fra enkelte typer arbeid i forbindelse med covid-19." },
-                            nynorsk { +"Feriepengar som skriv seg frå enkelte typar arbeid i samband med covid-19." },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"Inntekt som stammer fra arbeid i forbindelse med fordrevne fra Ukraina." },
-                            nynorsk { +"Inntekt som skriv seg frå arbeid i samband med fordrivne frå Ukraina." },
+                            bokmal {
+                                +"feriepenger etter særskilt sats for pensjonistavlønning fra arbeid med fordrevne fra Ukraina. Dette gjelder bare feriepenger fra arbeid til og med 31. desember 2024."
+                            },
+                            nynorsk {
+                                +"feriepengar etter særskilt sats for pensjonistlønn frå arbeid med fordrivne frå Ukraina. Dette gjeld berre feriepengar får arbeid til og med 31. desember 2024."
+                            },
                         )
                     }
                 }
+            }
+            paragraph {
                 text(
-                    bokmal { +"Se mer informasjon om arbeid i forbindelse med covid-19 og fordrevne fra Ukraina nedenfor." },
-                    nynorsk { +"Sjå meir informasjon om arbeid i samband med covid-19 og fordrivne frå Ukraina nedanfor." },
+                    bokmal { +"Vi trenger bekreftelse fra arbeidsgiveren din om Ukraina-arbeid:" },
+                    nynorsk { +"Vi treng stadfesting får arbeidsgivaren din om Ukraina-arbeid:" }
+                )
+                list {
+                    item {
+                        text(
+                            bokmal { +"hvor mye du har hatt i feriepenger fra inntekter fra Ukraina-arbeid" },
+                            nynorsk { +"kor mykje du har hatt i feriepengar frå inntekter frå Ukraina-arbeid" }
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"i hvilken tidsperiode(-r) dette gjelder" },
+                            nynorsk { +"i kva tidsperiode dette gjeld" }
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"om utbetalingen er gjort etter særskilt sats for pensjonistavlønning" },
+                            nynorsk { +"om utbetalinga er gjort etter særskilt sats for pensjonistlønn" }
+                        )
+                    }
+                }
+            }
+            paragraph {
+                text(
+                    bokmal { +"Reglene om inntekter fra arbeid med fordrevne fra Ukraina finnes i forskrift om kombinasjon av AFP og arbeidsinntekt § 2 tredje ledd." },
+                    nynorsk { +"Reglane om inntekter frå arbeid med fordrivne frå Ukraina finst i forskrift om kombinasjon av AFP og arbeidsinntekt § 2 tredje ledd." }
                 )
             }
         }
@@ -415,14 +437,13 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Annen inntekt som er opptjent samtidig med utbetaling av AFP skal redusere pensjonen. " +
-                            "Feriepenger opptjent etter første uttak av AFP skal også redusere " +
-                            "pensjonen hvis de ikke kommer fra arbeid med fordrevne fra Ukraina som beskrevet over."
+                                "Feriepenger opptjent etter første uttak av AFP skal også redusere " +
+                                "pensjonen hvis de ikke kommer fra arbeid med fordrevne fra Ukraina som beskrevet over."
                     },
                     nynorsk {
-                        +"Anna inntekt som er opptent samtidig med utbetaling av AFP, vil bli " +
-                            "inntektsprøvd mot pensjonen. Vi gjer for ordens skuld merksam på at " +
-                            "feriepengar som er opptente etter uttak av AFP, skal inntektsprøvast mot " +
-                            "pensjonen."
+                        +"Anna inntekt som er opptent samtidig med utbetaling av AFP skal redusere pensjonen. " +
+                                "Feriepengar som er opptente etter uttak av AFP skal også redusere pensjonen " +
+                                "om dei ikkje kjem frå arbeid med fordrivne frå Ukraina som omtalt ovanfor."
                     },
                 )
             }
@@ -435,13 +456,13 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Du må dokumentere hvilke av inntektene dine som ikke skal redusere " +
-                            "AFP. Hvis du ikke sender inn ny dokumentasjon innen fristen, bruker vi " +
-                            "de opplysningene vi har og avslutter etteroppgjøret."
+                                "AFP. Hvis du ikke sender inn ny dokumentasjon innen fristen, bruker vi " +
+                                "de opplysningene vi har og avslutter etteroppgjøret."
                     },
                     nynorsk {
-                        +"Du må dokumentere kva delar av inntektene dine som skal haldast utanfor " +
-                            "avkorting av AFP. Dersom du ikkje sender inn ny dokumentasjon innan fristen, " +
-                            "nyttar vi dei opplysningane vi har, og etteroppgjeret blir rekna som avslutta."
+                        +"Du må dokumentere kva delar av inntektene dine som ikkje skal redusere " +
+                                "AFP. Dersom du ikkje sender inn ny dokumentasjon innan fristen, " +
+                                "nyttar vi dei opplysningane vi har og avsluttar etteroppgjeret."
                     },
                 )
             }
@@ -458,11 +479,11 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"På $AFP_ETTEROPPGJOER_URL finner du et skjema som du kan " +
-                            "bruke ved innsending av dokumentasjon."
+                                "bruke ved innsending av dokumentasjon."
                     },
                     nynorsk {
-                        +"På $AFP_ETTEROPPGJOER_URL finn du eit skjema som du eller arbeidsgivaren kan " +
-                            "nytte ved innsending av dokumentasjon."
+                        +"På $AFP_ETTEROPPGJOER_URL finn du eit skjema som du kan " +
+                                "nytte ved innsending av dokumentasjon."
                     },
                 )
             }
@@ -485,20 +506,20 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Dersom du har påtatt deg ekstra covid-19-relatert arbeid ut over det du " +
-                            "vanligvis jobber, kan det hende at inntekten din fra dette arbeidet ikke " +
-                            "skal gi avkorting av AFP. Dette gjelder feriepenger av inntekt fra tjeneste " +
-                            "fram til 30. juni 2023 som var nødvendig for å ivareta et ekstraordinært " +
-                            "personellbehov ved TISK-tiltak (testing, isolering, smittesporing og " +
-                            "karantene) eller vaksinering. Det gjelder bare tjeneste med pensjonistlønn " +
-                            "etter særskilt sats."
+                                "vanligvis jobber, kan det hende at inntekten din fra dette arbeidet ikke " +
+                                "skal gi avkorting av AFP. Dette gjelder feriepenger av inntekt fra tjeneste " +
+                                "fram til 30. juni 2023 som var nødvendig for å ivareta et ekstraordinært " +
+                                "personellbehov ved TISK-tiltak (testing, isolering, smittesporing og " +
+                                "karantene) eller vaksinering. Det gjelder bare tjeneste med pensjonistlønn " +
+                                "etter særskilt sats."
                     },
                     nynorsk {
                         +"Dersom du har teke på deg ekstra covid-19-relatert arbeid utover det du " +
-                            "vanlegvis jobbar, kan det hende at inntekta di frå dette arbeidet ikkje " +
-                            "skal gi avkorting av AFP. Dette gjeld feriepengane av inntekt frå teneste " +
-                            "fram til 30. juni 2023 som var naudsynt for å ivareta personellbehov ved " +
-                            "TISK-tiltak (testing, isolering, smittesporing og karantene) eller " +
-                            "vaksinering. Det gjeld berre teneste med pensjonistlønn etter særskilt sats."
+                                "vanlegvis jobbar, kan det hende at inntekta di frå dette arbeidet ikkje " +
+                                "skal gi avkorting av AFP. Dette gjeld feriepengane av inntekt frå teneste " +
+                                "fram til 30. juni 2023 som var naudsynt for å ivareta personellbehov ved " +
+                                "TISK-tiltak (testing, isolering, smittesporing og karantene) eller " +
+                                "vaksinering. Det gjeld berre teneste med pensjonistlønn etter særskilt sats."
                     },
                 )
             }
@@ -506,13 +527,13 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Reglene om dette finnes i forskrift 19. september 2023 nr. 1446 om endring i " +
-                            "forskrift om kombinasjon av avtalefestet pensjon for medlemmer av Statens " +
-                            "pensjonskasse og arbeidsinntekt (pensjonsgivende inntekt) kapittel II nr. 2."
+                                "forskrift om kombinasjon av avtalefestet pensjon for medlemmer av Statens " +
+                                "pensjonskasse og arbeidsinntekt (pensjonsgivende inntekt) kapittel II nr. 2."
                     },
                     nynorsk {
                         +"Reglane om dette finst i forskrift 19. september 2023 nr. 1446 om endring i " +
-                            "forskrift om kombinasjon av avtalefestet pensjon for medlemmer av Statens " +
-                            "pensjonskasse og arbeidsinntekt (pensjonsgivande inntekt) kapittel II nr. 2."
+                                "forskrift om kombinasjon av avtalefestet pensjon for medlemmer av Statens " +
+                                "pensjonskasse og arbeidsinntekt (pensjonsgivande inntekt) kapittel II nr. 2."
                     },
                 )
             }
@@ -529,11 +550,11 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Spesielt om unntak for pensjonistlønn etter særskilt sats for pensjonister som " +
-                            "jobber med fordrevne fra Ukraina"
+                                "jobber med fordrevne fra Ukraina"
                     },
                     nynorsk {
                         +"Spesielt om unntak for pensjonistlønn etter særskilt sats for pensjonistar som " +
-                            "har arbeidd med fordrivne frå Ukraina"
+                                "har arbeidd med fordrivne frå Ukraina"
                     },
                 )
             }
@@ -541,13 +562,13 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Dersom du har arbeidet med fordrevne fra Ukraina og mottatt pensjonistlønn etter " +
-                            "særskilt sats kan inntekten for dette arbeidet unntas fra inntektsavkorting. " +
-                            "Det samme gjelder feriepenger for arbeid utført etter 1. april 2022."
+                                "særskilt sats kan inntekten for dette arbeidet unntas fra inntektsavkorting. " +
+                                "Det samme gjelder feriepenger for arbeid utført etter 1. april 2022."
                     },
                     nynorsk {
                         +"Dersom du har arbeidd med fordrivne frå Ukraina og motteke pensjonistlønn etter " +
-                            "særskilt sats kan inntekta for dette arbeidet unntakas frå inntektsavkorting. " +
-                            "Det same gjeld feriepengar for slikt arbeid utført etter 1. april 2022."
+                                "særskilt sats kan inntekta for dette arbeidet unntakas frå inntektsavkorting. " +
+                                "Det same gjeld feriepengar for slikt arbeid utført etter 1. april 2022."
                     },
                 )
             }
@@ -555,11 +576,11 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Reglene om inntekter fra arbeid med fordrevne fra Ukraina finnes i forskrift om " +
-                            "kombinasjon av AFP og arbeidsinntekt § 2 tredje ledd."
+                                "kombinasjon av AFP og arbeidsinntekt § 2 tredje ledd."
                     },
                     nynorsk {
                         +"Reglane om inntekter frå arbeid med fordrivne frå Ukraina finst i forskrift " +
-                            "om kombinasjon av AFP og arbeidsinntekt § 2 tredje ledd."
+                                "om kombinasjon av AFP og arbeidsinntekt § 2 tredje ledd."
                     },
                 )
             }
@@ -612,13 +633,13 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"For at Nav skal kunne holde slike inntekter utenfor avkorting, må du sende " +
-                            "oss dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
-                            "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
+                                "oss dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
+                                "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
                     },
                     nynorsk {
                         +"For at Nav skal kunne halde slike inntekter utanfor avkorting, må du sende " +
-                            "oss dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL. Vi treng stadfesting " +
-                            "frå arbeidsgivaren din om følgjande:"
+                                "oss dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL. Vi treng stadfesting " +
+                                "frå arbeidsgivaren din om følgjande:"
                     },
                 )
                 list {
@@ -656,13 +677,13 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"For at Nav skal kunne holde slike inntekter utenfor avkorting, må du sende oss " +
-                            "dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
-                            "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
+                                "dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
+                                "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
                     },
                     nynorsk {
                         +"For at Nav skal kunne halde slike inntekter utanfor avkorting, må du sende oss " +
-                            "dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL om korleis du sender " +
-                            "dokumentasjon. Vi treng stadfesting frå arbeidsgivaren din om følgjande:"
+                                "dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL om korleis du sender " +
+                                "dokumentasjon. Vi treng stadfesting frå arbeidsgivaren din om følgjande:"
                     },
                 )
                 list {
@@ -700,13 +721,13 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"For at NAV skal kunne holde slike inntekter utenfor avkorting, må du sende " +
-                            "oss dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
-                            "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
+                                "oss dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
+                                "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
                     },
                     nynorsk {
                         +"For at NAV skal kunne halde slike inntekter utanfor avkorting, må du sende " +
-                            "oss dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL. Vi treng stadfesting " +
-                            "frå arbeidsgivaren din om følgjande:"
+                                "oss dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL. Vi treng stadfesting " +
+                                "frå arbeidsgivaren din om følgjande:"
                     },
                 )
                 list {
@@ -750,7 +771,7 @@ object AfpEtteroppgjoerInnhold {
      * versjon (med komma etter datoselektoren), og «AFP er avslutta» er valgt
      * over «AFP tok slutt» i OPPHOER_I_AARET-paragrafens IEO-tekst.
      */
-    data class IfuIeoFordelingPerPeriode(
+    data class InntektFoerUttakInntektEtterOpphoerFordelingPerPeriode(
         val erHelAfpHeleAaret: Expression<Boolean>,
         val erUttakIAaret: Expression<Boolean>,
         val erOpphoerIAaret: Expression<Boolean>,
@@ -776,15 +797,15 @@ object AfpEtteroppgjoerInnhold {
                     text(
                         bokmal {
                             +"Fordi du har tatt ut AFP fra " + uttaksdato.format() + " bruker vi en " +
-                                "standardberegning for å fordele inntekten din før og etter " +
-                                "AFP-uttaket. Denne beregningen kan endres hvis du dokumenterer en " +
-                                "annen fordeling av inntekten."
+                                    "standardberegning for å fordele inntekten din før og etter " +
+                                    "AFP-uttaket. Denne beregningen kan endres hvis du dokumenterer en " +
+                                    "annen fordeling av inntekten."
                         },
                         nynorsk {
-                            +"Fordi du har teke ut AFP frå " + uttaksdato.format() + ", nyttar vi ei " +
-                                "standardberekning for å rekne ut fordelinga av inntekta di før og etter " +
-                                "AFP-uttaket. Denne berekninga kan endrast dersom du kan dokumentere ei " +
-                                "anna fordeling av inntekta."
+                            +"Fordi du har tatt ut AFP frå " + uttaksdato.format() + ", nyttar vi ei " +
+                                    "standardberekning for å fordele inntekta di før og etter " +
+                                    "AFP-uttaket. Denne berekninga kan endrast dersom du kan dokumentere ei " +
+                                    "anna fordeling av inntekta."
                         },
                     )
                 }
@@ -792,17 +813,17 @@ object AfpEtteroppgjoerInnhold {
                     text(
                         bokmal {
                             +"Vi har lagt til grunn at " + inntektFoerUttak.format() + " er opptjent før du tok ut AFP. " +
-                                "Dette beløpet skal holdes utenfor etteroppgjøret for " +
-                                oppgjoersAar.format() + ". Den delen av inntekten som regnes for å være " +
-                                "opptjent i den perioden du har mottatt AFP, er beregnet til " +
-                                inntektIAfpPerioden.format() + "."
+                                    "Dette beløpet skal holdes utenfor etteroppgjøret for " +
+                                    oppgjoersAar.format() + ". Den delen av inntekten som regnes for å være " +
+                                    "opptjent i den perioden du har mottatt AFP, er beregnet til " +
+                                    inntektIAfpPerioden.format() + "."
                         },
                         nynorsk {
                             +"Vi har lagt til grunn at " + inntektFoerUttak.format() + " er opptente før du tok ut AFP. " +
-                                "Dette beløpet skal haldast utanfor etteroppgjeret for " +
-                                oppgjoersAar.format() + ". Den delen av inntekta som blir rekna for å vere " +
-                                "opptent i den perioden du har fått AFP, er berekna til " +
-                                inntektIAfpPerioden.format() + "."
+                                    "Dette beløpet skal haldast utanfor etteroppgjeret for " +
+                                    oppgjoersAar.format() + ". Den delen av inntekta som blir rekna for å vere " +
+                                    "opptent i den perioden du har fått AFP, er berekna til " +
+                                    inntektIAfpPerioden.format() + "."
                         },
                     )
                 }
@@ -813,15 +834,15 @@ object AfpEtteroppgjoerInnhold {
                         text(
                             bokmal {
                                 +"Fordi AFP har opphørt fra " + opphor.format() + " bruker vi en " +
-                                    "standardberegning for å fordele inntekten din i " +
-                                    "perioder med og uten AFP. Denne beregningen kan endres dersom du kan " +
-                                    "dokumentere en annen fordeling av inntekten."
+                                        "standardberegning for å fordele inntekten din i " +
+                                        "perioder med og uten AFP. Denne beregningen kan endres dersom du kan " +
+                                        "dokumentere en annen fordeling av inntekten."
                             },
                             nynorsk {
                                 +"Fordi AFP er avslutta frå " + opphor.format() + ", nyttar vi ei " +
-                                    "standardberekning for å rekne ut fordelinga av inntekta di i periodar " +
-                                    "med og utan AFP. Denne berekninga kan endrast dersom du kan " +
-                                    "dokumentere ei anna fordeling av inntekta."
+                                        "standardberekning for å fordele inntekta di i periodar " +
+                                        "med og utan AFP. Denne berekninga kan endrast dersom du kan " +
+                                        "dokumentere ei anna fordeling av inntekta."
                             },
                         )
                     }
@@ -830,17 +851,17 @@ object AfpEtteroppgjoerInnhold {
                     text(
                         bokmal {
                             +"Vi har lagt til grunn at " + inntektEtterOpphoer.format() + " er opptjent etter at du gikk " +
-                                "over fra AFP til annen pensjon, eventuelt etter opphør av AFP. Dette " +
-                                "beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() +
-                                ". Den delen av inntekten som regnes for å være opptjent i den perioden du " +
-                                "har mottatt AFP, er " + inntektIAfpPerioden.format() + "."
+                                    "over fra AFP til annen ytelse, eventuelt etter opphør av AFP. Dette " +
+                                    "beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() +
+                                    ". Den delen av inntekten som regnes for å være opptjent i den perioden du " +
+                                    "har mottatt AFP, er " + inntektIAfpPerioden.format() + "."
                         },
                         nynorsk {
                             +"Vi har lagt til grunn at " + inntektEtterOpphoer.format() + " er opptente etter at du gjekk " +
-                                "over frå AFP til annan pensjon, eventuelt etter at AFP er avslutta. Dette " +
-                                "beløpet skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() +
-                                ". Den delen av inntekta som blir rekna for å vere opptent i den perioden " +
-                                "du har fått AFP, er berekna til " + inntektIAfpPerioden.format() + "."
+                                    "over frå AFP til annan yting, eventuelt etter at AFP er avslutta. Dette " +
+                                    "beløpet skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() +
+                                    ". Den delen av inntekta som etter standardberekninga er rekna for å vere opptent i den perioden " +
+                                    "du har fått AFP, er " + inntektIAfpPerioden.format() + "."
                         },
                     )
                 }
@@ -850,15 +871,15 @@ object AfpEtteroppgjoerInnhold {
                     text(
                         bokmal {
                             +"Fordi du ikke har hatt rett til AFP hele året bruker vi en " +
-                                "standardberegning for å fordele inntekten din i perioder " +
-                                "med og uten AFP i det aktuelle året. Denne beregningen kan endres dersom " +
-                                "du kan dokumentere en annen fordeling av inntekten."
+                                    "standardberegning for å fordele inntekten din i perioder " +
+                                    "med og uten AFP i det aktuelle året. Denne beregningen kan endres dersom " +
+                                    "du kan dokumentere en annen fordeling av inntekten."
                         },
                         nynorsk {
                             +"Fordi du ikkje har hatt rett til AFP heile året, nyttar vi ei " +
-                                "standardberekning for å rekne ut fordelinga av inntekta di i periodar med " +
-                                "og utan AFP i det aktuelle året. Denne berekninga kan endrast dersom du " +
-                                "kan dokumentere ei anna fordeling av inntekta."
+                                    "standardberekning for å rekne ut fordelinga av inntekta di i periodar med " +
+                                    "og utan AFP i det aktuelle året. Denne berekninga kan endrast dersom du " +
+                                    "kan dokumentere ei anna fordeling av inntekta."
                         },
                     )
                 }
@@ -866,17 +887,17 @@ object AfpEtteroppgjoerInnhold {
                     text(
                         bokmal {
                             +"Vi har lagt til grunn at du tjente " + inntektFoerUttak.format() + " før du tok ut AFP og " +
-                                inntektEtterOpphoer.format() + " etter at du gikk over fra AFP til en annen ytelse, " +
-                                "eventuelt etter opphør av AFP. Det samlede beløpet holdes utenfor " +
-                                "etteroppgjøret. Den delen av inntekten som etter standardberegningen regnes for å være opptjent i " +
-                                "den perioden du har mottatt AFP, er " + inntektIAfpPerioden.format() + "."
+                                    inntektEtterOpphoer.format() + " etter at du gikk over fra AFP til en annen ytelse, " +
+                                    "eventuelt etter opphør av AFP. Det samlede beløpet holdes utenfor " +
+                                    "etteroppgjøret. Den delen av inntekten som etter standardberegningen regnes for å være opptjent i " +
+                                    "den perioden du har mottatt AFP, er " + inntektIAfpPerioden.format() + "."
                         },
                         nynorsk {
                             +"Vi har lagt til grunn at du tente " + inntektFoerUttak.format() + " før du tok ut AFP og " +
-                                inntektEtterOpphoer.format() + " etter at du gjekk over frå AFP til annan pensjon, " +
-                                "eventuelt etter at AFP tok slutt. Det samla beløpet blir halde utanfor " +
-                                "etteroppgjeret. Den delen av inntekta som blir rekna for å vere opptent i " +
-                                "den perioden du har fått AFP, er berekna til " + inntektIAfpPerioden.format() + "."
+                                    inntektEtterOpphoer.format() + " etter at du gjekk over frå AFP til annan yting, " +
+                                    "eventuelt etter at AFP tok slutt. Det samla beløpet blir halde utanfor " +
+                                    "etteroppgjeret. Den delen av inntekta som etter standardberekninga er rekna for å vere opptent i " +
+                                    "den perioden du har fått AFP, er " + inntektIAfpPerioden.format() + "."
                         },
                     )
                 }
@@ -916,11 +937,11 @@ object AfpEtteroppgjoerInnhold {
                     text(
                         bokmal {
                             +"Nedenfor ser du en beregning som viser hva du skulle ha fått utbetalt i " +
-                                oppgjoersAar.format() + ":"
+                                    oppgjoersAar.format() + ":"
                         },
                         nynorsk {
-                            +"Nedanfor følgjer ei berekning som viser kva du skulle ha fått utbetalt i " +
-                                oppgjoersAar.format() + ":"
+                            +"Nedanfor ser du ei berekning som viser kva du skulle ha fått utbetalt i " +
+                                    oppgjoersAar.format() + ":"
                         },
                     )
                 }
@@ -930,13 +951,13 @@ object AfpEtteroppgjoerInnhold {
                     text(
                         bokmal {
                             +"Nedenfor ser du en beregning som viser hva du skulle ha fått utbetalt i " +
-                                "perioden " + uttaksdato.format() + " til 31. desember " +
-                                oppgjoersAar.format() + ":"
+                                    "perioden " + uttaksdato.format() + " til 31. desember " +
+                                    oppgjoersAar.format() + ":"
                         },
                         nynorsk {
-                            +"Nedanfor følgjer ei berekning som viser kva du skulle ha fått utbetalt i " +
-                                "perioden " + uttaksdato.format() + " til 31. desember " +
-                                oppgjoersAar.format() + ":"
+                            +"Nedanfor ser du ei berekning som viser kva du skulle ha fått utbetalt i " +
+                                    "perioden " + uttaksdato.format() + " til 31. desember " +
+                                    oppgjoersAar.format() + ":"
                         },
                     )
                 }
@@ -947,13 +968,13 @@ object AfpEtteroppgjoerInnhold {
                         text(
                             bokmal {
                                 +"Nedenfor ser du en beregning som viser hva du skulle ha fått utbetalt i " +
-                                    "perioden 1. januar " + oppgjoersAar.format() + " til " +
-                                    opphor.format() + ":"
+                                        "perioden 1. januar " + oppgjoersAar.format() + " til " +
+                                        opphor.format() + ":"
                             },
                             nynorsk {
-                                +"Nedanfor følgjer ei berekning som viser kva du skulle ha fått utbetalt i " +
-                                    "perioden 1. januar " + oppgjoersAar.format() + " til " +
-                                    opphor.format() + ":"
+                                +"Nedanfor ser du ei berekning som viser kva du skulle ha fått utbetalt i " +
+                                        "perioden 1. januar " + oppgjoersAar.format() + " til " +
+                                        opphor.format() + ":"
                             },
                         )
                     }
@@ -965,11 +986,11 @@ object AfpEtteroppgjoerInnhold {
                         text(
                             bokmal {
                                 +"Nedenfor ser du en beregning som viser hva du skulle ha fått utbetalt i " +
-                                    "perioden " + uttaksdato.format() + " til " + opphor.format() + ":"
+                                        "perioden " + uttaksdato.format() + " til " + opphor.format() + ":"
                             },
                             nynorsk {
-                                +"Nedanfor følgjer ei berekning som viser kva du skulle ha fått utbetalt i " +
-                                    "perioden " + uttaksdato.format() + " til " + opphor.format() + ":"
+                                +"Nedanfor ser du ei berekning som viser kva du skulle ha fått utbetalt i " +
+                                        "perioden " + uttaksdato.format() + " til " + opphor.format() + ":"
                             },
                         )
                     }
@@ -990,13 +1011,13 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +inntektIAfpPerioden.format(denominator = false) + " kr (ny beregnet inntekt) / " +
-                            tidligereArbeidsInntektBeregnet.format(denominator = false) + " kr (tidligere arbeidsinntekt*) x " +
-                            fullAfp.format(denominator = false) + " kr (full AFP)"
+                                tidligereArbeidsInntektBeregnet.format(denominator = false) + " kr (tidligere arbeidsinntekt*) x " +
+                                fullAfp.format(denominator = false) + " kr (full AFP)"
                     },
                     nynorsk {
                         +inntektIAfpPerioden.format(denominator = false) + " kr (ny berekna inntekt) / " +
-                            tidligereArbeidsInntektBeregnet.format(denominator = false) + " kr (tidlegare arbeidsinntekt*) x " +
-                            fullAfp.format(denominator = false) + " kr (full AFP)"
+                                tidligereArbeidsInntektBeregnet.format(denominator = false) + " kr (tidlegare arbeidsinntekt*) x " +
+                                fullAfp.format(denominator = false) + " kr (full AFP)"
                     },
                 )
                 newline()
@@ -1033,11 +1054,7 @@ object AfpEtteroppgjoerInnhold {
                         +"Hvis du har rett til annen samordningspliktig pensjon, kan andre pensjonsordninger kreve refusjon i etterbetalingen. Da kan etterbetalingen bli redusert eller ikke bli utbetalt."
                     },
                     nynorsk {
-                        +"Dersom du har rett til annan samordningspliktig pensjon, må vi ta atterhald om " +
-                            "moglege refusjonskrav frå andre pensjonsordningar i etterbetalinga av AFP. Ny " +
-                            "samordning mellom to eller fleire pensjonar tilbake i tid kan føre til at " +
-                            "den aktuelle etterbetalinga av AFP blir vesentleg redusert eller fell heilt " +
-                            "bort."
+                        +"Dersom du har rett til annan samordningspliktig pensjon, kan andre pensjonsordningar krevje refusjon frå etterbetalinga. Då kan etterbetalinga bli redusert eller ikkje bli utbetalt."
                     },
                 )
             }
