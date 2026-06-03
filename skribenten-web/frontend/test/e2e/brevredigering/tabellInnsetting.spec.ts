@@ -3,7 +3,7 @@ import { expect, type Page, test } from "@playwright/test";
 import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/LetterEditor/actions/common";
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 
-import { nyBrevResponse, nyRedigertBrev } from "../../utils/brevredigeringTestUtils";
+import { brevResponse, editedLetter } from "../../utils/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
 // Playwright Chromium always reports a Windows userAgent (isMac=false in the app),
@@ -51,8 +51,8 @@ function tableRow(...texts: string[]) {
   };
 }
 
-const brevMedUtfyltTabell = nyBrevResponse({
-  redigertBrev: nyRedigertBrev({
+const brevMedUtfyltTabell = brevResponse({
+  redigertBrev: editedLetter({
     blocks: [
       newParagraph({
         content: [

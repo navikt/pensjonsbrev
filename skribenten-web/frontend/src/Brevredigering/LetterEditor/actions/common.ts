@@ -496,7 +496,6 @@ export function newLiteral(
     text?: string;
     editedText?: Nullable<string>;
     fontType?: Nullable<FontType>;
-    // TODO: Gir ikke mening å sette editedFontType i nye literals.
     editedFontType?: Nullable<FontType>;
     tags?: ElementTags[];
   } = {},

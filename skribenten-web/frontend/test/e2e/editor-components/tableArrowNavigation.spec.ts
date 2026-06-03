@@ -2,7 +2,7 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/LetterEditor/actions/common";
 
-import { nyBrevResponse, nyRedigertBrev } from "../../utils/brevredigeringTestUtils";
+import { brevResponse, editedLetter } from "../../utils/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
 function tableRow(...texts: string[]) {
@@ -16,12 +16,12 @@ function tableRow(...texts: string[]) {
 async function setupEditor(page: Page, blocks: ReturnType<typeof newParagraph>[]) {
   await setupSakStubs(page);
 
-  const brevResponse = nyBrevResponse({
-    redigertBrev: nyRedigertBrev({ blocks }),
-  });
-
   await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) =>
-    route.fulfill({ json: brevResponse }),
+    route.fulfill({
+      json: brevResponse({
+        redigertBrev: editedLetter({ blocks }),
+      }),
+    }),
   );
   await page.route("**/bff/skribenten-backend/brev/1/reservasjon", (route) =>
     route.fulfill({ path: "test/e2e/fixtures/brevreservasjon.json", contentType: "application/json" }),

@@ -4,18 +4,18 @@ import { SpraakKode } from "~/types/apiTypes";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 
 import {
-  nyBrevInfo,
-  nyBrevResponse,
-  nyItem,
-  nyItemList,
-  nyLiteral,
-  nyParagraphBlock,
-  nyRedigertBrev,
-  nySignatur,
-  nyTitle1Block,
-  nyTitle2Block,
-  nyVariable,
-} from "../../utils/brevredigeringTestUtils";
+  literal as _literal,
+  variable as _variable,
+  brevInfo,
+  brevResponse,
+  editedLetter,
+  item,
+  itemList,
+  paragraph,
+  signatur,
+  title1,
+  title2,
+} from "../../utils/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
 const baseSakspart = {
@@ -25,7 +25,7 @@ const baseSakspart = {
   dokumentDato: "2024-03-15",
 };
 
-const baseSignatur = nySignatur({
+const baseSignatur = signatur({
   hilsenTekst: "Med vennlig hilsen",
   saksbehandlerRolleTekst: "Saksbehandler",
   saksbehandlerNavn: "Ole Saksbehandler",
@@ -33,7 +33,7 @@ const baseSignatur = nySignatur({
   navAvsenderEnhet: "Nav Familie- og pensjonsytelser Porsgrunn",
 });
 
-const editorInfo = nyBrevInfo({
+const editorInfo = brevInfo({
   brevkode: "BREV1",
   brevtittel: "Brev 1",
   opprettet: "2024-01-01",
@@ -43,68 +43,68 @@ const editorInfo = nyBrevInfo({
   status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
   avsenderEnhet: { enhetNr: "0001", navn: "NAV Familie- og pensjonsytelser" },
   spraak: SpraakKode.Bokmaal,
-  sadsId: "22981081",
+  saksId: "22981081",
 });
 
-function literal(id: number, parentId: number | null, text: string) {
-  return { ...nyLiteral({ id, text }), parentId };
+function makeLiteral(id: number, parentId: number | null, text: string) {
+  return { ..._literal({ id, text }), parentId };
 }
 
-function variable(id: number, parentId: number | null, text: string) {
-  return { ...nyVariable({ id, text }), parentId };
+function makeVariable(id: number, parentId: number | null, text: string) {
+  return { ..._variable(text), id, parentId };
 }
 
-const exampleLetter1 = nyRedigertBrev({
+const exampleLetter1 = editedLetter({
   title: {
-    text: [literal(1, null, "Informasjon om saksbehandlingstiden vår")],
+    text: [makeLiteral(1, null, "Informasjon om saksbehandlingstiden vår")],
     deletedContent: [],
   },
   sakspart: baseSakspart,
   blocks: [
-    nyParagraphBlock({
+    paragraph({
       id: 1,
       content: [
-        literal(11, 1, "Denne blokken[CP1-1] "),
-        variable(12, 1, "VARIABLE-MED-LITT-LENGDE"),
-        literal(
+        makeLiteral(11, 1, "Denne blokken[CP1-1] "),
+        makeVariable(12, 1, "VARIABLE-MED-LITT-LENGDE"),
+        makeLiteral(
           13,
           1,
           "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Vi vil teste [CP1-3] at caret går til nærmeste side av variable.",
         ),
       ],
     }),
-    nyParagraphBlock({
+    paragraph({
       id: 2,
       content: [
-        literal(21, 2, "[CP2-1]Her vil vi teste om piltast opp/ned"),
-        variable(22, 2, "ØVRE-VARIABLE"),
-        literal(23, 2, "fungerer mellom egne avsnitt"),
+        makeLiteral(21, 2, "[CP2-1]Her vil vi teste om piltast opp/ned"),
+        makeVariable(22, 2, "ØVRE-VARIABLE"),
+        makeLiteral(23, 2, "fungerer mellom egne avsnitt"),
       ],
     }),
-    nyParagraphBlock({
+    paragraph({
       id: 3,
       content: [
-        literal(31, 3, "[CP2-2]Her vil vi"),
-        variable(32, 3, "NEDRE-VARIABLE"),
-        literal(33, 3, " teste om pil opp/ned fungerer mellom avsnitt [CP2-3]"),
+        makeLiteral(31, 3, "[CP2-2]Her vil vi"),
+        makeVariable(32, 3, "NEDRE-VARIABLE"),
+        makeLiteral(33, 3, " teste om pil opp/ned fungerer mellom avsnitt [CP2-3]"),
       ],
     }),
-    nyTitle1Block({
+    title1({
       id: 4,
-      content: [literal(41, 4, "Tittel over punktliste")],
+      content: [makeLiteral(41, 4, "Tittel over punktliste")],
     }),
-    nyParagraphBlock({
+    paragraph({
       id: 5,
       content: [
         {
-          ...nyItemList({
+          ...itemList({
             id: 51,
             items: [
               {
-                ...nyItem({
+                ...item({
                   id: 511,
                   content: [
-                    literal(
+                    makeLiteral(
                       5111,
                       511,
                       "Punkt 1. Dette er et veldig langt punkt kun av den grunn at vi ønsker helst, mest sannsynlig, at denne skal brekke over to linjer[CP3-1]",
@@ -114,16 +114,16 @@ const exampleLetter1 = nyRedigertBrev({
                 parentId: 51,
               },
               {
-                ...nyItem({
+                ...item({
                   id: 512,
-                  content: [literal(5121, 512, "Punkt 2. Migrere brev[CP3-2]")],
+                  content: [makeLiteral(5121, 512, "Punkt 2. Migrere brev[CP3-2]")],
                 }),
                 parentId: 51,
               },
               {
-                ...nyItem({
+                ...item({
                   id: 513,
-                  content: [literal(-5131, 513, "Punkt 3. Øk budjsettet[CP3-3]")],
+                  content: [makeLiteral(-5131, 513, "Punkt 3. Øk budjsettet[CP3-3]")],
                 }),
                 parentId: 51,
               },
@@ -133,20 +133,20 @@ const exampleLetter1 = nyRedigertBrev({
         },
       ],
     }),
-    nyTitle2Block({
+    title2({
       id: 6,
-      content: [literal(61, 6, "Tittel under punktliste")],
+      content: [makeLiteral(61, 6, "Tittel under punktliste")],
     }),
-    nyParagraphBlock({
+    paragraph({
       id: 7,
-      content: [literal(71, 7, "Siste avsnitt for å teste at pil ned tar oss til end of line.[CP4-1]")],
+      content: [makeLiteral(71, 7, "Siste avsnitt for å teste at pil ned tar oss til end of line.[CP4-1]")],
     }),
   ],
   signatur: baseSignatur,
 }) as EditedLetter;
 
 function makeBrevResponse(redigertBrev: EditedLetter) {
-  return nyBrevResponse({ info: editorInfo, redigertBrev });
+  return brevResponse({ info: editorInfo, redigertBrev });
 }
 
 async function setupBrevRoute(page: Page, brevResponse: object) {
@@ -420,9 +420,9 @@ test.describe("Switch font type", () => {
 
     test.describe("unmarked text", () => {
       test("endring av fonttype av en literal inne i et punkt skal bevare all content i punkten", async ({ page }) => {
-        const redigertBrev = nyRedigertBrev({
+        const redigertBrev = editedLetter({
           title: {
-            text: [literal(1, null, "Title")],
+            text: [makeLiteral(1, null, "Title")],
             deletedContent: [],
           },
           sakspart: {
@@ -432,16 +432,16 @@ test.describe("Switch font type", () => {
             dokumentDato: "2024-03-15",
           },
           blocks: [
-            nyParagraphBlock({
+            paragraph({
               id: 1,
               content: [
-                literal(11, 1, "Jeg er en literal,"),
-                literal(12, 1, " som blir fulgt opp av en annen literal,"),
-                literal(13, 1, " og til slutt, en siste literal"),
+                makeLiteral(11, 1, "Jeg er en literal,"),
+                makeLiteral(12, 1, " som blir fulgt opp av en annen literal,"),
+                makeLiteral(13, 1, " og til slutt, en siste literal"),
               ],
             }),
           ],
-          signatur: nySignatur({
+          signatur: signatur({
             hilsenTekst: "Med vennlig hilsen",
             saksbehandlerRolleTekst: "Saksbehandler",
             saksbehandlerNavn: "Ole Saksbehandler",
@@ -691,7 +691,7 @@ test.describe("Switch font type", () => {
     });
 
     test("endring av fonttype av en variable inne i et punkt skal bevare all content i punkten", async ({ page }) => {
-      const redigertBrev = nyRedigertBrev({});
+      const redigertBrev = editedLetter({});
       const brevResponse = makeBrevResponse(redigertBrev);
       await setupBrevRoute(page, brevResponse);
       await navigateToEditor(page);

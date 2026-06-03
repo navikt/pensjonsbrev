@@ -4,18 +4,18 @@ import { SpraakKode } from "~/types/apiTypes";
 import { type Content, type EditedLetter, type Item, ListType } from "~/types/brevbakerTypes";
 
 import {
-  nyBrevInfo,
-  nyBrevResponse,
-  nyItem,
-  nyItemList,
-  nyLiteral,
-  nyParagraphBlock,
-  nyRedigertBrev,
-  nySignatur,
-} from "../../utils/brevredigeringTestUtils";
+  brevInfo,
+  brevResponse,
+  editedLetter,
+  item,
+  itemList,
+  literal,
+  paragraph,
+  signatur,
+} from "../../utils/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
-const editorInfo = nyBrevInfo({
+const editorInfo = brevInfo({
   brevkode: "BREV1",
   brevtittel: "Brev 1",
   opprettet: "2024-01-01",
@@ -25,27 +25,27 @@ const editorInfo = nyBrevInfo({
   status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
   avsenderEnhet: { enhetNr: "0001", navn: "NAV Familie- og pensjonsytelser" },
   spraak: SpraakKode.Bokmaal,
-  sadsId: "22981081",
+  saksId: "22981081",
 });
 
 function makeBrevResponse(redigertBrev: EditedLetter) {
-  return nyBrevResponse({ info: editorInfo, redigertBrev });
+  return brevResponse({ info: editorInfo, redigertBrev });
 }
 
 function makeLiteral(id: number, text: string, parentId: number | null = null) {
-  return { ...nyLiteral({ id, text }), parentId };
+  return { ...literal({ id, text }), parentId };
 }
 
 function makeItem(id: number, text: string): Item {
   return {
-    ...nyItem({ id, content: [makeLiteral(id * 10 + 1, text, id)] }),
+    ...item({ id, content: [makeLiteral(id * 10 + 1, text, id)] }),
     parentId: null,
   };
 }
 
 function makeItemList(id: number, items: Item[], listType: ListType = ListType.PUNKTLISTE) {
   return {
-    ...nyItemList({
+    ...itemList({
       id,
       listType,
       items: items.map((item) => ({ ...item, parentId: id })),
@@ -55,14 +55,14 @@ function makeItemList(id: number, items: Item[], listType: ListType = ListType.P
 }
 
 function makeBlock(id: number, content: Content[]) {
-  return nyParagraphBlock({
+  return paragraph({
     id,
     content: content.map((entry) => ({ ...entry, parentId: id })),
   });
 }
 
 function makeLetter(blocks: ReturnType<typeof makeBlock>[]) {
-  return nyRedigertBrev({
+  return editedLetter({
     title: {
       text: [makeLiteral(1, "Test")],
       deletedContent: [],
@@ -74,7 +74,7 @@ function makeLetter(blocks: ReturnType<typeof makeBlock>[]) {
       dokumentDato: "2024-03-15",
     },
     blocks,
-    signatur: nySignatur({
+    signatur: signatur({
       hilsenTekst: "Hilsen",
       saksbehandlerRolleTekst: "Saksbehandler",
       saksbehandlerNavn: "Ole",
