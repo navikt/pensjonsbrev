@@ -4,7 +4,6 @@ import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstac
 import { useEffect, useRef } from "react";
 
 import {
-  getBrevkoder,
   getTemplateDescription,
   getTemplateDocumentation,
   type MalType,
@@ -32,11 +31,6 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     }),
   },
   loader: async ({ context, deps, params, preload }) => {
-    await context.queryClient.ensureQueryData({
-      queryKey: getBrevkoder.queryKey(params.malType),
-      queryFn: () => getBrevkoder.queryFn(params.malType),
-    });
-
     const description = await context.queryClient.ensureQueryData({
       queryKey: getTemplateDescription.queryKey(params.malType, params.templateId),
       queryFn: () => getTemplateDescription.queryFn(params.malType, params.templateId),

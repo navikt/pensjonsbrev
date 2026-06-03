@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.render.DocumentationSearchableTextExtractor
+import no.nav.pensjon.brev.template.render.DocumentationTextExtractor
 import no.nav.pensjon.brev.template.render.TemplateDocumentation
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brev.template.toCode
@@ -152,7 +152,7 @@ class TemplateRoutesTest {
         testBrevbakerApp(isIntegrationTest = false) { client ->
             val response = client.get("/templates/autobrev/all")
             assertEquals(HttpStatusCode.OK, response.status)
-            val body = response.body<List<TemplateDocumentationSearchEntry>>()
+            val body = response.body<List<SearchableContent>>()
 
             val expected = alleAutobrevmaler.flatMap { mal ->
                 mal.template.language.all().map { mal.kode.kode() to it.toCode() }
@@ -162,7 +162,7 @@ class TemplateRoutesTest {
             // Lines match the server-side extraction of the per-template documentation.
             val sample = body.first { it.brevkode == ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.kode.name && it.language == LanguageCode.BOKMAL }
             assertEquals(
-                DocumentationSearchableTextExtractor.extract(
+                DocumentationTextExtractor.extract(
                     TemplateDocumentationRenderer.render(
                         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
                         Language.Bokmal,

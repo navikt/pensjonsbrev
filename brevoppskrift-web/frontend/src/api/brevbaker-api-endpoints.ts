@@ -4,6 +4,10 @@ import { type SearchLineWithBlockId, type TemplateDescription, type TemplateDocu
 
 const BREVBAKER_API_BASE_PATH = "/brevbaker";
 
+/**
+ * Anbefalt lesing for react-query key factory pattern: https://tkdodo.eu/blog/effective-react-query-keys
+ */
+
 export const templateDescriptionKeys = {
   all: ["TEMPLATE_DESCRIPTION"] as const,
   id: (malType: MalType, templateId: string) => [...templateDescriptionKeys.all, malType, templateId] as const,
@@ -15,11 +19,6 @@ export const templateDocumentationKeys = {
   all: ["TEMPLATE_DOCUMENTATION"] as const,
   idWithLanguage: (malType: MalType, templateId: string, language: string) =>
     [...templateDocumentationKeys.all, malType, templateId, language] as const,
-};
-
-export const brevkoderKeys = {
-  all: ["BREVKODER"] as const,
-  malType: (malType: MalType) => [...brevkoderKeys.all, malType] as const,
 };
 
 export const getTemplateDescription = {
@@ -50,14 +49,8 @@ export const getAllTemplateDocumentation = {
     (await axios.get<SearchableContent[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}/all`)).data,
 };
 
-export const getBrevkoder = {
-  queryKey: brevkoderKeys.malType,
-  queryFn: async (malType: MalType) =>
-    (await axios.get<string[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}`)).data,
-};
-
 export const getBrevkoderMedMetadata = {
-  queryKey: (malType: MalType) => [...brevkoderKeys.malType(malType), "METADATA"] as const,
+  queryKey: (malType: MalType) => ["BREVKODER", malType, "METADATA"] as const,
   queryFn: async (malType: MalType) =>
     (await axios.get<TemplateDescription[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}?includeMetadata=true`))
       .data,

@@ -1,13 +1,8 @@
 import { type TemplateDescription } from "~/api/brevbakerTypes";
 
-export type TemplateWithDescription = {
-  id: string;
-  description: TemplateDescription;
-};
-
 export type CachedTemplates = {
-  autobrev: TemplateWithDescription[];
-  redigerbar: TemplateWithDescription[];
+  autobrev: TemplateDescription[];
+  redigerbar: TemplateDescription[];
   cachedAt: number;
 };
 
@@ -33,7 +28,7 @@ export function loadTemplateCache(): CachedTemplates | null {
   }
 }
 
-export function saveTemplateCache(autobrev: TemplateWithDescription[], redigerbar: TemplateWithDescription[]): void {
+export function saveTemplateCache(autobrev: TemplateDescription[], redigerbar: TemplateDescription[]): void {
   try {
     const value: CachedTemplates = { autobrev, redigerbar, cachedAt: Date.now() };
     localStorage.setItem(CACHE_KEY, JSON.stringify(value));

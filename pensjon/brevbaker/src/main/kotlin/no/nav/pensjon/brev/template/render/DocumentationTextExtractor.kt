@@ -38,7 +38,7 @@ data class SearchLine(val blockId: String, val segments: List<SearchLineSegment>
  * segments (excluded from the searchable text); literal text is normalised
  * (collapsed whitespace).
  */
-object DocumentationSearchableTextExtractor {
+object DocumentationTextExtractor {
 
     private const val MAX_VAR_LABEL_LENGTH = 40
 

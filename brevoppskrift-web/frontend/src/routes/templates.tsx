@@ -5,12 +5,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 
 import {
-  getBrevkoder,
   getBrevkoderMedMetadata,
   getTemplateDescription,
   type MalType,
 } from "~/api/brevbaker-api-endpoints";
-import { loadTemplateCache, saveTemplateCache, type TemplateWithDescription } from "~/api/templateCache";
+import { type TemplateDescription } from "~/api/brevbakerTypes";
+import { loadTemplateCache, saveTemplateCache } from "~/api/templateCache";
 import {
   BrevResultList,
   type IndexableTemplate,
@@ -23,10 +23,9 @@ import {
 
 function displayTitleOf(
   description: { name: string; metadata?: { displayTitle?: string } | null },
-  id: string,
 ): string {
   const title = description.metadata?.displayTitle;
-  return title?.trim() ? title : description.name || id;
+  return title?.trim() ? title : description.name;
 }
 
 export const Route = createFileRoute("/templates")({
@@ -50,57 +49,37 @@ export const Route = createFileRoute("/templates")({
   component: AllTemplates,
 });
 
-function populateQueryCache(queryClient: QueryClient, malType: MalType, templates: TemplateWithDescription[]) {
-  for (const { id, description } of templates) {
-    queryClient.setQueryData(getTemplateDescription.queryKey(malType, id), description);
+function populateQueryCache(queryClient: QueryClient, malType: MalType, templates: TemplateDescription[]) {
+  for (const description of templates) {
+    queryClient.setQueryData(getTemplateDescription.queryKey(malType, description.name), description);
   }
 }
 
-async function fetchAllDescriptions(queryClient: QueryClient, malType: MalType): Promise<TemplateWithDescription[]> {
-  const [ids, descriptions] = await Promise.all([
-    queryClient.ensureQueryData({
-      queryKey: getBrevkoder.queryKey(malType),
-      queryFn: () => getBrevkoder.queryFn(malType),
-    }),
-    queryClient.ensureQueryData({
-      queryKey: getBrevkoderMedMetadata.queryKey(malType),
-      queryFn: () => getBrevkoderMedMetadata.queryFn(malType),
-    }),
-  ]);
+async function fetchAllDescriptions(queryClient: QueryClient, malType: MalType): Promise<TemplateDescription[]> {
+  const descriptions = await queryClient.ensureQueryData({
+    queryKey: getBrevkoderMedMetadata.queryKey(malType),
+    queryFn: () => getBrevkoderMedMetadata.queryFn(malType),
+  });
 
-  if (!Array.isArray(ids)) {
+  if (!Array.isArray(descriptions)) {
     throw new TypeError(
       `Forventet en liste med brevkoder for "${malType}", men fikk noe annet. Går kallene til brevbaker-APIet (f.eks. via BFF eller Vite-proxy)?`,
     );
   }
 
-  // Metadata and brevkode lists share the same order; fall back to per-template fetches if misaligned.
-  const templates: TemplateWithDescription[] =
-    Array.isArray(descriptions) && descriptions.length === ids.length
-      ? ids.map((id, index) => ({ id, description: descriptions[index] }))
-      : await Promise.all(
-          ids.map(async (id) => ({
-            id,
-            description: await queryClient.ensureQueryData({
-              queryKey: getTemplateDescription.queryKey(malType, id),
-              queryFn: () => getTemplateDescription.queryFn(malType, id),
-            }),
-          })),
-        );
-
-  populateQueryCache(queryClient, malType, templates);
-  return templates;
+  populateQueryCache(queryClient, malType, descriptions);
+  return descriptions;
 }
 
-function TemplateList({ templates, malType }: { templates: TemplateWithDescription[]; malType: MalType }) {
+function TemplateList({ templates, malType }: { templates: TemplateDescription[]; malType: MalType }) {
   if (templates.length === 0) {
     return <span>Ingen treff</span>;
   }
   return (
     <VStack gap="space-8">
-      {templates.map(({ id, description }) => (
-        <Link key={id} params={{ malType, templateId: id }} preload="intent" to="/template/$malType/$templateId">
-          {displayTitleOf(description, id)}
+      {templates.map((description) => (
+        <Link key={description.name} params={{ malType, templateId: description.name }} preload="intent" to="/template/$malType/$templateId">
+          {displayTitleOf(description)}
         </Link>
       ))}
     </VStack>
@@ -130,13 +109,13 @@ function AllTemplates() {
   const { autobrev, redigerbar } = Route.useLoaderData();
 
   const indexable = useMemo<IndexableTemplate[]>(() => {
-    const toIndexable = (templates: TemplateWithDescription[], malType: MalType) =>
-      templates.flatMap(({ id, description }) =>
+    const toIndexable = (templates: TemplateDescription[], malType: MalType) =>
+      templates.flatMap((description) =>
         description.languages.map((language) => ({
-          id,
+          id: description.name,
           malType,
-          name: description.name || id,
-          displayTitle: displayTitleOf(description, id),
+          name: description.name,
+          displayTitle: displayTitleOf(description),
           language,
         })),
       );
@@ -147,9 +126,9 @@ function AllTemplates() {
 
   const titleByKey = useMemo(() => {
     const map = new Map<string, string>();
-    const add = (templates: TemplateWithDescription[], malType: MalType) => {
-      for (const { id, description } of templates) {
-        map.set(`${malType}/${id}`, displayTitleOf(description, id));
+    const add = (templates: TemplateDescription[], malType: MalType) => {
+      for (const description of templates) {
+        map.set(`${malType}/${description.name}`, displayTitleOf(description));
       }
     };
     add(autobrev, "autobrev");

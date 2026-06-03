@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.TemplateModelSpecificationFactory
-import no.nav.pensjon.brev.template.render.DocumentationSearchableTextExtractor
+import no.nav.pensjon.brev.template.render.DocumentationTextExtractor
 import no.nav.pensjon.brev.template.render.SearchLine
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brev.template.toCode
@@ -32,7 +32,7 @@ val EMPTY_MODEL_SPECIFICATION = TemplateModelSpecification(types = emptyMap(), l
 /** One template's searchable lines for a single language, as returned by the batch
  * documentation endpoint. Each line is an ordered list of text/variable segments
  * (see [SearchLine]). */
-data class TemplateDocumentationSearchEntry(
+data class SearchableContent(
     val brevkode: String,
     val language: LanguageCode,
     val lines: List<SearchLine>,
@@ -56,10 +56,10 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
             val entries = resource.listTemplatekeys().flatMap { key ->
                 val template = resource.getTemplate(resource.kodeOf(key))?.template ?: return@flatMap emptyList()
                 template.language.all().map { language ->
-                    TemplateDocumentationSearchEntry(
+                    SearchableContent(
                         brevkode = key,
                         language = language.toCode(),
-                        lines = DocumentationSearchableTextExtractor.extract(
+                        lines = DocumentationTextExtractor.extract(
                             TemplateDocumentationRenderer.render(template, language, EMPTY_MODEL_SPECIFICATION),
                         ),
                     )
