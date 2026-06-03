@@ -124,6 +124,66 @@ Prefer helpers in `actions/common.ts` before writing custom mutation logic:
 - `splitLiteralAtOffset(...)`: standardized literal split with correct `editedText` behavior.
 - `new*` constructors: create new nodes consistently (`newLiteral`, `newItem`, `newItemList`, `newParagraph`, `newRow`, ...).
 
+## List-specific rules
+
+### One list per block — the invariant
+
+The letter editor enforces a strict **one list per block** invariant on blocks it creates or touches:
+
+- A block that contains a list must contain **only** that list (no surrounding text, no other lists).
+- A block that contains no list may hold any number of text/variable content items.
+
+Templates and stored letters may legitimately violate this structure (the DSL allows `[text, list, text]` inside a paragraph). Actions must therefore be **tolerant on input** (never crash on mixed blocks) but **normalize on output** (any block the action writes should conform to the invariant).
+
+### `splitMixedListBlock` — the normalization helper
+
+Whenever an action converts text to a list (via `toggleListOn`) or otherwise produces a block that may contain mixed content, call:
+
+```ts
+splitMixedListBlock(draft, blockIndex);
+```
+
+This helper:
+1. Merges adjacent same-type `ItemList`s within the block (pre-pass via `mergeSameTypeListsInBlock`).
+2. Partitions the remaining content into "runs" — each run is either a contiguous sequence of non-list content or a single `ItemList`.
+3. Keeps run[0] in the original block (preserving its `id`).
+4. Removes runs[1..N] via `removeElements` (recording their ids in `deletedContent` for split-persistence) and inserts them as new `id: null` blocks directly after the original.
+5. Updates `draft.focus` if focus was inside the block being split.
+
+Returns the number of blocks that replaced the original (1 = no split was needed).
+
+**Where to call it:**
+- After `toggleListOn` in `toggleList` — already done.
+- After any other operation that inserts a list into a block that may already have text.
+- **Not** needed after `toggleListOff`, which already produces clean separate blocks by design.
+
+### `toggleListOff` — always produces separate blocks
+
+When the user converts a list item back to normal text, `toggleListOff` always places the extracted text and the remaining list into **separate blocks**. The four cases and their ID-preservation rationale:
+
+| Case | Original block becomes | New block(s) after |
+|---|---|---|
+| List becomes empty | Text inline (no extra block) | — |
+| First item extracted | Text block (keeps original `id`) | Remaining list in a new `id: null` block |
+| Last item extracted | List block (keeps original `id`) | Extracted text in a new `id: null` block |
+| Middle item extracted | First-half list (keeps original `id`) | Text block + second-half list in two new `id: null` blocks |
+
+**Why the original block must be at the lower index:** Both `mergeListWithAdjacentBlocks` and `mergeAdjacentListBlocks` keep the **lower-indexed** block as the merge survivor and discard the higher-indexed one. If the original block were at a higher index, its `id` would be lost on any subsequent re-merge, causing the backend to lose its merge-tracking identity.
+
+### `mergeSameTypeListsInBlock` — ID promotion during merge
+
+When two adjacent `ItemList`s of the same effective type are merged into one, if the surviving list has `id: null` but the consumed list has a real `id`, the real `id` is promoted onto the surviving list. The consumed list's `id` is un-deleted from `deletedContent` immediately afterwards, because `removeElements` would have just added it there.
+
+This is the same ID-promotion pattern as the general "ID preservation during merge" rule above, scoped to within-block list merging.
+
+### Normalization scope: only touched blocks
+
+Actions normalize only the blocks they create or touch. Pre-existing mixed blocks from old templates or stored letters are left as-is unless the action directly modifies them. This keeps the scope of each change minimal and prevents cascading side effects.
+
+### `editedListType` — list type changes
+
+To toggle or change the type of an existing `ItemList`, set `itemList.editedListType` — never write to `itemList.listType` directly. Use `effectiveListType(itemList)` (from `model/utils.ts`) everywhere you need the operative type, as it returns `editedListType ?? listType`.
+
 ## Table-specific rules
 
 Table actions must preserve these invariants:
@@ -186,3 +246,6 @@ Avoid ad hoc slicing that duplicates `editedText`/`text` rules.
 - [ ] Edit overlays (`editedText`, `editedFontType`, `editedListType`) are set instead of overwriting originals.
 - [ ] Empty container cases are handled (`newLiteral()` when needed).
 - [ ] Table-separator invariants are still satisfied.
+- [ ] After converting text to a list: `splitMixedListBlock` is called on the affected block.
+- [ ] List type reads use `effectiveListType(list)`, not `list.listType` directly.
+- [ ] After splitting a list or block: the original block retains its `id` at the lowest index.

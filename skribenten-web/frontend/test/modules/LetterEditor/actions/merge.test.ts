@@ -642,6 +642,14 @@ describe("LetterEditorActions.merge", () => {
       // Should merge into one block with one list containing all 4 items
       expect(result.redigertBrev.blocks).toHaveLength(1);
       expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(4);
+      // Focus lands at end of last item of the first list (item "b", now at index 1)
+      expect(result.focus).toMatchObject({
+        blockIndex: 0,
+        contentIndex: 0,
+        itemIndex: 1,
+        itemContentIndex: 0,
+        cursorPosition: 1,
+      });
     });
 
     test("backspace on blank line between different-type lists does not merge them", () => {
@@ -654,8 +662,16 @@ describe("LetterEditorActions.merge", () => {
       // Backspace on empty block 1
       const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
 
-      // Empty block removed, but lists stay as separate blocks (merged into one block via standard mergeBlocks)
+      // Empty block removed, lists stay separate
       expect(result.redigertBrev.blocks).toHaveLength(2);
+      // Focus lands at end of last item of the first (bullet) list
+      expect(result.focus).toMatchObject({
+        blockIndex: 0,
+        contentIndex: 0,
+        itemIndex: 0,
+        itemContentIndex: 0,
+        cursorPosition: 1,
+      });
     });
 
     test("full round-trip: enter on empty item, then backspace to re-merge", () => {

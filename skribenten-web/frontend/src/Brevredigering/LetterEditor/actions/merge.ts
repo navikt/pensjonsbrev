@@ -400,9 +400,22 @@ function mergeIntoItemList(
 
 function focusEndOfBlock(blockId: number, block: AnyBlock): Focus {
   const lastContent = block.content.at(-1);
+  const contentIndex = block.content.length - 1;
+  if (isItemList(lastContent) && lastContent.items.length > 0) {
+    const lastItemIndex = lastContent.items.length - 1;
+    const lastItem = lastContent.items[lastItemIndex];
+    const lastItemContent = lastItem.content.at(-1);
+    return {
+      blockIndex: blockId,
+      contentIndex,
+      itemIndex: lastItemIndex,
+      itemContentIndex: lastItem.content.length - 1,
+      cursorPosition: isLiteral(lastItemContent) ? text(lastItemContent).length : 0,
+    };
+  }
   return {
     blockIndex: blockId,
-    contentIndex: block.content.length - 1,
+    contentIndex,
     cursorPosition: lastContent?.type === LITERAL ? text(lastContent).length : 0,
   };
 }

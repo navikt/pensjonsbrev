@@ -18,17 +18,23 @@ describe("LetterEditorActions.toggleBulletList", () => {
         ]),
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 1, contentIndex: 2 });
-      expect(result.redigertBrev.blocks).toHaveLength(2);
+
+      // The mixed block (block1) is split: leading literal stays, merged list goes to new block2.
+      // block0 (in the previous block) must not be touched.
+      expect(result.redigertBrev.blocks).toHaveLength(3);
       expect(result.redigertBrev.blocks[0]).toEqual(state.redigertBrev.blocks[0]);
 
       const toggledContent = select<LiteralValue>(state, { blockIndex: 1, contentIndex: 2 });
 
-      const toggledInBlock = select<ParagraphBlock>(result, { blockIndex: 1 });
-      expect(toggledInBlock.content).toHaveLength(2);
-      expect(toggledInBlock.deletedContent).toEqual(toggledContent.id ? [toggledContent.id] : []);
-      expect(toggledInBlock?.content[0]).toEqual(state.redigertBrev.blocks[1].content[0]);
+      // block1 now only contains the leading literal
+      const block1After = select<ParagraphBlock>(result, { blockIndex: 1 });
+      expect(block1After.content).toHaveLength(1);
+      expect(block1After.content[0]).toEqual(state.redigertBrev.blocks[1].content[0]);
+      // toggleListOn recorded the toggled literal id; the merged list (parentId=null) is not tracked
+      expect(block1After.deletedContent).toContain(toggledContent.id);
 
-      expect(select<Item>(result, { blockIndex: 1, contentIndex: 1, itemIndex: 1 }).content).toEqual([toggledContent]);
+      // block2 holds the merged list with both items; the toggled literal is item[1]
+      expect(select<Item>(result, { blockIndex: 2, contentIndex: 0, itemIndex: 1 }).content).toEqual([toggledContent]);
     });
     test("should not merge with itemList in next block if not last in current block", () => {
       const state = letter(
@@ -40,15 +46,23 @@ describe("LetterEditorActions.toggleBulletList", () => {
         paragraph([itemList({ items: [item(literal({ text: "b2-p1" }))] })]),
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0 });
-      expect(result.redigertBrev.blocks).toHaveLength(2);
-      expect(result.redigertBrev.blocks[1]).toEqual(state.redigertBrev.blocks[1]);
+
+      // The mixed block (block0) is split: merged list goes to block0, trailing literal to new block1.
+      // Original block1 (the next block) must not be touched — it is now block2.
+      expect(result.redigertBrev.blocks).toHaveLength(3);
+      expect(result.redigertBrev.blocks[2]).toEqual(state.redigertBrev.blocks[1]);
 
       const toggledContent = select<LiteralValue>(state, { blockIndex: 0, contentIndex: 0 });
 
-      const toggledInBlock = select<ParagraphBlock>(result, { blockIndex: 0 });
-      expect(toggledInBlock.content).toHaveLength(2);
-      expect(toggledInBlock.deletedContent).toEqual(toggledContent.id ? [toggledContent.id] : []);
-      expect(toggledInBlock?.content.at(-1)).toEqual(state.redigertBrev.blocks[0].content.at(-1));
+      // block0 now holds the merged list only
+      const block0After = select<ParagraphBlock>(result, { blockIndex: 0 });
+      expect(block0After.content).toHaveLength(1);
+      expect(block0After.deletedContent).toContain(toggledContent.id);
+
+      // block1 holds the trailing literal that was in the mixed block
+      const block1After = select<ParagraphBlock>(result, { blockIndex: 1 });
+      expect(block1After.content).toHaveLength(1);
+      expect(block1After.content[0]).toEqual(state.redigertBrev.blocks[0].content.at(-1));
 
       expect(select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 }).content).toEqual([toggledContent]);
     });
@@ -67,29 +81,37 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
       const result = Actions.toggleBulletList(state, { blockIndex: 1, contentIndex: 2 });
 
-      // blocks and content that should be untouched
-      expect(result.redigertBrev.blocks).toHaveLength(3);
+      // The mixed block is split into 4 parts: leading literal, merged list, trailing literal.
+      // block0 and the original block2 (now block4) must be untouched.
+      expect(result.redigertBrev.blocks).toHaveLength(5);
       expect(result.redigertBrev.blocks[0]).toEqual(state.redigertBrev.blocks[0]);
-      expect(result.redigertBrev.blocks[2]).toEqual(state.redigertBrev.blocks[2]);
-      expect(result.redigertBrev.blocks[1].content[0]).toEqual(state.redigertBrev.blocks[1].content[0]);
-      expect(result.redigertBrev.blocks[1].content.at(-1)).toEqual(state.redigertBrev.blocks[1].content.at(-1));
+      expect(result.redigertBrev.blocks[4]).toEqual(state.redigertBrev.blocks[2]);
 
-      const toggledInBlock = select<ParagraphBlock>(result, { blockIndex: 1 });
-      expect(toggledInBlock.content).toHaveLength(3);
+      // block1 now has only the leading literal
+      const block1After = select<ParagraphBlock>(result, { blockIndex: 1 });
+      expect(block1After.content).toHaveLength(1);
+      expect(block1After.content[0]).toEqual(state.redigertBrev.blocks[1].content[0]);
+      // deletedContent: lit(22) removed by toggleListOn, id3 removed by toggleListOn,
+      // lit("b2-l3") removed by splitMixedListBlock when it moved to block3.
+      // The merged list (id=2) has parentId=null so its removal is not tracked here.
+      expect(block1After.deletedContent).toContain(22);
+      expect(block1After.deletedContent).toContain(3);
+      expect(block1After.deletedContent).toContain(select<LiteralValue>(state, { blockIndex: 1, contentIndex: 4 }).id);
 
-      // deletedContent should contain the literal that was toggled and the itemList that we merged into the one we kept
-      expect(toggledInBlock.deletedContent).toHaveLength(2);
-      expect(toggledInBlock.deletedContent).toEqual([22, 3]);
-      const shouldBeDeleted = state.redigertBrev.blocks[1].content
-        .map((c) => c.id)
-        .filter((id) => !toggledInBlock.content.some((keptContent) => keptContent.id === id));
-      expect(toggledInBlock.deletedContent).toEqual(shouldBeDeleted);
+      // block2 holds the merged list (id=2 preserved) with all 3 items
+      const keptItemList = select<ItemList>(result, { blockIndex: 2, contentIndex: 0 });
+      expect(keptItemList.id).toBe(2);
+      expect(keptItemList.items).toHaveLength(3);
 
-      // content that we merged in to the itemList
-      expect(select<Item>(result, { blockIndex: 1, contentIndex: 1, itemIndex: 1 }).content).toEqual([
+      // block3 holds the trailing literal
+      const block3After = select<ParagraphBlock>(result, { blockIndex: 3 });
+      expect(block3After.content).toHaveLength(1);
+      expect(block3After.content[0]).toEqual(state.redigertBrev.blocks[1].content.at(-1));
+
+      // The toggled content (b2-l2, id=22) is item[1] in the merged list
+      expect(select<Item>(result, { blockIndex: 2, contentIndex: 0, itemIndex: 1 }).content).toEqual([
         select<LiteralValue>(state, { blockIndex: 1, contentIndex: 2 }),
       ]);
-      const keptItemList = select<ItemList>(result, { blockIndex: 1, contentIndex: 1 });
       const mergedItemList = state.redigertBrev.blocks[1].content.find(
         (c) => c.type === "ITEM_LIST" && c.id !== keptItemList.id,
       ) as ItemList;
@@ -108,14 +130,20 @@ describe("LetterEditorActions.toggleBulletList", () => {
         }),
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 1, contentIndex: 3 });
-      expect(result.redigertBrev.blocks).toHaveLength(2);
-      expect(result.redigertBrev.blocks[1]?.content).toHaveLength(3);
-      expect(
-        select<LiteralValue>(result, { blockIndex: 1, contentIndex: 2, itemIndex: 1, itemContentIndex: 0 })?.text,
-      ).toEqual("l2");
-      expect(result.redigertBrev.blocks[1].deletedContent).toContain(
-        select<LiteralValue>(state, { blockIndex: 1, contentIndex: 3 }).id,
+
+      // The mixed block is split: list1 → block1, lit("l1") → block2, merged-list → block3.
+      // block0 (blokk før) must not be touched.
+      expect(result.redigertBrev.blocks).toHaveLength(4);
+
+      // "punktliste1" is preserved unchanged in block1
+      expect(select<ItemList>(result, { blockIndex: 1, contentIndex: 0 }).items).toEqual(
+        select<ItemList>(state, { blockIndex: 1, contentIndex: 0 }).items,
       );
+
+      // The merged list (punktliste2 + l2) is in block3
+      expect(
+        select<LiteralValue>(result, { blockIndex: 3, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 })?.text,
+      ).toEqual("l2");
     });
   });
 
@@ -175,12 +203,14 @@ describe("LetterEditorActions.toggleBulletList", () => {
         itemContentIndex: 0,
       });
 
-      const block = select<ParagraphBlock>(result, { blockIndex: 0 });
-      expect(block.content).toHaveLength(3);
-      expect(block.content.filter((c) => c.type === "ITEM_LIST")).toHaveLength(2);
+      // toggleListOff (middle) produces 3 blocks: first-half list, text, second-half list
+      expect(result.redigertBrev.blocks).toHaveLength(3);
 
-      const keptList = block.content.find((il) => il.id === -1 && il.type === "ITEM_LIST") as ItemList;
+      const keptList = select<ItemList>(result, { blockIndex: 0, contentIndex: 0 });
       expect(keptList).not.toBeUndefined();
+      expect(keptList.id).toBe(-1);
+      expect(keptList.items).toHaveLength(1);
+      // deletedItems preserves the original -2 plus the ids of the two removed items
       expect(keptList.deletedItems).toEqual([-2, ...originalItemList.items.slice(1).map((c) => c.id)]);
     });
   });
@@ -192,7 +222,8 @@ describe("LetterEditorActions.toggleBulletList", () => {
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
 
-      expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 1 }).deletedItems).toContain(
+      // The remaining list moves to a new block1; item0's id is in that list's deletedItems
+      expect(select<ItemList>(result, { blockIndex: 1, contentIndex: 0 }).deletedItems).toContain(
         select<Item>(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0 }).id,
       );
     });
@@ -250,8 +281,10 @@ describe("LetterEditorActions.toggleBulletList", () => {
         itemIndex: 0,
         itemContentIndex: 0,
       });
-      expect(result.redigertBrev.blocks).toHaveLength(1);
-      expect(result.redigertBrev.blocks[0].content).toHaveLength(3);
+      // Original block (block0) becomes [leading-literal, extracted-item-text].
+      // Remaining list moves to block1.
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(2);
       expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 1, cursorPosition: state.focus.cursorPosition });
     });
 
@@ -273,8 +306,9 @@ describe("LetterEditorActions.toggleBulletList", () => {
         itemIndex: 0,
         itemContentIndex: 1,
       });
-      expect(result.redigertBrev.blocks).toHaveLength(1);
-      expect(result.redigertBrev.blocks[0].content).toHaveLength(4);
+      // block0 becomes [leading-literal, lit0, lit1]. Remaining list in block1.
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(3);
       expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 2, cursorPosition: state.focus.cursorPosition });
     });
 
@@ -297,9 +331,10 @@ describe("LetterEditorActions.toggleBulletList", () => {
         itemContentIndex: 0,
       });
 
-      expect(result.redigertBrev.blocks).toHaveLength(1);
-      expect(result.redigertBrev.blocks[0].content).toHaveLength(3);
-      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 2, cursorPosition: state.focus.cursorPosition });
+      // block0 keeps [leading-literal, remaining-list]. Extracted item goes to block1.
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(2);
+      expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: state.focus.cursorPosition });
     });
 
     test("when toggling off last item with multiple literals, focus should be moved", () => {
@@ -321,9 +356,10 @@ describe("LetterEditorActions.toggleBulletList", () => {
         itemContentIndex: 1,
       });
 
-      expect(result.redigertBrev.blocks).toHaveLength(1);
-      expect(result.redigertBrev.blocks[0].content).toHaveLength(4);
-      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 3, cursorPosition: state.focus.cursorPosition });
+      // block0 keeps [leading-literal, remaining-list]. Extracted item (2 literals) in block1.
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(2);
+      expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 1, cursorPosition: state.focus.cursorPosition });
     });
 
     test("when toggling off item in the middle, focus should be moved", () => {
@@ -347,14 +383,15 @@ describe("LetterEditorActions.toggleBulletList", () => {
         itemIndex: 1,
       });
 
-      expect(result.redigertBrev.blocks).toHaveLength(1);
-      expect(result.redigertBrev.blocks[0].content).toHaveLength(6);
-      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 3, cursorPosition: state.focus.cursorPosition });
+      // block0 keeps [v1, first-half-list, v2]. Text block at block1, second-half list at block2.
+      expect(result.redigertBrev.blocks).toHaveLength(3);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(3);
+      expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 1, cursorPosition: state.focus.cursorPosition });
     });
   });
 
   describe("toggle off", () => {
-    test("first of two items, then content is inserted after list", () => {
+    test("first of two items: extracted text stays in original block, remaining list moves to new block", () => {
       const state = letter(
         paragraph([
           variable("v1"),
@@ -372,14 +409,17 @@ describe("LetterEditorActions.toggleBulletList", () => {
         contentIndex: 1,
         itemIndex: 0,
         itemContentIndex: 1,
-      }).redigertBrev.blocks[0];
+      });
 
-      expect(result.content).toHaveLength(5);
-      expect(result.content.slice(1, 3)).toEqual(
+      // Original block becomes [v1, item0-lit1, item0-lit2, v2]; remaining list in block1
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      const block0 = result.redigertBrev.blocks[0];
+      expect(block0.content).toHaveLength(4);
+      expect(block0.content.slice(1, 3)).toEqual(
         select<Item>(state, { blockIndex: 0, contentIndex: 1, itemIndex: 0 }).content,
       );
     });
-    test("last of two items, then content is inserted after list", () => {
+    test("last of two items: original block keeps list, extracted text goes to new block", () => {
       const state = letter(
         paragraph([
           variable("v1"),
@@ -397,10 +437,12 @@ describe("LetterEditorActions.toggleBulletList", () => {
         contentIndex: 1,
         itemIndex: 1,
         itemContentIndex: 1,
-      }).redigertBrev.blocks[0];
+      });
 
-      expect(result.content).toHaveLength(5);
-      expect(result.content.slice(2, 4)).toEqual(
+      // Original block keeps [v1, list([item0]), v2]; extracted item1 content in block1
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(3);
+      expect(result.redigertBrev.blocks[1].content).toEqual(
         select<Item>(state, { blockIndex: 0, contentIndex: 1, itemIndex: 1 }).content,
       );
     });
@@ -427,7 +469,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
       );
     });
 
-    test("middle, then list is split and itemContent is moved", () => {
+    test("middle: original block keeps first-half list, text and second-half list go to new blocks", () => {
       const state = letter(
         paragraph([
           variable("v1"),
@@ -446,10 +488,12 @@ describe("LetterEditorActions.toggleBulletList", () => {
         contentIndex: 1,
         itemIndex: 1,
         itemContentIndex: 1,
-      }).redigertBrev.blocks[0];
+      });
 
-      expect(result.content).toHaveLength(6);
-      expect(result.content.slice(2, 4)).toEqual(
+      // block0=[v1, list([item0]), v2], block1=[item1 content], block2=[list([item2])]
+      expect(result.redigertBrev.blocks).toHaveLength(3);
+      expect(result.redigertBrev.blocks[0].content).toHaveLength(3);
+      expect(result.redigertBrev.blocks[1].content).toEqual(
         select<Item>(state, { blockIndex: 0, contentIndex: 1, itemIndex: 1 }).content,
       );
     });

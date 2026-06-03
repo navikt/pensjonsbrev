@@ -399,7 +399,7 @@ test.describe("toggle bullet-list", () => {
       await page.getByTestId("bullet-list-button").click();
       await expect(page.locator("ul")).toHaveCount(1);
       await expect(page.locator("li")).toHaveCount(1);
-      await expect(page.locator(".PARAGRAPH").first().getByText("skal brytes ut")).toBeVisible();
+      await expect(page.locator(".PARAGRAPH").getByText("skal brytes ut")).toBeVisible();
     });
 
     test("fjerner punkt fra midten av en punktliste", async ({ page }) => {
@@ -417,7 +417,7 @@ test.describe("toggle bullet-list", () => {
       await page.getByTestId("bullet-list-button").click();
       await expect(page.locator("ul")).toHaveCount(2);
       await expect(page.locator("li")).toHaveCount(2);
-      await expect(page.locator(".PARAGRAPH").first().getByText("skal brytes ut")).toBeVisible();
+      await expect(page.locator(".PARAGRAPH").getByText("skal brytes ut")).toBeVisible();
     });
   });
 });

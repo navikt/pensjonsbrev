@@ -1,11 +1,19 @@
 import { current, type Draft } from "immer";
 
-import { type ItemList, ListType } from "~/types/brevbakerTypes";
+import { type Content, type Item, type ItemList, ListType } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
 import { type ItemContentIndex, type LetterEditorState, type LiteralIndex } from "../model/state";
 import { effectiveListType, isItemList, isTextContent } from "../model/utils";
-import { addElements, findAdjoiningContent, newItem, newItemList, removeElements } from "./common";
+import {
+  addElements,
+  findAdjoiningContent,
+  newItem,
+  newItemList,
+  newParagraph,
+  removeElements,
+  splitMixedListBlock,
+} from "./common";
 
 export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralIndex]> = withPatches(
   (draft, literalIndex) => toggleList(draft, literalIndex, ListType.PUNKTLISTE),
@@ -24,6 +32,8 @@ const toggleList = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex,
   const blockContent = block.content[literalIndex.contentIndex];
   if (isTextContent(blockContent)) {
     toggleListOn(draft, literalIndex, listType);
+    const focusBlockIndex = draft.focus.blockIndex;
+    splitMixedListBlock(draft, focusBlockIndex);
     mergeListWithAdjacentBlocks(draft, draft.focus.blockIndex, draft.focus.contentIndex, listType);
   } else if (isItemList(blockContent) && "itemIndex" in literalIndex) {
     if (effectiveListType(blockContent) === listType) {
@@ -285,57 +295,109 @@ const mergeListWithAdjacentBlocks = (
 };
 
 /**
- * - om det er det første elelentet så flyttes item.content ut i block.content før listen
- * - om det er det siste elementet så flyttes item.content ut i block.content etter listen
- * - om det er et element i midten så splittes listen i to ved angitt punkt og item.content settes inn i mellom listene.
+ * Converts a single list item back to normal paragraph text by removing it
+ * from its list and placing its content in a dedicated paragraph block.
+ *
+ * To maintain the "one list per block, nothing else" invariant, the extracted
+ * text and any remaining list halves are placed in separate blocks — never
+ * inline in the same block as the remaining list.
+ *
+ * ID-preservation rule: the original block (with its template id) always stays
+ * at its current index. New blocks (id: null) are inserted AFTER it. This
+ * guarantees that if the user re-toggles the list on, mergeListWithAdjacentBlocks
+ * will keep the lower-indexed block as the survivor, preserving the original id.
+ *
+ * Cases:
+ *  - Empty list after removal: list removed, item content placed inline (no split needed).
+ *  - First item: original block changes content to the extracted text; remaining
+ *    list goes to a new block after (list id recorded in block.deletedContent).
+ *  - Last item: original block keeps the list; extracted text goes to a new block after.
+ *  - Middle item: original block keeps the first-half list; text block + second-half
+ *    list block are inserted after.
  */
 const toggleListOff = (draft: Draft<LetterEditorState>, literalIndex: ItemContentIndex) => {
-  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
-  const itemList = block.content[literalIndex.contentIndex] as ItemList;
+  const blocks = draft.redigertBrev.blocks;
+  const block = blocks[literalIndex.blockIndex];
+  const blockIndex = literalIndex.blockIndex;
+  const contentIndex = literalIndex.contentIndex;
+  const itemIndex = literalIndex.itemIndex;
+  const itemList = block.content[contentIndex] as ItemList;
 
-  if (literalIndex.itemIndex >= 0 && literalIndex.itemIndex < itemList.items.length) {
-    draft.saveStatus = "DIRTY";
+  if (itemIndex < 0 || itemIndex >= itemList.items.length) return;
 
-    const itemContent = removeElements(literalIndex.itemIndex, 1, {
+  draft.saveStatus = "DIRTY";
+
+  // Remove the item from the list (records item.id in itemList.deletedItems).
+  const itemContent = removeElements(itemIndex, 1, {
+    content: itemList.items,
+    deletedContent: itemList.deletedItems,
+    id: itemList.id,
+  }).flatMap((item) => item.content) as Content[];
+
+  const isFirstItem = itemIndex === 0;
+  const isLastItem = itemIndex === itemList.items.length; // length is now post-removal
+
+  if (itemList.items.length === 0) {
+    // List is now empty: remove it and place item content inline.
+    removeElements(contentIndex, 1, { content: block.content, deletedContent: block.deletedContent, id: block.id });
+    addElements(itemContent, contentIndex, block.content, block.deletedContent);
+    draft.focus = {
+      blockIndex,
+      contentIndex: contentIndex + Math.min(itemContent.length - 1, literalIndex.itemContentIndex),
+      cursorPosition: draft.focus.cursorPosition,
+    };
+    return;
+  }
+
+  if (isFirstItem) {
+    // Original block BECOMES the text block; remaining list moves to a new block after.
+    // Placing the original id at the lower index ensures id-preservation on re-merge.
+    const remainingList = current(itemList) as ItemList;
+
+    // Remove the list from the original block (records list.id in block.deletedContent —
+    // split-persistence: prevents backend from re-introducing this list in block.id).
+    removeElements(contentIndex, 1, { content: block.content, deletedContent: block.deletedContent, id: block.id });
+
+    // Place item content at the same position (original block now holds text).
+    addElements(itemContent, contentIndex, block.content, block.deletedContent);
+
+    // New block (id: null) holds the remaining list.
+    const listBlock = newParagraph({ content: [remainingList] });
+    blocks.splice(blockIndex + 1, 0, listBlock);
+
+    draft.focus = {
+      blockIndex,
+      contentIndex: contentIndex + Math.min(itemContent.length - 1, literalIndex.itemContentIndex),
+      cursorPosition: draft.focus.cursorPosition,
+    };
+  } else if (isLastItem) {
+    // Original block keeps the list; extracted text goes to a new block after.
+    const textBlock = newParagraph({ content: itemContent });
+    blocks.splice(blockIndex + 1, 0, textBlock);
+
+    draft.focus = {
+      blockIndex: blockIndex + 1,
+      contentIndex: Math.min(itemContent.length - 1, literalIndex.itemContentIndex),
+      cursorPosition: draft.focus.cursorPosition,
+    };
+  } else {
+    // Middle item: original block keeps first-half list; text + second-half list follow.
+    // removeElements marks the moved items as deleted in itemList.deletedItems (split-persistence).
+    const itemsAfter = removeElements(itemIndex, itemList.items.length - itemIndex, {
       content: itemList.items,
       deletedContent: itemList.deletedItems,
       id: itemList.id,
-    }).flatMap((item) => item.content);
+    }) as unknown as Item[];
 
-    if (itemList.items.length === 0) {
-      removeElements(literalIndex.contentIndex, 1, {
-        content: block.content,
-        deletedContent: block.deletedContent,
-        id: block.id,
-      });
-    }
-
-    const insertItemContentIndex = literalIndex.contentIndex + (literalIndex.itemIndex === 0 ? 0 : 1);
-    if (literalIndex.itemIndex === 0 || literalIndex.itemIndex === itemList.items.length) {
-      // since we've already removed the item, then if we're removing the last item the index will be equal to `thisItemList.items.length`.
-      addElements(itemContent, insertItemContentIndex, block.content, block.deletedContent);
-    } else {
-      // removeElements marks the moved items as deleted in itemList.deletedItems. This is
-      // intentional (the split-persistence mechanism): those deletion records prevent the backend
-      // from re-introducing the items into the original list on re-merge. The new user-created
-      // list (id: null) that receives them is kept verbatim by the backend.
-      // See letter-editor-actions SKILL.md for the split-persistence pattern.
-      const itemsAfter = removeElements(literalIndex.itemIndex, itemList.items.length, {
-        content: itemList.items,
-        deletedContent: itemList.deletedItems,
-        id: itemList.id,
-      });
-      addElements(
-        [...itemContent, newItemList({ listType: effectiveListType(itemList), items: itemsAfter })],
-        insertItemContentIndex,
-        block.content,
-        block.deletedContent,
-      );
-    }
+    const textBlock = newParagraph({ content: itemContent });
+    const secondHalfBlock = newParagraph({
+      content: [newItemList({ listType: effectiveListType(itemList), items: itemsAfter })],
+    });
+    blocks.splice(blockIndex + 1, 0, textBlock, secondHalfBlock);
 
     draft.focus = {
-      blockIndex: literalIndex.blockIndex,
-      contentIndex: insertItemContentIndex + Math.min(itemContent.length - 1, literalIndex.itemContentIndex),
+      blockIndex: blockIndex + 1,
+      contentIndex: Math.min(itemContent.length - 1, literalIndex.itemContentIndex),
       cursorPosition: draft.focus.cursorPosition,
     };
   }
