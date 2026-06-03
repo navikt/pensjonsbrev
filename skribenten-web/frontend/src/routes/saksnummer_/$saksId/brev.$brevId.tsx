@@ -2,7 +2,7 @@ import { Alert, Box, Button, Heading, HGrid, HStack, Label, Tabs, VStack } from 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -48,6 +48,9 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
   component: () => <RedigerBrevPage />,
 });
 
+const queryRetries = 3;
+const isSpecialCaseErrorStatus = (status: number | undefined) => [404, 409, 423].includes(Number(status));
+
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
   const { enhetsId, vedtaksId } = Route.useSearch();
@@ -55,19 +58,14 @@ function RedigerBrevPage() {
   const search = Route.useSearch();
   const navigate = Route.useNavigate();
 
-  const isSpecialCaseErrorStatus = (status: number | undefined) => [404, 409, 423].includes(Number(status));
-  const queryRetries = 3;
   const brevQuery = useQuery({
     queryKey: getBrev.queryKey(brevId),
     queryFn: () => getBrev.queryFn(saksId, brevId),
     staleTime: Number.POSITIVE_INFINITY,
-    retry: useCallback(
-      (failureCount: number, error: AxiosError) => {
-        return failureCount < queryRetries && !isSpecialCaseErrorStatus(error.response?.status);
-      },
-      [queryRetries],
-    ),
-    throwOnError: useCallback((error: AxiosError) => !isSpecialCaseErrorStatus(error.response?.status), []),
+    retry: (failureCount: number, error: AxiosError) => {
+      return failureCount < queryRetries && !isSpecialCaseErrorStatus(error.response?.status);
+    },
+    throwOnError: (error: AxiosError) => !isSpecialCaseErrorStatus(error.response?.status),
   });
 
   useEffect(() => {
