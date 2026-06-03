@@ -67,7 +67,7 @@ fun Route.sakRoute(
                 val sak: Fagsak = call.attributes[SakKey]
                 val erSkjermet = async { skjermingService.hentSkjerming(sak.pid) ?: false }
                 val harVerge = async { pensjonRepresentasjonService.harVerge(sak.pid) ?: false }
-                val person = pdlService.hentBrukerContext(sak.pid, sak.behandlingsnummer)
+                val person = pdlService.hentBrukerContext(sak.pid, sak.behandlingsnumre)
                 if (person != null) {
                     call.respond(
                         Api.BrukerStatus(
