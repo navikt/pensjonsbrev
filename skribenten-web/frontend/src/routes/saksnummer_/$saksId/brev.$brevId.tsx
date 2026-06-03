@@ -49,7 +49,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
 });
 
 const queryRetries = 3;
-const isSpecialCaseErrorStatus = (status: number | undefined) => [404, 409, 423].includes(Number(status));
+const isSpecialCaseErrorStatus = (status: number | undefined) => status === 404 || status === 409 || status === 423;
 
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
