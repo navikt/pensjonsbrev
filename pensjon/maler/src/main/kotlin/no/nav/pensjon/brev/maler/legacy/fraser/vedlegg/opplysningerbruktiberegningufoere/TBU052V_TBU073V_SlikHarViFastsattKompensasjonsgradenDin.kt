@@ -20,15 +20,15 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
 
             title1 {
                 text(
-                    bokmal { + "Slik har vi fastsatt kompensasjonsgraden din" },
-                    nynorsk { + "Slik har vi fastsett kompensasjonsgraden din" },
+                    bokmal { + "Slik har vi fastsatt reduksjonsprosenten din" },
+                    nynorsk { + "Slik har vi fastsett reduksjonsprosenten din" },
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { + "Vi fastsetter kompensasjonsgraden ved å sammenligne det du " },
-                    nynorsk { + "Vi fastset kompensasjonsgraden ved å samanlikne det du " },
+                    bokmal { + "Vi fastsetter reduksjonsprosenten ved å sammenligne det du " },
+                    nynorsk { + "Vi fastset reduksjonsprosenten ved å samanlikne det du " },
                 )
 
                 //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = 100
@@ -47,28 +47,8 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
                     )
                 }
                 text(
-                    bokmal { + " 100 prosent uføretrygd med din oppjusterte inntekt før du ble ufør. Kompensasjonsgraden brukes til å beregne hvor mye vi reduserer uføretrygden din, hvis du har inntekt som er høyere enn inntektsgrensen." },
-                    nynorsk { + " 100 prosent uføretrygd, med den oppjusterte inntekta di før du blei ufør. Kompensasjonsgraden blir brukt til å berekne kor mykje vi reduserer uføretrygda di, dersom du har inntekt som er høgare enn inntektsgrensa." },
-                )
-
-                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = 100
-                showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().equalTo(100)) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "" },
-                    )
-                }
-
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad < 100) THEN      INCLUDE ENDIF
-                showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().lessThan(100))) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "" },
-                    )
-                }
-                text(
-                    bokmal { + "" },
-                    nynorsk { + "" },
+                    bokmal { + " 100 prosent uføretrygd med din oppjusterte inntekt før du ble ufør. Reduksjonsprosenten brukes til å beregne hvor mye vi reduserer uføretrygden din, hvis du har inntekt som er høyere enn inntektsgrensen. Reduksjonsprosenten kan ikke være høyere enn 70 prosent." },
+                    nynorsk { + " 100 prosent uføretrygd, med den oppjusterte inntekta di før du blei ufør. Reduksjonsprosenten blir brukt til å berekne kor mykje vi reduserer uføretrygda di, dersom du har inntekt som er høgare enn inntektsgrensa. Reduksjonsprosenten kan ikkje vere høgare enn 70 prosent." },
                 )
             }
         }
@@ -85,12 +65,12 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
                 text(
                     bokmal {
                         +"Inntekten din før du ble ufør er fastsatt til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                            .format() + ". For å kunne fastsette kompensasjonsgraden din, må denne inntekten oppjusteres til dagens verdi. Oppjustert til dagens verdi tilsvarer dette en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                            .format() + ". For å kunne fastsette reduksjonsprosenten din, må denne inntekten oppjusteres til dagens verdi. Oppjustert til dagens verdi tilsvarer dette en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
                             .format() + "."
                     },
                     nynorsk {
                         +"Inntekta di før du blei ufør er fastsett til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                            .format() + ". For å kunne fastsetje kompensasjonsgraden din, må inntekta oppjusterast til dagens verdi. Oppjustert til dagens verdi utgjer dette ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                            .format() + ". For å kunne fastsetje reduksjonsprosenten din, må inntekta oppjusterast til dagens verdi. Oppjustert til dagens verdi utgjer dette ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
                             .format() + "."
                     },
                 )
@@ -130,11 +110,11 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
 
             paragraph {
                 text (
-                    bokmal { + "Vi beregner kompensasjonsgraden din slik: (" + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                    bokmal { + "Vi beregner reduksjonsprosenten din slik: (" + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
                         .format(false) + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
                         .format(false) + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent." },
-                    nynorsk { + "Vi bereknar kompensasjonsgraden din slik: (" + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                    nynorsk { + "Vi bereknar reduksjonsprosenten din slik: (" + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
                         .format(false) + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
                         .format(false) + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent." },
@@ -151,13 +131,13 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
                 //IF(PE_UT_TBU056V_51() = true) THEN      INCLUDE ENDIF
                 showIf(pe.ut_tbu056v_51()) {
                     text(
-                        bokmal { + "Kompensasjonsgraden skal ved beregningen ikke settes høyere enn 70 prosent. " },
-                        nynorsk { + "Kompensasjonsgraden skal ikkje setjast høgare enn 70 prosent i berekninga. " },
+                        bokmal { + "Reduksjonsprosenten skal ved beregningen ikke settes høyere enn 70 prosent. " },
+                        nynorsk { + "Reduksjonsprosenten skal ikkje setjast høgare enn 70 prosent i berekninga. " },
                     )
                 }
                 text(
-                    bokmal { + "Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig kompensasjonsgrad i beregningen." },
-                    nynorsk { + "Dersom uføretrygda di blir endra i løpet av eit kalenderår, vil vi bruke ein gjennomsnittleg kompensasjonsgrad i berekninga." },
+                    bokmal { + "Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig reduksjonsprosent i beregningen." },
+                    nynorsk { + "Dersom uføretrygda di blir endra i løpet av eit kalenderår, vil vi bruke ein gjennomsnittleg reduksjonsprosent i berekninga." },
                 )
             }
         }
