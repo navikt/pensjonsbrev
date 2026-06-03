@@ -32,7 +32,7 @@ fun Application.configureRouting(
 ) {
     val authService = AzureADService(authConfig, cache = cache)
     val servicesConfig = skribentenConfig.getConfig("services")
-    initDatabase(servicesConfig, maxPoolSize = 9).also { db -> monitor.subscribe(ApplicationStopping) { db.close() } }
+    initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopping) { db.close() } }
     val safService = SafServiceHttp(servicesConfig.getConfig("saf"), authService)
     val penClient = PentHttpClient(servicesConfig.getConfig("pen"), authService)
     val skjermingService = SkjermingServiceHttp(servicesConfig.getConfig("skjerming"), authService, cache)
