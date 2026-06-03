@@ -2,7 +2,7 @@ import { Alert, Box, Button, Heading, HGrid, HStack, Label, Tabs, VStack } from 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -61,10 +61,13 @@ function RedigerBrevPage() {
     queryKey: getBrev.queryKey(brevId),
     queryFn: () => getBrev.queryFn(saksId, brevId),
     staleTime: Number.POSITIVE_INFINITY,
-    retry: (failureCount: number, error: AxiosError) => {
-      return failureCount < queryRetries && !isSpecialCaseErrorStatus(error.response?.status);
-    },
-    throwOnError: (error: AxiosError) => !isSpecialCaseErrorStatus(error.response?.status),
+    retry: useCallback(
+      (failureCount: number, error: AxiosError) => {
+        return failureCount < queryRetries && !isSpecialCaseErrorStatus(error.response?.status);
+      },
+      [queryRetries],
+    ),
+    throwOnError: useCallback((error: AxiosError) => !isSpecialCaseErrorStatus(error.response?.status), []),
   });
 
   useEffect(() => {
