@@ -66,8 +66,8 @@ data class OpplysningerOmMinstetillegg(
 
             title1 {
                 text(
-                    bokmal { + "Slik har vi fastsatt kompensasjonsgraden din" },
-                    nynorsk { + "Slik har vi fastsett kompensasjonsgraden din" },
+                    bokmal { + "Slik har vi fastsatt reduksjonsprosenten din" },
+                    nynorsk { + "Slik har vi fastsett reduksjonsprosenten din" },
                     english { + "This is your degree of compensation" }
                 )
             }
@@ -177,8 +177,8 @@ data class OpplysningerOmMinstetillegg(
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 text(
-                    bokmal { + "Vi fastsetter kompensasjonsgraden ved å sammenligne det du har rett til i 100 prosent uføretrygd med din oppjusterte inntekt før du ble ufør. Kompensasjonsgraden brukes til å beregne hvor mye vi reduserer uføretrygden din, hvis du har inntekt som er høyere enn inntektsgrensen." },
-                    nynorsk { + "Vi fastset kompensasjonsgrad ved å samanlikna det du har rett til i 100 prosent uføretrygd med di oppjusterte inntekt før du blei ufør. Kompensasjonsgraden vert brukt til å rekna ut kor mykje vi reduserer uføretrygda di, dersom du har inntekt som er høgare enn inntektsgrensa." },
+                    bokmal { + "Vi fastsetter reduksjonsprosenten ved å sammenligne det du har rett til i 100 prosent uføretrygd med din oppjusterte inntekt før du ble ufør. Reduksjonsprosenten brukes til å beregne hvor mye vi reduserer uføretrygden din, hvis du har inntekt som er høyere enn inntektsgrensen. Reduksjonsprosenten kan ikke være høyere enn 70 prosent." },
+                    nynorsk { + "Vi fastset reduksjonsprosent ved å samanlikna det du har rett til i 100 prosent uføretrygd med di oppjusterte inntekt før du blei ufør. Reduksjonsprosenten vert brukt til å rekna ut kor mykje vi reduserer uføretrygda di, dersom du har inntekt som er høgare enn inntektsgrensa. Reduksjonsprosenten kan ikkje vere høgare enn 70 prosent." },
                     english { + "Your degree of compensation is established by comparing what you are entitled to with a degree of disability of 100 percent, and your recalculated income prior to your disability. The degree of compensation is used to calculate how much your disability benefit will be reduced if your income exceeds the income limit." }
                 )
             }
@@ -188,8 +188,8 @@ data class OpplysningerOmMinstetillegg(
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 text(
-                    bokmal { + "Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig kompensasjonsgrad i beregningen." },
-                    nynorsk { + "Dersom uføretrygda di i løpet av eit kalenderår vert endra, bruker vi ei gjennomsnittleg kompensasjonsgrad i utrekninga." },
+                    bokmal { + "Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig reduksjonsprosent i beregningen." },
+                    nynorsk { + "Dersom uføretrygda di i løpet av eit kalenderår vert endra, bruker vi ei gjennomsnittleg reduksjonsprosent i utrekninga." },
                     english { + "If your degree of compensation has changed over the course of a calendar year, your disability benefit payment will be recalculated based on your average degree of compensation." }
                 )
             }
@@ -199,8 +199,8 @@ data class OpplysningerOmMinstetillegg(
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 text(
-                    bokmal { + "Kompensasjonsgraden skal ved beregningen ikke settes høyere enn 70 prosent. Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig kompensasjonsgrad i beregningen." },
-                    nynorsk { + "Kompensasjonsgraden skal ved utrekninga ikkje setjast høgare enn 70 prosent. Dersom uføretrygda di i løpet av eit kalenderår vert endra, bruker vi ei gjennomsnittleg kompensasjonsgrad i utrekning." },
+                    bokmal { + "Reduksjonsprosenten skal ved beregningen ikke settes høyere enn 70 prosent. Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig reduksjonsprosent i beregningen." },
+                    nynorsk { + "Reduksjonsprosenten skal ved utrekninga ikkje setjast høgare enn 70 prosent. Dersom uføretrygda di i løpet av eit kalenderår vert endra, bruker vi ei gjennomsnittleg reduksjonsprosent i utrekning." },
                     english { + "Your degree of compensation will not be set higher than 70 percent. If your degree of compensation has changed over the course of a calendar year, your disability benefit payment will be recalculated based on your average degree of compensation." }
                 )
             }
