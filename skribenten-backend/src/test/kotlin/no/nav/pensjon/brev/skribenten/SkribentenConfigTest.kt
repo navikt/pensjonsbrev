@@ -14,6 +14,6 @@ class SkribentenConfigTest {
             .getConfig("skribenten")
             .getConfig("services")
 
-        assertThat(config.getInt("database.maxPoolSize")).isEqualTo(9)
+        assertThat(config.getInt("database.maxPoolSize")).isEqualTo(2)
     }
 }
