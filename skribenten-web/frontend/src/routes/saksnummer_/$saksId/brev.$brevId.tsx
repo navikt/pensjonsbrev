@@ -112,14 +112,15 @@ function RedigerBrevPage() {
             <CenteredLoader label="Henter brev..." />
             <Alert size="small" variant="warning">
               Klarte ikke å hente brevet. Prøver på nytt (forsøk {failureCount + 1} av {queryRetries + 1})...
-              {retryErrorMessage ? <p>{`Feilårsak: ${retryErrorMessage}`}</p> : ""}
+              {retryErrorMessage && <p>{`Feilårsak: ${retryErrorMessage}`}</p>}
             </Alert>
           </VStack>
         </Box>
       );
     },
     error: (error) => {
-      if (error.response?.status === 423 && error.response?.data) {
+      const errorStatus = error.response?.status;
+      if (errorStatus === 423 && error.response?.data) {
         return (
           <ReservertBrevError
             doRetry={brevQuery.refetch}
@@ -128,7 +129,7 @@ function RedigerBrevPage() {
           />
         );
       }
-      if (error.response?.status === 409) {
+      if (errorStatus === 409) {
         return (
           <Box asChild background="default">
             <VStack align="start" flexGrow="1" gap="space-8" padding="space-24">
@@ -152,7 +153,7 @@ function RedigerBrevPage() {
           </Box>
         );
       }
-      if (error.response?.status === 404) {
+      if (errorStatus === 404) {
         return (
           <VStack align="center" flexGrow="1" gap="space-8" padding="space-24">
             <ApiError error={error} title="Finner ikke brevet i databasen" />
