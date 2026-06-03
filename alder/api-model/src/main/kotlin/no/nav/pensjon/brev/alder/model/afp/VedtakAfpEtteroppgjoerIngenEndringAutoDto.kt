@@ -3,38 +3,47 @@ package no.nav.pensjon.brev.alder.model.afp
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
+import java.time.LocalDate
+
 
 data class VedtakAfpEtteroppgjoerIngenEndringAutoDto(
-    // PE_Vedtaksdata_Oppgjorsar
-    // (rtv-brev brev Vedtaksdata Oppgjorsar)
     val oppgjoersAar: Year,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_PGI
-    // (rtv-brev brev Grunnlag Persongrunnlagsliste Persongrunnlag AFPEOGrunnlag PGI)
-    val pgi: Kroner,
-
-    val scenario: Scenario,
+    val pensjonsgivendeInntekt: Kroner,
+    val inntektFoerUttak: Kroner,
+    val inntektEtterOpphoer: Kroner,
+    val inntektIAfpPerioden: Kroner,
+    val forventetPensjonsgivendeInntektBeregnet: Kroner,
+    val avvik: Kroner,
+    val uttaksdato: LocalDate,
+    val opphorsdato: LocalDate?,
+    val medlemAvApotekerordningen: Boolean,
+    val toleranseBeloep: Kroner,
+    val periode: Periode,
 ) : AutobrevData {
 
     /**
-     * Hvilket av de fire gjensidig utelukkende scenariene som beskriver
-     * hvorfor pensjonsberegningen ikke endres. Eksstream uttrykte disse som
-     * fire `showIf`-blokker over rådata; her er logikken løftet ut av malen.
+     * Hvilken periodevariant av forklaringen som skal vises. Eksstream brukte
+     * fire overlappende `showIf`-blokker over rådata for uttaksdato/opphorsdato
+     * mot 01.01 og 31.12 i oppgjørsåret — her er logikken løftet ut av malen.
      */
-    enum class Scenario {
-        // PGI < IFU AND IIAP=0 AND FPIberegnet=0 AND UtbetaltAFP=fullAFP
-        // AND AFP_Uttaksdato >= Dato0102
-        HEL_AFP_HELE_AARET_INNTEKT_FOER_UTTAK,
+    enum class Periode {
+        // AFP_Uttaksdato < 01.01 AND (Opphorsdato >= 31.12 OR Opphorsdato tom)
+        // Hadde AFP hele året; hele inntekten regnes som opptjent samtidig med AFP.
+        HEL_AFP_HELE_AARET,
 
-        // AFP_Uttaksdato < Dato0102 AND (Opphorsdato >= Dato3112 OR Opphorsdato tom)
-        // AND UtbetaltAFP = fullAFP AND PGI = 0
-        HEL_AFP_HELE_AARET_INGEN_INNTEKT,
+        // AFP_Uttaksdato >= 01.01 AND (Opphorsdato >= 31.12 OR Opphorsdato tom)
+        // AFP startet i året, opphørte ikke; standardberegning fordeler inntekten
+        // mellom periode før uttak og periode med AFP.
+        UTTAK_I_AARET,
 
-        // UtbetaltAFP = 0 AND PGI >= TPIberegnet
-        IKKE_AFP_FULL_INNTEKT,
+        // AFP_Opphorsdato < 31.12 AND Opphorsdato satt AND Uttaksdato < 01.01
+        // AFP opphørte i året; standardberegning fordeler inntekten mellom
+        // periode med AFP og periode etter opphør.
+        OPPHOER_I_AARET,
 
-        // AFP_Uttaksdato < Dato0102 AND Opphorsdato < Dato3112
-        // AND PGI <= 15 100 AND UtbetaltAFP = fullAFP
-        HEL_AFP_DELER_AV_AARET,
+        // AFP_Uttaksdato >= 01.01 AND Opphorsdato < 31.12 AND Opphorsdato satt
+        // Både uttak og opphør i samme år; standardberegning fordeler inntekten
+        // mellom periode før uttak, periode med AFP og periode etter opphør.
+        UTTAK_OG_OPPHOER_I_AARET,
     }
 }

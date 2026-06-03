@@ -33,15 +33,14 @@ import { erBrevKladdEllerUnderRedigering, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
 import { trackEvent } from "~/utils/umami";
 
+import { baseSearchSchema } from "../route";
 import BrevmalPanel from "./-components/BrevmalPanel";
 import BrevvelgerFooter from "./-components/BrevvelgerFooter";
 
-const brevvelgerSearchSchema = z.object({
+const brevvelgerSearchSchema = baseSearchSchema.extend({
   brevId: z.coerce.number().optional(),
   idTSSEkstern: z.coerce.string().optional(),
   templateId: z.coerce.string().optional(),
-  enhetsId: z.coerce.string().optional(),
-  vedtaksId: z.coerce.string().optional(),
 });
 
 type BrevvelgerSearch = z.infer<typeof brevvelgerSearchSchema>;
@@ -408,6 +407,8 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
                       ...s,
                       brevId: brev.id,
                       templateId: undefined,
+                      enhetsId: brev.avsenderEnhet.enhetNr,
+                      ...(brev.vedtaksId != null && { vedtaksId: String(brev.vedtaksId) }),
                     }),
                   })
                 }

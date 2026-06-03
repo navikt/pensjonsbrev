@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.afp.fraser
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants.KLAGE_URL
-import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -120,13 +119,13 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
             paragraph {
                 text(
                     bokmal {
-                        +"Du kan som nevnt sende inn dokumentasjon på inntekter som du mener skal holdes " +
+                        +"Du kan sende inn dokumentasjon på inntekter som du mener skal holdes " +
                             "utenfor etteroppgjøret. Nav vil foreta et nytt etteroppgjør dersom du har sendt " +
                             "ny dokumentasjon for inntekt innen fristen på fire uker. Du vil da motta et " +
                             "nytt vedtak."
                     },
                     nynorsk {
-                        +"Du kan som nemnt sende inn dokumentasjon på inntekter som du meiner skal haldast " +
+                        +"Du kan sende inn dokumentasjon på inntekter som du meiner skal haldast " +
                             "utanfor etteroppgjeret. Nav vil gjennomføre eit nytt etteroppgjer dersom du har " +
                             "sendt ny dokumentasjon for inntekt innan fristen på fire veker. Du vil då få " +
                             "eit nytt vedtak."
@@ -142,8 +141,7 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
                     },
                     nynorsk {
                         +"Dersom du meiner at det er andre forhold ved vedtaket som ikkje er rette, har du " +
-                            "høve til å klage på vedtaket. Fristen for å klage er seks veker frå du får " +
-                            "dette brevet."
+                            "høve til å klage på vedtaket. Fristen for å klage er seks veker frå vedtaket har komme fram til deg."
                     },
                 )
             }

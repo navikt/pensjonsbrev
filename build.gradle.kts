@@ -6,8 +6,6 @@ import org.jlleitschuh.gradle.ktlint.tasks.KtLintCheckTask
 
 plugins {
     kotlin("jvm") version libs.versions.kotlinVersion apply false
-    alias(libs.plugins.ksp) apply false
-    alias(libs.plugins.binary.compatibility.validator) apply false
     alias(libs.plugins.ktlint)
 }
 
@@ -74,6 +72,7 @@ subprojects {
 
     tasks {
         register<Test>("integrationTest") {
+            description = "Integration tests"
             outputs.doNotCacheIf("Output of this task is not cached") { true }
             outputs.upToDateWhen { false }
             group = LifecycleBasePlugin.VERIFICATION_GROUP
@@ -84,6 +83,7 @@ subprojects {
             }
         }
         register<Test>("manualTest") {
+            description = "Manual tests that require running services"
             outputs.doNotCacheIf("Output of this task is not cached") { true }
             outputs.upToDateWhen { false }
             group = LifecycleBasePlugin.VERIFICATION_GROUP

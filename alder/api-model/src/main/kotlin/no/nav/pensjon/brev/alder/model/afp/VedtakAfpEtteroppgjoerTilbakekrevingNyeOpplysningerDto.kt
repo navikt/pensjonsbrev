@@ -45,47 +45,20 @@ data class VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto(
     }
 
     data class PesysData(
-        // PE_Vedtaksdata_Oppgjorsar
         val oppgjoersAar: Year,
-
-        // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_PGI
-        // Samlet pensjonsgivende inntekt fra Skatteetaten for oppgjørsåret.
-        val pgi: Kroner,
-
-        // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IFU
-        // Inntekt opptjent før uttak av AFP.
-        val ifu: Kroner,
-
-        // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IEO
-        // Inntekt opptjent etter opphør av AFP.
-        val ieo: Kroner,
-
-        // PE_Vedtaksdata_APFEO_IIAP
-        // Faktisk arbeidsinntekt i perioden med AFP (= PGI − IFU − IEO).
-        val iiap: Kroner,
-
-        // PE_Vedtaksdata_AFPEO_AFP_avvik
+        val pensjonsgivendeInntekt: Kroner,
+        val inntektFoerUttak: Kroner,
+        val inntektEtterOpphoer: Kroner,
+        val inntektIAfpPerioden: Kroner,
         val avvik: Kroner,
-
-        // PE_Vedtaksdata_AFPEO_fullafp
-        val fullafp: Kroner,
-
-        // PE_Vedtaksdata_AFPEO_fradragberegnetai
-        val fradragberegnetai: Kroner,
-
-        // PE_Vedtaksdata_AFPEO_korrigertafp
-        val korrigertafp: Kroner,
-
-        // PE_Vedtaksdata_AFPEO_tpiberegnet
-        val tpiberegnet: Kroner,
-
-        // PE_Vedtaksdata_AFPEO_utbetaltafp
-        val utbetaltafp: Kroner,
-
-        // PE_Vedtaksdata_AFPEO_formyebetalt
-        // For mye utbetalt AFP — beløpet før fradrag for innbetalt skatt.
+        val fullAfp: Kroner,
+        val fradragBeregnetArbeidsInntekt: Kroner,
+        val korrigertAfp: Kroner,
+        val tidligereArbeidsInntektBeregnet: Kroner,
+        val utbetaltAfp: Kroner,
         val formyebetalt: Kroner,
-
+        val medlemAvApotekerordningen: Boolean,
+        val toleranseBeloep: Kroner,
         val scenario: Scenario,
     ) : FagsystemBrevdata
 }

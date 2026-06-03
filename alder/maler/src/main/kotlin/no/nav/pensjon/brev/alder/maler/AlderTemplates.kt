@@ -13,18 +13,25 @@ import no.nav.pensjon.brev.alder.maler.adhoc.AdhocTidligereUfoereGradertAP
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling
 import no.nav.pensjon.brev.alder.maler.adhoc.FeilUtsendingAvGjenlevenderett
-import no.nav.pensjon.brev.alder.maler.afp.AvslagAfpPrivat
-import no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfp
-import no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfpAuto
+import no.nav.pensjon.brev.alder.maler.afpprivat.AvslagAfpPrivat
+import no.nav.pensjon.brev.alder.maler.afp.AvslagAfpGammel
+import no.nav.pensjon.brev.alder.maler.afpprivat.AvslagAfpPrivatAuto
+import no.nav.pensjon.brev.alder.maler.afpprivat.VedtakAfpPrivatEndring
+import no.nav.pensjon.brev.alder.maler.afpprivat.VedtakAfpPrivatEndringOpptjeningAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerToleransebeloep
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEtterbetaling
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndring
+import no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfp
+import no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpAuto
 import no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfpOffentligSektor
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEtterbetalingAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto
-import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerTilbakekrevingAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger
-import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerToleransebeloepAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakEndringAfpOffentligSektor
 import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061
 import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061Utland
@@ -122,10 +129,12 @@ object AlderTemplates : AllTemplates {
             VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto,
             VedtakAfpEtteroppgjoerEtterbetalingAuto,
             VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto,
-            VedtakAfpEtteroppgjoerIngenEndringAuto,
+            VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto,
             VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto,
             VedtakAfpEtteroppgjoerTilbakekrevingAuto,
-            VedtakAfpEtteroppgjoerToleransebeloepAuto,
+            VedtakAfpEtteroppgjoerIngenEndringAuto,
+            AvslagAfpPrivatAuto,
+            VedtakAfpPrivatEndringOpptjeningAuto,
             VedtakAldersovergang67AarGarantitilleggAuto,
             VedtakEndringAFPEndretOpptjeningAuto,
             VedtakOmregningAFPTilEnsligPensjonistAuto,
@@ -135,6 +144,11 @@ object AlderTemplates : AllTemplates {
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> =
         setOf(
             AvslagAfpPrivat,
+            AvslagAfpGammel,
+            VedtakAfpPrivatEndring,
+            VedtakAfpEtteroppgjoerToleransebeloep,
+            VedtakAfpEtteroppgjoerEtterbetaling,
+            VedtakAfpEtteroppgjoerIngenEndring,
             AvslagGradsendringFoerNormertPensjonsalder,
             AvslagGradsendringFoerNormertPensjonsalderAP2016,
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,

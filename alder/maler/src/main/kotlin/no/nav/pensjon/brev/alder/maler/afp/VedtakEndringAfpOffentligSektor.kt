@@ -11,8 +11,9 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOpplysningerOmBeregningenA
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOversiktOverPensjonenAfp
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
+import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.ektefelletillegg
+import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.EktefelletilleggSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDtoSelectors.pesysData
 import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDtoSelectors.PesysDataSelectors.afpPensjonsgrad
 import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDtoSelectors.PesysDataSelectors.beregning
 import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDtoSelectors.PesysDataSelectors.beregningVirkDatoFom
@@ -24,25 +25,17 @@ import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDtoSel
 import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDtoSelectors.PesysDataSelectors.oversiktOverPensjonen
 import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDtoSelectors.PesysDataSelectors.sivilstand
 import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDtoSelectors.PesysDataSelectors.tidligereArbeidsinntekt
+import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDtoSelectors.PesysDataSelectors.toleranseBeloep
 import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDtoSelectors.PesysDataSelectors.virkningFom
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.brutto
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.ektefelletillegg
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.netto
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.EktefelletilleggSelectors.brutto as ektefelletilleggBrutto
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.EktefelletilleggSelectors.inntektBruktIAvkortning
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.YtelsesKomponentSelectors.brutto as ytelsesKomponentBrutto
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.YtelsesKomponentSelectors.netto as ytelsesKomponentNetto
+import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -185,6 +178,7 @@ object VedtakEndringAfpOffentligSektor : RedigerbarTemplate<VedtakEndringAfpOffe
                 AfpOffentligSektorInnhold.HvordanAfpBeregnes(
                     tidligereArbeidsinntekt = pesysData.tidligereArbeidsinntekt,
                     framtidigArligInntekt = pesysData.framtidigArligInntekt,
+                    toleranseBeloep = pesysData.toleranseBeloep,
                 ),
             )
 
@@ -198,6 +192,7 @@ object VedtakEndringAfpOffentligSektor : RedigerbarTemplate<VedtakEndringAfpOffe
                 AfpOffentligSektorInnhold.DinePlikterAfpOffentlig(
                     sivilstand = pesysData.sivilstand,
                     harEktefelletillegg = pesysData.beregning.ektefelletillegg.notNull(),
+                    toleranseBeloep = pesysData.toleranseBeloep,
                 ),
             )
 

@@ -35,7 +35,8 @@ private val testSak = Pen.SakSelection(
     foedselsdato = LocalDate.of(1990, 1, 1),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("Sakstype123"),
-    pid = Pid("12345")
+    pid = Pid("12345"),
+    behandlingsnumre = listOf()
 )
 private val sakVikafossen = Pen.SakSelection(
     saksId = SaksId(7007),
@@ -43,6 +44,7 @@ private val sakVikafossen = Pen.SakSelection(
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("Sakstype123"),
     pid = Pid("007"),
+    behandlingsnumre = listOf()
 )
 
 private val generellSak0001 = Pen.SakSelection(
@@ -51,6 +53,7 @@ private val generellSak0001 = Pen.SakSelection(
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("GENRL"),
     pid = Pid("12345"),
+    behandlingsnumre = listOf()
 )
 
 private val generellSak0002 = Pen.SakSelection(
@@ -59,6 +62,7 @@ private val generellSak0002 = Pen.SakSelection(
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("GENRL"),
     pid = Pid("12345"),
+    behandlingsnumre = listOf(),
 )
 
 
@@ -69,12 +73,12 @@ class AuthorizeAnsattSakTilgangTest {
 
     private val creds = BasicAuthCredentials("test", "123")
 
-    private fun lagPdlService(adressebeskyttelser: Map<Pair<Pid, Behandlingsnummer?>, List<Pdl.Gradering>> = mapOf()) = object : PdlServiceStub() {
-        override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Behandlingsnummer?) =
-            adressebeskyttelser[Pair(ident, behandlingsnummer)]
-                ?: notYetStubbed("Mangler stub for adressebeskyttelse for fødselsnummer $ident og behandlingsnummer $behandlingsnummer")
+    private fun lagPdlService(adressebeskyttelser: Map<Pair<Pid, List<Behandlingsnummer>>, List<Pdl.Gradering>> = mapOf()) = object : PdlServiceStub() {
+        override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnumre: List<Behandlingsnummer>) =
+            adressebeskyttelser[Pair(ident, behandlingsnumre)]
+                ?: notYetStubbed("Mangler stub for adressebeskyttelse for fødselsnummer $ident og behandlingsnummer $behandlingsnumre")
 
-        override suspend fun hentBrukerContext(ident: Pid, behandlingsnummer: Behandlingsnummer?): Pdl.PersonContext =
+        override suspend fun hentBrukerContext(ident: Pid, behandlingsnumre: List<Behandlingsnummer>): Pdl.PersonContext =
             notYetStubbed("Mangler stub for hentBrukerContext")
 
     }
@@ -225,7 +229,7 @@ class AuthorizeAnsattSakTilgangTest {
     @Test
     fun `svarer med internal server error om hentAdressebeskyttelse feiler`() = basicAuthTestApplication(
         pdlService = object : PdlServiceStub() {
-            override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Behandlingsnummer?) =
+            override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnumre: List<Behandlingsnummer>) =
                 throw PdlServiceException("En feil", HttpStatusCode.InternalServerError)
         }
     ) { client ->
@@ -250,7 +254,7 @@ class AuthorizeAnsattSakTilgangTest {
         assertEquals(HttpStatusCode.NotFound, response.status)
     }
 
-    private fun behandlingsnummer(): Behandlingsnummer? = null
+    private fun behandlingsnummer(): List<Behandlingsnummer> = listOf()
 
     private fun successResponse(saksId: String) =
         "Fikk tilgang til den strengt bevoktede saken: $saksId"

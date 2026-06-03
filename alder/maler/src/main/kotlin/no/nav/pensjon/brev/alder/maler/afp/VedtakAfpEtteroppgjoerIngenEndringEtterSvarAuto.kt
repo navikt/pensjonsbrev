@@ -7,13 +7,15 @@ import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto.Scenario
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.avvik
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.fpiberegnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.ieo
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.ifu
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.iiap
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.forventetPensjonsgivendeInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.inntektEtterOpphoer
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.inntektFoerUttak
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.inntektIAfpPerioden
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.medlemAvApotekerordningen
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.oppgjoersAar
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.pgi
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.scenario
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.toleranseBeloep
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -37,8 +39,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * [VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto.Scenario].
  */
 @TemplateModelHelpers
-object VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto :
-    AutobrevTemplate<VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto> {
+object VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto : AutobrevTemplate<VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto> {
 
     override val kode = Aldersbrevkoder.AutoBrev.PE_AFP_ETTEROPPGJOER_INGEN_ENDR_ETTER_SVAR_AUTO
 
@@ -59,51 +60,45 @@ object VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto :
 
         outline {
             includePhrase(AfpEtteroppgjoerInnhold.HarVaertRiktigIntro(oppgjoersAar))
-            includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            showIf(medlemAvApotekerordningen) {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
+            }.orShow {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            }
 
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
             showIf(scenario.equalTo(Scenario.INGEN_NYE_OPPLYSNINGER)) {
-                includePhrase(AfpEtteroppgjoerForklaringer.IngenNyeOpplysningerOmEndretInntektFoerUttak(ifu, oppgjoersAar))
+                includePhrase(AfpEtteroppgjoerForklaringer.IngenNyeOpplysningerOmEndretInntektFoerUttak(inntektFoerUttak = inntektFoerUttak, oppgjoersAar = oppgjoersAar))
             }
 
             showIf(scenario.equalTo(Scenario.IFU_UTTAK_I_AARET)) {
-                includePhrase(AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakIAaret(ifu, oppgjoersAar))
-                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIfu(iiap, oppgjoersAar, pgi, ifu))
+                includePhrase(AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakIAaret(inntektFoerUttak = inntektFoerUttak, oppgjoersAar = oppgjoersAar))
+                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIfu(inntektIAfpPerioden = inntektIAfpPerioden, oppgjoersAar = oppgjoersAar, pensjonsgivendeInntekt = pensjonsgivendeInntekt, inntektFoerUttak = inntektFoerUttak))
             }
 
             showIf(scenario.equalTo(Scenario.IFU_UTTAK_FOER_AARET)) {
-                includePhrase(AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakFoerAaret(ifu, oppgjoersAar))
-                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIfu(iiap, oppgjoersAar, pgi, ifu))
+                includePhrase(AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakFoerAaret(inntektFoerUttak = inntektFoerUttak, oppgjoersAar = oppgjoersAar))
+                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIfu(inntektIAfpPerioden = inntektIAfpPerioden, oppgjoersAar = oppgjoersAar, pensjonsgivendeInntekt = pensjonsgivendeInntekt, inntektFoerUttak = inntektFoerUttak))
             }
 
             showIf(scenario.equalTo(Scenario.IFU_OG_IEO_REGISTRERT)) {
-                includePhrase(AfpEtteroppgjoerForklaringer.IfuOgIeoOverstyrt(ifu, ieo, oppgjoersAar))
-                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenIfuOgIeo(iiap, oppgjoersAar, pgi, ifu, ieo))
+                includePhrase(AfpEtteroppgjoerForklaringer.IfuOgIeoOverstyrt(inntektFoerUttak = inntektFoerUttak, inntektEtterOpphoer = inntektEtterOpphoer, oppgjoersAar = oppgjoersAar))
+                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenIfuOgIeo(inntektIAfpPerioden = inntektIAfpPerioden, oppgjoersAar = oppgjoersAar, pensjonsgivendeInntekt = pensjonsgivendeInntekt, inntektFoerUttak = inntektFoerUttak, inntektEtterOpphoer = inntektEtterOpphoer))
             }
 
             showIf(scenario.equalTo(Scenario.KUN_IEO_REGISTRERT)) {
-                includePhrase(AfpEtteroppgjoerForklaringer.KunIeoOverstyrt(ieo, oppgjoersAar))
-                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIeo(iiap, oppgjoersAar, pgi, ieo))
+                includePhrase(AfpEtteroppgjoerForklaringer.KunIeoOverstyrt(inntektEtterOpphoer = inntektEtterOpphoer, oppgjoersAar = oppgjoersAar))
+                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIeo(inntektIAfpPerioden = inntektIAfpPerioden, oppgjoersAar = oppgjoersAar, pensjonsgivendeInntekt = pensjonsgivendeInntekt, inntektEtterOpphoer = inntektEtterOpphoer))
             }
 
             paragraph {
                 text(
                     bokmal {
-                        +"Ved beregningen av pensjonen din for " + oppgjoersAar.format() + " la vi til " +
-                            "grunn at du ville ha en forventet arbeidsinntekt på " + fpiberegnet.format() +
-                            ". Differansen mellom denne tidligere medregnede arbeidsinntekten og den " +
-                            "arbeidsinntekten du etter vår nye beregning har hatt i perioden, utgjør " +
-                            avvik.format() + ". Denne differansen er ikke større enn toleransebeløpet " +
-                            "som i " + oppgjoersAar.format() + " var 15 000 kroner."
+                        +"Ved beregningen av pensjonen din for " + oppgjoersAar.format() + " la vi til " + "grunn at du ville ha en forventet arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Differansen mellom denne tidligere medregnede arbeidsinntekten og den " + "arbeidsinntekten du etter vår nye beregning har hatt i perioden, utgjør " + avvik.format() + ". Denne differansen er ikke større enn toleransebeløpet " + "som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + "."
                     },
                     nynorsk {
-                        +"Ved berekninga av pensjonen din for " + oppgjoersAar.format() + " la vi til " +
-                            "grunn at du ville ha ei forventa arbeidsinntekt på " + fpiberegnet.format() +
-                            ". Differansen mellom denne tidlegare medrekna arbeidsinntekta og den " +
-                            "arbeidsinntekta du etter vår nye berekning har hatt i perioden, utgjer " +
-                            avvik.format() + ". Denne differansen er ikkje større enn toleransebeløpet " +
-                            "som i " + oppgjoersAar.format() + " var 15 000 kroner."
+                        +"Ved berekninga av pensjonen din for " + oppgjoersAar.format() + " la vi til " + "grunn at du ville ha ei forventa arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Differansen mellom denne tidlegare medrekna arbeidsinntekta og den " + "arbeidsinntekta du etter vår nye berekning har hatt i perioden, utgjer " + avvik.format() + ". Denne differansen er ikkje større enn toleransebeløpet " + "som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + "."
                     },
                 )
             }

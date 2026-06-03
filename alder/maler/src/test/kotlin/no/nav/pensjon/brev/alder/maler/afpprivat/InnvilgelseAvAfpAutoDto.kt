@@ -1,7 +1,8 @@
-package no.nav.pensjon.brev.alder.maler.afp
+package no.nav.pensjon.brev.alder.maler.afpprivat
 
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpAutoDto
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpDto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createOversiktOverPensjonenAfpPrivatDto
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDto
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpDto
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
@@ -18,6 +19,7 @@ fun createInnvilgelseAvAfpAutoDto(): InnvilgelseAvAfpAutoDto =
             kronetilleggBrutto = Kroner(2000),
             kompensasjonstilleggBrutto = Kroner(4500),
         ),
+        oversiktOverPensjonen = createOversiktOverPensjonenAfpPrivatDto(),
     )
 
 fun createInnvilgelseAvAfpDto(): InnvilgelseAvAfpDto =

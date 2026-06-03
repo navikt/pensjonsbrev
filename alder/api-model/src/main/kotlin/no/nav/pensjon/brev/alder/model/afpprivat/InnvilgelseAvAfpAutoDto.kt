@@ -1,7 +1,8 @@
-package no.nav.pensjon.brev.alder.model.afp
+package no.nav.pensjon.brev.alder.model.afpprivat
 
+import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDto
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import java.time.LocalDate
 
 /**
@@ -30,12 +31,18 @@ data class InnvilgelseAvAfpAutoDto(
     val bosattINorge: Boolean,
 
     val afpBeregning: AfpBeregning,
+
+    // PE_AF_oversikt_over_pensjonen_RTF — vises kun når beregningen har flere perioder
+    // (PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder > 1). Brukes kun av
+    // den redigerbare malen `InnvilgelseAvAfp` (PE_AF_04_111); autobrevet
+    // (PE_AF_04_115) inkluderer ikke vedlegget.
+    val oversiktOverPensjonen: OversiktOverPensjonenAfpPrivatDto? = null,
 ) : AutobrevData {
 
     data class AfpBeregning(
         // PE_Vedtaksdata_BeregningsData_Beregning_TotalPensjon
         // (rtv-brev brev Vedtaksdata BeregningsData Beregning TotalPensjon)
-        val totalPensjon: Kroner,
+        val totalPensjon: BrevbakerType.Kroner,
 
         // Per AFP-komponent: brutto månedsbeløp, eller `null` når komponenten ikke
         // er innvilget. Nullability erstatter den tidligere `innvilget: Boolean`-flagget
@@ -44,17 +51,16 @@ data class InnvilgelseAvAfpAutoDto(
         // PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_AFPLivsvarig_AFPLivsvarBrutto
         // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningYtelsesKomp AFPLivsvarig AFPLivsvarBrutto)
         // Tilstede ⇔ PE_..._AFPLivsvarig_AFPLivsvarInnvilget = true
-        val livsvarigBrutto: Kroner?,
+        val livsvarigBrutto: BrevbakerType.Kroner?,
 
         // PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_AFPKronetillegg_AFPKroneBrutto
         // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningYtelsesKomp AFPKronetillegg AFPKroneBrutto)
         // Tilstede ⇔ PE_..._AFPKronetillegg_AFPKroneInnvilget = true
-        val kronetilleggBrutto: Kroner?,
+        val kronetilleggBrutto: BrevbakerType.Kroner?,
 
         // PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_AFPKompensasjonstillegg_AFPKompBrutto
         // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningYtelsesKomp AFPKompensasjonstillegg AFPKompBrutto)
         // Tilstede ⇔ PE_..._AFPKompensasjonstillegg_AFPKompInnvilget = true
-        val kompensasjonstilleggBrutto: Kroner?,
+        val kompensasjonstilleggBrutto: BrevbakerType.Kroner?,
     )
 }
-

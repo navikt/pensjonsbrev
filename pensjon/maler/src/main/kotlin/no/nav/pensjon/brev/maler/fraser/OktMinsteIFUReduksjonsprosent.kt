@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
+import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtak.fritekst
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
@@ -19,10 +20,13 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import java.time.LocalDate
 
 object OktMinsteIFUReduksjonsprosent {
 
     data class Brevdata(
+        val redigerbar: Expression<Boolean>,
+        val beregningFomDato: Expression<LocalDate>,
         val totalbelop: Expression<Kroner>,
         val nettoUforetrygdUtenTillegg: Expression<Kroner>,
         val nettoBarnetillegg: Expression<Kroner?>,
@@ -57,8 +61,7 @@ object OktMinsteIFUReduksjonsprosent {
                     nynorsk { +"Vi endrar uføretrygda di fordi Stortinget har vedteke lovendringar som trer i kraft 1. juli 2026, men gjeld frå 1. januar 2026. " },
                 )
                 table(header = {
-                    // TODO: Hva skal kolonnene hete?
-                    column { text(bokmal { +"" }, nynorsk { +"" }) }
+                    column { text(bokmal { +"Ny beregning fra " + data.beregningFomDato.format() }, nynorsk { +"Ny berekning frå " + data.beregningFomDato.format() }) }
                     column(alignment = RIGHT) {}
                 }) {
                     showIf(data.endringNettoUforetrygdUtenTillegg) {
@@ -164,10 +167,18 @@ object OktMinsteIFUReduksjonsprosent {
                                 )
                             }
                             cell {
-                                text(
-                                    bokmal { +data.etterbetalingJuli.format() },
-                                    nynorsk { +data.etterbetalingJuli.format() },
-                                )
+                                showIf(data.redigerbar) {
+                                    text(
+                                        bokmal { +fritekst("Beløp etterbetaling") },
+                                        nynorsk { +fritekst("Beløp etterbetaling") },
+                                    )
+
+                                }.orShow {
+                                    text(
+                                        bokmal { +data.etterbetalingJuli.format() },
+                                        nynorsk { +data.etterbetalingJuli.format() },
+                                    )
+                                }
                             }
                         }
                     }
@@ -245,7 +256,7 @@ object OktMinsteIFUReduksjonsprosent {
                 paragraph {
                     text(
                         bokmal { +"Minste IFU bruker vi for å sikre et inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførhet. IFU brukes og for å fastsette en reduksjonsprosent." },
-                        nynorsk { +"Minste IFU brukar vi for å sikre eit inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførhet. IFU blir òg brukt for å fastsetje ein reduksjonsprosent." },
+                        nynorsk { +"Minste IFU brukar vi for å sikre eit inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførleik. IFU blir òg brukt for å fastsetje ein reduksjonsprosent." }
                     )
                 }
             }

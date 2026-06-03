@@ -1,21 +1,24 @@
-package no.nav.pensjon.brev.alder.maler.afp
+package no.nav.pensjon.brev.alder.maler.afpprivat
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
+import no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpInnhold
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOversiktOverPensjonenAfpPrivat
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpAutoDtoSelectors.AfpBeregningSelectors.kompensasjonstilleggBrutto
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpAutoDtoSelectors.AfpBeregningSelectors.kronetilleggBrutto
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpAutoDtoSelectors.AfpBeregningSelectors.livsvarigBrutto
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpAutoDtoSelectors.AfpBeregningSelectors.totalPensjon
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpAutoDtoSelectors.afpBeregning
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpAutoDtoSelectors.bosattINorge
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpAutoDtoSelectors.brukerUnder70Aar
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpAutoDtoSelectors.kravMottattDato
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpAutoDtoSelectors.virkningFom
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpDto
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpDtoSelectors.pesysData
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.AfpBeregningSelectors.kompensasjonstilleggBrutto
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.AfpBeregningSelectors.kronetilleggBrutto
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.AfpBeregningSelectors.livsvarigBrutto
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.AfpBeregningSelectors.totalPensjon
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.afpBeregning
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.bosattINorge
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.brukerUnder70Aar
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.kravMottattDato
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.oversiktOverPensjonen
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.virkningFom
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpDto
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -80,5 +83,12 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
             )
             includePhrase(HarDuSpoersmaal.alder)
         }
+
+        // PE_AF_oversikt_over_pensjonen_RTF — inkluderes når vedtaket har flere
+        // beregningsperioder (i Exstream: BeregningAntallPerioder > 1).
+        includeAttachmentIfNotNull(
+            vedleggOversiktOverPensjonenAfpPrivat,
+            pesysData.oversiktOverPensjonen,
+        )
     }
 }

@@ -1,28 +1,30 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerForklaringer
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto.NyPensjonsberegningPeriode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto.Scenario
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.avvik
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.forlitebetalt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.fradragberegnetai
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.fullafp
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.ieo
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.ifu
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.iiap
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.korrigertafp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.fradragBeregnetArbeidsInntekt
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.fullAfp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.inntektEtterOpphoer
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.inntektFoerUttak
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.inntektIAfpPerioden
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.korrigertAfp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.medlemAvApotekerordningen
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.oppgjoersAar
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.opphorsdato
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.periode
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.pgi
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.scenario
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.tpiberegnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.utbetaltafp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.tidligereArbeidsInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.toleranseBeloep
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.utbetaltAfp
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.uttaksdato
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -34,8 +36,6 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -77,19 +77,19 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto : AutobrevTemplate<Vedta
             paragraph {
                 text(
                     bokmal {
-                        +"Vi viser til tidligere brev om etteroppgjør av avtalefestet pensjon (AFP) for " +
-                            oppgjoersAar.format() + ". Resultatet av etteroppgjøret viser at du har fått " +
-                            forlitebetalt.format() + " for lite utbetalt pensjon."
+                        +"Vi viser til tidligere brev om etteroppgjør av avtalefestet pensjon (AFP) for " + oppgjoersAar.format() + ". Resultatet av etteroppgjøret viser at du har fått " + forlitebetalt.format() + " for lite utbetalt pensjon."
                     },
                     nynorsk {
-                        +"Vi viser til tidlegare brev om etteroppgjer av avtalefesta pensjon (AFP) for " +
-                            oppgjoersAar.format() + ". Resultatet av etteroppgjeret viser at du har fått " +
-                            forlitebetalt.format() + " for lite utbetalt pensjon."
+                        +"Vi viser til tidlegare brev om etteroppgjer av avtalefesta pensjon (AFP) for " + oppgjoersAar.format() + ". Resultatet av etteroppgjeret viser at du har fått " + forlitebetalt.format() + " for lite utbetalt pensjon."
                     },
                 )
             }
 
-            includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            showIf(medlemAvApotekerordningen) {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
+            }.orShow {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            }
 
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
@@ -102,22 +102,10 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto : AutobrevTemplate<Vedta
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Dokumentasjonen " +
-                                "som foreligger gir ikke tilstrekkelig grunnlag for å endre tidligere " +
-                                "beregnet arbeidsinntekt før uttak av AFP. Arbeidsinntekten din er derfor " +
-                                "satt til " + ifu.format() + " i samsvar med den tidligere beregningen. " +
-                                "Dette beløpet skal holdes utenfor etteroppgjøret for " +
-                                oppgjoersAar.format() + ". Arbeidsinntekten din i den perioden du har " +
-                                "mottatt AFP er som tidligere satt til " + iiap.format() + "."
+                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Dokumentasjonen " + "som foreligger gir ikke tilstrekkelig grunnlag for å endre tidligere " + "beregnet arbeidsinntekt før uttak av AFP. Arbeidsinntekten din er derfor " + "satt til " + inntektFoerUttak.format() + " i samsvar med den tidligere beregningen. " + "Dette beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() + ". Arbeidsinntekten din i den perioden du har " + "mottatt AFP er som tidligere satt til " + inntektIAfpPerioden.format() + "."
                         },
                         nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Dokumentasjonen " +
-                                "som ligg føre, gir ikkje godt nok grunnlag for å endre tidlegare berekna " +
-                                "arbeidsinntekt før uttak av AFP. Arbeidsinntekta di er derfor sett til " +
-                                ifu.format() + " i samsvar med den tidlegare berekninga. Dette beløpet " +
-                                "skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() +
-                                ". Arbeidsinntekta di i den perioden du har fått AFP, er, som tidlegare, " +
-                                "sett til " + iiap.format() + "."
+                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Dokumentasjonen " + "som ligg føre, gir ikkje godt nok grunnlag for å endre tidlegare berekna " + "arbeidsinntekt før uttak av AFP. Arbeidsinntekta di er derfor sett til " + inntektFoerUttak.format() + " i samsvar med den tidlegare berekninga. Dette beløpet " + "skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() + ". Arbeidsinntekta di i den perioden du har fått AFP, er, som tidlegare, " + "sett til " + inntektIAfpPerioden.format() + "."
                         },
                     )
                 }
@@ -126,13 +114,13 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto : AutobrevTemplate<Vedta
             // Scenario B — IFU_OVERSTYRT_UTTAK_I_AARET.
             // Forklaringen er en eksakt match med fellesfrasen.
             showIf(scenario.equalTo(Scenario.IFU_OVERSTYRT_UTTAK_I_AARET)) {
-                includePhrase(AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakIAaret(ifu, oppgjoersAar))
+                includePhrase(AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakIAaret(inntektFoerUttak = inntektFoerUttak, oppgjoersAar = oppgjoersAar))
                 // Paret "Den faktiske arbeidsinntekten …" inlines (delt med
                 // scenario C i [DenFaktiskeArbeidsinntektenKunIfu105]):
                 // [AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIfu]
                 // bruker "differansen" og mangler "er satt til" der 105 har
                 // "forskjellen" og "er satt til".
-                includePhrase(DenFaktiskeArbeidsinntektenKunIfu105(iiap = iiap, oppgjoersAar = oppgjoersAar, pgi = pgi, ifu = ifu))
+                includePhrase(DenFaktiskeArbeidsinntektenKunIfu105(inntektIAfpPerioden = inntektIAfpPerioden, oppgjoersAar = oppgjoersAar, pensjonsgivendeInntekt = pensjonsgivendeInntekt, inntektFoerUttak = inntektFoerUttak))
             }
 
             // Scenario C — IFU_OVERSTYRT_HEL_AFP.
@@ -142,8 +130,8 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto : AutobrevTemplate<Vedta
             // har derimot flere ordlydsavvik (se Scenario B) og bruker den
             // lokale frasen.
             showIf(scenario.equalTo(Scenario.IFU_OVERSTYRT_HEL_AFP)) {
-                includePhrase(AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakFoerAaret(ifu = ifu, oppgjoersAar = oppgjoersAar))
-                includePhrase(DenFaktiskeArbeidsinntektenKunIfu105(iiap = iiap, oppgjoersAar = oppgjoersAar, pgi = pgi, ifu = ifu))
+                includePhrase(AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakFoerAaret(inntektFoerUttak = inntektFoerUttak, oppgjoersAar = oppgjoersAar))
+                includePhrase(DenFaktiskeArbeidsinntektenKunIfu105(inntektIAfpPerioden = inntektIAfpPerioden, oppgjoersAar = oppgjoersAar, pensjonsgivendeInntekt = pensjonsgivendeInntekt, inntektFoerUttak = inntektFoerUttak))
             }
 
             // Scenario D — IFU_OG_IEO_OVERSTYRT.
@@ -158,28 +146,16 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto : AutobrevTemplate<Vedta
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " +
-                                "opplysninger har du hatt en høyere arbeidsinntekt enn tidligere beregnet " +
-                                "i perioder du ikke har hatt samtidig rett til AFP. Arbeidsinntekten din " +
-                                "for denne perioden er endret i samsvar med disse opplysningene til " +
-                                "henholdsvis " + ifu.format() + " for perioden før uttak av AFP og " +
-                                ieo.format() + " for perioden etter opphør av AFP. Disse beløpene skal " +
-                                "holdes utenfor etteroppgjøret for " + oppgjoersAar.format() + "."
+                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " + "opplysninger har du hatt en høyere arbeidsinntekt enn tidligere beregnet " + "i perioder du ikke har hatt samtidig rett til AFP. Arbeidsinntekten din " + "for denne perioden er endret i samsvar med disse opplysningene til " + "henholdsvis " + inntektFoerUttak.format() + " for perioden før uttak av AFP og " + inntektEtterOpphoer.format() + " for perioden etter opphør av AFP. Disse beløpene skal " + "holdes utenfor etteroppgjøret for " + oppgjoersAar.format() + "."
                         },
                         nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " +
-                                "opplysningar har du hatt ei høgare arbeidsinntekt enn tidlegare berekna " +
-                                "i periodar der du ikkje har hatt samtidig rett til AFP. Arbeidsinntekta " +
-                                "di for denne perioden er endra i samsvar med desse opplysningane til " +
-                                "høvesvis " + ifu.format() + " for perioden før uttak av AFP og " +
-                                ieo.format() + " for perioden etter at AFP tok slutt. Desse beløpa skal " +
-                                "haldast utanfor etteroppgjeret for " + oppgjoersAar.format() + "."
+                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " + "opplysningar har du hatt ei høgare arbeidsinntekt enn tidlegare berekna " + "i periodar der du ikkje har hatt samtidig rett til AFP. Arbeidsinntekta " + "di for denne perioden er endra i samsvar med desse opplysningane til " + "høvesvis " + inntektFoerUttak.format() + " for perioden før uttak av AFP og " + inntektEtterOpphoer.format() + " for perioden etter at AFP tok slutt. Desse beløpa skal " + "haldast utanfor etteroppgjeret for " + oppgjoersAar.format() + "."
                         },
                     )
                 }
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenIfuOgIeo(
-                        iiap = iiap, oppgjoersAar = oppgjoersAar, pgi = pgi, ifu = ifu, ieo = ieo,
+                        inntektIAfpPerioden = inntektIAfpPerioden, oppgjoersAar = oppgjoersAar, pensjonsgivendeInntekt = pensjonsgivendeInntekt, inntektFoerUttak = inntektFoerUttak, inntektEtterOpphoer = inntektEtterOpphoer,
                     ),
                 )
             }
@@ -194,62 +170,32 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto : AutobrevTemplate<Vedta
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " +
-                                "opplysninger har du hatt en høyere arbeidsinntekt enn tidligere beregnet " +
-                                "etter opphør av AFP. Arbeidsinntekten din for denne perioden er endret " +
-                                "i samsvar med disse opplysningene til " + ieo.format() + ". Dette " +
-                                "beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() +
-                                "."
+                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " + "opplysninger har du hatt en høyere arbeidsinntekt enn tidligere beregnet " + "etter opphør av AFP. Arbeidsinntekten din for denne perioden er endret " + "i samsvar med disse opplysningene til " + inntektEtterOpphoer.format() + ". Dette " + "beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() + "."
                         },
                         nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " +
-                                "opplysningar har du hatt ei høgare arbeidsinntekt enn tidlegare berekna " +
-                                "etter at AFP tok slutt. Arbeidsinntekta di for denne perioden er endra " +
-                                "i samsvar med desse opplysningane til " + ieo.format() + ". Dette " +
-                                "beløpet skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() +
-                                "."
+                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " + "opplysningar har du hatt ei høgare arbeidsinntekt enn tidlegare berekna " + "etter at AFP tok slutt. Arbeidsinntekta di for denne perioden er endra " + "i samsvar med desse opplysningane til " + inntektEtterOpphoer.format() + ". Dette " + "beløpet skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() + "."
                         },
                     )
                 }
                 paragraph {
                     text(
                         bokmal {
-                            +"Den faktiske arbeidsinntekten i den perioden du har mottatt AFP er " +
-                                iiap.format() + ". Dette beløpet utgjør forskjellen mellom din " +
-                                "pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " +
-                                pgi.format() + " og arbeidsinntekten din etter opphøret av AFP på " +
-                                ieo.format() + "."
+                            +"Den faktiske arbeidsinntekten i den perioden du har mottatt AFP er " + inntektIAfpPerioden.format() + ". Dette beløpet utgjør forskjellen mellom din " + "pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og arbeidsinntekten din etter opphøret av AFP på " + inntektEtterOpphoer.format() + "."
                         },
                         nynorsk {
-                            +"Den faktiske arbeidsinntekta i den perioden du har fått AFP, er " +
-                                iiap.format() + ". Dette beløpet utgjer forskjellen mellom den " +
-                                "pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " +
-                                pgi.format() + " og arbeidsinntekta di etter at AFP tok slutt, på " +
-                                ieo.format() + "."
+                            +"Den faktiske arbeidsinntekta i den perioden du har fått AFP, er " + inntektIAfpPerioden.format() + ". Dette beløpet utgjer forskjellen mellom den " + "pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og arbeidsinntekta di etter at AFP tok slutt, på " + inntektEtterOpphoer.format() + "."
                         },
                     )
                 }
             }
 
-            // Toleransebeløp-paragrafen — 105 sier "lavere" (etterbetaling)
-            // der [AfpTilbakekrevingBody.ToleransebeloepOverskrider] sier
-            // "høyere" (tilbakekreving), og avslutter med kortere setning.
-            // Inlinet.
             paragraph {
                 text(
                     bokmal {
-                        +"Den arbeidsinntekten du har hatt i perioden med AFP, er " + avvik.format() +
-                            " lavere enn den forventede arbeidsinntekten som ble lagt til grunn ved " +
-                            "utbetalingen av pensjonen din i det aktuelle tidsrommet. Dette er mer enn " +
-                            "toleransebeløpet som i " + oppgjoersAar.format() + " var 15 000 kroner. " +
-                            "Vi har derfor beregnet ny pensjon for perioden."
+                        +"Den arbeidsinntekten du har hatt i perioden med AFP, er " + avvik.format() + " lavere enn den forventede arbeidsinntekten som ble lagt til grunn ved " + "utbetalingen av pensjonen din i det aktuelle tidsrommet. Dette er mer enn " + "toleransebeløpet som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + ". " + "Vi har derfor beregnet ny pensjon for perioden."
                     },
                     nynorsk {
-                        +"Den arbeidsinntekta du har hatt i perioden med AFP, er " + avvik.format() +
-                            " lågare enn den forventa arbeidsinntekta som blei lagd til grunn ved " +
-                            "utbetalinga av pensjonen din i det aktuelle tidsrommet. Dette er meir enn " +
-                            "toleransebeløpet som i " + oppgjoersAar.format() + " var 15 000 kroner. " +
-                            "Vi har derfor berekna ny pensjon for perioden."
+                        +"Den arbeidsinntekta du har hatt i perioden med AFP, er " + avvik.format() + " lågare enn den forventa arbeidsinntekta som blei lagd til grunn ved " + "utbetalinga av pensjonen din i det aktuelle tidsrommet. Dette er meir enn " + "toleransebeløpet som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + ". " + "Vi har derfor berekna ny pensjon for perioden."
                     },
                 )
             }
@@ -265,12 +211,12 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto : AutobrevTemplate<Vedta
                     uttaksdato = uttaksdato,
                     opphorsdato = opphorsdato,
                     oppgjoersAar = oppgjoersAar,
-                    fullafp = fullafp,
-                    fradragberegnetai = fradragberegnetai,
-                    iiap = iiap,
-                    tpiberegnet = tpiberegnet,
-                    korrigertafp = korrigertafp,
-                    utbetaltafp = utbetaltafp,
+                    fullAfp = fullAfp,
+                    fradragBeregnetArbeidsInntekt = fradragBeregnetArbeidsInntekt,
+                    inntektIAfpPerioden = inntektIAfpPerioden,
+                    tidligereArbeidsInntektBeregnet = tidligereArbeidsInntektBeregnet,
+                    korrigertAfp = korrigertAfp,
+                    utbetaltAfp = utbetaltAfp,
                     forlitebetalt = forlitebetalt,
                 ),
             )
@@ -305,27 +251,19 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto : AutobrevTemplate<Vedta
  * stedet for "differansen"), og er derfor lokal for 105.
  */
 private data class DenFaktiskeArbeidsinntektenKunIfu105(
-    val iiap: Expression<Kroner>,
+    val inntektIAfpPerioden: Expression<Kroner>,
     val oppgjoersAar: Expression<Year>,
-    val pgi: Expression<Kroner>,
-    val ifu: Expression<Kroner>,
+    val pensjonsgivendeInntekt: Expression<Kroner>,
+    val inntektFoerUttak: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {
             text(
                 bokmal {
-                    +"Den faktiske arbeidsinntekten i den perioden du har mottatt AFP er satt til " +
-                        iiap.format() + ". Dette beløpet utgjør forskjellen mellom din " +
-                        "pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " +
-                        pgi.format() + " og arbeidsinntekten din før uttak av AFP på " +
-                        ifu.format() + "."
+                    +"Den faktiske arbeidsinntekten i den perioden du har mottatt AFP er satt til " + inntektIAfpPerioden.format() + ". Dette beløpet utgjør forskjellen mellom din " + "pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og arbeidsinntekten din før uttak av AFP på " + inntektFoerUttak.format() + "."
                 },
                 nynorsk {
-                    +"Den faktiske arbeidsinntekta i den perioden du har fått AFP, er sett til " +
-                        iiap.format() + ". Dette beløpet utgjer forskjellen mellom den " +
-                        "pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " +
-                        pgi.format() + " og arbeidsinntekta di før uttak av AFP på " +
-                        ifu.format() + "."
+                    +"Den faktiske arbeidsinntekta i den perioden du har fått AFP, er sett til " + inntektIAfpPerioden.format() + ". Dette beløpet utgjer forskjellen mellom den " + "pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og arbeidsinntekta di før uttak av AFP på " + inntektFoerUttak.format() + "."
                 },
             )
         }
