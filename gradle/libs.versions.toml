@@ -9,6 +9,7 @@ commonsCodecVersion = "1.22.0"
 commonVersion = "2.32.0"
 exposedVersion = "1.3.0"
 flywayVersion = "12.6.2"
+gradleNodePluginVersion = "7.1.0"
 hikariVersion = "7.0.2"
 # TODO: Vi burde egentlig bruke samme versjon av Jackson, men jsr310 er publisert med 2.21.0, og resten med 2.21
 jacksonJsr310Version = "2.21.3"
@@ -28,6 +29,7 @@ unleashVersion = "12.2.2"
 valkeyVersion = "5.5.0"
 
 [plugins]
+gradle-node = { id = "com.github.node-gradle.node", version.ref = "gradleNodePluginVersion" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKspVersion" }
 binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref="binaryCompatibilityValidatorVersion" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintVersion" }

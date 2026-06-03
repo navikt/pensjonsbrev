@@ -74,7 +74,7 @@ fun Application.configureRouting(
                 contentType = ContentType.Application.Json,
                 schemaInference = ReflectionJsonSchemaInference.Default,
                 routes = {
-                    val excludedRoutePrefixes = listOf("/external/", "/swagger", "/isAlive", "/isReady")
+                    val excludedRoutePrefixes = listOf("/external/", "/swagger", "/isAlive", "/isReady", "/brevmal/{brevkode}/modelSpecification")
                     routingRoot.descendants()
                         .filter { route ->
                             val path = route.path()

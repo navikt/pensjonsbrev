@@ -1,3 +1,4 @@
+import com.github.gradle.node.npm.task.NpxTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
@@ -6,6 +7,7 @@ plugins {
     application
     kotlin("jvm")
     id("io.ktor.plugin") version "3.5.0"
+    alias(libs.plugins.gradle.node)
 }
 
 ktor {
@@ -13,6 +15,34 @@ ktor {
         enabled = true
         codeInferenceEnabled = true
     }
+}
+
+node {
+    nodeProjectDir.set(rootProject.file("skribenten-web/frontend"))
+    download.set(true)
+    version.set("24.14.1")
+}
+
+tasks.npmInstall {
+    args.addAll("--legacy-peer-deps")
+}
+
+val generateApiTypes by tasks.registering(NpxTask::class) {
+    description = "Generates TypeScript types from the OpenAPI spec into skribenten-web/frontend/src/types/skribenten-api.ts"
+    dependsOn(tasks.test, tasks.npmInstall)
+    command.set("openapi-typescript")
+    val specFile = layout.buildDirectory.file("openapi-spec.yaml")
+    val outputFile = rootProject.file("skribenten-web/frontend/src/types/skribenten-api.ts")
+    args.set(
+        listOf(
+            specFile.get().asFile.absolutePath,
+            "--output", outputFile.absolutePath,
+            "--root-types",
+            "--root-types-no-schema-prefix",
+        )
+    )
+    inputs.file(specFile)
+    outputs.file(outputFile)
 }
 
 group = "no.nav.pensjon.brev.skribenten"
@@ -44,6 +74,7 @@ tasks {
     }
     build {
         dependsOn(installDist)
+        dependsOn(generateApiTypes)
     }
 }
 
