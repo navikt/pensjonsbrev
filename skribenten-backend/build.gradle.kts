@@ -23,10 +23,6 @@ node {
     version.set("24.14.1")
 }
 
-tasks.npmInstall {
-    args.addAll("--legacy-peer-deps")
-}
-
 val generateApiTypes by tasks.registering(NpxTask::class) {
     description = "Generates TypeScript types from the OpenAPI spec into skribenten-web/frontend/src/types/skribenten-api.ts"
     dependsOn(tasks.test, tasks.npmInstall)
