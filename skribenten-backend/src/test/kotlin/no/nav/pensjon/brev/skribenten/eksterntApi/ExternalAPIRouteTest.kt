@@ -149,9 +149,9 @@ class ExternalAPIRouteTest {
         }
         routing {
             externalAPI(jwtConfig, externalAPIService, object : PdlServiceStub() {
-                override suspend fun hentAdressebeskyttelse(ident: BrevbakerType.Pid, behandlingsnummer: Behandlingsnummer?) = null
+                override suspend fun hentAdressebeskyttelse(ident: BrevbakerType.Pid, behandlingsnumre: List<Behandlingsnummer>) = null
             }, FagsakService(object : PenClientStub() {
-                override suspend fun hentSak(saksId: SaksId) = Pen.SakSelection(saksId, LocalDate.now(), Pen.SakSelection.Navn("fornavn1", mellomnavn = null, "etternavn2"), Sakstype("hei"), BrevbakerType.Pid("123"))
+                override suspend fun hentSak(saksId: SaksId) = Pen.SakSelection(saksId, LocalDate.now(), Pen.SakSelection.Navn("fornavn1", mellomnavn = null, "etternavn2"), Sakstype("hei"), BrevbakerType.Pid("123"), listOf())
             }))
         }
 
