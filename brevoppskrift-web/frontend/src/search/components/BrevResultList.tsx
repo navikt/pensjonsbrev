@@ -1,10 +1,11 @@
+import { css } from "@emotion/react";
 import { Detail, HStack, VStack } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 
 import { type MalType } from "~/api/brevbaker-api-endpoints";
 import { languageLabel } from "~/search/components/format";
-import { HighlightedLine } from "~/search/components/highlight";
+import { LineContent } from "~/search/components/highlight";
 import { type SnippetResult } from "~/search/textSearch";
 
 export function BrevResultList({
@@ -35,15 +36,21 @@ export function BrevResultList({
       {rows.map(({ result, languages }) => (
         <HStack align="baseline" gap="space-8" key={`${result.malType}/${result.id}`} wrap>
           <Link
+            css={css`
+              mark {
+                background: transparent;
+                color: inherit;
+                font-weight: var(--ax-font-weight-bold);
+              }
+            `}
             params={{ malType: result.malType, templateId: result.id }}
             preload="intent"
             search={{ language: result.language }}
             to="/template/$malType/$templateId"
           >
-            <HighlightedLine
+            <LineContent
               line={[{ kind: "text", value: getTitle(result.malType, result.id) }]}
-              metaNeedle={result.metaNeedle}
-              ranges={[]}
+              needle={result.metaNeedle}
             />
           </Link>
           <Detail textColor="subtle">

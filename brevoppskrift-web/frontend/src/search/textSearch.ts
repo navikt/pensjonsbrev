@@ -12,33 +12,11 @@ export type TextIndexEntry = {
   displayTitle?: string;
   language: string;
   lines: Line[];
+  blockIds: string[];
 };
 
 export function textLine(value: string): Line {
   return [{ kind: "text", value }];
-}
-
-function countOccurrences(haystack: string, needle: string): number {
-  if (!needle) {
-    return 0;
-  }
-  let count = 0;
-  let at = haystack.indexOf(needle);
-  while (at >= 0) {
-    count++;
-    at = haystack.indexOf(needle, at + needle.length);
-  }
-  return count;
-}
-
-function lineOccurrences(line: Line, needle: string): number {
-  let count = 0;
-  for (const segment of line) {
-    if (segment.kind === "text") {
-      count += countOccurrences(segment.value.toLowerCase(), needle);
-    }
-  }
-  return count;
 }
 
 export type SnippetResult = {
@@ -50,16 +28,12 @@ export type SnippetResult = {
   matchCount: number;
   templateMatchCount: number;
   lines: Line[];
-  matchOrdinal?: number;
+  blockId?: string;
   score: number;
-  anchorQuery: string;
-  highlightRanges: HighlightRange[];
-  highlightLineIndex?: number;
+  primaryLineIndex?: number;
   meta?: boolean;
   metaNeedle?: string;
 };
-
-export type HighlightRange = { segmentIndex: number; start: number; end: number };
 
 export function lineSearchText(line: Line): string {
   const parts: string[] = [];
@@ -141,64 +115,6 @@ function proximityBoost(line: Line, terms: string[]): number {
 
   const idealSpan = terms.reduce((sum, t) => sum + t.length, 0) + terms.length - 1;
   return idealSpan / Math.max(shortestSpan, idealSpan);
-}
-
-function findTermHighlights(line: Line, terms: string[]): HighlightRange[] {
-  const ranges: HighlightRange[] = [];
-  for (let segmentIndex = 0; segmentIndex < line.length; segmentIndex++) {
-    const segment = line[segmentIndex];
-    if (segment.kind !== "text") continue;
-    const lower = segment.value.toLowerCase();
-    for (const term of terms) {
-      let pos = lower.indexOf(term);
-      while (pos >= 0) {
-        ranges.push({ segmentIndex, start: pos, end: pos + term.length });
-        pos = lower.indexOf(term, pos + term.length);
-      }
-    }
-  }
-  ranges.sort((a, b) => a.segmentIndex - b.segmentIndex || a.start - b.start);
-  const merged: HighlightRange[] = [];
-  for (const range of ranges) {
-    const last = merged.at(-1);
-    if (last && last.segmentIndex === range.segmentIndex && range.start <= last.end) {
-      last.end = Math.max(last.end, range.end);
-    } else {
-      merged.push({ ...range });
-    }
-  }
-  return merged;
-}
-
-function computeAnchor(
-  lines: Line[],
-  primaryLine: number,
-  ranges: HighlightRange[],
-): { anchorQuery: string; matchOrdinal: number } | null {
-  if (ranges.length === 0) return null;
-  let longestRange = ranges[0];
-  for (const range of ranges) {
-    if (range.end - range.start > longestRange.end - longestRange.start) {
-      longestRange = range;
-    }
-  }
-  const segment = lines[primaryLine][longestRange.segmentIndex];
-  if (segment.kind !== "text") return null;
-  const anchorQuery = segment.value.slice(longestRange.start, longestRange.end);
-  const needle = anchorQuery.toLowerCase();
-  let ordinal = 0;
-  for (let i = 0; i < primaryLine; i++) {
-    ordinal += lineOccurrences(lines[i], needle);
-  }
-  const primarySegments = lines[primaryLine];
-  for (let s = 0; s < longestRange.segmentIndex; s++) {
-    const seg = primarySegments[s];
-    if (seg.kind === "text") {
-      ordinal += countOccurrences(seg.value.toLowerCase(), needle);
-    }
-  }
-  ordinal += countOccurrences(segment.value.toLowerCase().slice(0, longestRange.start), needle);
-  return { anchorQuery, matchOrdinal: ordinal };
 }
 
 export type ContentIndex = {
@@ -298,11 +214,6 @@ export function searchContent(context: SearchContext, rawQuery: string): Snippet
           }
         }
       }
-      const primaryHit = lineMatches.get(primaryLine);
-      const highlightTerms = primaryHit?.terms ?? [];
-      const ranges = findTermHighlights(entry.lines[primaryLine], highlightTerms);
-      const anchor = computeAnchor(entry.lines, primaryLine, ranges);
-
       results.push({
         id: entry.id,
         malType: entry.malType,
@@ -312,11 +223,9 @@ export function searchContent(context: SearchContext, rawQuery: string): Snippet
         matchCount,
         templateMatchCount: lineMatches.size,
         lines: entry.lines.slice(window.start, window.end + 1),
-        matchOrdinal: anchor?.matchOrdinal,
+        blockId: entry.blockIds[primaryLine],
         score: windowScore,
-        anchorQuery: anchor?.anchorQuery ?? query,
-        highlightRanges: ranges,
-        highlightLineIndex: primaryLine - window.start,
+        primaryLineIndex: primaryLine - window.start,
       });
     }
   }
@@ -344,8 +253,6 @@ export function searchContent(context: SearchContext, rawQuery: string): Snippet
         templateMatchCount: 0,
         lines: metaLines,
         score: 0,
-        anchorQuery: query,
-        highlightRanges: [],
         meta: true,
         metaNeedle: query,
       });
@@ -360,45 +267,4 @@ export function searchContent(context: SearchContext, rawQuery: string): Snippet
       a.startLine - b.startLine,
   );
   return results;
-}
-
-export function exactRanges(value: string, needle: string): { start: number; end: number }[] {
-  const ranges: { start: number; end: number }[] = [];
-  if (!needle) {
-    return ranges;
-  }
-  const haystack = value.toLowerCase();
-  let at = haystack.indexOf(needle);
-  while (at >= 0) {
-    ranges.push({ start: at, end: at + needle.length });
-    at = haystack.indexOf(needle, at + needle.length);
-  }
-  return ranges;
-}
-
-export function splitSegmentByRanges(
-  value: string,
-  ranges: { start: number; end: number }[],
-): { text: string; match: boolean }[] {
-  const sorted = [...ranges].sort((a, b) => a.start - b.start);
-  const parts: { text: string; match: boolean }[] = [];
-  let last = 0;
-  for (const range of sorted) {
-    const start = Math.max(range.start, last);
-    if (start >= range.end) {
-      continue;
-    }
-    if (start > last) {
-      parts.push({ text: value.slice(last, start), match: false });
-    }
-    parts.push({ text: value.slice(start, range.end), match: true });
-    last = range.end;
-  }
-  if (last < value.length) {
-    parts.push({ text: value.slice(last), match: false });
-  }
-  if (parts.length === 0) {
-    return [{ text: value, match: false }];
-  }
-  return parts;
 }

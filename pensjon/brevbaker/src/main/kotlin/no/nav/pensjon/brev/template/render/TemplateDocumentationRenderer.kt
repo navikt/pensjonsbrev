@@ -17,18 +17,25 @@ private typealias AssignedReplacements = Map<Expression.FromScope.Assigned<*>, E
 
 object TemplateDocumentationRenderer {
 
-    fun render(template: LetterTemplate<*, *>, lang: Language, modelSpecification: TemplateModelSpecification): TemplateDocumentation =
-        TemplateDocumentation(
+    private class RenderContext {
+        private var nextId = 0
+        fun nextBlockId(): String = "b${nextId++}"
+    }
+
+    fun render(template: LetterTemplate<*, *>, lang: Language, modelSpecification: TemplateModelSpecification): TemplateDocumentation {
+        val ctx = RenderContext()
+        return TemplateDocumentation(
             title = renderText(template.title, lang),
-            outline = renderOutline(template.outline, lang),
-            attachments = template.attachments.map { renderAttachment(it, lang) },
+            outline = renderOutline(template.outline, lang, ctx),
+            attachments = template.attachments.map { renderAttachment(it, lang, ctx) },
             templateModelSpecification = modelSpecification,
         )
+    }
 
-    private fun renderAttachment(attachment: IncludeAttachment<*, *>, lang: Language): TemplateDocumentation.Attachment =
+    private fun renderAttachment(attachment: IncludeAttachment<*, *>, lang: Language, ctx: RenderContext): TemplateDocumentation.Attachment =
         TemplateDocumentation.Attachment(
             title = renderText(attachment.template.title, lang),
-            outline = renderOutline(attachment.template.outline, lang),
+            outline = renderOutline(attachment.template.outline, lang, ctx),
             include = renderExpression(attachment.predicate, emptyMap()),
             attachmentData = renderExpression(attachment.data, emptyMap()),
         )
@@ -89,15 +96,17 @@ object TemplateDocumentationRenderer {
     private fun renderOutline(
         outline: List<OutlineElement<*>>,
         lang: Language,
+        ctx: RenderContext,
     ): List<TemplateDocumentation.ContentOrControlStructure<TemplateDocumentation.Element.OutlineContent>> =
-        renderContentOrStructure(outline) { listOf(renderOutline(it, lang)) }
+        renderContentOrStructure(outline) { listOf(renderOutline(it, lang, ctx)) }
 
-    private fun renderOutline(element: Element.OutlineContent<*>, lang: Language): TemplateDocumentation.Element.OutlineContent =
+    private fun renderOutline(element: Element.OutlineContent<*>, lang: Language, ctx: RenderContext): TemplateDocumentation.Element.OutlineContent =
         when (element) {
-            is Element.OutlineContent.Title1 -> TemplateDocumentation.Element.OutlineContent.Title1(renderText(element.text, lang))
-            is Element.OutlineContent.Title2 -> TemplateDocumentation.Element.OutlineContent.Title2(renderText(element.text, lang))
-            is Element.OutlineContent.Title3 -> TemplateDocumentation.Element.OutlineContent.Title3(renderText(element.text, lang))
+            is Element.OutlineContent.Title1 -> TemplateDocumentation.Element.OutlineContent.Title1(ctx.nextBlockId(), renderText(element.text, lang))
+            is Element.OutlineContent.Title2 -> TemplateDocumentation.Element.OutlineContent.Title2(ctx.nextBlockId(), renderText(element.text, lang))
+            is Element.OutlineContent.Title3 -> TemplateDocumentation.Element.OutlineContent.Title3(ctx.nextBlockId(), renderText(element.text, lang))
             is Element.OutlineContent.Paragraph -> TemplateDocumentation.Element.OutlineContent.Paragraph(
+                ctx.nextBlockId(),
                 renderContentOrStructure(element.paragraph) {
                     renderParagraphContent(it, lang)
                 }
@@ -378,10 +387,10 @@ data class TemplateDocumentation(
     @JsonPropertyOrder("elementType")
     sealed class Element {
         sealed class OutlineContent : Element() {
-            data class Title1(val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
-            data class Title2(val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
-            data class Title3(val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
-            data class Paragraph(val paragraph: List<ContentOrControlStructure<ParagraphContent>>) : OutlineContent()
+            data class Title1(val id: String, val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
+            data class Title2(val id: String, val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
+            data class Title3(val id: String, val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
+            data class Paragraph(val id: String, val paragraph: List<ContentOrControlStructure<ParagraphContent>>) : OutlineContent()
         }
 
         sealed class ParagraphContent : Element() {

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { type Line, type TemplateDescription, type TemplateDocumentation } from "~/api/brevbakerTypes";
+import { type SearchLineWithBlockId, type TemplateDescription, type TemplateDocumentation } from "~/api/brevbakerTypes";
 
 const BREVBAKER_API_BASE_PATH = "/brevbaker";
 
@@ -38,16 +38,16 @@ export const getTemplateDocumentation = {
     ).data,
 };
 
-export type TemplateDocumentationSearchEntry = {
+export type SearchableContent = {
   brevkode: string;
   language: string;
-  lines: Line[];
+  lines: SearchLineWithBlockId[];
 };
 
 export const getAllTemplateDocumentation = {
   queryKey: (malType: MalType) => [...templateDocumentationKeys.all, malType, "BATCH"] as const,
   queryFn: async (malType: MalType) =>
-    (await axios.get<TemplateDocumentationSearchEntry[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}/all`)).data,
+    (await axios.get<SearchableContent[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}/all`)).data,
 };
 
 export const getBrevkoder = {

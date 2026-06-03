@@ -5,32 +5,29 @@ import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
-import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppenderImpl
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
-class AutobrevTemplateResource<out T : BrevTemplate<AutobrevData, Brevkode.Automatisk>>(
+class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<AutobrevData, Kode>>(
     override val name: String,
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
-    ) : TemplateResource<Brevkode.Automatisk, T, BestillBrevRequest<Brevkode.Automatisk>>, TemplateLibrary<Brevkode.Automatisk, T> by TemplateLibraryImpl(templates) {
+    ) : TemplateResource<Kode, T, BestillBrevRequest<Kode>>, TemplateLibrary<Kode, T> by TemplateLibraryImpl(templates) {
     private val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl)
-    private val letterFactory: LetterFactory<Brevkode.Automatisk> = LetterFactory(emptySet())
+    private val letterFactory: LetterFactory<Kode> = LetterFactory(emptySet())
 
-    override fun kodeOf(key: String): Brevkode.Automatisk = AutomatiskBrevkode(key)
-
-    override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Brevkode.Automatisk>): LetterResponse =
+    override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         brevbaker.renderPDF(createLetter(brevbestilling))
 
-    override fun renderHTML(brevbestilling: BestillBrevRequest<Brevkode.Automatisk>): LetterResponse =
+    override fun renderHTML(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         brevbaker.renderHTML(createLetter(brevbestilling))
 
-    override fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Brevkode.Automatisk>): LetterMarkup =
+    override fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         brevbaker.renderLetterMarkup(createLetter(brevbestilling))
 
-    private fun createLetter(brevbestilling: BestillBrevRequest<Brevkode.Automatisk>) =
+    private fun createLetter(brevbestilling: BestillBrevRequest<Kode>) =
         letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))
 
 }

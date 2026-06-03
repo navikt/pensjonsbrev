@@ -56,7 +56,8 @@ export function useTextCorpus(templates: IndexableTemplate[]): TextCorpus {
           name: nameByKey.get(key) ?? item.brevkode,
           displayTitle: displayTitleByKey.get(key),
           language: item.language,
-          lines: item.lines,
+          lines: item.lines.map((l) => l.segments),
+          blockIds: item.lines.map((l) => l.blockId),
         });
       }
     });

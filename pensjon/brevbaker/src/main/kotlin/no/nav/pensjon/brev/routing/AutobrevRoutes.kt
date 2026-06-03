@@ -18,7 +18,7 @@ fun <T : Brevkode<T>> RoutingContext.installBrevkodeInCallContext(kode: Brevkode
 fun ApplicationCall.useBrevkodeFromCallContext(): String? = attributes.getOrNull(BREV_KODE)
 
 fun Route.autobrevRoutes(
-    autobrev: AutobrevTemplateResource<AutobrevTemplate<*>>,
+    autobrev: AutobrevTemplateResource<Brevkode.Automatisk, AutobrevTemplate<*>>,
 ) {
     route("/${autobrev.name}") {
         post<BestillBrevRequest<Brevkode.Automatisk>>("/pdf") { brevbestilling ->

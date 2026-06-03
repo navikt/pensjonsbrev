@@ -70,139 +70,49 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     language?: string;
     highlightedDataClass?: string;
     highlightedDataField?: string;
-    q?: string;
-    qi?: number;
+    bid?: string;
   } => {
-    const qiRaw = search.qi !== undefined ? Number(search.qi) : Number.NaN;
+    const bidRaw = search.bid?.toString();
     return {
       language: search.language?.toString(),
       highlightedDataClass: search.highlightedDataClass?.toString(),
       highlightedDataField: search.highlightedDataField?.toString(),
-      q: search.q?.toString(),
-      qi: Number.isInteger(qiRaw) && qiRaw >= 0 ? qiRaw : undefined,
+      bid: bidRaw && /^b\d+$/.test(bidRaw) ? bidRaw : undefined,
     };
   },
   component: TemplateExplorer,
 });
 
-function clearSearchHighlights(container: HTMLElement): void {
-  for (const mark of container.querySelectorAll("mark.search-target")) {
-    const parent = mark.parentNode;
-    if (!parent) {
-      continue;
-    }
-    while (mark.firstChild) {
-      parent.insertBefore(mark.firstChild, mark);
-    }
-    parent.removeChild(mark);
-    parent.normalize();
-  }
-}
-
-function isInsideExpressionOrCodeSubtree(node: Node, container: HTMLElement): boolean {
-  let element = node.parentElement;
-  while (element && element !== container) {
-    if (element.tagName === "CODE" || element.classList.contains("expression")) {
-      return true;
-    }
-    element = element.parentElement;
-  }
-  return false;
-}
-
-function collapseWhitespaceWithOffsetMap(raw: string): { text: string; map: number[] } {
-  const chars: string[] = [];
-  const map: number[] = [];
-  let pendingSpace = false;
-  for (let i = 0; i < raw.length; i++) {
-    const ch = raw[i];
-    if (/\s/.test(ch)) {
-      if (chars.length > 0) {
-        pendingSpace = true;
-      }
-      continue;
-    }
-    if (pendingSpace) {
-      chars.push(" ");
-      map.push(i);
-      pendingSpace = false;
-    }
-    chars.push(ch);
-    map.push(i);
-  }
-  return { text: chars.join(""), map };
-}
-
-type Occurrence = { node: Text; start: number; end: number };
-
-function markAndScrollToOccurrence(occurrence: Occurrence): void {
-  const range = document.createRange();
-  range.setStart(occurrence.node, occurrence.start);
-  range.setEnd(occurrence.node, occurrence.end);
-  const mark = document.createElement("mark");
-  mark.className = "search-target";
-  range.surroundContents(mark);
-  mark.scrollIntoView({ behavior: "smooth", block: "center" });
-}
-
-function highlightNthOccurrence(container: HTMLElement, query: string, ordinal: number): void {
-  const needle = query.trim().toLowerCase();
-  if (!needle) {
-    return;
-  }
-  clearSearchHighlights(container);
-  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
-    acceptNode: (node) =>
-      isInsideExpressionOrCodeSubtree(node, container) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
-  });
-
-  let seen = 0;
-  let last: Occurrence | null = null;
-  let node = walker.nextNode() as Text | null;
-  while (node) {
-    const raw = node.nodeValue ?? "";
-    const { text, map } = collapseWhitespaceWithOffsetMap(raw);
-    const haystack = text.toLowerCase();
-    let at = haystack.indexOf(needle);
-    while (at >= 0) {
-      const start = map[at];
-      const end = map[at + needle.length - 1] + 1;
-      const occurrence: Occurrence = { node, start, end };
-      if (seen === ordinal) {
-        markAndScrollToOccurrence(occurrence);
-        return;
-      }
-      last = occurrence;
-      seen++;
-      at = haystack.indexOf(needle, at + needle.length);
-    }
-    node = walker.nextNode() as Text | null;
-  }
-
-  if (last) {
-    markAndScrollToOccurrence(last);
-  }
-}
-
 function TemplateExplorer() {
   const { documentation } = Route.useLoaderData();
   const { templateId } = Route.useParams();
-  const { q, qi } = Route.useSearch();
+  const { bid } = Route.useSearch();
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: documentation is an intentional trigger so we re-highlight when navigating between templates with the same query.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: documentation is an intentional trigger so we re-highlight when navigating between templates with the same bid.
   useEffect(() => {
     const container = previewRef.current;
     if (!container) {
       return;
     }
-    if (!q) {
-      clearSearchHighlights(container);
+
+    for (const prev of container.querySelectorAll(".search-target")) {
+      prev.classList.remove("search-target");
+    }
+
+    if (!bid) {
       return;
     }
-    const raf = requestAnimationFrame(() => highlightNthOccurrence(container, q, qi ?? 0));
+
+    const raf = requestAnimationFrame(() => {
+      const el = container.querySelector(`[data-block-id="${CSS.escape(bid)}"]`);
+      if (el) {
+        el.classList.add("search-target");
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
     return () => cancelAnimationFrame(raf);
-  }, [q, qi, documentation]);
+  }, [bid, documentation]);
 
   return (
     <>
@@ -216,9 +126,9 @@ function TemplateExplorer() {
           css={css`
             width: 100%;
 
-            mark.search-target {
-              background: var(--ax-warning-300);
-              color: inherit;
+            .search-target {
+              outline: 3px solid var(--ax-warning-400);
+              border-radius: var(--ax-radius-4);
               scroll-margin-top: var(--ax-space-64);
             }
           `}
@@ -307,7 +217,7 @@ function ContentComponent({ content }: { content: Element }) {
   switch (content.elementType) {
     case ElementType.TITLE1: {
       return (
-        <Heading size="medium" spacing>
+        <Heading data-block-id={content.id} size="medium" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
@@ -316,7 +226,7 @@ function ContentComponent({ content }: { content: Element }) {
     }
     case ElementType.TITLE2: {
       return (
-        <Heading size="small" spacing>
+        <Heading data-block-id={content.id} size="small" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
@@ -325,7 +235,7 @@ function ContentComponent({ content }: { content: Element }) {
     }
     case ElementType.TITLE3: {
       return (
-        <Heading size="xsmall" spacing>
+        <Heading data-block-id={content.id} size="xsmall" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
@@ -344,7 +254,7 @@ function ContentComponent({ content }: { content: Element }) {
     }
     case ElementType.PARAGRAPH: {
       return (
-        <BodyLong as="div" spacing>
+        <BodyLong as="div" data-block-id={content.id} spacing>
           {content.paragraph.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}

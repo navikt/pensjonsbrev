@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.render.DocumentationLineExtractor
+import no.nav.pensjon.brev.template.render.DocumentationSearchableTextExtractor
 import no.nav.pensjon.brev.template.render.TemplateDocumentation
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brev.template.toCode
@@ -162,7 +162,7 @@ class TemplateRoutesTest {
             // Lines match the server-side extraction of the per-template documentation.
             val sample = body.first { it.brevkode == ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.kode.name && it.language == LanguageCode.BOKMAL }
             assertEquals(
-                DocumentationLineExtractor.extract(
+                DocumentationSearchableTextExtractor.extract(
                     TemplateDocumentationRenderer.render(
                         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
                         Language.Bokmal,
@@ -172,7 +172,7 @@ class TemplateRoutesTest {
                 sample.lines,
             )
             // Every segment is a text or var segment (no empty lines).
-            assertTrue(sample.lines.all { it.isNotEmpty() })
+            assertTrue(sample.lines.all { it.segments.isNotEmpty() })
         }
 
     @Test

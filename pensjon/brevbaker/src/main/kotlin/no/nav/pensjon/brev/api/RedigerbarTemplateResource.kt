@@ -7,39 +7,36 @@ import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppenderImpl
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 
-class RedigerbarTemplateResource<out T : BrevTemplate<BrevbakerBrevdata, Brevkode.Redigerbart>>(
+class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
     override val name: String,
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
     val alltidValgbareVedlegg: Set<AlltidValgbartVedlegg<*>>,
-) : TemplateResource<Brevkode.Redigerbart, T, BestillRedigertBrevRequest<Brevkode.Redigerbart>>, TemplateLibrary<Brevkode.Redigerbart, T> by TemplateLibraryImpl(templates) {
+) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>, TemplateLibrary<Kode, T> by TemplateLibraryImpl(templates) {
     private val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl)
-    private val letterFactory: LetterFactory<Brevkode.Redigerbart> = LetterFactory(alltidValgbareVedlegg)
+    private val letterFactory: LetterFactory<Kode> = LetterFactory(alltidValgbareVedlegg)
 
-    override fun kodeOf(key: String): Brevkode.Redigerbart = RedigerbarBrevkode(key)
-
-    override fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Brevkode.Redigerbart>): LetterMarkup =
+    override fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         brevbaker.renderLetterMarkup(createLetter(brevbestilling))
 
-    fun renderLetterMarkupWithDataUsage(brevbestilling: BestillBrevRequest<Brevkode.Redigerbart>): LetterMarkupWithDataUsage =
+    fun renderLetterMarkupWithDataUsage(brevbestilling: BestillBrevRequest<Kode>): LetterMarkupWithDataUsage =
         brevbaker.renderLetterMarkupWithDataUsage(createLetter(brevbestilling))
 
-    override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Brevkode.Redigerbart>): LetterResponse =
+    override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         brevbaker.renderRedigertBrevPDF(createLetter(brevbestilling), brevbestilling.letterMarkup)
 
-    override fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Brevkode.Redigerbart>): LetterResponse =
+    override fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         brevbaker.renderRedigertBrevHTML(createLetter(brevbestilling), brevbestilling.letterMarkup)
 
-    private fun createLetter(brevbestilling: BestillBrevRequest<Brevkode.Redigerbart>) =
+    private fun createLetter(brevbestilling: BestillBrevRequest<Kode>) =
         letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))
 
-    private fun createLetter(brevbestilling: BestillRedigertBrevRequest<Brevkode.Redigerbart>) =
+    private fun createLetter(brevbestilling: BestillRedigertBrevRequest<Kode>) =
         letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))
 }

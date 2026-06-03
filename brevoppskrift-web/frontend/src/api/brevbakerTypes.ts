@@ -6,9 +6,11 @@ export type TemplateMetadata = {
 
 /** A searchable line, as flattened server-side from a template's documentation and
  * returned by the batch documentation endpoint. A line is a sequence of segments:
- * literal text (searchable) and variables (shown as a placeholder, never searchable). */
+ * literal text (searchable) and variables (shown as a placeholder, never searchable).
+ * The blockId links to the rendered outline element for scroll-to navigation. */
 export type LineSegment = { kind: "text"; value: string } | { kind: "var"; label: string };
 export type Line = LineSegment[];
+export type SearchLineWithBlockId = { blockId: string; segments: LineSegment[] };
 
 export type TemplateDescription = {
   name: string;
@@ -46,20 +48,24 @@ export enum ElementType {
 export type Element = OutlineContent | ParagraphContent;
 export type OutlineContent = Title1 | Title2 | Title3 | Paragraph;
 export type Title1 = {
+  id: string;
   elementType: ElementType.TITLE1;
   text: ContentOrControlStructure<Text>[];
 };
 export type Title2 = {
+  id: string;
   elementType: ElementType.TITLE2;
   text: ContentOrControlStructure<Text>[];
 };
 
 export type Title3 = {
+  id: string;
   elementType: ElementType.TITLE3;
   text: ContentOrControlStructure<Text>[];
 };
 
 export type Paragraph = {
+  id: string;
   elementType: ElementType.PARAGRAPH;
   paragraph: ContentOrControlStructure<ParagraphContent>[];
 };

@@ -273,6 +273,7 @@ function AllTemplates() {
               innholdPageItems.map((result) => (
                 <SearchSnippet
                   key={`${result.malType}/${result.id}/${result.language}/${result.startLine}`}
+                  needle={search.query}
                   result={result}
                   title={getTitle(result.malType, result.id)}
                 />

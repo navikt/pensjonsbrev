@@ -27,8 +27,9 @@ sealed class SearchLineSegment {
     data class Variable(val label: String) : SearchLineSegment()
 }
 
-/** A single line: an ordered list of text/variable segments. */
-typealias SearchLine = List<SearchLineSegment>
+/** A single line: an ordered list of text/variable segments with a reference
+ *  to the outline block it originates from. */
+data class SearchLine(val blockId: String, val segments: List<SearchLineSegment>)
 
 /**
  * Flattens a template's rendered [TemplateDocumentation] into an ordered list of
@@ -36,12 +37,8 @@ typealias SearchLine = List<SearchLineSegment>
  * branches and for-each bodies) in document order. Variables are kept as `var`
  * segments (excluded from the searchable text); literal text is normalised
  * (collapsed whitespace).
- *
- * This is the server-side counterpart of what the brevoppskrift search frontend
- * used to do client-side, kept deliberately byte-compatible so occurrence
- * ordinals (used by the detail page's `qi` deep-link) do not drift.
  */
-object DocumentationLineExtractor {
+object DocumentationSearchableTextExtractor {
 
     private const val MAX_VAR_LABEL_LENGTH = 40
 
@@ -130,7 +127,7 @@ object DocumentationLineExtractor {
     /** Turns an accumulated builder into a line, or null when there is nothing to
      * show. Variable sentinels are replaced by `var` segments paired with their
      * labels in order. */
-    private fun finishLine(builder: LineBuilder): SearchLine? {
+    private fun finishLine(builder: LineBuilder): List<SearchLineSegment>? {
         val normalized = normalize(builder.raw.toString())
         if (normalized.isEmpty()) {
             return null
@@ -164,13 +161,13 @@ object DocumentationLineExtractor {
         }
     }
 
-    private fun lineFromTextArray(items: List<ContentOrControlStructure<Element.ParagraphContent.Text>>): SearchLine? {
+    private fun segmentsFromTextArray(items: List<ContentOrControlStructure<Element.ParagraphContent.Text>>): List<SearchLineSegment>? {
         val builder = LineBuilder()
         appendTextArray(builder, items)
         return finishLine(builder)
     }
 
-    private fun rowToLine(row: Element.ParagraphContent.Table.Row): SearchLine? {
+    private fun rowToSegments(row: Element.ParagraphContent.Table.Row): List<SearchLineSegment>? {
         val builder = LineBuilder()
         var first = true
         for (cell in row.cells) {
@@ -189,16 +186,16 @@ object DocumentationLineExtractor {
         return finishLine(builder)
     }
 
-    private fun linesFromParagraph(items: List<ContentOrControlStructure<Element.ParagraphContent>>): List<SearchLine> {
-        val lines = mutableListOf<SearchLine>()
+    private fun segmentsFromParagraph(items: List<ContentOrControlStructure<Element.ParagraphContent>>): List<List<SearchLineSegment>> {
+        val lines = mutableListOf<List<SearchLineSegment>>()
         var buffer = LineBuilder()
         fun flush() {
             finishLine(buffer)?.let { lines.add(it) }
             buffer = LineBuilder()
         }
-        fun pushLine(line: SearchLine?) {
-            if (line != null) {
-                lines.add(line)
+        fun pushLine(segments: List<SearchLineSegment>?) {
+            if (segments != null) {
+                lines.add(segments)
             }
         }
 
@@ -208,12 +205,12 @@ object DocumentationLineExtractor {
                 is Element.ParagraphContent.Text.Expression -> buffer.pushVariable(content.expression)
                 is Element.ParagraphContent.ItemList -> {
                     flush()
-                    eachContent(content.items) { item -> pushLine(lineFromTextArray(item.text)) }
+                    eachContent(content.items) { item -> pushLine(segmentsFromTextArray(item.text)) }
                 }
                 is Element.ParagraphContent.Table -> {
                     flush()
-                    pushLine(rowToLine(content.header))
-                    eachContent(content.rows) { row -> pushLine(rowToLine(row)) }
+                    pushLine(rowToSegments(content.header))
+                    eachContent(content.rows) { row -> pushLine(rowToSegments(row)) }
                 }
             }
         }
@@ -223,16 +220,18 @@ object DocumentationLineExtractor {
 
     /** Handles outline-level elements (titles and paragraphs). Non-outline
      * elements (e.g. the bare `Text` elements of a document `title`) are ignored,
-     * mirroring the frontend behaviour exactly. */
+     * mirroring the frontend behaviour exactly. Each produced [SearchLine]
+     * carries the `id` of its source outline element so the search frontend
+     * can deep-link directly to the rendered block. */
     private fun linesFromElements(items: List<ContentOrControlStructure<out Element>>): List<SearchLine> {
         val lines = mutableListOf<SearchLine>()
         @Suppress("UNCHECKED_CAST")
         eachContent(items as List<ContentOrControlStructure<Element>>) { element ->
             when (element) {
-                is Element.OutlineContent.Title1 -> lineFromTextArray(element.text)?.let { lines.add(it) }
-                is Element.OutlineContent.Title2 -> lineFromTextArray(element.text)?.let { lines.add(it) }
-                is Element.OutlineContent.Title3 -> lineFromTextArray(element.text)?.let { lines.add(it) }
-                is Element.OutlineContent.Paragraph -> lines.addAll(linesFromParagraph(element.paragraph))
+                is Element.OutlineContent.Title1 -> segmentsFromTextArray(element.text)?.let { lines.add(SearchLine(element.id, it)) }
+                is Element.OutlineContent.Title2 -> segmentsFromTextArray(element.text)?.let { lines.add(SearchLine(element.id, it)) }
+                is Element.OutlineContent.Title3 -> segmentsFromTextArray(element.text)?.let { lines.add(SearchLine(element.id, it)) }
+                is Element.OutlineContent.Paragraph -> segmentsFromParagraph(element.paragraph).forEach { lines.add(SearchLine(element.id, it)) }
                 else -> Unit
             }
         }
