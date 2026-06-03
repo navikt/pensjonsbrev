@@ -1,3 +1,4 @@
+import com.github.gradle.node.npm.task.NpmTask
 import com.github.gradle.node.npm.task.NpxTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -41,6 +42,15 @@ val generateApiTypes by tasks.registering(NpxTask::class) {
     outputs.file(outputFile)
 }
 
+val typeCheckFrontend by tasks.registering(NpmTask::class) {
+    description = "Runs TypeScript type checking on the frontend after API type generation"
+    dependsOn(generateApiTypes)
+    npmCommand.set(listOf("run", "check-types"))
+    inputs.files(rootProject.fileTree("skribenten-web/frontend/src"))
+    outputs.upToDateWhen { true }
+}
+
+
 group = "no.nav.pensjon.brev.skribenten"
 version = "0.0.1"
 application {
@@ -70,7 +80,7 @@ tasks {
     }
     build {
         dependsOn(installDist)
-        dependsOn(generateApiTypes)
+        dependsOn(typeCheckFrontend)
     }
 }
 
