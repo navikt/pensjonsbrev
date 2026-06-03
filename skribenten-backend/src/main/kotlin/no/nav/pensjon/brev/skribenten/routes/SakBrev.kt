@@ -7,6 +7,7 @@ import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.*
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1Data
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
@@ -232,7 +233,7 @@ fun Route.sakBrev(
                 post<Api.GeneriskBrevdata> { p1Data ->
                     val brevId = call.parameters.brevId()
                     val sak: Fagsak = call.attributes[SakKey]
-                    call.respond(p1Service.lagreP1Data(p1Data, brevId, sak.saksId))
+                    call.respond(p1Service.lagreP1Data(p1Data, brevId, sak.saksId).toDto())
                 }
             }
 
@@ -242,6 +243,10 @@ fun Route.sakBrev(
             }
         }
     }
+
+private fun P1Data.toDto(): P1Dto = P1Dto(p1Data = p1data)
+
+data class P1Dto(val p1Data: Api.GeneriskBrevdata)
 
 fun SpraakKode.toLanguageCode(): LanguageCode =
     when (this) {
