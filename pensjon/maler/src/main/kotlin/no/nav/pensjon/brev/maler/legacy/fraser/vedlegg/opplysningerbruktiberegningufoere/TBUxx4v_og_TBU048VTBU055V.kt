@@ -120,14 +120,8 @@ data class TBUxx4v_og_TBU048V_TBU055V(
                 list {
                     item {
                         text(
-                            bokmal { + "3,3 ganger grunnbeløpet dersom du lever sammen med ektefelle/partner/samboer. Samboerforholdet ditt må ha vart i minst 12 av de siste 18 månedene." },
-                            nynorsk { + "3,3 gonger grunnbeløpet dersom du lever saman med ektefelle/partner/sambuar. Sambuarforholdet ditt må ha vart i minst 12 av dei siste 18 månadene." },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { + "3,5 ganger grunnbeløpet dersom du er enslig." },
-                            nynorsk { + "3,5 gonger grunnbeløpet dersom du er einsleg." },
+                            bokmal { + "3,5 ganger grunnbeløpet uavhengig av din sivilstand." },
+                            nynorsk { + "3,5 gonger grunnbeløpet uavhengig av din sivilstand." },
                         )
                     }
                     item {

@@ -156,16 +156,9 @@ data class OpplysningerOmMinstetillegg(
                 list {
                     item {
                         text(
-                            bokmal { + "3,3 ganger grunnbeløpet dersom du lever sammen med ektefelle/partner/samboer. Samboerforholdet ditt må ha vart i minst 12 av de siste 18 månedene." },
-                            nynorsk { + "3,3 gonger grunnbeløpet dersom du lever saman med ektefelle/partnar/sambuar. Sambuarforholdet ditt må ha vart i minst 12 av dei siste 18 månadane." },
-                            english { + "3.3 times the National Insurance basic amount for individuals living with a spouse or partner, or in a cohabitant relationship that has lasted no less than 12 of the last 18 months." }
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { + "3,5 ganger grunnbeløpet dersom du er enslig." },
-                            nynorsk { + "3,5 gonger grunnbeløpet dersom du er einsleg." },
-                            english { + "3.5 times the National Insurance basic amount if you are single." }
+                            bokmal { + "3,5 ganger grunnbeløpet uavhengig av din sivilstand." },
+                            nynorsk { + "3,5 gonger grunnbeløpet uavhengig av din sivilstand." },
+                            english { + "3.5 times the National Insurance basic amount." }
                         )
                     }
                 }
