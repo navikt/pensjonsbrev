@@ -53,9 +53,14 @@ internal inline fun <reified T> IdTable<*>.readJsonBinary(json: ByteArray): T =
     }
 
 
-fun initDatabase(config: Config) =
+fun initDatabase(config: Config, maxPoolSize: Int = 2) =
     config.getConfig("database").let {
-        initDatabase(createJdbcUrl(it), it.getString("username"), it.getString("password"))
+        initDatabase(
+            jdbcUrl = createJdbcUrl(it),
+            username = it.getString("username"),
+            password = it.getString("password"),
+            maxPoolSize = maxPoolSize,
+        )
     }
 
 fun initDatabase(jdbcUrl: String, username: String, password: String, maxPoolSize: Int = 2) =
