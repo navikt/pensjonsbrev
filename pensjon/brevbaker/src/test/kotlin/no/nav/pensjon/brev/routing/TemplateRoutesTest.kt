@@ -150,7 +150,7 @@ class TemplateRoutesTest {
     @Test
     fun `batch doc endpoint returns one entry per autobrev template per supported language`() =
         testBrevbakerApp(isIntegrationTest = false) { client ->
-            val response = client.get("/templates/autobrev/doc")
+            val response = client.get("/templates/autobrev/all")
             assertEquals(HttpStatusCode.OK, response.status)
             val body = response.body<List<TemplateDocumentationSearchEntry>>()
 

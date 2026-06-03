@@ -49,7 +49,7 @@ fun <Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>> Route.tem
         // Batch documentation for every template in every supported language, so a
         // client (e.g. brevoppskrift's full-text index) can build its index with a
         // single request instead of one request per template per language.
-        get("/doc") {
+        get("/all") {
             val entries = resource.listTemplatekeys().flatMap { key ->
                 val template = resource.getTemplate(resource.kodeOf(key))?.template ?: return@flatMap emptyList()
                 template.language.all().map { language ->

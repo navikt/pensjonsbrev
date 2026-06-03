@@ -47,7 +47,7 @@ export type TemplateDocumentationSearchEntry = {
 export const getAllTemplateDocumentation = {
   queryKey: (malType: MalType) => [...templateDocumentationKeys.all, malType, "BATCH"] as const,
   queryFn: async (malType: MalType) =>
-    (await axios.get<TemplateDocumentationSearchEntry[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}/doc`)).data,
+    (await axios.get<TemplateDocumentationSearchEntry[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}/all`)).data,
 };
 
 export const getBrevkoder = {
