@@ -77,7 +77,25 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
         });
       }
 
-      case "UnderRedigering":
+      case "UnderRedigering": {
+        if (!isOriginalCreator && brevInfo.erAttestant) {
+          trackEvent("pesys omdirigering", {
+            brevStatus: brevInfo.status.type,
+            destinasjon: "attestering",
+            erForfatter: false,
+            rolle: "attestant",
+            enhetsId: brevInfo.avsenderEnhet.enhetNr,
+            brevkode: brevInfo.brevkode,
+          });
+          throw redirect({
+            to: "/saksnummer/$saksId/attester/$brevId/redigering",
+            params: {
+              saksId: String(brevInfo.saksId),
+              brevId: String(brevIdNum),
+            },
+          });
+        }
+
         trackEvent("pesys omdirigering", {
           brevStatus: brevInfo.status.type,
           destinasjon: "brev-redigering",
@@ -89,6 +107,7 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
           to: "/saksnummer/$saksId/brev/$brevId",
           params: { saksId: String(brevInfo.saksId), brevId: brevIdNum },
         });
+      }
 
       case "Attestering": {
         if (isOriginalCreator) {
