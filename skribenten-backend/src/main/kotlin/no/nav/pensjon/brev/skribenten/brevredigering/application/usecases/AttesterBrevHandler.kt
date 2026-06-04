@@ -46,15 +46,15 @@ class AttesterBrevHandler(
             brev.oppdaterRedigertBrev(request.nyttRedigertbrev, principal.navIdent)
         }
 
+        val pesysdata = brevdataService.hentBrevdata(brev)
+        val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
+        brev.mergeRendretBrev(rendretBrev.markup)
+
         ferdigRedigertPolicy.erFerdigRedigert(brev).onError { return failure(it) }
 
         if (!brev.laastForRedigering) {
             brev.markerSomKlar()
         }
-
-        val pesysdata = brevdataService.hentBrevdata(brev)
-        val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
-        brev.mergeRendretBrev(rendretBrev.markup)
 
         val attestantSignatur = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn
             ?: principal.hentSignatur(navansattService)
