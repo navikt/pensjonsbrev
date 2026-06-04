@@ -33,6 +33,5 @@ enum class FeatureToggles(private val key: String) {
     vedtakEndringGjenlevendepensjonBosattUtland("brevmalEndringGjenlevendepensjonBosattUtland"),
     vedtakOmOktMinsteIFUOgReduksjonsprosent("vedtakOmOktMinsteIFUOgReduksjonsprosent");
 
-
     val toggle = FeatureToggle(key)
 }

@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalEnglish
+import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.TableScope
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -21,128 +22,187 @@ import java.time.LocalDate
  * Genererer "Din månedlige gjenlevendepensjon ..."-blokken med innledende kulepunkter
  * (grunnbeløp + framtidig årlig inntekt) og en tabell med ytelseskomponenter.
  *
- * Bruk [bruttoNettoTabell] når brutto != netto (3 kolonner: komponent, brutto, netto).
- * Bruk [kunNettoTabell] når brutto == netto (2 kolonner: komponent, netto).
- *
- * Radhjelperne [bruttoNettoRad]/[nettoRad] tar `Expression<Kroner>` direkte slik at
- * malen kan gjenbrukes på tvers av DTO-er med ulik `Komponent`-modell.
+ * Bruk [GjenlevendepensjonBeregningTabell.BruttoNetto] når brutto != netto
+ * (3 kolonner: komponent, brutto, netto).
+ * Bruk [GjenlevendepensjonBeregningTabell.KunNetto] når brutto == netto
+ * (2 kolonner: komponent, netto).
  */
 
 // ---- Outline-blokker -------------------------------------------------------
 
-fun <LetterData : Any> OutlineOnlyScope<LangBokmalEnglish, LetterData>.gjenlevendepensjonBeregningTabellBruttoNetto(
-    virkDatoFom: Expression<LocalDate>,
-    grunnbeloep: Expression<Kroner>,
-    framtidigAarligInntekt: Expression<Kroner>,
-    sumBrutto: Expression<Kroner>,
-    sumNetto: Expression<Kroner>,
-    rader: TableScope<LangBokmalEnglish, LetterData>.() -> Unit,
-) {
-    title1 {
-        text(
-            bokmal { +"Din månedlige gjenlevendepensjon fra " + virkDatoFom.format() },
-            english { +"Your survivor's pension from " + virkDatoFom.format() },
-        )
-    }
-    paragraph {
-        list {
-            item {
+object GjenlevendepensjonBeregningTabell {
+    data class BruttoNetto(
+        val virkDatoFom: Expression<LocalDate>,
+        val grunnbeloep: Expression<Kroner>,
+        val framtidigAarligInntekt: Expression<Kroner>,
+        val grunnpensjonBrutto: Expression<Kroner>,
+        val grunnpensjonNetto: Expression<Kroner>,
+        val tilleggspensjonBrutto: Expression<Kroner?>,
+        val tilleggspensjonNetto: Expression<Kroner?>,
+        val saertilleggBrutto: Expression<Kroner?>,
+        val saertilleggNetto: Expression<Kroner?>,
+        val fasteUtgifterBrutto: Expression<Kroner?>,
+        val fasteUtgifterNetto: Expression<Kroner?>,
+        val familietilleggBrutto: Expression<Kroner?>,
+        val familietilleggNetto: Expression<Kroner?>,
+        val sumBrutto: Expression<Kroner>,
+        val sumNetto: Expression<Kroner>,
+    ) : OutlinePhrase<LangBokmalEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalEnglish, Unit>.template() {
+            title1 {
                 text(
-                    bokmal {
-                        +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " + grunnbeloep.format() + "."
-                    },
-                    english {
-                        +"The national insurance basic amount (G) used in the calculation is " + grunnbeloep.format() + "."
-                    },
+                    bokmal { +"Din månedlige gjenlevendepensjon fra " + virkDatoFom.format() },
+                    english { +"Your survivor's pension from " + virkDatoFom.format() },
                 )
             }
-            item {
-                text(
-                    bokmal {
-                        +"Framtidig årlig inntekt benyttet i beregningen er " + framtidigAarligInntekt.format() + "."
+            paragraph {
+                list {
+                    item {
+                        text(
+                            bokmal {
+                                +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " + grunnbeloep.format() + "."
+                            },
+                            english {
+                                +"The national insurance basic amount (G) used in the calculation is " + grunnbeloep.format() + "."
+                            },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal {
+                                +"Framtidig årlig inntekt benyttet i beregningen er " + framtidigAarligInntekt.format() + "."
+                            },
+                            english {
+                                +"Expected future earned income used in the calculation is " + framtidigAarligInntekt.format() + "."
+                            },
+                        )
+                    }
+                }
+            }
+            paragraph {
+                table(
+                    header = {
+                        column(columnSpan = 2, alignment = LEFT) { text(bokmal { +"" }, english { +"" }) }
+                        column(columnSpan = 1, alignment = RIGHT) {
+                            text(
+                                bokmal { +"Pensjon per måned før fradrag for inntekt" },
+                                english { +"Pension per month before deduction for income" },
+                            )
+                        }
+                        column(columnSpan = 1, alignment = RIGHT) {
+                            text(
+                                bokmal { +"Pensjon per måned etter fradrag for inntekt" },
+                                english { +"Pension per month after deduction for income" },
+                            )
+                        }
                     },
-                    english {
-                        +"Expected future earned income used in the calculation is " + framtidigAarligInntekt.format() + "."
-                    },
-                )
+                ) {
+                    bruttoNettoRad("Grunnpensjon", "Basic pension", grunnpensjonBrutto, grunnpensjonNetto)
+                    ifNotNull(tilleggspensjonBrutto) { tpBrutto ->
+                        ifNotNull(tilleggspensjonNetto) { tpNetto ->
+                            bruttoNettoRad("Tilleggspensjon", "Supplementary pension", tpBrutto, tpNetto)
+                        }
+                    }
+                    ifNotNull(saertilleggBrutto) { stBrutto ->
+                        ifNotNull(saertilleggNetto) { stNetto ->
+                            bruttoNettoRad("Særtillegg", "Special supplement", stBrutto, stNetto)
+                        }
+                    }
+                    ifNotNull(fasteUtgifterBrutto) { fuBrutto ->
+                        ifNotNull(fasteUtgifterNetto) { fuNetto ->
+                            bruttoNettoRad(
+                                "Faste utgifter ved institusjonsopphold",
+                                "Fixed costs when institutionalised",
+                                fuBrutto,
+                                fuNetto,
+                            )
+                        }
+                    }
+                    ifNotNull(familietilleggBrutto) { ftBrutto ->
+                        ifNotNull(familietilleggNetto) { ftNetto ->
+                            bruttoNettoRad("Familietillegg", "Family supplement", ftBrutto, ftNetto)
+                        }
+                    }
+                    sumBruttoNettoRad(sumBrutto, sumNetto)
+                }
             }
         }
     }
-    paragraph {
-        table(
-            header = {
-                column(columnSpan = 2, alignment = LEFT) { text(bokmal { +"" }, english { +"" }) }
-                column(columnSpan = 1, alignment = RIGHT) {
-                    text(
-                        bokmal { +"Pensjon per måned før fradrag for inntekt" },
-                        english { +"Pension per month before deduction for income" },
-                    )
-                }
-                column(columnSpan = 1, alignment = RIGHT) {
-                    text(
-                        bokmal { +"Pensjon per måned etter fradrag for inntekt" },
-                        english { +"Pension per month after deduction for income" },
-                    )
-                }
-            },
-        ) {
-            rader()
-            sumBruttoNettoRad(sumBrutto, sumNetto)
-        }
-    }
-}
 
-fun <LetterData : Any> OutlineOnlyScope<LangBokmalEnglish, LetterData>.gjenlevendepensjonBeregningTabellKunNetto(
-    virkDatoFom: Expression<LocalDate>,
-    grunnbeloep: Expression<Kroner>,
-    framtidigAarligInntekt: Expression<Kroner>,
-    sumNetto: Expression<Kroner>,
-    rader: TableScope<LangBokmalEnglish, LetterData>.() -> Unit,
-) {
-    title1 {
-        text(
-            bokmal { +"Din månedlige gjenlevendepensjon fra " + virkDatoFom.format() },
-            english { +"Your monthly survivor's pension from " + virkDatoFom.format() },
-        )
-    }
-    paragraph {
-        list {
-            item {
+    data class KunNetto(
+        val virkDatoFom: Expression<LocalDate>,
+        val grunnbeloep: Expression<Kroner>,
+        val framtidigAarligInntekt: Expression<Kroner>,
+        val grunnpensjonNetto: Expression<Kroner>,
+        val tilleggspensjonNetto: Expression<Kroner?>,
+        val saertilleggNetto: Expression<Kroner?>,
+        val fasteUtgifterNetto: Expression<Kroner?>,
+        val familietilleggNetto: Expression<Kroner?>,
+        val sumNetto: Expression<Kroner>,
+    ) : OutlinePhrase<LangBokmalEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalEnglish, Unit>.template() {
+            title1 {
                 text(
-                    bokmal {
-                        +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " + grunnbeloep.format() + "."
-                    },
-                    english {
-                        +"The national insurance basic amount (G) used in the calculation is " + grunnbeloep.format() + "."
-                    },
+                    bokmal { +"Din månedlige gjenlevendepensjon fra " + virkDatoFom.format() },
+                    english { +"Your monthly survivor's pension from " + virkDatoFom.format() },
                 )
             }
-            item {
-                text(
-                    bokmal {
-                        +"Framtidig årlig inntekt benyttet i beregningen er " + framtidigAarligInntekt.format() + "."
-                    },
-                    english {
-                        +"Expected future earned income used in the calculation is " + framtidigAarligInntekt.format() + "."
-                    },
-                )
-            }
-        }
-    }
-    paragraph {
-        table(
-            header = {
-                column(columnSpan = 2) {}
-                column(columnSpan = 1, alignment = RIGHT) {
-                    text(
-                        bokmal { +"Pensjon per måned" },
-                        english { +"Pension per month" },
-                    )
+            paragraph {
+                list {
+                    item {
+                        text(
+                            bokmal {
+                                +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " + grunnbeloep.format() + "."
+                            },
+                            english {
+                                +"The national insurance basic amount (G) used in the calculation is " + grunnbeloep.format() + "."
+                            },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal {
+                                +"Framtidig årlig inntekt benyttet i beregningen er " + framtidigAarligInntekt.format() + "."
+                            },
+                            english {
+                                +"Expected future earned income used in the calculation is " + framtidigAarligInntekt.format() + "."
+                            },
+                        )
+                    }
                 }
-            },
-        ) {
-            rader()
-            sumNettoRad(sumNetto)
+            }
+            paragraph {
+                table(
+                    header = {
+                        column(columnSpan = 2) {}
+                        column(columnSpan = 1, alignment = RIGHT) {
+                            text(
+                                bokmal { +"Pensjon per måned" },
+                                english { +"Pension per month" },
+                            )
+                        }
+                    },
+                ) {
+                    nettoRad("Grunnpensjon", "Basic pension", grunnpensjonNetto)
+                    ifNotNull(tilleggspensjonNetto) { tpNetto ->
+                        nettoRad("Tilleggspensjon", "Supplementary pension", tpNetto)
+                    }
+                    ifNotNull(saertilleggNetto) { stNetto ->
+                        nettoRad("Særtillegg", "Special supplement", stNetto)
+                    }
+                    ifNotNull(fasteUtgifterNetto) { fuNetto ->
+                        nettoRad(
+                            "Faste utgifter ved institusjonsopphold",
+                            "Fixed costs when institutionalised",
+                            fuNetto,
+                        )
+                    }
+                    ifNotNull(familietilleggNetto) { ftNetto ->
+                        nettoRad("Familietillegg", "Family supplement", ftNetto)
+                    }
+                    sumNettoRad(sumNetto)
+                }
+            }
         }
     }
 }

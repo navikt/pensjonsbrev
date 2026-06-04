@@ -44,10 +44,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenle
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.bruttoNettoRad
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.gjenlevendepensjonBeregningTabellBruttoNetto
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.gjenlevendepensjonBeregningTabellKunNetto
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.nettoRad
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.GjenlevendepensjonBeregningTabell
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggFolketrygdenBokmalEnglish
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerOmBeregningenGPUtlandLegacy
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy
@@ -67,6 +64,7 @@ import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -144,7 +142,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                 paragraph {
                     text(
                         bokmal {
-                            +"Pensjonen din blir regulert i forhold til ƒden arbeidsinntekten du har eller forventes å ha." +
+                            +"Pensjonen din blir regulert i forhold til den arbeidsinntekten du har eller forventes å ha." +
                                     " Pensjonen din vil øke fordi du har hatt en reduksjon i forventet arbeidsinntekt." +
                                     " Økning av pensjonen trer i kraft fra og med den måneden arbeidsinntekten din ble endret."
                         },
@@ -178,11 +176,9 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                 }
                 paragraph {
                     text(
-                        bokmal {
-                            +"Pensjonen vil bli redusert fra måneden etter at dere har vært samboere i 12 av de 18 siste månedene."
+                        bokmal { +"Pensjonen vil bli redusert fra måneden etter at dere har vært samboere i 12 av de 18 siste månedene."
                         },
-                        english {
-                            +"Your pension will be reduced as of the month after you have been cohabiting for 12 of the past 18 months."
+                        english { +"Your pension will be reduced as of the month after you have been cohabiting for 12 of the past 18 months."
                         },
                     )
                 }
@@ -201,61 +197,43 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
             // ---- PE_GP_tabellA1_utland (brutto != netto) ----
             // Tre kolonner: komponent, brutto, netto.
             showIf(pesysData.beregning.brutto.notEqualTo(pesysData.beregning.netto)) {
-                gjenlevendepensjonBeregningTabellBruttoNetto(
-                    virkDatoFom = pesysData.beregning.virkDatoFom,
-                    grunnbeloep = pesysData.beregning.grunnbeloep,
-                    framtidigAarligInntekt = pesysData.beregning.framtidigAarligInntekt,
-                    sumBrutto = pesysData.beregning.brutto,
-                    sumNetto = pesysData.beregning.netto,
-                ) {
-                    bruttoNettoRad(
-                        "Grunnpensjon", "Basic pension",
-                        pesysData.beregning.grunnpensjon.brutto, pesysData.beregning.grunnpensjon.netto,
+                includePhrase(
+                    GjenlevendepensjonBeregningTabell.BruttoNetto(
+                        virkDatoFom = pesysData.beregning.virkDatoFom,
+                        grunnbeloep = pesysData.beregning.grunnbeloep,
+                        framtidigAarligInntekt = pesysData.beregning.framtidigAarligInntekt,
+                        grunnpensjonBrutto = pesysData.beregning.grunnpensjon.brutto,
+                        grunnpensjonNetto = pesysData.beregning.grunnpensjon.netto,
+                        tilleggspensjonBrutto = pesysData.beregning.tilleggspensjon.safe { brutto },
+                        tilleggspensjonNetto = pesysData.beregning.tilleggspensjon.safe { netto },
+                        saertilleggBrutto = pesysData.beregning.saertillegg.safe { brutto },
+                        saertilleggNetto = pesysData.beregning.saertillegg.safe { netto },
+                        fasteUtgifterBrutto = pesysData.beregning.fasteUtgifter.safe { brutto },
+                        fasteUtgifterNetto = pesysData.beregning.fasteUtgifter.safe { netto },
+                        familietilleggBrutto = pesysData.beregning.familietillegg.safe { brutto },
+                        familietilleggNetto = pesysData.beregning.familietillegg.safe { netto },
+                        sumBrutto = pesysData.beregning.brutto,
+                        sumNetto = pesysData.beregning.netto,
                     )
-                    ifNotNull(pesysData.beregning.tilleggspensjon) { tp ->
-                        bruttoNettoRad("Tilleggspensjon", "Supplementary pension", tp.brutto, tp.netto)
-                    }
-                    ifNotNull(pesysData.beregning.saertillegg) { st ->
-                        bruttoNettoRad("Særtillegg", "Special supplement", st.brutto, st.netto)
-                    }
-                    ifNotNull(pesysData.beregning.fasteUtgifter) { fu ->
-                        bruttoNettoRad(
-                            "Faste utgifter ved institusjonsopphold", "Fixed costs when institutionalised",
-                            fu.brutto, fu.netto,
-                        )
-                    }
-                    ifNotNull(pesysData.beregning.familietillegg) { ft ->
-                        bruttoNettoRad("Familietillegg", "Family supplement", ft.brutto, ft.netto)
-                    }
-                }
+                )
             }
 
             // ---- PE_GP_tabellA2_utland (brutto = netto) ----
             // To kolonner: komponent, netto.
             showIf(pesysData.beregning.brutto.equalTo(pesysData.beregning.netto)) {
-                gjenlevendepensjonBeregningTabellKunNetto(
-                    virkDatoFom = pesysData.beregning.virkDatoFom,
-                    grunnbeloep = pesysData.beregning.grunnbeloep,
-                    framtidigAarligInntekt = pesysData.beregning.framtidigAarligInntekt,
-                    sumNetto = pesysData.beregning.netto,
-                ) {
-                    nettoRad("Grunnpensjon", "Basic pension", pesysData.beregning.grunnpensjon.netto)
-                    ifNotNull(pesysData.beregning.tilleggspensjon) { tp ->
-                        nettoRad("Tilleggspensjon", "Supplementary pension", tp.netto)
-                    }
-                    ifNotNull(pesysData.beregning.saertillegg) { st ->
-                        nettoRad("Særtillegg", "Special supplement", st.netto)
-                    }
-                    ifNotNull(pesysData.beregning.fasteUtgifter) { fu ->
-                        nettoRad(
-                            "Faste utgifter ved institusjonsopphold", "Fixed costs when institutionalised",
-                            fu.netto,
-                        )
-                    }
-                    ifNotNull(pesysData.beregning.familietillegg) { ft ->
-                        nettoRad("Familietillegg", "Family supplement", ft.netto)
-                    }
-                }
+                includePhrase(
+                    GjenlevendepensjonBeregningTabell.KunNetto(
+                        virkDatoFom = pesysData.beregning.virkDatoFom,
+                        grunnbeloep = pesysData.beregning.grunnbeloep,
+                        framtidigAarligInntekt = pesysData.beregning.framtidigAarligInntekt,
+                        grunnpensjonNetto = pesysData.beregning.grunnpensjon.netto,
+                        tilleggspensjonNetto = pesysData.beregning.tilleggspensjon.safe { netto },
+                        saertilleggNetto = pesysData.beregning.saertillegg.safe { netto },
+                        fasteUtgifterNetto = pesysData.beregning.fasteUtgifter.safe { netto },
+                        familietilleggNetto = pesysData.beregning.familietillegg.safe { netto },
+                        sumNetto = pesysData.beregning.netto,
+                    )
+                )
             }
 
             // ---- PE_GP_04_028_tekst2: trygdetid og avhengige tilleggsavsnitt ----
@@ -851,9 +829,5 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
         includeAttachment(vedleggFolketrygdenBokmalEnglish)
     }
 }
-
-
-
-
 
 
