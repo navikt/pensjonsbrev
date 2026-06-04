@@ -59,8 +59,6 @@ object VedtakOmEndringBarnetilleggEPSAuto : AutobrevTemplate<VedtakOmEndringBarn
                         totalbelop = data.totalbelop,
                         samletInntektsgrenseBarnetillegg = data.samletInntektsgrenseBarnetillegg,
                         fribelop = data.fribelop,
-                        epsBokmalTxt = data.pe.sivilstand_ektefelle_partner_samboer_bormed_ut(),
-                        epsNynorskTxt = data.pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall()
                     )
                 )
             )
