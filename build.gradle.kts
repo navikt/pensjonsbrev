@@ -1,16 +1,15 @@
+import com.ncorti.ktfmt.gradle.tasks.KtfmtCheckTask
+import com.ncorti.ktfmt.gradle.tasks.KtfmtFormatTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
-import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
-import org.jlleitschuh.gradle.ktlint.tasks.KtLintCheckTask
 
 plugins {
     kotlin("jvm") version libs.versions.kotlinVersion apply false
-    alias(libs.plugins.ktlint)
+    alias(libs.plugins.ktfmt)
 }
 
 allprojects {
-
     repositories {
         mavenCentral()
         mavenLocal()
@@ -26,24 +25,31 @@ allprojects {
             }
         }
     }
-    tasks.withType<KotlinJvmCompile>{
+    tasks.withType<KotlinJvmCompile> {
         /*
         Denne er for å unngå unødige advarsler om https://youtrack.jetbrains.com/issue/KT-73255
         Vi bruker egentlig bare konstruktør-varianten, men vil egentlig helst holde oss til kotlin sin standardvariant
         Så når dette er blitt standarden i kotlin - som det skal bli - så kan vi skru av denne
          */
-        compilerOptions {
-            freeCompilerArgs = listOf("-Xannotation-default-target=param-property")
-        }
+        compilerOptions { freeCompilerArgs = listOf("-Xannotation-default-target=param-property") }
     }
-    tasks.withType<KtLintCheckTask> {
+    tasks.withType<KtfmtCheckTask> {
         if (System.getenv("CI")?.toBoolean() != true) {
-            dependsOn("ktlintFormat")
+            dependsOn("ktfmtFormat")
         }
     }
-    tasks.withType<Test>{
+    tasks.withType<KtfmtFormatTask> {
+        source = project.fileTree(rootDir)
+        include("**/.kt", "**/*.kts")
+    }
+    tasks.withType<Test> {
         testLogging {
-            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
+            events(
+                TestLogEvent.PASSED,
+                TestLogEvent.SKIPPED,
+                TestLogEvent.FAILED,
+                TestLogEvent.STANDARD_ERROR,
+            )
             exceptionFormat = TestExceptionFormat.FULL
         }
         systemProperties["junit.jupiter.execution.parallel.enabled"] = true
@@ -56,20 +62,11 @@ allprojects {
 }
 
 subprojects {
-    apply(plugin = "org.jlleitschuh.gradle.ktlint")
-    configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-        outputToConsole.set(true)
-        reporters {
-            reporter(ReporterType.JSON)
-        }
-        filter {
-            exclude { element ->
-                val path = element.file.path
-                path.contains("generated/") || path.contains("build.gradle.kts")
-            }
-        }
+    apply(plugin = "com.ncorti.ktfmt.gradle")
+    ktfmt {
+        googleStyle()
+        kotlinLangStyle()
     }
-
     tasks {
         register<Test>("integrationTest") {
             description = "Integration tests"
@@ -78,9 +75,7 @@ subprojects {
             group = LifecycleBasePlugin.VERIFICATION_GROUP
             systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.5
             forkEvery = 0 // for å dele test-container uten å spinne opp ny.
-            useJUnitPlatform {
-                includeTags = setOf("integration-test")
-            }
+            useJUnitPlatform { includeTags = setOf("integration-test") }
         }
         register<Test>("manualTest") {
             description = "Manual tests that require running services"
@@ -89,9 +84,7 @@ subprojects {
             group = LifecycleBasePlugin.VERIFICATION_GROUP
             systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.5
             forkEvery = 0 // for å dele test-container uten å spinne opp ny.
-            useJUnitPlatform {
-                includeTags = setOf("manual-test")
-            }
+            useJUnitPlatform { includeTags = setOf("manual-test") }
         }
     }
 }
