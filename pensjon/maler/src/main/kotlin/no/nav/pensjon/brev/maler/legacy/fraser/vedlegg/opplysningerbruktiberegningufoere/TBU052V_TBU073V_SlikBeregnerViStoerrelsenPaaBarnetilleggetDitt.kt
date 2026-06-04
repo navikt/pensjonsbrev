@@ -1537,6 +1537,20 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 )
             }
         }
+        showIf(pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v()) {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Hvis du har barnetillegg bare deler av året, er inntektene og fribeløpet for beregning av barnetillegg justert slik at det kun gjelder for den perioden du mottar barnetillegg. " +
+                                "Får du barnetillegg for hele året, beregnes dette ut fra hele årets inntekter og fradrag."
+                    },
+                    nynorsk {
+                        +"Hvis du har barnetillegg berre delar av året, er inntektene og fribeløpet for berekning av barnetillegg justert slik at det kun gjeld for den perioden du mottar barnetillegg. " +
+                                "Får du barnetillegg for heile året, bereknas dette ut fra heile årets inntekter og frådrag."
+                    },
+                )
+            }
+        }
 
         //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0 AND PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true) THEN      INCLUDE ENDIF
         showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
