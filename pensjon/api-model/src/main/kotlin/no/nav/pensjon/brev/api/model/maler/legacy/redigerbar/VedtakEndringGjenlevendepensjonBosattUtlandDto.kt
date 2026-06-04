@@ -79,25 +79,31 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
     }
 
     enum class SkattAlternativ {
-        @DisplayText("Fjern informasjon om skatt")
+        @DisplayText("Informasjon om skatt")
         INFORMASJON_OM_SKATT,
 
-        @DisplayText("Fjern kildeskatt")
+        @DisplayText("Informasjon om kildeskatt")
         KILDESKATT,
 
-        @DisplayText("Fjern begge alternativer om skatt")
+        @DisplayText("Informasjon om skatt og kildeskatt")
+        INFORMASJON_OM_SKATT_OG_KILDESKATT,
+
+        @DisplayText("Ingen informasjon om skatt")
         INGEN_INFORMASJON_OM_SKATT,
     }
 
     enum class UtbetalingAlternativ {
-        @DisplayText("Fjern etterbetaling")
+        @DisplayText("Informasjon om etterbetaling")
         ETTERBETALING,
 
-        @DisplayText("Fjern feilutbetaling")
+        @DisplayText("Informajson om feilutbetaling")
         FEILUTBETALING,
 
+        @DisplayText("Informasjon om etterbetaling og feilutbetaling")
+        INFORMASJON_OM_ETTERBETALING_OG_FEILUTBETALING,
+
         @DisplayText("Fjern begger alternativer etterbetaling/feilutbetaling")
-        INGEN_AVSNITT_OM_ETTERBETALING_FEILUTBETALING,
+        INGEN_INFORMASJON_OM_ETTERBETALING_FEILUTBETALING,
     }
 
     data class PesysData(

@@ -16,6 +16,8 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.lessThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.text
@@ -153,7 +155,18 @@ object Felles {
             text(
                 bokmal { + antall.format() + " måneder" },
                 nynorsk { + antall.format() + " månadar" },
-                english { + antall.format() + " months" },
+                english { + antall.format() + ifElse(antall.greaterThan(1), " months", " month")},
+            )
+    }
+
+    data class AarText(
+        val antall: Expression<Int>,
+    ) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+        override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+            text(
+                bokmal { +antall.format() + " år" },
+                nynorsk { +antall.format() + " år" },
+                english { +antall.format() + ifElse(antall.greaterThan(1), " years", " year") },
             )
     }
 

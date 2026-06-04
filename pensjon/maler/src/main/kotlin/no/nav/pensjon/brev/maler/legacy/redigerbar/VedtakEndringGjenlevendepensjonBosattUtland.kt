@@ -5,9 +5,9 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDto.AarsakEndring
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDto.ForventetInntektNivaa
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDto.SkattAlternativ
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDto.ForventetInntektNivaa.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDto.Sivilstand
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDto.SkattAlternativ.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDto.UtbetalingAlternativ.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDtoSelectors.BeregningSelectors.brutto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDtoSelectors.BeregningSelectors.familietillegg
@@ -61,6 +61,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
@@ -454,7 +455,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
 
             // Forventet-inntekt-fork (Saksbehandlervalg.forventetInntektNivaa)
             // Erstatter <FRITEKST: VELG ET ALTERNATIV …> + Alt 1/2/3 fra Exstream-kilden.
-            showIf(saksbehandlerValg.forventetInntektNivaa.equalTo(ForventetInntektNivaa.UNDER_HALV_G)) {
+            showIf(saksbehandlerValg.forventetInntektNivaa.equalTo(UNDER_HALV_G)) {
                 paragraph {
                     text(
                         bokmal {
@@ -473,7 +474,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         },
                     )
                 }
-            }.orShowIf(saksbehandlerValg.forventetInntektNivaa.equalTo(ForventetInntektNivaa.OVER_HALV_G)) {
+            }.orShowIf(saksbehandlerValg.forventetInntektNivaa.equalTo(OVER_HALV_G)) {
                 paragraph {
                     text(
                         bokmal {
@@ -488,7 +489,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         },
                     )
                 }
-            }.orShowIf(saksbehandlerValg.forventetInntektNivaa.equalTo(ForventetInntektNivaa.REDUSERT_TIL_NULL)) {
+            }.orShowIf(saksbehandlerValg.forventetInntektNivaa.equalTo(REDUSERT_TIL_NULL)) {
                 paragraph {
                     text(
                         bokmal {
@@ -506,7 +507,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         },
                     )
                 }
-            }.orShowIf(saksbehandlerValg.forventetInntektNivaa.equalTo(ForventetInntektNivaa.FRITEKST)) {
+            }.orShowIf(saksbehandlerValg.forventetInntektNivaa.equalTo(FRITEKST)) {
                 paragraph { text(bokmal { +fritekst("Fritekst") }, english { +fritekst("Fritekst") }) }
             }
 
@@ -532,9 +533,12 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
             showIf(pesysData.beregning.netto.greaterThan(0)) {
                 title1 {
                     text(
-                        bokmal { +"Utbetaling og skatt" },
-                        english { +"Payment and tax" },
+                        bokmal { +"Utbetaling" },
+                        english { +"Payment" },
                     )
+                    showIf(saksbehandlerValg.skattAlternativ.isNotAnyOf(INGEN_INFORMASJON_OM_SKATT)) {
+                        text(bokmal { +" og skatt" }, english { +" and tax" })
+                    }
                 }
                 paragraph {
                     text(
@@ -562,7 +566,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                 }
 
                 // Skatt-fork (Saksbehandlervalg.skattAlternativ)
-                showIf(saksbehandlerValg.skattAlternativ.equalTo(SkattAlternativ.INFORMASJON_OM_SKATT)) {
+                showIf(saksbehandlerValg.skattAlternativ.isOneOf(INFORMASJON_OM_SKATT, INFORMASJON_OM_SKATT_OG_KILDESKATT)) {
                     paragraph {
                         text(
                             bokmal {
@@ -582,7 +586,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             },
                         )
                     }
-                }.orShowIf(saksbehandlerValg.skattAlternativ.equalTo(SkattAlternativ.KILDESKATT)) {
+                }.orShowIf(saksbehandlerValg.skattAlternativ.isOneOf(KILDESKATT, INFORMASJON_OM_SKATT_OG_KILDESKATT)) {
                     paragraph {
                         text(
                             bokmal {
@@ -624,7 +628,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
 
             // ---- PE_GP_04_028_tekst6: etterbetaling / feilutbetaling (kun når netto >= 0) ----
             showIf(pesysData.beregning.netto.greaterThanOrEqual(0)) {
-                showIf(saksbehandlerValg.utbetalingAlternativ.isNotAnyOf(ETTERBETALING, INGEN_AVSNITT_OM_ETTERBETALING_FEILUTBETALING)) {
+                showIf(saksbehandlerValg.utbetalingAlternativ.isOneOf(ETTERBETALING, INFORMASJON_OM_ETTERBETALING_OG_FEILUTBETALING)) {
                     title1 {
                         text(
                             bokmal { +"Etterbetaling" },
@@ -663,7 +667,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             },
                         )
                     }
-                }.orShowIf(saksbehandlerValg.utbetalingAlternativ.isNotAnyOf(FEILUTBETALING, INGEN_AVSNITT_OM_ETTERBETALING_FEILUTBETALING)) {
+                }.orShowIf(saksbehandlerValg.utbetalingAlternativ.isOneOf(FEILUTBETALING, INFORMASJON_OM_ETTERBETALING_OG_FEILUTBETALING)) {
                     // FEILUTBETALING
                     title1 {
                         text(

@@ -95,18 +95,13 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtl
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.YrkesskadeBeregningSelectors.sluttpoengtallYrke
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Constants
-import no.nav.pensjon.brev.maler.fraser.common.KronerText
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC
-import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalEnglish
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.TableScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -117,7 +112,7 @@ import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brev.template.includePhrase
 
 /**
  * Vedlegg "Opplysninger om beregningen" som henges på vedtak om gjenlevendepensjon (utland).
@@ -826,10 +821,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.yrke.poengaarYrkeF92.format() + " år" },
-                    english { +pesysData.beregning.yrke.poengaarYrkeF92.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.yrke.poengaarYrkeF92))
             }
         }
     }
@@ -842,10 +834,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.yrke.poengaarYrkeE91.format() + " år" },
-                    english { +pesysData.beregning.yrke.poengaarYrkeE91.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.yrke.poengaarYrkeE91))
             }
         }
     }
@@ -861,10 +850,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.trygdetid.faTTNorge.format() + " måneder" },
-                    english { +pesysData.beregning.trygdetid.faTTNorge.format() + " months" },
-                )
+                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTNorge))
             }
         }
     }
@@ -877,10 +863,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.trygdetid.faTTEos.format() + " måneder" },
-                    english { +pesysData.beregning.trygdetid.faTTEos.format() + " months" },
-                )
+                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTEos))
             }
         }
     }
@@ -893,10 +876,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.trygdetid.framtidigTTEos.format() + " måneder" },
-                    english { +pesysData.beregning.trygdetid.framtidigTTEos.format() + " months" },
-                )
+                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.framtidigTTEos))
             }
         }
     }
@@ -909,10 +889,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.trygdetid.faTTNorgePlusFaTTEos.format() + " måneder" },
-                    english { +pesysData.beregning.trygdetid.faTTNorgePlusFaTTEos.format() + " months" },
-                )
+                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTNorgePlusFaTTEos))
             }
         }
     }
@@ -925,10 +902,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkF92.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkF92.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkF92))
             }
         }
     }
@@ -941,10 +915,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkE91.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkE91.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkE91))
             }
         }
     }
@@ -982,10 +953,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge))
             }
         }
     }
@@ -998,10 +966,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos))
             }
         }
     }
@@ -1017,10 +982,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusEos2.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusEos2.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusEos2))
             }
         }
     }
@@ -1033,10 +995,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkTeoretiskEos.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkTeoretiskEos.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkTeoretiskEos))
             }
         }
     }
@@ -1187,10 +1146,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOk.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOk.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOk))
             }
         }
     }
@@ -1203,10 +1159,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkF92.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkF92.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkF92))
             }
         }
     }
@@ -1219,10 +1172,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkE91.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkE91.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkE91))
             }
         }
     }
@@ -1235,10 +1185,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.trygdetid.ttNordisk.format() + " måneder" },
-                    english { +pesysData.beregning.trygdetid.ttNordisk.format() + " months" },
-                )
+                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.ttNordisk))
             }
         }
     }
@@ -1251,10 +1198,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.trygdetid.framtidigTTNorsk.format() + " måneder" },
-                    english { +pesysData.beregning.trygdetid.framtidigTTNorsk.format() + " months" },
-                )
+                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.framtidigTTNorsk))
             }
         }
     }
@@ -1295,10 +1239,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.trygdetid.faTTNorgePlusFaTTA10Netto.format() + " måneder" },
-                    english { +pesysData.beregning.trygdetid.faTTNorgePlusFaTTA10Netto.format() + " months" },
-                )
+                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTNorgePlusFaTTA10Netto))
             }
         }
     }
@@ -1311,10 +1252,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge))
             }
         }
     }
@@ -1327,10 +1265,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorden.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorden.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorden))
             }
         }
     }
@@ -1343,10 +1278,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.framtidigPoengaarNordenBrutto.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.framtidigPoengaarNordenBrutto.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.framtidigPoengaarNordenBrutto))
             }
         }
     }
@@ -1406,10 +1338,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.trygdetid.faTTNorge.format() + " måneder" },
-                    english { +pesysData.beregning.trygdetid.faTTNorge.format() + " months" },
-                )
+                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTNorge))
             }
         }
     }
@@ -1422,10 +1351,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.trygdetid.faTTBilateral.format() + " måneder" },
-                    english { +pesysData.beregning.trygdetid.faTTBilateral.format() + " months" },
-                )
+                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTBilateral))
             }
         }
     }
@@ -1438,10 +1364,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.trygdetid.framtidigTTAvtaleland.format() + " måneder" },
-                    english { +pesysData.beregning.trygdetid.framtidigTTAvtaleland.format() + " months" },
-                )
+                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.framtidigTTAvtaleland))
             }
         }
     }
@@ -1457,10 +1380,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.trygdetid.faTTNorgePlusFaTTBilateral.format() + " måneder" },
-                    english { +pesysData.beregning.trygdetid.faTTNorgePlusFaTTBilateral.format() + " months" },
-                )
+                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTNorgePlusFaTTBilateral))
             }
         }
     }
@@ -1473,10 +1393,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkF92.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkF92.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkF92))
             }
         }
     }
@@ -1489,10 +1406,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkE91.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkE91.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkE91))
             }
         }
     }
@@ -1530,10 +1444,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge))
             }
         }
     }
@@ -1546,10 +1457,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos))
             }
         }
     }
@@ -1565,10 +1473,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusEos2.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusEos2.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusEos2))
             }
         }
     }
@@ -1581,10 +1486,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 )
             }
             cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.framtidigPoengtall.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.framtidigPoengtall.format() + " year(s)" },
-                )
+                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.framtidigPoengtall))
             }
         }
     }
