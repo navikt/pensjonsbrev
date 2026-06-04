@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.brev.BrevLandmodell.Landkode
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
@@ -36,7 +36,7 @@ object Dto {
         val sistredigert: Instant,
         val redigeresAv: NavIdent?,
         val sistReservert: Instant?,
-        val brevkode: Brevkode.Redigerbart,
+        val brevkode: RedigerbarBrevkode,
         val laastForRedigering: Boolean,
         val distribusjonstype: Distribusjonstype,
         val mottaker: Mottaker?,

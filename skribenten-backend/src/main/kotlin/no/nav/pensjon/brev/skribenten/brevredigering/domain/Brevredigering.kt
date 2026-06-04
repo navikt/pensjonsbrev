@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -22,7 +23,7 @@ interface Brevredigering {
     val id: EntityID<BrevId>
     val saksId: SaksId
     val vedtaksId: VedtaksId?
-    val brevkode: Brevkode.Redigerbart
+    val brevkode: RedigerbarBrevkode
     val spraak: LanguageCode
     val avsenderEnhetId: EnhetId
     val saksbehandlerValg: SaksbehandlerValg
@@ -136,7 +137,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             saksId: SaksId,
             vedtaksId: VedtaksId?,
             opprettetAv: NavIdent,
-            brevkode: Brevkode.Redigerbart,
+            brevkode: RedigerbarBrevkode,
             spraak: LanguageCode,
             avsenderEnhetId: EnhetId,
             saksbehandlerValg: SaksbehandlerValg,

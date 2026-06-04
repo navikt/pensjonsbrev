@@ -1,10 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1Data
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -20,7 +16,7 @@ open class BrevredigeringStub : Brevredigering {
     override val id: EntityID<BrevId> get() = notYetStubbed()
     override val saksId: SaksId get() = notYetStubbed()
     override val vedtaksId: VedtaksId get() = notYetStubbed()
-    override val brevkode: Brevkode.Redigerbart get() = notYetStubbed()
+    override val brevkode: RedigerbarBrevkode get() = notYetStubbed()
     override val spraak: LanguageCode get() = notYetStubbed()
     override val avsenderEnhetId: EnhetId get() = notYetStubbed()
     override val saksbehandlerValg: SaksbehandlerValg get() = notYetStubbed()

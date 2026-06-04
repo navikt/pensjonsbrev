@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.db
 
 import no.nav.brev.BrevLandmodell.Landkode
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
@@ -38,7 +37,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
 
     val saksId: Column<SaksId> = long("saksId").index().transform(::SaksId, SaksId::id)
     val vedtaksId: Column<VedtaksId?> = long("vedtaksId").transform(::VedtaksId, VedtaksId::id).nullable()
-    val brevkode: Column<Brevkode.Redigerbart> = varchar("brevkode", length = 50).transform({ RedigerbarBrevkode(it) }, Brevkode.Redigerbart::kode)
+    val brevkode: Column<RedigerbarBrevkode> = varchar("brevkode", length = 50).transform(::RedigerbarBrevkode, RedigerbarBrevkode::kode)
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<EnhetId> = varchar("avsenderEnhetId", 50).transform(::EnhetId, EnhetId::value)
     val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonString)

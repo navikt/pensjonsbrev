@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
@@ -30,7 +30,7 @@ object Api {
     data class UserInfo(val name: String, val navident: NavIdent, val erAttestant: Boolean)
 
     data class OpprettBrevRequest(
-        val brevkode: Brevkode.Redigerbart,
+        val brevkode: RedigerbarBrevkode,
         val spraak: SpraakKode,
         val avsenderEnhetsId: EnhetId,
         val saksbehandlerValg: SaksbehandlerValg,
@@ -65,7 +65,7 @@ object Api {
         val opprettet: Instant,
         val sistredigertAv: NavAnsatt,
         val sistredigert: Instant,
-        val brevkode: Brevkode.Redigerbart,
+        val brevkode: RedigerbarBrevkode,
         val brevtittel: String,
         val brevtype: LetterMetadata.Brevtype,
         val status: BrevStatus,

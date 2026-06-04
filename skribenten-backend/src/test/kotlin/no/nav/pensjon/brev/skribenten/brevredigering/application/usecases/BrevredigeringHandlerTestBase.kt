@@ -237,7 +237,7 @@ abstract class BrevredigeringHandlerTestBase {
         reserverForRedigering: Boolean = false,
         mottaker: Dto.Mottaker? = null,
         saksbehandlerValg: SaksbehandlerValg = SaksbehandlerValg().apply { put("valg", true) },
-        brevkode: Brevkode.Redigerbart = Testbrevkoder.INFORMASJONSBREV,
+        brevkode: RedigerbarBrevkode = Testbrevkoder.INFORMASJONSBREV,
         vedtaksId: VedtaksId? = null,
         sak: Pen.SakSelection = sak1,
         avsenderEnhetsId: EnhetId = PRINCIPAL_NAVENHET_ID,

@@ -2500,8 +2500,6 @@ export interface components {
             enhetNr: string;
             navn: string;
         };
-        /** Redigerbart */
-        Redigerbart: Record<string, never>;
         /** NorskAdresse */
         NorskAdresse: {
             adresselinje1?: string | null;
@@ -2597,7 +2595,7 @@ export interface components {
         /** BrevInfo */
         BrevInfo: {
             avsenderEnhet: components["schemas"]["NavEnhet"];
-            brevkode: components["schemas"]["Redigerbart"];
+            brevkode: string;
             brevtittel: string;
             /** @enum {string} */
             brevtype: "VEDTAKSBREV" | "INFORMASJONSBREV";
@@ -3127,7 +3125,6 @@ export type BestillOgRedigerBrevResponse = components['schemas']['BestillOgRedig
 export type KontaktAdresseDto = components['schemas']['KontaktAdresseDto'];
 export type KontaktinfoResponse = components['schemas']['KontaktinfoResponse'];
 export type NavEnhet = components['schemas']['NavEnhet'];
-export type Redigerbart = components['schemas']['Redigerbart'];
 export type NorskAdresse = components['schemas']['NorskAdresse'];
 export type Samhandler = components['schemas']['Samhandler'];
 export type UtenlandskAdresse = components['schemas']['UtenlandskAdresse'];
