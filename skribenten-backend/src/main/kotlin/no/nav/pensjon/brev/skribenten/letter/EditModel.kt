@@ -3,6 +3,8 @@
 package no.nav.pensjon.brev.skribenten.letter
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.Listetype
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
@@ -77,6 +79,13 @@ object Edit {
         val deletedContent: Set<Int> = emptySet(),
     )
 
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
+    @JsonSubTypes(
+        JsonSubTypes.Type(value = Edit.Block.Title1::class, name = "TITLE1"),
+        JsonSubTypes.Type(value = Edit.Block.Title2::class, name = "TITLE2"),
+        JsonSubTypes.Type(value = Edit.Block.Title3::class, name = "TITLE3"),
+        JsonSubTypes.Type(value = Edit.Block.Paragraph::class, name = "PARAGRAPH"),
+    )
     sealed class Block(val type: Type) : Identifiable {
         enum class Type {
             TITLE1, TITLE2, TITLE3, PARAGRAPH,
@@ -134,6 +143,14 @@ object Edit {
         ) : Block(Type.PARAGRAPH)
     }
 
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
+    @JsonSubTypes(
+        JsonSubTypes.Type(value = Edit.ParagraphContent.ItemList::class, name = "ITEM_LIST"),
+        JsonSubTypes.Type(value = Edit.ParagraphContent.Text.Literal::class, name = "LITERAL"),
+        JsonSubTypes.Type(value = Edit.ParagraphContent.Text.Variable::class, name = "VARIABLE"),
+        JsonSubTypes.Type(value = Edit.ParagraphContent.Table::class, name = "TABLE"),
+        JsonSubTypes.Type(value = Edit.ParagraphContent.Text.NewLine::class, name = "NEW_LINE"),
+    )
     sealed class ParagraphContent(val type: Type) : Identifiable {
         enum class Type {
             ITEM_LIST, LITERAL, VARIABLE, TABLE, NEW_LINE,
@@ -192,6 +209,12 @@ object Edit {
             override fun isEdited(): Boolean = isNew() || deletedRows.isNotEmpty() || rows.any { it.isEdited() || it.parentId != id } || header.isEdited()
         }
 
+        @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
+        @JsonSubTypes(
+            JsonSubTypes.Type(value = Edit.ParagraphContent.Text.Literal::class, name = "LITERAL"),
+            JsonSubTypes.Type(value = Edit.ParagraphContent.Text.Variable::class, name = "VARIABLE"),
+            JsonSubTypes.Type(value = Edit.ParagraphContent.Text.NewLine::class, name = "NEW_LINE"),
+        )
         sealed class Text(type: Type) : ParagraphContent(type) {
             abstract val text: String
             abstract val fontType: FontType
