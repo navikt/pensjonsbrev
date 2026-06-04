@@ -125,7 +125,7 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
                             "nytt vedtak."
                     },
                     nynorsk {
-                        +"Du kan som nemnt sende inn dokumentasjon på inntekter som du meiner skal haldast " +
+                        +"Du kan sende inn dokumentasjon på inntekter som du meiner skal haldast " +
                             "utanfor etteroppgjeret. Nav vil gjennomføre eit nytt etteroppgjer dersom du har " +
                             "sendt ny dokumentasjon for inntekt innan fristen på fire veker. Du vil då få " +
                             "eit nytt vedtak."
@@ -141,8 +141,7 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
                     },
                     nynorsk {
                         +"Dersom du meiner at det er andre forhold ved vedtaket som ikkje er rette, har du " +
-                            "høve til å klage på vedtaket. Fristen for å klage er seks veker frå du får " +
-                            "dette brevet."
+                            "høve til å klage på vedtaket. Fristen for å klage er seks veker frå vedtaket har komme fram til deg."
                     },
                 )
             }

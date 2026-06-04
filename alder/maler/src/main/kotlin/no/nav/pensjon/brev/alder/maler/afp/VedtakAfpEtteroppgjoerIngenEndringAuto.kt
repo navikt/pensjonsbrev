@@ -101,7 +101,7 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
             // Periode-diskriminert fordeling av PGI på periodene med/uten AFP.
             // Delt med PE_AF_04_101 (etterbetaling). Se phrase for detaljer.
             includePhrase(
-                AfpEtteroppgjoerInnhold.IfuIeoFordelingPerPeriode(
+                AfpEtteroppgjoerInnhold.InntektFoerUttakInntektEtterOpphoerFordelingPerPeriode(
                     erHelAfpHeleAaret = periode.equalTo(Periode.HEL_AFP_HELE_AARET),
                     erUttakIAaret = periode.equalTo(Periode.UTTAK_I_AARET),
                     erOpphoerIAaret = periode.equalTo(Periode.OPPHOER_I_AARET),

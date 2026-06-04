@@ -35,15 +35,15 @@ object VedtakOmEtterbetalingOpphor2026Redigerbar : RedigerbarTemplate<VedtakOmEt
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtaksbrev - Du får en etterbetaling fra Nav",
+            displayTitle = "Vedtak - opphørte saker - økt minste IFU og lavere reduksjonsprosent fom 1. januar 2026",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
         title {
             text(
-                bokmal { +"Vedtaksbrev - Du får en etterbetaling fra Nav" },
-                nynorsk { +"Vedtaksbrev - Du får ei etterbetaling frå Nav" },
+                bokmal { +"Vedtaksbrev - Nav endrer uføretrygden din " },
+                nynorsk { +"Vedtaksbrev - Nav endrar uføretrygda di " },
             )
         }
         outline {
