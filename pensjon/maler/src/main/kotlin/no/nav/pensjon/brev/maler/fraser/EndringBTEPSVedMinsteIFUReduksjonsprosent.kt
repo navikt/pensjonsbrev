@@ -25,9 +25,6 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
 
         val samletInntektsgrenseBarnetillegg: Expression<Kroner>,
         val fribelop: Expression<Kroner>,
-
-        val epsBokmalTxt: Expression<String>,
-        val epsNynorskTxt: Expression<String>,
     )
 
     data class Outline(val data: Brevdata) : OutlinePhrase<LangBokmalNynorsk>() {
@@ -35,8 +32,8 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
 
             paragraph {
                 text(
-                    bokmal { +"Vi har endret barnetillegg i uføretrygden din. " },
-                    nynorsk { +"Vi har endra barnetillegg i uføretrygda di. " },
+                    bokmal { +"Vi har endret barnetillegget i uføretrygden din. " },
+                    nynorsk { +"Vi har endra barnetillegget i uføretrygda di. " },
                 )
                 table(header = {
                     column { text(bokmal { +"Du får per måned før skatt:" }, nynorsk { +"Du får per månad før skatt:" }) }
