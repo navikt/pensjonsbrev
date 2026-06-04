@@ -46,8 +46,9 @@ class AttesterBrevHandler(
             brev.oppdaterRedigertBrev(request.nyttRedigertbrev, principal.navIdent)
         }
 
+        ferdigRedigertPolicy.erFerdigRedigert(brev).onError { return failure(it) }
+
         if (!brev.laastForRedigering) {
-            ferdigRedigertPolicy.erFerdigRedigert(brev).onError { return failure(it) }
             brev.markerSomKlar()
         }
 
