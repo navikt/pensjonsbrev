@@ -19,18 +19,12 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
     data class Brevdata(
         val nettoUforetrygdUtenTillegg: Expression<Kroner>,
         val nettoBarnetilleggFB: Expression<Kroner>,
+        val nettoBarnetilleggSB: Expression<Kroner>,
+        val barnetilleggSB: Expression<Boolean>,
         val totalbelop: Expression<Kroner>,
 
-        val inntektBruker: Expression<Kroner>,
-        val inntektEPS: Expression<Kroner>,
-
-        val gInntil: Expression<Kroner>,
-        val samletInntekt: Expression<Kroner>,
         val samletInntektsgrenseBarnetillegg: Expression<Kroner>,
         val fribelop: Expression<Kroner>,
-        val arligUtbetalingBarnetilleggFB: Expression<Kroner>,
-        val utbetaltBarnetilleggHittilIAr: Expression<Kroner>,
-        val utbetalingBarnetilleggResten: Expression<Kroner>,
 
         val epsBokmalTxt: Expression<String>,
         val epsNynorskTxt: Expression<String>,
@@ -76,6 +70,22 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
                             )
                         }
                     }
+                    showIf (data.barnetilleggSB) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Barnetillegg særkullsbarn" },
+                                    nynorsk { +"Barnetillegg særkullsbarn" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +data.nettoBarnetilleggSB.format(false) },
+                                    nynorsk { +data.nettoBarnetilleggSB.format(false) },
+                                )
+                            }
+                        }
+                    }
                     row {
                         cell {
                             text(
@@ -119,50 +129,50 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
                     nynorsk { +"Du får barnetillegg for fellesbarn fordi du bur saman med barnets andre forelder. For fellesbarn brukar vi begge foreldrenes inntekt (inkludert uføretrygd) når vi reknar ut storleiken på barnetillegg. Lovendringa har ført til ei endring i den andre forelderens uføretrygd. Dette påverkar berre barnetillegg for fellesbarn, og ikkje uføretrygda di. " },
                 )
             }
-            paragraph {
-                text(
-                    bokmal { +"Dersom du også mottar barnetillegg for et barn som ikke bor med begge foreldre, påvirkes ikke dette av lovendringene. " },
-                    nynorsk { +"Dersom du også mottar barnetillegg for eit barn som ikkje bur med begge foreldre, påverkes ikkje dette av lovendringane. " },
-                )
+            showIf (data.barnetilleggSB) {
+                paragraph {
+                    text(
+                        bokmal { +"Barnetillegg du mottar for barn som ikke bor med begge foreldre, påvirkes ikke av lovendringene. " },
+                        nynorsk { +"Barnetillegg du mottar for barn som ikkje bur med begge foreldre, påverkas ikkje av lovendringane. " },
+                    )
+                }
             }
 
             title1 {
                 text(
-                    bokmal { +"Slik har vi beregnet barnetillegg" },
-                    nynorsk { +"Slik har vi berekna barnetillegg" },
-                )
-            }
-
-            paragraph {
-                text(
-                    bokmal { +"Vi har beregnet barnetillegg på nytt ut fra inntekten din på " + data.inntektBruker.format() + " og inntekten til din " + data.epsBokmalTxt + " på " + data.inntektEPS.format() + ". " +
-                            "Folketrygdens grunnbeløp på inntil " + data.gInntil.format() + " er holdt utenfor den andre forelderens inntekt. Til sammen utgjør disse inntektene " + data.samletInntekt.format() + " . " },
-                    nynorsk { +"Vi har berekna barnetillegg på nytt ut fra inntekta di på " + data.inntektBruker.format() + " og inntekta til " + data.epsNynorskTxt + " din på " + data.inntektEPS.format() + ". " +
-                            "Folketrygdas grunnbeløp på inntil " + data.gInntil.format() + " er halde utanfor den andre forelderen sin inntekt. Til saman utgjer desse inntektene " + data.samletInntekt.format() + " . " },
+                    bokmal { +"Endring i barnetillegg" },
+                    nynorsk { +"Endring i barnetillegg" },
                 )
             }
 
             showIf (data.nettoBarnetilleggFB.equalTo(Kroner(0))) {
                 paragraph {
                     text(
-                        bokmal { +"Barnetillegg for fellesbarn blir ikke utbetalt fordi den samlede inntekten til deg og barnets andre forelder er høyere enn " + data.samletInntektsgrenseBarnetillegg.format() +", som er grensen for å få utbetalt barnetillegg. Får dere lavere inntekt i fremtiden, kan du få utbetalt barnetillegg igjen. " },
-                        nynorsk { +"Barnetillegg for fellesbarn blir ikkje utbetalt fordi den samla inntekta til deg og barnets andre forelder er høgare enn " + data.samletInntektsgrenseBarnetillegg.format() +", som er grensa for å få utbetalt barnetillegg. Får dere lågare inntekt i framtida, kan du få utbetalt barnetillegg igjen. " },
+                        bokmal { +"Regelverksendringene fører til at barnetillegg for fellesbarn ikke blir utbetalt fordi den samlede inntekten til deg og barnets andre forelder er høyere enn " + data.samletInntektsgrenseBarnetillegg.format() + ", som er grensen for å få utbetalt barnetillegg. Får dere lavere inntekt i fremtiden, kan du få utbetalt barnetillegg igjen. " },
+                        nynorsk { +"Regelverksendringane fører til at barnetillegg for fellesbarn ikkje blir utbetalt fordi den samla inntekta til deg og barnets andre forelder er høgare enn " + data.samletInntektsgrenseBarnetillegg.format() + ", som er grensa for å få utbetalt barnetillegg. Får dere lågare inntekt i framtida, kan du få utbetalt barnetillegg igjen. " },
                     )
                 }
             }.orShow {
                 paragraph {
                     text(
-                        bokmal { +"Barnetillegg for fellesbarn blir redusert til " + data.nettoBarnetilleggFB.format() + " per måned, fordi den samlede inntekten til deg og barnets andre forelder er høyere enn fribeløpet på " + data.fribelop.format() + ". " },
-                        nynorsk { +"Barnetillegg for fellesbarn blir redusert til " + data.nettoBarnetilleggFB.format() + " per månad, fordi den samla inntekta til deg og barnets andre forelder er høgare enn fribeløpet på " + data.fribelop.format() + ". " },
+                        bokmal { +"Regelverksendringene fører til at barnetillegg for fellesbarn blir redusert til " + data.nettoBarnetilleggFB.format() + " per måned, fordi den samlede inntekten til deg og barnets andre forelder er høyere enn fribeløpet på " + data.fribelop.format() + ". " },
+                        nynorsk { +"Regelverksendringane fører til at barnetillegg for fellesbarn blir redusert til " + data.nettoBarnetilleggFB.format() + " per månad, fordi den samla inntekta til deg og barnets andre forelder er høgare enn fribeløpet på " + data.fribelop.format() + ". " },
                     )
                 }
 
                 paragraph {
                     text(
-                        bokmal { +"Du har rett til en årlig utbetaling av barnetillegg for fellesbarn på " + data.arligUtbetalingBarnetilleggFB.format() + ". Siden du allerede har fått utbetalt " + data.utbetaltBarnetilleggHittilIAr.format() + " i barnetillegg hittil i år, har du rett til utbetaling på " + data.utbetalingBarnetilleggResten.format() + " resten av året. Derfor får du " + data.nettoBarnetilleggFB.format() + " i måneden før skatt i barnetillegg resten av året. " },
-                        nynorsk { +"Du har rett til ei årleg utbetaling av barnetillegg for fellesbarn på " + data.arligUtbetalingBarnetilleggFB.format() + ". Sidan du allereie har fått utbetalt " + data.utbetaltBarnetilleggHittilIAr.format() + " i barnetillegg hittil i år, har du rett til utbetaling på " + data.utbetalingBarnetilleggResten.format() + " resten av året. Derfor får du " + data.nettoBarnetilleggFB.format() + " i månaden før skatt i barnetillegg resten av året. " },
+                        bokmal { +"Ny beregning av barnetillegg fra 1. juli (før skatt) er " + data.nettoBarnetilleggFB.format() + ". " },
+                        nynorsk { +"Ny berekning av barnetillegg frå 1. juli (før skatt) er " + data.nettoBarnetilleggFB.format() + ". " },
                     )
                 }
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Dersom du i perioden 1. januar til 1. juli 2026, har fått for mye utbetalt barnetillegg, vil dette bli regulert i etteroppgjøret neste år. " },
+                    nynorsk { +"Dersom du i perioden 1. januar til 1. juli 2026, har fått for mykje utbetalt barnetillegg, vil dette bli regulert i etteroppgjeret neste år. " },
+                )
             }
 
             paragraph {
