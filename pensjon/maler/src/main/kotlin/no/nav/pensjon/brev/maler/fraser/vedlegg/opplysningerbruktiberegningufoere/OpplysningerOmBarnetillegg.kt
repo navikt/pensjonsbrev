@@ -227,8 +227,8 @@ data class OpplysningerOmBarnetillegg(
                         text (
                             bokmal { + "Hvis du har barnetillegg bare deler av året, er inntektene og fribeløpet for beregning av barnetillegg justert slik at det kun gjelder for den perioden du mottar barnetillegg. " +
                                     "Får du barnetillegg for hele året, beregnes dette ut fra hele årets inntekter og fradrag." },
-                            nynorsk { + "Hvis du har barnetillegg berre delar av året, er inntektene og fribeløpet for berekning av barnetillegg justert slik at det kun gjeld for den perioden du mottar barnetillegg. " +
-                                    "Får du barnetillegg for heile året, bereknas dette ut fra heile årets inntekter og frådrag." },
+                            nynorsk { + "Hvis du har barnetillegg berre delar av året, er inntektene og fribeløpet for berekning av barnetillegg justert slik at det berre gjeld for den perioden du mottar barnetillegg. " +
+                                    "Får du barnetillegg for heile året, blir dette berekna ut frå heile årets inntekter og frådrag." },
                             english { + "If you receive child supplement for only part of the year, the incomes and exemption amount used in the calculation of child supplement are adjusted so that they only apply to the period you receive child supplement. " +
                                     "If you receive child supplement for the whole year, it is calculated based on the whole year's income and deductions." }
                         )
