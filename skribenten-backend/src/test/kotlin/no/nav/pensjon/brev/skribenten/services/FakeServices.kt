@@ -69,7 +69,7 @@ open class FakeP1Service: P1Service {
         p1DataInput: Api.GeneriskBrevdata,
         brevId: BrevId,
         saksId: SaksId,
-    ): P1Data? = notYetStubbed()
+    ): Api.GeneriskBrevdata? = notYetStubbed()
 
     override suspend fun hentP1Data(
         brevId: BrevId,

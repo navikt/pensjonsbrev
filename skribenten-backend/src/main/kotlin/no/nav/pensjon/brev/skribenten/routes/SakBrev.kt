@@ -232,7 +232,7 @@ fun Route.sakBrev(
                 post<Api.GeneriskBrevdata> { p1Data ->
                     val brevId = call.parameters.brevId()
                     val sak: Fagsak = call.attributes[SakKey]
-                    call.respond(p1Service.lagreP1Data(p1Data, brevId, sak.saksId).p1data)
+                    call.respond(p1Service.lagreP1Data(p1Data, brevId, sak.saksId))
                 }
             }
 
