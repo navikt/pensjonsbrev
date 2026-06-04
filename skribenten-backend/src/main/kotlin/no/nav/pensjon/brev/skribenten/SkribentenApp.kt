@@ -38,7 +38,6 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenFeilIDatabyggerExceptio
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.ServiceException
 import org.slf4j.LoggerFactory
@@ -227,7 +226,6 @@ fun Application.skribentenContenNegotiation() {
         jackson {
             registerModule(JavaTimeModule())
             registerModule(EditLetterJacksonModule)
-            registerModule(SakstypeModule)
             registerModule(LetterMarkupJacksonModule)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)

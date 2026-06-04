@@ -2447,10 +2447,6 @@ export interface components {
             fornavn: string;
             mellomnavn?: string | null;
         };
-        /** ISakstype */
-        ISakstype: {
-            kode: string;
-        };
         /** Fagsak */
         Fagsak: {
             behandlingsnummer?: string | null;
@@ -2458,7 +2454,7 @@ export interface components {
             foedselsdato: string;
             navn: components["schemas"]["Navn"];
             pid: string;
-            sakType: components["schemas"]["ISakstype"];
+            sakType: string;
             saksId: number;
         };
         /** SakContext */
@@ -2838,8 +2834,8 @@ export interface components {
         };
         /** SaksbehandlerValgBrevdata */
         SaksbehandlerValgBrevdata: Record<string, never>;
-        /** AlltidValgbartVedleggKode */
-        AlltidValgbartVedleggKode: {
+        /** AlltidValgbartVedleggBrevkode */
+        AlltidValgbartVedleggBrevkode: {
             kode: string;
             spraak: ("BOKMAL" | "NYNORSK" | "ENGLISH")[];
             visningstekst: string;
@@ -2851,7 +2847,7 @@ export interface components {
             redigertBrev: components["schemas"]["Letter"];
             redigertBrevHash: string;
             saksbehandlerValg: components["schemas"]["SaksbehandlerValgBrevdata"];
-            valgteVedlegg?: components["schemas"]["AlltidValgbartVedleggKode"][] | null;
+            valgteVedlegg?: components["schemas"]["AlltidValgbartVedleggBrevkode"][] | null;
         };
         /** PdfResponse */
         PdfResponse: {
@@ -3117,7 +3113,6 @@ export type Redigerbar = components['schemas']['Redigerbar'];
 export type Brevbaker = components['schemas']['Brevbaker'];
 export type Avtaleland = components['schemas']['Avtaleland'];
 export type Navn = components['schemas']['Navn'];
-export type ISakstype = components['schemas']['ISakstype'];
 export type Fagsak = components['schemas']['Fagsak'];
 export type SakContext = components['schemas']['SakContext'];
 export type BrukerStatus = components['schemas']['BrukerStatus'];
@@ -3161,7 +3156,7 @@ export type Signatur = components['schemas']['Signatur'];
 export type Title = components['schemas']['Title'];
 export type Letter = components['schemas']['Letter'];
 export type SaksbehandlerValgBrevdata = components['schemas']['SaksbehandlerValgBrevdata'];
-export type AlltidValgbartVedleggKode = components['schemas']['AlltidValgbartVedleggKode'];
+export type AlltidValgbartVedleggBrevkode = components['schemas']['AlltidValgbartVedleggBrevkode'];
 export type BrevResponse = components['schemas']['BrevResponse'];
 export type PdfResponse = components['schemas']['PdfResponse'];
 export type Error = components['schemas']['Error'];
