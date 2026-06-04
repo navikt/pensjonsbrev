@@ -2637,7 +2637,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            type: "no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal";
+            type: "LITERAL";
         };
         /** NewLine */
         NewLine: {
@@ -2650,7 +2650,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            type: "no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.NewLine";
+            type: "NEW_LINE";
         };
         /** Variable */
         Variable: {
@@ -2664,7 +2664,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            type: "no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Variable";
+            type: "VARIABLE";
         };
         /** Text */
         Text: {
@@ -2672,7 +2672,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            type: "no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text";
+            type: "Text";
         } & (components["schemas"]["Literal"] | components["schemas"]["NewLine"] | components["schemas"]["Variable"]);
         /** Item */
         Item: {
@@ -2693,7 +2693,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            type: "no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList";
+            type: "ITEM_LIST";
         };
         /** Cell */
         Cell: {
@@ -2733,7 +2733,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            type: "no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table";
+            type: "TABLE";
         };
         /** ParagraphContent */
         ParagraphContent: components["schemas"]["ItemList"] | components["schemas"]["Table"] | components["schemas"]["Text"];
@@ -2751,7 +2751,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            type: "no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph";
+            type: "PARAGRAPH";
         };
         /** Title1 */
         Title1: {
@@ -2767,7 +2767,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            type: "no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title1";
+            type: "TITLE1";
         };
         /** Title2 */
         Title2: {
@@ -2783,7 +2783,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            type: "no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title2";
+            type: "TITLE2";
         };
         /** Title3 */
         Title3: {
@@ -2799,7 +2799,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            type: "no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title3";
+            type: "TITLE3";
         };
         /** Block */
         Block: components["schemas"]["Paragraph"] | components["schemas"]["Title1"] | components["schemas"]["Title2"] | components["schemas"]["Title3"];

@@ -28,7 +28,7 @@ val generateApiTypes by tasks.registering(NpxTask::class) {
     description = "Generates TypeScript types from the OpenAPI spec into skribenten-web/frontend/src/types/skribenten-api.ts"
     dependsOn(tasks.test, tasks.npmInstall)
     command.set("openapi-typescript")
-    val specFile = layout.buildDirectory.file("openapi-spec.yaml")
+    val specFile = layout.buildDirectory.file("openapi-spec.json")
     val outputFile = rootProject.file("skribenten-web/frontend/src/types/skribenten-api.ts")
     args.set(
         listOf(

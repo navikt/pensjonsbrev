@@ -125,7 +125,7 @@ class OpenApiSpecTest {
             "Expected JSON but got: ${specJson.take(500)}"
         }
         val postProcessed = OpenApiSpecPostProcessor(objectMapper).process(specJson)
-        File("build/openapi-spec.yaml").writeText(postProcessed)
+        File("build/openapi-spec.json").writeText(postProcessed)
     }
 
 }
