@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.NavEnhet
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.Duration
@@ -45,7 +45,7 @@ object Api {
     )
 
     data class DelvisOppdaterBrevRequest(
-        val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
+        val alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>? = null,
     )
 
     data class OppdaterAttesteringRequest(
@@ -56,7 +56,7 @@ object Api {
     data class OppdaterKlarStatusRequest(val klar: Boolean)
     data class DistribusjonstypeRequest(val distribusjon: Distribusjonstype)
     data class OppdaterMottakerRequest(val mottaker: OverstyrtMottaker)
-    data class ValgteVedleggRequest(val valgteVedlegg: List<AlltidValgbartVedleggKode>)
+    data class ValgteVedleggRequest(val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>)
 
     data class BrevInfo(
         val id: BrevId,
@@ -128,7 +128,7 @@ object Api {
         val redigertBrevHash: Hash<Edit.Letter>,
         val saksbehandlerValg: SaksbehandlerValgBrevdata,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
-        val valgteVedlegg: List<AlltidValgbartVedleggKode>?,
+        val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>?,
     )
 
     data class ReservasjonResponse(

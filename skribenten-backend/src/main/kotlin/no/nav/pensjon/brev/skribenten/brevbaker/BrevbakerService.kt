@@ -26,7 +26,6 @@ import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
 import no.nav.pensjon.brev.skribenten.model.BrevId
-import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationJacksonModule
@@ -52,11 +51,11 @@ interface BrevbakerService {
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
-        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>
     ): LetterResponse
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
-    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggKode>
+    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggBrevkode>
 }
 
 class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus {
@@ -76,7 +75,6 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             jackson {
                 registerModule(JavaTimeModule())
                 registerModule(LetterMarkupJacksonModule)
-                registerModule(BrevkodeJacksonModule)
                 registerModule(SakstypeModule)
                 registerModule(TemplateModelSpecificationJacksonModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
@@ -137,7 +135,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
-        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
     ): LetterResponse {
         val response = client.post("/letter/redigerbar/pdf") {
             contentType(ContentType.Application.Json)
@@ -191,7 +189,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             }
         }
 
-    override suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggKode> =
+    override suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggBrevkode> =
         cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, brevId) {
             val response = client.get("/letter/redigerbar/alltidValgbareVedlegg")
 

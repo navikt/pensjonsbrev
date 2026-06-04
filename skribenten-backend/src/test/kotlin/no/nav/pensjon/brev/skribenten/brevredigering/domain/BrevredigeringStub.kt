@@ -34,7 +34,7 @@ open class BrevredigeringStub : Brevredigering {
     override var document: Dto.Document? = null
     override val mottaker: Dto.Mottaker get() = notYetStubbed()
     override val p1Data: P1Data get() = notYetStubbed()
-    override val valgteVedlegg: List<AlltidValgbartVedleggKode> get() = notYetStubbed()
+    override val valgteVedlegg: List<AlltidValgbartVedleggBrevkode> get() = notYetStubbed()
     override val attestertAvNavIdent: NavIdent get() = notYetStubbed()
     override val brevtype: LetterMetadata.Brevtype get() = notYetStubbed()
     override val isVedtaksbrev: Boolean get() = notYetStubbed()

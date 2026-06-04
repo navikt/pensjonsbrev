@@ -36,7 +36,6 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Exception
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenDataException
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenFeilIDatabyggerException
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
@@ -228,7 +227,6 @@ fun Application.skribentenContenNegotiation() {
         jackson {
             registerModule(JavaTimeModule())
             registerModule(EditLetterJacksonModule)
-            registerModule(BrevkodeJacksonModule)
             registerModule(SakstypeModule)
             registerModule(LetterMarkupJacksonModule)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

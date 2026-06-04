@@ -9,12 +9,11 @@ import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class EndreValgteVedleggHandlerTest : BrevredigeringHandlerTestBase() {
-    suspend fun endreVedlegg(brev: Dto.Brevredigering, vedlegg: List<AlltidValgbartVedleggKode>, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+    suspend fun endreVedlegg(brev: Dto.Brevredigering, vedlegg: List<AlltidValgbartVedleggBrevkode>, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         withPrincipal(principal) {
             brevredigeringFacade.endreValgteVedlegg(EndreValgteVedleggHandler.Request(brev.info.id, vedlegg))
         }

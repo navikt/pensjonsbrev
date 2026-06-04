@@ -106,10 +106,10 @@ suspend fun <T> RoutingContext.respondOutcome(
                     call.respond(HttpStatusCode.Locked, "Brev er låst for redigering")
 
                 is BrevmalFinnesIkke ->
-                    call.respond(HttpStatusCode.BadRequest, "Brevmal finnes ikke: ${outcome.error.brevkode}")
+                    call.respond(HttpStatusCode.BadRequest, "Brevmal finnes ikke: ${outcome.error.brevkode.kode()}")
 
                 is OpprettBrevPolicy.KanIkkeOppretteBrev.BrevmalKreverVedtaksId ->
-                    call.respond(HttpStatusCode.BadRequest, "Brevmal krever vedtaksId: ${outcome.error.brevkode}")
+                    call.respond(HttpStatusCode.BadRequest, "Brevmal krever vedtaksId: ${outcome.error.brevkode.kode()}")
 
                 is OpprettBrevPolicy.KanIkkeOppretteBrev.IkkeTilgangTilEnhet ->
                     call.respond(HttpStatusCode.BadRequest, "Ikke tilgang til enhet: ${outcome.error.enhetsId}")

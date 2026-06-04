@@ -120,7 +120,7 @@ open class FakeBrevbakerService(
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
-        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
     ): LetterResponse = notYetStubbed()
 }
 

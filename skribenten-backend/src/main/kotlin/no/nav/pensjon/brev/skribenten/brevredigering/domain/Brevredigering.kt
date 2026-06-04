@@ -47,7 +47,7 @@ interface Brevredigering {
     var document: Dto.Document?
     val mottaker: Dto.Mottaker?
     val p1Data: P1Data?
-    val valgteVedlegg: List<AlltidValgbartVedleggKode>
+    val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>
     val attestertAvNavIdent: NavIdent?
     val brevtype: LetterMetadata.Brevtype
     val isVedtaksbrev: Boolean
@@ -115,7 +115,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override val p1Data by P1Data optionalBackReferencedOn P1DataTable.id
 
     private val _valgteVedlegg by ValgteVedlegg optionalBackReferencedOn ValgteVedleggTable.id
-    override var valgteVedlegg: List<AlltidValgbartVedleggKode>
+    override var valgteVedlegg: List<AlltidValgbartVedleggBrevkode>
         get() = _valgteVedlegg?.valgteVedlegg ?: emptyList()
         set(nyeValgteVedlegg) = settValgteVedlegg(nyeValgteVedlegg)
 
@@ -282,7 +282,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         }
     }
 
-    private fun settValgteVedlegg(nyeValgteVedlegg: List<AlltidValgbartVedleggKode>) {
+    private fun settValgteVedlegg(nyeValgteVedlegg: List<AlltidValgbartVedleggBrevkode>) {
         val valgteVedlegEntity = _valgteVedlegg
         if (valgteVedlegEntity != null) {
             valgteVedlegEntity.valgteVedlegg = nyeValgteVedlegg
