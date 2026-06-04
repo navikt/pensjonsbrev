@@ -6,6 +6,5 @@
         <appender-ref ref="stdout_json"/>
     </root>
     <logger name="io.ktor.auth.jwt" level="TRACE" />
-    <logger name="io.netty" level="INFO"/>
     <logger name="io.getunleash.repository.PollingFeatureFetcher" level="ERROR"/>
 </configuration>

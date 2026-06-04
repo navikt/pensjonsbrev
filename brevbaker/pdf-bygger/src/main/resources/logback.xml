@@ -5,5 +5,5 @@
     <root level="INFO">
         <appender-ref ref="stdout_json"/>
     </root>
-    <logger name="io.netty" level="INFO"/>
+    <logger name="io.jetty" level="INFO"/>
 </configuration>
