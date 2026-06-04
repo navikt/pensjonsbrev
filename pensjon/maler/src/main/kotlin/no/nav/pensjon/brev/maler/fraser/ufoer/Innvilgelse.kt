@@ -1296,8 +1296,8 @@ object Innvilgelse {
                 showIf(btInnvilget) {
                     paragraph {
                         text(
-                            bokmal { +"Inntekten din består av uføretrygd for de " + fritekst("antall mnd gjenstående månedene av året.") },
-                            nynorsk { +"Inntekta di består av uføretrygd for dei " + fritekst("antall mnd gjenstående månedene av året.") }
+                            bokmal { +"Inntekten din består av uføretrygd for de " + fritekst("antall mnd") + " gjenstående månedene av året." },
+                            nynorsk { +"Inntekta di består av uføretrygd for dei " + fritekst("antall mnd") + " gjenstående månedene av året." }
                         )
                         showIf(btFellesInnvilget) {
                             text(
@@ -1307,8 +1307,8 @@ object Innvilgelse {
                         }
                         showIf(btFellesInnvilget and btSerkullInnvilget) {
                             text(
-                                bokmal { +"Barnetillegget for barn som ikke bor med begge foreldre er kun beregnet utfra din inntekt" },
-                                nynorsk { +"Barnetillegget for barn som ikkje bur med begge foreldre er kun berekna utfra inntekta di" },
+                                bokmal { +" Barnetillegget for barn som ikke bor med begge foreldre er kun beregnet utfra din inntekt." },
+                                nynorsk { +" Barnetillegget for barn som ikkje bur med begge foreldre er kun berekna utfra inntekta di." },
                             )
                         }
                     }
