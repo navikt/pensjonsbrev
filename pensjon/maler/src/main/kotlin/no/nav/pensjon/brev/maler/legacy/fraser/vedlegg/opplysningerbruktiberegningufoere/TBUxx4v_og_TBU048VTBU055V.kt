@@ -115,7 +115,7 @@ data class TBUxx4v_og_TBU048V_TBU055V(
             paragraph {
                 text (
                     bokmal { + "Før 1. januar 2026 skal inntekten din før du ble ufør ikke settes lavere enn:" },
-                    nynorsk { + "Før 1. januar 2026 skal inntekta di før du blei ufør ikkje setjas lågare enn:" },
+                    nynorsk { + "Før 1. januar 2026 skal inntekta di før du blei ufør ikkje fastsetjast lågare enn:" },
                 )
                 list {
                     item {
@@ -135,7 +135,7 @@ data class TBUxx4v_og_TBU048V_TBU055V(
             paragraph {
                 text (
                     bokmal { + "Fra og med 1. januar 2026 skal inntekten din før du ble ufør ikke settes lavere enn:" },
-                    nynorsk { + "Frå og med 1. januar 2026 skal inntekta di før du blei ufør ikkje setjas lågare enn:" },
+                    nynorsk { + "Frå og med 1. januar 2026 skal inntekta di før du blei ufør ikkje fastsetjast lågare enn:" },
                 )
                 list {
                     item {
