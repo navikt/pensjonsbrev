@@ -85,19 +85,31 @@ Prefer helpers in `actions/common.ts` before writing custom mutation logic:
 
 ## List-specific rules
 
-### One list per block — the invariant
+### One-list-per-block — the invariant
 
-A block that contains an `ItemList` must contain **only** that list. A block without a list may hold any text/variable content. Templates and stored letters may violate this; actions must be **tolerant on input** but **normalize on output** for any block they touch.
+A block that contains a **new** (`id: null`) `ItemList` must contain **only** that list. Template lists (`id: non-null`) may co-exist with other content in the same block.
+
+In practice: when a user action creates a new list (`id: null`) and that list is not immediately merged into a template list, `splitMixedListBlock` isolates it. If the new list does merge with an adjacent template list (gaining a non-null `id` via the intentional ID copy), no split is needed — the merged list inherits the template's block position.
 
 ### `splitMixedListBlock`
 
-Call `splitMixedListBlock(draft, blockIndex)` after any operation that inserts a list into a block that may already have text. It:
+Call `splitMixedListBlock(draft, blockIndex)` after `toggleListOn` modifies a block. It:
 1. Merges adjacent same-type lists within the block.
-2. Partitions content into runs (text runs or single-list runs).
+2. Partitions content into runs: each `id: null` ItemList is a single-element run; everything else (text, variables, tables, `id != null` ItemLists) forms "text" runs.
 3. Keeps run[0] in the original block (preserving its `id`); subsequent runs become new `id: null` blocks inserted after.
 4. Updates `draft.focus` if it was inside the block.
 
 Not needed after `toggleListOff`, which already produces clean separate blocks.
+
+### `editedListType` — switching list type without changing the original
+
+`ItemList` has an `editedListType: ListType | null` field (an edit overlay, never set by templates). When a user switches a bullet list to a numbered list (or vice versa):
+
+- `switchListType` sets `editedListType = newType` when `newType !== list.listType`.
+- Reverting to the original type sets `editedListType = null` (no edit stored).
+- `effectiveListType(list)` returns `editedListType ?? listType` — **always use this** when comparing or rendering the current list type.
+- `toMarkup()` uses `editedListType ?? listType` for the rendered output.
+- The Kotlin backend preserves `editedListType` through `UpdateEditedLetter` and applies it in `toMarkup()`.
 
 ### `toggleListOff` — always produces separate blocks
 
@@ -132,6 +144,6 @@ Normalize only blocks the action creates or touches. Leave pre-existing mixed bl
 - [ ] Edit overlays (`editedText`, `editedFontType`, `editedListType`) are set instead of overwriting originals.
 - [ ] Empty container cases are handled (`newLiteral()` when needed).
 - [ ] Table-separator invariants are still satisfied.
-- [ ] After inserting a list: `splitMixedListBlock` is called on the affected block.
+- [ ] After inserting a **new** (`id: null`) list: `splitMixedListBlock` is called on the affected block.
 - [ ] List type reads use `effectiveListType(list)`, not `list.listType` directly.
 - [ ] After splitting a block or list: the original block retains its `id` at the lowest index.

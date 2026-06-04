@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newParagraph } from "~/Brevredigering/LetterEditor/actions/common";
-import { type Item, type ItemList, type LiteralValue, type ParagraphBlock } from "~/types/brevbakerTypes";
+import { type Item, type ItemList, ListType, type LiteralValue, type ParagraphBlock } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, select, variable } from "../utils";
 
@@ -19,22 +19,21 @@ describe("LetterEditorActions.toggleBulletList", () => {
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 1, contentIndex: 2 });
 
-      // The mixed block (block1) is split: leading literal stays, merged list goes to new block2.
+      // With new rule: template list (non-null id) is tolerated in a mixed block — block1 is not split.
       // block0 (in the previous block) must not be touched.
-      expect(result.redigertBrev.blocks).toHaveLength(3);
+      expect(result.redigertBrev.blocks).toHaveLength(2);
       expect(result.redigertBrev.blocks[0]).toEqual(state.redigertBrev.blocks[0]);
 
       const toggledContent = select<LiteralValue>(state, { blockIndex: 1, contentIndex: 2 });
 
-      // block1 now only contains the leading literal
+      // block1 keeps the leading literal AND the merged list (not split out)
       const block1After = select<ParagraphBlock>(result, { blockIndex: 1 });
-      expect(block1After.content).toHaveLength(1);
+      expect(block1After.content).toHaveLength(2);
       expect(block1After.content[0]).toEqual(state.redigertBrev.blocks[1].content[0]);
-      // toggleListOn recorded the toggled literal id; the merged list (parentId=null) is not tracked
       expect(block1After.deletedContent).toContain(toggledContent.id);
 
-      // block2 holds the merged list with both items; the toggled literal is item[1]
-      expect(select<Item>(result, { blockIndex: 2, contentIndex: 0, itemIndex: 1 }).content).toEqual([toggledContent]);
+      // The merged list (at contentIndex 1) has both items; the toggled literal is item[1]
+      expect(select<Item>(result, { blockIndex: 1, contentIndex: 1, itemIndex: 1 }).content).toEqual([toggledContent]);
     });
     test("should not merge with itemList in next block if not last in current block", () => {
       const state = letter(
@@ -47,23 +46,20 @@ describe("LetterEditorActions.toggleBulletList", () => {
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0 });
 
-      // The mixed block (block0) is split: merged list goes to block0, trailing literal to new block1.
-      // Original block1 (the next block) must not be touched — it is now block2.
-      expect(result.redigertBrev.blocks).toHaveLength(3);
-      expect(result.redigertBrev.blocks[2]).toEqual(state.redigertBrev.blocks[1]);
+      // With new rule: template list (non-null id) is tolerated in a mixed block — block0 is not split.
+      // Original block1 (the next block) must not be touched.
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(result.redigertBrev.blocks[1]).toEqual(state.redigertBrev.blocks[1]);
 
       const toggledContent = select<LiteralValue>(state, { blockIndex: 0, contentIndex: 0 });
 
-      // block0 now holds the merged list only
+      // block0 keeps the merged list AND the trailing literal (not split out)
       const block0After = select<ParagraphBlock>(result, { blockIndex: 0 });
-      expect(block0After.content).toHaveLength(1);
+      expect(block0After.content).toHaveLength(2);
       expect(block0After.deletedContent).toContain(toggledContent.id);
+      expect(block0After.content[1]).toEqual(state.redigertBrev.blocks[0].content.at(-1));
 
-      // block1 holds the trailing literal that was in the mixed block
-      const block1After = select<ParagraphBlock>(result, { blockIndex: 1 });
-      expect(block1After.content).toHaveLength(1);
-      expect(block1After.content[0]).toEqual(state.redigertBrev.blocks[0].content.at(-1));
-
+      // The toggled literal is now item[0] in the merged list
       expect(select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 }).content).toEqual([toggledContent]);
     });
     test("should not merge with itemList in previous and next block if not first and last in block", () => {
@@ -81,35 +77,32 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
       const result = Actions.toggleBulletList(state, { blockIndex: 1, contentIndex: 2 });
 
-      // The mixed block is split into 4 parts: leading literal, merged list, trailing literal.
-      // block0 and the original block2 (now block4) must be untouched.
-      expect(result.redigertBrev.blocks).toHaveLength(5);
+      // With new rule: template lists (id=2, id=3) are tolerated in a mixed block — block1 is not split.
+      // block0 and block2 must be untouched.
+      expect(result.redigertBrev.blocks).toHaveLength(3);
       expect(result.redigertBrev.blocks[0]).toEqual(state.redigertBrev.blocks[0]);
-      expect(result.redigertBrev.blocks[4]).toEqual(state.redigertBrev.blocks[2]);
+      expect(result.redigertBrev.blocks[2]).toEqual(state.redigertBrev.blocks[2]);
 
-      // block1 now has only the leading literal
+      // block1 keeps leading literal, merged list, and trailing literal (3 elements, not split)
       const block1After = select<ParagraphBlock>(result, { blockIndex: 1 });
-      expect(block1After.content).toHaveLength(1);
+      expect(block1After.content).toHaveLength(3);
       expect(block1After.content[0]).toEqual(state.redigertBrev.blocks[1].content[0]);
-      // deletedContent: lit(22) removed by toggleListOn, id3 removed by toggleListOn,
-      // lit("b2-l3") removed by splitMixedListBlock when it moved to block3.
-      // The merged list (id=2) has parentId=null so its removal is not tracked here.
+      expect(block1After.content[2]).toEqual(state.redigertBrev.blocks[1].content.at(-1));
+      // deletedContent: lit(22) and id=3 removed by toggleListOn; id=2 un-deleted by addElements.
+      // lit("b2-l3") is not removed — it stays in block1 under the new rule.
       expect(block1After.deletedContent).toContain(22);
       expect(block1After.deletedContent).toContain(3);
-      expect(block1After.deletedContent).toContain(select<LiteralValue>(state, { blockIndex: 1, contentIndex: 4 }).id);
+      expect(block1After.deletedContent).not.toContain(
+        select<LiteralValue>(state, { blockIndex: 1, contentIndex: 4 }).id,
+      );
 
-      // block2 holds the merged list (id=2 preserved) with all 3 items
-      const keptItemList = select<ItemList>(result, { blockIndex: 2, contentIndex: 0 });
+      // The merged list (id=2) is at contentIndex=1 and has all 3 items
+      const keptItemList = select<ItemList>(result, { blockIndex: 1, contentIndex: 1 });
       expect(keptItemList.id).toBe(2);
       expect(keptItemList.items).toHaveLength(3);
 
-      // block3 holds the trailing literal
-      const block3After = select<ParagraphBlock>(result, { blockIndex: 3 });
-      expect(block3After.content).toHaveLength(1);
-      expect(block3After.content[0]).toEqual(state.redigertBrev.blocks[1].content.at(-1));
-
       // The toggled content (b2-l2, id=22) is item[1] in the merged list
-      expect(select<Item>(result, { blockIndex: 2, contentIndex: 0, itemIndex: 1 }).content).toEqual([
+      expect(select<Item>(result, { blockIndex: 1, contentIndex: 1, itemIndex: 1 }).content).toEqual([
         select<LiteralValue>(state, { blockIndex: 1, contentIndex: 2 }),
       ]);
       const mergedItemList = state.redigertBrev.blocks[1].content.find(
@@ -131,18 +124,23 @@ describe("LetterEditorActions.toggleBulletList", () => {
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 1, contentIndex: 3 });
 
-      // The mixed block is split: list1 → block1, lit("l1") → block2, merged-list → block3.
+      // With new rule: template lists (non-null ids) tolerated in a mixed block — block1 is not split.
       // block0 (blokk før) must not be touched.
-      expect(result.redigertBrev.blocks).toHaveLength(4);
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(result.redigertBrev.blocks[0]).toEqual(state.redigertBrev.blocks[0]);
 
-      // "punktliste1" is preserved unchanged in block1
+      // block1 keeps all 3 positions: list1, "l1", merged-list
+      const block1After = select<ParagraphBlock>(result, { blockIndex: 1 });
+      expect(block1After.content).toHaveLength(3);
+
+      // "punktliste1" is preserved unchanged at contentIndex 0
       expect(select<ItemList>(result, { blockIndex: 1, contentIndex: 0 }).items).toEqual(
         select<ItemList>(state, { blockIndex: 1, contentIndex: 0 }).items,
       );
 
-      // The merged list (punktliste2 + l2) is in block3
+      // The merged list (punktliste2 + l2) is at contentIndex 2 with 2 items
       expect(
-        select<LiteralValue>(result, { blockIndex: 3, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 })?.text,
+        select<LiteralValue>(result, { blockIndex: 1, contentIndex: 2, itemIndex: 1, itemContentIndex: 0 })?.text,
       ).toEqual("l2");
     });
   });
@@ -497,5 +495,104 @@ describe("LetterEditorActions.toggleBulletList", () => {
         select<Item>(state, { blockIndex: 0, contentIndex: 1, itemIndex: 1 }).content,
       );
     });
+  });
+});
+
+describe("LetterEditorActions.toggleNumberList", () => {
+  test("converts a literal to a numbered list", () => {
+    const state = letter(paragraph([literal({ text: "tekst" })]));
+    const result = Actions.toggleNumberList(state, { blockIndex: 0, contentIndex: 0 });
+
+    const list = select<ItemList>(result, { blockIndex: 0, contentIndex: 0 });
+    expect(list.listType).toBe(ListType.NUMMERERT_LISTE);
+    expect(list.items).toHaveLength(1);
+  });
+
+  test("toggling again on the same item removes the list", () => {
+    const state = letter(paragraph([literal({ text: "tekst" })]));
+    const afterOn = Actions.toggleNumberList(state, { blockIndex: 0, contentIndex: 0 });
+    const afterOff = Actions.toggleNumberList(afterOn, {
+      blockIndex: 0,
+      contentIndex: 0,
+      itemIndex: 0,
+      itemContentIndex: 0,
+    });
+
+    expect(afterOff.redigertBrev.blocks[0].content[0].type).toBe("LITERAL");
+  });
+});
+
+describe("switchListType (via toggleBulletList / toggleNumberList on an existing list)", () => {
+  test("switching a bullet list to numbered sets editedListType", () => {
+    const state = letter(
+      paragraph([itemList({ listType: ListType.PUNKTLISTE, items: [item(literal({ text: "a" }))] })]),
+    );
+
+    const result = Actions.toggleNumberList(state, {
+      blockIndex: 0,
+      contentIndex: 0,
+      itemIndex: 0,
+      itemContentIndex: 0,
+    });
+
+    const list = select<ItemList>(result, { blockIndex: 0, contentIndex: 0 });
+    expect(list.listType).toBe(ListType.PUNKTLISTE);
+    expect(list.editedListType).toBe(ListType.NUMMERERT_LISTE);
+  });
+
+  test("switching a numbered list to bullet sets editedListType", () => {
+    const state = letter(
+      paragraph([itemList({ listType: ListType.NUMMERERT_LISTE, items: [item(literal({ text: "a" }))] })]),
+    );
+
+    const result = Actions.toggleBulletList(state, {
+      blockIndex: 0,
+      contentIndex: 0,
+      itemIndex: 0,
+      itemContentIndex: 0,
+    });
+
+    const list = select<ItemList>(result, { blockIndex: 0, contentIndex: 0 });
+    expect(list.listType).toBe(ListType.NUMMERERT_LISTE);
+    expect(list.editedListType).toBe(ListType.PUNKTLISTE);
+  });
+
+  test("switching back to original type clears editedListType", () => {
+    const state = letter(
+      paragraph([itemList({ listType: ListType.PUNKTLISTE, items: [item(literal({ text: "a" }))] })]),
+    );
+    const afterSwitch = Actions.toggleNumberList(state, {
+      blockIndex: 0,
+      contentIndex: 0,
+      itemIndex: 0,
+      itemContentIndex: 0,
+    });
+    const afterRevert = Actions.toggleBulletList(afterSwitch, {
+      blockIndex: 0,
+      contentIndex: 0,
+      itemIndex: 0,
+      itemContentIndex: 0,
+    });
+
+    const list = select<ItemList>(afterRevert, { blockIndex: 0, contentIndex: 0 });
+    expect(list.editedListType).toBeNull();
+  });
+
+  test("after switching type, adjacent block with the new type is merged", () => {
+    const state = letter(
+      paragraph([itemList({ listType: ListType.PUNKTLISTE, items: [item(literal({ text: "a" }))] })]),
+      paragraph([itemList({ listType: ListType.NUMMERERT_LISTE, items: [item(literal({ text: "b" }))] })]),
+    );
+
+    // Switch block0 from bullet to numbered → should merge with block1
+    const result = Actions.toggleNumberList(state, {
+      blockIndex: 0,
+      contentIndex: 0,
+      itemIndex: 0,
+      itemContentIndex: 0,
+    });
+
+    expect(result.redigertBrev.blocks).toHaveLength(1);
+    expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(2);
   });
 });

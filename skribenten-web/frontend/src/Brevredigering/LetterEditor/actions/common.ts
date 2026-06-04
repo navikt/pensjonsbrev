@@ -351,20 +351,25 @@ export function splitMixedListBlock(draft: Draft<LetterEditorState>, blockIndex:
   mergeSameTypeListsInBlock(block.content, block.deletedContent, block.id);
 
   // Step 2: check whether a split is needed at all.
+  // Only id:null (user-created) lists must be isolated in their own block.
+  // Template lists (id != null) may co-exist with other content — do not split them out.
   if (block.content.length <= 1) return 1;
   const contentSnap = current(block.content) as Content[];
-  if (!contentSnap.some(isItemList)) return 1;
+  const isNewList = (c: Content): c is ItemList => isItemList(c) && c.id === null;
+  if (!contentSnap.some(isNewList)) return 1;
 
   // Step 3: partition into runs (maximal sequences of the same category).
   // Each run is [startIndex, endIndex] (inclusive) in contentSnap.
+  // Only id:null ItemLists are their own single-element runs; all other content
+  // (text, variables, tables, and id != null ItemLists) forms "text" runs.
   const runs: Array<{ start: number; end: number }> = [];
   for (let i = 0; i < contentSnap.length; ) {
-    if (isItemList(contentSnap[i])) {
+    if (isNewList(contentSnap[i])) {
       runs.push({ start: i, end: i });
       i++;
     } else {
       const j = i;
-      while (i < contentSnap.length && !isItemList(contentSnap[i])) i++;
+      while (i < contentSnap.length && !isNewList(contentSnap[i])) i++;
       runs.push({ start: j, end: i - 1 });
     }
   }
@@ -737,11 +742,9 @@ export function insertEmptyParagraphAfterBlock(draft: Draft<LetterEditorState>, 
 }
 
 /**
- * Breaks out of an empty list item by removing it and splitting the list into separate blocks
- * with a new blank line block inserted at the empty item's position.
- *
- * This ensures the "list as sole block content" principle: each resulting list
- * ends up as the only content in its own paragraph block.
+ * Breaks out of an empty list item by removing it and replacing the current block with up to
+ * five new blocks in order: [content-before-list?] [items-before?] [blank-line] [items-after?] [content-after-list?].
+ * Focus lands on the blank-line block.
  */
 export function breakOutEmptyItem(
   draft: Draft<LetterEditorState>,

@@ -298,14 +298,9 @@ const mergeListWithAdjacentBlocks = (
  * Converts a single list item back to normal paragraph text by removing it
  * from its list and placing its content in a dedicated paragraph block.
  *
- * To maintain the "one list per block, nothing else" invariant, the extracted
- * text and any remaining list halves are placed in separate blocks — never
- * inline in the same block as the remaining list.
- *
- * ID-preservation rule: the original block (with its template id) always stays
- * at its current index. New blocks (id: null) are inserted AFTER it. This
- * guarantees that if the user re-toggles the list on, mergeListWithAdjacentBlocks
- * will keep the lower-indexed block as the survivor, preserving the original id.
+ * The extracted text and any remaining list halves are placed in separate blocks.
+ * New (id: null) blocks are inserted AFTER the original block, which keeps its
+ * current index and id.
  *
  * Cases:
  *  - Empty list after removal: list removed, item content placed inline (no split needed).

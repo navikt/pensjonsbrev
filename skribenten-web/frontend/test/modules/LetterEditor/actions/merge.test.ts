@@ -884,5 +884,66 @@ describe("LetterEditorActions.merge", () => {
       expect(text(lastItemContent[0])).toBe("a");
       expect(text(lastItemContent[1])).toBe("merged");
     });
+
+    test("next block starts with same-type list: both lists merge after text merge", () => {
+      const state = letter(
+        paragraph([itemList({ items: [item(literal({ text: "a" }))] })]),
+        paragraph([literal({ text: "" }), itemList({ items: [item(literal({ text: "b" }))] })]),
+      );
+
+      // Backspace at the start of the empty literal merges it into the list in block 0,
+      // which then triggers mergeAdjacentListBlocks to merge the remaining same-type list.
+      const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(2);
+    });
+
+    test("next block starts with different-type list: lists stay separate after text merge", () => {
+      const state = letter(
+        paragraph([itemList({ items: [item(literal({ text: "a" }))], listType: ListType.PUNKTLISTE })]),
+        paragraph([
+          literal({ text: "" }),
+          itemList({ items: [item(literal({ text: "b" }))], listType: ListType.NUMMERERT_LISTE }),
+        ]),
+      );
+
+      const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+
+      // Empty text merged, but different-type lists stay separate
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).listType).toBe(ListType.PUNKTLISTE);
+      expect(select<ItemList>(result, { blockIndex: 1, contentIndex: 0 }).listType).toBe(ListType.NUMMERERT_LISTE);
+    });
+  });
+
+  describe("break out of empty item in template mixed-content block (backspace)", () => {
+    test("empty middle item with content before and after list: backspace removes empty item and preserves surroundings", () => {
+      const state = letter(
+        paragraph([
+          literal({ text: "before" }),
+          itemList({
+            items: [item(literal({ text: "item1" })), item(literal({ text: "" })), item(literal({ text: "item3" }))],
+          }),
+          literal({ text: "after" }),
+        ]),
+      );
+
+      const result = Actions.merge(
+        state,
+        { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 },
+        MergeTarget.PREVIOUS,
+      );
+
+      // [before] [list(item1)] [blank] [list(item3)] [after]
+      expect(result.redigertBrev.blocks).toHaveLength(5);
+      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).text).toBe("before");
+      expect(select<ItemList>(result, { blockIndex: 1, contentIndex: 0 }).items).toHaveLength(1);
+      expect(select<LiteralValue>(result, { blockIndex: 2, contentIndex: 0 })).toStrictEqual(newLiteral());
+      expect(select<ItemList>(result, { blockIndex: 3, contentIndex: 0 }).items).toHaveLength(1);
+      expect(select<LiteralValue>(result, { blockIndex: 4, contentIndex: 0 }).text).toBe("after");
+      // Focus on the blank line
+      expect(result.focus).toEqual({ blockIndex: 2, contentIndex: 0, cursorPosition: 0 });
+    });
   });
 });

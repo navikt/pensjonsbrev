@@ -525,4 +525,50 @@ describe("LetterEditorActions.split", () => {
       });
     });
   });
+
+  describe("break out of empty item in template mixed-content block", () => {
+    test("empty middle item: content before list, list, content after list → 5 blocks", () => {
+      const state = letter(
+        paragraph([
+          literal({ text: "before" }),
+          itemList({
+            items: [item(literal({ text: "item1" })), item(literal({ text: "" })), item(literal({ text: "item3" }))],
+          }),
+          literal({ text: "after" }),
+        ]),
+      );
+
+      const result = Actions.split(state, { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 }, 0);
+
+      // [before] [list(item1)] [blank] [list(item3)] [after]
+      expect(result.redigertBrev.blocks).toHaveLength(5);
+      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).text).toBe("before");
+      expect(select<ItemList>(result, { blockIndex: 1, contentIndex: 0 }).items).toHaveLength(1);
+      expect(select<LiteralValue>(result, { blockIndex: 2, contentIndex: 0 })).toStrictEqual(newLiteral());
+      expect(select<ItemList>(result, { blockIndex: 3, contentIndex: 0 }).items).toHaveLength(1);
+      expect(select<LiteralValue>(result, { blockIndex: 4, contentIndex: 0 }).text).toBe("after");
+      expect(result.focus).toEqual({ blockIndex: 2, contentIndex: 0, cursorPosition: 0 });
+    });
+
+    test("empty first item: content before list, list, content after list → 4 blocks", () => {
+      const state = letter(
+        paragraph([
+          literal({ text: "before" }),
+          itemList({
+            items: [item(literal({ text: "" })), item(literal({ text: "item2" }))],
+          }),
+          literal({ text: "after" }),
+        ]),
+      );
+
+      const result = Actions.split(state, { blockIndex: 0, contentIndex: 1, itemIndex: 0, itemContentIndex: 0 }, 0);
+
+      // [before] [blank] [list(item2)] [after]
+      expect(result.redigertBrev.blocks).toHaveLength(4);
+      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).text).toBe("before");
+      expect(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 })).toStrictEqual(newLiteral());
+      expect(select<ItemList>(result, { blockIndex: 2, contentIndex: 0 }).items).toHaveLength(1);
+      expect(select<LiteralValue>(result, { blockIndex: 3, contentIndex: 0 }).text).toBe("after");
+    });
+  });
 });

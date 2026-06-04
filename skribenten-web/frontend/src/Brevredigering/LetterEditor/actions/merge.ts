@@ -235,7 +235,10 @@ function mergeBlockIntoList(
     // Leave the remaining non-text content as its own block (already in place)
   }
 
-  // Set focus at the merge point (end of original last item content, before merged text)
+  // Merge adjacent same-type list blocks first, then override focus with the text-merge point.
+  mergeAdjacentListBlocks(draft, firstBlockId);
+
+  // Focus lands at the text-merge point: end of the original last item, before any appended text.
   draft.focus = {
     blockIndex: firstBlockId,
     contentIndex: listContentIndex,
@@ -243,16 +246,13 @@ function mergeBlockIntoList(
     itemIndex: lastItemIndex,
     itemContentIndex: cursorItemContentIndex,
   };
-
-  // Try to merge adjacent same-type lists without overwriting focus
-  mergeAdjacentListBlocks(draft, firstBlockId, false);
 }
 
 /**
  * After removing a block, check if the blocks at prevBlockIndex and prevBlockIndex+1
  * are both single-list blocks of the same type, and if so merge them into one.
  */
-function mergeAdjacentListBlocks(draft: Draft<LetterEditorState>, prevBlockIndex: number, setFocus: boolean = true) {
+function mergeAdjacentListBlocks(draft: Draft<LetterEditorState>, prevBlockIndex: number) {
   const blocks = draft.redigertBrev.blocks;
   const prevBlock = blocks[prevBlockIndex];
   const nextBlock = blocks[prevBlockIndex + 1];
@@ -279,18 +279,16 @@ function mergeAdjacentListBlocks(draft: Draft<LetterEditorState>, prevBlockIndex
     id: null,
   });
 
-  if (setFocus) {
-    // Focus at end of the last item of the FIRST list (the merge boundary)
-    const lastItemOfFirst = prevContent.items[lastItemIndexOfFirst];
-    const lastContentOfItem = lastItemOfFirst?.content.at(-1);
-    draft.focus = {
-      blockIndex: prevBlockIndex,
-      contentIndex: 0,
-      cursorPosition: lastContentOfItem ? text(lastContentOfItem).length : 0,
-      itemIndex: lastItemIndexOfFirst,
-      itemContentIndex: (lastItemOfFirst?.content.length ?? 1) - 1,
-    };
-  }
+  // Focus at end of the last item of the FIRST list (the merge boundary)
+  const lastItemOfFirst = prevContent.items[lastItemIndexOfFirst];
+  const lastContentOfItem = lastItemOfFirst?.content.at(-1);
+  draft.focus = {
+    blockIndex: prevBlockIndex,
+    contentIndex: 0,
+    cursorPosition: lastContentOfItem ? text(lastContentOfItem).length : 0,
+    itemIndex: lastItemIndexOfFirst,
+    itemContentIndex: (lastItemOfFirst?.content.length ?? 1) - 1,
+  };
 }
 
 function mergeFromItemList(draft: Draft<LetterEditorState>, literalIndex: ItemContentIndex, target: MergeTarget) {

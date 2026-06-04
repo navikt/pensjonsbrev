@@ -14,6 +14,7 @@ import {
   FontType,
   type Item,
   type ItemList,
+  ListType,
   type LiteralValue,
   PARAGRAPH,
   type ParagraphBlock,
@@ -3607,6 +3608,40 @@ describe("LetterEditorActions.paste", () => {
         });
       });
     });
+  });
+});
+
+describe("LetterEditorActions.paste - list type from HTML tag", () => {
+  test("pasting <ol> produces a NUMMERERT_LISTE", () => {
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "tekst" })] }));
+    const clipboard = new MockDataTransfer({ "text/html": "<ol><li>1</li><li>2</li></ol>" });
+
+    const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);
+
+    const list = select<ItemList>(result, { blockIndex: 0, contentIndex: 0 });
+    expect(list.listType).toBe(ListType.NUMMERERT_LISTE);
+    expect(
+      text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 })),
+    ).toBe("1");
+    expect(
+      text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 })),
+    ).toBe("2");
+  });
+
+  test("pasting <ul> produces a PUNKTLISTE", () => {
+    const state = letter(paragraph({ id: 1, content: [literal({ text: "tekst" })] }));
+    const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
+
+    const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);
+
+    const list = select<ItemList>(result, { blockIndex: 0, contentIndex: 0 });
+    expect(list.listType).toBe(ListType.PUNKTLISTE);
+    expect(
+      text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 })),
+    ).toBe("1");
+    expect(
+      text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 })),
+    ).toBe("2");
   });
 });
 
