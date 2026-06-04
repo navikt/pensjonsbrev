@@ -14,7 +14,7 @@ import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.engine.*
-import io.ktor.server.netty.*
+import io.ktor.server.jetty.jakarta.Jetty
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.callid.*
 import io.ktor.server.plugins.calllogging.*
@@ -71,7 +71,7 @@ private fun run() {
     KrypteringService.init(skribentenConfig.getString("krypteringsnoekkel"))
 
     embeddedServer(
-        Netty,
+        Jetty,
         configure = {
             connectors.add(EngineConnectorBuilder().apply {
                 host = "0.0.0.0"

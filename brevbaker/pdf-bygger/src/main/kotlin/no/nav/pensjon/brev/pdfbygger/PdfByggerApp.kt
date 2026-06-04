@@ -6,8 +6,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.*
 import io.ktor.server.config.*
+import io.ktor.server.jetty.jakarta.EngineMain
 import io.ktor.server.metrics.micrometer.*
-import io.ktor.server.netty.*
 import io.ktor.server.plugins.callid.CallId
 import io.ktor.server.plugins.callid.callIdMdc
 import io.ktor.server.plugins.callid.generate

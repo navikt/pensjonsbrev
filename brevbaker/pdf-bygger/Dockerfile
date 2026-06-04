@@ -21,7 +21,7 @@ EXPOSE 8080
 COPY --from=assets /typst/typst /app/typst/typst
 COPY --from=assets /usr/share/fonts/truetype/noto /usr/share/fonts/truetype/noto
 # `nice` (fra coreutils) brukes til å starte typst med lavere OS-prioritet enn
-# JVM-prosessen. Det sikrer at Ktor/Netty alltid får CPU under høy compile-last,
+# JVM-prosessen. Det sikrer at Ktor/Jetty alltid får CPU under høy compile-last,
 # slik at /isAlive og /isReady svarer kjapt selv om mange typst-prosesser kjører.
 COPY --from=assets /usr/bin/nice /usr/bin/nice
 COPY containerFiles/typst /app/typst

@@ -12,7 +12,7 @@ group = "no.nav.pensjon.brev"
 version = "0.0.1-SNAPSHOT"
 
 application {
-    mainClass.set("io.ktor.server.netty.EngineMain")
+    mainClass.set("io.ktor.server.jetty.jakarta.EngineMain")
 }
 
 repositories {
@@ -80,7 +80,7 @@ dependencies {
     implementation(libs.ktor.server.callLogging)
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.server.core)
-    implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.jetty)
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.swagger)
     implementation(libs.ktor.client.encoding)
