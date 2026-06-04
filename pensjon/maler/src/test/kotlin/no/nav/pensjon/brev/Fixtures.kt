@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsAutoDto
@@ -126,6 +127,7 @@ object Fixtures : LetterDataFactory {
             AvslagUfoerepensjonDto::class -> createAvslagUfoerepensjonDto() as T
             VedtakOmEtterbetalingOpphor2026AutoDto::class -> createVedtakOmEtterbetalingOpphor2026AutoDto() as T
             VedtakOmEtterbetalingOpphor2026RedigerbarDto::class -> createVedtakOmEtterbetalingOpphor2026RedigerbarDto() as T
+            VedtakOmEndringBarnetilleggEPSAutoDto::class -> createVedtakOmEndringBarnetilleggEPSAutoDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

@@ -49,7 +49,7 @@ object VedtakOmEtterbetalingOpphor2026Redigerbar : RedigerbarTemplate<VedtakOmEt
         outline {
             includePhrase(VedtakOmEtterbetalingOpphor2026.Outline(etterbetaling = pesysData.etterbetaling, hjemler = pesysData.hjemler, erRedigerbar = true.expr()))
             includePhrase(VedtakOmEtterbetalingOpphor2026.RettTilAAKlage)
-            includePhrase(Ufoeretrygd.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfore))
+            includePhrase(Ufoeretrygd.RettTilInnsyn)
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
         includeAttachment(vedleggDineRettigheterOgPlikterUfore, pesysData.dineRettigheterOgPlikterUfore)
