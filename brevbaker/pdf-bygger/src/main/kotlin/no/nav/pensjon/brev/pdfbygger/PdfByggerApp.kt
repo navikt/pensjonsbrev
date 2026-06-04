@@ -6,18 +6,12 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.*
 import io.ktor.server.config.*
-import io.ktor.server.http.content.suppressCompression
 import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.callid.CallId
 import io.ktor.server.plugins.callid.callIdMdc
 import io.ktor.server.plugins.callid.generate
 import io.ktor.server.plugins.calllogging.CallLogging
-import io.ktor.server.plugins.compression.Compression
-import io.ktor.server.plugins.compression.deflate
-import io.ktor.server.plugins.compression.gzip
-import io.ktor.server.plugins.compression.matchContentType
-import io.ktor.server.plugins.compression.minimumSize
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.path
@@ -72,22 +66,6 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         }
     }
 
-    install(Compression) {
-        gzip {
-            priority = 1.0
-            matchContentType(
-                ContentType.Application.Json
-            )
-        }
-        deflate {
-            priority = 10.0
-            minimumSize(1024)
-            matchContentType(
-                ContentType.Application.Json
-            )
-        }
-    }
-
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
@@ -117,7 +95,6 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
             val result = typstCompileService.createLetter {
                 TypstDocumentRenderer.render(request, it)
             }
-            call.suppressCompression()
             handleResult(result, call.application.environment.log)
         }
 

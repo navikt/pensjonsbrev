@@ -7,7 +7,6 @@ import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.network.sockets.*
 import io.ktor.client.plugins.*
-import io.ktor.client.plugins.compression.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.utils.*
@@ -43,9 +42,6 @@ class PensjonPdfByggerService(
         }
         HttpResponseValidator {
             validateResponse { validateResponse(it.status.value, { msg -> logger.warn(msg) }) { it.body<String>() } }
-        }
-        install(ContentEncoding) {
-            gzip()
         }
 
         engine {
