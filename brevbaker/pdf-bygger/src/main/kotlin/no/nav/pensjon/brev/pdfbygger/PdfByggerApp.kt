@@ -6,6 +6,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.*
 import io.ktor.server.config.*
+import io.ktor.server.http.content.suppressCompression
 import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.callid.CallId
@@ -116,6 +117,7 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
             val result = typstCompileService.createLetter {
                 TypstDocumentRenderer.render(request, it)
             }
+            call.suppressCompression()
             handleResult(result, call.application.environment.log)
         }
 
