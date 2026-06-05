@@ -83,7 +83,6 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.swagger)
-    implementation(libs.ktor.client.encoding)
 
     implementation(project(":pensjon:maler"))
     implementation(project(":alder:maler"))
