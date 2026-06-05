@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.maler.legacy.VedtakOmEtterbetalingOpphor2026Auto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmEtterbetalingOpphor2026OktIfuAuto
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
+import no.nav.pensjon.brev.maler.legacy.VedtakOmEndringBarnetilleggEPSAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereMinstesatsAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereReduksjonsprosentAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmOktMinsteIFUAuto
@@ -133,6 +134,7 @@ object ProductionTemplates : AllTemplates {
         VedtakOmOktMinsteIFUAuto,
         VedtakOmLavereReduksjonsprosentAuto,
         VedtakOmOktMinsteIFULavereReduksjonsprosentAuto,
+        VedtakOmEndringBarnetilleggEPSAuto
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(

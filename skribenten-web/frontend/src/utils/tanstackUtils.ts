@@ -2,12 +2,6 @@ import { type UseQueryResult } from "@tanstack/react-query";
 import { type AxiosError } from "axios";
 import { type JSX } from "react";
 
-declare module "@tanstack/react-query" {
-  interface Register {
-    defaultError: AxiosError;
-  }
-}
-
 export function queryFold<TData>(args: {
   query: UseQueryResult<TData, AxiosError>;
   initial: () => JSX.Element | null;

@@ -37,6 +37,7 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -55,7 +56,7 @@ object VedtakOmOktMinsteIFURedigerbar : RedigerbarTemplate<VedtakOmIFUReduksjons
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - økt minste IFU fom 1. januar 2026",
+            displayTitle = "Vedtaksbrev - økt minste IFU",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -63,10 +64,17 @@ object VedtakOmOktMinsteIFURedigerbar : RedigerbarTemplate<VedtakOmIFUReduksjons
         val data = pesysData.vedtakData
 
         title {
-            text(
-                bokmal { +"Vedtaksbrev - Nav endrer uføretrygden din" },
-                nynorsk { +"Vedtaksbrev - Nav endrar uføretrygda di" },
-            )
+            showIf(data.etterbetalingJuli.greaterThan(0)) {
+                text(
+                    bokmal { +"Vedtaksbrev - Du får en etterbetaling av uføretrygd " },
+                    nynorsk { +"Vedtaksbrev - Du får ein etterbetaling av uføretrygd " },
+                )
+            }.orShow {
+                text(
+                    bokmal { +"Vedtaksbrev - Ingen endring av utbetalt uføretrygd" },
+                    nynorsk { +"Vedtaksbrev - Ingen endring av utbetalt uføretrygd" },
+                )
+            }
         }
         outline {
             includePhrase(
