@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.alder.maler.afp.fraser
 import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_ETTEROPPGJOER_URL
 import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
@@ -1011,7 +1012,7 @@ object AfpEtteroppgjoerInnhold {
                                 },
                             )
                         }
-                        column(columnSpan = 0) {
+                        column(columnSpan = 1) {
                             text(
                                 bokmal { +"" },
                                 nynorsk { +"" },
@@ -1032,8 +1033,8 @@ object AfpEtteroppgjoerInnhold {
                     row {
                         cell {
                             text(
-                                bokmal { +"Inntektsfradraget i AFP for den nye inntekten *" },
-                                nynorsk { +"Inntektsfrådraget i AFP for den nye inntekta *" },
+                                bokmal { +"- Inntektsfradraget i AFP for den nye inntekten*" },
+                                nynorsk { +"- Inntektsfrådraget i AFP for den nye inntekta*" },
                             )
                         }
                         cell {
@@ -1043,8 +1044,8 @@ object AfpEtteroppgjoerInnhold {
                     row {
                         cell {
                             text(
-                                bokmal { +"AFP etter fradrag for den nye inntekten" },
-                                nynorsk { +"AFP etter frådrag for den nye inntekta" },
+                                bokmal { +"= AFP etter fradrag for den nye inntekten" },
+                                nynorsk { +"= AFP etter frådrag for den nye inntekta" },
                             )
                         }
                         cell {
@@ -1054,8 +1055,8 @@ object AfpEtteroppgjoerInnhold {
                     row {
                         cell {
                             text(
-                                bokmal { +"Tidligere utbetalt AFP" },
-                                nynorsk { +"Tidlegare utbetalt AFP" },
+                                bokmal { +"- Tidligere utbetalt AFP" },
+                                nynorsk { +"- Tidlegare utbetalt AFP" },
                             )
                         }
                         cell {
@@ -1065,12 +1066,13 @@ object AfpEtteroppgjoerInnhold {
                     row {
                         cell {
                             text(
-                                bokmal { +"For lite utbetalt AFP" },
-                                nynorsk { +"For lite utbetalt AFP" },
+                                bokmal { +"= For lite utbetalt AFP" },
+                                nynorsk { +"= For lite utbetalt AFP" },
+                                BOLD,
                             )
                         }
                         cell {
-                            includePhrase(KronerText(forlitebetalt))
+                            includePhrase(KronerText(forlitebetalt, BOLD))
                         }
                     }
                 }
@@ -1082,13 +1084,13 @@ object AfpEtteroppgjoerInnhold {
                     bokmal {
                         +"* "
                         +inntektIAfpPerioden.format() + " (ny beregnet inntekt) / " +
-                                tidligereArbeidsInntektBeregnet.format() + " (tidligere arbeidsinntekt **) x " +
+                                tidligereArbeidsInntektBeregnet.format() + " (tidligere arbeidsinntekt**) x " +
                                 fullAfp.format() + " (full AFP)"
                     },
                     nynorsk {
                         +"* "
                         +inntektIAfpPerioden.format() + " (ny berekna inntekt) / " +
-                                tidligereArbeidsInntektBeregnet.format() + " (tidlegare arbeidsinntekt **) x " +
+                                tidligereArbeidsInntektBeregnet.format() + " (tidlegare arbeidsinntekt**) x " +
                                 fullAfp.format() + " (full AFP)"
                     },
                 )
@@ -1096,8 +1098,8 @@ object AfpEtteroppgjoerInnhold {
 
             paragraph {
                 text(
-                    bokmal { +"** Tidligere arbeidsinntekt er beregnet ut fra inntekten din i årene før du tok ut AFP." },
-                    nynorsk { +"** Tidlegare arbeidsinntekt er berekna ut frå inntekta di i åra før du tok ut AFP." },
+                    bokmal { +"**Tidligere arbeidsinntekt er beregnet ut fra inntekten din i årene før du tok ut AFP." },
+                    nynorsk { +"**Tidlegare arbeidsinntekt er berekna ut frå inntekta di i åra før du tok ut AFP." },
                 )
             }
         }
