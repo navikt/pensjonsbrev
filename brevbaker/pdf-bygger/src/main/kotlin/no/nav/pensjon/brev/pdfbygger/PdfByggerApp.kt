@@ -19,6 +19,7 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.utils.io.ByteChannel
+import io.ktor.utils.io.copyTo
 import io.ktor.utils.io.toByteArray
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
@@ -91,22 +92,22 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
     }
 
     routing {
-
         post("/produserBrev") {
             val request = call.receive<PDFRequest>()
             val channel = ByteChannel(autoFlush = true)
 
-//            if (call.request.headers["Accept"] == ContentType.Application.Json.contentType) {
             val result = typstCompileService.createLetter(channel) {
                 TypstDocumentRenderer.render(request, it)
             }
             val logger = call.application.environment.log
             when (result) {
                 is PDFCompilationResponse.Success -> {
-                    val str = PDFCompilationOutput(channel.toByteArray())
-//                    val str = call.respondBytesWriter(ContentType.Application.Pdf) { channel.copyTo(this) }
-                    call.respond(str)
-//                    call.respond(result.pdfCompilationOutput)
+                    if (call.request.headers[io.ktor.http.HttpHeaders.Accept]?.contains(ContentType.Application.Pdf.toString()) ?: false) {
+                        call.respondBytesWriter(ContentType.Application.Pdf) { channel.copyTo(this) }
+                    }
+                    else {
+                        call.respond(PDFCompilationOutput(channel.toByteArray()))
+                    }
                 }
                 is PDFCompilationResponse.Failure.Client -> {
                     logger.warn("Client error: ${result.reason}")
