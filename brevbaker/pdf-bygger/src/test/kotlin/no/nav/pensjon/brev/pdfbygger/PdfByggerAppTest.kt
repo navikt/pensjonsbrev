@@ -83,6 +83,7 @@ class PdfByggerAppTest {
             val response = client.post("/produserBrev") {
                 contentType(ContentType.Application.Json)
                 setBody(mapper.writeValueAsBytes(request))
+                accept(ContentType.Application.Json)
             }
 
             assertEquals(HttpStatusCode.OK, response.status)
