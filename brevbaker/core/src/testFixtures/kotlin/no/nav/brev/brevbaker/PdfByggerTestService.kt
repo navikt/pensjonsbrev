@@ -29,7 +29,7 @@ class PdfByggerTestService(private val pdfByggerUrl: String = PDFByggerTestConta
         }
 
         engine {
-            requestTimeout = 30.seconds.inWholeMilliseconds
+            requestTimeout = 50.seconds.inWholeMilliseconds
         }
     }
 
