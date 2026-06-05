@@ -30,6 +30,8 @@ import {
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
+import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
+import { useUserInfo } from "~/hooks/useUserInfo";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import {
   type BrevResponse,
@@ -222,6 +224,7 @@ function RedigerBrev({
   const navigate = useNavigate({ from: Route.fullPath });
   const { enhetsId } = Route.useSearch();
   const editorStartTime = useRef(Date.now());
+  const currentUser = useUserInfo();
 
   const [warnOpen, setWarnOpen] = useState(false);
   const [warn, setWarn] = useState<{
@@ -405,6 +408,14 @@ function RedigerBrev({
     queryKey: getBrevReservasjon.querykey(brev.info.id),
     queryFn: () => getBrevReservasjon.queryFn(brev.info.id),
     refetchInterval: 10_000,
+  });
+
+  useReleaseReservationOnPageExit({
+    enabled: reservasjonQuery.isSuccess,
+    saksId,
+    brevId: brev.info.id,
+    currentUserNavIdent: currentUser?.navident,
+    reservationOwnerNavIdent: reservasjonQuery.data?.reservertAv.id,
   });
 
   useEffect(() => {
