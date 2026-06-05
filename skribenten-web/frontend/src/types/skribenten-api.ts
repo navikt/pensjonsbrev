@@ -2730,7 +2730,7 @@ export interface components {
             type: "TABLE";
         };
         /** ParagraphContent */
-        ParagraphContent: components["schemas"]["ItemList"] | components["schemas"]["Table"] | components["schemas"]["Literal"] | components["schemas"]["Variable"] | components["schemas"]["NewLine"];
+        ParagraphContent: components["schemas"]["ItemList"] | components["schemas"]["Table"] | components["schemas"]["Literal"] | components["schemas"]["NewLine"] | components["schemas"]["Variable"];
         /** Paragraph */
         Paragraph: {
             content: components["schemas"]["ParagraphContent"][];
@@ -2880,122 +2880,8 @@ export interface components {
             timestamp: string;
             vellykket: boolean;
         };
-        /** BlockContentIndex */
-        BlockContentIndex: {
-            blockIndex: number;
-            contentIndex: number;
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "no.nav.pensjon.brev.skribenten.letter.ContentIndex.BlockContentIndex";
-        };
-        /** BlockIndex */
-        BlockIndex: {
-            blockIndex: number;
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "no.nav.pensjon.brev.skribenten.letter.ContentIndex.BlockIndex";
-        };
-        /** ItemContentIndex */
-        ItemContentIndex: {
-            blockIndex: number;
-            contentIndex: number;
-            itemContentIndex: number;
-            itemIndex: number;
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "no.nav.pensjon.brev.skribenten.letter.ContentIndex.ItemContentIndex";
-        };
-        /** ItemIndex */
-        ItemIndex: {
-            blockIndex: number;
-            contentIndex: number;
-            itemIndex: number;
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "no.nav.pensjon.brev.skribenten.letter.ContentIndex.ItemIndex";
-        };
-        /** TableCellContentIndex */
-        TableCellContentIndex: {
-            blockIndex: number;
-            cellContentIndex: number;
-            cellIndex: number;
-            contentIndex: number;
-            rowIndex: number;
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableCellContentIndex";
-        };
-        /** TableCellIndex */
-        TableCellIndex: {
-            blockIndex: number;
-            cellIndex: number;
-            contentIndex: number;
-            rowIndex: number;
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableCellIndex";
-        };
-        /** TableRowIndex */
-        TableRowIndex: {
-            blockIndex: number;
-            contentIndex: number;
-            rowIndex: number;
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableRowIndex";
-        };
-        /** ContentIndex */
-        ContentIndex: components["schemas"]["BlockContentIndex"] | components["schemas"]["BlockIndex"] | components["schemas"]["ItemContentIndex"] | components["schemas"]["ItemIndex"] | components["schemas"]["TableCellContentIndex"] | components["schemas"]["TableCellIndex"] | components["schemas"]["TableRowIndex"];
-        /** DiffSegment */
-        DiffSegment: {
-            endOffset: number;
-            index: components["schemas"]["ContentIndex"];
-            startOffset: number;
-        };
-        /** Split */
-        Split: {
-            deletes: components["schemas"]["DiffSegment"][];
-            inserts: components["schemas"]["DiffSegment"][];
-            rendretBrev: components["schemas"]["Letter"];
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.DiffBrevHandler.Response.Split";
-        };
-        /** UnifiedDeleteSegment */
-        UnifiedDeleteSegment: {
-            endOffset: number;
-            index: components["schemas"]["ContentIndex"];
-            startOffset: number;
-            text: string;
-        };
-        /** Unified */
-        Unified: {
-            deletes: components["schemas"]["UnifiedDeleteSegment"][];
-            inserts: components["schemas"]["DiffSegment"][];
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.DiffBrevHandler.Response.Unified";
-        };
         /** Response */
-        Response: components["schemas"]["Split"] | components["schemas"]["Unified"];
+        Response: Record<string, never>;
         /** DirekteOppslag */
         DirekteOppslag: {
             id: string;
@@ -3158,18 +3044,6 @@ export type BestillBrevResponse = components['schemas']['BestillBrevResponse'];
 export type ValgbartVedlegg = components['schemas']['ValgbartVedlegg'];
 export type Duration = components['schemas']['Duration'];
 export type ReservasjonResponse = components['schemas']['ReservasjonResponse'];
-export type BlockContentIndex = components['schemas']['BlockContentIndex'];
-export type BlockIndex = components['schemas']['BlockIndex'];
-export type ItemContentIndex = components['schemas']['ItemContentIndex'];
-export type ItemIndex = components['schemas']['ItemIndex'];
-export type TableCellContentIndex = components['schemas']['TableCellContentIndex'];
-export type TableCellIndex = components['schemas']['TableCellIndex'];
-export type TableRowIndex = components['schemas']['TableRowIndex'];
-export type ContentIndex = components['schemas']['ContentIndex'];
-export type DiffSegment = components['schemas']['DiffSegment'];
-export type Split = components['schemas']['Split'];
-export type UnifiedDeleteSegment = components['schemas']['UnifiedDeleteSegment'];
-export type Unified = components['schemas']['Unified'];
 export type Response = components['schemas']['Response'];
 export type DirekteOppslag = components['schemas']['DirekteOppslag'];
 export type Organisasjonsnavn = components['schemas']['Organisasjonsnavn'];

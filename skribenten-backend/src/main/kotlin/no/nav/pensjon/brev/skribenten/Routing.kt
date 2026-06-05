@@ -3,13 +3,13 @@ package no.nav.pensjon.brev.skribenten
 import com.typesafe.config.Config
 import io.ktor.http.*
 import io.ktor.openapi.*
-import io.ktor.openapi.reflect.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.routing.*
 import io.ktor.server.routing.openapi.*
 import no.nav.pensjon.brev.skribenten.auth.*
+import no.nav.pensjon.brev.skribenten.openapi.JacksonReflectionJsonSchemaInference
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceHttp
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacadeFactory
@@ -72,7 +72,7 @@ fun Application.configureRouting(
             info = OpenApiInfo("Skribenten Internal API", "1.0")
             source = OpenApiDocSource.Routing(
                 contentType = ContentType.Application.Json,
-                schemaInference = ReflectionJsonSchemaInference.Default,
+                schemaInference = JacksonReflectionJsonSchemaInference.Default,
                 routes = {
                     val excludedRoutePrefixes = listOf("/external/", "/swagger", "/isAlive", "/isReady", "/brevmal/{brevkode}/modelSpecification")
                     routingRoot.descendants()
