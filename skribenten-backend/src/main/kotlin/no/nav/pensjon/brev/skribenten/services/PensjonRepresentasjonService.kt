@@ -47,9 +47,10 @@ class PensjonRepresentasjonService(
     data class HasRepresentantResponse(val value: Boolean)
 
     enum class RelevanteRepresentasjonstyper {
-        PENSJON_VERGE,
-        PENSJON_PENGEMOTTAKER,
-        PENSJON_VERGE_PENGEMOTTAKER,
+        VERGE_PENSJON_LES,
+        VERGE_PENSJON_SKRIV,
+        VERGE_UFORETRYGD_LES,
+        VERGE_UFORETRYGD_SKRIV
     }
 
     suspend fun harVerge(pid: Pid): Boolean? =

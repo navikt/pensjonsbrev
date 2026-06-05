@@ -145,26 +145,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                 }
             }
 
-            paragraph {
-                text(
-                    bokmal {
-                        +"Nedenfor kan du se nærmere hvilke inntekter som er brukt og hvordan vi har " +
-                                "beregnet din nye pensjon for denne perioden. Vi gjør oppmerksom på at " +
-                                "innrapporterte inntektsopplysninger fra Skatteetaten ikke skiller mellom hvor " +
-                                "stor del av inntekten din som er opptjent før og etter at du tok ut AFP."
-                    },
-                    nynorsk {
-                        +"Nedanfor kan du sjå nærmare kva inntekter som er brukt, og korleis vi har " +
-                                "berekna den nye pensjonen din for denne perioden. Vi gjer merksam på at " +
-                                "innrapporterte inntektsopplysningar frå Skatteetaten ikkje skil mellom kor " +
-                                "stor del av inntekta di som er opptent før og etter at du tok ut AFP. Nav kan " +
-                                "heller ikkje sjå om nokre av inntektene stammar frå arbeid i samband med " +
-                                "covid-19. Vi kan heller ikkje sjå at noko av inntekta er pensjonistlønn etter " +
-                                "særskilt sats for arbeid med fordrivne frå Ukraina. Nokre slike inntekter kan " +
-                                "haldast utanfor inntektsavkortinga."
-                    },
-                )
-            }
+            includePhrase(AfpEtteroppgjoerInnhold.NedenforInntekterBruktOgBeregnet)
 
             showIf(medlemAvApotekerordningen) {
                 includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
@@ -172,120 +153,22 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                 includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
             }
 
-            // Melding om endringer av inntekten + de to delte innledende paragrafene.
             includePhrase(AfpEtteroppgjoerInnhold.MeldingOmEndringerInnledning)
 
-            // Inlinet: «Inntekt som skal holdes utenfor etteroppgjøret»-liste.
-            // TODO ordlydsavvik vs PE_AF_04_100/102 i covid-19-punktet og
-            //  Ukraina-punktet. Avklar med fag om listen skal harmoniseres
-            //  på tvers av AFP etteroppgjør-brevene.
-            paragraph {
-                text(
-                    bokmal { +"Inntekt som skal holdes utenfor etteroppgjøret:" },
-                    nynorsk { +"Inntekt som skal haldast utanfor etteroppgjeret:" },
-                )
-                list {
-                    item {
-                        text(
-                            bokmal { +"Feriepenger og lønn som er opptjent før første uttak av AFP" },
-                            nynorsk { +"Feriepengar og lønn som er opptente før første uttaket av AFP" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal {
-                                +"Honorar, royalty, bonus eller andre inntekter som kommer fra arbeid " +
-                                        "eller virksomhet før første uttak av AFP"
-                            },
-                            nynorsk {
-                                +"Honorar, royalty, bonus eller andre inntekter som stammar frå arbeid " +
-                                        "eller verksemd før det første uttaket av AFP"
-                            },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal {
-                                +"Etterbetaling av trygdeytelser som gjelder for tidsrom før AFP ble tatt ut"
-                            },
-                            nynorsk {
-                                +"Etterbetaling av trygdeytingar som gjeld for tidsrom før AFP vart tatt ut"
-                            },
-                        )
-                    }
-                }
-            }
-            paragraph {
-                text(
-                    bokmal { +"Inntekt fra arbeid med fordrevne fra Ukraina som skal holdes utenfor etteroppgjøret " },
-                    nynorsk { +"" }
+            includePhrase(AfpEtteroppgjoerInnhold.InntektUtenforEtteroppgjoerListe)
 
-                )
-                list {
-                    item {
-                        text(
-                            bokmal {
-                                +"Feriepenger etter særskilt sats for pensjonistavlønning fra arbeid med fordrevne fra Ukraina. Dette gjelder bare feriepenger fra arbeid til og med 31. desember 2024."
-                            },
-                            nynorsk {
-                                +""
-                            },
-                        )
-                    }
-                }
-            }
-            paragraph {
-                text(
-                    bokmal { +"Vi trenger bekreftelse fra arbeidsgiveren din om: " },
-                    nynorsk { +"" }
-                )
-                list {
-                    item {
-                        text(
-                            bokmal { +"hvor mye du har hatt i feriepenger fra inntekter fra slikt ekstra arbeid" },
-                            nynorsk { +"" }
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"i hvilken tidsperiode(-r) dette gjelder" },
-                            nynorsk { +"" }
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"om utbetalingen er gjort etter særskilt sats for pensjonistavlønning" },
-                            nynorsk { +"" }
-                        )
-                    }
-                }
-            }
-            paragraph {
-                text(
-                    bokmal { +"Reglene om inntekter fra arbeid med fordrevne fra Ukraina finnes i forskrift om kombinasjon av AFP og arbeidsinntekt § 2 tredje ledd." },
-                    nynorsk { +"" }
-                )
-            }
-
-            // Felles paragraf «Annen inntekt som er opptjent samtidig … inntektsprøves».
-            // 101-originalen sier "etter uttak av AFP", fellesfrasen sier
-            // "etter første uttak av AFP" — kosmetisk, harmoniseres mot fellesfrasen.
             includePhrase(AfpEtteroppgjoerInnhold.AnnenInntektInntektsproevd)
 
             includePhrase(AfpEtteroppgjoerInnhold.DokumenterInntekterUtenforAvkorting)
 
-            // Skjema-paragraf — delt med PE_AF_04_100 og PE_AF_04_102.
             includePhrase(AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon)
 
-            // «Inntekten din i {år}»-tittel + PGI-paragraf.
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
             includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pensjonsgivendeInntekt = pensjonsgivendeInntekt, oppgjoersAar = oppgjoersAar))
 
-            // Periode-diskriminert fordeling av PGI på periodene med/uten AFP.
-            // Delt med PE_AF_04_107 (toleransebeløp). Se phrase for detaljer.
             includePhrase(
-                AfpEtteroppgjoerInnhold.IfuIeoFordelingPerPeriode(
+                AfpEtteroppgjoerInnhold.InntektFoerUttakInntektEtterOpphoerFordelingPerPeriode(
                     erHelAfpHeleAaret = periode.equalTo(Periode.HEL_AFP_HELE_AARET),
                     erUttakIAaret = periode.equalTo(Periode.UTTAK_I_AARET),
                     erOpphoerIAaret = periode.equalTo(Periode.OPPHOER_I_AARET),

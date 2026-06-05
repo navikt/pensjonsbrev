@@ -33,7 +33,7 @@ data class Simulering(
     @DisplayText("AFP offentlig livsvarig")
     val afpOffentligLivsvarig: AfpOffentligLivsvarigSimulering?,
     @DisplayText("AFP offentlig tidsbegrenset")
-    val afpOffentligTidsbegrenset: AfpOffentligTidsbegrensetSimulering?,
+    val afpOffentligTidsbegrenset: TidsbegrensetOffentligAfp?,
 )
 
 data class AfpPrivatSimulering(
@@ -41,6 +41,8 @@ data class AfpPrivatSimulering(
     val vedGradertUttak: PrivatAfp?,
     @DisplayText("Ved helt uttak")
     val vedHeltUttak: PrivatAfp,
+    @DisplayText("Ved 67 år")
+    val vedNormertPensjonsalder: PrivatAfp?,
 )
 
 data class AfpOffentligLivsvarigSimulering(
@@ -50,111 +52,67 @@ data class AfpOffentligLivsvarigSimulering(
     val vedHeltUttak: LivsvarigOffentligAfp,
 )
 
-data class AfpOffentligTidsbegrensetSimulering(
-    @DisplayText("Ved gradert uttak")
-    val vedGradertUttak: TidsbegrensetOffentligAfp?,
-    @DisplayText("Ved helt uttak")
-    val vedHeltUttak: TidsbegrensetOffentligAfp,
-)
-
 data class Alderspensjon(
-    @DisplayText("placeholder")
     val alderAar: Int,
-    @DisplayText("placeholder")
     val beloep: Kroner,
-    @DisplayText("placeholder")
     val gjenlevendetillegg: Kroner?
 )
 
 data class LivsvarigOffentligAfp(
-    @DisplayText("placeholder")
     val alderAar: Int,
-    @DisplayText("placeholder")
     val aarligBeloep: Kroner,
-    @DisplayText("placeholder")
     val maanedligBeloep: Kroner
 )
 
 data class TidsbegrensetOffentligAfp(
-    @DisplayText("placeholder")
     val alderAar: Int,
-    @DisplayText("placeholder")
     val totaltAfpBeloep: Kroner,
-    @DisplayText("placeholder")
     val tidligereArbeidsinntekt: Kroner,
-    @DisplayText("placeholder")
     val grunnbeloep: Kroner,
-    @DisplayText("placeholder")
     val sluttpoengtall: Double,
-    @DisplayText("placeholder")
     val trygdetid: Int,
-    @DisplayText("placeholder")
     val poengaarTom1991: Int,
-    @DisplayText("placeholder")
     val poengaarFom1992: Int,
-    @DisplayText("placeholder")
     val grunnpensjon: Kroner,
-    @DisplayText("placeholder")
     val tilleggspensjon: Kroner,
-    @DisplayText("placeholder")
     val afpTillegg: Kroner,
-    @DisplayText("placeholder")
     val saertillegg: Kroner,
-    @DisplayText("placeholder")
     val afpGrad: Percent,
-    @DisplayText("placeholder")
     val erAvkortet: Boolean
 )
 
 data class PrivatAfp(
-    @DisplayText("placeholder")
     val alderAar: Int,
-    @DisplayText("placeholder")
     val aarligBeloep: Kroner,
-    @DisplayText("placeholder")
     val kompensasjonstillegg: Kroner,
-    @DisplayText("placeholder")
-    val kronetillegg: Kroner,
-    @DisplayText("placeholder")
+    val kronetillegg: Kroner?,
     val livsvarig: Kroner,
-    @DisplayText("placeholder")
     val maanedligBeloep: Kroner
 )
 
 data class Vilkaarsproevingsresultat(
-    @DisplayText("placeholder")
     val erInnvilget: Boolean,
-    @DisplayText("placeholder")
     val alternativ: Uttaksparametre?
 )
 
 data class Trygdetid(
-    @DisplayText("placeholder")
     val antallAar: Int,
-    @DisplayText("placeholder")
     val erUtilstrekkelig: Boolean
 )
 
 data class AarligBeloep(
-    @DisplayText("placeholder")
     val aarstall: Year,
-    @DisplayText("placeholder")
     val beloep: Kroner
 )
 
 data class Uttaksparametre(
-    @DisplayText("placeholder")
     val gradertUttakAlder: Alder?,
-    @DisplayText("placeholder")
     val uttaksgrad: Percent?,
-    @DisplayText("placeholder")
     val heltUttakAlder: Alder
 )
 
 data class Alder(
-    @DisplayText("placeholder")
     val aar: Int,
-    @DisplayText("placeholder")
     val maaneder: Int
 )
 
@@ -164,8 +122,15 @@ data class Simuleringsinformasjon(
     @DisplayText("Helt uttaksalder")
     val heltUttaksalder: Alder,
     val sivilstatus: Sivilstatus,
-    val utenlandsperioder: List<SimuleringUtenlandsperiode>
+    val utenlandsperioder: List<SimuleringUtenlandsperiode>?,
+    val kull: Kull,
+    val normertPensjonsalderPlassering: NormertPensjonsalderPlassering?
 ) : VedleggData
+
+enum class NormertPensjonsalderPlassering {
+    MELLOM_GRADERT_OG_HELT,
+    ETTER_HELT
+}
 
 data class SimuleringV1MaanedligAlderspensjonForKnekkpunkter(
     @DisplayText("Ved gradert uttak")
@@ -173,7 +138,7 @@ data class SimuleringV1MaanedligAlderspensjonForKnekkpunkter(
     @DisplayText("Ved helt uttak")
     val vedHeltUttak: SimuleringV1MaanedligAlderspensjon,
     @DisplayText("Ved normert pensjonsalder")
-    val vedNormertPensjonsalder: SimuleringV1MaanedligAlderspensjon
+    val vedNormertPensjonsalder: SimuleringV1MaanedligAlderspensjon?
 )
 
 data class SimuleringV1MaanedligAlderspensjon(
@@ -237,7 +202,7 @@ data class SimuleringUtenlandsperiode(
     val fom: LocalDate,
     val tom: LocalDate? = null,
     val landkode: String,
-    val arbeidetUtenlands: Boolean
+    val arbeidetUtenlands: Boolean?
 )
 
 enum class Sivilstatus(val value: String = "None") {
@@ -255,9 +220,15 @@ enum class Sivilstatus(val value: String = "None") {
     SAMBOER("Samboer")
 }
 
+enum class Kull {
+    KAP19,
+    KAP20,
+    OVERGANG
+}
+
 data class ForbeholdInnhold(
     @DisplayText("Seksjoner")
-    val seksjoner: List<ForbeholdSeksjon>,
+    val seksjoner: List<ForbeholdSeksjon>?,
 ) : VedleggData
 
 data class ForbeholdSeksjon(

@@ -63,7 +63,7 @@ private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfig
 suspend fun validerTilgangTilSak(fagsakService: FagsakService, saksId: SaksId, pdlService: PdlService): Fagsak? {
     val sak = fagsakService.hentSak(saksId)
     if (sak != null) {
-        val harTilgang = pdlService.hentAdressebeskyttelse(sak.pid, sak.behandlingsnummer)
+        val harTilgang = pdlService.hentAdressebeskyttelse(sak.pid, sak.behandlingsnumre)
             ?.saksbehandlerHarTilgangTilGradering()
             ?: true
 

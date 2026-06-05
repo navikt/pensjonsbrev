@@ -353,11 +353,11 @@ export function addElements<T extends Identifiable, E extends T>(
     to.splice(
       toIndex - 1,
       1,
-      ...mergeLiteralsIfPossible(elementBeforeStartIndex, firstElementToAdd),
-      ...elements.slice(1),
+      ...mergeLiteralsIfPossible(elementBeforeStartIndex, firstElementToAdd as Draft<T>),
+      ...(elements.slice(1) as unknown as Draft<T>[]),
     );
   } else {
-    to.splice(toIndex, 0, ...elements);
+    to.splice(toIndex, 0, ...(elements as unknown as Draft<T>[]));
   }
 
   const presentIds = to.map((e) => e.id).filter((id) => id !== null) as number[];

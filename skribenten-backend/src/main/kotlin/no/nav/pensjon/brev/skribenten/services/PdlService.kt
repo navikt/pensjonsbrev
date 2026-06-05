@@ -32,8 +32,8 @@ private val hentBrukerContextQuery = PdlServiceHttp::class.java.getResource(HENT
 private val logger = LoggerFactory.getLogger(PdlService::class.java)
 
 interface PdlService {
-    suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Behandlingsnummer?): List<Pdl.Gradering>?
-    suspend fun hentBrukerContext(ident: Pid, behandlingsnummer: Behandlingsnummer?): Pdl.PersonContext?
+    suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnumre: List<Behandlingsnummer>): List<Pdl.Gradering>?
+    suspend fun hentBrukerContext(ident: Pid, behandlingsnumre: List<Behandlingsnummer>): Pdl.PersonContext?
 }
 
 class PdlServiceException(message: String, status: HttpStatusCode = HttpStatusCode.InternalServerError) : ServiceException(message, status = status)
@@ -103,19 +103,19 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
         )
     }
 
-    override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Behandlingsnummer?): List<Pdl.Gradering>? =
+    override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnumre: List<Behandlingsnummer>): List<Pdl.Gradering>? =
         postQuery<DataWrapperPersonMedAdressebeskyttelse>(
             query = PDLQuery<IdentVariables>(hentAdressebeskyttelseQuery, IdentVariables(ident.value)),
-            behandlingsnummer = behandlingsnummer,
+            behandlingsnumre = behandlingsnumre,
         ).handleGraphQLErrors()
             ?.let {
                 it.hentPerson?.adressebeskyttelse?.map { b -> b.gradering }
             }
 
-    override suspend fun hentBrukerContext(ident: Pid, behandlingsnummer: Behandlingsnummer?): Pdl.PersonContext? =
+    override suspend fun hentBrukerContext(ident: Pid, behandlingsnumre: List<Behandlingsnummer>): Pdl.PersonContext? =
         postQuery<DataWrapperPersonSakKontekst>(
             query = PDLQuery(query = hentBrukerContextQuery, variables = IdentVariables(ident.value)),
-            behandlingsnummer = behandlingsnummer,
+            behandlingsnumre = behandlingsnumre,
         ).handleGraphQLErrors()
             ?.let { response ->
                 val person = response.hentPerson
@@ -125,15 +125,13 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
                 )
             }
 
-    private suspend inline fun <reified T : Any> postQuery(query: PDLQuery<*>, behandlingsnummer: Behandlingsnummer?): PDLResponse<T> {
+    private suspend inline fun <reified T : Any> postQuery(query: PDLQuery<*>, behandlingsnumre: List<Behandlingsnummer>): PDLResponse<T> {
         val response = client.post("") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             setBody(query)
             headers {
-                if (behandlingsnummer != null) {
-                    set("Behandlingsnummer", behandlingsnummer.value)
-                }
+                set("Behandlingsnummer", behandlingsnumre.joinToString(",") { it.value })
             }
         }
         return if (response.status.isSuccess()) {

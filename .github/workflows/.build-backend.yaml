@@ -77,7 +77,7 @@ jobs:
         run: |
           ./gradlew :${{ inputs.gradleTarget }}:buildNeeded
       - name: "Build and publish container image to GAR"
-        uses: nais/docker-build-push@078e460885ed0424b60d45ce9220b4be1748be9d # v0
+        uses: nais/docker-build-push@751a312f0803eb96a05a41fadf51be19b7be362c # v0
         id: docker-push
         if: ${{ inputs.buildImage && ((github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch') || (github.event_name == 'schedule' && github.ref == 'refs/heads/main')) }}
         with:
