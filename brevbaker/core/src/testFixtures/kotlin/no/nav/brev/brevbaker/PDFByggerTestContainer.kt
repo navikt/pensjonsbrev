@@ -6,6 +6,9 @@ import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.images.PullPolicy
 import org.testcontainers.utility.DockerImageName
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
 
 object PDFByggerTestContainer {
 
@@ -40,7 +43,10 @@ object PDFByggerTestContainer {
             // bakover-ompatibilitet med pdf-bygger (brukt i integrasjonstester i brevbaker på github actions).
             .withEnv("PDF_BYGGER_COMPILE_TMP_DIR", "/tmp")
             .withEnv("PDF_COMPILE_TIMEOUT_SECONDS", "200")
-            .waitingFor(Wait.forHttp("/isReady").forStatusCode(200))
+            .waitingFor(Wait.forHttp("/isReady")
+                .forStatusCode(200)
+                .withStartupTimeout(50.seconds.toJavaDuration())
+            )
             .withReuse(REUSE_CONTAINER)
     }
 
