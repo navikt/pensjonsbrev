@@ -37,7 +37,7 @@ class PdfByggerTestService(private val pdfByggerUrl: String = PDFByggerTestConta
         httpClient.post("$pdfByggerUrl/produserBrev") {
             contentType(ContentType.Application.Json)
             setBody(objectmapper.writeValueAsBytes(pdfRequest))
-            accept(ContentType.Application.Json)
+            accept(ContentType.Application.Pdf)
         }.bodyAsBytes().let { PDFCompilationOutput(it) }
 
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
