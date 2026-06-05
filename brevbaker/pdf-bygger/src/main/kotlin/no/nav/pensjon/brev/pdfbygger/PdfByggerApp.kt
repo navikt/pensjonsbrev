@@ -92,10 +92,18 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
 
         post("/produserBrev") {
             val request = call.receive<PDFRequest>()
-            val result = typstCompileService.createLetter {
-                TypstDocumentRenderer.render(request, it)
+
+            if (call.request.headers["Accept"] == ContentType.Application.Json.contentType) {
+                val result = typstCompileService.createLetter {
+                    TypstDocumentRenderer.render(request, it)
+                }
+                handleResult(result, call.application.environment.log)
+            } else {
+                val result = typstCompileService.createLetter {
+                    TypstDocumentRenderer.render(request, it)
+                }
+                handleResult(result, call.application.environment.log)
             }
-            handleResult(result, call.application.environment.log)
         }
 
         get("/isAlive") {
