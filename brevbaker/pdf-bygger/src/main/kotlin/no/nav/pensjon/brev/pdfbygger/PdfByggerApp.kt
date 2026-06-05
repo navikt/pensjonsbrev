@@ -18,7 +18,6 @@ import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.util.logging.Logger
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.PDFRequest
@@ -95,7 +94,25 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
             val result = typstCompileService.createLetter {
                 TypstDocumentRenderer.render(request, it)
             }
-            handleResult(result, call.application.environment.log)
+            val logger = call.application.environment.log
+            when (result) {
+                is PDFCompilationResponse.Success -> call.respond(result.pdfCompilationOutput)
+                is PDFCompilationResponse.Failure.Client -> {
+                    logger.warn("Client error: ${result.reason}")
+                    if (result.output?.isNotBlank() == true) {
+                        logger.warn("Output: ${result.output}")
+                    }
+                    if (result.error?.isNotBlank() == true) {
+                        logger.warn("Error: ${result.error}")
+                    }
+                    call.respond(HttpStatusCode.BadRequest, result)
+                }
+
+                is PDFCompilationResponse.Failure.Server -> {
+                    logger.error(result.reason)
+                    call.respond(HttpStatusCode.InternalServerError, result)
+                }
+            }
         }
 
         get("/isAlive") {
@@ -108,28 +125,3 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
     }
 
 }
-
-private suspend fun RoutingContext.handleResult(
-    result: PDFCompilationResponse,
-    logger: Logger,
-) {
-    when (result) {
-        is PDFCompilationResponse.Success -> call.respond(result.pdfCompilationOutput)
-        is PDFCompilationResponse.Failure.Client -> {
-            logger.warn("Client error: ${result.reason}")
-            if (result.output?.isNotBlank() == true) {
-                logger.warn("Output: ${result.output}")
-            }
-            if (result.error?.isNotBlank() == true) {
-                logger.warn("Error: ${result.error}")
-            }
-            call.respond(HttpStatusCode.BadRequest, result)
-        }
-
-        is PDFCompilationResponse.Failure.Server -> {
-            logger.error(result.reason)
-            call.respond(HttpStatusCode.InternalServerError, result)
-        }
-    }
-}
-
