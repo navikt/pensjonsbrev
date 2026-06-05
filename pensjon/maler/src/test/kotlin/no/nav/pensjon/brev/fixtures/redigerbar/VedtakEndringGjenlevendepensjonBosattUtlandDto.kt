@@ -23,7 +23,7 @@ fun createVedtakEndringGjenlevendepensjonBosattUtlandDto() =
             aarsakEndring = AarsakEndring.OEKNING_AV_INNTEKT,
             forventetInntektNivaa = ForventetInntektNivaa.OVER_HALV_G,
             harBehovForOppfoelging = true,
-            skattAlternativ = SkattAlternativ.INGEN_INFORMASJON_OM_SKATT,
+            skattAlternativ = SkattAlternativ.INFORMASJON_OM_SKATT_OG_KILDESKATT,
             utbetalingAlternativ = UtbetalingAlternativ.ETTERBETALING,
         ),
         pesysData = PesysData(

@@ -2,7 +2,9 @@ package no.nav.pensjon.brev.maler.legacy.vedlegg
 
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.Beregningsmetode
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.Poengtallstype
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.Poengtallstype.FRAMTIDIG_POENG
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.Poengtallstype.OMSORGSPOENG_K
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.Poengtallstype.OMSORGSPOENG_L
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.avtaleland
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.doedsdato
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.doedsfallSkyldesYrkesskade
@@ -14,8 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtl
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.trygdetidsgrunnlagNorge
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.ttNordiskAar
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.ttNordiskMnd
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.ungUfoerFodtEtter1940
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.ungUfoerFodtFor1941
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.ungUfoer
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BeregningSelectors.beregningsmetode
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BeregningSelectors.poengrekke
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BeregningSelectors.sluttpoengtall
@@ -25,11 +26,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtl
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BeregningSelectors.ttAnvBest
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BeregningSelectors.yrke
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BeregningSelectors.yug
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BrukerSelectors.ektefelleInntektOver2g
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BrukerSelectors.ektefelleMottarPensjon
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BrukerSelectors.flyktning as brukerFlyktning
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BrukerSelectors.forventetInntekt
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BrukerSelectors.samboer3_2
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.PesysDataSelectors.avdoed
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.PesysDataSelectors.beregning
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.PesysDataSelectors.bruker
@@ -105,7 +103,6 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
@@ -140,7 +137,6 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
             )
         }
         // ---- Opplysninger om deg ----
-        // TODO(Redigerbare informasjon i 'Opplsninger om deg' i vedlegget må enten fjernes fra malen eller legges i hovedbrevet)
         paragraph {
             table(
                 header = {
@@ -176,38 +172,6 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                         )
                     }
                     cell { }
-                }
-                showIf(pesysData.bruker.samboer3_2) {
-                    row {
-                        cell {
-                            text(
-                                bokmal {
-                                    +"Samboer mottar pensjon fra folketrygden eller AFP som det godskrives pensjonspoeng for: " +
-                                            ifElse(pesysData.bruker.ektefelleMottarPensjon, "Ja", "Nei")
-                                },
-                                english {
-                                    +"Cohabiter is receiving a pension from the National Insurance Scheme or AFP for which he/she is being credited with pension points: " +
-                                            ifElse(pesysData.bruker.ektefelleMottarPensjon, "Yes", "No")
-                                },
-                            )
-                        }
-                        cell { }
-                    }
-                    row {
-                        cell {
-                            text(
-                                bokmal {
-                                    +"Samboer har inntekt over 2 G: " +
-                                            ifElse(pesysData.bruker.ektefelleInntektOver2g, "Ja", "Nei")
-                                },
-                                english {
-                                    +"Cohabiter has an income of more than 2 G: " +
-                                            ifElse(pesysData.bruker.ektefelleInntektOver2g, "Yes", "No")
-                                },
-                            )
-                        }
-                        cell { }
-                    }
                 }
 
                 // ---- Opplysninger om avdøde ----
@@ -281,16 +245,955 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                     }
                 }
 
+               // Seksjonen om samboer 3-2 er fjernet, da dette er redigerbar og bør plasseres i brevet istedenfor.
+
                 // ---- Beregningsmetode-spesifikke opplysninger ----
-                // Kollapser de fire Exstream `Beregningsmetode2`-grenene til ett `showIf … orShowIf … orShow {}`-treff.
+                // De fire Exstream `Beregningsmetode2`-grenene; innholdet er stort sett identisk på tvers av
+                // metodene, forskjellene ligger i hvilke felt som har verdi og hvilke ord/etiketter som brukes.
                 showIf(pesysData.beregning.beregningsmetode.equalTo(Beregningsmetode.FOLKETRYGD)) {
-                    folketrygdSeksjon()
+                    showIf(
+                        pesysData.beregning.sluttpoengtall.sptUtenOk.notEqualTo(0.0)
+                                and pesysData.beregning.sluttpoengtall.optMedOk.equalTo(0.0),
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Sluttpoengtall" },
+                                    english { +"Final pension point score" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.sluttpoengtall.sptUtenOk.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.sptUtenOk.format() },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.sluttpoengtall.optMedOk.notEqualTo(0.0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Sluttpoengtall med overkompensasjon" },
+                                    english { +"Final pension point score with over-compensation" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.sluttpoengtall.optMedOk.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.optMedOk.format() },
+                                )
+                            }
+                        }
+                        showIf(pesysData.beregning.sluttpoengtall.sptUtenOk.notEqualTo(0.0)) {
+                            row {
+                                cell {
+                                    text(
+                                        bokmal { +"Sluttpoengtall uten overkompensasjon" },
+                                        english { +"Final pension point score without over-compensation" },
+                                    )
+                                }
+                                cell {
+                                    text(
+                                        bokmal { +pesysData.beregning.sluttpoengtall.sptUtenOkMinusOptMedOkAvdoed.format() },
+                                        english { +pesysData.beregning.sluttpoengtall.sptUtenOkMinusOptMedOkAvdoed.format() },
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.tpInnvilget) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall poengår brukt i beregning" },
+                                    english { +"Number of pension point earning years" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOk.format() + " år" },
+                                    english { +pesysData.beregning.poengrekke.poengaarUtenOk.format() + " year(s)" },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.poengaarUtenOkF92.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall år med pensjonsprosent 45" },
+                                    english { +"Number of years with a 45 per cent pension" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkF92.format() + " år" },
+                                    english { +pesysData.beregning.poengrekke.poengaarUtenOkF92.format() + " year(s)" },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.poengaarUtenOkE91.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall år med pensjonsprosent 42" },
+                                    english { +"Number of years with a 42 per cent pension" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkE91.format() + " år" },
+                                    english { +pesysData.beregning.poengrekke.poengaarUtenOkE91.format() + " year(s)" },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.avdoed.ungUfoer) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Ung ufør" },
+                                    english { +"Young person with disabilities" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +"Ja" },
+                                    english { +"Yes" },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.avdoed.doedsfallSkyldesYrkesskade) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Dødsfall skyldes yrkesskade" },
+                                    english { +"Death due to occupational injury" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +"Ja" },
+                                    english { +"Yes" },
+                                )
+                            }
+                        }
+                    }
+                    ifNotNull(pesysData.avdoed.skadetidspunktYrkesskade) { skadetidspunkt ->
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Yrkesskadetidspunkt" },
+                                    english { +"Date/time of occupational injury" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +skadetidspunkt.format() },
+                                    english { +skadetidspunkt.format() },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.yug.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Avdøde har tidligere godkjent yrkesskade med en uføregrad på" },
+                                    english { +"The deceased has had an approved occupational injury with a degree of disability of" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.yug.format() + " %" },
+                                    english { +pesysData.beregning.yug.format() + " %" },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.yrke.sluttpoengtallYrke.notEqualTo(0.0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Sluttpoengtall ved yrkesskade" },
+                                    english { +"Final points figure on occupational injury" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.yrke.sluttpoengtallYrke.format() },
+                                    english { +pesysData.beregning.yrke.sluttpoengtallYrke.format() },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.yrke.poengaarYrke.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall poengår benyttet ved yrkesskadeberegningen" },
+                                    english { +"Number of point-earning year(s) applied when calculating occupational injury" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.yrke.poengaarYrke.format() + " år" },
+                                    english { +pesysData.beregning.yrke.poengaarYrke.format() + " year(s)" },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.yrke.poengaarYrkeF92.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall år med pensjonsprosent 45 (yrkesskade)" },
+                                    english { +"Number of years with a 45 per cent pension (occupational injury)" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.yrke.poengaarYrkeF92))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.yrke.poengaarYrkeE91.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall år med pensjonsprosent 42 (yrkesskade)" },
+                                    english { +"Number of years with a 42 per cent pension (occupational injury)" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.yrke.poengaarYrkeE91))
+                            }
+                        }
+                    }
                 }.orShowIf(pesysData.beregning.beregningsmetode.equalTo(Beregningsmetode.EOS)) {
-                    eosSeksjon()
+                    showIf(pesysData.beregning.trygdetid.faTTNorge.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Faktisk trygdetid i Norge" },
+                                    english { +"Actual period of national insurance cover in Norway" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTNorge))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.trygdetid.faTTEos.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Faktisk trygdetid i andre EØS-land" },
+                                    english { +"Actual period of national insurance cover in other EEA country" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTEos))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.trygdetid.framtidigTTEos.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Framtidig trygdetid" },
+                                    english { +"Period of future national insurance cover" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.framtidigTTEos))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.trygdetid.faTTNorge.notEqualTo(0) and pesysData.beregning.trygdetid.faTTEos.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)" },
+                                    english { +"Actual period of national insurance cover in Norway and the other EEA country (max 40 years)" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTNorgePlusFaTTEos))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.poengaarUtenOkF92.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall år med pensjonsprosent 45 (EØS)" },
+                                    english { +"Number of years with a 45 per cent pension (EEA)" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkF92))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.poengaarUtenOkE91.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall år med pensjonsprosent 42 (EØS)" },
+                                    english { +"Number of years with a 42 per cent pension (EEA)" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkE91))
+                            }
+                        }
+                    }
+                    showIf(
+                        pesysData.beregning.trygdetid.ttNevnerEos.notEqualTo(0)
+                                and pesysData.beregning.trygdetid.ttTellerEos.notEqualTo(0),
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Forholdstallet brukt ved beregning av grunnpensjon" },
+                                    english { +"The ratio on which the basic pension is calculated" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal {
+                                        +pesysData.beregning.trygdetid.ttTellerEos.format() + "/" +
+                                                pesysData.beregning.trygdetid.ttNevnerEos.format()
+                                    },
+                                    english {
+                                        +pesysData.beregning.trygdetid.ttTellerEos.format() + "/" +
+                                                pesysData.beregning.trygdetid.ttNevnerEos.format()
+                                    },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall faktiske poengår i Norge" },
+                                    english { +"Number of point earning years in Norway" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall poengår i andre EØS-land" },
+                                    english { +"Number of point earning years in other EEA country" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos))
+                            }
+                        }
+                    }
+                    showIf(
+                        pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)
+                                and pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.notEqualTo(0),
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall poengår i Norge og EØS-land (maksimalt 40 år)" },
+                                    english { +"Number of point earning years in Norway and other EEA country (max 40 years)" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusEos2))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.poengaarUtenOkTeoretiskEos.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Samlet antall poengår i Norge og avtaleland (inkludert framtidig)" },
+                                    english { +"Total number of point years in Norway and other EEA countries (future years included)" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkTeoretiskEos))
+                            }
+                        }
+                    }
+                    showIf(
+                        pesysData.beregning.poengrekke.poengaarTellerEos.notEqualTo(0)
+                                and pesysData.beregning.poengrekke.poengaarNevnerEos.notEqualTo(0),
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Forholdstallet brukt ved beregning av tilleggspensjon" },
+                                    english { +"The ratio on which the supplementary pension is calculated" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal {
+                                        +pesysData.beregning.poengrekke.poengaarTellerEos.format() + "/" +
+                                                pesysData.beregning.poengrekke.poengaarNevnerEos.format()
+                                    },
+                                    english {
+                                        +pesysData.beregning.poengrekke.poengaarTellerEos.format() + "/" +
+                                                pesysData.beregning.poengrekke.poengaarNevnerEos.format()
+                                    },
+                                )
+                            }
+                        }
+                    }
+                    showIf(
+                        pesysData.beregning.tpInnvilget
+                                and pesysData.beregning.sluttpoengtall.optMedOkEos.equalTo(0.0),
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Sluttpoengtall (EØS)" },
+                                    english { +"Final pension point score (EEA)" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.sluttpoengtall.sptUtenOkEos.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.sptUtenOkEos.format() },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.sluttpoengtall.optMedOkEos.notEqualTo(0.0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Sluttpoengtall med overkompensasjon (EØS)" },
+                                    english { +"Final points with over-compensation (EEA)" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.sluttpoengtall.optMedOkEos.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.optMedOkEos.format() },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.sluttpoengtall.sptUtenOkEos.notEqualTo(0.0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Sluttpoengtall uten overkompensasjon (EØS)" },
+                                    english { +"Final points without over-compensation (EEA)" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.sluttpoengtall.sptUtenOkEosMinusOptMedOkEos2.format(denominator = false) },
+                                    english { +pesysData.beregning.sluttpoengtall.sptUtenOkEosMinusOptMedOkEos2.format(denominator = false) },
+                                )
+                            }
+                        }
+                    }
                 }.orShowIf(pesysData.beregning.beregningsmetode.equalTo(Beregningsmetode.NORDISK)) {
-                    nordiskSeksjon()
+                    showIf(
+                        pesysData.beregning.sluttpoengtall.sptUtenOkNordisk.notEqualTo(0.0)
+                                and pesysData.beregning.sluttpoengtall.optMedOkNordisk.equalTo(0.0),
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Sluttpoengtall (nordisk)" },
+                                    english { +"Final pension point score (Nordic)" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.sluttpoengtall.sptUtenOkNordisk.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.sptUtenOkNordisk.format() },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.sluttpoengtall.optMedOkNordisk.notEqualTo(0.0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Sluttpoengtall med overkompensasjon (nordisk)" },
+                                    english { +"Final points with over-compensation (Nordic)" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.sluttpoengtall.optMedOkNordisk.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.optMedOkNordisk.format() },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.sluttpoengtall.sptUtenOkNordisk.notEqualTo(0.0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Sluttpoengtall uten overkompensasjon (nordisk)" },
+                                    english { +"Final points without over-compensation (Nordic)" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal {
+                                        +pesysData.beregning.sluttpoengtall.sptUtenOkNordiskMinusOptMedOkNordisk2.format(
+                                            denominator = false
+                                        )
+                                    },
+                                    english {
+                                        +pesysData.beregning.sluttpoengtall.sptUtenOkNordiskMinusOptMedOkNordisk2.format(
+                                            denominator = false
+                                        )
+                                    },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.tpInnvilget) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall poengår brukt i beregning" },
+                                    english { +"Number of point earning years" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOk))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.poengaarUtenOkF92.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall år med pensjonsprosent 45" },
+                                    english { +"Number of years with a 45 per cent pension" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkF92))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.poengaarUtenOkE91.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall år med pensjonsprosent 42" },
+                                    english { +"Number of years with a 42 per cent pension" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkE91))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.trygdetid.ttNordisk.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Faktisk trygdetid i annet nordisk land som beregner framtidig trygdetid" },
+                                    english { +"Actual period of national insurance cover in other Nordic country that calculates future national insurance cover" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.ttNordisk))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.trygdetid.framtidigTTNorsk.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Norsk framtidig trygdetid" },
+                                    english { +"Period of future national insurance cover in Norway" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.framtidigTTNorsk))
+                            }
+                        }
+                    }
+                    showIf(
+                        pesysData.beregning.trygdetid.ttNevnerNordisk.notEqualTo(0)
+                                and pesysData.beregning.trygdetid.ttTellerNordisk.notEqualTo(0),
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Forholdstallet brukt ved avkorting av norsk framtidig trygdetid" },
+                                    english { +"The ratio on which the future national insurance cover in Norway is reduced" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal {
+                                        +pesysData.beregning.trygdetid.ttTellerNordisk.format() + "/" +
+                                                pesysData.beregning.trygdetid.ttNevnerNordisk.format()
+                                    },
+                                    english {
+                                        +pesysData.beregning.trygdetid.ttTellerNordisk.format() + "/" +
+                                                pesysData.beregning.trygdetid.ttNevnerNordisk.format()
+                                    },
+                                )
+                            }
+                        }
+                    }
+                    showIf(
+                        pesysData.beregning.trygdetid.faTTNorge.notEqualTo(0)
+                                and pesysData.beregning.trygdetid.faTTNorgePlusFaTTA10Netto.notEqualTo(0),
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Samlet trygdetid brukt ved beregning av grunnpensjon etter avkorting av framtidig tid" },
+                                    english { +"Total period of national insurance cover on which the basic pension is calculated after reduction of future time" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTNorgePlusFaTTA10Netto))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall faktiske poengår i Norge" },
+                                    english { +"Actual point earning years in Norway" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorden.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Poengår i annet nordisk land som beregner framtidige år" },
+                                    english { +"Point earning years in other Nordic country that calculates future years" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorden))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.framtidigPoengaarNordenBrutto.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Norske framtidige poengår" },
+                                    english { +"Nordic actual point earning years" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.framtidigPoengaarNordenBrutto))
+                            }
+                        }
+                    }
+                    showIf(
+                        pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)
+                                and pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorden.notEqualTo(0),
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Forholdstallet brukt ved avkorting av norske framtidige poengår" },
+                                    english { +"The ratio on which the reduction of future point earning years in Norway is based" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal {
+                                        +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.format() + "/" +
+                                                pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusFaktiskeNorden2.format()
+                                    },
+                                    english {
+                                        +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.format() + "/" +
+                                                pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusFaktiskeNorden2.format()
+                                    },
+                                )
+                            }
+                        }
+                    }
+                    showIf(
+                        pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)
+                                and pesysData.beregning.poengrekke.framtidigPoengaarNordenNetto.notEqualTo(0),
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Samlet antall poengår for beregning av tilleggspensjon etter avkorting av framtidig poengår" },
+                                    english { +"Total number of point earning years on which the supplementary pension is based after reduction of future point earning years" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusFramtidigPoengaarNordenNetto2.format() },
+                                    english { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusFramtidigPoengaarNordenNetto2.format() },
+                                )
+                            }
+                        }
+                    }
                 }.orShow {
-                    bilateralSeksjon()
+                    showIf(pesysData.beregning.trygdetid.faTTNorge.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Faktisk trygdetid i Norge" },
+                                    english { +"Actual period of national insurance cover in Norway" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTNorge))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.trygdetid.faTTBilateral.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Faktisk trygdetid i andre avtaleland" },
+                                    english { +"Actual period of national insurance cover in other country with social security agreement" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTBilateral))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.trygdetid.framtidigTTAvtaleland.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Framtidig trygdetid" },
+                                    english { +"Period of future national insurance cover" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.framtidigTTAvtaleland))
+                            }
+                        }
+                    }
+                    showIf(
+                        pesysData.beregning.trygdetid.faTTNorge.notEqualTo(0)
+                                and pesysData.beregning.trygdetid.faTTBilateral.notEqualTo(0),
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)" },
+                                    english { +"Actual period of national insurance cover in Norway and country with social security agreement (max 40 years)" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTNorgePlusFaTTBilateral))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.poengaarUtenOkF92.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall år med pensjonsprosent 45 (avtaleland)" },
+                                    english { +"Number of years with a 45 per cent pension (other country)" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkF92))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.poengaarUtenOkE91.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall år med pensjonsprosent 42 (avtaleland)" },
+                                    english { +"Number of years with a 42 per cent pension (other country)" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkE91))
+                            }
+                        }
+                    }
+                    showIf(
+                        pesysData.beregning.trygdetid.ttNevnerBilateral.notEqualTo(0)
+                                and pesysData.beregning.trygdetid.ttTellerBilateral.notEqualTo(0),
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Forholdstallet brukt ved beregning av grunnpensjon" },
+                                    english { +"The ratio on which the basic pension is calculated" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal {
+                                        +pesysData.beregning.trygdetid.ttTellerBilateral.format() + "/" +
+                                                pesysData.beregning.trygdetid.ttNevnerBilateral.format()
+                                    },
+                                    english {
+                                        +pesysData.beregning.trygdetid.ttTellerBilateral.format() + "/" +
+                                                pesysData.beregning.trygdetid.ttNevnerBilateral.format()
+                                    },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall faktiske poengår i Norge" },
+                                    english { +"Number of point earning years in Norway" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall poengår i andre avtaleland" },
+                                    english { +"Number of point earning years in the other country" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos))
+                            }
+                        }
+                    }
+                    showIf(
+                        pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)
+                                and pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.notEqualTo(0),
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall poengår i Norge og avtaleland (maksimalt 40 år)" },
+                                    english { +"Number of point earning years in Norway and other country (max 40 years)" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusEos2))
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.poengrekke.framtidigPoengtall.notEqualTo(0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Antall framtidige poengår" },
+                                    english { +"Period of future point earning years" },
+                                )
+                            }
+                            cell {
+                                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.framtidigPoengtall))
+                            }
+                        }
+                    }
+                    showIf(
+                        pesysData.beregning.poengrekke.poengaarTellerEos.notEqualTo(0)
+                                and pesysData.beregning.poengrekke.poengaarNevnerEos.notEqualTo(0),
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Forholdstallet brukt ved beregning av tilleggspensjon" },
+                                    english { +"Ratio used when calculating pro rata supplementary pension" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal {
+                                        +pesysData.beregning.poengrekke.poengaarTellerEos.format() + "/" +
+                                                pesysData.beregning.poengrekke.poengaarNevnerEos.format()
+                                    },
+                                    english {
+                                        +pesysData.beregning.poengrekke.poengaarTellerEos.format() + "/" +
+                                                pesysData.beregning.poengrekke.poengaarNevnerEos.format()
+                                    },
+                                )
+                            }
+                        }
+                    }
+                    showIf(
+                        pesysData.beregning.tpInnvilget
+                                and pesysData.beregning.sluttpoengtall.optMedOkEos.equalTo(0.0),
+                    ) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Sluttpoengtall (avtaleland)" },
+                                    english { +"Final points figure (Other country)" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.sluttpoengtall.sptUtenOkEos.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.sptUtenOkEos.format() },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.sluttpoengtall.optMedOkEos.notEqualTo(0.0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Sluttpoengtall med overkompensasjon (avtaleland)" },
+                                    english { +"Final points figure with over-compensation (Other country)" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.sluttpoengtall.optMedOkEos.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.optMedOkEos.format() },
+                                )
+                            }
+                        }
+                    }
+                    showIf(pesysData.beregning.sluttpoengtall.sptUtenOkEos.notEqualTo(0.0)) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Sluttpoengtall uten overkompensasjon (avtaleland)" },
+                                    english { +"Final points figure without over-compensation (Other country)" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +pesysData.beregning.sluttpoengtall.sptUtenOkEosMinusOptMedOkEos2.format(denominator = false) },
+                                    english { +pesysData.beregning.sluttpoengtall.sptUtenOkEosMinusOptMedOkEos2.format(denominator = false) },
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -525,15 +1428,15 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                             }
                             cell {
                                 showIf(
-                                    ar.poengtallstype.equalTo(Poengtallstype.OMSORGSPOENG_J)
-                                            or ar.poengtallstype.equalTo(Poengtallstype.OMSORGSPOENG_K)
-                                            or ar.poengtallstype.equalTo(Poengtallstype.OMSORGSPOENG_L),
+                                    ar.poengtallstype.equalTo(OpplysningerOmBeregningenGPUtlandDto.Poengtallstype.OMSORGSPOENG_J)
+                                            or ar.poengtallstype.equalTo(OMSORGSPOENG_K)
+                                            or ar.poengtallstype.equalTo(OMSORGSPOENG_L),
                                 ) {
                                     text(
                                         bokmal { +"Omsorgspoeng godskrevet" },
                                         english { +"Credited acquired rights for care work" },
                                     )
-                                }.orShowIf(ar.poengtallstype.equalTo(Poengtallstype.FRAMTIDIG_POENG)) {
+                                }.orShowIf(ar.poengtallstype.equalTo(FRAMTIDIG_POENG)) {
                                     text(
                                         bokmal { +"Framtidig pensjonspoeng" },
                                         english { +"Future pension point score" },
@@ -611,961 +1514,5 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
         }
     }
 
-// region Per-beregningsmetode-seksjoner
-// Hver av de fire seksjonene speiler de tilsvarende `Beregningsmetode2 = "..."`-blokkene fra Exstream-kilden.
-// Innholdet er stort sett identisk på tvers av metodene; forskjellene ligger i hvilke felt som har verdi
-// og hvilke ord/etiketter som brukes (f.eks. "(EØS)" / "(nordisk)").
-
-private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, OpplysningerOmBeregningenGPUtlandDto>.folketrygdSeksjon() {
-    showIf(
-        pesysData.beregning.sluttpoengtall.sptUtenOk.notEqualTo(0.0)
-                and pesysData.beregning.sluttpoengtall.optMedOk.equalTo(0.0),
-    ) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Sluttpoengtall" },
-                    english { +"Final pension point score" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.sluttpoengtall.sptUtenOk.format() },
-                    english { +pesysData.beregning.sluttpoengtall.sptUtenOk.format() },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.sluttpoengtall.optMedOk.notEqualTo(0.0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Sluttpoengtall med overkompensasjon" },
-                    english { +"Final pension point score with over-compensation" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.sluttpoengtall.optMedOk.format() },
-                    english { +pesysData.beregning.sluttpoengtall.optMedOk.format() },
-                )
-            }
-        }
-        showIf(pesysData.beregning.sluttpoengtall.sptUtenOk.notEqualTo(0.0)) {
-            row {
-                cell {
-                    text(
-                        bokmal { +"Sluttpoengtall uten overkompensasjon" },
-                        english { +"Final pension point score without over-compensation" },
-                    )
-                }
-                cell {
-                    text(
-                        bokmal { +pesysData.beregning.sluttpoengtall.sptUtenOkMinusOptMedOkAvdoed.format() },
-                        english { +pesysData.beregning.sluttpoengtall.sptUtenOkMinusOptMedOkAvdoed.format() },
-                    )
-                }
-            }
-        }
-    }
-    showIf(pesysData.beregning.tpInnvilget) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall poengår brukt i beregning" },
-                    english { +"Number of pension point earning years" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOk.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOk.format() + " year(s)" },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.poengaarUtenOkF92.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall år med pensjonsprosent 45" },
-                    english { +"Number of years with a 45 per cent pension" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkF92.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkF92.format() + " year(s)" },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.poengaarUtenOkE91.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall år med pensjonsprosent 42" },
-                    english { +"Number of years with a 42 per cent pension" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkE91.format() + " år" },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkE91.format() + " year(s)" },
-                )
-            }
-        }
-    }
-    showIf(pesysData.avdoed.ungUfoerFodtEtter1940 or pesysData.avdoed.ungUfoerFodtFor1941) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Ung ufør" },
-                    english { +"Young person with disabilities" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +"Ja" },
-                    english { +"Yes" },
-                )
-            }
-        }
-    }
-    showIf(pesysData.avdoed.doedsfallSkyldesYrkesskade) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Dødsfall skyldes yrkesskade" },
-                    english { +"Death due to occupational injury" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +"Ja" },
-                    english { +"Yes" },
-                )
-            }
-        }
-    }
-    ifNotNull(pesysData.avdoed.skadetidspunktYrkesskade) { skadetidspunkt ->
-        row {
-            cell {
-                text(
-                    bokmal { +"Yrkesskadetidspunkt" },
-                    english { +"Date/time of occupational injury" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +skadetidspunkt.format() },
-                    english { +skadetidspunkt.format() },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.yug.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Avdøde har tidligere godkjent yrkesskade med en uføregrad på" },
-                    english { +"The deceased has had an approved occupational injury with a degree of disability of" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.yug.format() + " %" },
-                    english { +pesysData.beregning.yug.format() + " %" },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.yrke.sluttpoengtallYrke.notEqualTo(0.0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Sluttpoengtall ved yrkesskade" },
-                    english { +"Final points figure on occupational injury" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.yrke.sluttpoengtallYrke.format() },
-                    english { +pesysData.beregning.yrke.sluttpoengtallYrke.format() },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.yrke.poengaarYrke.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall poengår benyttet ved yrkesskadeberegningen" },
-                    english { +"Number of point-earning year(s) applied when calculating occupational injury" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.yrke.poengaarYrke.format() + " år" },
-                    english { +pesysData.beregning.yrke.poengaarYrke.format() + " year(s)" },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.yrke.poengaarYrkeF92.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall år med pensjonsprosent 45 (yrkesskade)" },
-                    english { +"Number of years with a 45 per cent pension (occupational injury)" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.yrke.poengaarYrkeF92))
-            }
-        }
-    }
-    showIf(pesysData.beregning.yrke.poengaarYrkeE91.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall år med pensjonsprosent 42 (yrkesskade)" },
-                    english { +"Number of years with a 42 per cent pension (occupational injury)" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.yrke.poengaarYrkeE91))
-            }
-        }
-    }
-}
-
-private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, OpplysningerOmBeregningenGPUtlandDto>.eosSeksjon() {
-    showIf(pesysData.beregning.trygdetid.faTTNorge.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Faktisk trygdetid i Norge" },
-                    english { +"Actual period of national insurance cover in Norway" },
-                )
-            }
-            cell {
-                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTNorge))
-            }
-        }
-    }
-    showIf(pesysData.beregning.trygdetid.faTTEos.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Faktisk trygdetid i andre EØS-land" },
-                    english { +"Actual period of national insurance cover in other EEA country" },
-                )
-            }
-            cell {
-                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTEos))
-            }
-        }
-    }
-    showIf(pesysData.beregning.trygdetid.framtidigTTEos.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Framtidig trygdetid" },
-                    english { +"Period of future national insurance cover" },
-                )
-            }
-            cell {
-                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.framtidigTTEos))
-            }
-        }
-    }
-    showIf(pesysData.beregning.trygdetid.faTTNorge.notEqualTo(0) and pesysData.beregning.trygdetid.faTTEos.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)" },
-                    english { +"Actual period of national insurance cover in Norway and the other EEA country (max 40 years)" },
-                )
-            }
-            cell {
-                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTNorgePlusFaTTEos))
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.poengaarUtenOkF92.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall år med pensjonsprosent 45 (EØS)" },
-                    english { +"Number of years with a 45 per cent pension (EEA)" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkF92))
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.poengaarUtenOkE91.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall år med pensjonsprosent 42 (EØS)" },
-                    english { +"Number of years with a 42 per cent pension (EEA)" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkE91))
-            }
-        }
-    }
-    showIf(
-        pesysData.beregning.trygdetid.ttNevnerEos.notEqualTo(0)
-                and pesysData.beregning.trygdetid.ttTellerEos.notEqualTo(0),
-    ) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Forholdstallet brukt ved beregning av grunnpensjon" },
-                    english { +"The ratio on which the basic pension is calculated" },
-                )
-            }
-            cell {
-                text(
-                    bokmal {
-                        +pesysData.beregning.trygdetid.ttTellerEos.format() + "/" +
-                                pesysData.beregning.trygdetid.ttNevnerEos.format()
-                    },
-                    english {
-                        +pesysData.beregning.trygdetid.ttTellerEos.format() + "/" +
-                                pesysData.beregning.trygdetid.ttNevnerEos.format()
-                    },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall faktiske poengår i Norge" },
-                    english { +"Number of point earning years in Norway" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge))
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall poengår i andre EØS-land" },
-                    english { +"Number of point earning years in other EEA country" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos))
-            }
-        }
-    }
-    showIf(
-        pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)
-                and pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.notEqualTo(0),
-    ) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall poengår i Norge og EØS-land (maksimalt 40 år)" },
-                    english { +"Number of point earning years in Norway and other EEA country (max 40 years)" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusEos2))
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.poengaarUtenOkTeoretiskEos.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Samlet antall poengår i Norge og avtaleland (inkludert framtidig)" },
-                    english { +"Total number of point years in Norway and other EEA countries (future years included)" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkTeoretiskEos))
-            }
-        }
-    }
-    showIf(
-        pesysData.beregning.poengrekke.poengaarTellerEos.notEqualTo(0)
-                and pesysData.beregning.poengrekke.poengaarNevnerEos.notEqualTo(0),
-    ) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Forholdstallet brukt ved beregning av tilleggspensjon" },
-                    english { +"The ratio on which the supplementary pension is calculated" },
-                )
-            }
-            cell {
-                text(
-                    bokmal {
-                        +pesysData.beregning.poengrekke.poengaarTellerEos.format() + "/" +
-                                pesysData.beregning.poengrekke.poengaarNevnerEos.format()
-                    },
-                    english {
-                        +pesysData.beregning.poengrekke.poengaarTellerEos.format() + "/" +
-                                pesysData.beregning.poengrekke.poengaarNevnerEos.format()
-                    },
-                )
-            }
-        }
-    }
-    showIf(
-        pesysData.beregning.tpInnvilget
-                and pesysData.beregning.sluttpoengtall.optMedOkEos.equalTo(0.0),
-    ) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Sluttpoengtall (EØS)" },
-                    english { +"Final pension point score (EEA)" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.sluttpoengtall.sptUtenOkEos.format() },
-                    english { +pesysData.beregning.sluttpoengtall.sptUtenOkEos.format() },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.sluttpoengtall.optMedOkEos.notEqualTo(0.0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Sluttpoengtall med overkompensasjon (EØS)" },
-                    english { +"Final points with over-compensation (EEA)" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.sluttpoengtall.optMedOkEos.format() },
-                    english { +pesysData.beregning.sluttpoengtall.optMedOkEos.format() },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.sluttpoengtall.sptUtenOkEos.notEqualTo(0.0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Sluttpoengtall uten overkompensasjon (EØS)" },
-                    english { +"Final points without over-compensation (EEA)" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.sluttpoengtall.sptUtenOkEosMinusOptMedOkEos2.format(denominator = false) },
-                    english { +pesysData.beregning.sluttpoengtall.sptUtenOkEosMinusOptMedOkEos2.format(denominator = false) },
-                )
-            }
-        }
-    }
-}
-
-private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, OpplysningerOmBeregningenGPUtlandDto>.nordiskSeksjon() {
-    showIf(
-        pesysData.beregning.sluttpoengtall.sptUtenOkNordisk.notEqualTo(0.0)
-                and pesysData.beregning.sluttpoengtall.optMedOkNordisk.equalTo(0.0),
-    ) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Sluttpoengtall (nordisk)" },
-                    english { +"Final pension point score (Nordic)" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.sluttpoengtall.sptUtenOkNordisk.format() },
-                    english { +pesysData.beregning.sluttpoengtall.sptUtenOkNordisk.format() },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.sluttpoengtall.optMedOkNordisk.notEqualTo(0.0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Sluttpoengtall med overkompensasjon (nordisk)" },
-                    english { +"Final points with over-compensation (Nordic)" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.sluttpoengtall.optMedOkNordisk.format() },
-                    english { +pesysData.beregning.sluttpoengtall.optMedOkNordisk.format() },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.sluttpoengtall.sptUtenOkNordisk.notEqualTo(0.0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Sluttpoengtall uten overkompensasjon (nordisk)" },
-                    english { +"Final points without over-compensation (Nordic)" },
-                )
-            }
-            cell {
-                text(
-                    bokmal {
-                        +pesysData.beregning.sluttpoengtall.sptUtenOkNordiskMinusOptMedOkNordisk2.format(
-                            denominator = false
-                        )
-                    },
-                    english {
-                        +pesysData.beregning.sluttpoengtall.sptUtenOkNordiskMinusOptMedOkNordisk2.format(
-                            denominator = false
-                        )
-                    },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.tpInnvilget) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall poengår brukt i beregning" },
-                    english { +"Number of point earning years" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOk))
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.poengaarUtenOkF92.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall år med pensjonsprosent 45" },
-                    english { +"Number of years with a 45 per cent pension" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkF92))
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.poengaarUtenOkE91.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall år med pensjonsprosent 42" },
-                    english { +"Number of years with a 42 per cent pension" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkE91))
-            }
-        }
-    }
-    showIf(pesysData.beregning.trygdetid.ttNordisk.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Faktisk trygdetid i annet nordisk land som beregner framtidig trygdetid" },
-                    english { +"Actual period of national insurance cover in other Nordic country that calculates future national insurance cover" },
-                )
-            }
-            cell {
-                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.ttNordisk))
-            }
-        }
-    }
-    showIf(pesysData.beregning.trygdetid.framtidigTTNorsk.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Norsk framtidig trygdetid" },
-                    english { +"Period of future national insurance cover in Norway" },
-                )
-            }
-            cell {
-                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.framtidigTTNorsk))
-            }
-        }
-    }
-    showIf(
-        pesysData.beregning.trygdetid.ttNevnerNordisk.notEqualTo(0)
-                and pesysData.beregning.trygdetid.ttTellerNordisk.notEqualTo(0),
-    ) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Forholdstallet brukt ved avkorting av norsk framtidig trygdetid" },
-                    english { +"The ratio on which the future national insurance cover in Norway is reduced" },
-                )
-            }
-            cell {
-                text(
-                    bokmal {
-                        +pesysData.beregning.trygdetid.ttTellerNordisk.format() + "/" +
-                                pesysData.beregning.trygdetid.ttNevnerNordisk.format()
-                    },
-                    english {
-                        +pesysData.beregning.trygdetid.ttTellerNordisk.format() + "/" +
-                                pesysData.beregning.trygdetid.ttNevnerNordisk.format()
-                    },
-                )
-            }
-        }
-    }
-    showIf(
-        pesysData.beregning.trygdetid.faTTNorge.notEqualTo(0)
-                and pesysData.beregning.trygdetid.faTTNorgePlusFaTTA10Netto.notEqualTo(0),
-    ) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Samlet trygdetid brukt ved beregning av grunnpensjon etter avkorting av framtidig tid" },
-                    english { +"Total period of national insurance cover on which the basic pension is calculated after reduction of future time" },
-                )
-            }
-            cell {
-                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTNorgePlusFaTTA10Netto))
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall faktiske poengår i Norge" },
-                    english { +"Actual point earning years in Norway" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge))
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorden.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Poengår i annet nordisk land som beregner framtidige år" },
-                    english { +"Point earning years in other Nordic country that calculates future years" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorden))
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.framtidigPoengaarNordenBrutto.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Norske framtidige poengår" },
-                    english { +"Nordic actual point earning years" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.framtidigPoengaarNordenBrutto))
-            }
-        }
-    }
-    showIf(
-        pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)
-                and pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorden.notEqualTo(0),
-    ) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Forholdstallet brukt ved avkorting av norske framtidige poengår" },
-                    english { +"The ratio on which the reduction of future point earning years in Norway is based" },
-                )
-            }
-            cell {
-                text(
-                    bokmal {
-                        +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.format() + "/" +
-                                pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusFaktiskeNorden2.format()
-                    },
-                    english {
-                        +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.format() + "/" +
-                                pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusFaktiskeNorden2.format()
-                    },
-                )
-            }
-        }
-    }
-    showIf(
-        pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)
-                and pesysData.beregning.poengrekke.framtidigPoengaarNordenNetto.notEqualTo(0),
-    ) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Samlet antall poengår for beregning av tilleggspensjon etter avkorting av framtidig poengår" },
-                    english { +"Total number of point earning years on which the supplementary pension is based after reduction of future point earning years" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusFramtidigPoengaarNordenNetto2.format() },
-                    english { +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusFramtidigPoengaarNordenNetto2.format() },
-                )
-            }
-        }
-    }
-}
-
-private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, OpplysningerOmBeregningenGPUtlandDto>.bilateralSeksjon() {
-    showIf(pesysData.beregning.trygdetid.faTTNorge.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Faktisk trygdetid i Norge" },
-                    english { +"Actual period of national insurance cover in Norway" },
-                )
-            }
-            cell {
-                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTNorge))
-            }
-        }
-    }
-    showIf(pesysData.beregning.trygdetid.faTTBilateral.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Faktisk trygdetid i andre avtaleland" },
-                    english { +"Actual period of national insurance cover in other country with social security agreement" },
-                )
-            }
-            cell {
-                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTBilateral))
-            }
-        }
-    }
-    showIf(pesysData.beregning.trygdetid.framtidigTTAvtaleland.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Framtidig trygdetid" },
-                    english { +"Period of future national insurance cover" },
-                )
-            }
-            cell {
-                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.framtidigTTAvtaleland))
-            }
-        }
-    }
-    showIf(
-        pesysData.beregning.trygdetid.faTTNorge.notEqualTo(0)
-                and pesysData.beregning.trygdetid.faTTBilateral.notEqualTo(0),
-    ) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)" },
-                    english { +"Actual period of national insurance cover in Norway and country with social security agreement (max 40 years)" },
-                )
-            }
-            cell {
-                includePhrase(Felles.MaanederText(pesysData.beregning.trygdetid.faTTNorgePlusFaTTBilateral))
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.poengaarUtenOkF92.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall år med pensjonsprosent 45 (avtaleland)" },
-                    english { +"Number of years with a 45 per cent pension (other country)" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkF92))
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.poengaarUtenOkE91.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall år med pensjonsprosent 42 (avtaleland)" },
-                    english { +"Number of years with a 42 per cent pension (other country)" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkE91))
-            }
-        }
-    }
-    showIf(
-        pesysData.beregning.trygdetid.ttNevnerBilateral.notEqualTo(0)
-                and pesysData.beregning.trygdetid.ttTellerBilateral.notEqualTo(0),
-    ) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Forholdstallet brukt ved beregning av grunnpensjon" },
-                    english { +"The ratio on which the basic pension is calculated" },
-                )
-            }
-            cell {
-                text(
-                    bokmal {
-                        +pesysData.beregning.trygdetid.ttTellerBilateral.format() + "/" +
-                                pesysData.beregning.trygdetid.ttNevnerBilateral.format()
-                    },
-                    english {
-                        +pesysData.beregning.trygdetid.ttTellerBilateral.format() + "/" +
-                                pesysData.beregning.trygdetid.ttNevnerBilateral.format()
-                    },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall faktiske poengår i Norge" },
-                    english { +"Number of point earning years in Norway" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge))
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall poengår i andre avtaleland" },
-                    english { +"Number of point earning years in the other country" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos))
-            }
-        }
-    }
-    showIf(
-        pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)
-                and pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.notEqualTo(0),
-    ) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall poengår i Norge og avtaleland (maksimalt 40 år)" },
-                    english { +"Number of point earning years in Norway and other country (max 40 years)" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusEos2))
-            }
-        }
-    }
-    showIf(pesysData.beregning.poengrekke.framtidigPoengtall.notEqualTo(0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Antall framtidige poengår" },
-                    english { +"Period of future point earning years" },
-                )
-            }
-            cell {
-                includePhrase(Felles.AarText(pesysData.beregning.poengrekke.framtidigPoengtall))
-            }
-        }
-    }
-    showIf(
-        pesysData.beregning.poengrekke.poengaarTellerEos.notEqualTo(0)
-                and pesysData.beregning.poengrekke.poengaarNevnerEos.notEqualTo(0),
-    ) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Forholdstallet brukt ved beregning av tilleggspensjon" },
-                    english { +"Ratio used when calculating pro rata supplementary pension" },
-                )
-            }
-            cell {
-                text(
-                    bokmal {
-                        +pesysData.beregning.poengrekke.poengaarTellerEos.format() + "/" +
-                                pesysData.beregning.poengrekke.poengaarNevnerEos.format()
-                    },
-                    english {
-                        +pesysData.beregning.poengrekke.poengaarTellerEos.format() + "/" +
-                                pesysData.beregning.poengrekke.poengaarNevnerEos.format()
-                    },
-                )
-            }
-        }
-    }
-    showIf(
-        pesysData.beregning.tpInnvilget
-                and pesysData.beregning.sluttpoengtall.optMedOkEos.equalTo(0.0),
-    ) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Sluttpoengtall (avtaleland)" },
-                    english { +"Final points figure (Other country)" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.sluttpoengtall.sptUtenOkEos.format() },
-                    english { +pesysData.beregning.sluttpoengtall.sptUtenOkEos.format() },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.sluttpoengtall.optMedOkEos.notEqualTo(0.0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Sluttpoengtall med overkompensasjon (avtaleland)" },
-                    english { +"Final points figure with over-compensation (Other country)" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.sluttpoengtall.optMedOkEos.format() },
-                    english { +pesysData.beregning.sluttpoengtall.optMedOkEos.format() },
-                )
-            }
-        }
-    }
-    showIf(pesysData.beregning.sluttpoengtall.sptUtenOkEos.notEqualTo(0.0)) {
-        row {
-            cell {
-                text(
-                    bokmal { +"Sluttpoengtall uten overkompensasjon (avtaleland)" },
-                    english { +"Final points figure without over-compensation (Other country)" },
-                )
-            }
-            cell {
-                text(
-                    bokmal { +pesysData.beregning.sluttpoengtall.sptUtenOkEosMinusOptMedOkEos2.format(denominator = false) },
-                    english { +pesysData.beregning.sluttpoengtall.sptUtenOkEosMinusOptMedOkEos2.format(denominator = false) },
-                )
-            }
-        }
-    }
-}
 
 

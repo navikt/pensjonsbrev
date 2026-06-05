@@ -84,10 +84,9 @@ data class OpplysningerOmBeregningenGPUtlandDto(
         val skadetidspunktYrkesskade: LocalDate?,
         // PE_Vedtaksdata_BeregningsData_Beregning_BeregningsSammendragAvdod_AvdodUngUforFodtEtter1940
         // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningsSammendragAvdod AvdodUngUforFodtEtter1940)
-        val ungUfoerFodtEtter1940: Boolean,
         // PE_Vedtaksdata_BeregningsData_Beregning_BeregningsSammendragAvdod_AvdodUngUforFodtFor1941
         // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningsSammendragAvdod AvdodUngUforFodtFor1941)
-        val ungUfoerFodtFor1941: Boolean,
+        val ungUfoer: Boolean,
         // PE_Grunnlag_PersongrunnlagslisteAvdod_TrygdeAvtaler_Avtaleland
         // (rtv-brev brev Grunnlag PersongrunnlagslisteAvdod TrygdeAvtaler Avtaleland)
         val avtaleland: String,
