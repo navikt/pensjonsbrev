@@ -14,6 +14,7 @@ import io.ktor.server.plugins.callid.generate
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
+import io.ktor.server.request.acceptItems
 import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
@@ -102,7 +103,7 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
             val logger = call.application.environment.log
             when (result) {
                 is PDFCompilationResponse.Success -> {
-                    if (call.request.headers[io.ktor.http.HttpHeaders.Accept]?.contains(ContentType.Application.Pdf.toString()) ?: false) {
+                    if (call.request.acceptItems().any { ContentType.Application.Pdf.match(it.value) }) {
                         call.respondBytesWriter(ContentType.Application.Pdf) { channel.copyTo(this) }
                     }
                     else {
