@@ -56,7 +56,7 @@ class PensjonTypstITest {
     }
 
     @Test
-    fun `all supported characters render in a single PDF`() {
+    suspend fun `all supported characters render in a single PDF`() {
         val allSupported = (1..Char.MAX_VALUE.code)
             .filter { code -> !Char(code).isSurrogate() } // surrogate's er UTF-16 som vi ikke serialiserer uansett.
 
@@ -74,16 +74,14 @@ class PensjonTypstITest {
             }
         }
 
-        val result = runBlocking {
-            pdfCompileService.producePDF(
-                PDFRequest(
-                    letterMarkup = markup,
-                    attachments = emptyList(),
-                    language = LanguageCode.BOKMAL,
-                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-                ),
-            )
-        }
+        val result = pdfCompileService.producePDF(
+            PDFRequest(
+                letterMarkup = markup,
+                attachments = emptyList(),
+                language = LanguageCode.BOKMAL,
+                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+            ),
+        )
 
         writeTestPDF("all_supported_characters_smoke_test", result.bytes)
         println("Smoke test passed: rendered ${allSupported.size} characters in a single PDF.")
