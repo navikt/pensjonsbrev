@@ -1,9 +1,10 @@
 package no.nav.pensjon.brev.pdfbygger.typst
 
+import io.ktor.utils.io.ByteChannel
+import io.ktor.utils.io.jvm.javaio.toOutputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import org.slf4j.LoggerFactory
 import java.io.IOException
@@ -37,10 +38,10 @@ open class TypstCompileService(
         "-",
     )
 
-    open suspend fun createLetter(writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
-        return when (val result: Execution = executeCompileProcess(writeLetter)) {
+    open suspend fun createLetter(channel: ByteChannel, writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
+        return when (val result: Execution = executeCompileProcess(channel, writeLetter)) {
             is Execution.Success ->
-                PDFCompilationResponse.Success(PDFCompilationOutput(result.pdfBytes))
+                PDFCompilationResponse.Success
 
             is Execution.Failure.Compilation ->
                 PDFCompilationResponse.Failure.Client(
@@ -56,7 +57,7 @@ open class TypstCompileService(
         }
     }
 
-    private suspend fun executeCompileProcess(writeLetter: (TypstFileWriter) -> Unit): Execution {
+    private suspend fun executeCompileProcess(channel: ByteChannel, writeLetter: (TypstFileWriter) -> Unit): Execution {
         return withContext(Dispatchers.IO) {
             var process: Process? = null
             try {
@@ -66,9 +67,12 @@ open class TypstCompileService(
 
                 process.outputStream.writer(Charsets.UTF_8).use { writeLetter(TypstFileWriter(it)) }
 
-                val stdoutDeferred = async(Dispatchers.IO) { process.inputStream.readAllBytes() }
+                val stdoutDeferred = async(Dispatchers.IO) {
+                    process.inputStream.copyTo(channel.toOutputStream())
+                    channel.close()
+                }
                 val stderrContent = String(process.errorStream.readAllBytes(), Charsets.UTF_8)
-                val pdfBytes = stdoutDeferred.await()
+                stdoutDeferred.await()
 
                 val exitCode = process.waitFor()
 
@@ -76,7 +80,7 @@ open class TypstCompileService(
                     if (stderrContent.isNotBlank()) {
                         logger.warn("PDF-generering gikk bra, men ga følgende typst feil: $stderrContent")
                     }
-                    Execution.Success(pdfBytes = pdfBytes)
+                    Execution.Success
                 } else {
                     Execution.Failure.Compilation(error = stderrContent)
                 }
@@ -89,7 +93,7 @@ open class TypstCompileService(
     }
 
     private sealed class Execution {
-        class Success(val pdfBytes: ByteArray) : Execution()
+        object Success : Execution()
         sealed class Failure : Execution() {
             data class Compilation(val error: String) : Failure()
             data class Execution(val cause: Throwable) : Failure()

@@ -18,9 +18,11 @@ import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.util.logging.Logger
+import io.ktor.utils.io.ByteChannel
+import io.ktor.utils.io.toByteArray
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
@@ -92,17 +94,35 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
 
         post("/produserBrev") {
             val request = call.receive<PDFRequest>()
+            val channel = ByteChannel(autoFlush = true)
 
-            if (call.request.headers["Accept"] == ContentType.Application.Json.contentType) {
-                val result = typstCompileService.createLetter {
-                    TypstDocumentRenderer.render(request, it)
+//            if (call.request.headers["Accept"] == ContentType.Application.Json.contentType) {
+            val result = typstCompileService.createLetter(channel) {
+                TypstDocumentRenderer.render(request, it)
+            }
+            val logger = call.application.environment.log
+            when (result) {
+                is PDFCompilationResponse.Success -> {
+                    val str = PDFCompilationOutput(channel.toByteArray())
+//                    val str = call.respondBytesWriter(ContentType.Application.Pdf) { channel.copyTo(this) }
+                    call.respond(str)
+//                    call.respond(result.pdfCompilationOutput)
                 }
-                handleResult(result, call.application.environment.log)
-            } else {
-                val result = typstCompileService.createLetter {
-                    TypstDocumentRenderer.render(request, it)
+                is PDFCompilationResponse.Failure.Client -> {
+                    logger.warn("Client error: ${result.reason}")
+                    if (result.output?.isNotBlank() == true) {
+                        logger.warn("Output: ${result.output}")
+                    }
+                    if (result.error?.isNotBlank() == true) {
+                        logger.warn("Error: ${result.error}")
+                    }
+                    call.respond(HttpStatusCode.BadRequest, result)
                 }
-                handleResult(result, call.application.environment.log)
+
+                is PDFCompilationResponse.Failure.Server -> {
+                    logger.error(result.reason)
+                    call.respond(HttpStatusCode.InternalServerError, result)
+                }
             }
         }
 
@@ -115,29 +135,5 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         }
     }
 
-}
-
-private suspend fun RoutingContext.handleResult(
-    result: PDFCompilationResponse,
-    logger: Logger,
-) {
-    when (result) {
-        is PDFCompilationResponse.Success -> call.respond(result.pdfCompilationOutput)
-        is PDFCompilationResponse.Failure.Client -> {
-            logger.warn("Client error: ${result.reason}")
-            if (result.output?.isNotBlank() == true) {
-                logger.warn("Output: ${result.output}")
-            }
-            if (result.error?.isNotBlank() == true) {
-                logger.warn("Error: ${result.error}")
-            }
-            call.respond(HttpStatusCode.BadRequest, result)
-        }
-
-        is PDFCompilationResponse.Failure.Server -> {
-            logger.error(result.reason)
-            call.respond(HttpStatusCode.InternalServerError, result)
-        }
-    }
 }
 

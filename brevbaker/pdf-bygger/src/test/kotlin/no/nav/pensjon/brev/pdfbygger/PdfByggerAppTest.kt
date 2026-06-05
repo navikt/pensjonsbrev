@@ -7,6 +7,7 @@ import io.ktor.http.*
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.*
+import io.ktor.utils.io.ByteChannel
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
@@ -47,7 +48,7 @@ class PdfByggerAppTest {
         val rendererCalled = ArrayList<Int>()
 
         val fakeCompileService = object : TypstCompileService() {
-            override suspend fun createLetter(writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
+            override suspend fun createLetter(channel: ByteChannel, writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
                 // Driver renderer-kallbacken slik at TypstDocumentRenderer faktisk produserer Typst-innhold,
                 // men hopper over det eksterne `typst`-prosesskallet.
                 val captured = ByteArrayOutputStream()
@@ -55,7 +56,7 @@ class PdfByggerAppTest {
                     writeLetter(TypstFileWriter(writer))
                 }
                 rendererCalled.add(captured.size())
-                return PDFCompilationResponse.Success(PDFCompilationOutput(expectedPdfBytes))
+                return PDFCompilationResponse.Success
             }
         }
 
