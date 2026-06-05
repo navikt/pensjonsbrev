@@ -77,6 +77,7 @@ subprojects {
             outputs.upToDateWhen { false }
             group = LifecycleBasePlugin.VERIFICATION_GROUP
             systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.5
+            systemProperties["junit.jupiter.execution.parallel.config.executor-service"] = "WORKER_THREAD_POOL"
             forkEvery = 0 // for å dele test-container uten å spinne opp ny.
             useJUnitPlatform {
                 includeTags = setOf("integration-test")
