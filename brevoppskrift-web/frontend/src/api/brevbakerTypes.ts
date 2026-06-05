@@ -4,10 +4,6 @@ export type TemplateMetadata = {
   brevtype?: string;
 };
 
-/** A searchable line, as flattened server-side from a template's documentation and
- * returned by the batch documentation endpoint. A line is a sequence of segments:
- * literal text (searchable) and variables (shown as a placeholder, never searchable).
- * The blockId links to the rendered outline element for scroll-to navigation. */
 export type LineSegment = { kind: "text"; value: string } | { kind: "var"; label: string };
 export type Line = LineSegment[];
 export type SearchLineWithBlockId = { blockId: string; segments: LineSegment[] };
