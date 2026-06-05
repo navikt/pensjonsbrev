@@ -36,11 +36,8 @@ declare module "@tanstack/react-router" {
 }
 
 const container = document.querySelector("#root") as HTMLElement;
-const root = ReactDOM.createRoot(container);
-
-if (import.meta.hot) {
-    import.meta.hot.dispose(() => root.unmount());
-}
+const root = (container as unknown as { _root?: ReactDOM.Root })._root ?? ReactDOM.createRoot(container);
+(container as unknown as { _root?: ReactDOM.Root })._root = root;
 
 root.render(
     <React.StrictMode>

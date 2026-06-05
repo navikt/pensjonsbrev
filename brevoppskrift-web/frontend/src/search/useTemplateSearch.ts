@@ -1,10 +1,14 @@
 import { useQueries } from "@tanstack/react-query";
 import { useDeferredValue, useMemo, useState } from "react";
 
-import { getAllTemplateDocumentation, type MalType } from "~/api/brevbaker-api-endpoints";
+import { getAllTemplateDocumentation, getTemplateDocVersion, type MalType } from "~/api/brevbaker-api-endpoints";
 import { type BrevHit, buildIndex, type ContentHit, search, type TemplateText } from "~/search/textSearch";
 export const MIN_QUERY_LENGTH = 2;
-const STALE_TIME_MS = 5 * 60 * 1000;
+/** The cheap version endpoint is polled often so we notice template changes
+ *  quickly; the large /all payload is only re-fetched and re-indexed when the
+ *  content hash changes. */
+const VERSION_STALE_TIME_MS = 30 * 1000;
+const VERSION_REFETCH_MS = 60 * 1000;
 /** A template the search should cover, with all the languages it supports. */
 export type TemplateRef = {
   malType: MalType;
@@ -31,12 +35,30 @@ function templateCount(hits: { template: TemplateText }[]): number {
 }
 export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
   const malTypes = useMemo(() => [...new Set(templates.map((t) => t.malType))] as MalType[], [templates]);
-  const queries = useQueries({
+  // Poll the cheap content fingerprint often. The hash changes on a new deploy
+  // or when an Unleash toggle changes which templates are visible.
+  const versionQueries = useQueries({
     queries: malTypes.map((malType) => ({
-      queryKey: getAllTemplateDocumentation.queryKey(malType),
-      queryFn: () => getAllTemplateDocumentation.queryFn(malType),
-      staleTime: STALE_TIME_MS,
+      queryKey: getTemplateDocVersion.queryKey(malType),
+      queryFn: () => getTemplateDocVersion.queryFn(malType),
+      staleTime: VERSION_STALE_TIME_MS,
+      refetchInterval: VERSION_REFETCH_MS,
     })),
+  });
+  // The large batch payload is keyed by the content hash, so it is only
+  // re-fetched (and the index only rebuilt) when the hash actually changes. We
+  // wait for the version query to settle to avoid an extra fetch on first load,
+  // but still fetch if the version endpoint is unavailable (degraded mode).
+  const queries = useQueries({
+    queries: malTypes.map((malType, i) => {
+      const version = versionQueries[i].data?.hash;
+      return {
+        queryKey: [...getAllTemplateDocumentation.queryKey(malType), version ?? "no-version"],
+        queryFn: () => getAllTemplateDocumentation.queryFn(malType),
+        enabled: !versionQueries[i].isLoading,
+        staleTime: Number.POSITIVE_INFINITY,
+      };
+    }),
   });
   const titleByKey = useMemo(() => new Map(templates.map((t) => [`${t.malType}/${t.brevkode}`, t.title])), [templates]);
   const freshnessKey = queries.map((q) => `${q.status}:${q.dataUpdatedAt}`).join("|");
@@ -71,7 +93,7 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
     query,
     setQuery,
     isSearching,
-    isLoading: queries.some((q) => q.isLoading),
+    isLoading: versionQueries.some((q) => q.isLoading) || queries.some((q) => q.data === undefined && !q.isError),
     failedCount: queries.filter((q) => q.isError).length,
     contentHits: results.content,
     brevHits: results.brev,

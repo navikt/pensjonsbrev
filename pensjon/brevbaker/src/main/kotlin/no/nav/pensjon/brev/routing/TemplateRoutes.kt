@@ -20,6 +20,8 @@ import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
+import java.security.MessageDigest
+import java.util.concurrent.ConcurrentHashMap
 
 // The documentation batch endpoint renders each template into searchable lines
 // (and omits the large, per-language identical model specification), so a search
@@ -29,17 +31,10 @@ import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 // /{kode}/modelSpecification.
 val EMPTY_MODEL_SPECIFICATION = TemplateModelSpecification(types = emptyMap(), letterModelTypeName = null)
 
-/** One template's searchable lines for a single language, as returned by the batch
- * documentation endpoint. Each line is an ordered list of text/variable segments
- * (see [SearchLine]). */
-data class SearchableContent(
-    val brevkode: String,
-    val language: LanguageCode,
-    val lines: List<SearchLine>,
-)
-
 inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>> Route.templateRoutes(resource: TemplateResource<Kode, T, *>) =
     route("/${resource.name}") {
+
+        val docCache = TemplateDocCache(resource)
 
         get {
             if (call.request.queryParameters["includeMetadata"] == "true") {
@@ -49,23 +44,12 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
             }
         }
 
-        // Batch documentation for every template in every supported language, so a
-        // client (e.g. brevoppskrift's full-text index) can build its index with a
-        // single request instead of one request per template per language.
         get("/all") {
-            val entries = resource.listTemplatekeys().flatMap { key ->
-                val template = resource.getTemplate(resource.kodeOf(key))?.template ?: return@flatMap emptyList()
-                template.language.all().map { language ->
-                    SearchableContent(
-                        brevkode = key,
-                        language = language.toCode(),
-                        lines = DocumentationTextExtractor.extract(
-                            TemplateDocumentationRenderer.render(template, language, EMPTY_MODEL_SPECIFICATION),
-                        ),
-                    )
-                }
-            }
-            call.respond(entries)
+            call.respond(docCache.all())
+        }
+
+        get("/all/version") {
+            call.respond(docCache.version())
         }
 
         route("/{kode}") {
@@ -120,3 +104,64 @@ fun <Kode: Brevkode<Kode>> TemplateResource<Kode,*,*>.kodeOf(kode: String): Kode
     } else {
         RedigerbarBrevkode(kode)
     } as Kode
+
+
+/** One template's searchable lines for a single language, as returned by the batch
+ * documentation endpoint. Each line is an ordered list of text/variable segments
+ * (see [SearchLine]). */
+data class SearchableContent(
+    val brevkode: String,
+    val language: LanguageCode,
+    val lines: List<SearchLine>,
+)
+
+/** A content fingerprint for the batch documentation of a template resource.
+ * Changes whenever the rendered documentation changes (e.g. a new deploy) or
+ * when the set of enabled templates changes (Unleash toggles). Clients can poll
+ * this cheaply and only re-fetch/-index the full corpus when [hash] changes. */
+data class TemplateDocVersion(val hash: String)
+
+private fun sha256Hex(value: String): String =
+    MessageDigest.getInstance("SHA-256").digest(value.toByteArray()).joinToString("") { "%02x".format(it) }
+
+/**
+ * Renders and caches the searchable documentation for a template resource.
+ *
+ * A template's rendered documentation is static for the lifetime of the process
+ * (templates are code), so each template is rendered once and memoised. Unleash
+ * toggles only change *which* templates are visible; that is evaluated live via
+ * [TemplateResource.listTemplatekeys] on every call, so toggling a template
+ * in/out takes effect immediately.
+ */
+@PublishedApi
+internal class TemplateDocCache<Kode : Brevkode<Kode>>(private val resource: TemplateResource<Kode, *, *>) {
+    private data class Rendered(val content: List<SearchableContent>, val hash: String)
+
+    private val cache = ConcurrentHashMap<String, Rendered>()
+
+    private fun render(brevkode: String): Rendered? =
+        cache[brevkode] ?: resource.getTemplate(resource.kodeOf(brevkode))?.template?.let { template ->
+            template.language.all()
+                .map { language ->
+                    SearchableContent(
+                        brevkode = brevkode,
+                        language = language.toCode(),
+                        lines = DocumentationTextExtractor.extract(
+                            TemplateDocumentationRenderer.render(template, language, EMPTY_MODEL_SPECIFICATION),
+                        ),
+                    )
+                }
+                .let { content -> Rendered(content, sha256Hex(content.toString())) }
+                .also { cache[brevkode] = it }
+        }
+
+    /** Searchable documentation for every enabled template in every language. */
+    fun all(): List<SearchableContent> =
+        resource.listTemplatekeys().flatMap { render(it)?.content.orEmpty() }
+
+    /** Content fingerprint of [all]; cheap and stable while the content is unchanged. */
+    fun version(): TemplateDocVersion =
+        resource.listTemplatekeys().sorted()
+            .joinToString("|") { "$it:${render(it)?.hash.orEmpty()}" }
+            .let { TemplateDocVersion(sha256Hex(it)) }
+}

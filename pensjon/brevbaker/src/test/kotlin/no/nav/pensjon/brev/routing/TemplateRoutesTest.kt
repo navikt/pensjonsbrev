@@ -176,6 +176,19 @@ class TemplateRoutesTest {
         }
 
     @Test
+    fun `version endpoint returns a stable non-blank corpus hash`() =
+        testBrevbakerApp(isIntegrationTest = false) { client ->
+            val first = client.get("/templates/autobrev/all/version")
+            assertEquals(HttpStatusCode.OK, first.status)
+            val firstHash = first.body<TemplateDocVersion>().hash
+            assertTrue(firstHash.isNotBlank())
+
+            // Content is static at runtime, so the hash is stable across calls.
+            val secondHash = client.get("/templates/autobrev/all/version").body<TemplateDocVersion>().hash
+            assertEquals(firstHash, secondHash)
+        }
+
+    @Test
     fun `filtrerer bort deaktiverte maler`() = runBlocking {
         testBrevbakerApp(enableAllToggles = false, isIntegrationTest = false) { client ->
             val response = client.get("/templates/redigerbar?includeMetadata=true")
