@@ -49,6 +49,14 @@ export const getAllTemplateDocumentation = {
     (await axios.get<SearchableContent[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}/all`)).data,
 };
 
+export type TemplateDocVersion = { hash: string };
+
+export const getTemplateDocVersion = {
+  queryKey: (malType: MalType) => [...templateDocumentationKeys.all, malType, "VERSION"] as const,
+  queryFn: async (malType: MalType) =>
+    (await axios.get<TemplateDocVersion>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}/all/version`)).data,
+};
+
 export const getBrevkoderMedMetadata = {
   queryKey: (malType: MalType) => ["BREVKODER", malType, "METADATA"] as const,
   queryFn: async (malType: MalType) =>
