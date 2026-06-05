@@ -72,6 +72,9 @@ object BrevredigeringFacadeFactory {
             reserverBrev = ReserverBrevHandler(
                 brevreservasjonPolicy = brevreservasjonPolicy
             ),
+            frigiReservasjon = FrigiReservasjonHandler(
+                brevreservasjonPolicy = brevreservasjonPolicy,
+            ),
             hentEllerOpprettPdf = HentEllerOpprettPdfHandler(
                 brevdataService = brevdataService,
                 renderService = renderService,

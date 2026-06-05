@@ -148,6 +148,17 @@ fun Route.sakBrev(
                 apiRespond(dto2ApiService, result)
             }
 
+            route("/reservasjon") {
+                delete {
+                    val sak: Fagsak = call.attributes[SakKey]
+                    val brevId = call.parameters.brevId()
+                    val result = brevredigeringFacade.frigiReservasjon(
+                        FrigiReservasjonHandler.Request(saksId = sak.saksId, brevId = brevId)
+                    )
+                    apiRespond(dto2ApiService, result)
+                }
+            }
+
             route("/mottaker") {
                 put<Api.OppdaterMottakerRequest> { request ->
                     val brevId = call.parameters.brevId()
