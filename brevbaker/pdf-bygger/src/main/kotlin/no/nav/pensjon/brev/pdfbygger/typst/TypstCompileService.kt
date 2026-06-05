@@ -6,6 +6,7 @@ import kotlinx.coroutines.withContext
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import org.slf4j.LoggerFactory
+import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.nio.file.Path
 
@@ -37,8 +38,8 @@ open class TypstCompileService(
         "-",
     )
 
-    open suspend fun createLetter(writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
-        return when (val result: Execution = executeCompileProcess(writeLetter)) {
+    open suspend fun createLetter(stream: ByteArrayOutputStream, writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
+        return when (val result: Execution = executeCompileProcess(stream, writeLetter)) {
             is Execution.Success ->
                 PDFCompilationResponse.Success(PDFCompilationOutput(result.pdfBytes))
 
@@ -56,7 +57,7 @@ open class TypstCompileService(
         }
     }
 
-    private suspend fun executeCompileProcess(writeLetter: (TypstFileWriter) -> Unit): Execution {
+    private suspend fun executeCompileProcess(stream: ByteArrayOutputStream, writeLetter: (TypstFileWriter) -> Unit): Execution {
         return withContext(Dispatchers.IO) {
             var process: Process? = null
             try {
@@ -66,7 +67,11 @@ open class TypstCompileService(
 
                 process.outputStream.writer(Charsets.UTF_8).use { writeLetter(TypstFileWriter(it)) }
 
-                val stdoutDeferred = async(Dispatchers.IO) { process.inputStream.readAllBytes() }
+                val stdoutDeferred = async(Dispatchers.IO) {
+                    val allBytes = process.inputStream.readAllBytes()
+                    stream.write(allBytes)
+                    allBytes
+                }
                 val stderrContent = String(process.errorStream.readAllBytes(), Charsets.UTF_8)
                 val pdfBytes = stdoutDeferred.await()
 

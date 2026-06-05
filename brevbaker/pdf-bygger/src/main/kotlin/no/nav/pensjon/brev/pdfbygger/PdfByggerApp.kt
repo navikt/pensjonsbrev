@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
 import org.slf4j.LoggerFactory
+import java.io.ByteArrayOutputStream
 
 fun main(args: Array<String>) = EngineMain.main(args)
 
@@ -92,7 +93,8 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
 
         post("/produserBrev") {
             val request = call.receive<PDFRequest>()
-            val result = typstCompileService.createLetter {
+            val stream = ByteArrayOutputStream()
+            val result = typstCompileService.createLetter(stream) {
                 TypstDocumentRenderer.render(request, it)
             }
             val logger = call.application.environment.log

@@ -47,7 +47,7 @@ class PdfByggerAppTest {
         val rendererCalled = ArrayList<Int>()
 
         val fakeCompileService = object : TypstCompileService() {
-            override suspend fun createLetter(writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
+            override suspend fun createLetter(stream: ByteArrayOutputStream, writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
                 // Driver renderer-kallbacken slik at TypstDocumentRenderer faktisk produserer Typst-innhold,
                 // men hopper over det eksterne `typst`-prosesskallet.
                 val captured = ByteArrayOutputStream()
