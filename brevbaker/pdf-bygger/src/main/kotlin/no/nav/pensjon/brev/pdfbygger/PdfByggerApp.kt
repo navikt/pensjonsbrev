@@ -99,7 +99,7 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
             when (result) {
                 is PDFCompilationResponse.Success -> {
                     if (call.request.acceptItems().any { ContentType.Application.Pdf.match(it.value) }) {
-                        call.respond(result.pdfCompilationOutput)
+                        call.respondOutputStream(ContentType.Application.Pdf) { write(result.pdfCompilationOutput.bytes) }
                     } else {
                         call.respond(result.pdfCompilationOutput)
                     }
