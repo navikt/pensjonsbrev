@@ -2667,13 +2667,7 @@ export interface components {
             type: "VARIABLE";
         };
         /** Text */
-        Text: {
-            /**
-             * @description discriminator enum property added by openapi-typescript
-             * @enum {string}
-             */
-            type: "Text";
-        } & (components["schemas"]["Literal"] | components["schemas"]["NewLine"] | components["schemas"]["Variable"]);
+        Text: components["schemas"]["Literal"] | components["schemas"]["NewLine"] | components["schemas"]["Variable"];
         /** Item */
         Item: {
             content: components["schemas"]["Text"][];
@@ -2736,7 +2730,7 @@ export interface components {
             type: "TABLE";
         };
         /** ParagraphContent */
-        ParagraphContent: components["schemas"]["ItemList"] | components["schemas"]["Table"] | components["schemas"]["Text"];
+        ParagraphContent: components["schemas"]["ItemList"] | components["schemas"]["Table"] | components["schemas"]["Literal"] | components["schemas"]["Variable"] | components["schemas"]["NewLine"];
         /** Paragraph */
         Paragraph: {
             content: components["schemas"]["ParagraphContent"][];

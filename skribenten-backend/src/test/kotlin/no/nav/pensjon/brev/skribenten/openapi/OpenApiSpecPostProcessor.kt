@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.openapi
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.readValue
 
@@ -52,15 +53,53 @@ class OpenApiSpecPostProcessor(private val objectMapper: ObjectMapper) {
                 discriminator.put("propertyName", typeInfo.property)
             }
 
-            // Rebuild the mapping with Jackson discriminator names as keys
+            // Rebuild the mapping with Jackson discriminator names as keys.
+            // If a mapped class is not a direct Jackson subtype (i.e. it is an intermediate
+            // abstract class like Text), skip it — its concrete subtypes are already listed
+            // directly in the parent's @JsonSubTypes and will be added in the second pass.
             val newMapping = objectMapper.createObjectNode()
+            val newOneOf = objectMapper.createArrayNode()
+            val oneOfArray = schema.withArrayProperty("oneOf")
+
+            // Track intermediate abstract classes (present in Ktor's mapping but absent from
+            // @JsonSubTypes) so we can inline their concrete subtypes in the second pass.
+            val intermediateClasses = mutableListOf<Class<*>>()
+
             for (fqcn in fqcnKeys) {
-                val jvmClassName = loadNestedClass(fqcn)?.name
-                val jacksonName = jvmClassName?.let { jacksonNames[it] } ?: fqcn.substringAfterLast('.')
+                val jvmClass = loadNestedClass(fqcn)
+                val jacksonName = jvmClass?.name?.let { jacksonNames[it] }
                 val refValue = mapping.get(fqcn)?.asText() ?: continue
-                newMapping.put(jacksonName, refValue)
+
+                if (jacksonName != null) {
+                    // Direct Jackson subtype — add to new mapping and oneOf
+                    newMapping.put(jacksonName, refValue)
+                    oneOfArray.firstOrNull { it.get("\$ref")?.asText() == refValue }
+                        ?.let { newOneOf.add(it) }
+                } else if (jvmClass != null) {
+                    intermediateClasses += jvmClass
+                }
             }
+
+            // Add any Jackson subtypes not found via Ktor's FQCN entries.
+            // This covers concrete subtypes of intermediate abstract classes (e.g. Literal, Variable,
+            // NewLine are listed in ParagraphContent's @JsonSubTypes but only reachable via Text in
+            // Ktor's reflection-based schema).
+            // Only add a subtype if it is assignable from one of the intermediate classes, so that
+            // sibling schemas (e.g. Text) don't accidentally inherit unrelated subtypes like ItemList.
+            for (subtype in jsonSubTypes.value) {
+                val name = subtype.name
+                if (!newMapping.has(name)) {
+                    val subtypeClass = subtype.value.java
+                    if (intermediateClasses.any { it.isAssignableFrom(subtypeClass) }) {
+                        val ref = "#/components/schemas/${subtypeClass.simpleName}"
+                        newMapping.put(name, ref)
+                        newOneOf.add(objectMapper.createObjectNode().put("\$ref", ref))
+                    }
+                }
+            }
+
             discriminator.set<ObjectNode>("mapping", newMapping)
+            schema.set<ArrayNode>("oneOf", newOneOf)
         }
     }
 
