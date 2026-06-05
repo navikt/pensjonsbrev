@@ -46,7 +46,7 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
 
     switch (brevInfo.status.type) {
       case "Kladd": {
-        if (!isOriginalCreator && brevInfo.erAttestant) {
+        if (!isOriginalCreator && currentUser.erAttestant) {
           trackEvent("pesys omdirigering", {
             brevStatus: brevInfo.status.type,
             destinasjon: "attestering",
@@ -78,7 +78,7 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
       }
 
       case "UnderRedigering": {
-        if (!isOriginalCreator && brevInfo.erAttestant) {
+        if (!isOriginalCreator && currentUser.erAttestant) {
           trackEvent("pesys omdirigering", {
             brevStatus: brevInfo.status.type,
             destinasjon: "attestering",

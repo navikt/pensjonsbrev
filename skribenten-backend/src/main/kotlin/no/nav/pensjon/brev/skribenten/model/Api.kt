@@ -59,7 +59,6 @@ object Api {
     data class BrevInfo(
         val id: BrevId,
         val saksId: SaksId,
-        val erAttestant: Boolean,
         val opprettetAv: NavAnsatt,
         val opprettet: Instant,
         val sistredigertAv: NavAnsatt,

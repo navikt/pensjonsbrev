@@ -14,6 +14,7 @@ export type BaseUrls = {
 export type UserInfo = {
   name: string;
   navident: string;
+  erAttestant: boolean;
 };
 
 export const getUserInfo = {

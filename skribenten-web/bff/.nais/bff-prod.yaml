@@ -16,6 +16,8 @@ env:
     value: "api://prod-gcp.pensjonsbrev.skribenten-backend/.default"
   - name: PSAK_BASE_URL
     value: "https://pensjon-psak.nais.adeo.no"
+  - name: ATTESTANT_GROUP_ID
+    value: "11053fd7-e674-4552-9a88-f9fcedfa70b3"
   - name: UMAMI_HOST_URL
     value: "https://reops-event-proxy.nav.no"
   - name: UMAMI_WEBSITE_ID

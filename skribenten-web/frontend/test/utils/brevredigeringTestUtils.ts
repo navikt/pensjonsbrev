@@ -152,7 +152,6 @@ export const nyBrevInfo = (args: {
   journalpostId?: Nullable<number>;
   vedtaksId?: Nullable<number>;
   saksId?: string;
-  erAttestant?: boolean;
 }): BrevInfo => {
   return {
     id: args.id ?? 1,
@@ -179,7 +178,6 @@ export const nyBrevInfo = (args: {
     journalpostId: args.journalpostId ?? null,
     vedtaksId: args.vedtaksId ?? null,
     saksId: args.saksId ?? "22981081",
-    erAttestant: args.erAttestant ?? false,
   };
 };
 

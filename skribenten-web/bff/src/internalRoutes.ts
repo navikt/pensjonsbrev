@@ -20,11 +20,15 @@ export const internalRoutes = (server: Express) => {
     }
 
     try {
-      const { name, NAVident } = jwtDecode<{ name: string; NAVident: string }>(token as string);
+      const { name, NAVident, groups } = jwtDecode<{ name: string; NAVident: string; groups?: string[] }>(
+        token as string,
+      );
+      const erAttestant = groups?.includes(config.accessControl.attestantGroupId) ?? false;
 
       response.json({
         name,
         navident: NAVident,
+        erAttestant,
       });
     } catch {
       response.status(404).json({ message: "Could not get username" });

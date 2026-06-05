@@ -63,7 +63,7 @@ export async function setupSakStubs(page: Page) {
 
   await page.route("**/bff/api/userInfo", (route) => {
     return route.fulfill({
-      json: { id: "Z990297", navn: "F_Z990297 E_Z990297", rolle: "Saksbehandler" },
+      json: { navident: "Z990297", name: "F_Z990297 E_Z990297", erAttestant: false },
     });
   });
 
