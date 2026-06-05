@@ -36,14 +36,17 @@ declare module "@tanstack/react-router" {
 }
 
 const container = document.querySelector("#root") as HTMLElement;
-const root = (container as unknown as { _root?: ReactDOM.Root })._root ?? ReactDOM.createRoot(container);
-(container as unknown as { _root?: ReactDOM.Root })._root = root;
+const root = ReactDOM.createRoot(container);
+
+if (import.meta.hot) {
+    import.meta.hot.dispose(() => root.unmount());
+}
 
 root.render(
-  <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools buttonPosition="bottom-left" initialIsOpen={false} />
-      <RouterProvider router={router} />
-    </QueryClientProvider>
-  </React.StrictMode>,
+    <React.StrictMode>
+        <QueryClientProvider client={queryClient}>
+            <ReactQueryDevtools buttonPosition="bottom-left" initialIsOpen={false} />
+            <RouterProvider router={router} />
+        </QueryClientProvider>
+    </React.StrictMode>,
 );
