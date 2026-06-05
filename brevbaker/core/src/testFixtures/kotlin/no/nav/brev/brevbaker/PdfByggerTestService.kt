@@ -5,6 +5,7 @@ import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -13,6 +14,7 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.PDFRequest
+import kotlin.time.Duration.Companion.seconds
 
 class PdfByggerTestService(private val pdfByggerUrl: String = PDFByggerTestContainer.mappedUrl(), private val logWarning: (String) -> Unit = ::println) : PDFByggerService {
     private val objectmapper = jacksonObjectMapper()
@@ -27,7 +29,7 @@ class PdfByggerTestService(private val pdfByggerUrl: String = PDFByggerTestConta
         }
 
         engine {
-            requestTimeout = 0
+            requestTimeout = 30.seconds.inWholeMilliseconds
         }
     }
 
@@ -35,6 +37,7 @@ class PdfByggerTestService(private val pdfByggerUrl: String = PDFByggerTestConta
         httpClient.post("$pdfByggerUrl/produserBrev") {
             contentType(ContentType.Application.Json)
             setBody(objectmapper.writeValueAsBytes(pdfRequest))
+            accept(ContentType.Application.Json)
         }.body()
 
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
