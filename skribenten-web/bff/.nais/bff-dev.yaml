@@ -17,8 +17,6 @@ env:
     value: "api://dev-gcp.pensjonsbrev.skribenten-backend/.default"
   - name: PSAK_BASE_URL
     value: "https://pensjon-psak-q2.intern.dev.nav.no"
-  - name: ATTESTANT_GROUP_ID
-    value: "63f46f74-84a8-4d1c-87a8-78532ab3ae60"
   - name: UMAMI_HOST_URL
     value: "https://reops-event-proxy.ekstern.dev.nav.no"
   - name: UMAMI_WEBSITE_ID

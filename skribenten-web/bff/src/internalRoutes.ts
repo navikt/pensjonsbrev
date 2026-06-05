@@ -1,8 +1,8 @@
 import { getToken } from "@navikt/oasis";
+import axios from "axios";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { type Express } from "express";
-import { jwtDecode } from "jwt-decode";
 
 import config from "./config.js";
 
@@ -11,7 +11,7 @@ export const internalRoutes = (server: Express) => {
     response.redirect("/oauth2/logout");
   });
 
-  server.get("/bff/api/userinfo", (request, response): void => {
+  server.get("/bff/api/userinfo", async (request, response): Promise<void> => {
     const token = getToken(request);
 
     if (!token) {
@@ -20,16 +20,13 @@ export const internalRoutes = (server: Express) => {
     }
 
     try {
-      const { name, NAVident, groups } = jwtDecode<{ name: string; NAVident: string; groups?: string[] }>(
-        token as string,
-      );
-      const erAttestant = groups?.includes(config.accessControl.attestantGroupId) ?? false;
-
-      response.json({
-        name,
-        navident: NAVident,
-        erAttestant,
+      const backendUrl = config.skribentenBackendApiProxy.url.replace(/\/$/, "");
+      const res = await axios.get(`${backendUrl}/me/userinfo`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
+      response.json(res.data);
     } catch {
       response.status(404).json({ message: "Could not get username" });
     }

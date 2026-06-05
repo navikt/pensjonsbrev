@@ -21,16 +21,11 @@ const baseUrls = {
   psak: requireEnvironment("PSAK_BASE_URL"),
 };
 
-const accessControl = {
-  attestantGroupId: requireEnvironment("ATTESTANT_GROUP_ID"),
-};
-
 export default {
   app,
   azureApp,
   skribentenBackendApiProxy,
   baseUrls,
-  accessControl,
 };
 
 function requireEnvironment(environmentName: string) {

@@ -12,6 +12,14 @@ fun Route.meRoute(navansattService: NavansattService) {
     val favouritesRepository = FavouritesRepository()
 
     route("/me") {
+        get("/userinfo") {
+            val p = principal()
+            call.respond(mapOf(
+                "name" to p.fullName,
+                "navident" to p.navIdent,
+                "erAttestant" to p.isAttestant()
+            ))
+        }
         post("/favourites") {
             call.respond(favouritesRepository.addFavourite(principal().navIdent, call.receive<String>()))
         }
