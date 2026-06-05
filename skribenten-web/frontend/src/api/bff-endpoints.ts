@@ -19,7 +19,7 @@ export type UserInfo = {
 
 export const getUserInfo = {
   queryKey: ["USER"],
-  queryFn: async () => (await axios.get<UserInfo>(`${BFF_BASE_URL}/userInfo`)).data,
+  queryFn: async () => (await axios.get<UserInfo>("/bff/skribenten-backend/me/userinfo")).data,
   staleTime: CACHE_FOR.aDay,
 };
 

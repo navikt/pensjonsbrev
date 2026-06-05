@@ -1,5 +1,3 @@
-import { getToken, requestOboToken } from "@navikt/oasis";
-import axios from "axios";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { type Express } from "express";
@@ -9,33 +7,6 @@ import config from "./config.js";
 export const internalRoutes = (server: Express) => {
   server.get("/bff/api/logout", (_request, response) => {
     response.redirect("/oauth2/logout");
-  });
-
-  server.get("/bff/api/userinfo", async (request, response): Promise<void> => {
-    const token = getToken(request);
-
-    if (!token) {
-      response.status(400).json({ message: "Bruker er ikke logget inn" });
-      return;
-    }
-
-    const oboResult = await requestOboToken(token as string, config.skribentenBackendApiProxy.scope);
-    if (!oboResult.ok) {
-      response.status(403).json({ message: "Could not exchange token" });
-      return;
-    }
-
-    try {
-      const backendUrl = config.skribentenBackendApiProxy.url.replace(/\/$/, "");
-      const res = await axios.get(`${backendUrl}/me/userinfo`, {
-        headers: {
-          Authorization: `Bearer ${oboResult.token}`,
-        },
-      });
-      response.json(res.data);
-    } catch {
-      response.status(404).json({ message: "Could not get username" });
-    }
   });
 
   const baseUrls = config.baseUrls;
