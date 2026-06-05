@@ -19,12 +19,8 @@ import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.utils.io.ByteChannel
-import io.ktor.utils.io.copyTo
-import io.ktor.utils.io.toByteArray
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
-import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
@@ -96,17 +92,16 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
 
         post("/produserBrev") {
             val request = call.receive<PDFRequest>()
-            val stream = ByteChannel()
-            val result = typstCompileService.createLetter(stream) {
+            val result = typstCompileService.createLetter {
                 TypstDocumentRenderer.render(request, it)
             }
             val logger = call.application.environment.log
             when (result) {
                 is PDFCompilationResponse.Success -> {
                     if (call.request.acceptItems().any { ContentType.Application.Pdf.match(it.value) }) {
-                        call.respondBytesWriter(ContentType.Application.Pdf) { stream.copyTo(this) }
+                        call.respond(result.pdfCompilationOutput)
                     } else {
-                        call.respond(PDFCompilationOutput(stream.toByteArray()))
+                        call.respond(result.pdfCompilationOutput)
                     }
                 }
                 is PDFCompilationResponse.Failure.Client -> {

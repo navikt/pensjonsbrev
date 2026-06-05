@@ -2,13 +2,12 @@ package no.nav.pensjon.brev.pdfbygger
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.client.request.*
-import io.ktor.client.statement.bodyAsBytes
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.*
-import io.ktor.utils.io.ByteChannel
-import io.ktor.utils.io.jvm.javaio.toOutputStream
+import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
@@ -17,7 +16,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.OutputStreamWriter
 
@@ -49,7 +47,7 @@ class PdfByggerAppTest {
         val rendererCalled = ArrayList<Int>()
 
         val fakeCompileService = object : TypstCompileService() {
-            override suspend fun createLetter(stream: ByteChannel, writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
+            override suspend fun createLetter(writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
                 // Driver renderer-kallbacken slik at TypstDocumentRenderer faktisk produserer Typst-innhold,
                 // men hopper over det eksterne `typst`-prosesskallet.
                 val captured = ByteArrayOutputStream()
@@ -57,9 +55,7 @@ class PdfByggerAppTest {
                     writeLetter(TypstFileWriter(writer))
                 }
                 rendererCalled.add(captured.size())
-                ByteArrayInputStream(expectedPdfBytes).copyTo(stream.toOutputStream())
-                stream.close()
-                return PDFCompilationResponse.Success
+                return PDFCompilationResponse.Success(PDFCompilationOutput(expectedPdfBytes))
             }
         }
 
@@ -87,15 +83,14 @@ class PdfByggerAppTest {
             val response = client.post("/produserBrev") {
                 contentType(ContentType.Application.Json)
                 setBody(mapper.writeValueAsBytes(request))
-                accept(ContentType.Application.Pdf)
             }
 
             assertEquals(HttpStatusCode.OK, response.status)
             assertEquals(1, rendererCalled.size, "TypstDocumentRenderer skal være kalt nøyaktig én gang")
             assertTrue(rendererCalled.single() > 0, "TypstDocumentRenderer skal ha skrevet Typst-innhold")
 
-            val bytes = response.bodyAsBytes()
-            assertTrue(expectedPdfBytes.contentEquals(bytes), "PDF-bytes skal returneres uendret til klienten")
+            val output = mapper.readValue(response.bodyAsText(), PDFCompilationOutput::class.java)
+            assertTrue(expectedPdfBytes.contentEquals(output.bytes), "PDF-bytes skal returneres uendret til klienten")
         }
     }
 }
