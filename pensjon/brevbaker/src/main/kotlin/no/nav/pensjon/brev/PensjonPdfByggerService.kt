@@ -7,7 +7,6 @@ import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.network.sockets.*
 import io.ktor.client.plugins.*
-import io.ktor.client.plugins.compression.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.utils.*
@@ -43,9 +42,6 @@ class PensjonPdfByggerService(
         }
         HttpResponseValidator {
             validateResponse { validateResponse(it.status.value, { msg -> logger.warn(msg) }) { it.body<String>() } }
-        }
-        install(ContentEncoding) {
-            gzip()
         }
 
         engine {
@@ -92,6 +88,7 @@ class PensjonPdfByggerService(
                 // Fjern dette etter at ny pdf-bygger er rullet ut til alle miljø.
                 url { parameters.append("typst", "true") }
                 contentType(ContentType.Application.Json)
+                accept(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
                 //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
                 // If the body is set using an object, it will use the content-negotiation strategy which also uses a jackson object-mapper
