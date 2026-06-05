@@ -88,7 +88,7 @@ class PensjonPdfByggerService(
                 // Fjern dette etter at ny pdf-bygger er rullet ut til alle miljø.
                 url { parameters.append("typst", "true") }
                 contentType(ContentType.Application.Json)
-                accept(ContentType.Application.Pdf)
+                accept(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
                 //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
                 // If the body is set using an object, it will use the content-negotiation strategy which also uses a jackson object-mapper
@@ -98,7 +98,7 @@ class PensjonPdfByggerService(
                 // setBody(pdfRequest)
                 // this needs further investigation
                 setBody(objectmapper.writeValueAsBytes(pdfRequest))
-            }.body<ByteArray>().let { PDFCompilationOutput(it) }
+            }.body()
         }
     } catch (e: CancellationException) {
         throw PDFTimeoutException("Spent more than $timeout trying to compile pdf", e)
