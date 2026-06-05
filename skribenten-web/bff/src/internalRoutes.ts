@@ -1,4 +1,4 @@
-import { getToken } from "@navikt/oasis";
+import { getToken, requestOboToken } from "@navikt/oasis";
 import axios from "axios";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
@@ -19,11 +19,17 @@ export const internalRoutes = (server: Express) => {
       return;
     }
 
+    const oboResult = await requestOboToken(token as string, config.skribentenBackendApiProxy.scope);
+    if (!oboResult.ok) {
+      response.status(403).json({ message: "Could not exchange token" });
+      return;
+    }
+
     try {
       const backendUrl = config.skribentenBackendApiProxy.url.replace(/\/$/, "");
       const res = await axios.get(`${backendUrl}/me/userinfo`, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${oboResult.token}`,
         },
       });
       response.json(res.data);
