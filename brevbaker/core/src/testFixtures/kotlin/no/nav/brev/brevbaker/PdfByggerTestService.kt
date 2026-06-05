@@ -9,7 +9,6 @@ import io.ktor.client.request.accept
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsBytes
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
@@ -38,7 +37,7 @@ class PdfByggerTestService(private val pdfByggerUrl: String = PDFByggerTestConta
             contentType(ContentType.Application.Json)
             setBody(objectmapper.writeValueAsBytes(pdfRequest))
             accept(ContentType.Application.Pdf)
-        }.bodyAsBytes().let { PDFCompilationOutput(it) }
+        }.body()
 
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
 }
