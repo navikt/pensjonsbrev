@@ -28,6 +28,10 @@ export function useReleaseReservationOnPageExit({
   );
 
   useEffect(() => {
+    releasedRef.current = false;
+  }, [saksId, brevId, reservationOwnerNavIdent]);
+
+  useEffect(() => {
     if (!enabled || !ownsReservation) return;
 
     const releaseOnce = () => {
