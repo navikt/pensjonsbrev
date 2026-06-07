@@ -77,7 +77,7 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
 
       case "Attestering": {
         if (isOriginalCreator) {
-          trackRedirect("brevbehandler", "saksbehandler");
+          trackRedirect("brevbehandler", "forfatter");
           throw redirect({
             to: "/saksnummer/$saksId/brevbehandler",
             params: { saksId: String(brevInfo.saksId) },
@@ -96,7 +96,7 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
 
       case "Klar":
       case "Arkivert":
-        trackRedirect("brevbehandler", "saksbehandler");
+        trackRedirect("brevbehandler");
         throw redirect({
           to: "/saksnummer/$saksId/brevbehandler",
           params: { saksId: String(brevInfo.saksId) },
