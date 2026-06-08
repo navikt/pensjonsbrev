@@ -86,10 +86,13 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         if (letterData is Map<*, *> && letterData.containsKey("saksbehandlerValg")) {
             (letterData["saksbehandlerValg"] as Map<String, Any?>).entries.forEach { nye -> // TODO: kva er eigentleg typen her?
                 saksbehandlervalg[nye.key] = when (val eksisterende = template.saksbehandlervalg[nye.key]) {
-                    is SaksbehandlervalgVerdi.Bool -> SaksbehandlervalgVerdi.Bool(nye.value as? Boolean ?: false, nye.key)
-                    is SaksbehandlervalgVerdi.Enum<*> -> eksisterende.kopier(java.lang.Enum.valueOf(eksisterende.clazz, nye.value as String))
-                    is SaksbehandlervalgVerdi.Integer -> SaksbehandlervalgVerdi.Integer((nye.value as? String)?.toInt(), nye.key)
-                    is SaksbehandlervalgVerdi.Text -> SaksbehandlervalgVerdi.Text(nye.value as String, nye.key)
+                    is SaksbehandlervalgVerdi.Bool -> SaksbehandlervalgVerdi.Bool(nye.value as? Boolean ?: false, eksisterende.displayText)
+                    is SaksbehandlervalgVerdi.Enum<*> -> eksisterende.kopier((nye.value as? String)?.let { java.lang.Enum.valueOf(eksisterende.clazz, it) })
+                    is SaksbehandlervalgVerdi.Integer -> SaksbehandlervalgVerdi.Integer(
+                        (nye.value as? Number)?.toInt() ?: (nye.value as? String)?.toIntOrNull(),
+                        eksisterende.displayText
+                    )
+                    is SaksbehandlervalgVerdi.Text -> SaksbehandlervalgVerdi.Text(nye.value as? String, eksisterende.displayText)
                     null -> // Dette kan skje hvis malen kombinerer ny og gammel løsning
                         when (nye.value) {
                             // TODO: lurer på om vi kkal støtte det her i det heile tatt, innfører ein del ekstra kompleksitet
