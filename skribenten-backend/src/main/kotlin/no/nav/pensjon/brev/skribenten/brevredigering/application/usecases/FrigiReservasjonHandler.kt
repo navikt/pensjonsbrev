@@ -23,7 +23,7 @@ class FrigiReservasjonHandler(
 
         if (reservasjon.reservertAv != principal.navIdent) {
             logger.info(
-                "Ignorerer forsok pa a frigi reservasjon for brevId={} av bruker={} fordi reservasjonen eies av={}.",
+                "Ignorerer forsøk på å frigi reservasjon for brevId={} av bruker={} fordi reservasjonen eies av={}.",
                 request.brevId,
                 principal.navIdent,
                 reservasjon.reservertAv,
