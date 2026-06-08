@@ -21,6 +21,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
@@ -104,7 +105,9 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
                         // TODO: sørg for at denne bruker streamen heile vegen gjennom
                         call.respondOutputStream(ContentType.Application.Pdf) { stream.writeTo(this) }
                     } else {
-                        call.respond(result.pdfCompilationOutput)
+                        val bytes = stream.toByteArray()
+                        println("Returnerer ${bytes.size}. Original var ${result.pdfCompilationOutput.bytes.size}")
+                        call.respond(PDFCompilationOutput(bytes))
                     }
                 }
                 is PDFCompilationResponse.Failure.Client -> {
