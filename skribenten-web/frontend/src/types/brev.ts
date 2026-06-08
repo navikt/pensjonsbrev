@@ -3,6 +3,7 @@ import { type EditedLetter, type PropertyUsage } from "~/types/brevbakerTypes";
 import { type SpraakKode } from "./apiTypes";
 import { type LanguageCode } from "./brevbakerTypes";
 import { type Nullable } from "./Nullable";
+import type * as generated from "./skribenten-api";
 
 export type OpprettBrevRequest = {
   brevkode: string;
@@ -60,30 +61,10 @@ export type ReservasjonResponse = {
   redigertBrevHash: string;
 };
 
-export type NavAnsatt = {
-  id: string;
-  navn: string | null;
-};
+export type NavAnsatt = generated.NavAnsatt;
 export type BrevType = "VEDTAKSBREV" | "INFORMASJONSBREV";
 
-export type BrevInfo = {
-  id: number;
-  opprettetAv: NavAnsatt;
-  opprettet: string;
-  sistredigertAv: NavAnsatt;
-  sistredigert: string;
-  brevkode: string;
-  brevtittel: string;
-  brevtype: BrevType;
-  status: BrevStatus;
-  distribusjonstype: Distribusjonstype;
-  mottaker: Nullable<Mottaker>;
-  avsenderEnhet: NAVEnhet;
-  spraak: SpraakKode;
-  journalpostId: Nullable<number>;
-  vedtaksId: Nullable<number>;
-  saksId: string;
-};
+export type BrevInfo = generated.BrevInfo;
 
 export type BrevStatus = Kladd | UnderRedigering | Attestering | Klar | Arkivert;
 export type Kladd = { type: "Kladd" };
@@ -100,12 +81,13 @@ export type OppdaterBrevRequest = {
   redigertBrev: EditedLetter;
 };
 
-export enum Distribusjonstype {
-  SENTRALPRINT = "SENTRALPRINT",
-  LOKALPRINT = "LOKALPRINT",
-}
+export type Distribusjonstype = generated.Distribusjon;
+export const Distribusjonstype = {
+  SENTRALPRINT: "SENTRALPRINT",
+  LOKALPRINT: "LOKALPRINT",
+} as const;
 
-export type Mottaker = Samhandler | NorskAdresse | UtenlandskAdresse;
+export type Mottaker = generated.OverstyrtMottaker;
 
 export interface Samhandler {
   type: "Samhandler";
@@ -144,8 +126,6 @@ export interface NAVEnhet {
   enhetNr: string;
   navn: string;
 }
-
-export type VedleggKode = string;
 
 export const P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2";
 

@@ -2,6 +2,7 @@ import { type Identtype, type InnOgUtland, type Søketype } from "~/components/e
 
 import { type ManueltAdressertTil } from "./brev";
 import { type Nullable } from "./Nullable";
+import type * as generated from "./skribenten-api";
 
 export type SakDto = {
   readonly saksId: number;
@@ -39,34 +40,27 @@ export type SakType =
 
 export type DokumentkategoriCode = "B" | "E_BLANKETT" | "IB" | "SED" | "VB";
 
-export type LetterMetadata = {
-  name: string;
-  id: string;
-  brevsystem: BrevSystem;
-  spraak: SpraakKode[];
-  brevkategori?: string;
-  dokumentkategoriCode?: DokumentkategoriCode;
-  redigerbarBrevtittel: boolean;
-  redigerbart: boolean;
-};
+export type LetterMetadata = generated.Brevmal;
 
-export enum BrevSystem {
-  Exstream = "EXSTREAM",
-  Brevbaker = "BREVBAKER",
-}
+export type BrevSystem = "EXSTREAM" | "BREVBAKER";
+export const BrevSystem = {
+  Exstream: "EXSTREAM",
+  Brevbaker: "BREVBAKER",
+} as const;
 
 export type PreferredLanguage = {
   spraakKode: SpraakKode | null;
   failure: string;
 };
 
-export enum SpraakKode {
-  Bokmaal = "NB",
-  Engelsk = "EN",
-  Nynorsk = "NN",
-  Fransk = "FR",
-  NordSamisk = "SE",
-}
+export type SpraakKode = "EN" | "NB" | "NN" | "FR" | "SE";
+export const SpraakKode = {
+  Bokmaal: "NB",
+  Engelsk: "EN",
+  Nynorsk: "NN",
+  Fransk: "FR",
+  NordSamisk: "SE",
+} as const;
 
 export type BaseLetterRequest = {
   brevkode: string;
