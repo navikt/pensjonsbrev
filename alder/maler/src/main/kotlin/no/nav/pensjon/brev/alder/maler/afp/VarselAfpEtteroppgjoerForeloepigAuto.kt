@@ -46,7 +46,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object VarselAfpEtteroppgjoerForeloepigAuto : AutobrevTemplate<VarselAfpEtteroppgjoerForeloepigAutoDto> {
 
-    override val kode = Aldersbrevkoder.AutoBrev.PE_AFP_ETTEROPPGJOER_VARSEL_FORELOEPIG
+    override val kode = Aldersbrevkoder.AutoBrev.PE_AFP_ETTEROPPGJOER_VARSEL_FORELOEPIG_AUTO
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),

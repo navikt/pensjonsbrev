@@ -44,14 +44,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * (`PE_AF_03_100`): innholdet er identisk, men saksbehandler kan redigere teksten
  * i Skribenten. Hele brødteksten deles med autobrevet gjennom den felles frasen
  * [AfpEtteroppgjoerVarselForeloepigInnhold].
- *
- * Brevet leses i vedtak-kontekst fordi det henter beregningsdata fra
- * `vedtaksdata_afpeo_*` i Pesys.
  */
 @TemplateModelHelpers
 object VarselAfpEtteroppgjoerForeloepig : RedigerbarTemplate<VarselAfpEtteroppgjoerForeloepigDto> {
 
-    override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_VARSEL_FORELOEPIG_RED
+    override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_VARSEL_FORELOEPIG
 
     override val featureToggle = FeatureToggles.varselAfpEtteroppgjoerForeloepig.toggle
 
