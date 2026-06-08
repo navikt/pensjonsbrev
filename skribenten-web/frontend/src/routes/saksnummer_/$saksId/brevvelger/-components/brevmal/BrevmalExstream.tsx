@@ -41,15 +41,16 @@ export default function BrevmalForExstream({
   saksId: string;
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) {
-  const { vedtaksId, idTSSEkstern } = Route.useSearch();
+  const { enhetsId: urlEnhetsId, vedtaksId, idTSSEkstern } = Route.useSearch();
   const formRef = useRef<HTMLFormElement>(null);
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
     mutationFn: (payload) => orderExstreamLetter(saksId, payload),
-    onSuccess: (callbackUrl) => {
+    onSuccess: (callbackUrl, variables) => {
       trackEvent("brev opprettet", {
         brevkode: letterTemplate.id,
         brevtittel: letterTemplate.name,
         brevtype: "exstream",
+        enhetsId: variables.enhetsId,
       });
       window.open(callbackUrl);
     },
@@ -70,13 +71,15 @@ export default function BrevmalForExstream({
     resolver: zodResolver(validationSchema),
   });
 
-  const { reset: resetMutation } = orderLetterMutation;
-  const { reset: resetForm } = methods;
+  const { getValues, setValue } = methods;
+
   useEffect(() => {
-    //ved template endring vil vi resette formet - men beholde preferredLanguage hvis den finnes
-    resetForm(defaultValues);
-    resetMutation();
-  }, [templateId, defaultValues, resetForm, resetMutation]);
+    const enhetsId = urlEnhetsId ?? "";
+
+    if (getValues("enhetsId") !== enhetsId) {
+      setValue("enhetsId", enhetsId);
+    }
+  }, [urlEnhetsId, getValues, setValue]);
 
   return (
     <>
@@ -85,7 +88,7 @@ export default function BrevmalForExstream({
       <FormProvider {...methods}>
         <BrevmalFormWrapper
           formRef={formRef}
-          onSubmit={methods.handleSubmit((submittedValues) =>
+          onSubmit={methods.handleSubmit((submittedValues) => {
             orderLetterMutation.mutate(
               byggExstreamOnSubmitRequest({
                 template: letterTemplate,
@@ -97,8 +100,8 @@ export default function BrevmalForExstream({
                   brevtittel: submittedValues.brevtittel ?? null,
                 },
               }),
-            ),
-          )}
+            );
+          })}
         >
           {/*Special case to hide mottaker for "Notat" & "Posteringsgrunnlag" */}
           {templateId !== "PE_IY_03_156" && templateId !== "PE_OK_06_101" && <EndreMottaker saksId={saksId} />}

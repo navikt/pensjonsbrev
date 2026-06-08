@@ -80,6 +80,7 @@ object BrevredigeringFacadeFactory {
             ),
             attesterBrev = AttesterBrevHandler(
                 attesterBrevPolicy = attesterBrevPolicy,
+                ferdigRedigertPolicy = ferdigRedigertPolicy,
                 redigerBrevPolicy = redigerBrevPolicy,
                 brevmalService = brevmalService,
                 brevdataService = brevdataService,

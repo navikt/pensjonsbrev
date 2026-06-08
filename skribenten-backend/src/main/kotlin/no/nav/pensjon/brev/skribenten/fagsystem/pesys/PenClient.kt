@@ -16,6 +16,7 @@ import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
@@ -47,6 +48,7 @@ interface PenClient {
 
 class PenServiceException(message: String) : ServiceException(message)
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
+class PenFeilIDatabyggerException(message: String) : ServiceException(message)
 
 class PentHttpClient(config: Config, authService: AuthService) : PenClient, ServiceStatus {
     private val penUrl = config.getString("url")
@@ -81,7 +83,8 @@ class PentHttpClient(config: Config, authService: AuthService) : PenClient, Serv
                 foedselsdato = it.foedselsdato,
                 navn = with(it.navn) { Pen.SakSelection.Navn(fornavn, mellomnavn, etternavn) },
                 sakType = it.sakType,
-                pid = it.pid
+                pid = it.pid,
+                behandlingsnumre = it.behandlingsnumre,
             )
         }
 
@@ -156,6 +159,7 @@ class PentHttpClient(config: Config, authService: AuthService) : PenClient, Serv
         when {
             status.isSuccess() -> body<BrevdataResponseWrapper<Data>>().data
             status == HttpStatusCode.UnprocessableEntity -> throw PenDataException(body<BrevdataFeilResponse>().feil)
+            status == HttpStatusCode.InternalServerError -> throw PenFeilIDatabyggerException("Feil ved henting av brevdata i sak ${saksId.id}${vedtaksId?.let { " for vedtak ${it.id}" } ?: ""}. ${bodyAsText()}")
             else -> throw PenServiceException("Feil ved kall til PEN: ${status.value} - ${bodyAsText()}. Saksid: ${saksId.id} ${vedtaksId?.let { ", vedtaksId: ${it.id}" }}")
         }
 
@@ -174,6 +178,7 @@ class PentHttpClient(config: Config, authService: AuthService) : PenClient, Serv
         val sakType: ISakstype,
         val enhetId: String?,
         val pid: Pid,
+        val behandlingsnumre: List<Behandlingsnummer>,
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }

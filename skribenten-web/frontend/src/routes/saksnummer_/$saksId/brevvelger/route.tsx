@@ -33,10 +33,11 @@ import { erBrevKladdEllerUnderRedigering, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
 import { trackEvent } from "~/utils/umami";
 
+import { baseSearchSchema } from "../route";
 import BrevmalPanel from "./-components/BrevmalPanel";
 import BrevvelgerFooter from "./-components/BrevvelgerFooter";
 
-const brevvelgerSearchSchema = z.object({
+const brevvelgerSearchSchema = baseSearchSchema.extend({
   brevId: z.coerce.number().optional(),
   idTSSEkstern: z.coerce.string().optional(),
   templateId: z.coerce.string().optional(),
@@ -61,6 +62,7 @@ export interface SubmitTemplateOptions {
 
 export function BrevvelgerPage() {
   const { saksId } = Route.useParams();
+  const { enhetsId } = Route.useSearch();
   const startTime = useRef(0);
 
   useEffect(() => {
@@ -70,6 +72,7 @@ export function BrevvelgerPage() {
       trackEvent("tid brukt i brevvelger", {
         varighetSekunder,
         varighetMinutter: Math.round(varighetSekunder / 60),
+        enhetsId,
       });
     };
   }, []);
@@ -182,7 +185,7 @@ function Brevmaler({
   handleOpenAccordionChange: (categoryKey: string) => void;
 }) {
   const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger" });
-  const { templateId } = Route.useSearch();
+  const { templateId, enhetsId } = Route.useSearch();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const favoritter = useQuery(getFavoritter).data ?? [];
@@ -333,7 +336,15 @@ function Brevmaler({
                           }
                           icon={<BrevSystemIcon brevsystem={template.brevsystem} />}
                           key={template.id}
-                          onClick={() =>
+                          onClick={() => {
+                            if (template.brevsystem === BrevSystem.Exstream) {
+                              trackEvent("exstream brev valgt", {
+                                brevkode: template.id,
+                                brevtittel: template.name,
+                                enhetsId,
+                              });
+                            }
+
                             navigate({
                               to: "/saksnummer/$saksId/brevvelger",
                               search: (s) => ({
@@ -341,8 +352,8 @@ function Brevmaler({
                                 templateId: template.id,
                                 brevId: undefined,
                               }),
-                            })
-                          }
+                            });
+                          }}
                           title={template.name}
                         />
                       ))}
@@ -396,6 +407,8 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
                       ...s,
                       brevId: brev.id,
                       templateId: undefined,
+                      enhetsId: brev.avsenderEnhet.enhetNr,
+                      ...(brev.vedtaksId != null && { vedtaksId: String(brev.vedtaksId) }),
                     }),
                   })
                 }

@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.skribenten.common.diff.EditOperation.Insert
 fun <T : Any> shortestEditScript(old: List<T>, new: List<T>): EditScript<T> =
     EditScript(old, new, MyersDiff(old, new).shortestEditScript())
 
-private fun <T> List<T>.asArrayList() = if (this is ArrayList) this else ArrayList(this)
+private fun <T> List<T>.asArrayList() = this as? ArrayList ?: ArrayList(this)
 
 class EditScript<T : Any>(val old: List<T>, val new: List<T>, val all: List<EditOperation<T>>) {
     val inserts: List<Insert<T>> = all.filterIsInstance<Insert<T>>()

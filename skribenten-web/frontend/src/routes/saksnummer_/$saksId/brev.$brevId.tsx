@@ -1,4 +1,4 @@
-import { BodyLong, Box, Button, Heading, HGrid, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
+import { Alert, Box, Button, Heading, HGrid, HStack, Label, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
@@ -21,12 +21,14 @@ import {
   usePartitionedModelSpecification,
 } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
+import { CenteredLoader } from "~/components/CenteredLoader";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
   ManagedLetterEditorContextProvider,
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
+import ReservertBrevError from "~/components/ReservertBrevError";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import {
@@ -35,6 +37,7 @@ import {
   type ReservasjonResponse,
   type SaksbehandlerValg,
 } from "~/types/brev";
+import { genericErrorMessage, getErrorMessage } from "~/utils/errorUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
 
@@ -44,6 +47,9 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
   },
   component: () => <RedigerBrevPage />,
 });
+
+const queryRetries = 3;
+const isSpecialCaseErrorStatus = (status: number | undefined) => status === 404 || status === 409 || status === 423;
 
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
@@ -56,8 +62,10 @@ function RedigerBrevPage() {
     queryKey: getBrev.queryKey(brevId),
     queryFn: () => getBrev.queryFn(saksId, brevId),
     staleTime: Number.POSITIVE_INFINITY,
-    retry: (_, error: AxiosError) => error && error.response?.status !== 423 && error.response?.status !== 409,
-    throwOnError: (error: AxiosError) => error.response?.status !== 423 && error.response?.status !== 409,
+    retry: (failureCount: number, error: AxiosError) => {
+      return failureCount < queryRetries && !isSpecialCaseErrorStatus(error.response?.status);
+    },
+    throwOnError: (error: AxiosError) => !isSpecialCaseErrorStatus(error.response?.status),
   });
 
   useEffect(() => {
@@ -86,18 +94,43 @@ function RedigerBrevPage() {
     pending: () => (
       <Box asChild background="default" marginInline="auto" maxWidth="1106px" minWidth="945px">
         <HStack align="stretch" flexGrow="1" gap="space-16" justify="space-around" padding="space-16" wrap={false}>
-          <Skeleton height="auto" variant="rectangle" width="33%" />
-          <Skeleton height="auto" variant="rectangle" width="66%" />
+          <CenteredLoader label="Henter brev..." />
         </HStack>
       </Box>
     ),
+    retrying: (failureCount, failureReason) => {
+      const errorMessage = getErrorMessage(failureReason).trim();
+      const retryErrorMessage =
+        !errorMessage || errorMessage === genericErrorMessage
+          ? undefined
+          : /[.!?]$/.test(errorMessage)
+            ? errorMessage
+            : `${errorMessage}.`;
+
+      return (
+        <Box asChild background="default" marginInline="auto" maxWidth="1106px" minWidth="945px">
+          <VStack align="center" flexGrow="1" gap="space-8" justify="center" padding="space-16">
+            <CenteredLoader label="Henter brev..." />
+            <Alert size="small" variant="warning">
+              Klarte ikke å hente brevet. Prøver på nytt (forsøk {failureCount + 1} av {queryRetries + 1})...
+              {retryErrorMessage && <p>{`Feilårsak: ${retryErrorMessage}`}</p>}
+            </Alert>
+          </VStack>
+        </Box>
+      );
+    },
     error: (error) => {
-      if (error.response?.status === 423 && error.response?.data) {
+      const errorStatus = error.response?.status;
+      if (errorStatus === 423 && error.response?.data) {
         return (
-          <ReservertBrevError doRetry={brevQuery.refetch} reservasjon={error.response.data as ReservasjonResponse} />
+          <ReservertBrevError
+            doRetry={brevQuery.refetch}
+            onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
+            reservasjon={error.response.data as ReservasjonResponse}
+          />
         );
       }
-      if (error.response?.status === 409) {
+      if (errorStatus === 409) {
         return (
           <Box asChild background="default">
             <VStack align="start" flexGrow="1" gap="space-8" padding="space-24">
@@ -121,6 +154,41 @@ function RedigerBrevPage() {
           </Box>
         );
       }
+      if (errorStatus === 404) {
+        return (
+          <VStack align="center" flexGrow="1" gap="space-8" padding="space-24">
+            <ApiError error={error} title="Finner ikke brevet i databasen" />
+            <HStack gap="space-8">
+              <Button
+                onClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevvelger",
+                    params: { saksId },
+                    search: { enhetsId, vedtaksId },
+                  })
+                }
+                size="small"
+                variant="secondary"
+              >
+                Gå til brevvelger
+              </Button>
+              <Button
+                onClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevbehandler",
+                    params: { saksId },
+                    search: { enhetsId, vedtaksId },
+                  })
+                }
+                size="small"
+                variant="secondary"
+              >
+                Gå til brevbehandler
+              </Button>
+            </HStack>
+          </VStack>
+        );
+      }
       return <ApiError error={error} title="En feil skjedde ved henting av brev" />;
     },
     success: (brev) => (
@@ -130,48 +198,6 @@ function RedigerBrevPage() {
     ),
   });
 }
-
-const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: ReservasjonResponse; doRetry: () => void }) => {
-  const navigate = useNavigate({ from: Route.fullPath });
-  const { enhetsId, vedtaksId } = Route.useSearch();
-  if (reservasjon) {
-    return (
-      <Modal
-        header={{
-          heading: "Brevet redigeres av noen andre",
-          closeButton: false,
-        }}
-        onClose={() => {}}
-        open={!reservasjon.vellykket}
-        width={478}
-      >
-        <Modal.Body>
-          <BodyLong>
-            Brevet er utilgjengelig for deg fordi {reservasjon.reservertAv.navn} har brevet åpent. Ønsker du å forsøke å
-            åpne brevet på nytt?
-          </BodyLong>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={doRetry} type="button">
-            Ja, åpne på nytt
-          </Button>
-          <Button
-            onClick={() =>
-              navigate({
-                to: BrevvelgerRoute.fullPath,
-                search: { enhetsId, vedtaksId },
-              })
-            }
-            type="button"
-            variant="tertiary"
-          >
-            Nei, gå til brevbehandler
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
-};
 
 interface RedigerBrevSidemenyFormData {
   signatur: string;
@@ -425,7 +451,11 @@ function RedigerBrev({
               }}
               open={warnOpen}
             />
-            <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
+            <ReservertBrevError
+              doRetry={doReload}
+              onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
+              reservasjon={reservasjonQuery.data}
+            />
             <HGrid columns="minmax(304px, 384px) minmax(640px, 694px)" height="var(--main-page-content-height)">
               <Box
                 asChild

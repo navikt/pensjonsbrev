@@ -228,15 +228,12 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             ))
 
             showIf(kravGjelder.equalTo("f_bh_med_utl")){
-                paragraph {
+                title1 {
                     text (
                         bokmal { + "Dette skjer videre med søknaden din" },
                         nynorsk { + "Dette skjer vidare med søknaden din" },
                     )
                 }
-            }
-
-            showIf(kravGjelder.equalTo("f_bh_med_utl")){
                 paragraph {
                     text (
                         bokmal { + "Når vi mottar vedtak fra " + fritekst("land") + ", vil vi fatte et vedtak med en endelig beregning. Du mottar da et samlet vedtak fra Norge og " + fritekst("land") + "." },

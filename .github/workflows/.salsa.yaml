@@ -21,12 +21,12 @@ jobs:
       id-token: "write"
     steps:
       - name: NAIS login
-        uses: nais/login@c88ada9ce583928e1c84d2fd5c45cfacdd18d5de # v0
+        uses: nais/login@d0fcfa8591d10b57312f58e7f6269de58bdab1df # v0
         id: login
         with:
           team: pensjonsbrev
       - name: Generate SBOM, attest and sign image
         id: attest-sign
-        uses: nais/attest-sign@2582340c642c3fd834a0f0f0773bf3a70d30a227 # v2.0.8
+        uses: nais/attest-sign@2548fccb3e472f3f65d1cf0fe6e339c7675d3c55 # v2.0.9
         with:
           image_ref: ${{ inputs.image }}@${{ inputs.digest }}

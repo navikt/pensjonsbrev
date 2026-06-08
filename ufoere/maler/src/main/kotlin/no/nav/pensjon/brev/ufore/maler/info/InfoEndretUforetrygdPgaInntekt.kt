@@ -33,37 +33,37 @@ object InfoEndretUforetrygdPgaInntekt : AutobrevTemplate<InfoEndretUTPgaInntektD
 
         outline {
             title1 {
-                text (
+                text(
                     bokmal { +"Vi har fått opplysninger om inntekten din" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Hvis du fortsetter å ha like mye inntekt som du har hatt hittil i år, vil du få utbetalt for mye uføretrygd. Hvis inntekten din blir høyere enn " + belopsgrense.format() + " kroner i år, vil du få en lavere utbetaling av uføretrygd."}
+                    bokmal { +"Hvis du fortsetter å ha like mye inntekt som du har hatt hittil i år, vil du få utbetalt for mye uføretrygd. Hvis inntekten din blir høyere enn " + belopsgrense.format() + " i år, vil du få en lavere utbetaling av uføretrygd." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Har du barnetillegg, kan inntekt under inntektsgrensen føre til endring i barnetillegget. Bor du sammen med barnets andre forelder, kan både din og den andre forelderens inntekt påvirke barnetillegget. Derfor må du melde fra om både din og den andre forelderens inntekt."}
+                    bokmal { +"Har du barnetillegg, kan inntekt under inntektsgrensen føre til endring i barnetillegget. Bor du sammen med barnets andre forelder, kan både din og den andre forelderens inntekt påvirke barnetillegget. Derfor må du melde fra om både din og den andre forelderens inntekt." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Du beholder uføregraden din selv om du får en lavere utbetaling."}
+                    bokmal { +"Du beholder uføregraden din selv om du får en lavere utbetaling." }
                 )
             }
 
             title1 {
-                text (
+                text(
                     bokmal { +"Dette kan du gjøre" }
                 )
             }
             paragraph {
                 list {
-                    item { text(bokmal { +"Hvis du ikke forventer at inntekten din blir høyere enn " + belopsgrense.format() + " kroner i år, trenger du ikke gjøre noe." }) }
+                    item { text(bokmal { +"Hvis du ikke forventer at inntekten din blir høyere enn " + belopsgrense.format() + " i år, trenger du ikke gjøre noe." }) }
                 }
                 list {
-                    item { text(bokmal { +"Forventer du at inntekten din blir høyere enn " + belopsgrense.format() + " kroner, bør du melde fra til oss så fort som mulig." }) }
+                    item { text(bokmal { +"Forventer du at inntekten din blir høyere enn " + belopsgrense.format() + ", bør du melde fra til oss så fort som mulig." }) }
                 }
                 list {
                     item { text(bokmal { +"Har du barnetillegg og bor sammen med barnets andre forelder, bør du melde fra om både din og den andre forelderens inntekt." }) }
@@ -71,60 +71,60 @@ object InfoEndretUforetrygdPgaInntekt : AutobrevTemplate<InfoEndretUTPgaInntektD
             }
 
             title1 {
-                text (
+                text(
                     bokmal { +"For deg som har fått feriepenger" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Du kan få dette brevet fordi du har fått en større utbetaling av feriepenger. Så lenge inntekten din for året ikke blir høyere enn " + belopsgrense.format() + " kroner blir ikke utbetalingen av uføretrygden din påvirket."}
+                    bokmal { +"Du kan få dette brevet fordi du har fått en større utbetaling av feriepenger. Så lenge inntekten din for året ikke blir høyere enn " + belopsgrense.format() + " blir ikke utbetalingen av uføretrygden din påvirket." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Feriepenger skal som hovedregel tas med som inntekt. Unntaket er hvis feriepengene er opptjent før du fikk innvilget uføretrygd eller økt uføregraden din."}
+                    bokmal { +"Feriepenger skal som hovedregel tas med som inntekt. Unntaket er hvis feriepengene er opptjent før du fikk innvilget uføretrygd eller økt uføregraden din." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Husk at en lavere inntekt kan ha betydning hvis du har barnetillegg."}
+                    bokmal { +"Husk at en lavere inntekt kan ha betydning hvis du har barnetillegg." }
                 )
             }
 
             title1 {
-                text (
+                text(
                     bokmal { +"Slik melder du fra om inntekt" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Du kan melde fra om endringer i inntektsplanleggeren, som du finner ved å logge inn på Din uføretrygd. Her kan du melde fra om hvor mye du forventer å tjene, og se hvordan det vil påvirke din utbetaling."}
+                    bokmal { +"Du kan melde fra om endringer i inntektsplanleggeren, som du finner ved å logge inn på Din uføretrygd. Her kan du melde fra om hvor mye du forventer å tjene, og se hvordan det vil påvirke din utbetaling." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Hvis du ikke melder fra om inntekt, øker risikoen for at du får utbetalt feil beløp i uføretrygd. Derfor er det viktig at du melder fra om inntekt. "}
+                    bokmal { +"Hvis du ikke melder fra om inntekt, øker risikoen for at du får utbetalt feil beløp i uføretrygd. Derfor er det viktig at du melder fra om inntekt. " }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Selv om vi reduserer uføretrygden din, kan du ha fått for mye utbetalt til at vi kan rette det opp samme år. Hvis du har fått for lite eller for mye utbetalt i uføretrygd et år, får du et etteroppgjør. Etteroppgjøret kommer på høsten når skatteoppgjøret for året før er klart."}
+                    bokmal { +"Selv om vi reduserer uføretrygden din, kan du ha fått for mye utbetalt til at vi kan rette det opp samme år. Hvis du har fått for lite eller for mye utbetalt i uføretrygd et år, får du et etteroppgjør. Etteroppgjøret kommer på høsten når skatteoppgjøret for året før er klart." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Du får et vedtak fra oss hvis uføretrygden endres på grunn av inntekt."}
+                    bokmal { +"Du får et vedtak fra oss hvis uføretrygden endres på grunn av inntekt." }
                 )
             }
 
             title1 {
-                text (
+                text(
                     bokmal { +"Slik henter vi opplysninger om inntekt" }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Vi henter inntektsopplysninger automatisk fra Skatteetatens register, hvor arbeidsgivere melder inn sine ansattes inntekt. Hvis du mener arbeidsgiver har rapportert inn feil inntekt, må du kontakte arbeidsgiver."}
+                    bokmal { +"Vi henter inntektsopplysninger automatisk fra Skatteetatens register, hvor arbeidsgivere melder inn sine ansattes inntekt. Hvis du mener arbeidsgiver har rapportert inn feil inntekt, må du kontakte arbeidsgiver." }
                 )
             }
 
