@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.model.BrevId
-import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -22,10 +21,9 @@ class FrigiReservasjonHandlerTest : BrevredigeringHandlerTestBase() {
             principal = saksbehandler1Principal,
         )
 
-        assertThat(resultat).isSuccess {
-            val etterFrigi = hentBrev(brevId = brev.info.id, principal = saksbehandler1Principal).resultOrFail()
-            assertThat(etterFrigi.info.redigeresAv).isNull()
-        }
+        assertThat(resultat).isSuccess()
+        val etterFrigi = hentBrev(brevId = brev.info.id, principal = saksbehandler1Principal).resultOrFail()
+        assertThat(etterFrigi.info.redigeresAv).isNull()
     }
 
     @Test
@@ -38,10 +36,9 @@ class FrigiReservasjonHandlerTest : BrevredigeringHandlerTestBase() {
             principal = saksbehandler2Principal,
         )
 
-        assertThat(resultat).isSuccess {
-            val etterFrigi = hentBrev(brevId = brev.info.id, principal = saksbehandler1Principal).resultOrFail()
-            assertThat(etterFrigi.info.redigeresAv).isEqualTo(saksbehandler1Principal.navIdent)
-        }
+        assertThat(resultat).isSuccess()
+        val etterFrigi = hentBrev(brevId = brev.info.id, principal = saksbehandler1Principal).resultOrFail()
+        assertThat(etterFrigi.info.redigeresAv).isEqualTo(saksbehandler1Principal.navIdent)
     }
 
     @Test
@@ -54,10 +51,9 @@ class FrigiReservasjonHandlerTest : BrevredigeringHandlerTestBase() {
             principal = saksbehandler1Principal,
         )
 
-        assertThat(resultat).isSuccess {
-            val etterFrigi = hentBrev(brevId = brev.info.id, principal = saksbehandler1Principal).resultOrFail()
-            assertThat(etterFrigi.info.redigeresAv).isNull()
-        }
+        assertThat(resultat).isSuccess()
+        val etterFrigi = hentBrev(brevId = brev.info.id, principal = saksbehandler1Principal).resultOrFail()
+        assertThat(etterFrigi.info.redigeresAv).isNull()
     }
 
     private suspend fun frigiReservasjon(
