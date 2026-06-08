@@ -91,6 +91,27 @@ class HentBrevAttesteringHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
+    suspend fun `attestant kan hente kladd for attestering`() {
+        val opprettet = opprettBrev(
+            brevkode = Testbrevkoder.VEDTAKSBREV,
+            vedtaksId = VedtaksId(1234),
+            reserverForRedigering = false,
+            principal = saksbehandler1Principal,
+        ).resultOrFail()
+
+        val hentet = hentBrevAttestering(
+            brevId = opprettet.info.id,
+            reserverForRedigering = true,
+            principal = attestant1Principal,
+        )
+
+        assertThat(hentet).isSuccess {
+            assertThat(it.info.status).isEqualTo(Dto.BrevStatus.KLADD)
+            assertThat(it.info.redigeresAv).isEqualTo(attestant1Principal.navIdent)
+        }
+    }
+
+    @Test
     suspend fun `kan ikke hente eget brev for attestering`() {
         val opprettet = opprettBrev(
             brevkode = Testbrevkoder.VEDTAKSBREV,
