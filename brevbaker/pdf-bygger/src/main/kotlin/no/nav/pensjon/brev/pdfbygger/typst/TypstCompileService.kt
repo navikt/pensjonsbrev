@@ -41,7 +41,7 @@ open class TypstCompileService(
     open suspend fun createLetter(stream: ByteArrayOutputStream, writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
         return when (val result: Execution = executeCompileProcess(stream, writeLetter)) {
             is Execution.Success ->
-                PDFCompilationResponse.Success(PDFCompilationOutput(result.pdfBytes))
+                PDFCompilationResponse.Success(PDFCompilationOutput(stream.toByteArray()))
 
             is Execution.Failure.Compilation ->
                 PDFCompilationResponse.Failure.Client(
@@ -68,12 +68,10 @@ open class TypstCompileService(
                 process.outputStream.writer(Charsets.UTF_8).use { writeLetter(TypstFileWriter(it)) }
 
                 val stdoutDeferred = async(Dispatchers.IO) {
-                    val allBytes = process.inputStream.readAllBytes()
-                    stream.write(allBytes)
-                    allBytes
+                    process.inputStream.copyTo(stream)
                 }
                 val stderrContent = String(process.errorStream.readAllBytes(), Charsets.UTF_8)
-                val pdfBytes = stdoutDeferred.await()
+                stdoutDeferred.await()
 
                 val exitCode = process.waitFor()
 
@@ -81,7 +79,7 @@ open class TypstCompileService(
                     if (stderrContent.isNotBlank()) {
                         logger.warn("PDF-generering gikk bra, men ga følgende typst feil: $stderrContent")
                     }
-                    Execution.Success(pdfBytes = pdfBytes)
+                    Execution.Success
                 } else {
                     Execution.Failure.Compilation(error = stderrContent)
                 }
@@ -94,7 +92,7 @@ open class TypstCompileService(
     }
 
     private sealed class Execution {
-        class Success(val pdfBytes: ByteArray) : Execution()
+        object Success : Execution()
         sealed class Failure : Execution() {
             data class Compilation(val error: String) : Failure()
             data class Execution(val cause: Throwable) : Failure()
