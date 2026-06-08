@@ -40,10 +40,10 @@ const root = (container as unknown as { _root?: ReactDOM.Root })._root ?? ReactD
 (container as unknown as { _root?: ReactDOM.Root })._root = root;
 
 root.render(
-    <React.StrictMode>
-        <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools buttonPosition="bottom-left" initialIsOpen={false} />
-            <RouterProvider router={router} />
-        </QueryClientProvider>
-    </React.StrictMode>,
+  <React.StrictMode>
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools buttonPosition="bottom-left" initialIsOpen={false} />
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  </React.StrictMode>,
 );

@@ -3,11 +3,7 @@ import { BodyLong, Heading, Select, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
-import {
-  getTemplateDescription,
-  getTemplateDocumentation,
-  type MalType,
-} from "~/api/brevbaker-api-endpoints";
+import { getTemplateDescription, getTemplateDocumentation, type MalType } from "~/api/brevbaker-api-endpoints";
 import {
   type Attachment,
   type Conditional,
