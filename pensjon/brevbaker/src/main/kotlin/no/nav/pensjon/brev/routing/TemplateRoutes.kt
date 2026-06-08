@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.routing
 
 import io.ktor.http.*
 import io.ktor.server.application.ApplicationCall
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
@@ -14,8 +15,8 @@ import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.TemplateModelSpecificationFactory
-import no.nav.pensjon.brev.template.render.DocumentationTextExtractor
-import no.nav.pensjon.brev.template.render.SearchLine
+import no.nav.pensjon.brev.template.render.TemplateTextExtractor
+import no.nav.pensjon.brev.template.render.TemplateTextBlock
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -45,11 +46,16 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
         }
 
         get("/all") {
-            call.respond(docCache.all())
-        }
-
-        get("/all/version") {
-            call.respond(docCache.version())
+            val etag = "\"${docCache.etag()}\""
+            call.response.header(HttpHeaders.ETag, etag)
+            // `no-cache` (not `no-store`): clients may cache the body but must
+            // revalidate with If-None-Match, so unchanged corpora cost a cheap 304.
+            call.response.header(HttpHeaders.CacheControl, "no-cache")
+            if (call.request.header(HttpHeaders.IfNoneMatch)?.let { ifNoneMatchAllows(it, etag) } == true) {
+                call.respond(HttpStatusCode.NotModified)
+            } else {
+                call.respond(docCache.all())
+            }
         }
 
         route("/{kode}") {
@@ -108,31 +114,27 @@ fun <Kode: Brevkode<Kode>> TemplateResource<Kode,*,*>.kodeOf(kode: String): Kode
 
 /** One template's searchable lines for a single language, as returned by the batch
  * documentation endpoint. Each line is an ordered list of text/variable segments
- * (see [SearchLine]). */
+ * (see [TemplateTextBlock]). */
 data class SearchableContent(
     val brevkode: String,
     val language: LanguageCode,
-    val lines: List<SearchLine>,
+    val lines: List<TemplateTextBlock>,
 )
 
 /** A content fingerprint for the batch documentation of a template resource.
  * Changes whenever the rendered documentation changes (e.g. a new deploy) or
- * when the set of enabled templates changes (Unleash toggles). Clients can poll
- * this cheaply and only re-fetch/-index the full corpus when [hash] changes. */
-data class TemplateDocVersion(val hash: String)
-
+ * when the set of enabled templates changes (Unleash toggles). Served as the
+ * HTTP ETag of the batch endpoint so clients revalidate cheaply (304) and only
+ * re-fetch/-index the full corpus when it actually changes. */
 private fun sha256Hex(value: String): String =
     MessageDigest.getInstance("SHA-256").digest(value.toByteArray()).joinToString("") { "%02x".format(it) }
 
-/**
- * Renders and caches the searchable documentation for a template resource.
- *
- * A template's rendered documentation is static for the lifetime of the process
- * (templates are code), so each template is rendered once and memoised. Unleash
- * toggles only change *which* templates are visible; that is evaluated live via
- * [TemplateResource.listTemplatekeys] on every call, so toggling a template
- * in/out takes effect immediately.
- */
+/** Whether an `If-None-Match` header value matches [etag] (or is the `*` wildcard). */
+@PublishedApi
+internal fun ifNoneMatchAllows(ifNoneMatch: String, etag: String): Boolean =
+    ifNoneMatch.split(",").map { it.trim() }.any { it == etag || it == "*" }
+
+
 @PublishedApi
 internal class TemplateDocCache<Kode : Brevkode<Kode>>(private val resource: TemplateResource<Kode, *, *>) {
     private data class Rendered(val content: List<SearchableContent>, val hash: String)
@@ -146,7 +148,7 @@ internal class TemplateDocCache<Kode : Brevkode<Kode>>(private val resource: Tem
                     SearchableContent(
                         brevkode = brevkode,
                         language = language.toCode(),
-                        lines = DocumentationTextExtractor.extract(
+                        lines = TemplateTextExtractor.extract(
                             TemplateDocumentationRenderer.render(template, language, EMPTY_MODEL_SPECIFICATION),
                         ),
                     )
@@ -159,9 +161,10 @@ internal class TemplateDocCache<Kode : Brevkode<Kode>>(private val resource: Tem
     fun all(): List<SearchableContent> =
         resource.listTemplatekeys().flatMap { render(it)?.content.orEmpty() }
 
-    /** Content fingerprint of [all]; cheap and stable while the content is unchanged. */
-    fun version(): TemplateDocVersion =
+    /** Content fingerprint of [all]; cheap and stable while the content is
+     *  unchanged. Served as the batch endpoint's HTTP ETag. */
+    fun etag(): String =
         resource.listTemplatekeys().sorted()
             .joinToString("|") { "$it:${render(it)?.hash.orEmpty()}" }
-            .let { TemplateDocVersion(sha256Hex(it)) }
+            .let(::sha256Hex)
 }

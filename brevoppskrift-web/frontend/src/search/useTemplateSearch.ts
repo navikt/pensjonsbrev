@@ -1,14 +1,13 @@
 import { useQueries } from "@tanstack/react-query";
 import { useDeferredValue, useMemo, useState } from "react";
 
-import { getAllTemplateDocumentation, getTemplateDocVersion, type MalType } from "~/api/brevbaker-api-endpoints";
+import { getAllTemplateDocumentation, type MalType } from "~/api/brevbaker-api-endpoints";
 import { type BrevHit, buildIndex, type ContentHit, search, type TemplateText } from "~/search/textSearch";
 export const MIN_QUERY_LENGTH = 2;
-/** The cheap version endpoint is polled often so we notice template changes
- *  quickly; the large /all payload is only re-fetched and re-indexed when the
- *  content hash changes. */
-const VERSION_STALE_TIME_MS = 30 * 1000;
-const VERSION_REFETCH_MS = 60 * 1000;
+/** The batch payload carries an ETag, so periodic refetches revalidate cheaply
+ *  (304 Not Modified) and only transfer the corpus when its content changes. */
+const DOC_STALE_TIME_MS = 30 * 1000;
+const DOC_REFETCH_MS = 60 * 1000;
 /** A template the search should cover, with all the languages it supports. */
 export type TemplateRef = {
   malType: MalType;
@@ -33,35 +32,39 @@ export type TemplateSearch = {
 function templateCount(hits: { template: TemplateText }[]): number {
   return new Set(hits.map((hit) => `${hit.template.malType}/${hit.template.id}`)).size;
 }
+/** Stable id per object reference. React Query's structural sharing keeps the
+ *  same `data` reference across refetches when the content is unchanged, so this
+ *  lets us rebuild the search index only when the corpus actually changes. */
+const referenceIds = new WeakMap<object, number>();
+let nextReferenceId = 1;
+function referenceId(value: object | undefined): string {
+  if (!value) {
+    return "0";
+  }
+  const existing = referenceIds.get(value);
+  if (existing !== undefined) {
+    return String(existing);
+  }
+  const id = nextReferenceId++;
+  referenceIds.set(value, id);
+  return String(id);
+}
 export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
   const malTypes = useMemo(() => [...new Set(templates.map((t) => t.malType))] as MalType[], [templates]);
-  // Poll the cheap content fingerprint often. The hash changes on a new deploy
-  // or when an Unleash toggle changes which templates are visible.
-  const versionQueries = useQueries({
+  // The corpus is keyed only by malType; periodic refetches revalidate against
+  // the server ETag and return a 304 (served from cache) while it is unchanged.
+  const queries = useQueries({
     queries: malTypes.map((malType) => ({
-      queryKey: getTemplateDocVersion.queryKey(malType),
-      queryFn: () => getTemplateDocVersion.queryFn(malType),
-      staleTime: VERSION_STALE_TIME_MS,
-      refetchInterval: VERSION_REFETCH_MS,
+      queryKey: getAllTemplateDocumentation.queryKey(malType),
+      queryFn: () => getAllTemplateDocumentation.queryFn(malType),
+      staleTime: DOC_STALE_TIME_MS,
+      refetchInterval: DOC_REFETCH_MS,
     })),
   });
-  // The large batch payload is keyed by the content hash, so it is only
-  // re-fetched (and the index only rebuilt) when the hash actually changes. We
-  // wait for the version query to settle to avoid an extra fetch on first load,
-  // but still fetch if the version endpoint is unavailable (degraded mode).
-  const queries = useQueries({
-    queries: malTypes.map((malType, i) => {
-      const version = versionQueries[i].data?.hash;
-      return {
-        queryKey: [...getAllTemplateDocumentation.queryKey(malType), version ?? "no-version"],
-        queryFn: () => getAllTemplateDocumentation.queryFn(malType),
-        enabled: !versionQueries[i].isLoading,
-        staleTime: Number.POSITIVE_INFINITY,
-      };
-    }),
-  });
   const titleByKey = useMemo(() => new Map(templates.map((t) => [`${t.malType}/${t.brevkode}`, t.title])), [templates]);
-  const freshnessKey = queries.map((q) => `${q.status}:${q.dataUpdatedAt}`).join("|");
+  // Depends on data identity (not fetch timestamps), so an unchanged corpus that
+  // revalidated to a 304 keeps the same reference and does not rebuild the index.
+  const freshnessKey = queries.map((q) => referenceId(q.data)).join("|");
   // biome-ignore lint/correctness/useExhaustiveDependencies: `queries` is a new array every render; `freshnessKey` captures the data we actually depend on.
   const index = useMemo(() => {
     const entries: TemplateText[] = [];
@@ -93,7 +96,7 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
     query,
     setQuery,
     isSearching,
-    isLoading: versionQueries.some((q) => q.isLoading) || queries.some((q) => q.data === undefined && !q.isError),
+    isLoading: queries.some((q) => q.data === undefined && !q.isError),
     failedCount: queries.filter((q) => q.isError).length,
     contentHits: results.content,
     brevHits: results.brev,

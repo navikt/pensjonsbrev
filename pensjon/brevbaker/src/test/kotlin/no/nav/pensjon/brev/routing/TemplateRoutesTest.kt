@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.render.DocumentationTextExtractor
+import no.nav.pensjon.brev.template.render.TemplateTextExtractor
 import no.nav.pensjon.brev.template.render.TemplateDocumentation
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brev.template.toCode
@@ -162,7 +162,7 @@ class TemplateRoutesTest {
             // Lines match the server-side extraction of the per-template documentation.
             val sample = body.first { it.brevkode == ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.kode.name && it.language == LanguageCode.BOKMAL }
             assertEquals(
-                DocumentationTextExtractor.extract(
+                TemplateTextExtractor.extract(
                     TemplateDocumentationRenderer.render(
                         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
                         Language.Bokmal,
@@ -176,16 +176,29 @@ class TemplateRoutesTest {
         }
 
     @Test
-    fun `version endpoint returns a stable non-blank corpus hash`() =
+    fun `batch doc endpoint serves a stable ETag and answers 304 to a matching If-None-Match`() =
         testBrevbakerApp(isIntegrationTest = false) { client ->
-            val first = client.get("/templates/autobrev/all/version")
+            val first = client.get("/templates/autobrev/all")
             assertEquals(HttpStatusCode.OK, first.status)
-            val firstHash = first.body<TemplateDocVersion>().hash
-            assertTrue(firstHash.isNotBlank())
+            val etag = first.headers[HttpHeaders.ETag]
+            assertTrue(!etag.isNullOrBlank())
 
-            // Content is static at runtime, so the hash is stable across calls.
-            val secondHash = client.get("/templates/autobrev/all/version").body<TemplateDocVersion>().hash
-            assertEquals(firstHash, secondHash)
+            // Content is static at runtime, so the ETag is stable across calls.
+            val second = client.get("/templates/autobrev/all")
+            assertEquals(etag, second.headers[HttpHeaders.ETag])
+
+            // A matching If-None-Match revalidates cheaply with 304 and no body.
+            val notModified = client.get("/templates/autobrev/all") {
+                header(HttpHeaders.IfNoneMatch, etag)
+            }
+            assertEquals(HttpStatusCode.NotModified, notModified.status)
+            assertTrue(notModified.bodyAsText().isEmpty())
+
+            // A stale ETag still gets the full payload.
+            val stale = client.get("/templates/autobrev/all") {
+                header(HttpHeaders.IfNoneMatch, "\"not-the-current-etag\"")
+            }
+            assertEquals(HttpStatusCode.OK, stale.status)
         }
 
     @Test
