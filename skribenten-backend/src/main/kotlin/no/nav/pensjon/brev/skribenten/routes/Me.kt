@@ -17,7 +17,7 @@ fun Route.meRoute(navansattService: NavansattService) {
             val p = principal()
             call.respond(Api.UserInfo(
                 name = p.fullName,
-                navident = p.navIdent.id,
+                navident = p.navIdent
                 erAttestant = p.isAttestant(),
             ))
         }
