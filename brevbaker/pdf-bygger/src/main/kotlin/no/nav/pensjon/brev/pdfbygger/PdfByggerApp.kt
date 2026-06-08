@@ -101,7 +101,8 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
             when (result) {
                 is PDFCompilationResponse.Success -> {
                     if (call.request.acceptItems().any { ContentType.Application.Pdf.match(it.value) }) {
-                        call.respondOutputStream(ContentType.Application.Pdf) { write(result.pdfCompilationOutput.bytes) }
+                        // TODO: sørg for at denne bruker streamen heile vegen gjennom
+                        call.respondOutputStream(ContentType.Application.Pdf) { stream.writeTo(this) }
                     } else {
                         call.respond(result.pdfCompilationOutput)
                     }
