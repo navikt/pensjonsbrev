@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.pdfbygger
 
-import no.nav.brev.brevbaker.PDFCompilationOutput
-
 sealed class PDFCompilationResponse {
-    data class Success(val pdfCompilationOutput: PDFCompilationOutput) : PDFCompilationResponse()
+    data object Success : PDFCompilationResponse()
 
     sealed class Failure: PDFCompilationResponse() {
         abstract val reason: String

@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.pdfbygger.typst
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayOutputStream
@@ -40,8 +39,7 @@ open class TypstCompileService(
 
     open suspend fun createLetter(stream: ByteArrayOutputStream, writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
         return when (val result: Execution = executeCompileProcess(stream, writeLetter)) {
-            is Execution.Success ->
-                PDFCompilationResponse.Success(PDFCompilationOutput(stream.toByteArray()))
+            is Execution.Success -> PDFCompilationResponse.Success
 
             is Execution.Failure.Compilation ->
                 PDFCompilationResponse.Failure.Client(

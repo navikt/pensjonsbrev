@@ -9,7 +9,6 @@ import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
@@ -60,7 +59,7 @@ class PdfByggerAppTest {
                     stream.write(expectedPdfBytes)
                 }
                 rendererCalled.add(captured.size())
-                return PDFCompilationResponse.Success(PDFCompilationOutput(expectedPdfBytes))
+                return PDFCompilationResponse.Success
             }
         }
 
