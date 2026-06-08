@@ -36,6 +36,7 @@ export function SearchSnippet({ hit, needle }: { hit: ContentHit; needle?: strin
       <div
         css={css`
           margin-top: var(--ax-space-2);
+
           mark {
             background: transparent;
             color: inherit;
@@ -50,7 +51,7 @@ export function SearchSnippet({ hit, needle }: { hit: ContentHit; needle?: strin
             <BodyShort
               css={css`
                 white-space: normal;
-                word-break: break-word;
+                overflow-wrap: anywhere;
                 ${
                   !isPrimary &&
                   css`
