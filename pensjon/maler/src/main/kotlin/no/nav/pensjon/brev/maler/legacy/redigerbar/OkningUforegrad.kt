@@ -106,38 +106,26 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             val txtOgEllerEktefelle = if (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().equals(true)) " og/eller ektefelle" else ""
 
-            showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()).notEqualTo("oppfylt"))) {
-                paragraph {
+            paragraph {
+                text(
+                    bokmal { +"Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". " },
+                    nynorsk { +"Vi har innvilga søknaden din om auka uføretrygd som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". " },
+                )
+                showIf(pe.vedtaksdata_kravhode_kravarsaktype().isNotAnyOf("omgj_etter_klage", "omgj_etter_anke")) {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Uføregraden din øker fra " + fritekst("Forrige Uforegrad") + " til " + uforegradFraBeregning.format() + " prosent fra " + virkningstidpunkt.format() + "." },
-                        nynorsk { +"Vi har innvilga søknaden din om auka uføretrygd som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Uføregraden din aukar frå " + fritekst("Forrige Uforegrad") + " til " + uforegradFraBeregning.format() + " prosent frå " + virkningstidpunkt.format() + "." },
+                        bokmal { +"Uføregraden din øker fra " + fritekst("Forrige Uforegrad") + " til " + uforegradFraBeregning.format() + " prosent fra " + virkningstidpunkt.format() + ". " },
+                        nynorsk { +"Uføregraden din aukar frå " + fritekst("Forrige Uforegrad") + " til " + uforegradFraBeregning.format() + " prosent frå " + virkningstidpunkt.format() + ". " },
+                    )
+                }.orShow {
+                    text(
+                        bokmal { +"Du har fått medhold i klagen din, og får " + uforegradFraBeregning.format() + " prosent uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + ". " },
+                        nynorsk { +"Du har fått medhald i klaga di, og får " + uforegradFraBeregning.format() + " prosent uføretrygd frå " + pe.vedtaksdata_virkningfom().format() + ". " },
                     )
                 }
-            }
-
-            showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()).equalTo("oppfylt"))) {
-                paragraph {
+                showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()).equalTo("oppfylt"))) {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Uføregraden din øker fra " + fritekst("Forrige Uforegrad") + " til " + uforegradFraBeregning.format() + " prosent fra " + virkningstidpunkt.format() + ". Hele uføretrygden din er innvilget med rettighet som ung ufør." },
-                        nynorsk { +"Vi har innvilga søknaden din om auka uføretrygd som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Uføregraden din aukar frå " + fritekst("Forrige Uforegrad") + " til " + uforegradFraBeregning.format() + " prosent frå " + virkningstidpunkt.format() + ". Heile uføretrygda di er innvilga med rett som ung ufør. " },
-                    )
-                }
-            }
-
-            showIf(((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("omgj_etter_klage") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("omgj_etter_anke")) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat().notEqualTo("oppfylt"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Du har fått medhold i klagen din, og får " + uforegradFraBeregning.format() + " prosent uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + "." },
-                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Du har fått medhald i klaga di, og får " + uforegradFraBeregning.format() + " prosent uføretrygd frå " + pe.vedtaksdata_virkningfom().format() + "." },
-                    )
-                }
-            }
-
-            showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()).equalTo("oppfylt") and (pe.vedtaksdata_kravhode_kravarsaktype().equalTo("omgj_etter_klage") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("omgj_etter_anke")))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Du har fått medhold i klagen din, og får " + uforegradFraBeregning.format() + " prosent uføretrygd med rettighet som ung ufør fra " + pe.vedtaksdata_virkningfom().format() + "." },
-                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Du har fått medhald i klaga di, og får " + uforegradFraBeregning.format() + " prosent uføretrygd med rett som ung ufør frå " + pe.vedtaksdata_virkningfom().format() + "." },
+                        bokmal { +"Hele uføretrygden din er innvilget med rettighet som ung ufør. " },
+                        nynorsk { +"Heile uføretrygda di er innvilga med rett som ung ufør. " },
                     )
                 }
             }
