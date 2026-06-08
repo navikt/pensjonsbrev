@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -50,10 +51,17 @@ object OktMinsteIFUReduksjonsprosent {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
             title1 {
-                text(
-                    bokmal { +"Dette er dine endringer fra 1. januar 2026" },
-                    nynorsk { +"Dette er endringane dine frå 1. januar 2026" },
-                )
+                showIf(data.etterbetalingJuli.greaterThan(0) or data.endringNettoUforetrygdUtenTillegg or data.endringNettoBarnetillegg or data.endringNettoGjenlevendetillegg) {
+                    text(
+                        bokmal { +"Dette er dine endringer" },
+                        nynorsk { +"Dette er endringane dine" },
+                    )
+                }.orShow {
+                    text(
+                        bokmal { +"Dette er dine endringer, de påvirker ikke utbetalingen" },
+                        nynorsk { +"Dette er endringane dine, dei påverkar ikkje utbetalinga" },
+                    )
+                }
             }
             paragraph {
                 text(
