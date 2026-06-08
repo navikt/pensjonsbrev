@@ -43,6 +43,7 @@ export function useReleaseReservationOnPageExit({
 
     return () => {
       globalThis.removeEventListener("pagehide", releaseOnce);
+      releaseOnce();
     };
   }, [enabled, ownsReservation, brevId]);
 }
