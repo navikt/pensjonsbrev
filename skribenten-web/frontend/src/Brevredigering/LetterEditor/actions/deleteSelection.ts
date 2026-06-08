@@ -455,8 +455,12 @@ function removeInTextContentParent(
       const originalText = text(startContent);
       if (end.cursorPosition > start.cursorPosition) {
         if (isLiteral(startContent)) {
-          const newText = originalText.slice(0, start.cursorPosition) + originalText.slice(end.cursorPosition);
-          updateLiteralText(startContent, newText);
+          if (start.cursorPosition === 0 && end.cursorPosition >= originalText.length) {
+            removeElements(start.contentIndex, 1, parent);
+          } else {
+            const newText = originalText.slice(0, start.cursorPosition) + originalText.slice(end.cursorPosition);
+            updateLiteralText(startContent, newText);
+          }
         } else if (isVariable(startContent) || isNewLine(startContent)) {
           removeElements(start.contentIndex, 1, parent);
         }
