@@ -1,9 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
-import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
-import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerVarselFraser
-import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpTilbakekrevingBody
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerVarselForeloepigInnhold
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDto.Periode
@@ -42,9 +39,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * fire ukers frist til å legge fram nye inntektsopplysninger før det endelige
  * vedtaket fattes — se [VedtakAfpEtteroppgjoerTilbakekrevingAuto] (`PE_AF_04_107`).
  *
- * Det meste av innholdet gjenbrukes fra PE_AF_04-familien gjennom
- * [AfpEtteroppgjoerInnhold] og [AfpTilbakekrevingBody]; de varsel-spesifikke
- * paragrafene ligger i [AfpEtteroppgjoerVarselFraser].
+ * Hele brødteksten deles med den redigerbare varianten
+ * [VarselAfpEtteroppgjoerForeloepig] (`PE_AF_03_101`) gjennom den felles frasen
+ * [AfpEtteroppgjoerVarselForeloepigInnhold].
  */
 @TemplateModelHelpers
 object VarselAfpEtteroppgjoerForeloepigAuto : AutobrevTemplate<VarselAfpEtteroppgjoerForeloepigAutoDto> {
@@ -73,10 +70,8 @@ object VarselAfpEtteroppgjoerForeloepigAuto : AutobrevTemplate<VarselAfpEtteropp
         }
 
         outline {
-            includePhrase(AfpEtteroppgjoerInnhold.EtteroppgjoerIntro)
-
             includePhrase(
-                AfpEtteroppgjoerVarselFraser.ForeloepigBeregningForMye(
+                AfpEtteroppgjoerVarselForeloepigInnhold(
                     erHelAfpHeleAaret = periode.equalTo(Periode.HEL_AFP_HELE_AARET),
                     erUttakIAaret = periode.equalTo(Periode.UTTAK_I_AARET),
                     erOpphoerIAaret = periode.equalTo(Periode.OPPHOER_I_AARET),
@@ -85,84 +80,18 @@ object VarselAfpEtteroppgjoerForeloepigAuto : AutobrevTemplate<VarselAfpEtteropp
                     opphorsdato = opphorsdato,
                     oppgjoersAar = oppgjoersAar,
                     formyebetalt = formyebetalt,
-                ),
-            )
-
-            includePhrase(AfpEtteroppgjoerInnhold.InnrapporterteInntektsopplysningerIkkeSkiller)
-            includePhrase(AfpEtteroppgjoerInnhold.LaverePgiKanGiHoyereAfp)
-
-            includePhrase(AfpEtteroppgjoerVarselFraser.HjemmelForeloepig)
-
-            includePhrase(AfpEtteroppgjoerInnhold.MeldingOmEndringerInnledning)
-            includePhrase(AfpEtteroppgjoerInnhold.InntektUtenforEtteroppgjoerListe)
-            includePhrase(AfpEtteroppgjoerInnhold.AnnenInntektInntektsproevd)
-            includePhrase(AfpEtteroppgjoerInnhold.DokumenterInntekterUtenforAvkorting)
-            includePhrase(AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon)
-            includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmCovidInntekterInnledning)
-            includePhrase(AfpEtteroppgjoerInnhold.CovidDokumentasjonskravInntekter)
-            includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
-
-            includePhrase(AfpEtteroppgjoerVarselFraser.VedtakOmEndeligResultatSenere)
-
-            includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
-            includePhrase(
-                AfpEtteroppgjoerInnhold.SamletPgiOpplysning(
                     pensjonsgivendeInntekt = pensjonsgivendeInntekt,
-                    oppgjoersAar = oppgjoersAar,
-                ),
-            )
-
-            includePhrase(
-                AfpEtteroppgjoerInnhold.InntektFoerUttakInntektEtterOpphoerFordelingPerPeriode(
-                    erHelAfpHeleAaret = periode.equalTo(Periode.HEL_AFP_HELE_AARET),
-                    erUttakIAaret = periode.equalTo(Periode.UTTAK_I_AARET),
-                    erOpphoerIAaret = periode.equalTo(Periode.OPPHOER_I_AARET),
-                    erUttakOgOpphoerIAaret = periode.equalTo(Periode.UTTAK_OG_OPPHOER_I_AARET),
-                    uttaksdato = uttaksdato,
-                    opphorsdato = opphorsdato,
-                    oppgjoersAar = oppgjoersAar,
                     inntektFoerUttak = inntektFoerUttak,
                     inntektEtterOpphoer = inntektEtterOpphoer,
                     inntektIAfpPerioden = inntektIAfpPerioden,
-                ),
-            )
-
-            includePhrase(
-                AfpEtteroppgjoerVarselFraser.ToleransebeloepForeloepig(
                     forventetInntekt = forventetInntekt,
-                    oppgjoersAar = oppgjoersAar,
-                ),
-            )
-
-            includePhrase(
-                AfpTilbakekrevingBody.NyPensjonsberegningEquation(
                     fullAfp = fullAfp,
                     fradragBeregnetArbeidsInntekt = fradragBeregnetArbeidsInntekt,
                     korrigertAfp = korrigertAfp,
-                ),
-            )
-            includePhrase(
-                AfpTilbakekrevingBody.InntektsfradragetFormel(
-                    fradragBeregnetArbeidsInntekt = fradragBeregnetArbeidsInntekt,
-                    inntektIAfpPerioden = inntektIAfpPerioden,
                     tidligereArbeidsInntektBeregnet = tidligereArbeidsInntektBeregnet,
-                    fullAfp = fullAfp,
-                ),
-            )
-            includePhrase(
-                AfpTilbakekrevingBody.AfpForMyeEquation(
                     utbetaltAfp = utbetaltAfp,
-                    korrigertAfp = korrigertAfp,
-                    formyebetalt = formyebetalt,
                 ),
             )
-
-            includePhrase(AfpEtteroppgjoerVarselFraser.NaarFristenHarGaattUt(oppgjoersAar))
-            includePhrase(AfpEtteroppgjoerVarselFraser.EktefelletilleggForbehold)
-
-            includePhrase(AfpEtteroppgjoerVarselFraser.DineRettigheterOgPlikterInnsyn)
-            includePhrase(HarDuSpoersmaal.afpEtteroppgjoer)
-            includePhrase(AfpEtteroppgjoerVarselFraser.MeldepliktArbeidsinntekt)
         }
     }
 }

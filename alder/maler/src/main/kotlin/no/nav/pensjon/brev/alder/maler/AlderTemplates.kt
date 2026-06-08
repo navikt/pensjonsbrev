@@ -31,6 +31,7 @@ import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAnd
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerTilbakekrevingAuto
 import no.nav.pensjon.brev.alder.maler.afp.VarselAfpEtteroppgjoerForeloepigAuto
+import no.nav.pensjon.brev.alder.maler.afp.VarselAfpEtteroppgjoerForeloepig
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakEndringAfpOffentligSektor
@@ -162,6 +163,7 @@ object AlderTemplates : AllTemplates {
             InnvilgelseAvAfpOffentligSektor,
             VedtakEndringAfpOffentligSektor,
             VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger,
+            VarselAfpEtteroppgjoerForeloepig,
             EndringAvAlderspensjonSivilstand,
             EndringAvAlderspensjonSivilstandSaerskiltSats,
             OmregningAlderUfore2016,
