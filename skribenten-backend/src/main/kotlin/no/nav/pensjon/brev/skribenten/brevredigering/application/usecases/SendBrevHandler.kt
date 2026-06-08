@@ -41,7 +41,7 @@ class SendBrevHandler(
                 eksternReferanseId = "skribenten:${brev.id.value.id}",
                 mottaker = brev.mottaker?.toPen(),
             ),
-            distribuer = brev.distribusjonstype == Distribusjonstype.SENTRALPRINT,
+            distribuer = brev.distribusjonstype == Distribusjon.SENTRALPRINT,
         )
 
         if (response.journalpostId != null) {

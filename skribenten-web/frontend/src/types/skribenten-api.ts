@@ -2394,33 +2394,63 @@ export interface components {
             kode: string;
             navn: string;
         };
+        /**
+         * BrevSystem
+         * @enum {string}
+         */
+        BrevSystem: "EXSTREAM" | "BREVBAKER";
+        /**
+         * DokumentkategoriCode
+         * @enum {string|null}
+         */
+        DokumentkategoriCode: "B" | "E_BLANKETT" | "IB" | "SED" | "VB" | null;
+        /**
+         * SpraakKode
+         * @enum {string}
+         */
+        SpraakKode: "EN" | "NB" | "NN" | "FR" | "SE";
         /** Brevmal */
         Brevmal: {
             brevkategori?: string | null;
-            /** @enum {string} */
-            brevsystem: "EXSTREAM" | "BREVBAKER";
-            /** @enum {string|null} */
-            dokumentkategoriCode?: "B" | "E_BLANKETT" | "IB" | "SED" | "VB" | null;
+            brevsystem: components["schemas"]["BrevSystem"];
+            dokumentkategoriCode?: components["schemas"]["DokumentkategoriCode"];
             id: string;
             name: string;
             redigerbarBrevtittel: boolean;
             redigerbart: boolean;
-            spraak: ("EN" | "NB" | "NN" | "FR" | "SE")[];
+            spraak: components["schemas"]["SpraakKode"][];
         };
+        /**
+         * Brevkontekst
+         * @enum {string}
+         */
+        Brevkontekst: "ALLE" | "SAK" | "VEDTAK";
+        /**
+         * LanguageCode
+         * @enum {string}
+         */
+        LanguageCode: "BOKMAL" | "NYNORSK" | "ENGLISH";
+        /**
+         * Brevtype
+         * @enum {string}
+         */
+        Brevtype: "VEDTAKSBREV" | "INFORMASJONSBREV";
+        /**
+         * Distribusjonstype
+         * @enum {string}
+         */
+        Distribusjonstype: "VEDTAK" | "VIKTIG" | "ANNET";
         /** LetterMetadata */
         LetterMetadata: {
-            /** @enum {string} */
-            brevtype: "VEDTAKSBREV" | "INFORMASJONSBREV";
+            brevtype: components["schemas"]["Brevtype"];
             displayTitle: string;
-            /** @enum {string} */
-            distribusjonstype: "VEDTAK" | "VIKTIG" | "ANNET";
+            distribusjonstype: components["schemas"]["Distribusjonstype"];
         };
         /** Redigerbar */
         Redigerbar: {
-            /** @enum {string} */
-            brevkontekst: "ALLE" | "SAK" | "VEDTAK";
+            brevkontekst: components["schemas"]["Brevkontekst"];
             kategori: string;
-            languages: ("BOKMAL" | "NYNORSK" | "ENGLISH")[];
+            languages: components["schemas"]["LanguageCode"][];
             letterDataClass: string;
             metadata: components["schemas"]["LetterMetadata"];
             name: string;
@@ -2429,8 +2459,7 @@ export interface components {
         /** Brevbaker */
         Brevbaker: {
             brevkode: string;
-            /** @enum {string} */
-            brevkontekst: "ALLE" | "SAK" | "VEDTAK";
+            brevkontekst: components["schemas"]["Brevkontekst"];
             data: components["schemas"]["Redigerbar"];
             isRedigerbart: boolean;
             isForSakskontekst: boolean;
@@ -2470,39 +2499,59 @@ export interface components {
             erSkjermet: boolean;
             vergemaal: boolean;
         };
+        /**
+         * FailureType
+         * @enum {string|null}
+         */
+        FailureType: "EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT" | "EXSTREAM_REDIGERING_GENERELL" | "FERDIGSTILLING_TIMEOUT" | "SAF_ERROR" | "SKRIBENTEN_INTERNAL_ERROR" | "ENHET_UNAUTHORIZED" | "NAVANSATT_MANGLER_NAVN" | null;
         /** BestillOgRedigerBrevResponse */
         BestillOgRedigerBrevResponse: {
-            /** @enum {string|null} */
-            failureType?: "EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT" | "EXSTREAM_REDIGERING_GENERELL" | "FERDIGSTILLING_TIMEOUT" | "SAF_ERROR" | "SKRIBENTEN_INTERNAL_ERROR" | "ENHET_UNAUTHORIZED" | "NAVANSATT_MANGLER_NAVN" | null;
+            failureType?: components["schemas"]["FailureType"];
             journalpostId?: number | null;
             url?: string | null;
         };
+        /**
+         * Adressetype
+         * @enum {string}
+         */
+        Adressetype: "MATRIKKELADRESSE" | "POSTADRESSE_I_FRITT_FORMAT" | "POSTBOKSADRESSE" | "REGOPPSLAG_ADRESSE" | "UKJENT_BOSTED" | "UTENLANDSK_ADRESSE" | "UTENLANDSK_ADRESSE_I_FRITT_FORMAT" | "VEGADRESSE" | "VERGE_PERSON_POSTADRESSE" | "VERGE_SAMHANDLER_POSTADRESSE";
         /** KontaktAdresseDto */
         KontaktAdresseDto: {
             adresseString: string;
             adresselinjer: string[];
-            /** @enum {string} */
-            type: "MATRIKKELADRESSE" | "POSTADRESSE_I_FRITT_FORMAT" | "POSTBOKSADRESSE" | "REGOPPSLAG_ADRESSE" | "UKJENT_BOSTED" | "UTENLANDSK_ADRESSE" | "UTENLANDSK_ADRESSE_I_FRITT_FORMAT" | "VEGADRESSE" | "VERGE_PERSON_POSTADRESSE" | "VERGE_SAMHANDLER_POSTADRESSE";
+            type: components["schemas"]["Adressetype"];
         };
+        /**
+         * no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoResponse.FailureType
+         * @enum {string|null}
+         */
+        "no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoResponse.FailureType": "NOT_FOUND" | "ERROR" | null;
         /** KontaktinfoResponse */
         KontaktinfoResponse: {
-            /** @enum {string|null} */
-            failure?: "NOT_FOUND" | "ERROR" | null;
-            /** @enum {string|null} */
-            spraakKode?: "EN" | "NB" | "NN" | "FR" | "SE" | null;
+            failure?: components["schemas"]["no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoResponse.FailureType"];
+            spraakKode?: components["schemas"]["SpraakKode"];
         };
         /** NavEnhet */
         NavEnhet: {
             enhetNr: string;
             navn: string;
         };
+        /**
+         * Distribusjon
+         * @enum {string}
+         */
+        Distribusjon: "SENTRALPRINT" | "LOKALPRINT";
+        /**
+         * ManueltAdressertTil
+         * @enum {string|null}
+         */
+        ManueltAdressertTil: "BRUKER" | "ANNEN" | "IKKE_RELEVANT" | null;
         /** NorskAdresse */
         NorskAdresse: {
             adresselinje1?: string | null;
             adresselinje2?: string | null;
             adresselinje3?: string | null;
-            /** @enum {string|null} */
-            manueltAdressertTil?: "BRUKER" | "ANNEN" | "IKKE_RELEVANT" | null;
+            manueltAdressertTil?: components["schemas"]["ManueltAdressertTil"];
             navn: string;
             postnummer: string;
             poststed: string;
@@ -2528,8 +2577,7 @@ export interface components {
             adresselinje2?: string | null;
             adresselinje3?: string | null;
             landkode: string;
-            /** @enum {string|null} */
-            manueltAdressertTil?: "BRUKER" | "ANNEN" | "IKKE_RELEVANT" | null;
+            manueltAdressertTil?: components["schemas"]["ManueltAdressertTil"];
             navn: string;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -2593,10 +2641,8 @@ export interface components {
             avsenderEnhet: components["schemas"]["NavEnhet"];
             brevkode: string;
             brevtittel: string;
-            /** @enum {string} */
-            brevtype: "VEDTAKSBREV" | "INFORMASJONSBREV";
-            /** @enum {string} */
-            distribusjonstype: "SENTRALPRINT" | "LOKALPRINT";
+            brevtype: components["schemas"]["Brevtype"];
+            distribusjonstype: components["schemas"]["Distribusjon"];
             id: number;
             journalpostId?: number | null;
             mottaker?: components["schemas"]["OverstyrtMottaker"];
@@ -2607,8 +2653,7 @@ export interface components {
             /** Format: date-time */
             sistredigert: string;
             sistredigertAv: components["schemas"]["NavAnsatt"];
-            /** @enum {string} */
-            spraak: "EN" | "NB" | "NN" | "FR" | "SE";
+            spraak: components["schemas"]["SpraakKode"];
             status: components["schemas"]["BrevStatus"];
             vedtaksId?: number | null;
         };
@@ -2622,16 +2667,29 @@ export interface components {
             propertyName: string;
             typeName: string;
         };
+        /**
+         * FontType
+         * @enum {string}
+         */
+        FontType: "PLAIN" | "BOLD" | "ITALIC";
+        /**
+         * ElementTags
+         * @enum {string}
+         */
+        ElementTags: "FRITEKST" | "REDIGERBAR_DATA";
+        /**
+         * Type
+         * @enum {string}
+         */
+        Type: "ITEM_LIST" | "LITERAL" | "VARIABLE" | "TABLE" | "NEW_LINE";
         /** Literal */
         Literal: {
-            /** @enum {string|null} */
-            editedFontType?: "PLAIN" | "BOLD" | "ITALIC" | null;
+            editedFontType?: components["schemas"]["FontType"];
             editedText?: string | null;
-            /** @enum {string} */
-            fontType: "PLAIN" | "BOLD" | "ITALIC";
+            fontType: components["schemas"]["FontType"];
             id?: number;
             parentId?: number;
-            tags: ("FRITEKST" | "REDIGERBAR_DATA")[];
+            tags: components["schemas"]["ElementTags"][];
             text: string;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -2641,8 +2699,7 @@ export interface components {
         };
         /** NewLine */
         NewLine: {
-            /** @enum {string} */
-            fontType: "PLAIN" | "BOLD" | "ITALIC";
+            fontType: components["schemas"]["FontType"];
             id?: number;
             parentId?: number;
             text: string;
@@ -2654,11 +2711,10 @@ export interface components {
         };
         /** Variable */
         Variable: {
-            /** @enum {string} */
-            fontType: "PLAIN" | "BOLD" | "ITALIC";
+            fontType: components["schemas"]["FontType"];
             id?: number;
             parentId?: number;
-            tags: ("FRITEKST" | "REDIGERBAR_DATA")[];
+            tags: components["schemas"]["ElementTags"][];
             text: string;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -2675,13 +2731,17 @@ export interface components {
             id?: number;
             parentId?: number;
         };
+        /**
+         * Listetype
+         * @enum {string}
+         */
+        Listetype: "PUNKTLISTE" | "NUMMERERT_LISTE";
         /** ItemList */
         ItemList: {
             deletedItems: number[];
             id?: number;
             items: components["schemas"]["Item"][];
-            /** @enum {string} */
-            listType: "PUNKTLISTE" | "NUMMERERT_LISTE";
+            listType: components["schemas"]["Listetype"];
             parentId?: number;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -2689,6 +2749,11 @@ export interface components {
              */
             type: "ITEM_LIST";
         };
+        /**
+         * ColumnAlignment
+         * @enum {string}
+         */
+        ColumnAlignment: "LEFT" | "RIGHT";
         /** Cell */
         Cell: {
             id?: number;
@@ -2697,8 +2762,7 @@ export interface components {
         };
         /** ColumnSpec */
         ColumnSpec: {
-            /** @enum {string} */
-            alignment: "LEFT" | "RIGHT";
+            alignment: components["schemas"]["ColumnAlignment"];
             headerContent: components["schemas"]["Cell"];
             id?: number;
             parentId?: number;
@@ -2731,6 +2795,11 @@ export interface components {
         };
         /** ParagraphContent */
         ParagraphContent: components["schemas"]["ItemList"] | components["schemas"]["Table"] | components["schemas"]["Literal"] | components["schemas"]["NewLine"] | components["schemas"]["Variable"];
+        /**
+         * no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type
+         * @enum {string}
+         */
+        "no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type": "TITLE1" | "TITLE2" | "TITLE3" | "PARAGRAPH";
         /** Paragraph */
         Paragraph: {
             content: components["schemas"]["ParagraphContent"][];
@@ -2738,8 +2807,7 @@ export interface components {
             editable: boolean;
             id?: number;
             missingFromTemplate: boolean;
-            /** @enum {string|null} */
-            originalType?: "TITLE1" | "TITLE2" | "TITLE3" | "PARAGRAPH" | null;
+            originalType?: components["schemas"]["no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type"];
             parentId?: number;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -2754,8 +2822,7 @@ export interface components {
             editable: boolean;
             id?: number;
             missingFromTemplate: boolean;
-            /** @enum {string|null} */
-            originalType?: "TITLE1" | "TITLE2" | "TITLE3" | "PARAGRAPH" | null;
+            originalType?: components["schemas"]["no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type"];
             parentId?: number;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -2770,8 +2837,7 @@ export interface components {
             editable: boolean;
             id?: number;
             missingFromTemplate: boolean;
-            /** @enum {string|null} */
-            originalType?: "TITLE1" | "TITLE2" | "TITLE3" | "PARAGRAPH" | null;
+            originalType?: components["schemas"]["no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type"];
             parentId?: number;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -2786,8 +2852,7 @@ export interface components {
             editable: boolean;
             id?: number;
             missingFromTemplate: boolean;
-            /** @enum {string|null} */
-            originalType?: "TITLE1" | "TITLE2" | "TITLE3" | "PARAGRAPH" | null;
+            originalType?: components["schemas"]["no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type"];
             parentId?: number;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -2831,7 +2896,7 @@ export interface components {
         /** AlltidValgbartVedleggBrevkode */
         AlltidValgbartVedleggBrevkode: {
             kode: string;
-            spraak: ("BOKMAL" | "NYNORSK" | "ENGLISH")[];
+            spraak: components["schemas"]["LanguageCode"][];
             visningstekst: string;
         };
         /** BrevResponse */
@@ -2862,7 +2927,7 @@ export interface components {
         /** ValgbartVedlegg */
         ValgbartVedlegg: {
             kode: string;
-            spraak: ("BOKMAL" | "NYNORSK" | "ENGLISH")[];
+            spraak: components["schemas"]["LanguageCode"][];
             tilgjengeligForSpraak: boolean;
             visningstekst: string;
         };
@@ -2882,12 +2947,16 @@ export interface components {
         };
         /** Response */
         Response: Record<string, never>;
+        /**
+         * SamhandlerTypeCode
+         * @enum {string}
+         */
+        SamhandlerTypeCode: "AA" | "ADVO" | "AFPO" | "AK" | "AMI" | "AN" | "AP" | "APOP" | "APOS" | "ART" | "ASEN" | "AT" | "ATU" | "AU" | "BAND" | "BB" | "BBE" | "BEH" | "BF" | "BH" | "BHT" | "BI" | "BU" | "EOS" | "ET" | "FA" | "FB" | "FFU" | "FKL" | "FL" | "FO" | "FS" | "FT" | "FTK" | "FULL" | "GVS" | "HE" | "HF" | "HFO" | "HJS" | "HMS" | "HP" | "HPRD" | "HS" | "HSTA" | "HSV" | "HTF" | "HU" | "INST" | "IS" | "JO" | "KA" | "KE" | "KEMN" | "KI" | "KOMM" | "KON" | "KRED" | "KRU" | "KYND" | "LABO" | "LABP" | "LARO" | "LBS" | "LE" | "LEBE" | "LEFA" | "LEKO" | "LERA" | "LFK" | "LHK" | "LK" | "LM" | "LOGO" | "LRB" | "LS" | "MT" | "NB" | "OA" | "OI" | "OM" | "OP" | "OR" | "ORVE" | "PE" | "PF" | "POLI" | "PPT" | "PS" | "RA" | "REGO" | "RF" | "RFK" | "RHFO" | "RKK" | "ROL" | "RONO" | "RONP" | "RT" | "RTK" | "RTV" | "SAD" | "SFK" | "SK" | "SP" | "SR" | "STKO" | "SUD" | "SYKH" | "TEPE" | "TH" | "TI" | "TK" | "TL" | "TLO" | "TOLK" | "TP" | "TR" | "TRAN" | "TT" | "UTL" | "VE" | "VIRT" | "VP" | "X" | "YH" | "YM";
         /** DirekteOppslag */
         DirekteOppslag: {
             id: string;
             identtype: string;
-            /** @enum {string} */
-            samhandlerType: "AA" | "ADVO" | "AFPO" | "AK" | "AMI" | "AN" | "AP" | "APOP" | "APOS" | "ART" | "ASEN" | "AT" | "ATU" | "AU" | "BAND" | "BB" | "BBE" | "BEH" | "BF" | "BH" | "BHT" | "BI" | "BU" | "EOS" | "ET" | "FA" | "FB" | "FFU" | "FKL" | "FL" | "FO" | "FS" | "FT" | "FTK" | "FULL" | "GVS" | "HE" | "HF" | "HFO" | "HJS" | "HMS" | "HP" | "HPRD" | "HS" | "HSTA" | "HSV" | "HTF" | "HU" | "INST" | "IS" | "JO" | "KA" | "KE" | "KEMN" | "KI" | "KOMM" | "KON" | "KRED" | "KRU" | "KYND" | "LABO" | "LABP" | "LARO" | "LBS" | "LE" | "LEBE" | "LEFA" | "LEKO" | "LERA" | "LFK" | "LHK" | "LK" | "LM" | "LOGO" | "LRB" | "LS" | "MT" | "NB" | "OA" | "OI" | "OM" | "OP" | "OR" | "ORVE" | "PE" | "PF" | "POLI" | "PPT" | "PS" | "RA" | "REGO" | "RF" | "RFK" | "RHFO" | "RKK" | "ROL" | "RONO" | "RONP" | "RT" | "RTK" | "RTV" | "SAD" | "SFK" | "SK" | "SP" | "SR" | "STKO" | "SUD" | "SYKH" | "TEPE" | "TH" | "TI" | "TK" | "TL" | "TLO" | "TOLK" | "TP" | "TR" | "TRAN" | "TT" | "UTL" | "VE" | "VIRT" | "VP" | "X" | "YH" | "YM";
+            samhandlerType: components["schemas"]["SamhandlerTypeCode"];
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -2898,8 +2967,7 @@ export interface components {
         Organisasjonsnavn: {
             innlandUtland: string;
             navn: string;
-            /** @enum {string} */
-            samhandlerType: "AA" | "ADVO" | "AFPO" | "AK" | "AMI" | "AN" | "AP" | "APOP" | "APOS" | "ART" | "ASEN" | "AT" | "ATU" | "AU" | "BAND" | "BB" | "BBE" | "BEH" | "BF" | "BH" | "BHT" | "BI" | "BU" | "EOS" | "ET" | "FA" | "FB" | "FFU" | "FKL" | "FL" | "FO" | "FS" | "FT" | "FTK" | "FULL" | "GVS" | "HE" | "HF" | "HFO" | "HJS" | "HMS" | "HP" | "HPRD" | "HS" | "HSTA" | "HSV" | "HTF" | "HU" | "INST" | "IS" | "JO" | "KA" | "KE" | "KEMN" | "KI" | "KOMM" | "KON" | "KRED" | "KRU" | "KYND" | "LABO" | "LABP" | "LARO" | "LBS" | "LE" | "LEBE" | "LEFA" | "LEKO" | "LERA" | "LFK" | "LHK" | "LK" | "LM" | "LOGO" | "LRB" | "LS" | "MT" | "NB" | "OA" | "OI" | "OM" | "OP" | "OR" | "ORVE" | "PE" | "PF" | "POLI" | "PPT" | "PS" | "RA" | "REGO" | "RF" | "RFK" | "RHFO" | "RKK" | "ROL" | "RONO" | "RONP" | "RT" | "RTK" | "RTV" | "SAD" | "SFK" | "SK" | "SP" | "SR" | "STKO" | "SUD" | "SYKH" | "TEPE" | "TH" | "TI" | "TK" | "TL" | "TLO" | "TOLK" | "TP" | "TR" | "TRAN" | "TT" | "UTL" | "VE" | "VIRT" | "VP" | "X" | "YH" | "YM";
+            samhandlerType: components["schemas"]["SamhandlerTypeCode"];
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -2910,8 +2978,7 @@ export interface components {
         Personnavn: {
             etternavn: string;
             fornavn: string;
-            /** @enum {string} */
-            samhandlerType: "AA" | "ADVO" | "AFPO" | "AK" | "AMI" | "AN" | "AP" | "APOP" | "APOS" | "ART" | "ASEN" | "AT" | "ATU" | "AU" | "BAND" | "BB" | "BBE" | "BEH" | "BF" | "BH" | "BHT" | "BI" | "BU" | "EOS" | "ET" | "FA" | "FB" | "FFU" | "FKL" | "FL" | "FO" | "FS" | "FT" | "FTK" | "FULL" | "GVS" | "HE" | "HF" | "HFO" | "HJS" | "HMS" | "HP" | "HPRD" | "HS" | "HSTA" | "HSV" | "HTF" | "HU" | "INST" | "IS" | "JO" | "KA" | "KE" | "KEMN" | "KI" | "KOMM" | "KON" | "KRED" | "KRU" | "KYND" | "LABO" | "LABP" | "LARO" | "LBS" | "LE" | "LEBE" | "LEFA" | "LEKO" | "LERA" | "LFK" | "LHK" | "LK" | "LM" | "LOGO" | "LRB" | "LS" | "MT" | "NB" | "OA" | "OI" | "OM" | "OP" | "OR" | "ORVE" | "PE" | "PF" | "POLI" | "PPT" | "PS" | "RA" | "REGO" | "RF" | "RFK" | "RHFO" | "RKK" | "ROL" | "RONO" | "RONP" | "RT" | "RTK" | "RTV" | "SAD" | "SFK" | "SK" | "SP" | "SR" | "STKO" | "SUD" | "SYKH" | "TEPE" | "TH" | "TI" | "TK" | "TL" | "TLO" | "TOLK" | "TP" | "TR" | "TRAN" | "TT" | "UTL" | "VE" | "VIRT" | "VP" | "X" | "YH" | "YM";
+            samhandlerType: components["schemas"]["SamhandlerTypeCode"];
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -2938,6 +3005,11 @@ export interface components {
             hentDetaljert: boolean;
             idTSSEkstern: string;
         };
+        /**
+         * no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto.FailureType
+         * @enum {string|null}
+         */
+        "no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto.FailureType": "GENERISK" | "IKKE_FUNNET" | null;
         /** Success */
         Success: {
             idType: string;
@@ -2947,8 +3019,7 @@ export interface components {
         };
         /** HentSamhandlerResponseDto */
         HentSamhandlerResponseDto: {
-            /** @enum {string|null} */
-            failure?: "GENERISK" | "IKKE_FUNNET" | null;
+            failure?: components["schemas"]["no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto.FailureType"];
             success?: components["schemas"]["Success"] | null;
         };
         /** HentSamhandlerAdresseRequestDto */
@@ -2965,11 +3036,15 @@ export interface components {
             postnr?: string | null;
             poststed?: string | null;
         };
+        /**
+         * no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto.FailureType
+         * @enum {string|null}
+         */
+        "no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto.FailureType": "NOT_FOUND" | "GENERISK" | null;
         /** HentSamhandlerAdresseResponseDto */
         HentSamhandlerAdresseResponseDto: {
             adresse?: components["schemas"]["SamhandlerPostadresse"] | null;
-            /** @enum {string|null} */
-            failureType?: "NOT_FOUND" | "GENERISK" | null;
+            failureType?: components["schemas"]["no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto.FailureType"];
         };
         /** Unit */
         Unit: Record<string, never>;
@@ -2987,7 +3062,14 @@ export interface components {
 }
 export type StatusResponse = components['schemas']['StatusResponse'];
 export type Land = components['schemas']['Land'];
+export type BrevSystem = components['schemas']['BrevSystem'];
+export type DokumentkategoriCode = components['schemas']['DokumentkategoriCode'];
+export type SpraakKode = components['schemas']['SpraakKode'];
 export type Brevmal = components['schemas']['Brevmal'];
+export type Brevkontekst = components['schemas']['Brevkontekst'];
+export type LanguageCode = components['schemas']['LanguageCode'];
+export type Brevtype = components['schemas']['Brevtype'];
+export type Distribusjonstype = components['schemas']['Distribusjonstype'];
 export type LetterMetadata = components['schemas']['LetterMetadata'];
 export type Redigerbar = components['schemas']['Redigerbar'];
 export type Brevbaker = components['schemas']['Brevbaker'];
@@ -2996,10 +3078,15 @@ export type Navn = components['schemas']['Navn'];
 export type Fagsak = components['schemas']['Fagsak'];
 export type SakContext = components['schemas']['SakContext'];
 export type BrukerStatus = components['schemas']['BrukerStatus'];
+export type FailureType = components['schemas']['FailureType'];
 export type BestillOgRedigerBrevResponse = components['schemas']['BestillOgRedigerBrevResponse'];
+export type Adressetype = components['schemas']['Adressetype'];
 export type KontaktAdresseDto = components['schemas']['KontaktAdresseDto'];
+export type NoNavPensjonBrevSkribentenServicesKrrServiceKontaktinfoResponseFailureType = components['schemas']['no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoResponse.FailureType'];
 export type KontaktinfoResponse = components['schemas']['KontaktinfoResponse'];
 export type NavEnhet = components['schemas']['NavEnhet'];
+export type Distribusjon = components['schemas']['Distribusjon'];
+export type ManueltAdressertTil = components['schemas']['ManueltAdressertTil'];
 export type NorskAdresse = components['schemas']['NorskAdresse'];
 export type Samhandler = components['schemas']['Samhandler'];
 export type UtenlandskAdresse = components['schemas']['UtenlandskAdresse'];
@@ -3014,18 +3101,24 @@ export type BrevStatus = components['schemas']['BrevStatus'];
 export type BrevInfo = components['schemas']['BrevInfo'];
 export type BrevExceptionDto = components['schemas']['BrevExceptionDto'];
 export type Property = components['schemas']['Property'];
+export type FontType = components['schemas']['FontType'];
+export type ElementTags = components['schemas']['ElementTags'];
+export type Type = components['schemas']['Type'];
 export type Literal = components['schemas']['Literal'];
 export type NewLine = components['schemas']['NewLine'];
 export type Variable = components['schemas']['Variable'];
 export type Text = components['schemas']['Text'];
 export type Item = components['schemas']['Item'];
+export type Listetype = components['schemas']['Listetype'];
 export type ItemList = components['schemas']['ItemList'];
+export type ColumnAlignment = components['schemas']['ColumnAlignment'];
 export type Cell = components['schemas']['Cell'];
 export type ColumnSpec = components['schemas']['ColumnSpec'];
 export type Header = components['schemas']['Header'];
 export type Row = components['schemas']['Row'];
 export type Table = components['schemas']['Table'];
 export type ParagraphContent = components['schemas']['ParagraphContent'];
+export type NoNavPensjonBrevSkribentenLetterEditBlockType = components['schemas']['no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type'];
 export type Paragraph = components['schemas']['Paragraph'];
 export type Title1 = components['schemas']['Title1'];
 export type Title2 = components['schemas']['Title2'];
@@ -3045,6 +3138,7 @@ export type ValgbartVedlegg = components['schemas']['ValgbartVedlegg'];
 export type Duration = components['schemas']['Duration'];
 export type ReservasjonResponse = components['schemas']['ReservasjonResponse'];
 export type Response = components['schemas']['Response'];
+export type SamhandlerTypeCode = components['schemas']['SamhandlerTypeCode'];
 export type DirekteOppslag = components['schemas']['DirekteOppslag'];
 export type Organisasjonsnavn = components['schemas']['Organisasjonsnavn'];
 export type Personnavn = components['schemas']['Personnavn'];
@@ -3052,10 +3146,12 @@ export type FinnSamhandlerRequestDto = components['schemas']['FinnSamhandlerRequ
 export type NoNavPensjonBrevSkribentenRoutesSamhandlerDtoFinnSamhandlerResponseDtoSamhandler = components['schemas']['no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerResponseDto.Samhandler'];
 export type FinnSamhandlerResponseDto = components['schemas']['FinnSamhandlerResponseDto'];
 export type HentSamhandlerRequestDto = components['schemas']['HentSamhandlerRequestDto'];
+export type NoNavPensjonBrevSkribentenRoutesSamhandlerDtoHentSamhandlerResponseDtoFailureType = components['schemas']['no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto.FailureType'];
 export type Success = components['schemas']['Success'];
 export type HentSamhandlerResponseDto = components['schemas']['HentSamhandlerResponseDto'];
 export type HentSamhandlerAdresseRequestDto = components['schemas']['HentSamhandlerAdresseRequestDto'];
 export type SamhandlerPostadresse = components['schemas']['SamhandlerPostadresse'];
+export type NoNavPensjonBrevSkribentenRoutesSamhandlerDtoHentSamhandlerAdresseResponseDtoFailureType = components['schemas']['no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto.FailureType'];
 export type HentSamhandlerAdresseResponseDto = components['schemas']['HentSamhandlerAdresseResponseDto'];
 export type Unit = components['schemas']['Unit'];
 export type NavAnsattEnhet = components['schemas']['NAVAnsattEnhet'];

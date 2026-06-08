@@ -38,7 +38,7 @@ object Dto {
         val sistReservert: Instant?,
         val brevkode: RedigerbarBrevkode,
         val laastForRedigering: Boolean,
-        val distribusjonstype: Distribusjonstype,
+        val distribusjonstype: Distribusjon,
         val mottaker: Mottaker?,
         val avsenderEnhetId: EnhetId,
         val spraak: LanguageCode,

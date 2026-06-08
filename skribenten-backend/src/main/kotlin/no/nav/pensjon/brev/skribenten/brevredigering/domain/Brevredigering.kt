@@ -35,7 +35,7 @@ interface Brevredigering {
      * avhengig av om det er informasjonsbrev eller vedtaksbrev.
      */
     val laastForRedigering: Boolean
-    val distribusjonstype: Distribusjonstype
+    val distribusjonstype: Distribusjon
     val redigeresAv: NavIdent?
     val sistRedigertAv: NavIdent
     val opprettetAv: NavIdent
@@ -143,7 +143,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             redigertBrev: Edit.Letter,
             brevtype: LetterMetadata.Brevtype,
             timestamp: Instant = Instant.now(),
-            distribusjonstype: Distribusjonstype = Distribusjonstype.SENTRALPRINT,
+            distribusjonstype: Distribusjon = Distribusjon.SENTRALPRINT,
         ): BrevredigeringEntity = new {
             this.saksId = saksId
             this.vedtaksId = vedtaksId

@@ -96,6 +96,7 @@ class JacksonReflectionJsonSchemaInference(
                 .map { GenericElement<String>(it) }
 
             return jsonSchemaFromAnnotations(
+                title = adapter.getName(type),
                 annotations = includeAnnotations + kClass.annotations,
                 reflectSchema = ::schemaRefForClass,
                 type = JsonType.STRING.wrapIfNullable(nullable),

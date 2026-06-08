@@ -23,7 +23,7 @@ open class BrevredigeringStub : Brevredigering {
     override val redigertBrev: Edit.Letter get() = notYetStubbed()
     override val redigertBrevHash: Hash<Edit.Letter> get() = notYetStubbed()
     override val laastForRedigering: Boolean get() = notYetStubbed()
-    override val distribusjonstype: Distribusjonstype get() = notYetStubbed()
+    override val distribusjonstype: Distribusjon get() = notYetStubbed()
     override val redigeresAv: NavIdent get() = notYetStubbed()
     override val sistRedigertAv: NavIdent get() = notYetStubbed()
     override val opprettetAv: NavIdent get() = notYetStubbed()

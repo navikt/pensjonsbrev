@@ -50,7 +50,7 @@ class ExternalAPIServiceTest {
         sistReservert = null,
         brevkode = Testbrevkoder.INFORMASJONSBREV,
         laastForRedigering = false,
-        distribusjonstype = Distribusjonstype.SENTRALPRINT,
+        distribusjonstype = Distribusjon.SENTRALPRINT,
         mottaker = null,
         avsenderEnhetId = EnhetId("0001"),
         spraak = LanguageCode.BOKMAL,

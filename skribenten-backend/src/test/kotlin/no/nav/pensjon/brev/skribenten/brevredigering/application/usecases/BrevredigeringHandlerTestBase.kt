@@ -348,7 +348,7 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected suspend fun endreDistribusjonstype(
         brevId: BrevId,
-        nyDistribusjonstype: Distribusjonstype,
+        nyDistribusjonstype: Distribusjon,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
         brevredigeringFacade.endreDistribusjonstype(

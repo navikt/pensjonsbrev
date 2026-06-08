@@ -54,7 +54,7 @@ object Api {
     )
 
     data class OppdaterKlarStatusRequest(val klar: Boolean)
-    data class DistribusjonstypeRequest(val distribusjon: Distribusjonstype)
+    data class DistribusjonstypeRequest(val distribusjon: Distribusjon)
     data class OppdaterMottakerRequest(val mottaker: OverstyrtMottaker)
     data class ValgteVedleggRequest(val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>)
 
@@ -69,7 +69,7 @@ object Api {
         val brevtittel: String,
         val brevtype: LetterMetadata.Brevtype,
         val status: BrevStatus,
-        val distribusjonstype: Distribusjonstype,
+        val distribusjonstype: Distribusjon,
         val mottaker: OverstyrtMottaker?,
         val avsenderEnhet: NavEnhet,
         val spraak: SpraakKode,
