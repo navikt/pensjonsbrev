@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.alder.maler.afp.fraser
 
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
@@ -59,6 +59,22 @@ data class AfpEtteroppgjoerVarselForeloepigInnhold(
             ),
         )
 
+        // Innledende setning som i Exstream-kilden (03_100/03_101) sto først i samme
+        // avsnitt som «Vi gjør oppmerksom på …». Den er unik for varselet og finnes
+        // ikke i 04_100/04_107, derfor ligger den her og ikke i den delte frasen
+        // [AfpEtteroppgjoerInnhold.InnrapporterteInntektsopplysningerIkkeSkiller].
+        paragraph {
+            text(
+                bokmal {
+                    +"Nedenfor kan du se hvilke inntekter som er brukt og hvordan vi har beregnet din " +
+                            "nye pensjon for denne perioden."
+                },
+                nynorsk {
+                    +"Nedanfor kan du sjå kva inntekter som er brukt, og korleis vi har berekna den nye " +
+                            "pensjonen din for denne perioden."
+                },
+            )
+        }
         includePhrase(AfpEtteroppgjoerInnhold.InnrapporterteInntektsopplysningerIkkeSkiller)
         includePhrase(AfpEtteroppgjoerInnhold.LaverePgiKanGiHoyereAfp)
 
@@ -132,7 +148,8 @@ data class AfpEtteroppgjoerVarselForeloepigInnhold(
         includePhrase(AfpEtteroppgjoerVarselFraser.EktefelletilleggForbehold)
 
         includePhrase(AfpEtteroppgjoerVarselFraser.DineRettigheterOgPlikterInnsyn)
-        includePhrase(HarDuSpoersmaal.afpEtteroppgjoer)
+        // bør antageligvis bruke har du spørsmål frasen her. -HH
+        includePhrase(AfpEtteroppgjoerVarselFraser.TaKontaktForMerInformasjon)
         includePhrase(AfpEtteroppgjoerVarselFraser.MeldepliktArbeidsinntekt)
     }
 }

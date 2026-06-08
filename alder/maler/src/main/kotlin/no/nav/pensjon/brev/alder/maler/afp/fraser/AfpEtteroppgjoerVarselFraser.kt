@@ -263,6 +263,24 @@ object AfpEtteroppgjoerVarselFraser {
         }
     }
 
+    /** Oppfordring om å ta kontakt med Nav for mer informasjon (som i Exstream-kilden 03_100/03_101). */
+    object TaKontaktForMerInformasjon : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Ta gjerne kontakt med Nav hvis du ønsker mer informasjon. Husk at du kan finne mer " +
+                                "informasjon om AFP på $NAV_URL."
+                    },
+                    nynorsk {
+                        +"Ta gjerne kontakt med Nav dersom du ønskjer meir informasjon. Hugs at du kan finne meir " +
+                                "informasjon om AFP på $NAV_URL."
+                    },
+                )
+            }
+        }
+    }
+
     /** Avsluttende meldeplikt-paragraf om endringer i arbeidsinntekt. */
     object MeldepliktArbeidsinntekt : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
@@ -270,13 +288,11 @@ object AfpEtteroppgjoerVarselFraser {
                 text(
                     bokmal {
                         +"Det er viktig at du melder fra til Nav om endringer i arbeidsinntekt som kan ha " +
-                                "betydning for størrelsen på den månedlige pensjonen din. Du kan finne mer " +
-                                "informasjon om AFP på $NAV_URL."
+                                "betydning for størrelsen på den månedlige pensjonen din."
                     },
                     nynorsk {
                         +"Det er viktig at du melder frå til Nav om endringar i arbeidsinntekt som kan ha " +
-                                "noko å seie for storleiken på den månadlege pensjonen din. Du kan finne meir " +
-                                "informasjon om AFP på $NAV_URL."
+                                "noko å seie for storleiken på den månadlege pensjonen din."
                     },
                 )
             }
