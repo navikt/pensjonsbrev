@@ -59,7 +59,6 @@ object PDFByggerTestContainer {
     private fun start() {
         if (!pdfContainer.isRunning) {
             pdfContainer.start()
-            pdfContainer.followOutput { println("pdfbygger-testcontainer: ${it.utf8String}") }
         }
     }
 }
