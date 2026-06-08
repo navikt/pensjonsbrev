@@ -51,12 +51,16 @@ export function SearchSnippet({ hit, needle }: { hit: ContentHit; needle?: strin
               css={css`
                 white-space: normal;
                 word-break: break-word;
+                ${!isPrimary &&
+                css`
+                  margin: var(--ax-space-2) 0;
+                `}
               `}
               key={absoluteIndex}
               size="small"
               textColor={isPrimary ? "default" : "subtle"}
             >
-              <LineContent line={truncateLine(line, SNIPPET_CHARS)} needle={isPrimary ? needle : undefined} />
+              <LineContent line={isPrimary ? line : truncateLine(line, SNIPPET_CHARS)} needle={isPrimary ? needle : undefined} />
             </BodyShort>
           );
         })}
