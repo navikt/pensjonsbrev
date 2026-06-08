@@ -27,6 +27,8 @@ typealias SaksbehandlerValg = Api.GeneriskBrevdata
 object Api {
     class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlerValgBrevdata
 
+    data class UserInfo(val name: String, val navident: String, val erAttestant: Boolean)
+
     data class OpprettBrevRequest(
         val brevkode: Brevkode.Redigerbart,
         val spraak: SpraakKode,
