@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEtterbetalingEt
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerTilbakekrevingAuto
+import no.nav.pensjon.brev.alder.maler.afp.VarselAfpEtteroppgjoerForeloepigAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakEndringAfpOffentligSektor
@@ -132,6 +133,7 @@ object AlderTemplates : AllTemplates {
             VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto,
             VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto,
             VedtakAfpEtteroppgjoerTilbakekrevingAuto,
+            VarselAfpEtteroppgjoerForeloepigAuto,
             VedtakAfpEtteroppgjoerIngenEndringAuto,
             AvslagAfpPrivatAuto,
             VedtakAfpPrivatEndringOpptjeningAuto,

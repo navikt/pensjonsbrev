@@ -20,6 +20,7 @@ import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerEtterbeta
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerTilbakekrevingAutoDto
+import no.nav.pensjon.brev.alder.maler.afp.createVarselAfpEtteroppgjoerForeloepigAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakEndringAfpOffentligSektorDto
@@ -74,6 +75,7 @@ import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDto
+import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDto
@@ -153,6 +155,7 @@ object Fixtures : LetterDataFactory {
             VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto::class -> createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto() as T
             VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto::class -> createVedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto() as T
             VedtakAfpEtteroppgjoerTilbakekrevingAutoDto::class -> createVedtakAfpEtteroppgjoerTilbakekrevingAutoDto() as T
+            VarselAfpEtteroppgjoerForeloepigAutoDto::class -> createVarselAfpEtteroppgjoerForeloepigAutoDto() as T
             VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto::class -> createVedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto() as T
             VedtakAfpEtteroppgjoerIngenEndringAutoDto::class -> createVedtakAfpEtteroppgjoerIngenEndringAutoDto() as T
             VedtakEndringAfpOffentligSektorDto::class -> createVedtakEndringAfpOffentligSektorDto() as T
