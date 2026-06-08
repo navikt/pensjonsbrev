@@ -44,7 +44,7 @@ class PdfByggerAppTest {
      * mot pdf-bygger-containeren krever).
      */
     @Test
-    fun `produserBrev happy path returnerer PDFCompilationOutput`() {
+    fun `produserBrev happy path returnerer innholdet`() {
         val expectedPdfBytes = byteArrayOf(0x25, 0x50, 0x44, 0x46) // "%PDF"
         val rendererCalled = ArrayList<Int>()
 
