@@ -412,7 +412,6 @@ function RedigerBrev({
 
   useReleaseReservationOnPageExit({
     enabled: reservasjonQuery.isSuccess,
-    saksId,
     brevId: brev.info.id,
     currentUserNavIdent: currentUser?.navident,
     reservationOwnerNavIdent: reservasjonQuery.data?.reservertAv.id,

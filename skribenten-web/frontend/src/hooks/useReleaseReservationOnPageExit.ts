@@ -4,7 +4,6 @@ import { releaseReservationKeepalive } from "~/api/release-reservation";
 
 type UseReleaseReservationOnPageExitArgs = {
   enabled: boolean;
-  saksId: string;
   brevId: number;
   currentUserNavIdent?: string;
   reservationOwnerNavIdent?: string;
@@ -12,7 +11,6 @@ type UseReleaseReservationOnPageExitArgs = {
 
 export function useReleaseReservationOnPageExit({
   enabled,
-  saksId,
   brevId,
   currentUserNavIdent,
   reservationOwnerNavIdent,
@@ -29,7 +27,7 @@ export function useReleaseReservationOnPageExit({
 
   useEffect(() => {
     releasedRef.current = false;
-  }, [saksId, brevId, reservationOwnerNavIdent]);
+  }, [brevId, reservationOwnerNavIdent]);
 
   useEffect(() => {
     if (!enabled || !ownsReservation) return;
@@ -38,7 +36,7 @@ export function useReleaseReservationOnPageExit({
       if (releasedRef.current) return;
 
       releasedRef.current = true;
-      void releaseReservationKeepalive({ saksId, brevId });
+      void releaseReservationKeepalive({ brevId });
     };
 
     globalThis.addEventListener("pagehide", releaseOnce);
@@ -46,5 +44,5 @@ export function useReleaseReservationOnPageExit({
     return () => {
       globalThis.removeEventListener("pagehide", releaseOnce);
     };
-  }, [enabled, ownsReservation, saksId, brevId]);
+  }, [enabled, ownsReservation, brevId]);
 }

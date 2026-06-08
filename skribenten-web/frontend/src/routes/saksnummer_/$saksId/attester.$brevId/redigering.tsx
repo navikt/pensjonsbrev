@@ -196,7 +196,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   useReleaseReservationOnPageExit({
     enabled: reservasjonQuery.isSuccess,
-    saksId: props.saksId,
     brevId: props.brev.info.id,
     currentUserNavIdent: currentUser?.navident,
     reservationOwnerNavIdent: reservasjonQuery.data?.reservertAv.id,
