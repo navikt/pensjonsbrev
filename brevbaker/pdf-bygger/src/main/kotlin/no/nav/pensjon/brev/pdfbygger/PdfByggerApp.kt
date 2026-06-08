@@ -105,9 +105,7 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
                         // TODO: sørg for at denne bruker streamen heile vegen gjennom
                         call.respondOutputStream(ContentType.Application.Pdf) { stream.writeTo(this) }
                     } else {
-                        val bytes = stream.toByteArray()
-                        println("Returnerer ${bytes.size}. Original var ${result.pdfCompilationOutput.bytes.size}")
-                        call.respond(PDFCompilationOutput(bytes))
+                        call.respond(PDFCompilationOutput(stream.toByteArray()))
                     }
                 }
                 is PDFCompilationResponse.Failure.Client -> {
