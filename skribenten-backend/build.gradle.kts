@@ -24,6 +24,13 @@ node {
     version.set("24.14.1")
 }
 
+// Declare openapi-spec.json as a test output so Gradle's build cache includes and restores
+// it when the test result is cached. Without this, running clean then generateApiTypes would
+// use the cached test result but leave build/openapi-spec.json absent.
+tasks.test {
+    outputs.file(layout.buildDirectory.file("openapi-spec.json"))
+}
+
 val generateApiTypes by tasks.registering(NpxTask::class) {
     description = "Generates TypeScript types from the OpenAPI spec into skribenten-web/frontend/src/types/skribenten-api.ts"
     dependsOn(tasks.test, tasks.npmInstall)
@@ -40,6 +47,7 @@ val generateApiTypes by tasks.registering(NpxTask::class) {
     )
     inputs.file(specFile)
     outputs.file(outputFile)
+    
 }
 
 val typeCheckFrontend by tasks.registering(NpmTask::class) {
