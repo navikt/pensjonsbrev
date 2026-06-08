@@ -1,4 +1,4 @@
-import { type AdresseType, type SakType, SamhandlerTypeCode, SpraakKode } from "./apiTypes";
+import { type AdresseType, SamhandlerTypeCode, SpraakKode } from "./apiTypes";
 import { type LanguageCode } from "./brevbakerTypes";
 
 export const SPRAAK_ENUM_TO_TEXT = {
@@ -21,7 +21,11 @@ export const SPRAAKKODE_TO_LANGUAGE_CODE: Partial<Record<SpraakKode, LanguageCod
   [SpraakKode.Engelsk]: "ENGLISH",
 };
 
-export const SAK_TYPE_TO_TEXT: Record<SakType, string> = {
+// TODO: Dette er en uønsket sterk kobling til Pesys sine sakstyper
+export function sakstypeText(sakstype: string) {
+  return SAK_TYPE_TO_TEXT[sakstype] ?? sakstype;
+}
+const SAK_TYPE_TO_TEXT: Record<string, string> = {
   AFP: "AFP",
   AFP_PRIVAT: "AFP Privat",
   ALDER: "Alderspensjon",

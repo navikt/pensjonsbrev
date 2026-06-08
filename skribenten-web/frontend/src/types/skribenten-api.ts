@@ -316,7 +316,11 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["BestillExstreamBrevRequest"];
+                };
+            };
             responses: {
                 200: {
                     headers: {
@@ -352,7 +356,11 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["BestillEblankettRequest"];
+                };
+            };
             responses: {
                 200: {
                     headers: {
@@ -2499,6 +2507,15 @@ export interface components {
             erSkjermet: boolean;
             vergemaal: boolean;
         };
+        /** BestillExstreamBrevRequest */
+        BestillExstreamBrevRequest: {
+            brevkode: string;
+            brevtittel?: string | null;
+            enhetsId: string;
+            idTSSEkstern?: string | null;
+            spraak: components["schemas"]["SpraakKode"];
+            vedtaksId?: number | null;
+        };
         /**
          * FailureType
          * @enum {string|null}
@@ -2509,6 +2526,13 @@ export interface components {
             failureType?: components["schemas"]["FailureType"];
             journalpostId?: number | null;
             url?: string | null;
+        };
+        /** BestillEblankettRequest */
+        BestillEblankettRequest: {
+            brevkode: string;
+            enhetsId: string;
+            landkode: string;
+            mottakerText: string;
         };
         /**
          * Adressetype
@@ -3078,8 +3102,10 @@ export type Navn = components['schemas']['Navn'];
 export type Fagsak = components['schemas']['Fagsak'];
 export type SakContext = components['schemas']['SakContext'];
 export type BrukerStatus = components['schemas']['BrukerStatus'];
+export type BestillExstreamBrevRequest = components['schemas']['BestillExstreamBrevRequest'];
 export type FailureType = components['schemas']['FailureType'];
 export type BestillOgRedigerBrevResponse = components['schemas']['BestillOgRedigerBrevResponse'];
+export type BestillEblankettRequest = components['schemas']['BestillEblankettRequest'];
 export type Adressetype = components['schemas']['Adressetype'];
 export type KontaktAdresseDto = components['schemas']['KontaktAdresseDto'];
 export type NoNavPensjonBrevSkribentenServicesKrrServiceKontaktinfoResponseFailureType = components['schemas']['no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoResponse.FailureType'];

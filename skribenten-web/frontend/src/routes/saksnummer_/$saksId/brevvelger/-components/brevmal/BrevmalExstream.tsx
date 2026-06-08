@@ -93,7 +93,7 @@ export default function BrevmalForExstream({
               byggExstreamOnSubmitRequest({
                 template: letterTemplate,
                 idTSSEkstern: idTSSEkstern ?? null,
-                vedtaksId: vedtaksId ?? null,
+                vedtaksId: typeof vedtaksId === "string" ? Number.parseInt(vedtaksId, 10) : null,
                 formValues: {
                   enhetsId: submittedValues.enhetsId,
                   spraak: submittedValues.spraak ?? null,

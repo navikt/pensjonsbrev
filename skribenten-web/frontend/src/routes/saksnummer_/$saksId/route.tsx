@@ -14,7 +14,7 @@ import {
 } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { type SakContextDto } from "~/types/apiTypes";
-import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
+import { sakstypeText } from "~/types/nameMappings";
 import { humanizeName } from "~/utils/stringUtils";
 
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
@@ -188,7 +188,7 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
           )}
         </HStack>
         <HStack gap="space-8" paddingInline="space-0 space-48" wrap={false}>
-          <BodyShort size="small">{SAK_TYPE_TO_TEXT[sak.sakType]}</BodyShort>
+          <BodyShort size="small">{sakstypeText(sak.sakType)}</BodyShort>
           <BodyShort size="small">
             {sak.saksId}{" "}
             <Box asChild marginInline="space-8 space-0">

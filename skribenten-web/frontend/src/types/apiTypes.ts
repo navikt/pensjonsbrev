@@ -1,59 +1,20 @@
-import { type Identtype, type InnOgUtland, type Søketype } from "~/components/endreMottaker/EndreMottakerUtils";
-
 import { type ManueltAdressertTil } from "./brev";
 import { type Nullable } from "./Nullable";
 import type * as generated from "./skribenten-api";
 
-export type SakDto = {
-  readonly saksId: number;
-  readonly pid: string;
-  readonly foedselsdato: string;
-  readonly navn: { readonly fornavn: string; readonly mellomnavn: string | null; readonly etternavn: string };
-  readonly sakType: SakType;
-};
-
-export type SakContextDto = {
-  readonly sak: SakDto;
-  readonly brevmalKoder: string[];
-};
-
-export type BrukerStatusDto = {
-  readonly adressebeskyttelse: boolean;
-  readonly doedsfall: string;
-  readonly erSkjermet: boolean;
-  readonly vergemaal: boolean;
-};
-
-export type SakType =
-  | "AFP"
-  | "AFP_PRIVAT"
-  | "ALDER"
-  | "BARNEP"
-  | "FAM_PL"
-  | "GAM_YRK"
-  | "GENRL"
-  | "GJENLEV"
-  | "GRBL"
-  | "KRIGSP"
-  | "OMSORG"
-  | "UFOREP";
-
-export type DokumentkategoriCode = "B" | "E_BLANKETT" | "IB" | "SED" | "VB";
-
+export type SakDto = generated.Fagsak;
+export type SakContextDto = generated.SakContext;
+export type BrukerStatusDto = generated.BrukerStatus;
 export type LetterMetadata = generated.Brevmal;
+export type PreferredLanguage = generated.KontaktinfoResponse;
 
-export type BrevSystem = "EXSTREAM" | "BREVBAKER";
+export type BrevSystem = generated.BrevSystem;
 export const BrevSystem = {
   Exstream: "EXSTREAM",
   Brevbaker: "BREVBAKER",
 } as const;
 
-export type PreferredLanguage = {
-  spraakKode: SpraakKode | null;
-  failure: string;
-};
-
-export type SpraakKode = "EN" | "NB" | "NN" | "FR" | "SE";
+export type SpraakKode = generated.SpraakKode;
 export const SpraakKode = {
   Bokmaal: "NB",
   Engelsk: "EN",
@@ -62,70 +23,13 @@ export const SpraakKode = {
   NordSamisk: "SE",
 } as const;
 
-export type BaseLetterRequest = {
-  brevkode: string;
-  spraak: SpraakKode;
-  enhetsId: string;
-  vedtaksId: Nullable<string>;
-};
+export type OrderExstreamLetterRequest = generated.BestillExstreamBrevRequest;
+export type OrderEblankettRequest = generated.BestillEblankettRequest;
+export type BestillOgRedigerBrevResponse = generated.BestillOgRedigerBrevResponse;
+export type FailureType = generated.FailureType;
 
-export type OrderExstreamLetterRequest = BaseLetterRequest & {
-  idTSSEkstern: Nullable<string>;
-  brevtittel: Nullable<string>;
-};
-
-export type OrderEblankettRequest = Omit<BaseLetterRequest, "spraak"> & {
-  landkode: string;
-  mottakerText: string;
-};
-
-export type BestillOgRedigerBrevResponse = {
-  url?: string;
-  failureType?: FailureType;
-};
-
-export const FAILURE_TYPES = [
-  "EXSTREAM_BESTILLING_ADRESSE_MANGLER",
-  "EXSTREAM_BESTILLING_HENTE_BREVDATA",
-  "EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT",
-  "EXSTREAM_BESTILLING_OPPRETTE_JOURNALPOST",
-  "EXSTREAM_REDIGERING_GENERELL",
-  "FERDIGSTILLING_TIMEOUT",
-  "SAF_ERROR",
-  "SKRIBENTEN_INTERNAL_ERROR",
-  "ENHET_UNAUTHORIZED",
-  "ENHETSID_MANGLER",
-  "NAVANSATT_ENHETER_ERROR",
-] as const;
-
-export type FailureType = (typeof FAILURE_TYPES)[number];
-
-interface SamhandlerRequestBase {
-  samhandlerType: SamhandlerTypeCode;
-}
-
-export interface SamhandlerDirekteoppslagRequest extends SamhandlerRequestBase {
-  readonly type: Søketype.DIREKTE_OPPSLAG;
-  identtype: Identtype;
-  id: string;
-}
-
-export interface SamhandlerOrganisasjonsnavnRequest extends SamhandlerRequestBase {
-  readonly type: Søketype.ORGANISASJONSNAVN;
-  innlandUtland: InnOgUtland;
-  navn: string;
-}
-
-export interface SamhandlerPersonnavnRequest extends SamhandlerRequestBase {
-  readonly type: Søketype.PERSONNAVN;
-  fornavn: string;
-  etternavn: string;
-}
-
-export type FinnSamhandlerRequestDto =
-  | SamhandlerDirekteoppslagRequest
-  | SamhandlerOrganisasjonsnavnRequest
-  | SamhandlerPersonnavnRequest;
+export type FinnSamhandlerRequestDto = generated.FinnSamhandlerRequestDto;
+export type FinnSamhandlerResponseDto = generated.FinnSamhandlerResponseDto;
 
 export type HentSamhandlerRequestDto = {
   idTSSEkstern: string;
@@ -161,18 +65,7 @@ export type HentsamhandlerResponseDto = {
   failure: null | string;
 };
 
-export type Samhandler = {
-  navn: string;
-  samhandlerType: SamhandlerTypeCode;
-  offentligId: string;
-  idType: string;
-  idTSSEkstern: string;
-};
-
-export type FinnSamhandlerResponseDto = {
-  samhandlere: Samhandler[];
-  failureType: Nullable<string>;
-};
+export type Samhandler = generated.NoNavPensjonBrevSkribentenRoutesSamhandlerDtoFinnSamhandlerResponseDtoSamhandler;
 
 export enum SamhandlerTypeCode {
   AA = "AA",
