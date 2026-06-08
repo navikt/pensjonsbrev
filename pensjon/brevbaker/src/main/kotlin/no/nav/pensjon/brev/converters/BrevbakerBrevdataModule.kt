@@ -61,7 +61,12 @@ object BrevbakerBrevdataModule : SimpleModule() {
     private object SaksbehandlervalgEnumDeserializer : JsonDeserializer<SaksbehandlervalgVerdi.Enum<*>>() {
         override fun deserialize(p: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgVerdi.Enum<*> {
             val node = p.codec.readTree<JsonNode>(p)
-            val clazz = Class.forName(node.get("clazz").textValue())
+            val className = node.get("clazz")?.textValue() ?: throw IllegalArgumentException("Missing 'clazz' for SaksbehandlervalgVerdi.Enum")
+            require(className.startsWith("no.nav")) { "Illegal enum class for saksbehandlervalg: $className, pakkenavnet må starte med no.nav" }
+            val clazz = Class.forName(className, false, BrevbakerBrevdataModule::class.java.classLoader)
+                require(clazz.isEnum && SaksbehandlerValgEnum::class.java.isAssignableFrom(clazz)) {
+                    "Illegal enum class for saksbehandlervalg: $className"
+            }
             return SaksbehandlervalgVerdi.Enum(
                 enum = java.lang.Enum.valueOf(clazz as Class<out Enum<*>?>, node.get("enum").textValue()) as SaksbehandlerValgEnum?,
                 displayText = node.get("displayText").textValue(),
