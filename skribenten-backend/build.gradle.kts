@@ -47,7 +47,6 @@ val generateApiTypes by tasks.registering(NpxTask::class) {
     )
     inputs.file(specFile)
     outputs.file(outputFile)
-    
 }
 
 val typeCheckFrontend by tasks.registering(NpmTask::class) {

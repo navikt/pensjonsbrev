@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.routes
 
 import io.ktor.http.*
+import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
@@ -85,7 +86,8 @@ fun Route.sakRoute(
 
         route("/bestillBrev") {
             route("/exstream") {
-                post<Api.BestillExstreamBrevRequest> { request ->
+                post {
+                    val request = call.receive<Api.BestillExstreamBrevRequest>()
                     val sak = call.attributes[SakKey]
 
                     call.respond(
@@ -97,7 +99,8 @@ fun Route.sakRoute(
                     )
                 }
 
-                post<Api.BestillEblankettRequest>("/eblankett") { request ->
+                post<Api.BestillEblankettRequest>("/eblankett") {
+                    val request = call.receive<Api.BestillEblankettRequest>()
                     val sak = call.attributes[SakKey]
 
                     call.respond(
