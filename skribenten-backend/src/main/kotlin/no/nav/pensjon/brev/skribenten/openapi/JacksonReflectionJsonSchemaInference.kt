@@ -37,16 +37,17 @@ import kotlin.uuid.Uuid
  * deleted and [JacksonSchemaReflectionAdapter] can be made to simply implement the updated interface.
  */
 class JacksonReflectionJsonSchemaInference(
-    val adapter: JacksonSchemaReflectionAdapter = JacksonSchemaReflectionAdapter(),
+    private val adapter: JacksonSchemaReflectionAdapter,
 ) : JsonSchemaInference {
-
-    companion object {
-        val Default: JacksonReflectionJsonSchemaInference = JacksonReflectionJsonSchemaInference()
-    }
 
     override fun buildSchema(type: KType): JsonSchema =
         buildSchemaInternal(type, LinkedHashSet())
 
+    /**
+     * Creates an object schema for [kClass] with properties inferred from Kotlin reflection.
+     *
+     * [Report a problem](https://ktor.io/feedback/?fqname=io.ktor.openapi.reflect.ReflectionJsonSchemaInference.schemaForClass)
+     */
     fun schemaForClass(kClass: KClass<*>): JsonSchema {
         return buildSchemaInternal(
             kClass.starProjectedTypeOrNull() ?: return JsonSchema(type = JsonType.OBJECT),
@@ -66,20 +67,28 @@ class JacksonReflectionJsonSchemaInference(
         val kClass = type.classifier as? KClass<*>
             ?: return JsonSchema(type = JsonType.OBJECT)
 
+        // Nullability: OpenAPI schema has a `nullable` flag
         val nullable = adapter.isNullable(type)
 
+        // Primitives / common JDK types
         val primitiveSchema = primitiveSchemaOrNull(kClass, includeAnnotations, nullable)
         if (primitiveSchema != null) {
             return primitiveSchema
         }
 
+        // Value classes (inline) should be represented as their underlying value
         if (kClass.isValue) {
             kClass.underlyingValueClassTypeOrNull(type)?.let { underlyingType ->
-                val unboxedSchema = buildSchemaInternal(underlyingType, visiting, includeAnnotations + kClass.annotations)
+                val unboxedSchema = buildSchemaInternal(
+                    underlyingType,
+                    visiting,
+                    includeAnnotations + kClass.annotations
+                )
                 return unboxedSchema.wrapIfNullable(nullable)
             }
         }
 
+        // Enums
         if (kClass.java.isEnum) {
             val values = kClass.java.enumConstants
                 ?.map { it.toString() }
@@ -94,6 +103,7 @@ class JacksonReflectionJsonSchemaInference(
             )
         }
 
+        // Arrays / Iterables
         if (kClass == Array<Any>::class || kClass.java.isArray || kClass.isSubclassOf(Iterable::class)) {
             val itemType = type.arguments.firstOrNull()?.type
             val itemTypeName = itemType?.let { adapter.getName(it) }
@@ -113,10 +123,13 @@ class JacksonReflectionJsonSchemaInference(
             )
         }
 
+        // Map -> object with additionalProperties
         if (kClass.isSubclassOf(Map::class)) {
+            // key type ignored
             val valueType = type.arguments.getOrNull(1)?.type
             val valueTypeName = valueType?.let { adapter.getName(it) }
 
+            // JSON object keys are strings; if key isn't String, we still produce an object schema.
             val additional = if (valueTypeName != null && valueTypeName in visiting) {
                 AdditionalProperties.PSchema(ReferenceOr.schema(valueTypeName))
             } else {
@@ -132,7 +145,6 @@ class JacksonReflectionJsonSchemaInference(
                 additionalProperties = additional,
             )
         }
-
         val typeName = adapter.getName(type)?.also(visiting::add)
         try {
             if (kClass.isSealed) {
@@ -158,11 +170,20 @@ class JacksonReflectionJsonSchemaInference(
 
                 collectConcreteSubtypes(kClass)
 
+                // For nullable sealed classes, add {"type": "null"} to the oneOf instead of
+                // using type: ["object", "null"]. This avoids the broken intersection type that
+                // openapi-typescript generates for `type: ["object", "null"] + oneOf`, which
+                // produces `(Record<string, never> | null) & (SubtypeA | SubtypeB)` where null
+                // is not assignable as a standalone value due to how intersection distributes.
+                if (nullable) {
+                    oneOfSchemas += ReferenceOr.Value(JsonSchema(type = JsonType.NULL))
+                }
+
                 return jsonSchemaFromAnnotations(
                     title = typeName,
                     annotations = includeAnnotations + kClass.annotations,
                     reflectSchema = ::schemaRefForClass,
-                    type = JsonType.OBJECT.wrapIfNullable(nullable),
+                    type = JsonType.OBJECT,
                     oneOf = oneOfSchemas,
                     discriminator = JsonSchemaDiscriminator(adapter.getDiscriminatorProperty(kClass), discriminatorMapping),
                 )
@@ -180,6 +201,7 @@ class JacksonReflectionJsonSchemaInference(
 
                 properties[propertyName] = buildSchemaOrRef(resolvedPropertyType, visiting, prop.annotations)
 
+                // Required: non-nullable properties are required (best effort; default values are not detectable reliably)
                 if (!propertyIsNullable) {
                     required += propertyName
                 }

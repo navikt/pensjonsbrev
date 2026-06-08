@@ -9,9 +9,11 @@ import no.nav.pensjon.brev.skribenten.skribentenApp
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Isolated
 import org.testcontainers.postgresql.PostgreSQLContainer
 import java.io.File
 
+@Isolated
 class OpenApiSpecTest {
 
     private lateinit var postgres: PostgreSQLContainer

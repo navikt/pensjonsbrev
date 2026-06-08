@@ -2538,7 +2538,7 @@ export interface components {
             type: "UtenlandskAdresse";
         };
         /** OverstyrtMottaker */
-        OverstyrtMottaker: (Record<string, never> | null) & (components["schemas"]["NorskAdresse"] | components["schemas"]["Samhandler"] | components["schemas"]["UtenlandskAdresse"]);
+        OverstyrtMottaker: components["schemas"]["NorskAdresse"] | components["schemas"]["Samhandler"] | components["schemas"]["UtenlandskAdresse"] | null;
         /** NavAnsatt */
         NavAnsatt: {
             id: string;

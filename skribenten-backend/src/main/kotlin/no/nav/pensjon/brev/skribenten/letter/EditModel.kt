@@ -209,12 +209,6 @@ object Edit {
             override fun isEdited(): Boolean = isNew() || deletedRows.isNotEmpty() || rows.any { it.isEdited() || it.parentId != id } || header.isEdited()
         }
 
-        @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
-        @JsonSubTypes(
-            JsonSubTypes.Type(value = Edit.ParagraphContent.Text.Literal::class, name = "LITERAL"),
-            JsonSubTypes.Type(value = Edit.ParagraphContent.Text.Variable::class, name = "VARIABLE"),
-            JsonSubTypes.Type(value = Edit.ParagraphContent.Text.NewLine::class, name = "NEW_LINE"),
-        )
         sealed class Text(type: Type) : ParagraphContent(type) {
             abstract val text: String
             abstract val fontType: FontType

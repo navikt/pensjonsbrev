@@ -19,7 +19,16 @@ class EditModelJacksonTest {
 
     @Test
     fun `kan deserialisere gjeldende EditModel`() {
-        val expected = editedLetter()
+        val expected = editedLetter {
+            title1 { literal(null, "Mitt avsnitt") }
+            paragraph {
+                literal(null, text = "hei")
+                variable(null, "joda")
+                itemList {
+                    item { literal(null, "kanskje") }
+                }
+            }
+        }
         val json = objectMapper.writeValueAsString(expected)
         val actual = objectMapper.readValue(json, Edit.Letter::class.java)
 

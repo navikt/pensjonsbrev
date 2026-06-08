@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataServiceHttp
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.LegacyBrevServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PentHttpClient
+import no.nav.pensjon.brev.skribenten.openapi.JacksonSchemaReflectionAdapter
 import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.samhandler.samhandlerRoute
 import no.nav.pensjon.brev.skribenten.services.*
@@ -72,7 +73,7 @@ fun Application.configureRouting(
             info = OpenApiInfo("Skribenten Internal API", "1.0")
             source = OpenApiDocSource.Routing(
                 contentType = ContentType.Application.Json,
-                schemaInference = JacksonReflectionJsonSchemaInference.Default,
+                schemaInference = JacksonReflectionJsonSchemaInference(JacksonSchemaReflectionAdapter()),
                 routes = {
                     val excludedRoutePrefixes = listOf("/external/", "/swagger", "/isAlive", "/isReady", "/brevmal/{brevkode}/modelSpecification")
                     routingRoot.descendants()

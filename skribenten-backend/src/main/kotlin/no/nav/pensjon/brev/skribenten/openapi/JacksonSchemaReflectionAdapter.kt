@@ -14,7 +14,7 @@ import kotlin.reflect.full.findAnnotation
  *
  * Two methods are anticipated by the Ktor team for the upstream [SchemaReflectionAdapter] interface:
  * - [getDiscriminatorProperty] (already added in Ktor main branch)
- * - [getDiscriminatorMappingName] (proposed)
+ * - [getDiscriminatorMappingName] (proposed: https://youtrack.jetbrains.com/issue/KTOR-9648)
  *
  * Once Ktor releases these, the class can be simplified to just override the interface methods
  * and [JacksonReflectionJsonSchemaInference] can be removed.
@@ -41,7 +41,7 @@ class JacksonSchemaReflectionAdapter : SchemaReflectionAdapter {
             if (typeInfo != null && typeInfo.property.isNotEmpty()) {
                 return typeInfo.property
             }
-            current.supertypes.mapNotNull { it.classifier as? KClass<*> }.forEach(queue::add)
+            queue.addAll(current.supertypes.mapNotNull { it.classifier as? KClass<*> })
         }
         return "type"
     }
@@ -61,7 +61,7 @@ class JacksonSchemaReflectionAdapter : SchemaReflectionAdapter {
     fun getDiscriminatorMappingName(kClass: KClass<*>): String? {
         val visited = mutableSetOf<KClass<*>>()
         val queue = ArrayDeque<KClass<*>>()
-        kClass.supertypes.mapNotNull { it.classifier as? KClass<*> }.forEach(queue::add)
+        queue.addAll(kClass.supertypes.mapNotNull { it.classifier as? KClass<*> })
 
         while (queue.isNotEmpty()) {
             val ancestor = queue.removeFirst()
