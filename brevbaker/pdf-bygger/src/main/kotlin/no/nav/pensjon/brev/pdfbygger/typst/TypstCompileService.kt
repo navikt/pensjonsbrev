@@ -67,6 +67,7 @@ open class TypstCompileService(
 
                 val stdoutDeferred = async(Dispatchers.IO) {
                     process.inputStream.copyTo(stream)
+                    stream.close()
                 }
                 val stderrContent = String(process.errorStream.readAllBytes(), Charsets.UTF_8)
                 stdoutDeferred.await()
