@@ -5,8 +5,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import org.slf4j.LoggerFactory
-import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.io.OutputStream
 import java.nio.file.Path
 
 
@@ -37,7 +37,7 @@ open class TypstCompileService(
         "-",
     )
 
-    open suspend fun createLetter(stream: ByteArrayOutputStream, writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
+    open suspend fun createLetter(stream: OutputStream, writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
         return when (val result: Execution = executeCompileProcess(stream, writeLetter)) {
             is Execution.Success -> PDFCompilationResponse.Success
 
@@ -55,7 +55,7 @@ open class TypstCompileService(
         }
     }
 
-    private suspend fun executeCompileProcess(stream: ByteArrayOutputStream, writeLetter: (TypstFileWriter) -> Unit): Execution {
+    private suspend fun executeCompileProcess(stream: OutputStream, writeLetter: (TypstFileWriter) -> Unit): Execution {
         return withContext(Dispatchers.IO) {
             var process: Process? = null
             try {

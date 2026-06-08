@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
+import java.io.OutputStream
 import java.io.OutputStreamWriter
 
 class PdfByggerAppTest {
@@ -48,7 +49,7 @@ class PdfByggerAppTest {
         val rendererCalled = ArrayList<Int>()
 
         val fakeCompileService = object : TypstCompileService() {
-            override suspend fun createLetter(stream: ByteArrayOutputStream, writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
+            override suspend fun createLetter(stream: OutputStream, writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
                 // Driver renderer-kallbacken slik at TypstDocumentRenderer faktisk produserer Typst-innhold,
                 // men hopper over det eksterne `typst`-prosesskallet.
                 val captured = ByteArrayOutputStream()
