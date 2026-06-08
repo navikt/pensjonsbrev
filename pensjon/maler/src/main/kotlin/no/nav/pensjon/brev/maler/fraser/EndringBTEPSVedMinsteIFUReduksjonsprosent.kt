@@ -121,13 +121,13 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
                 paragraph {
                     text(
                         bokmal { +"Du har fått barnetillegg for fellesbarn fordi du bor sammen med barnets andre forelder. For fellesbarn, bruker vi begge foreldrenes inntekt (inkludert uføretrygd) når vi beregner størrelsen på barnetillegg. Lovendringen har ført til en endring i den andre forelderens uføretrygd. Dette påvirker bare barnetillegg for fellesbarn, og ikke uføretrygden din. " },
-                        nynorsk { +"Du har fått barnetillegg for fellesbarn fordi du bur saman med barnets andre forelder. For fellesbarn, brukar vi begge foreldrenes inntekt (inkludert uføretrygd) når vi bereknar storleiken på barnetillegg. Lovendringen har ført til en endring i den andre forelderens uføretrygd. Dette påverkar bare barnetillegg for fellesbarn, og ikkje uføretrygda di. " },
+                        nynorsk { +"Du har fått barnetillegg for fellesbarn fordi du bur saman med barnets andre forelder. For fellesbarn, brukar vi begge foreldrenes inntekt (inkludert uføretrygd) når vi bereknar storleiken på barnetillegg. Lovendringa har ført til ein endring i den andre forelderens uføretrygd. Dette påverkar berre barnetillegg for fellesbarn, og ikkje uføretrygda di. " },
                     )
                 }
                 paragraph {
                     text(
                         bokmal { +"Dersom du også mottar barnetillegg for et barn som ikke bor med begge foreldre, påvirkes ikke dette av lovendringene. " },
-                        nynorsk { +"Dersom du også mottar barnetillegg for eit barn som ikkje bur med begge foreldre, påvirkes ikkje dette av lovendringane. " },
+                        nynorsk { +"Dersom du også mottar barnetillegg for eit barn som ikkje bur med begge foreldre, påverkas ikkje dette av lovendringane. " },
                     )
                 }
             }.orShow {
