@@ -255,8 +255,8 @@ object OktMinsteIFUReduksjonsprosent {
                 }
                 paragraph {
                     text(
-                        bokmal { +"Minste IFU bruker vi for å sikre et inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførhet. IFU brukes og for å fastsette en reduksjonsprosent." },
-                        nynorsk { +"Minste IFU brukar vi for å sikre eit inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførleik. IFU blir òg brukt for å fastsetje ein reduksjonsprosent." }
+                        bokmal { +"Minste IFU bruker vi for å sikre et inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførhet. IFU brukes også til å fastsette en reduksjonsprosent." },
+                        nynorsk { +"Minste IFU brukar vi for å sikre eit inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførleik. IFU vert også brukt til å fastsetje ein reduksjonsprosent." },
                     )
                 }
             }
