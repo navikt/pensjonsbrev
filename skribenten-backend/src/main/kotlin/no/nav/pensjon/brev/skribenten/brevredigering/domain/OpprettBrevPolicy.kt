@@ -23,7 +23,7 @@ class OpprettBrevPolicy(
         request: OpprettBrevHandlerImpl.Request,
         principal: UserPrincipal
     ): Outcome<Parametre, BrevredigeringError> {
-        if (!navansattService.harTilgangTilEnhet(principal.navIdent.id, request.avsenderEnhetsId)) {
+        if (!navansattService.harTilgangTilEnhet(principal.navIdent, request.avsenderEnhetsId)) {
             return failure(IkkeTilgangTilEnhet(enhetsId = request.avsenderEnhetsId))
         }
 

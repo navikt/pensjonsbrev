@@ -59,9 +59,9 @@ dependencies {
     implementation(libs.ktor.server.callId)
     implementation(libs.ktor.server.callLogging)
     implementation(libs.ktor.server.content.negotiation)
-    implementation(libs.ktor.server.core.jvm)
+    implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.cors)
-    implementation(libs.ktor.server.netty.jvm)
+    implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.swagger)
 
@@ -94,7 +94,6 @@ dependencies {
 
     // Metrics
     implementation(libs.bundles.metrics)
-    implementation(libs.ktor.server.caching.headers.jvm)
 
     // Caching
     implementation(libs.valkey)

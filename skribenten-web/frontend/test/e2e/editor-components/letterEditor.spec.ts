@@ -43,7 +43,7 @@ const editorInfo = nyBrevInfo({
   status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
   avsenderEnhet: { enhetNr: "0001", navn: "NAV Familie- og pensjonsytelser" },
   spraak: SpraakKode.Bokmaal,
-  sadsId: "22981081",
+  saksId: "22981081",
 });
 
 function literal(id: number, parentId: number | null, text: string) {

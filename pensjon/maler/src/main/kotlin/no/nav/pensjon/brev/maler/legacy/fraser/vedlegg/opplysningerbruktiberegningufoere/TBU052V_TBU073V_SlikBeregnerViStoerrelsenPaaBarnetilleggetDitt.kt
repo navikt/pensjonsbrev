@@ -1582,6 +1582,21 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
             }
         }
 
+        showIf(pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v()) {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Hvis du har barnetillegg bare deler av året, er inntektene og fribeløpet for beregning av barnetillegg justert slik at det kun gjelder for den perioden du mottar barnetillegg. " +
+                                "Får du barnetillegg for hele året, beregnes dette ut fra hele årets inntekter og fradrag."
+                    },
+                    nynorsk {
+                        +"Hvis du har barnetillegg berre delar av året, er inntektene og fribeløpet for berekning av barnetillegg justert slik at det kun gjeld for den perioden du mottar barnetillegg. " +
+                                "Får du barnetillegg for heile året, bereknas dette ut fra heile årets inntekter og frådrag."
+                    },
+                )
+            }
+        }
+
         //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true) THEN    INCLUDE END IF
         showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
             //[TBU052V-TBU073V]
@@ -1895,6 +1910,21 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         nynorsk { + "Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året. " },
                     )
                 }
+            }
+        }
+
+        showIf(pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v()) {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Hvis du har barnetillegg bare deler av året, er inntektene og fribeløpet for beregning av barnetillegg justert slik at det kun gjelder for den perioden du mottar barnetillegg. " +
+                                "Får du barnetillegg for hele året, beregnes dette ut fra hele årets inntekter og fradrag."
+                    },
+                    nynorsk {
+                        +"Hvis du har barnetillegg berre delar av året, er inntektene og fribeløpet for berekning av barnetillegg justert slik at det kun gjeld for den perioden du mottar barnetillegg. " +
+                                "Får du barnetillegg for heile året, bereknas dette ut fra heile årets inntekter og frådrag."
+                    },
+                )
             }
         }
     }

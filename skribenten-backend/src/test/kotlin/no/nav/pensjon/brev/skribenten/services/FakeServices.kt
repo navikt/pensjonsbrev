@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1Data
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
@@ -35,13 +34,13 @@ fun notYetStubbed(description: String? = null): Nothing =
     throw NotYetStubbedException(description ?: "This method has not yet been stubbed in the test setup.")
 
 open class FakeNavansattService(
-    val harTilgangTilEnhet: Map<Pair<String, EnhetId>, Boolean> = emptyMap(),
-    val navansatte: Map<String, String> = emptyMap(),
+    val harTilgangTilEnhet: Map<Pair<NavIdent, EnhetId>, Boolean> = emptyMap(),
+    val navansatte: Map<NavIdent, String> = emptyMap(),
 ) : NavansattService {
-    override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: EnhetId) =
+    override suspend fun harTilgangTilEnhet(ansattId: NavIdent, enhetsId: EnhetId) =
         harTilgangTilEnhet.getOrDefault(Pair(ansattId, enhetsId), false)
 
-    override suspend fun hentNavansatt(ansattId: String): Navansatt? = navansatte[ansattId]?.let {
+    override suspend fun hentNavansatt(ansattId: NavIdent): Navansatt? = navansatte[ansattId]?.let {
         Navansatt(
             emptyList(),
             it,
@@ -50,7 +49,7 @@ open class FakeNavansattService(
         )
     }
 
-    override suspend fun hentNavAnsattEnhetListe(ansattId: String) = notYetStubbed()
+    override suspend fun hentNavAnsattEnhetListe(ansattId: NavIdent) = notYetStubbed()
 }
 
 open class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg2Service {
@@ -69,7 +68,7 @@ open class FakeP1Service: P1Service {
         p1DataInput: Api.GeneriskBrevdata,
         brevId: BrevId,
         saksId: SaksId,
-    ): P1Data? = notYetStubbed()
+    ): Api.GeneriskBrevdata? = notYetStubbed()
 
     override suspend fun hentP1Data(
         brevId: BrevId,

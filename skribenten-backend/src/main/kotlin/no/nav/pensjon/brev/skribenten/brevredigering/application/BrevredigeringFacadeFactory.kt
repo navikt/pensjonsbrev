@@ -72,6 +72,9 @@ object BrevredigeringFacadeFactory {
             reserverBrev = ReserverBrevHandler(
                 brevreservasjonPolicy = brevreservasjonPolicy
             ),
+            frigiReservasjon = FrigiReservasjonHandler(
+                brevreservasjonPolicy = brevreservasjonPolicy,
+            ),
             hentEllerOpprettPdf = HentEllerOpprettPdfHandler(
                 brevdataService = brevdataService,
                 renderService = renderService,
@@ -80,6 +83,7 @@ object BrevredigeringFacadeFactory {
             ),
             attesterBrev = AttesterBrevHandler(
                 attesterBrevPolicy = attesterBrevPolicy,
+                ferdigRedigertPolicy = ferdigRedigertPolicy,
                 redigerBrevPolicy = redigerBrevPolicy,
                 brevmalService = brevmalService,
                 brevdataService = brevdataService,

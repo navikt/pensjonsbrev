@@ -3,6 +3,8 @@ import com.ncorti.ktfmt.gradle.tasks.KtfmtFormatTask
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.toJavaDuration
 
 plugins {
     kotlin("jvm") version libs.versions.kotlinVersion apply false
@@ -74,6 +76,7 @@ subprojects {
             outputs.doNotCacheIf("Output of this task is not cached") { true }
             outputs.upToDateWhen { false }
             group = LifecycleBasePlugin.VERIFICATION_GROUP
+            timeout = 15.minutes.toJavaDuration()
             systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.5
             forkEvery = 0 // for å dele test-container uten å spinne opp ny.
             useJUnitPlatform { includeTags = setOf("integration-test") }

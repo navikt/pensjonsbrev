@@ -1,34 +1,12 @@
-import { getToken } from "@navikt/oasis";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { type Express } from "express";
-import { jwtDecode } from "jwt-decode";
 
 import config from "./config.js";
 
 export const internalRoutes = (server: Express) => {
   server.get("/bff/api/logout", (_request, response) => {
     response.redirect("/oauth2/logout");
-  });
-
-  server.get("/bff/api/userinfo", (request, response): void => {
-    const token = getToken(request);
-
-    if (!token) {
-      response.status(400).json({ message: "Bruker er ikke logget inn" });
-      return;
-    }
-
-    try {
-      const { name, NAVident } = jwtDecode<{ name: string; NAVident: string }>(token as string);
-
-      response.json({
-        name,
-        navident: NAVident,
-      });
-    } catch {
-      response.status(404).json({ message: "Could not get username" });
-    }
   });
 
   const baseUrls = config.baseUrls;
@@ -45,22 +23,6 @@ export const internalRoutes = (server: Express) => {
     });
   });
 
-  function findLogLevel(status: number | undefined): string {
-    switch (status) {
-      case undefined:
-        return "ERROR";
-      case 401:
-      case 403:
-      case 404:
-      case 504:
-        return "WARN";
-      case 422:
-        return "INFO";
-      default:
-        return "ERROR";
-    }
-  }
-
   server.post("/bff/api/logg", bodyParser.json(), cookieParser(), (request, response) => {
     if (request.cookies["use-local-vite-server"] === "true") {
       response.status(200).end();
@@ -71,7 +33,7 @@ export const internalRoutes = (server: Express) => {
 
     console.error(
       JSON.stringify({
-        level: findLogLevel(body.status),
+        level: body.level ?? "ERROR",
         statusCode: body.status,
         timestamp: body.jsonContent.timestamp,
         message: `Feil fra frontend: ${body.message}: ${body.jsonContent.url}`,

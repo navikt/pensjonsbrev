@@ -26,6 +26,7 @@ class BrevredigeringFacade(
     private val endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.BrevInfo>,
     private val endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.BrevInfo>,
     private val reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError>,
+    private val frigiReservasjon: UseCaseHandler<FrigiReservasjonHandler.Request, Unit, BrevredigeringError>,
     private val hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult>,
     private val attesterBrev: BrevredigeringHandler<AttesterBrevHandler.Request, Dto.Brevredigering>,
     private val tilbakestillBrev: BrevredigeringHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering>,
@@ -86,6 +87,11 @@ class BrevredigeringFacade(
     suspend fun reserverBrev(request: ReserverBrevHandler.Request): Outcome<Reservasjon, BrevredigeringError>? =
         suspendTransaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
             reserverBrev.handle(request)?.onError { rollback() }
+        }
+
+    suspend fun frigiReservasjon(request: FrigiReservasjonHandler.Request): Outcome<Unit, BrevredigeringError>? =
+        suspendTransaction {
+            frigiReservasjon.handle(request)?.onError { rollback() }
         }
 
     suspend fun hentPDF(request: HentEllerOpprettPdfHandler.Request): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =

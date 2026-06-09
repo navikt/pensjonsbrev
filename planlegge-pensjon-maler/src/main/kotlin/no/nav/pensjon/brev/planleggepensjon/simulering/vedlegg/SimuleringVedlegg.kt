@@ -180,6 +180,12 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
                 }
                 ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
                     includePhrase(AlderspensjonTabell(normPensjonsalder))
+                    ifNotNull(simulering.afpPrivat) { afpPrivatSim ->
+                        ifNotNull(afpPrivatSim.vedNormertPensjonsalder) { afp ->
+                            includePhrase(AfpPrivatTabell(afp))
+                            includePhrase(SumTabell(normPensjonsalder, afp))
+                        }
+                    }
                 }
             }
         }

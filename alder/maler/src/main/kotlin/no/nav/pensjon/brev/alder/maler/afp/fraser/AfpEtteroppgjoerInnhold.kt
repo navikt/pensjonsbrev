@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.alder.maler.afp.fraser
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_ETTEROPPGJOER_URL
+import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
@@ -998,49 +1000,106 @@ object AfpEtteroppgjoerInnhold {
             }
 
             paragraph {
-                text(
-                    bokmal { +"Full AFP (uten fradrag for inntekt): " + fullAfp.format(denominator = false) + " kr" },
-                    nynorsk { +"Full AFP (utan frådrag for inntekt): " + fullAfp.format(denominator = false) + " kr" },
-                )
-                newline()
-                text(
-                    bokmal { +"Inntektsfradraget i AFP for den nye inntekten: " + fradragBeregnetArbeidsInntekt.format(denominator = false) + " kr" },
-                    nynorsk { +"Inntektsfrådraget i AFP for den nye inntekta: " + fradragBeregnetArbeidsInntekt.format(denominator = false) + " kr" },
-                )
-                newline()
+                table(
+                    header = {
+                        column(columnSpan = 1) {
+                            text(
+                                bokmal {
+                                    +"Beregning"
+                                },
+                                nynorsk {
+                                    +"Berekning"
+                                },
+                            )
+                        }
+                        column(columnSpan = 1) {
+                            text(
+                                bokmal { +"" },
+                                nynorsk { +"" },
+                            )
+                        }
+                    }) {
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Full AFP (uten fradrag for inntekt)" },
+                                nynorsk { +"Full AFP (utan frådrag for inntekt)" },
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(fullAfp))
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"- Inntektsfradraget i AFP for den nye inntekten*" },
+                                nynorsk { +"- Inntektsfrådraget i AFP for den nye inntekta*" },
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(fradragBeregnetArbeidsInntekt))
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"= AFP etter fradrag for den nye inntekten" },
+                                nynorsk { +"= AFP etter frådrag for den nye inntekta" },
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(korrigertAfp))
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"- Tidligere utbetalt AFP" },
+                                nynorsk { +"- Tidlegare utbetalt AFP" },
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(utbetaltAfp))
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"= For lite utbetalt AFP" },
+                                nynorsk { +"= For lite utbetalt AFP" },
+                                BOLD,
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(forlitebetalt, BOLD))
+                        }
+                    }
+                }
+
+            }
+
+            paragraph {
                 text(
                     bokmal {
-                        +inntektIAfpPerioden.format(denominator = false) + " kr (ny beregnet inntekt) / " +
-                                tidligereArbeidsInntektBeregnet.format(denominator = false) + " kr (tidligere arbeidsinntekt*) x " +
-                                fullAfp.format(denominator = false) + " kr (full AFP)"
+                        +"* "
+                        +inntektIAfpPerioden.format() + " (ny beregnet inntekt) / " +
+                                tidligereArbeidsInntektBeregnet.format() + " (tidligere arbeidsinntekt**) x " +
+                                fullAfp.format() + " (full AFP)"
                     },
                     nynorsk {
-                        +inntektIAfpPerioden.format(denominator = false) + " kr (ny berekna inntekt) / " +
-                                tidligereArbeidsInntektBeregnet.format(denominator = false) + " kr (tidlegare arbeidsinntekt*) x " +
-                                fullAfp.format(denominator = false) + " kr (full AFP)"
+                        +"* "
+                        +inntektIAfpPerioden.format() + " (ny berekna inntekt) / " +
+                                tidligereArbeidsInntektBeregnet.format() + " (tidlegare arbeidsinntekt**) x " +
+                                fullAfp.format() + " (full AFP)"
                     },
-                )
-                newline()
-                text(
-                    bokmal { +"AFP etter fradrag for den nye inntekten: " + korrigertAfp.format(denominator = false) + " kr" },
-                    nynorsk { +"AFP etter frådrag for den nye inntekta: " + korrigertAfp.format(denominator = false) + " kr" },
-                )
-                newline()
-                text(
-                    bokmal { +"Tidligere utbetalt AFP: " + utbetaltAfp.format(denominator = false) + " kr" },
-                    nynorsk { +"Tidlegare utbetalt AFP: " + utbetaltAfp.format(denominator = false) + " kr" },
-                )
-                newline()
-                text(
-                    bokmal { +"*Tidligere arbeidsinntekt er beregnet ut fra inntekten din i årene før du tok ut AFP." },
-                    nynorsk { +"*Tidlegare arbeidsinntekt er berekna ut frå inntekta di i åra før du tok ut AFP." },
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { +"For lite utbetalt AFP: " + forlitebetalt.format(denominator = false) + " kr" },
-                    nynorsk { +"For lite utbetalt AFP: " + forlitebetalt.format(denominator = false) + " kr" },
+                    bokmal { +"**Tidligere arbeidsinntekt er beregnet ut fra inntekten din i årene før du tok ut AFP." },
+                    nynorsk { +"**Tidlegare arbeidsinntekt er berekna ut frå inntekta di i åra før du tok ut AFP." },
                 )
             }
         }
