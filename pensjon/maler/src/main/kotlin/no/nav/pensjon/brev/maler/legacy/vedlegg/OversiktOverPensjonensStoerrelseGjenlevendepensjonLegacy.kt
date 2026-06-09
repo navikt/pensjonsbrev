@@ -28,20 +28,19 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OversiktOverPensjonensStoerrel
 import no.nav.pensjon.brev.api.model.maler.legacy.OversiktOverPensjonensStoerrelseGjenlevendepensjonDtoSelectors.PesysDataSelectors.beregningPerioder
 import no.nav.pensjon.brev.api.model.maler.legacy.OversiktOverPensjonensStoerrelseGjenlevendepensjonDtoSelectors.PesysDataSelectors.virkningFom
 import no.nav.pensjon.brev.api.model.maler.legacy.OversiktOverPensjonensStoerrelseGjenlevendepensjonDtoSelectors.pesysData
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.bruttoNettoRad
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.nettoRad
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.sumBruttoNettoRad
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.sumNettoRad
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.YtelserPerMaanedTabell
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalEnglish
+import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.isNotEmpty
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
@@ -55,8 +54,8 @@ import no.nav.pensjon.brev.template.dsl.text
  * saksbehandlerforklaring per periodeaarsak; disse er bevisst utelatt - kun de tre periode-
  * aarsakene som hadde fast tekst beholdes (se EndringAarsak).
  *
- * Tabell- og radoppsett deles med fraser/gjenlevende via bruttoNettoRad, nettoRad,
- * sumBruttoNettoRad og sumNettoRad.
+ * Tabelloppsettet deles med fraser/gjenlevende via YtelserPerMaanedTabell (BruttoNetto/KunNetto),
+ * slik at periode-tabellene og slutt-tabellen bruker samme frase.
  */
 @TemplateModelHelpers
 val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
@@ -105,130 +104,50 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                     )
                 }
 
+                /*
+                TODO: FRITEKST-felter som er utelatt:
+                <FRITEKST: Forklar kort hva som er endret i vedtak på bruker eller ektefelle/partner/samboer>
+                <FRITEKST: Forklar hvilke regler/satser som er endret>
+                <FRITEKST: Forklar kort hvilke familieforhold som er endret>
+                <FRITEKST: Forklar kort hvilke inntekter som er endret>
+                <FRITEKST: Forklar kort hvilke endringer mht institusjonsopphold som ligger til grunn>
+                <FRITEKST: Forklar kort hva slags aldersovergang som ligger til grunn for endringen>
+                 */
+
                 showIf(periode.aarsaker.isNotEmpty()) {
-                    paragraph {
-                        text(
-                            bokmal { +"Pensjonen din er endret fordi" },
-                            english { +"Your pension is changed due to" },
-                        )
-                        forEach(periode.aarsaker) { aarsak ->
-                            list {
-                                showIf(aarsak.equalTo(EndringAarsak.FASTE_UTGIFTER_INSTITUSJONSOPPHOLD)) {
-                                    item {
-                                        text(
-                                            bokmal { +"faste utgifter ved institusjonsopphold er endret" },
-                                            english { +"a change in fixed costs when institutionalised" },
-                                        )
-                                    }
-                                }
-                                showIf(aarsak.equalTo(EndringAarsak.UTTAKSGRAD)) {
-                                    item {
-                                        text(
-                                            bokmal { +"uttaksgraden er endret" },
-                                            english { +"a change in the pension level" },
-                                        )
-                                    }
-                                }
-                                showIf(aarsak.equalTo(EndringAarsak.OPPTJENING)) {
-                                    item {
-                                        text(
-                                            bokmal { +"opptjeningsgrunnlaget er endret" },
-                                            english { +"a change in the accumulated pension rights" },
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    includePhrase(EndringAarsakerListe(periode.aarsaker))
                 }
 
                 showIf(periode.ytelser.brutto.notEqualTo(periode.ytelser.netto)) {
-                    paragraph {
-                        table(
-                            header = {
-                                column(columnSpan = 2, alignment = LEFT) { text(bokmal { +"" }, english { +"" }) }
-                                column(columnSpan = 1, alignment = RIGHT) {
-                                    text(
-                                        bokmal { +"Pensjon per måned før fradrag for inntekt" },
-                                        english { +"Pension per month before deduction for income" },
-                                    )
-                                }
-                                column(columnSpan = 1, alignment = RIGHT) {
-                                    text(
-                                        bokmal { +"Pensjon per måned etter fradrag for inntekt" },
-                                        english { +"Pension per month after deduction for income" },
-                                    )
-                                }
-                            },
-                        ) {
-                            bruttoNettoRad(
-                                "Grunnpensjon", "Basic pension",
-                                periode.ytelser.grunnpensjon.brutto, periode.ytelser.grunnpensjon.netto,
-                            )
-                            ifNotNull(periode.ytelser.tilleggspensjon) { tilleggspensjon ->
-                                bruttoNettoRad(
-                                    "Tilleggspensjon", "Supplementary pension",
-                                    tilleggspensjon.brutto, tilleggspensjon.netto,
-                                )
-                            }
-                            ifNotNull(periode.ytelser.saertillegg) { saertillegg ->
-                                bruttoNettoRad(
-                                    "Særtillegg", "Special supplement",
-                                    saertillegg.brutto, saertillegg.netto,
-                                )
-                            }
-                            ifNotNull(periode.ytelser.fasteUtgifter) { fasteUtgifter ->
-                                bruttoNettoRad(
-                                    "Faste utgifter ved institusjonsopphold",
-                                    "Fixed costs when institutionalised",
-                                    fasteUtgifter.brutto, fasteUtgifter.netto,
-                                )
-                            }
-                            ifNotNull(periode.ytelser.familietillegg) { familietillegg ->
-                                bruttoNettoRad(
-                                    "Familietillegg", "Family supplement",
-                                    familietillegg.brutto, familietillegg.netto,
-                                )
-                            }
-                            // Bevarer Exstream-kildens fete sumrad for periode-bruttoNetto-tabellen.
-                            sumBruttoNettoRad(periode.ytelser.brutto, periode.ytelser.netto, bold = true)
-                        }
-                    }
+                    includePhrase(
+                        YtelserPerMaanedTabell.BruttoNetto(
+                            grunnpensjonBrutto = periode.ytelser.grunnpensjon.brutto,
+                            grunnpensjonNetto = periode.ytelser.grunnpensjon.netto,
+                            tilleggspensjonBrutto = periode.ytelser.tilleggspensjon.safe { brutto },
+                            tilleggspensjonNetto = periode.ytelser.tilleggspensjon.safe { netto },
+                            saertilleggBrutto = periode.ytelser.saertillegg.safe { brutto },
+                            saertilleggNetto = periode.ytelser.saertillegg.safe { netto },
+                            fasteUtgifterBrutto = periode.ytelser.fasteUtgifter.safe { brutto },
+                            fasteUtgifterNetto = periode.ytelser.fasteUtgifter.safe { netto },
+                            familietilleggBrutto = periode.ytelser.familietillegg.safe { brutto },
+                            familietilleggNetto = periode.ytelser.familietillegg.safe { netto },
+                            sumBrutto = periode.ytelser.brutto,
+                            sumNetto = periode.ytelser.netto,
+                        )
+                    )
                 }
 
                 showIf(periode.ytelser.brutto.equalTo(periode.ytelser.netto)) {
-                    paragraph {
-                        table(
-                            header = {
-                                column(columnSpan = 2, alignment = LEFT) { text(bokmal { +"" }, english { +"" }) }
-                                column(columnSpan = 1, alignment = RIGHT) {
-                                    text(
-                                        bokmal { +"Pensjon per måned" },
-                                        english { +"Pension per month" },
-                                    )
-                                }
-                            },
-                        ) {
-                            nettoRad("Grunnpensjon", "Basic pension", periode.ytelser.grunnpensjon.netto)
-                            ifNotNull(periode.ytelser.tilleggspensjon) { tilleggspensjon ->
-                                nettoRad("Tilleggspensjon", "Supplementary pension", tilleggspensjon.netto)
-                            }
-                            ifNotNull(periode.ytelser.saertillegg) { saertillegg ->
-                                nettoRad("Særtillegg", "Special supplement", saertillegg.netto)
-                            }
-                            ifNotNull(periode.ytelser.fasteUtgifter) { fasteUtgifter ->
-                                nettoRad(
-                                    "Faste utgifter ved institusjonsopphold",
-                                    "Fixed costs when institutionalised",
-                                    fasteUtgifter.netto,
-                                )
-                            }
-                            ifNotNull(periode.ytelser.familietillegg) { familietillegg ->
-                                nettoRad("Familietillegg", "Family supplement", familietillegg.netto)
-                            }
-                            sumNettoRad(periode.ytelser.netto, bold = true)
-                        }
-                    }
+                    includePhrase(
+                        YtelserPerMaanedTabell.KunNetto(
+                            grunnpensjonNetto = periode.ytelser.grunnpensjon.netto,
+                            tilleggspensjonNetto = periode.ytelser.tilleggspensjon.safe { netto },
+                            saertilleggNetto = periode.ytelser.saertillegg.safe { netto },
+                            fasteUtgifterNetto = periode.ytelser.fasteUtgifter.safe { netto },
+                            familietilleggNetto = periode.ytelser.familietillegg.safe { netto },
+                            sumNetto = periode.ytelser.netto,
+                        )
+                    )
                 }
             }
         }
@@ -252,122 +171,87 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
             )
         }
         showIf(pesysData.beregning.aarsaker.isNotEmpty()) {
-            paragraph {
-                text(
-                    bokmal { +"Pensjonen din er endret fordi" },
-                    english { +"Your pension is changed due to" },
-                )
-                forEach(pesysData.beregning.aarsaker) { aarsak ->
-                    showIf(aarsak.equalTo(EndringAarsak.FASTE_UTGIFTER_INSTITUSJONSOPPHOLD)) {
-                        text(
-                            bokmal { +"- faste utgifter ved institusjonsopphold er endret" },
-                            english { +"- a change in fixed costs when institutionalised" },
-                        )
-                    }
-                    showIf(aarsak.equalTo(EndringAarsak.UTTAKSGRAD)) {
-                        text(
-                            bokmal { +"- uttaksgraden er endret" },
-                            english { +"- a change in the pension level" },
-                        )
-                    }
-                    showIf(aarsak.equalTo(EndringAarsak.OPPTJENING)) {
-                        text(
-                            bokmal { +"- opptjeningsgrunnlaget er endret" },
-                            english { +"- a change in the accumulated pension rights" },
-                        )
-                    }
-                }
-            }
+            includePhrase(EndringAarsakerListe(pesysData.beregning.aarsaker))
         }
 
         showIf(pesysData.beregning.ytelser.brutto.notEqualTo(pesysData.beregning.ytelser.netto)) {
-            paragraph {
-                table(
-                    header = {
-                        column(columnSpan = 2, alignment = LEFT) { text(bokmal { +"" }, english { +"" }) }
-                        column(columnSpan = 1, alignment = RIGHT) {
-                            text(
-                                bokmal { +"Pensjon per måned før fradrag for inntekt" },
-                                english { +"Pension per month before deduction for income" },
-                            )
-                        }
-                        column(columnSpan = 1, alignment = RIGHT) {
-                            text(
-                                bokmal { +"Pensjon per måned etter fradrag for inntekt" },
-                                english { +"Pension per month after deduction for income" },
-                            )
-                        }
-                    },
-                ) {
-                    bruttoNettoRad(
-                        "Grunnpensjon", "Basic pension",
-                        pesysData.beregning.ytelser.grunnpensjon.brutto,
-                        pesysData.beregning.ytelser.grunnpensjon.netto,
-                    )
-                    ifNotNull(pesysData.beregning.ytelser.tilleggspensjon) { tilleggspensjon ->
-                        bruttoNettoRad(
-                            "Tilleggspensjon", "Supplementary pension",
-                            tilleggspensjon.brutto, tilleggspensjon.netto,
-                        )
-                    }
-                    ifNotNull(pesysData.beregning.ytelser.saertillegg) { saertillegg ->
-                        bruttoNettoRad(
-                            "Særtillegg", "Special supplement",
-                            saertillegg.brutto, saertillegg.netto,
-                        )
-                    }
-                    ifNotNull(pesysData.beregning.ytelser.fasteUtgifter) { fasteUtgifter ->
-                        bruttoNettoRad(
-                            "Faste utgifter ved institusjonsopphold",
-                            "Fixed costs when institutionalised",
-                            fasteUtgifter.brutto, fasteUtgifter.netto,
-                        )
-                    }
-                    ifNotNull(pesysData.beregning.ytelser.familietillegg) { familietillegg ->
-                        bruttoNettoRad(
-                            "Familietillegg", "Family supplement",
-                            familietillegg.brutto, familietillegg.netto,
-                        )
-                    }
-                    sumBruttoNettoRad(pesysData.beregning.ytelser.brutto, pesysData.beregning.ytelser.netto, bold = true)
-                }
-            }
+            includePhrase(
+                YtelserPerMaanedTabell.BruttoNetto(
+                    grunnpensjonBrutto = pesysData.beregning.ytelser.grunnpensjon.brutto,
+                    grunnpensjonNetto = pesysData.beregning.ytelser.grunnpensjon.netto,
+                    tilleggspensjonBrutto = pesysData.beregning.ytelser.tilleggspensjon.safe { brutto },
+                    tilleggspensjonNetto = pesysData.beregning.ytelser.tilleggspensjon.safe { netto },
+                    saertilleggBrutto = pesysData.beregning.ytelser.saertillegg.safe { brutto },
+                    saertilleggNetto = pesysData.beregning.ytelser.saertillegg.safe { netto },
+                    fasteUtgifterBrutto = pesysData.beregning.ytelser.fasteUtgifter.safe { brutto },
+                    fasteUtgifterNetto = pesysData.beregning.ytelser.fasteUtgifter.safe { netto },
+                    familietilleggBrutto = pesysData.beregning.ytelser.familietillegg.safe { brutto },
+                    familietilleggNetto = pesysData.beregning.ytelser.familietillegg.safe { netto },
+                    sumBrutto = pesysData.beregning.ytelser.brutto,
+                    sumNetto = pesysData.beregning.ytelser.netto,
+                )
+            )
         }
 
         showIf(pesysData.beregning.ytelser.brutto.equalTo(pesysData.beregning.ytelser.netto)) {
-            paragraph {
-                table(
-                    header = {
-                        column(columnSpan = 2, alignment = LEFT) { text(bokmal { +"" }, english { +"" }) }
-                        column(columnSpan = 1, alignment = RIGHT) {
+            includePhrase(
+                YtelserPerMaanedTabell.KunNetto(
+                    grunnpensjonNetto = pesysData.beregning.ytelser.grunnpensjon.netto,
+                    tilleggspensjonNetto = pesysData.beregning.ytelser.tilleggspensjon.safe { netto },
+                    saertilleggNetto = pesysData.beregning.ytelser.saertillegg.safe { netto },
+                    fasteUtgifterNetto = pesysData.beregning.ytelser.fasteUtgifter.safe { netto },
+                    familietilleggNetto = pesysData.beregning.ytelser.familietillegg.safe { netto },
+                    sumNetto = pesysData.beregning.ytelser.netto,
+                )
+            )
+        }
+    }
+
+/**
+ * "Pensjonen din er endret fordi ..."-blokken med kulepunkter for hver [EndringAarsak].
+ *
+ * Deles av periode-seksjonen og slutt-seksjonen. Exstream-kilden hadde i tillegg flere
+ * FRITEKST-markører per periodeårsak; disse er bevisst utelatt (vedlegget er ikke redigerbart).
+ */
+private class EndringAarsakerListe(
+    val aarsaker: Expression<List<EndringAarsak>>,
+) : OutlinePhrase<LangBokmalEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalEnglish, Unit>.template() {
+        paragraph {
+            text(
+                bokmal { +"Pensjonen din er endret fordi" },
+                english { +"Your pension is changed due to" },
+            )
+            forEach(aarsaker) { aarsak ->
+                list {
+                    showIf(aarsak.equalTo(EndringAarsak.FASTE_UTGIFTER_INSTITUSJONSOPPHOLD)) {
+                        item {
                             text(
-                                bokmal { +"Pensjon per måned" },
-                                english { +"Pension per month" },
+                                bokmal { +"faste utgifter ved institusjonsopphold er endret" },
+                                english { +"a change in fixed costs when institutionalised" },
                             )
                         }
-                    },
-                ) {
-                    nettoRad("Grunnpensjon", "Basic pension", pesysData.beregning.ytelser.grunnpensjon.netto)
-                    ifNotNull(pesysData.beregning.ytelser.tilleggspensjon) { tilleggspensjon ->
-                        nettoRad("Tilleggspensjon", "Supplementary pension", tilleggspensjon.netto)
                     }
-                    ifNotNull(pesysData.beregning.ytelser.saertillegg) { saertillegg ->
-                        nettoRad("Særtillegg", "Special supplement", saertillegg.netto)
+                    showIf(aarsak.equalTo(EndringAarsak.UTTAKSGRAD)) {
+                        item {
+                            text(
+                                bokmal { +"uttaksgraden er endret" },
+                                english { +"a change in the pension level" },
+                            )
+                        }
                     }
-                    ifNotNull(pesysData.beregning.ytelser.fasteUtgifter) { fasteUtgifter ->
-                        nettoRad(
-                            "Faste utgifter ved institusjonsopphold",
-                            "Fixed costs when institutionalised",
-                            fasteUtgifter.netto,
-                        )
+                    showIf(aarsak.equalTo(EndringAarsak.OPPTJENING)) {
+                        item {
+                            text(
+                                bokmal { +"opptjeningsgrunnlaget er endret" },
+                                english { +"a change in the accumulated pension rights" },
+                            )
+                        }
                     }
-                    ifNotNull(pesysData.beregning.ytelser.familietillegg) { familietillegg ->
-                        nettoRad("Familietillegg", "Family supplement", familietillegg.netto)
-                    }
-                    sumNettoRad(pesysData.beregning.ytelser.netto, bold = true)
                 }
             }
         }
     }
+}
 
 

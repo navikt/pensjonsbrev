@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.VedleggData
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetid
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
@@ -96,35 +97,11 @@ data class OpplysningerOmBeregningenGPUtlandDto(
         // PE_Grunnlag_PersongrunnlagslisteAvdod_Trygdeavtaledetaljer_TTNordiskMnd
         // (rtv-brev brev Grunnlag PersongrunnlagslisteAvdod Trygdeavtaledetaljer TTNordiskMnd)
         val ttNordiskMnd: Int,
-        val trygdetidsgrunnlagNorge: List<TrygdetidsgrunnlagPeriode>,
-        val trygdetidsgrunnlagEos: List<TrygdetidsgrunnlagEosPeriode>,
-        val trygdetidsgrunnlagBilateral: List<TrygdetidsgrunnlagBilateralPeriode>,
+        val trygdetidsgrunnlagNorge: List<Trygdetid>,
+        val trygdetidsgrunnlagEos: List<Trygdetid>,
+        val trygdetidsgrunnlagBilateral: List<Trygdetid>,
     )
 
-    data class TrygdetidsgrunnlagPeriode(
-        // PE_Grunnlag_PersongrunnlagslisteAvdod_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom
-        val fom: LocalDate,
-        // PE_Grunnlag_PersongrunnlagslisteAvdod_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidTom
-        val tom: LocalDate,
-    )
-
-    data class TrygdetidsgrunnlagEosPeriode(
-        // PE_Grunnlag_PersongrunnlagslisteAvdod_TrygdetidsgrunnlagListeEOS_TrygdetidsgrunnlagEOS_TrygdetidEOSLand
-        val land: String,
-        // PE_Grunnlag_PersongrunnlagslisteAvdod_TrygdetidsgrunnlagListeEOS_TrygdetidsgrunnlagEOS_TrygdetidFomEOS
-        val fom: LocalDate,
-        // PE_Grunnlag_PersongrunnlagslisteAvdod_TrygdetidsgrunnlagListeEOS_TrygdetidsgrunnlagEOS_TrygdetidTomEOS
-        val tom: LocalDate,
-    )
-
-    data class TrygdetidsgrunnlagBilateralPeriode(
-        // PE_Grunnlag_PersongrunnlagslisteAvdod_TrygdetidsgrunnlagListeBilateral_TrygdetidsgrunnlagBilateral_TrygdetidBilateralLand
-        val land: String,
-        // PE_Grunnlag_PersongrunnlagslisteAvdod_TrygdetidsgrunnlagListeBilateral_TrygdetidsgrunnlagBilateral_TrygdetidFomBilateral
-        val fom: LocalDate,
-        // PE_Grunnlag_PersongrunnlagslisteAvdod_TrygdetidsgrunnlagListeBilateral_TrygdetidsgrunnlagBilateral_TrygdetidTomBilateral
-        val tom: LocalDate,
-    )
 
     data class Beregning(
         // PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Tilleggspensjon_TPinnvilget

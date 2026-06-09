@@ -49,6 +49,7 @@ object GjenlevendepensjonBeregningTabell {
         val sumNetto: Expression<Kroner>,
     ) : OutlinePhrase<LangBokmalEnglish>() {
         override fun OutlineOnlyScope<LangBokmalEnglish, Unit>.template() {
+
             title1 {
                 text(
                     bokmal { +"Din månedlige gjenlevendepensjon fra " + virkDatoFom.format() },
@@ -201,6 +202,116 @@ object GjenlevendepensjonBeregningTabell {
                         nettoRad("Familietillegg", "Family supplement", ftNetto)
                     }
                     sumNettoRad(sumNetto)
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Ytelser-per-måned-tabell uten innledende tittel/kulepunkter (Bokmål/Engelsk).
+ *
+ * Brukes av oversikts-vedlegget der hver beregningsperiode allerede har egen
+ * overskrift og grunnbeløp-/inntektstekst over tabellen.
+ *
+ * Bruk [YtelserPerMaanedTabell.BruttoNetto] når brutto != netto, og
+ * [YtelserPerMaanedTabell.KunNetto] når brutto == netto.
+ */
+object YtelserPerMaanedTabell {
+    data class BruttoNetto(
+        val grunnpensjonBrutto: Expression<Kroner>,
+        val grunnpensjonNetto: Expression<Kroner>,
+        val tilleggspensjonBrutto: Expression<Kroner?>,
+        val tilleggspensjonNetto: Expression<Kroner?>,
+        val saertilleggBrutto: Expression<Kroner?>,
+        val saertilleggNetto: Expression<Kroner?>,
+        val fasteUtgifterBrutto: Expression<Kroner?>,
+        val fasteUtgifterNetto: Expression<Kroner?>,
+        val familietilleggBrutto: Expression<Kroner?>,
+        val familietilleggNetto: Expression<Kroner?>,
+        val sumBrutto: Expression<Kroner>,
+        val sumNetto: Expression<Kroner>,
+    ) : OutlinePhrase<LangBokmalEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalEnglish, Unit>.template() {
+            paragraph {
+                table(
+                    header = {
+                        column(columnSpan = 2, alignment = LEFT) { text(bokmal { +"" }, english { +"" }) }
+                        column(columnSpan = 1, alignment = RIGHT) {
+                            text(
+                                bokmal { +"Pensjon per måned før fradrag for inntekt" },
+                                english { +"Pension per month before deduction for income" },
+                            )
+                        }
+                        column(columnSpan = 1, alignment = RIGHT) {
+                            text(
+                                bokmal { +"Pensjon per måned etter fradrag for inntekt" },
+                                english { +"Pension per month after deduction for income" },
+                            )
+                        }
+                    },
+                ) {
+                    bruttoNettoRad("Grunnpensjon", "Basic pension", grunnpensjonBrutto, grunnpensjonNetto)
+                    ifNotNull(tilleggspensjonBrutto) { tpBrutto ->
+                        ifNotNull(tilleggspensjonNetto) { tpNetto ->
+                            bruttoNettoRad("Tilleggspensjon", "Supplementary pension", tpBrutto, tpNetto)
+                        }
+                    }
+                    ifNotNull(saertilleggBrutto) { stBrutto ->
+                        ifNotNull(saertilleggNetto) { stNetto ->
+                            bruttoNettoRad("Særtillegg", "Special supplement", stBrutto, stNetto)
+                        }
+                    }
+                    ifNotNull(fasteUtgifterBrutto) { fuBrutto ->
+                        ifNotNull(fasteUtgifterNetto) { fuNetto ->
+                            bruttoNettoRad(
+                                "Faste utgifter ved institusjonsopphold",
+                                "Fixed costs when institutionalised",
+                                fuBrutto,
+                                fuNetto,
+                            )
+                        }
+                    }
+                    ifNotNull(familietilleggBrutto) { ftBrutto ->
+                        ifNotNull(familietilleggNetto) { ftNetto ->
+                            bruttoNettoRad("Familietillegg", "Family supplement", ftBrutto, ftNetto)
+                        }
+                    }
+                    sumBruttoNettoRad(sumBrutto, sumNetto, bold = true)
+                }
+            }
+        }
+    }
+
+    data class KunNetto(
+        val grunnpensjonNetto: Expression<Kroner>,
+        val tilleggspensjonNetto: Expression<Kroner?>,
+        val saertilleggNetto: Expression<Kroner?>,
+        val fasteUtgifterNetto: Expression<Kroner?>,
+        val familietilleggNetto: Expression<Kroner?>,
+        val sumNetto: Expression<Kroner>,
+    ) : OutlinePhrase<LangBokmalEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalEnglish, Unit>.template() {
+            paragraph {
+                table(
+                    header = {
+                        column(columnSpan = 2, alignment = LEFT) { text(bokmal { +"" }, english { +"" }) }
+                        column(columnSpan = 1, alignment = RIGHT) {
+                            text(
+                                bokmal { +"Pensjon per måned" },
+                                english { +"Pension per month" },
+                            )
+                        }
+                    },
+                ) {
+                    nettoRad("Grunnpensjon", "Basic pension", grunnpensjonNetto)
+                    ifNotNull(tilleggspensjonNetto) { nettoRad("Tilleggspensjon", "Supplementary pension", it) }
+                    ifNotNull(saertilleggNetto) { nettoRad("Særtillegg", "Special supplement", it) }
+                    ifNotNull(fasteUtgifterNetto) {
+                        nettoRad("Faste utgifter ved institusjonsopphold", "Fixed costs when institutionalised", it)
+                    }
+                    ifNotNull(familietilleggNetto) { nettoRad("Familietillegg", "Family supplement", it) }
+                    sumNettoRad(sumNetto, bold = true)
                 }
             }
         }

@@ -11,9 +11,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtl
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.Poengtallstype
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.Sluttpoengtall
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.TrygdetidScalars
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.TrygdetidsgrunnlagEosPeriode
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.TrygdetidsgrunnlagPeriode
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.YrkesskadeBeregning
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetid
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
@@ -41,13 +40,14 @@ fun createOpplysningerOmBeregningGPUtlandDto() =
                 ttNordiskAar = 0,
                 ttNordiskMnd = 0,
                 trygdetidsgrunnlagNorge = listOf(
-                    TrygdetidsgrunnlagPeriode(
+                    Trygdetid(
                         fom = LocalDate.of(1980, 1, 1),
                         tom = LocalDate.of(2010, 12, 31),
+                        land = "Norge",
                     ),
                 ),
                 trygdetidsgrunnlagEos = listOf(
-                    TrygdetidsgrunnlagEosPeriode(
+                    Trygdetid(
                         land = "Spania",
                         fom = LocalDate.of(2011, 1, 1),
                         tom = LocalDate.of(2020, 12, 31),

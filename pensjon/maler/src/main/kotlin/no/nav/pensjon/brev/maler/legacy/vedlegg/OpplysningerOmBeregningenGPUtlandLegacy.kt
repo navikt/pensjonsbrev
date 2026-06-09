@@ -79,14 +79,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtl
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidScalarsSelectors.ttTellerBilateral
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidScalarsSelectors.ttTellerEos
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidScalarsSelectors.ttTellerNordisk
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidsgrunnlagBilateralPeriodeSelectors.fom as bilFom
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidsgrunnlagBilateralPeriodeSelectors.land as bilLand
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidsgrunnlagBilateralPeriodeSelectors.tom as bilTom
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidsgrunnlagEosPeriodeSelectors.fom as eosFom
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidsgrunnlagEosPeriodeSelectors.land as eosLand
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidsgrunnlagEosPeriodeSelectors.tom as eosTom
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidsgrunnlagPeriodeSelectors.fom as norFom
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidsgrunnlagPeriodeSelectors.tom as norTom
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.YrkesskadeBeregningSelectors.poengaarYrke
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.YrkesskadeBeregningSelectors.poengaarYrkeE91
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.YrkesskadeBeregningSelectors.poengaarYrkeF92
@@ -94,6 +86,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtl
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetid
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller.UtenlandskTrygdetid
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -245,7 +239,7 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                     }
                 }
 
-               // Seksjonen om samboer 3-2 er fjernet, da dette er redigerbar og bør plasseres i brevet istedenfor.
+                // Seksjonen om samboer 3-2 er fjernet, da dette er redigerbar og bør plasseres i brevet istedenfor.
 
                 // ---- Beregningsmetode-spesifikke opplysninger ----
                 // De fire Exstream `Beregningsmetode2`-grenene; innholdet er stort sett identisk på tvers av
@@ -1234,25 +1228,7 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                     english { +"The deceased's period of national insurance cover in Norway is based on the following periods:" },
                 )
             }
-            paragraph {
-                table(
-                    header = {
-                        column(columnSpan = 1, alignment = LEFT) {
-                            text(bokmal { +"Fra og med" }, english { +"Start date" })
-                        }
-                        column(columnSpan = 1, alignment = LEFT) {
-                            text(bokmal { +"Til og med" }, english { +"End date" })
-                        }
-                    },
-                ) {
-                    forEach(pesysData.avdoed.trygdetidsgrunnlagNorge) { periode ->
-                        row {
-                            cell { text(bokmal { +periode.norFom.format() }, english { +periode.norFom.format() }) }
-                            cell { text(bokmal { +periode.norTom.format() }, english { +periode.norTom.format() }) }
-                        }
-                    }
-                }
-            }
+            includePhrase(NorskTrygdetid(pesysData.avdoed.trygdetidsgrunnlagNorge))
         }
 
         // EOS perioder
@@ -1263,31 +1239,7 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                     english { +"The deceased's period of national insurance cover in other EEA countries is based on the following periods:" },
                 )
             }
-            paragraph {
-                table(
-                    header = {
-                        column(columnSpan = 1, alignment = LEFT) {
-                            text(bokmal { +"Land" }, english { +"Country" })
-                        }
-                        column(columnSpan = 1, alignment = LEFT) {
-                            text(bokmal { +"Fra og med" }, english { +"Start date" })
-                        }
-                        column(columnSpan = 1, alignment = LEFT) {
-                            text(bokmal { +"Til og med" }, english { +"End date" })
-                        }
-                    },
-                ) {
-                    forEach(pesysData.avdoed.trygdetidsgrunnlagEos) { periode ->
-                        showIf(periode.eosLand.notEqualTo("Norge")) {
-                            row {
-                                cell { text(bokmal { +periode.eosLand }, english { +periode.eosLand }) }
-                                cell { text(bokmal { +periode.eosFom.format() }, english { +periode.eosFom.format() }) }
-                                cell { text(bokmal { +periode.eosTom.format() }, english { +periode.eosTom.format() }) }
-                            }
-                        }
-                    }
-                }
-            }
+            includePhrase(UtenlandskTrygdetid(pesysData.avdoed.trygdetidsgrunnlagEos))
         }
 
         // Bilateral perioder
@@ -1308,29 +1260,7 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                     },
                 )
             }
-            paragraph {
-                table(
-                    header = {
-                        column(columnSpan = 1, alignment = LEFT) {
-                            text(bokmal { +"Land" }, english { +"Country" })
-                        }
-                        column(columnSpan = 1, alignment = LEFT) {
-                            text(bokmal { +"Fra og med" }, english { +"Start date" })
-                        }
-                        column(columnSpan = 1, alignment = LEFT) {
-                            text(bokmal { +"Til og med" }, english { +"End date" })
-                        }
-                    },
-                ) {
-                    forEach(pesysData.avdoed.trygdetidsgrunnlagBilateral) { periode ->
-                        row {
-                            cell { text(bokmal { +periode.bilLand }, english { +periode.bilLand }) }
-                            cell { text(bokmal { +periode.bilFom.format() }, english { +periode.bilFom.format() }) }
-                            cell { text(bokmal { +periode.bilTom.format() }, english { +periode.bilTom.format() }) }
-                        }
-                    }
-                }
-            }
+            includePhrase(UtenlandskTrygdetid(pesysData.avdoed.trygdetidsgrunnlagBilateral))
         }
 
         // Nordisk: tekst om trygdetid i andre nordiske land
