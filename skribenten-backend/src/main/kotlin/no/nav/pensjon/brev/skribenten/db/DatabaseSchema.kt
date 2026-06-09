@@ -27,7 +27,7 @@ import java.time.LocalDate
 
 object Favourites : Table() {
     val id: Column<Int> = integer("id").autoIncrement()
-    val userId: Column<String> = varchar("User Id", length = 50)
+    val userId: Column<NavIdent> = varchar("User Id", length = 50).transform(::NavIdent, NavIdent::id)
     val letterCode: Column<String> = varchar("Letter Code", length = 50)
     override val primaryKey = PrimaryKey(id, name = "PK_Favourite_ID")
 }

@@ -10,14 +10,14 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 class FavouritesRepository {
     fun getFavourites(userId: NavIdent): List<String> =
         transaction {
-            Favourites.selectAll().where { Favourites.userId eq userId.id }.map { row -> row[Favourites.letterCode] }
+            Favourites.selectAll().where { Favourites.userId eq userId }.map { row -> row[Favourites.letterCode] }
         }
 
 
     fun addFavourite(userID: NavIdent, letterId: String) {
         transaction {
             Favourites.insert {
-                it[userId] = userID.id
+                it[userId] = userID
                 it[letterCode] = letterId
             }
         }
@@ -26,7 +26,7 @@ class FavouritesRepository {
     fun removeFavourite(userID: NavIdent, letterId: String) {
         transaction {
             Favourites.deleteWhere {
-                userId eq userID.id
+                userId eq userID
                 letterCode eq letterId
             }
         }
