@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { BodyShort, Detail, Heading, Loader, Search, Tabs, Tag, VStack } from "@navikt/ds-react";
+import { BodyShort, Detail, Heading, HStack, Loader, Search, Tabs, Tag, VStack } from "@navikt/ds-react";
 import { type QueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
@@ -154,7 +154,6 @@ function AllTemplates() {
           value={query}
           variant="simple"
         />
-        {isLoading ? <Loader size="small" title="Indekserer innhold…" /> : null}
       </div>
       <Detail
         aria-live="polite"
@@ -199,7 +198,13 @@ function AllTemplates() {
               ) : undefined
             }
           >
-            {!isSearching ? (
+            {isLoading ? (
+              <HStack flexGrow="1" justify="center">
+                <BodyShort>
+                  <Loader size="3xlarge" title={"Laster maler"} />
+                </BodyShort>
+              </HStack>
+            ) : !isSearching ? (
               <BodyShort textColor="subtle">
                 Skriv minst {MIN_QUERY_LENGTH} tegn for å søke i innholdet i malene.
               </BodyShort>
