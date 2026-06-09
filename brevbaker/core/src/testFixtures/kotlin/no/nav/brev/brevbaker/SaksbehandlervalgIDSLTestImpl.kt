@@ -10,9 +10,9 @@ class SaksbehandlervalgIDSLTestImpl(override val verdier: Map<String, Saksbehand
     override fun <T : SaksbehandlervalgVerdi> get(key: String): T = verdier[key] as T
 }
 
-fun <T : Enum<T>> T.tilSaksbehandlervalgverdiEnum(displayText: String): SaksbehandlervalgVerdi.Enum<*> =
+fun <T> T.tilSaksbehandlervalgverdiEnum(displayText: String): SaksbehandlervalgVerdi.Enum<*> where T : SaksbehandlerValgEnum, T: Enum<T> =
     SaksbehandlervalgVerdi.Enum(
-        enum = this as SaksbehandlerValgEnum?,
+        enum = this,
         displayText = displayText,
         clazz = this::class.java
     )
