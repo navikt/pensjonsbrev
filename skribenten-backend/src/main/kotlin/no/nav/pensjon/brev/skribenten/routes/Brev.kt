@@ -7,6 +7,7 @@ import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.DiffBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.FrigiReservasjonHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.ReserverBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.TilbakestillBrevHandler
@@ -53,10 +54,18 @@ fun Route.brev(
             apiRespond(dto2ApiService, resultat)
         }
 
-        get("/reservasjon") {
-            val brevId = call.parameters.brevId()
-            val reservasjon = brevredigeringFacade.reserverBrev(ReserverBrevHandler.Request(brevId = brevId))
-            apiRespond(dto2ApiService, reservasjon)
+        route("/reservasjon") {
+            get {
+                val brevId = call.parameters.brevId()
+                val reservasjon = brevredigeringFacade.reserverBrev(ReserverBrevHandler.Request(brevId = brevId))
+                apiRespond(dto2ApiService, reservasjon)
+            }
+
+            delete {
+                val brevId = call.parameters.brevId()
+                val result = brevredigeringFacade.frigiReservasjon(FrigiReservasjonHandler.Request(brevId = brevId))
+                apiRespond(dto2ApiService, result)
+            }
         }
 
         post("/tilbakestill") {
