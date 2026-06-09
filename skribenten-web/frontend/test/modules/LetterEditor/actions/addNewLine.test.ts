@@ -2,9 +2,9 @@ import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { text } from "~/Brevredigering/LetterEditor/actions/common";
-import { type LiteralValue, NEW_LINE, type ParagraphBlock, type TextContent } from "~/types/brevbakerTypes";
+import { ListType, type LiteralValue, NEW_LINE, type ParagraphBlock, type TextContent } from "~/types/brevbakerTypes";
 
-import { letter, literal, paragraph, select, title1, title2 } from "../utils";
+import { item, itemList, letter, literal, newLine, paragraph, select, title1, title2 } from "../utils";
 
 describe("Actions.addNewLine", () => {
   test("does not add new line to title1", () => {
@@ -71,5 +71,105 @@ describe("Actions.addNewLine", () => {
     expect(block.content[0]).toEqual(state.redigertBrev.blocks[0].content[0]);
     expect(select<TextContent>(result, { blockIndex: 0, contentIndex: 1 }).type).toEqual(NEW_LINE);
     expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 2 }))).toEqual("");
+  });
+});
+
+describe("Actions.addNewLine inside list item", () => {
+  test("adds new line after literal (mid-item, end position)", () => {
+    const it = item(literal({ text: "hello" }));
+    const state = letter(paragraph([itemList({ items: [it] })]));
+    const result = Actions.addNewLine(state, {
+      blockIndex: 0,
+      contentIndex: 0,
+      itemIndex: 0,
+      itemContentIndex: 0,
+      cursorPosition: 5,
+    });
+
+    const resultItem = select<typeof it>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
+    expect(resultItem.content).toHaveLength(3);
+    expect(resultItem.content[0]).toEqual(it.content[0]);
+    expect(resultItem.content[1].type).toEqual(NEW_LINE);
+    expect(text(resultItem.content[2] as LiteralValue)).toEqual("");
+    expect(result.focus).toMatchObject({
+      blockIndex: 0,
+      contentIndex: 0,
+      itemIndex: 0,
+      itemContentIndex: 2,
+      cursorPosition: 0,
+    });
+  });
+
+  test("adds new line before literal (start position)", () => {
+    const it = item(literal({ text: "hello" }));
+    const state = letter(paragraph([itemList({ items: [it] })]));
+    const result = Actions.addNewLine(state, {
+      blockIndex: 0,
+      contentIndex: 0,
+      itemIndex: 0,
+      itemContentIndex: 0,
+      cursorPosition: 0,
+    });
+
+    const resultItem = select<typeof it>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
+    expect(resultItem.content).toHaveLength(3);
+    expect(resultItem.content[0]).toMatchObject({ type: "LITERAL", text: "" });
+    expect(resultItem.content[1].type).toEqual(NEW_LINE);
+    expect(resultItem.content[2]).toEqual(it.content[0]);
+    expect(result.focus).toMatchObject({
+      blockIndex: 0,
+      contentIndex: 0,
+      itemIndex: 0,
+      itemContentIndex: 2,
+      cursorPosition: 0,
+    });
+  });
+
+  test("splits literal and inserts new line in middle", () => {
+    const it = item(literal({ text: "abcdef" }));
+    const state = letter(paragraph([itemList({ items: [it] })]));
+    const result = Actions.addNewLine(state, {
+      blockIndex: 0,
+      contentIndex: 0,
+      itemIndex: 0,
+      itemContentIndex: 0,
+      cursorPosition: 3,
+    });
+
+    const resultItem = select<typeof it>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
+    expect(resultItem.content).toHaveLength(3);
+    expect(text(resultItem.content[0] as LiteralValue)).toEqual("abc");
+    expect(resultItem.content[1].type).toEqual(NEW_LINE);
+    expect(text(resultItem.content[2] as LiteralValue)).toEqual("def");
+    expect(result.focus).toMatchObject({ itemContentIndex: 2, cursorPosition: 0 });
+  });
+
+  test("does not add consecutive new lines at end", () => {
+    const it = item({ content: [literal({ text: "hi" }), newLine()] });
+    const state = letter(paragraph([itemList({ items: [it] })]));
+    const result = Actions.addNewLine(state, {
+      blockIndex: 0,
+      contentIndex: 0,
+      itemIndex: 0,
+      itemContentIndex: 0,
+      cursorPosition: 2,
+    });
+    expect(result).toBe(state);
+  });
+
+  test("works identically for NUMMERERT_LISTE items", () => {
+    const it = item(literal({ text: "punkt" }));
+    const state = letter(paragraph([itemList({ items: [it], listType: ListType.NUMMERERT_LISTE })]));
+    const result = Actions.addNewLine(state, {
+      blockIndex: 0,
+      contentIndex: 0,
+      itemIndex: 0,
+      itemContentIndex: 0,
+      cursorPosition: 5,
+    });
+
+    const resultItem = select<typeof it>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
+    expect(resultItem.content).toHaveLength(3);
+    expect(resultItem.content[1].type).toEqual(NEW_LINE);
   });
 });

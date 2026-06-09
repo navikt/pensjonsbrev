@@ -297,6 +297,61 @@ function mergeFromItemList(draft: Draft<LetterEditorState>, literalIndex: ItemCo
 
   const itemList = block.content[literalIndex.contentIndex];
   if (itemList.type === ITEM_LIST) {
+    const currentItem = itemList.items[literalIndex.itemIndex];
+
+    // If the adjacent content within the same item is a NEW_LINE, remove it (and merge surrounding literals if possible).
+    // This mirrors the block-level NEW_LINE removal in mergeRecipe.
+    if (currentItem != null) {
+      const mod = target === MergeTarget.PREVIOUS ? -1 : 1;
+      const adjacentInItem = currentItem.content[literalIndex.itemContentIndex + mod];
+      if (adjacentInItem?.type === NEW_LINE) {
+        const newLineIdx = literalIndex.itemContentIndex + mod;
+        removeElements(newLineIdx, 1, {
+          content: currentItem.content,
+          deletedContent: currentItem.deletedContent,
+          id: currentItem.id,
+        });
+        // After NEW_LINE removal, before/after are now adjacent at newLineIdx-1 and newLineIdx
+        const beforeContent = currentItem.content[newLineIdx - 1];
+        const afterContent = currentItem.content[newLineIdx];
+        const cursorPositionAtBoundary = isTextContent(beforeContent) ? text(beforeContent).length : 0;
+        if (isLiteral(beforeContent) && isLiteral(afterContent)) {
+          // Remove both and re-insert merged (or the pair if they can't merge)
+          removeElements(newLineIdx - 1, 2, {
+            content: currentItem.content,
+            deletedContent: currentItem.deletedContent,
+            id: currentItem.id,
+          });
+          addElements(
+            mergeLiteralsIfPossible(beforeContent, afterContent),
+            newLineIdx - 1,
+            currentItem.content,
+            currentItem.deletedContent,
+          );
+          // Focus at the start of the merged/before literal
+          draft.focus = {
+            blockIndex: literalIndex.blockIndex,
+            contentIndex: literalIndex.contentIndex,
+            itemIndex: literalIndex.itemIndex,
+            itemContentIndex: newLineIdx - 1,
+            cursorPosition: cursorPositionAtBoundary,
+          };
+        } else {
+          // Focus stays at the literal where the cursor was (shifted by -1 if PREVIOUS due to removed NEW_LINE)
+          const focusIdx =
+            target === MergeTarget.PREVIOUS ? literalIndex.itemContentIndex - 1 : literalIndex.itemContentIndex;
+          draft.focus = {
+            blockIndex: literalIndex.blockIndex,
+            contentIndex: literalIndex.contentIndex,
+            itemIndex: literalIndex.itemIndex,
+            itemContentIndex: focusIdx,
+            cursorPosition: target === MergeTarget.PREVIOUS ? 0 : cursorPositionAtBoundary,
+          };
+        }
+        return;
+      }
+    }
+
     const [firstId, secondId] = getMergeIds(literalIndex.itemIndex, target);
     const first = itemList.items[firstId];
     const second = itemList.items[secondId];
