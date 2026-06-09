@@ -17,7 +17,6 @@ class FrigiReservasjonHandlerTest : BrevredigeringHandlerTestBase() {
 
         val resultat = frigiReservasjon(
             brevId = brev.info.id,
-            saksId = brev.info.saksId,
             principal = saksbehandler1Principal,
         )
 
@@ -32,7 +31,6 @@ class FrigiReservasjonHandlerTest : BrevredigeringHandlerTestBase() {
 
         val resultat = frigiReservasjon(
             brevId = brev.info.id,
-            saksId = brev.info.saksId,
             principal = saksbehandler2Principal,
         )
 
@@ -47,7 +45,6 @@ class FrigiReservasjonHandlerTest : BrevredigeringHandlerTestBase() {
 
         val resultat = frigiReservasjon(
             brevId = brev.info.id,
-            saksId = brev.info.saksId,
             principal = saksbehandler1Principal,
         )
 
@@ -58,9 +55,8 @@ class FrigiReservasjonHandlerTest : BrevredigeringHandlerTestBase() {
 
     private suspend fun frigiReservasjon(
         brevId: BrevId,
-        saksId: SaksId,
         principal: no.nav.pensjon.brev.skribenten.auth.UserPrincipal = saksbehandler1Principal,
     ): Outcome<Unit, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.frigiReservasjon(FrigiReservasjonHandler.Request(saksId = saksId, brevId = brevId))
+        brevredigeringFacade.frigiReservasjon(FrigiReservasjonHandler.Request(brevId = brevId))
     }
 }
