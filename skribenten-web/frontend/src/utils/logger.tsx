@@ -22,7 +22,7 @@ export const logError = async (error: unknown, status: number | undefined) => {
       type: "error",
       message: "Error som ikke var av type error",
       status: status,
-      level: findLogLevel(error, undefined),
+      level: findLogLevel(error, status),
       stack: "",
       jsonContent: JSON.stringify(error),
     };
