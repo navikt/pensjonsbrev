@@ -17,12 +17,13 @@ import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
+import no.nav.pensjon.brev.skribenten.model.NavIdent
 import org.slf4j.LoggerFactory
 
 interface NavansattService {
-    suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: EnhetId): Boolean
-    suspend fun hentNavansatt(ansattId: String): Navansatt?
-    suspend fun hentNavAnsattEnhetListe(ansattId: String): List<NAVAnsattEnhet>
+    suspend fun harTilgangTilEnhet(ansattId: NavIdent, enhetsId: EnhetId): Boolean
+    suspend fun hentNavansatt(ansattId: NavIdent): Navansatt?
+    suspend fun hentNavAnsattEnhetListe(ansattId: NavIdent): List<NAVAnsattEnhet>
 }
 
 class NavansattServiceException(message: String) : ServiceException(message)
@@ -47,34 +48,34 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
         callIdAndOnBehalfOfClient(navansattScope, authService)
     }
 
-    override suspend fun hentNavAnsattEnhetListe(ansattId: String): List<NAVAnsattEnhet> {
-        return cache.cached(Cacheomraade.NAVANSATTENHET, ansattId) {
-            val response = client.get("navansatt/$ansattId/enheter")
+    override suspend fun hentNavAnsattEnhetListe(ansattId: NavIdent): List<NAVAnsattEnhet> {
+        return cache.cached(Cacheomraade.NAVANSATTENHET, ansattId.id) {
+            val response = client.get("navansatt/${ansattId.id}/enheter")
 
             if (response.status.isSuccess()) {
                 response.body()
             } else {
-                throw NavansattServiceException("Fant ikke navansattenhet $ansattId: ${response.status} - ${response.bodyAsText()}")
+                throw NavansattServiceException("Fant ikke navansattenhet ${ansattId.id}: ${response.status} - ${response.bodyAsText()}")
             }
         }
     }
 
-    override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: EnhetId): Boolean =
+    override suspend fun harTilgangTilEnhet(ansattId: NavIdent, enhetsId: EnhetId): Boolean =
         hentNavAnsattEnhetListe(ansattId).any { enhet -> enhet.id == enhetsId }
 
-    override suspend fun hentNavansatt(ansattId: String): Navansatt? = try {
-        cache.cached(Cacheomraade.NAVANSATT, ansattId) {
-            val response = client.get("/navansatt/$ansattId")
+    override suspend fun hentNavansatt(ansattId: NavIdent): Navansatt? = try {
+        cache.cached(Cacheomraade.NAVANSATT, ansattId.id) {
+            val response = client.get("/navansatt/${ansattId.id}")
 
             return@cached if (response.status.isSuccess()) {
                 response.body()
             } else {
-                logger.error("Fant ikke navansatt $ansattId: ${response.status} - ${response.bodyAsText()}")
+                logger.error("Fant ikke navansatt ${ansattId.id}: ${response.status} - ${response.bodyAsText()}")
                 null
             }
         }
     } catch (e: Exception) {
-        logger.error("Feil ved henting av navansatt $ansattId", e)
+        logger.error("Feil ved henting av navansatt ${ansattId.id}", e)
         throw e
     }
 
