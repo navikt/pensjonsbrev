@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.BrevTemplate
@@ -88,11 +87,7 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
             (letterData["saksbehandlerValg"] as Map<String, Any?>).entries.forEach { nye -> // TODO: kva er eigentleg typen her?
                 saksbehandlervalg[nye.key] = when (val eksisterende = template.saksbehandlervalg[nye.key]) {
                     is SaksbehandlervalgVerdi.Bool -> SaksbehandlervalgVerdi.Bool(nye.value as? Boolean ?: false, eksisterende.displayText)
-                    is SaksbehandlervalgVerdi.Enum<*> -> SaksbehandlervalgVerdi.Enum(
-                        (nye.value as? String)?.let { java.lang.Enum.valueOf(eksisterende.clazz, it) as SaksbehandlerValgEnum?},
-                        eksisterende.displayText,
-                        eksisterende.clazz
-                    )
+                    is SaksbehandlervalgVerdi.Enum<*> -> eksisterende.withRawValue(nye.value)
                     is SaksbehandlervalgVerdi.Integer -> SaksbehandlervalgVerdi.Integer(
                         (nye.value as? Number)?.toInt() ?: (nye.value as? String)?.toIntOrNull(),
                         eksisterende.displayText
