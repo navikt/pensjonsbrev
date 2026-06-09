@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPS
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nettoBarnetilleggFB
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nettoBarnetilleggSB
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nettoUforetrygdUtenTillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.opphortUforetrygdEllerBTFB
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.samletInntektsgrenseBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.totalbelop
@@ -52,13 +53,14 @@ object VedtakOmEndringBarnetilleggEPSAuto : AutobrevTemplate<VedtakOmEndringBarn
             includePhrase(
                 EndringBTEPSVedMinsteIFUReduksjonsprosent.Outline(
                     EndringBTEPSVedMinsteIFUReduksjonsprosent.Brevdata(
-                        nettoUforetrygdUtenTillegg = data.nettoUforetrygdUtenTillegg,
+                        nettoUforetrygdUtenTillegg = data.nettoUforetrygdUtenTillegg.ifNull(Kroner(0)),
                         nettoBarnetilleggFB = data.nettoBarnetilleggFB.ifNull(Kroner(0)),
                         nettoBarnetilleggSB = data.nettoBarnetilleggSB.ifNull(Kroner(0)),
+                        totalbelop = data.totalbelop.ifNull(Kroner(0)),
+                        samletInntektsgrenseBarnetillegg = data.samletInntektsgrenseBarnetillegg.ifNull(Kroner(0)),
+                        fribelop = data.fribelop.ifNull(Kroner(0)),
                         barnetilleggSB = data.barnetilleggSB,
-                        totalbelop = data.totalbelop,
-                        samletInntektsgrenseBarnetillegg = data.samletInntektsgrenseBarnetillegg,
-                        fribelop = data.fribelop,
+                        opphortUforetrygdEllerBTFB = data.opphortUforetrygdEllerBTFB,
                     )
                 )
             )
