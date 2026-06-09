@@ -1,4 +1,5 @@
 import { type Nullable } from "./Nullable";
+import type * as generated from "./skribenten-api";
 
 export type LetterModelSpecification = {
   readonly types: ObjectTypeSpecifications;
@@ -68,41 +69,29 @@ export type Signatur = {
 export type AnyBlock = Title1Block | Title2Block | Title3Block | ParagraphBlock;
 
 export type Identifiable = {
-  readonly id: number | null;
-  readonly parentId: number | null;
+  readonly id?: number | null;
+  readonly parentId?: number | null;
 };
 
-export enum ElementTags {
-  FRITEKST = "FRITEKST",
-}
+export type ElementTags = generated.ElementTags;
+export const ElementTags: Record<ElementTags, ElementTags> = {
+  FRITEKST: "FRITEKST",
+  REDIGERBAR_DATA: "REDIGERBAR_DATA",
+};
 
 export const LITERAL = "LITERAL";
-export type LiteralValue = Identifiable & {
-  readonly type: typeof LITERAL;
-  readonly text: string;
-  readonly editedText: string | null;
-  readonly fontType: FontType;
-  readonly editedFontType: Nullable<FontType>;
-  readonly tags: ElementTags[];
-};
+export type LiteralValue = generated.Literal;
 export const VARIABLE = "VARIABLE";
-export type VariableValue = Identifiable & {
-  readonly type: typeof VARIABLE;
-  readonly name?: string;
-  readonly text: string;
-  readonly fontType: FontType;
-};
+export type VariableValue = generated.Variable;
 export const NEW_LINE = "NEW_LINE";
-export type NewLine = Identifiable & {
-  readonly type: typeof NEW_LINE;
-  readonly text: string;
-};
+export type NewLine = generated.NewLine;
 
-export enum FontType {
-  PLAIN = "PLAIN",
-  BOLD = "BOLD",
-  ITALIC = "ITALIC",
-}
+export type FontType = generated.FontType;
+export const FontType: Record<FontType, FontType> = {
+  PLAIN: "PLAIN",
+  BOLD: "BOLD",
+  ITALIC: "ITALIC",
+};
 
 export const ITEM_LIST = "ITEM_LIST";
 export type ItemList = Identifiable & {
@@ -138,7 +127,7 @@ export type ColumnSpec = Identifiable & {
 };
 export type ColumnAlignment = "LEFT" | "RIGHT";
 
-export type TextContent = LiteralValue | VariableValue | NewLine;
+export type TextContent = generated.Text;
 export type Content = ItemList | TextContent | Table;
 
 export type Block = Identifiable & {

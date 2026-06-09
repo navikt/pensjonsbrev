@@ -190,16 +190,15 @@ export const nyLiteral = (args: { id?: Nullable<number>; text?: string; editedTe
   editedText: args.editedText ?? args.text ?? "ny literal default edited-text",
   tags: [],
   fontType: FontType.PLAIN,
-  editedFontType: null,
 });
 
 export const nyVariable = (args: { id?: Nullable<number>; name?: string; text?: string }): VariableValue => ({
   type: "VARIABLE",
   id: args.id ?? 1,
   parentId: null,
-  name: args.name,
   text: args.text ?? "ny variable default text",
   fontType: FontType.PLAIN,
+  tags: [],
 });
 
 //TODO - kan heller bruke newItem fra common.ts

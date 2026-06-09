@@ -31,10 +31,10 @@ export const InsertedTekstValgHighlightProvider = ({
 export const useInsertedTekstValgHighlight = () => useContext(InsertedTekstValgHighlightContext);
 
 export const isTekstValgHighlighted = (highlightedIds: ReadonlySet<number>, element: Identifiable): boolean =>
-  element.id !== null && highlightedIds.has(element.id);
+  typeof element.id === "number" && highlightedIds.has(element.id);
 
 const addId = (ids: Set<number>, element: Identifiable) => {
-  if (element.id !== null) ids.add(element.id);
+  if (typeof element.id === "number") ids.add(element.id);
 };
 
 const collectTextContentIds = (ids: Set<number>, textContents: readonly TextContent[]) => {

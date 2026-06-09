@@ -313,7 +313,7 @@ export function applyTableSeparatorNormalization(draft: Draft<EditedLetter>) {
 export function removeElements<T extends Identifiable>(
   startIndex: number,
   count: number,
-  from: { content: Draft<T[]>; deletedContent: Draft<number[]>; id: number | null },
+  from: { content: Draft<T[]>; deletedContent: Draft<number[]>; id?: number | null },
 ): Draft<T[]> {
   const removedElements = from.content.splice(startIndex, count);
   for (const e of removedElements) deleteElement(e, from);
@@ -322,10 +322,10 @@ export function removeElements<T extends Identifiable>(
 
 function deleteElement(
   toDelete: Identifiable,
-  from: { content: Identifiable[]; deletedContent: Draft<number[]>; id: number | null },
+  from: { content: Identifiable[]; deletedContent: Draft<number[]>; id?: number | null },
 ) {
   if (
-    toDelete.id !== null &&
+    typeof toDelete.id === "number" &&
     toDelete.parentId === from.id &&
     !from.deletedContent.includes(toDelete.id) &&
     !from.content.map((c) => c.id).includes(toDelete.id)
@@ -494,7 +494,6 @@ export function newLiteral(
     text?: string;
     editedText?: Nullable<string>;
     fontType?: Nullable<FontType>;
-    // TODO: Gir ikke mening å sette editedFontType i nye literals.
     editedFontType?: Nullable<FontType>;
     tags?: ElementTags[];
   } = {},
@@ -505,7 +504,7 @@ export function newLiteral(
     parentId: args?.parentId ?? null,
     text: args?.text ?? "",
     editedText: args?.editedText ?? null,
-    editedFontType: args?.editedFontType ?? null,
+    editedFontType: args?.editedFontType ?? undefined,
     fontType: args?.fontType ?? FontType.PLAIN,
     tags: args?.tags ?? [],
   };
@@ -523,6 +522,7 @@ export const newVariable = (args: {
     parentId: args.parentId ?? null,
     text: args.text,
     fontType: args.fontType ?? FontType.PLAIN,
+    tags: [],
   };
 };
 
@@ -559,6 +559,7 @@ export function createNewLine(): NewLine {
     parentId: null,
     type: NEW_LINE,
     text: "",
+    fontType: "PLAIN",
   };
 }
 

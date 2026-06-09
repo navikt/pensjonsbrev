@@ -193,6 +193,7 @@ export function newLine(): NewLine {
     parentId: null,
     type: NEW_LINE,
     text: "",
+    fontType: "PLAIN",
   };
 }
 

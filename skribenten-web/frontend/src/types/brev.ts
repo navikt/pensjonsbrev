@@ -3,8 +3,6 @@ import { type EditedLetter, type PropertyUsage } from "~/types/brevbakerTypes";
 import { type Nullable } from "./Nullable";
 import type * as generated from "./skribenten-api";
 
-export type OpprettBrevRequest = generated.OpprettBrevRequest;
-
 export type SaksbehandlerValg = {
   [key: string]: SaksbehandlerValg | SaksbehandlerValg[] | number | boolean | string | null;
 };
@@ -18,6 +16,7 @@ export type BrevResponse = {
   valgteVedlegg: Nullable<AlltidValgbartVedlegg[]>;
 };
 
+export type OpprettBrevRequest = generated.OpprettBrevRequest;
 export type OppdaterKlarStatusRequest = generated.OppdaterKlarStatusRequest;
 export type DistribusjonstypeRequest = generated.DistribusjonstypeRequest;
 export type OppdaterMottakerRequest = generated.OppdaterMottakerRequest;

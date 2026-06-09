@@ -170,7 +170,7 @@ function splitItemList(
 }
 
 function splitContentArrayAtLiteral<T extends Content | TextContent>(
-  from: { content: Draft<T[]>; deletedContent: Draft<number[]>; id: number | null },
+  from: { content: Draft<T[]>; deletedContent: Draft<number[]>; id?: number | null },
   atIndex: number,
   offset: number,
 ): Draft<T[]> {
