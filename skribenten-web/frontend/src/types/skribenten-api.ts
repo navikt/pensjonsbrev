@@ -537,7 +537,11 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["OpprettBrevRequest"];
+                };
+            };
             responses: {
                 201: {
                     headers: {
@@ -694,7 +698,11 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["OppdaterBrevRequest"];
+                };
+            };
             responses: {
                 200: {
                     headers: {
@@ -835,7 +843,11 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["DelvisOppdaterBrevRequest"];
+                };
+            };
             responses: {
                 200: {
                     headers: {
@@ -915,7 +927,11 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["DistribusjonstypeRequest"];
+                };
+            };
             responses: {
                 200: {
                     headers: {
@@ -1000,7 +1016,11 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ValgteVedleggRequest"];
+                };
+            };
             responses: {
                 200: {
                     headers: {
@@ -1085,7 +1105,11 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["OppdaterKlarStatusRequest"];
+                };
+            };
             responses: {
                 200: {
                     headers: {
@@ -1170,7 +1194,11 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["OppdaterMottakerRequest"];
+                };
+            };
             responses: {
                 200: {
                     headers: {
@@ -1567,7 +1595,11 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["OppdaterAttesteringRequest"];
+                };
+            };
             responses: {
                 200: {
                     headers: {
@@ -2681,6 +2713,18 @@ export interface components {
             status: components["schemas"]["BrevStatus"];
             vedtaksId?: number | null;
         };
+        /** OpprettBrevRequest */
+        OpprettBrevRequest: {
+            avsenderEnhetsId: string;
+            brevkode: string;
+            mottaker?: components["schemas"]["OverstyrtMottaker"];
+            reserverForRedigering?: boolean;
+            saksbehandlerValg: {
+                [key: string]: unknown;
+            };
+            spraak: components["schemas"]["SpraakKode"];
+            vedtaksId?: number | null;
+        };
         /** BrevExceptionDto */
         BrevExceptionDto: {
             melding: string;
@@ -2932,6 +2976,33 @@ export interface components {
             saksbehandlerValg: components["schemas"]["SaksbehandlerValgBrevdata"];
             valgteVedlegg?: components["schemas"]["AlltidValgbartVedleggBrevkode"][] | null;
         };
+        /** OppdaterBrevRequest */
+        OppdaterBrevRequest: {
+            redigertBrev: components["schemas"]["Letter"];
+            saksbehandlerValg: {
+                [key: string]: unknown;
+            };
+        };
+        /** DelvisOppdaterBrevRequest */
+        DelvisOppdaterBrevRequest: {
+            alltidValgbareVedlegg?: components["schemas"]["AlltidValgbartVedleggBrevkode"][] | null;
+        };
+        /** DistribusjonstypeRequest */
+        DistribusjonstypeRequest: {
+            distribusjon: components["schemas"]["Distribusjon"];
+        };
+        /** ValgteVedleggRequest */
+        ValgteVedleggRequest: {
+            valgteVedlegg: components["schemas"]["AlltidValgbartVedleggBrevkode"][];
+        };
+        /** OppdaterKlarStatusRequest */
+        OppdaterKlarStatusRequest: {
+            klar: boolean;
+        };
+        /** OppdaterMottakerRequest */
+        OppdaterMottakerRequest: {
+            mottaker: components["schemas"]["OverstyrtMottaker"];
+        };
         /** PdfResponse */
         PdfResponse: {
             pdf: Record<string, never>[];
@@ -2947,6 +3018,13 @@ export interface components {
         BestillBrevResponse: {
             error?: components["schemas"]["Error"] | null;
             journalpostId?: number | null;
+        };
+        /** OppdaterAttesteringRequest */
+        OppdaterAttesteringRequest: {
+            redigertBrev: components["schemas"]["Letter"];
+            saksbehandlerValg: {
+                [key: string]: unknown;
+            };
         };
         /** ValgbartVedlegg */
         ValgbartVedlegg: {
@@ -3125,6 +3203,7 @@ export type Klar = components['schemas']['Klar'];
 export type UnderRedigering = components['schemas']['UnderRedigering'];
 export type BrevStatus = components['schemas']['BrevStatus'];
 export type BrevInfo = components['schemas']['BrevInfo'];
+export type OpprettBrevRequest = components['schemas']['OpprettBrevRequest'];
 export type BrevExceptionDto = components['schemas']['BrevExceptionDto'];
 export type Property = components['schemas']['Property'];
 export type FontType = components['schemas']['FontType'];
@@ -3157,9 +3236,16 @@ export type Letter = components['schemas']['Letter'];
 export type SaksbehandlerValgBrevdata = components['schemas']['SaksbehandlerValgBrevdata'];
 export type AlltidValgbartVedleggBrevkode = components['schemas']['AlltidValgbartVedleggBrevkode'];
 export type BrevResponse = components['schemas']['BrevResponse'];
+export type OppdaterBrevRequest = components['schemas']['OppdaterBrevRequest'];
+export type DelvisOppdaterBrevRequest = components['schemas']['DelvisOppdaterBrevRequest'];
+export type DistribusjonstypeRequest = components['schemas']['DistribusjonstypeRequest'];
+export type ValgteVedleggRequest = components['schemas']['ValgteVedleggRequest'];
+export type OppdaterKlarStatusRequest = components['schemas']['OppdaterKlarStatusRequest'];
+export type OppdaterMottakerRequest = components['schemas']['OppdaterMottakerRequest'];
 export type PdfResponse = components['schemas']['PdfResponse'];
 export type Error = components['schemas']['Error'];
 export type BestillBrevResponse = components['schemas']['BestillBrevResponse'];
+export type OppdaterAttesteringRequest = components['schemas']['OppdaterAttesteringRequest'];
 export type ValgbartVedlegg = components['schemas']['ValgbartVedlegg'];
 export type Duration = components['schemas']['Duration'];
 export type ReservasjonResponse = components['schemas']['ReservasjonResponse'];

@@ -10,13 +10,13 @@ import {
   type Avtaleland,
   type BestillOgRedigerBrevResponse,
   type BrukerStatusDto,
-  type Enhet,
   type FinnSamhandlerRequestDto,
   type FinnSamhandlerResponseDto,
   type HentSamhandlerAdresseResponseDto,
   type HentSamhandlerRequestDto,
   type HentSamhandlerResponseDto,
   type KontaktAdresseResponse,
+  type NavAnsattEnhet,
   type OrderEblankettRequest,
   type OrderExstreamLetterRequest,
   type PreferredLanguage,
@@ -133,7 +133,7 @@ export const getAvtaleLand = {
 
 export const getEnheter = {
   queryKey: enheterKeys.all,
-  queryFn: async () => (await axios.get<Enhet[]>(`${SKRIBENTEN_API_BASE_PATH}/me/enheter`)).data,
+  queryFn: async () => (await axios.get<NavAnsattEnhet[]>(`${SKRIBENTEN_API_BASE_PATH}/me/enheter`)).data,
 };
 
 export async function addFavoritt(id: string) {

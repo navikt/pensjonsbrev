@@ -8,10 +8,11 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 @JvmName("apiRespondBrevredigering")
-suspend fun RoutingContext.apiRespond(
+suspend inline fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<Dto.Brevredigering, BrevredigeringError>?,
     successStatus: HttpStatusCode = HttpStatusCode.OK,
@@ -75,9 +76,9 @@ suspend fun RoutingContext.apiRespond(
     }
 }
 
-private val logger = LoggerFactory.getLogger("ApiResponse")
+val apiRespondLogger: Logger = LoggerFactory.getLogger("ApiResponse")
 
-suspend fun <T> RoutingContext.respondOutcome(
+suspend inline fun <T> RoutingContext.respondOutcome(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<T, BrevredigeringError>?,
     successResponse: suspend RoutingCall.(T) -> Unit
@@ -86,7 +87,7 @@ suspend fun <T> RoutingContext.respondOutcome(
         is Outcome.Success -> call.successResponse(outcome.value)
 
         is Outcome.Failure -> {
-            logger.info("Outcome failure: $outcome")
+            apiRespondLogger.info("Outcome failure: $outcome")
 
             when (outcome.error) {
                 is BrevreservasjonPolicy.ReservertAvAnnen ->

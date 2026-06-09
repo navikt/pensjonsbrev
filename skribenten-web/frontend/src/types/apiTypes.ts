@@ -14,7 +14,7 @@ export type BrevSystem = generated.BrevSystem;
 export const BrevSystem: Record<string, BrevSystem> = {
   Exstream: "EXSTREAM",
   Brevbaker: "BREVBAKER",
-} as const;
+};
 
 export type SpraakKode = generated.SpraakKode;
 export const SpraakKode: Record<string, SpraakKode> = {
@@ -23,7 +23,7 @@ export const SpraakKode: Record<string, SpraakKode> = {
   Nynorsk: "NN",
   Fransk: "FR",
   NordSamisk: "SE",
-} as const;
+};
 
 export type OrderExstreamLetterRequest = generated.BestillExstreamBrevRequest;
 export type OrderEblankettRequest = generated.BestillEblankettRequest;
@@ -60,30 +60,6 @@ export const SamhandlerTypeCodes = Object.keys(SAMHANDLER_ENUM_TO_TEXT) as [
   ...SamhandlerTypeCode[],
 ];
 
-export type KontaktAdresseResponse = {
-  adresseString: string;
-  adresselinjer: string[];
-  type: AdresseType;
-};
-
-export type AdresseType =
-  | "MATRIKKELADRESSE"
-  | "POSTADRESSE_I_FRITT_FORMAT"
-  | "POSTBOKSADRESSE"
-  | "REGOPPSLAG_ADRESSE"
-  | "UKJENT_BOSTED"
-  | "UTENLANDSK_ADRESSE"
-  | "UTENLANDSK_ADRESSE_I_FRITT_FORMAT"
-  | "VEGADRESSE"
-  | "VERGE_PERSON_POSTADRESSE"
-  | "VERGE_SAMHANDLER_POSTADRESSE";
-
-export type Avtaleland = {
-  navn: string;
-  kode: string;
-};
-
-export type Enhet = {
-  id: string;
-  navn: string;
-};
+export type KontaktAdresseResponse = generated.KontaktAdresseDto;
+export type Avtaleland = generated.Avtaleland;
+export type NavAnsattEnhet = generated.NavAnsattEnhet;

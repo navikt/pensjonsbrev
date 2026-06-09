@@ -1,18 +1,9 @@
 import { type EditedLetter, type PropertyUsage } from "~/types/brevbakerTypes";
 
-import { type SpraakKode } from "./apiTypes";
-import { type LanguageCode } from "./brevbakerTypes";
 import { type Nullable } from "./Nullable";
 import type * as generated from "./skribenten-api";
 
-export type OpprettBrevRequest = {
-  brevkode: string;
-  spraak: SpraakKode;
-  avsenderEnhetsId: string;
-  saksbehandlerValg: SaksbehandlerValg;
-  mottaker: Nullable<Mottaker>;
-  vedtaksId: Nullable<number>;
-};
+export type OpprettBrevRequest = generated.OpprettBrevRequest;
 
 export type SaksbehandlerValg = {
   [key: string]: SaksbehandlerValg | SaksbehandlerValg[] | number | boolean | string | null;
@@ -27,54 +18,17 @@ export type BrevResponse = {
   valgteVedlegg: Nullable<AlltidValgbartVedlegg[]>;
 };
 
-export interface OppdaterKlarStatusRequest {
-  klar: boolean;
-}
-
-export interface DistribusjonstypeRequest {
-  distribusjon: Distribusjonstype;
-}
-
-export interface OppdaterMottakerRequest {
-  mottaker: Mottaker;
-}
-
-export interface ValgteVedleggRequest {
-  valgteVedlegg: AlltidValgbartVedlegg[];
-}
-
-export interface BestillBrevResponse {
-  journalpostId: Nullable<number>;
-  error: Nullable<BestillBrevError>;
-}
-
-export interface BestillBrevError {
-  brevIkkeStoettet: Nullable<string>;
-  tekniskgrunn: Nullable<string>;
-  beskrivelse: Nullable<string>;
-}
-
-export type ReservasjonResponse = {
-  vellykket: boolean;
-  reservertAv: NavAnsatt;
-  expiresIn: string;
-  redigertBrevHash: string;
-};
-
+export type OppdaterKlarStatusRequest = generated.OppdaterKlarStatusRequest;
+export type DistribusjonstypeRequest = generated.DistribusjonstypeRequest;
+export type OppdaterMottakerRequest = generated.OppdaterMottakerRequest;
+export type ValgteVedleggRequest = generated.ValgteVedleggRequest;
+export type BestillBrevResponse = generated.BestillBrevResponse;
+export type BestillBrevError = generated.Error;
+export type ReservasjonResponse = generated.ReservasjonResponse;
 export type NavAnsatt = generated.NavAnsatt;
-export type BrevType = "VEDTAKSBREV" | "INFORMASJONSBREV";
-
+export type BrevType = generated.Brevtype;
 export type BrevInfo = generated.BrevInfo;
-
-export type BrevStatus = Kladd | UnderRedigering | Attestering | Klar | Arkivert;
-export type Kladd = { type: "Kladd" };
-export type UnderRedigering = {
-  type: "UnderRedigering";
-  redigeresAv: NavAnsatt;
-};
-export type Attestering = { type: "Attestering" };
-export type Klar = { type: "Klar" };
-export type Arkivert = { type: "Arkivert" };
+export type BrevStatus = generated.BrevStatus;
 
 export type OppdaterBrevRequest = {
   saksbehandlerValg: SaksbehandlerValg;
@@ -82,56 +36,24 @@ export type OppdaterBrevRequest = {
 };
 
 export type Distribusjonstype = generated.Distribusjon;
-export const Distribusjonstype = {
+export const Distribusjonstype: Record<Distribusjonstype, Distribusjonstype> = {
   SENTRALPRINT: "SENTRALPRINT",
   LOKALPRINT: "LOKALPRINT",
-} as const;
+};
 
 export type Mottaker = generated.OverstyrtMottaker;
+export type Samhandler = generated.Samhandler;
+export type ManueltAdressertTil = generated.ManueltAdressertTil;
+export const ManueltAdressertTil = {
+  BRUKER: "BRUKER",
+  ANNEN: "ANNEN",
+  IKKE_RELEVANT: "IKKE_RELEVANT",
+} as const;
+export type NorskAdresse = generated.NorskAdresse;
+export type UtenlandskAdresse = generated.UtenlandskAdresse;
 
-export interface Samhandler {
-  type: "Samhandler";
-  tssId: string;
-  navn: Nullable<string>;
-}
-
-export enum ManueltAdressertTil {
-  BRUKER = "BRUKER",
-  ANNEN = "ANNEN",
-  IKKE_RELEVANT = "IKKE_RELEVANT",
-}
-
-export interface NorskAdresse {
-  type: "NorskAdresse";
-  navn: string;
-  postnummer: string;
-  poststed: string;
-  adresselinje1: Nullable<string>;
-  adresselinje2: Nullable<string>;
-  adresselinje3: Nullable<string>;
-  manueltAdressertTil: ManueltAdressertTil;
-}
-
-export interface UtenlandskAdresse {
-  type: "UtenlandskAdresse";
-  navn: string;
-  adresselinje1: string;
-  adresselinje2: Nullable<string>;
-  adresselinje3: Nullable<string>;
-  landkode: string;
-  manueltAdressertTil: ManueltAdressertTil;
-}
-
-export interface NAVEnhet {
-  enhetNr: string;
-  navn: string;
-}
+export type NAVEnhet = generated.NavEnhet;
 
 export const P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2";
 
-export interface AlltidValgbartVedlegg {
-  kode: string;
-  visningstekst: string;
-  spraak: LanguageCode[];
-  tilgjengeligForSpraak: boolean;
-}
+export type AlltidValgbartVedlegg = generated.ValgbartVedlegg;
