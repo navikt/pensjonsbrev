@@ -117,7 +117,7 @@ suspend fun <T> RoutingContext.respondOutcome(
                 is FerdigRedigertPolicy.IkkeFerdigRedigert.FritekstFelterUredigert ->
                     call.respond(
                         status = HttpStatusCode.UnprocessableEntity,
-                        message = BrevExceptionDto(tittel = "Brev ikke klart", melding = "Brevet inneholder fritekst-felter som ikke er endret. Det gjelder følgende felt: ${outcome.error.ikkeredigerteFritekstfelter.joinToString(", ") { it.text.substring(0, 20) }}")
+                        message = BrevExceptionDto(tittel = "Brev ikke klart", melding = "Brevet inneholder fritekst-felter som ikke er endret. Det gjelder følgende felt: ${outcome.error.ikkeredigerteFritekstfelter.joinToString(", ") { it.text.take(20) }}")
                     )
 
                 is FerdigRedigertPolicy.IkkeFerdigRedigert.DuplikatAvsnittUhaandtert ->
@@ -131,9 +131,6 @@ suspend fun <T> RoutingContext.respondOutcome(
 
                 is AttesterBrevPolicy.KanIkkeAttestere.KanIkkeAttestereInformasjonsbrev ->
                     call.respond(HttpStatusCode.BadRequest, "Kan ikke attestere informasjonsbrev ${outcome.error.brevId}")
-
-                is AttesterBrevPolicy.KanIkkeAttestere.IkkeKlarTilAttestering ->
-                    call.respond(HttpStatusCode.BadRequest, "Brev ${outcome.error.brevId} er ikke klar til attestering")
 
                 is AttesterBrevPolicy.KanIkkeAttestere.KanIkkeAttestereEgetBrev ->
                     call.respond(HttpStatusCode.Forbidden, "Bruker ${outcome.error.navIdent} kan ikke attestere sitt eget brev ${outcome.error.brevId}")

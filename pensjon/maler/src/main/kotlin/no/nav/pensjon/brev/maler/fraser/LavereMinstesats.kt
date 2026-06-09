@@ -264,7 +264,7 @@ object LavereMinstesats {
                     nynorsk { +" får du vite meir om korleis du går fram for å klage." },
                 )
             }
-            includePhrase(Ufoeretrygd.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfore))
+            includePhrase(Ufoeretrygd.RettTilInnsyn)
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
     }

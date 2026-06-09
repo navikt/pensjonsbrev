@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -35,21 +36,28 @@ object VedtakOmEtterbetalingOpphor2026Redigerbar : RedigerbarTemplate<VedtakOmEt
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - opphørte saker - økt minste IFU og lavere reduksjonsprosent fom 1. januar 2026",
+            displayTitle = "Vedtaksbrev opphørt sak - økt minste IFU og lavere reduksjonsprosent",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
         title {
-            text(
-                bokmal { +"Vedtaksbrev - Nav endrer uføretrygden din " },
-                nynorsk { +"Vedtaksbrev - Nav endrar uføretrygda di " },
-            )
+            showIf(pesysData.etterbetaling.greaterThan(0)) {
+                text(
+                    bokmal { +"Vedtaksbrev - Du får en etterbetaling av uføretrygd " },
+                    nynorsk { +"Vedtaksbrev - Du får ein etterbetaling av uføretrygd " },
+                )
+            }.orShow {
+                text(
+                    bokmal { +"Vedtaksbrev - Ingen endring av utbetalt uføretrygd" },
+                    nynorsk { +"Vedtaksbrev - Ingen endring av utbetalt uføretrygd" },
+                )
+            }
         }
         outline {
             includePhrase(VedtakOmEtterbetalingOpphor2026.Outline(etterbetaling = pesysData.etterbetaling, hjemler = pesysData.hjemler, erRedigerbar = true.expr()))
             includePhrase(VedtakOmEtterbetalingOpphor2026.RettTilAAKlage)
-            includePhrase(Ufoeretrygd.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfore))
+            includePhrase(Ufoeretrygd.RettTilInnsyn)
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
         includeAttachment(vedleggDineRettigheterOgPlikterUfore, pesysData.dineRettigheterOgPlikterUfore)

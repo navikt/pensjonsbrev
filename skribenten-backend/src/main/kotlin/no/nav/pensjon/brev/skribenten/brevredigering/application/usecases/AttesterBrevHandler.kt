@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.services.NavansattService
 
 class AttesterBrevHandler(
     private val attesterBrevPolicy: AttesterBrevPolicy,
+    private val ferdigRedigertPolicy: FerdigRedigertPolicy,
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
@@ -48,6 +49,12 @@ class AttesterBrevHandler(
         val pesysdata = brevdataService.hentBrevdata(brev)
         val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
         brev.mergeRendretBrev(rendretBrev.markup)
+
+        ferdigRedigertPolicy.erFerdigRedigert(brev).onError { return failure(it) }
+
+        if (!brev.laastForRedigering) {
+            brev.markerSomKlar()
+        }
 
         val attestantSignatur = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn
             ?: principal.hentSignatur(navansattService)

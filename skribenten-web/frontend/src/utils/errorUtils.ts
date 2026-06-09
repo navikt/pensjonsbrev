@@ -8,6 +8,8 @@ export function getErrorTitle(error: Error): string | undefined {
   return undefined;
 }
 
+export const genericErrorMessage = "Noe gikk galt";
+
 export function getErrorMessage(error: Error): string {
   const data = (error as AxiosError).response?.data;
   if (typeof data === "string") {
@@ -15,5 +17,5 @@ export function getErrorMessage(error: Error): string {
   } else if (data && typeof data === "object" && "melding" in data) {
     return (data as { melding: string }).melding;
   }
-  return "Noe gikk galt";
+  return genericErrorMessage;
 }

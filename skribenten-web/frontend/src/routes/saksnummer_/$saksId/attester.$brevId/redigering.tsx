@@ -37,6 +37,8 @@ import { UnderskriftTextField } from "~/components/ManagedLetterEditor/Underskri
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
+import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
+import { useUserInfo } from "~/hooks/useUserInfo";
 import {
   type BrevResponse,
   type OppdaterBrevRequest,
@@ -151,6 +153,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const navigate = useNavigate({ from: Route.fullPath });
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
   const attesteringStartTime = useRef(Date.now());
+  const currentUser = useUserInfo();
 
   const [forbidReason, setForbidReason] = useState<AttestForbiddenReason | null>(null);
   const [unexpectedError, setUnexpectedError] = useState<AxiosError | null>(null);
@@ -189,6 +192,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     queryKey: getBrevReservasjon.querykey(props.brev.info.id),
     queryFn: () => getBrevReservasjon.queryFn(props.brev.info.id),
     refetchInterval: 10_000,
+  });
+
+  useReleaseReservationOnPageExit({
+    enabled: reservasjonQuery.isSuccess,
+    brevId: props.brev.info.id,
+    currentUserNavIdent: currentUser?.navident,
+    reservationOwnerNavIdent: reservasjonQuery.data?.reservertAv.id,
   });
 
   const defaultValuesModelEditor = useMemo(

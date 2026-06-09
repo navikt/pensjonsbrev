@@ -30,6 +30,8 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -43,7 +45,7 @@ object VedtakOmLavereReduksjonsprosentAuto : AutobrevTemplate<VedtakOmIFUReduksj
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - lavere reduksjonsprosent fom 1. januar 2026",
+            displayTitle = "Vedtaksbrev - lavere reduksjonsprosent",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
@@ -51,10 +53,22 @@ object VedtakOmLavereReduksjonsprosentAuto : AutobrevTemplate<VedtakOmIFUReduksj
         val data = vedtakData
 
         title {
-            text(
-                bokmal { +"Vedtaksbrev - Nav endrer uføretrygden din" },
-                nynorsk { +"Vedtaksbrev - Nav endrar uføretrygda di" },
-            )
+            showIf(data.etterbetalingJuli.greaterThan(0)) {
+                text(
+                    bokmal { +"Vedtaksbrev - Du får en etterbetaling av uføretrygd " },
+                    nynorsk { +"Vedtaksbrev - Du får ein etterbetaling av uføretrygd " },
+                )
+            }.orShowIf(data.endringNettoUforetrygdUtenTillegg or data.endringNettoBarnetillegg or data.endringNettoGjenlevendetillegg) {
+                text(
+                    bokmal { +"Vedtaksbrev - Endring av uføretrygd" },
+                    nynorsk { +"Vedtaksbrev - Endring av uføretrygd" },
+                )
+            }.orShow {
+                text(
+                    bokmal { +"Vedtaksbrev - Ingen endring av utbetalt uføretrygd" },
+                    nynorsk { +"Vedtaksbrev - Ingen endring av utbetalt uføretrygd" },
+                )
+            }
         }
         outline {
             includePhrase(
