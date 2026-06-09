@@ -15,7 +15,7 @@ import {
   type FinnSamhandlerResponseDto,
   type HentSamhandlerAdresseResponseDto,
   type HentSamhandlerRequestDto,
-  type HentsamhandlerResponseDto,
+  type HentSamhandlerResponseDto,
   type KontaktAdresseResponse,
   type OrderEblankettRequest,
   type OrderExstreamLetterRequest,
@@ -185,7 +185,7 @@ export async function finnSamhandler(request: FinnSamhandlerRequestDto): Promise
 export const hentSamhandler = {
   queryKey: samhandlerKeys.idTSSEkstern,
   queryFn: async (request: HentSamhandlerRequestDto) => {
-    const response = await axios.post<HentsamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/hentSamhandler`, request);
+    const response = await axios.post<HentSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/hentSamhandler`, request);
 
     if (response.data.failure) {
       throw convertResponseToAxiosError({ message: response.data.failure, response });
@@ -207,7 +207,8 @@ export const hentSamhandlerAdresse = (idTSSEkstern: string) => ({
       throw convertResponseToAxiosError({ message: response.data.failureType, response });
     }
 
-    return response.data.adresse;
+    // Not null assertion her siden pensjon-samhandler-proxy returnerer `failureType = NOT_FOUND` om adressen ikke finnes
+    return response.data.adresse!;
   },
 });
 
