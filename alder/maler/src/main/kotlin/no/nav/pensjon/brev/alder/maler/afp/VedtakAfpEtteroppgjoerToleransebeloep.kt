@@ -93,7 +93,7 @@ object VedtakAfpEtteroppgjoerToleransebeloep : RedigerbarTemplate<VedtakAfpEtter
             includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pensjonsgivendeInntekt = pesysData.pgi, oppgjoersAar = pesysData.oppgjoersAar))
 
             includePhrase(
-                AfpEtteroppgjoerInnhold.IfuIeoFordelingPerPeriode(
+                AfpEtteroppgjoerInnhold.InntektFoerUttakInntektEtterOpphoerFordelingPerPeriode(
                     erHelAfpHeleAaret = pesysData.periode.equalTo(Periode.HEL_AFP_HELE_AARET),
                     erUttakIAaret = pesysData.periode.equalTo(Periode.UTTAK_I_AARET),
                     erOpphoerIAaret = pesysData.periode.equalTo(Periode.OPPHOER_I_AARET),

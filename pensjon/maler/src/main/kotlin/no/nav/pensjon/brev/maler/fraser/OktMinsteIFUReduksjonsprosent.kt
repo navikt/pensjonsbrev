@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -50,10 +51,17 @@ object OktMinsteIFUReduksjonsprosent {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
             title1 {
-                text(
-                    bokmal { +"Dette er dine endringer fra 1. januar 2026" },
-                    nynorsk { +"Dette er endringane dine frå 1. januar 2026" },
-                )
+                showIf(data.etterbetalingJuli.greaterThan(0) or data.endringNettoUforetrygdUtenTillegg or data.endringNettoBarnetillegg or data.endringNettoGjenlevendetillegg) {
+                    text(
+                        bokmal { +"Dette er dine endringer" },
+                        nynorsk { +"Dette er endringane dine" },
+                    )
+                }.orShow {
+                    text(
+                        bokmal { +"Dette er dine endringer, de påvirker ikke utbetalingen" },
+                        nynorsk { +"Dette er endringane dine, dei påverkar ikkje utbetalinga" },
+                    )
+                }
             }
             paragraph {
                 text(
@@ -334,20 +342,8 @@ object OktMinsteIFUReduksjonsprosent {
                     }
                     paragraph {
                         text(
-                            bokmal { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i beregningene av uføretrygden din hvis du har hatt inntekt over inntektsgrensen. Når lovendringen trer i kraft, skal den ha virkning tilbake i tid fra 1. januar i år." },
-                            nynorsk { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i berekningane av uføretrygda di dersom du har hatt inntekt over inntektsgrensa. Når lovendringa trer i kraft, skal regelen ha tilbakeverkande kraft frå 1. januar i år." },
-                        )
-                    }
-                    paragraph {
-                        text(
-                            bokmal { +"Det kan føre til at vi har trukket for mye av uføretrygden din, og at du har fått utbetalt for lite uføretrygd." },
-                            nynorsk { +"Det kan føre til at vi har trekt for mykje av uføretrygda di, og at du har fått utbetalt for lite uføretrygd." },
-                        )
-                    }
-                    paragraph {
-                        text(
-                            bokmal { +"Har du fått for lite utbetalt frem til 1. juli, vil du få etterbetalt i juli. Hvis du får en etterbetaling i juli, vil beløpet stå i tabellen øverst i dette brevet." },
-                            nynorsk { +"Har du fått for lite utbetalt fram til 1. juli, vil du få etterbetalt i juli. Om du får ei etterbetaling i juli, vil beløpet stå i tabellen øvst i dette brevet." },
+                            bokmal { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i beregningene av uføretrygden din.Når lovendringen trer i kraft, skal ny reduksjonsprosent ha virkning tilbake i tid fra 1. januar i år. Du vil derfor få en etterbetaling på " + data.etterbetalingJuli.format() + " innen kort tid." },
+                            nynorsk { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny reduksjonsprosent ha tilbakeverkande kraft frå 1. januar i år. Du vil derfor få ei etterbetaling på " + data.etterbetalingJuli.format() + " innan kort tid." },
                         )
                     }
                 }.orShow {
@@ -359,8 +355,8 @@ object OktMinsteIFUReduksjonsprosent {
                     }
                     paragraph {
                         text(
-                            bokmal { +"Fordi du ikke har hatt inntekt over inntektsgrensen, vil ikke regelendringene føre til at du har fått utbetalt for lite uføretrygd." },
-                            nynorsk { +"Fordi du ikkje har hatt inntekt over inntektsgrensa, vil ikkje regelendringane føre til at du har fått utbetalt for lite uføretrygd." },
+                            bokmal { +"Fordi du ikke har hatt inntekt over inntektsgrensen, vil ikke regelendringene føre til endringer i utbetaling for deg." },
+                            nynorsk { +"Fordi du ikkje har hatt inntekt over inntektsgrensa, vil ikkje regelendringane føre til endringar i utbetaling for deg." },
                         )
                     }
                 }

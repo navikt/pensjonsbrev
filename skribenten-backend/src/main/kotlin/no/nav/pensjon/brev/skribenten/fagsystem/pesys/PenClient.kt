@@ -16,6 +16,7 @@ import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
@@ -82,7 +83,8 @@ class PentHttpClient(config: Config, authService: AuthService) : PenClient, Serv
                 foedselsdato = it.foedselsdato,
                 navn = with(it.navn) { Pen.SakSelection.Navn(fornavn, mellomnavn, etternavn) },
                 sakType = it.sakType,
-                pid = it.pid
+                pid = it.pid,
+                behandlingsnumre = it.behandlingsnumre,
             )
         }
 
@@ -176,6 +178,7 @@ class PentHttpClient(config: Config, authService: AuthService) : PenClient, Serv
         val sakType: ISakstype,
         val enhetId: String?,
         val pid: Pid,
+        val behandlingsnumre: List<Behandlingsnummer>,
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }

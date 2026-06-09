@@ -21,7 +21,7 @@ sealed class P1Exception(override val message: String): Exception(){
 
 interface P1Service {
 
-    suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: BrevId, saksId: SaksId): P1Data?
+    suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: BrevId, saksId: SaksId): Api.GeneriskBrevdata?
     suspend fun hentP1Data(brevId: BrevId, saksId: SaksId): Api.GeneriskBrevdata?
     suspend fun patchMedP1DataOmP1(
         brevdataResponse: BrevdataResponse.Data,
@@ -33,14 +33,15 @@ interface P1Service {
 
 class P1ServiceImpl(private val penClient: PenClient) : P1Service {
 
-    override suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: BrevId, saksId: SaksId): P1Data = transaction {
+    override suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: BrevId, saksId: SaksId): Api.GeneriskBrevdata = suspendTransaction {
         val brevredigering = BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
         if (brevredigering != null) {
-            P1Data.findSingleByAndUpdate(P1DataTable.id eq brevredigering.id) { p1Data ->
+            val entity = P1Data.findSingleByAndUpdate(P1DataTable.id eq brevredigering.id) { p1Data ->
                 p1Data.p1data = p1DataInput
             } ?: P1Data.new(brevId) {
                 p1data = p1DataInput
             }
+            entity.p1data
         } else throw IllegalArgumentException("Fant ikke brev med id: $brevId")
     }
 

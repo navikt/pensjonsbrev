@@ -148,15 +148,6 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                     css={css`
                       align-self: flex-start;
                       width: 60%;
-
-                      /*
-                        siden input feltet er nederts på modalen, vil det å åpne den tvinge en scroll på modalen
-                        vi setter den derfor til å åpne oppover
-                      */
-                      .aksel-combobox__list {
-                        bottom: 100%;
-                        top: auto;
-                      }
                     `}
                     data-testid="land-combobox"
                     error={fieldState.error?.message}

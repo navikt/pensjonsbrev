@@ -94,13 +94,11 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
             paragraph {
                 text(
                     bokmal {
-                        +"Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du " +
-                            "mottok vedtaket. Klagen skal være skriftlig. Du finner skjema og informasjon på " +
+                        +"Hvis du mener vedtaket er feil, kan du klage innen seks uker fra vedtaket har kommet fram til deg. Klagen skal være skriftlig. Du finner skjema og informasjon på " +
                             "$KLAGE_URL."
                     },
                     nynorsk {
-                        +"Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen " +
-                            "då du fekk vedtaket. Klaga skal vere skriftleg. Du finn skjema og informasjon på " +
+                        +"Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå vedtaket har komme fram til deg. Klaga skal vere skriftleg. Du finn skjema og informasjon på " +
                             "$KLAGE_URL."
                     },
                 )
@@ -125,7 +123,7 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
                             "nytt vedtak."
                     },
                     nynorsk {
-                        +"Du kan som nemnt sende inn dokumentasjon på inntekter som du meiner skal haldast " +
+                        +"Du kan sende inn dokumentasjon på inntekter som du meiner skal haldast " +
                             "utanfor etteroppgjeret. Nav vil gjennomføre eit nytt etteroppgjer dersom du har " +
                             "sendt ny dokumentasjon for inntekt innan fristen på fire veker. Du vil då få " +
                             "eit nytt vedtak."
@@ -136,13 +134,11 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
                 text(
                     bokmal {
                         +"Hvis du mener at det er andre forhold ved vedtaket som ikke er riktig, har du " +
-                            "anledning til å klage på vedtaket. Fristen for å klage er seks uker fra du " +
-                            "mottar dette brevet."
+                            "anledning til å klage på vedtaket. Fristen for å klage er seks uker fra vedtaket har kommet fram til deg."
                     },
                     nynorsk {
                         +"Dersom du meiner at det er andre forhold ved vedtaket som ikkje er rette, har du " +
-                            "høve til å klage på vedtaket. Fristen for å klage er seks veker frå du får " +
-                            "dette brevet."
+                            "høve til å klage på vedtaket. Fristen for å klage er seks veker frå vedtaket har komme fram til deg."
                     },
                 )
             }
