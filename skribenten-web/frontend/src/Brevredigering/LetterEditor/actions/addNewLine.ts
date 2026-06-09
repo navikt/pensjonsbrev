@@ -24,9 +24,9 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
     const offset = focus.cursorPosition;
 
     if (isTextContent(content) && content.type === LITERAL && !("itemIndex" in focus) && offset !== undefined) {
-      const newFocusIdx = insertNewLineInContent(block.content, block.deletedContent, focus.contentIndex, offset);
-      if (newFocusIdx !== null) {
-        draft.focus = { blockIndex: focus.blockIndex, contentIndex: newFocusIdx, cursorPosition: 0 };
+      const newFocusIndex = insertNewLineInContent(block.content, block.deletedContent, focus.contentIndex, offset);
+      if (newFocusIndex !== null) {
+        draft.focus = { blockIndex: focus.blockIndex, contentIndex: newFocusIndex, cursorPosition: 0 };
         draft.saveStatus = "DIRTY";
       }
     } else if (isItemList(content) && "itemIndex" in focus && offset !== undefined) {
@@ -35,18 +35,18 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
       if (item) {
         const itemContent = item.content[itemFocus.itemContentIndex];
         if (itemContent?.type === LITERAL) {
-          const newFocusIdx = insertNewLineInContent(
+          const newFocusIndex = insertNewLineInContent(
             item.content,
             item.deletedContent,
             itemFocus.itemContentIndex,
             offset,
           );
-          if (newFocusIdx !== null) {
+          if (newFocusIndex !== null) {
             draft.focus = {
               blockIndex: focus.blockIndex,
               contentIndex: focus.contentIndex,
               itemIndex: itemFocus.itemIndex,
-              itemContentIndex: newFocusIdx,
+              itemContentIndex: newFocusIndex,
               cursorPosition: 0,
             };
             draft.saveStatus = "DIRTY";
@@ -58,7 +58,7 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
 });
 
 /**
- * Inserts a NEW_LINE at position `idx` within `content`, handling start/end/mid-literal cases.
+ * Inserts a NEW_LINE at position `index` within `content`, handling start/end/mid-literal cases.
  * Also inserts a guard literal when inserting at the boundary of the array or adjacent to a VARIABLE.
  * No-ops (returns null) if a NEW_LINE already neighbours the insertion point.
  *
@@ -68,10 +68,10 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
 function insertNewLineInContent(
   content: Draft<Content[]>,
   deletedContent: Draft<number[]>,
-  idx: number,
+  index: number,
   offset: number,
 ): number | null {
-  const literal = content[idx];
+  const literal = content[index];
   if (!isTextContent(literal) || literal.type !== LITERAL) return null;
 
   const currentText = text(literal);
@@ -79,22 +79,22 @@ function insertNewLineInContent(
   const atEnd = offset >= currentText.length;
 
   if (atStart) {
-    if (content[idx - 1]?.type === NEW_LINE) return null;
-    const isFirst = idx === 0;
+    if (content[index - 1]?.type === NEW_LINE) return null;
+    const isFirst = index === 0;
     const toAdd = isFirst ? [newLiteral(), createNewLine()] : [createNewLine()];
-    if (content[idx - 1]?.type === VARIABLE) toAdd.unshift(newLiteral());
-    addElements(toAdd, idx, content, deletedContent);
-    return idx + toAdd.length;
+    if (content[index - 1]?.type === VARIABLE) toAdd.unshift(newLiteral());
+    addElements(toAdd, index, content, deletedContent);
+    return index + toAdd.length;
   } else if (atEnd) {
-    if (content[idx + 1]?.type === NEW_LINE || content[idx - 1]?.type === NEW_LINE) return null;
-    const isLast = idx + 1 === content.length;
+    if (content[index + 1]?.type === NEW_LINE || content[index - 1]?.type === NEW_LINE) return null;
+    const isLast = index + 1 === content.length;
     const toAdd = isLast ? [createNewLine(), newLiteral()] : [createNewLine()];
-    if (content[idx + 1]?.type === VARIABLE) toAdd.push(newLiteral());
-    addElements(toAdd, idx + 1, content, deletedContent);
-    return idx + 2;
+    if (content[index + 1]?.type === VARIABLE) toAdd.push(newLiteral());
+    addElements(toAdd, index + 1, content, deletedContent);
+    return index + 2;
   } else {
     const splitLiteral = splitLiteralAtOffset(literal, offset);
-    addElements([createNewLine(), splitLiteral], idx + 1, content, deletedContent);
-    return idx + 2;
+    addElements([createNewLine(), splitLiteral], index + 1, content, deletedContent);
+    return index + 2;
   }
 }

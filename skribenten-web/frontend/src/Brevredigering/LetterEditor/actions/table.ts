@@ -35,11 +35,17 @@ const updateDefaultHeaderLabels = (table: Draft<Table>) => {
   const isDefault = (s: string) => /^Kolonne\s+\d+$/i.test(s);
   const stripZWSP = (s: string) => s.replaceAll(ZERO_WIDTH_SPACE, "");
 
-  table.header.colSpec.forEach((col, idx) => {
-    const headerCellText = stripZWSP(cleanseText(col.headerContent.text.map((txt) => text(txt) ?? "").join(""))).trim();
+  table.header.colSpec.forEach((col, index) => {
+    const headerCellText = stripZWSP(
+      cleanseText(col.headerContent.text.map((fragment) => text(fragment) ?? "").join("")),
+    ).trim();
 
     if (headerCellText === "" || isDefault(headerCellText)) {
-      col.headerContent.text.splice(0, col.headerContent.text.length, newLiteral({ editedText: `Kolonne ${idx + 1}` }));
+      col.headerContent.text.splice(
+        0,
+        col.headerContent.text.length,
+        newLiteral({ editedText: `Kolonne ${index + 1}` }),
+      );
     }
   });
 };

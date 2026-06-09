@@ -323,19 +323,19 @@ export function getSelectionFocus(root?: HTMLElement): SelectionFocus | undefine
   }
   if (!startEl || !endEl) return;
 
-  const startIdx = parseLiteralIndex(startEl);
-  const endIdx = parseLiteralIndex(endEl);
-  if (!startIdx || !endIdx) return;
+  const startIndex = parseLiteralIndex(startEl);
+  const endIndex = parseLiteralIndex(endEl);
+  if (!startIndex || !endIndex) return;
 
   const sIsDirect = startEl === closestLiteralEl(range.startContainer);
   const eIsDirect = endEl === closestLiteralEl(range.endContainer);
 
   const start = {
-    ...startIdx,
+    ...startIndex,
     cursorPosition: sIsDirect ? charOffsetWithinLiteral(startEl, range.startContainer, range.startOffset) : 0,
   };
   const end = {
-    ...endIdx,
+    ...endIndex,
     cursorPosition: eIsDirect
       ? charOffsetWithinLiteral(endEl, range.endContainer, range.endOffset)
       : getTextLengthExcludingZWSP(endEl),

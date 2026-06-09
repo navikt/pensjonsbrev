@@ -441,8 +441,8 @@ function mergeSameTypeListsInBlock(
       // that removeElements just recorded, since we're reusing the id).
       if (a.id === null && b.id !== null) {
         (a as Draft<ItemList>).id = b.id;
-        const delIdx = deletedContent.indexOf(b.id);
-        if (delIdx !== -1) deletedContent.splice(delIdx, 1);
+        const deletedIndex = deletedContent.indexOf(b.id);
+        if (deletedIndex !== -1) deletedContent.splice(deletedIndex, 1);
       }
 
       // Append b's items and deletedItems to a.

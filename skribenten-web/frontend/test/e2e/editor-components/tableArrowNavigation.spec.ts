@@ -42,12 +42,12 @@ async function setupEditor(page: Page, blocks: ReturnType<typeof newParagraph>[]
   await page.evaluate(() => document.fonts.ready);
 }
 
-function headerCell(page: Page, colIdx: number) {
-  return page.getByTestId(`table-header-${colIdx}`).locator("span[contenteditable=true]").first();
+function headerCell(page: Page, columnIndex: number) {
+  return page.getByTestId(`table-header-${columnIndex}`).locator("span[contenteditable=true]").first();
 }
 
-function bodyCell(page: Page, rowIdx: number, cellIdx: number) {
-  return page.getByTestId(`table-cell-${rowIdx}-${cellIdx}`).locator("span[contenteditable=true]").first();
+function bodyCell(page: Page, rowIndex: number, cellIndex: number) {
+  return page.getByTestId(`table-cell-${rowIndex}-${cellIndex}`).locator("span[contenteditable=true]").first();
 }
 
 async function assertFocused(_page: Page, locator: ReturnType<typeof bodyCell>) {

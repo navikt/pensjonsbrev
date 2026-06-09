@@ -53,9 +53,9 @@ const selectedBackgroundStyle = css`
 
 // TODO: render <ContentGroup> once that component
 // can accept TableCellIndex (rowIndex/cellIndex)
-const renderCellText = (cell: CellType, _: number, idx: TableCellIndex) =>
+const renderCellText = (cell: CellType, _: number, index: TableCellIndex) =>
   cell.text.map((txt, i) => (
-    <TableCellContent content={txt} key={i} tableCellIndex={{ ...idx, cellContentIndex: i }} />
+    <TableCellContent content={txt} key={i} tableCellIndex={{ ...index, cellContentIndex: i }} />
   ));
 
 const TableView: React.FC<{
@@ -111,21 +111,21 @@ const TableView: React.FC<{
       >
         <thead>
           <tr>
-            {node.header.colSpec.map((col: ColumnSpec, colIdx) => {
+            {node.header.colSpec.map((col: ColumnSpec, colIndex) => {
               const isHeaderHighlighted =
-                !!highlight && highlight.row === -1 && (highlight.col === -1 || highlight.col === colIdx);
+                !!highlight && highlight.row === -1 && (highlight.col === -1 || highlight.col === colIndex);
               return (
                 <th
                   css={isHeaderHighlighted && selectedBackgroundStyle}
-                  data-testid={`table-header-${colIdx}`}
-                  key={colIdx}
+                  data-testid={`table-header-${colIndex}`}
+                  key={colIndex}
                   scope="col"
                 >
-                  {renderCellText(col.headerContent, colIdx, {
+                  {renderCellText(col.headerContent, colIndex, {
                     blockIndex,
                     contentIndex,
                     rowIndex: -1,
-                    cellIndex: colIdx,
+                    cellIndex: colIndex,
                     cellContentIndex: 0,
                   })}
                 </th>
@@ -134,23 +134,23 @@ const TableView: React.FC<{
           </tr>
         </thead>
         <tbody>
-          {node.rows.map((row, rowIdx) => {
+          {node.rows.map((row, rowIndex) => {
             return (
-              <tr data-testid={`table-row-${rowIdx}`} key={rowIdx}>
-                {row.cells.map((cell, cellIdx) => {
+              <tr data-testid={`table-row-${rowIndex}`} key={rowIndex}>
+                {row.cells.map((cell, cellIndex) => {
                   const isHighlighted =
-                    !!highlight && highlight.row === rowIdx && (highlight.col === -1 || highlight.col === cellIdx);
+                    !!highlight && highlight.row === rowIndex && (highlight.col === -1 || highlight.col === cellIndex);
                   return (
                     <td
                       css={isHighlighted && selectedBackgroundStyle}
-                      data-testid={`table-cell-${rowIdx}-${cellIdx}`}
-                      key={cellIdx}
+                      data-testid={`table-cell-${rowIndex}-${cellIndex}`}
+                      key={cellIndex}
                     >
-                      {renderCellText(cell, cellIdx, {
+                      {renderCellText(cell, cellIndex, {
                         blockIndex,
                         contentIndex,
-                        rowIndex: rowIdx,
-                        cellIndex: cellIdx,
+                        rowIndex: rowIndex,
+                        cellIndex: cellIndex,
                         cellContentIndex: 0,
                       })}
                     </td>
@@ -179,9 +179,9 @@ const TableView: React.FC<{
               setHighlight(menuTarget ? { row: menuTarget.rowIndex, col: menuTarget.colIndex } : null)
             }
             onSelect={() => {
-              const rowIdx = menuTarget?.rowIndex ?? -1;
-              if (rowIdx >= 0) {
-                applyAction(Actions.promoteRowToHeader, setEditorState, blockIndex, contentIndex, rowIdx);
+              const rowIndex = menuTarget?.rowIndex ?? -1;
+              if (rowIndex >= 0) {
+                applyAction(Actions.promoteRowToHeader, setEditorState, blockIndex, contentIndex, rowIndex);
                 setMenuTarget(null);
               }
             }}
