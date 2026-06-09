@@ -66,6 +66,7 @@ subprojects {
     ktfmt {
         googleStyle()
         kotlinLangStyle()
+        maxWidth = 160
     }
     tasks {
         register<Test>("integrationTest") {
