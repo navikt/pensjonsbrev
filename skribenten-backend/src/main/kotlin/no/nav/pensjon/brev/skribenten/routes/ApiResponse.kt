@@ -23,7 +23,7 @@ suspend inline fun RoutingContext.apiRespond(
 }
 
 @JvmName("apiRespondBrevInfo")
-suspend fun RoutingContext.apiRespond(
+suspend inline fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<Dto.BrevInfo, BrevredigeringError>?,
     successStatus: HttpStatusCode = HttpStatusCode.OK,
@@ -34,7 +34,7 @@ suspend fun RoutingContext.apiRespond(
 }
 
 @JvmName("apiRespondHentDocumentResult")
-suspend fun RoutingContext.apiRespond(
+suspend inline fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<Dto.HentDocumentResult, BrevredigeringError>?,
     successStatus: HttpStatusCode = HttpStatusCode.OK,
@@ -45,7 +45,7 @@ suspend fun RoutingContext.apiRespond(
 }
 
 @JvmName("apiRespondReservasjon")
-suspend fun RoutingContext.apiRespond(
+suspend inline fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<Reservasjon, BrevredigeringError>?,
     successStatus: HttpStatusCode = HttpStatusCode.OK,
@@ -56,7 +56,7 @@ suspend fun RoutingContext.apiRespond(
 }
 
 @JvmName("apiRespondSendBrevResult")
-suspend fun RoutingContext.apiRespond(
+suspend inline fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<Dto.SendBrevResult, BrevredigeringError>?,
     successStatus: HttpStatusCode = HttpStatusCode.OK,
@@ -67,7 +67,7 @@ suspend fun RoutingContext.apiRespond(
 }
 
 @JvmName("apiRespondNoContent")
-suspend fun RoutingContext.apiRespond(
+suspend inline fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<Unit, BrevredigeringError>?
 ) {

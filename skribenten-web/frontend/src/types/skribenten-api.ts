@@ -2718,7 +2718,7 @@ export interface components {
             avsenderEnhetsId: string;
             brevkode: string;
             mottaker?: components["schemas"]["OverstyrtMottaker"];
-            reserverForRedigering?: boolean;
+            reserverForRedigering?: boolean | null;
             saksbehandlerValg: {
                 [key: string]: unknown;
             };
@@ -2755,8 +2755,8 @@ export interface components {
             editedFontType?: components["schemas"]["FontType"];
             editedText?: string | null;
             fontType: components["schemas"]["FontType"];
-            id?: number;
-            parentId?: number;
+            id?: number | null;
+            parentId?: number | null;
             tags: components["schemas"]["ElementTags"][];
             text: string;
             /**
@@ -2768,8 +2768,8 @@ export interface components {
         /** NewLine */
         NewLine: {
             fontType: components["schemas"]["FontType"];
-            id?: number;
-            parentId?: number;
+            id?: number | null;
+            parentId?: number | null;
             text: string;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -2780,8 +2780,8 @@ export interface components {
         /** Variable */
         Variable: {
             fontType: components["schemas"]["FontType"];
-            id?: number;
-            parentId?: number;
+            id?: number | null;
+            parentId?: number | null;
             tags: components["schemas"]["ElementTags"][];
             text: string;
             /**
@@ -2796,8 +2796,8 @@ export interface components {
         Item: {
             content: components["schemas"]["Text"][];
             deletedContent: number[];
-            id?: number;
-            parentId?: number;
+            id?: number | null;
+            parentId?: number | null;
         };
         /**
          * Listetype
@@ -2807,10 +2807,10 @@ export interface components {
         /** ItemList */
         ItemList: {
             deletedItems: number[];
-            id?: number;
+            id?: number | null;
             items: components["schemas"]["Item"][];
             listType: components["schemas"]["Listetype"];
-            parentId?: number;
+            parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -2824,36 +2824,36 @@ export interface components {
         ColumnAlignment: "LEFT" | "RIGHT";
         /** Cell */
         Cell: {
-            id?: number;
-            parentId?: number;
+            id?: number | null;
+            parentId?: number | null;
             text: components["schemas"]["Text"][];
         };
         /** ColumnSpec */
         ColumnSpec: {
             alignment: components["schemas"]["ColumnAlignment"];
             headerContent: components["schemas"]["Cell"];
-            id?: number;
-            parentId?: number;
+            id?: number | null;
+            parentId?: number | null;
             span: number;
         };
         /** Header */
         Header: {
             colSpec: components["schemas"]["ColumnSpec"][];
-            id?: number;
-            parentId?: number;
+            id?: number | null;
+            parentId?: number | null;
         };
         /** Row */
         Row: {
             cells: components["schemas"]["Cell"][];
-            id?: number;
-            parentId?: number;
+            id?: number | null;
+            parentId?: number | null;
         };
         /** Table */
         Table: {
             deletedRows: number[];
             header: components["schemas"]["Header"];
-            id?: number;
-            parentId?: number;
+            id?: number | null;
+            parentId?: number | null;
             rows: components["schemas"]["Row"][];
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -2873,10 +2873,10 @@ export interface components {
             content: components["schemas"]["ParagraphContent"][];
             deletedContent: number[];
             editable: boolean;
-            id?: number;
+            id?: number | null;
             missingFromTemplate: boolean;
             originalType?: components["schemas"]["no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type"];
-            parentId?: number;
+            parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -2888,10 +2888,10 @@ export interface components {
             content: components["schemas"]["Text"][];
             deletedContent: number[];
             editable: boolean;
-            id?: number;
+            id?: number | null;
             missingFromTemplate: boolean;
             originalType?: components["schemas"]["no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type"];
-            parentId?: number;
+            parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -2903,10 +2903,10 @@ export interface components {
             content: components["schemas"]["Text"][];
             deletedContent: number[];
             editable: boolean;
-            id?: number;
+            id?: number | null;
             missingFromTemplate: boolean;
             originalType?: components["schemas"]["no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type"];
-            parentId?: number;
+            parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -2918,10 +2918,10 @@ export interface components {
             content: components["schemas"]["Text"][];
             deletedContent: number[];
             editable: boolean;
-            id?: number;
+            id?: number | null;
             missingFromTemplate: boolean;
             originalType?: components["schemas"]["no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type"];
-            parentId?: number;
+            parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}

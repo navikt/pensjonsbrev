@@ -225,6 +225,7 @@ fun Route.sakBrev(
                 }
             }
 
+            // TODO: Request/response body er sterkt typet i frontend, men ikke her i backend.
             route("/p1") {
                 get {
                     val brevId = call.parameters.brevId()

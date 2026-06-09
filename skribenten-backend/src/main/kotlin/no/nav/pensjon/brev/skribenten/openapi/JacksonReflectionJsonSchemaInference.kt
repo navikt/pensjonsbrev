@@ -6,7 +6,6 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import java.time.OffsetDateTime
 import kotlin.reflect.KClass
-import kotlin.reflect.KProperty1
 import kotlin.reflect.KType
 import kotlin.reflect.KTypeParameter
 import kotlin.reflect.KTypeProjection
@@ -308,16 +307,16 @@ class JacksonReflectionJsonSchemaInference(
             type = JsonType.STRING.wrapIfNullable(nullable)
         )
 
-        Boolean::class -> jsonSchemaFromAnnotations(annotations, ::schemaRefForClass, type = JsonType.BOOLEAN)
+        Boolean::class -> jsonSchemaFromAnnotations(annotations, ::schemaRefForClass, type = JsonType.BOOLEAN.wrapIfNullable(nullable))
 
         Byte::class, Short::class, Int::class, Long::class,
         UByte::class, UShort::class, UInt::class, ULong::class,
         java.lang.Byte::class, java.lang.Short::class, Integer::class, java.lang.Long::class ->
-            jsonSchemaFromAnnotations(annotations, ::schemaRefForClass, type = JsonType.INTEGER)
+            jsonSchemaFromAnnotations(annotations, ::schemaRefForClass, type = JsonType.INTEGER.wrapIfNullable(nullable))
 
         Float::class, Double::class,
         java.lang.Float::class, java.lang.Double::class ->
-            jsonSchemaFromAnnotations(annotations, ::schemaRefForClass, type = JsonType.NUMBER)
+            jsonSchemaFromAnnotations(annotations, ::schemaRefForClass, type = JsonType.NUMBER.wrapIfNullable(nullable))
 
         Uuid::class -> jsonSchemaFromAnnotations(
             annotations,
