@@ -39,11 +39,6 @@ sealed interface SaksbehandlervalgVerdi {
             return enum == other.enum
         }
         override fun hashCode() = Enum::class.java.hashCode() + (enum?.hashCode() ?: 0)
-        fun <V : kotlin.Enum<V>> kopier(enumverdi: kotlin.Enum<V>?) = Enum(
-            enum = enumverdi as SaksbehandlerValgEnum?,
-            displayText = displayText,
-            clazz = clazz
-        )
     }
     class Text(val text: String?, override val displayText: String) : SaksbehandlervalgVerdi {
         override val type = Type.TEXT
