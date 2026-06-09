@@ -32,7 +32,7 @@ fun Route.meRoute(navansattService: NavansattService) {
             call.respond(favouritesRepository.getFavourites(principal().navIdent))
         }
         get("/enheter") {
-            call.respond(navansattService.hentNavAnsattEnhetListe(principal().navIdent.id))
+            call.respond(navansattService.hentNavAnsattEnhetListe(principal().navIdent))
         }
     }
 }
