@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.routes
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.db.FavouritesRepository
@@ -22,10 +23,10 @@ fun Route.meRoute(navansattService: NavansattService) {
             ))
         }
         post("/favourites") {
-            call.respond(favouritesRepository.addFavourite(principal().navIdent, call.receive<String>()))
+            call.respond(favouritesRepository.addFavourite(principal().navIdent, RedigerbarBrevkode(call.receive<String>())))
         }
         delete("/favourites") {
-            call.respond(favouritesRepository.removeFavourite(principal().navIdent, call.receive<String>()))
+            call.respond(favouritesRepository.removeFavourite(principal().navIdent, RedigerbarBrevkode(call.receive<String>())))
         }
         get("/favourites") {
             call.respond(favouritesRepository.getFavourites(principal().navIdent))
