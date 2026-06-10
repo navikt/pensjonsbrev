@@ -27,6 +27,12 @@ class Brevbaker(
     fun <T: BrevbakerBrevdata> renderLetterMarkup(letter: Letter<T>): LetterMarkup =
         BrevbakerLetterMarkup.renderLetterMarkup(letter)
 
+    fun <T: BrevbakerBrevdata> renderRedigerbartVedleggTitler(letter: Letter<T>): Map<String, List<LetterMarkup.ParagraphContent.Text>> =
+        BrevbakerLetterMarkup.renderRedigerbartVedleggTitler(letter)
+
+    fun <T: BrevbakerBrevdata> renderRedigerbartVedlegg(letter: Letter<T>, vedleggId: String): LetterMarkup.Attachment? =
+        BrevbakerLetterMarkup.renderRedigerbartVedlegg(letter, vedleggId)
+
     fun <T: BrevbakerBrevdata> renderLetterMarkupWithDataUsage(letter: Letter<T>): LetterMarkupWithDataUsage =
         BrevbakerLetterMarkup.renderLetterMarkupWithDataUsage(letter)
 }

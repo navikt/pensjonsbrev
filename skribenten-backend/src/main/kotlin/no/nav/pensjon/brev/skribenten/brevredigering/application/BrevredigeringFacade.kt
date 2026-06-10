@@ -34,6 +34,7 @@ class BrevredigeringFacade(
     private val endreValgteVedlegg: BrevredigeringHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering>,
     private val endreRedigertVedlegg: BrevredigeringHandler<EndreRedigertVedleggHandler.Request, Dto.Brevredigering>,
     private val hentRedigertVedlegg: BrevredigeringHandler<HentRedigertVedleggHandler.Request, Edit.Attachment>,
+    private val hentRedigerbareVedlegg: BrevredigeringHandler<HentRedigerbareVedleggHandler.Request, List<RedigerbartVedleggInfo>>,
     private val slettRedigertVedlegg: BrevredigeringHandler<SlettRedigertVedleggHandler.Request, Dto.Brevredigering>,
     private val sendBrev: BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult>,
     private val slettBrev: BrevredigeringHandler<SlettBrevHandler.Request, Unit>,
@@ -93,6 +94,9 @@ class BrevredigeringFacade(
 
     suspend fun hentRedigertVedlegg(request: HentRedigertVedleggHandler.Request): Outcome<Edit.Attachment, BrevredigeringError>? =
         hentRedigertVedlegg.runHandler(request)
+
+    suspend fun hentRedigerbareVedlegg(request: HentRedigerbareVedleggHandler.Request): Outcome<List<RedigerbartVedleggInfo>, BrevredigeringError>? =
+        hentRedigerbareVedlegg.runHandler(request)
 
     suspend fun slettRedigertVedlegg(request: SlettRedigertVedleggHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         slettRedigertVedlegg.runHandler(request)

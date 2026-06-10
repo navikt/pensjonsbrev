@@ -10,6 +10,8 @@ public final class no/nav/brev/brevbaker/Brevbaker {
 	public final fun renderLetterMarkup (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
 	public final fun renderLetterMarkupWithDataUsage (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupWithDataUsage;
 	public final fun renderPDF (Lno/nav/pensjon/brev/template/Letter;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun renderRedigerbartVedlegg (Lno/nav/pensjon/brev/template/Letter;Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Attachment;
+	public final fun renderRedigerbartVedleggTitler (Lno/nav/pensjon/brev/template/Letter;)Ljava/util/Map;
 	public final fun renderRedigertBrevHTML (Lno/nav/pensjon/brev/template/Letter;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/Map;)Lno/nav/pensjon/brev/api/model/LetterResponse;
 	public static synthetic fun renderRedigertBrevHTML$default (Lno/nav/brev/brevbaker/Brevbaker;Lno/nav/pensjon/brev/template/Letter;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/Map;ILjava/lang/Object;)Lno/nav/pensjon/brev/api/model/LetterResponse;
 	public final fun renderRedigertBrevPDF (Lno/nav/pensjon/brev/template/Letter;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

@@ -55,6 +55,19 @@ interface BrevbakerService {
         alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
         redigerteVedlegg: Map<String, LetterMarkup.Attachment> = emptyMap(),
     ): LetterResponse
+    suspend fun hentRedigerbareVedlegg(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: BrevbakerFelles,
+    ): Map<String, List<LetterMarkup.ParagraphContent.Text>>
+    suspend fun renderRedigerbartVedlegg(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: BrevbakerFelles,
+        vedleggId: String,
+    ): LetterMarkup.Attachment?
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
     suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggKode>
@@ -162,6 +175,63 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             throw BrevbakerServiceException(
                 response.bodyAsText().takeIf { it.isNotBlank() }
                     ?: "Ukjent feil oppstod ved generering av PDF for brevkode: $brevkode"
+            )
+        }
+    }
+
+    override suspend fun hentRedigerbareVedlegg(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: BrevbakerFelles,
+    ): Map<String, List<LetterMarkup.ParagraphContent.Text>> {
+        val response = client.post("/letter/redigerbar/redigerbare-vedlegg/titler") {
+            contentType(ContentType.Application.Json)
+            setBody(
+                BestillBrevRequest(
+                    kode = brevkode,
+                    letterData = brevdata,
+                    felles = felles,
+                    language = spraak,
+                )
+            )
+        }
+
+        return if (response.status.isSuccess()) {
+            response.body()
+        } else {
+            throw BrevbakerServiceException(
+                response.bodyAsText().takeIf { it.isNotBlank() }?.let { "${response.status}: $it" }
+                    ?: "Ukjent feil oppstod ved generering av redigerbare vedlegg for brevkode: $brevkode"
+            )
+        }
+    }
+
+    override suspend fun renderRedigerbartVedlegg(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: BrevbakerFelles,
+        vedleggId: String,
+    ): LetterMarkup.Attachment? {
+        val response = client.post("/letter/redigerbar/redigerbare-vedlegg/$vedleggId") {
+            contentType(ContentType.Application.Json)
+            setBody(
+                BestillBrevRequest(
+                    kode = brevkode,
+                    letterData = brevdata,
+                    felles = felles,
+                    language = spraak,
+                )
+            )
+        }
+
+        return when {
+            response.status == HttpStatusCode.NotFound -> null
+            response.status.isSuccess() -> response.body()
+            else -> throw BrevbakerServiceException(
+                response.bodyAsText().takeIf { it.isNotBlank() }?.let { "${response.status}: $it" }
+                    ?: "Ukjent feil oppstod ved generering av redigerbart vedlegg for brevkode: $brevkode"
             )
         }
     }

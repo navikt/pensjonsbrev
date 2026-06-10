@@ -4,10 +4,16 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 
-class HentRedigertVedleggHandler : BrevredigeringHandler<HentRedigertVedleggHandler.Request, Edit.Attachment> {
+class HentRedigertVedleggHandler(
+    private val brevmalService: BrevmalService,
+    private val brevdataService: BrevdataService,
+) : BrevredigeringHandler<HentRedigertVedleggHandler.Request, Edit.Attachment> {
 
     data class Request(
         override val brevId: BrevId,
@@ -16,8 +22,13 @@ class HentRedigertVedleggHandler : BrevredigeringHandler<HentRedigertVedleggHand
 
     override suspend fun handle(request: Request): Outcome<Edit.Attachment, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
-        val redigertVedlegg = brev.hentRedigertVedlegg(request.vedleggId) ?: return null
-        return success(redigertVedlegg)
+
+        brev.hentRedigertVedlegg(request.vedleggId)?.let { return success(it) }
+
+        // Ingen overstyring lagret: returner vedlegget slik det produseres fra mal som utgangspunkt.
+        val pesysdata = brevdataService.hentBrevdata(brev)
+        val malVedlegg = brevmalService.renderRedigerbartVedlegg(brev, pesysdata, request.vedleggId) ?: return null
+        return success(malVedlegg.toEdit())
     }
 
     override fun requiresReservasjon(request: Request) = false

@@ -88,6 +88,15 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
+    suspend fun `hent uten overstyring gir vedlegget slik det produseres fra mal`() {
+        val brev = opprettBrev().resultOrFail()
+        brevbakerService.renderRedigerbareVedleggResultat = mapOf("vedlegg1" to attachment("Mal-innhold").toMarkup())
+
+        val hentet = hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()
+        assertThat(hentet.toMarkup()).isEqualTo(attachment("Mal-innhold").toMarkup())
+    }
+
+    @Test
     suspend fun `kan overstyre flere vedlegg paa samme brev`() {
         val brev = opprettBrev().resultOrFail()
         val vedlegg1 = attachment("Innhold 1")

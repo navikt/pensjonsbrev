@@ -123,6 +123,19 @@ open class FakeBrevbakerService(
         alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
         redigerteVedlegg: Map<String, LetterMarkup.Attachment>,
     ): LetterResponse = notYetStubbed()
+    override suspend fun hentRedigerbareVedlegg(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: BrevbakerFelles,
+    ): Map<String, List<LetterMarkup.ParagraphContent.Text>> = notYetStubbed()
+    override suspend fun renderRedigerbartVedlegg(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: BrevbakerFelles,
+        vedleggId: String,
+    ): LetterMarkup.Attachment? = notYetStubbed()
 }
 
 private val objectMapper = jacksonObjectMapper()

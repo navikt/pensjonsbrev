@@ -28,6 +28,12 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     fun renderLetterMarkupWithDataUsage(brevbestilling: BestillBrevRequest<Kode>): LetterMarkupWithDataUsage =
         brevbaker.renderLetterMarkupWithDataUsage(createLetter(brevbestilling))
 
+    fun renderRedigerbartVedleggTitler(brevbestilling: BestillBrevRequest<Kode>): Map<String, List<LetterMarkup.ParagraphContent.Text>> =
+        brevbaker.renderRedigerbartVedleggTitler(createLetter(brevbestilling))
+
+    fun renderRedigerbartVedlegg(brevbestilling: BestillBrevRequest<Kode>, vedleggId: String): LetterMarkup.Attachment? =
+        brevbaker.renderRedigerbartVedlegg(createLetter(brevbestilling), vedleggId)
+
     override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         brevbaker.renderRedigertBrevPDF(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg)
 

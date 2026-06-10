@@ -128,6 +128,16 @@ fun Route.sakBrev(
                 apiRespond(dto2ApiService, brev)
             }
 
+            get("/redigerbareVedlegg") {
+                val brevId = call.parameters.brevId()
+
+                val result = brevredigeringFacade.hentRedigerbareVedlegg(
+                    HentRedigerbareVedleggHandler.Request(brevId = brevId)
+                )
+
+                respondOutcome(dto2ApiService, result) { respond(it) }
+            }
+
             route("/vedlegg/{vedleggId}") {
                 get {
                     val brevId = call.parameters.brevId()
