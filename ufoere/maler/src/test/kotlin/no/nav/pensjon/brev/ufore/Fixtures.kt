@@ -30,6 +30,7 @@ object Fixtures : LetterDataFactory {
         when (letterDataType) {
             InfoEndretUTPgaInntektDto::class -> lagInfoEndretUTPgaInntektDto() as T
             UforeAvslagUtenVurderingDto::class -> lagUforeAvslagUtenVurderingDto() as T
+            UforeAvslagDto::class -> lagUforeAvslagDto() as T
             UforeAvslagEnkelDto::class -> lagUforeAvslagEnkelDto() as T
             UforeAvslagInntektDto::class -> lagUforeAvslagInntektDto() as T
             UforeAvslagUforetidspunkt26Dto::class -> lagUforeAvslagUforetidspunkt26Dto() as T
@@ -101,6 +102,13 @@ object Fixtures : LetterDataFactory {
             VisVurderingFraVilkarvedtak = true,
             visForverrelseEtter26 = true
         )
+    )
+
+    private fun lagUforeAvslagDto() = UforeAvslagDto(
+        pesysData = UforeAvslagDto.UforeAvslagPendata(
+            kravMottattDato = vilkaarligDato,
+        ),
+        EmptySaksbehandlerValg
     )
 
     private fun lagUforeAvslagEnkelDto() = UforeAvslagEnkelDto(

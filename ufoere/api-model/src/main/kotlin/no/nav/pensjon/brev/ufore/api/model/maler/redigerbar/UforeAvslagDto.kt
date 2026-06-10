@@ -12,6 +12,5 @@ data class UforeAvslagDto(
 
     data class UforeAvslagPendata(
         val kravMottattDato: LocalDate,
-        val vurdering: String
     ) : FagsystemBrevdata
 }
