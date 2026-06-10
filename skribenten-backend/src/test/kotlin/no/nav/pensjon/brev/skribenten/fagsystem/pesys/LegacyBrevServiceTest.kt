@@ -121,9 +121,9 @@ class LegacyBrevServiceTest {
 
     private val navansattService = FakeNavansattService(
         harTilgangTilEnhet = mapOf(
-            Pair(principalIdent.id, principalSinNAVEnhet.id) to true
+            Pair(principalIdent, principalSinNAVEnhet.id) to true
         ),
-        navansatte = mapOf(principalIdent.id to "verdens beste saksbehandler")
+        navansatte = mapOf(principalIdent to "verdens beste saksbehandler")
     )
 
 

@@ -93,16 +93,16 @@ abstract class BrevredigeringHandlerTestBase {
 
     private val navAnsattService = FakeNavansattService(
         harTilgangTilEnhet = mapOf(
-            Pair(saksbehandler1Principal.navIdent.id, PRINCIPAL_NAVENHET_ID) to true,
-            Pair(saksbehandler2Principal.navIdent.id, PRINCIPAL_NAVENHET_ID) to true,
-            Pair(attestant1Principal.navIdent.id, PRINCIPAL_NAVENHET_ID) to true,
-            Pair(attestant2Principal.navIdent.id, PRINCIPAL_NAVENHET_ID) to true,
+            Pair(saksbehandler1Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
+            Pair(saksbehandler2Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
+            Pair(attestant1Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
+            Pair(attestant2Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
         ),
         navansatte = mapOf(
-            saksbehandler1Principal.navIdent.id to saksbehandler1Principal.fullName,
-            saksbehandler2Principal.navIdent.id to saksbehandler2Principal.fullName,
-            attestant1Principal.navIdent.id to attestant1Principal.fullName,
-            attestant2Principal.navIdent.id to attestant2Principal.fullName,
+            saksbehandler1Principal.navIdent to saksbehandler1Principal.fullName,
+            saksbehandler2Principal.navIdent to saksbehandler2Principal.fullName,
+            attestant1Principal.navIdent to attestant1Principal.fullName,
+            attestant2Principal.navIdent to attestant2Principal.fullName,
         )
     )
 

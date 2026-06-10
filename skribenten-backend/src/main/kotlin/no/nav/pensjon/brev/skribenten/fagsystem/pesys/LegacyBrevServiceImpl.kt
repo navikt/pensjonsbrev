@@ -36,7 +36,7 @@ class LegacyBrevServiceImpl(
     override suspend fun bestillOgRedigerExstreamBrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
         val brevtittel = if (brevMetadata.isRedigerbarBrevtittel()) request.brevtittel else brevMetadata.dekode
-        val navansatt = navansattService.hentNavansatt(PrincipalInContext.require().navIdent.id)
+        val navansatt = navansattService.hentNavansatt(PrincipalInContext.require().navIdent)
 
         return if (brevtittel.isNullOrBlank()) {
             Api.BestillOgRedigerBrevResponse(failureType = EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT)
@@ -68,7 +68,7 @@ class LegacyBrevServiceImpl(
         saksId: SaksId,
     ): Api.BestillOgRedigerBrevResponse = coroutineScope {
         val brevMetadataDeffered = async { brevmetadataService.getMal(request.brevkode) }
-        val navansatt = navansattService.hentNavansatt(PrincipalInContext.require().navIdent.id)
+        val navansatt = navansattService.hentNavansatt(PrincipalInContext.require().navIdent)
         val brevMetadata = brevMetadataDeffered.await()
 
         if (navansatt == null) {
@@ -171,6 +171,6 @@ class LegacyBrevServiceImpl(
         }
 
     private suspend fun harTilgangTilEnhet(enhetsId: EnhetId): Boolean =
-        navansattService.harTilgangTilEnhet(PrincipalInContext.require().navIdent.id, enhetsId)
+        navansattService.harTilgangTilEnhet(PrincipalInContext.require().navIdent, enhetsId)
 
 }
