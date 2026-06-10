@@ -10,19 +10,19 @@ import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto.Periode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.forlitebetalt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.fpiberegnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.fradragberegnetai
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.fullafp
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.ieo
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.ifu
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.iiap
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.korrigertafp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.forventetPensjonsgivendeInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.fradragBeregnetArbeidsInntekt
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.fullAfp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.inntektEtterOpphoer
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.inntektFoerUttak
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.inntektIAfpPerioden
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.korrigertAfp
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.oppgjoersAar
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.opphorsdato
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.periode
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.pgi
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.tpiberegnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.utbetaltafp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.tidligereArbeidsInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.utbetaltAfp
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.uttaksdato
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -163,7 +163,7 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
 
             includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(pesysData.oppgjoersAar))
-            includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pensjonsgivendeInntekt = pesysData.pgi, oppgjoersAar = pesysData.oppgjoersAar))
+            includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, oppgjoersAar = pesysData.oppgjoersAar))
 
             includePhrase(
                 AfpEtteroppgjoerInnhold.InntektFoerUttakInntektEtterOpphoerFordelingPerPeriode(
@@ -174,9 +174,9 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
                     uttaksdato = pesysData.uttaksdato,
                     opphorsdato = pesysData.opphorsdato,
                     oppgjoersAar = pesysData.oppgjoersAar,
-                    inntektFoerUttak = pesysData.ifu,
-                    inntektEtterOpphoer = pesysData.ieo,
-                    inntektIAfpPerioden = pesysData.iiap,
+                    inntektFoerUttak = pesysData.inntektFoerUttak,
+                    inntektEtterOpphoer = pesysData.inntektEtterOpphoer,
+                    inntektIAfpPerioden = pesysData.inntektIAfpPerioden,
                 ),
             )
 
@@ -184,7 +184,7 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
                 text(
                     bokmal {
                         +"Ved beregningen av pensjonen din la vi til grunn at du ville ha en forventet " +
-                            "arbeidsinntekt på " + pesysData.fpiberegnet.format() + ". Etter våre nye beregninger " +
+                            "arbeidsinntekt på " + pesysData.forventetPensjonsgivendeInntektBeregnet.format() + ". Etter våre nye beregninger " +
                             "har du hatt en arbeidsinntekt i den perioden du har mottatt AFP som er " +
                             "lavere enn den arbeidsinntekten som ble lagt til grunn ved utbetalingen av " +
                             "pensjon. Denne forskjellen er større enn toleransebeløpet som i " +
@@ -193,7 +193,7 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
                     },
                     nynorsk {
                         +"Ved berekninga av pensjonen din la vi til grunn at du ville ha ei forventa " +
-                            "arbeidsinntekt på " + pesysData.fpiberegnet.format() + ". Etter dei nye berekningane " +
+                            "arbeidsinntekt på " + pesysData.forventetPensjonsgivendeInntektBeregnet.format() + ". Etter dei nye berekningane " +
                             "våre har du hatt ei arbeidsinntekt i den perioden du har fått AFP, som er " +
                             "lågare enn den arbeidsinntekta som blei lagd til grunn ved utbetalinga av " +
                             "pensjon. Denne forskjellen er større enn toleransebeløpet som i " +
@@ -212,12 +212,12 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
                     uttaksdato = pesysData.uttaksdato,
                     opphorsdato = pesysData.opphorsdato,
                     oppgjoersAar = pesysData.oppgjoersAar,
-                    fullAfp = pesysData.fullafp,
-                    fradragBeregnetArbeidsInntekt = pesysData.fradragberegnetai,
-                    inntektIAfpPerioden = pesysData.iiap,
-                    tidligereArbeidsInntektBeregnet = pesysData.tpiberegnet,
-                    korrigertAfp = pesysData.korrigertafp,
-                    utbetaltAfp = pesysData.utbetaltafp,
+                    fullAfp = pesysData.fullAfp,
+                    fradragBeregnetArbeidsInntekt = pesysData.fradragBeregnetArbeidsInntekt,
+                    inntektIAfpPerioden = pesysData.inntektIAfpPerioden,
+                    tidligereArbeidsInntektBeregnet = pesysData.tidligereArbeidsInntektBeregnet,
+                    korrigertAfp = pesysData.korrigertAfp,
+                    utbetaltAfp = pesysData.utbetaltAfp,
                     forlitebetalt = pesysData.forlitebetalt,
                 ),
             )
