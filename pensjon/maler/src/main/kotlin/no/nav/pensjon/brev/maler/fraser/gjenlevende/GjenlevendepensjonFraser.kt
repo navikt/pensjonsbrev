@@ -91,3 +91,10 @@ object Samboer12av18Maaneder : OutlinePhrase<LangBokmalEnglish>() {
         }
     }
 }
+
+object AarsakTilEndringFritekster : OutlinePhrase<LangBokmalEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalEnglish, Unit>.template() {
+
+    }
+
+}
