@@ -11,9 +11,7 @@ import {
   type EditedLetter,
   type Identifiable,
   type Item,
-  LITERAL,
   type TextContent,
-  VARIABLE,
 } from "~/types/brevbakerTypes";
 
 const EMPTY_HIGHLIGHTED_IDS: ReadonlySet<number> = new Set();
@@ -114,8 +112,8 @@ export const hasAnyTekstvalgBeenToggledOn = (
 };
 
 const lengthOfText = (textContent: TextContent): number => {
-  if (textContent.type === LITERAL) return (textContent.editedText ?? textContent.text).length;
-  if (textContent.type === VARIABLE) return textContent.text.length;
+  if (textContent.type === "LITERAL") return (textContent.editedText ?? textContent.text).length;
+  if (textContent.type === "VARIABLE") return textContent.text.length;
   return 0;
 };
 

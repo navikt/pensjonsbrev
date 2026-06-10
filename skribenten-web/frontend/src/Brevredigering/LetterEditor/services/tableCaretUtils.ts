@@ -3,12 +3,8 @@ import { type Draft, produce } from "immer";
 import {
   type AnyBlock,
   type Cell,
-  PARAGRAPH,
   type ParagraphBlock,
   type Table,
-  TITLE1,
-  TITLE2,
-  TITLE3,
   type Title1Block,
   type Title2Block,
   type Title3Block,
@@ -212,7 +208,7 @@ function insertBlankLiteralIfEmptyBlock(
   block: ParagraphBlock | Title1Block | Title2Block | Title3Block,
   contentIndex: number,
 ) {
-  if (block.type === PARAGRAPH || block.type === TITLE1 || block.type === TITLE2 || block.type === TITLE3) {
+  if (block.type === "PARAGRAPH" || block.type === "TITLE1" || block.type === "TITLE2" || block.type === "TITLE3") {
     addElements([newLiteral({ editedText: "" })], contentIndex, block.content, block.deletedContent);
     return true;
   }
@@ -340,7 +336,7 @@ export function addRow(
       if (!isTableCellIndex(f)) return;
 
       const block = draft.redigertBrev.blocks[f.blockIndex];
-      if (block.type !== PARAGRAPH) return;
+      if (block.type !== "PARAGRAPH") return;
       const paragraphDraft = block as Draft<ParagraphBlock>;
 
       const content = paragraphDraft.content[f.contentIndex];

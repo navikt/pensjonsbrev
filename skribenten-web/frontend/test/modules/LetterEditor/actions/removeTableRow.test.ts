@@ -3,12 +3,12 @@ import { describe, expect, test } from "vitest";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/LetterEditor/actions/common";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import { LITERAL, type LiteralValue, type TextContent } from "~/types/brevbakerTypes";
+import { type LiteralValue, type TextContent } from "~/types/brevbakerTypes";
 
 import { nyBrevResponse, nyRedigertBrev } from "../../../utils/brevredigeringTestUtils";
 
 function asLiteral(content: TextContent): LiteralValue {
-  if (content.type !== LITERAL) throw new Error(`Expected LITERAL, got ${content.type}`);
+  if (content.type !== "LITERAL") throw new Error(`Expected LITERAL, got ${content.type}`);
   return content;
 }
 
