@@ -44,6 +44,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenle
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.AarsakTilEndringFritekst
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.GjenlevendepensjonBeregningTabell
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.Inntektsoekning
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.Inntektsreduksjon
@@ -129,9 +130,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
             }.orShowIf(saksbehandlerValg.aarsakEndring.equalTo(AarsakEndring.SAMBOER_12_AV_18_MAANEDER)) {
                 includePhrase(Samboer12av18Maaneder)
             }.orShowIf(saksbehandlerValg.aarsakEndring.equalTo(AarsakEndring.FRITEKST)) {
-                paragraph {
-                    text(bokmal { +fritekst("Egen tekst") }, english { +fritekst("Egen tekst") })
-                }
+                includePhrase(AarsakTilEndringFritekst)
+
             }
 
             // ---- PE_GP_tabellA1_utland (brutto != netto) ----
