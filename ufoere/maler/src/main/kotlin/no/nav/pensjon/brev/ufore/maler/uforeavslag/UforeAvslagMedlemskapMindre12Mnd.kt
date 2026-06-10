@@ -52,7 +52,7 @@ object UforeAvslagMedlemskapMindre12Mnd : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Du bor i " + fritekst("BostedslandBeskrivelse") + ". Dette er en land Norge har trygdeavtale med. " })
+                text(bokmal { +"Du bor i " + fritekst("BostedslandBeskrivelse") + ". Dette er et land Norge har trygdeavtale med. " })
             }
             paragraph {
                 text(bokmal { +"For å ha rett til uføretrygd etter " + fritekst("trygdeavtale") + " må du ha vært medlem av folketrygden i minst ett år. " })
