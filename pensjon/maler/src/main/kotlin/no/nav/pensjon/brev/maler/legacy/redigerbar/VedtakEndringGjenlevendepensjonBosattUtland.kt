@@ -45,7 +45,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenle
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.AarsakTilEndringFritekst
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.AvdodFlyktning
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.GjenlevendepensjonBeregningTabell
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonGP
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.Inntektsoekning
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.Inntektsreduksjon
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.Samboer12av18Maaneder
@@ -80,7 +82,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 // Brevgruppe 2
 
 @TemplateModelHelpers
-object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEndringGjenlevendepensjonBosattUtlandDto> {
+object VedtakEndringGjenlevendepensjonBosattUtland :
+    RedigerbarTemplate<VedtakEndringGjenlevendepensjonBosattUtlandDto> {
 
     override val featureToggle = FeatureToggles.vedtakEndringGjenlevendepensjonBosattUtland.toggle
 
@@ -177,43 +180,10 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
             }
 
             // ---- PE_GP_04_028_tekst2: trygdetid og avhengige tilleggsavsnitt ----
-            paragraph {
-                text(bokmal { +"Grunnpensjon" }, english { +"The basic pension" }, BOLD)
-                text(
-                    bokmal {
-                        +" fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er " +
-                                pesysData.beregning.grunnbeloep.format() +
-                                ". For at du skal få full grunnpensjon må avdødes trygdetid være minst 40 år." +
-                                " Trygdetiden tilsvarer det antall år den avdøde har vært medlem i folketrygden etter fylte 16 år." +
-                                " Dersom avdøde var under 67 år på tidspunktet for dødsfallet, blir det beregnet framtidig trygdetid." +
-                                " Den regnes vanligvis fram til og med det året avdøde ville ha fylt 66 år." +
-                                " Ved mindre enn 40 års trygdetid blir grunnpensjonen tilsvarende redusert." +
-                                " Oversikt over trygdetiden er gitt i vedlegg til dette vedtaket."
-                    },
-                    english {
-                        +" is calculated on the basis of the national insurance basic amount, which currently is " +
-                                pesysData.beregning.grunnbeloep.format() +
-                                ". In order for you to receive a full basic pension, the deceased's period of national insurance cover" +
-                                " must be at least 40 years. The period of national insurance cover is equivalent to the years the deceased" +
-                                " had been a member of the National Insurance Scheme since turning 16. If the deceased was under 67 years of" +
-                                " age at the time of death, credit is also given for their future period of national insurance cover." +
-                                " This period is usually calculated to include the years up to and including the year the deceased would have" +
-                                " turned 66. If the deceased had less than 40 years of national insurance cover, the basic pension is reduced" +
-                                " proportionately. An overview of the period of national insurance cover is enclosed with this decision."
-                    },
-                )
-            }
+            includePhrase(GrunnpensjonGP(pesysData.beregning.grunnbeloep))
 
             showIf(pesysData.avdoed.flyktning) {
-                paragraph {
-                    text(
-                        bokmal { +"Pensjonen er beregnet etter full trygdetid (40 år) fordi avdøde var flyktning." },
-                        english {
-                            +"The pension has been calculated based on a full period of national insurance cover (40 years)" +
-                                    " because the deceased was a refugee."
-                        },
-                    )
-                }
+                includePhrase(AvdodFlyktning)
             }
 
             showIf(pesysData.avdoed.doedsfallSkyldesYrkesskade) {
@@ -505,7 +475,12 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                 }
 
                 // Skatt-fork (Saksbehandlervalg.skattAlternativ)
-                showIf(saksbehandlerValg.skattAlternativ.isOneOf(INFORMASJON_OM_SKATT, INFORMASJON_OM_SKATT_OG_KILDESKATT)) {
+                showIf(
+                    saksbehandlerValg.skattAlternativ.isOneOf(
+                        INFORMASJON_OM_SKATT,
+                        INFORMASJON_OM_SKATT_OG_KILDESKATT
+                    )
+                ) {
                     paragraph {
                         text(
                             bokmal {
@@ -525,7 +500,12 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             },
                         )
                     }
-                }.orShowIf(saksbehandlerValg.skattAlternativ.isOneOf(KILDESKATT, INFORMASJON_OM_SKATT_OG_KILDESKATT)) {
+                }.orShowIf(
+                    saksbehandlerValg.skattAlternativ.isOneOf(
+                        KILDESKATT,
+                        INFORMASJON_OM_SKATT_OG_KILDESKATT
+                    )
+                ) {
                     paragraph {
                         text(
                             bokmal {
@@ -567,7 +547,12 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
 
             // ---- PE_GP_04_028_tekst6: etterbetaling / feilutbetaling (kun når netto >= 0) ----
             showIf(pesysData.beregning.netto.greaterThanOrEqual(0)) {
-                showIf(saksbehandlerValg.utbetalingAlternativ.isOneOf(ETTERBETALING, INFORMASJON_OM_ETTERBETALING_OG_FEILUTBETALING)) {
+                showIf(
+                    saksbehandlerValg.utbetalingAlternativ.isOneOf(
+                        ETTERBETALING,
+                        INFORMASJON_OM_ETTERBETALING_OG_FEILUTBETALING
+                    )
+                ) {
                     title1 {
                         text(
                             bokmal { +"Etterbetaling" },
@@ -606,7 +591,12 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             },
                         )
                     }
-                }.orShowIf(saksbehandlerValg.utbetalingAlternativ.isOneOf(FEILUTBETALING, INFORMASJON_OM_ETTERBETALING_OG_FEILUTBETALING)) {
+                }.orShowIf(
+                    saksbehandlerValg.utbetalingAlternativ.isOneOf(
+                        FEILUTBETALING,
+                        INFORMASJON_OM_ETTERBETALING_OG_FEILUTBETALING
+                    )
+                ) {
                     // FEILUTBETALING
                     title1 {
                         text(
@@ -767,8 +757,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                 )
             }
         }
-        includeAttachmentIfNotNull(vedleggOpplysningerOmBeregningenGPUtlandLegacy, pesysData.opplysningerOmBeregningen)
-        includeAttachmentIfNotNull(vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy, pesysData.oversiktOverPensjonensStoerrelse)
+        includeAttachmentIfNotNull(
+            vedleggOpplysningerOmBeregningenGPUtlandLegacy,
+            pesysData.opplysningerOmBeregningen
+        )
+        includeAttachmentIfNotNull(
+            vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy,
+            pesysData.oversiktOverPensjonensStoerrelse
+        )
         includeAttachment(vedleggFolketrygdenBokmalEnglish)
     }
 }
