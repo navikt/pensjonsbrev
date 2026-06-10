@@ -42,6 +42,7 @@ open class BrevredigeringStub : Brevredigering {
     override val attestertAvNavIdent: NavIdent get() = notYetStubbed()
     override val brevtype: LetterMetadata.Brevtype get() = notYetStubbed()
     override val isVedtaksbrev: Boolean get() = notYetStubbed()
+    override val redigerteVedlegg: List<Dto.RedigertVedlegg> get() = notYetStubbed()
 
     override fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon? = notYetStubbed()
     override fun reserver(fra: Instant, saksbehandler: NavIdent, policy: BrevreservasjonPolicy): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen> = notYetStubbed()

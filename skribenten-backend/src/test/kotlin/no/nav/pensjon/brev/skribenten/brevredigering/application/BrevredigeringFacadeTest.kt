@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.db.Hash
+import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
@@ -227,6 +228,9 @@ private fun createFacade(
     hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult> = handlerStub(),
     attesterBrev: BrevredigeringHandler<AttesterBrevHandler.Request, Dto.Brevredigering> = handlerStub(),
     endreValgteVedlegg: BrevredigeringHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering> = handlerStub(),
+    endreRedigertVedlegg: BrevredigeringHandler<EndreRedigertVedleggHandler.Request, Dto.Brevredigering> = handlerStub(),
+    hentRedigertVedlegg: BrevredigeringHandler<HentRedigertVedleggHandler.Request, Edit.Attachment> = handlerStub(),
+    slettRedigertVedlegg: BrevredigeringHandler<SlettRedigertVedleggHandler.Request, Dto.Brevredigering> = handlerStub(),
     tilbakestillBrev: BrevredigeringHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering> = handlerStub(),
     sendBrev: BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult> = handlerStub(),
     brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
@@ -247,6 +251,9 @@ private fun createFacade(
         attesterBrev = attesterBrev,
         tilbakestillBrev = tilbakestillBrev,
         endreValgteVedlegg = endreValgteVedlegg,
+        endreRedigertVedlegg = endreRedigertVedlegg,
+        hentRedigertVedlegg = hentRedigertVedlegg,
+        slettRedigertVedlegg = slettRedigertVedlegg,
         sendBrev = sendBrev,
         slettBrev = handlerStub(),
         diffBrev = diffBrev,

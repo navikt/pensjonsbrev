@@ -50,6 +50,7 @@ interface Brevredigering {
     val attestertAvNavIdent: NavIdent?
     val brevtype: LetterMetadata.Brevtype
     val isVedtaksbrev: Boolean
+    val redigerteVedlegg: List<Dto.RedigertVedlegg>
 
     fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon?
     fun reserver(
@@ -117,6 +118,10 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var valgteVedlegg: List<AlltidValgbartVedleggKode>
         get() = _valgteVedlegg?.valgteVedlegg ?: emptyList()
         set(nyeValgteVedlegg) = settValgteVedlegg(nyeValgteVedlegg)
+
+    private val _redigerteVedlegg by RedigertVedlegg referrersOn RedigertVedleggTable.brevredigering
+    override val redigerteVedlegg: List<Dto.RedigertVedlegg>
+        get() = _redigerteVedlegg.map { Dto.RedigertVedlegg(vedleggId = it.vedleggId, redigertVedlegg = it.redigertVedlegg) }
 
     override var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent
     override var brevtype by BrevredigeringTable.brevtype
@@ -291,6 +296,34 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             }
             refresh(flush = true) // pga. optionalBackReferencedOn, må vi oppdatere referansen til valgteVedlegg-tabellen
         }
+    }
+
+    fun hentRedigertVedlegg(vedleggId: String): Edit.Attachment? =
+        _redigerteVedlegg.firstOrNull { it.vedleggId == vedleggId }?.redigertVedlegg
+
+    fun settRedigertVedlegg(vedleggId: String, redigertVedlegg: Edit.Attachment): Boolean {
+        val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId == vedleggId }
+        if (eksisterende != null) {
+            if (eksisterende.redigertVedlegg == redigertVedlegg) {
+                return false
+            }
+            eksisterende.redigertVedlegg = redigertVedlegg
+        } else {
+            RedigertVedlegg.new {
+                this.brevredigering = this@BrevredigeringEntity.id
+                this.vedleggId = vedleggId
+                this.redigertVedlegg = redigertVedlegg
+            }
+            refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til redigertVedlegg-tabellen
+        }
+        return true
+    }
+
+    fun slettRedigertVedlegg(vedleggId: String): Boolean {
+        val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId == vedleggId } ?: return false
+        eksisterende.delete()
+        refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til redigertVedlegg-tabellen
+        return true
     }
 
     override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering =
