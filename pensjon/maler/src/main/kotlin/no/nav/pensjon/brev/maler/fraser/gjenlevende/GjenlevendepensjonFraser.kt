@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.gjenlevende
 
+import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtak.fritekst
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -92,9 +93,15 @@ object Samboer12av18Maaneder : OutlinePhrase<LangBokmalEnglish>() {
     }
 }
 
-object AarsakTilEndringFritekster : OutlinePhrase<LangBokmalEnglish>() {
+object AarsakTilEndringFritekst : OutlinePhrase<LangBokmalEnglish>() {
     override fun OutlineOnlyScope<LangBokmalEnglish, Unit>.template() {
-
+// Fritekst – andre årsaker som ikke passer i de tre faste alternativene.
+        paragraph {
+            text(
+                bokmal { +fritekst("Beskriv årsaken til at pensjonen endres, og hvilken bestemmelse i folketrygdloven vedtaket er gjort etter.") },
+                nynorsk { +fritekst("Beskriv årsaken til at pensjonen endres, og hvilken bestemmelse i folketrygdloven vedtaket er gjort etter.") },
+                english { +fritekst("Beskriv årsaken til at pensjonen endres, og hvilken bestemmelse i folketrygdloven vedtaket er gjort etter.") },
+            )
+        }
     }
-
 }
