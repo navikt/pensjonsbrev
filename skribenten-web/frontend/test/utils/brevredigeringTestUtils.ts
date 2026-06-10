@@ -216,6 +216,7 @@ export const nyItemList = (args: { id?: Nullable<number>; items?: Item[] }): Ite
   parentId: null,
   items: args.items ?? [nyItem({})],
   deletedItems: [],
+  listType: "PUNKTLISTE",
 });
 
 export const nyTitle1Block = (args: {

@@ -94,38 +94,16 @@ export const FontType: Record<FontType, FontType> = {
 };
 
 export const ITEM_LIST = "ITEM_LIST";
-export type ItemList = Identifiable & {
-  readonly type: typeof ITEM_LIST;
-  readonly items: Item[];
-  readonly deletedItems: number[];
-};
-export type Item = Identifiable & {
-  readonly content: TextContent[];
-  readonly deletedContent: number[];
-};
+export type ItemList = generated.ItemList;
+export type Item = generated.Item;
 
 export const TABLE = "TABLE";
-export type Table = Identifiable & {
-  readonly type: typeof TABLE;
-  readonly rows: Row[];
-  readonly header: Header;
-  readonly deletedRows: number[];
-};
-export type Row = Identifiable & {
-  readonly cells: Cell[];
-};
-export type Cell = Identifiable & {
-  readonly text: TextContent[];
-};
-export type Header = Identifiable & {
-  readonly colSpec: ColumnSpec[];
-};
-export type ColumnSpec = Identifiable & {
-  readonly headerContent: Cell;
-  readonly alignment: ColumnAlignment;
-  readonly span: number;
-};
-export type ColumnAlignment = "LEFT" | "RIGHT";
+export type Table = generated.Table;
+export type Row = generated.Row;
+export type Cell = generated.Cell;
+export type Header = generated.Header;
+export type ColumnSpec = generated.ColumnSpec;
+export type ColumnAlignment = generated.ColumnAlignment;
 
 export type TextContent = generated.Text;
 export type Content = ItemList | TextContent | Table;
@@ -154,10 +132,7 @@ export const TITLE3 = "TITLE3";
 export type Title3Block = generated.Title3;
 
 export const TITLE_INDEX = -1;
-export type Title = {
-  readonly text: TextContent[];
-  readonly deletedContent: number[];
-};
+export type Title = generated.Title;
 
 export interface EditedLetter {
   readonly title: Title;

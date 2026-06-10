@@ -213,6 +213,7 @@ export function itemList(args: {
     type: ITEM_LIST,
     items: withParent(args.items, id),
     deletedItems: args.deletedItems ?? [],
+    listType: "PUNKTLISTE",
   };
 }
 

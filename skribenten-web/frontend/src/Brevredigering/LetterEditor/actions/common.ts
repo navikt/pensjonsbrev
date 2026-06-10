@@ -549,6 +549,7 @@ export function newItemList(args: { id?: Nullable<number>; items: Item[]; delete
     type: "ITEM_LIST",
     items: args.items,
     deletedItems: args.deletedItems ?? [],
+    listType: "PUNKTLISTE",
   };
 }
 
