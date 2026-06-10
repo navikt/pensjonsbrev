@@ -117,10 +117,7 @@ export type Block = Identifiable & {
 };
 
 export const PARAGRAPH = "PARAGRAPH";
-export type ParagraphBlock = Block & {
-  readonly type: typeof PARAGRAPH;
-  readonly content: Content[];
-};
+export type ParagraphBlock = generated.Paragraph;
 
 export const TITLE1 = "TITLE1";
 export type Title1Block = generated.Title1;

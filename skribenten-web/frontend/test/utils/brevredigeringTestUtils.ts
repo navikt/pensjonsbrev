@@ -107,6 +107,7 @@ export const nyRedigertBrev = ({
           newLiteral({ id: -1_114_690_237, parentId: 272_720_182, text: "." }),
         ],
         deletedContent: [],
+        missingFromTemplate: false,
         type: "PARAGRAPH",
       },
       {
@@ -127,6 +128,7 @@ export const nyRedigertBrev = ({
           }),
         ],
         deletedContent: [],
+        missingFromTemplate: false,
         type: "PARAGRAPH",
       },
     ],

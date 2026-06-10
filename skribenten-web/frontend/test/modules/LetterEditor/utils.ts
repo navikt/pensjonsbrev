@@ -104,6 +104,7 @@ export function paragraph(content?: Content[] | ParagraphArgs): ParagraphBlock {
       editable: true,
       type: PARAGRAPH,
       deletedContent: [],
+      missingFromTemplate: false,
       content: withParent(content ?? [], id),
     };
   } else {
@@ -113,6 +114,7 @@ export function paragraph(content?: Content[] | ParagraphArgs): ParagraphBlock {
       editable: true,
       type: PARAGRAPH,
       deletedContent: [],
+      missingFromTemplate: false,
       content: withParent(content.content, content.id ?? null),
     };
   }
