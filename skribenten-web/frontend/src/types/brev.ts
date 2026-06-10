@@ -16,18 +16,18 @@ export type BrevResponse = {
   valgteVedlegg: Nullable<AlltidValgbartVedlegg[]>;
 };
 
-export type OpprettBrevRequest = generated.OpprettBrevRequest;
-export type OppdaterKlarStatusRequest = generated.OppdaterKlarStatusRequest;
-export type DistribusjonstypeRequest = generated.DistribusjonstypeRequest;
-export type OppdaterMottakerRequest = generated.OppdaterMottakerRequest;
-export type ValgteVedleggRequest = generated.ValgteVedleggRequest;
-export type BestillBrevResponse = generated.BestillBrevResponse;
-export type BestillBrevError = generated.Error;
-export type ReservasjonResponse = generated.ReservasjonResponse;
-export type NavAnsatt = generated.NavAnsatt;
-export type BrevType = generated.Brevtype;
-export type BrevInfo = generated.BrevInfo;
-export type BrevStatus = generated.BrevStatus;
+export type OpprettBrevRequest = generated.ApiOpprettBrevRequest;
+export type OppdaterKlarStatusRequest = generated.ApiOppdaterKlarStatusRequest;
+export type DistribusjonstypeRequest = generated.ApiDistribusjonstypeRequest;
+export type OppdaterMottakerRequest = generated.ApiOppdaterMottakerRequest;
+export type ValgteVedleggRequest = generated.ApiValgteVedleggRequest;
+export type BestillBrevResponse = generated.ApiBestillBrevResponse;
+export type BestillBrevError = generated.ApiBestillBrevResponseError;
+export type ReservasjonResponse = generated.ApiReservasjonResponse;
+export type NavAnsatt = generated.ApiNavAnsatt;
+export type BrevType = generated.LetterMetadataBrevtype;
+export type BrevInfo = generated.ApiBrevInfo;
+export type BrevStatus = generated.ApiBrevStatus;
 
 export type OppdaterBrevRequest = {
   saksbehandlerValg: SaksbehandlerValg;
@@ -40,16 +40,16 @@ export const Distribusjonstype: Record<Distribusjonstype, Distribusjonstype> = {
   LOKALPRINT: "LOKALPRINT",
 };
 
-export type Mottaker = generated.OverstyrtMottaker;
-export type Samhandler = generated.Samhandler;
-export type ManueltAdressertTil = generated.ManueltAdressertTil;
+export type Mottaker = generated.ApiOverstyrtMottaker;
+export type Samhandler = generated.ApiOverstyrtMottakerSamhandler;
+export type ManueltAdressertTil = generated.DtoMottakerManueltAdressertTil;
 export const ManueltAdressertTil = {
   BRUKER: "BRUKER",
   ANNEN: "ANNEN",
   IKKE_RELEVANT: "IKKE_RELEVANT",
 } as const;
-export type NorskAdresse = generated.NorskAdresse;
-export type UtenlandskAdresse = generated.UtenlandskAdresse;
+export type NorskAdresse = generated.ApiOverstyrtMottakerNorskAdresse;
+export type UtenlandskAdresse = generated.ApiOverstyrtMottakerUtenlandskAdresse;
 
 export type NAVEnhet = generated.NavEnhet;
 

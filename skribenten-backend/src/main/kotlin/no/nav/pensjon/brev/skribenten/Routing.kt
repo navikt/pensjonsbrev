@@ -78,7 +78,7 @@ fun Application.configureRouting(
                     JacksonSchemaReflectionAdapter(ObjectMapper().skribentenServerJackson())
                 ),
                 routes = {
-                    val excludedRoutePrefixes = listOf("/external/", "/swagger", "/isAlive", "/isReady", "/brevmal/{brevkode}/modelSpecification")
+                    val excludedRoutePrefixes = listOf("/external/", "/swagger", "/isAlive", "/isReady")
                     routingRoot.descendants()
                         .filter { route ->
                             val path = route.path()

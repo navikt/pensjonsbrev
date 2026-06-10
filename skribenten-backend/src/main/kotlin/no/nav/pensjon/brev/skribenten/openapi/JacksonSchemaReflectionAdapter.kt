@@ -2,9 +2,9 @@ package no.nav.pensjon.brev.skribenten.openapi
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ktor.openapi.reflect.SchemaReflectionAdapter
 import kotlin.reflect.KClass
-import kotlin.reflect.KProperty1
 import kotlin.reflect.KType
 import kotlin.reflect.full.findAnnotation
 
@@ -23,10 +23,14 @@ import kotlin.reflect.full.findAnnotation
  * (registered via [ObjectMapper.addMixIn]) to be respected for classes that cannot declare
  * Jackson annotations directly (e.g. classes in published library modules without a Jackson dependency).
  */
-class JacksonSchemaReflectionAdapter : SchemaReflectionAdapter {
 class JacksonSchemaReflectionAdapter(
     private val objectMapper: ObjectMapper?,
 ) : SchemaReflectionAdapter {
+
+    // qualifiedName -> assigned schema name
+    private val assignedNames = mutableMapOf<String, String>()
+    // schema name -> qualifiedName that owns it (for collision detection)
+    private val takenNames = mutableMapOf<String, String>()
 
     /**
      * Returns the effective class to inspect for annotations: the mix-in registered for [kClass]
@@ -35,6 +39,56 @@ class JacksonSchemaReflectionAdapter(
     private fun effectiveClass(kClass: KClass<*>): KClass<*> =
         objectMapper?.findMixInClassFor(kClass.java)?.kotlin ?: kClass
 
+    /**
+     * Returns a dot-free schema name derived from the class hierarchy, guaranteed unique across
+     * all classes seen during this schema generation run.
+     *
+     * Ktor's [mapToPathItemsAndSchema] derives the component key via `title.substringAfterLast('.')`.
+     * Cycle-detection $refs in [JacksonReflectionJsonSchemaInference.buildSchemaOrRef] are emitted
+     * using the name returned here. By returning a dot-free name, both the component key and our
+     * refs always use the same string, avoiding mismatches.
+     *
+     * The candidate name starts from the first uppercase segment (class hierarchy start) and joins
+     * the remaining segments without separator. If that collides with another class, progressively
+     * more leading segments are prepended until a unique name is found. As a last resort the full
+     * qualified name without dots is used.
+     *
+     * Examples:
+     * - `no.nav...TemplateModelSpecification.FieldType` → `TemplateModelSpecificationFieldType`
+     * - `no.nav...LetterMetadata.Distribusjonstype`     → `LetterMetadataDistribusjonstype`
+     * - `no.nav...model.Distribusjon`                  → `Distribusjon`
+     * - `no.foo.Bar` and `no.baz.Bar`                  → `Bar` and `bazBar`
+     *
+     * Package vs class boundary is detected by finding the first dot-segment that starts with an
+     * uppercase letter (Kotlin/Java convention). For generic types, returns null (inlined).
+     */
+    override fun getName(type: KType): String? {
+        if (type.arguments.isNotEmpty()) return null
+        val kClass = type.classifier as? KClass<*> ?: return null
+        val qualifiedName = kClass.qualifiedName ?: return kClass.simpleName
+
+        assignedNames[qualifiedName]?.let { return it }
+
+        val segments = qualifiedName.split('.')
+        val classStart = segments.indexOfFirst { it.firstOrNull()?.isUpperCase() == true }
+            .takeIf { it >= 0 } ?: (segments.size - 1)
+
+        // Minimum candidate: class hierarchy without package prefix (e.g. "FieldType", "TemplateModelSpecificationFieldType")
+        val minCandidate = segments.drop(classStart).joinToString("")
+
+        // Start from minCandidate (seed) and grow outward by prepending package segments one by one
+        // until a unique name is found. Package segments are reversed so the fold starts closest
+        // to the class boundary. Last resort: full qualified name without dots.
+        val uniqueName = segments.take(classStart)
+            .reversed()
+            .runningFold(minCandidate) { acc, seg -> seg + acc }
+            .firstOrNull { takenNames[it].let { owner -> owner == null || owner == qualifiedName } }
+            ?: segments.joinToString("")
+
+        assignedNames[qualifiedName] = uniqueName
+        takenNames[uniqueName] = qualifiedName
+        return uniqueName
+    }
 
     /**
      * Returns the discriminator property name for the given sealed [kClass].

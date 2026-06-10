@@ -59,7 +59,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Land"][];
+                        "application/json": components["schemas"]["BrevLandmodellLand"][];
                     };
                 };
             };
@@ -93,7 +93,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Land"][];
+                        "application/json": components["schemas"]["BrevLandmodellLand"][];
                     };
                 };
             };
@@ -127,7 +127,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Brevmal"][];
+                        "application/json": components["schemas"]["ApiBrevmal"][];
                     };
                 };
             };
@@ -163,7 +163,49 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Brevbaker"];
+                        "application/json": components["schemas"]["LetterMetadataBrevbaker"];
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/brevmal/{brevkode}/modelSpecification": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    brevkode: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["TemplateModelSpecification"];
                     };
                 };
                 404: {
@@ -203,7 +245,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Avtaleland"][];
+                        "application/json": components["schemas"]["PenAvtaleland"][];
                     };
                 };
             };
@@ -241,7 +283,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["SakContext"];
+                        "application/json": components["schemas"]["ApiSakContext"];
                     };
                 };
             };
@@ -277,7 +319,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrukerStatus"];
+                        "application/json": components["schemas"]["ApiBrukerStatus"];
                     };
                 };
                 404: {
@@ -318,7 +360,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["BestillExstreamBrevRequest"];
+                    "application/json": components["schemas"]["ApiBestillExstreamBrevRequest"];
                 };
             };
             responses: {
@@ -327,7 +369,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BestillOgRedigerBrevResponse"];
+                        "application/json": components["schemas"]["ApiBestillOgRedigerBrevResponse"];
                     };
                 };
             };
@@ -358,7 +400,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["BestillEblankettRequest"];
+                    "application/json": components["schemas"]["ApiBestillEblankettRequest"];
                 };
             };
             responses: {
@@ -367,7 +409,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BestillOgRedigerBrevResponse"];
+                        "application/json": components["schemas"]["ApiBestillOgRedigerBrevResponse"];
                     };
                 };
             };
@@ -443,7 +485,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["KontaktinfoResponse"];
+                        "application/json": components["schemas"]["KrrServiceKontaktinfoResponse"];
                     };
                 };
             };
@@ -522,7 +564,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrevInfo"][];
+                        "application/json": components["schemas"]["ApiBrevInfo"][];
                     };
                 };
             };
@@ -539,7 +581,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["OpprettBrevRequest"];
+                    "application/json": components["schemas"]["ApiOpprettBrevRequest"];
                 };
             };
             responses: {
@@ -548,7 +590,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrevResponse"];
+                        "application/json": components["schemas"]["ApiBrevResponse"];
                     };
                 };
                 400: {
@@ -633,7 +675,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrevResponse"];
+                        "application/json": components["schemas"]["ApiBrevResponse"];
                     };
                 };
                 400: {
@@ -700,7 +742,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["OppdaterBrevRequest"];
+                    "application/json": components["schemas"]["ApiOppdaterBrevRequest"];
                 };
             };
             responses: {
@@ -709,7 +751,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrevResponse"];
+                        "application/json": components["schemas"]["ApiBrevResponse"];
                     };
                 };
                 400: {
@@ -845,7 +887,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["DelvisOppdaterBrevRequest"];
+                    "application/json": components["schemas"]["ApiDelvisOppdaterBrevRequest"];
                 };
             };
             responses: {
@@ -854,7 +896,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrevResponse"];
+                        "application/json": components["schemas"]["ApiBrevResponse"];
                     };
                 };
                 400: {
@@ -929,7 +971,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["DistribusjonstypeRequest"];
+                    "application/json": components["schemas"]["ApiDistribusjonstypeRequest"];
                 };
             };
             responses: {
@@ -938,7 +980,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrevInfo"];
+                        "application/json": components["schemas"]["ApiBrevInfo"];
                     };
                 };
                 400: {
@@ -1018,7 +1060,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["ValgteVedleggRequest"];
+                    "application/json": components["schemas"]["ApiValgteVedleggRequest"];
                 };
             };
             responses: {
@@ -1027,7 +1069,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrevResponse"];
+                        "application/json": components["schemas"]["ApiBrevResponse"];
                     };
                 };
                 400: {
@@ -1107,7 +1149,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["OppdaterKlarStatusRequest"];
+                    "application/json": components["schemas"]["ApiOppdaterKlarStatusRequest"];
                 };
             };
             responses: {
@@ -1116,7 +1158,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrevInfo"];
+                        "application/json": components["schemas"]["ApiBrevInfo"];
                     };
                 };
                 400: {
@@ -1196,7 +1238,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["OppdaterMottakerRequest"];
+                    "application/json": components["schemas"]["ApiOppdaterMottakerRequest"];
                 };
             };
             responses: {
@@ -1205,7 +1247,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrevInfo"];
+                        "application/json": components["schemas"]["ApiBrevInfo"];
                     };
                 };
                 400: {
@@ -1276,7 +1318,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrevInfo"];
+                        "application/json": components["schemas"]["ApiBrevInfo"];
                     };
                 };
                 400: {
@@ -1358,7 +1400,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["PdfResponse"];
+                        "application/json": components["schemas"]["ApiPdfResponse"];
                     };
                 };
                 400: {
@@ -1445,7 +1487,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BestillBrevResponse"];
+                        "application/json": components["schemas"]["ApiBestillBrevResponse"];
                     };
                 };
                 400: {
@@ -1530,7 +1572,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrevResponse"];
+                        "application/json": components["schemas"]["ApiBrevResponse"];
                     };
                 };
                 400: {
@@ -1597,7 +1639,7 @@ export interface paths {
             };
             requestBody?: {
                 content: {
-                    "application/json": components["schemas"]["OppdaterAttesteringRequest"];
+                    "application/json": components["schemas"]["ApiOppdaterAttesteringRequest"];
                 };
             };
             responses: {
@@ -1606,7 +1648,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrevResponse"];
+                        "application/json": components["schemas"]["ApiBrevResponse"];
                     };
                 };
                 400: {
@@ -1794,7 +1836,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrevInfo"];
+                        "application/json": components["schemas"]["ApiBrevInfo"];
                     };
                 };
                 404: {
@@ -1841,7 +1883,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrevResponse"];
+                        "application/json": components["schemas"]["ApiBrevResponse"];
                     };
                 };
                 400: {
@@ -1924,7 +1966,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["ReservasjonResponse"];
+                        "application/json": components["schemas"]["ApiReservasjonResponse"];
                     };
                 };
                 400: {
@@ -2010,7 +2052,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["BrevResponse"];
+                        "application/json": components["schemas"]["ApiBrevResponse"];
                     };
                 };
                 400: {
@@ -2096,7 +2138,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Response"];
+                        "application/json": components["schemas"]["DiffBrevHandlerResponse"];
                     };
                 };
                 400: {
@@ -2429,8 +2471,8 @@ export interface components {
                 [key: string]: boolean;
             };
         };
-        /** Land */
-        Land: {
+        /** BrevLandmodellLand */
+        BrevLandmodellLand: {
             kode: string;
             navn: string;
         };
@@ -2440,20 +2482,20 @@ export interface components {
          */
         BrevSystem: "EXSTREAM" | "BREVBAKER";
         /**
-         * DokumentkategoriCode
+         * BrevdataDtoDokumentkategoriCode
          * @enum {string|null}
          */
-        DokumentkategoriCode: "B" | "E_BLANKETT" | "IB" | "SED" | "VB" | null;
+        BrevdataDtoDokumentkategoriCode: "B" | "E_BLANKETT" | "IB" | "SED" | "VB" | null;
         /**
          * SpraakKode
          * @enum {string}
          */
         SpraakKode: "EN" | "NB" | "NN" | "FR" | "SE";
-        /** Brevmal */
-        Brevmal: {
+        /** ApiBrevmal */
+        ApiBrevmal: {
             brevkategori?: string | null;
             brevsystem: components["schemas"]["BrevSystem"];
-            dokumentkategoriCode?: components["schemas"]["DokumentkategoriCode"];
+            dokumentkategoriCode?: components["schemas"]["BrevdataDtoDokumentkategoriCode"];
             id: string;
             name: string;
             redigerbarBrevtittel: boolean;
@@ -2461,34 +2503,34 @@ export interface components {
             spraak: components["schemas"]["SpraakKode"][];
         };
         /**
-         * Brevkontekst
+         * TemplateDescriptionBrevkontekst
          * @enum {string}
          */
-        Brevkontekst: "ALLE" | "SAK" | "VEDTAK";
+        TemplateDescriptionBrevkontekst: "ALLE" | "SAK" | "VEDTAK";
         /**
          * LanguageCode
          * @enum {string}
          */
         LanguageCode: "BOKMAL" | "NYNORSK" | "ENGLISH";
         /**
-         * Brevtype
+         * LetterMetadataBrevtype
          * @enum {string}
          */
-        Brevtype: "VEDTAKSBREV" | "INFORMASJONSBREV";
+        LetterMetadataBrevtype: "VEDTAKSBREV" | "INFORMASJONSBREV";
         /**
-         * Distribusjonstype
+         * LetterMetadataDistribusjonstype
          * @enum {string}
          */
-        Distribusjonstype: "VEDTAK" | "VIKTIG" | "ANNET";
+        LetterMetadataDistribusjonstype: "VEDTAK" | "VIKTIG" | "ANNET";
         /** LetterMetadata */
         LetterMetadata: {
-            brevtype: components["schemas"]["Brevtype"];
+            brevtype: components["schemas"]["LetterMetadataBrevtype"];
             displayTitle: string;
-            distribusjonstype: components["schemas"]["Distribusjonstype"];
+            distribusjonstype: components["schemas"]["LetterMetadataDistribusjonstype"];
         };
-        /** Redigerbar */
-        Redigerbar: {
-            brevkontekst: components["schemas"]["Brevkontekst"];
+        /** TemplateDescriptionRedigerbar */
+        TemplateDescriptionRedigerbar: {
+            brevkontekst: components["schemas"]["TemplateDescriptionBrevkontekst"];
             kategori: string;
             languages: components["schemas"]["LanguageCode"][];
             letterDataClass: string;
@@ -2496,22 +2538,87 @@ export interface components {
             name: string;
             sakstyper: string[];
         };
-        /** Brevbaker */
-        Brevbaker: {
+        /** LetterMetadataBrevbaker */
+        LetterMetadataBrevbaker: {
             brevkode: string;
-            brevkontekst: components["schemas"]["Brevkontekst"];
-            data: components["schemas"]["Redigerbar"];
+            brevkontekst: components["schemas"]["TemplateDescriptionBrevkontekst"];
+            data: components["schemas"]["TemplateDescriptionRedigerbar"];
             isRedigerbart: boolean;
             isForSakskontekst: boolean;
             isForVedtakskontekst: boolean;
         };
-        /** Avtaleland */
-        Avtaleland: {
+        /** TemplateModelSpecificationFieldTypeArray */
+        TemplateModelSpecificationFieldTypeArray: {
+            displayText?: string | null;
+            items: components["schemas"]["TemplateModelSpecificationFieldType"];
+            nullable: boolean;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "array";
+        };
+        /** TemplateModelSpecificationFieldTypeEnumEntry */
+        TemplateModelSpecificationFieldTypeEnumEntry: {
+            displayText?: string | null;
+            value: string;
+        };
+        /** TemplateModelSpecificationFieldTypeEnum */
+        TemplateModelSpecificationFieldTypeEnum: {
+            displayText?: string | null;
+            nullable: boolean;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "enum";
+            values: components["schemas"]["TemplateModelSpecificationFieldTypeEnumEntry"][];
+        };
+        /** TemplateModelSpecificationFieldTypeObject */
+        TemplateModelSpecificationFieldTypeObject: {
+            displayText?: string | null;
+            nullable: boolean;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "object";
+            typeName: string;
+        };
+        /**
+         * TemplateModelSpecificationFieldTypeScalarKind
+         * @enum {string}
+         */
+        TemplateModelSpecificationFieldTypeScalarKind: "NUMBER" | "DOUBLE" | "STRING" | "BOOLEAN" | "DATE";
+        /** TemplateModelSpecificationFieldTypeScalar */
+        TemplateModelSpecificationFieldTypeScalar: {
+            displayText?: string | null;
+            kind: components["schemas"]["TemplateModelSpecificationFieldTypeScalarKind"];
+            nullable: boolean;
+            /**
+             * @description discriminator enum property added by openapi-typescript
+             * @enum {string}
+             */
+            type: "scalar";
+        };
+        /** TemplateModelSpecificationFieldType */
+        TemplateModelSpecificationFieldType: components["schemas"]["TemplateModelSpecificationFieldTypeArray"] | components["schemas"]["TemplateModelSpecificationFieldTypeEnum"] | components["schemas"]["TemplateModelSpecificationFieldTypeObject"] | components["schemas"]["TemplateModelSpecificationFieldTypeScalar"];
+        /** TemplateModelSpecification */
+        TemplateModelSpecification: {
+            letterModelTypeName?: string | null;
+            types: {
+                [key: string]: {
+                    [key: string]: components["schemas"]["TemplateModelSpecificationFieldType"];
+                };
+            };
+        };
+        /** PenAvtaleland */
+        PenAvtaleland: {
             kode: string;
             navn: string;
         };
-        /** Navn */
-        Navn: {
+        /** FagsakNavn */
+        FagsakNavn: {
             etternavn: string;
             fornavn: string;
             mellomnavn?: string | null;
@@ -2521,26 +2628,26 @@ export interface components {
             behandlingsnummer?: string | null;
             /** Format: date */
             foedselsdato: string;
-            navn: components["schemas"]["Navn"];
+            navn: components["schemas"]["FagsakNavn"];
             pid: string;
             sakType: string;
             saksId: number;
         };
-        /** SakContext */
-        SakContext: {
+        /** ApiSakContext */
+        ApiSakContext: {
             brevmalKoder: string[];
             sak: components["schemas"]["Fagsak"];
         };
-        /** BrukerStatus */
-        BrukerStatus: {
+        /** ApiBrukerStatus */
+        ApiBrukerStatus: {
             adressebeskyttelse: boolean;
             /** Format: date */
             doedsfall?: string | null;
             erSkjermet: boolean;
             vergemaal: boolean;
         };
-        /** BestillExstreamBrevRequest */
-        BestillExstreamBrevRequest: {
+        /** ApiBestillExstreamBrevRequest */
+        ApiBestillExstreamBrevRequest: {
             brevkode: string;
             brevtittel?: string | null;
             enhetsId: string;
@@ -2549,42 +2656,42 @@ export interface components {
             vedtaksId?: number | null;
         };
         /**
-         * FailureType
+         * ApiBestillOgRedigerBrevResponseFailureType
          * @enum {string|null}
          */
-        FailureType: "EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT" | "EXSTREAM_REDIGERING_GENERELL" | "FERDIGSTILLING_TIMEOUT" | "SAF_ERROR" | "SKRIBENTEN_INTERNAL_ERROR" | "ENHET_UNAUTHORIZED" | "NAVANSATT_MANGLER_NAVN" | null;
-        /** BestillOgRedigerBrevResponse */
-        BestillOgRedigerBrevResponse: {
-            failureType?: components["schemas"]["FailureType"];
+        ApiBestillOgRedigerBrevResponseFailureType: "EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT" | "EXSTREAM_REDIGERING_GENERELL" | "FERDIGSTILLING_TIMEOUT" | "SAF_ERROR" | "SKRIBENTEN_INTERNAL_ERROR" | "ENHET_UNAUTHORIZED" | "NAVANSATT_MANGLER_NAVN" | null;
+        /** ApiBestillOgRedigerBrevResponse */
+        ApiBestillOgRedigerBrevResponse: {
+            failureType?: components["schemas"]["ApiBestillOgRedigerBrevResponseFailureType"];
             journalpostId?: number | null;
             url?: string | null;
         };
-        /** BestillEblankettRequest */
-        BestillEblankettRequest: {
+        /** ApiBestillEblankettRequest */
+        ApiBestillEblankettRequest: {
             brevkode: string;
             enhetsId: string;
             landkode: string;
             mottakerText: string;
         };
         /**
-         * Adressetype
+         * KontaktAdresseDtoAdressetype
          * @enum {string}
          */
-        Adressetype: "MATRIKKELADRESSE" | "POSTADRESSE_I_FRITT_FORMAT" | "POSTBOKSADRESSE" | "REGOPPSLAG_ADRESSE" | "UKJENT_BOSTED" | "UTENLANDSK_ADRESSE" | "UTENLANDSK_ADRESSE_I_FRITT_FORMAT" | "VEGADRESSE" | "VERGE_PERSON_POSTADRESSE" | "VERGE_SAMHANDLER_POSTADRESSE";
+        KontaktAdresseDtoAdressetype: "MATRIKKELADRESSE" | "POSTADRESSE_I_FRITT_FORMAT" | "POSTBOKSADRESSE" | "REGOPPSLAG_ADRESSE" | "UKJENT_BOSTED" | "UTENLANDSK_ADRESSE" | "UTENLANDSK_ADRESSE_I_FRITT_FORMAT" | "VEGADRESSE" | "VERGE_PERSON_POSTADRESSE" | "VERGE_SAMHANDLER_POSTADRESSE";
         /** KontaktAdresseDto */
         KontaktAdresseDto: {
             adresseString: string;
             adresselinjer: string[];
-            type: components["schemas"]["Adressetype"];
+            type: components["schemas"]["KontaktAdresseDtoAdressetype"];
         };
         /**
-         * no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoResponse.FailureType
+         * KrrServiceKontaktinfoResponseFailureType
          * @enum {string|null}
          */
-        "no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoResponse.FailureType": "NOT_FOUND" | "ERROR" | null;
-        /** KontaktinfoResponse */
-        KontaktinfoResponse: {
-            failure?: components["schemas"]["no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoResponse.FailureType"];
+        KrrServiceKontaktinfoResponseFailureType: "NOT_FOUND" | "ERROR" | null;
+        /** KrrServiceKontaktinfoResponse */
+        KrrServiceKontaktinfoResponse: {
+            failure?: components["schemas"]["KrrServiceKontaktinfoResponseFailureType"];
             spraakKode?: components["schemas"]["SpraakKode"];
         };
         /** NavEnhet */
@@ -2598,16 +2705,16 @@ export interface components {
          */
         Distribusjon: "SENTRALPRINT" | "LOKALPRINT";
         /**
-         * ManueltAdressertTil
+         * DtoMottakerManueltAdressertTil
          * @enum {string|null}
          */
-        ManueltAdressertTil: "BRUKER" | "ANNEN" | "IKKE_RELEVANT" | null;
-        /** NorskAdresse */
-        NorskAdresse: {
+        DtoMottakerManueltAdressertTil: "BRUKER" | "ANNEN" | "IKKE_RELEVANT" | null;
+        /** ApiOverstyrtMottakerNorskAdresse */
+        ApiOverstyrtMottakerNorskAdresse: {
             adresselinje1?: string | null;
             adresselinje2?: string | null;
             adresselinje3?: string | null;
-            manueltAdressertTil?: components["schemas"]["ManueltAdressertTil"];
+            manueltAdressertTil?: components["schemas"]["DtoMottakerManueltAdressertTil"];
             navn: string;
             postnummer: string;
             poststed: string;
@@ -2617,8 +2724,8 @@ export interface components {
              */
             type: "NorskAdresse";
         };
-        /** Samhandler */
-        Samhandler: {
+        /** ApiOverstyrtMottakerSamhandler */
+        ApiOverstyrtMottakerSamhandler: {
             navn?: string | null;
             tssId: string;
             /**
@@ -2627,13 +2734,13 @@ export interface components {
              */
             type: "Samhandler";
         };
-        /** UtenlandskAdresse */
-        UtenlandskAdresse: {
+        /** ApiOverstyrtMottakerUtenlandskAdresse */
+        ApiOverstyrtMottakerUtenlandskAdresse: {
             adresselinje1: string;
             adresselinje2?: string | null;
             adresselinje3?: string | null;
             landkode: string;
-            manueltAdressertTil?: components["schemas"]["ManueltAdressertTil"];
+            manueltAdressertTil?: components["schemas"]["DtoMottakerManueltAdressertTil"];
             navn: string;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -2641,83 +2748,83 @@ export interface components {
              */
             type: "UtenlandskAdresse";
         };
-        /** OverstyrtMottaker */
-        OverstyrtMottaker: components["schemas"]["NorskAdresse"] | components["schemas"]["Samhandler"] | components["schemas"]["UtenlandskAdresse"] | null;
-        /** NavAnsatt */
-        NavAnsatt: {
+        /** ApiOverstyrtMottaker */
+        ApiOverstyrtMottaker: components["schemas"]["ApiOverstyrtMottakerNorskAdresse"] | components["schemas"]["ApiOverstyrtMottakerSamhandler"] | components["schemas"]["ApiOverstyrtMottakerUtenlandskAdresse"] | null;
+        /** ApiNavAnsatt */
+        ApiNavAnsatt: {
             id: string;
             navn?: string | null;
         };
-        /** Arkivert */
-        Arkivert: {
+        /** ApiBrevStatusArkivert */
+        ApiBrevStatusArkivert: {
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             type: "Arkivert";
         };
-        /** Attestering */
-        Attestering: {
+        /** ApiBrevStatusAttestering */
+        ApiBrevStatusAttestering: {
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             type: "Attestering";
         };
-        /** Kladd */
-        Kladd: {
+        /** ApiBrevStatusKladd */
+        ApiBrevStatusKladd: {
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             type: "Kladd";
         };
-        /** Klar */
-        Klar: {
-            attestertAv?: components["schemas"]["NavAnsatt"] | null;
+        /** ApiBrevStatusKlar */
+        ApiBrevStatusKlar: {
+            attestertAv?: components["schemas"]["ApiNavAnsatt"] | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             type: "Klar";
         };
-        /** UnderRedigering */
-        UnderRedigering: {
-            redigeresAv: components["schemas"]["NavAnsatt"];
+        /** ApiBrevStatusUnderRedigering */
+        ApiBrevStatusUnderRedigering: {
+            redigeresAv: components["schemas"]["ApiNavAnsatt"];
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             type: "UnderRedigering";
         };
-        /** BrevStatus */
-        BrevStatus: components["schemas"]["Arkivert"] | components["schemas"]["Attestering"] | components["schemas"]["Kladd"] | components["schemas"]["Klar"] | components["schemas"]["UnderRedigering"];
-        /** BrevInfo */
-        BrevInfo: {
+        /** ApiBrevStatus */
+        ApiBrevStatus: components["schemas"]["ApiBrevStatusArkivert"] | components["schemas"]["ApiBrevStatusAttestering"] | components["schemas"]["ApiBrevStatusKladd"] | components["schemas"]["ApiBrevStatusKlar"] | components["schemas"]["ApiBrevStatusUnderRedigering"];
+        /** ApiBrevInfo */
+        ApiBrevInfo: {
             avsenderEnhet: components["schemas"]["NavEnhet"];
             brevkode: string;
             brevtittel: string;
-            brevtype: components["schemas"]["Brevtype"];
+            brevtype: components["schemas"]["LetterMetadataBrevtype"];
             distribusjonstype: components["schemas"]["Distribusjon"];
             id: number;
             journalpostId?: number | null;
-            mottaker?: components["schemas"]["OverstyrtMottaker"];
+            mottaker?: components["schemas"]["ApiOverstyrtMottaker"];
             /** Format: date-time */
             opprettet: string;
-            opprettetAv: components["schemas"]["NavAnsatt"];
+            opprettetAv: components["schemas"]["ApiNavAnsatt"];
             saksId: number;
             /** Format: date-time */
             sistredigert: string;
-            sistredigertAv: components["schemas"]["NavAnsatt"];
+            sistredigertAv: components["schemas"]["ApiNavAnsatt"];
             spraak: components["schemas"]["SpraakKode"];
-            status: components["schemas"]["BrevStatus"];
+            status: components["schemas"]["ApiBrevStatus"];
             vedtaksId?: number | null;
         };
-        /** OpprettBrevRequest */
-        OpprettBrevRequest: {
+        /** ApiOpprettBrevRequest */
+        ApiOpprettBrevRequest: {
             avsenderEnhetsId: string;
             brevkode: string;
-            mottaker?: components["schemas"]["OverstyrtMottaker"];
+            mottaker?: components["schemas"]["ApiOverstyrtMottaker"];
             reserverForRedigering?: boolean | null;
             saksbehandlerValg: {
                 [key: string]: unknown;
@@ -2730,31 +2837,31 @@ export interface components {
             melding: string;
             tittel: string;
         };
-        /** Property */
-        Property: {
+        /** LetterMarkupWithDataUsageProperty */
+        LetterMarkupWithDataUsageProperty: {
             propertyName: string;
             typeName: string;
         };
         /**
-         * FontType
+         * EditParagraphContentTextFontType
          * @enum {string}
          */
-        FontType: "PLAIN" | "BOLD" | "ITALIC";
+        EditParagraphContentTextFontType: "PLAIN" | "BOLD" | "ITALIC";
         /**
          * ElementTags
          * @enum {string}
          */
         ElementTags: "FRITEKST" | "REDIGERBAR_DATA";
         /**
-         * Type
+         * EditParagraphContentType
          * @enum {string}
          */
-        Type: "ITEM_LIST" | "LITERAL" | "VARIABLE" | "TABLE" | "NEW_LINE";
-        /** Literal */
-        Literal: {
-            editedFontType?: components["schemas"]["FontType"];
+        EditParagraphContentType: "ITEM_LIST" | "LITERAL" | "VARIABLE" | "TABLE" | "NEW_LINE";
+        /** EditParagraphContentTextLiteral */
+        EditParagraphContentTextLiteral: {
+            editedFontType?: components["schemas"]["EditParagraphContentTextFontType"];
             editedText?: string | null;
-            fontType: components["schemas"]["FontType"];
+            fontType: components["schemas"]["EditParagraphContentTextFontType"];
             id?: number | null;
             parentId?: number | null;
             tags: components["schemas"]["ElementTags"][];
@@ -2765,9 +2872,9 @@ export interface components {
              */
             type: "LITERAL";
         };
-        /** NewLine */
-        NewLine: {
-            fontType: components["schemas"]["FontType"];
+        /** EditParagraphContentTextNewLine */
+        EditParagraphContentTextNewLine: {
+            fontType: components["schemas"]["EditParagraphContentTextFontType"];
             id?: number | null;
             parentId?: number | null;
             text: string;
@@ -2777,9 +2884,9 @@ export interface components {
              */
             type: "NEW_LINE";
         };
-        /** Variable */
-        Variable: {
-            fontType: components["schemas"]["FontType"];
+        /** EditParagraphContentTextVariable */
+        EditParagraphContentTextVariable: {
+            fontType: components["schemas"]["EditParagraphContentTextFontType"];
             id?: number | null;
             parentId?: number | null;
             tags: components["schemas"]["ElementTags"][];
@@ -2790,11 +2897,11 @@ export interface components {
              */
             type: "VARIABLE";
         };
-        /** Text */
-        Text: components["schemas"]["Literal"] | components["schemas"]["NewLine"] | components["schemas"]["Variable"];
-        /** Item */
-        Item: {
-            content: components["schemas"]["Text"][];
+        /** EditParagraphContentText */
+        EditParagraphContentText: components["schemas"]["EditParagraphContentTextLiteral"] | components["schemas"]["EditParagraphContentTextNewLine"] | components["schemas"]["EditParagraphContentTextVariable"];
+        /** EditParagraphContentItemListItem */
+        EditParagraphContentItemListItem: {
+            content: components["schemas"]["EditParagraphContentText"][];
             deletedContent: number[];
             id?: number | null;
             parentId?: number | null;
@@ -2804,11 +2911,11 @@ export interface components {
          * @enum {string}
          */
         Listetype: "PUNKTLISTE" | "NUMMERERT_LISTE";
-        /** ItemList */
-        ItemList: {
+        /** EditParagraphContentItemList */
+        EditParagraphContentItemList: {
             deletedItems: number[];
             id?: number | null;
-            items: components["schemas"]["Item"][];
+            items: components["schemas"]["EditParagraphContentItemListItem"][];
             listType: components["schemas"]["Listetype"];
             parentId?: number | null;
             /**
@@ -2818,64 +2925,64 @@ export interface components {
             type: "ITEM_LIST";
         };
         /**
-         * ColumnAlignment
+         * EditParagraphContentTableColumnAlignment
          * @enum {string}
          */
-        ColumnAlignment: "LEFT" | "RIGHT";
-        /** Cell */
-        Cell: {
+        EditParagraphContentTableColumnAlignment: "LEFT" | "RIGHT";
+        /** EditParagraphContentTableCell */
+        EditParagraphContentTableCell: {
             id?: number | null;
             parentId?: number | null;
-            text: components["schemas"]["Text"][];
+            text: components["schemas"]["EditParagraphContentText"][];
         };
-        /** ColumnSpec */
-        ColumnSpec: {
-            alignment: components["schemas"]["ColumnAlignment"];
-            headerContent: components["schemas"]["Cell"];
+        /** EditParagraphContentTableColumnSpec */
+        EditParagraphContentTableColumnSpec: {
+            alignment: components["schemas"]["EditParagraphContentTableColumnAlignment"];
+            headerContent: components["schemas"]["EditParagraphContentTableCell"];
             id?: number | null;
             parentId?: number | null;
             span: number;
         };
-        /** Header */
-        Header: {
-            colSpec: components["schemas"]["ColumnSpec"][];
+        /** EditParagraphContentTableHeader */
+        EditParagraphContentTableHeader: {
+            colSpec: components["schemas"]["EditParagraphContentTableColumnSpec"][];
             id?: number | null;
             parentId?: number | null;
         };
-        /** Row */
-        Row: {
-            cells: components["schemas"]["Cell"][];
+        /** EditParagraphContentTableRow */
+        EditParagraphContentTableRow: {
+            cells: components["schemas"]["EditParagraphContentTableCell"][];
             id?: number | null;
             parentId?: number | null;
         };
-        /** Table */
-        Table: {
+        /** EditParagraphContentTable */
+        EditParagraphContentTable: {
             deletedRows: number[];
-            header: components["schemas"]["Header"];
+            header: components["schemas"]["EditParagraphContentTableHeader"];
             id?: number | null;
             parentId?: number | null;
-            rows: components["schemas"]["Row"][];
+            rows: components["schemas"]["EditParagraphContentTableRow"][];
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
             type: "TABLE";
         };
-        /** ParagraphContent */
-        ParagraphContent: components["schemas"]["ItemList"] | components["schemas"]["Table"] | components["schemas"]["Literal"] | components["schemas"]["NewLine"] | components["schemas"]["Variable"];
+        /** EditParagraphContent */
+        EditParagraphContent: components["schemas"]["EditParagraphContentItemList"] | components["schemas"]["EditParagraphContentTable"] | components["schemas"]["EditParagraphContentTextLiteral"] | components["schemas"]["EditParagraphContentTextNewLine"] | components["schemas"]["EditParagraphContentTextVariable"];
         /**
-         * no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type
+         * EditBlockType
          * @enum {string}
          */
-        "no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type": "TITLE1" | "TITLE2" | "TITLE3" | "PARAGRAPH";
-        /** Paragraph */
-        Paragraph: {
-            content: components["schemas"]["ParagraphContent"][];
+        EditBlockType: "TITLE1" | "TITLE2" | "TITLE3" | "PARAGRAPH";
+        /** EditBlockParagraph */
+        EditBlockParagraph: {
+            content: components["schemas"]["EditParagraphContent"][];
             deletedContent: number[];
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
-            originalType?: components["schemas"]["no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type"];
+            originalType?: components["schemas"]["EditBlockType"];
             parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -2883,14 +2990,14 @@ export interface components {
              */
             type: "PARAGRAPH";
         };
-        /** Title1 */
-        Title1: {
-            content: components["schemas"]["Text"][];
+        /** EditBlockTitle1 */
+        EditBlockTitle1: {
+            content: components["schemas"]["EditParagraphContentText"][];
             deletedContent: number[];
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
-            originalType?: components["schemas"]["no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type"];
+            originalType?: components["schemas"]["EditBlockType"];
             parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -2898,14 +3005,14 @@ export interface components {
              */
             type: "TITLE1";
         };
-        /** Title2 */
-        Title2: {
-            content: components["schemas"]["Text"][];
+        /** EditBlockTitle2 */
+        EditBlockTitle2: {
+            content: components["schemas"]["EditParagraphContentText"][];
             deletedContent: number[];
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
-            originalType?: components["schemas"]["no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type"];
+            originalType?: components["schemas"]["EditBlockType"];
             parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -2913,14 +3020,14 @@ export interface components {
              */
             type: "TITLE2";
         };
-        /** Title3 */
-        Title3: {
-            content: components["schemas"]["Text"][];
+        /** EditBlockTitle3 */
+        EditBlockTitle3: {
+            content: components["schemas"]["EditParagraphContentText"][];
             deletedContent: number[];
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
-            originalType?: components["schemas"]["no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type"];
+            originalType?: components["schemas"]["EditBlockType"];
             parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -2928,10 +3035,10 @@ export interface components {
              */
             type: "TITLE3";
         };
-        /** Block */
-        Block: components["schemas"]["Paragraph"] | components["schemas"]["Title1"] | components["schemas"]["Title2"] | components["schemas"]["Title3"];
-        /** Sakspart */
-        Sakspart: {
+        /** EditBlock */
+        EditBlock: components["schemas"]["EditBlockParagraph"] | components["schemas"]["EditBlockTitle1"] | components["schemas"]["EditBlockTitle2"] | components["schemas"]["EditBlockTitle3"];
+        /** LetterMarkupSakspart */
+        LetterMarkupSakspart: {
             annenMottakerNavn?: string | null;
             /** Format: date */
             dokumentDato: string;
@@ -2939,25 +3046,25 @@ export interface components {
             gjelderNavn: string;
             saksnummer: string;
         };
-        /** Signatur */
-        Signatur: {
+        /** LetterMarkupSignatur */
+        LetterMarkupSignatur: {
             attesterendeSaksbehandlerNavn?: string | null;
             hilsenTekst: string;
             navAvsenderEnhet: string;
             saksbehandlerNavn?: string | null;
         };
-        /** Title */
-        Title: {
+        /** EditTitle */
+        EditTitle: {
             deletedContent: number[];
-            text: components["schemas"]["Text"][];
+            text: components["schemas"]["EditParagraphContentText"][];
         };
-        /** Letter */
-        Letter: {
-            blocks: components["schemas"]["Block"][];
+        /** EditLetter */
+        EditLetter: {
+            blocks: components["schemas"]["EditBlock"][];
             deletedBlocks: number[];
-            sakspart: components["schemas"]["Sakspart"];
-            signatur: components["schemas"]["Signatur"];
-            title: components["schemas"]["Title"];
+            sakspart: components["schemas"]["LetterMarkupSakspart"];
+            signatur: components["schemas"]["LetterMarkupSignatur"];
+            title: components["schemas"]["EditTitle"];
         };
         /** SaksbehandlerValgBrevdata */
         SaksbehandlerValgBrevdata: Record<string, never>;
@@ -2967,61 +3074,61 @@ export interface components {
             spraak: components["schemas"]["LanguageCode"][];
             visningstekst: string;
         };
-        /** BrevResponse */
-        BrevResponse: {
-            info: components["schemas"]["BrevInfo"];
-            propertyUsage?: components["schemas"]["Property"][] | null;
-            redigertBrev: components["schemas"]["Letter"];
+        /** ApiBrevResponse */
+        ApiBrevResponse: {
+            info: components["schemas"]["ApiBrevInfo"];
+            propertyUsage?: components["schemas"]["LetterMarkupWithDataUsageProperty"][] | null;
+            redigertBrev: components["schemas"]["EditLetter"];
             redigertBrevHash: string;
             saksbehandlerValg: components["schemas"]["SaksbehandlerValgBrevdata"];
             valgteVedlegg?: components["schemas"]["AlltidValgbartVedleggBrevkode"][] | null;
         };
-        /** OppdaterBrevRequest */
-        OppdaterBrevRequest: {
-            redigertBrev: components["schemas"]["Letter"];
+        /** ApiOppdaterBrevRequest */
+        ApiOppdaterBrevRequest: {
+            redigertBrev: components["schemas"]["EditLetter"];
             saksbehandlerValg: {
                 [key: string]: unknown;
             };
         };
-        /** DelvisOppdaterBrevRequest */
-        DelvisOppdaterBrevRequest: {
+        /** ApiDelvisOppdaterBrevRequest */
+        ApiDelvisOppdaterBrevRequest: {
             alltidValgbareVedlegg?: components["schemas"]["AlltidValgbartVedleggBrevkode"][] | null;
         };
-        /** DistribusjonstypeRequest */
-        DistribusjonstypeRequest: {
+        /** ApiDistribusjonstypeRequest */
+        ApiDistribusjonstypeRequest: {
             distribusjon: components["schemas"]["Distribusjon"];
         };
-        /** ValgteVedleggRequest */
-        ValgteVedleggRequest: {
+        /** ApiValgteVedleggRequest */
+        ApiValgteVedleggRequest: {
             valgteVedlegg: components["schemas"]["AlltidValgbartVedleggBrevkode"][];
         };
-        /** OppdaterKlarStatusRequest */
-        OppdaterKlarStatusRequest: {
+        /** ApiOppdaterKlarStatusRequest */
+        ApiOppdaterKlarStatusRequest: {
             klar: boolean;
         };
-        /** OppdaterMottakerRequest */
-        OppdaterMottakerRequest: {
-            mottaker: components["schemas"]["OverstyrtMottaker"];
+        /** ApiOppdaterMottakerRequest */
+        ApiOppdaterMottakerRequest: {
+            mottaker: components["schemas"]["ApiOverstyrtMottaker"];
         };
-        /** PdfResponse */
-        PdfResponse: {
+        /** ApiPdfResponse */
+        ApiPdfResponse: {
             pdf: Record<string, never>[];
             rendretBrevErEndret: boolean;
         };
-        /** Error */
-        Error: {
+        /** ApiBestillBrevResponseError */
+        ApiBestillBrevResponseError: {
             beskrivelse?: string | null;
             brevIkkeStoettet?: string | null;
             tekniskgrunn?: string | null;
         };
-        /** BestillBrevResponse */
-        BestillBrevResponse: {
-            error?: components["schemas"]["Error"] | null;
+        /** ApiBestillBrevResponse */
+        ApiBestillBrevResponse: {
+            error?: components["schemas"]["ApiBestillBrevResponseError"] | null;
             journalpostId?: number | null;
         };
-        /** OppdaterAttesteringRequest */
-        OppdaterAttesteringRequest: {
-            redigertBrev: components["schemas"]["Letter"];
+        /** ApiOppdaterAttesteringRequest */
+        ApiOppdaterAttesteringRequest: {
+            redigertBrev: components["schemas"]["EditLetter"];
             saksbehandlerValg: {
                 [key: string]: unknown;
             };
@@ -3038,24 +3145,24 @@ export interface components {
             seconds: number;
             nanos: number;
         };
-        /** ReservasjonResponse */
-        ReservasjonResponse: {
+        /** ApiReservasjonResponse */
+        ApiReservasjonResponse: {
             expiresIn: components["schemas"]["Duration"];
             redigertBrevHash: string;
-            reservertAv: components["schemas"]["NavAnsatt"];
+            reservertAv: components["schemas"]["ApiNavAnsatt"];
             /** Format: date-time */
             timestamp: string;
             vellykket: boolean;
         };
-        /** Response */
-        Response: Record<string, never>;
+        /** DiffBrevHandlerResponse */
+        DiffBrevHandlerResponse: Record<string, never>;
         /**
          * SamhandlerTypeCode
          * @enum {string}
          */
         SamhandlerTypeCode: "AA" | "ADVO" | "AFPO" | "AK" | "AMI" | "AN" | "AP" | "APOP" | "APOS" | "ART" | "ASEN" | "AT" | "ATU" | "AU" | "BAND" | "BB" | "BBE" | "BEH" | "BF" | "BH" | "BHT" | "BI" | "BU" | "EOS" | "ET" | "FA" | "FB" | "FFU" | "FKL" | "FL" | "FO" | "FS" | "FT" | "FTK" | "FULL" | "GVS" | "HE" | "HF" | "HFO" | "HJS" | "HMS" | "HP" | "HPRD" | "HS" | "HSTA" | "HSV" | "HTF" | "HU" | "INST" | "IS" | "JO" | "KA" | "KE" | "KEMN" | "KI" | "KOMM" | "KON" | "KRED" | "KRU" | "KYND" | "LABO" | "LABP" | "LARO" | "LBS" | "LE" | "LEBE" | "LEFA" | "LEKO" | "LERA" | "LFK" | "LHK" | "LK" | "LM" | "LOGO" | "LRB" | "LS" | "MT" | "NB" | "OA" | "OI" | "OM" | "OP" | "OR" | "ORVE" | "PE" | "PF" | "POLI" | "PPT" | "PS" | "RA" | "REGO" | "RF" | "RFK" | "RHFO" | "RKK" | "ROL" | "RONO" | "RONP" | "RT" | "RTK" | "RTV" | "SAD" | "SFK" | "SK" | "SP" | "SR" | "STKO" | "SUD" | "SYKH" | "TEPE" | "TH" | "TI" | "TK" | "TL" | "TLO" | "TOLK" | "TP" | "TR" | "TRAN" | "TT" | "UTL" | "VE" | "VIRT" | "VP" | "X" | "YH" | "YM";
-        /** DirekteOppslag */
-        DirekteOppslag: {
+        /** FinnSamhandlerRequestDtoDirekteOppslag */
+        FinnSamhandlerRequestDtoDirekteOppslag: {
             id: string;
             identtype: string;
             samhandlerType: components["schemas"]["SamhandlerTypeCode"];
@@ -3065,8 +3172,8 @@ export interface components {
              */
             type: "DIREKTE_OPPSLAG";
         };
-        /** Organisasjonsnavn */
-        Organisasjonsnavn: {
+        /** FinnSamhandlerRequestDtoOrganisasjonsnavn */
+        FinnSamhandlerRequestDtoOrganisasjonsnavn: {
             innlandUtland: string;
             navn: string;
             samhandlerType: components["schemas"]["SamhandlerTypeCode"];
@@ -3076,8 +3183,8 @@ export interface components {
              */
             type: "ORGANISASJONSNAVN";
         };
-        /** Personnavn */
-        Personnavn: {
+        /** FinnSamhandlerRequestDtoPersonnavn */
+        FinnSamhandlerRequestDtoPersonnavn: {
             etternavn: string;
             fornavn: string;
             samhandlerType: components["schemas"]["SamhandlerTypeCode"];
@@ -3088,9 +3195,9 @@ export interface components {
             type: "PERSONNAVN";
         };
         /** FinnSamhandlerRequestDto */
-        FinnSamhandlerRequestDto: components["schemas"]["DirekteOppslag"] | components["schemas"]["Organisasjonsnavn"] | components["schemas"]["Personnavn"];
-        /** no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerResponseDto.Samhandler */
-        "no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerResponseDto.Samhandler": {
+        FinnSamhandlerRequestDto: components["schemas"]["FinnSamhandlerRequestDtoDirekteOppslag"] | components["schemas"]["FinnSamhandlerRequestDtoOrganisasjonsnavn"] | components["schemas"]["FinnSamhandlerRequestDtoPersonnavn"];
+        /** FinnSamhandlerResponseDtoSamhandler */
+        FinnSamhandlerResponseDtoSamhandler: {
             idTSSEkstern: string;
             idType: string;
             navn: string;
@@ -3100,7 +3207,7 @@ export interface components {
         /** FinnSamhandlerResponseDto */
         FinnSamhandlerResponseDto: {
             failureType?: string | null;
-            samhandlere: components["schemas"]["no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerResponseDto.Samhandler"][];
+            samhandlere: components["schemas"]["FinnSamhandlerResponseDtoSamhandler"][];
         };
         /** HentSamhandlerRequestDto */
         HentSamhandlerRequestDto: {
@@ -3108,12 +3215,12 @@ export interface components {
             idTSSEkstern: string;
         };
         /**
-         * no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto.FailureType
+         * HentSamhandlerResponseDtoFailureType
          * @enum {string|null}
          */
-        "no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto.FailureType": "GENERISK" | "IKKE_FUNNET" | null;
-        /** Success */
-        Success: {
+        HentSamhandlerResponseDtoFailureType: "GENERISK" | "IKKE_FUNNET" | null;
+        /** HentSamhandlerResponseDtoSuccess */
+        HentSamhandlerResponseDtoSuccess: {
             idType: string;
             navn: string;
             offentligId: string;
@@ -3121,15 +3228,15 @@ export interface components {
         };
         /** HentSamhandlerResponseDto */
         HentSamhandlerResponseDto: {
-            failure?: components["schemas"]["no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto.FailureType"];
-            success?: components["schemas"]["Success"] | null;
+            failure?: components["schemas"]["HentSamhandlerResponseDtoFailureType"];
+            success?: components["schemas"]["HentSamhandlerResponseDtoSuccess"] | null;
         };
         /** HentSamhandlerAdresseRequestDto */
         HentSamhandlerAdresseRequestDto: {
             idTSSEkstern: string;
         };
-        /** SamhandlerPostadresse */
-        SamhandlerPostadresse: {
+        /** HentSamhandlerAdresseResponseDtoSamhandlerPostadresse */
+        HentSamhandlerAdresseResponseDtoSamhandlerPostadresse: {
             land?: string | null;
             linje1?: string | null;
             linje2?: string | null;
@@ -3139,14 +3246,14 @@ export interface components {
             poststed?: string | null;
         };
         /**
-         * no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto.FailureType
+         * HentSamhandlerAdresseResponseDtoFailureType
          * @enum {string|null}
          */
-        "no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto.FailureType": "NOT_FOUND" | "GENERISK" | null;
+        HentSamhandlerAdresseResponseDtoFailureType: "NOT_FOUND" | "GENERISK" | null;
         /** HentSamhandlerAdresseResponseDto */
         HentSamhandlerAdresseResponseDto: {
-            adresse?: components["schemas"]["SamhandlerPostadresse"] | null;
-            failureType?: components["schemas"]["no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto.FailureType"];
+            adresse?: components["schemas"]["HentSamhandlerAdresseResponseDtoSamhandlerPostadresse"] | null;
+            failureType?: components["schemas"]["HentSamhandlerAdresseResponseDtoFailureType"];
         };
         /** Unit */
         Unit: Record<string, never>;
@@ -3163,107 +3270,115 @@ export interface components {
     pathItems: never;
 }
 export type StatusResponse = components['schemas']['StatusResponse'];
-export type Land = components['schemas']['Land'];
+export type BrevLandmodellLand = components['schemas']['BrevLandmodellLand'];
 export type BrevSystem = components['schemas']['BrevSystem'];
-export type DokumentkategoriCode = components['schemas']['DokumentkategoriCode'];
+export type BrevdataDtoDokumentkategoriCode = components['schemas']['BrevdataDtoDokumentkategoriCode'];
 export type SpraakKode = components['schemas']['SpraakKode'];
-export type Brevmal = components['schemas']['Brevmal'];
-export type Brevkontekst = components['schemas']['Brevkontekst'];
+export type ApiBrevmal = components['schemas']['ApiBrevmal'];
+export type TemplateDescriptionBrevkontekst = components['schemas']['TemplateDescriptionBrevkontekst'];
 export type LanguageCode = components['schemas']['LanguageCode'];
-export type Brevtype = components['schemas']['Brevtype'];
-export type Distribusjonstype = components['schemas']['Distribusjonstype'];
+export type LetterMetadataBrevtype = components['schemas']['LetterMetadataBrevtype'];
+export type LetterMetadataDistribusjonstype = components['schemas']['LetterMetadataDistribusjonstype'];
 export type LetterMetadata = components['schemas']['LetterMetadata'];
-export type Redigerbar = components['schemas']['Redigerbar'];
-export type Brevbaker = components['schemas']['Brevbaker'];
-export type Avtaleland = components['schemas']['Avtaleland'];
-export type Navn = components['schemas']['Navn'];
+export type TemplateDescriptionRedigerbar = components['schemas']['TemplateDescriptionRedigerbar'];
+export type LetterMetadataBrevbaker = components['schemas']['LetterMetadataBrevbaker'];
+export type TemplateModelSpecificationFieldTypeArray = components['schemas']['TemplateModelSpecificationFieldTypeArray'];
+export type TemplateModelSpecificationFieldTypeEnumEntry = components['schemas']['TemplateModelSpecificationFieldTypeEnumEntry'];
+export type TemplateModelSpecificationFieldTypeEnum = components['schemas']['TemplateModelSpecificationFieldTypeEnum'];
+export type TemplateModelSpecificationFieldTypeObject = components['schemas']['TemplateModelSpecificationFieldTypeObject'];
+export type TemplateModelSpecificationFieldTypeScalarKind = components['schemas']['TemplateModelSpecificationFieldTypeScalarKind'];
+export type TemplateModelSpecificationFieldTypeScalar = components['schemas']['TemplateModelSpecificationFieldTypeScalar'];
+export type TemplateModelSpecificationFieldType = components['schemas']['TemplateModelSpecificationFieldType'];
+export type TemplateModelSpecification = components['schemas']['TemplateModelSpecification'];
+export type PenAvtaleland = components['schemas']['PenAvtaleland'];
+export type FagsakNavn = components['schemas']['FagsakNavn'];
 export type Fagsak = components['schemas']['Fagsak'];
-export type SakContext = components['schemas']['SakContext'];
-export type BrukerStatus = components['schemas']['BrukerStatus'];
-export type BestillExstreamBrevRequest = components['schemas']['BestillExstreamBrevRequest'];
-export type FailureType = components['schemas']['FailureType'];
-export type BestillOgRedigerBrevResponse = components['schemas']['BestillOgRedigerBrevResponse'];
-export type BestillEblankettRequest = components['schemas']['BestillEblankettRequest'];
-export type Adressetype = components['schemas']['Adressetype'];
+export type ApiSakContext = components['schemas']['ApiSakContext'];
+export type ApiBrukerStatus = components['schemas']['ApiBrukerStatus'];
+export type ApiBestillExstreamBrevRequest = components['schemas']['ApiBestillExstreamBrevRequest'];
+export type ApiBestillOgRedigerBrevResponseFailureType = components['schemas']['ApiBestillOgRedigerBrevResponseFailureType'];
+export type ApiBestillOgRedigerBrevResponse = components['schemas']['ApiBestillOgRedigerBrevResponse'];
+export type ApiBestillEblankettRequest = components['schemas']['ApiBestillEblankettRequest'];
+export type KontaktAdresseDtoAdressetype = components['schemas']['KontaktAdresseDtoAdressetype'];
 export type KontaktAdresseDto = components['schemas']['KontaktAdresseDto'];
-export type NoNavPensjonBrevSkribentenServicesKrrServiceKontaktinfoResponseFailureType = components['schemas']['no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoResponse.FailureType'];
-export type KontaktinfoResponse = components['schemas']['KontaktinfoResponse'];
+export type KrrServiceKontaktinfoResponseFailureType = components['schemas']['KrrServiceKontaktinfoResponseFailureType'];
+export type KrrServiceKontaktinfoResponse = components['schemas']['KrrServiceKontaktinfoResponse'];
 export type NavEnhet = components['schemas']['NavEnhet'];
 export type Distribusjon = components['schemas']['Distribusjon'];
-export type ManueltAdressertTil = components['schemas']['ManueltAdressertTil'];
-export type NorskAdresse = components['schemas']['NorskAdresse'];
-export type Samhandler = components['schemas']['Samhandler'];
-export type UtenlandskAdresse = components['schemas']['UtenlandskAdresse'];
-export type OverstyrtMottaker = components['schemas']['OverstyrtMottaker'];
-export type NavAnsatt = components['schemas']['NavAnsatt'];
-export type Arkivert = components['schemas']['Arkivert'];
-export type Attestering = components['schemas']['Attestering'];
-export type Kladd = components['schemas']['Kladd'];
-export type Klar = components['schemas']['Klar'];
-export type UnderRedigering = components['schemas']['UnderRedigering'];
-export type BrevStatus = components['schemas']['BrevStatus'];
-export type BrevInfo = components['schemas']['BrevInfo'];
-export type OpprettBrevRequest = components['schemas']['OpprettBrevRequest'];
+export type DtoMottakerManueltAdressertTil = components['schemas']['DtoMottakerManueltAdressertTil'];
+export type ApiOverstyrtMottakerNorskAdresse = components['schemas']['ApiOverstyrtMottakerNorskAdresse'];
+export type ApiOverstyrtMottakerSamhandler = components['schemas']['ApiOverstyrtMottakerSamhandler'];
+export type ApiOverstyrtMottakerUtenlandskAdresse = components['schemas']['ApiOverstyrtMottakerUtenlandskAdresse'];
+export type ApiOverstyrtMottaker = components['schemas']['ApiOverstyrtMottaker'];
+export type ApiNavAnsatt = components['schemas']['ApiNavAnsatt'];
+export type ApiBrevStatusArkivert = components['schemas']['ApiBrevStatusArkivert'];
+export type ApiBrevStatusAttestering = components['schemas']['ApiBrevStatusAttestering'];
+export type ApiBrevStatusKladd = components['schemas']['ApiBrevStatusKladd'];
+export type ApiBrevStatusKlar = components['schemas']['ApiBrevStatusKlar'];
+export type ApiBrevStatusUnderRedigering = components['schemas']['ApiBrevStatusUnderRedigering'];
+export type ApiBrevStatus = components['schemas']['ApiBrevStatus'];
+export type ApiBrevInfo = components['schemas']['ApiBrevInfo'];
+export type ApiOpprettBrevRequest = components['schemas']['ApiOpprettBrevRequest'];
 export type BrevExceptionDto = components['schemas']['BrevExceptionDto'];
-export type Property = components['schemas']['Property'];
-export type FontType = components['schemas']['FontType'];
+export type LetterMarkupWithDataUsageProperty = components['schemas']['LetterMarkupWithDataUsageProperty'];
+export type EditParagraphContentTextFontType = components['schemas']['EditParagraphContentTextFontType'];
 export type ElementTags = components['schemas']['ElementTags'];
-export type Type = components['schemas']['Type'];
-export type Literal = components['schemas']['Literal'];
-export type NewLine = components['schemas']['NewLine'];
-export type Variable = components['schemas']['Variable'];
-export type Text = components['schemas']['Text'];
-export type Item = components['schemas']['Item'];
+export type EditParagraphContentType = components['schemas']['EditParagraphContentType'];
+export type EditParagraphContentTextLiteral = components['schemas']['EditParagraphContentTextLiteral'];
+export type EditParagraphContentTextNewLine = components['schemas']['EditParagraphContentTextNewLine'];
+export type EditParagraphContentTextVariable = components['schemas']['EditParagraphContentTextVariable'];
+export type EditParagraphContentText = components['schemas']['EditParagraphContentText'];
+export type EditParagraphContentItemListItem = components['schemas']['EditParagraphContentItemListItem'];
 export type Listetype = components['schemas']['Listetype'];
-export type ItemList = components['schemas']['ItemList'];
-export type ColumnAlignment = components['schemas']['ColumnAlignment'];
-export type Cell = components['schemas']['Cell'];
-export type ColumnSpec = components['schemas']['ColumnSpec'];
-export type Header = components['schemas']['Header'];
-export type Row = components['schemas']['Row'];
-export type Table = components['schemas']['Table'];
-export type ParagraphContent = components['schemas']['ParagraphContent'];
-export type NoNavPensjonBrevSkribentenLetterEditBlockType = components['schemas']['no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type'];
-export type Paragraph = components['schemas']['Paragraph'];
-export type Title1 = components['schemas']['Title1'];
-export type Title2 = components['schemas']['Title2'];
-export type Title3 = components['schemas']['Title3'];
-export type Block = components['schemas']['Block'];
-export type Sakspart = components['schemas']['Sakspart'];
-export type Signatur = components['schemas']['Signatur'];
-export type Title = components['schemas']['Title'];
-export type Letter = components['schemas']['Letter'];
+export type EditParagraphContentItemList = components['schemas']['EditParagraphContentItemList'];
+export type EditParagraphContentTableColumnAlignment = components['schemas']['EditParagraphContentTableColumnAlignment'];
+export type EditParagraphContentTableCell = components['schemas']['EditParagraphContentTableCell'];
+export type EditParagraphContentTableColumnSpec = components['schemas']['EditParagraphContentTableColumnSpec'];
+export type EditParagraphContentTableHeader = components['schemas']['EditParagraphContentTableHeader'];
+export type EditParagraphContentTableRow = components['schemas']['EditParagraphContentTableRow'];
+export type EditParagraphContentTable = components['schemas']['EditParagraphContentTable'];
+export type EditParagraphContent = components['schemas']['EditParagraphContent'];
+export type EditBlockType = components['schemas']['EditBlockType'];
+export type EditBlockParagraph = components['schemas']['EditBlockParagraph'];
+export type EditBlockTitle1 = components['schemas']['EditBlockTitle1'];
+export type EditBlockTitle2 = components['schemas']['EditBlockTitle2'];
+export type EditBlockTitle3 = components['schemas']['EditBlockTitle3'];
+export type EditBlock = components['schemas']['EditBlock'];
+export type LetterMarkupSakspart = components['schemas']['LetterMarkupSakspart'];
+export type LetterMarkupSignatur = components['schemas']['LetterMarkupSignatur'];
+export type EditTitle = components['schemas']['EditTitle'];
+export type EditLetter = components['schemas']['EditLetter'];
 export type SaksbehandlerValgBrevdata = components['schemas']['SaksbehandlerValgBrevdata'];
 export type AlltidValgbartVedleggBrevkode = components['schemas']['AlltidValgbartVedleggBrevkode'];
-export type BrevResponse = components['schemas']['BrevResponse'];
-export type OppdaterBrevRequest = components['schemas']['OppdaterBrevRequest'];
-export type DelvisOppdaterBrevRequest = components['schemas']['DelvisOppdaterBrevRequest'];
-export type DistribusjonstypeRequest = components['schemas']['DistribusjonstypeRequest'];
-export type ValgteVedleggRequest = components['schemas']['ValgteVedleggRequest'];
-export type OppdaterKlarStatusRequest = components['schemas']['OppdaterKlarStatusRequest'];
-export type OppdaterMottakerRequest = components['schemas']['OppdaterMottakerRequest'];
-export type PdfResponse = components['schemas']['PdfResponse'];
-export type Error = components['schemas']['Error'];
-export type BestillBrevResponse = components['schemas']['BestillBrevResponse'];
-export type OppdaterAttesteringRequest = components['schemas']['OppdaterAttesteringRequest'];
+export type ApiBrevResponse = components['schemas']['ApiBrevResponse'];
+export type ApiOppdaterBrevRequest = components['schemas']['ApiOppdaterBrevRequest'];
+export type ApiDelvisOppdaterBrevRequest = components['schemas']['ApiDelvisOppdaterBrevRequest'];
+export type ApiDistribusjonstypeRequest = components['schemas']['ApiDistribusjonstypeRequest'];
+export type ApiValgteVedleggRequest = components['schemas']['ApiValgteVedleggRequest'];
+export type ApiOppdaterKlarStatusRequest = components['schemas']['ApiOppdaterKlarStatusRequest'];
+export type ApiOppdaterMottakerRequest = components['schemas']['ApiOppdaterMottakerRequest'];
+export type ApiPdfResponse = components['schemas']['ApiPdfResponse'];
+export type ApiBestillBrevResponseError = components['schemas']['ApiBestillBrevResponseError'];
+export type ApiBestillBrevResponse = components['schemas']['ApiBestillBrevResponse'];
+export type ApiOppdaterAttesteringRequest = components['schemas']['ApiOppdaterAttesteringRequest'];
 export type ValgbartVedlegg = components['schemas']['ValgbartVedlegg'];
 export type Duration = components['schemas']['Duration'];
-export type ReservasjonResponse = components['schemas']['ReservasjonResponse'];
-export type Response = components['schemas']['Response'];
+export type ApiReservasjonResponse = components['schemas']['ApiReservasjonResponse'];
+export type DiffBrevHandlerResponse = components['schemas']['DiffBrevHandlerResponse'];
 export type SamhandlerTypeCode = components['schemas']['SamhandlerTypeCode'];
-export type DirekteOppslag = components['schemas']['DirekteOppslag'];
-export type Organisasjonsnavn = components['schemas']['Organisasjonsnavn'];
-export type Personnavn = components['schemas']['Personnavn'];
+export type FinnSamhandlerRequestDtoDirekteOppslag = components['schemas']['FinnSamhandlerRequestDtoDirekteOppslag'];
+export type FinnSamhandlerRequestDtoOrganisasjonsnavn = components['schemas']['FinnSamhandlerRequestDtoOrganisasjonsnavn'];
+export type FinnSamhandlerRequestDtoPersonnavn = components['schemas']['FinnSamhandlerRequestDtoPersonnavn'];
 export type FinnSamhandlerRequestDto = components['schemas']['FinnSamhandlerRequestDto'];
-export type NoNavPensjonBrevSkribentenRoutesSamhandlerDtoFinnSamhandlerResponseDtoSamhandler = components['schemas']['no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerResponseDto.Samhandler'];
+export type FinnSamhandlerResponseDtoSamhandler = components['schemas']['FinnSamhandlerResponseDtoSamhandler'];
 export type FinnSamhandlerResponseDto = components['schemas']['FinnSamhandlerResponseDto'];
 export type HentSamhandlerRequestDto = components['schemas']['HentSamhandlerRequestDto'];
-export type NoNavPensjonBrevSkribentenRoutesSamhandlerDtoHentSamhandlerResponseDtoFailureType = components['schemas']['no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto.FailureType'];
-export type Success = components['schemas']['Success'];
+export type HentSamhandlerResponseDtoFailureType = components['schemas']['HentSamhandlerResponseDtoFailureType'];
+export type HentSamhandlerResponseDtoSuccess = components['schemas']['HentSamhandlerResponseDtoSuccess'];
 export type HentSamhandlerResponseDto = components['schemas']['HentSamhandlerResponseDto'];
 export type HentSamhandlerAdresseRequestDto = components['schemas']['HentSamhandlerAdresseRequestDto'];
-export type SamhandlerPostadresse = components['schemas']['SamhandlerPostadresse'];
-export type NoNavPensjonBrevSkribentenRoutesSamhandlerDtoHentSamhandlerAdresseResponseDtoFailureType = components['schemas']['no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto.FailureType'];
+export type HentSamhandlerAdresseResponseDtoSamhandlerPostadresse = components['schemas']['HentSamhandlerAdresseResponseDtoSamhandlerPostadresse'];
+export type HentSamhandlerAdresseResponseDtoFailureType = components['schemas']['HentSamhandlerAdresseResponseDtoFailureType'];
 export type HentSamhandlerAdresseResponseDto = components['schemas']['HentSamhandlerAdresseResponseDto'];
 export type Unit = components['schemas']['Unit'];
 export type NavAnsattEnhet = components['schemas']['NAVAnsattEnhet'];

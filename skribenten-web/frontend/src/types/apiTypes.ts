@@ -5,10 +5,10 @@ import { type Nullable } from "./Nullable";
 import type * as generated from "./skribenten-api";
 
 export type SakDto = generated.Fagsak;
-export type SakContextDto = generated.SakContext;
-export type BrukerStatusDto = generated.BrukerStatus;
-export type LetterMetadata = generated.Brevmal;
-export type PreferredLanguage = generated.KontaktinfoResponse;
+export type SakContextDto = generated.ApiSakContext;
+export type BrukerStatusDto = generated.ApiBrukerStatus;
+export type LetterMetadata = generated.ApiBrevmal;
+export type PreferredLanguage = generated.KrrServiceKontaktinfoResponse;
 
 export type BrevSystem = generated.BrevSystem;
 export const BrevSystem: Record<string, BrevSystem> = {
@@ -25,10 +25,10 @@ export const SpraakKode: Record<string, SpraakKode> = {
   NordSamisk: "SE",
 };
 
-export type OrderExstreamLetterRequest = generated.BestillExstreamBrevRequest;
-export type OrderEblankettRequest = generated.BestillEblankettRequest;
-export type BestillOgRedigerBrevResponse = generated.BestillOgRedigerBrevResponse;
-export type FailureType = generated.FailureType;
+export type OrderExstreamLetterRequest = generated.ApiBestillExstreamBrevRequest;
+export type OrderEblankettRequest = generated.ApiBestillEblankettRequest;
+export type BestillOgRedigerBrevResponse = generated.ApiBestillOgRedigerBrevResponse;
+export type FailureType = generated.ApiBestillOgRedigerBrevResponseFailureType;
 
 export type FinnSamhandlerRequestDto = generated.FinnSamhandlerRequestDto;
 export type FinnSamhandlerResponseDto = generated.FinnSamhandlerResponseDto;
@@ -36,7 +36,7 @@ export type HentSamhandlerRequestDto = generated.HentSamhandlerRequestDto;
 export type HentSamhandlerResponseDto = generated.HentSamhandlerResponseDto;
 export type HentSamhandlerAdresseRequestDto = generated.HentSamhandlerAdresseRequestDto;
 export type HentSamhandlerAdresseResponseDto = generated.HentSamhandlerAdresseResponseDto;
-export type SamhandlerPostadresse = generated.SamhandlerPostadresse;
+export type SamhandlerPostadresse = generated.HentSamhandlerAdresseResponseDtoSamhandlerPostadresse;
 
 /*
   vi har '2' typer adresser vi kan få. Denne, og KontaktAdresseResponse. Dette formatet brukes for samhandler / manuell, mens KontaktAdresseResponse brukes ved getKontaktAdresse
@@ -53,7 +53,7 @@ export type Adresse = {
   manueltAdressertTil: ManueltAdressertTil;
 };
 
-export type Samhandler = generated.NoNavPensjonBrevSkribentenRoutesSamhandlerDtoFinnSamhandlerResponseDtoSamhandler;
+export type Samhandler = generated.FinnSamhandlerResponseDtoSamhandler;
 export type SamhandlerTypeCode = generated.SamhandlerTypeCode;
 export const SamhandlerTypeCodes = Object.keys(SAMHANDLER_ENUM_TO_TEXT) as [
   SamhandlerTypeCode,
@@ -61,5 +61,5 @@ export const SamhandlerTypeCodes = Object.keys(SAMHANDLER_ENUM_TO_TEXT) as [
 ];
 
 export type KontaktAdresseResponse = generated.KontaktAdresseDto;
-export type Avtaleland = generated.Avtaleland;
+export type Avtaleland = generated.PenAvtaleland;
 export type NavAnsattEnhet = generated.NavAnsattEnhet;
