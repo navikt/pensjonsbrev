@@ -54,10 +54,10 @@ class Dto2ApiServiceTest {
 
         val navansattService = FakeNavansattService(
             navansatte = mapOf(
-                saksbehandler.id to "Saksbehandler Saksbehandlersen",
-                attestant.id to "Peder AAs",
-                opprettetAv.id to "Opprettet Av",
-                sistredigertAv.id to "Sist Redigert Av"
+                saksbehandler to "Saksbehandler Saksbehandlersen",
+                attestant to "Peder AAs",
+                opprettetAv to "Opprettet Av",
+                sistredigertAv to "Sist Redigert Av"
             )
         )
 

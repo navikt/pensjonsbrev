@@ -69,7 +69,7 @@ class Dto2ApiService(
     suspend fun toApi(reservasjon: Reservasjon): Api.ReservasjonResponse = with(reservasjon) {
         Api.ReservasjonResponse(
             vellykket = vellykket,
-            reservertAv = NavAnsatt(reservertAv, navansattService.hentNavansatt(reservertAv.id)!!.navn),
+            reservertAv = NavAnsatt(reservertAv, navansattService.hentNavansatt(reservertAv)!!.navn),
             timestamp = timestamp,
             expiresIn = expiresIn,
             redigertBrevHash = redigertBrevHash,
@@ -114,7 +114,7 @@ class Dto2ApiService(
     }
 
     private suspend fun hentNavAnsatt(navIdent: NavIdent): NavAnsatt =
-        NavAnsatt(navIdent, navansattService.hentNavansatt(navIdent.id)?.navn)
+        NavAnsatt(navIdent, navansattService.hentNavansatt(navIdent)?.navn)
 
 }
 

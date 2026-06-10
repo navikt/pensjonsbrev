@@ -7,5 +7,5 @@ import no.nav.pensjon.brev.skribenten.services.NavansattService
  * Fallbacker til principal.fullName hvis navansatt ikke finnes.
  */
 suspend fun UserPrincipal.hentSignatur(navansattService: NavansattService): String =
-    navansattService.hentNavansatt(navIdent.id)?.fulltNavn ?: fullName
+    navansattService.hentNavansatt(navIdent)?.fulltNavn ?: fullName
 
