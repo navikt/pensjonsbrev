@@ -6,6 +6,7 @@ import {
   isValidIndex,
   mergeLiteralsIfPossible,
   newLiteral,
+  removeBlocks,
   removeElements,
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
@@ -147,10 +148,10 @@ function mergeBlocks(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex
 
   if (first != null && second != null) {
     if (isEmptyBlock(first)) {
-      removeElements(firstId, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks, id: null });
+      removeBlocks(firstId, 1, { content: blocks, deletedBlocks: draft.redigertBrev.deletedBlocks });
       draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: firstId };
     } else if (isEmptyBlock(second)) {
-      removeElements(secondId, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks, id: null });
+      removeBlocks(secondId, 1, { content: blocks, deletedBlocks: draft.redigertBrev.deletedBlocks });
       if (first.content.at(-1)?.type === VARIABLE) {
         first.content.push(newLiteral());
       }
@@ -167,7 +168,7 @@ function mergeBlocks(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex
       };
 
       addElements(second.content, first.content.length, first.content, first.deletedContent);
-      removeElements(secondId, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks, id: null });
+      removeBlocks(secondId, 1, { content: blocks, deletedBlocks: draft.redigertBrev.deletedBlocks });
     }
   }
 }

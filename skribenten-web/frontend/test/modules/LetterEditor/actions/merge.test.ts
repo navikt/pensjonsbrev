@@ -82,6 +82,16 @@ describe("LetterEditorActions.merge", () => {
         );
       });
 
+      test("tracks deleted empty block with non-null parentId", () => {
+        const deletedBlock = paragraph({ id: 123, parentId: 456, content: [literal("")] });
+        const state = letter(deletedBlock, paragraph([literal({ text: "p2" })]));
+
+        const result = Actions.merge(state, { blockIndex: 0, contentIndex: 0 }, MergeTarget.NEXT);
+
+        expect(result.redigertBrev.blocks).not.toContainEqual(expect.objectContaining({ id: deletedBlock.id }));
+        expect(result.redigertBrev.deletedBlocks).toContain(deletedBlock.id);
+      });
+
       test("updates deletedContent", () => {
         const movedContent = [literal({ text: "third" }), variable("fourth")];
         const state = letter(

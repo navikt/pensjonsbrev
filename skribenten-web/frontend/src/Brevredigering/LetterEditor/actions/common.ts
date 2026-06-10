@@ -11,6 +11,7 @@ import {
 } from "~/Brevredigering/LetterEditor/model/utils";
 import { type BrevResponse } from "~/types/brev";
 import {
+  type AnyBlock,
   type Cell,
   type ColumnSpec,
   type Content,
@@ -318,6 +319,26 @@ export function removeElements<T extends Identifiable>(
   const removedElements = from.content.splice(startIndex, count);
   for (const e of removedElements) deleteElement(e, from);
   return removedElements;
+}
+
+export function removeBlocks(
+  startIndex: number,
+  count: number,
+  from: { content: Draft<AnyBlock[]>; deletedBlocks: Draft<number[]> },
+): Draft<AnyBlock[]> {
+  const removedBlocks = removeElements(startIndex, count, {
+    content: from.content,
+    deletedContent: from.deletedBlocks,
+    id: null,
+  });
+
+  for (const block of removedBlocks) {
+    if (block.id !== null && !from.deletedBlocks.includes(block.id)) {
+      from.deletedBlocks.push(block.id);
+    }
+  }
+
+  return removedBlocks;
 }
 
 function deleteElement(

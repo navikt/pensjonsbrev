@@ -92,6 +92,7 @@ function randomId() {
 
 export type ParagraphArgs = {
   id?: number;
+  parentId?: number | null;
   content: Content[];
   deletedContent?: number[];
 };
@@ -109,7 +110,7 @@ export function paragraph(content?: Content[] | ParagraphArgs): ParagraphBlock {
   } else {
     return {
       id: content.id ?? null,
-      parentId: null,
+      parentId: content.parentId ?? null,
       editable: true,
       type: PARAGRAPH,
       deletedContent: [],

@@ -17,6 +17,7 @@ import {
   isTable,
   isValidIndex,
   newLiteral,
+  removeBlocks,
   removeElements,
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
@@ -108,10 +109,9 @@ export function deleteSelectionRecipe(draft: LetterEditorState, selection: Selec
 
   if (start.blockIndex < end.blockIndex) {
     // remove all blocks between start and end blocks
-    const removedBlocks = removeElements(start.blockIndex + 1, end.blockIndex - start.blockIndex - 1, {
+    const removedBlocks = removeBlocks(start.blockIndex + 1, end.blockIndex - start.blockIndex - 1, {
       content: redigertBrev.blocks,
-      deletedContent: redigertBrev.deletedBlocks,
-      id: null,
+      deletedBlocks: redigertBrev.deletedBlocks,
     });
 
     // remove content before endContent in endBlock
