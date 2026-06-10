@@ -45,6 +45,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenle
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.GjenlevendepensjonBeregningTabell
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.Inntektsoekning
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.Inntektsreduksjon
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.Samboer12av18Maaneder
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggFolketrygdenBokmalEnglish
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerOmBeregningenGPUtlandLegacy
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy
@@ -69,6 +72,7 @@ import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // PE_GP_04_029 Vedtak endring av gjenlevendepensjon (bosatt utland)
@@ -119,76 +123,11 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
             // Erstatter <FRITEKST: VELG ETT AV ALTERNATIVENE UNDER, ELLER FYLL INN EGEN TEKST …>
             // og de tre alternativene som fulgte i Exstream-kilden.
             showIf(saksbehandlerValg.aarsakEndring.equalTo(AarsakEndring.OEKNING_AV_INNTEKT)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Pensjonen din blir regulert i forhold til den arbeidsinntekten du har eller forventes å ha." +
-                                    " Pensjonen din vil reduseres fordi du har hatt en økning i forventet arbeidsinntekt." +
-                                    " Reduksjonen av pensjonen trer i kraft fra og med måneden etter at arbeidsinntekten ble endret."
-                        },
-                        english {
-                            +"Your pension will be regulated in relation to the earned income you have or is expected to have." +
-                                    " Your pension will be reduced due to an increase in your expected earned income." +
-                                    " Your pension will be changed as of the month from which your earned income has changed."
-                        },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter bestemmelsene i folketrygdloven kapittel 17." },
-                        english { +"This decision has been made in accordance with Chapter 17 of the National Insurance Act." },
-                    )
-                }
+                includePhrase(Inntektsoekning)
             }.orShowIf(saksbehandlerValg.aarsakEndring.equalTo(AarsakEndring.REDUKSJON_AV_INNTEKT)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Pensjonen din blir regulert i forhold til den arbeidsinntekten du har eller forventes å ha." +
-                                    " Pensjonen din vil øke fordi du har hatt en reduksjon i forventet arbeidsinntekt." +
-                                    " Økning av pensjonen trer i kraft fra og med den måneden arbeidsinntekten din ble endret."
-                        },
-                        english {
-                            +"Your pension will be regulated in relation to the earned income you have or is expected to have." +
-                                    " Your pension will be increased due to a change in your expected earned income." +
-                                    " Your pension will be changed as of the month from which your earned income has changed."
-                        },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter bestemmelsene i folketrygdloven kapittel 17." },
-                        english { +"This decision has been made in accordance with Chapter 17 of the National Insurance Act." },
-                    )
-                }
+                includePhrase(Inntektsreduksjon)
             }.orShowIf(saksbehandlerValg.aarsakEndring.equalTo(AarsakEndring.SAMBOER_12_AV_18_MAANEDER)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Pensjonen din er endret fordi du har vært samboer i 12 av de siste 18 månedene," +
-                                    " og fordi samboeren din har en inntekt som overstiger to ganger grunnbeløpet" +
-                                    " eller mottar pensjon eller uføretrygd fra folketrygden."
-                        },
-                        english {
-                            +"Your pension has been changed because you have been cohabiting for 12 of the past 18 months," +
-                                    " and because your cohabitant has an income that exceeds twice the national insurance basic amount" +
-                                    " or receives a pension from the National Insurance Scheme."
-                        },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Pensjonen vil bli redusert fra måneden etter at dere har vært samboere i 12 av de 18 siste månedene."
-                        },
-                        english { +"Your pension will be reduced as of the month after you have been cohabiting for 12 of the past 18 months."
-                        },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter bestemmelsene i folketrygdloven kapittel 3." },
-                        english { +"This decision has been made in accordance with Chapter 3 of the National Insurance Act." },
-                    )
-                }
+                includePhrase(Samboer12av18Maaneder)
             }.orShowIf(saksbehandlerValg.aarsakEndring.equalTo(AarsakEndring.FRITEKST)) {
                 paragraph {
                     text(bokmal { +fritekst("Egen tekst") }, english { +fritekst("Egen tekst") })
