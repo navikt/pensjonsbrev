@@ -27,7 +27,8 @@ import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationJacksonModule
+import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationMixins
+import no.nav.pensjon.brev.skribenten.serialize.registerMixin
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.*
 import org.slf4j.LoggerFactory
@@ -74,7 +75,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             jackson {
                 registerModule(JavaTimeModule())
                 registerModule(LetterMarkupJacksonModule)
-                registerModule(TemplateModelSpecificationJacksonModule)
+                registerMixin(TemplateModelSpecificationMixins)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             }

@@ -18,13 +18,29 @@ import kotlin.reflect.full.findAnnotation
  *
  * Once Ktor releases these, the class can be simplified to just override the interface methods
  * and [JacksonReflectionJsonSchemaInference] can be removed.
+ *
+ * [objectMapper] is used to look up mix-in classes, enabling Jackson annotations on mix-ins
+ * (registered via [ObjectMapper.addMixIn]) to be respected for classes that cannot declare
+ * Jackson annotations directly (e.g. classes in published library modules without a Jackson dependency).
  */
 class JacksonSchemaReflectionAdapter : SchemaReflectionAdapter {
+class JacksonSchemaReflectionAdapter(
+    private val objectMapper: ObjectMapper?,
+) : SchemaReflectionAdapter {
+
+    /**
+     * Returns the effective class to inspect for annotations: the mix-in registered for [kClass]
+     * in the [objectMapper], or [kClass] itself if no mix-in is registered.
+     */
+    private fun effectiveClass(kClass: KClass<*>): KClass<*> =
+        objectMapper?.findMixInClassFor(kClass.java)?.kotlin ?: kClass
+
 
     /**
      * Returns the discriminator property name for the given sealed [kClass].
      *
-     * Reads the [JsonTypeInfo.property] from [kClass] or its ancestors, defaulting to `"type"`.
+     * Reads the [JsonTypeInfo.property] from [kClass] or its ancestors (including mix-ins),
+     * defaulting to `"type"`.
      *
      * Mirrors `fun getDiscriminatorProperty(kClass: KClass<*>): String` from Ktor main branch.
      */
@@ -37,7 +53,7 @@ class JacksonSchemaReflectionAdapter : SchemaReflectionAdapter {
             val current = queue.removeFirst()
             if (!visited.add(current)) continue
 
-            val typeInfo = current.findAnnotation<JsonTypeInfo>()
+            val typeInfo = effectiveClass(current).findAnnotation<JsonTypeInfo>()
             if (typeInfo != null && typeInfo.property.isNotEmpty()) {
                 return typeInfo.property
             }
@@ -52,8 +68,8 @@ class JacksonSchemaReflectionAdapter : SchemaReflectionAdapter {
      * be inlined into the parent discriminator.
      *
      * Walks up the supertype hierarchy to find a [JsonSubTypes] annotation on any ancestor
-     * that directly references [kClass]. If found, returns the Jackson name from that entry.
-     * If not found, returns `null` — signalling that [kClass] is an intermediate class.
+     * (or its mix-in) that directly references [kClass]. If found, returns the Jackson name
+     * from that entry. If not found, returns `null` — signalling that [kClass] is an intermediate class.
      *
      * Mirrors the proposed `fun getDiscriminatorMappingName(kClass: KClass<*>): String`
      * from the Ktor team (their default returns `kClass.qualifiedName!!`).
@@ -67,7 +83,7 @@ class JacksonSchemaReflectionAdapter : SchemaReflectionAdapter {
             val ancestor = queue.removeFirst()
             if (!visited.add(ancestor)) continue
 
-            val subTypes = ancestor.findAnnotation<JsonSubTypes>()
+            val subTypes = effectiveClass(ancestor).findAnnotation<JsonSubTypes>()
             if (subTypes != null) {
                 val name = subTypes.value.firstOrNull { it.value == kClass }?.name
                 if (name != null) return name
