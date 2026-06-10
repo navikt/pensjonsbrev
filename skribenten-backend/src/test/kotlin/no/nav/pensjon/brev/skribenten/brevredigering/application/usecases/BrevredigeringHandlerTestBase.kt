@@ -400,6 +400,7 @@ abstract class BrevredigeringHandlerTestBase {
         override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
         val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
         val renderPdfKall = mutableListOf<LetterMarkup>()
+        val renderPdfRedigerteVedleggKall = mutableListOf<Map<String, LetterMarkup.Attachment>>()
 
         override suspend fun renderMarkup(
             brevkode: Brevkode.Redigerbart,
@@ -417,8 +418,12 @@ abstract class BrevredigeringHandlerTestBase {
             brevdata: RedigerbarBrevdata<*, *>,
             felles: BrevbakerFelles,
             redigertBrev: LetterMarkup,
-            alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
-        ) = renderPdfResultat.also { renderPdfKall.add(redigertBrev) }
+            alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
+            redigerteVedlegg: Map<String, LetterMarkup.Attachment>,
+        ) = renderPdfResultat.also {
+            renderPdfKall.add(redigertBrev)
+            renderPdfRedigerteVedleggKall.add(redigerteVedlegg)
+        }
 
         override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
         override suspend fun getAlltidValgbareVedlegg(brevId: BrevId) = notYetStubbed()

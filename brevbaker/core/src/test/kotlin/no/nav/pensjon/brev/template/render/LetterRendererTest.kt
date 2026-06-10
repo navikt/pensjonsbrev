@@ -63,7 +63,7 @@ class LetterRendererTest {
         fun publicRender(scope: ExpressionScope<*>, elements: List<ParagraphContentElement<*>>, renderBlock: (scope: ExpressionScope<*>, element: Element.OutlineContent.ParagraphContent<*>) -> Unit) =
             render(scope, elements, renderBlock)
 
-        fun publicRenderAttachments(scope: ExpressionScope<*>, attachments: List<IncludeAttachment<*, *>>, renderBlock: (scope: ExpressionScope<*>, id: Int, attachment: AttachmentTemplate<*, *>) -> Unit) =
+        fun publicRenderAttachments(scope: ExpressionScope<*>, attachments: List<IncludeAttachment<*, *>>, renderBlock: (scope: ExpressionScope<*>, editableId: String?, attachment: AttachmentTemplate<*, *>) -> Unit) =
             render(scope, attachments, renderBlock)
     }
 

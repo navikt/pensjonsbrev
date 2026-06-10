@@ -10,8 +10,8 @@ import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 internal object BrevbakerHTML {
-    fun renderHTML(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
-        renderCompleteMarkup(letter, redigertBrev)
+    fun renderHTML(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null, redigerteVedlegg: Map<String, LetterMarkup.Attachment> = emptyMap()): LetterResponse =
+        renderCompleteMarkup(letter, redigertBrev, redigerteVedlegg)
             .let { HTMLDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
             .let { html ->
                 LetterResponse(
@@ -21,11 +21,11 @@ internal object BrevbakerHTML {
                 )
             }
 
-    private fun renderCompleteMarkup(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterWithAttachmentsMarkup =
+    private fun renderCompleteMarkup(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null, redigerteVedlegg: Map<String, LetterMarkup.Attachment> = emptyMap()): LetterWithAttachmentsMarkup =
         letter.toScope().let { scope ->
             LetterWithAttachmentsMarkup(
                 redigertBrev ?: Letter2Markup.renderLetterOnly(scope, letter.template),
-                Letter2Markup.renderAttachmentsOnly(scope, letter.template),
+                Letter2Markup.renderAttachmentsOnly(scope, letter.template, redigerteVedlegg),
             )
         }
 }

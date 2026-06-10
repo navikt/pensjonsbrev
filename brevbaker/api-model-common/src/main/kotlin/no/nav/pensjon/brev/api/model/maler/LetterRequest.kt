@@ -36,7 +36,8 @@ class BestillRedigertBrevRequest<T : Brevkode<T>>(
     val felles: BrevbakerFelles,
     val language: LanguageCode,
     val letterMarkup: LetterMarkup,
-    val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
+    val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
+    val redigerteVedlegg: Map<String, LetterMarkup.Attachment> = emptyMap(),
 ) : BrevRequest<T> {
     override fun equals(other: Any?): Boolean {
         if (other !is BestillRedigertBrevRequest<*>) return false
@@ -45,11 +46,12 @@ class BestillRedigertBrevRequest<T : Brevkode<T>>(
                 && felles == other.felles
                 && language == other.language
                 && letterMarkup == other.letterMarkup
+                && redigerteVedlegg == other.redigerteVedlegg
     }
 
-    override fun hashCode() = Objects.hash(kode, letterData, felles, language, letterMarkup)
+    override fun hashCode() = Objects.hash(kode, letterData, felles, language, letterMarkup, redigerteVedlegg)
 
-    override fun toString() = "BestillRedigertBrevRequest(kode=$kode, letterData=$letterData, felles=$felles, language=$language, letterMarkup=$letterMarkup)"
+    override fun toString() = "BestillRedigertBrevRequest(kode=$kode, letterData=$letterData, felles=$felles, language=$language, letterMarkup=$letterMarkup, redigerteVedlegg=$redigerteVedlegg)"
 }
 
 interface BrevRequest<T : Brevkode<T>>

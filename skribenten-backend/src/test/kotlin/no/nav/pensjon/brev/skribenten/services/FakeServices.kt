@@ -122,6 +122,7 @@ open class FakeBrevbakerService(
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
+        redigerteVedlegg: Map<String, LetterMarkup.Attachment>,
     ): LetterResponse = notYetStubbed()
 }
 

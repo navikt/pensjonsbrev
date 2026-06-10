@@ -52,7 +52,8 @@ interface BrevbakerService {
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
-        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
+        redigerteVedlegg: Map<String, LetterMarkup.Attachment> = emptyMap(),
     ): LetterResponse
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
@@ -138,6 +139,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
+        redigerteVedlegg: Map<String, LetterMarkup.Attachment>,
     ): LetterResponse {
         val response = client.post("/letter/redigerbar/pdf") {
             contentType(ContentType.Application.Json)
@@ -149,6 +151,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
                     language = spraak,
                     letterMarkup = redigertBrev,
                     alltidValgbareVedlegg = alltidValgbareVedlegg,
+                    redigerteVedlegg = redigerteVedlegg,
                 )
             )
         }

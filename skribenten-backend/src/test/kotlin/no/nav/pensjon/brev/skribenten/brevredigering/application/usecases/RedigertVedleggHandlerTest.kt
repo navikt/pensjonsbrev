@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import org.assertj.core.api.Assertions.assertThat
@@ -139,6 +140,30 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(slettVedlegg(brev.info.id, "vedlegg1")).isSuccess()
         assertThat(antallDokumenter(brev.info.id)).isEqualTo(0)
+    }
+
+    @Test
+    suspend fun `overstyrt vedlegg sendes til brevbaker ved rendring`() {
+        val brev = opprettBrev().resultOrFail()
+        val vedlegg = attachment("Overstyrt innhold")
+        assertThat(endreVedlegg(brev.info.id, "vedlegg1", vedlegg)).isSuccess()
+
+        brevbakerService.renderPdfRedigerteVedleggKall.clear()
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+
+        val sendteVedlegg = brevbakerService.renderPdfRedigerteVedleggKall.last()
+        assertThat(sendteVedlegg).containsOnlyKeys("vedlegg1")
+        assertThat(sendteVedlegg.getValue("vedlegg1")).isEqualTo(vedlegg.toMarkup())
+    }
+
+    @Test
+    suspend fun `uten overstyring sendes ingen redigerte vedlegg til brevbaker`() {
+        val brev = opprettBrev().resultOrFail()
+
+        brevbakerService.renderPdfRedigerteVedleggKall.clear()
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+
+        assertThat(brevbakerService.renderPdfRedigerteVedleggKall.last()).isEmpty()
     }
 
     @Test

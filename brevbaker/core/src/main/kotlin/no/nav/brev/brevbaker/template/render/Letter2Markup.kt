@@ -72,15 +72,24 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             }
         )
 
-    fun renderAttachmentsOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<Attachment> = buildList {
-        render(scope, template.attachments) { scope, _, attachment ->
-            add(
-                AttachmentImpl(
-                    renderText(scope, attachment.title),
-                    renderOutline(scope, attachment.outline),
-                    attachment.includeSakspart,
+    fun renderAttachmentsOnly(
+        scope: ExpressionScope<*>,
+        template: LetterTemplate<*, *>,
+        redigerteVedlegg: Map<String, LetterMarkup.Attachment> = emptyMap(),
+    ): List<Attachment> = buildList {
+        render(scope, template.attachments) { attachmentScope, editableId, attachment ->
+            val override = editableId?.let { redigerteVedlegg[it] }
+            if (override != null) {
+                add(AttachmentImpl(override.title, override.blocks, override.includeSakspart))
+            } else {
+                add(
+                    AttachmentImpl(
+                        renderText(attachmentScope, attachment.title),
+                        renderOutline(attachmentScope, attachment.outline),
+                        attachment.includeSakspart,
+                    )
                 )
-            )
+            }
         }
     }
 

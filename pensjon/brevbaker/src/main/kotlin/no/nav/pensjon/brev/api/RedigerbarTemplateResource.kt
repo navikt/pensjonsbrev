@@ -29,10 +29,10 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
         brevbaker.renderLetterMarkupWithDataUsage(createLetter(brevbestilling))
 
     override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
-        brevbaker.renderRedigertBrevPDF(createLetter(brevbestilling), brevbestilling.letterMarkup)
+        brevbaker.renderRedigertBrevPDF(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg)
 
     override fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
-        brevbaker.renderRedigertBrevHTML(createLetter(brevbestilling), brevbestilling.letterMarkup)
+        brevbaker.renderRedigertBrevHTML(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg)
 
     private fun createLetter(brevbestilling: BestillBrevRequest<Kode>) =
         letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))
