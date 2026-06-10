@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.periode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.tidligereArbeidsInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.toleranseBeloep
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.utbetaltAfp
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.uttaksdato
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.pesysData
@@ -188,7 +189,7 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
                             "har du hatt en arbeidsinntekt i den perioden du har mottatt AFP som er " +
                             "lavere enn den arbeidsinntekten som ble lagt til grunn ved utbetalingen av " +
                             "pensjon. Denne forskjellen er større enn toleransebeløpet som i " +
-                            pesysData.oppgjoersAar.format() + " var på 15 000 kroner. Pensjonen din er derfor " +
+                            pesysData.oppgjoersAar.format() + " var på " + pesysData.toleranseBeloep.format() + ". Pensjonen din er derfor " +
                             "beregnet på ny for perioden."
                     },
                     nynorsk {
@@ -197,7 +198,7 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
                             "våre har du hatt ei arbeidsinntekt i den perioden du har fått AFP, som er " +
                             "lågare enn den arbeidsinntekta som blei lagd til grunn ved utbetalinga av " +
                             "pensjon. Denne forskjellen er større enn toleransebeløpet som i " +
-                            pesysData.oppgjoersAar.format() + " var på 15 000 kroner. Pensjonen din er derfor " +
+                            pesysData.oppgjoersAar.format() + " var på " + pesysData.toleranseBeloep.format() + ". Pensjonen din er derfor " +
                             "berekna på nytt for perioden."
                     },
                 )
