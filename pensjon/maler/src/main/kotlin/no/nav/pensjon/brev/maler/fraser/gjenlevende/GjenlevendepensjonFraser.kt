@@ -177,3 +177,9 @@ object AvdodFlyktning : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
     }
 }
+
+object DoedsfallSkyldesYrkesskade : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        TODO("Not yet implemented")
+    }
+}
