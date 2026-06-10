@@ -264,7 +264,7 @@ object OktMinsteIFUReduksjonsprosent {
                 paragraph {
                     text(
                         bokmal { +"IFU brukes til å fastsette uføregrad, reduksjonsprosent og inntektstak. Minste IFU er tidligere fastsatt for deg fordi du hadde lite eller ingen inntekt før uførhet. " },
-                        nynorsk { +"IFU blir brukt til å fastsetje uføregrad, reduksjonsprosent og inntektstak. Minste IFU er fastsett for deg tidligare fordi du hadde låg eller ingen inntekt før uførleiken. " },
+                        nynorsk { +"IFU blir brukt til å fastsetje uføregrad, reduksjonsprosent og inntektstak. Minste IFU er fastsett for deg tidlegare fordi du hadde låg eller ingen inntekt før uførleiken. " },
                     )
                 }
             }
