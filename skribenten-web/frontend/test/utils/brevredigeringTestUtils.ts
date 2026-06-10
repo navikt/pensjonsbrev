@@ -229,6 +229,7 @@ export const nyTitle1Block = (args: {
   editable: args.editable ?? true,
   content: args.content ?? [nyVariable({})],
   deletedContent: [],
+  missingFromTemplate: false,
 });
 
 export const nyTitle2Block = (args: {
@@ -242,6 +243,7 @@ export const nyTitle2Block = (args: {
   editable: args.editable ?? true,
   content: args.content ?? [nyVariable({})],
   deletedContent: [],
+  missingFromTemplate: false,
 });
 
 export const nyTitle3Block = (args: {
@@ -255,6 +257,7 @@ export const nyTitle3Block = (args: {
   editable: args.editable ?? true,
   content: args.content ?? [nyVariable({})],
   deletedContent: [],
+  missingFromTemplate: false,
 });
 
 export const nyParagraphBlock = (args: { id?: Nullable<number>; content?: Content[] }): ParagraphBlock =>

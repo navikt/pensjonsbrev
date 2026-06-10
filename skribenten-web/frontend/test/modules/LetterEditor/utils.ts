@@ -134,6 +134,7 @@ export function title1(...content: TextContent[]): Title1Block {
     type: TITLE1,
     deletedContent: [],
     content: withParent(content, id),
+    missingFromTemplate: false,
   };
 }
 export function title2(...content: TextContent[]): Title2Block {
@@ -145,6 +146,7 @@ export function title2(...content: TextContent[]): Title2Block {
     type: TITLE2,
     deletedContent: [],
     content: withParent(content, id),
+    missingFromTemplate: false,
   };
 }
 
@@ -157,6 +159,7 @@ export function title3(...content: TextContent[]): Title3Block {
     type: TITLE3,
     deletedContent: [],
     content: withParent(content, id),
+    missingFromTemplate: false,
   };
 }
 

@@ -432,18 +432,17 @@ export function splitLiteralAtOffset(literal: Draft<LiteralValue>, offset: numbe
 }
 
 export function newTitle(args: {
-  id?: Nullable<number>;
   content: TextContent[];
   type: typeof TITLE1 | typeof TITLE2 | typeof TITLE3;
   deletedContent?: number[];
 }): Title1Block | Title2Block | Title3Block {
   return {
     type: args.type,
-    id: args.id ?? null,
-    parentId: null,
+    id: null,
     editable: true,
     deletedContent: args.deletedContent ?? [],
     content: args.content,
+    missingFromTemplate: false,
   };
 }
 

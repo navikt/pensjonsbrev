@@ -145,22 +145,13 @@ export type ParagraphBlock = Block & {
 };
 
 export const TITLE1 = "TITLE1";
-export type Title1Block = Block & {
-  readonly type: typeof TITLE1;
-  readonly content: TextContent[];
-};
+export type Title1Block = generated.Title1;
 
 export const TITLE2 = "TITLE2";
-export type Title2Block = Block & {
-  readonly type: typeof TITLE2;
-  readonly content: TextContent[];
-};
+export type Title2Block = generated.Title2;
 
 export const TITLE3 = "TITLE3";
-export type Title3Block = Block & {
-  readonly type: typeof TITLE3;
-  readonly content: TextContent[];
-};
+export type Title3Block = generated.Title3;
 
 export const TITLE_INDEX = -1;
 export type Title = {
