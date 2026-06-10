@@ -46,11 +46,17 @@ import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.AarsakTilEndringFritekst
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.AvdodFlyktning
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.AvdoedDoedsfallNotSkyldesYrkesskade
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.AvdoedDoedsfallSkyldesYrkesskade
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.GjenlevendepensjonBeregningTabell
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonGP
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonJustertTil90ProsentPgaEgenPensjon
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonJustertTil90ProsentPgaEktefelleInntekt
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonJustertTil90ProsentPgaSamboerInntekt
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.Inntektsoekning
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.Inntektsreduksjon
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.Samboer12av18Maaneder
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.Tilleggspensjon
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggFolketrygdenBokmalEnglish
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerOmBeregningenGPUtlandLegacy
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy
@@ -187,89 +193,24 @@ object VedtakEndringGjenlevendepensjonBosattUtland :
             }
 
             showIf(pesysData.avdoed.doedsfallSkyldesYrkesskade) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Når dødsfallet skyldes en yrkesskade blir ikke grunnpensjonen avkortet på grunn av manglende trygdetid."
-                        },
-                        english {
-                            +"If the death occurred as the result of a workplace injury, the basic pension is not reduced even if" +
-                                    " the deceased's period of national insurance cover was less than 40 years."
-                        },
-                    )
-                }
+               includePhrase(AvdoedDoedsfallSkyldesYrkesskade)
             }
 
             showIf(pesysData.beregning.harYrkesskadegradFraAvdoed and not(pesysData.avdoed.doedsfallSkyldesYrkesskade)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Når avdøde mottok en pensjon beregnet helt eller delvis etter regler som gjelder for yrkesskade," +
-                                    " blir ikke denne delen av grunnpensjonen avkortet på grunn av manglende trygdetid."
-                        },
-                        english {
-                            +"If the deceased received a pension based entirely or in part on the regulations for workplace injuries," +
-                                    " this part of the basic pension is not reduced even if the deceased's period of national insurance cover" +
-                                    " was less than 40 years."
-                        },
-                    )
-                }
+                includePhrase(AvdoedDoedsfallNotSkyldesYrkesskade)
             }
 
             showIf(pesysData.ektefelle.mottarPensjon and not(pesysData.ektefelle.inntektOver2g)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Grunnpensjonen er justert til 90 prosent av beløpet fordi din samboer mottar pensjon" +
-                                    " eller uføretrygd fra folketrygden."
-                        },
-                        english {
-                            +"The basic pension has been adjusted to 90 per cent of the total amount, because your cohabitant" +
-                                    " receives a national insurance pension."
-                        },
-                    )
-                }
+                includePhrase(GrunnpensjonJustertTil90ProsentPgaEgenPensjon)
             }
 
             showIf(pesysData.ektefelle.inntektOver2g) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Grunnpensjonen er justert til 90 prosent av beløpet fordi din samboer har inntekt over to ganger grunnbeløpet."
-                        },
-                        english {
-                            +"The basic pension has been adjusted to 90 per cent of the total amount, because your cohabitant has" +
-                                    " an income that exceeds twice the national insurance basic amount."
-                        },
-                    )
-                }
+                includePhrase(GrunnpensjonJustertTil90ProsentPgaEktefelleInntekt)
             }
 
             ifNotNull(pesysData.beregning.tilleggspensjon) {
-                paragraph {
-                    text(
-                        bokmal { +"Tilleggspensjonen" }, english { +"Your supplementary pension" }, BOLD
-                    )
-                    text(
-                        bokmal {
-                            +" avhenger av antall år med pensjonspoeng avdøde har opptjent og størrelsen på pensjonspoengene." +
-                                    " Det gis pensjonspoeng for år med inntekt over folketrygdens grunnbeløp." +
-                                    " Det kreves 40 år med pensjonspoeng for å få full tilleggspensjon." +
-                                    " På visse vilkår kan det medregnes framtidige poengår fra dødsåret til og med det året avdøde ville ha fylt 66 år." +
-                                    " Tilleggspensjonen din utgjør 55 prosent av den tilleggspensjonen avdøde hadde opptjent rett til." +
-                                    " Oversikt over poengopptjeningen er gitt i vedlegg til dette vedtaket."
-                        },
-                        english {
-                            +" depends on the number of years the deceased earned pension points and on how" +
-                                    " many pension points were earned. You receive pension points for years in which you have an income greater" +
-                                    " than the national insurance basic amount. 40 years of pension points are required to receive a full" +
-                                    " supplementary pension. In some cases credit may be given for future years of earning pension points." +
-                                    " The future years of earning pension points usually include the years between death and up to and including" +
-                                    " the year the deceased would have turned 66. Your supplementary pension is 55 per cent of the supplementary" +
-                                    " pension the deceased had accumulated. An overview of the accumulated points is enclosed with this decision."
-                        },
-                    )
-                }
+                includePhrase(Tilleggspensjon)
+
                 showIf(pesysData.avdoed.doedsfallSkyldesYrkesskade) {
                     paragraph {
                         text(
