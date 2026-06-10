@@ -27,6 +27,8 @@ import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
+import org.apache.pdfbox.pdmodel.font.PDType1Font
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName
 import kotlin.time.Duration.Companion.minutes
 
 fun Application.brevbakerModule(
@@ -145,6 +147,7 @@ private fun Application.konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
         async {
             delay(1.minutes)
             FeatureToggleSingleton.verifiserAtAlleBrytereErDefinert(FeatureToggles.entries.map { it.toggle })
+            PDType1Font(FontName.HELVETICA) // Trigger denne her for å få bygd opp font-cachen
         }
     }
 }
