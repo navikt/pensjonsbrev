@@ -326,11 +326,7 @@ export function removeBlocks(
   count: number,
   from: { content: Draft<AnyBlock[]>; deletedBlocks: Draft<number[]> },
 ): Draft<AnyBlock[]> {
-  const removedBlocks = removeElements(startIndex, count, {
-    content: from.content,
-    deletedContent: from.deletedBlocks,
-    id: null,
-  });
+  const removedBlocks = from.content.splice(startIndex, count);
 
   for (const block of removedBlocks) {
     if (block.id !== null && !from.deletedBlocks.includes(block.id)) {
