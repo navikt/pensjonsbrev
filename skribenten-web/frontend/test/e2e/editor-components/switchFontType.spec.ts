@@ -27,7 +27,6 @@ const baseSakspart = {
 
 const baseSignatur = nySignatur({
   hilsenTekst: "Med vennlig hilsen",
-  saksbehandlerRolleTekst: "Saksbehandler",
   saksbehandlerNavn: "Ole Saksbehandler",
   attesterendeSaksbehandlerNavn: "",
   navAvsenderEnhet: "Nav Familie- og pensjonsytelser Porsgrunn",
@@ -443,7 +442,6 @@ test.describe("Switch font type", () => {
           ],
           signatur: nySignatur({
             hilsenTekst: "Med vennlig hilsen",
-            saksbehandlerRolleTekst: "Saksbehandler",
             saksbehandlerNavn: "Ole Saksbehandler",
             attesterendeSaksbehandlerNavn: "",
             navAvsenderEnhet: "Nav",

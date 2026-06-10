@@ -75,7 +75,6 @@ function makeLetter(blocks: ReturnType<typeof makeBlock>[]) {
     blocks,
     signatur: nySignatur({
       hilsenTekst: "Hilsen",
-      saksbehandlerRolleTekst: "Saksbehandler",
       saksbehandlerNavn: "Ole",
       attesterendeSaksbehandlerNavn: "",
       navAvsenderEnhet: "Nav",

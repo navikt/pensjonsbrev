@@ -68,7 +68,6 @@ const typographyLetter = nyRedigertBrev({
   ],
   signatur: nySignatur({
     hilsenTekst: "Med vennlig hilsen",
-    saksbehandlerRolleTekst: "Saksbehandler",
     saksbehandlerNavn: "Ole",
     attesterendeSaksbehandlerNavn: "",
     navAvsenderEnhet: "Nav",

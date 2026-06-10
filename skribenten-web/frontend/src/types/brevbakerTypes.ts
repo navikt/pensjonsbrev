@@ -46,25 +46,10 @@ export type TObject = {
 };
 
 export type ScalarKind = "NUMBER" | "DOUBLE" | "STRING" | "BOOLEAN" | "DATE" | "YEAR";
-
 export type LanguageCode = "BOKMAL" | "NYNORSK" | "ENGLISH";
 
-export type Sakspart = {
-  readonly gjelderNavn: string;
-  readonly gjelderFoedselsnummer: string;
-  readonly annenMottakerNavn?: string;
-  readonly saksnummer: string;
-  // Formatert som 'yyyy-MM-dd'
-  readonly dokumentDato: string;
-};
-
-export type Signatur = {
-  readonly hilsenTekst: string;
-  readonly saksbehandlerRolleTekst: string;
-  readonly saksbehandlerNavn?: string;
-  readonly attesterendeSaksbehandlerNavn?: string;
-  readonly navAvsenderEnhet: string;
-};
+export type Sakspart = generated.Sakspart;
+export type Signatur = generated.Signatur;
 
 export type AnyBlock = Title1Block | Title2Block | Title3Block | ParagraphBlock;
 

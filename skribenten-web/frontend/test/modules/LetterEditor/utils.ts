@@ -74,7 +74,6 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
       signatur: {
         hilsenTekst: "Mvh",
         navAvsenderEnhet: "enhet",
-        saksbehandlerRolleTekst: "Saksbehandler",
         saksbehandlerNavn: "navn",
       },
       deletedBlocks: [],

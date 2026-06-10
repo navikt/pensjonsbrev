@@ -271,13 +271,11 @@ export const nyParagraphBlock = (args: { id?: Nullable<number>; content?: Conten
 
 export const nySignatur = (args: {
   hilsenTekst?: string;
-  saksbehandlerRolleTekst?: string;
   saksbehandlerNavn?: string;
   attesterendeSaksbehandlerNavn?: string;
   navAvsenderEnhet?: string;
 }): Signatur => ({
   hilsenTekst: args.hilsenTekst ?? "Sincerely",
-  saksbehandlerRolleTekst: args.saksbehandlerRolleTekst ?? "Caseworker",
   saksbehandlerNavn: args.saksbehandlerNavn ?? "Sak S. Behandler",
   attesterendeSaksbehandlerNavn: args.attesterendeSaksbehandlerNavn ?? "Attest S. Behandler",
   navAvsenderEnhet: args.navAvsenderEnhet ?? "Nav Arbeid og ytelser Sørlandet",
