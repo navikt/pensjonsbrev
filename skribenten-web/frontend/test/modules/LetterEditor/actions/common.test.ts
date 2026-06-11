@@ -7,6 +7,7 @@ import {
   coalesceAdjacentSameTypeLists,
   findAdjoiningContent,
   removeElements,
+  splitMixedListBlock,
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
@@ -200,7 +201,7 @@ describe("buildMergedItemList", () => {
     expect(merged.id).toBe(42);
   });
 
-  test("falls back to the last list's id when all ids are null", () => {
+  test("returns a null id when all source lists have null ids", () => {
     const first: ItemList = { ...itemList({ items: [item(literal("a"))] }), id: null };
     const last: ItemList = { ...itemList({ items: [item(literal("b"))] }), id: null };
     const merged = buildMergedItemList([first, last], ListType.PUNKTLISTE);
@@ -349,5 +350,70 @@ describe("absorbListIntoList", () => {
     const tail = result.redigertBrev.blocks[1].content;
     expect(tail).toHaveLength(1);
     expect(text(tail[0] as LiteralValue)).toBe("tail");
+  });
+});
+
+describe("splitMixedListBlock", () => {
+  test("is a no-op for a block with a single content element", () => {
+    const state = letter(paragraph([itemList({ items: [item(literal("a"))] })]));
+    let ret: number | undefined;
+    const result = produce(state, (draft) => {
+      ret = splitMixedListBlock(draft, 0);
+    });
+    expect(ret).toBe(1);
+    expect(result.redigertBrev.blocks).toHaveLength(1);
+    expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
+  });
+
+  test("does not split when the only list has a non-null id (template list tolerated)", () => {
+    const state = letter(
+      paragraph([literal("before"), itemList({ id: 5, items: [item(literal("x"))] }), literal("after")]),
+    );
+    let ret: number | undefined;
+    const result = produce(state, (draft) => {
+      ret = splitMixedListBlock(draft, 0);
+    });
+    expect(ret).toBe(1);
+    expect(result.redigertBrev.blocks).toHaveLength(1);
+    expect(result.redigertBrev.blocks[0].content).toHaveLength(3);
+  });
+
+  test("isolates a new (id:null) list into its own block, splitting the surrounding text out", () => {
+    const newList: ItemList = { ...itemList({ items: [item(literal("x"))] }), id: null };
+    const state = letter(paragraph([literal("before"), newList, literal("after")]));
+    let ret: number | undefined;
+    const result = produce(state, (draft) => {
+      ret = splitMixedListBlock(draft, 0);
+    });
+    expect(ret).toBe(3);
+    expect(result.redigertBrev.blocks).toHaveLength(3);
+    expect(text(result.redigertBrev.blocks[0].content[0] as LiteralValue)).toBe("before");
+    expect(result.redigertBrev.blocks[1].content).toHaveLength(1);
+    expect(result.redigertBrev.blocks[1].content[0].type).toBe("ITEM_LIST");
+    expect(text(result.redigertBrev.blocks[2].content[0] as LiteralValue)).toBe("after");
+  });
+
+  test("merges adjacent same-type lists first; no split needed when the result is one list", () => {
+    const l1: ItemList = { ...itemList({ items: [item(literal("a"))] }), id: null };
+    const l2: ItemList = { ...itemList({ items: [item(literal("b"))] }), id: null };
+    const state = letter(paragraph([l1, l2]));
+    let ret: number | undefined;
+    const result = produce(state, (draft) => {
+      ret = splitMixedListBlock(draft, 0);
+    });
+    expect(ret).toBe(1);
+    expect(result.redigertBrev.blocks).toHaveLength(1);
+    const merged = result.redigertBrev.blocks[0].content[0] as ItemList;
+    expect(merged.items.map((_, i) => literalText(merged, i))).toEqual(["a", "b"]);
+  });
+
+  test("remaps focus into the correct new block when the caret was in a later run", () => {
+    const newList: ItemList = { ...itemList({ items: [item(literal("x"))] }), id: null };
+    const base = letter(paragraph([literal("before"), newList, literal("after")]));
+    const state = { ...base, focus: { blockIndex: 0, contentIndex: 2, cursorPosition: 1 } };
+    const result = produce(state, (draft) => {
+      splitMixedListBlock(draft, 0);
+    });
+    expect(result.focus).toMatchObject({ blockIndex: 2, contentIndex: 0 });
   });
 });

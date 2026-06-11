@@ -205,7 +205,7 @@ function mergeBlockIntoList(
   const secondBlock = blocks[secondBlockId];
   const firstBlock = blocks[firstBlockId];
   // biome-ignore lint/complexity/useIndexOf: targetList is ItemList, not assignable to Content — findIndex avoids the type mismatch
-  const listContentIndex = firstBlock.content.findIndex((c) => c === targetList);
+  const listContentIndex = firstBlock.content.findIndex((content) => content === targetList);
 
   const lastItemIndex = targetList.items.length - 1;
   const lastItem = targetList.items[lastItemIndex];
@@ -214,7 +214,7 @@ function mergeBlockIntoList(
   const cursorItemContentIndex = lastItem.content.length - 1;
 
   // Extract leading text content from the second block to merge into the last item
-  const firstNonTextIndex = secondBlock.content.findIndex((c) => !isTextContent(c));
+  const firstNonTextIndex = secondBlock.content.findIndex((content) => !isTextContent(content));
   const textEndIndex = firstNonTextIndex === -1 ? secondBlock.content.length : firstNonTextIndex;
 
   // Add text content to the last item of the list (before removing the block, to avoid Immer proxy revocation)
@@ -432,7 +432,7 @@ function mergeIntoItemList(
   // extract and remove all consecutive textContent after the itemList we want to merge into
   const nonTextContentRelativeIndex = block.content
     .slice(literalIndex.contentIndex)
-    .findIndex((c) => !isTextContent(c));
+    .findIndex((content) => !isTextContent(content));
   const nonTextContentIndex = nonTextContentRelativeIndex === -1 ? block.content.length : nonTextContentRelativeIndex;
 
   const textContentAfterList = removeElements(literalIndex.contentIndex, nonTextContentIndex, {
