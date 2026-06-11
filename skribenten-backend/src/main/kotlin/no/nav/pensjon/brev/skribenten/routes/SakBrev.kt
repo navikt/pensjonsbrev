@@ -19,12 +19,6 @@ import no.nav.pensjon.brev.skribenten.model.toDto
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import org.apache.pdfbox.Loader
-import org.apache.pdfbox.multipdf.PDFMergerUtility
-import org.apache.pdfbox.pdmodel.PDDocument
-import java.io.ByteArrayOutputStream
-import java.nio.file.Files
-import java.nio.file.Paths
 
 fun Route.sakBrev(
     brevmalService: BrevmalService,
