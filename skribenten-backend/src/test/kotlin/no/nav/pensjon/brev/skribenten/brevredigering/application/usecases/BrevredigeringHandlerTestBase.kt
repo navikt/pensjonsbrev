@@ -232,7 +232,7 @@ abstract class BrevredigeringHandlerTestBase {
         navansattService = navAnsattService,
         p1Service = p1Service,
         renderService = RenderService(brevbakerService),
-        foerstesidegeneratorClient = FoerstesidegeneratorClient(ConfigFactory.parseMap(mapOf("url" to "", "scope" to "")), FakeAuthService)
+        foerstesidegeneratorClient = FoerstesidegeneratorClient(ConfigFactory.parseMap(mapOf("url" to "http://localhost", "scope" to "test-scope")), FakeAuthService)
     )
 
     protected suspend fun opprettBrev(
