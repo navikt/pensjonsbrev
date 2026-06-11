@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 
-class FoerstesidegeneratorService {
-    fun genererFoersteside(request: GenererFoerstesideDto) : GenererFoerstesideResponse {
+class FoerstesidegeneratorService(val klient: FoerstesidegeneratorClient) {
+    suspend fun genererFoersteside(request: GenererFoerstesideDto) : GenererFoerstesideResponse {
         val request = GenererFoerstesideRequest(
             spraakkode = request.spraakkode,
             netsPostboks = Postboks("1400"), // familie-integrasjoner bruker dette, vi må dobbeltsjekke om det er sant
@@ -26,7 +26,7 @@ class FoerstesidegeneratorService {
             foerstesidetype = Foerstesidetype.LOESPOST, // TODO: må vi kunne styre denne?
             enhetsnummer = request.enhetsnummer,
         )
-        TODO()
+        return klient.genererFoersteside(request)
     }
 }
 

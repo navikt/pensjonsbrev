@@ -21,6 +21,8 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataServiceHttp
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.LegacyBrevServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PentHttpClient
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorService
 import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.samhandler.samhandlerRoute
 import no.nav.pensjon.brev.skribenten.services.*
@@ -47,6 +49,8 @@ fun Application.configureRouting(
     val legacyBrevService = LegacyBrevServiceImpl(brevmetadataService, safService, penClient, navansattService, pensjonPersonDataService)
     val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"), cache)
     val p1Service = P1ServiceImpl(penClient)
+    val foerstesidegeneratorClient = FoerstesidegeneratorClient(servicesConfig.getConfig("foerstesidegenerator"), authService)
+    val foerstesidegeneratorService = FoerstesidegeneratorService(foerstesidegeneratorClient)
 
     val brevService = BrevService(penClient, legacyBrevService)
     val brevdataService = BrevdataService(penClient, samhandlerService)
