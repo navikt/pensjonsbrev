@@ -73,7 +73,6 @@ ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktorVer
 ktor-server-metrics = { module = "io.ktor:ktor-server-metrics", version.ref = "ktorVersion" }
 ktor-server-metrics-micrometer = { module = "io.ktor:ktor-server-metrics-micrometer", version.ref = "ktorVersion" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktorVersion" }
-ktor-server-routing-openapi = { module = "io.ktor:ktor-server-routing-openapi", version.ref = "ktorVersion" }
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktorVersion" }
 ktor-server-swagger = { module = "io.ktor:ktor-server-swagger", version.ref = "ktorVersion" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktorVersion" }
@@ -100,4 +99,3 @@ testcontainers-core = { module = "org.testcontainers:testcontainers", version.re
 junit = ["junit-jupiter", "junit-platform-launcher", "assertJ"]
 logging = ["logback-classic", "logback-encoder"]
 metrics = ["micrometer-prometheus", "ktor-server-metrics", "ktor-server-metrics-micrometer"]
-ktor-openapi = ["ktor-server-routing-openapi", "ktor-openapi-schema-reflect"]

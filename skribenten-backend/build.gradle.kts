@@ -116,7 +116,7 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.swagger)
-    implementation(libs.bundles.ktor.openapi)
+    implementation(libs.ktor.openapi.schema.reflect)
 
     // Exposed
     implementation(libs.exposed.core)
