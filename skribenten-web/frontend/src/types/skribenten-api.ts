@@ -2021,7 +2021,73 @@ export interface paths {
         };
         put?: never;
         post?: never;
-        delete?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    brevId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
         options?: never;
         head?: never;
         patch?: never;
@@ -2305,6 +2371,40 @@ export interface paths {
                 };
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/me/userinfo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiUserInfo"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2625,7 +2725,7 @@ export interface components {
         };
         /** Fagsak */
         Fagsak: {
-            behandlingsnummer?: string | null;
+            behandlingsnumre: string[];
             /** Format: date */
             foedselsdato: string;
             navn: components["schemas"]["FagsakNavn"];
@@ -3255,6 +3355,12 @@ export interface components {
             adresse?: components["schemas"]["HentSamhandlerAdresseResponseDtoSamhandlerPostadresse"] | null;
             failureType?: components["schemas"]["HentSamhandlerAdresseResponseDtoFailureType"];
         };
+        /** ApiUserInfo */
+        ApiUserInfo: {
+            erAttestant: boolean;
+            name: string;
+            navident: string;
+        };
         /** Unit */
         Unit: Record<string, never>;
         /** NAVAnsattEnhet */
@@ -3380,6 +3486,7 @@ export type HentSamhandlerAdresseRequestDto = components['schemas']['HentSamhand
 export type HentSamhandlerAdresseResponseDtoSamhandlerPostadresse = components['schemas']['HentSamhandlerAdresseResponseDtoSamhandlerPostadresse'];
 export type HentSamhandlerAdresseResponseDtoFailureType = components['schemas']['HentSamhandlerAdresseResponseDtoFailureType'];
 export type HentSamhandlerAdresseResponseDto = components['schemas']['HentSamhandlerAdresseResponseDto'];
+export type ApiUserInfo = components['schemas']['ApiUserInfo'];
 export type Unit = components['schemas']['Unit'];
 export type NavAnsattEnhet = components['schemas']['NAVAnsattEnhet'];
 export type $defs = Record<string, never>;

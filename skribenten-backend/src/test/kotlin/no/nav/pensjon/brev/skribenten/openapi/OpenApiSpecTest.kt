@@ -101,6 +101,7 @@ class OpenApiSpecTest {
             put("services.database.name", postgres.databaseName)
             put("services.database.username", postgres.username)
             put("services.database.password", postgres.password)
+            put("services.database.maxPoolSize", 2)
         }
     )
 

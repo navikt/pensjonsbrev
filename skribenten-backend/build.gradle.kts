@@ -7,7 +7,7 @@ val javaTarget: String by System.getProperties()
 plugins {
     application
     kotlin("jvm")
-    id("io.ktor.plugin") version "3.5.0"
+    alias(libs.plugins.ktor)
     alias(libs.plugins.gradle.node)
 }
 
