@@ -57,28 +57,24 @@ object GjenlevendepensjonBeregningTabell {
                 )
             }
             paragraph {
-                list {
-                    item {
-                        text(
-                            bokmal {
-                                +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " + grunnbeloep.format() + "."
-                            },
-                            english {
-                                +"The national insurance basic amount (G) used in the calculation is " + grunnbeloep.format() + "."
-                            },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal {
-                                +"Framtidig årlig inntekt benyttet i beregningen er " + framtidigAarligInntekt.format() + "."
-                            },
-                            english {
-                                +"Expected future earned income used in the calculation is " + framtidigAarligInntekt.format() + "."
-                            },
-                        )
-                    }
-                }
+                text(
+                    bokmal {
+                        +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " + grunnbeloep.format() + "."
+                    },
+                    english {
+                        +"The national insurance basic amount (G) used in the calculation is " + grunnbeloep.format() + "."
+                    },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Framtidig årlig inntekt benyttet i beregningen er " + framtidigAarligInntekt.format() + "."
+                    },
+                    english {
+                        +"Expected future earned income used in the calculation is " + framtidigAarligInntekt.format() + "."
+                    },
+                )
             }
             paragraph {
                 table(
@@ -99,32 +95,39 @@ object GjenlevendepensjonBeregningTabell {
                     },
                 ) {
                     bruttoNettoRad("Grunnpensjon", "Basic pension", grunnpensjonBrutto, grunnpensjonNetto)
-                    ifNotNull(tilleggspensjonBrutto) { tpBrutto ->
-                        ifNotNull(tilleggspensjonNetto) { tpNetto ->
-                            bruttoNettoRad("Tilleggspensjon", "Supplementary pension", tpBrutto, tpNetto)
-                        }
+                    ifNotNull(tilleggspensjonBrutto,tilleggspensjonNetto) { tilleggspensjonBrutto, tilleggspensjonNetto ->
+                        bruttoNettoRad(
+                            bokmal = "Tilleggspensjon",
+                            english = "Supplementary pension",
+                            brutto = tilleggspensjonBrutto,
+                            netto = tilleggspensjonNetto
+                        )
                     }
-                    ifNotNull(saertilleggBrutto) { stBrutto ->
-                        ifNotNull(saertilleggNetto) { stNetto ->
-                            bruttoNettoRad("Særtillegg", "Special supplement", stBrutto, stNetto)
-                        }
+                    ifNotNull(saertilleggBrutto, saertilleggNetto) { saertilleggBrutto, saertilleggNetto ->
+                        bruttoNettoRad(
+                            bokmal = "Særtillegg",
+                            english = "Special supplement",
+                            brutto = saertilleggBrutto,
+                            netto = saertilleggNetto
+                        )
                     }
-                    ifNotNull(fasteUtgifterBrutto) { fuBrutto ->
-                        ifNotNull(fasteUtgifterNetto) { fuNetto ->
-                            bruttoNettoRad(
-                                "Faste utgifter ved institusjonsopphold",
-                                "Fixed costs when institutionalised",
-                                fuBrutto,
-                                fuNetto,
-                            )
-                        }
+                    ifNotNull(fasteUtgifterBrutto, fasteUtgifterNetto) { fasteUtgifterBrutto, fasteUtgifterNetto ->
+                        bruttoNettoRad(
+                            bokmal = "Faste utgifter ved institusjonsopphold",
+                            english = "Fixed costs when institutionalised",
+                            brutto = fasteUtgifterBrutto,
+                            netto = fasteUtgifterNetto,
+                        )
                     }
-                    ifNotNull(familietilleggBrutto) { ftBrutto ->
-                        ifNotNull(familietilleggNetto) { ftNetto ->
-                            bruttoNettoRad("Familietillegg", "Family supplement", ftBrutto, ftNetto)
-                        }
+                    ifNotNull(familietilleggBrutto, familietilleggNetto) { familietilleggBrutto, familietilleggNetto ->
+                        bruttoNettoRad(
+                            bokmal = "Familietillegg",
+                            english = "Family supplement",
+                            brutto = familietilleggBrutto,
+                            netto = familietilleggNetto
+                        )
                     }
-                    sumBruttoNettoRad(sumBrutto, sumNetto)
+                    sumPensjonFoerSkattBruttoNettoRad(brutto = sumBrutto, netto = sumNetto)
                 }
             }
         }
@@ -149,28 +152,24 @@ object GjenlevendepensjonBeregningTabell {
                 )
             }
             paragraph {
-                list {
-                    item {
-                        text(
-                            bokmal {
-                                +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " + grunnbeloep.format() + "."
-                            },
-                            english {
-                                +"The national insurance basic amount (G) used in the calculation is " + grunnbeloep.format() + "."
-                            },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal {
-                                +"Framtidig årlig inntekt benyttet i beregningen er " + framtidigAarligInntekt.format() + "."
-                            },
-                            english {
-                                +"Expected future earned income used in the calculation is " + framtidigAarligInntekt.format() + "."
-                            },
-                        )
-                    }
-                }
+                text(
+                    bokmal {
+                        +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " + grunnbeloep.format() + "."
+                    },
+                    english {
+                        +"The national insurance basic amount (G) used in the calculation is " + grunnbeloep.format() + "."
+                    },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Framtidig årlig inntekt benyttet i beregningen er " + framtidigAarligInntekt.format() + "."
+                    },
+                    english {
+                        +"Expected future earned income used in the calculation is " + framtidigAarligInntekt.format() + "."
+                    },
+                )
             }
             paragraph {
                 table(
@@ -184,24 +183,40 @@ object GjenlevendepensjonBeregningTabell {
                         }
                     },
                 ) {
-                    nettoRad("Grunnpensjon", "Basic pension", grunnpensjonNetto)
-                    ifNotNull(tilleggspensjonNetto) { tpNetto ->
-                        nettoRad("Tilleggspensjon", "Supplementary pension", tpNetto)
-                    }
-                    ifNotNull(saertilleggNetto) { stNetto ->
-                        nettoRad("Særtillegg", "Special supplement", stNetto)
-                    }
-                    ifNotNull(fasteUtgifterNetto) { fuNetto ->
+                    nettoRad(
+                        bokmal = "Grunnpensjon",
+                        english = "Basic pension",
+                        netto = grunnpensjonNetto
+                    )
+                    ifNotNull(tilleggspensjonNetto) { tilleggspensjonNetto ->
                         nettoRad(
-                            "Faste utgifter ved institusjonsopphold",
-                            "Fixed costs when institutionalised",
-                            fuNetto,
+                            bokmal = "Tilleggspensjon",
+                            english = "Supplementary pension",
+                            netto = tilleggspensjonNetto
                         )
                     }
-                    ifNotNull(familietilleggNetto) { ftNetto ->
-                        nettoRad("Familietillegg", "Family supplement", ftNetto)
+                    ifNotNull(saertilleggNetto) { saertilleggNetto ->
+                        nettoRad(
+                            bokmal = "Særtillegg",
+                            english = "Special supplement",
+                            netto = saertilleggNetto
+                        )
                     }
-                    sumNettoRad(sumNetto)
+                    ifNotNull(fasteUtgifterNetto) { fasteUtgifterNetto ->
+                        nettoRad(
+                            bokmal = "Faste utgifter ved institusjonsopphold",
+                            english = "Fixed costs when institutionalised",
+                            netto = fasteUtgifterNetto,
+                        )
+                    }
+                    ifNotNull(familietilleggNetto) { familietilleggNetto ->
+                        nettoRad(
+                            bokmal = "Familietillegg",
+                            english = "Family supplement",
+                            netto = familietilleggNetto
+                        )
+                    }
+                    sumNettoPensjonRad(sumNetto)
                 }
             }
         }
@@ -277,7 +292,7 @@ object YtelserPerMaanedTabell {
                             bruttoNettoRad("Familietillegg", "Family supplement", ftBrutto, ftNetto)
                         }
                     }
-                    sumBruttoNettoRad(sumBrutto, sumNetto, bold = true)
+                    sumPensjonFoerSkattBruttoNettoRad(sumBrutto, sumNetto)
                 }
             }
         }
@@ -311,7 +326,7 @@ object YtelserPerMaanedTabell {
                         nettoRad("Faste utgifter ved institusjonsopphold", "Fixed costs when institutionalised", it)
                     }
                     ifNotNull(familietilleggNetto) { nettoRad("Familietillegg", "Family supplement", it) }
-                    sumNettoRad(sumNetto, bold = true)
+                    sumNettoPensjonRad(sumNetto)
                 }
             }
         }
@@ -344,39 +359,35 @@ fun <LetterData : Any> TableScope<LangBokmalEnglish, LetterData>.nettoRad(
     }
 }
 
-internal fun <LetterData : Any> TableScope<LangBokmalEnglish, LetterData>.sumBruttoNettoRad(
+internal fun <LetterData : Any> TableScope<LangBokmalEnglish, LetterData>.sumPensjonFoerSkattBruttoNettoRad(
     brutto: Expression<Kroner>,
     netto: Expression<Kroner>,
-    bold: Boolean = true,
 ) {
-    val font = if (bold) BOLD else PLAIN
     row {
         cell {
             text(
                 bokmal { +"Sum pensjon før skatt" },
                 english { +"Total pension before tax" },
-                font,
+                BOLD,
             )
         }
-        cell { includePhrase(KronerText(brutto, font)) }
-        cell { includePhrase(KronerText(netto, font)) }
+        cell { includePhrase(KronerText(brutto, BOLD)) }
+        cell { includePhrase(KronerText(netto, BOLD)) }
     }
 }
 
-internal fun <LetterData : Any> TableScope<LangBokmalEnglish, LetterData>.sumNettoRad(
+internal fun <LetterData : Any> TableScope<LangBokmalEnglish, LetterData>.sumNettoPensjonRad(
     netto: Expression<Kroner>,
-    bold: Boolean = true,
 ) {
-    val font = if (bold) BOLD else PLAIN
     row {
         cell {
             text(
                 bokmal { +"Sum pensjon før skatt" },
                 english { +"Total pension before tax" },
-                font,
+                BOLD,
             )
         }
-        cell { includePhrase(KronerText(netto, font)) }
+        cell { includePhrase(KronerText(netto, BOLD)) }
     }
 }
 

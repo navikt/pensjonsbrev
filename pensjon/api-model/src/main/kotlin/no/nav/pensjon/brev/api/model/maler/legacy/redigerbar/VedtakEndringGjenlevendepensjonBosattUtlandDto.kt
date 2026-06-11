@@ -34,19 +34,19 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
      */
     data class Saksbehandlervalg(
         // Kilde: <FRITEKST: VELG ETT AV ALTERNATIVENE UNDER …> (Alt 1/2/3)
-        @DisplayText("Årsak til endring - velg et alternativ:")
+        @DisplayText("Årsak til endring")
         val aarsakEndring: AarsakEndring,
         // Kilde: <FRITEKST: VELG ET ALTERNATIV …> for forventet inntekt (Alt 1/2/3)
-        @DisplayText("Forventet inntekt - velg et alternativ. Gi eventuell nærmere begrunnelse for hvorfor inntekten er hypotetisk fastsatt, eller andre vurderinger gjort i forbinelse med fastsettelsen av forventet inntekt.")
+        @DisplayText("Forventet inntekt")
         val forventetInntektNivaa: ForventetInntektNivaa,
         // Kilde: <FRITEKST: FORSLAG TEKST - BEHOV FOR OPPFØLGING – inkluder oppfølgingsavsnittet?
         @DisplayText("Behov for oppfølging - inkluder oppfølgingsavsnittet?")
         val harBehovForOppfoelging: Boolean,
         // Kilde: <FRITEKST: fjern overskrifter og de alternativer som ikke passer> for skatt (Alt 1/2)
-        @DisplayText("Skatt - fjern alternativer som ikke passer. (Dersom kildeskatt og etterbetaling tilpasses avsnittet om etterbetaling siden det ikke vil bli trukket 30 årosent)")
+        @DisplayText("Skatt (Dersom kildeskatt og etterbetaling tilpasses avsnittet om etterbetaling siden det ikke vil bli trukket 30 årosent)")
         val skattAlternativ: SkattAlternativ,
         // Kilde: <FRITEKST: Etterbetaling/Feilutbetaling - stryk om det ikke passer> (Alt 1/2)
-        @DisplayText("Etterbetaling/Feilutbetaling - fjern alternativer som ikke passer")
+        @DisplayText("Etterbetaling og Feilutbetaling")
         val utbetalingAlternativ: UtbetalingAlternativ,
     ) : SaksbehandlerValgBrevdata
 
@@ -60,7 +60,7 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
         @DisplayText("Samboer i 12 av de siste 18 månedene")
         SAMBOER_12_AV_18_MAANEDER,
 
-        @DisplayText("Fritekst: Egen tekst")
+        @DisplayText("Egen tekst")
         FRITEKST
     }
 
@@ -74,7 +74,7 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
         @DisplayText("Som følge av inntekt, er pensjonen redusert til null kroner")
         REDUSERT_TIL_NULL,
 
-        @DisplayText("Fritekst: Forslag tekst - behov for oppfølging")
+        @DisplayText("Egen tekst")
         FRITEKST
     }
 
@@ -102,7 +102,7 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
         @DisplayText("Informasjon om etterbetaling og feilutbetaling")
         INFORMASJON_OM_ETTERBETALING_OG_FEILUTBETALING,
 
-        @DisplayText("Fjern begger alternativer etterbetaling/feilutbetaling")
+        @DisplayText("Ingen informasjon om etterbetaling/feilutbetaling")
         INGEN_INFORMASJON_OM_ETTERBETALING_FEILUTBETALING,
     }
 

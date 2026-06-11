@@ -84,13 +84,18 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtl
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.YrkesskadeBeregningSelectors.poengaarYrkeF92
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.YrkesskadeBeregningSelectors.sluttpoengtallYrke
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.fraser.common.AntallAarText
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.Ja
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetid
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller.UtenlandskTrygdetid
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.createAttachment
@@ -113,7 +118,7 @@ import no.nav.pensjon.brev.template.includePhrase
  * ble historisk inkludert i flere GP-utland-vedtak (se PR-beskrivelsen).
  */
 @TemplateModelHelpers
-val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
+val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
     createAttachment<LangBokmalEnglish, OpplysningerOmBeregningenGPUtlandDto>(
         title = {
             text(
@@ -124,25 +129,24 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
         includeSakspart = false,
     ) {
         // ---- Innledning ----
-        title2 {
-            text(
-                bokmal { +"Opplysninger som ligger til grunn for beregningen fra " + pesysData.virkDatoFom.format() },
-                english { +"Information that provides the basis for the calculation starting " + pesysData.virkDatoFom.format() },
-            )
-        }
         // ---- Opplysninger om deg ----
         paragraph {
             table(
                 header = {
-                    column(columnSpan = 1, alignment = LEFT) {}
-                    column(columnSpan = 1, alignment = LEFT) {}
+                    column(columnSpan = 3, alignment = LEFT) {
+                        text(
+                            bokmal { +"Opplysninger som ligger til grunn for beregningen fra " + pesysData.virkDatoFom.format() },
+                            english { +"Information that provides the basis for the calculation starting " + pesysData.virkDatoFom.format() },
+                        )
+                    }
+                    column(columnSpan = 1, alignment = RIGHT) {}
                 },
             ) {
                 row {
                     cell {
                         text(
                             bokmal { +"Opplysninger om deg" },
-                            english { +"Information about you" }, ITALIC
+                            english { +"Information about you" }, BOLD
                         )
                     }
                     cell { }
@@ -151,29 +155,32 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                     row {
                         cell {
                             text(
-                                bokmal { +"Du er registrert med flyktningstatus: Ja" },
-                                english { +"You are registered as having refugee status: Yes" },
+                                bokmal { +"Du er registrert med flyktningstatus" },
+                                english { +"You are registered as having refugee status" },
                             )
                         }
-                        cell { }
+                        cell { includePhrase(Ja) }
                     }
                 }
                 row {
                     cell {
                         text(
-                            bokmal { +"Forventet inntekt: " + pesysData.bruker.forventetInntekt.format() },
-                            english { +"Future income: NOK" + pesysData.bruker.forventetInntekt.format() },
+                            bokmal { +"Forventet inntekt" },
+                            english { +"Future income" },
                         )
                     }
-                    cell { }
+                    cell {
+                        includePhrase(KronerText(pesysData.bruker.forventetInntekt))
+                    }
                 }
 
+                // TODO her er det redigerbare felter for samboer
                 // ---- Opplysninger om avdøde ----
                 row {
                     cell {
                         text(
                             bokmal { +"Opplysninger om avdøde" },
-                            english { +"Information about the deceased" }, ITALIC
+                            english { +"Information about the deceased" }, BOLD
                         )
                     }
                     cell { }
@@ -231,10 +238,7 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                             )
                         }
                         cell {
-                            text(
-                                bokmal { +pesysData.beregning.ttAnvBest.format() + " år" },
-                                english { +pesysData.beregning.ttAnvBest.format() + " year(s)" },
-                            )
+                            includePhrase(AntallAarText(pesysData.beregning.ttAnvBest))
                         }
                     }
                 }
@@ -305,10 +309,7 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                                 )
                             }
                             cell {
-                                text(
-                                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOk.format() + " år" },
-                                    english { +pesysData.beregning.poengrekke.poengaarUtenOk.format() + " year(s)" },
-                                )
+                                includePhrase(AntallAarText(pesysData.beregning.poengrekke.poengaarUtenOk))
                             }
                         }
                     }
@@ -321,10 +322,7 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                                 )
                             }
                             cell {
-                                text(
-                                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkF92.format() + " år" },
-                                    english { +pesysData.beregning.poengrekke.poengaarUtenOkF92.format() + " year(s)" },
-                                )
+                                includePhrase(AntallAarText(pesysData.beregning.poengrekke.poengaarUtenOkF92))
                             }
                         }
                     }
@@ -337,10 +335,7 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                                 )
                             }
                             cell {
-                                text(
-                                    bokmal { +pesysData.beregning.poengrekke.poengaarUtenOkE91.format() + " år" },
-                                    english { +pesysData.beregning.poengrekke.poengaarUtenOkE91.format() + " year(s)" },
-                                )
+                                includePhrase(AntallAarText(pesysData.beregning.poengrekke.poengaarUtenOkE91))
                             }
                         }
                     }
@@ -429,14 +424,11 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                             cell {
                                 text(
                                     bokmal { +"Antall poengår benyttet ved yrkesskadeberegningen" },
-                                    english { +"Number of point-earning year(s) applied when calculating occupational injury" },
+                                    english { +"Number of point-earning years applied when calculating occupational injury" },
                                 )
                             }
                             cell {
-                                text(
-                                    bokmal { +pesysData.beregning.yrke.poengaarYrke.format() + " år" },
-                                    english { +pesysData.beregning.yrke.poengaarYrke.format() + " year(s)" },
-                                )
+                                includePhrase(Felles.AarText(pesysData.beregning.yrke.poengaarYrke))
                             }
                         }
                     }

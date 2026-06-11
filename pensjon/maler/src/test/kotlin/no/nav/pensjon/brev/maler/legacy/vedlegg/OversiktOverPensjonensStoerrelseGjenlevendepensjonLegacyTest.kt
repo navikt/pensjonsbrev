@@ -19,7 +19,7 @@ class OversiktOverPensjonensStoerrelseGjenlevendepensjonLegacyTest {
     @Test
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
-            vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy,
+            vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjon,
             Fixtures.createVedlegg<OversiktOverPensjonensStoerrelseGjenlevendepensjonDto>().expr(),
             languages(Language.Bokmal, Language.Nynorsk, Language.English),
         )

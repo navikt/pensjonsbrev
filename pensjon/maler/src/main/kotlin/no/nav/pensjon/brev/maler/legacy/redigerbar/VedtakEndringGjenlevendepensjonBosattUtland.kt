@@ -44,22 +44,11 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenle
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.AarsakTilEndringFritekst
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.AvdodFlyktning
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.AvdoedDoedsfallNotSkyldesYrkesskade
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.AvdoedDoedsfallSkyldesYrkesskade
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.GjenlevendepensjonBeregningTabell
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonGP
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonJustertTil90ProsentPgaEgenPensjon
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonJustertTil90ProsentPgaEktefelleInntekt
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonJustertTil90ProsentPgaSamboerInntekt
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.Inntektsoekning
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.Inntektsreduksjon
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.Samboer12av18Maaneder
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.Tilleggspensjon
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.GjenlevendepensjonFraser
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggFolketrygdenBokmalEnglish
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerOmBeregningenGPUtlandLegacy
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjon
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
@@ -67,14 +56,11 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
-import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.safe
@@ -82,6 +68,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.includePhrase
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // PE_GP_04_029 Vedtak endring av gjenlevendepensjon (bosatt utland)
@@ -133,14 +120,13 @@ object VedtakEndringGjenlevendepensjonBosattUtland :
             // Erstatter <FRITEKST: VELG ETT AV ALTERNATIVENE UNDER, ELLER FYLL INN EGEN TEKST …>
             // og de tre alternativene som fulgte i Exstream-kilden.
             showIf(saksbehandlerValg.aarsakEndring.equalTo(AarsakEndring.OEKNING_AV_INNTEKT)) {
-                includePhrase(Inntektsoekning)
+                includePhrase(GjenlevendepensjonFraser.Inntektsoekning)
             }.orShowIf(saksbehandlerValg.aarsakEndring.equalTo(AarsakEndring.REDUKSJON_AV_INNTEKT)) {
-                includePhrase(Inntektsreduksjon)
+                includePhrase(GjenlevendepensjonFraser.Inntektsreduksjon)
             }.orShowIf(saksbehandlerValg.aarsakEndring.equalTo(AarsakEndring.SAMBOER_12_AV_18_MAANEDER)) {
-                includePhrase(Samboer12av18Maaneder)
+                includePhrase(GjenlevendepensjonFraser.Samboer12av18Maaneder)
             }.orShowIf(saksbehandlerValg.aarsakEndring.equalTo(AarsakEndring.FRITEKST)) {
-                includePhrase(AarsakTilEndringFritekst)
-
+                includePhrase(GjenlevendepensjonFraser.FyllInnEgenTekst)
             }
 
             // ---- PE_GP_tabellA1_utland (brutto != netto) ----
@@ -186,30 +172,27 @@ object VedtakEndringGjenlevendepensjonBosattUtland :
             }
 
             // ---- PE_GP_04_028_tekst2: trygdetid og avhengige tilleggsavsnitt ----
-            includePhrase(GrunnpensjonGP(pesysData.beregning.grunnbeloep))
+            includePhrase(GjenlevendepensjonFraser.GrunnpensjonGP(pesysData.beregning.grunnbeloep))
 
             showIf(pesysData.avdoed.flyktning) {
-                includePhrase(AvdodFlyktning)
+                includePhrase(GjenlevendepensjonFraser.AvdodFlyktning)
             }
 
             showIf(pesysData.avdoed.doedsfallSkyldesYrkesskade) {
-               includePhrase(AvdoedDoedsfallSkyldesYrkesskade)
-            }
-
-            showIf(pesysData.beregning.harYrkesskadegradFraAvdoed and not(pesysData.avdoed.doedsfallSkyldesYrkesskade)) {
-                includePhrase(AvdoedDoedsfallNotSkyldesYrkesskade)
-            }
-
-            showIf(pesysData.ektefelle.mottarPensjon and not(pesysData.ektefelle.inntektOver2g)) {
-                includePhrase(GrunnpensjonJustertTil90ProsentPgaEgenPensjon)
+               includePhrase(GjenlevendepensjonFraser.AvdoedDoedsfallSkyldesYrkesskade)
+            }.orShowIf(pesysData.beregning.harYrkesskadegradFraAvdoed) {
+                includePhrase(GjenlevendepensjonFraser.AvdoedDoedsfallNotSkyldesYrkesskade)
             }
 
             showIf(pesysData.ektefelle.inntektOver2g) {
-                includePhrase(GrunnpensjonJustertTil90ProsentPgaEktefelleInntekt)
+                includePhrase(GjenlevendepensjonFraser.GrunnpensjonJustertTil90ProsentPgaEktefelleInntekt)
+            }.orShowIf(pesysData.ektefelle.mottarPensjon) {
+                includePhrase(GjenlevendepensjonFraser.GrunnpensjonJustertTil90ProsentPgaEgenPensjon)
             }
 
+
             ifNotNull(pesysData.beregning.tilleggspensjon) {
-                includePhrase(Tilleggspensjon)
+                includePhrase(GjenlevendepensjonFraser.Tilleggspensjon)
 
                 showIf(pesysData.avdoed.doedsfallSkyldesYrkesskade) {
                     paragraph {
@@ -295,7 +278,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland :
                                 " sykepenger, pleiepenger, svangerskapspenger, foreldrepenger og arbeidsavklaringspenger."
                     },
                     english {
-                        +"\"Earned income\" means personal income from pensionable work or business activities, or other benefits from the" +
+                        + quoted("Earned income") + " means personal income from pensionable work or business activities, or other benefits from the" +
                                 " National Insurance Scheme that are considered equivalent to earned income. Such benefits include unemployment" +
                                 " benefit (dagpenger), sickness benefit (sykepenger), attendance allowance (pleiepenger), pregnancy allowance" +
                                 " (svangerskapspenger), parental benefit (foreldrepenger) and work assessment allowance (arbeidsavklaringspenger)."
@@ -358,10 +341,10 @@ object VedtakEndringGjenlevendepensjonBosattUtland :
                     )
                 }
             }.orShowIf(saksbehandlerValg.forventetInntektNivaa.equalTo(FRITEKST)) {
-                paragraph { text(bokmal { +fritekst("Fritekst") }, english { +fritekst("Fritekst") }) }
+                val fritekst = fritekst("Gi nærmere begrunnelse for hvorfor inntekten er hypotetisk fastsatt, eller andre vurderinger gjort i forbinelse med fastsettelsen av forventet inntekt.")
+                paragraph { text(bokmal { +fritekst }, english { +fritekst }) }
             }
 
-            // Behov for oppfølging — valgfritt avsnitt (Saksbehandlervalg.harBehovForOppfoelging)
             showIf(saksbehandlerValg.harBehovForOppfoelging) {
                 paragraph {
                     text(
@@ -383,12 +366,9 @@ object VedtakEndringGjenlevendepensjonBosattUtland :
             showIf(pesysData.beregning.netto.greaterThan(0)) {
                 title1 {
                     text(
-                        bokmal { +"Utbetaling" },
-                        english { +"Payment" },
+                        bokmal { +"Utbetaling og skatt" },
+                        english { +"Payment and tax" },
                     )
-                    showIf(saksbehandlerValg.skattAlternativ.isNotAnyOf(INGEN_INFORMASJON_OM_SKATT)) {
-                        text(bokmal { +" og skatt" }, english { +" and tax" })
-                    }
                 }
                 paragraph {
                     text(
@@ -441,7 +421,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland :
                             },
                         )
                     }
-                }.orShowIf(
+                }
+                showIf(
                     saksbehandlerValg.skattAlternativ.isOneOf(
                         KILDESKATT,
                         INFORMASJON_OM_SKATT_OG_KILDESKATT
@@ -467,15 +448,16 @@ object VedtakEndringGjenlevendepensjonBosattUtland :
                         )
                     }
                     paragraph {
+                        val telefonnummer = BrevbakerType.Telefonnummer("22077000").format()
                         text(
                             bokmal {
                                 +"Alle spørsmål om kildeskatt og skattefritak skal rettes til Skatt nord, Postboks 6310, NO - 9293 Tromsø." +
-                                        " Tlf.: +47 22 07 70 00. Spørsmål om skatteplikt til det landet du har flyttet til, må du selv avklare" +
+                                        " Tlf.: +47 "+ telefonnummer + ". Spørsmål om skatteplikt til det landet du har flyttet til, må du selv avklare" +
                                         " med skattemyndighetene der."
                             },
                             english {
                                 +"All questions about withholding tax and tax exemptions must be directed to Skatt nord, Postboks 6310," +
-                                        " NO - 9293 Tromsø. Tel.: +47 22 07 70 00. Questions related to tax obligations in your current country" +
+                                        " NO - 9293 Tromsø. Tel.: +47 "+ telefonnummer + ". Questions related to tax obligations in your current country" +
                                         " of residence must be clarified with local tax authorities."
                             },
                         )
@@ -494,12 +476,6 @@ object VedtakEndringGjenlevendepensjonBosattUtland :
                         INFORMASJON_OM_ETTERBETALING_OG_FEILUTBETALING
                     )
                 ) {
-                    title1 {
-                        text(
-                            bokmal { +"Etterbetaling" },
-                            english { +"Back pay" },
-                        )
-                    }
                     paragraph {
                         text(
                             bokmal {
@@ -532,19 +508,13 @@ object VedtakEndringGjenlevendepensjonBosattUtland :
                             },
                         )
                     }
-                }.orShowIf(
+                }
+                showIf(
                     saksbehandlerValg.utbetalingAlternativ.isOneOf(
                         FEILUTBETALING,
                         INFORMASJON_OM_ETTERBETALING_OG_FEILUTBETALING
                     )
                 ) {
-                    // FEILUTBETALING
-                    title1 {
-                        text(
-                            bokmal { +"Feilutbetaling" },
-                            english { +"Overpayment" },
-                        )
-                    }
                     paragraph {
                         text(
                             bokmal {
@@ -699,11 +669,11 @@ object VedtakEndringGjenlevendepensjonBosattUtland :
             }
         }
         includeAttachmentIfNotNull(
-            vedleggOpplysningerOmBeregningenGPUtlandLegacy,
+            vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland,
             pesysData.opplysningerOmBeregningen
         )
         includeAttachmentIfNotNull(
-            vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy,
+            vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjon,
             pesysData.oversiktOverPensjonensStoerrelse
         )
         includeAttachment(vedleggFolketrygdenBokmalEnglish)

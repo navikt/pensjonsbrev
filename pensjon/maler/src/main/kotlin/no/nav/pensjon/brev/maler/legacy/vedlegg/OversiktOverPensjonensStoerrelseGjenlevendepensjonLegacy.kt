@@ -58,7 +58,7 @@ import no.nav.pensjon.brev.template.dsl.text
  * slik at periode-tabellene og slutt-tabellen bruker samme frase.
  */
 @TemplateModelHelpers
-val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
+val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjon =
     createAttachment<LangBokmalEnglish, OversiktOverPensjonensStoerrelseGjenlevendepensjonDto>(
         title = {
             text(
