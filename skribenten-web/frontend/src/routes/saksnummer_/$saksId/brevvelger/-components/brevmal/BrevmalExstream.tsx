@@ -89,11 +89,13 @@ export default function BrevmalForExstream({
         <BrevmalFormWrapper
           formRef={formRef}
           onSubmit={methods.handleSubmit((submittedValues) => {
+            const parsedVedtaksId = Number.parseInt(vedtaksId ?? "", 10);
+
             orderLetterMutation.mutate(
               byggExstreamOnSubmitRequest({
                 template: letterTemplate,
                 idTSSEkstern: idTSSEkstern ?? null,
-                vedtaksId: typeof vedtaksId === "string" ? Number.parseInt(vedtaksId, 10) : null,
+                vedtaksId: Number.isNaN(parsedVedtaksId) ? null : parsedVedtaksId,
                 formValues: {
                   enhetsId: submittedValues.enhetsId,
                   spraak: submittedValues.spraak ?? null,
