@@ -205,7 +205,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         includePhrase(AarligInntektOgPensjonTabell(it))
     }
     ifNotNull(simulering.maanedligAlderspensjonForKnekkpunkter) { knekkpunkter ->
-        title2 {
+        title1 {
             text(bokmal { +"Ditt opptjeningsgrunnlag i folketrygden" })
         }
         ifNotNull(knekkpunkter.vedGradertUttak) { alderspensjon ->
