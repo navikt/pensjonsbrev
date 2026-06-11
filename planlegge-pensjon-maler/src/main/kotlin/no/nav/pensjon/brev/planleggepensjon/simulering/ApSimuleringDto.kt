@@ -19,6 +19,8 @@ data class ApSimuleringDto(
     val trygdetid: Trygdetid?,
     @DisplayText("Pensjonsgivende inntekt")
     val pensjonsgivendeInntektListe: List<AarligBeloep>?,
+    @DisplayText("Årlig inntekt og pensjon")
+    val aarligInntektOgPensjonListe: List<AarligInntektOgPensjon>?,
     @DisplayText("Forbehold")
     val forbehold: ForbeholdInnhold,
 ) : SaksbehandlerValgBrevdata, VedleggData
@@ -116,11 +118,17 @@ data class Alder(
     val maaneder: Int
 )
 
+data class Uttaksinformasjon (
+    val alder: Alder,
+    val uttaksdato: String
+)
+
 data class Simuleringsinformasjon(
     @DisplayText("Gradert uttaksalder")
-    val gradertUttaksalder: Alder?,
+    val gradertUttakInformasjon: Uttaksinformasjon?,
     @DisplayText("Helt uttaksalder")
-    val heltUttaksalder: Alder,
+    val heltUttakInformasjon: Uttaksinformasjon,
+    val normertUttakInformasjon: Uttaksinformasjon?,
     val sivilstatus: Sivilstatus,
     val utenlandsperioder: List<SimuleringUtenlandsperiode>?,
     val kull: Kull,
@@ -196,6 +204,13 @@ data class SimuleringV1MaanedligAlderspensjon(
     val garantitilleggBeloep: Kroner?,
     @DisplayText("Grunnbeløp")
     val grunnbeloep: Kroner?
+)
+
+data class AarligInntektOgPensjon(
+    val alderLabel: String,
+    val alderspensjon: Int,
+    val avtalefestetPensjon: Int,
+    val pensjonsgivendeInntekt: Double,
 )
 
 data class SimuleringUtenlandsperiode(

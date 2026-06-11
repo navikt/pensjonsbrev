@@ -30,30 +30,22 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringUtenlandsperiod
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonForKnekkpunkterSelectors.vedGradertUttak
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonForKnekkpunkterSelectors.vedHeltUttak
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonForKnekkpunkterSelectors.vedNormertPensjonsalder
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.gradertUttaksalder
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.heltUttaksalder
+import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.gradertUttakInformasjon
+import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.heltUttakInformasjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.kull
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.normertPensjonsalderPlassering
+import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.normertUttakInformasjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.sivilstatus
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.utenlandsperioder
 import no.nav.pensjon.brev.planleggepensjon.simulering.Sivilstatus
-import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.AfpOffentligLivsvarigTabell
-import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.AfpOffentligTidsbegrensetTabell
-import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.AfpPrivatTabell
-import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.AlderspensjonTabell
-import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.OpptjeningKapittel19Tabell
-import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.OpptjeningKapittel20Tabell
-import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.SumOffentligLivsvarigTabell
-import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.SumTabell
+import no.nav.pensjon.brev.planleggepensjon.simulering.UttaksinformasjonSelectors.alder
+import no.nav.pensjon.brev.planleggepensjon.simulering.UttaksinformasjonSelectors.uttaksdato
+import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.SimpleSelector
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.select
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
@@ -78,43 +70,53 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
     paragraph {
         text(
             bokmal {
-                +"Pensjonen er beregnet på grunnlag av de opplysningene vi har om deg, i tillegg til de opplysningene du har oppgitt selv. Dette er derfor en foreløpig beregning av hva du kan forvente deg i pensjon. Pensjonsberegningen er vist i dagens kroneverdi. Beregningen er ikke juridisk bindende."
+                +"Pensjonen er beregnet med opplysninger Nav har om deg og opplysninger du har gitt på beregningstidspunktet. Dette er et foreløpig estimat. Det er ikke et vedtak og gir ikke rett til pensjon. Beregningen er vist i dagens kroneverdi før skatt. Den er gjort etter gjeldende regelverk og satser."
             },
+        )
+    }
+    paragraph {
+        text(
+            bokmal {
+                +"Endringer i opplysninger, opptjening eller regelverk kan påvirke resultatet. Det kan også påvirke når du tidligst kan starte uttak av alderspensjon. Vi anbefaler å gjøre en ny beregning når du nærmer deg tidspunktet for uttak av pensjon."
+            }
         )
     }
 
     ifNotNull(simulering.afpOffentligTidsbegrenset) { afp ->
-        ifNotNull(simuleringsinformasjon.gradertUttaksalder) { alder ->
+        ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
             title1 {
-                text(bokmal { +"Din estimerte månedlige pensjon før skatt ved " + alder.aar.format() + " år" })
-                showIf(alder.maaneder greaterThan 1) {
-                    text(bokmal { +" og " + alder.maaneder.format() + " måneder" })
-                }.orShowIf(alder.maaneder greaterThan 0) {
+                text(bokmal { +"Månedlig pensjon før skatt ved " + informasjon.alder.aar.format() + " år" })
+                showIf(informasjon.alder.maaneder greaterThan 1) {
+                    text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
+                }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
                     text(bokmal { +" og 1 måned" })
                 }
+                text(bokmal { +" (" + informasjon.uttaksdato + ")" })
             }
         }.orShow {
             title1 {
-                text(bokmal { +"Din estimerte månedlige pensjon før skatt ved gradert uttak" })
+                text(bokmal { +"Månedlig pensjon før skatt ved gradert uttak" })
             }
+
         }
         includePhrase(AfpOffentligTidsbegrensetTabell(afp))
     }
 
     ifNotNull(simulering.maanedligAlderspensjonForKnekkpunkter) { knekkpunkter ->
         ifNotNull(knekkpunkter.vedGradertUttak) { gradertUttak ->
-            ifNotNull(simuleringsinformasjon.gradertUttaksalder) { alder ->
+            ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
                 title1 {
-                    text(bokmal { +"Din estimerte månedlige pensjon før skatt ved " + alder.aar.format() + " år" })
-                    showIf(alder.maaneder greaterThan 1) {
-                        text(bokmal { +" og " + alder.maaneder.format() + " måneder" })
-                    }.orShowIf(alder.maaneder greaterThan 0) {
+                    text(bokmal { +"Månedlig pensjon før skatt ved " + informasjon.alder.aar.format() + " år" })
+                    showIf(informasjon.alder.maaneder greaterThan 1) {
+                        text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
+                    }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
                         text(bokmal { +" og 1 måned" })
                     }
+                    text(bokmal { +" (" + informasjon.uttaksdato + ")" })
                 }
             }.orShow {
                 title1 {
-                    text(bokmal { +"Din estimerte månedlige pensjon før skatt ved gradert uttak" })
+                    text(bokmal { +"Månedlig pensjon før skatt ved gradert uttak" })
                 }
             }
             includePhrase(AlderspensjonTabell(gradertUttak))
@@ -135,18 +137,20 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
 
         ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
             ifNotNull(simuleringsinformasjon.normertPensjonsalderPlassering) { plassering ->
-                showIf(plassering.isOneOf(NormertPensjonsalderPlassering.MELLOM_GRADERT_OG_HELT)) {
-                    title1 {
-                        text(bokmal { +"Din estimerte månedlige pensjon før skatt ved 67 år" })
-                    }
+                ifNotNull(simuleringsinformasjon.normertUttakInformasjon) { informasjon ->
+                    showIf(plassering.isOneOf(NormertPensjonsalderPlassering.MELLOM_GRADERT_OG_HELT)) {
+                        title1 {
+                            text(bokmal { +"Månedlig pensjon før skatt ved 67 år (" + informasjon.uttaksdato + ")" })
+                        }
 
-                    includePhrase(AlderspensjonTabell(normPensjonsalder))
+                        includePhrase(AlderspensjonTabell(normPensjonsalder))
 
-                    ifNotNull(simulering.afpPrivat) { afpPrivatSim ->
-                        ifNotNull(afpPrivatSim.vedNormertPensjonsalder) { afp ->
-                            includePhrase(AfpPrivatTabell(afp))
-                            ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
-                                includePhrase(SumTabell(normPensjonsalder, afp))
+                        ifNotNull(simulering.afpPrivat) { afpPrivatSim ->
+                            ifNotNull(afpPrivatSim.vedNormertPensjonsalder) { afp ->
+                                includePhrase(AfpPrivatTabell(afp))
+                                ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
+                                    includePhrase(SumTabell(normPensjonsalder, afp))
+                                }
                             }
                         }
                     }
@@ -155,12 +159,13 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         }
 
         title1 {
-            text(bokmal { +"Din estimerte månedlige pensjon før skatt ved " + simuleringsinformasjon.heltUttaksalder.aar.format() + " år" })
-            showIf(simuleringsinformasjon.heltUttaksalder.maaneder greaterThan 1) {
-                text(bokmal { +" og " + simuleringsinformasjon.heltUttaksalder.maaneder.format() + " måneder" })
-            }.orShowIf(simuleringsinformasjon.heltUttaksalder.maaneder greaterThan 0) {
+            text(bokmal { +"Månedlig pensjon før skatt ved " + simuleringsinformasjon.heltUttakInformasjon.alder.aar.format() + " år" })
+            showIf(simuleringsinformasjon.heltUttakInformasjon.alder.maaneder greaterThan 1) {
+                text(bokmal { +" og " + simuleringsinformasjon.heltUttakInformasjon.alder.maaneder.format() + " måneder" })
+            }.orShowIf(simuleringsinformasjon.heltUttakInformasjon.alder.maaneder greaterThan 0) {
                 text(bokmal { +" og 1 måned" })
             }
+            text(bokmal { +" (" + simuleringsinformasjon.heltUttakInformasjon.uttaksdato + ")" })
         }
         includePhrase(AlderspensjonTabell(knekkpunkter.vedHeltUttak))
 
@@ -174,16 +179,18 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         }
 
         ifNotNull(simuleringsinformasjon.normertPensjonsalderPlassering) { plassering ->
-            showIf(plassering.isOneOf(NormertPensjonsalderPlassering.ETTER_HELT)) {
-                title1 {
-                    text(bokmal { +"Din estimerte månedlige pensjon før skatt ved 67 år" })
-                }
-                ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
-                    includePhrase(AlderspensjonTabell(normPensjonsalder))
-                    ifNotNull(simulering.afpPrivat) { afpPrivatSim ->
-                        ifNotNull(afpPrivatSim.vedNormertPensjonsalder) { afp ->
-                            includePhrase(AfpPrivatTabell(afp))
-                            includePhrase(SumTabell(normPensjonsalder, afp))
+            ifNotNull(simuleringsinformasjon.normertUttakInformasjon) { informasjon ->
+                showIf(plassering.isOneOf(NormertPensjonsalderPlassering.ETTER_HELT)) {
+                    title1 {
+                        text(bokmal { +"Månedlig pensjon før skatt ved 67 år (" + informasjon.uttaksdato + ")" })
+                    }
+                    ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
+                        includePhrase(AlderspensjonTabell(normPensjonsalder))
+                        ifNotNull(simulering.afpPrivat) { afpPrivatSim ->
+                            ifNotNull(afpPrivatSim.vedNormertPensjonsalder) { afp ->
+                                includePhrase(AfpPrivatTabell(afp))
+                                includePhrase(SumTabell(normPensjonsalder, afp))
+                            }
                         }
                     }
                 }
@@ -193,18 +200,87 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
 
     ifNotNull(simulering.maanedligAlderspensjonForKnekkpunkter) { knekkpunkter ->
         title1 {
-            text(bokmal { +"Slik har vi beregnet pensjonen din" })
-         }
+            text(bokmal { +"Ditt opptjeningsgrunnlag i folketrygden" })
+        }
         ifNotNull(knekkpunkter.vedGradertUttak) { alderspensjon ->
-            showIf(simuleringsinformasjon.kull.isOneOf(Kull.KAP19, Kull.OVERGANG)) {
-                includePhrase(OpptjeningKapittel19Tabell(alderspensjon))
-            }
-            showIf(simuleringsinformasjon.kull.isOneOf(Kull.KAP20, Kull.OVERGANG)) {
-                includePhrase(OpptjeningKapittel20Tabell(alderspensjon))
+            ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
+                title1 {
+                    text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
+                    showIf(informasjon.alder.maaneder greaterThan 1) {
+                        text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
+                    }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
+                        text(bokmal { +" og 1 måned" })
+                    }
+                    text(bokmal { +" (" + informasjon.uttaksdato + ")" })
+                }
+                showIf(simuleringsinformasjon.kull.isOneOf(Kull.KAP19, Kull.OVERGANG)) {
+                    includePhrase(OpptjeningKapittel19Tabell(alderspensjon))
+                }
+                showIf(simuleringsinformasjon.kull.isOneOf(Kull.KAP20, Kull.OVERGANG)) {
+                    includePhrase(OpptjeningKapittel20Tabell(alderspensjon))
+                }
             }
         }
-        includePhrase(OpptjeningKapittel19Tabell(knekkpunkter.vedHeltUttak))
-        includePhrase(OpptjeningKapittel20Tabell(knekkpunkter.vedHeltUttak))
+        ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
+            showIf(simuleringsinformasjon.normertPensjonsalderPlassering.equalTo(NormertPensjonsalderPlassering.MELLOM_GRADERT_OG_HELT)) {
+                ifNotNull(simuleringsinformasjon.normertUttakInformasjon) { informasjon ->
+                    title1 {
+                        text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
+                        showIf(informasjon.alder.maaneder greaterThan 1) {
+                            text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
+                        }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
+                            text(bokmal { +" og 1 måned" })
+                        }
+                        text(bokmal { +" (" + informasjon.uttaksdato + ")" })
+                    }
+                }
+                showIf(simuleringsinformasjon.kull.isOneOf(Kull.KAP19, Kull.OVERGANG)) {
+                    includePhrase(OpptjeningKapittel19Tabell(normPensjonsalder))
+                }
+                showIf(simuleringsinformasjon.kull.isOneOf(Kull.KAP20, Kull.OVERGANG)) {
+                    includePhrase(OpptjeningKapittel20Tabell(normPensjonsalder))
+                }
+            }
+        }
+
+        ifNotNull(simuleringsinformasjon.heltUttakInformasjon) { informasjon ->
+            title1 {
+                text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
+                showIf(informasjon.alder.maaneder greaterThan 1) {
+                    text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
+                }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
+                    text(bokmal { +" og 1 måned" })
+                }
+                text(bokmal { +" (" + informasjon.uttaksdato + ")" })
+            }
+        }
+        showIf(simuleringsinformasjon.kull.isOneOf(Kull.KAP19, Kull.OVERGANG)) {
+            includePhrase(OpptjeningKapittel19Tabell(knekkpunkter.vedHeltUttak))
+        }
+        showIf(simuleringsinformasjon.kull.isOneOf(Kull.KAP20, Kull.OVERGANG)) {
+            includePhrase(OpptjeningKapittel20Tabell(knekkpunkter.vedHeltUttak))
+        }
+        ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
+            showIf(simuleringsinformasjon.normertPensjonsalderPlassering.equalTo(NormertPensjonsalderPlassering.ETTER_HELT)) {
+                ifNotNull(simuleringsinformasjon.normertUttakInformasjon) { informasjon ->
+                    title1 {
+                        text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
+                        showIf(informasjon.alder.maaneder greaterThan 1) {
+                            text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
+                        }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
+                            text(bokmal { +" og 1 måned" })
+                        }
+                        text(bokmal { +" (" + informasjon.uttaksdato + ")" })
+                    }
+                }
+                showIf(simuleringsinformasjon.kull.isOneOf(Kull.KAP19, Kull.OVERGANG)) {
+                    includePhrase(OpptjeningKapittel19Tabell(normPensjonsalder))
+                }
+                showIf(simuleringsinformasjon.kull.isOneOf(Kull.KAP20, Kull.OVERGANG)) {
+                    includePhrase(OpptjeningKapittel20Tabell(normPensjonsalder))
+                }
+            }
+        }
     }
 
     ifNotNull(simuleringsinformasjon.utenlandsperioder) { utenlandsperioder ->

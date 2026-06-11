@@ -5,6 +5,7 @@ import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.Alder
@@ -24,6 +25,7 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlde
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonForKnekkpunkter
 import no.nav.pensjon.brev.planleggepensjon.simulering.Sivilstatus
 import no.nav.pensjon.brev.planleggepensjon.simulering.TidsbegrensetOffentligAfp
+import no.nav.pensjon.brev.planleggepensjon.simulering.Uttaksinformasjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.Vilkaarsproevingsresultat
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -84,8 +86,8 @@ object Fixtures : LetterDataFactory {
     fun createBrevDtoMedAfpOffentligTidsbegrenset() = ApSimuleringBrevDto(
         saksbehandlerValg = createLagreSimuleringDto().copy(
             simuleringsinformasjon = createSimuleringsinformasjon().copy(
-                heltUttaksalder = Alder(67,0),
-                gradertUttaksalder = Alder(63,2)
+                heltUttakInformasjon = Uttaksinformasjon(alder = Alder(67, 0), uttaksdato = "01.02.2030"),
+                gradertUttakInformasjon = Uttaksinformasjon(alder = Alder(63, 2), uttaksdato = "01.04.2026"),
             ),
             simulering = createSimulering().copy(
                 maanedligAlderspensjonForKnekkpunkter = SimuleringV1MaanedligAlderspensjonForKnekkpunkter(
@@ -121,6 +123,20 @@ object Fixtures : LetterDataFactory {
             simulering = createSimulering(),
             vilkaarsproevingsresultat = Vilkaarsproevingsresultat(erInnvilget = true, alternativ = null),
             pensjonsgivendeInntektListe = emptyList(),
+            aarligInntektOgPensjonListe = listOf(
+                AarligInntektOgPensjon(
+                    alderLabel = "62 år",
+                    alderspensjon = 18500,
+                    avtalefestetPensjon = 4000,
+                    pensjonsgivendeInntekt = 550000.0,
+                ),
+                AarligInntektOgPensjon(
+                    alderLabel = "67 år",
+                    alderspensjon = 29133,
+                    avtalefestetPensjon = 5000,
+                    pensjonsgivendeInntekt = 0.0,
+                ),
+            ),
             simuleringsinformasjon = createSimuleringsinformasjon(),
             trygdetid = null,
             forbehold = createForbeholdInnhold(),
@@ -222,8 +238,9 @@ object Fixtures : LetterDataFactory {
     )
 
     private fun createSimuleringsinformasjon() = Simuleringsinformasjon(
-        gradertUttaksalder = Alder(aar = 62, maaneder = 0),
-        heltUttaksalder = Alder(aar = 70, maaneder = 0),
+        gradertUttakInformasjon = Uttaksinformasjon(alder = Alder(aar = 62, maaneder = 0), uttaksdato = "01.02.2025"),
+        heltUttakInformasjon = Uttaksinformasjon(alder = Alder(aar = 70, maaneder = 2), uttaksdato = "01.04.2033"),
+        normertUttakInformasjon = Uttaksinformasjon(alder = Alder(aar = 67, maaneder = 2), uttaksdato = "01.04.2030"),
         sivilstatus = Sivilstatus.UGIFT,
         utenlandsperioder = listOf(
             SimuleringUtenlandsperiode(
