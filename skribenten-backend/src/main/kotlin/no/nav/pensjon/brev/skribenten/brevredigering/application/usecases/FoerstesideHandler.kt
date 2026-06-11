@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Arkivsak
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Arkivsaksystem
@@ -15,22 +14,21 @@ import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorC
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Postboks
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Tema
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.toApi
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import kotlin.collections.listOf
 
 class FoerstesideHandler(
-    private val brevdataService: BrevdataService,
     private val klient: FoerstesidegeneratorClient
 ) : BrevredigeringHandler<FoerstesideHandler.Request, GenererFoerstesideResponse> {
 
-    data class Request(override val brevId: BrevId) : BrevredigeringRequest
+    data class Request(override val brevId: BrevId, val pid: BrevbakerType.Pid, val sakstype: Sakstype) : BrevredigeringRequest
 
     override fun requiresReservasjon(request: Request) = false
 
     override suspend fun handle(request: Request): Outcome<GenererFoerstesideResponse, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
-        val brevdata = brevdataService.hentBrevdata(brev)
 
         val tittel = brev.redigertBrev.title.text.joinToString(" ") { it.text }.trim()
 
@@ -38,10 +36,10 @@ class FoerstesideHandler(
             spraakkode = brev.spraak.toApi(),
             netsPostboks = Postboks("1400"), // familie-integrasjoner bruker dette, vi må dobbeltsjekke om det er sant
             bruker = Bruker(
-                brukerId = brevdata.felles.bruker.foedselsnummer.let { BrevbakerType.Pid(it.value) },
+                brukerId = request.pid,
                 brukerType = Bruker.BrukerType.PERSON
             ),
-            tema = Tema.FOR,
+            tema = if (request.sakstype.kode == "UFO") {Tema.UFO} else { Tema.PEN }, // TODO: meh
             behandlingstema = null,
             arkivtittel = tittel,
             vedleggsliste = listOf(), // TODO: må finne ut av kva vi sender her

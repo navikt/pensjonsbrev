@@ -116,7 +116,6 @@ object BrevredigeringFacadeFactory {
                 brevdataService = brevdataService,
             ),
             foerstesideHandler = FoerstesideHandler(
-                brevdataService = brevdataService,
                 klient = foerstesidegeneratorClient,
             )
         )

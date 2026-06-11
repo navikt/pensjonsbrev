@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.toDto
+import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
@@ -187,7 +188,8 @@ fun Route.sakBrev(
             route("/foersteside") {
                 post {
                     val brevId = call.parameters.brevId()
-                    val resultat = brevredigeringFacade.opprettFoersteside(FoerstesideHandler.Request(brevId = brevId))
+                    val sak: Fagsak = call.attributes[SakKey]
+                    val resultat = brevredigeringFacade.opprettFoersteside(FoerstesideHandler.Request(brevId = brevId, pid = sak.pid, sakstype = sak.sakType as Sakstype)) // TODO fjern eksplisitt casting her
                     call.respond(HttpStatusCode.Created) // TODO: bytt med apiRespond(dto2ApiService, resultat)
                 }
             }

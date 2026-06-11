@@ -113,7 +113,7 @@ class FoerstesidegeneratorClient(config: Config, authService: AuthService) {
     }
 
     enum class Tema {
-        FOR; // TODO: kva har vi for pensjon eller uføre her? FOR er Foreldrepenger
+        PEN, UFO
     }
 
     enum class Foerstesidetype {
