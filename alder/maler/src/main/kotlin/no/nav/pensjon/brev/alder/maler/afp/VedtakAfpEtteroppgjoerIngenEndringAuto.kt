@@ -86,14 +86,6 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
 
             includePhrase(AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon)
 
-            // Seksjon 2: Spesielt om inntekter opptjent i forbindelse med covid-19.
-            includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmCovidInntekterInnledning)
-
-            // TODO dokumentasjonslisten avviker fra PE_AF_04_102: 04_102 har 4 punkter (med "om arbeidet var beordret eller frivillig") og bokmål-ordlyd "i hvilken tidsperiode(-r) dette gjelder". Avklar med fag om listen skal harmoniseres.
-            includePhrase(AfpEtteroppgjoerInnhold.CovidDokumentasjonskravInntekter)
-
-            // Seksjon 3: Spesielt om unntak ... fordrevne fra Ukraina.
-            includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
             includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pensjonsgivendeInntekt = pensjonsgivendeInntekt, oppgjoersAar = oppgjoersAar))
