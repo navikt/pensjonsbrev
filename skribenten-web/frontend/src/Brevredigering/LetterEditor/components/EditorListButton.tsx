@@ -33,6 +33,7 @@ const EditorListButton = ({ listType }: EditorListButtonProps) => {
   return (
     <Tooltip content={tooltip}>
       <Button
+        aria-label={listType === ListType.NUMMERERT_LISTE ? "Nummerert liste" : "Punktliste"}
         color="text-neutral"
         data-testid={dataTestId}
         disabled={freeze || editorState.focus.blockIndex < 0}
