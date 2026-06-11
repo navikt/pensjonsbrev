@@ -2,9 +2,7 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.typesafe.config.Config
-import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -15,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
 import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
+import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import org.slf4j.LoggerFactory
 
 interface Norg2Service {
@@ -26,7 +25,7 @@ class Norg2ServiceHttp(val config: Config, val cache: Cache) : Norg2Service {
     private val logger = LoggerFactory.getLogger(Norg2ServiceHttp::class.java)
     private val norgUrl = config.getString("url")
 
-    private val client = HttpClient(CIO) {
+    private val client = lagHttpClient {
         defaultRequest {
             url(norgUrl)
         }

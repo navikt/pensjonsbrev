@@ -2,9 +2,7 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.typesafe.config.Config
-import io.ktor.client.*
 import io.ktor.client.call.body
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -15,6 +13,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
+import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brev.skribenten.services.SafService.HentDokumenterResponse
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.seconds
@@ -59,7 +58,7 @@ class SafServiceHttp(config: Config, authService: AuthService) : SafService, Ser
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     //TODO vurder å bruke en egen client for graphql: (https://opensource.expediagroup.com/graphql-kotlin/docs/client/client-overview/)
-    private val client = HttpClient(CIO) {
+    private val client = lagHttpClient {
         defaultRequest {
             url(safUrl)
         }
