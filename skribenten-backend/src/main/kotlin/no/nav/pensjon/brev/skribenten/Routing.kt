@@ -22,7 +22,6 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.LegacyBrevServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PentHttpClient
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
-import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorService
 import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.samhandler.samhandlerRoute
 import no.nav.pensjon.brev.skribenten.services.*
@@ -50,7 +49,6 @@ fun Application.configureRouting(
     val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"), cache)
     val p1Service = P1ServiceImpl(penClient)
     val foerstesidegeneratorClient = FoerstesidegeneratorClient(servicesConfig.getConfig("foerstesidegenerator"), authService)
-    val foerstesidegeneratorService = FoerstesidegeneratorService(foerstesidegeneratorClient)
 
     val brevService = BrevService(penClient, legacyBrevService)
     val brevdataService = BrevdataService(penClient, samhandlerService)
@@ -59,7 +57,7 @@ fun Application.configureRouting(
     val renderService = RenderService(brevbakerService)
 
     val dto2ApiService = Dto2ApiService(brevmalService, navansattService, norg2Service, samhandlerService)
-    val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevService, brevdataService, brevmalService, navansattService, p1Service, renderService, foerstesidegeneratorService)
+    val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevService, brevdataService, brevmalService, navansattService, p1Service, renderService, foerstesidegeneratorClient)
     val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringFacade, brevmalService, brevredigeringFacade)
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
@@ -102,7 +100,6 @@ fun Application.configureRouting(
                 pensjonRepresentasjonService,
                 brevredigeringFacade,
                 dto2ApiService,
-                foerstesidegeneratorService,
             )
             brev(pdlService, fagsakService, brevredigeringFacade, dto2ApiService)
             samhandlerRoute(samhandlerService)

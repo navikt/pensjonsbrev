@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.foerstesidegenerator.GenererFoerstesideResponse
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.GenererFoerstesideResponse
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId

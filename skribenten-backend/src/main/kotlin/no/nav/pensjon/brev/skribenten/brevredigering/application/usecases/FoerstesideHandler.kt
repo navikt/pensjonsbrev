@@ -5,9 +5,15 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
-import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorService
-import no.nav.pensjon.brev.skribenten.foerstesidegenerator.GenererFoerstesideDto
-import no.nav.pensjon.brev.skribenten.foerstesidegenerator.GenererFoerstesideResponse
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Arkivsak
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Arkivsaksystem
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Bruker
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Foerstesidetype
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.GenererFoerstesideRequest
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.GenererFoerstesideResponse
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Postboks
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Tema
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.services.toApi
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
@@ -15,7 +21,7 @@ import kotlin.collections.listOf
 
 class FoerstesideHandler(
     private val brevdataService: BrevdataService,
-    private val foerstesidegeneratorService: FoerstesidegeneratorService
+    private val klient: FoerstesidegeneratorClient
 ) : BrevredigeringHandler<FoerstesideHandler.Request, GenererFoerstesideResponse> {
 
     data class Request(override val brevId: BrevId) : BrevredigeringRequest
@@ -26,16 +32,29 @@ class FoerstesideHandler(
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
         val brevdata = brevdataService.hentBrevdata(brev)
 
-        val response = foerstesidegeneratorService.genererFoersteside(
-            GenererFoerstesideDto(
-                spraakkode = brev.spraak.toApi(),
-                tittel = brev.redigertBrev.title.text.joinToString(" ") { it.text }.trim(),
-                vedlegg = listOf(),
-                enhetsnummer = brev.avsenderEnhetId,
+        val tittel = brev.redigertBrev.title.text.joinToString(" ") { it.text }.trim()
+
+        val request = GenererFoerstesideRequest(
+            spraakkode = brev.spraak.toApi(),
+            netsPostboks = Postboks("1400"), // familie-integrasjoner bruker dette, vi må dobbeltsjekke om det er sant
+            bruker = Bruker(
                 brukerId = brevdata.felles.bruker.foedselsnummer.let { BrevbakerType.Pid(it.value) },
-                saksnummer = brev.saksId,
+                brukerType = Bruker.BrukerType.PERSON
+            ),
+            tema = Tema.FOR,
+            behandlingstema = null,
+            arkivtittel = tittel,
+            vedleggsliste = listOf(), // TODO: må finne ut av kva vi sender her
+            overskriftstittel = tittel,
+            dokumentlisteFoersteside = listOf(), // TODO: må finne ut av kva vi sender her
+            foerstesidetype = Foerstesidetype.LOESPOST, // TODO: må vi kunne styre denne?
+            enhetsnummer = brev.avsenderEnhetId,
+            arkivsak = Arkivsak(
+                arkivsaksystem = Arkivsaksystem.PSAK,
+                arkivsaksnummer = brev.saksId,
             )
         )
+        val response = klient.genererFoersteside(request)
         return success(response)
     }
 }
