@@ -99,8 +99,7 @@ fun Route.sakRoute(
                     )
                 }
 
-                post<Api.BestillEblankettRequest>("/eblankett") {
-                    val request = call.receive<Api.BestillEblankettRequest>()
+                post("/eblankett") {
                     val sak = call.attributes[SakKey]
 
                     call.respond(

@@ -33,7 +33,7 @@ interface P1Service {
 
 class P1ServiceImpl(private val penClient: PenClient) : P1Service {
 
-    override suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: BrevId, saksId: SaksId): Api.GeneriskBrevdata = transaction {
+    override suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: BrevId, saksId: SaksId): Api.GeneriskBrevdata = suspendTransaction {
         val brevredigering = BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
         if (brevredigering != null) {
             val entity = P1Data.findSingleByAndUpdate(P1DataTable.id eq brevredigering.id) { p1Data ->
