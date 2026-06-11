@@ -208,9 +208,9 @@ data class SimuleringV1MaanedligAlderspensjon(
 
 data class AarligInntektOgPensjon(
     val alderLabel: String,
-    val alderspensjon: Int,
-    val avtalefestetPensjon: Int,
-    val pensjonsgivendeInntekt: Double,
+    val alderspensjon: Kroner,
+    val avtalefestetPensjon: Kroner,
+    val pensjonsgivendeInntekt: Kroner,
 )
 
 data class SimuleringUtenlandsperiode(

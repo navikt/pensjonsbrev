@@ -126,15 +126,21 @@ object Fixtures : LetterDataFactory {
             aarligInntektOgPensjonListe = listOf(
                 AarligInntektOgPensjon(
                     alderLabel = "62 år",
-                    alderspensjon = 18500,
-                    avtalefestetPensjon = 4000,
-                    pensjonsgivendeInntekt = 550000.0,
+                    alderspensjon = Kroner(18500),
+                    avtalefestetPensjon = Kroner(4000),
+                    pensjonsgivendeInntekt = Kroner(550000),
+                ),
+                AarligInntektOgPensjon(
+                    alderLabel = "63 til 66 år",
+                    alderspensjon = Kroner(18500),
+                    avtalefestetPensjon = Kroner(4002),
+                    pensjonsgivendeInntekt = Kroner(550000),
                 ),
                 AarligInntektOgPensjon(
                     alderLabel = "67 år",
-                    alderspensjon = 29133,
-                    avtalefestetPensjon = 5000,
-                    pensjonsgivendeInntekt = 0.0,
+                    alderspensjon = Kroner(29133),
+                    avtalefestetPensjon = Kroner(5000),
+                    pensjonsgivendeInntekt = Kroner(0),
                 ),
             ),
             simuleringsinformasjon = createSimuleringsinformasjon(),
