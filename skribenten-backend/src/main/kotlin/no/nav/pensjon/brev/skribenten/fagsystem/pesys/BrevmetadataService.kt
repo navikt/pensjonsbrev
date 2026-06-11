@@ -14,6 +14,7 @@ import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import no.nav.pensjon.brev.skribenten.services.ServiceStatus
+import no.nav.pensjon.brev.skribenten.services.SkribentenService
 import no.nav.pensjon.brev.skribenten.services.ping
 import org.slf4j.LoggerFactory
 
@@ -24,10 +25,7 @@ interface BrevmetadataService {
     suspend fun getMal(brevkode: String): BrevdataDto
 }
 
-class BrevmetadataServiceHttp(
-    config: Config,
-    closeOnShutdown: (HttpClient) -> Unit,
-) : BrevmetadataService, ServiceStatus {
+class BrevmetadataServiceHttp(config: Config) : BrevmetadataService, ServiceStatus, SkribentenService {
     private val brevmetadataUrl = config.getString("url")
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
     private val httpClient = HttpClient(CIO) {
@@ -40,7 +38,9 @@ class BrevmetadataServiceHttp(
             }
         }
         install(CallIdFromContext)
-    }.also { closeOnShutdown(it) }
+    }
+
+    override fun close() = httpClient.close()
 
     override suspend fun getAllBrev(): List<BrevdataDto> {
         val httpResponse = httpClient.get("/api/brevdata/allBrev")

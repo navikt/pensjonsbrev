@@ -24,7 +24,6 @@ class KrrServiceTest {
                 config = config,
                 authService = FakeAuthService,
                 engine = engine,
-                closeOnShutdown = {},
             )
 
             val preferredLocale = service.getPreferredLocale(Pid("12345"))
@@ -45,7 +44,6 @@ class KrrServiceTest {
                 config = config,
                 authService = FakeAuthService,
                 engine = engine,
-                closeOnShutdown = {},
             )
 
             val preferredLocale = service.getPreferredLocale(Pid("12345"))
@@ -66,7 +64,6 @@ class KrrServiceTest {
                 config = config,
                 authService = FakeAuthService,
                 engine = engine,
-                closeOnShutdown = {},
             )
 
             val preferredLocale = service.getPreferredLocale(Pid("12345"))

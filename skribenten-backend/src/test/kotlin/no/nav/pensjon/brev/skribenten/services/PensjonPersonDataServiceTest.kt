@@ -29,7 +29,6 @@ class PensjonPersonDataServiceTest {
         ConfigFactory.parseMap(mapOf("url" to "http://localhost", "scope" to "fri tilgang")),
         FakeAuthService,
         InMemoryCache(),
-        {},
         engine,
     )
 

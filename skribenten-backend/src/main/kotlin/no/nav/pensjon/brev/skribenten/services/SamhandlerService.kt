@@ -30,7 +30,7 @@ interface SamhandlerService {
     suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto
 }
 
-class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthService, private val cache: Cache, closeOnShutdown: (HttpClient) -> Unit) : SamhandlerService, ServiceStatus {
+class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthService, private val cache: Cache) : SamhandlerService, ServiceStatus, SkribentenService {
     private val samhandlerProxyUrl = configSamhandlerProxy.getString("url")
     private val samhandlerProxyScope = configSamhandlerProxy.getString("scope")
 
@@ -44,7 +44,9 @@ class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthServ
             }
         }
         callIdAndOnBehalfOfClient(samhandlerProxyScope, authService)
-    }.also { closeOnShutdown(it) }
+    }
+
+    override fun close() = samhandlerProxyClient.close()
 
     private val logger = LoggerFactory.getLogger(SamhandlerServiceHttp::class.java)
 

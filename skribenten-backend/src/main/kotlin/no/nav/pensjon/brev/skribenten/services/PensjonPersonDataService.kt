@@ -52,9 +52,8 @@ class PensjonPersonDataServiceImpl(
     config: Config,
     authService: AuthService,
     private val cache: Cache,
-    closeOnShutdown: (HttpClient) -> Unit,
     clientEngine: HttpClientEngine = CIO.create(),
-): ServiceStatus, PensjonPersonDataService {
+): ServiceStatus, PensjonPersonDataService, SkribentenService {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val pensjonPersondataURL = config.getString("url")
     private val scope = config.getString("scope")
@@ -69,7 +68,9 @@ class PensjonPersonDataServiceImpl(
             }
         }
         callIdAndOnBehalfOfClient(scope, authService)
-    }.also { closeOnShutdown(it) }
+    }
+
+    override fun close() = client.close()
 
     override suspend fun hentKontaktadresse(pid: Pid): KontaktAdresseResponseDto? = cache.cached(
         Cacheomraade.PENSJON_PERSONDATA,

@@ -92,6 +92,5 @@ class AzureADServiceTest {
             jwtConfig = jwtConfig,
             engine = MockEngine.invoke(handler),
             cache = InMemoryCache(),
-            closeOnShutdown = {},
         )
 }

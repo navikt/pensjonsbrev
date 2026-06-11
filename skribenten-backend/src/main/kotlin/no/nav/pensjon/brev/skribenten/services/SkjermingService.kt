@@ -24,7 +24,7 @@ interface SkjermingService {
 
 private val logger = LoggerFactory.getLogger(SkjermingService::class.java)
 
-class SkjermingServiceHttp(config: Config, authService: AuthService, private val cache: Cache, closeOnShutdown: (HttpClient) -> Unit) : SkjermingService {
+class SkjermingServiceHttp(config: Config, authService: AuthService, private val cache: Cache) : SkjermingService, SkribentenService {
     private val url = config.getString("url")
     private val scope = config.getString("scope")
 
@@ -33,7 +33,9 @@ class SkjermingServiceHttp(config: Config, authService: AuthService, private val
         installRetry(logger)
         install(ContentNegotiation) { jackson() }
         callIdAndOnBehalfOfClient(scope, authService)
-    }.also { closeOnShutdown(it) }
+    }
+
+    override fun close() = client.close()
 
     override suspend fun hentSkjerming(pid: Pid): Boolean? =
         cache.cached(Cacheomraade.SKJERMING, pid, ttl = { 5.minutes }) {

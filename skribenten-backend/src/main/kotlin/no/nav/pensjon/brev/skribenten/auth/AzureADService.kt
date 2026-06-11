@@ -16,6 +16,7 @@ import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
+import no.nav.pensjon.brev.skribenten.services.SkribentenService
 import no.nav.pensjon.brev.skribenten.services.installRetry
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
@@ -47,7 +48,7 @@ interface AuthService {
     suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse.OnBehalfOfToken
 }
 
-class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create(), private val cache: Cache, closeOnShutdown: (HttpClient) -> Unit) : AuthService {
+class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create(), private val cache: Cache) : AuthService, SkribentenService {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val client = HttpClient(engine) {
@@ -57,7 +58,9 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
             }
         }
         installRetry(logger, maxRetries = 2)
-    }.also { closeOnShutdown(it) }
+    }
+
+    override fun close() = client.close()
 
     override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String) =
         cache.cached(Cacheomraade.AD, Pair(principal.navIdent, scope), { it.expiresIn.seconds.minus(5.minutes) }) {

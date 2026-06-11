@@ -23,8 +23,7 @@ class PensjonRepresentasjonService(
     config: Config,
     authService: AuthService,
     private val cache: Cache,
-    closeOnShutdown: (HttpClient) -> Unit,
-) {
+) : SkribentenService {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val pensjonPersondataURL = config.getString("url")
     private val scope = config.getString("scope")
@@ -38,7 +37,9 @@ class PensjonRepresentasjonService(
         }
         install(ContentNegotiation) { jackson() }
         callIdAndOnBehalfOfClient(scope, authService)
-    }.also { closeOnShutdown(it) }
+    }
+
+    override fun close() = client.close()
 
     data class HasRepresentantRequest(
         val representertPid: Pid,
