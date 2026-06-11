@@ -52,7 +52,7 @@ class FoerstesidegeneratorClient(config: Config, authService: AuthService) {
         val response = client.post("/api/foerstesidegenerator/v1/foersteside") {
             setBody(request)
             contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Pdf)
+            accept(ContentType.Application.Json)
             header("Nav-Consumer-Id", "skribenten-backend")
         }
 
