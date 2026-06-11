@@ -3,38 +3,109 @@ package no.nav.pensjon.brev.alder.maler.brev.soknadkvittering
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDto
 import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.afpPrivat
-import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatSelectors.arbeidsgiverNavn
-import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatSelectors.soktAfpPrivat
 import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.familieforhold
-import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.FamilieforholdSelectors.sivilstand
 import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.innledning
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.personopplysninger
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.utland
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpOpphoerSelectors.opphoerArsak
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpOpphoerSelectors.sisteDagArbeid
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.ansattDato
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.ansattType
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.ansattforholdOpphoert
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.arbeidetUtlandEtter53
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.arbeidsgiverAdresse
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.arbeidsgiverNavn
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.arbeidsgiverOrgnr
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.epost
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.inntektUtenArbeidsplikt
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.naeringsvirkEierandel20
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.omsorgForBarnUnder7 as afpOmsorgForBarnUnder7
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.opphoer
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.permisjonSiste3Ar
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.permittertSiste3Ar
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.redusertStillingSiste3Ar
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.samtykkeEpost
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.stillingUnder20Etter53Ar
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatDetaljerSelectors.sykemeldtMerEnn26Siste3Ar
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatSelectors.detaljer
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AfpPrivatSelectors.soektAfpPrivat
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AvdoedSelectors.foedselsnummer as avdoedFoedselsnummer
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.AvdoedSelectors.navn as avdoedNavn
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.EpsNavnOgFoedselsnummerSelectors.foedselsnummer as epsFoedselsnummer
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.EpsNavnOgFoedselsnummerSelectors.navn as epsNavn
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.EpsSelectors.betegnelse
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.EpsSelectors.betegnelseGenitiv
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.EpsSelectors.betegnelseGenitivStor
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.EpsSelectors.giftOgBarn
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.EpsSelectors.leverVarigAdskilt
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.EpsSelectors.navnOgFoedselsnummer
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.EpsSelectors.pensjonOgInntekt
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.EpsSelectors.samboerFraDato as epsSamboerFraDato
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.FamilieforholdSelectors.avdoed
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.FamilieforholdSelectors.eps
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.FamilieforholdSelectors.harSamboerSpoersmaal
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.FamilieforholdSelectors.omsorgForBarnUnder7
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.FamilieforholdSelectors.samboer
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.FamilieforholdSelectors.sivilstand
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.SamboerSelectors.foedselsnummer as samboerFoedselsnummer
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.SamboerSelectors.navn as samboerNavn
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.SamboerSelectors.samboerskapOpphoertDato
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.GiftOgBarnSelectors.harFellesBarn
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.GiftOgBarnSelectors.tidligereGift
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.HarSamboerSpoersmaalSelectors.erNySamboer
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.HarSamboerSpoersmaalSelectors.svar
 import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.InnledningSelectors.erNyttRegelverk
 import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.InnledningSelectors.iverksettelsesdato
 import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.InnledningSelectors.uttaksgrad
-import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.personopplysninger
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.PensjonOgInntektSelectors.harAnnenInntekt
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.PensjonOgInntektSelectors.mottarAfp
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.PensjonOgInntektSelectors.sumInntekt
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.PersonopplysningerSelectors.adresselinjer
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.PersonopplysningerSelectors.erFlyktning
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.PersonopplysningerSelectors.erUtenlandsk
 import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.PersonopplysningerSelectors.foedselsnummer
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.PersonopplysningerSelectors.kontonummer
 import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.PersonopplysningerSelectors.navn
-import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.PersonopplysningerSelectors.statsborgerskap
-import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.utland
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.PersonopplysningerSelectors.statsborgerskapLand
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.PersonopplysningerSelectors.telefon
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.UtenlandsoppholdSelectors.arbeidet
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.UtenlandsoppholdSelectors.bodd
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.UtenlandsoppholdSelectors.land
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.UtenlandsoppholdSelectors.pensjonsordning
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.UtenlandsoppholdSelectors.sluttDato
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.UtenlandsoppholdSelectors.startDato
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.UtenlandsoppholdSelectors.tilleggsinformasjon
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.UtenlandsoppholdSelectors.utlandsId
 import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.UtlandSelectors.harBoddArbeidetUtland
+import no.nav.pensjon.brev.alder.model.soknad.ApSoknadKvitteringAutoDtoSelectors.UtlandSelectors.opphold
 import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.LanguageSupport
+import no.nav.pensjon.brev.template.LocalizedFormatter
+import no.nav.pensjon.brev.template.dsl.OutlineScope
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import java.time.LocalDate
+
+private typealias KvitteringOutline = OutlineScope<LanguageSupport.Single<Language.Bokmal>, ApSoknadKvitteringAutoDto>
 
 /**
- * Kvittering for innsendt søknad om alderspensjon.
+ * Kvittering for innsendt søknad om alderspensjon (AP_SOKNAD_KVITTERING).
  *
- * Denne malen genererer et PDF-dokument som journalføres som kvittering
- * på at søknad om alderspensjon er mottatt. Brevet distribueres IKKE til bruker.
- *
- * Innholdet tilsvarer den gamle Velocity/XSL-FO-baserte kvitteringen (alderspensjon.xsl).
+ * Brevet journalføres som kvittering på at søknad om alderspensjon er mottatt og
+ * distribueres IKKE til bruker. Innholdet speiler den gamle XSL-FO-baserte
+ * kvitteringen (`alderspensjon.xsl`) felt for felt.
  */
 @TemplateModelHelpers
 object ApSoknadKvitteringAuto : AutobrevTemplate<ApSoknadKvitteringAutoDto> {
@@ -52,75 +123,201 @@ object ApSoknadKvitteringAuto : AutobrevTemplate<ApSoknadKvitteringAutoDto> {
         ) {
             title {
                 text(
-                    bokmal { +"Søknad om alderspensjon" },
+                    bokmal {
+                        +ifElse(
+                            afpPrivat.soektAfpPrivat,
+                            "Søknad om alderspensjon og AFP i privat sektor",
+                            "Søknad om alderspensjon",
+                        )
+                    },
                 )
             }
             outline {
                 // Innledning
-                title1 {
-                    text(bokmal { +"Opplysninger om pensjoneringen" })
-                }
-                paragraph {
-                    text(bokmal { +"Ønsket pensjoneringstidspunkt: ".expr() + innledning.iverksettelsesdato.format() })
-                }
+                title1 { text(bokmal { +"Innledning" }) }
+                tekstRad("Ønsket start for uttak av pensjon", innledning.iverksettelsesdato.formatMonthYear())
                 showIf(innledning.erNyttRegelverk) {
-                    paragraph {
-                        text(bokmal { +"Uttaksgrad: ".expr() + innledning.uttaksgrad.format() + " %" })
-                    }
+                    tekstRad("Ønsket uttaksgrad", innledning.uttaksgrad.format() + " %")
                 }
 
-                // Personopplysninger
-                title1 {
-                    text(bokmal { +"Personopplysninger" })
+                // Opplysninger om deg
+                title1 { text(bokmal { +"Opplysninger om deg" }) }
+                tekstRad("Navn", personopplysninger.navn)
+                tekstRad("Fødselsnummer", personopplysninger.foedselsnummer)
+                paragraph { text(bokmal { +"Adresse:" }) }
+                forEach(personopplysninger.adresselinjer) { linje ->
+                    paragraph { text(bokmal { +linje }) }
                 }
-                paragraph {
-                    text(bokmal { +"Navn: ".expr() + personopplysninger.navn })
+                tekstRad("Telefonnummer", personopplysninger.telefon.ifNull(""))
+                tekstRad("Statsborgerskap", ifElse(personopplysninger.erUtenlandsk, "Annet", "Norsk"))
+                ifNotNull(personopplysninger.statsborgerskapLand) { statsborgerskapsland ->
+                    tekstRad("Statsborgerskap", statsborgerskapsland)
                 }
-                paragraph {
-                    text(bokmal { +"Fødselsnummer: ".expr() + personopplysninger.foedselsnummer })
+                ifNotNull(personopplysninger.erFlyktning) { flyktning ->
+                    jaNeiRad("Registrert som flyktning", flyktning)
                 }
-                paragraph {
-                    text(bokmal { +"Statsborgerskap: ".expr() + personopplysninger.statsborgerskap })
-                }
+                tekstRad("Kontonummer for utbetaling", personopplysninger.kontonummer.ifNull(""))
 
                 // Familieforhold
-                title1 {
-                    text(bokmal { +"Familieforhold" })
+                title1 { text(bokmal { +"Familieforhold" }) }
+                ifNotNull(familieforhold.omsorgForBarnUnder7) { omsorg ->
+                    jaNeiRad("Omsorg for barn under 7 år i perioden 1967-1991", omsorg)
                 }
-                paragraph {
-                    text(bokmal { +"Sivilstand: ".expr() + familieforhold.sivilstand })
+                tekstRad("Sivilstand", familieforhold.sivilstand)
+                ifNotNull(familieforhold.avdoed) { avdoedRelasjon ->
+                    tekstRad("Avdødes navn", avdoedRelasjon.avdoedNavn)
+                    tekstRad("Avdødes fødselsnummer", avdoedRelasjon.avdoedFoedselsnummer.ifNull(""))
                 }
-
-                // Utland
-                title1 {
-                    text(bokmal { +"Opplysninger om opphold utenfor Norge" })
-                }
-                showIf(utland.harBoddArbeidetUtland) {
-                    paragraph {
-                        text(bokmal { +"Har bodd/arbeidet utenfor Norge etter fylte 16 år: Ja" })
-                    }
-                }.orShow {
-                    paragraph {
-                        text(bokmal { +"Har bodd/arbeidet utenfor Norge etter fylte 16 år: Nei" })
+                ifNotNull(familieforhold.samboer) { samboerRelasjon ->
+                    tekstRad("Samboers navn", samboerRelasjon.samboerNavn)
+                    tekstRad("Samboers fødselsnummer", samboerRelasjon.samboerFoedselsnummer.ifNull(""))
+                    ifNotNull(samboerRelasjon.samboerskapOpphoertDato) { opphoertDato ->
+                        tekstRad("Samboerskapet opphørte", opphoertDato.format(short = true))
                     }
                 }
-
-                // AFP Privat
-                ifNotNull(afpPrivat) { afp ->
-                    showIf(afp.soktAfpPrivat) {
-                        title1 {
-                            text(bokmal { +"AFP i privat sektor" })
+                ifNotNull(familieforhold.harSamboerSpoersmaal) { spoersmaal ->
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Jeg har ".expr() +
+                                    ifElse(spoersmaal.erNySamboer, "ny samboer", "samboer") +
+                                    ": " +
+                                    ifElse(spoersmaal.svar, "Ja", "Nei")
+                            },
+                        )
+                    }
+                }
+                ifNotNull(familieforhold.eps) { ektefelle ->
+                    ifNotNull(ektefelle.navnOgFoedselsnummer) { navnFnr ->
+                        paragraph {
+                            text(bokmal { +ektefelle.betegnelseGenitivStor + " navn: " + navnFnr.epsNavn })
                         }
                         paragraph {
-                            text(bokmal { +"Søkt AFP i privat sektor: Ja" })
+                            text(bokmal { +ektefelle.betegnelseGenitivStor + " fødselsnummer: " + navnFnr.epsFoedselsnummer.ifNull("") })
                         }
-                        ifNotNull(afp.arbeidsgiverNavn) { arbgiver ->
+                    }
+                    ifNotNull(ektefelle.epsSamboerFraDato) { fraDato ->
+                        tekstRad("Samboer fra dato", fraDato.format(short = true))
+                    }
+                    ifNotNull(ektefelle.giftOgBarn) { giftBarn ->
+                        jaNeiRad("Tidligere vært gift med", giftBarn.tidligereGift)
+                        jaNeiRad("Har barn med samboer", giftBarn.harFellesBarn)
+                    }
+                    ifNotNull(ektefelle.leverVarigAdskilt) { varigAdskilt ->
+                        paragraph {
+                            text(
+                                bokmal {
+                                    +"Lever du og ".expr() + ektefelle.betegnelse + " varig adskilt? " +
+                                        ifElse(varigAdskilt, "Ja", "Nei")
+                                },
+                            )
+                        }
+                    }
+                    ifNotNull(ektefelle.pensjonOgInntekt) { pensjonInntekt ->
+                        paragraph {
+                            text(
+                                bokmal {
+                                    +"Mottar/søker din ".expr() + ektefelle.betegnelse + " AFP fra offentlig sektor? " +
+                                        ifElse(pensjonInntekt.mottarAfp, "Ja", "Nei")
+                                },
+                            )
+                        }
+                        paragraph {
+                            text(
+                                bokmal {
+                                    +"Har ".expr() + ektefelle.betegnelse + " inntekt? " +
+                                        ifElse(pensjonInntekt.harAnnenInntekt, "Ja", "Nei")
+                                },
+                            )
+                        }
+                        ifNotNull(pensjonInntekt.sumInntekt) { sum ->
                             paragraph {
-                                text(bokmal { +"Arbeidsgiver: ".expr() + arbgiver })
+                                text(
+                                    bokmal {
+                                        +"Din ".expr() + ektefelle.betegnelseGenitiv +
+                                            " samlede årlige inntekt før skatt: " +
+                                            sum.format(LocalizedFormatter.CurrencyFormat) + " kr per år"
+                                    },
+                                )
                             }
                         }
                     }
                 }
+
+                // Opphold utenfor Norge
+                title1 { text(bokmal { +"Opphold utenfor Norge" }) }
+                jaNeiRad("Har du bodd eller arbeidet utenfor Norge etter at du fylte 16 år?", utland.harBoddArbeidetUtland)
+                forEach(utland.opphold) { opphold ->
+                    tekstRad("Land", opphold.land)
+                    jaNeiRad("Bodde du i landet?", opphold.bodd)
+                    jaNeiRad("Arbeidet du i landet?", opphold.arbeidet)
+                    tekstRad("Startdato for oppholdet", opphold.startDato.format(short = true).ifNull(""))
+                    tekstRad("Sluttdato for oppholdet", opphold.sluttDato.format(short = true).ifNull(""))
+                    tekstRad("Pensjonsordning under oppholdet", opphold.pensjonsordning.ifNull(""))
+                    tekstRad("Identitetsnummeret ditt i landet eller i pensjonsordningen", opphold.utlandsId.ifNull(""))
+                    tekstRad("Tilleggsinformasjon", opphold.tilleggsinformasjon.ifNull(""))
+                }
+
+                // AFP i privat sektor
+                title1 { text(bokmal { +"AFP i privat sektor" }) }
+                jaNeiRad("Ønsker du å søke om AFP i privat sektor?", afpPrivat.soektAfpPrivat)
+                ifNotNull(afpPrivat.detaljer) { afp ->
+                    tekstRad("Arbeidsgivers navn", afp.arbeidsgiverNavn.ifNull(""))
+                    paragraph { text(bokmal { +"Arbeidsgivers adresse:" }) }
+                    forEach(afp.arbeidsgiverAdresse) { linje ->
+                        paragraph { text(bokmal { +linje }) }
+                    }
+                    ifNotNull(afp.arbeidsgiverOrgnr) { orgnr ->
+                        tekstRad("Arbeidsgivers organisasjonsnummer", orgnr)
+                    }
+                    ifNotNull(afp.afpOmsorgForBarnUnder7) { omsorg ->
+                        jaNeiRad("Omsorg for barn under 7 år i perioden 1967-1991", omsorg)
+                    }
+                    tekstRad("Når ble du ansatt hos nåværende arbeidsgiver?", afp.ansattDato.format(short = true).ifNull(""))
+                    jaNeiRadValgfri(
+                        "Har arbeidsforholdet opphørt, eller er det bestemt når arbeidsforholdet skal opphøre?",
+                        afp.ansattforholdOpphoert,
+                    )
+                    ifNotNull(afp.opphoer) { opphoer ->
+                        tekstRad("Dato for opphør av arbeidsforholdet", opphoer.sisteDagArbeid.format(short = true).ifNull(""))
+                        tekstRad("Årsak til opphør av arbeidsforhold", opphoer.opphoerArsak.ifNull(""))
+                    }
+                    tekstRad("Er du heltidsansatt, deltidsansatt, midlertidig ansatt eller sesongansatt?", afp.ansattType.ifNull(""))
+                    jaNeiRadValgfri("Har du i løpet av de siste 3 år før du fylte 62 år fått redusert din stillingsprosent?", afp.redusertStillingSiste3Ar)
+                    jaNeiRadValgfri("Har stillingsprosenten din vært under 20 prosent etter du fylte 53 år?", afp.stillingUnder20Etter53Ar)
+                    jaNeiRadValgfri("Har du i løpet av de 3 siste år til sammen vært sykemeldt mer enn 26 uker?", afp.sykemeldtMerEnn26Siste3Ar)
+                    jaNeiRadValgfri("Har du i løpet av de siste 3 år vært permittert?", afp.permittertSiste3Ar)
+                    jaNeiRadValgfri(
+                        "Har du i løpet av de siste 3 år hatt permisjon i en eller flere perioder som til sammen utgjør mer enn 26 uker?",
+                        afp.permisjonSiste3Ar,
+                    )
+                    jaNeiRadValgfri(
+                        "Har du i de siste 3 årene før du fylte 62 år fått utbetalt pensjon, ventelønn eller andre ytelser uten arbeidsplikt?",
+                        afp.inntektUtenArbeidsplikt,
+                    )
+                    jaNeiRadValgfri(
+                        "Har du etter fylte 53 år drevet næringsvirksomhet eller hatt en eierandel på 20 prosent eller mer i søknadsbedriften eller annen virksomhet?",
+                        afp.naeringsvirkEierandel20,
+                    )
+                    jaNeiRadValgfri("Har du etter fylte 53 år arbeidet i utlandet?", afp.arbeidetUtlandEtter53)
+                    jaNeiRadValgfri("Vil du at Fellesordningen for AFP skal kontakte deg på e-post?", afp.samtykkeEpost)
+                    ifNotNull(afp.epost) { epostadresse ->
+                        tekstRad("E-postadressen din", epostadresse)
+                    }
+                }
             }
         }
+}
+
+private fun KvitteringOutline.tekstRad(ledetekst: String, verdi: Expression<String>) {
+    val skille = if (ledetekst.endsWith("?")) " " else ": "
+    paragraph { text(bokmal { +"$ledetekst$skille".expr() + verdi }) }
+}
+
+private fun KvitteringOutline.jaNeiRad(ledetekst: String, verdi: Expression<Boolean>) {
+    tekstRad(ledetekst, ifElse(verdi, "Ja", "Nei"))
+}
+
+private fun KvitteringOutline.jaNeiRadValgfri(ledetekst: String, verdi: Expression<Boolean?>) {
+    tekstRad(ledetekst, ifElse(verdi.notNull(), ifElse(verdi.ifNull(false), "Ja", "Nei"), "".expr()))
 }

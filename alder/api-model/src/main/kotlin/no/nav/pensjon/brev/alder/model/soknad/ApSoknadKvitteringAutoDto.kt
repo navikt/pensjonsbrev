@@ -4,18 +4,27 @@ import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import java.time.LocalDate
 
 /**
- * DTO for kvittering av innsendt søknad om alderspensjon.
+ * DTO for kvittering av innsendt søknad om alderspensjon (brevkode AP_SOKNAD_KVITTERING).
  *
- * Inneholder alle data som vises i søknadskvitteringen — strukturert
- * etter de samme seksjonene som den gamle XSL-baserte kvitteringen:
- * Innledning, Personopplysninger, Familieforhold, Utland, AFP Privat.
+ * Strukturen og feltene speiler 1-1 den gamle XSL-baserte kvitteringen
+ * (`alderspensjon.xsl` + `KeyTextGetter` + `PdfPopulator`) i
+ * pensjon-selvbetjening-soknad-alder-backend.
+ *
+ * Forretningslogikken (hvilke rader/seksjoner som vises, navne-/fnr-oppslag med
+ * sensitivitet, betegnelse på ektefelle/partner/samboer osv.) gjøres i mapperen
+ * i søknad-backend. Denne malen rendrer kun det som ligger i modellen, slik at
+ * malen holdes fri for forgreningslogikk.
+ *
+ * Avvik fra den gamle PDF-en (bevisst):
+ * - Fotnoter/«Informasjon»-listen er utelatt (hjelpetekster, ikke kjernedata).
+ * - Måned-år vises med liten forbokstav («januar 2025») iht. brevbaker-konvensjon.
  */
 data class ApSoknadKvitteringAutoDto(
     val innledning: Innledning,
     val personopplysninger: Personopplysninger,
     val familieforhold: Familieforhold,
     val utland: Utland,
-    val afpPrivat: AfpPrivat?,
+    val afpPrivat: AfpPrivat,
 ) : AutobrevData {
 
     data class Innledning(
@@ -29,8 +38,8 @@ data class ApSoknadKvitteringAutoDto(
         val foedselsnummer: String,
         val adresselinjer: List<String>,
         val telefon: String?,
-        val statsborgerskap: String,
         val erUtenlandsk: Boolean,
+        val statsborgerskapLand: String?,
         val erFlyktning: Boolean?,
         val kontonummer: String?,
     )
@@ -38,36 +47,53 @@ data class ApSoknadKvitteringAutoDto(
     data class Familieforhold(
         val sivilstand: String,
         val omsorgForBarnUnder7: Boolean?,
-        val eps: EpsInfo?,
-        val avdoed: RelasjonInfo?,
-        val samboer: SamboerInfo?,
+        val avdoed: Avdoed?,
+        val samboer: Samboer?,
+        val harSamboerSpoersmaal: HarSamboerSpoersmaal?,
+        val eps: Eps?,
     )
 
-    data class EpsInfo(
-        val type: String,
-        val navn: String?,
-        val foedselsnummer: String?,
-        val mottarPensjon: Boolean?,
-        val harAnnenInntekt: Boolean?,
-        val sumInntekt: Int?,
-        val arbeidsinntekt: Int?,
-        val kapitalinntekt: Int?,
-        val pensjonsinntekt: Int?,
-        val leverVarigAdskilt: Boolean?,
-    )
-
-    data class RelasjonInfo(
-        val navn: String?,
+    data class Avdoed(
+        val navn: String,
         val foedselsnummer: String?,
     )
 
-    data class SamboerInfo(
-        val navn: String?,
+    data class Samboer(
+        val navn: String,
         val foedselsnummer: String?,
+        val samboerskapOpphoertDato: LocalDate?,
+    )
+
+    data class HarSamboerSpoersmaal(
+        val erNySamboer: Boolean,
+        val svar: Boolean,
+    )
+
+    data class Eps(
+        val betegnelse: String,
+        val betegnelseGenitiv: String,
+        val betegnelseGenitivStor: String,
+        val navnOgFoedselsnummer: EpsNavnOgFoedselsnummer?,
         val samboerFraDato: LocalDate?,
-        val samboerOpphortDato: LocalDate?,
-        val tidligereGift: Boolean?,
-        val fellesBarn: Boolean?,
+        val giftOgBarn: GiftOgBarn?,
+        val leverVarigAdskilt: Boolean?,
+        val pensjonOgInntekt: PensjonOgInntekt?,
+    )
+
+    data class EpsNavnOgFoedselsnummer(
+        val navn: String,
+        val foedselsnummer: String?,
+    )
+
+    data class GiftOgBarn(
+        val tidligereGift: Boolean,
+        val harFellesBarn: Boolean,
+    )
+
+    data class PensjonOgInntekt(
+        val mottarAfp: Boolean,
+        val harAnnenInntekt: Boolean,
+        val sumInntekt: Int?,
     )
 
     data class Utland(
@@ -82,26 +108,38 @@ data class ApSoknadKvitteringAutoDto(
         val startDato: LocalDate?,
         val sluttDato: LocalDate?,
         val pensjonsordning: String?,
+        val utlandsId: String?,
+        val tilleggsinformasjon: String?,
     )
 
     data class AfpPrivat(
-        val soktAfpPrivat: Boolean,
+        val soektAfpPrivat: Boolean,
+        val detaljer: AfpPrivatDetaljer?,
+    )
+
+    data class AfpPrivatDetaljer(
         val arbeidsgiverNavn: String?,
+        val arbeidsgiverAdresse: List<String>,
         val arbeidsgiverOrgnr: String?,
+        val omsorgForBarnUnder7: Boolean?,
         val ansattDato: LocalDate?,
         val ansattforholdOpphoert: Boolean?,
-        val sisteDagArbeid: LocalDate?,
-        val opphoerArsak: String?,
-        val permisjonSiste3Ar: Boolean?,
+        val opphoer: AfpOpphoer?,
+        val ansattType: String?,
         val redusertStillingSiste3Ar: Boolean?,
-        val inntektUtenArbeidsplikt: Boolean?,
-        val naeringsvirkEierandel20: Boolean?,
         val stillingUnder20Etter53Ar: Boolean?,
         val sykemeldtMerEnn26Siste3Ar: Boolean?,
         val permittertSiste3Ar: Boolean?,
+        val permisjonSiste3Ar: Boolean?,
+        val inntektUtenArbeidsplikt: Boolean?,
+        val naeringsvirkEierandel20: Boolean?,
         val arbeidetUtlandEtter53: Boolean?,
-        val omsorgForBarnUnder7: Boolean?,
         val samtykkeEpost: Boolean?,
         val epost: String?,
+    )
+
+    data class AfpOpphoer(
+        val sisteDagArbeid: LocalDate?,
+        val opphoerArsak: String?,
     )
 }
