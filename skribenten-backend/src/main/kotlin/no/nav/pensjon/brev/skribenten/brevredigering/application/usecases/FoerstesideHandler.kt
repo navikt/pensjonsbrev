@@ -32,7 +32,7 @@ class FoerstesideHandler(
 
         val tittel = brev.redigertBrev.title.text.joinToString(" ") { it.text }.trim()
 
-        val request = GenererFoerstesideRequest(
+        val response = klient.genererFoersteside(GenererFoerstesideRequest(
             spraakkode = brev.spraak.toApi(),
             netsPostboks = Postboks("1400"), // familie-integrasjoner bruker dette, vi må dobbeltsjekke om det er sant
             bruker = Bruker(
@@ -51,8 +51,7 @@ class FoerstesideHandler(
                 arkivsaksystem = Arkivsaksystem.PSAK,
                 arkivsaksnummer = brev.saksId,
             )
-        )
-        val response = klient.genererFoersteside(request)
+        ))
         return success(response)
     }
 }
