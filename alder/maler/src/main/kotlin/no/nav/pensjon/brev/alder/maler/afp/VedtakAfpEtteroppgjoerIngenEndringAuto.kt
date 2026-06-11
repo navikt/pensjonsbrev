@@ -71,11 +71,6 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
                 includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
             }
 
-            // Melding om endringer av inntekten + dokumentasjon + covid-19 + Ukraina (alltid).
-            // Identisk innhold med PE_AF_04_102 er trukket ut til delte fraser; bare paragrafer
-            // med ordlydsforskjeller er inlinet og markert med TODO for faglig gjennomgang.
-            //
-            // Seksjon 1: Melding om endringer av inntekten.
             includePhrase(AfpEtteroppgjoerInnhold.MeldingOmEndringerInnledning)
 
             includePhrase(AfpEtteroppgjoerInnhold.InntektUtenforEtteroppgjoerListe)
@@ -86,20 +81,10 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
 
             includePhrase(AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon)
 
-            // Seksjon 2: Spesielt om inntekter opptjent i forbindelse med covid-19.
-            includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmCovidInntekterInnledning)
-
-            // TODO dokumentasjonslisten avviker fra PE_AF_04_102: 04_102 har 4 punkter (med "om arbeidet var beordret eller frivillig") og bokmål-ordlyd "i hvilken tidsperiode(-r) dette gjelder". Avklar med fag om listen skal harmoniseres.
-            includePhrase(AfpEtteroppgjoerInnhold.CovidDokumentasjonskravInntekter)
-
-            // Seksjon 3: Spesielt om unntak ... fordrevne fra Ukraina.
-            includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
             includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pensjonsgivendeInntekt = pensjonsgivendeInntekt, oppgjoersAar = oppgjoersAar))
 
-            // Periode-diskriminert fordeling av PGI på periodene med/uten AFP.
-            // Delt med PE_AF_04_101 (etterbetaling). Se phrase for detaljer.
             includePhrase(
                 AfpEtteroppgjoerInnhold.InntektFoerUttakInntektEtterOpphoerFordelingPerPeriode(
                     erHelAfpHeleAaret = periode.equalTo(Periode.HEL_AFP_HELE_AARET),

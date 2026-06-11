@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.alder.maler.afp.fraser
 import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_ETTEROPPGJOER_URL
 import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
@@ -304,16 +303,12 @@ object AfpEtteroppgjoerInnhold {
                     bokmal {
                         +"Vi gjør oppmerksom på at innrapporterte inntektsopplysninger fra Skatteetaten " +
                                 "ikke skiller mellom hvor stor del av inntekten din som er opptjent før og " +
-                                "etter at du tok ut AFP. Nav kan heller ikke se om noen av inntektene stammer " +
-                                "fra arbeid i forbindelse med covid-19 eller arbeid med fordrevne fra Ukraina. " +
-                                "Noen slike inntekter kan unntas fra inntektsavkortingen."
+                                "etter at du tok ut AFP."
                     },
                     nynorsk {
                         +"Vi gjer merksam på at innrapporterte inntektsopplysningar frå Skatteetaten ikkje " +
                                 "skil mellom kor stor del av inntekta di som er opptent før og etter at du tok " +
-                                "ut AFP. Nav kan heller ikkje sjå om nokre av inntektene stammar frå arbeid i " +
-                                "samband med covid-19 eller arbeid med fordrivne frå Ukraina. Enkelte slike " +
-                                "inntekter kan haldast utanfor inntektsavkortingen."
+                                "ut AFP."
                     },
                 )
             }
@@ -343,7 +338,7 @@ object AfpEtteroppgjoerInnhold {
 
     /**
      * Liste over inntekter som skal holdes utenfor etteroppgjøret, med avsluttende
-     * henvisning til mer informasjon om covid-19/Ukraina. Brukes i PE_AF_04_100,
+     * henvisning til mer informasjon om Ukraina. Brukes i PE_AF_04_100,
      * PE_AF_04_101 og PE_AF_04_107.
      */
     object InntektUtenforEtteroppgjoerListe : OutlinePhrase<LangBokmalNynorsk>() {
@@ -823,8 +818,8 @@ object AfpEtteroppgjoerInnhold {
                         nynorsk {
                             +"Vi har lagt til grunn at " + inntektFoerUttak.format() + " er opptente før du tok ut AFP. " +
                                     "Dette beløpet skal haldast utanfor etteroppgjeret for " +
-                                    oppgjoersAar.format() + ". Den delen av inntekta som blir rekna for å vere " +
-                                    "opptent i den perioden du har fått AFP, er berekna til " +
+                                    oppgjoersAar.format() + ". Den delen av inntekta som etter standardberekninga blir rekna for å vere " +
+                                    "opptent i den perioden du har fått AFP, er " +
                                     inntektIAfpPerioden.format() + "."
                         },
                     )
@@ -855,7 +850,7 @@ object AfpEtteroppgjoerInnhold {
                             +"Vi har lagt til grunn at " + inntektEtterOpphoer.format() + " er opptjent etter at du gikk " +
                                     "over fra AFP til annen ytelse, eventuelt etter opphør av AFP. Dette " +
                                     "beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() +
-                                    ". Den delen av inntekten som regnes for å være opptjent i den perioden du " +
+                                    ". Den delen av inntekten som etter standardberegningen regnes for å være opptjent i den perioden du " +
                                     "har mottatt AFP, er " + inntektIAfpPerioden.format() + "."
                         },
                         nynorsk {
