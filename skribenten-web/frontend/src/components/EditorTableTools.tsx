@@ -19,6 +19,7 @@ const EditorTableTools = () => {
       <HStack gap="space-8">
         <Tooltip content={tooltipText.table}>
           <Button
+            aria-label={tooltipText.table}
             data-color="neutral"
             data-testid="toolbar-table-button"
             disabled={freeze || editorState.focus.blockIndex < 0}
