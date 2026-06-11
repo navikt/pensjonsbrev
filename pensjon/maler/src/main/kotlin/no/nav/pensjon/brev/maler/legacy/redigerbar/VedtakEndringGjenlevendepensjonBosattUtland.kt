@@ -48,11 +48,11 @@ import no.nav.pensjon.brev.maler.fraser.gjenlevende.AarsakTilEndringFritekst
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.AvdodFlyktning
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.AvdoedDoedsfallNotSkyldesYrkesskade
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.AvdoedDoedsfallSkyldesYrkesskade
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.AvdoedDoedsfallSkyldesYrkesskadeBeregningAvTilleggspensjon
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.GjenlevendepensjonBeregningTabell
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonGP
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonJustertTil90ProsentPgaEgenPensjon
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonJustertTil90ProsentPgaEktefelleInntekt
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonJustertTil90ProsentPgaSamboerInntekt
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.Inntektsoekning
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.Inntektsreduksjon
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.Samboer12av18Maaneder
@@ -212,6 +212,11 @@ object VedtakEndringGjenlevendepensjonBosattUtland :
                 includePhrase(Tilleggspensjon)
 
                 showIf(pesysData.avdoed.doedsfallSkyldesYrkesskade) {
+                    includePhrase(AvdoedDoedsfallSkyldesYrkesskadeBeregningAvTilleggspensjon)
+                }
+            }
+
+                showIf(pesysData.avdoed.doedsfallSkyldesYrkesskade) {
                     paragraph {
                         text(
                             bokmal {
@@ -256,7 +261,6 @@ object VedtakEndringGjenlevendepensjonBosattUtland :
                         )
                     }
                 }
-            }
 
             ifNotNull(pesysData.beregning.saertillegg) {
                 paragraph {

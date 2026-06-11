@@ -263,14 +263,26 @@ object Tilleggspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
                     +"Oversikt over poengopptjeninga er gitt i vedlegg til dette vedtaket. "
                 },
                 english {
-                    +" depends on the number of years the deceased earned pension points and on how "
-                    +"many pension points were earned. You receive pension points for years in which you have an income greater "
-                    +"than the national insurance basic amount. 40 years of pension points are required to receive a full "
-                    +"supplementary pension. In some cases credit may be given for future years of earning pension points. "
-                    +"The future years of earning pension points usually include the years between death and up to and including "
-                    +"the year the deceased would have turned 66. Your supplementary pension is 55 per cent of the supplementary "
-                    +"pension the deceased had accumulated. An overview of the accumulated points is enclosed with this decision."
+                    +" depends on the number of years the deceased earned pension points and on how many pension points were earned. "
+                    +"You receive pension points for years in which you have an income greater than the national insurance basic amount. "
+                    +"40 years of pension points are required to receive a full supplementary pension. "
+                    +"In some cases credit may be given for future years of earning pension points. "
+                    +"The future years of earning pension points usually include the years between death and up to and including the year the deceased would have turned 66. "
+                    +"Your supplementary pension is 55 per cent of the supplementary pension the deceased had accumulated. "
+                    +"An overview of the accumulated points is enclosed with this decision."
                 },
+            )
+        }
+    }
+}
+
+object AvdoedDoedsfallSkyldesYrkesskadeBeregningAvTilleggspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            text(
+                bokmal { +"Når dødsfallet skyldes en yrkesskade gjelder det spesielle regler for beregning av tilleggspensjon." },
+                nynorsk { +"Når dødsfallet skuldast ein yrkesskade, gjeld det spesielle reglar for berekning av tilleggspensjon." },
+                english { +"When the death is caused by a workplace injury, particular regulations for the calculation of supplementary pensions apply." },
             )
         }
     }
