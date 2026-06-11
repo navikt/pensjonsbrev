@@ -6,7 +6,9 @@ import { type Action, withPatches } from "../lib/actions";
 import { type ItemContentIndex, type LetterEditorState, type LiteralIndex } from "../model/state";
 import { effectiveListType, isItemList, isTextContent } from "../model/utils";
 import {
+  absorbListIntoList,
   addElements,
+  coalesceAdjacentSameTypeLists,
   findAdjoiningContent,
   newItem,
   newItemList,
@@ -40,7 +42,7 @@ const toggleList = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex,
       toggleListOff(draft, literalIndex as ItemContentIndex);
     } else {
       switchListType(draft, literalIndex, listType);
-      const { newContentIndex, itemIndexOffset } = mergeAdjacentListsInBlock(
+      const { newContentIndex, itemIndexOffset } = coalesceAdjacentSameTypeLists(
         draft,
         literalIndex.blockIndex,
         literalIndex.contentIndex,
@@ -59,7 +61,7 @@ const toggleList = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex,
 };
 
 /**
- * Endrer listType på en eksisterende liste uten å endre innholdet eller fokuset.
+ * Changes the listType of an existing list without altering its content or focus.
  */
 const switchListType = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, listType: ListType) => {
   const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
@@ -69,14 +71,14 @@ const switchListType = (draft: Draft<LetterEditorState>, literalIndex: LiteralIn
 };
 
 /**
- * Når vi lager et nytt listeelement, må vi ta høyde for at det kan ligge inntil en eksisterende liste.  Det kan
- * være en liste i blokken før, etter, eller begge. Det kan også være en liste i samme
- * blokk; før, etter eller begge.
+ * When creating a new list item, we must account for the possibility that it may be adjacent to an
+ * existing list. It can be a list in the block before, after, or both. It can also be a list in the
+ * same block; before, after, or both.
  *
- * Det vil si at når vi konverterer en literal til en liste, må vi merge med
- * nabolister - hvis de eksisterer - i samme blokk eller naboblokk.
+ * This means that when we convert a literal to a list, we must merge with neighboring lists - if
+ * they exist - in the same block or neighboring blocks.
  *
- * Denne mergingen kan også påvirke adressen til fokus
+ * This merging can also affect the address of the focus.
  */
 const toggleListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, listType: ListType) => {
   draft.saveStatus = "DIRTY";
@@ -84,7 +86,7 @@ const toggleListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralInde
   const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
   const contentIndex = literalIndex.contentIndex;
 
-  // move sentence into a new item list
+  // move text into a new item list element
   const textIndex = findAdjoiningContent(contentIndex, block.content, isTextContent);
   const text = removeElements(textIndex.startIndex, textIndex.count, {
     content: block.content,
@@ -98,103 +100,22 @@ const toggleListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralInde
     block.deletedContent,
   );
 
-  // merge with neighbors
-  const itemListIndex = findAdjoiningContent(
+  // merge the new list with any same-type neighbours in this block
+  const { newContentIndex, itemIndexOffset } = coalesceAdjacentSameTypeLists(
+    draft,
+    literalIndex.blockIndex,
     textIndex.startIndex,
-    block.content,
-    (c): c is ItemList => isItemList(c) && effectiveListType(c) === listType,
+    listType,
   );
-  const itemLists = removeElements(itemListIndex.startIndex, itemListIndex.count, {
-    content: block.content,
-    deletedContent: block.deletedContent,
-    id: block.id,
-  }).filter(isItemList);
 
-  // Collect all items from the lists to merge, preserving order.
-  // Identify a list with a non-null id to keep (so the backend can track it),
-  // falling back to the last list in the sequence.
-  const listWithId = itemLists.find((l) => l.id !== null) ?? itemLists[itemLists.length - 1];
-  const allItems = itemLists.flatMap((l) => [...l.items]);
-  const allDeletedItems = itemLists.flatMap((l) => [...l.deletedItems]);
-
-  // INTENTIONAL ID COPY: the merged list is given listWithId.id even though it is a new object.
-  // This preserves the backend's merge-tracking identity for this list across re-renders — without
-  // it the backend would both "delete" and "re-add" the list from the fresh template render.
-  // addElements below will un-delete that id from block.deletedContent if it was marked deleted.
-  // Rule 1 exception: ID preservation during merge (see letter-editor-actions SKILL.md).
-  const mergedList = newItemList({
-    id: listWithId.id,
-    listType: listWithId.listType,
-    editedListType: listType !== listWithId.listType ? listType : listWithId.editedListType,
-    items: allItems,
-    deletedItems: allDeletedItems,
-  });
-  addElements([mergedList], itemListIndex.startIndex, block.content, block.deletedContent);
-
-  // update focus — the new item's position is determined by items from lists that preceded it
-  const newListPosition = textIndex.startIndex - itemListIndex.startIndex;
-  const newItemIndex = itemLists.slice(0, newListPosition).reduce((sum, l) => sum + l.items.length, 0);
+  // update focus — the new item's position accounts for items from lists that preceded it
   draft.focus = {
     blockIndex: literalIndex.blockIndex,
-    contentIndex: itemListIndex.startIndex,
-    itemIndex: newItemIndex,
+    contentIndex: newContentIndex,
+    itemIndex: itemIndexOffset,
     itemContentIndex: contentIndex - textIndex.startIndex,
     cursorPosition: draft.focus.cursorPosition,
   };
-};
-
-/**
- * After switching a list's type in-place, merges it with any immediately adjacent same-type
- * lists within the same block. Returns the new contentIndex of the merged list and the number
- * of items prepended from lists that preceded the current list (used to update itemIndex).
- */
-const mergeAdjacentListsInBlock = (
-  draft: Draft<LetterEditorState>,
-  blockIndex: number,
-  contentIndex: number,
-  listType: ListType,
-): { newContentIndex: number; itemIndexOffset: number } => {
-  const block = draft.redigertBrev.blocks[blockIndex];
-  if (!block || block.type !== "PARAGRAPH") return { newContentIndex: contentIndex, itemIndexOffset: 0 };
-
-  const currentList = block.content[contentIndex];
-  if (!isItemList(currentList) || effectiveListType(currentList) !== listType)
-    return { newContentIndex: contentIndex, itemIndexOffset: 0 };
-
-  const itemListsIndex = findAdjoiningContent(
-    contentIndex,
-    block.content,
-    (c): c is ItemList => isItemList(c) && effectiveListType(c) === listType,
-  );
-
-  if (itemListsIndex.count <= 1) return { newContentIndex: contentIndex, itemIndexOffset: 0 };
-
-  const itemLists = removeElements(itemListsIndex.startIndex, itemListsIndex.count, {
-    content: block.content,
-    deletedContent: block.deletedContent,
-    id: block.id,
-  }).filter(isItemList);
-
-  // Count items from lists that preceded the current list in the adjoining range.
-  const currentListPosition = contentIndex - itemListsIndex.startIndex;
-  const itemIndexOffset = itemLists.slice(0, currentListPosition).reduce((sum, l) => sum + l.items.length, 0);
-
-  const listWithId = itemLists.find((l) => l.id !== null) ?? itemLists[itemLists.length - 1];
-  const allItems = itemLists.flatMap((l) => [...l.items]);
-  const allDeletedItems = itemLists.flatMap((l) => [...l.deletedItems]);
-
-  // INTENTIONAL ID COPY — same rationale as in toggleListOn above.
-  // Rule 1 exception: ID preservation during merge (see letter-editor-actions SKILL.md).
-  const mergedList = newItemList({
-    id: listWithId.id,
-    listType: listWithId.listType,
-    editedListType: listType !== listWithId.listType ? listType : listWithId.editedListType,
-    items: allItems,
-    deletedItems: allDeletedItems,
-  });
-  addElements([mergedList], itemListsIndex.startIndex, block.content, block.deletedContent);
-
-  return { newContentIndex: itemListsIndex.startIndex, itemIndexOffset };
 };
 
 /**
@@ -228,34 +149,17 @@ const mergeListWithAdjacentBlocks = (
     if (prevBlock.type === "PARAGRAPH" && prevBlock.content.length > 0) {
       const lastPrevContent = prevBlock.content[prevBlock.content.length - 1];
       if (isItemList(lastPrevContent) && effectiveListType(lastPrevContent) === listType) {
-        const prevItems = current(lastPrevContent.items);
-        const prevDeletedItems = current(lastPrevContent.deletedItems);
-
-        removeElements(prevBlock.content.length - 1, 1, {
-          content: prevBlock.content,
-          deletedContent: prevBlock.deletedContent,
-          id: prevBlock.id,
-        });
-
-        if (prevBlock.content.length === 0) {
-          removeElements(blockIndex - 1, 1, {
-            content: blocks,
-            deletedContent: draft.redigertBrev.deletedBlocks,
-            id: null,
-          });
-          blockIndex--;
-        }
-
-        const curList = blocks[blockIndex].content[contentIndex] as Draft<ItemList>;
-        // Direct mutation (not addElements): items from the prev list have parentId pointing to
-        // the prev list's id, not curList.id, so they cannot be in curList.deletedItems — no
-        // un-delete step is needed. addElements would also try to merge adjacent literals at the
-        // item boundary, which does not apply to Item[].
-        curList.items.unshift(...(prevItems as ItemList["items"]));
-        curList.deletedItems.push(...(prevDeletedItems as ItemList["deletedItems"]));
+        const { movedItemCount, sourceBlockRemoved } = absorbListIntoList(
+          draft,
+          currentList,
+          blockIndex - 1,
+          prevBlock.content.length - 1,
+          "front",
+        );
+        if (sourceBlockRemoved) blockIndex--;
         draft.focus.blockIndex = blockIndex;
         if ("itemIndex" in draft.focus) {
-          draft.focus.itemIndex += prevItems.length;
+          draft.focus.itemIndex += movedItemCount;
         }
       }
     }
@@ -268,27 +172,7 @@ const mergeListWithAdjacentBlocks = (
     if (nextBlock.type === "PARAGRAPH" && nextBlock.content.length > 0) {
       const firstNextContent = nextBlock.content[0];
       if (isItemList(firstNextContent) && effectiveListType(firstNextContent) === listType) {
-        const nextItems = current(firstNextContent.items);
-        const nextDeletedItems = current(firstNextContent.deletedItems);
-
-        removeElements(0, 1, {
-          content: nextBlock.content,
-          deletedContent: nextBlock.deletedContent,
-          id: nextBlock.id,
-        });
-
-        if (nextBlock.content.length === 0) {
-          removeElements(nextBlockIndex, 1, {
-            content: blocks,
-            deletedContent: draft.redigertBrev.deletedBlocks,
-            id: null,
-          });
-        }
-
-        const curList = blocks[blockIndex].content[contentIndex] as Draft<ItemList>;
-        // Direct mutation — same reasoning as the unshift case above.
-        curList.items.push(...(nextItems as ItemList["items"]));
-        curList.deletedItems.push(...(nextDeletedItems as ItemList["deletedItems"]));
+        absorbListIntoList(draft, currentList, nextBlockIndex, 0, "back");
       }
     }
   }

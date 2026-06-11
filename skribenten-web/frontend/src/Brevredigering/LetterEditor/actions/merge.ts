@@ -1,6 +1,7 @@
 import { type Draft, type WritableDraft } from "immer";
 
 import {
+  absorbListIntoList,
   addElements,
   breakOutEmptyItem,
   getMergeIds,
@@ -268,16 +269,9 @@ function mergeAdjacentListBlocks(draft: Draft<LetterEditorState>, prevBlockIndex
   // Lists must have the same effective type
   if (effectiveListType(prevContent) !== effectiveListType(nextContent)) return;
 
-  // Merge: add all items from nextContent into prevContent
+  // Append nextContent's items into prevContent (the lower-indexed, surviving list).
   const lastItemIndexOfFirst = prevContent.items.length - 1;
-  addElements(nextContent.items, prevContent.items.length, prevContent.items, prevContent.deletedItems);
-
-  // Remove the next block
-  removeElements(prevBlockIndex + 1, 1, {
-    content: blocks,
-    deletedContent: draft.redigertBrev.deletedBlocks,
-    id: null,
-  });
+  absorbListIntoList(draft, prevContent, prevBlockIndex + 1, 0, "back");
 
   // Focus at end of the last item of the FIRST list (the merge boundary)
   const lastItemOfFirst = prevContent.items[lastItemIndexOfFirst];
@@ -299,8 +293,8 @@ function mergeFromItemList(draft: Draft<LetterEditorState>, literalIndex: ItemCo
   if (itemList.type === ITEM_LIST) {
     const currentItem = itemList.items[literalIndex.itemIndex];
 
-    // If the adjacent content within the same item is a NEW_LINE, remove it (and merge surrounding literals if possible).
-    // This mirrors the block-level NEW_LINE removal in mergeRecipe.
+    // If the adjacent content within the same item is a NEW_LINE, remove it (and merge surrounding
+    // literals if possible).  This mirrors the block-level NEW_LINE removal in mergeRecipe.
     if (currentItem != null) {
       const mod = target === MergeTarget.PREVIOUS ? -1 : 1;
       const adjacentInItem = currentItem.content[literalIndex.itemContentIndex + mod];
@@ -447,7 +441,6 @@ function mergeIntoItemList(
     id: block.id,
   }).filter(isTextContent);
 
-  // TODO: item har ikke deletedContent (enda?), derav `[]` som deleted
   addElements(textContentAfterList, lastItem.content.length, lastItem.content, lastItem.deletedContent);
 }
 
