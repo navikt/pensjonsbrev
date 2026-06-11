@@ -76,6 +76,7 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMa
           <LagringStatus />
           <Tooltip content={tooltipText.tilbakestill}>
             <Button
+              aria-label="Tilbakestill mal"
               data-color="danger"
               data-testid="tilbakestill-mal-button"
               icon={<ArrowCirclepathReverseIcon fontSize="1.5rem" title="Tilbakestill mal" />}
