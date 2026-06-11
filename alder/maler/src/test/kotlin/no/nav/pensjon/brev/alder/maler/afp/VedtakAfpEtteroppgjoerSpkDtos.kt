@@ -31,7 +31,7 @@ fun createVedtakAfpEtteroppgjoerEtterbetalingDto(): VedtakAfpEtteroppgjoerEtterb
         saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = VedtakAfpEtteroppgjoerEtterbetalingDto.PesysData(
             oppgjoersAar = Year(2024),
-            forlitebetalt = Kroner(15_000),
+            forlitebetalt = Kroner(14_000),
             pensjonsgivendeInntekt = Kroner(220_000),
             inntektFoerUttak = Kroner(40_000),
             inntektEtterOpphoer = Kroner(0),
