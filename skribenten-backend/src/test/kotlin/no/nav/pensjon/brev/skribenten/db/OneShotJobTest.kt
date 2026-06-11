@@ -38,7 +38,7 @@ class OneShotJobTest {
         val name = jobName("test-job")
 
         runBlocking {
-            oneShotJobs(config) {
+            oneShotJobs(config, {}) {
                 job(name) {
                     isExecuted = true
                 }
@@ -60,7 +60,7 @@ class OneShotJobTest {
         val name = jobName("no-duplicate-execution")
         fun aJob() {
             runBlocking {
-                oneShotJobs(config) {
+                oneShotJobs(config, {}) {
                     job(name) {
                         executionCount++
                     }
@@ -80,7 +80,7 @@ class OneShotJobTest {
         val name = jobName("failing-job")
 
         fun failingJob() = runBlocking {
-            oneShotJobs(config) {
+            oneShotJobs(config, {}) {
                 job(name) {
                     isExecuted = true
                     throw RuntimeException("Simulated failure")
