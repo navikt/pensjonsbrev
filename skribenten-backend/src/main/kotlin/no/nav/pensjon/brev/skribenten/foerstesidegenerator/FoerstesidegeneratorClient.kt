@@ -59,7 +59,7 @@ class FoerstesidegeneratorClient(config: Config, authService: AuthService) {
         if (response.status.isSuccess()) {
             return response.body()
         } else {
-            throw FoerstesidegeneratorException("Klarte ikke lage førsteside for ${request.arkivtittel}: ${response.status} - ${response.bodyAsText()}")
+            throw FoerstesidegeneratorException("Klarte ikke lage førsteside for brev i sak ${request.arkivsak.arkivsaksnummer}: statuskode ${response.status}")
         }
     }
 
