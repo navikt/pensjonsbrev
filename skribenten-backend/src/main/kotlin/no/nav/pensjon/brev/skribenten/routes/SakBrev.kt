@@ -181,7 +181,7 @@ fun Route.sakBrev(
                     if (Features.isEnabled(foersteside)) {
                         result?.onSuccess { original ->
                             val sak: Fagsak = call.attributes[SakKey]
-                            val resultat = brevredigeringFacade.opprettFoersteside(FoerstesideHandler.Request(brevId = brevId, pid = sak.pid, sakstype = sak.sakType as Sakstype)) // TODO fjern eksplisitt casting her
+                            val resultat = brevredigeringFacade.opprettFoersteside(FoerstesideHandler.Request(brevId = brevId, pid = sak.pid, sakstype = Sakstype(sak.sakType.kode))) // TODO fjern sakstypetriksing her
                             resultat?.onSuccess { foersteside ->
                                 val pdf = PDFMerger.merge(original.document.pdf, foersteside.foersteside)
                                 val returobjekt = original.copy(
@@ -209,7 +209,7 @@ fun Route.sakBrev(
                 post {
                     val brevId = call.parameters.brevId()
                     val sak: Fagsak = call.attributes[SakKey]
-                    val resultat = brevredigeringFacade.opprettFoersteside(FoerstesideHandler.Request(brevId = brevId, pid = sak.pid, sakstype = sak.sakType as Sakstype)) // TODO fjern eksplisitt casting her
+                    val resultat = brevredigeringFacade.opprettFoersteside(FoerstesideHandler.Request(brevId = brevId, pid = sak.pid, sakstype = Sakstype(sak.sakType.kode))) // TODO kan sikkert fjerne sakstypetriksinga her når typegenereringa er inne
                     call.respond(HttpStatusCode.Created) // TODO: bytt med apiRespond(dto2ApiService, resultat)
                 }
             }
