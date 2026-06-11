@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.GenererFoerstesideResponse
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -35,6 +36,7 @@ class BrevredigeringFacade(
     private val slettBrev: BrevredigeringHandler<SlettBrevHandler.Request, Unit>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
     private val diffBrev: BrevredigeringHandler<DiffBrevHandler.Request, DiffBrevHandler.Response>,
+    private val foerstesideHandler: BrevredigeringHandler<FoerstesideHandler.Request, GenererFoerstesideResponse>,
 ) : HentBrevService, OpprettBrevService {
 
     override suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
@@ -125,4 +127,6 @@ class BrevredigeringFacade(
             }
         }
     }
+
+    suspend fun opprettFoersteside(request: FoerstesideHandler.Request) = foerstesideHandler.handle(request)
 }

@@ -59,7 +59,7 @@ fun Application.configureRouting(
     val renderService = RenderService(brevbakerService)
 
     val dto2ApiService = Dto2ApiService(brevmalService, navansattService, norg2Service, samhandlerService)
-    val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevService, brevdataService, brevmalService, navansattService, p1Service, renderService)
+    val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevService, brevdataService, brevmalService, navansattService, p1Service, renderService, foerstesidegeneratorService)
     val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringFacade, brevmalService, brevredigeringFacade)
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
@@ -102,6 +102,7 @@ fun Application.configureRouting(
                 pensjonRepresentasjonService,
                 brevredigeringFacade,
                 dto2ApiService,
+                foerstesidegeneratorService,
             )
             brev(pdlService, fagsakService, brevredigeringFacade, dto2ApiService)
             samhandlerRoute(samhandlerService)
