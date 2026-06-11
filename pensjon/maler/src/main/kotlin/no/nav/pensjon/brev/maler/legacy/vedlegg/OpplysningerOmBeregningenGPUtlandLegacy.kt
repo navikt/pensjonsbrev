@@ -23,7 +23,10 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtl
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BeregningSelectors.ttAnvBest
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BeregningSelectors.yrke
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BeregningSelectors.yug
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BrukerSelectors.ektefelleInntektOver2g
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BrukerSelectors.ektefelleMottarPensjon
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BrukerSelectors.forventetInntekt
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BrukerSelectors.samboer3_2
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.PesysDataSelectors.avdoed
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.PesysDataSelectors.beregning
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.PesysDataSelectors.bruker
@@ -160,7 +163,44 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
                     }
                 }
 
-                // TODO her er det redigerbare felter for samboer
+                // Samboer §3-2: vises kun når bruker er registrert som samboer etter folketrygdloven § 3-2.
+                // IF(PE_..._BeregningSivilstandAnvendt = "bormed 3-2") THEN INCLUDE ENDIF
+                showIf(pesysData.bruker.samboer3_2) {
+                    // IF(PE_..._BeregningEktefelleMottarPensjon = true) THEN "Ja" ELSE "Nei"
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Samboer mottar pensjon fra folketrygden eller AFP som det godskrives pensjonspoeng for" },
+                                english { +"The cohabitant is receiving a pension from the National Insurance Scheme or AFP, for which they are being credited with pension points" },
+                            )
+                        }
+                        cell {
+                            showIf(pesysData.bruker.ektefelleMottarPensjon) {
+                                includePhrase(Ja)
+                            }.orShow {
+                                includePhrase(Nei)
+                            }
+                        }
+                    }
+
+                    // IF(PE_..._BeregningEktefelleInntektOver2g = true) THEN "Ja" ELSE "Nei"
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Samboeren din har inntekt over 2 G" },
+                                english { +"Your cohabitant has an income exceeding 2 G" },
+                            )
+                        }
+                        cell {
+                            showIf(pesysData.bruker.ektefelleInntektOver2g) {
+                                includePhrase(Ja)
+                            }.orShow {
+                                includePhrase(Nei)
+                            }
+                        }
+                    }
+                }
+
                 // ---- Opplysninger om avdøde ----
                 row {
                     cell {
@@ -193,12 +233,7 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
                                 english { +"The deceased is registered with the status of a refugee" },
                             )
                         }
-                        cell {
-                            text(
-                                bokmal { +"Ja" },
-                                english { +"Yes" },
-                            )
-                        }
+                        cell { includePhrase(Ja) }
                     }
                 }
                 row {
@@ -229,11 +264,6 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
                     }
                 }
 
-                // Seksjonen om samboer 3-2 er fjernet, da dette er redigerbar og bør plasseres i brevet istedenfor.
-
-                // ---- Beregningsmetode-spesifikke opplysninger ----
-                // De fire Exstream `Beregningsmetode2`-grenene; innholdet er stort sett identisk på tvers av
-                // metodene, forskjellene ligger i hvilke felt som har verdi og hvilke ord/etiketter som brukes.
                 showIf(pesysData.beregning.beregningsmetode.equalTo(Beregningsmetode.FOLKETRYGD)) {
                     showIf(
                         pesysData.beregning.sluttpoengtall.sptUtenOk.notEqualTo(0.0)
