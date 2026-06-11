@@ -184,6 +184,14 @@ fun Route.sakBrev(
                 }
             }
 
+            route("/foersteside") {
+                post {
+                    val brevId = call.parameters.brevId()
+                    val resultat = brevredigeringFacade.opprettFoersteside(FoerstesideHandler.Request(brevId = brevId))
+                    call.respond(HttpStatusCode.Created) // TODO: bytt med apiRespond(dto2ApiService, resultat)
+                }
+            }
+
             route("/attestering") {
                 get {
                     val brevId = call.parameters.brevId()
