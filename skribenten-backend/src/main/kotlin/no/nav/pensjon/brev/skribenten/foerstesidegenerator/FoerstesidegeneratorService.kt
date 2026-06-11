@@ -1,18 +1,15 @@
 package no.nav.pensjon.brev.skribenten.foerstesidegenerator
 
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 
 class FoerstesidegeneratorService(val klient: FoerstesidegeneratorClient) {
-    suspend fun genererFoersteside(request: GenererFoerstesideDto) : GenererFoerstesideResponse {
+    suspend fun genererFoersteside(request: GenererFoerstesideDto): GenererFoerstesideResponse {
         val request = GenererFoerstesideRequest(
             spraakkode = request.spraakkode,
             netsPostboks = Postboks("1400"), // familie-integrasjoner bruker dette, vi må dobbeltsjekke om det er sant
-            avsender = Avsender(
-                avsenderId = request.avsenderId,
-                avsenderNavn = request.avsenderNavn,
-            ),
             bruker = Bruker(
                 brukerId = request.brukerId,
                 brukerType = Bruker.BrukerType.PERSON
@@ -25,6 +22,10 @@ class FoerstesidegeneratorService(val klient: FoerstesidegeneratorClient) {
             dokumentlisteFoersteside = listOf(), // TODO: må finne ut av kva vi sender her
             foerstesidetype = Foerstesidetype.LOESPOST, // TODO: må vi kunne styre denne?
             enhetsnummer = request.enhetsnummer,
+            arkivsak = Arkivsak(
+                arkivsaksystem = Arkivsaksystem.PSAK,
+                arkivsaksnummer = request.saksnummer.id,
+            )
         )
         return klient.genererFoersteside(request)
     }
@@ -35,16 +36,15 @@ data class GenererFoerstesideDto(
     val tittel: String,
     val vedlegg: List<String>,
     val enhetsnummer: EnhetId,
-    val avsenderId: BrevbakerType.Foedselsnummer,
-    val avsenderNavn: String,
-    val brukerId: BrevbakerType.Foedselsnummer,
+    val brukerId: BrevbakerType.Pid,
+    val saksnummer: SaksId
 )
 
 data class GenererFoerstesideRequest(
     val spraakkode: SpraakKode,
     val adresse: Any? = null,
     val netsPostboks: Postboks,
-    val avsender: Avsender,
+    val avsender: Avsender? = null,
     val bruker: Bruker,
     val ukjentBrukerPersoninfo: String? = null,
     val tema: Tema,
@@ -56,7 +56,7 @@ data class GenererFoerstesideRequest(
     val dokumentlisteFoersteside: List<String>,
     val foerstesidetype: Foerstesidetype,
     val enhetsnummer: EnhetId,
-    val arkivsak: Arkivsak = Arkivsak.PSAK,
+    val arkivsak: Arkivsak,
 )
 
 data class GenererFoerstesideResponse(
@@ -75,12 +75,12 @@ value class Postboks(val value: String) {
 }
 
 data class Avsender(
-    val avsenderId: BrevbakerType.Foedselsnummer, // TODO, kan også vera orgid
+    val avsenderId: BrevbakerType.Pid, // TODO, kan også vera orgid
     val avsenderNavn: String
 )
 
 data class Bruker(
-    val brukerId: BrevbakerType.Foedselsnummer, // TODO, kan også vera orgid
+    val brukerId: BrevbakerType.Pid, // TODO, kan også vera orgid
     val brukerType: BrukerType,
 ) {
     enum class BrukerType {
@@ -99,6 +99,11 @@ enum class Foerstesidetype {
     NAV_INTERN
 }
 
-enum class Arkivsak {
+data class Arkivsak(
+    val arkivsaksystem: Arkivsaksystem,
+    val arkivsaksnummer: Long,
+)
+
+enum class Arkivsaksystem {
     PSAK,
 }

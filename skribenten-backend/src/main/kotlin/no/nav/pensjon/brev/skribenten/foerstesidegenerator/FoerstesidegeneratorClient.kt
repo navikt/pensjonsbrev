@@ -9,6 +9,7 @@ import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.accept
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
@@ -40,6 +41,7 @@ class FoerstesidegeneratorClient(config: Config, authService: AuthService) {
         }
         installRetry(logger)
         callIdAndOnBehalfOfClient(foerstesidegeratorScope, authService)
+
     }
 
     suspend fun genererFoersteside(request: GenererFoerstesideRequest): GenererFoerstesideResponse {
@@ -47,6 +49,7 @@ class FoerstesidegeneratorClient(config: Config, authService: AuthService) {
             setBody(request)
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Pdf)
+            header("Nav-Consumer-Id", "skribenten-backend")
         }
 
         if (response.status.isSuccess()) {
