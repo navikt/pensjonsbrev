@@ -192,7 +192,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
     monitor.subscribe(ServerReady) {
         delayedJobs.add(launch {
             delay(5.minutes)
-            oneShotJobs(skribentenConfig, { client -> monitor.subscribe(ApplicationStopping) { client.cancel() }}) {
+            oneShotJobs(skribentenConfig, { client -> monitor.subscribe(ApplicationStopping) { client.close() }}) {
                 job("leggPaaSpraakForValgbareVedlegg") {
                     updateBrevredigeringJson()
                 }
