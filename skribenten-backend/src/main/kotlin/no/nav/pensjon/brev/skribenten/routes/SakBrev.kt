@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.PDFMerger
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.toDto
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
@@ -188,20 +189,12 @@ fun Route.sakBrev(
                         val resultat = brevredigeringFacade.opprettFoersteside(FoerstesideHandler.Request(brevId = brevId, pid = sak.pid, sakstype = sak.sakType as Sakstype)) // TODO fjern eksplisitt casting her
                         result?.onSuccess { original ->
                             resultat?.onSuccess { foersteside ->
-                                PDDocument().use { target ->
-                                    val merger = PDFMergerUtility()
-                                    val foerstesidePdf = Loader.loadPDF(foersteside.foersteside)
-                                    val originalPdf = Loader.loadPDF(original.document.pdf)
-                                    merger.appendDocument(target, originalPdf).also { originalPdf.close() }
-                                    merger.appendDocument(target, foerstesidePdf).also { foerstesidePdf.close() }
-                                    val outputStream = ByteArrayOutputStream()
-                                    target.save(outputStream)
-                                    val returobjekt = original.copy(
-                                        document = original.document.copy(pdf = outputStream.toByteArray())
-                                    )
-                                    call.respond(HttpStatusCode.OK, dto2ApiService.toApi(returobjekt))
-                                    return@get
-                                }
+                                val pdf = PDFMerger.merge(original.document.pdf, foersteside.foersteside)
+                                val returobjekt = original.copy(
+                                    document = original.document.copy(pdf = pdf)
+                                )
+                                call.respond(HttpStatusCode.OK, dto2ApiService.toApi(returobjekt))
+                                return@get
                             }
 
                         }
