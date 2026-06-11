@@ -20,8 +20,7 @@ ktor {
 
 node {
     nodeProjectDir.set(rootProject.file("skribenten-web/frontend"))
-    download.set(true)
-    version.set("24.14.1")
+    npmInstallCommand.set("ci")
 }
 
 // Declare openapi-spec.json as a test output so Gradle's build cache includes and restores

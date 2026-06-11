@@ -39,6 +39,7 @@ jobs:
       target: skribenten-backend
       gradleTarget: skribenten-backend
       buildImage: true
+      requiresNode: true
 
   salsa:
     uses: ./.github/workflows/.salsa.yaml
