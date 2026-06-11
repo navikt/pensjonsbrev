@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
+import no.nav.pensjon.brev.api.model.BeloepEndring.UENDRET
 import no.nav.pensjon.brev.api.model.BeloepEndring.ENDR_OKT
 import no.nav.pensjon.brev.api.model.BeloepEndring.ENDR_RED
 import no.nav.pensjon.brev.api.model.KravInitiertAv
@@ -170,10 +171,11 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
 
             // innvilgetGjRettAPIngenEndr2_001
             showIf(
-                (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
+                ((pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
                     and (brukerFoedtEtter1944.not()
                     or virkDatoFomEtter2023.not()))
                     or (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967) and brukerFoedtEtter1944.not())
+                        and pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(UENDRET))
             ) {
                 paragraph {
                     text(
