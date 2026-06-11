@@ -128,5 +128,5 @@ class BrevredigeringFacade(
         }
     }
 
-    suspend fun opprettFoersteside(request: FoerstesideHandler.Request) = foerstesideHandler.handle(request)
+    suspend fun opprettFoersteside(request: FoerstesideHandler.Request) = foerstesideHandler.runHandler(request)
 }

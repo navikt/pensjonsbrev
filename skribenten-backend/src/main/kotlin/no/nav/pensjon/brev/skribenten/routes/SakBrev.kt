@@ -4,6 +4,8 @@ import io.ktor.http.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import no.nav.pensjon.brev.skribenten.Features
+import no.nav.pensjon.brev.skribenten.Features.foersteside
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.*
@@ -16,6 +18,12 @@ import no.nav.pensjon.brev.skribenten.model.toDto
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import org.apache.pdfbox.Loader
+import org.apache.pdfbox.multipdf.PDFMergerUtility
+import org.apache.pdfbox.pdmodel.PDDocument
+import java.io.ByteArrayOutputStream
+import java.nio.file.Files
+import java.nio.file.Paths
 
 fun Route.sakBrev(
     brevmalService: BrevmalService,
@@ -174,6 +182,31 @@ fun Route.sakBrev(
                     val brevId = call.parameters.brevId()
 
                     val result = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brevId))
+
+                    if (Features.isEnabled(foersteside)) {
+                        val sak: Fagsak = call.attributes[SakKey]
+                        val resultat = brevredigeringFacade.opprettFoersteside(FoerstesideHandler.Request(brevId = brevId, pid = sak.pid, sakstype = sak.sakType as Sakstype)) // TODO fjern eksplisitt casting her
+                        result?.onSuccess { original ->
+                            resultat?.onSuccess { foersteside ->
+                                PDDocument().use { target ->
+                                    val merger = PDFMergerUtility()
+                                    val foerstesidePdf = Loader.loadPDF(foersteside.foersteside)
+                                    val originalPdf = Loader.loadPDF(original.document.pdf)
+                                    merger.appendDocument(target, originalPdf).also { originalPdf.close() }
+                                    merger.appendDocument(target, foerstesidePdf).also { foerstesidePdf.close() }
+                                    val outputStream = ByteArrayOutputStream()
+                                    target.save(outputStream)
+                                    val returobjekt = original.copy(
+                                        document = original.document.copy(pdf = outputStream.toByteArray())
+                                    )
+                                    call.respond(HttpStatusCode.OK, dto2ApiService.toApi(returobjekt))
+                                    return@get
+                                }
+                            }
+
+                        }
+                    }
+
                     apiRespond(dto2ApiService, result)
                 }
 

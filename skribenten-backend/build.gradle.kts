@@ -84,6 +84,9 @@ dependencies {
     // Domenemodell
     implementation(libs.brevbaker.common)
 
+    // For å merge førsteside med resten av pdf-en
+    implementation(libs.pdfbox)
+
     implementation(libs.bundles.logging)
 
     // Necessary for java.time.LocalDate
