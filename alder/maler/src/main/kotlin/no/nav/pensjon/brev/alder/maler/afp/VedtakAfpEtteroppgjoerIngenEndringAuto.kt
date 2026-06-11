@@ -71,11 +71,6 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
                 includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
             }
 
-            // Melding om endringer av inntekten + dokumentasjon + covid-19 + Ukraina (alltid).
-            // Identisk innhold med PE_AF_04_102 er trukket ut til delte fraser; bare paragrafer
-            // med ordlydsforskjeller er inlinet og markert med TODO for faglig gjennomgang.
-            //
-            // Seksjon 1: Melding om endringer av inntekten.
             includePhrase(AfpEtteroppgjoerInnhold.MeldingOmEndringerInnledning)
 
             includePhrase(AfpEtteroppgjoerInnhold.InntektUtenforEtteroppgjoerListe)
@@ -90,8 +85,6 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
 
             includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pensjonsgivendeInntekt = pensjonsgivendeInntekt, oppgjoersAar = oppgjoersAar))
 
-            // Periode-diskriminert fordeling av PGI på periodene med/uten AFP.
-            // Delt med PE_AF_04_101 (etterbetaling). Se phrase for detaljer.
             includePhrase(
                 AfpEtteroppgjoerInnhold.InntektFoerUttakInntektEtterOpphoerFordelingPerPeriode(
                     erHelAfpHeleAaret = periode.equalTo(Periode.HEL_AFP_HELE_AARET),

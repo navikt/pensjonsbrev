@@ -338,7 +338,7 @@ object AfpEtteroppgjoerInnhold {
 
     /**
      * Liste over inntekter som skal holdes utenfor etteroppgjøret, med avsluttende
-     * henvisning til mer informasjon om covid-19/Ukraina. Brukes i PE_AF_04_100,
+     * henvisning til mer informasjon om Ukraina. Brukes i PE_AF_04_100,
      * PE_AF_04_101 og PE_AF_04_107.
      */
     object InntektUtenforEtteroppgjoerListe : OutlinePhrase<LangBokmalNynorsk>() {
