@@ -185,9 +185,9 @@ fun Route.sakBrev(
                     val result = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brevId))
 
                     if (Features.isEnabled(foersteside)) {
-                        val sak: Fagsak = call.attributes[SakKey]
-                        val resultat = brevredigeringFacade.opprettFoersteside(FoerstesideHandler.Request(brevId = brevId, pid = sak.pid, sakstype = sak.sakType as Sakstype)) // TODO fjern eksplisitt casting her
                         result?.onSuccess { original ->
+                            val sak: Fagsak = call.attributes[SakKey]
+                            val resultat = brevredigeringFacade.opprettFoersteside(FoerstesideHandler.Request(brevId = brevId, pid = sak.pid, sakstype = sak.sakType as Sakstype)) // TODO fjern eksplisitt casting her
                             resultat?.onSuccess { foersteside ->
                                 val pdf = PDFMerger.merge(original.document.pdf, foersteside.foersteside)
                                 val returobjekt = original.copy(
