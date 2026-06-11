@@ -2,6 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRootRoute, createRouter, RouterProvider } from "@tanstack/react-router";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { AxiosError, AxiosHeaders } from "axios";
 import { describe, expect, test, vi } from "vitest";
 
 import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
@@ -16,18 +17,24 @@ vi.mock("~/hooks/useSakGjelderNavn", () => ({
   useSakGjelderNavnFormatert: () => "Tydelig Bakke",
 }));
 
+vi.mock("~/utils/logger", () => ({
+  logError: vi.fn().mockResolvedValue(undefined),
+}));
+
 const nyKvittertBrev = (args: {
   apiStatus?: "error" | "success";
   context?: "sendBrev" | "attestering";
   brevFørHandling?: BrevInfo;
   attesteringResponse?: Nullable<BrevInfo>;
   sendtBrevResponse?: Nullable<BestillBrevResponse>;
+  sendtBrevError?: KvittertBrev["sendtBrevError"];
 }): KvittertBrev => ({
   apiStatus: args.apiStatus ?? "success",
   context: args.context ?? "attestering",
   brevFørHandling: args.brevFørHandling ?? nyBrevInfo({}),
   attesteringResponse: args.attesteringResponse ?? null,
   sendtBrevResponse: args.sendtBrevResponse ?? null,
+  sendtBrevError: args.sendtBrevError ?? null,
 });
 
 const attesteringError = nyKvittertBrev({ apiStatus: "error", context: "attestering" });
@@ -179,5 +186,34 @@ describe("<KvitterteBrev />", () => {
 
     // Then sentralprint
     expect(cards[5].textContent).toContain("Sendt til mottaker");
+  });
+
+  test("viser funksjonell feilmelding ved 422 under sending", async () => {
+    const sendBrev422Error = new AxiosError(
+      "Request failed with status code 422",
+      "ERR_BAD_REQUEST",
+      undefined,
+      undefined,
+      {
+        data: {
+          tittel: "Brevet kan ikke sendes",
+          melding: "Mottaker mangler adresse.",
+        },
+        status: 422,
+        statusText: "Unprocessable Entity",
+        headers: {},
+        config: { headers: new AxiosHeaders() },
+      },
+    );
+
+    await renderKvitterteBrev([
+      nyKvittertBrev({ apiStatus: "error", context: "sendBrev", sendtBrevError: sendBrev422Error }),
+    ]);
+
+    expect(screen.getByTestId("functional-error-alert")).not.toBeNull();
+    expect(screen.getByText("Brevet kan ikke sendes")).not.toBeNull();
+    expect(screen.getByText("Mottaker mangler adresse.")).not.toBeNull();
+    expect(screen.queryByText("Skribenten klarte ikke å sende brevet.")).toBeNull();
+    expect(screen.getByText("Brevet ligger lagret i brevbehandler til brevet er sendt.")).not.toBeNull();
   });
 });
