@@ -39,7 +39,7 @@ class FoerstesideHandler(
                 brukerId = request.pid,
                 brukerType = Bruker.BrukerType.PERSON
             ),
-            tema = if (request.sakstype.kode == "UFO") {Tema.UFO} else { Tema.PEN }, // TODO: meh
+            tema = if (request.sakstype.kode == "UFO") { Tema.UFO } else { Tema.PEN }, // TODO: meh
             behandlingstema = null,
             arkivtittel = tittel,
             vedleggsliste = listOf(), // TODO: må finne ut av kva vi sender her
