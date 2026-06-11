@@ -12,7 +12,6 @@ import io.ktor.client.request.accept
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
@@ -30,12 +29,12 @@ import org.slf4j.LoggerFactory
 class FoerstesidegeneratorClient(config: Config, authService: AuthService) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    private val foerstesidegeratorUrl = config.getString("url")
-    private val foerstesidegeratorScope = config.getString("scope")
+    private val foerstesidegeneratorUrl = config.getString("url")
+    private val foerstesidegeneratorScope = config.getString("scope")
 
     private val client = HttpClient(CIO) {
         defaultRequest {
-            url(foerstesidegeratorUrl)
+            url(foerstesidegeneratorUrl)
         }
         install(ContentNegotiation) {
             jackson {
@@ -44,7 +43,7 @@ class FoerstesidegeneratorClient(config: Config, authService: AuthService) {
             }
         }
         installRetry(logger)
-        callIdAndOnBehalfOfClient(foerstesidegeratorScope, authService)
+        callIdAndOnBehalfOfClient(foerstesidegeneratorScope, authService)
 
     }
 
