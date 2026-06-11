@@ -62,15 +62,19 @@ fun createOpplysningerOmBeregningGPUtlandDto() =
                 ttAnv = 30,
                 yug = 0,
                 sluttpoengtall = Sluttpoengtall(
-                    sluttpoengtallUtenOverkompensasjon = 4.5,
-                    optMedOverkompensasjon = 0.0,
-                    sluttpoengtallUtenOverkompensasjonEos = 4.5,
-                    optMedOkEos = 0.0,
-                    sluttpoengtallUtenOverkompensasjonNordisk = 0.0,
-                    sluttpoengtallMedOverkompensasjonNordisk = 0.0,
-                    sluttpoengtallUtenOverkompensasjonMinusOptMedOverkompensasjonAvdoed = 0.0,
-                    sluttpoengtallUtenOverkompensasjonEosMinusOptMedOverkompensasjonEos2 = Kroner(0),
-                    sluttpoengtallUtenOverkompensasjonNordiskMinusOptMedOverkompensasjonNordisk2 = Kroner(0),
+                    folketrygdMinusAvdoedFolketrygdMedOverkompensasjon = 0.0,
+                    eosMinusEosMedOverkompensasjon = Kroner(0),
+                    nordiskMinusNordiskMedOverkompensasjon = Kroner(0),
+                    medOverkompensasjon = Sluttpoengtall.MedOverkompensasjon(
+                        folketrygd = 0.0,
+                        eos = 0.0,
+                        nordisk = 0.0,
+                    ),
+                    utenOverkompensasjon = Sluttpoengtall.UtenOverkompensasjon(
+                        folketrygd = 4.5,
+                        eos = 4.5,
+                        nordisk = 0.0,
+                    ),
                 ),
                 poengrekke = Poengrekke(
                     populert = true,

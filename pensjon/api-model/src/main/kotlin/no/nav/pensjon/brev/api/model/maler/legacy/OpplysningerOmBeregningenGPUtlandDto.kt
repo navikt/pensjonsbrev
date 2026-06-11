@@ -126,26 +126,33 @@ data class OpplysningerOmBeregningenGPUtlandDto(
     )
 
     data class Sluttpoengtall(
-        // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_SPT_SluttpoengtallUtenOk
-        val sptUtenOk: Double,
-        // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_OPT_SluttpoengtallMedok
-        val optMedOk: Double,
-        // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_SPT_SluttpoengtallUtenOkEOS
-        val sptUtenOkEos: Double,
-        // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_OPT_SluttpoengtallMedOkEOS
-        val optMedOkEos: Double,
-        // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_SPT_SluttpoengtallUtenOkNordisk
-        val sptUtenOkNordisk: Double,
-        // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_OPT_SluttpoengtallMedOkNordisk
-        val optMedOkNordisk: Double,
-        // PE_AP_SluttpoengtallUtenOkMinusSluttpoengtallMedOkAvdod
-        // Forhåndsberegnet differanse (Exstream-detalj — bestiller leverer ferdig).
-        val sptUtenOkMinusOptMedOkAvdoed: Double,
+        val folketrygdMinusAvdoedFolketrygdMedOverkompensasjon: Double,
         // PE_Beregningsvedlegg_SluttpoengtallUtenOkEOSMinusSluttpoengtallMedOkEOS2
-        val sptUtenOkEosMinusOptMedOkEos2: Kroner,
+        val eosMinusEosMedOverkompensasjon: Kroner,
         // PE_Beregningsvedlegg_SluttpoengtallUtenOkNordiskMinusSluttpoengtallMedOkNordisk2
-        val sptUtenOkNordiskMinusOptMedOkNordisk2: Kroner,
-    )
+        val nordiskMinusNordiskMedOverkompensasjon: Kroner,
+
+        val medOverkompensasjon: MedOverkompensasjon,
+        val utenOverkompensasjon: UtenOverkompensasjon,
+    ) {
+        data class MedOverkompensasjon(
+            // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_OPT_SluttpoengtallMedok
+            val folketrygd: Double,
+            // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_OPT_SluttpoengtallMedOkEOS
+            val eos: Double,
+            // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_OPT_SluttpoengtallMedOkNordisk
+            val nordisk: Double,
+        )
+        data class UtenOverkompensasjon(
+            // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_SPT_SluttpoengtallUtenOk
+            val folketrygd: Double,
+            // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_SPT_SluttpoengtallUtenOkEOS
+            val eos: Double,
+            // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_SPT_SluttpoengtallUtenOkNordisk
+            val nordisk: Double,
+            // PE_AP_SluttpoengtallUtenOkMinusSluttpoengtallMedOkAvdod
+        )
+    }
 
     data class YrkesskadeBeregning(
         // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_YPT_SluttpoengtallYrke
