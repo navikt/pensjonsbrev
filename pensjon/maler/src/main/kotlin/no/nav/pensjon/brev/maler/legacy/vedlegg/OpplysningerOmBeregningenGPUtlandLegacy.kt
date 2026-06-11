@@ -2,13 +2,10 @@ package no.nav.pensjon.brev.maler.legacy.vedlegg
 
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.Beregningsmetode
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.Poengtallstype.FRAMTIDIG_POENG
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.Poengtallstype.OMSORGSPOENG_K
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.Poengtallstype.OMSORGSPOENG_L
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.Poengtallstype.*
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.avtaleland
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.doedsdato
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.doedsfallSkyldesYrkesskade
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.flyktning as avdoedFlyktning
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.fnr
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.skadetidspunktYrkesskade
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.trygdetidsgrunnlagBilateral
@@ -26,7 +23,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtl
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BeregningSelectors.ttAnvBest
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BeregningSelectors.yrke
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BeregningSelectors.yug
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BrukerSelectors.flyktning as brukerFlyktning
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BrukerSelectors.forventetInntekt
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.PesysDataSelectors.avdoed
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.PesysDataSelectors.beregning
@@ -63,8 +59,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtl
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.sptUtenOkMinusOptMedOkAvdoed
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.sptUtenOkNordisk
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.sptUtenOkNordiskMinusOptMedOkNordisk2
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidScalarsSelectors.faTTEos
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidScalarsSelectors.faTTBilateral
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidScalarsSelectors.faTTEos
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidScalarsSelectors.faTTNorge
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidScalarsSelectors.faTTNorgePlusFaTTA10Netto
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidScalarsSelectors.faTTNorgePlusFaTTBilateral
@@ -84,31 +80,21 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtl
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.YrkesskadeBeregningSelectors.poengaarYrkeF92
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.YrkesskadeBeregningSelectors.sluttpoengtallYrke
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.pesysData
-import no.nav.pensjon.brev.maler.fraser.common.AntallAarText
-import no.nav.pensjon.brev.maler.fraser.common.Constants
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.common.Ja
-import no.nav.pensjon.brev.maler.fraser.common.KronerText
+import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetid
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller.UtenlandskTrygdetid
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.lessThan
-import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.includePhrase
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.AvdoedSelectors.flyktning as avdoedFlyktning
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.BrukerSelectors.flyktning as brukerFlyktning
 
 /**
  * Vedlegg "Opplysninger om beregningen" som henges på vedtak om gjenlevendepensjon (utland).

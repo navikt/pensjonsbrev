@@ -44,19 +44,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenle
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.AarsakTilEndringFritekst
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.AvdodFlyktning
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.AvdoedDoedsfallNotSkyldesYrkesskade
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.AvdoedDoedsfallSkyldesYrkesskade
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.AvdoedDoedsfallSkyldesYrkesskadeBeregningAvTilleggspensjon
 import no.nav.pensjon.brev.maler.fraser.gjenlevende.GjenlevendepensjonBeregningTabell
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonGP
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonJustertTil90ProsentPgaEgenPensjon
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.GrunnpensjonJustertTil90ProsentPgaEktefelleInntekt
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.Inntektsoekning
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.Inntektsreduksjon
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.Samboer12av18Maaneder
-import no.nav.pensjon.brev.maler.fraser.gjenlevende.Tilleggspensjon
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.GjenlevendepensjonFraser
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggFolketrygdenBokmalEnglish
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjon
@@ -206,7 +195,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland :
                 includePhrase(GjenlevendepensjonFraser.Tilleggspensjon)
 
                 showIf(pesysData.avdoed.doedsfallSkyldesYrkesskade) {
-                    includePhrase(AvdoedDoedsfallSkyldesYrkesskadeBeregningAvTilleggspensjon)
+                    includePhrase(GjenlevendepensjonFraser.AvdoedDoedsfallSkyldesYrkesskadeBeregningAvTilleggspensjon)
                 }
             }
 
