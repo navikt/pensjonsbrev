@@ -1,12 +1,12 @@
-import { type SamhandlerTypeCode, SpraakKode } from "./apiTypes";
+import { type SamhandlerTypeCode, type SpraakKode } from "./apiTypes";
 import { type LanguageCode } from "./brevbakerTypes";
 
-export const SPRAAK_ENUM_TO_TEXT = {
-  [SpraakKode.Bokmaal]: "Bokmål",
-  [SpraakKode.Nynorsk]: "Nynorsk",
-  [SpraakKode.Engelsk]: "Engelsk",
-  [SpraakKode.Fransk]: "Fransk",
-  [SpraakKode.NordSamisk]: "Nordsamisk",
+export const SPRAAK_ENUM_TO_TEXT: Record<SpraakKode, string> = {
+  NB: "Bokmål",
+  NN: "Nynorsk",
+  EN: "Engelsk",
+  FR: "Fransk",
+  SE: "Nordsamisk",
 };
 
 export const LANGUAGE_CODE_TO_TEXT: Record<LanguageCode, string> = {
@@ -16,9 +16,9 @@ export const LANGUAGE_CODE_TO_TEXT: Record<LanguageCode, string> = {
 };
 
 export const SPRAAKKODE_TO_LANGUAGE_CODE: Partial<Record<SpraakKode, LanguageCode>> = {
-  [SpraakKode.Bokmaal]: "BOKMAL",
-  [SpraakKode.Nynorsk]: "NYNORSK",
-  [SpraakKode.Engelsk]: "ENGLISH",
+  NB: "BOKMAL",
+  NN: "NYNORSK",
+  EN: "ENGLISH",
 };
 
 // TODO: Dette er en uønsket sterk kobling til Pesys sine sakstyper

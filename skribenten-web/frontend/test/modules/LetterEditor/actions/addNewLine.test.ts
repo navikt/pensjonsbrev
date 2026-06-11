@@ -44,7 +44,6 @@ describe("Actions.addNewLine", () => {
       text: "",
       editedText: null,
       fontType: "PLAIN",
-      editedFontType: null,
       tags: [],
     });
     expect(block.content[1].type).toEqual("NEW_LINE");
