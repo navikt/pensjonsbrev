@@ -38,7 +38,7 @@ interface PdlService {
 
 class PdlServiceException(message: String, status: HttpStatusCode = HttpStatusCode.InternalServerError) : ServiceException(message, status = status)
 
-class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, ServiceStatus {
+class PdlServiceHttp(config: Config, authService: AuthService, closeOnShutdown: (HttpClient) -> Unit) : PdlService, ServiceStatus {
     private val pdlUrl = config.getString("url")
     private val pdlScope = config.getString("scope")
 
@@ -51,7 +51,7 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
             jackson { registerModule(JavaTimeModule()) }
         }
         callIdAndOnBehalfOfClient(pdlScope, authService)
-    }
+    }.also { closeOnShutdown(it) }
 
     private data class PDLQuery<T : Any>(
         val query: String,

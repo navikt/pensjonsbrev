@@ -59,7 +59,7 @@ interface BrevbakerService {
     suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggKode>
 }
 
-class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus {
+class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: Cache, closeOnShutdown: (HttpClient) -> Unit) : BrevbakerService, ServiceStatus {
     private val logger = LoggerFactory.getLogger(BrevbakerServiceHttp::class.java)!!
 
     private val brevbakerUrl = config.getString("url")
@@ -84,7 +84,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             }
         }
         callIdAndOnBehalfOfClient(scope, authService)
-    }
+    }.also { closeOnShutdown(it) }
 
     /**
      * Get model specification for a template.

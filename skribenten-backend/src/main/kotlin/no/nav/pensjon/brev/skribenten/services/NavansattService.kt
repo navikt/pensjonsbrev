@@ -28,7 +28,7 @@ interface NavansattService {
 
 class NavansattServiceException(message: String) : ServiceException(message)
 
-class NavansattServiceHttp(config: Config, authService: AuthService, private val cache: Cache) : NavansattService, ServiceStatus {
+class NavansattServiceHttp(config: Config, authService: AuthService, private val cache: Cache, closeOnShutdown: (HttpClient) -> Unit) : NavansattService, ServiceStatus {
     private val logger = LoggerFactory.getLogger(NavansattServiceHttp::class.java)
 
     private val navansattUrl = config.getString("url")
@@ -46,7 +46,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
         }
         installRetry(logger)
         callIdAndOnBehalfOfClient(navansattScope, authService)
-    }
+    }.also { closeOnShutdown(it) }
 
     override suspend fun hentNavAnsattEnhetListe(ansattId: NavIdent): List<NAVAnsattEnhet> {
         return cache.cached(Cacheomraade.NAVANSATTENHET, ansattId.id) {

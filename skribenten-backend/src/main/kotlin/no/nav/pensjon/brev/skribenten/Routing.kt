@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.typesafe.config.Config
+import io.ktor.client.HttpClient
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.plugins.swagger.*
@@ -25,27 +26,29 @@ import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.samhandler.samhandlerRoute
 import no.nav.pensjon.brev.skribenten.services.*
 
+
 fun Application.configureRouting(
     authConfig: JwtConfig,
     skribentenConfig: Config,
     cache: Cache
 ) {
-    val authService = AzureADService(authConfig, cache = cache)
+    val closeOnShutdown: (HttpClient) -> Unit = { client -> monitor.subscribe(ApplicationStopping) { client.close() } }
+    val authService = AzureADService(authConfig, cache = cache, closeOnShutdown = closeOnShutdown)
     val servicesConfig = skribentenConfig.getConfig("services")
     initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopping) { db.close() } }
-    val safService = SafServiceHttp(servicesConfig.getConfig("saf"), authService)
-    val penClient = PentHttpClient(servicesConfig.getConfig("pen"), authService)
-    val skjermingService = SkjermingServiceHttp(servicesConfig.getConfig("skjerming"), authService, cache)
-    val pensjonPersonDataService = PensjonPersonDataServiceImpl(servicesConfig.getConfig("pensjon_persondata"), authService, cache = cache)
-    val pensjonRepresentasjonService = PensjonRepresentasjonService(servicesConfig.getConfig("pensjonRepresentasjon"), authService, cache)
-    val pdlService = PdlServiceHttp(servicesConfig.getConfig("pdl"), authService)
-    val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
-    val brevbakerService = BrevbakerServiceHttp(servicesConfig.getConfig("brevbaker"), authService, cache)
-    val brevmetadataService = BrevmetadataServiceHttp(servicesConfig.getConfig("brevmetadata"))
-    val samhandlerService = SamhandlerServiceHttp(servicesConfig.getConfig("samhandlerProxy"), authService, cache)
-    val navansattService = NavansattServiceHttp(servicesConfig.getConfig("navansatt"), authService, cache)
+    val safService = SafServiceHttp(servicesConfig.getConfig("saf"), authService, closeOnShutdown)
+    val penClient = PentHttpClient(servicesConfig.getConfig("pen"), authService, closeOnShutdown)
+    val skjermingService = SkjermingServiceHttp(servicesConfig.getConfig("skjerming"), authService, cache, closeOnShutdown)
+    val pensjonPersonDataService = PensjonPersonDataServiceImpl(servicesConfig.getConfig("pensjon_persondata"), authService, cache, closeOnShutdown)
+    val pensjonRepresentasjonService = PensjonRepresentasjonService(servicesConfig.getConfig("pensjonRepresentasjon"), authService, cache, closeOnShutdown)
+    val pdlService = PdlServiceHttp(servicesConfig.getConfig("pdl"), authService, closeOnShutdown)
+    val krrService = KrrService(servicesConfig.getConfig("krr"), authService, closeOnShutdown = closeOnShutdown)
+    val brevbakerService = BrevbakerServiceHttp(servicesConfig.getConfig("brevbaker"), authService, cache, closeOnShutdown)
+    val brevmetadataService = BrevmetadataServiceHttp(servicesConfig.getConfig("brevmetadata"), closeOnShutdown)
+    val samhandlerService = SamhandlerServiceHttp(servicesConfig.getConfig("samhandlerProxy"), authService, cache, closeOnShutdown)
+    val navansattService = NavansattServiceHttp(servicesConfig.getConfig("navansatt"), authService, cache, closeOnShutdown)
     val legacyBrevService = LegacyBrevServiceImpl(brevmetadataService, safService, penClient, navansattService, pensjonPersonDataService)
-    val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"), cache)
+    val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"), cache, closeOnShutdown)
     val p1Service = P1ServiceImpl(penClient)
 
     val brevService = BrevService(penClient, legacyBrevService)

@@ -23,7 +23,7 @@ class KrrServiceTest {
             val service = KrrService(
                 config = config,
                 authService = FakeAuthService,
-                engine = engine,
+                engine = engine,,
             )
 
             val preferredLocale = service.getPreferredLocale(Pid("12345"))
@@ -43,7 +43,7 @@ class KrrServiceTest {
             val service = KrrService(
                 config = config,
                 authService = FakeAuthService,
-                engine = engine,
+                engine = engine,,
             )
 
             val preferredLocale = service.getPreferredLocale(Pid("12345"))
@@ -63,7 +63,7 @@ class KrrServiceTest {
             val service = KrrService(
                 config = config,
                 authService = FakeAuthService,
-                engine = engine
+                engine = engine,
             )
 
             val preferredLocale = service.getPreferredLocale(Pid("12345"))

@@ -52,7 +52,7 @@ interface SafService {
 
 class SafServiceException(message: String) : ServiceException(message)
 
-class SafServiceHttp(config: Config, authService: AuthService) : SafService, ServiceStatus {
+class SafServiceHttp(config: Config, authService: AuthService, closeOnShutdown: (HttpClient) -> Unit) : SafService, ServiceStatus {
     private val safUrl = config.getString("url")
     private val safRestUrl = config.getString("rest_url")
     private val safScope = config.getString("scope")
@@ -67,7 +67,7 @@ class SafServiceHttp(config: Config, authService: AuthService) : SafService, Ser
             jackson()
         }
         callIdAndOnBehalfOfClient(safScope, authService)
-    }
+    }.also { closeOnShutdown(it) }
 
     data class HentJournalStatusResponse(val data: HentJournalpostData?, val errors: JsonNode?)
     data class HentJournalpostData(val journalpost: JournalPost)

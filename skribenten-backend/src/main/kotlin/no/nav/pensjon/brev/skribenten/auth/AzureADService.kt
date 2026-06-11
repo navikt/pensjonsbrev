@@ -47,7 +47,7 @@ interface AuthService {
     suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse.OnBehalfOfToken
 }
 
-class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create(), private val cache: Cache) : AuthService {
+class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create(), private val cache: Cache, closeOnShutdown: (HttpClient) -> Unit) : AuthService {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val client = HttpClient(engine) {
@@ -57,7 +57,7 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
             }
         }
         installRetry(logger, maxRetries = 2)
-    }
+    }.also { closeOnShutdown(it) }
 
     override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String) =
         cache.cached(Cacheomraade.AD, Pair(principal.navIdent, scope), { it.expiresIn.seconds.minus(5.minutes) }) {

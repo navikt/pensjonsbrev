@@ -26,6 +26,7 @@ interface BrevmetadataService {
 
 class BrevmetadataServiceHttp(
     config: Config,
+    closeOnShutdown: (HttpClient) -> Unit,
 ) : BrevmetadataService, ServiceStatus {
     private val brevmetadataUrl = config.getString("url")
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
@@ -39,7 +40,7 @@ class BrevmetadataServiceHttp(
             }
         }
         install(CallIdFromContext)
-    }
+    }.also { closeOnShutdown(it) }
 
     override suspend fun getAllBrev(): List<BrevdataDto> {
         val httpResponse = httpClient.get("/api/brevdata/allBrev")

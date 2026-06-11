@@ -28,8 +28,9 @@ class PensjonPersonDataServiceTest {
     private fun pensjonPersonDataService(engine: MockEngine) = PensjonPersonDataServiceImpl(
         ConfigFactory.parseMap(mapOf("url" to "http://localhost", "scope" to "fri tilgang")),
         FakeAuthService,
+        InMemoryCache(),
+        {},
         engine,
-        InMemoryCache()
     )
 
 }

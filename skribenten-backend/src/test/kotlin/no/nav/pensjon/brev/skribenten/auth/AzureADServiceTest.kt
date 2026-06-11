@@ -91,6 +91,6 @@ class AzureADServiceTest {
         AzureADService(
             jwtConfig = jwtConfig,
             engine = MockEngine.invoke(handler),
-            cache = InMemoryCache()
+            cache = InMemoryCache(),
         )
 }

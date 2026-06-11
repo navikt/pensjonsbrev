@@ -23,10 +23,12 @@ interface LeaderService {
 class NaisLeaderService(
     private val url: String?,
     clientEngine: HttpClientEngine = CIO.create(),
+    closeOnShutdown: (HttpClient) -> Unit = {}
 ) : LeaderService {
-    constructor(config: Config, clientEngine: HttpClientEngine = CIO.create()) : this(
+    constructor(config: Config, clientEngine: HttpClientEngine = CIO.create(), closeOnShutdown: (HttpClient) -> Unit) : this(
         url = config.tryGetString("url"),
-        clientEngine = clientEngine
+        clientEngine = clientEngine,
+        closeOnShutdown = closeOnShutdown
     )
 
     private val client = HttpClient(clientEngine) {
@@ -35,7 +37,7 @@ class NaisLeaderService(
                 configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
             }
         }
-    }
+    }.also { closeOnShutdown(it) }
     private val thisInstanceName by lazy { thisInstanceName() }
 
     override val isLeaderElectionEnabled: Boolean

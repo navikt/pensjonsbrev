@@ -18,7 +18,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 
-class KrrService(config: Config, authService: AuthService, engine: HttpClientEngine = CIO.create()) : ServiceStatus {
+class KrrService(config: Config, authService: AuthService, engine: HttpClientEngine = CIO.create(), closeOnShutdown: (HttpClient) -> Unit) : ServiceStatus {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val client = HttpClient(engine) {
         defaultRequest {
@@ -30,7 +30,7 @@ class KrrService(config: Config, authService: AuthService, engine: HttpClientEng
             }
         }
         callIdAndOnBehalfOfClient(config.getString("scope"), authService)
-    }
+    }.also { closeOnShutdown(it) }
 
     @Suppress("EnumEntryName")
     @JsonIgnoreProperties(ignoreUnknown = true)

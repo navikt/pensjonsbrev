@@ -22,7 +22,7 @@ interface Norg2Service {
 }
 
 // docs: https://confluence.adeo.no/display/FEL/NORG2+-+Teknisk+beskrivelse - trykk på droppdown
-class Norg2ServiceHttp(val config: Config, val cache: Cache) : Norg2Service {
+class Norg2ServiceHttp(val config: Config, val cache: Cache, closeOnShutdown: (HttpClient) -> Unit) : Norg2Service {
     private val logger = LoggerFactory.getLogger(Norg2ServiceHttp::class.java)
     private val norgUrl = config.getString("url")
 
@@ -36,7 +36,7 @@ class Norg2ServiceHttp(val config: Config, val cache: Cache) : Norg2Service {
             }
         }
         install(CallIdFromContext)
-    }
+    }.also { closeOnShutdown(it) }
 
     override suspend fun getEnhet(enhetId: EnhetId): NavEnhet =
         cache.cached(Cacheomraade.NORG, enhetId) {

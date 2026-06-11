@@ -50,7 +50,7 @@ class PenServiceException(message: String) : ServiceException(message)
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
 class PenFeilIDatabyggerException(message: String) : ServiceException(message)
 
-class PentHttpClient(config: Config, authService: AuthService) : PenClient, ServiceStatus {
+class PentHttpClient(config: Config, authService: AuthService, closeOnShutdown: (HttpClient) -> Unit) : PenClient, ServiceStatus {
     private val penUrl = config.getString("url")
     private val penScope = config.getString("scope")
 
@@ -67,7 +67,7 @@ class PentHttpClient(config: Config, authService: AuthService) : PenClient, Serv
             }
         }
         callIdAndOnBehalfOfClient(penScope, authService)
-    }
+    }.also { closeOnShutdown(it) }
 
     private suspend inline fun <reified T> HttpResponse.bodyOrThrow(): T? =
         when {

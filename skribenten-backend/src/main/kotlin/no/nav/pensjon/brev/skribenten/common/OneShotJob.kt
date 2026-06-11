@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.common
 
 import com.typesafe.config.Config
+import io.ktor.client.HttpClient
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
@@ -72,8 +73,8 @@ private val logger = LoggerFactory.getLogger("OneShotJob")
  * @param skribentenConfig The configuration for Skribenten, including leader service settings.
  * @param block The block of one-shot job definitions to execute.
  */
-suspend fun oneShotJobs(skribentenConfig: Config, block: OneShotJobConfig.() -> Unit) =
-    oneShotJobs(NaisLeaderService(skribentenConfig.getConfig("services.leader")), block)
+suspend fun oneShotJobs(skribentenConfig: Config, closeOnShutdown: (HttpClient) -> Unit, block: OneShotJobConfig.() -> Unit) =
+    oneShotJobs(NaisLeaderService(skribentenConfig.getConfig("services.leader"), closeOnShutdown = closeOnShutdown), block)
 
 /**
  * Executes one-shot jobs if this instance is the leader in a leader election setup.

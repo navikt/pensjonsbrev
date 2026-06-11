@@ -23,6 +23,8 @@ import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
@@ -186,20 +188,22 @@ fun Application.skribentenApp(skribentenConfig: Config) {
     configureRouting(azureADConfig, skribentenConfig, cache)
     configureMetrics()
 
+    val delayedJobs = mutableListOf<Job>()
     monitor.subscribe(ServerReady) {
-        launch {
+        delayedJobs.add(launch {
             delay(5.minutes)
-            oneShotJobs(skribentenConfig) {
+            oneShotJobs(skribentenConfig, { client -> monitor.subscribe(ApplicationStopping) { client.cancel() }}) {
                 job("leggPaaSpraakForValgbareVedlegg") {
                     updateBrevredigeringJson()
                 }
                 // Sett opp evt. jobber her
             }
-        }
+        })
     }
 
     monitor.subscribe(ApplicationStopPreparing) {
         Features.shutdown()
+        delayedJobs.forEach { it.cancel() }
     }
 }
 
