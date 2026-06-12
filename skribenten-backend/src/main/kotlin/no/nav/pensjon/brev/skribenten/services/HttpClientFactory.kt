@@ -7,22 +7,20 @@ import io.ktor.client.engine.HttpClientEngineConfig
 import io.ktor.client.engine.HttpClientEngineFactory
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.engine.cio.CIOEngineConfig
+import io.ktor.util.collections.ConcurrentSet
 import io.ktor.utils.io.core.Closeable
 
 object HttpClientFactory : Closeable {
-    private val clients = mutableListOf<HttpClient>()
+    private val clients = ConcurrentSet<HttpClient>()
 
-    @Synchronized
     fun lagHttpClient(config: HttpClientConfig<CIOEngineConfig>.() -> Unit): HttpClient =
         lagHttpClient(CIO, config)
 
-    @Synchronized
     fun lagHttpClient(engine: HttpClientEngine, config: HttpClientConfig<*>.() -> Unit): HttpClient =
         HttpClient(engine) {
             config()
         }.also { clients.add(it) }
 
-    @Synchronized
     private fun <C : HttpClientEngineConfig, T : HttpClientEngineFactory<C>> lagHttpClient(engine: T, config: HttpClientConfig<C>.() -> Unit): HttpClient =
         HttpClient(engine) {
             config()
