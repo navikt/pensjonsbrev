@@ -52,18 +52,20 @@ export function nextTableFocus(editorState: LetterEditorState, direction: "forwa
   }
 
   // Find our position in that flat list
-  const idx = pointers.findIndex((p) => p.rowIndex === currentFocus.rowIndex && p.cellIndex === currentFocus.cellIndex);
-  if (idx === -1) {
+  const index = pointers.findIndex(
+    (p) => p.rowIndex === currentFocus.rowIndex && p.cellIndex === currentFocus.cellIndex,
+  );
+  if (index === -1) {
     return { ...currentFocus };
   }
 
-  const nextIdx = direction === "forward" ? idx + 1 : idx - 1;
+  const nextIndex = direction === "forward" ? index + 1 : index - 1;
   // Off the ends? return a new copy of the original focus.
-  if (nextIdx < 0 || nextIdx >= pointers.length) {
+  if (nextIndex < 0 || nextIndex >= pointers.length) {
     return { ...currentFocus };
   }
 
-  const { rowIndex, cellIndex } = pointers[nextIdx];
+  const { rowIndex, cellIndex } = pointers[nextIndex];
   return {
     ...currentFocus,
     rowIndex,

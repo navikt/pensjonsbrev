@@ -1,11 +1,26 @@
-import { produce } from "immer";
+import { type Draft, produce } from "immer";
 import { describe, expect, test } from "vitest";
 
-import { findAdjoiningContent, removeElements } from "~/Brevredigering/LetterEditor/actions/common";
+import {
+  absorbListIntoList,
+  buildMergedItemList,
+  coalesceAdjacentSameTypeLists,
+  findAdjoiningContent,
+  removeElements,
+  splitMixedListBlock,
+  text,
+} from "~/Brevredigering/LetterEditor/actions/common";
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
-import { type Content, type Identifiable, type LiteralValue, type TextContent } from "~/types/brevbakerTypes";
+import {
+  type Content,
+  type Identifiable,
+  type ItemList,
+  ListType,
+  type LiteralValue,
+  type TextContent,
+} from "~/types/brevbakerTypes";
 
-import { itemList, literal } from "../utils";
+import { item, itemList, letter, literal, paragraph } from "../utils";
 
 describe("findAdjoiningContent", () => {
   describe("entire array matches", () => {
@@ -163,5 +178,242 @@ describe("removeElements", () => {
     ];
     const result = removeElementsProducer({ content: otherParent, deletedContent: [], id: 1 }, 0, 3);
     expect(result.deletedContent).toEqual(otherParent.slice(1, 3).map(id));
+  });
+});
+
+const literalText = (list: ItemList, itemIndex: number) => text(list.items[itemIndex].content[0]);
+
+describe("buildMergedItemList", () => {
+  test("flattens items from all lists in order", () => {
+    const merged = buildMergedItemList(
+      [itemList({ items: [item(literal("a")), item(literal("b"))] }), itemList({ items: [item(literal("c"))] })],
+      ListType.PUNKTLISTE,
+    );
+    expect(merged.items.map((_, i) => literalText(merged, i))).toEqual(["a", "b", "c"]);
+  });
+
+  test("preserves the id of the first list with a non-null id", () => {
+    const nullIdList: ItemList = { ...itemList({ items: [item(literal("a"))] }), id: null };
+    const merged = buildMergedItemList(
+      [nullIdList, itemList({ id: 42, items: [item(literal("b"))] })],
+      ListType.PUNKTLISTE,
+    );
+    expect(merged.id).toBe(42);
+  });
+
+  test("returns a null id when all source lists have null ids", () => {
+    const first: ItemList = { ...itemList({ items: [item(literal("a"))] }), id: null };
+    const last: ItemList = { ...itemList({ items: [item(literal("b"))] }), id: null };
+    const merged = buildMergedItemList([first, last], ListType.PUNKTLISTE);
+    expect(merged.id).toBeNull();
+  });
+
+  test("collects deletedItems from all lists", () => {
+    const merged = buildMergedItemList(
+      [
+        itemList({ items: [item(literal("a"))], deletedItems: [1, 2] }),
+        itemList({ items: [item(literal("b"))], deletedItems: [3] }),
+      ],
+      ListType.PUNKTLISTE,
+    );
+    expect(merged.deletedItems).toEqual([1, 2, 3]);
+  });
+
+  test("sets editedListType when target differs from the surviving list's listType", () => {
+    const merged = buildMergedItemList(
+      [itemList({ id: 7, listType: ListType.PUNKTLISTE, items: [item(literal("a"))] })],
+      ListType.NUMMERERT_LISTE,
+    );
+    expect(merged.editedListType).toBe(ListType.NUMMERERT_LISTE);
+  });
+
+  test("leaves editedListType null when target equals the surviving list's listType", () => {
+    const merged = buildMergedItemList(
+      [itemList({ id: 7, listType: ListType.PUNKTLISTE, editedListType: null, items: [item(literal("a"))] })],
+      ListType.PUNKTLISTE,
+    );
+    expect(merged.editedListType).toBeNull();
+  });
+});
+
+describe("coalesceAdjacentSameTypeLists", () => {
+  test("merges adjacent same-type lists in a block into one", () => {
+    const state = letter(
+      paragraph([itemList({ items: [item(literal("a"))] }), itemList({ items: [item(literal("b"))] })]),
+    );
+    let ret: { newContentIndex: number; itemIndexOffset: number } | undefined;
+    const result = produce(state, (draft) => {
+      ret = coalesceAdjacentSameTypeLists(draft, 0, 0, ListType.PUNKTLISTE);
+    });
+    const block = result.redigertBrev.blocks[0];
+    expect(block.content).toHaveLength(1);
+    const merged = block.content[0] as ItemList;
+    expect(merged.items.map((_, i) => literalText(merged, i))).toEqual(["a", "b"]);
+    expect(ret).toEqual({ newContentIndex: 0, itemIndexOffset: 0 });
+  });
+
+  test("returns itemIndexOffset counting items in lists before the anchor", () => {
+    const state = letter(
+      paragraph([
+        itemList({ items: [item(literal("a")), item(literal("b"))] }),
+        itemList({ items: [item(literal("c"))] }),
+      ]),
+    );
+    let ret: { newContentIndex: number; itemIndexOffset: number } | undefined;
+    produce(state, (draft) => {
+      ret = coalesceAdjacentSameTypeLists(draft, 0, 1, ListType.PUNKTLISTE);
+    });
+    expect(ret).toEqual({ newContentIndex: 0, itemIndexOffset: 2 });
+  });
+
+  test("is a no-op when only one same-type list adjoins the anchor", () => {
+    const state = letter(paragraph([itemList({ items: [item(literal("a"))] })]));
+    let ret: { newContentIndex: number; itemIndexOffset: number } | undefined;
+    const result = produce(state, (draft) => {
+      ret = coalesceAdjacentSameTypeLists(draft, 0, 0, ListType.PUNKTLISTE);
+    });
+    expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
+    expect(ret).toEqual({ newContentIndex: 0, itemIndexOffset: 0 });
+  });
+
+  test("does not merge lists of different types", () => {
+    const state = letter(
+      paragraph([
+        itemList({ listType: ListType.PUNKTLISTE, items: [item(literal("a"))] }),
+        itemList({ listType: ListType.NUMMERERT_LISTE, items: [item(literal("b"))] }),
+      ]),
+    );
+    const result = produce(state, (draft) => {
+      coalesceAdjacentSameTypeLists(draft, 0, 0, ListType.PUNKTLISTE);
+    });
+    expect(result.redigertBrev.blocks[0].content).toHaveLength(2);
+  });
+});
+
+describe("absorbListIntoList", () => {
+  test("back: appends source items to target and removes the emptied source block", () => {
+    const state = letter(
+      paragraph([itemList({ items: [item(literal("a"))] })]),
+      paragraph([itemList({ items: [item(literal("b")), item(literal("c"))] })]),
+    );
+    let ret: { movedItemCount: number; sourceBlockRemoved: boolean } | undefined;
+    const result = produce(state, (draft) => {
+      const target = draft.redigertBrev.blocks[0].content[0] as Draft<ItemList>;
+      ret = absorbListIntoList(draft, target, 1, 0, "back");
+    });
+    expect(result.redigertBrev.blocks).toHaveLength(1);
+    const merged = result.redigertBrev.blocks[0].content[0] as ItemList;
+    expect(merged.items.map((_, i) => literalText(merged, i))).toEqual(["a", "b", "c"]);
+    expect(ret).toEqual({ movedItemCount: 2, sourceBlockRemoved: true });
+  });
+
+  test("front: prepends source items to target", () => {
+    const state = letter(
+      paragraph([itemList({ items: [item(literal("x"))] })]),
+      paragraph([itemList({ items: [item(literal("y"))] })]),
+    );
+    let ret: { movedItemCount: number; sourceBlockRemoved: boolean } | undefined;
+    const result = produce(state, (draft) => {
+      const target = draft.redigertBrev.blocks[1].content[0] as Draft<ItemList>;
+      ret = absorbListIntoList(draft, target, 0, 0, "front");
+    });
+    expect(result.redigertBrev.blocks).toHaveLength(1);
+    const merged = result.redigertBrev.blocks[0].content[0] as ItemList;
+    expect(merged.items.map((_, i) => literalText(merged, i))).toEqual(["x", "y"]);
+    expect(ret).toEqual({ movedItemCount: 1, sourceBlockRemoved: true });
+  });
+
+  test("carries the source list's deletedItems into the target", () => {
+    const state = letter(
+      paragraph([itemList({ items: [item(literal("a"))], deletedItems: [10] })]),
+      paragraph([itemList({ items: [item(literal("b"))], deletedItems: [20] })]),
+    );
+    const result = produce(state, (draft) => {
+      const target = draft.redigertBrev.blocks[0].content[0] as Draft<ItemList>;
+      absorbListIntoList(draft, target, 1, 0, "back");
+    });
+    expect((result.redigertBrev.blocks[0].content[0] as ItemList).deletedItems).toEqual([10, 20]);
+  });
+
+  test("keeps the source block when it still has other content", () => {
+    const state = letter(
+      paragraph([itemList({ items: [item(literal("a"))] })]),
+      paragraph([itemList({ items: [item(literal("b"))] }), literal("tail")]),
+    );
+    let ret: { movedItemCount: number; sourceBlockRemoved: boolean } | undefined;
+    const result = produce(state, (draft) => {
+      const target = draft.redigertBrev.blocks[0].content[0] as Draft<ItemList>;
+      ret = absorbListIntoList(draft, target, 1, 0, "back");
+    });
+    expect(result.redigertBrev.blocks).toHaveLength(2);
+    expect(ret?.sourceBlockRemoved).toBe(false);
+    const tail = result.redigertBrev.blocks[1].content;
+    expect(tail).toHaveLength(1);
+    expect(text(tail[0] as LiteralValue)).toBe("tail");
+  });
+});
+
+describe("splitMixedListBlock", () => {
+  test("is a no-op for a block with a single content element", () => {
+    const state = letter(paragraph([itemList({ items: [item(literal("a"))] })]));
+    let ret: number | undefined;
+    const result = produce(state, (draft) => {
+      ret = splitMixedListBlock(draft, 0);
+    });
+    expect(ret).toBe(1);
+    expect(result.redigertBrev.blocks).toHaveLength(1);
+    expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
+  });
+
+  test("does not split when the only list has a non-null id (template list tolerated)", () => {
+    const state = letter(
+      paragraph([literal("before"), itemList({ id: 5, items: [item(literal("x"))] }), literal("after")]),
+    );
+    let ret: number | undefined;
+    const result = produce(state, (draft) => {
+      ret = splitMixedListBlock(draft, 0);
+    });
+    expect(ret).toBe(1);
+    expect(result.redigertBrev.blocks).toHaveLength(1);
+    expect(result.redigertBrev.blocks[0].content).toHaveLength(3);
+  });
+
+  test("isolates a new (id:null) list into its own block, splitting the surrounding text out", () => {
+    const newList: ItemList = { ...itemList({ items: [item(literal("x"))] }), id: null };
+    const state = letter(paragraph([literal("before"), newList, literal("after")]));
+    let ret: number | undefined;
+    const result = produce(state, (draft) => {
+      ret = splitMixedListBlock(draft, 0);
+    });
+    expect(ret).toBe(3);
+    expect(result.redigertBrev.blocks).toHaveLength(3);
+    expect(text(result.redigertBrev.blocks[0].content[0] as LiteralValue)).toBe("before");
+    expect(result.redigertBrev.blocks[1].content).toHaveLength(1);
+    expect(result.redigertBrev.blocks[1].content[0].type).toBe("ITEM_LIST");
+    expect(text(result.redigertBrev.blocks[2].content[0] as LiteralValue)).toBe("after");
+  });
+
+  test("merges adjacent same-type lists first; no split needed when the result is one list", () => {
+    const l1: ItemList = { ...itemList({ items: [item(literal("a"))] }), id: null };
+    const l2: ItemList = { ...itemList({ items: [item(literal("b"))] }), id: null };
+    const state = letter(paragraph([l1, l2]));
+    let ret: number | undefined;
+    const result = produce(state, (draft) => {
+      ret = splitMixedListBlock(draft, 0);
+    });
+    expect(ret).toBe(1);
+    expect(result.redigertBrev.blocks).toHaveLength(1);
+    const merged = result.redigertBrev.blocks[0].content[0] as ItemList;
+    expect(merged.items.map((_, i) => literalText(merged, i))).toEqual(["a", "b"]);
+  });
+
+  test("remaps focus into the correct new block when the caret was in a later run", () => {
+    const newList: ItemList = { ...itemList({ items: [item(literal("x"))] }), id: null };
+    const base = letter(paragraph([literal("before"), newList, literal("after")]));
+    const state = { ...base, focus: { blockIndex: 0, contentIndex: 2, cursorPosition: 1 } };
+    const result = produce(state, (draft) => {
+      splitMixedListBlock(draft, 0);
+    });
+    expect(result.focus).toMatchObject({ blockIndex: 2, contentIndex: 0 });
   });
 });

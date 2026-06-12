@@ -143,6 +143,7 @@ object Edit {
             override val id: Int?,
             val items: List<Item>,
             val listType: Listetype = Listetype.PUNKTLISTE,
+            val editedListType: Listetype? = null,
             val deletedItems: Set<Int> = emptySet(),
             override val parentId: Int? = null,
         ) : ParagraphContent(Type.ITEM_LIST) {
@@ -155,7 +156,7 @@ object Edit {
                 override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() || it.parentId != id } || deletedContent.isNotEmpty()
             }
 
-            override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() || it.parentId != id } || deletedItems.isNotEmpty()
+            override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() || it.parentId != id } || deletedItems.isNotEmpty() || editedListType != null
         }
 
         data class Table(
@@ -309,7 +310,7 @@ fun List<Edit.ParagraphContent.Text>.toMarkup() =
 
 fun Edit.ParagraphContent.toMarkup(): ParagraphContent =
     when (this) {
-        is Edit.ParagraphContent.ItemList -> ParagraphContentImpl.ItemListImpl(id = id ?: 0, items = items.map { it.toMarkup() }, listType = listType)
+        is Edit.ParagraphContent.ItemList -> ParagraphContentImpl.ItemListImpl(id = id ?: 0, items = items.map { it.toMarkup() }, listType = editedListType ?: listType)
         is Edit.ParagraphContent.Table -> ParagraphContentImpl.TableImpl(id = id ?: 0, rows = rows.map { it.toMarkup() }, header = header.toMarkup())
         is Edit.ParagraphContent.Text -> toMarkup()
     }

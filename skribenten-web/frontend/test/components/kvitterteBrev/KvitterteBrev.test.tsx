@@ -10,7 +10,7 @@ import { SendtBrevProvider } from "~/routes/saksnummer_/$saksId/kvittering/-comp
 import { type BestillBrevResponse, type BrevInfo, Distribusjonstype } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
 
-import { nyBrevInfo } from "../../utils/brevredigeringTestUtils";
+import { brevInfo } from "../../utils/letterEditorTestUtils";
 
 vi.mock("~/hooks/useSakGjelderNavn", () => ({
   useSakGjelderNavnFormatert: () => "Tydelig Bakke",
@@ -25,7 +25,7 @@ const nyKvittertBrev = (args: {
 }): KvittertBrev => ({
   apiStatus: args.apiStatus ?? "success",
   context: args.context ?? "attestering",
-  brevFørHandling: args.brevFørHandling ?? nyBrevInfo({}),
+  brevFørHandling: args.brevFørHandling ?? brevInfo({}),
   attesteringResponse: args.attesteringResponse ?? null,
   sendtBrevResponse: args.sendtBrevResponse ?? null,
 });
@@ -34,19 +34,19 @@ const attesteringError = nyKvittertBrev({ apiStatus: "error", context: "attester
 const attesteringSuccess = nyKvittertBrev({
   apiStatus: "success",
   context: "attestering",
-  attesteringResponse: nyBrevInfo({}),
+  attesteringResponse: brevInfo({}),
 });
 const sendBrevError = nyKvittertBrev({ apiStatus: "error", context: "sendBrev" });
 const sendBrevSuccessLokalprint = nyKvittertBrev({
   apiStatus: "success",
   context: "sendBrev",
-  brevFørHandling: nyBrevInfo({ distribusjonstype: Distribusjonstype.LOKALPRINT }),
+  brevFørHandling: brevInfo({ distribusjonstype: Distribusjonstype.LOKALPRINT }),
   sendtBrevResponse: { journalpostId: 1, error: null },
 });
 const sendBrevSuccessSentralprint = nyKvittertBrev({
   apiStatus: "success",
   context: "sendBrev",
-  brevFørHandling: nyBrevInfo({ distribusjonstype: Distribusjonstype.SENTRALPRINT }),
+  brevFørHandling: brevInfo({ distribusjonstype: Distribusjonstype.SENTRALPRINT }),
   sendtBrevResponse: { journalpostId: 1, error: null },
 });
 
