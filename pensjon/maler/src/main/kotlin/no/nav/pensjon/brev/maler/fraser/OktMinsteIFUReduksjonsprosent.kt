@@ -373,6 +373,24 @@ object OktMinsteIFUReduksjonsprosent {
                             )
                         }
                     }
+                    title2 {
+                        text(
+                            bokmal { +"Informasjon om etterbetaling" },
+                            nynorsk { +"Informasjon om etterbetaling" },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Du får ikke renter på etterbetalingen. Informasjon om skattetrekk på etterbetalingen finner du hos Skatteetaten." },
+                            nynorsk { +"Du får ikkje renter på etterbetalinga. Informasjon om skattetrekk på etterbetalinga finn du hos Skatteetaten." },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Har du gjeld som Skatteetaten krever inn, kan pengene fra etterbetalingen gå til å dekke gjelden. Eksempler på gjeld kan være bidrags- eller feilutbetalingsgjeld hos Nav og refusjonskrav hos tjenestepensjonsordning." },
+                            nynorsk { +"Har du gjeld som Skatteetaten krev inn, kan pengane frå etterbetalinga gå til å dekke gjelda. Eksempel på gjeld kan vere bidrags- eller feilutbetalingsgjeld hos Nav og refusjonskrav hos tenestepensjonsordning." },
+                        )
+                    }
                 }.orShow {
                     title2 {
                         text(

@@ -35,10 +35,10 @@ class VedtakOmEtterbetalingOpphor2026 {
                 paragraph {
                     text(
                         bokmal {
-                            +"Stortinget har vedtatt en lovendring som gir deg en lavere reduksjonsprosent. Dette er til fordel for deg. Den nye reduksjonsprosenten skal gjelde fra 1. januar 2026. Siden du har hatt inntekt over inntektsgrensen i perioden etterpå, fører det til at du får en etterbetaling. "
+                            +"Stortinget har vedtatt en lovendring som gir deg en lavere reduksjonsprosent. Dette er til fordel for deg. Den nye reduksjonsprosenten skal gjelde fra 1. januar 2026. Siden du har hatt inntekt over inntektsgrensen i perioden etter 1. januar, fører det til at du får en etterbetaling. "
                         },
                         nynorsk {
-                            +"Stortinget har vedteke ei lovendring som gir deg ein lågare reduksjonsprosent. Dette er til fordel for deg. Den nye reduksjonsprosenten skal gjelde frå 1. januar 2026. Sidan du har hatt inntekt over inntektsgrensa i perioden etterpå, fører det til at du får ei etterbetaling. "
+                            +"Stortinget har vedteke ei lovendring som gir deg ein lågare reduksjonsprosent. Dette er til fordel for deg. Den nye reduksjonsprosenten skal gjelde frå 1. januar 2026. Sidan du har hatt inntekt over inntektsgrensa i perioden etter 1. januar, fører det til at du får ei etterbetaling. "
                         },
                     )
                 }
@@ -91,6 +91,26 @@ class VedtakOmEtterbetalingOpphor2026 {
                     bokmal { +hjemler.format(HjemmelFormatter(true)) + "." },
                     nynorsk { +hjemler.format(HjemmelFormatter(true)) + "." },
                 )
+            }
+            showIf(etterbetaling.greaterThan(0)) {
+                title1 {
+                    text(
+                        bokmal { +"Informasjon om etterbetaling" },
+                        nynorsk { +"Informasjon om etterbetaling" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Du får ikke renter på etterbetalingen. Informasjon om skattetrekk på etterbetalingen finner du hos Skatteetaten." },
+                        nynorsk { +"Du får ikkje renter på etterbetalinga. Informasjon om skattetrekk på etterbetalinga finn du hos Skatteetaten." },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Har du gjeld som Skatteetaten krever inn, kan pengene fra etterbetalingen gå til å dekke gjelden. Eksempler på gjeld kan være bidrags- eller feilutbetalingsgjeld hos Nav og refusjonskrav hos tjenestepensjonsordning." },
+                        nynorsk { +"Har du gjeld som Skatteetaten krev inn, kan pengane frå etterbetalinga gå til å dekke gjelda. Eksempel på gjeld kan vere bidrags- eller feilutbetalingsgjeld hos Nav og refusjonskrav hos tenestepensjonsordning." },
+                    )
+                }
             }
         }
     }
