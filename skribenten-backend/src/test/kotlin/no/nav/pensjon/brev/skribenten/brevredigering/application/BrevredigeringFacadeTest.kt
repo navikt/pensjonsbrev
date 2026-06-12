@@ -174,7 +174,8 @@ class BrevredigeringFacadeTest {
             spraak = LanguageCode.ENGLISH,
             journalpostId = null,
             attestertAv = null,
-            status = Dto.BrevStatus.KLADD
+            status = Dto.BrevStatus.KLADD,
+            harFoersteside = false,
         ),
         redigertBrev = editedLetter(),
         redigertBrevHash = Hash("abc123"),
@@ -250,6 +251,7 @@ private fun createFacade(
         sendBrev = sendBrev,
         slettBrev = handlerStub(),
         diffBrev = diffBrev,
+        lagreFoersteside = handlerStub(),
     )
 }
 
