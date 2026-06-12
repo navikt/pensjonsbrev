@@ -26,7 +26,6 @@ import no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpAuto
 import no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfpOffentligSektor
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEtterbetalingAuto
-import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerTilbakekrevingAuto
@@ -47,6 +46,7 @@ import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VedtakGjpForlen
 import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VedtakGjpForlengetArskull6270Utland
 import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VedtakGjpOpphorArskull6070
 import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VedtakGjpOpphorArskull6070Utland
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvar
 import no.nav.pensjon.brev.alder.maler.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAuto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.InfoAldersovergangEps60AarAuto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.InfoAldersovergangEps62AarAuto
@@ -130,7 +130,6 @@ object AlderTemplates : AllTemplates {
             InfoFyller67AarSaerskiltSats,
             VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto,
             VedtakAfpEtteroppgjoerEtterbetalingAuto,
-            VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto,
             VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto,
             VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto,
             VedtakAfpEtteroppgjoerTilbakekrevingAuto,
@@ -151,6 +150,7 @@ object AlderTemplates : AllTemplates {
             VedtakAfpPrivatEndring,
             VedtakAfpEtteroppgjoerToleransebeloep,
             VedtakAfpEtteroppgjoerEtterbetaling,
+            VedtakAfpEtteroppgjoerEtterbetalingEtterSvar,
             VedtakAfpEtteroppgjoerIngenEndring,
             AvslagGradsendringFoerNormertPensjonsalder,
             AvslagGradsendringFoerNormertPensjonsalderAP2016,

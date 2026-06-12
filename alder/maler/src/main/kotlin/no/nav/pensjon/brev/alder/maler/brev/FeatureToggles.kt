@@ -15,6 +15,7 @@ enum class FeatureToggles(
     vedtakAfpPrivatEndring("vedtakAfpPrivatEndring"),
     vedtakAfpEtteroppgjoerToleransebeloep("vedtakAfpEtteroppgjoerToleransebeloep"),
     vedtakAfpEtteroppgjoerEtterbetaling("vedtakAfpEtteroppgjoerEtterbetaling"),
+    vedtakAfpEtteroppgjoerEtterbetalingEtterSvar("vedtakAfpEtteroppgjoerEtterbetalingEtterSvar"),
     vedtakAfpEtteroppgjoerIngenEndring("vedtakAfpEtteroppgjoerIngenEndring"),
     varselAfpEtteroppgjoerForeloepig("varselAfpEtteroppgjoerForeloepig"),
     vedtakEndringAfpOffentligSektor("vedtakEndringAfpOffentligSektor");
