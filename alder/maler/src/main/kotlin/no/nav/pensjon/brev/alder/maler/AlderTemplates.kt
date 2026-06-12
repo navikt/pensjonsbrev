@@ -24,7 +24,7 @@ import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndring
 import no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfp
 import no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpAuto
 import no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfpOffentligSektor
-import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysninger
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEtterbetalingAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvar
@@ -128,7 +128,6 @@ object AlderTemplates : AllTemplates {
             InfoAldersovergangEps62AarAuto,
             InfoAldersovergang67AarAuto,
             InfoFyller67AarSaerskiltSats,
-            VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto,
             VedtakAfpEtteroppgjoerEtterbetalingAuto,
             VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto,
             VedtakAfpEtteroppgjoerTilbakekrevingAuto,
@@ -144,14 +143,9 @@ object AlderTemplates : AllTemplates {
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> =
         setOf(
-            AvslagAfpPrivat,
+            AfpPrivatSokerUforeTrygd,
             AvslagAfpGammel,
-            VedtakAfpPrivatEndring,
-            VedtakAfpEtteroppgjoerToleransebeloep,
-            VedtakAfpEtteroppgjoerEtterbetaling,
-            VedtakAfpEtteroppgjoerEtterbetalingEtterSvar,
-            VedtakAfpEtteroppgjoerIngenEndring,
-            VedtakAfpEtteroppgjoerIngenEndringEtterSvar,
+            AvslagAfpPrivat,
             AvslagGradsendringFoerNormertPensjonsalder,
             AvslagGradsendringFoerNormertPensjonsalderAP2016,
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
@@ -159,17 +153,23 @@ object AlderTemplates : AllTemplates {
             AvslagUttakFoerNormertPensjonsalderAP2016,
             BekreftelseAvUtsendtKravTilUtlandet,
             EndringAvAlderspensjonPgaGarantitillegg,
-            InnvilgelseAvAfp,
-            InnvilgelseAvAfpOffentligSektor,
-            VedtakEndringAfpOffentligSektor,
-            VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger,
-            VarselAfpEtteroppgjoerForeloepig,
             EndringAvAlderspensjonSivilstand,
             EndringAvAlderspensjonSivilstandSaerskiltSats,
+            InnvilgelseAvAfp,
+            InnvilgelseAvAfpOffentligSektor,
             OmregningAlderUfore2016,
-            VedtakStansAlderspensjonFlyttingMellomLand,
-            AfpPrivatSokerUforeTrygd,
             UforetrygdSokerAfpPrivat,
+            VarselAfpEtteroppgjoerForeloepig,
+            VedtakAfpEtteroppgjoerEtterbetaling,
+            VedtakAfpEtteroppgjoerEtterbetalingEtterSvar,
+            VedtakAfpEtteroppgjoerIngenEndring,
+            VedtakAfpEtteroppgjoerIngenEndringEtterSvar,
+            VedtakAfpEtteroppgjoerIngenEndringNyeOpplysninger,
+            VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger,
+            VedtakAfpEtteroppgjoerToleransebeloep,
+            VedtakAfpPrivatEndring,
+            VedtakEndringAfpOffentligSektor,
+            VedtakStansAlderspensjonFlyttingMellomLand,
         )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf(

@@ -37,7 +37,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * (se [VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerDto.Scenario]).
  */
 @TemplateModelHelpers
-object VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto : RedigerbarTemplate<VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerDto> {
+object VedtakAfpEtteroppgjoerIngenEndringNyeOpplysninger : RedigerbarTemplate<VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerDto> {
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_INGEN_ENDR_NYE_OPPL
 
