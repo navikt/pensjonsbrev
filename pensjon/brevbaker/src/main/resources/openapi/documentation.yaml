@@ -1,3 +1,4 @@
+# TODO: Denne er skrevet manuelt, og er potensielt ikke oppdatert
 openapi: 3.0.3
 info:
   title: Brevbaker
@@ -537,13 +538,10 @@ components:
       readOnly: true
       required:
         - hilsenTekst
-        - saksbehandlerRolleTekst
         - saksbehandlerNavn
         - navAvsenderEnhet
       properties:
         hilsenTekst:
-          type: string
-        saksbehandlerRolleTekst:
           type: string
         saksbehandlerNavn:
           type: string

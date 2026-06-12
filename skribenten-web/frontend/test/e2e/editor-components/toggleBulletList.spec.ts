@@ -25,7 +25,7 @@ const editorInfo = nyBrevInfo({
   status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
   avsenderEnhet: { enhetNr: "0001", navn: "NAV Familie- og pensjonsytelser" },
   spraak: SpraakKode.Bokmaal,
-  saksId: "22981081",
+  saksId: 22981081,
 });
 
 function makeBrevResponse(redigertBrev: EditedLetter) {
@@ -75,7 +75,6 @@ function makeLetter(blocks: ReturnType<typeof makeBlock>[]) {
     blocks,
     signatur: nySignatur({
       hilsenTekst: "Hilsen",
-      saksbehandlerRolleTekst: "Saksbehandler",
       saksbehandlerNavn: "Ole",
       attesterendeSaksbehandlerNavn: "",
       navAvsenderEnhet: "Nav",

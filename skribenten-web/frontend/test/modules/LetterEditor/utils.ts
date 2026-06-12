@@ -10,21 +10,14 @@ import {
   type Content,
   type ElementTags,
   type Identifiable,
-  ITEM_LIST,
   type Item,
   type ItemList,
   type LiteralValue,
-  NEW_LINE,
   type NewLine,
-  PARAGRAPH,
   type ParagraphBlock,
   type Row,
-  TABLE,
   type Table,
   type TextContent,
-  TITLE1,
-  TITLE2,
-  TITLE3,
   type Title1Block,
   type Title2Block,
   type Title3Block,
@@ -57,7 +50,7 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
       journalpostId: null,
       vedtaksId: null,
       brevtype: "INFORMASJONSBREV",
-      saksId: "22981081",
+      saksId: 22981081,
     },
     redigertBrev: {
       title: {
@@ -74,7 +67,6 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
       signatur: {
         hilsenTekst: "Mvh",
         navAvsenderEnhet: "enhet",
-        saksbehandlerRolleTekst: "Saksbehandler",
         saksbehandlerNavn: "navn",
       },
       deletedBlocks: [],
@@ -102,8 +94,9 @@ export function paragraph(content?: Content[] | ParagraphArgs): ParagraphBlock {
       id,
       parentId: null,
       editable: true,
-      type: PARAGRAPH,
+      type: "PARAGRAPH",
       deletedContent: [],
+      missingFromTemplate: false,
       content: withParent(content ?? [], id),
     };
   } else {
@@ -111,8 +104,9 @@ export function paragraph(content?: Content[] | ParagraphArgs): ParagraphBlock {
       id: content.id ?? null,
       parentId: null,
       editable: true,
-      type: PARAGRAPH,
+      type: "PARAGRAPH",
       deletedContent: [],
+      missingFromTemplate: false,
       content: withParent(content.content, content.id ?? null),
     };
   }
@@ -131,9 +125,10 @@ export function title1(...content: TextContent[]): Title1Block {
     id,
     parentId: null,
     editable: true,
-    type: TITLE1,
+    type: "TITLE1",
     deletedContent: [],
     content: withParent(content, id),
+    missingFromTemplate: false,
   };
 }
 export function title2(...content: TextContent[]): Title2Block {
@@ -142,9 +137,10 @@ export function title2(...content: TextContent[]): Title2Block {
     id,
     parentId: null,
     editable: true,
-    type: TITLE2,
+    type: "TITLE2",
     deletedContent: [],
     content: withParent(content, id),
+    missingFromTemplate: false,
   };
 }
 
@@ -154,9 +150,10 @@ export function title3(...content: TextContent[]): Title3Block {
     id,
     parentId: null,
     editable: true,
-    type: TITLE3,
+    type: "TITLE3",
     deletedContent: [],
     content: withParent(content, id),
+    missingFromTemplate: false,
   };
 }
 
@@ -191,8 +188,9 @@ export function newLine(): NewLine {
   return {
     id: randomId(),
     parentId: null,
-    type: NEW_LINE,
+    type: "NEW_LINE",
     text: "",
+    fontType: "PLAIN",
   };
 }
 
@@ -206,9 +204,10 @@ export function itemList(args: {
   return {
     id: id,
     parentId: args.parentId ?? null,
-    type: ITEM_LIST,
+    type: "ITEM_LIST",
     items: withParent(args.items, id),
     deletedItems: args.deletedItems ?? [],
+    listType: "PUNKTLISTE",
   };
 }
 
@@ -232,7 +231,7 @@ export function table(headerCells: Cell[], rows: Row[]): Table {
   return {
     id: tableId,
     parentId: null,
-    type: TABLE,
+    type: "TABLE",
     rows: withParent(rows, tableId),
     header: {
       id: headerId,

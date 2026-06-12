@@ -32,7 +32,7 @@ export const useModelSpecificationForm = (brevkode: string) => {
 
 export const extractRelevantSaksbehandlerValgFields = (
   propertyUsage: PropertyUsage[],
-  saksbehandlerValgType: string | undefined,
+  saksbehandlerValgType: string | undefined | null,
 ): Set<string> => {
   if (!saksbehandlerValgType) {
     return new Set();
@@ -161,12 +161,12 @@ export const SaksbehandlerValgModelEditor = (props: {
   );
 };
 
-function findSaksbehandlerValgTypeName(modelSpecification: LetterModelSpecification): string {
-  const saksbehandlerValgModelSpec =
-    modelSpecification.types[modelSpecification.letterModelTypeName]?.saksbehandlerValg;
+function findSaksbehandlerValgTypeName(modelSpecification: LetterModelSpecification): string | null {
+  const brevModel = modelSpecification?.letterModelTypeName
+    ? modelSpecification.types[modelSpecification.letterModelTypeName]
+    : null;
 
-  // TODO: Bør vi feile her om modelspesifikasjonen mangler deklarasjon for saksbehandlerValg?
-  return saksbehandlerValgModelSpec?.type === "object"
-    ? saksbehandlerValgModelSpec.typeName
-    : modelSpecification.letterModelTypeName;
+  const saksbehandlerValgModelSpec = brevModel?.saksbehandlerValg;
+
+  return saksbehandlerValgModelSpec?.type === "object" ? saksbehandlerValgModelSpec.typeName : null;
 }

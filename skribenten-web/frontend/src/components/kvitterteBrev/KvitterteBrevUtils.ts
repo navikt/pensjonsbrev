@@ -11,10 +11,10 @@ export interface KvittertBrev {
 
 export const distribusjonstypeTilText = (d: Distribusjonstype) => {
   switch (d) {
-    case Distribusjonstype.SENTRALPRINT: {
+    case "SENTRALPRINT": {
       return "Sentral print";
     }
-    case Distribusjonstype.LOKALPRINT: {
+    case "LOKALPRINT": {
       return "Lokal print";
     }
   }

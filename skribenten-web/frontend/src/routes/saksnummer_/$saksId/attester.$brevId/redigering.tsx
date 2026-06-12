@@ -378,7 +378,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
             <VStack gap="space-32">
               <Heading size="small">{props.brev.info.brevtittel}</Heading>
               <VStack gap="space-16">
-                <OppsummeringAvMottaker mottaker={props.brev.info.mottaker} saksId={props.saksId} withTitle />
+                <OppsummeringAvMottaker mottaker={props.brev.info.mottaker ?? null} saksId={props.saksId} withTitle />
                 <VStack>
                   <Label size="small">Distribusjonstype</Label>
                   <BodyShort size="small">{props.brev.info.distribusjonstype}</BodyShort>
