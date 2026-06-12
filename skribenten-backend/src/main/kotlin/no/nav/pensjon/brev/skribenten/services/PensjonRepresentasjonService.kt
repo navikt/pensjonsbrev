@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.typesafe.config.Config
-import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -14,6 +12,7 @@ import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
+import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
@@ -28,7 +27,7 @@ class PensjonRepresentasjonService(
     private val pensjonPersondataURL = config.getString("url")
     private val scope = config.getString("scope")
 
-    private val client = HttpClient(CIO) {
+    private val client = lagHttpClient {
         defaultRequest {
             url(pensjonPersondataURL)
         }
