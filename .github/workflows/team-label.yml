@@ -1,0 +1,52 @@
+name: "Label PR by team"
+
+on:
+  pull_request:
+    types: [opened, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label-team:
+    name: "Apply team label"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Label PR with author's team"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          declare -A teams=(
+            ["etterlatte"]="team/etterlatte"
+            ["ufore"]="team/ufore"
+            ["pensjon-alder"]="team/pensjon-alder"
+            ["pensjonskalkulator"]="team/pensjonskalkulator"
+            ["pensjonsbrev"]="team/pensjonsbrev"
+          )
+
+          labels_to_add=()
+
+          for team in "${!teams[@]}"; do
+            label="${teams[$team]}"
+            state=$(gh api "/orgs/navikt/teams/$team/memberships/$PR_AUTHOR" --jq '.state' 2>/dev/null || true)
+            if [ "$state" = "active" ]; then
+              labels_to_add+=("$label")
+            fi
+          done
+
+          if [ "${#labels_to_add[@]}" -eq 0 ]; then
+            echo "PR author $PR_AUTHOR is not a member of any known team — skipping labeling."
+            exit 0
+          fi
+
+          for label in "${labels_to_add[@]}"; do
+            gh label create "$label" --repo "$GITHUB_REPOSITORY" --color "0075ca" --force 2>/dev/null || true
+          done
+
+          label_args=$(printf '%s\n' "${labels_to_add[@]}" | paste -sd ',' -)
+          gh pr edit "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --add-label "$label_args"
+
+          echo "Labeled PR #$PR_NUMBER with: $label_args"
