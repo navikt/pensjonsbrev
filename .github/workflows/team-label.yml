@@ -31,7 +31,10 @@ jobs:
 
           for team in "${!teams[@]}"; do
             label="${teams[$team]}"
-            state=$(gh api "/orgs/navikt/teams/$team/memberships/$PR_AUTHOR" --jq '.state' 2>/dev/null || true)
+            state=$(gh api "/orgs/navikt/teams/$team/memberships/$PR_AUTHOR" --jq '.state' 2>&1) || {
+              echo "Could not check membership for team '$team' (API error: $state) — skipping."
+              continue
+            }
             if [ "$state" = "active" ]; then
               labels_to_add+=("$label")
             fi
@@ -43,7 +46,9 @@ jobs:
           fi
 
           for label in "${labels_to_add[@]}"; do
-            gh label create "$label" --repo "$GITHUB_REPOSITORY" --color "0075ca" --force 2>/dev/null || true
+            if ! gh label create "$label" --repo "$GITHUB_REPOSITORY" --color "0075ca" --force 2>&1; then
+              echo "Warning: could not create label '$label' — it may already exist or the token lacks permission."
+            fi
           done
 
           label_args=$(printf '%s\n' "${labels_to_add[@]}" | paste -sd ',' -)
