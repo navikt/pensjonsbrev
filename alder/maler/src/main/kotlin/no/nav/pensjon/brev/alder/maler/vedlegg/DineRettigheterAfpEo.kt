@@ -88,8 +88,8 @@ val vedleggDineRettigheterAfpEo =
         }
         paragraph {
             text(
-                bokmal { +"Du kan be om hjelp fra andre under hele saksbehandlingen, for eksempel fra en advokat, rettshjelper, en organisasjon du er medlem av, eller en myndig person over 18 år. Dette følger av forvaltningsloven § 12. Hvis den som hjelper deg ikke er advokat, må du gi denne personen skriftlig fullmakt. Bruk skjemaet du finner på ${Constants.FULLMAKT_URL}. Ta kontakt på telefon 55 55 33 34 hvis du ikke kan bruke det digitale skjemaet." },
-                nynorsk { +"Du kan be om hjelp fra andre under hele saksbehandlingen, for eksempel fra en advokat, rettshjelper, en organisasjon du er medlem av, eller en myndig person over 18 år. Dette følger av forvaltningsloven § 12. Hvis den som hjelper deg ikke er advokat, må du gi denne personen skriftlig fullmakt. Bruk skjemaet du finner på ${Constants.FULLMAKT_URL}. Ta kontakt på telefon 55 55 33 34 hvis du ikke kan bruke det digitale skjemaet." },
+                bokmal { +"Du kan be om hjelp fra andre under hele saksbehandlingen, for eksempel fra en advokat, rettshjelper, en organisasjon du er medlem av, eller en myndig person over 18 år. Dette følger av forvaltningsloven § 12. Hvis den som hjelper deg ikke er advokat, må du gi denne personen skriftlig fullmakt. Bruk skjemaet du finner på ${Constants.FULLMAKT_URL}. Ta kontakt på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} hvis du ikke kan bruke det digitale skjemaet." },
+                nynorsk { +"Du kan be om hjelp fra andre under hele saksbehandlingen, for eksempel fra en advokat, rettshjelper, en organisasjon du er medlem av, eller en myndig person over 18 år. Dette følger av forvaltningsloven § 12. Hvis den som hjelper deg ikke er advokat, må du gi denne personen skriftlig fullmakt. Bruk skjemaet du finner på ${Constants.FULLMAKT_URL}. Ta kontakt på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} hvis du ikke kan bruke det digitale skjemaet." },
             )
         }
 
