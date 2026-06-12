@@ -56,7 +56,9 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
                 maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
                 dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
                 inntektsgrense = Kroner(30000),
-                endringInntektsgrense = true
+                endringInntektsgrense = true,
+                uforegrad = 100,
+                endringUforegrad = true
             )
         )
 
@@ -70,6 +72,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
                 nettoGjenlevendetillegg = Kroner(0),
                 totalbelop = Kroner(23000),
                 etterbetalingJuli = Kroner(0),
+                uforegrad = 100,
                 reduksjonsprosent = 62.65,
                 inntektstak = Kroner(350000),
                 ifu = Kroner(40000),
@@ -84,7 +87,8 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
                 maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
                 dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
                 inntektsgrense = Kroner(30000),
-                endringInntektsgrense = true
+                endringInntektsgrense = true,
+                endringUforegrad = true
             )
         )
 

@@ -57,5 +57,5 @@ object VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto : AutobrevTemp
         }
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pe, pe.inkluderopplysningerbruktiberegningen())
-        includeAttachment(vedleggDineRettigheterOgPlikterUfore, dineRettigheterOgPlikterUfore)    }
+        includeAttachment(vedleggDineRettigheterOgPlikterUfore, dineRettigheterOgPlikterUfore) }
 }

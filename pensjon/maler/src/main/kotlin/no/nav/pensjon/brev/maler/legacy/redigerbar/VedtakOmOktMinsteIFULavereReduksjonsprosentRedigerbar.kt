@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDa
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.endringNettoBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.endringNettoGjenlevendetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.endringNettoUforetrygdUtenTillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.endringUforegrad
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.erInntektsavkortet
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.etterbetalingJuli
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.hjemler
@@ -27,6 +28,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDa
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.reduksjonsprosent
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.tillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.totalbelop
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.uforegrad
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.OktMinsteIFUReduksjonsprosent
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
@@ -95,6 +97,7 @@ object VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar : RedigerbarTemplat
                         nettoBarnetillegg = data.nettoBarnetillegg,
                         nettoGjenlevendetillegg = data.nettoGjenlevendetillegg,
                         etterbetalingJuli = data.etterbetalingJuli,
+                        uforegrad = data.uforegrad,
                         reduksjonsprosent = data.reduksjonsprosent,
                         inntektstak = data.inntektstak,
                         ifu = data.ifu,
@@ -108,7 +111,8 @@ object VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar : RedigerbarTemplat
                         visOktMinsteIFU = true.expr(),
                         visReduksjonsprosent = true.expr(),
                         inntektsgrense = data.inntektsgrense,
-                        endringInntektsgrense = data.endringInntektsgrense
+                        endringInntektsgrense = data.endringInntektsgrense,
+                        endringUforegrad = data.endringUforegrad
                     )
                 )
             )
