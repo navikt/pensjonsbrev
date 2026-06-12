@@ -40,7 +40,7 @@ object AfpTilbakekrevingBody {
                                 " høyere enn den forventede arbeidsinntekten som ble lagt til grunn ved " +
                                 "utbetalingen av pensjonen din i det aktuelle tidsrommet. Fordi dette er mer " +
                                 "enn toleransebeløpet som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + ", " +
-                                "er pensjonen din beregnet på ny og avregnet mot den pensjonen du allerede " +
+                                "er pensjonen din beregnet på nytt og avregnet mot den pensjonen du allerede " +
                                 "har fått utbetalt i perioden."
                     },
                     nynorsk {
@@ -198,7 +198,7 @@ object AfpTilbakekrevingBody {
             paragraph {
                 text(
                     bokmal {
-                        +"Du vil motta et eget brev med betalingsinformasjon. Beløpet skal som hovedregel " +
+                        +"Du vil få et eget brev med betalingsinformasjon. Beløpet skal som hovedregel " +
                                 "betales tilbake i løpet av 12 kalendermåneder, og vil trekkes i den månedlige " +
                                 "utbetalingen din av AFP eller alderspensjon fra folketrygden."
                     },
@@ -213,7 +213,7 @@ object AfpTilbakekrevingBody {
             paragraph {
                 text(
                     bokmal {
-                        +"Etter du har mottatt brevet fra Skatteetaten kan du ta kontakt med dem for å " +
+                        +"Etter at du har fått brevet fra Skatteetaten, kan du ta kontakt med dem for å " +
                                 "endre trekkbeløpet."
                     },
                     nynorsk {
