@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.legacy
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
-import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentAutoDto
@@ -111,7 +110,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
             fullDataDto(),
             Language.Nynorsk,
             Fixtures.fellesAuto
-        ).renderTestPDF("OKT_MINSTE_IFU_FULL_NN")
+        ).renderTestHtml("OKT_MINSTE_IFU_FULL_NN")
     }
 
     @Test
@@ -131,7 +130,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
             inntektsavkortetDto(),
             Language.Nynorsk,
             Fixtures.fellesAuto
-        ).renderTestPDF("LAVERE_REDUKSJONSPROSENT_AVKORTET_NN")
+        ).renderTestHtml("LAVERE_REDUKSJONSPROSENT_AVKORTET_NN")
     }
 
     @Test
@@ -141,7 +140,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
             fullDataDto(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        ).renderTestPDF("OKT_MINSTE_IFU_LAVERE_REDUKSJON_FULL_BM")
+        ).renderTestHtml("OKT_MINSTE_IFU_LAVERE_REDUKSJON_FULL_BM")
     }
 
     @Test
@@ -151,6 +150,6 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
             fullDataDto(),
             Language.Nynorsk,
             Fixtures.fellesAuto
-        ).renderTestPDF("OKT_MINSTE_IFU_LAVERE_REDUKSJON_FULL_NN")
+        ).renderTestHtml("OKT_MINSTE_IFU_LAVERE_REDUKSJON_FULL_NN")
     }
 }
