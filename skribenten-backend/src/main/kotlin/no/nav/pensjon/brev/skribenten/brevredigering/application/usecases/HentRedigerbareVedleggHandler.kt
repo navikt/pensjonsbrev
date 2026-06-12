@@ -27,10 +27,13 @@ class HentRedigerbareVedleggHandler(
 
         val pesysdata = brevdataService.hentBrevdata(brev)
         val vedlegg = brevmalService.hentRedigerbareVedlegg(brev, pesysdata)
-            .map { (vedleggId, tittel) ->
+            .map { (vedleggId, malTittel) ->
+                // Bruk den redigerte tittelen dersom saksbehandler har overstyrt vedlegget, ellers maltittelen.
+                val redigertTittel = brev.hentRedigertVedlegg(vedleggId)?.title?.text
                 RedigerbartVedleggInfo(
                     vedleggId = vedleggId,
-                    tittel = tittel.joinToString("") { it.text },
+                    tittel = redigertTittel?.joinToString("") { it.text }
+                        ?: malTittel.joinToString("") { it.text },
                 )
             }
 

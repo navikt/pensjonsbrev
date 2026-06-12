@@ -20,9 +20,9 @@ import org.junit.jupiter.api.Test
 
 class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
 
-    private fun attachment(tekst: String): Edit.Attachment =
+    private fun attachment(tekst: String, tittel: String = "Vedlegg tittel"): Edit.Attachment =
         Edit.Attachment(
-            title = Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(id = null, text = "Vedlegg tittel"))),
+            title = Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(id = null, text = tittel))),
             blocks = listOf(
                 Edit.Block.Paragraph(
                     id = null,
@@ -33,6 +33,16 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
             deletedBlocks = emptySet(),
             includeSakspart = false,
         )
+
+    private suspend fun hentRedigerbareVedlegg(
+        brevId: BrevId,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<List<RedigerbartVedleggInfo>, BrevredigeringError>? =
+        withPrincipal(principal) {
+            brevredigeringFacade.hentRedigerbareVedlegg(
+                HentRedigerbareVedleggHandler.Request(brevId = brevId)
+            )
+        }
 
     private suspend fun endreVedlegg(
         brevId: BrevId,
@@ -223,5 +233,33 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(slettBrev(brev)).isSuccess()
 
         assertThat(hentVedlegg(brev.info.id, "vedlegg1")).isNull()
+    }
+
+    @Test
+    suspend fun `hentRedigerbareVedlegg bruker maltittelen naar vedlegget ikke er overstyrt`() {
+        val brev = opprettBrev().resultOrFail()
+        brevbakerService.renderRedigerbareVedleggResultat =
+            mapOf("vedlegg1" to attachment("Mal-innhold", tittel = "Mal tittel").toMarkup())
+
+        val info = hentRedigerbareVedlegg(brev.info.id).resultOrFail()
+
+        assertThat(info).hasSize(1)
+        assertThat(info.first().vedleggId).isEqualTo("vedlegg1")
+        assertThat(info.first().tittel).isEqualTo("Mal tittel")
+    }
+
+    @Test
+    suspend fun `hentRedigerbareVedlegg returnerer den redigerte tittelen naar vedlegget er overstyrt`() {
+        val brev = opprettBrev().resultOrFail()
+        brevbakerService.renderRedigerbareVedleggResultat =
+            mapOf("vedlegg1" to attachment("Mal-innhold", tittel = "Mal tittel").toMarkup())
+        assertThat(endreVedlegg(brev.info.id, "vedlegg1", attachment("Redigert innhold", tittel = "Redigert tittel")))
+            .isSuccess()
+
+        val info = hentRedigerbareVedlegg(brev.info.id).resultOrFail()
+
+        assertThat(info).hasSize(1)
+        assertThat(info.first().vedleggId).isEqualTo("vedlegg1")
+        assertThat(info.first().tittel).isEqualTo("Redigert tittel")
     }
 }

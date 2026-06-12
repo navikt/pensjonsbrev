@@ -197,10 +197,12 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             )
         }
 
-        return if (response.status.isSuccess()) {
-            response.body()
-        } else {
-            throw BrevbakerServiceException(
+        return when {
+            // TODO(redigerbart-vedlegg): midlertidig 404-toleranse mens gammel brevbaker mangler endepunktet.
+            //  Behandle 404 som feil igjen når både skribenten og brevbaker er deployet.
+            response.status == HttpStatusCode.NotFound -> emptyMap()
+            response.status.isSuccess() -> response.body()
+            else -> throw BrevbakerServiceException(
                 response.bodyAsText().takeIf { it.isNotBlank() }?.let { "${response.status}: $it" }
                     ?: "Ukjent feil oppstod ved generering av redigerbare vedlegg for brevkode: $brevkode"
             )

@@ -75,7 +75,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     fun renderAttachmentsOnly(
         scope: ExpressionScope<*>,
         template: LetterTemplate<*, *>,
-        redigerteVedlegg: Map<String, LetterMarkup.Attachment> = emptyMap(),
+        redigerteVedlegg: Map<String, Attachment> = emptyMap(),
     ): List<Attachment> = buildList {
         render(scope, template.attachments) { attachmentScope, editableId, attachment ->
             val override = editableId?.let { redigerteVedlegg[it] }

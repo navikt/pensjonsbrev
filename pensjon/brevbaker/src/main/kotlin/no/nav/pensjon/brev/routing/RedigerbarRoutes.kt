@@ -27,13 +27,13 @@ fun Route.redigerbarRoutes(
         }
 
         post<BestillBrevRequest<Brevkode.Redigerbart>>("/redigerbare-vedlegg/titler") { brevbestilling ->
-            val titler = redigerbareBrev.renderRedigerbartVedleggTitler(brevbestilling)
+            val titler = redigerbareBrev.renderRedigerbartVedleggMarkupTitler(brevbestilling)
             call.respond(titler)
         }
 
         post<BestillBrevRequest<Brevkode.Redigerbart>>("/redigerbare-vedlegg/{vedleggId}") { brevbestilling ->
             val vedleggId = call.parameters.getOrFail("vedleggId")
-            when (val vedlegg = redigerbareBrev.renderRedigerbartVedlegg(brevbestilling, vedleggId)) {
+            when (val vedlegg = redigerbareBrev.renderRedigerbartVedleggMarkup(brevbestilling, vedleggId)) {
                 null -> call.respond(HttpStatusCode.NotFound)
                 else -> call.respond(vedlegg)
             }

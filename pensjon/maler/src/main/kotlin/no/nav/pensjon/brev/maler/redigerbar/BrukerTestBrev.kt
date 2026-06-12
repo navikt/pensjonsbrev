@@ -50,7 +50,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
             )
         }
         outline {
-            title1 { 
+            title1 {
                 text(bokmal { + "Vedtak" })
             }
             paragraph {
@@ -211,15 +211,4 @@ private val testvedleggRedigerbart = createAttachment<LangBokmal, EmptyVedleggDa
         text(bokmal { +"Testvedlegg (redigerbart)" })
     },
     includeSakspart = false,
-) {
-    paragraph {
-        text(
-            bokmal { +"Dette er innholdet i testvedlegget slik det produseres fra malen. Hvis vedlegget ikke er overstyrt i Skribenten, er det denne teksten som vises." },
-        )
-    }
-    paragraph {
-        text(
-            bokmal { +"Når en saksbehandler overstyrer vedlegget, erstattes hele dette innholdet av det som er lagret i Skribenten." },
-        )
-    }
-}
+) { paragraph { text(bokmal { +"Dette er innholdet i testvedlegget slik det produseres fra malen." }) } }

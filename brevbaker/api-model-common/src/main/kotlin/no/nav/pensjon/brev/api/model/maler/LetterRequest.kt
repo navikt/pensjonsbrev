@@ -37,7 +37,9 @@ class BestillRedigertBrevRequest<T : Brevkode<T>>(
     val language: LanguageCode,
     val letterMarkup: LetterMarkup,
     val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
-    val redigerteVedlegg: Map<String, LetterMarkup.Attachment> = emptyMap(),
+    // TODO(redigerbart-vedlegg): midlertidig nullable for bakoverkompatibilitet under utrulling.
+    //  Gjør obligatorisk (Map<...> uten default) når både skribenten og brevbaker er deployet.
+    val redigerteVedlegg: Map<String, LetterMarkup.Attachment>? = null,
 ) : BrevRequest<T> {
     override fun equals(other: Any?): Boolean {
         if (other !is BestillRedigertBrevRequest<*>) return false
