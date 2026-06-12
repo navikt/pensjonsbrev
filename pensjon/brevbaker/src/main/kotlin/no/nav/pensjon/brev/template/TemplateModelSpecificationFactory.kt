@@ -4,14 +4,17 @@ import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Broek
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.ObjectTypeSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
+import java.time.LocalDate
 import java.time.Period
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
+import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
 
@@ -20,7 +23,7 @@ class TemplateModelSpecificationError(msg: String) : Error(msg)
 class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     private val toProcess = mutableListOf<KClass<*>>()
 
-    fun build(): TemplateModelSpecification =
+    fun build(saksbehandlervalg: Map<String, SaksbehandlervalgVerdi>): TemplateModelSpecification =
         if (from.objectInstance == Unit || from.objectInstance in setOf(EmptyAutobrevdata, EmptyRedigerbarBrevdata, EmptyVedleggData)) {
             TemplateModelSpecification(emptyMap(), null)
         } else if (from.primaryConstructor == null) {
@@ -28,13 +31,27 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
         } else if (!(from.isData || from.isValue)) {
             throw TemplateModelSpecificationError("Cannot create specification from a regular class: must be data or value class")
         } else {
-            val objectTypes = mutableMapOf(from.qualifiedName!! to createObjectTypeSpecification(from))
+            val objectTypes = mutableMapOf(from.qualifiedName!! to createObjectTypeSpecification(parameters(from), from.isSubclassOf(SaksbehandlerValgBrevdata::class)))
 
             while (toProcess.isNotEmpty()) {
                 val current = toProcess.removeFirst()
                 val name = current.qualifiedName!!
+                val isSaksbehandlervalg = current.isSubclassOf(SaksbehandlerValgBrevdata::class)
                 if (!objectTypes.containsKey(name)) {
-                    objectTypes[name] = createObjectTypeSpecification(current)
+                    objectTypes[name] = createObjectTypeSpecification(parameters(current), isSaksbehandlervalg)
+                }
+                if (isSaksbehandlervalg) {
+                    objectTypes[name] = createObjectTypeSpecification(saksbehandlervalg.map { Parameter(
+                        name = it.key,
+                        type = when (val v = it.value) {
+                            is SaksbehandlervalgVerdi.Bool -> Boolean::class
+                            is SaksbehandlervalgVerdi.Integer -> Int::class
+                            is SaksbehandlervalgVerdi.Enum<*> -> v.clazz.kotlin
+                            is SaksbehandlervalgVerdi.Text -> String::class
+                        }.createType(),
+                        annotations = listOf(),
+                        displayText = it.value.displayText,
+                    ) }, false) + (objectTypes[name] ?: emptyMap())
                 }
             }
 
@@ -45,6 +62,8 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                 )
             )
         }
+
+    private fun parameters(from: KClass<*>): List<Parameter> = from.primaryConstructor?.parameters?.map { Parameter(it.name!!, it.type, it.annotations, it.annotations.filterIsInstance<DisplayText>().map { it.text }.firstOrNull()) } ?: emptyList()
 
     private fun validate(spec: TemplateModelSpecification): TemplateModelSpecification {
         spec.types.forEach { (name, fieldType) -> validateTypes(spec, listOf(name), fieldType) }
@@ -66,66 +85,62 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
         }
     }
 
-    private fun createObjectTypeSpecification(type: KClass<*>): ObjectTypeSpecification =
-        type.primaryConstructor?.parameters?.associate { it.name!! to it.type.toFieldType(it.annotations, type.isSubclassOf(SaksbehandlerValgBrevdata::class), it.name!!) }
-            ?: emptyMap()
+    private fun createObjectTypeSpecification(parameters: List<Parameter>, paakrevDisplayText: Boolean): ObjectTypeSpecification =
+        parameters.associate { it.name to it.type.toFieldType(it, paakrevDisplayText) }
 
-    private fun KType.toFieldType(annotations: List<Annotation>, paakrevDisplayText: Boolean, name: String): FieldType {
+    private data class Parameter(val name: String, val type: KType, val annotations: List<Annotation>, val displayText: String?)
+
+    private fun KType.toFieldType(parameter: Parameter, paakrevDisplayText: Boolean): FieldType {
         val theClassifier = classifier
-        return if (theClassifier is KClass<*>) {
-            val displayText = annotations.filterIsInstance<DisplayText>().map { it.text }
-            val displayedText = displayText.firstOrNull()
-            if (paakrevDisplayText && displayedText == null) {
-                throw TemplateModelSpecificationError("Missing required DisplayText annotation on $name")
-                }
+        if (theClassifier !is KClass<*>) {
+            throw TemplateModelSpecificationError("Unable to create FieldType of: $this")
+        }
+        // TODO: Når vi er fullt over på ny saksbehandlervalg-løsning, kan vi gjøre displayText-feltet påkrevd, og dermed droppe dette
+        val displayedText = parameter.displayText ?: parameter.annotations.filterIsInstance<DisplayText>().map { it.text }.firstOrNull()
+        if (paakrevDisplayText && displayedText == null) {
+            throw TemplateModelSpecificationError("Missing required DisplayText annotation on ${parameter.name}")
+        }
 
-            when (val qname = theClassifier.qualifiedName) {
-                "kotlin.String" ->
-                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.STRING, displayText = displayedText)
+        return when (val qname = theClassifier.qualifiedName) {
+            String::class.qualifiedName ->
+                FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.STRING, displayText = displayedText)
 
-                "kotlin.Int", "kotlin.Long" ->
-                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.NUMBER, displayText = displayedText)
+            Int::class.qualifiedName, Long::class.qualifiedName ->
+                FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.NUMBER, displayText = displayedText)
 
-                "kotlin.Double", "kotlin.Float" ->
-                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DOUBLE, displayText = displayedText)
+            Double::class.qualifiedName, Float::class.qualifiedName ->
+                FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DOUBLE, displayText = displayedText)
 
-                "kotlin.Boolean" ->
-                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.BOOLEAN, displayText = displayedText)
+            Boolean::class.qualifiedName ->
+                FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.BOOLEAN, displayText = displayedText)
 
-                "kotlin.collections.List" -> {
-                    FieldType.Array(isMarkedNullable, arguments.first().type!!.toFieldType(listOf(), false, name))
-                }
+            List::class.qualifiedName -> {
+                val type = arguments.first().type!!
+                FieldType.Array(isMarkedNullable, type.toFieldType(Parameter(parameter.name, type, listOf(), null), false))
+            }
 
-                "java.time.LocalDate" ->
-                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DATE, displayText = displayedText)
+            LocalDate::class.qualifiedName ->
+                FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DATE, displayText = displayedText)
 
-                "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata", "no.nav.pensjon.brev.api.model.maler.EmptyVedlegg" -> {
-                    toProcess.add(theClassifier)
-                    FieldType.Object(isMarkedNullable, qname, displayText = displayedText)
-                }
-                Broek::class.qualifiedName, Period::class.qualifiedName -> {
+            Broek::class.qualifiedName, Period::class.qualifiedName -> {
+                toProcess.add(theClassifier)
+                FieldType.Object(isMarkedNullable, qname!!, displayText = displayedText)
+            }
+
+            else -> {
+                if (theClassifier.isValue) {
+                    val parameter = theClassifier.primaryConstructor!!.parameters.first().let { Parameter(it.name!!, it.type, it.annotations, displayedText ?: it.annotations.filterIsInstance<DisplayText>().map { it.text }.firstOrNull()) }
+                    parameter.type.toFieldType(parameter, paakrevDisplayText)
+                        .takeIf { it is FieldType.Scalar } ?: throw TemplateModelSpecificationError("Expected value class to be scalar, but was not")
+                } else if (theClassifier.isData || theClassifier.java.isInterface) {
                     toProcess.add(theClassifier)
                     FieldType.Object(isMarkedNullable, qname!!, displayText = displayedText)
-                }
-
-                else -> {
-                    if (theClassifier.isValue) {
-                        val parameter = theClassifier.primaryConstructor!!.parameters.first()
-                        parameter.type.toFieldType(annotations, paakrevDisplayText, parameter.name!!)
-                            .takeIf { it is FieldType.Scalar } ?: throw TemplateModelSpecificationError("Expected value class to be scalar, but was not")
-                    }
-                    else if (theClassifier.isData || theClassifier.java.isInterface) {
-                        toProcess.add(theClassifier)
-                        FieldType.Object(isMarkedNullable, qname!!, displayText = displayedText)
-                    } else if (theClassifier.java.isEnum) {
-                        FieldType.Enum(isMarkedNullable, enumVerdier(theClassifier, paakrevDisplayText), displayText = displayedText)
-                    } else {
-                        throw TemplateModelSpecificationError("Don't know how to handle type: $qname")
-                    }
+                } else if (theClassifier.java.isEnum) {
+                    FieldType.Enum(isMarkedNullable, enumVerdier(theClassifier, paakrevDisplayText), displayText = displayedText)
+                } else {
+                    throw TemplateModelSpecificationError("Don't know how to handle type: $qname")
                 }
             }
-        } else {
-            throw TemplateModelSpecificationError("Unable to create FieldType of: $this")
         }
     }
 

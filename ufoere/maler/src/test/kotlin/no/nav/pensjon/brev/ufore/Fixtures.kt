@@ -2,11 +2,13 @@ package no.nav.pensjon.brev.ufore
 
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
+import no.nav.brev.brevbaker.SaksbehandlervalgIDSLTestImpl
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
@@ -70,8 +72,9 @@ object Fixtures : LetterDataFactory {
 
     private fun lagInnhentingOpplysningerSamboer() = InnhentingOpplysningerSamboerDto(
         pesysData = EmptyFagsystemdata,
-        saksbehandlerValg = InnhentingOpplysningerSamboerDto.Saksbehandlervalg(
-            ukjentSamboer = false
+        saksbehandlerValg = SaksbehandlervalgIDSLTestImpl(
+            "ukjentSamboer" to SaksbehandlervalgVerdi.Bool (false, "tull"),
+            "vilkaarlegInt" to SaksbehandlervalgVerdi.Integer(4, "tøys")
         )
     )
 

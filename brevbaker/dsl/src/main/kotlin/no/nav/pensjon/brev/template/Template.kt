@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -17,6 +18,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     val outline: MutableList<OutlineElement<Lang>> = mutableListOf(),
     val attachments: MutableList<IncludeAttachment<Lang, *>> = mutableListOf(),
     val pdfAttachments: MutableList<IncludeAttachmentPDF<Lang, *>> = mutableListOf(),
+    val saksbehandlervalg: MutableMap<String, SaksbehandlervalgVerdi> = mutableMapOf(),
 ) : TemplateGlobalScope<LetterData> {
 
     fun title(init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {

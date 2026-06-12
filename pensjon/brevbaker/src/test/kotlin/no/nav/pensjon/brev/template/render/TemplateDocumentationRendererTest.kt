@@ -202,4 +202,4 @@ object ExpressionVisitor {
         }
 }
 
-fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactory(this.letterDataType).build()
+fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactory(this.letterDataType).build(saksbehandlervalg)

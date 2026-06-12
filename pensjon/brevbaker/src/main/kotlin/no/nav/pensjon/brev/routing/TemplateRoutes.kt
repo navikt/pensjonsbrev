@@ -68,7 +68,7 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
         }
     }
 
-fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactory(this.letterDataType).build()
+fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactory(this.letterDataType).build(saksbehandlervalg)
 
 // TODO: Med riktig typing burde heile denne metoden vera unødvendig
 fun <Kode: Brevkode<Kode>> ApplicationCall.kode(resource: TemplateResource<Kode,*,*>): Kode = parameters.getOrFail<String>("kode").let {

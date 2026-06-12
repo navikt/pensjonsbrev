@@ -1,9 +1,11 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.brev.brevbaker.LetterTestImpl
+import no.nav.brev.brevbaker.SaksbehandlervalgIDSLTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
+import no.nav.brev.brevbaker.tilSaksbehandlervalgverdiEnum
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto
@@ -17,17 +19,16 @@ import org.junit.jupiter.api.Test
 class VarselRevurderingAvPensjonTest {
 
     private val data = VarselRevurderingAvPensjonDto(
-        saksbehandlerValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg(
-            tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett
-        ),
+        saksbehandlerValg = SaksbehandlervalgIDSLTestImpl(),
         pesysData = VarselRevurderingAvPensjonDto.PesysData(sakstype = Sakstype.FAM_PL)
-        )
+    )
+
 
     @Test
     fun `med revurdering av rett`() {
         writeAllLanguages(
             "revurdering av rett",
-            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett))
+            data.copy(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl("tittelValg" to VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett.tilSaksbehandlervalgverdiEnum("Tittelvalg")))
         )
     }
 
@@ -35,7 +36,7 @@ class VarselRevurderingAvPensjonTest {
     fun `med revurdering av reduksjon`() {
         writeAllLanguages(
             "revurdering reduksjon",
-            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon))
+            data.copy(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl("tittelValg" to VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon.tilSaksbehandlervalgverdiEnum("Tittelvalg")))
         )
     }
 

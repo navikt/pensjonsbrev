@@ -30,7 +30,7 @@ sealed interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkod
         init: TemplateRootScope<Lang, LetterData>.() -> Unit
     ): LetterTemplate<Lang, LetterData> =
         with(TemplateRootScope<Lang, LetterData>().apply(init)) {
-            return LetterTemplate(title, letterDataType, languages, outline, attachments, pdfAttachments, letterMetadata)
+            return LetterTemplate(title, letterDataType, languages, outline, attachments, pdfAttachments, saksbehandlervalg, letterMetadata)
         }
 }
 
