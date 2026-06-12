@@ -27,7 +27,7 @@ import no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfpOffentligSektor
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEtterbetalingAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto
-import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvar
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerTilbakekrevingAuto
 import no.nav.pensjon.brev.alder.maler.afp.VarselAfpEtteroppgjoerForeloepigAuto
 import no.nav.pensjon.brev.alder.maler.afp.VarselAfpEtteroppgjoerForeloepig
@@ -131,7 +131,6 @@ object AlderTemplates : AllTemplates {
             VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto,
             VedtakAfpEtteroppgjoerEtterbetalingAuto,
             VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto,
-            VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto,
             VedtakAfpEtteroppgjoerTilbakekrevingAuto,
             VarselAfpEtteroppgjoerForeloepigAuto,
             VedtakAfpEtteroppgjoerIngenEndringAuto,
@@ -152,6 +151,7 @@ object AlderTemplates : AllTemplates {
             VedtakAfpEtteroppgjoerEtterbetaling,
             VedtakAfpEtteroppgjoerEtterbetalingEtterSvar,
             VedtakAfpEtteroppgjoerIngenEndring,
+            VedtakAfpEtteroppgjoerIngenEndringEtterSvar,
             AvslagGradsendringFoerNormertPensjonsalder,
             AvslagGradsendringFoerNormertPensjonsalderAP2016,
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,

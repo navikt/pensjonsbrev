@@ -5,19 +5,20 @@ import no.nav.pensjon.brev.api.model.FeatureToggle
 enum class FeatureToggles(
     private val key: String,
 ) {
-    omregningAlderUfore2016("omregningAlderUfore2016"),
     afpPrivatUfore("afpPrivatUfore"),
-    innvilgelseAvAfpOffentligSektor("innvilgelseAvAfpOffentligSektor"),
-    innvilgelseAvAfp("innvilgelseAvAfp"),
-    vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger("vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger"),
-    avslagAfpPrivat("avslagAfpPrivat"),
     avslagAfpGammel("avslagAfpGammel"),
-    vedtakAfpPrivatEndring("vedtakAfpPrivatEndring"),
-    vedtakAfpEtteroppgjoerToleransebeloep("vedtakAfpEtteroppgjoerToleransebeloep"),
+    avslagAfpPrivat("avslagAfpPrivat"),
+    innvilgelseAvAfp("innvilgelseAvAfp"),
+    innvilgelseAvAfpOffentligSektor("innvilgelseAvAfpOffentligSektor"),
+    omregningAlderUfore2016("omregningAlderUfore2016"),
+    varselAfpEtteroppgjoerForeloepig("varselAfpEtteroppgjoerForeloepig"),
     vedtakAfpEtteroppgjoerEtterbetaling("vedtakAfpEtteroppgjoerEtterbetaling"),
     vedtakAfpEtteroppgjoerEtterbetalingEtterSvar("vedtakAfpEtteroppgjoerEtterbetalingEtterSvar"),
     vedtakAfpEtteroppgjoerIngenEndring("vedtakAfpEtteroppgjoerIngenEndring"),
-    varselAfpEtteroppgjoerForeloepig("varselAfpEtteroppgjoerForeloepig"),
+    vedtakAfpEtteroppgjoerIngenEndringEtterSvar("vedtakAfpEtteroppgjoerIngenEndringEtterSvar"),
+    vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger("vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger"),
+    vedtakAfpEtteroppgjoerToleransebeloep("vedtakAfpEtteroppgjoerToleransebeloep"),
+    vedtakAfpPrivatEndring("vedtakAfpPrivatEndring"),
     vedtakEndringAfpOffentligSektor("vedtakEndringAfpOffentligSektor");
 
     val toggle = FeatureToggle(key)
