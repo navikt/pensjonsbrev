@@ -31,8 +31,8 @@ val vedleggDineRettigheterAfpEo =
         }
         paragraph {
             text(
-                bokmal { +"Nav kan veilede deg på telefon om hvordan du sender en klage. Nav-kontoret ditt kan også hjelpe deg med å skrive en klage. Kontakt oss på telefon 55 55 33 33 <34> hvis du trenger hjelp." },
-                nynorsk { +"Nav kan veilede deg på telefon om hvordan du sender en klage. Nav-kontoret ditt kan også hjelpe deg med å skrive en klage. Kontakt oss på telefon 55 55 33 33 <34> hvis du trenger hjelp." },
+                bokmal { +"Nav kan veilede deg på telefon om hvordan du sender en klage. Nav-kontoret ditt kan også hjelpe deg med å skrive en klage. Kontakt oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} hvis du trenger hjelp." },
+                nynorsk { +"Nav kan veilede deg på telefon om hvordan du sender en klage. Nav-kontoret ditt kan også hjelpe deg med å skrive en klage. Kontakt oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} hvis du trenger hjelp." },
             )
         }
         paragraph {
