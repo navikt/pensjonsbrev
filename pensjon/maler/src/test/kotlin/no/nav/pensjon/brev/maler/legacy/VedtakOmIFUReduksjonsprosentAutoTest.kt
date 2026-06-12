@@ -54,7 +54,9 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
                 hjemler = setOf("12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14", "22-12"),
                 pe = createPEgruppe10(),
                 maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
-                dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto()
+                dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
+                inntektsgrense = Kroner(30000),
+                endringInntektsgrense = true
             )
         )
 
@@ -80,7 +82,9 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
                 hjemler = setOf("12-8", "12-13", "12-16", "22-12"),
                 pe = createPEgruppe10(),
                 maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
-                dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto()
+                dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
+                inntektsgrense = Kroner(30000),
+                endringInntektsgrense = true
             )
         )
 

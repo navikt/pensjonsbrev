@@ -33,7 +33,9 @@ fun createVedtakOmIFUReduksjonsprosentAutoDto() =
             hjemler = setOf("12-13", "12-16", "12-18", "22-12"),
             pe = createPEgruppe10(),
             maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
-            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto()
+            dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
+            inntektsgrense = Kroner(30000),
+            endringInntektsgrense = true
         )
     )
 
@@ -60,7 +62,9 @@ fun createVedtakOmIFUReduksjonsprosentRedigerbarDto() =
                 hjemler = setOf("12-13", "12-16", "12-18", "22-12"),
                 pe = createPEgruppe10(),
                 maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
-                dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto()
+                dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
+                inntektsgrense = Kroner(30000),
+                endringInntektsgrense = true
             )
         )
     )
