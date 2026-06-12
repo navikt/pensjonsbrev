@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.fraser
 import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtak.fritekst
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.model.format
@@ -17,7 +18,7 @@ import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 class VedtakOmEtterbetalingOpphor2026 {
-    data class Outline(private val etterbetaling: Expression<Kroner>, private val hjemler: Expression<Collection<String>>, private val reduksjonsprosent: Expression<Double>, private val erRedigerbar: Expression<Boolean> = false.expr()) : OutlinePhrase<LangBokmalNynorsk>() {
+    data class Outline(private val etterbetaling: Expression<Kroner>, private val hjemler: Expression<Collection<String>>, private val reduksjonsprosent: Expression<Double>, private val uforegrad: Expression<Int>, private val ifu: Expression<Kroner>, private val endringUforegrad: Expression<Boolean>, private val endringIfu: Expression<Boolean>, private val erRedigerbar: Expression<Boolean> = false.expr()) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(etterbetaling.greaterThan(0)) {
                 paragraph {
@@ -34,14 +35,50 @@ class VedtakOmEtterbetalingOpphor2026 {
                 }
                 paragraph {
                     text(
-                        bokmal {
-                            +"Stortinget har vedtatt en lovendring som gir deg en lavere reduksjonsprosent. Dette er til fordel for deg. Din nye reduksjonsprosent, som er " + reduksjonsprosent.format() + " skal gjelde fra 1. januar 2026. Siden du har hatt inntekt over inntektsgrensen i perioden etter 1. januar, fører det til at du får en etterbetaling. "
-                        },
-                        nynorsk {
-                            +"Stortinget har vedteke ei lovendring som gir deg ein lågare reduksjonsprosent. Dette er til fordel for deg. Din nye reduksjonsprosent, som er " + reduksjonsprosent.format() + " skal gjelde frå 1. januar 2026. Sidan du har hatt inntekt over inntektsgrensa i perioden etter 1. januar, fører det til at du får ei etterbetaling. "
-                        },
+                        bokmal { +"Vi endrer uføretrygden din fordi Stortinget har vedtatt lovendringer som trer i kraft 1. juli 2026, men gjelder fra 1. januar 2026. " },
+                        nynorsk { +"Vi endrar uføretrygda di fordi Stortinget har vedteke lovendringar som trer i kraft 1. juli 2026, men gjeld frå 1. januar 2026. " },
                     )
                 }
+                showIf(endringIfu) {
+                    paragraph {
+                        text(
+                            bokmal { +"Lovendringene har ført til at din inntekt før uførhet(IFU) har økt til " + ifu.format() + ", og du har fått en lavere reduksjonsprosent på " + reduksjonsprosent.format() + ". " },
+                            nynorsk { +"Lovendringane har ført til at inntekta di før uførhet(IFU) har auka til " + ifu.format() + ", og du har fått ein lågare reduksjonsprosent på " + reduksjonsprosent.format() + ". " },
+                        )
+                        showIf(endringUforegrad) {
+                            text(
+                                bokmal { +"Siden din IFU har økt har dette ført til at uføregraden din har økt til " + uforegrad.format() + ". " },
+                                nynorsk { +"Sidan IFU-en din har auka har dette ført til at uføregraden din har auka til " + uforegrad.format() + ". " },
+                            )
+                        }
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            bokmal { +"Lovendringene har ført til at du har fått en lavere reduksjonsprosent på " + reduksjonsprosent.format() + ". " },
+                            nynorsk { +"Lovendringane har ført til at du har fått ein lågare reduksjonsprosent på " + reduksjonsprosent.format() + ". " },
+                        )
+                    }
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Lovendringene fører til at du får en etterbetaling av oss. " },
+                        nynorsk { +"Lovendringane fører til at du får ei etterbetaling av oss. " },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Du finner mer informasjon om beregningen i vedlegget " },
+                        nynorsk { +"Du finn meir informasjon om berekninga i vedlegget " },
+                    )
+                    namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
+                    text(
+                        bokmal { +". " },
+                        nynorsk { +". " },
+                    )
+                }
+
+                //hvis ikke etterbetaling:
             }.orShow {
                 paragraph {
                     text(
@@ -92,6 +129,7 @@ class VedtakOmEtterbetalingOpphor2026 {
                     nynorsk { +hjemler.format(HjemmelFormatter(true)) + "." },
                 )
             }
+
             showIf(etterbetaling.greaterThan(0)) {
                 title1 {
                     text(
