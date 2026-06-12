@@ -58,12 +58,12 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtl
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.medOverkompensasjon
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.nordiskMinusNordiskMedOverkompensasjon
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.utenOverkompensasjon
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.MedOverkompensasjonSelectors.eos as medOkEos
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.MedOverkompensasjonSelectors.folketrygd as medOkFolketrygd
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.MedOverkompensasjonSelectors.nordisk as medOkNordisk
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.UtenOverkompensasjonSelectors.eos as utenOkEos
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.UtenOverkompensasjonSelectors.folketrygd as utenOkFolketrygd
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.UtenOverkompensasjonSelectors.nordisk as utenOkNordisk
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.MedOverkompensasjonSelectors.eos
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.MedOverkompensasjonSelectors.folketrygd
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.MedOverkompensasjonSelectors.nordisk
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.UtenOverkompensasjonSelectors.eos
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.UtenOverkompensasjonSelectors.folketrygd
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.SluttpoengtallSelectors.UtenOverkompensasjonSelectors.nordisk
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidScalarsSelectors.faTTBilateral
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidScalarsSelectors.faTTEos
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.TrygdetidScalarsSelectors.faTTNorge
@@ -268,8 +268,8 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
 
                 showIf(pesysData.beregning.beregningsmetode.equalTo(Beregningsmetode.FOLKETRYGD)) {
                     showIf(
-                        pesysData.beregning.sluttpoengtall.utenOverkompensasjon.utenOkFolketrygd.notEqualTo(0.0)
-                                and pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkFolketrygd.equalTo(0.0),
+                        pesysData.beregning.sluttpoengtall.utenOverkompensasjon.folketrygd.notEqualTo(0.0)
+                                and pesysData.beregning.sluttpoengtall.medOverkompensasjon.folketrygd.equalTo(0.0),
                     ) {
                         row {
                             cell {
@@ -280,13 +280,13 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.utenOkFolketrygd.format() },
-                                    english { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.utenOkFolketrygd.format() },
+                                    bokmal { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.folketrygd.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.folketrygd.format() },
                                 )
                             }
                         }
                     }
-                    showIf(pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkFolketrygd.notEqualTo(0.0)) {
+                    showIf(pesysData.beregning.sluttpoengtall.medOverkompensasjon.folketrygd.notEqualTo(0.0)) {
                         row {
                             cell {
                                 text(
@@ -296,12 +296,12 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkFolketrygd.format() },
-                                    english { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkFolketrygd.format() },
+                                    bokmal { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.folketrygd.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.folketrygd.format() },
                                 )
                             }
                         }
-                        showIf(pesysData.beregning.sluttpoengtall.utenOverkompensasjon.utenOkFolketrygd.notEqualTo(0.0)) {
+                        showIf(pesysData.beregning.sluttpoengtall.utenOverkompensasjon.folketrygd.notEqualTo(0.0)) {
                             row {
                                 cell {
                                     text(
@@ -662,7 +662,7 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
                     }
                     showIf(
                         pesysData.beregning.tpInnvilget
-                                and pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkEos.equalTo(0.0),
+                                and pesysData.beregning.sluttpoengtall.medOverkompensasjon.eos.equalTo(0.0),
                     ) {
                         row {
                             cell {
@@ -673,13 +673,13 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.utenOkEos.format() },
-                                    english { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.utenOkEos.format() },
+                                    bokmal { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.eos.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.eos.format() },
                                 )
                             }
                         }
                     }
-                    showIf(pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkEos.notEqualTo(0.0)) {
+                    showIf(pesysData.beregning.sluttpoengtall.medOverkompensasjon.eos.notEqualTo(0.0)) {
                         row {
                             cell {
                                 text(
@@ -689,13 +689,13 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkEos.format() },
-                                    english { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkEos.format() },
+                                    bokmal { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.eos.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.eos.format() },
                                 )
                             }
                         }
                     }
-                    showIf(pesysData.beregning.sluttpoengtall.utenOverkompensasjon.utenOkEos.notEqualTo(0.0)) {
+                    showIf(pesysData.beregning.sluttpoengtall.utenOverkompensasjon.eos.notEqualTo(0.0)) {
                         row {
                             cell {
                                 text(
@@ -713,8 +713,8 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
                     }
                 }.orShowIf(pesysData.beregning.beregningsmetode.equalTo(Beregningsmetode.NORDISK)) {
                     showIf(
-                        pesysData.beregning.sluttpoengtall.utenOverkompensasjon.utenOkNordisk.notEqualTo(0.0)
-                                and pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkNordisk.equalTo(0.0),
+                        pesysData.beregning.sluttpoengtall.utenOverkompensasjon.nordisk.notEqualTo(0.0)
+                                and pesysData.beregning.sluttpoengtall.medOverkompensasjon.nordisk.equalTo(0.0),
                     ) {
                         row {
                             cell {
@@ -725,13 +725,13 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.utenOkNordisk.format() },
-                                    english { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.utenOkNordisk.format() },
+                                    bokmal { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.nordisk.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.nordisk.format() },
                                 )
                             }
                         }
                     }
-                    showIf(pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkNordisk.notEqualTo(0.0)) {
+                    showIf(pesysData.beregning.sluttpoengtall.medOverkompensasjon.nordisk.notEqualTo(0.0)) {
                         row {
                             cell {
                                 text(
@@ -741,13 +741,13 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkNordisk.format() },
-                                    english { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkNordisk.format() },
+                                    bokmal { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.nordisk.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.nordisk.format() },
                                 )
                             }
                         }
                     }
-                    showIf(pesysData.beregning.sluttpoengtall.utenOverkompensasjon.utenOkNordisk.notEqualTo(0.0)) {
+                    showIf(pesysData.beregning.sluttpoengtall.utenOverkompensasjon.nordisk.notEqualTo(0.0)) {
                         row {
                             cell {
                                 text(
@@ -1149,7 +1149,7 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
                     }
                     showIf(
                         pesysData.beregning.tpInnvilget
-                                and pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkEos.equalTo(0.0),
+                                and pesysData.beregning.sluttpoengtall.medOverkompensasjon.eos.equalTo(0.0),
                     ) {
                         row {
                             cell {
@@ -1160,13 +1160,13 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.utenOkEos.format() },
-                                    english { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.utenOkEos.format() },
+                                    bokmal { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.eos.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.utenOverkompensasjon.eos.format() },
                                 )
                             }
                         }
                     }
-                    showIf(pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkEos.notEqualTo(0.0)) {
+                    showIf(pesysData.beregning.sluttpoengtall.medOverkompensasjon.eos.notEqualTo(0.0)) {
                         row {
                             cell {
                                 text(
@@ -1176,13 +1176,13 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkEos.format() },
-                                    english { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.medOkEos.format() },
+                                    bokmal { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.eos.format() },
+                                    english { +pesysData.beregning.sluttpoengtall.medOverkompensasjon.eos.format() },
                                 )
                             }
                         }
                     }
-                    showIf(pesysData.beregning.sluttpoengtall.utenOverkompensasjon.utenOkEos.notEqualTo(0.0)) {
+                    showIf(pesysData.beregning.sluttpoengtall.utenOverkompensasjon.eos.notEqualTo(0.0)) {
                         row {
                             cell {
                                 text(
