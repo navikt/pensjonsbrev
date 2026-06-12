@@ -1,30 +1,36 @@
 package no.nav.pensjon.brev.alder.model.afp
 
-import no.nav.pensjon.brev.api.model.maler.AutobrevData
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 
-data class VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto(
-    val oppgjoersAar: Year,
-    val forlitebetalt: Kroner,
-    val pensjonsgivendeInntekt: Kroner,
-    val inntektFoerUttak: Kroner,
-    val inntektEtterOpphoer: Kroner,
-    val inntektIAfpPerioden: Kroner,
-    val avvik: Kroner,
-    val fullAfp: Kroner,
-    val fradragBeregnetArbeidsInntekt: Kroner,
-    val korrigertAfp: Kroner,
-    val tidligereArbeidsInntektBeregnet: Kroner,
-    val utbetaltAfp: Kroner,
-    val uttaksdato: LocalDate,
-    val opphorsdato: LocalDate?,
-    val medlemAvApotekerordningen: Boolean,
-    val toleranseBeloep: Kroner,
-    val scenario: Scenario,
-    val periode: NyPensjonsberegningPeriode,
-) : AutobrevData {
+data class VedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto(
+    override val saksbehandlerValg: EmptySaksbehandlerValg,
+    override val pesysData: PesysData,
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto.PesysData> {
+    data class PesysData(
+        val oppgjoersAar: Year,
+        val forlitebetalt: Kroner,
+        val pensjonsgivendeInntekt: Kroner,
+        val inntektFoerUttak: Kroner,
+        val inntektEtterOpphoer: Kroner,
+        val inntektIAfpPerioden: Kroner,
+        val avvik: Kroner,
+        val fullAfp: Kroner,
+        val fradragBeregnetArbeidsInntekt: Kroner,
+        val korrigertAfp: Kroner,
+        val tidligereArbeidsInntektBeregnet: Kroner,
+        val utbetaltAfp: Kroner,
+        val uttaksdato: LocalDate,
+        val opphorsdato: LocalDate?,
+        val medlemAvApotekerordningen: Boolean,
+        val toleranseBeloep: Kroner,
+        val scenario: Scenario,
+        val periode: NyPensjonsberegningPeriode,
+    ) : FagsystemBrevdata
 
     /**
      * Hvilken inntektsforklaring som skal vises. Fem gjensidig utelukkende
