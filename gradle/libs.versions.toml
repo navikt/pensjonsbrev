@@ -16,7 +16,7 @@ jacksonVersion = "2.21"
 jupiterVersion = "6.1.0"
 kotlinxHtmlVersion = "0.12.0"
 kotlinxCoroutinesVersion = "1.11.0"
-ktlintVersion = "14.2.0"
+ktfmtVersion = "0.26.0"
 logbackVersion = "1.5.32"
 logstashVersion = "9.0"
 micrometerVersion = "1.16.5"
@@ -30,7 +30,7 @@ valkeyVersion = "5.5.0"
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKspVersion" }
 binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref="binaryCompatibilityValidatorVersion" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintVersion" }
+ktfmt = { id = "com.ncorti.ktfmt.gradle", version.ref = "ktfmtVersion"}
 
 [libraries]
 brevbaker-common = { module = "no.nav.brev.brevbaker:api-model-common", version.ref = "commonVersion" }
