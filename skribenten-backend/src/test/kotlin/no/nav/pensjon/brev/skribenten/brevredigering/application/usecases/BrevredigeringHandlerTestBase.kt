@@ -400,6 +400,8 @@ abstract class BrevredigeringHandlerTestBase {
         override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
         val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
         val renderPdfKall = mutableListOf<LetterMarkup>()
+        val renderPdfRedigerteVedleggKall = mutableListOf<Map<String, LetterMarkup.Attachment>>()
+        var renderRedigerbareVedleggResultat: Map<String, LetterMarkup.Attachment> = emptyMap()
 
         override suspend fun renderMarkup(
             brevkode: Brevkode.Redigerbart,
@@ -417,11 +419,31 @@ abstract class BrevredigeringHandlerTestBase {
             brevdata: RedigerbarBrevdata<*, *>,
             felles: BrevbakerFelles,
             redigertBrev: LetterMarkup,
-            alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
-        ) = renderPdfResultat.also { renderPdfKall.add(redigertBrev) }
+            alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
+            redigerteVedlegg: Map<String, LetterMarkup.Attachment>,
+        ) = renderPdfResultat.also {
+            renderPdfKall.add(redigertBrev)
+            renderPdfRedigerteVedleggKall.add(redigerteVedlegg)
+        }
 
         override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
         override suspend fun getAlltidValgbareVedlegg(brevId: BrevId) = notYetStubbed()
+
+        override suspend fun hentRedigerbareVedlegg(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            brevdata: RedigerbarBrevdata<*, *>,
+            felles: BrevbakerFelles,
+        ): Map<String, List<LetterMarkup.ParagraphContent.Text>> =
+            renderRedigerbareVedleggResultat.mapValues { it.value.title }
+
+        override suspend fun renderRedigerbartVedlegg(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            brevdata: RedigerbarBrevdata<*, *>,
+            felles: BrevbakerFelles,
+            vedleggId: String,
+        ): LetterMarkup.Attachment? = renderRedigerbareVedleggResultat[vedleggId]
 
         override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart) = modelSpecificationResultat
     }

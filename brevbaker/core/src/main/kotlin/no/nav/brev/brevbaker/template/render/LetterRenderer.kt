@@ -36,9 +36,9 @@ internal abstract class LetterRenderer<R : Any> {
     }
 
     @JvmName("renderAttachments")
-    fun render(scope: ExpressionScope<*>, attachments: List<IncludeAttachment<*, *>>, renderAttachment: (attachmentScope: ExpressionScope<*>, id: Int, attachment: AttachmentTemplate<*, *>) -> Unit) {
+    fun render(scope: ExpressionScope<*>, attachments: List<IncludeAttachment<*, *>>, renderAttachment: (attachmentScope: ExpressionScope<*>, editableId: String?, attachment: AttachmentTemplate<*, *>) -> Unit) {
         attachments.filter { it.predicate.eval(scope) }
-            .mapIndexed { index, attachment -> renderAttachment(attachment.toScope(scope), index, attachment.template) }
+            .forEach { attachment -> renderAttachment(attachment.toScope(scope), attachment.editableId, attachment.template) }
     }
 
     protected fun <C : Element<*>> hasAnyContent(scope: ExpressionScope<*>, elements: List<ContentOrControlStructure<*, C>>): Boolean {

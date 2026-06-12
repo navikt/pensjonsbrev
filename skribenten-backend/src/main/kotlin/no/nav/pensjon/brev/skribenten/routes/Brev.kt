@@ -87,3 +87,5 @@ fun Route.brev(
 }
 
 fun Parameters.brevId() = BrevId(getOrFail<Long>("brevId"))
+
+fun Parameters.vedleggId(): String = getOrFail("vedleggId")

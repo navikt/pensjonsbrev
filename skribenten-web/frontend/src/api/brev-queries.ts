@@ -10,7 +10,12 @@ import {
   type OpprettBrevRequest,
   type ReservasjonResponse,
 } from "~/types/brev";
-import { type EditedLetter, type LetterModelSpecification } from "~/types/brevbakerTypes";
+import {
+  type EditAttachment,
+  type EditedLetter,
+  type LetterModelSpecification,
+  type RedigerbartVedleggInfo,
+} from "~/types/brevbakerTypes";
 import { type P1Redigerbar } from "~/types/p1";
 
 export const brevmetadataKeys = {
@@ -148,4 +153,57 @@ export const getP1Override = {
 
 export async function saveP1Override(saksId: string, brevId: number, payload: P1Redigerbar): Promise<P1Redigerbar> {
   return (await axios.post<P1Redigerbar>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1`, payload)).data;
+}
+
+// Throwaway test-API for redigerbare vedlegg. Hele frontend skrives på nytt senere.
+export const redigertVedleggKeys = {
+  all: ["REDIGERT_VEDLEGG"] as const,
+  id: (brevId: number, vedleggId: string) => [...redigertVedleggKeys.all, brevId, vedleggId] as const,
+};
+
+const redigertVedleggUrl = (saksId: string, brevId: number, vedleggId: string) =>
+  `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/vedlegg/${vedleggId}`;
+
+// Forteller hvilke redigerbare vedlegg som er inkludert i brevet (back-end er kilden).
+export const redigerbareVedleggKeys = {
+  all: ["REDIGERBARE_VEDLEGG"] as const,
+  brev: (brevId: number) => [...redigerbareVedleggKeys.all, brevId] as const,
+};
+
+export const getRedigerbareVedlegg = {
+  queryKey: redigerbareVedleggKeys.brev,
+  queryFn: async (saksId: string, brevId: number): Promise<RedigerbartVedleggInfo[]> =>
+    (
+      await axios.get<RedigerbartVedleggInfo[]>(
+        `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/redigerbareVedlegg`,
+      )
+    ).data,
+};
+
+export const getRedigertVedlegg = {
+  queryKey: redigertVedleggKeys.id,
+  // 404 = ingen overstyring lagret ennå → returner null.
+  queryFn: async (saksId: string, brevId: number, vedleggId: string): Promise<EditAttachment | null> => {
+    try {
+      return (await axios.get<EditAttachment>(redigertVedleggUrl(saksId, brevId, vedleggId))).data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        return null;
+      }
+      throw error;
+    }
+  },
+};
+
+export async function lagreRedigertVedlegg(
+  saksId: string,
+  brevId: number,
+  vedleggId: string,
+  redigertVedlegg: EditAttachment,
+): Promise<BrevResponse> {
+  return (await axios.put<BrevResponse>(redigertVedleggUrl(saksId, brevId, vedleggId), { redigertVedlegg })).data;
+}
+
+export async function slettRedigertVedlegg(saksId: string, brevId: number, vedleggId: string): Promise<BrevResponse> {
+  return (await axios.delete<BrevResponse>(redigertVedleggUrl(saksId, brevId, vedleggId))).data;
 }

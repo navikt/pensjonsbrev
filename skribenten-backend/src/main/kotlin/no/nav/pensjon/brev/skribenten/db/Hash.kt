@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.db
 
-import no.nav.pensjon.brev.skribenten.letter.Edit
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
 import org.jetbrains.exposed.v1.core.Column
@@ -9,7 +8,7 @@ import org.jetbrains.exposed.v1.core.columnTransformer
 import org.jetbrains.exposed.v1.dao.Entity
 import kotlin.reflect.KProperty
 
-fun Column<Edit.Letter>.writeHashTo(hash: Column<Hash<Edit.Letter>>) =
+fun <T> Column<T>.writeHashTo(hash: Column<Hash<T>>) =
     WithHash(this, hash)
 
 fun <T> Table.hashColumn(name: String): Column<Hash<T>> =

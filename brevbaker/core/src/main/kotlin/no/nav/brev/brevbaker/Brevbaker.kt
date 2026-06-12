@@ -15,17 +15,23 @@ class Brevbaker(
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>): LetterResponse =
         brevbakerPDF.renderPDF(letter, null)
 
-    suspend fun renderRedigertBrevPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup) =
-        brevbakerPDF.renderPDF(letter, redigertBrev)
+    suspend fun renderRedigertBrevPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup, redigerteVedlegg: Map<String, LetterMarkup.Attachment> = emptyMap()) =
+        brevbakerPDF.renderPDF(letter, redigertBrev, redigerteVedlegg)
 
     fun renderHTML(letter: Letter<BrevbakerBrevdata>): LetterResponse =
         BrevbakerHTML.renderHTML(letter, null)
 
-    fun renderRedigertBrevHTML(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup): LetterResponse =
-        BrevbakerHTML.renderHTML(letter, redigertBrev)
+    fun renderRedigertBrevHTML(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup, redigerteVedlegg: Map<String, LetterMarkup.Attachment> = emptyMap()): LetterResponse =
+        BrevbakerHTML.renderHTML(letter, redigertBrev, redigerteVedlegg)
 
     fun <T: BrevbakerBrevdata> renderLetterMarkup(letter: Letter<T>): LetterMarkup =
         BrevbakerLetterMarkup.renderLetterMarkup(letter)
+
+    fun <T: BrevbakerBrevdata> renderRedigerbartVedleggTitler(letter: Letter<T>): Map<String, List<LetterMarkup.ParagraphContent.Text>> =
+        BrevbakerLetterMarkup.renderRedigerbartVedleggTitler(letter)
+
+    fun <T: BrevbakerBrevdata> renderRedigerbartVedleggMarkup(letter: Letter<T>, vedleggId: String): LetterMarkup.Attachment? =
+        BrevbakerLetterMarkup.renderRedigerbartVedlegg(letter, vedleggId)
 
     fun <T: BrevbakerBrevdata> renderLetterMarkupWithDataUsage(letter: Letter<T>): LetterMarkupWithDataUsage =
         BrevbakerLetterMarkup.renderLetterMarkupWithDataUsage(letter)

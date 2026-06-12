@@ -72,16 +72,54 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             }
         )
 
-    fun renderAttachmentsOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<Attachment> = buildList {
-        render(scope, template.attachments) { scope, _, attachment ->
-            add(
-                AttachmentImpl(
-                    renderText(scope, attachment.title),
-                    renderOutline(scope, attachment.outline),
+    fun renderAttachmentsOnly(
+        scope: ExpressionScope<*>,
+        template: LetterTemplate<*, *>,
+        redigerteVedlegg: Map<String, Attachment> = emptyMap(),
+    ): List<Attachment> = buildList {
+        render(scope, template.attachments) { attachmentScope, editableId, attachment ->
+            val override = editableId?.let { redigerteVedlegg[it] }
+            if (override != null) {
+                add(AttachmentImpl(override.title, override.blocks, override.includeSakspart))
+            } else {
+                add(
+                    AttachmentImpl(
+                        renderText(attachmentScope, attachment.title),
+                        renderOutline(attachmentScope, attachment.outline),
+                        attachment.includeSakspart,
+                    )
+                )
+            }
+        }
+    }
+
+    fun renderEditableAttachmentTitles(
+        scope: ExpressionScope<*>,
+        template: LetterTemplate<*, *>,
+    ): Map<String, List<Text>> = buildMap {
+        render(scope, template.attachments) { attachmentScope, editableId, attachment ->
+            if (editableId != null) {
+                put(editableId, renderText(attachmentScope, attachment.title))
+            }
+        }
+    }
+
+    fun renderEditableAttachment(
+        scope: ExpressionScope<*>,
+        template: LetterTemplate<*, *>,
+        vedleggId: String,
+    ): Attachment? {
+        var result: Attachment? = null
+        render(scope, template.attachments) { attachmentScope, editableId, attachment ->
+            if (result == null && editableId == vedleggId) {
+                result = AttachmentImpl(
+                    renderText(attachmentScope, attachment.title),
+                    renderOutline(attachmentScope, attachment.outline),
                     attachment.includeSakspart,
                 )
-            )
+            }
         }
+        return result
     }
 
     fun renderPDFTitlesOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<PDFTittel> = buildList {

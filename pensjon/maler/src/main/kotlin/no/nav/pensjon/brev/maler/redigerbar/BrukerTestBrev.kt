@@ -11,10 +11,13 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDtoSelectors
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDtoSelectors.SaksbehandlerValgSelectors.kontorplantenTorlill
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDtoSelectors.SaksbehandlerValgSelectors.utsiktenFraKontoret
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.model.Brevkategori
+import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
@@ -47,7 +50,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
             )
         }
         outline {
-            title1 { 
+            title1 {
                 text(bokmal { + "Vedtak" })
             }
             paragraph {
@@ -199,5 +202,13 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                 )
             }
         }
+        includeAttachmentRedigerbar("vedlegg1", testvedleggRedigerbart)
     }
 }
+
+private val testvedleggRedigerbart = createAttachment<LangBokmal, EmptyVedleggData>(
+    title = {
+        text(bokmal { +"Testvedlegg (redigerbart)" })
+    },
+    includeSakspart = false,
+) { paragraph { text(bokmal { +"Dette er innholdet i testvedlegget slik det produseres fra malen." }) } }

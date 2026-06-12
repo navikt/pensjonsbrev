@@ -13,6 +13,12 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageImpl
 internal object BrevbakerLetterMarkup {
     fun <T: BrevbakerBrevdata> renderLetterMarkup(letter: Letter<T>): LetterMarkup = Letter2Markup.renderLetterOnly(letter.toScope(), letter.template)
 
+    fun <T: BrevbakerBrevdata> renderRedigerbartVedleggTitler(letter: Letter<T>): Map<String, List<LetterMarkup.ParagraphContent.Text>> =
+        Letter2Markup.renderEditableAttachmentTitles(letter.toScope(), letter.template)
+
+    fun <T: BrevbakerBrevdata> renderRedigerbartVedlegg(letter: Letter<T>, vedleggId: String): LetterMarkup.Attachment? =
+        Letter2Markup.renderEditableAttachment(letter.toScope(), letter.template, vedleggId)
+
     @OptIn(InterneDataklasser::class)
     fun <T: BrevbakerBrevdata> renderLetterMarkupWithDataUsage(letter: Letter<T>): LetterMarkupWithDataUsage =
         SelectorUsage().let { usage ->

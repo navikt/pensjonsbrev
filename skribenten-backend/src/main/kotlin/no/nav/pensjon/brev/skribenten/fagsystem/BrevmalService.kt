@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDa
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -61,6 +62,29 @@ class BrevmalService(
             spraak = brev.spraak,
             saksbehandlerValg = brev.saksbehandlerValg,
             pesysData = pesysData,
+        )
+
+    suspend fun hentRedigerbareVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data): Map<String, List<LetterMarkup.ParagraphContent.Text>> =
+        brevbakerService.hentRedigerbareVedlegg(
+            brevkode = brev.brevkode,
+            spraak = brev.spraak,
+            brevdata = GeneriskRedigerbarBrevdata(
+                pesysData = pesysData.brevdata,
+                saksbehandlerValg = brev.saksbehandlerValg,
+            ),
+            felles = pesysData.felles,
+        )
+
+    suspend fun renderRedigerbartVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data, vedleggId: String): LetterMarkup.Attachment? =
+        brevbakerService.renderRedigerbartVedlegg(
+            brevkode = brev.brevkode,
+            spraak = brev.spraak,
+            brevdata = GeneriskRedigerbarBrevdata(
+                pesysData = pesysData.brevdata,
+                saksbehandlerValg = brev.saksbehandlerValg,
+            ),
+            felles = pesysData.felles,
+            vedleggId = vedleggId,
         )
 
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =

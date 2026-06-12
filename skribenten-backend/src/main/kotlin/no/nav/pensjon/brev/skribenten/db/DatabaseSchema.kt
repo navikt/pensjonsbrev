@@ -95,6 +95,20 @@ object P1DataTable : IdTable<BrevId>() {
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
+object RedigertVedleggTable : LongIdTable() {
+    val brevredigering: Column<EntityID<BrevId>> =
+        reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE)
+    val vedleggId: Column<String> = varchar("vedleggId", 50)
+    val redigertVedleggKryptert: Column<Edit.Attachment> = encryptedBinary("redigertVedleggKryptert")
+        .transform(KrypteringService::dekrypter, KrypteringService::krypter)
+        .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
+    val redigertVedleggKryptertHash: Column<Hash<Edit.Attachment>> = hashColumn("redigertVedleggKryptertHash")
+
+    init {
+        uniqueIndex(brevredigering, vedleggId)
+    }
+}
+
 object OneShotJobTable : IdTable<String>() {
     override val id: Column<EntityID<String>> = varchar("name", 255).entityId()
     val completedAt: Column<Instant> = timestamp("completedAt")

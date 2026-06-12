@@ -51,6 +51,11 @@ object Dto {
         KLADD, ATTESTERING, KLAR, ARKIVERT
     }
 
+    data class RedigertVedlegg(
+        val vedleggId: String,
+        val redigertVedlegg: Edit.Attachment,
+    )
+
     data class Document(
         val dokumentDato: LocalDate,
         val pdf: ByteArray,
