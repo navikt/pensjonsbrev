@@ -3,7 +3,9 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 
 data class VedtakOmEtterbetalingOpphor2026RedigerbarDto(
@@ -14,6 +16,8 @@ data class VedtakOmEtterbetalingOpphor2026RedigerbarDto(
         val etterbetaling: BrevbakerType.Kroner,
         val hjemler: Set<String>,
         val reduksjonsprosent: Double,
+        val pe: PEgruppe10,
+        val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
         val dineRettigheterOgPlikterUfore: DineRettigheterOgPlikterUforeDto,
         ) : FagsystemBrevdata
 }
