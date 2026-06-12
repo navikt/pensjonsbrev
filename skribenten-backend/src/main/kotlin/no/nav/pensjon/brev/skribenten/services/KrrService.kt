@@ -29,6 +29,7 @@ class KrrService(config: Config, authService: AuthService, engine: HttpClientEng
                 registerModule(JavaTimeModule())
             }
         }
+        installRetry(logger)
         callIdAndOnBehalfOfClient(config.getString("scope"), authService)
     }
 
