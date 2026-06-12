@@ -164,11 +164,7 @@ val vedleggOpplysningerOmBeregningenGjenlevendepensjonUtland =
                         includePhrase(KronerText(pesysData.bruker.forventetInntekt))
                     }
                 }
-
-                // Samboer §3-2: vises kun når bruker er registrert som samboer etter folketrygdloven § 3-2.
-                // IF(PE_..._BeregningSivilstandAnvendt = "bormed 3-2") THEN INCLUDE ENDIF
                 showIf(pesysData.bruker.samboer3_2) {
-                    // IF(PE_..._BeregningEktefelleMottarPensjon = true) THEN "Ja" ELSE "Nei"
                     row {
                         cell {
                             text(
