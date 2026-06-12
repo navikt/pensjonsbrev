@@ -1,9 +1,6 @@
-// "When accessing a member from an await expression, the await expression has to be parenthesized, which is not readable."
-// For the purpose of this file it is convenient to be able to access the data property of axios response as a one-liners.
-
 import axios from "axios";
 
-import { type TemplateDescription, type TemplateDocumentation } from "~/api/brevbakerTypes";
+import { type SearchLineWithBlockId, type TemplateDescription, type TemplateDocumentation } from "~/api/brevbakerTypes";
 
 const BREVBAKER_API_BASE_PATH = "/brevbaker";
 
@@ -24,11 +21,6 @@ export const templateDocumentationKeys = {
     [...templateDocumentationKeys.all, malType, templateId, language] as const,
 };
 
-export const brevkoderKeys = {
-  all: ["BREVKODER"] as const,
-  malType: (malType: MalType) => [...brevkoderKeys.all, malType] as const,
-};
-
 export const getTemplateDescription = {
   queryKey: templateDescriptionKeys.id,
   queryFn: async (type: MalType, templateId: string) =>
@@ -45,8 +37,21 @@ export const getTemplateDocumentation = {
     ).data,
 };
 
-export const getBrevkoder = {
-  queryKey: brevkoderKeys.malType,
+export type SearchableContent = {
+  brevkode: string;
+  language: string;
+  lines: SearchLineWithBlockId[];
+};
+
+export const getAllTemplateDocumentation = {
+  queryKey: (malType: MalType) => [...templateDocumentationKeys.all, malType, "BATCH"] as const,
   queryFn: async (malType: MalType) =>
-    (await axios.get<string[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}`)).data,
+    (await axios.get<SearchableContent[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}/all`)).data,
+};
+
+export const getBrevkoderMedMetadata = {
+  queryKey: (malType: MalType) => ["BREVKODER", malType, "METADATA"] as const,
+  queryFn: async (malType: MalType) =>
+    (await axios.get<TemplateDescription[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}?includeMetadata=true`))
+      .data,
 };

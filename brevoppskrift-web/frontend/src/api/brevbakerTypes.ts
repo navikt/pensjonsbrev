@@ -1,8 +1,18 @@
+export type TemplateMetadata = {
+  displayTitle?: string;
+  distribusjonstype?: string;
+  brevtype?: string;
+};
+
+export type LineSegment = { kind: "text"; value: string } | { kind: "var"; label: string };
+export type Line = LineSegment[];
+export type SearchLineWithBlockId = { blockId: string; segments: LineSegment[] };
+
 export type TemplateDescription = {
   name: string;
   letterDataClass: string;
   languages: string[];
-  metadata: unknown;
+  metadata?: TemplateMetadata | null;
 };
 
 export type TemplateDocumentation = {
@@ -34,20 +44,24 @@ export enum ElementType {
 export type Element = OutlineContent | ParagraphContent;
 export type OutlineContent = Title1 | Title2 | Title3 | Paragraph;
 export type Title1 = {
+  id: string;
   elementType: ElementType.TITLE1;
   text: ContentOrControlStructure<Text>[];
 };
 export type Title2 = {
+  id: string;
   elementType: ElementType.TITLE2;
   text: ContentOrControlStructure<Text>[];
 };
 
 export type Title3 = {
+  id: string;
   elementType: ElementType.TITLE3;
   text: ContentOrControlStructure<Text>[];
 };
 
 export type Paragraph = {
+  id: string;
   elementType: ElementType.PARAGRAPH;
   paragraph: ContentOrControlStructure<ParagraphContent>[];
 };
