@@ -106,27 +106,9 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
             }
 
             showIf(pesysData.medlemAvApotekerordningen) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Vedtaket er gjort etter lov om AFP for apotekvirksomhet §3."
-                        },
-                        nynorsk {
-                            +"Vedtaket er gjort etter reglane om AFP for apotekvirksomhet §3."
-                        },
-                    )
-                }
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
             }.orShow {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3 " + "bokstav d, og tilhørende forskrift om kombinasjon av avtalefestet pensjon " + "for medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende " + "inntekt)."
-                        },
-                        nynorsk {
-                            +"Vedtaket er fatta etter reglane om kombinasjon av AFP og arbeidsinntekt i lov " + "om AFP for medlemmer av Statens pensjonskasse paragraf 3 første ledd bokstav " + "d og tilhøyrande forskrift om kombinasjon av AFP og arbeidsinntekt."
-                        },
-                    )
-                }
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
             }
 
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(pesysData.oppgjoersAar))
