@@ -2062,6 +2062,95 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/sak/{saksId}/brev/{brevId}/foersteside": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ApiOppdaterFoerstesideRequest"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiBrevInfo"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/brev/{brevId}/info": {
         parameters: {
             query?: never;
@@ -3555,6 +3644,10 @@ export interface components {
             tilgjengeligForSpraak: boolean;
             visningstekst: string;
         };
+        /** ApiOppdaterFoerstesideRequest */
+        ApiOppdaterFoerstesideRequest: {
+            leggVedFoersteside: boolean;
+        };
         /** Duration */
         Duration: {
             seconds: number;
@@ -3794,6 +3887,7 @@ export type P1RedigerbarDtoInnvilgetPensjon = components["schemas"]["P1Redigerba
 export type P1RedigerbarDtoUtfyllendeInstitusjon = components["schemas"]["P1RedigerbarDtoUtfyllendeInstitusjon"];
 export type P1RedigerbarDto = components["schemas"]["P1RedigerbarDto"];
 export type ValgbartVedlegg = components['schemas']['ValgbartVedlegg'];
+export type ApiOppdaterFoerstesideRequest = components['schemas']['ApiOppdaterFoerstesideRequest'];
 export type Duration = components['schemas']['Duration'];
 export type ApiReservasjonResponse = components['schemas']['ApiReservasjonResponse'];
 export type DiffBrevHandlerResponse = components['schemas']['DiffBrevHandlerResponse'];
