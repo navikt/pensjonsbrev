@@ -41,6 +41,7 @@ import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
+import no.nav.pensjon.brev.skribenten.services.HttpClientFactory
 import no.nav.pensjon.brev.skribenten.services.ServiceException
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
@@ -200,6 +201,9 @@ fun Application.skribentenApp(skribentenConfig: Config) {
 
     monitor.subscribe(ApplicationStopPreparing) {
         Features.shutdown()
+    }
+    monitor.subscribe(ApplicationStopping) {
+        HttpClientFactory.close()
     }
 }
 
