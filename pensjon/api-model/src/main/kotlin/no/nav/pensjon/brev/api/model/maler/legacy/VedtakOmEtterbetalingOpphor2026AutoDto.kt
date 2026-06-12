@@ -7,5 +7,6 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 data class VedtakOmEtterbetalingOpphor2026AutoDto(
     val etterbetaling: Kroner,
     val hjemler: Set<String>,
+    val reduksjonsprosent: Double,
     val dineRettigheterOgPlikterUfore: DineRettigheterOgPlikterUforeDto,
 ) : AutobrevData

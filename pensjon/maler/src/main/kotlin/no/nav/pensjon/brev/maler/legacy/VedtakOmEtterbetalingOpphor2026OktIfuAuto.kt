@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor202
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.dineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.hjemler
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.reduksjonsprosent
 import no.nav.pensjon.brev.maler.fraser.VedtakOmEtterbetalingOpphor2026
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
@@ -45,7 +46,7 @@ object VedtakOmEtterbetalingOpphor2026OktIfuAuto : AutobrevTemplate<VedtakOmEtte
             }
         }
         outline {
-            includePhrase(VedtakOmEtterbetalingOpphor2026.Outline(etterbetaling = etterbetaling, hjemler = hjemler))
+            includePhrase(VedtakOmEtterbetalingOpphor2026.Outline(etterbetaling = etterbetaling, hjemler = hjemler, reduksjonsprosent = reduksjonsprosent))
             includePhrase(VedtakOmEtterbetalingOpphor2026.RettTilAAKlage)
             includePhrase(Ufoeretrygd.RettTilInnsyn)
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)

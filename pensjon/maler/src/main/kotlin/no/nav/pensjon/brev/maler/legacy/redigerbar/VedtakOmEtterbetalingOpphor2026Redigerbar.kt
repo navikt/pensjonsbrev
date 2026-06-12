@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetali
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDtoSelectors.PesysDataSelectors.dineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDtoSelectors.PesysDataSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDtoSelectors.PesysDataSelectors.hjemler
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDtoSelectors.PesysDataSelectors.reduksjonsprosent
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.VedtakOmEtterbetalingOpphor2026
@@ -55,7 +56,7 @@ object VedtakOmEtterbetalingOpphor2026Redigerbar : RedigerbarTemplate<VedtakOmEt
             }
         }
         outline {
-            includePhrase(VedtakOmEtterbetalingOpphor2026.Outline(etterbetaling = pesysData.etterbetaling, hjemler = pesysData.hjemler, erRedigerbar = true.expr()))
+            includePhrase(VedtakOmEtterbetalingOpphor2026.Outline(etterbetaling = pesysData.etterbetaling, hjemler = pesysData.hjemler, reduksjonsprosent = pesysData.reduksjonsprosent, erRedigerbar = true.expr()))
             includePhrase(VedtakOmEtterbetalingOpphor2026.RettTilAAKlage)
             includePhrase(Ufoeretrygd.RettTilInnsyn)
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)

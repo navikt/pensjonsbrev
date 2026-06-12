@@ -13,6 +13,7 @@ data class VedtakOmEtterbetalingOpphor2026RedigerbarDto(
     data class PesysData(
         val etterbetaling: BrevbakerType.Kroner,
         val hjemler: Set<String>,
+        val reduksjonsprosent: Double,
         val dineRettigheterOgPlikterUfore: DineRettigheterOgPlikterUforeDto,
         ) : FagsystemBrevdata
 }
