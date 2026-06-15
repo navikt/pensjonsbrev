@@ -79,17 +79,13 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     ): List<Attachment> = buildList {
         render(scope, template.attachments) { attachmentScope, editableId, attachment ->
             val override = editableId?.let { redigerteVedlegg[it] }
-            if (override != null) {
-                add(AttachmentImpl(override.title, override.blocks, override.includeSakspart))
-            } else {
-                add(
-                    AttachmentImpl(
-                        renderText(attachmentScope, attachment.title),
-                        renderOutline(attachmentScope, attachment.outline),
-                        attachment.includeSakspart,
-                    )
-                )
-            }
+            add(
+                if (override != null) {
+                    AttachmentImpl(override.title, override.blocks, override.includeSakspart)
+                } else {
+                    renderAttachment(attachmentScope, attachment)
+                }
+            )
         }
     }
 
@@ -112,15 +108,18 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         var result: Attachment? = null
         render(scope, template.attachments) { attachmentScope, editableId, attachment ->
             if (result == null && editableId == vedleggId) {
-                result = AttachmentImpl(
-                    renderText(attachmentScope, attachment.title),
-                    renderOutline(attachmentScope, attachment.outline),
-                    attachment.includeSakspart,
-                )
+                result = renderAttachment(attachmentScope, attachment)
             }
         }
         return result
     }
+
+    private fun renderAttachment(scope: ExpressionScope<*>, attachment: AttachmentTemplate<*, *>): Attachment =
+        AttachmentImpl(
+            renderText(scope, attachment.title),
+            renderOutline(scope, attachment.outline),
+            attachment.includeSakspart,
+        )
 
     fun renderPDFTitlesOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<PDFTittel> = buildList {
         return template.pdfAttachments.map {
