@@ -34,6 +34,7 @@ class PensjonRepresentasjonService(
         engine {
             requestTimeout = 10.seconds.inWholeMilliseconds
         }
+        installRetry(logger)
         install(ContentNegotiation) { jackson() }
         callIdAndOnBehalfOfClient(scope, authService)
     }
