@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression
  * brevoppskrift search index can consume the extracted lines directly without
  * having to flatten the documentation tree itself.
  */
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "kind", include = JsonTypeInfo.As.PROPERTY)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type", include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes(
     JsonSubTypes.Type(TextSegment.Text::class, name = "text"),
     JsonSubTypes.Type(TextSegment.Variable::class, name = "var"),

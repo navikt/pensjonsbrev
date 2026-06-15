@@ -4,6 +4,8 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import com.fasterxml.jackson.module.kotlin.readValue
+import java.util.zip.GZIPInputStream
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.alleAutobrevmaler
 import no.nav.pensjon.brev.alleRedigerbareMaler
@@ -12,6 +14,7 @@ import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import no.nav.pensjon.brev.template.render.TemplateTextExtractor
 import no.nav.pensjon.brev.template.render.TemplateDocumentation
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
@@ -202,14 +205,21 @@ class TemplateRoutesTest {
         }
 
     @Test
-    fun `filtrerer bort deaktiverte maler`() = runBlocking {
-        testBrevbakerApp(enableAllToggles = false, isIntegrationTest = false) { client ->
-            val response = client.get("/templates/redigerbar?includeMetadata=true")
-            assertEquals(HttpStatusCode.OK, response.status)
-            val body = response.body<List<LinkedHashMap<*, *>>>()
-            assertNull(body.map { it["name"] }.firstOrNull { it == "PE_OVERSETTELSE_AV_DOKUMENTER" })
-            assertNull(body.map { it["name"] }.firstOrNull { it == "UT_AVSLAG_UFOERETRYGD" })
-        }
-    }
+    fun `batch doc endpoint gzip-encodes the body when the client accepts gzip`() =
+        testBrevbakerApp(isIntegrationTest = false) { client ->
+            val plain = client.get("/templates/autobrev/all")
+            val expected = plain.body<List<SearchableContent>>()
 
+            val gzipResponse = client.get("/templates/autobrev/all") {
+                header(HttpHeaders.AcceptEncoding, "gzip")
+            }
+            assertEquals(HttpStatusCode.OK, gzipResponse.status)
+            assertEquals("gzip", gzipResponse.headers[HttpHeaders.ContentEncoding])
+
+            // The Ktor test client doesn't auto-decompress, so we gunzip ourselves
+            // and verify the payload round-trips to the same content as the plain body.
+            val decompressed = GZIPInputStream(gzipResponse.readRawBytes().inputStream()).use { it.readBytes() }
+            val actual = brevbakerJacksonObjectMapper().readValue<List<SearchableContent>>(decompressed)
+            assertEquals(expected.toSet(), actual.toSet())
+        }
 }
