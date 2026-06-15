@@ -8,6 +8,7 @@ on:
     paths:
       - ".githooks/pre-commit"
       - ".github/dependabot.yml"
+      - ".github/pr/**"
       - ".github/regsuitconfig.json"
       - ".github/skills/**/*.md"
       - ".github/workflows/.build-frontend.yaml"
