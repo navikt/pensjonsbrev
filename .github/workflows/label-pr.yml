@@ -28,6 +28,7 @@ jobs:
               'madsop-nav',
               'mussie009',
               'stainawarjar',
+              'sanderhaNav',
             ];
             const author = context.payload.pull_request.user.login;
             if (teamMembers.includes(author)) {
