@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.VedleggId
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.RedigerbartVedlegg
@@ -204,7 +205,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                 )
             }
         }
-        includeAttachmentRedigerbar("vedlegg1", testvedleggRedigerbart)
+        includeAttachmentRedigerbar(VedleggId("vedlegg1"), testvedleggRedigerbart)
     }
 }
 

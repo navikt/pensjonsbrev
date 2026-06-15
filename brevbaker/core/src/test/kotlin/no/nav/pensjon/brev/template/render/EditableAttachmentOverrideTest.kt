@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.SimpleSelector
+import no.nav.pensjon.brev.template.VedleggId
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.RedigerbartVedlegg
 import no.nav.pensjon.brev.template.dsl.expression.select
@@ -51,7 +52,7 @@ class EditableAttachmentOverrideTest {
     ) {
         title { text(nynorsk { +"tittel" }) }
         outline {}
-        includeAttachmentRedigerbar("vedlegg1", originaltVedlegg)
+        includeAttachmentRedigerbar(VedleggId("vedlegg1"), originaltVedlegg)
     }
 
     private val templateMedFlereVedlegg = createTemplate(
@@ -61,9 +62,9 @@ class EditableAttachmentOverrideTest {
     ) {
         title { text(nynorsk { +"tittel" }) }
         outline {}
-        includeAttachmentRedigerbar("vedlegg1", originaltVedlegg)
+        includeAttachmentRedigerbar(VedleggId("vedlegg1"), originaltVedlegg)
         includeAttachment(ikkeRedigerbartVedlegg)
-        includeAttachmentRedigerbar("vedlegg2", annetVedlegg)
+        includeAttachmentRedigerbar(VedleggId("vedlegg2"), annetVedlegg)
     }
 
     private val scopeMedFlereVedlegg =
@@ -79,7 +80,7 @@ class EditableAttachmentOverrideTest {
         ) {
             title { text(nynorsk { +"tittel" }) }
             outline {}
-            includeAttachmentRedigerbar("vedlegg1", annetVedlegg)
+            includeAttachmentRedigerbar(VedleggId("vedlegg1"), annetVedlegg)
         }
         val overrideScope = LetterImpl(overrideTemplate, TomtBrev(), Nynorsk, FellesFactory.felles).toScope()
         Letter2Markup.renderAttachmentsOnly(overrideScope, overrideTemplate).first()
@@ -93,7 +94,7 @@ class EditableAttachmentOverrideTest {
         title { text(nynorsk { +"tittel" }) }
         outline {}
         includeAttachmentRedigerbar(
-            "vedlegg1",
+            VedleggId("vedlegg1"),
             originaltVedlegg,
             predicate = argument.select(
                 SimpleSelector(
@@ -121,7 +122,7 @@ class EditableAttachmentOverrideTest {
 
         @Test
         fun `overstyringen brukes i sin helhet naar vedleggId matcher`() {
-            val attachments = Letter2Markup.renderAttachmentsOnly(scope, template, mapOf("vedlegg1" to overstyring))
+            val attachments = Letter2Markup.renderAttachmentsOnly(scope, template, mapOf(VedleggId("vedlegg1") to overstyring))
 
             assertThat(attachments).hasSize(1)
             assertThat(attachments.first()).isEqualTo(overstyring)
@@ -130,7 +131,7 @@ class EditableAttachmentOverrideTest {
         @Test
         fun `overstyring for en annen vedleggId ignoreres`() {
             val utenOverstyring = Letter2Markup.renderAttachmentsOnly(scope, template)
-            val medFeilId = Letter2Markup.renderAttachmentsOnly(scope, template, mapOf("annetVedlegg" to overstyring))
+            val medFeilId = Letter2Markup.renderAttachmentsOnly(scope, template, mapOf(VedleggId("annetVedlegg") to overstyring))
 
             assertThat(medFeilId).isEqualTo(utenOverstyring)
         }
@@ -142,17 +143,17 @@ class EditableAttachmentOverrideTest {
         fun `returnerer tittelen for et redigerbart vedlegg`() {
             val titler = Letter2Markup.renderEditableAttachmentTitles(scope, template)
 
-            assertThat(titler.keys).containsExactly("vedlegg1")
-            assertThat(titler.getValue("vedlegg1").joinToString("") { it.text }).isEqualTo("Original tittel")
+            assertThat(titler.keys).containsExactly(VedleggId("vedlegg1"))
+            assertThat(titler.getValue(VedleggId("vedlegg1")).joinToString("") { it.text }).isEqualTo("Original tittel")
         }
 
         @Test
         fun `returnerer titler for alle redigerbare vedlegg`() {
             val titler = Letter2Markup.renderEditableAttachmentTitles(scopeMedFlereVedlegg, templateMedFlereVedlegg)
 
-            assertThat(titler.keys).containsExactlyInAnyOrder("vedlegg1", "vedlegg2")
-            assertThat(titler.getValue("vedlegg1").joinToString("") { it.text }).isEqualTo("Original tittel")
-            assertThat(titler.getValue("vedlegg2").joinToString("") { it.text }).isEqualTo("Overstyrt tittel")
+            assertThat(titler.keys).containsExactlyInAnyOrder(VedleggId("vedlegg1"), VedleggId("vedlegg2"))
+            assertThat(titler.getValue(VedleggId("vedlegg1")).joinToString("") { it.text }).isEqualTo("Original tittel")
+            assertThat(titler.getValue(VedleggId("vedlegg2")).joinToString("") { it.text }).isEqualTo("Overstyrt tittel")
         }
 
         @Test
@@ -203,8 +204,8 @@ class EditableAttachmentOverrideTest {
         fun `renderEditableAttachmentTitles tar med redigerbart vedlegg naar predikatet er sant`() {
             val titler = Letter2Markup.renderEditableAttachmentTitles(predikatScope(visVedlegg = true), predikatTemplate)
 
-            assertThat(titler.keys).containsExactly("vedlegg1")
-            assertThat(titler.getValue("vedlegg1").joinToString("") { it.text }).isEqualTo("Original tittel")
+            assertThat(titler.keys).containsExactly(VedleggId("vedlegg1"))
+            assertThat(titler.getValue(VedleggId("vedlegg1")).joinToString("") { it.text }).isEqualTo("Original tittel")
         }
 
         @Test
