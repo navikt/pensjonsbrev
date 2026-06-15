@@ -1,21 +1,28 @@
 package no.nav.pensjon.brev.alder.model.afp
 
-import no.nav.pensjon.brev.api.model.maler.AutobrevData
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
-data class VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto(
-    val oppgjoersAar: Year,
-    val pensjonsgivendeInntekt: Kroner,
-    val inntektFoerUttak: Kroner,
-    val inntektEtterOpphoer: Kroner,
-    val inntektIAfpPerioden: Kroner,
-    val forventetPensjonsgivendeInntektBeregnet: Kroner,
-    val avvik: Kroner,
-    val medlemAvApotekerordningen: Boolean,
-    val toleranseBeloep: Kroner,
-    val scenario: Scenario,
-) : AutobrevData {
+data class VedtakAfpEtteroppgjoerIngenEndringEtterSvarDto(
+    override val saksbehandlerValg: EmptySaksbehandlerValg,
+    override val pesysData: PesysData,
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakAfpEtteroppgjoerIngenEndringEtterSvarDto.PesysData> {
+
+    data class PesysData(
+        val oppgjoersAar: Year,
+        val pensjonsgivendeInntekt: Kroner,
+        val inntektFoerUttak: Kroner,
+        val inntektEtterOpphoer: Kroner,
+        val inntektIAfpPerioden: Kroner,
+        val forventetPensjonsgivendeInntektBeregnet: Kroner,
+        val avvik: Kroner,
+        val medlemAvApotekerordningen: Boolean,
+        val toleranseBeloep: Kroner,
+        val scenario: Scenario,
+    ) : FagsystemBrevdata
 
     /**
      * Scenarier for forklaringen om hvilke nye opplysninger som er lagt fram.

@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.db
 
 import no.nav.brev.BrevLandmodell.Landkode
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
@@ -10,7 +9,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.services.EnhetId
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.jetbrains.exposed.v1.core.Column
@@ -38,7 +37,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
 
     val saksId: Column<SaksId> = long("saksId").index().transform(::SaksId, SaksId::id)
     val vedtaksId: Column<VedtaksId?> = long("vedtaksId").transform(::VedtaksId, VedtaksId::id).nullable()
-    val brevkode: Column<Brevkode.Redigerbart> = varchar("brevkode", length = 50).transform({ RedigerbarBrevkode(it) }, Brevkode.Redigerbart::kode)
+    val brevkode: Column<RedigerbarBrevkode> = varchar("brevkode", length = 50).transform(::RedigerbarBrevkode, RedigerbarBrevkode::kode)
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<EnhetId> = varchar("avsenderEnhetId", 50).transform(::EnhetId, EnhetId::value)
     val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonString)
@@ -47,7 +46,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
         .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
     val redigertBrevKryptertHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevKryptertHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
-    val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
+    val distribusjonstype: Column<Distribusjon> = varchar("distribusjonstype", length = 50).transform(Distribusjon::valueOf, Distribusjon::name)
     val redigeresAvNavIdent: Column<NavIdent?> = varchar("redigeresAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).nullable()
     val sistRedigertAvNavIdent: Column<NavIdent> = varchar("sistRedigertAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id)
     val opprettetAvNavIdent: Column<NavIdent> = varchar("opprettetAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).index()
@@ -117,7 +116,7 @@ object OneShotJobTable : IdTable<String>() {
 
 object ValgteVedleggTable : IdTable<BrevId>() {
     override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
-    val valgteVedlegg = json<List<AlltidValgbartVedleggKode>>("valgtevedlegg", databaseObjectMapper::writeValueAsString, ::readJsonString)
+    val valgteVedlegg = json<List<AlltidValgbartVedleggBrevkode>>("valgtevedlegg", databaseObjectMapper::writeValueAsString, ::readJsonString)
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }

@@ -3,9 +3,7 @@ package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
-import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -13,15 +11,15 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import no.nav.brev.BrevExceptionDto
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
-import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
+import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -54,7 +52,7 @@ class PentHttpClient(config: Config, authService: AuthService) : PenClient, Serv
     private val penUrl = config.getString("url")
     private val penScope = config.getString("scope")
 
-    private val client = HttpClient(CIO) {
+    private val client = lagHttpClient {
         defaultRequest {
             url(penUrl)
         }
@@ -62,7 +60,6 @@ class PentHttpClient(config: Config, authService: AuthService) : PenClient, Serv
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
-                registerModule(SakstypeModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
@@ -175,7 +172,7 @@ class PentHttpClient(config: Config, authService: AuthService) : PenClient, Serv
         val saksId: SaksId,
         val foedselsdato: LocalDate,
         val navn: Navn,
-        val sakType: ISakstype,
+        val sakType: Sakstype,
         val enhetId: String?,
         val pid: Pid,
         val behandlingsnumre: List<Behandlingsnummer>,

@@ -7,7 +7,6 @@ import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
@@ -24,6 +23,7 @@ import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerReques
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto
+import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.SafService.HentDokumenterResponse
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
@@ -68,7 +68,7 @@ open class FakeP1Service: P1Service {
         p1DataInput: Api.GeneriskBrevdata,
         brevId: BrevId,
         saksId: SaksId,
-    ): Api.GeneriskBrevdata? = notYetStubbed()
+    ): Api.GeneriskBrevdata = notYetStubbed()
 
     override suspend fun hentP1Data(
         brevId: BrevId,
@@ -90,7 +90,7 @@ open class FakeBrevmetadataService(
 ) : BrevmetadataService {
     override suspend fun getAllBrev(): List<BrevdataDto> = brevmaler + eblanketter
 
-    override suspend fun getBrevmalerForSakstype(sakstype: ISakstype) = brevmaler
+    override suspend fun getBrevmalerForSakstype(sakstype: Sakstype) = brevmaler
 
     override suspend fun getEblanketter() = eblanketter
 
@@ -120,7 +120,7 @@ open class FakeBrevbakerService(
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
-        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
         redigerteVedlegg: Map<String, LetterMarkup.Attachment>,
     ): LetterResponse = notYetStubbed()
     override suspend fun hentRedigerbareVedlegg(

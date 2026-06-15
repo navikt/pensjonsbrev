@@ -1,4 +1,6 @@
-import { type BestillBrevResponse, type BrevInfo, Distribusjonstype } from "~/types/brev";
+import { type AxiosError } from "axios";
+
+import { type BestillBrevError, type BestillBrevResponse, type BrevInfo, Distribusjonstype } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
 
 export interface KvittertBrev {
@@ -7,14 +9,15 @@ export interface KvittertBrev {
   brevFørHandling: BrevInfo;
   attesteringResponse: Nullable<BrevInfo>;
   sendtBrevResponse: Nullable<BestillBrevResponse>;
+  sendtBrevError: Nullable<AxiosError | BestillBrevError>;
 }
 
 export const distribusjonstypeTilText = (d: Distribusjonstype) => {
   switch (d) {
-    case Distribusjonstype.SENTRALPRINT: {
+    case "SENTRALPRINT": {
       return "Sentral print";
     }
-    case Distribusjonstype.LOKALPRINT: {
+    case "LOKALPRINT": {
       return "Lokal print";
     }
   }
@@ -25,6 +28,7 @@ export const toKvittertBrev = (args: {
   context: "sendBrev" | "attestering";
   brevFørHandling: BrevInfo;
   bestillBrevResponse: Nullable<BestillBrevResponse>;
+  bestillBrevError?: Nullable<AxiosError | BestillBrevError>;
   attesterResponse: Nullable<BrevInfo>;
 }): KvittertBrev => ({
   apiStatus: args.status,
@@ -32,6 +36,7 @@ export const toKvittertBrev = (args: {
   brevFørHandling: args.brevFørHandling,
   attesteringResponse: args.attesterResponse,
   sendtBrevResponse: args.bestillBrevResponse,
+  sendtBrevError: args.bestillBrevError ?? null,
 });
 
 export const kvitteringSorteringsPrioritet: Record<"error" | "lokalprint" | "attestering" | "sentralprint", number> = {

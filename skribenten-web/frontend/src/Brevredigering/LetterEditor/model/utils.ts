@@ -8,20 +8,14 @@ import {
   ElementTags,
   type Header,
   type Identifiable,
-  ITEM_LIST,
   type Item,
   type ItemList,
-  LITERAL,
   type LiteralValue,
-  NEW_LINE,
   type NewLine,
-  PARAGRAPH,
   type ParagraphBlock,
   type Row,
-  TABLE,
   type Table,
   type TextContent,
-  VARIABLE,
   type VariableValue,
 } from "~/types/brevbakerTypes";
 
@@ -38,22 +32,22 @@ export function isTextContent(obj: Identifiable | null | undefined): obj is Text
 
 export function isLiteral(obj: Draft<Identifiable | null | undefined>): obj is Draft<LiteralValue>;
 export function isLiteral(obj: Identifiable | null | undefined): obj is LiteralValue {
-  return !!obj && "type" in obj && obj.type === LITERAL;
+  return !!obj && "type" in obj && obj.type === "LITERAL";
 }
 
 export function isVariable(obj: Draft<Identifiable | null | undefined>): obj is Draft<VariableValue>;
 export function isVariable(obj: Identifiable | null | undefined): obj is VariableValue {
-  return !!obj && "type" in obj && obj.type === VARIABLE;
+  return !!obj && "type" in obj && obj.type === "VARIABLE";
 }
 
 export function isNewLine(obj: Draft<Identifiable | null | undefined>): obj is Draft<NewLine>;
 export function isNewLine(obj: Identifiable | null | undefined): obj is NewLine {
-  return !!obj && "type" in obj && obj.type === NEW_LINE;
+  return !!obj && "type" in obj && obj.type === "NEW_LINE";
 }
 
 export function isItemList(obj: Draft<Identifiable | null | undefined>): obj is Draft<ItemList>;
 export function isItemList(obj: Identifiable | null | undefined): obj is ItemList {
-  return !!obj && "type" in obj && obj.type === ITEM_LIST;
+  return !!obj && "type" in obj && obj.type === "ITEM_LIST";
 }
 
 export function isFritekst(literal: LiteralValue): boolean {
@@ -62,15 +56,15 @@ export function isFritekst(literal: LiteralValue): boolean {
 
 export function isEmptyContent(content: Content) {
   switch (content.type) {
-    case VARIABLE:
-    case NEW_LINE:
-    case LITERAL: {
+    case "VARIABLE":
+    case "NEW_LINE":
+    case "LITERAL": {
       return text(content).trim().replaceAll(ZERO_WIDTH_SPACE, "").length === 0;
     }
-    case ITEM_LIST: {
+    case "ITEM_LIST": {
       return content.items.length === 0 || content.items.every(isEmptyItem);
     }
-    case TABLE: {
+    case "TABLE": {
       return isEmptyTable(content);
     }
   }
@@ -94,7 +88,7 @@ export function isEmptyBlock(block: AnyBlock): boolean {
 }
 
 export function isParagraph(block: AnyBlock | undefined | null): block is ParagraphBlock {
-  return block?.type === PARAGRAPH;
+  return block?.type === "PARAGRAPH";
 }
 
 export function isTableCellIndex(idx: Focus | LiteralIndex | undefined): idx is TableCellIndex {

@@ -2,11 +2,9 @@ package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
-import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import java.time.LocalDate
@@ -17,7 +15,7 @@ object Pen {
         val saksId: SaksId,
         val foedselsdato: LocalDate,
         val navn: Navn,
-        val sakType: ISakstype,
+        val sakType: Sakstype,
         val pid: Pid,
         val behandlingsnumre: List<Behandlingsnummer>,
     ) {
@@ -127,7 +125,7 @@ object Pen {
         data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
     }
 
-    fun isRelevantRegelverk(sakstype: ISakstype, brevregeltype: BrevdataDto.BrevregeltypeCode?, forGammeltRegelverk: Boolean?): Boolean = when (sakstype.kode) {
+    fun isRelevantRegelverk(sakstype: Sakstype, brevregeltype: BrevdataDto.BrevregeltypeCode?, forGammeltRegelverk: Boolean?): Boolean = when (sakstype.kode) {
         "ALDER" if forGammeltRegelverk == true -> brevregeltype?.gjelderGammeltRegelverk() ?: true
         "ALDER" -> brevregeltype?.gjelderNyttRegelverk() ?: true
         "UFOREP" -> brevregeltype?.gjelderGammeltRegelverk() ?: true

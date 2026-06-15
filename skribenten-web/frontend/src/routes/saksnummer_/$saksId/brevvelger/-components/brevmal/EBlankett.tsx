@@ -31,7 +31,6 @@ export default function Eblankett({
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) {
   const { saksId } = Route.useParams();
-  const { vedtaksId } = Route.useSearch();
   const formRef = useRef<HTMLFormElement>(null);
 
   const methods = useForm<z.infer<typeof eblankettValidationSchema>>({
@@ -66,7 +65,6 @@ export default function Eblankett({
             orderEblankettMutation.mutate(
               byggEBlankettOnSubmitRequest({
                 template: letterTemplate,
-                vedtaksId: vedtaksId,
                 formValues: submittedValues,
               }),
             ),

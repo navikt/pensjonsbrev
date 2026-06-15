@@ -107,6 +107,7 @@ export const nyRedigertBrev = ({
           newLiteral({ id: -1_114_690_237, parentId: 272_720_182, text: "." }),
         ],
         deletedContent: [],
+        missingFromTemplate: false,
         type: "PARAGRAPH",
       },
       {
@@ -127,6 +128,7 @@ export const nyRedigertBrev = ({
           }),
         ],
         deletedContent: [],
+        missingFromTemplate: false,
         type: "PARAGRAPH",
       },
     ],
@@ -151,7 +153,7 @@ export const nyBrevInfo = (args: {
   spraak?: SpraakKode;
   journalpostId?: Nullable<number>;
   vedtaksId?: Nullable<number>;
-  saksId?: string;
+  saksId?: number;
 }): BrevInfo => {
   return {
     id: args.id ?? 1,
@@ -177,7 +179,7 @@ export const nyBrevInfo = (args: {
     spraak: args.spraak ?? SpraakKode.Engelsk,
     journalpostId: args.journalpostId ?? null,
     vedtaksId: args.vedtaksId ?? null,
-    saksId: args.saksId ?? "22981081",
+    saksId: args.saksId ?? 22981081,
   };
 };
 
@@ -190,16 +192,15 @@ export const nyLiteral = (args: { id?: Nullable<number>; text?: string; editedTe
   editedText: args.editedText ?? args.text ?? "ny literal default edited-text",
   tags: [],
   fontType: FontType.PLAIN,
-  editedFontType: null,
 });
 
 export const nyVariable = (args: { id?: Nullable<number>; name?: string; text?: string }): VariableValue => ({
   type: "VARIABLE",
   id: args.id ?? 1,
   parentId: null,
-  name: args.name,
   text: args.text ?? "ny variable default text",
   fontType: FontType.PLAIN,
+  tags: [],
 });
 
 //TODO - kan heller bruke newItem fra common.ts
@@ -217,6 +218,7 @@ export const nyItemList = (args: { id?: Nullable<number>; items?: Item[] }): Ite
   parentId: null,
   items: args.items ?? [nyItem({})],
   deletedItems: [],
+  listType: "PUNKTLISTE",
 });
 
 export const nyTitle1Block = (args: {
@@ -230,6 +232,7 @@ export const nyTitle1Block = (args: {
   editable: args.editable ?? true,
   content: args.content ?? [nyVariable({})],
   deletedContent: [],
+  missingFromTemplate: false,
 });
 
 export const nyTitle2Block = (args: {
@@ -243,6 +246,7 @@ export const nyTitle2Block = (args: {
   editable: args.editable ?? true,
   content: args.content ?? [nyVariable({})],
   deletedContent: [],
+  missingFromTemplate: false,
 });
 
 export const nyTitle3Block = (args: {
@@ -256,6 +260,7 @@ export const nyTitle3Block = (args: {
   editable: args.editable ?? true,
   content: args.content ?? [nyVariable({})],
   deletedContent: [],
+  missingFromTemplate: false,
 });
 
 export const nyParagraphBlock = (args: { id?: Nullable<number>; content?: Content[] }): ParagraphBlock =>
@@ -266,13 +271,11 @@ export const nyParagraphBlock = (args: { id?: Nullable<number>; content?: Conten
 
 export const nySignatur = (args: {
   hilsenTekst?: string;
-  saksbehandlerRolleTekst?: string;
   saksbehandlerNavn?: string;
   attesterendeSaksbehandlerNavn?: string;
   navAvsenderEnhet?: string;
 }): Signatur => ({
   hilsenTekst: args.hilsenTekst ?? "Sincerely",
-  saksbehandlerRolleTekst: args.saksbehandlerRolleTekst ?? "Caseworker",
   saksbehandlerNavn: args.saksbehandlerNavn ?? "Sak S. Behandler",
   attesterendeSaksbehandlerNavn: args.attesterendeSaksbehandlerNavn ?? "Attest S. Behandler",
   navAvsenderEnhet: args.navAvsenderEnhet ?? "Nav Arbeid og ytelser Sørlandet",

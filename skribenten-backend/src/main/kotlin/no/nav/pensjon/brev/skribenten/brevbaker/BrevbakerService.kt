@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
-import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -26,11 +24,11 @@ import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
 import no.nav.pensjon.brev.skribenten.model.BrevId
-import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
-import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationJacksonModule
+import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationMixins
+import no.nav.pensjon.brev.skribenten.serialize.registerMixin
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.*
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.seconds
@@ -52,7 +50,7 @@ interface BrevbakerService {
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
-        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
         redigerteVedlegg: Map<String, LetterMarkup.Attachment> = emptyMap(),
     ): LetterResponse
     suspend fun hentRedigerbareVedlegg(
@@ -70,7 +68,7 @@ interface BrevbakerService {
     ): LetterMarkup.Attachment?
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
-    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggKode>
+    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggBrevkode>
 }
 
 class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus {
@@ -78,7 +76,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
 
     private val brevbakerUrl = config.getString("url")
     private val scope = config.getString("scope")
-    private val client = HttpClient(CIO) {
+    private val client = lagHttpClient {
         defaultRequest {
             url(brevbakerUrl)
         }
@@ -90,9 +88,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             jackson {
                 registerModule(JavaTimeModule())
                 registerModule(LetterMarkupJacksonModule)
-                registerModule(BrevkodeJacksonModule)
-                registerModule(SakstypeModule)
-                registerModule(TemplateModelSpecificationJacksonModule)
+                registerMixin(TemplateModelSpecificationMixins)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             }
@@ -151,7 +147,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
-        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
         redigerteVedlegg: Map<String, LetterMarkup.Attachment>,
     ): LetterResponse {
         val response = client.post("/letter/redigerbar/pdf") {
@@ -266,7 +262,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             }
         }
 
-    override suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggKode> =
+    override suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggBrevkode> =
         cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, brevId) {
             val response = client.get("/letter/redigerbar/alltidValgbareVedlegg")
 

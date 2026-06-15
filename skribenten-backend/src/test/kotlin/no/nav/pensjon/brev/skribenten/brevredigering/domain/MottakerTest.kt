@@ -2,9 +2,6 @@ package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Mottaker
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.*
@@ -98,7 +95,7 @@ class MottakerTest {
             spraak = LanguageCode.BOKMAL,
             avsenderEnhetId = EnhetId("1111"),
             saksbehandlerValg = Api.GeneriskBrevdata(),
-            distribusjonstype = Distribusjonstype.SENTRALPRINT,
+            distribusjonstype = Distribusjon.SENTRALPRINT,
             redigertBrev = Edit.Letter(
                 Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(null, "a"))),
                 LetterMarkupImpl.SakspartImpl(

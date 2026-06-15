@@ -8,6 +8,7 @@ import { ApiError } from "~/components/ApiError";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import { queryClient } from "~/routes/__root";
 import { type BrevInfo } from "~/types/brev";
+import { erVedtaksbrev } from "~/utils/brevUtils";
 import { type AttestForbiddenReason } from "~/utils/parseAttest403";
 import { trackEvent } from "~/utils/umami";
 
@@ -57,7 +58,7 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
     switch (brevInfo.status.type) {
       case "Kladd":
       case "UnderRedigering": {
-        if (!isOriginalCreator && currentUser.erAttestant) {
+        if (!isOriginalCreator && currentUser.erAttestant && erVedtaksbrev(brevInfo)) {
           trackRedirect("attestering", "attestant");
           throw redirect({
             to: "/saksnummer/$saksId/attester/$brevId/redigering",
