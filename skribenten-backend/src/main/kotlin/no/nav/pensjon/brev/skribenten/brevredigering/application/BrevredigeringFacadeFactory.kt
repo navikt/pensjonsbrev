@@ -113,7 +113,7 @@ object BrevredigeringFacadeFactory {
                 brevmalService = brevmalService,
                 brevdataService = brevdataService,
             ),
-            lagreFoersteside = LagreFoerstesideHandler(
+            setFoersteside = SetFoerstesideHandler(
                 redigerBrevPolicy = redigerBrevPolicy,
                 brevreservasjonPolicy = brevreservasjonPolicy,
             ),

@@ -254,7 +254,7 @@ fun Route.sakBrev(
             put("/foersteside") {
                 val brevId = call.parameters.brevId()
                 val request = call.receive<Api.OppdaterFoerstesideRequest>()
-                val resultat = brevredigeringFacade.harFoersteside(LagreFoerstesideHandler.Request(brevId, request.leggVedFoersteside))
+                val resultat = brevredigeringFacade.setHarFoersteside(SetFoerstesideHandler.Request(brevId, request.leggVedFoersteside))
 
                 apiRespond(dto2ApiService, resultat)
             }

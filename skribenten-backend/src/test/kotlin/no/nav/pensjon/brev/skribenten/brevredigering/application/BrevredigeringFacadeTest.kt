@@ -251,7 +251,7 @@ private fun createFacade(
         sendBrev = sendBrev,
         slettBrev = handlerStub(),
         diffBrev = diffBrev,
-        lagreFoersteside = handlerStub(),
+        setFoersteside = handlerStub(),
     )
 }
 
