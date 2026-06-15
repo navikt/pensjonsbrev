@@ -5,9 +5,9 @@ import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 
-class KlageOrienteringOmSaksbehandlingstidVedNavPensjon(
+class KlageOrienteringOmSaksbehandlingstid(
     override val pesysData: PesysData, override val saksbehandlerValg: EmptySaksbehandlerValg
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, KlageOrienteringOmSaksbehandlingstidVedNavPensjon.PesysData> {
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, KlageOrienteringOmSaksbehandlingstid.PesysData> {
 
     data class PesysData(
         val foedselsdato: Foedselsnummer, // PE_PersonSak_PSfnr_tssid
