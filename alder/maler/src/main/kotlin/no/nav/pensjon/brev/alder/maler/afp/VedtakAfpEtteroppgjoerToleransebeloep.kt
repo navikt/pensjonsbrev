@@ -10,14 +10,16 @@ import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDto.Periode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.avvik
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.fpiberegnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.ieo
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.ifu
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.iiap
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.forventetPensjonsgivendeInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.inntektEtterOpphoer
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.inntektFoerUttak
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.inntektIAfpPerioden
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.medlemAvApotekerordningen
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.oppgjoersAar
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.opphorsdato
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.periode
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.pgi
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.toleranseBeloep
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.uttaksdato
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -75,7 +77,11 @@ object VedtakAfpEtteroppgjoerToleransebeloep : RedigerbarTemplate<VedtakAfpEtter
             includePhrase(AfpEtteroppgjoerInnhold.InnrapporterteInntektsopplysningerIkkeSkiller)
             includePhrase(AfpEtteroppgjoerInnhold.LaverePgiKanGiHoyereAfp)
 
-            includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            showIf(pesysData.medlemAvApotekerordningen) {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
+            }.orShow {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            }
 
             includePhrase(AfpEtteroppgjoerInnhold.MeldingOmEndringerInnledning)
 
@@ -84,13 +90,9 @@ object VedtakAfpEtteroppgjoerToleransebeloep : RedigerbarTemplate<VedtakAfpEtter
             includePhrase(AfpEtteroppgjoerInnhold.AnnenInntektInntektsproevd)
             includePhrase(AfpEtteroppgjoerInnhold.DokumenterInntekterUtenforAvkorting)
             includePhrase(AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon)
-            includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmCovidInntekterInnledning)
 
-            includePhrase(AfpEtteroppgjoerInnhold.CovidDokumentasjonskravInntekter)
-
-            includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(pesysData.oppgjoersAar))
-            includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pensjonsgivendeInntekt = pesysData.pgi, oppgjoersAar = pesysData.oppgjoersAar))
+            includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, oppgjoersAar = pesysData.oppgjoersAar))
 
             includePhrase(
                 AfpEtteroppgjoerInnhold.InntektFoerUttakInntektEtterOpphoerFordelingPerPeriode(
@@ -101,29 +103,19 @@ object VedtakAfpEtteroppgjoerToleransebeloep : RedigerbarTemplate<VedtakAfpEtter
                     uttaksdato = pesysData.uttaksdato,
                     opphorsdato = pesysData.opphorsdato,
                     oppgjoersAar = pesysData.oppgjoersAar,
-                    inntektFoerUttak = pesysData.ifu,
-                    inntektEtterOpphoer = pesysData.ieo,
-                    inntektIAfpPerioden = pesysData.iiap,
+                    inntektFoerUttak = pesysData.inntektFoerUttak,
+                    inntektEtterOpphoer = pesysData.inntektEtterOpphoer,
+                    inntektIAfpPerioden = pesysData.inntektIAfpPerioden,
                 ),
             )
 
             paragraph {
                 text(
                     bokmal {
-                        +"Ved beregningen av pensjonen din for " + pesysData.oppgjoersAar.format() + " la vi til grunn " +
-                            "at du ville ha en forventet arbeidsinntekt på " + pesysData.fpiberegnet.format() + ". " +
-                            "Forskjellen mellom den tidligere benyttede arbeidsinntekten og den " +
-                            "arbeidsinntekten du etter vår beregning har hatt i perioden, utgjør " +
-                            pesysData.avvik.format() + ". Denne forskjellen er ikke større enn toleransebeløpet som " +
-                            "i 2024 var på 15 000 kroner."
+                        +"Ved beregningen av pensjonen din for " + pesysData.oppgjoersAar.format() + " la vi til grunn at du ville ha en forventet arbeidsinntekt på " + pesysData.forventetPensjonsgivendeInntektBeregnet.format() + ". Forskjellen mellom den tidligere benyttede arbeidsinntekten og den arbeidsinntekten du etter vår beregning har hatt i perioden, utgjør " + pesysData.avvik.format() + ". Denne forskjellen er ikke større enn toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var på " + pesysData.toleranseBeloep.format() + "."
                     },
                     nynorsk {
-                        +"Ved berekninga av pensjonen din for " + pesysData.oppgjoersAar.format() + " la vi til grunn " +
-                            "at du ville ha ei forventa arbeidsinntekt på " + pesysData.fpiberegnet.format() + ". " +
-                            "Forskjellen mellom den tidlegare nytta arbeidsinntekta og den arbeidsinntekta " +
-                            "du etter vår berekning har hatt i perioden, utgjer " + pesysData.avvik.format() + ". " +
-                            "Denne forskjellen er ikkje større enn toleransebeløpet som i 2024 var på " +
-                            "15 000 kroner."
+                        +"Ved berekninga av pensjonen din for " + pesysData.oppgjoersAar.format() + " la vi til grunn at du ville ha ei forventa arbeidsinntekt på " + pesysData.forventetPensjonsgivendeInntektBeregnet.format() + ". Forskjellen mellom den tidlegare nytta arbeidsinntekta og den arbeidsinntekta du etter vår berekning har hatt i perioden, utgjer " + pesysData.avvik.format() + ". Denne forskjellen er ikkje større enn toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var på " + pesysData.toleranseBeloep.format() + "."
                     },
                 )
             }

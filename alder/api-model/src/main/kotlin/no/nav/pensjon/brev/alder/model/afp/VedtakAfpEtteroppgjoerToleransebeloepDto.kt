@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 /**
@@ -20,24 +21,17 @@ data class VedtakAfpEtteroppgjoerToleransebeloepDto(
 ) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakAfpEtteroppgjoerToleransebeloepDto.PesysData> {
 
     data class PesysData(
-        // PE_Vedtaksdata_Oppgjorsar
         val oppgjoersAar: BrevbakerType.Year,
-        // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_PGI
-        val pgi: BrevbakerType.Kroner,
-        // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IFU
-        val ifu: BrevbakerType.Kroner,
-        // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IEO
-        val ieo: BrevbakerType.Kroner,
-        // PE_Vedtaksdata_APFEO_IIAP
-        val iiap: BrevbakerType.Kroner,
-        // PE_Vedtaksdata_AFPEO_FPIberegnet
-        val fpiberegnet: BrevbakerType.Kroner,
-        // PE_Vedtaksdata_AFPEO_AFP_avvik
-        val avvik: BrevbakerType.Kroner,
-        // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_AFP_Uttaksdato
+        val pensjonsgivendeInntekt: Kroner,
+        val inntektFoerUttak: Kroner,
+        val inntektEtterOpphoer: Kroner,
+        val inntektIAfpPerioden: Kroner,
+        val forventetPensjonsgivendeInntektBeregnet: Kroner,
+        val avvik: Kroner,
         val uttaksdato: LocalDate,
-        // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_AFP_opphorsdato — null hvis AFP løper videre.
         val opphorsdato: LocalDate?,
+        val medlemAvApotekerordningen: Boolean,
+        val toleranseBeloep: Kroner,
         val periode: Periode,
     ) : FagsystemBrevdata
 
