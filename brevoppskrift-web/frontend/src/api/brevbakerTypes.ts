@@ -4,7 +4,7 @@ export type TemplateMetadata = {
   brevtype?: string;
 };
 
-export type LineSegment = { kind: "text"; value: string } | { kind: "var"; label: string };
+export type LineSegment = { type: "text"; value: string } | { type: "var"; label: string };
 export type Line = LineSegment[];
 export type SearchLineWithBlockId = { blockId: string; segments: LineSegment[] };
 

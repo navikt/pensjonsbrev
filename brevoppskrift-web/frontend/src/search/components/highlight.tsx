@@ -49,7 +49,7 @@ export function LineContent({ line, needle }: { line: Line; needle?: string }) {
   return (
     <>
       {line.map((segment, index) => {
-        if (segment.kind === "var") {
+        if (segment.type === "var") {
           return <VariableChip key={index} label={segment.label} />;
         }
         if (needle) {
@@ -66,13 +66,13 @@ export function truncateLine(line: Line, maxChars: number): Line {
   let remaining = maxChars;
   const result: Line = [];
   for (const segment of line) {
-    const text = segment.kind === "text" ? segment.value : segment.label;
+    const text = segment.type === "text" ? segment.value : segment.label;
     if (text.length <= remaining) {
       result.push(segment);
       remaining -= text.length;
     } else {
-      if (segment.kind === "text") {
-        result.push({ kind: "text", value: `${segment.value.slice(0, remaining).replace(/\s+$/, "")} …` });
+      if (segment.type === "text") {
+        result.push({ type: "text", value: `${segment.value.slice(0, remaining).replace(/\s+$/, "")} …` });
       }
       break;
     }

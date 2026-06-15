@@ -39,7 +39,7 @@ export function BrevResultList({ hits, needle }: { hits: BrevHit[]; needle?: str
             search={{ language: template.language }}
             to="/template/$malType/$templateId"
           >
-            <LineContent line={[{ kind: "text", value: template.title }]} needle={needle} />
+            <LineContent line={[{ type: "text", value: template.title }]} needle={needle} />
           </Link>
           <Detail textColor="subtle">
             {template.id} · {languages.map(languageLabel).join(", ")}

@@ -33,7 +33,7 @@ export type SearchResults = {
  *  searchable and are skipped. */
 export function lineText(line: Line): string {
   return line
-    .filter((segment) => segment.kind === "text")
+    .filter((segment) => segment.type === "text")
     .map((segment) => segment.value)
     .join(" ")
     .toLowerCase()

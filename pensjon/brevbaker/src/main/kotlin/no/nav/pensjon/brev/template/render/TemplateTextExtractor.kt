@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression
  * A line is rendered (and indexed by the search frontend) as a sequence of
  * segments. Literal text is searchable; variables are shown as a placeholder but
  * are never searchable. The JSON shape mirrors the frontend `LineSegment`
- * discriminated union (`{kind:"text",value}` / `{kind:"var",label}`), so the
+ * discriminated union (`{type:"text",value}` / `{type:"var",label}`), so the
  * brevoppskrift search index can consume the extracted lines directly without
  * having to flatten the documentation tree itself.
  */
@@ -21,7 +21,7 @@ import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression
     JsonSubTypes.Type(TextSegment.Text::class, name = "text"),
     JsonSubTypes.Type(TextSegment.Variable::class, name = "var"),
 )
-@JsonPropertyOrder("kind")
+@JsonPropertyOrder("type")
 sealed class TextSegment {
     data class Text(val value: String) : TextSegment()
     data class Variable(val label: String) : TextSegment()
