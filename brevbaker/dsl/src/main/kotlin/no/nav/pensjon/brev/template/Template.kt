@@ -11,6 +11,14 @@ import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 
+@RequiresOptIn(
+    message = "Redigerbare vedlegg skal kun brukes etter avtale. Bruk @OptIn(RedigerbartVedlegg::class) på malen når bruken er avklart.",
+    level = RequiresOptIn.Level.ERROR,
+)
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.FUNCTION)
+annotation class RedigerbartVedlegg
+
 @LetterTemplateMarker
 class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
     val title: MutableList<TextElement<Lang>> = mutableListOf(),
@@ -55,6 +63,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
      * gjøres redigerbare (de aller fleste vedlegg skal ikke være det). [vedleggId] må være
      * stabil og unik innenfor brevet.
      */
+    @RedigerbartVedlegg
     fun <AttachmentData : VedleggData> includeAttachmentRedigerbar(
         vedleggId: String,
         template: AttachmentTemplate<Lang, AttachmentData>,
@@ -64,6 +73,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         attachments.add(IncludeAttachment(attachmentData, template, predicate, vedleggId))
     }
 
+    @RedigerbartVedlegg
     fun includeAttachmentRedigerbar(
         vedleggId: String,
         template: AttachmentTemplate<Lang, EmptyVedleggData>,

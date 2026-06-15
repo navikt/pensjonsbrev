@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.RedigerbartVedlegg
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -27,6 +28,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
+@OptIn(RedigerbartVedlegg::class)
 object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
 
     override val featureToggle = FeatureToggles.brukertestbrev2025.toggle
