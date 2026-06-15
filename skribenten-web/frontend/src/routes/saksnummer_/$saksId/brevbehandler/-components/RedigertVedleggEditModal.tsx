@@ -34,7 +34,6 @@ const PLACEHOLDER_SAKSPART: Sakspart = {
 
 const PLACEHOLDER_SIGNATUR: Signatur = {
   hilsenTekst: "",
-  saksbehandlerRolleTekst: "",
   navAvsenderEnhet: "",
 };
 
