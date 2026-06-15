@@ -77,7 +77,7 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
           title: titleByKey.get(`${malType}/${content.brevkode}`) ?? content.brevkode,
           language: content.language,
           lines: content.lines.map((line) => line.segments),
-          blockIds: content.lines.map((line) => line.blockId),
+          indexes: content.lines.map((line) => line.index),
         });
       }
     });

@@ -24,7 +24,7 @@ export function SearchSnippet({ hit, needle }: { hit: ContentHit; needle?: strin
           `}
           params={{ malType: template.malType, templateId: template.id }}
           preload="intent"
-          search={{ language: template.language, bid: template.blockIds[lineIndex] }}
+          search={{ language: template.language, index: template.indexes[lineIndex] }}
           to="/template/$malType/$templateId"
         >
           {template.title}

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { type SearchLineWithBlockId, type TemplateDescription, type TemplateDocumentation } from "~/api/brevbakerTypes";
+import { type SearchLine, type TemplateDescription, type TemplateDocumentation } from "~/api/brevbakerTypes";
 
 const BREVBAKER_API_BASE_PATH = "/brevbaker";
 
@@ -40,7 +40,7 @@ export const getTemplateDocumentation = {
 export type SearchableContent = {
   brevkode: string;
   language: string;
-  lines: SearchLineWithBlockId[];
+  lines: SearchLine[];
 };
 
 export const getAllTemplateDocumentation = {

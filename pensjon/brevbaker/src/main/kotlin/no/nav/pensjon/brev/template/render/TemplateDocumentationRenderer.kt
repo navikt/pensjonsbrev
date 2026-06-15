@@ -18,8 +18,8 @@ private typealias AssignedReplacements = Map<Expression.FromScope.Assigned<*>, E
 object TemplateDocumentationRenderer {
 
     private class RenderContext {
-        private var nextId = 0
-        fun nextBlockId(): String = "b${nextId++}"
+        private var nextIndex = 0
+        fun nextIndex(): Int = nextIndex++
     }
 
     fun render(template: LetterTemplate<*, *>, lang: Language, modelSpecification: TemplateModelSpecification): TemplateDocumentation {
@@ -102,11 +102,11 @@ object TemplateDocumentationRenderer {
 
     private fun renderOutline(element: Element.OutlineContent<*>, lang: Language, ctx: RenderContext): TemplateDocumentation.Element.OutlineContent =
         when (element) {
-            is Element.OutlineContent.Title1 -> TemplateDocumentation.Element.OutlineContent.Title1(ctx.nextBlockId(), renderText(element.text, lang))
-            is Element.OutlineContent.Title2 -> TemplateDocumentation.Element.OutlineContent.Title2(ctx.nextBlockId(), renderText(element.text, lang))
-            is Element.OutlineContent.Title3 -> TemplateDocumentation.Element.OutlineContent.Title3(ctx.nextBlockId(), renderText(element.text, lang))
+            is Element.OutlineContent.Title1 -> TemplateDocumentation.Element.OutlineContent.Title1(ctx.nextIndex(), renderText(element.text, lang))
+            is Element.OutlineContent.Title2 -> TemplateDocumentation.Element.OutlineContent.Title2(ctx.nextIndex(), renderText(element.text, lang))
+            is Element.OutlineContent.Title3 -> TemplateDocumentation.Element.OutlineContent.Title3(ctx.nextIndex(), renderText(element.text, lang))
             is Element.OutlineContent.Paragraph -> TemplateDocumentation.Element.OutlineContent.Paragraph(
-                ctx.nextBlockId(),
+                ctx.nextIndex(),
                 renderContentOrStructure(element.paragraph) {
                     renderParagraphContent(it, lang)
                 }
@@ -387,10 +387,10 @@ data class TemplateDocumentation(
     @JsonPropertyOrder("elementType")
     sealed class Element {
         sealed class OutlineContent : Element() {
-            data class Title1(val id: String, val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
-            data class Title2(val id: String, val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
-            data class Title3(val id: String, val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
-            data class Paragraph(val id: String, val paragraph: List<ContentOrControlStructure<ParagraphContent>>) : OutlineContent()
+            data class Title1(val index: Int, val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
+            data class Title2(val index: Int, val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
+            data class Title3(val index: Int, val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
+            data class Paragraph(val index: Int, val paragraph: List<ContentOrControlStructure<ParagraphContent>>) : OutlineContent()
         }
 
         sealed class ParagraphContent : Element() {

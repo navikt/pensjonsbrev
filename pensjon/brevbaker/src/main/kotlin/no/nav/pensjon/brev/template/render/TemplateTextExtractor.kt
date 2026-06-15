@@ -27,7 +27,7 @@ sealed class TextSegment {
     data class Variable(val label: String) : TextSegment()
 }
 
-data class TemplateTextBlock(val blockId: String, val segments: List<TextSegment>)
+data class TemplateTextBlock(val index: Int, val segments: List<TextSegment>)
 
 object TemplateTextExtractor {
 
@@ -142,17 +142,17 @@ object TemplateTextExtractor {
         return lines + lineOf(trailingRun)
     }
 
-    private fun titleBlock(id: String, text: List<ContentOrControlStructure<Element.ParagraphContent.Text>>): List<TemplateTextBlock> =
-        listOfNotNull(lineFrom(text)?.let { TemplateTextBlock(id, it) })
+    private fun titleBlock(index: Int, text: List<ContentOrControlStructure<Element.ParagraphContent.Text>>): List<TemplateTextBlock> =
+        listOfNotNull(lineFrom(text)?.let { TemplateTextBlock(index, it) })
 
     private fun elementLines(items: List<ContentOrControlStructure<out Element>>): List<TemplateTextBlock> {
         @Suppress("UNCHECKED_CAST")
         return flatten(items as List<ContentOrControlStructure<Element>>).flatMap { element ->
             when (element) {
-                is Element.OutlineContent.Title1 -> titleBlock(element.id, element.text)
-                is Element.OutlineContent.Title2 -> titleBlock(element.id, element.text)
-                is Element.OutlineContent.Title3 -> titleBlock(element.id, element.text)
-                is Element.OutlineContent.Paragraph -> paragraphLines(element.paragraph).map { TemplateTextBlock(element.id, it) }
+                is Element.OutlineContent.Title1 -> titleBlock(element.index, element.text)
+                is Element.OutlineContent.Title2 -> titleBlock(element.index, element.text)
+                is Element.OutlineContent.Title3 -> titleBlock(element.index, element.text)
+                is Element.OutlineContent.Paragraph -> paragraphLines(element.paragraph).map { TemplateTextBlock(element.index, it) }
                 else -> emptyList()
             }
         }

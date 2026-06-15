@@ -60,14 +60,15 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     language?: string;
     highlightedDataClass?: string;
     highlightedDataField?: string;
-    bid?: string;
+    index?: number;
   } => {
-    const bidRaw = search.bid?.toString();
+    const indexRaw = search.index?.toString();
+    const index = indexRaw !== undefined && /^\d+$/.test(indexRaw) ? Number(indexRaw) : undefined;
     return {
       language: search.language?.toString(),
       highlightedDataClass: search.highlightedDataClass?.toString(),
       highlightedDataField: search.highlightedDataField?.toString(),
-      bid: bidRaw && /^b\d+$/.test(bidRaw) ? bidRaw : undefined,
+      index,
     };
   },
   component: TemplateExplorer,
@@ -76,10 +77,10 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
 function TemplateExplorer() {
   const { documentation } = Route.useLoaderData();
   const { templateId } = Route.useParams();
-  const { bid } = Route.useSearch();
+  const { index } = Route.useSearch();
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: documentation is an intentional trigger so we re-highlight when navigating between templates with the same bid.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: documentation is an intentional trigger so we re-highlight when navigating between templates with the same index.
   useEffect(() => {
     const container = previewRef.current;
     if (!container) {
@@ -90,19 +91,19 @@ function TemplateExplorer() {
       prev.classList.remove("search-target");
     }
 
-    if (!bid) {
+    if (index === undefined) {
       return;
     }
 
     const raf = requestAnimationFrame(() => {
-      const el = container.querySelector(`[data-block-id="${CSS.escape(bid)}"]`);
+      const el = container.querySelector(`[data-block-index="${CSS.escape(String(index))}"]`);
       if (el) {
         el.classList.add("search-target");
         el.scrollIntoView({ behavior: "smooth", block: "center" });
       }
     });
     return () => cancelAnimationFrame(raf);
-  }, [bid, documentation]);
+  }, [index, documentation]);
 
   return (
     <>
@@ -207,7 +208,7 @@ function ContentComponent({ content }: { content: Element }) {
   switch (content.elementType) {
     case ElementType.TITLE1: {
       return (
-        <Heading data-block-id={content.id} size="medium" spacing>
+        <Heading data-block-index={content.index} size="medium" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
@@ -216,7 +217,7 @@ function ContentComponent({ content }: { content: Element }) {
     }
     case ElementType.TITLE2: {
       return (
-        <Heading data-block-id={content.id} size="small" spacing>
+        <Heading data-block-index={content.index} size="small" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
@@ -225,7 +226,7 @@ function ContentComponent({ content }: { content: Element }) {
     }
     case ElementType.TITLE3: {
       return (
-        <Heading data-block-id={content.id} size="xsmall" spacing>
+        <Heading data-block-index={content.index} size="xsmall" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
@@ -244,7 +245,7 @@ function ContentComponent({ content }: { content: Element }) {
     }
     case ElementType.PARAGRAPH: {
       return (
-        <BodyLong as="div" data-block-id={content.id} spacing>
+        <BodyLong as="div" data-block-index={content.index} spacing>
           {content.paragraph.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}

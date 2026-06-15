@@ -9,7 +9,7 @@ export type TemplateText = {
   title: string;
   language: string;
   lines: Line[];
-  blockIds: string[];
+  indexes: number[];
 };
 /**
  * A content hit: the best-matching line in a template (its neighbours are
