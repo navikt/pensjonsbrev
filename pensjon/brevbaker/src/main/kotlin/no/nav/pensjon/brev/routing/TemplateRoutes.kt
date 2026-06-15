@@ -32,16 +32,10 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
         }
 
         get("/all") {
-            // ConditionalHeaders (installed in BrevbakerAppModule) turns this tag into an
-            // `ETag` header and answers a matching `If-None-Match` with `304`; CachingHeaders
-            // adds `Cache-Control: no-cache`. We only need to publish the content fingerprint.
             call.attributes.put(DocumentationETag, docCache.etag())
-            // The body is content-encoding negotiated, so caches must key on it.
+
             call.response.header(HttpHeaders.Vary, HttpHeaders.AcceptEncoding)
             if (call.request.acceptEncoding()?.contains("gzip", ignoreCase = true) == true) {
-                // The documentation is static per deploy, so we keep only the gzipped
-                // JSON in memory (~1.5 MB) instead of the full object graph (~20 MB)
-                // and stream those bytes straight to the (always gzip-capable) browser.
                 call.response.header(HttpHeaders.ContentEncoding, "gzip")
                 call.respondBytes(docCache.gzippedJson(), ContentType.Application.Json)
             } else {

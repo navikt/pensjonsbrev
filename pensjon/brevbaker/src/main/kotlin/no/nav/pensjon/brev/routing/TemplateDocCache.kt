@@ -18,34 +18,15 @@ import java.util.concurrent.atomic.AtomicReference
 import java.util.zip.GZIPInputStream
 import java.util.zip.GZIPOutputStream
 
-// The documentation batch endpoint renders each template into searchable lines
-// (and omits the large, per-language identical model specification), so a search
-// client can build its index directly without re-flattening the documentation
-// tree itself. Consumers that need the full documentation tree use
-// /{kode}/doc/{language}; those that need the model specification use
-// /{kode}/modelSpecification.
-private val EMPTY_MODEL_SPECIFICATION = TemplateModelSpecification(types = emptyMap(), letterModelTypeName = null)
-
-/** Carries the batch-documentation content fingerprint from the route to the
- *  ConditionalHeaders/CachingHeaders plugins, which turn it into `ETag`/`304`
- *  revalidation and `Cache-Control: no-cache`. */
 @PublishedApi
 internal val DocumentationETag = AttributeKey<String>("DocumentationETag")
 
-/** One template's searchable lines for a single language, as returned by the batch
- * documentation endpoint. Each line is an ordered list of text/variable segments
- * (see [TemplateTextBlock]). */
 data class SearchableContent(
     val brevkode: String,
     val language: LanguageCode,
     val lines: List<TemplateTextBlock>,
 )
 
-/** A content fingerprint for the batch documentation of a template resource.
- * Changes whenever the rendered documentation changes (e.g. a new deploy) or
- * when the set of enabled templates changes (Unleash toggles). Published via
- * [DocumentationETag] so the ConditionalHeaders plugin can serve it as the batch
- * endpoint's HTTP ETag and clients revalidate cheaply (304). */
 private fun sha256Hex(value: String): String =
     MessageDigest.getInstance("SHA-256").digest(value.toByteArray()).joinToString("") { "%02x".format(it) }
 
@@ -54,9 +35,6 @@ private fun sha256Hex(value: String): String =
 internal class TemplateDocCache<Kode : Brevkode<Kode>>(private val resource: TemplateResource<Kode, *, *>) {
     private val objectMapper = brevbakerJacksonObjectMapper()
 
-    // Per-brevkode content fingerprint. Cheap to retain and stable at runtime
-    // (the documentation only changes between deploys), so it drives the ETag
-    // without keeping the rendered object graph alive.
     private val hashes = ConcurrentHashMap<String, String>()
 
     /** The finished, gzipped JSON for the currently enabled set of templates,
@@ -74,7 +52,7 @@ internal class TemplateDocCache<Kode : Brevkode<Kode>>(private val resource: Tem
                         brevkode = brevkode,
                         language = language.toCode(),
                         lines = TemplateTextExtractor.extract(
-                            TemplateDocumentationRenderer.render(template, language, EMPTY_MODEL_SPECIFICATION),
+                            TemplateDocumentationRenderer.render(template, language, TemplateModelSpecification(types = emptyMap(), letterModelTypeName = null)),
                         ),
                     )
                 }
