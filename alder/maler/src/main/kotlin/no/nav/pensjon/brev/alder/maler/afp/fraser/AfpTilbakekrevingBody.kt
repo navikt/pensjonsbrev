@@ -204,8 +204,8 @@ object AfpTilbakekrevingBody {
                     },
                     nynorsk {
                         +"Du vil få eit eige brev frå Skatteetaten med betalingsinformasjon. Beløpet skal " +
-                                "som hovudregel betalast tilbake i løpet av 12 kalendermånadar, og vil " +
-                                "trekkast i den månadlege utbetalinga di av AFP eller alderspensjon frå " +
+                                "som hovudregel betalast tilbake i løpet av 12 kalendermånader, og vil " +
+                                "bli trekt i den månadlege utbetalinga di av AFP eller alderspensjon frå " +
                                 "folketrygda."
                     },
                 )
@@ -217,7 +217,7 @@ object AfpTilbakekrevingBody {
                                 "endre trekkbeløpet."
                     },
                     nynorsk {
-                        +"Etter du har fått brevet frå Skatteetaten kan du ta kontakt med dei for å endre " +
+                        +"Etter at du har fått brevet frå Skatteetaten kan du ta kontakt med dei for å endre " +
                                 "trekkbeløpet."
                     },
                 )

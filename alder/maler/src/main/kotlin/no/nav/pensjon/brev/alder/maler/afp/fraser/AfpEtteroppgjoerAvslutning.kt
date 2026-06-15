@@ -34,7 +34,7 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
             title1 {
                 text(
                     bokmal { +"Du må melde fra om endringer" },
-                    nynorsk { +"Dine plikter" },
+                    nynorsk { +"Du må melde frå om endringar" },
                 )
             }
             paragraph {
@@ -43,8 +43,7 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
                         +"Du må melde fra om endringer som har betydning for størrelsen på pensjonen din. Dette følger av lov om avtalefestet pensjon for medlemmer av Statens pensjonskasse § 5 tredje ledd."
                     },
                     nynorsk {
-                        +"Du pliktar å melde frå om endringar som har noko å seie for storleiken på pensjonen " +
-                            "din."
+                        +"Du må melde frå om endringar som har noko å seie for storleiken på pensjonen din. Dette følgjer av lov om avtalefesta pensjon for medlemmar av Statens pensjonskasse § 5 tredje ledd."
                     },
                 )
             }
@@ -74,7 +73,7 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
                     },
                     nynorsk {
                         +"Dersom du får utbetalt for mykje pensjon fordi du ikkje har meldt frå om endringar, " +
-                            "kan vi krevje tilbake det som er for mykje utbetalt."
+                            "må du vanlegvis betale tilbake pengane."
                     },
                 )
             }
@@ -95,8 +94,7 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
                         +"Hvis du mener vedtaket er feil, kan du klage innen seks uker fra vedtaket har kommet fram til deg."
                     },
                     nynorsk {
-                        +"Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå vedtaket har komme fram til deg. Klaga skal vere skriftleg. Du finn skjema og informasjon på " +
-                            "$KLAGE_URL."
+                        +"Om du meiner at vedtaket er feil, kan du klage innan seks veker frå vedtaket har komme fram til deg."
                     },
                 )
             }
