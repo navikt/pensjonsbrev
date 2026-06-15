@@ -256,8 +256,8 @@ object OktMinsteIFUReduksjonsprosent {
             }
             paragraph {
                 text(
-                    bokmal { +"Vedtaket har vi gjort etter " + data.hjemler.format(HjemmelFormatter(true)) + "." },
-                    nynorsk { +"Vedtaket har vi gjort etter " + data.hjemler.format(HjemmelFormatter(true)) + "." },
+                    bokmal { +"Vedtaket har vi gjort etter folketrygdloven " + data.hjemler.format(HjemmelFormatter(true)) + "." },
+                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova " + data.hjemler.format(HjemmelFormatter(true)) + "." },
                 )
             }
             paragraph {
