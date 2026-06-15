@@ -701,6 +701,7 @@ public final class no/nav/pensjon/brev/template/LanguageCombinationKt {
 
 public final class no/nav/pensjon/brev/template/LanguageKt {
 	public static final fun includePhrase (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;Lno/nav/pensjon/brev/template/OutlinePhrase;)V
+	public static final fun includePhrase (Lno/nav/pensjon/brev/template/dsl/TextOnlyScope;Lno/nav/pensjon/brev/template/TextOnlyPhrase;)V
 }
 
 public final class no/nav/pensjon/brev/template/LanguageSettings {
