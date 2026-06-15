@@ -57,6 +57,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   } = useQuery({
     queryKey: getBrevVedlegg.queryKey(props.saksId, props.brev.id),
     queryFn: () => getBrevVedlegg.queryFn(props.saksId, props.brev.id),
+    enabled: !props.erLaast,
   });
 
   const getVedleggLabel = (vedlegg: AlltidValgbartVedlegg) => vedlegg.visningstekst ?? vedlegg.kode;
