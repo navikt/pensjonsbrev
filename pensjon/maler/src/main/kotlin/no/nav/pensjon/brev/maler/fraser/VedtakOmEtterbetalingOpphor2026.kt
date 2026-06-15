@@ -42,21 +42,21 @@ class VedtakOmEtterbetalingOpphor2026 {
                 showIf(endringIfu) {
                     paragraph {
                         text(
-                            bokmal { +"Lovendringene har ført til at din inntekt før uførhet(IFU) har økt til " + ifu.format() + ", og du har fått en lavere reduksjonsprosent på " + reduksjonsprosent.format() + ". " },
-                            nynorsk { +"Lovendringane har ført til at inntekta di før uførhet(IFU) har auka til " + ifu.format() + ", og du har fått ein lågare reduksjonsprosent på " + reduksjonsprosent.format() + ". " },
+                            bokmal { +"Lovendringene har ført til at din inntekt før uførhet (IFU) har økt til " + ifu.format() + ", og du har fått en lavere reduksjonsprosent på " + reduksjonsprosent.format() + " prosent. " },
+                            nynorsk { +"Lovendringane har ført til at inntekta di før uførhet (IFU) har auka til " + ifu.format() + ", og du har fått ein lågare reduksjonsprosent på " + reduksjonsprosent.format() + " prosent. " },
                         )
                         showIf(endringUforegrad) {
                             text(
-                                bokmal { +"Siden din IFU har økt har dette ført til at uføregraden din har økt til " + uforegrad.format() + ". " },
-                                nynorsk { +"Sidan IFU-en din har auka har dette ført til at uføregraden din har auka til " + uforegrad.format() + ". " },
+                                bokmal { +"Siden din IFU har økt har dette ført til at uføregraden din har økt til " + uforegrad.format() + " prosent. " },
+                                nynorsk { +"Sidan IFU-en din har auka har dette ført til at uføregraden din har auka til " + uforegrad.format() + " prosent. " },
                             )
                         }
                     }
                 }.orShow {
                     paragraph {
                         text(
-                            bokmal { +"Lovendringene har ført til at du har fått en lavere reduksjonsprosent på " + reduksjonsprosent.format() + ". " },
-                            nynorsk { +"Lovendringane har ført til at du har fått ein lågare reduksjonsprosent på " + reduksjonsprosent.format() + ". " },
+                            bokmal { +"Lovendringene har ført til at du har fått en lavere reduksjonsprosent på " + reduksjonsprosent.format() + " prosent. " },
+                            nynorsk { +"Lovendringane har ført til at du har fått ein lågare reduksjonsprosent på " + reduksjonsprosent.format() + " prosent. " },
                         )
                     }
                 }

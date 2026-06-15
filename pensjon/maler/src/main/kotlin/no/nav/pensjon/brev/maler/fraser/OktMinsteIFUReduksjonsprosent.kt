@@ -102,8 +102,8 @@ object OktMinsteIFUReduksjonsprosent {
                             }
                             cell {
                                 text(
-                                    bokmal { +data.uforegrad.ifNull(0).format() },
-                                    nynorsk { +data.uforegrad.ifNull(0).format() },
+                                    bokmal { +data.uforegrad.format() + " prosent" },
+                                    nynorsk { +data.uforegrad.format() + " prosent" },
                                 )
                             }
                         }
