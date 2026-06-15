@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.VedleggId
 import no.nav.brev.brevbaker.template.toScope
 
 internal abstract class LetterRenderer<R : Any> {
@@ -36,7 +37,7 @@ internal abstract class LetterRenderer<R : Any> {
     }
 
     @JvmName("renderAttachments")
-    fun render(scope: ExpressionScope<*>, attachments: List<IncludeAttachment<*, *>>, renderAttachment: (attachmentScope: ExpressionScope<*>, editableId: String?, attachment: AttachmentTemplate<*, *>) -> Unit) {
+    fun render(scope: ExpressionScope<*>, attachments: List<IncludeAttachment<*, *>>, renderAttachment: (attachmentScope: ExpressionScope<*>, editableId: VedleggId?, attachment: AttachmentTemplate<*, *>) -> Unit) {
         attachments.filter { it.predicate.eval(scope) }
             .forEach { attachment -> renderAttachment(attachment.toScope(scope), attachment.editableId, attachment.template) }
     }

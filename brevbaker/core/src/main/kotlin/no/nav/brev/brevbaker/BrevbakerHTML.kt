@@ -4,13 +4,14 @@ import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
+import no.nav.pensjon.brev.template.VedleggId
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 internal object BrevbakerHTML {
-    fun renderHTML(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null, redigerteVedlegg: Map<String, LetterMarkup.Attachment> = emptyMap()): LetterResponse =
+    fun renderHTML(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null, redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev, redigerteVedlegg)
             .let { HTMLDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
             .let { html ->
@@ -21,7 +22,7 @@ internal object BrevbakerHTML {
                 )
             }
 
-    private fun renderCompleteMarkup(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null, redigerteVedlegg: Map<String, LetterMarkup.Attachment> = emptyMap()): LetterWithAttachmentsMarkup =
+    private fun renderCompleteMarkup(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null, redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()): LetterWithAttachmentsMarkup =
         letter.toScope().let { scope ->
             LetterWithAttachmentsMarkup(
                 redigertBrev ?: Letter2Markup.renderLetterOnly(scope, letter.template),

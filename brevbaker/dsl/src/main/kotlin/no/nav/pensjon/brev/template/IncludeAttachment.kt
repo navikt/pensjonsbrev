@@ -22,7 +22,7 @@ class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : VedleggData
     val data: Expression<AttachmentData>,
     val template: AttachmentTemplate<Lang, AttachmentData>,
     val predicate: Expression<Boolean> = Expression.Literal(true),
-    val editableId: String? = null,
+    val editableId: VedleggId? = null,
 ): StableHash by StableHash.of(data, template, predicate) {
     override fun equals(other: Any?): Boolean {
         if (other !is IncludeAttachment<*, *>) return false

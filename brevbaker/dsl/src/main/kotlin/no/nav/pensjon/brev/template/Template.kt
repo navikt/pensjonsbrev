@@ -65,7 +65,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
      */
     @RedigerbartVedlegg
     fun <AttachmentData : VedleggData> includeAttachmentRedigerbar(
-        vedleggId: String,
+        vedleggId: VedleggId,
         template: AttachmentTemplate<Lang, AttachmentData>,
         attachmentData: Expression<AttachmentData>,
         predicate: Expression<Boolean> = true.expr(),
@@ -75,7 +75,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
 
     @RedigerbartVedlegg
     fun includeAttachmentRedigerbar(
-        vedleggId: String,
+        vedleggId: VedleggId,
         template: AttachmentTemplate<Lang, EmptyVedleggData>,
         predicate: Expression<Boolean> = true.expr(),
     ) {
