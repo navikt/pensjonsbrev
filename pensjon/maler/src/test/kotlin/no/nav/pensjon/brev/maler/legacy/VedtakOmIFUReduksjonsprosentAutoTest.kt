@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.legacy
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
-import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentAutoDto
@@ -54,7 +53,11 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
                 hjemler = setOf("12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14", "22-12"),
                 pe = createPEgruppe10(),
                 maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
-                dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto()
+                dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
+                inntektsgrense = Kroner(30000),
+                endringInntektsgrense = true,
+                uforegrad = 100,
+                endringUforegrad = true
             )
         )
 
@@ -68,6 +71,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
                 nettoGjenlevendetillegg = Kroner(0),
                 totalbelop = Kroner(23000),
                 etterbetalingJuli = Kroner(0),
+                uforegrad = 100,
                 reduksjonsprosent = 62.65,
                 inntektstak = Kroner(350000),
                 ifu = Kroner(40000),
@@ -80,7 +84,10 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
                 hjemler = setOf("12-8", "12-13", "12-16", "22-12"),
                 pe = createPEgruppe10(),
                 maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
-                dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto()
+                dineRettigheterOgPlikterUfore = createDineRettigheterOgPlikterUforeDto(),
+                inntektsgrense = Kroner(30000),
+                endringInntektsgrense = true,
+                endringUforegrad = true
             )
         )
 
@@ -103,7 +110,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
             fullDataDto(),
             Language.Nynorsk,
             Fixtures.fellesAuto
-        ).renderTestPDF("OKT_MINSTE_IFU_FULL_NN")
+        ).renderTestHtml("OKT_MINSTE_IFU_FULL_NN")
     }
 
     @Test
@@ -123,7 +130,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
             inntektsavkortetDto(),
             Language.Nynorsk,
             Fixtures.fellesAuto
-        ).renderTestPDF("LAVERE_REDUKSJONSPROSENT_AVKORTET_NN")
+        ).renderTestHtml("LAVERE_REDUKSJONSPROSENT_AVKORTET_NN")
     }
 
     @Test
@@ -133,7 +140,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
             fullDataDto(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        ).renderTestPDF("OKT_MINSTE_IFU_LAVERE_REDUKSJON_FULL_BM")
+        ).renderTestHtml("OKT_MINSTE_IFU_LAVERE_REDUKSJON_FULL_BM")
     }
 
     @Test
@@ -143,6 +150,6 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
             fullDataDto(),
             Language.Nynorsk,
             Fixtures.fellesAuto
-        ).renderTestPDF("OKT_MINSTE_IFU_LAVERE_REDUKSJON_FULL_NN")
+        ).renderTestHtml("OKT_MINSTE_IFU_LAVERE_REDUKSJON_FULL_NN")
     }
 }

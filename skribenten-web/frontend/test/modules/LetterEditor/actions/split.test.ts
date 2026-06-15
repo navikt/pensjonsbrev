@@ -7,7 +7,6 @@ import {
   type Content,
   type Item,
   type ItemList,
-  LITERAL,
   type LiteralValue,
   type ParagraphBlock,
   type TextContent,
@@ -313,7 +312,7 @@ describe("LetterEditorActions.split", () => {
       );
       expect(select<ItemList>(withLiteralAfterList, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(1);
       expect(select<ParagraphBlock>(withLiteralAfterList, { blockIndex: 0 }).content).toHaveLength(2);
-      expect(select<Content>(withLiteralAfterList, { blockIndex: 0, contentIndex: 1 }).type).toEqual(LITERAL);
+      expect(select<Content>(withLiteralAfterList, { blockIndex: 0, contentIndex: 1 }).type).toEqual("LITERAL");
       expect(select<Content>(withLiteralAfterList, { blockIndex: 0, contentIndex: 1 }).id).toBeNull();
 
       expect(withLiteralAfterList.focus).toEqual({ blockIndex: 0, contentIndex: 1, cursorPosition: 0 });

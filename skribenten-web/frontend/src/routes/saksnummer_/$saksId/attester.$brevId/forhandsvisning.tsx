@@ -94,7 +94,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
           <VStack gap="space-12">
             <Heading size="small">{props.brev.info.brevtittel}</Heading>
             <VStack gap="space-16">
-              <OppsummeringAvMottaker mottaker={props.brev.info.mottaker} saksId={props.saksId} withTitle />
+              <OppsummeringAvMottaker mottaker={props.brev.info.mottaker ?? null} saksId={props.saksId} withTitle />
               <VStack gap="space-4">
                 <Label size="small">Distribusjonstype</Label>
                 <BodyShort size="small">{distribusjonstypeTilText(props.brev.info.distribusjonstype)}</BodyShort>

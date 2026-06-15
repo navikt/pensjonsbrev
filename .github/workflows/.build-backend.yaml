@@ -33,6 +33,11 @@ on:
         required: false
         type: boolean
         default: false
+      requiresNode:
+        description: "Gradle build requires node.js"
+        required: false
+        type: boolean
+        default: false
     outputs:
       image:
         description: "Image name"
@@ -66,6 +71,14 @@ jobs:
         with:
           "distribution": ${{ env.JavaDistribution }}
           "java-version": ${{ env.JavaVersion }}
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        if: ${{ inputs.requiresNode }}
+        with:
+          node-version-file: ".tool-versions"
+          registry-url: https://npm.pkg.github.com/
+          scope: "@navikt"
+          cache: "npm"
+          cache-dependency-path: skribenten-web/frontend/package-lock.json
       - name: "publish common to Maven local"
         run: |
           ./gradlew :brevbaker:api-model-common:publishToMavenLocal
@@ -76,6 +89,8 @@ jobs:
       - name: "compile and run tests"
         run: |
           ./gradlew :${{ inputs.gradleTarget }}:buildNeeded
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}
       - name: "Build and publish container image to GAR"
         uses: nais/docker-build-push@751a312f0803eb96a05a41fadf51be19b7be362c # v0
         id: docker-push

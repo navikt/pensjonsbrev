@@ -33,13 +33,17 @@ object OktMinsteIFUReduksjonsprosent {
         val nettoBarnetillegg: Expression<Kroner?>,
         val nettoGjenlevendetillegg: Expression<Kroner?>,
         val etterbetalingJuli: Expression<Kroner>,
+        val uforegrad: Expression<Int>,
         val reduksjonsprosent: Expression<Double>,
+        val inntektsgrense: Expression<Kroner>,
         val inntektstak: Expression<Kroner>,
         val ifu: Expression<Kroner>,
         val endringNettoUforetrygdUtenTillegg: Expression<Boolean>,
         val endringNettoBarnetillegg: Expression<Boolean>,
         val endringNettoGjenlevendetillegg: Expression<Boolean>,
+        val endringUforegrad: Expression<Boolean>,
         val endringInntektstak: Expression<Boolean>,
+        val endringInntektsgrense: Expression<Boolean>,
         val erInntektsavkortet: Expression<Boolean>,
         val tillegg: Expression<Collection<UTTillegg>>,
         val hjemler: Expression<Set<String>>,
@@ -88,6 +92,22 @@ object OktMinsteIFUReduksjonsprosent {
                             }
                         }
                     }
+                    showIf(data.endringUforegrad) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Ny uføregrad" },
+                                    nynorsk { +"Ny uføregrad" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +data.uforegrad.format() + " prosent" },
+                                    nynorsk { +data.uforegrad.format() + " prosent" },
+                                )
+                            }
+                        }
+                    }
                     showIf(data.endringNettoBarnetillegg) {
                         row {
                             cell {
@@ -132,6 +152,22 @@ object OktMinsteIFUReduksjonsprosent {
                                 bokmal { +data.reduksjonsprosent.format() + " prosent" },
                                 nynorsk { +data.reduksjonsprosent.format() + " prosent" },
                             )
+                        }
+                    }
+                    showIf(data.endringInntektsgrense) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Ny inntektsgrense" },
+                                    nynorsk { +"Ny inntektsgrense" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +data.inntektsgrense.format() },
+                                    nynorsk { +data.inntektsgrense.format() },
+                                )
+                            }
                         }
                     }
                     showIf(data.endringInntektstak) {
@@ -354,6 +390,24 @@ object OktMinsteIFUReduksjonsprosent {
                                 nynorsk { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny reduksjonsprosent ha tilbakeverkande kraft frå 1. januar i år. Du vil derfor få ei etterbetaling på " + data.etterbetalingJuli.format() + " innan kort tid." },
                             )
                         }
+                    }
+                    title2 {
+                        text(
+                            bokmal { +"Informasjon om etterbetaling" },
+                            nynorsk { +"Informasjon om etterbetaling" },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Du får ikke renter på etterbetalingen. Informasjon om skattetrekk på etterbetalingen finner du hos Skatteetaten." },
+                            nynorsk { +"Du får ikkje renter på etterbetalinga. Informasjon om skattetrekk på etterbetalinga finn du hos Skatteetaten." },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Har du gjeld som Skatteetaten krever inn, kan pengene fra etterbetalingen gå til å dekke gjelden. Eksempler på gjeld kan være bidrags- eller feilutbetalingsgjeld hos Nav og refusjonskrav hos tjenestepensjonsordning." },
+                            nynorsk { +"Har du gjeld som Skatteetaten krev inn, kan pengane frå etterbetalinga gå til å dekke gjelda. Eksempel på gjeld kan vere bidrags- eller feilutbetalingsgjeld hos Nav og refusjonskrav hos tenestepensjonsordning." },
+                        )
                     }
                 }.orShow {
                     title2 {

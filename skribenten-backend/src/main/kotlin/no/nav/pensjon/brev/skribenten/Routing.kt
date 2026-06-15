@@ -1,10 +1,14 @@
 package no.nav.pensjon.brev.skribenten
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.typesafe.config.Config
+import io.ktor.http.*
+import io.ktor.openapi.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.routing.*
+import io.ktor.server.routing.openapi.*
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceHttp
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
@@ -22,6 +26,8 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.LegacyBrevServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PentHttpClient
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
+import no.nav.pensjon.brev.skribenten.openapi.JacksonReflectionJsonSchemaInference
+import no.nav.pensjon.brev.skribenten.openapi.JacksonSchemaReflectionAdapter
 import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.samhandler.samhandlerRoute
 import no.nav.pensjon.brev.skribenten.services.*
@@ -64,7 +70,26 @@ fun Application.configureRouting(
 
     routing {
         healthRoute()
+
         swaggerUI("/swagger", "openapi/external-api.yaml")
+        swaggerUI("/swagger-internal") {
+            info = OpenApiInfo("Skribenten Internal API", "1.0")
+            source = OpenApiDocSource.Routing(
+                contentType = ContentType.Application.Json,
+                schemaInference = JacksonReflectionJsonSchemaInference(
+                    JacksonSchemaReflectionAdapter(ObjectMapper().skribentenServerJackson())
+                ),
+                routes = {
+                    val excludedRoutePrefixes = listOf("/external/", "/swagger", "/isAlive", "/isReady")
+                    routingRoot.descendants()
+                        .filter { route ->
+                            val path = route.path()
+                            excludedRoutePrefixes.none { path.startsWith(it) }
+                        }
+                },
+            )
+            remotePath = "documentation.json"
+        }
 
         authenticate(authConfig.name) {
             install(PrincipalInContext)

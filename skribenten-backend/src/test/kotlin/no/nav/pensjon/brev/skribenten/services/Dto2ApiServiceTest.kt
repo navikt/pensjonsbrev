@@ -117,7 +117,7 @@ class Dto2ApiServiceTest {
         sistReservert = Instant.now(),
         brevkode = Testbrevkoder.TESTBREV,
         laastForRedigering = laastForRedigering,
-        distribusjonstype = Distribusjonstype.SENTRALPRINT,
+        distribusjonstype = Distribusjon.SENTRALPRINT,
         mottaker = mottaker,
         avsenderEnhetId = avsenderEnhetId,
         spraak = LanguageCode.BOKMAL,

@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.hentSignatur
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
@@ -38,7 +38,7 @@ class OpprettBrevHandlerImpl(
     data class Request(
         val saksId: SaksId,
         val vedtaksId: VedtaksId?,
-        val brevkode: Brevkode.Redigerbart,
+        val brevkode: RedigerbarBrevkode,
         val spraak: LanguageCode,
         val avsenderEnhetsId: EnhetId,
         val saksbehandlerValg: SaksbehandlerValg,

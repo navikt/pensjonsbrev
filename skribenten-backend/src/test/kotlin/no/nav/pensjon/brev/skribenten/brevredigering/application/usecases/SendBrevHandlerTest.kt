@@ -71,7 +71,7 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `distribuerer ikke lokalprint brev`() {
         val brev = opprettBrev().resultOrFail()
 
-        assertThat(endreDistribusjonstype(brev.info.id, Distribusjonstype.LOKALPRINT)).isSuccess()
+        assertThat(endreDistribusjonstype(brev.info.id, Distribusjon.LOKALPRINT)).isSuccess()
         assertThat(veksleKlarStatus(brev, true)).isSuccess()
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
         assertThat(sendBrev(brev)).isSuccess()

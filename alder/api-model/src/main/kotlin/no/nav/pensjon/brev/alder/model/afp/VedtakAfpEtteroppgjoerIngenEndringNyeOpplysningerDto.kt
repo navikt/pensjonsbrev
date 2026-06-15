@@ -1,16 +1,24 @@
 package no.nav.pensjon.brev.alder.model.afp
 
-import no.nav.pensjon.brev.api.model.maler.AutobrevData
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
-data class VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto(
-    val oppgjoersAar: Year,
-    val inntektFoerUttak: Kroner,
-    val medlemAvApotekerordningen: Boolean,
-    val toleranseBeloep: Kroner,
-    val scenario: Scenario,
-) : AutobrevData {
+data class VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerDto(
+    override val saksbehandlerValg: EmptySaksbehandlerValg,
+    override val pesysData: PesysData,
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerDto.PesysData> {
+
+    data class PesysData(
+        val oppgjoersAar: Year,
+        val inntektFoerUttak: Kroner,
+        val medlemAvApotekerordningen: Boolean,
+        val toleranseBeloep: Kroner,
+        val scenario: Scenario,
+    ) : FagsystemBrevdata
+
     /*
      * Tre gjensidig utelukkende scenarier forklarer hvorfor — modellert som
      * [Scenario] (skill-step 7: Exstream-betingelsene avledes hos kalleren slik

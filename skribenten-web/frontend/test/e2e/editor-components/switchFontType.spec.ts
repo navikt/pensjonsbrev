@@ -27,7 +27,6 @@ const baseSakspart = {
 
 const baseSignatur = nySignatur({
   hilsenTekst: "Med vennlig hilsen",
-  saksbehandlerRolleTekst: "Saksbehandler",
   saksbehandlerNavn: "Ole Saksbehandler",
   attesterendeSaksbehandlerNavn: "",
   navAvsenderEnhet: "Nav Familie- og pensjonsytelser Porsgrunn",
@@ -43,7 +42,7 @@ const editorInfo = nyBrevInfo({
   status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
   avsenderEnhet: { enhetNr: "0001", navn: "NAV Familie- og pensjonsytelser" },
   spraak: SpraakKode.Bokmaal,
-  saksId: "22981081",
+  saksId: 22981081,
 });
 
 function literal(id: number, parentId: number | null, text: string) {
@@ -443,7 +442,6 @@ test.describe("Switch font type", () => {
           ],
           signatur: nySignatur({
             hilsenTekst: "Med vennlig hilsen",
-            saksbehandlerRolleTekst: "Saksbehandler",
             saksbehandlerNavn: "Ole Saksbehandler",
             attesterendeSaksbehandlerNavn: "",
             navAvsenderEnhet: "Nav",

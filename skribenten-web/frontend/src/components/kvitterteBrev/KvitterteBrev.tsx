@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import { sendBrev } from "~/api/sak-api-endpoints";
 import { useSendtBrev } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevContext";
-import { type BestillBrevResponse, type BrevInfo, Distribusjonstype } from "~/types/brev";
+import { type BestillBrevError, type BestillBrevResponse, type BrevInfo, Distribusjonstype } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
 
 import KvittertBrevContent from "./KvittertBrevContent";
@@ -30,6 +30,7 @@ const KvitterteBrev = (properties: { sakId: string; kvitterteBrev: KvittertBrev[
             journalpostId={kvittertBrev.sendtBrevResponse?.journalpostId ?? null}
             key={`resultat-${index}`}
             saksId={properties.sakId}
+            sendtBrevError={kvittertBrev.sendtBrevError}
           />
         );
       })}
@@ -50,6 +51,7 @@ const AccordionItem = (props: {
   apiStatus: "error" | "success";
   context: "sendBrev" | "attestering";
   journalpostId: Nullable<number>;
+  sendtBrevError: Nullable<AxiosError | BestillBrevError>;
 }) => {
   const { setBrevResult } = useSendtBrev();
   const key = String(props.brevFørHandling.id);
@@ -89,6 +91,7 @@ const AccordionItem = (props: {
         journalpostId={props.journalpostId}
         onRetry={() => sendBrevMutation.mutate()}
         saksId={props.saksId}
+        sendtBrevError={props.sendtBrevError}
       />
     </ExpansionCard>
   );

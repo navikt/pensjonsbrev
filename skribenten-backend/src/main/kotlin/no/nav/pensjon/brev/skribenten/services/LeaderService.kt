@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.typesafe.config.Config
-import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.*
@@ -10,6 +9,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.config.*
+import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import java.net.InetAddress
 
 data class LeaderElection(val isThisInstanceLeader: Boolean, val thisInstanceName: String, val leaderName: String)
@@ -29,7 +29,7 @@ class NaisLeaderService(
         clientEngine = clientEngine
     )
 
-    private val client = HttpClient(clientEngine) {
+    private val client = lagHttpClient(clientEngine) {
         install(ContentNegotiation) {
             jackson {
                 configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
