@@ -72,7 +72,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
                 logger.warn("Fant ikke navansatt ${ansattId.id}: ${response.status} - ${response.bodyAsText()}")
                 null
             } else {
-                logger.error("Fant ikke navansatt ${ansattId.id}: ${response.status} - ${response.bodyAsText()}")
+                logger.error("Klarte ikke å hente navansatt ${ansattId.id}: ${response.status} - ${response.bodyAsText()}")
                 null
             }
         }
