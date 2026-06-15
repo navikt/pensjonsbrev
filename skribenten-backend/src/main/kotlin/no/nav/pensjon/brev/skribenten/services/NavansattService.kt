@@ -68,6 +68,9 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
 
             return@cached if (response.status.isSuccess()) {
                 response.body()
+            } else if (response.status == HttpStatusCode.NotFound) {
+                logger.warn("Fant ikke navansatt ${ansattId.id}: ${response.status} - ${response.bodyAsText()}")
+                null
             } else {
                 logger.error("Fant ikke navansatt ${ansattId.id}: ${response.status} - ${response.bodyAsText()}")
                 null
