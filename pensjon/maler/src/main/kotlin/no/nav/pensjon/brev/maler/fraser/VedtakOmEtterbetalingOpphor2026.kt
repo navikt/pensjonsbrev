@@ -114,8 +114,8 @@ class VedtakOmEtterbetalingOpphor2026 {
 
             paragraph {
                 text(
-                    bokmal { +"Vedtaket har vi gjort etter " },
-                    nynorsk { +"Vedtaket har vi gjort etter " },
+                    bokmal { +"Vedtaket har vi gjort etter folketrygdloven " },
+                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova " },
                 )
                 showIf(erRedigerbar) {
                     text(
