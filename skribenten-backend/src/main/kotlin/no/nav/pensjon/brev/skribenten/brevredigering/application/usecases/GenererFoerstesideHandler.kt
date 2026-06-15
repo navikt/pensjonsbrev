@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorC
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Postboks
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Tema
 import no.nav.pensjon.brev.skribenten.model.BrevId
-import no.nav.pensjon.brev.skribenten.serialize.Sakstype
+import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.toApi
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import kotlin.collections.listOf
