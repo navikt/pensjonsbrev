@@ -9,6 +9,7 @@ on:
       - ".githooks/pre-commit"
       - ".github/dependabot.yml"
       - ".github/pr/**"
+      - ".github/prompts/**"
       - ".github/regsuitconfig.json"
       - ".github/skills/**/*.md"
       - ".github/workflows/.build-frontend.yaml"
