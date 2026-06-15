@@ -168,7 +168,7 @@ class BrevredigeringFacadeTest {
             sistReservert = null,
             brevkode = Testbrevkoder.INFORMASJONSBREV,
             laastForRedigering = false,
-            distribusjonstype = Distribusjonstype.SENTRALPRINT,
+            distribusjonstype = Distribusjon.SENTRALPRINT,
             mottaker = null,
             avsenderEnhetId = EnhetId("9876"),
             spraak = LanguageCode.ENGLISH,

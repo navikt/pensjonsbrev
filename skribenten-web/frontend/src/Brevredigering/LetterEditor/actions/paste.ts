@@ -41,7 +41,6 @@ import {
   FontType,
   type LiteralValue,
   type Row,
-  TABLE,
   type TextContent,
   TITLE_INDEX,
 } from "~/types/brevbakerTypes";
@@ -273,7 +272,7 @@ function createRow(source: TableRow, colCount: number): Row {
 
 function createTable(colSpec: ColumnSpec[], rows: Row[]): BrevbakerTable {
   return {
-    type: TABLE,
+    type: "TABLE",
     id: null,
     parentId: null,
     header: { id: null, parentId: null, colSpec },

@@ -21,7 +21,7 @@ sealed class P1Exception(override val message: String): Exception(){
 
 interface P1Service {
 
-    suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: BrevId, saksId: SaksId): Api.GeneriskBrevdata?
+    suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: BrevId, saksId: SaksId): Api.GeneriskBrevdata
     suspend fun hentP1Data(brevId: BrevId, saksId: SaksId): Api.GeneriskBrevdata?
     suspend fun patchMedP1DataOmP1(
         brevdataResponse: BrevdataResponse.Data,
