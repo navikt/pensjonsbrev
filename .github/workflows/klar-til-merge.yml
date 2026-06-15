@@ -21,6 +21,8 @@ on:
       - "CODEOWNERS"
       - "fetch-secrets.sh"
       - "*.md"
+      - ".gitattributes"
+      - ".gitignore"
       - ".tool-versions"
 
 jobs:
