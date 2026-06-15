@@ -36,7 +36,7 @@ class BrevredigeringFacade(
     private val slettBrev: BrevredigeringHandler<SlettBrevHandler.Request, Unit>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
     private val diffBrev: BrevredigeringHandler<DiffBrevHandler.Request, DiffBrevHandler.Response>,
-    private val foerstesideHandler: BrevredigeringHandler<FoerstesideHandler.Request, GenererFoerstesideResponse>,
+    private val genererFoerstesideHandler: BrevredigeringHandler<GenererFoerstesideHandler.Request, GenererFoerstesideResponse>,
 ) : HentBrevService, OpprettBrevService {
 
     override suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
@@ -128,5 +128,5 @@ class BrevredigeringFacade(
         }
     }
 
-    suspend fun opprettFoersteside(request: FoerstesideHandler.Request) = foerstesideHandler.runHandler(request)
+    suspend fun genererFoersteside(request: GenererFoerstesideHandler.Request) = genererFoerstesideHandler.runHandler(request)
 }

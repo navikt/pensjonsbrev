@@ -19,9 +19,9 @@ import no.nav.pensjon.brev.skribenten.services.toApi
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import kotlin.collections.listOf
 
-class FoerstesideHandler(
+class GenererFoerstesideHandler(
     private val klient: FoerstesidegeneratorClient
-) : BrevredigeringHandler<FoerstesideHandler.Request, GenererFoerstesideResponse> {
+) : BrevredigeringHandler<GenererFoerstesideHandler.Request, GenererFoerstesideResponse> {
 
     data class Request(override val brevId: BrevId, val pid: BrevbakerType.Pid, val sakstype: Sakstype) : BrevredigeringRequest
 
