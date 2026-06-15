@@ -104,7 +104,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   const hasVedleggToShow = isP1Brev || savedVedlegg.length > 0;
   const hasVedleggToAdd = vedleggKoder && vedleggKoder.length > 0;
 
-  if (props.erLaast && !hasVedleggToShow) {
+  if (props.erLaast && brevData && !hasVedleggToShow) {
     return (
       <VStack gap="space-8">
         <BodyShort size="small" weight="semibold">
