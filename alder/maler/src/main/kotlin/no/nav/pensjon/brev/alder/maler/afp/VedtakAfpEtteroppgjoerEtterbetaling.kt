@@ -42,7 +42,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 /**
- * Redigerbart vedtak — AFP etteroppgjør (SPK) med etterbetaling.
+ * Redigerbart vedtak — AFP etteroppgjør med etterbetaling.
  *
  * Konvertert fra Exstream-malen `PE_AF_04_109`. Auto-varianten av samme situasjon
  * er [VedtakAfpEtteroppgjoerEtterbetalingAuto] (`PE_AF_04_101`).
