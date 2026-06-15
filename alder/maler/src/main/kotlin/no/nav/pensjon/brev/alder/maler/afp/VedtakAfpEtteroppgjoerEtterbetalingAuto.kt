@@ -226,7 +226,6 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                 ),
             )
 
-            // Etterbetalingsfrist + skatt + saksbehandlingstid (kun i fase 1).
             paragraph {
                 text(
                     bokmal {
@@ -242,7 +241,6 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                 )
             }
 
-            // Forbehold om refusjonskrav — delt med PE_AF_04_105.
             includePhrase(AfpEtteroppgjoerInnhold.RefusjonskravForbehold)
 
             // Avslutning — gjenbrukes fra fellesfrasene.
