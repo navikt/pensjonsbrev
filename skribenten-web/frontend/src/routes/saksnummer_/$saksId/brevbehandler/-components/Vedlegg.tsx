@@ -104,6 +104,16 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   const hasVedleggToShow = isP1Brev || savedVedlegg.length > 0;
   const hasVedleggToAdd = vedleggKoder && vedleggKoder.length > 0;
 
+  if (props.erLaast && !hasVedleggToShow) {
+    return (
+      <VStack gap="space-8">
+        <BodyShort size="small" weight="semibold">
+          Ingen vedlegg
+        </BodyShort>
+      </VStack>
+    );
+  }
+
   if (!hasVedleggToShow && !hasVedleggToAdd && !isLoading && !isError) {
     return null;
   }
@@ -133,16 +143,6 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
           {getErrorMessage(error)}
         </Alert>
       </div>
-    );
-  }
-
-  if (props.erLaast && !hasVedleggToShow) {
-    return (
-      <VStack gap="space-8">
-        <BodyShort size="small" weight="semibold">
-          Ingen vedlegg
-        </BodyShort>
-      </VStack>
     );
   }
 
