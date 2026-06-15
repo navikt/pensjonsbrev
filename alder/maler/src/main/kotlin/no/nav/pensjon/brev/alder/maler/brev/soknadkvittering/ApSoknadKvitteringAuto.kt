@@ -83,7 +83,8 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.LocalizedFormatter
-import no.nav.pensjon.brev.template.dsl.OutlineScope
+import no.nav.pensjon.brev.template.dsl.TableHeaderScope
+import no.nav.pensjon.brev.template.dsl.TableScope
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -98,7 +99,9 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 
-private typealias KvitteringOutline = OutlineScope<LanguageSupport.Single<Language.Bokmal>, ApSoknadKvitteringAutoDto>
+private typealias KvitteringLang = LanguageSupport.Single<Language.Bokmal>
+private typealias KvitteringTabell = TableScope<KvitteringLang, ApSoknadKvitteringAutoDto>
+private typealias KvitteringHeader = TableHeaderScope<KvitteringLang, ApSoknadKvitteringAutoDto>
 
 /**
  * Kvittering for innsendt søknad om alderspensjon (AP_SOKNAD_KVITTERING).
@@ -133,191 +136,198 @@ object ApSoknadKvitteringAuto : AutobrevTemplate<ApSoknadKvitteringAutoDto> {
                 )
             }
             outline {
-                // Innledning
-                title1 { text(bokmal { +"Innledning" }) }
-                tekstRad("Ønsket start for uttak av pensjon", innledning.iverksettelsesdato.formatMonthYear())
-                showIf(innledning.erNyttRegelverk) {
-                    tekstRad("Ønsket uttaksgrad", innledning.uttaksgrad.format() + " %")
+                paragraph {
+                    table(header = seksjon("Innledning")) {
+                        tekstRad("Ønsket start for uttak av pensjon", innledning.iverksettelsesdato.formatMonthYear())
+                        showIf(innledning.erNyttRegelverk) {
+                            tekstRad("Ønsket uttaksgrad", innledning.uttaksgrad.format() + " %")
+                        }
+                    }
                 }
 
-                // Opplysninger om deg
-                title1 { text(bokmal { +"Opplysninger om deg" }) }
-                tekstRad("Navn", personopplysninger.navn)
-                tekstRad("Fødselsnummer", personopplysninger.foedselsnummer)
-                paragraph { text(bokmal { +"Adresse:" }) }
-                forEach(personopplysninger.adresselinjer) { linje ->
-                    paragraph { text(bokmal { +linje }) }
+                paragraph {
+                    table(header = seksjon("Opplysninger om deg")) {
+                        tekstRad("Navn", personopplysninger.navn)
+                        tekstRad("Fødselsnummer", personopplysninger.foedselsnummer)
+                        adresseRad("Adresse", personopplysninger.adresselinjer)
+                        tekstRad("Telefonnummer", personopplysninger.telefon.ifNull(""))
+                        tekstRad("Statsborgerskap", ifElse(personopplysninger.erUtenlandsk, "Annet", "Norsk"))
+                        ifNotNull(personopplysninger.statsborgerskapLand) { statsborgerskapsland ->
+                            tekstRad("Statsborgerskap", statsborgerskapsland)
+                        }
+                        ifNotNull(personopplysninger.erFlyktning) { flyktning ->
+                            jaNeiRad("Registrert som flyktning", flyktning)
+                        }
+                        tekstRad("Kontonummer for utbetaling", personopplysninger.kontonummer.ifNull(""))
+                    }
                 }
-                tekstRad("Telefonnummer", personopplysninger.telefon.ifNull(""))
-                tekstRad("Statsborgerskap", ifElse(personopplysninger.erUtenlandsk, "Annet", "Norsk"))
-                ifNotNull(personopplysninger.statsborgerskapLand) { statsborgerskapsland ->
-                    tekstRad("Statsborgerskap", statsborgerskapsland)
-                }
-                ifNotNull(personopplysninger.erFlyktning) { flyktning ->
-                    jaNeiRad("Registrert som flyktning", flyktning)
-                }
-                tekstRad("Kontonummer for utbetaling", personopplysninger.kontonummer.ifNull(""))
 
-                // Familieforhold
-                title1 { text(bokmal { +"Familieforhold" }) }
-                ifNotNull(familieforhold.omsorgForBarnUnder7) { omsorg ->
-                    jaNeiRad("Omsorg for barn under 7 år i perioden 1967-1991", omsorg)
-                }
-                tekstRad("Sivilstand", familieforhold.sivilstand)
-                ifNotNull(familieforhold.avdoed) { avdoedRelasjon ->
-                    tekstRad("Avdødes navn", avdoedRelasjon.avdoedNavn)
-                    tekstRad("Avdødes fødselsnummer", avdoedRelasjon.avdoedFoedselsnummer.ifNull(""))
-                }
-                ifNotNull(familieforhold.samboer) { samboerRelasjon ->
-                    tekstRad("Samboers navn", samboerRelasjon.samboerNavn)
-                    tekstRad("Samboers fødselsnummer", samboerRelasjon.samboerFoedselsnummer.ifNull(""))
-                    ifNotNull(samboerRelasjon.samboerskapOpphoertDato) { opphoertDato ->
-                        tekstRad("Samboerskapet opphørte", opphoertDato.format(short = true))
-                    }
-                }
-                ifNotNull(familieforhold.harSamboerSpoersmaal) { spoersmaal ->
-                    paragraph {
-                        text(
-                            bokmal {
-                                +"Jeg har ".expr() +
-                                    ifElse(spoersmaal.erNySamboer, "ny samboer", "samboer") +
-                                    ": " +
-                                    ifElse(spoersmaal.svar, "Ja", "Nei")
-                            },
-                        )
-                    }
-                }
-                ifNotNull(familieforhold.eps) { ektefelle ->
-                    ifNotNull(ektefelle.navnOgFoedselsnummer) { navnFnr ->
-                        paragraph {
-                            text(bokmal { +ektefelle.betegnelseGenitivStor + " navn: " + navnFnr.epsNavn })
+                paragraph {
+                    table(header = seksjon("Familieforhold")) {
+                        ifNotNull(familieforhold.omsorgForBarnUnder7) { omsorg ->
+                            jaNeiRad("Omsorg for barn under 7 år i perioden 1967-1991", omsorg)
                         }
-                        paragraph {
-                            text(bokmal { +ektefelle.betegnelseGenitivStor + " fødselsnummer: " + navnFnr.epsFoedselsnummer.ifNull("") })
+                        tekstRad("Sivilstand", familieforhold.sivilstand)
+                        ifNotNull(familieforhold.avdoed) { avdoedRelasjon ->
+                            tekstRad("Avdødes navn", avdoedRelasjon.avdoedNavn)
+                            tekstRad("Avdødes fødselsnummer", avdoedRelasjon.avdoedFoedselsnummer.ifNull(""))
                         }
-                    }
-                    ifNotNull(ektefelle.epsSamboerFraDato) { fraDato ->
-                        tekstRad("Samboer fra dato", fraDato.format(short = true))
-                    }
-                    ifNotNull(ektefelle.giftOgBarn) { giftBarn ->
-                        jaNeiRad("Tidligere vært gift med", giftBarn.tidligereGift)
-                        jaNeiRad("Har barn med samboer", giftBarn.harFellesBarn)
-                    }
-                    ifNotNull(ektefelle.leverVarigAdskilt) { varigAdskilt ->
-                        paragraph {
-                            text(
-                                bokmal {
-                                    +"Lever du og ".expr() + ektefelle.betegnelse + " varig adskilt? " +
-                                        ifElse(varigAdskilt, "Ja", "Nei")
-                                },
+                        ifNotNull(familieforhold.samboer) { samboerRelasjon ->
+                            tekstRad("Samboers navn", samboerRelasjon.samboerNavn)
+                            tekstRad("Samboers fødselsnummer", samboerRelasjon.samboerFoedselsnummer.ifNull(""))
+                            ifNotNull(samboerRelasjon.samboerskapOpphoertDato) { opphoertDato ->
+                                tekstRad("Samboerskapet opphørte", opphoertDato.format(short = true))
+                            }
+                        }
+                        ifNotNull(familieforhold.harSamboerSpoersmaal) { spoersmaal ->
+                            rad(
+                                "Jeg har ".expr() + ifElse(spoersmaal.erNySamboer, "ny samboer", "samboer"),
+                                ifElse(spoersmaal.svar, "Ja", "Nei"),
                             )
                         }
-                    }
-                    ifNotNull(ektefelle.pensjonOgInntekt) { pensjonInntekt ->
-                        paragraph {
-                            text(
-                                bokmal {
-                                    +"Mottar/søker din ".expr() + ektefelle.betegnelse + " AFP fra offentlig sektor? " +
-                                        ifElse(pensjonInntekt.mottarAfp, "Ja", "Nei")
-                                },
-                            )
-                        }
-                        paragraph {
-                            text(
-                                bokmal {
-                                    +"Har ".expr() + ektefelle.betegnelse + " inntekt? " +
-                                        ifElse(pensjonInntekt.harAnnenInntekt, "Ja", "Nei")
-                                },
-                            )
-                        }
-                        ifNotNull(pensjonInntekt.sumInntekt) { sum ->
-                            paragraph {
-                                text(
-                                    bokmal {
-                                        +"Din ".expr() + ektefelle.betegnelseGenitiv +
-                                            " samlede årlige inntekt før skatt: " +
-                                            sum.format(LocalizedFormatter.CurrencyFormat) + " kr per år"
-                                    },
+                        ifNotNull(familieforhold.eps) { ektefelle ->
+                            ifNotNull(ektefelle.navnOgFoedselsnummer) { navnFnr ->
+                                rad(ektefelle.betegnelseGenitivStor + " navn", navnFnr.epsNavn)
+                                rad(
+                                    ektefelle.betegnelseGenitivStor + " fødselsnummer",
+                                    navnFnr.epsFoedselsnummer.ifNull(""),
                                 )
+                            }
+                            ifNotNull(ektefelle.epsSamboerFraDato) { fraDato ->
+                                tekstRad("Samboer fra dato", fraDato.format(short = true))
+                            }
+                            ifNotNull(ektefelle.giftOgBarn) { giftBarn ->
+                                jaNeiRad("Tidligere vært gift med", giftBarn.tidligereGift)
+                                jaNeiRad("Har barn med samboer", giftBarn.harFellesBarn)
+                            }
+                            ifNotNull(ektefelle.leverVarigAdskilt) { varigAdskilt ->
+                                jaNeiRad(
+                                    "Lever du og ".expr() + ektefelle.betegnelse + " varig adskilt?",
+                                    varigAdskilt,
+                                )
+                            }
+                            ifNotNull(ektefelle.pensjonOgInntekt) { pensjonInntekt ->
+                                jaNeiRad(
+                                    "Mottar/søker din ".expr() + ektefelle.betegnelse + " AFP fra offentlig sektor?",
+                                    pensjonInntekt.mottarAfp,
+                                )
+                                jaNeiRad(
+                                    "Har ".expr() + ektefelle.betegnelse + " inntekt?",
+                                    pensjonInntekt.harAnnenInntekt,
+                                )
+                                ifNotNull(pensjonInntekt.sumInntekt) { sum ->
+                                    rad(
+                                        "Din ".expr() + ektefelle.betegnelseGenitiv + " samlede årlige inntekt før skatt",
+                                        sum.format(LocalizedFormatter.CurrencyFormat) + " kr per år",
+                                    )
+                                }
                             }
                         }
                     }
                 }
 
-                // Opphold utenfor Norge
-                title1 { text(bokmal { +"Opphold utenfor Norge" }) }
-                jaNeiRad("Har du bodd eller arbeidet utenfor Norge etter at du fylte 16 år?", utland.harBoddArbeidetUtland)
-                forEach(utland.opphold) { opphold ->
-                    tekstRad("Land", opphold.land)
-                    jaNeiRad("Bodde du i landet?", opphold.bodd)
-                    jaNeiRad("Arbeidet du i landet?", opphold.arbeidet)
-                    tekstRad("Startdato for oppholdet", opphold.startDato.format(short = true).ifNull(""))
-                    tekstRad("Sluttdato for oppholdet", opphold.sluttDato.format(short = true).ifNull(""))
-                    tekstRad("Pensjonsordning under oppholdet", opphold.pensjonsordning.ifNull(""))
-                    tekstRad("Identitetsnummeret ditt i landet eller i pensjonsordningen", opphold.utlandsId.ifNull(""))
-                    tekstRad("Tilleggsinformasjon", opphold.tilleggsinformasjon.ifNull(""))
+                paragraph {
+                    table(header = seksjon("Opphold utenfor Norge")) {
+                        jaNeiRad("Har du bodd eller arbeidet utenfor Norge etter at du fylte 16 år?", utland.harBoddArbeidetUtland)
+                        forEach(utland.opphold) { opphold ->
+                            tekstRad("Land", opphold.land)
+                            jaNeiRad("Bodde du i landet?", opphold.bodd)
+                            jaNeiRad("Arbeidet du i landet?", opphold.arbeidet)
+                            tekstRad("Startdato for oppholdet", opphold.startDato.format(short = true).ifNull(""))
+                            tekstRad("Sluttdato for oppholdet", opphold.sluttDato.format(short = true).ifNull(""))
+                            tekstRad("Pensjonsordning under oppholdet", opphold.pensjonsordning.ifNull(""))
+                            tekstRad("Identitetsnummeret ditt i landet eller i pensjonsordningen", opphold.utlandsId.ifNull(""))
+                            tekstRad("Tilleggsinformasjon", opphold.tilleggsinformasjon.ifNull(""))
+                        }
+                    }
                 }
 
-                // AFP i privat sektor
-                title1 { text(bokmal { +"AFP i privat sektor" }) }
-                jaNeiRad("Ønsker du å søke om AFP i privat sektor?", afpPrivat.soektAfpPrivat)
-                ifNotNull(afpPrivat.detaljer) { afp ->
-                    tekstRad("Arbeidsgivers navn", afp.arbeidsgiverNavn.ifNull(""))
-                    paragraph { text(bokmal { +"Arbeidsgivers adresse:" }) }
-                    forEach(afp.arbeidsgiverAdresse) { linje ->
-                        paragraph { text(bokmal { +linje }) }
-                    }
-                    ifNotNull(afp.arbeidsgiverOrgnr) { orgnr ->
-                        tekstRad("Arbeidsgivers organisasjonsnummer", orgnr)
-                    }
-                    ifNotNull(afp.afpOmsorgForBarnUnder7) { omsorg ->
-                        jaNeiRad("Omsorg for barn under 7 år i perioden 1967-1991", omsorg)
-                    }
-                    tekstRad("Når ble du ansatt hos nåværende arbeidsgiver?", afp.ansattDato.format(short = true).ifNull(""))
-                    jaNeiRadValgfri(
-                        "Har arbeidsforholdet opphørt, eller er det bestemt når arbeidsforholdet skal opphøre?",
-                        afp.ansattforholdOpphoert,
-                    )
-                    ifNotNull(afp.opphoer) { opphoer ->
-                        tekstRad("Dato for opphør av arbeidsforholdet", opphoer.sisteDagArbeid.format(short = true).ifNull(""))
-                        tekstRad("Årsak til opphør av arbeidsforhold", opphoer.opphoerArsak.ifNull(""))
-                    }
-                    tekstRad("Er du heltidsansatt, deltidsansatt, midlertidig ansatt eller sesongansatt?", afp.ansattType.ifNull(""))
-                    jaNeiRadValgfri("Har du i løpet av de siste 3 år før du fylte 62 år fått redusert din stillingsprosent?", afp.redusertStillingSiste3Ar)
-                    jaNeiRadValgfri("Har stillingsprosenten din vært under 20 prosent etter du fylte 53 år?", afp.stillingUnder20Etter53Ar)
-                    jaNeiRadValgfri("Har du i løpet av de 3 siste år til sammen vært sykemeldt mer enn 26 uker?", afp.sykemeldtMerEnn26Siste3Ar)
-                    jaNeiRadValgfri("Har du i løpet av de siste 3 år vært permittert?", afp.permittertSiste3Ar)
-                    jaNeiRadValgfri(
-                        "Har du i løpet av de siste 3 år hatt permisjon i en eller flere perioder som til sammen utgjør mer enn 26 uker?",
-                        afp.permisjonSiste3Ar,
-                    )
-                    jaNeiRadValgfri(
-                        "Har du i de siste 3 årene før du fylte 62 år fått utbetalt pensjon, ventelønn eller andre ytelser uten arbeidsplikt?",
-                        afp.inntektUtenArbeidsplikt,
-                    )
-                    jaNeiRadValgfri(
-                        "Har du etter fylte 53 år drevet næringsvirksomhet eller hatt en eierandel på 20 prosent eller mer i søknadsbedriften eller annen virksomhet?",
-                        afp.naeringsvirkEierandel20,
-                    )
-                    jaNeiRadValgfri("Har du etter fylte 53 år arbeidet i utlandet?", afp.arbeidetUtlandEtter53)
-                    jaNeiRadValgfri("Vil du at Fellesordningen for AFP skal kontakte deg på e-post?", afp.samtykkeEpost)
-                    ifNotNull(afp.epost) { epostadresse ->
-                        tekstRad("E-postadressen din", epostadresse)
+                paragraph {
+                    table(header = seksjon("AFP i privat sektor")) {
+                        jaNeiRad("Ønsker du å søke om AFP i privat sektor?", afpPrivat.soektAfpPrivat)
+                        ifNotNull(afpPrivat.detaljer) { afp ->
+                            tekstRad("Arbeidsgivers navn", afp.arbeidsgiverNavn.ifNull(""))
+                            adresseRad("Arbeidsgivers adresse", afp.arbeidsgiverAdresse)
+                            ifNotNull(afp.arbeidsgiverOrgnr) { orgnr ->
+                                tekstRad("Arbeidsgivers organisasjonsnummer", orgnr)
+                            }
+                            ifNotNull(afp.afpOmsorgForBarnUnder7) { omsorg ->
+                                jaNeiRad("Omsorg for barn under 7 år i perioden 1967-1991", omsorg)
+                            }
+                            tekstRad("Når ble du ansatt hos nåværende arbeidsgiver?", afp.ansattDato.format(short = true).ifNull(""))
+                            jaNeiRadValgfri(
+                                "Har arbeidsforholdet opphørt, eller er det bestemt når arbeidsforholdet skal opphøre?",
+                                afp.ansattforholdOpphoert,
+                            )
+                            ifNotNull(afp.opphoer) { opphoer ->
+                                tekstRad("Dato for opphør av arbeidsforholdet", opphoer.sisteDagArbeid.format(short = true).ifNull(""))
+                                tekstRad("Årsak til opphør av arbeidsforhold", opphoer.opphoerArsak.ifNull(""))
+                            }
+                            tekstRad("Er du heltidsansatt, deltidsansatt, midlertidig ansatt eller sesongansatt?", afp.ansattType.ifNull(""))
+                            jaNeiRadValgfri("Har du i løpet av de siste 3 år før du fylte 62 år fått redusert din stillingsprosent?", afp.redusertStillingSiste3Ar)
+                            jaNeiRadValgfri("Har stillingsprosenten din vært under 20 prosent etter du fylte 53 år?", afp.stillingUnder20Etter53Ar)
+                            jaNeiRadValgfri("Har du i løpet av de 3 siste år til sammen vært sykemeldt mer enn 26 uker?", afp.sykemeldtMerEnn26Siste3Ar)
+                            jaNeiRadValgfri("Har du i løpet av de siste 3 år vært permittert?", afp.permittertSiste3Ar)
+                            jaNeiRadValgfri(
+                                "Har du i løpet av de siste 3 år hatt permisjon i en eller flere perioder som til sammen utgjør mer enn 26 uker?",
+                                afp.permisjonSiste3Ar,
+                            )
+                            jaNeiRadValgfri(
+                                "Har du i de siste 3 årene før du fylte 62 år fått utbetalt pensjon, ventelønn eller andre ytelser uten arbeidsplikt?",
+                                afp.inntektUtenArbeidsplikt,
+                            )
+                            jaNeiRadValgfri(
+                                "Har du etter fylte 53 år drevet næringsvirksomhet eller hatt en eierandel på 20 prosent eller mer i søknadsbedriften eller annen virksomhet?",
+                                afp.naeringsvirkEierandel20,
+                            )
+                            jaNeiRadValgfri("Har du etter fylte 53 år arbeidet i utlandet?", afp.arbeidetUtlandEtter53)
+                            jaNeiRadValgfri("Vil du at Fellesordningen for AFP skal kontakte deg på e-post?", afp.samtykkeEpost)
+                            ifNotNull(afp.epost) { epostadresse ->
+                                tekstRad("E-postadressen din", epostadresse)
+                            }
+                        }
                     }
                 }
             }
         }
 }
 
-private fun KvitteringOutline.tekstRad(ledetekst: String, verdi: Expression<String>) {
-    val skille = if (ledetekst.endsWith("?")) " " else ": "
-    paragraph { text(bokmal { +"$ledetekst$skille".expr() + verdi }) }
+private fun seksjon(overskrift: String): KvitteringHeader.() -> Unit = {
+    column(columnSpan = 7) { text(bokmal { +overskrift }) }
+    column(columnSpan = 3) { }
 }
 
-private fun KvitteringOutline.jaNeiRad(ledetekst: String, verdi: Expression<Boolean>) {
-    tekstRad(ledetekst, ifElse(verdi, "Ja", "Nei"))
+private fun KvitteringTabell.rad(ledetekst: Expression<String>, verdi: Expression<String>) {
+    row {
+        cell { text(bokmal { +ledetekst }) }
+        cell { text(bokmal { +verdi }) }
+    }
 }
 
-private fun KvitteringOutline.jaNeiRadValgfri(ledetekst: String, verdi: Expression<Boolean?>) {
-    tekstRad(ledetekst, ifElse(verdi.notNull(), ifElse(verdi.ifNull(false), "Ja", "Nei"), "".expr()))
+private fun KvitteringTabell.tekstRad(ledetekst: String, verdi: Expression<String>) {
+    rad(ledetekst.expr(), verdi)
+}
+
+private fun KvitteringTabell.adresseRad(ledetekst: String, adresselinjer: Expression<List<String>>) {
+    row {
+        cell { text(bokmal { +ledetekst }) }
+        cell {
+            forEach(adresselinjer) { linje ->
+                text(bokmal { +linje })
+                newline()
+            }
+        }
+    }
+}
+
+private fun KvitteringTabell.jaNeiRad(ledetekst: String, verdi: Expression<Boolean>) {
+    rad(ledetekst.expr(), ifElse(verdi, "Ja", "Nei"))
+}
+
+private fun KvitteringTabell.jaNeiRad(ledetekst: Expression<String>, verdi: Expression<Boolean>) {
+    rad(ledetekst, ifElse(verdi, "Ja", "Nei"))
+}
+
+private fun KvitteringTabell.jaNeiRadValgfri(ledetekst: String, verdi: Expression<Boolean?>) {
+    rad(ledetekst.expr(), ifElse(verdi.notNull(), ifElse(verdi.ifNull(false), "Ja", "Nei"), "".expr()))
 }
