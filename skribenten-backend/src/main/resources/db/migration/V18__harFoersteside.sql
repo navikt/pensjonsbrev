@@ -1,1 +1,1 @@
-ALTER TABLE brevredigering ADD COLUMN IF NOT EXISTS harfoersteside BIT NULL;
+ALTER TABLE brevredigering ADD COLUMN IF NOT EXISTS harfoersteside BOOLEAN NULL;
