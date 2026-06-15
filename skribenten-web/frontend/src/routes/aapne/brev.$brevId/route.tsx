@@ -8,6 +8,7 @@ import { ApiError } from "~/components/ApiError";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import { queryClient } from "~/routes/__root";
 import { type BrevInfo } from "~/types/brev";
+import { erVedtaksbrev } from "~/utils/brevUtils";
 import { type AttestForbiddenReason } from "~/utils/parseAttest403";
 import { trackEvent } from "~/utils/umami";
 
@@ -44,45 +45,47 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
     const currentUser = await queryClient.ensureQueryData(getUserInfo);
     const isOriginalCreator = currentUser.navident === brevInfo.opprettetAv.id;
 
+    const trackRedirect = (destinasjon: string, rolle?: string) =>
+      trackEvent("pesys omdirigering", {
+        brevStatus: brevInfo.status.type,
+        destinasjon,
+        erForfatter: isOriginalCreator,
+        ...(rolle ? { rolle } : {}),
+        enhetsId: brevInfo.avsenderEnhet.enhetNr,
+        brevkode: brevInfo.brevkode,
+      });
+
     switch (brevInfo.status.type) {
       case "Kladd":
-      case "UnderRedigering":
-        trackEvent("pesys omdirigering", {
-          brevStatus: brevInfo.status.type,
-          destinasjon: "brev-redigering",
-          erForfatter: isOriginalCreator,
-          enhetsId: brevInfo.avsenderEnhet.enhetNr,
-          brevkode: brevInfo.brevkode,
-        });
+      case "UnderRedigering": {
+        if (!isOriginalCreator && currentUser.erAttestant && erVedtaksbrev(brevInfo)) {
+          trackRedirect("attestering", "attestant");
+          throw redirect({
+            to: "/saksnummer/$saksId/attester/$brevId/redigering",
+            params: {
+              saksId: String(brevInfo.saksId),
+              brevId: String(brevIdNum),
+            },
+          });
+        }
+
+        trackRedirect("brev-redigering");
         throw redirect({
           to: "/saksnummer/$saksId/brev/$brevId",
           params: { saksId: String(brevInfo.saksId), brevId: brevIdNum },
         });
+      }
 
       case "Attestering": {
         if (isOriginalCreator) {
-          trackEvent("pesys omdirigering", {
-            brevStatus: "Attestering",
-            destinasjon: "brevbehandler",
-            erForfatter: true,
-            rolle: "forfatter",
-            enhetsId: brevInfo.avsenderEnhet.enhetNr,
-            brevkode: brevInfo.brevkode,
-          });
+          trackRedirect("brevbehandler", "forfatter");
           throw redirect({
             to: "/saksnummer/$saksId/brevbehandler",
             params: { saksId: String(brevInfo.saksId) },
             search: { brevId: brevIdNum },
           });
         }
-        trackEvent("pesys omdirigering", {
-          brevStatus: "Attestering",
-          destinasjon: "attestering",
-          erForfatter: false,
-          rolle: "attestant",
-          enhetsId: brevInfo.avsenderEnhet.enhetNr,
-          brevkode: brevInfo.brevkode,
-        });
+        trackRedirect("attestering", "attestant");
         throw redirect({
           to: "/saksnummer/$saksId/attester/$brevId/redigering",
           params: {
@@ -94,13 +97,7 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
 
       case "Klar":
       case "Arkivert":
-        trackEvent("pesys omdirigering", {
-          brevStatus: brevInfo.status.type,
-          destinasjon: "brevbehandler",
-          erForfatter: isOriginalCreator,
-          enhetsId: brevInfo.avsenderEnhet.enhetNr,
-          brevkode: brevInfo.brevkode,
-        });
+        trackRedirect("brevbehandler");
         throw redirect({
           to: "/saksnummer/$saksId/brevbehandler",
           params: { saksId: String(brevInfo.saksId) },

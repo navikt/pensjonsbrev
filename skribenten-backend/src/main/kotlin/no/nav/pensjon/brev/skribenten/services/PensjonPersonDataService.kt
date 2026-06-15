@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
-import io.ktor.client.*
 import io.ktor.client.call.body
 import io.ktor.client.engine.*
 import io.ktor.client.engine.cio.*
@@ -17,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
+import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
@@ -57,7 +57,7 @@ class PensjonPersonDataServiceImpl(
     private val logger = LoggerFactory.getLogger(javaClass)
     private val pensjonPersondataURL = config.getString("url")
     private val scope = config.getString("scope")
-    private val client = HttpClient(clientEngine) {
+    private val client = lagHttpClient(clientEngine) {
         defaultRequest {
             url(pensjonPersondataURL)
         }

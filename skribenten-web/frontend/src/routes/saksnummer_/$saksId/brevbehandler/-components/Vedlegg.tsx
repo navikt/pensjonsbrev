@@ -57,6 +57,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   } = useQuery({
     queryKey: getBrevVedlegg.queryKey(props.saksId, props.brev.id),
     queryFn: () => getBrevVedlegg.queryFn(props.saksId, props.brev.id),
+    enabled: !props.erLaast,
   });
 
   const getVedleggLabel = (vedlegg: AlltidValgbartVedlegg) => vedlegg.visningstekst ?? vedlegg.kode;
@@ -103,6 +104,16 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   const hasVedleggToShow = isP1Brev || savedVedlegg.length > 0;
   const hasVedleggToAdd = vedleggKoder && vedleggKoder.length > 0;
 
+  if (props.erLaast && brevData && !hasVedleggToShow) {
+    return (
+      <VStack gap="space-8">
+        <BodyShort size="small" weight="semibold">
+          Ingen vedlegg
+        </BodyShort>
+      </VStack>
+    );
+  }
+
   if (!hasVedleggToShow && !hasVedleggToAdd && !isLoading && !isError) {
     return null;
   }
@@ -132,16 +143,6 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
           {getErrorMessage(error)}
         </Alert>
       </div>
-    );
-  }
-
-  if (props.erLaast && !hasVedleggToShow) {
-    return (
-      <VStack gap="space-8">
-        <BodyShort size="small" weight="semibold">
-          Ingen vedlegg
-        </BodyShort>
-      </VStack>
     );
   }
 

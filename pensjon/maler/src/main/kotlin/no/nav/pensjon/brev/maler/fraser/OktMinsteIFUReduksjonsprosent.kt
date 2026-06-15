@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -50,10 +51,17 @@ object OktMinsteIFUReduksjonsprosent {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
             title1 {
-                text(
-                    bokmal { +"Dette er dine endringer fra 1. januar 2026" },
-                    nynorsk { +"Dette er endringane dine frå 1. januar 2026" },
-                )
+                showIf(data.etterbetalingJuli.greaterThan(0) or data.endringNettoUforetrygdUtenTillegg or data.endringNettoBarnetillegg or data.endringNettoGjenlevendetillegg) {
+                    text(
+                        bokmal { +"Dette er dine endringer" },
+                        nynorsk { +"Dette er endringane dine" },
+                    )
+                }.orShow {
+                    text(
+                        bokmal { +"Dette er dine endringer, de påvirker ikke utbetalingen" },
+                        nynorsk { +"Dette er endringane dine, dei påverkar ikkje utbetalinga" },
+                    )
+                }
             }
             paragraph {
                 text(
@@ -255,8 +263,8 @@ object OktMinsteIFUReduksjonsprosent {
                 }
                 paragraph {
                     text(
-                        bokmal { +"Minste IFU bruker vi for å sikre et inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførhet. IFU brukes og for å fastsette en reduksjonsprosent." },
-                        nynorsk { +"Minste IFU brukar vi for å sikre eit inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførleik. IFU blir òg brukt for å fastsetje ein reduksjonsprosent." }
+                        bokmal { +"IFU brukes til å fastsette uføregrad, reduksjonsprosent og inntektstak. Minste IFU er tidligere fastsatt for deg fordi du hadde lite eller ingen inntekt før uførhet. " },
+                        nynorsk { +"IFU blir brukt til å fastsetje uføregrad, reduksjonsprosent og inntektstak. Minste IFU er fastsett for deg tidlegare fordi du hadde låg eller ingen inntekt før uførleiken. " },
                     )
                 }
             }
@@ -332,11 +340,20 @@ object OktMinsteIFUReduksjonsprosent {
                             nynorsk { +"Fordi du har hatt inntekt over inntektsgrensa" },
                         )
                     }
-                    paragraph {
-                        text(
-                            bokmal { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i beregningene av uføretrygden din.Når lovendringen trer i kraft, skal ny reduksjonsprosent ha virkning tilbake i tid fra 1. januar i år. Du vil derfor få en etterbetaling på " + data.etterbetalingJuli.format() + " innen kort tid." },
-                            nynorsk { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny reduksjonsprosent ha tilbakeverkande kraft frå 1. januar i år. Du vil derfor få ei etterbetaling på " + data.etterbetalingJuli.format() + " innan kort tid." },
-                        )
+                    showIf(data.redigerbar) {
+                        paragraph {
+                            text(
+                                bokmal { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i beregningene av uføretrygden din. Når lovendringen trer i kraft, skal ny reduksjonsprosent ha virkning tilbake i tid fra 1. januar i år. Du vil derfor få en etterbetaling på " + fritekst("Beløp etterbetaling") + " innen kort tid." },
+                                nynorsk { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny reduksjonsprosent ha tilbakeverkande kraft frå 1. januar i år. Du vil derfor få ei etterbetaling på " + fritekst("Beløp etterbetaling") + " innan kort tid." },
+                            )
+                        }
+                    }.orShow {
+                        paragraph {
+                            text(
+                                bokmal { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i beregningene av uføretrygden din. Når lovendringen trer i kraft, skal ny reduksjonsprosent ha virkning tilbake i tid fra 1. januar i år. Du vil derfor få en etterbetaling på " + data.etterbetalingJuli.format() + " innen kort tid." },
+                                nynorsk { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny reduksjonsprosent ha tilbakeverkande kraft frå 1. januar i år. Du vil derfor få ei etterbetaling på " + data.etterbetalingJuli.format() + " innan kort tid." },
+                            )
+                        }
                     }
                 }.orShow {
                     title2 {

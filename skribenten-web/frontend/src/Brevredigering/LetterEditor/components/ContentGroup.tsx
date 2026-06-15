@@ -36,13 +36,8 @@ import {
   type EditedLetter,
   ElementTags,
   FontType,
-  ITEM_LIST,
-  LITERAL,
   type LiteralValue,
-  NEW_LINE,
-  TABLE,
   TITLE_INDEX,
-  VARIABLE,
 } from "~/types/brevbakerTypes";
 import { trackEvent } from "~/utils/umami";
 
@@ -63,7 +58,7 @@ const WORD_JOINER = "\u2060";
 const NO_BREAK_PUNCTUATION = /^[.,;:!?'"()[\]{}°…«»%\u201D\u2019]/;
 
 function startsWithPunctuation(content: Content): boolean {
-  if (content.type !== LITERAL) return false;
+  if (content.type !== "LITERAL") return false;
   return NO_BREAK_PUNCTUATION.test(textOf(content));
 }
 
@@ -79,7 +74,7 @@ function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
   }
   const content = letter.blocks[literalIndex.blockIndex].content;
   const contentValue = content[literalIndex.contentIndex];
-  if ("itemIndex" in literalIndex && contentValue.type === ITEM_LIST) {
+  if ("itemIndex" in literalIndex && contentValue.type === "ITEM_LIST") {
     return contentValue.items[literalIndex.itemIndex].content;
   }
   return content;
@@ -95,7 +90,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
         const needsWordJoiner = contentIndex > 0 && startsWithPunctuation(content);
 
         switch (content.type) {
-          case LITERAL: {
+          case "LITERAL": {
             const updatedLiteralIndex =
               "itemIndex" in literalIndex
                 ? { ...literalIndex, itemContentIndex: contentIndex }
@@ -109,8 +104,8 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
               <EditableText content={content} key={contentIndex} literalIndex={updatedLiteralIndex} />
             );
           }
-          case NEW_LINE:
-          case VARIABLE: {
+          case "NEW_LINE":
+          case "VARIABLE": {
             return (
               <Text
                 content={content}
@@ -122,7 +117,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
               />
             );
           }
-          case ITEM_LIST: {
+          case "ITEM_LIST": {
             return (
               <ul key={contentIndex}>
                 {content.items.map((_item, itemIndex) => (
@@ -139,7 +134,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
               </ul>
             );
           }
-          case TABLE: {
+          case "TABLE": {
             return (
               <TableView
                 blockIndex={literalIndex.blockIndex}

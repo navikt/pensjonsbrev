@@ -7,7 +7,6 @@ import {
   type AnyBlock,
   type Item,
   type ItemList,
-  LITERAL,
   type LiteralValue,
   type ParagraphBlock,
   type TextContent,
@@ -231,7 +230,7 @@ describe("LetterEditorActions.merge", () => {
           const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
           expect(result.redigertBrev.blocks).toHaveLength(1);
           expect(select<ParagraphBlock>(result, { blockIndex: 0 }).content).toHaveLength(3);
-          expect(result.redigertBrev.blocks[0]?.content?.at(-1)?.type).toStrictEqual(LITERAL);
+          expect(result.redigertBrev.blocks[0]?.content?.at(-1)?.type).toStrictEqual("LITERAL");
         });
       });
 

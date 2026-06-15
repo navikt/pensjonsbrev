@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
@@ -36,11 +37,11 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Exception
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenDataException
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenFeilIDatabyggerException
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
+import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationMixins
+import no.nav.pensjon.brev.skribenten.serialize.registerMixin
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
+import no.nav.pensjon.brev.skribenten.services.HttpClientFactory
 import no.nav.pensjon.brev.skribenten.services.ServiceException
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
@@ -201,6 +202,9 @@ fun Application.skribentenApp(skribentenConfig: Config) {
     monitor.subscribe(ApplicationStopPreparing) {
         Features.shutdown()
     }
+    monitor.subscribe(ApplicationStopping) {
+        HttpClientFactory.close()
+    }
 }
 
 // Vi må gjøre denne vaskingen fordi Exposed sin BasicBinaryColumnType::valueFromDB kaster en IllegalStateException med toString av Edit.Letter.
@@ -226,13 +230,15 @@ private fun IllegalStateException.messageHasEditedLetter(): Boolean = message?.l
 fun Application.skribentenContenNegotiation() {
     install(ContentNegotiation) {
         jackson {
-            registerModule(JavaTimeModule())
-            registerModule(EditLetterJacksonModule)
-            registerModule(BrevkodeJacksonModule)
-            registerModule(SakstypeModule)
-            registerModule(LetterMarkupJacksonModule)
-            disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            skribentenServerJackson()
         }
     }
+}
+
+fun ObjectMapper.skribentenServerJackson() = apply {
+    registerModule(JavaTimeModule())
+    registerMixin(TemplateModelSpecificationMixins)
+    registerModule(LetterMarkupJacksonModule)
+    disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 }

@@ -14,18 +14,10 @@ import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettInfo4Aar
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettMidlertidigOppHoer
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettOppHoer
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettVarselOpphoer
-import no.nav.pensjon.brev.ufore.maler.info.Honnorkort
 import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
 import no.nav.pensjon.brev.ufore.maler.info.InfobrevLovendringer2026
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmOktMinsteIFU
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmOktMinsteIFUOgLavereReduksjonsprosent
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmOktMinsteIFUOgLavereReduksjonsprosentRedigerbar
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmOktMinsteIFURedigerbar
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmLavereMinstesats
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmLavereReduksjonsprosent
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmLavereReduksjonsprosentRedigerbar
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmLavereMinstesatsS
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.*
 import no.nav.pensjon.brev.ufore.maler.uforeavslag.*
 
 object UfoereTemplates : AllTemplates {
@@ -92,7 +84,6 @@ object UfoereTemplates : AllTemplates {
         HvilendeRettOppHoer,
         HvilendeRettVarselOpphoer,
         HvilendeRettMidlertidigOppHoer,
-        Honnorkort,
         VarselOmLavereMinstesatsS,
         VarselOmLavereReduksjonsprosentRedigerbar,
         VarselOmOktMinsteIFURedigerbar,

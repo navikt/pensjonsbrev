@@ -7,7 +7,7 @@ import com.typesafe.config.ConfigValueFactory
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.OpprettBrevService
@@ -16,13 +16,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
-import no.nav.pensjon.brev.skribenten.model.BrevId
-import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
-import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.JournalpostId
-import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.model.SaksId
-import no.nav.pensjon.brev.skribenten.model.VedtaksId
+import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.FakeBrevbakerService
 import no.nav.pensjon.brev.skribenten.services.FakeBrevmetadataService
@@ -56,7 +50,7 @@ class ExternalAPIServiceTest {
         sistReservert = null,
         brevkode = Testbrevkoder.INFORMASJONSBREV,
         laastForRedigering = false,
-        distribusjonstype = Distribusjonstype.SENTRALPRINT,
+        distribusjonstype = Distribusjon.SENTRALPRINT,
         mottaker = null,
         avsenderEnhetId = EnhetId("0001"),
         spraak = LanguageCode.BOKMAL,
@@ -117,8 +111,8 @@ class ExternalAPIServiceTest {
         parameters.forEach {
             val forventaType = finnForventaType(it)
 
-            assertThat(brevinfo[it.name]!!.type).isEqualTo(forventaType.first)
-            assertThat(brevinfo[it.name]!!.format).isEqualTo(forventaType.second)
+            assertThat(brevinfo[it.name]!!.type).`as`("typen til ${it.name}").isEqualTo(forventaType.first)
+            assertThat(brevinfo[it.name]!!.format).`as`("formatet til ${it.name}").isEqualTo(forventaType.second)
         }
         assertThat(parameters.size).isEqualTo(brevinfo.size)
     }
@@ -130,11 +124,11 @@ class ExternalAPIServiceTest {
         BrevId::class, SaksId::class, VedtaksId::class, JournalpostId::class -> Pair("number", "int64")
         EnhetId::class -> Pair("string", null)
         SpraakKode::class -> Pair("string", null)
-        Brevkode.Redigerbart::class, LetterMetadata.Brevtype::class -> Pair("string", null)
+        RedigerbarBrevkode::class, LetterMetadata.Brevtype::class -> Pair("string", null)
         Instant::class -> Pair("string", "date-time")
         ExternalAPI.OverstyrtMottaker::class -> Pair(null, null)
         ExternalAPI.BrevStatus::class -> Pair("string", null)
-        else -> Pair(null, null)
+        else -> throw IllegalArgumentException("testen mangler definisjon av forventet type for: ${(parameter.type.classifier as KClass<*>).qualifiedName}")
     }
 }
 

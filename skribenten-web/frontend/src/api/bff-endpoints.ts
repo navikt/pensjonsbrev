@@ -3,6 +3,7 @@
 
 import axios from "axios";
 
+import type * as generated from "../types/skribenten-api";
 import { CACHE_FOR } from "./cache";
 
 const BFF_BASE_URL = "/bff/api";
@@ -11,14 +12,11 @@ export type BaseUrls = {
   psak: string;
 };
 
-export type UserInfo = {
-  name: string;
-  navident: string;
-};
+export type UserInfo = generated.ApiUserInfo;
 
 export const getUserInfo = {
   queryKey: ["USER"],
-  queryFn: async () => (await axios.get<UserInfo>(`${BFF_BASE_URL}/userInfo`)).data,
+  queryFn: async () => (await axios.get<UserInfo>("/bff/skribenten-backend/me/userinfo")).data,
   staleTime: CACHE_FOR.aDay,
 };
 
@@ -37,6 +35,7 @@ export type Feilmelding = {
   message: unknown;
   stack: unknown;
   requestId?: string;
+  level: string;
   status: number | undefined;
   jsonContent: unknown;
 };

@@ -1,3 +1,5 @@
+import com.github.gradle.node.npm.task.NpmTask
+import com.github.gradle.node.npm.task.NpxTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
@@ -5,7 +7,55 @@ val javaTarget: String by System.getProperties()
 plugins {
     application
     kotlin("jvm")
+    alias(libs.plugins.ktor)
+    alias(libs.plugins.gradle.node)
 }
+
+ktor {
+    openApi {
+        enabled = true
+        codeInferenceEnabled = true
+    }
+}
+
+node {
+    nodeProjectDir.set(rootProject.file("skribenten-web/frontend"))
+    npmInstallCommand.set("ci")
+}
+
+// Declare openapi-spec.json as a test output so Gradle's build cache includes and restores
+// it when the test result is cached. Without this, running clean then generateApiTypes would
+// use the cached test result but leave build/openapi-spec.json absent.
+tasks.test {
+    outputs.file(layout.buildDirectory.file("openapi-spec.json"))
+}
+
+val generateApiTypes by tasks.registering(NpxTask::class) {
+    description = "Generates TypeScript types from the OpenAPI spec into skribenten-web/frontend/src/types/skribenten-api.ts"
+    dependsOn(tasks.test, tasks.npmInstall)
+    command.set("openapi-typescript")
+    val specFile = layout.buildDirectory.file("openapi-spec.json")
+    val outputFile = rootProject.file("skribenten-web/frontend/src/types/skribenten-api.ts")
+    args.set(
+        listOf(
+            specFile.get().asFile.absolutePath,
+            "--output", outputFile.absolutePath,
+            "--root-types",
+            "--root-types-no-schema-prefix",
+        )
+    )
+    inputs.file(specFile)
+    outputs.file(outputFile)
+}
+
+val typeCheckFrontend by tasks.registering(NpmTask::class) {
+    description = "Runs TypeScript type checking on the frontend after API type generation"
+    dependsOn(generateApiTypes)
+    npmCommand.set(listOf("run", "check-types"))
+    inputs.files(rootProject.fileTree("skribenten-web/frontend/src"))
+    outputs.upToDateWhen { true }
+}
+
 
 group = "no.nav.pensjon.brev.skribenten"
 version = "0.0.1"
@@ -36,6 +86,7 @@ tasks {
     }
     build {
         dependsOn(installDist)
+        dependsOn(typeCheckFrontend)
     }
 }
 
@@ -59,11 +110,12 @@ dependencies {
     implementation(libs.ktor.server.callId)
     implementation(libs.ktor.server.callLogging)
     implementation(libs.ktor.server.content.negotiation)
-    implementation(libs.ktor.server.core.jvm)
+    implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.cors)
-    implementation(libs.ktor.server.netty.jvm)
+    implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.swagger)
+    implementation(libs.ktor.openapi.schema.reflect)
 
     // Exposed
     implementation(libs.exposed.core)
@@ -94,7 +146,6 @@ dependencies {
 
     // Metrics
     implementation(libs.bundles.metrics)
-    implementation(libs.ktor.server.caching.headers.jvm)
 
     // Caching
     implementation(libs.valkey)
