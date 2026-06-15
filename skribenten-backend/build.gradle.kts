@@ -17,8 +17,23 @@ ktor {
         codeInferenceEnabled = true
     }
 }
+fun Project.nodeVersionFromToolVersions(): String {
+    val toolVersions = rootProject.file(".tool-versions")
+    require(toolVersions.exists()) { "Mangler .tool-versions i ${rootProject.projectDir}" }
+
+    val version = toolVersions
+        .readLines()
+        .firstOrNull { it.startsWith("nodejs ") }
+        ?.substringAfter("nodejs ")
+        ?.trim()
+
+    require(!version.isNullOrBlank()) { "Fant ikke 'nodejs <versjon>' i ${toolVersions.path}" }
+    return version
+}
 
 node {
+    download.set(true)
+    version.set(project.nodeVersionFromToolVersions())
     nodeProjectDir.set(rootProject.file("skribenten-web/frontend"))
     npmInstallCommand.set("ci")
 }
