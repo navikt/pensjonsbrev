@@ -9,7 +9,6 @@ import {
   isAtStartOfBlock,
   isAtStartOfItem,
   isBlockContentIndex,
-  isIndexAfter,
   isItemContentIndex,
   isNew,
   isTable,
@@ -75,11 +74,7 @@ export const pasteReplacingSelection: Action<LetterEditorState, [selection: Sele
     if (selection.start.blockIndex === TITLE_INDEX) {
       return;
     }
-    if (
-      !isValidIndex(draft.redigertBrev, selection.start) ||
-      !isValidIndex(draft.redigertBrev, selection.end) ||
-      !isIndexAfter(selection.start, selection.end)
-    ) {
+    if (!isValidIndex(draft.redigertBrev, selection.start) || !isValidIndex(draft.redigertBrev, selection.end)) {
       return;
     }
     deleteSelectionRecipe(draft, selection);
