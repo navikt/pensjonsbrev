@@ -13,4 +13,8 @@ fun Route.healthRoute() {
     get("/isReady") {
         call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
     }
+
+    get("/isStarted") {
+        call.respondText("Started!", ContentType.Text.Plain, HttpStatusCode.OK)
+    }
 }
