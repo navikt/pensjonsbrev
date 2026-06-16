@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.klageOgAnke
 
+import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst
@@ -9,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbeha
 import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.PesysDataSelectors.navAvsenderEnhet
 import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.PesysDataSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -24,6 +26,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<KlageOrienteringOmSaksbehandlingstidDto> {
+
+    override val featureToggle = FeatureToggles.brevmalKlageOrienteringOmSaksbehandlingstid.toggle
+
     override val kode = Pesysbrevkoder.Redigerbar.PE_KLAGE_ORIENTERING_OM_SAKSBEHANDLINGSTID
     override val kategori = no.nav.pensjon.brev.model.Brevkategori.KLAGE_OG_ANKE
     override val brevkontekst: Brevkontekst = Brevkontekst.ALLE
@@ -40,19 +45,19 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<KlageOrienterin
     ) {
         title {
             text(
-                bokmal { +fritekst("Fyll inn ytelse") + "- orientering om saksbehandlingstid" },
-                english { +fritekst("Fyll inn ytelse") + "- indication of case prosessing time" }
+                bokmal { +fritekst("ytelse") + " - orientering om saksbehandlingstid" },
+                english { +fritekst("ytelse") + " - indication of case prosessing time" }
             )
         }
 
         outline {
             paragraph {
-                text(bokmal { +"Klageren:  " }, english { +"Appellant:  " }, BOLD)
-                text(bokmal { +pesysData.navn + "  " }, english { +pesysData.navn + "  " })
+                text(bokmal { +"Klageren: " }, english { +"Appellant: " }, BOLD)
+                text(bokmal { +pesysData.navn + " " }, english { +pesysData.navn + " " } )
                 text(bokmal { +pesysData.foedselsnummer.format() }, english { +pesysData.foedselsnummer.format() })
             }
             paragraph {
-                text(bokmal { +"Klagemotpart:  " }, english { +"Other party:  " }, BOLD)
+                text(bokmal { +"Klagemotpart: " }, english { +"Other party: " }, BOLD)
                 text(bokmal { +pesysData.navAvsenderEnhet }, english { +pesysData.navAvsenderEnhet })
             }
             paragraph {

@@ -29,7 +29,7 @@ class KlageOrienteringOmSaksbehandlingstid {
         LetterTestImpl(
             KlageOrienteringOmSaksbehandlingstid.template,
             Fixtures.create<KlageOrienteringOmSaksbehandlingstidDto>(),
-            Language.English,
+            Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml(KlageOrienteringOmSaksbehandlingstid.kode.name)
     }
