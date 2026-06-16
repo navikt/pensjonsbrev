@@ -101,6 +101,27 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
         }
     }
 
+    object DuHarRettTilAaKlageSeksUkerMedLenke : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { +"Du har rett til å klage" },
+                    nynorsk { +"Du har rett til å klage" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Hvis du mener vedtaket er feil, kan du klage innen seks uker fra vedtaket har kommet fram til deg. Du finner skjema og informasjon på ${KLAGE_URL}."
+                    },
+                    nynorsk {
+                        +"Om du meiner at vedtaket er feil, kan du klage innan seks veker frå vedtaket har komme fram til deg. Du finn skjema og informasjon på ${KLAGE_URL}."
+                    },
+                )
+            }
+        }
+    }
+
     object DuHarRettTilAaKlageMedDokumentasjonsfrist : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {

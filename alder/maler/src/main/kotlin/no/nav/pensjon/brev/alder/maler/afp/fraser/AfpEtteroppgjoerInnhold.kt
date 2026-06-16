@@ -39,7 +39,7 @@ object AfpEtteroppgjoerInnhold {
                                 "Skatteetaten."
                     },
                     nynorsk {
-                        +"Kvart år gjennomfører Nav ein kontroll av AFP når resultatet av skatteoppgjeret er " +
+                        +"Kvart år gjer Nav ein kontroll av AFP når skatteoppgjeret er " +
                                 "klart. Dersom du har hatt ei anna pensjonsgivande inntekt frå arbeid eller næring " +
                                 "enn den framtidige inntekta som blei lagd til grunn ved utbetalinga, skal vi " +
                                 "berekne pensjonen på nytt på grunnlag av inntektsopplysningane frå Skatteetaten."
@@ -107,7 +107,6 @@ object AfpEtteroppgjoerInnhold {
         }
     }
 
-    /** Title1 «Inntekten din i {oppgjørsår}». */
     data class InntektenDinIAarTittel(
         val oppgjoersAar: Expression<Year>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
@@ -258,7 +257,7 @@ object AfpEtteroppgjoerInnhold {
                         +"Inntekt frå arbeid eller verksemd som er opptent før det første uttaket av AFP, " +
                                 "skal haldast utanfor etteroppgjeret. Det gjeld også dersom inntekta er " +
                                 "utbetalt etter at du tok ut AFP. Med første uttak meiner vi første gong du " +
-                                "tok ut AFP, uavhengig av om du har teke ut gradert eller heil pensjon."
+                                "tok ut AFP, uavhengig av om du har tatt ut gradert eller heil pensjon."
                     },
                 )
             }
@@ -373,7 +372,7 @@ object AfpEtteroppgjoerInnhold {
                                 +"etterbetaling av trygdeytelser som gjelder for tidsrom før AFP ble tatt ut"
                             },
                             nynorsk {
-                                +"etterbetaling av trygdeytingar som gjeld for tidsrom før AFP blei tatt ut"
+                                +"etterbetaling av trygdeytingar som gjeld for tidsrom før AFP vart tatt ut"
                             },
                         )
                     }
@@ -382,8 +381,8 @@ object AfpEtteroppgjoerInnhold {
                             bokmal {
                                 +"feriepenger etter særskilt sats for pensjonistavlønning fra arbeid med fordrevne fra Ukraina. Dette gjelder bare feriepenger fra arbeid til og med 31. desember 2024."
                             },
-                            nynorsk {
-                                +"feriepengar etter særskilt sats for pensjonistlønn frå arbeid med fordrivne frå Ukraina. Dette gjeld berre feriepengar får arbeid til og med 31. desember 2024."
+                            nynorsk { //TODO: skal det være "inntekt som skriv seg frå arbeid i samband med fordrivne frå Ukraina"?
+                                +"feriepengar etter særskilt sats for pensjonistlønn frå arbeid med fordrivne frå Ukraina. Dette gjeld berre feriepengar frå arbeid til og med 31. desember 2024."
                             },
                         )
                     }
@@ -392,7 +391,7 @@ object AfpEtteroppgjoerInnhold {
             paragraph {
                 text(
                     bokmal { +"Vi trenger bekreftelse fra arbeidsgiveren din om Ukraina-arbeid:" },
-                    nynorsk { +"Vi treng stadfesting får arbeidsgivaren din om Ukraina-arbeid:" }
+                    nynorsk { +"Vi treng stadfesting frå arbeidsgivaren din om Ukraina-arbeid:" }
                 )
                 list {
                     item {
@@ -650,100 +649,6 @@ object AfpEtteroppgjoerInnhold {
                         text(
                             bokmal { +"hvilken tidsperiode(-r) feriepengene er opptjent" },
                             nynorsk { +"i kva for tidsperiode (-periodar) feriepengane er tent opp" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"om utbetalingen er gjort etter særskilt sats for pensjonistavlønning" },
-                            nynorsk { +"om utbetalinga er gjort etter særskilt sats for pensjonistavlønning" },
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Covid-dokumentasjonskrav, variant med «feriepenger» i første punkt og lang nynorsk-intro
-     * (med «om korleis du sender dokumentasjon»).
-     * Brukes i PE_AF_04_101 (EtterbetalingAuto og Etterbetaling).
-     */
-    object CovidDokumentasjonskravFeriepenger : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            paragraph {
-                text(
-                    bokmal {
-                        +"For at Nav skal kunne holde slike inntekter utenfor avkorting, må du sende oss " +
-                                "dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
-                                "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
-                    },
-                    nynorsk {
-                        +"For at Nav skal kunne halde slike inntekter utanfor avkorting, må du sende oss " +
-                                "dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL om korleis du sender " +
-                                "dokumentasjon. Vi treng stadfesting frå arbeidsgivaren din om følgjande:"
-                    },
-                )
-                list {
-                    item {
-                        text(
-                            bokmal { +"hvor mye du har hatt i feriepenger fra slikt ekstra arbeid" },
-                            nynorsk { +"kor mykje du har hatt i feriepengar frå slikt ekstra arbeid" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"i hvilken tidsperiode(-r) feriepengene er opptjent" },
-                            nynorsk { +"i kva for tidsperiode (-periodar) feriepengane er tente opp" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"om utbetalingen er gjort etter særskilt sats for pensjonistavlønning" },
-                            nynorsk { +"om utbetalinga er gjort etter særskilt sats for pensjonistavlønning" },
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Covid-dokumentasjonskrav, 4-punkts variant med «inntekter» og «dette gjelder» + ekstra punkt
-     * om «beordret eller frivillig». Bruker «NAV» (uppercase).
-     * Brukes i PE_AF_04_102 (IngenEndring og IngenEndringAndreAvvikAuto).
-     */
-    object CovidDokumentasjonskravUtvidet : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            paragraph {
-                text(
-                    bokmal {
-                        +"For at NAV skal kunne holde slike inntekter utenfor avkorting, må du sende " +
-                                "oss dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
-                                "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
-                    },
-                    nynorsk {
-                        +"For at NAV skal kunne halde slike inntekter utanfor avkorting, må du sende " +
-                                "oss dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL. Vi treng stadfesting " +
-                                "frå arbeidsgivaren din om følgjande:"
-                    },
-                )
-                list {
-                    item {
-                        text(
-                            bokmal { +"hvor mye du har hatt i inntekter fra slikt ekstra arbeid" },
-                            nynorsk { +"kor mykje du har hatt i feriepengar frå slikt ekstra arbeid" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"i hvilken tidsperiode(-r) dette gjelder" },
-                            nynorsk { +"i kva for tidsperiode (-periodar) feriepengane er tent opp" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"om arbeidet var beordret eller frivillig" },
-                            nynorsk { +"om arbeidet var beordra eller frivillig" },
                         )
                     }
                     item {

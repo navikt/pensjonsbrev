@@ -1,9 +1,12 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
-import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
+import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning.DinePlikter
+import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageSeksUker
+import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning.DuHarRettTilInnsyn
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto.Scenario
@@ -28,12 +31,12 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 /**
- * Redigerbart vedtak — AFP etteroppgjør (SPK), ingen endring (andre avvik).
+ * Redigerbart vedtak — AFP etteroppgjør, ingen endring (andre avvik).
  *
  * Konvertert fra Exstream-malen `PE_AF_04_110`. Auto-varianten av samme situasjon
  * er [VedtakAfpEtteroppgjoerIngenEndringAuto] (`PE_AF_04_102`). Forklaringen til
  * brukeren avhenger av et av fire gjensidig utelukkende scenarier
- * (se [no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDto.Scenario]).
+ * (se [no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto.Scenario]).
  */
 @TemplateModelHelpers
 object VedtakAfpEtteroppgjoerIngenEndringAndreAvvik : RedigerbarTemplate<VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto> {
@@ -77,18 +80,10 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvik : RedigerbarTemplate<VedtakA
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har fått utbetalt 100 prosent AFP. Opplysninger fra Skatteetaten viser at du " +
-                                "har hatt en samlet pensjonsgivende inntekt på " + pesysData.pensjonsgivendeInntekt.format() + " for " +
-                                "inntektsåret " + pesysData.oppgjoersAar.format() + ". Vi antar at hele denne inntekten " +
-                                "er opptjent i perioden før du tok ut pensjon, og den blir derfor holdt utenfor " +
-                                "etteroppgjøret."
+                            +"Du har fått utbetalt 100 prosent AFP. Opplysninger fra Skatteetaten viser at du har hatt en samlet pensjonsgivende inntekt på " + pesysData.pensjonsgivendeInntekt.format() + " for inntektsåret " + pesysData.oppgjoersAar.format() + ". Vi antar at hele denne inntekten er opptjent i perioden før du tok ut pensjon, og den blir derfor holdt utenfor etteroppgjøret."
                         },
                         nynorsk {
-                            +"Du har fått utbetalt 100 prosent AFP. Opplysningar frå Skatteetaten viser at du " +
-                                "har hatt ei samla pensjonsgivande inntekt på " + pesysData.pensjonsgivendeInntekt.format() + " for " +
-                                "inntektsåret " + pesysData.oppgjoersAar.format() + ". Vi reknar med at heile denne " +
-                                "inntekta er opptent i perioden før du tok ut pensjon, og ho blir derfor halden " +
-                                "utanfor etteroppgjeret."
+                            +"Du har fått utbetalt 100 prosent AFP. Opplysningar frå Skatteetaten viser at du har hatt ei samla pensjonsgivande inntekt på " + pesysData.pensjonsgivendeInntekt.format() + " for inntektsåret " + pesysData.oppgjoersAar.format() + ". Vi reknar med at heile denne inntekta er opptent i perioden før du tok ut pensjon, og ho blir derfor halden utanfor etteroppgjeret."
                         },
                     )
                 }
@@ -118,17 +113,17 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvik : RedigerbarTemplate<VedtakA
                     text(
                         bokmal {
                             +"Du har ikke fått utbetalt pensjon fra AFP-ordningen for året " +
-                                pesysData.oppgjoersAar.format() + " som følge av at du har vært i fullt inntektsgivende " +
+                                pesysData.oppgjoersAar.format() + " fordi du har vært i fullt inntektsgivende " +
                                 "arbeid. Opplysninger fra Skatteetaten viser at du har hatt en pensjonsgivende " +
                                 "inntekt på " + pesysData.pensjonsgivendeInntekt.format() + " for " + pesysData.oppgjoersAar.format() + ". " +
-                                "Dette samsvarer med det som tidligere er lagt til grunn ved pensjonsberegningen."
+                                "Dette er det samme som tidligere er lagt til grunn ved pensjonsberegningen."
                         },
                         nynorsk {
                             +"Du har ikkje fått utbetalt pensjon frå AFP-ordninga for året " +
-                                pesysData.oppgjoersAar.format() + " som følgje av at du har vore i fullt inntektsgivande " +
+                                pesysData.oppgjoersAar.format() + " fordi du har vore i fullt inntektsgivande " +
                                 "arbeid. Opplysningar frå Skatteetaten viser at du har hatt ei pensjonsgivande " +
                                 "inntekt på " + pesysData.pensjonsgivendeInntekt.format() + " for " + pesysData.oppgjoersAar.format() + ". " +
-                                "Det samsvarer med det som tidlegare er lagt til grunn ved pensjonsberekninga."
+                                "Det er det same som tidlegare er lagt til grunn ved pensjonsberekninga."
                         },
                     )
                 }
@@ -140,14 +135,14 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvik : RedigerbarTemplate<VedtakA
                         bokmal {
                             +"Du har fått utbetalt 100 prosent AFP for deler av året. Ved beregningen av " +
                                 "pensjonen har vi lagt til grunn at du ikke ville ha arbeidsinntekt som " +
-                                "overstiger godkjent toleransebeløp på " + pesysData.toleranseBeloep.format() + " i perioden med AFP. " +
+                                "er høyere enn godkjent toleransebeløp på " + pesysData.toleranseBeloep.format() + " i perioden med AFP. " +
                                 "Ifølge opplysninger fra Skatteetaten har du heller ikke hatt slik " +
                                 "pensjonsgivende inntekt i " + pesysData.oppgjoersAar.format() + "."
                         },
                         nynorsk {
                             +"Du har fått utbetalt 100 prosent AFP for delar av året. Ved berekninga av " +
                                 "pensjonen har vi lagt til grunn at du ikkje ville ha arbeidsinntekt som " +
-                                "oversteig det godkjende toleransebeløpet på " + pesysData.toleranseBeloep.format() + " i perioden med " +
+                                "er høgare enn det godkjende toleransebeløpet på " + pesysData.toleranseBeloep.format() + " i perioden med " +
                                 "AFP. Ifølgje opplysningar frå Skatteetaten har du heller ikkje hatt slik " +
                                 "pensjonsgivande inntekt i " + pesysData.oppgjoersAar.format() + "."
                         },
@@ -160,82 +155,20 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvik : RedigerbarTemplate<VedtakA
             showIf(pesysData.scenario.equalTo(Scenario.IKKE_AFP_FULL_INNTEKT)) {
                 includePhrase(AfpEtteroppgjoerInnhold.MeldingOmEndringerInnledning)
 
-                paragraph {
-                    text(
-                        bokmal { +"Inntekt som skal holdes utenfor etteroppgjøret:" },
-                        nynorsk { +"Inntekt som skal haldast utanfor etteroppgjeret:" },
-                    )
-                    list {
-                        item {
-                            text(
-                                bokmal { +"Feriepenger og lønn som er opptjent før første uttak av AFP." },
-                                nynorsk { +"Feriepengar og lønn som er opptente før første uttaket av AFP." },
-                            )
-                        }
-                        item {
-                            text(
-                                bokmal {
-                                    +"Honorar, royalty, bonus eller andre inntekter som stammer fra arbeid " +
-                                        "eller virksomhet før første uttak av AFP."
-                                },
-                                nynorsk {
-                                    +"Honorar, royalty, bonus eller andre inntekter som stammar frå arbeid " +
-                                        "eller verksemd før det første uttaket av AFP."
-                                },
-                            )
-                        }
-                        item {
-                            text(
-                                bokmal { +"Etterbetaling av trygdeytelser som gjelder for tidsrom før AFP ble tatt ut." },
-                                nynorsk { +"Etterbetaling av trygdeytingar som gjeld for tidsrom før AFP vart tatt ut." },
-                            )
-                        }
-                        item {
-                            text(
-                                bokmal { +"Feriepenger som stammer fra arbeid med covid-19." },
-                                nynorsk { +"Feriepengar som skriv seg frå enkelte typar arbeid i samband med covid-19-pandemien." },
-                            )
-                        }
-                        item {
-                            text(
-                                bokmal { +"Inntekt som stammer fra arbeid i forbindelse med fordrevne fra Ukraina." },
-                                nynorsk { +"Inntekt som skriv seg frå arbeid i samband med fordrivne frå Ukraina." },
-                            )
-                        }
-                    }
-                    text(
-                        bokmal { +"Se mer informasjon om arbeid i forbindelse med covid-19 og fordrevne fra Ukraina nedenfor." },
-                        nynorsk { +"Sjå meir informasjon om arbeid i samband med covid-19 og fordrivne frå Ukraina nedanfor." },
-                    )
-                }
+                includePhrase(AfpEtteroppgjoerInnhold.InntektUtenforEtteroppgjoerListe)
 
                 includePhrase(AfpEtteroppgjoerInnhold.AnnenInntektInntektsproevd)
 
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du må dokumentere at inntekten er opptjent eller stammer fra arbeid eller " +
-                                "virksomhet før uttaket av AFP. Hvis du ikke sender inn ny dokumentasjon innen " +
-                                "fristen, benytter vi de foreliggende opplysningene vi har, og etteroppgjøret " +
-                                "vil bli vurdert som avsluttet."
-                        },
-                        nynorsk {
-                            +"Du må dokumentere kva delar av inntektene dine som skal haldast utanfor " +
-                                "avkorting av AFP. Dersom du ikkje sender inn ny dokumentasjon innan fristen, " +
-                                "nyttar vi dei opplysningane vi har, og etteroppgjeret blir rekna som avslutta."
-                        },
-                    )
-                }
+                includePhrase(AfpEtteroppgjoerInnhold.DokumenterInntekterUtenforAvkorting)
 
                 includePhrase(AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon)
-                includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmCovidInntekterInnledning)
-
-                includePhrase(AfpEtteroppgjoerInnhold.CovidDokumentasjonskravUtvidet)
-
-                includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
             }
 
-            includePhrase(AfpEtteroppgjoerAvslutning)
+            // TODO: hør om lenken til klage skal være med, om ikke kan vi endre de fire under til frase: AfpEtteroppgjoerAvslutning
+            includePhrase(DinePlikter)
+            includePhrase(DuHarRettTilAaKlageSeksUker)
+            includePhrase(DuHarRettTilInnsyn)
+            includePhrase(HarDuSpoersmaal.afpEtteroppgjoer)
         }
     }
 }
