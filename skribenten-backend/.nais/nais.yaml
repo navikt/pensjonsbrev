@@ -15,7 +15,7 @@ spec:
   liveness:
     path: "/isAlive"
     port: 8080
-    initialDelay: 10
+    initialDelay: 20
     timeout: 3
   readiness:
     path: "/isReady"
