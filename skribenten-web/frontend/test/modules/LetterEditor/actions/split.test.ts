@@ -503,6 +503,101 @@ describe("LetterEditorActions.split", () => {
         expect(result.redigertBrev.blocks).toHaveLength(3);
       });
 
+      test("preserves the original block id and records the empty item id in deletedItems (middle item)", () => {
+        const blockId = 100;
+        const listId = 200;
+        const emptyItemId = 301;
+        const state = letter(
+          paragraph({
+            id: blockId,
+            content: [
+              itemList({
+                id: listId,
+                items: [
+                  item({ id: 300, content: [literal({ text: "item1" })] }),
+                  item({ id: emptyItemId, content: [literal({ text: "" })] }),
+                  item({ id: 302, content: [literal({ text: "item3" })] }),
+                ],
+              }),
+            ],
+          }),
+        );
+
+        const result = Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 }, 0);
+
+        // The original block (and its list) is reused for the first half — id and not deleted.
+        expect(result.redigertBrev.blocks[0].id).toBe(blockId);
+        expect(result.redigertBrev.deletedBlocks).not.toContain(blockId);
+        const beforeList = select<ItemList>(result, { blockIndex: 0, contentIndex: 0 });
+        expect(beforeList.id).toBe(listId);
+        // The empty item id is tracked as a deleted item, not lost by discarding the block.
+        expect(beforeList.deletedItems).toContain(emptyItemId);
+      });
+
+      test("empty first item reuses original block for the blank line and records the moved list id", () => {
+        const blockId = 100;
+        const listId = 200;
+        const emptyItemId = 301;
+        const state = letter(
+          paragraph({
+            id: blockId,
+            content: [
+              itemList({
+                id: listId,
+                items: [
+                  item({ id: emptyItemId, content: [literal({ text: "" })] }),
+                  item({ id: 302, content: [literal({ text: "item2" })] }),
+                ],
+              }),
+            ],
+          }),
+        );
+
+        const result = Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 }, 0);
+
+        // Block 0 (the blank line) reuses the original block; the list moved out of it.
+        expect(result.redigertBrev.blocks[0].id).toBe(blockId);
+        expect(result.redigertBrev.deletedBlocks).not.toContain(blockId);
+        expect(result.redigertBrev.blocks[0].deletedContent).toContain(listId);
+        // The moved list keeps its id and tracks the removed empty item.
+        const afterList = select<ItemList>(result, { blockIndex: 1, contentIndex: 0 });
+        expect(afterList.id).toBe(listId);
+        expect(afterList.deletedItems).toContain(emptyItemId);
+      });
+
+      test("mixed block: original block keeps content-before and records the departed list/content ids", () => {
+        const blockId = 100;
+        const listId = 200;
+        const beforeLitId = 150;
+        const afterLitId = 160;
+        const emptyItemId = 301;
+        const state = letter(
+          paragraph({
+            id: blockId,
+            content: [
+              literal({ id: beforeLitId, text: "before" }),
+              itemList({
+                id: listId,
+                items: [
+                  item({ id: 300, content: [literal({ text: "item1" })] }),
+                  item({ id: emptyItemId, content: [literal({ text: "" })] }),
+                  item({ id: 302, content: [literal({ text: "item3" })] }),
+                ],
+              }),
+              literal({ id: afterLitId, text: "after" }),
+            ],
+          }),
+        );
+
+        const result = Actions.split(state, { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 }, 0);
+
+        // Original block reused for "before"; the list and "after" left it and are tracked as deleted.
+        expect(result.redigertBrev.blocks[0].id).toBe(blockId);
+        expect(result.redigertBrev.deletedBlocks).not.toContain(blockId);
+        expect(result.redigertBrev.blocks[0].deletedContent).toEqual(expect.arrayContaining([listId, afterLitId]));
+        expect(result.redigertBrev.blocks[0].deletedContent).not.toContain(beforeLitId);
+      });
+
       test("pre-existing deletedItems are propagated to both the before-list and the after-list", () => {
         const deletedId = 9001;
         const state = letter(

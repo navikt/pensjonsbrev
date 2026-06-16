@@ -866,9 +866,18 @@ export function insertEmptyParagraphAfterBlock(draft: Draft<LetterEditorState>, 
 }
 
 /**
- * Breaks out of an empty list item by removing it and replacing the current block with up to
- * five new blocks in order: [content-before-list?] [items-before?] [blank-line] [items-after?] [content-after-list?].
+ * Breaks out of an empty list item by removing it and reordering the current block into up to
+ * five blocks in order: [content-before-list?] [items-before?] [blank-line] [items-after?] [content-after-list?].
  * Focus lands on the blank-line block.
+ *
+ * ID semantics (see letter-editor-actions SKILL.md):
+ *  - The original block is reused for the first resulting block, keeping its id and deletedContent.
+ *    Only the subsequent blocks are new (id: null). Template ids that leave the block are recorded
+ *    in block.deletedContent so the backend doesn't re-introduce them.
+ *  - The empty item is removed via removeElements, so a template item-id is recorded in
+ *    itemList.deletedItems rather than being lost.
+ *  - The original list (and its id) is reused for one surviving half; the other half becomes a new
+ *    id: null list.
  */
 export function breakOutEmptyItem(
   draft: Draft<LetterEditorState>,
@@ -881,82 +890,90 @@ export function breakOutEmptyItem(
   const itemIndex = literalIndex.itemIndex;
   const contentIndex = literalIndex.contentIndex;
 
-  // Content before and after the list in the same block
-  const contentBeforeList = block.content.slice(0, contentIndex);
-  const contentAfterList = block.content.slice(contentIndex + 1);
+  draft.saveStatus = "DIRTY";
 
-  const itemsBefore = itemList.items.slice(0, itemIndex);
-  const itemsAfter = itemList.items.slice(itemIndex + 1);
+  // Pre-existing deletedItems can't be attributed to a specific half, so we propagate them to
+  // both halves (the backend prunes stale ids; dropping them risks re-introducing deleted items).
+  const preExistingDeletedItems = [...itemList.deletedItems];
+  const listType = itemList.listType;
+  const editedListType = itemList.editedListType;
 
-  // Build the new blocks to replace the current block
-  const newBlocks: ParagraphBlock[] = [];
+  // Remove the empty item itself. removeElements records a template item-id in itemList.deletedItems
+  // (instead of losing it by discarding the whole block).
+  removeElements(itemIndex, 1, {
+    content: itemList.items,
+    deletedContent: itemList.deletedItems,
+    id: itemList.id,
+  });
 
-  // If there was content before the list in the block, keep it in its own block
-  if (contentBeforeList.length > 0) {
-    newBlocks.push(newParagraph({ content: contentBeforeList as Content[] }));
+  const hasItemsBefore = itemIndex > 0;
+  const hasItemsAfter = itemIndex < itemList.items.length;
+
+  // The original list (and its id) is reused for one surviving half: the leading items when they
+  // exist, otherwise the trailing items. The other half, when present, becomes a new id: null list.
+  let beforeListContent: Content[] | null = null;
+  let afterListContent: Content[] | null = null;
+
+  if (hasItemsBefore) {
+    if (hasItemsAfter) {
+      // Split trailing items into a new list. removeElements records the moved item-ids in
+      // itemList.deletedItems (split-persistence) so they aren't re-introduced into the retained list.
+      const itemsAfter = removeElements(itemIndex, itemList.items.length - itemIndex, {
+        content: itemList.items,
+        deletedContent: itemList.deletedItems,
+        id: itemList.id,
+      }).map((removed) => current(removed)) as unknown as Item[];
+      afterListContent = [
+        newItemList({ listType, editedListType, items: itemsAfter, deletedItems: [...preExistingDeletedItems] }),
+      ];
+    }
+    // The retained list keeps the leading items (and its id).
+    beforeListContent = [current(itemList) as unknown as ItemList];
+  } else if (hasItemsAfter) {
+    // Empty item was first: the original list now holds only the trailing items; reuse it as-is.
+    afterListContent = [current(itemList) as unknown as ItemList];
   }
 
-  // Block for items before the empty item
-  if (itemsBefore.length > 0) {
-    newBlocks.push(
-      newParagraph({
-        content: [
-          newItemList({
-            listType: itemList.listType,
-            editedListType: itemList.editedListType,
-            items: itemsBefore as Item[],
-            // Copy all deletedItems to both halves: we can't know which deleted IDs
-            // belonged to which half, and the backend prunes stale IDs after re-merge,
-            // so having extras is safe. Missing entries would let the backend re-introduce
-            // previously deleted items.
-            deletedItems: [...itemList.deletedItems],
-          }),
-        ],
-      }),
-    );
+  // Content surrounding the list within the same block becomes its own block on each side.
+  const snapshotContent = current(block.content) as unknown as Content[];
+  const contentBeforeList = snapshotContent.slice(0, contentIndex);
+  const contentAfterList = snapshotContent.slice(contentIndex + 1);
+
+  // Ordered pieces; each becomes a block.
+  const pieces: Content[][] = [];
+  if (contentBeforeList.length > 0) pieces.push(contentBeforeList);
+  if (beforeListContent) pieces.push(beforeListContent);
+  const blankPieceIndex = pieces.length;
+  pieces.push([newLiteral()]);
+  if (afterListContent) pieces.push(afterListContent);
+  if (contentAfterList.length > 0) pieces.push(contentAfterList);
+
+  // Reuse the original block for the first piece (preserving block.id and block.deletedContent).
+  // Record any template-id child that leaves the block so the backend doesn't re-introduce it.
+  const firstPiece = pieces[0];
+  const survivingIds = new Set(firstPiece.map((c) => c.id).filter((id): id is number => id !== null));
+  for (const childContent of block.content) {
+    if (
+      childContent.id !== null &&
+      childContent.parentId === block.id &&
+      !survivingIds.has(childContent.id) &&
+      !block.deletedContent.includes(childContent.id)
+    ) {
+      block.deletedContent.push(childContent.id);
+    }
   }
+  block.content = firstPiece as Draft<Content[]>;
 
-  // The blank line block (always inserted)
-  const blankLineBlockIndex = newBlocks.length;
-  newBlocks.push(newParagraph({ content: [newLiteral()] }));
-
-  // Block for items after the empty item
-  if (itemsAfter.length > 0) {
-    newBlocks.push(
-      newParagraph({
-        content: [
-          newItemList({
-            listType: itemList.listType,
-            editedListType: itemList.editedListType,
-            items: itemsAfter as Item[],
-            // See comment on the before-list above.
-            deletedItems: [...itemList.deletedItems],
-          }),
-        ],
-      }),
-    );
-  }
-
-  // If there was content after the list in the block, keep it in its own block
-  if (contentAfterList.length > 0) {
-    newBlocks.push(newParagraph({ content: contentAfterList as Content[] }));
-  }
-
-  // Replace the current block with the new blocks
-  removeElements(blockIndex, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks, id: null });
-
-  // Insert all new blocks at the position. We use splice directly here because addElements
-  // attempts literal merging at boundaries which is inappropriate for block-level insertion.
-  blocks.splice(blockIndex, 0, ...newBlocks);
+  // Insert the remaining pieces as new id: null blocks after the original.
+  const newBlocks = pieces.slice(1).map((content) => newParagraph({ content }));
+  blocks.splice(blockIndex + 1, 0, ...newBlocks);
 
   // Focus the blank line
   draft.focus = {
-    blockIndex: blockIndex + blankLineBlockIndex,
+    blockIndex: blockIndex + blankPieceIndex,
     contentIndex: 0,
     cursorPosition: 0,
   };
-
-  draft.saveStatus = "DIRTY";
 }
 
 export function newCell(text?: TextContent[]): Cell {
