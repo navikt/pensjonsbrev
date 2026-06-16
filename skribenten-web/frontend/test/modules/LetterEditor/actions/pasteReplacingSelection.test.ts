@@ -237,20 +237,20 @@ describe("Actions.pasteReplacingSelection", () => {
 });
 
 class MockDataTransfer implements DataTransfer {
-  private readonly data: { [format: string]: string } = {};
+  private data: Record<string, string> = {};
 
-  get types() {
+  get types(): string[] {
     return Object.keys(this.data);
   }
   getData(format: string): string {
-    return this.data[format];
+    return this.data[format] ?? "";
   }
   setData(format: string, data: string): void {
     this.data[format] = data;
   }
 
-  constructor(data: { [format: string]: string }) {
-    this.data = { ...data };
+  constructor(data: Record<string, string>) {
+    Object.assign(this.data, data);
   }
 
   dropEffect: "none" | "copy" | "link" | "move" = "none";
