@@ -22,7 +22,6 @@ spec:
     port: 8080
     initialDelay: 5
     timeout: 5
-    failureThreshold: 10
   replicas:
     min: 2
     max: 10
