@@ -16,12 +16,12 @@ spec:
     path: "/isAlive"
     port: 8080
     initialDelay: 10
-    timeout: 5
+    timeout: 3
   readiness:
     path: "/isReady"
     port: 8080
     initialDelay: 5
-    timeout: 5
+    timeout: 3
   replicas:
     min: 2
     max: 10
