@@ -247,8 +247,12 @@ export function fontTypeOf(content: TextContent): FontType {
   }
 }
 
-export function isNew(obj: Identifiable): boolean {
+export function isNew(obj: Identifiable): obj is Identifiable & { id: null } {
   return obj.id === null;
+}
+
+export function isFromTemplate(obj: Identifiable): obj is Identifiable & { id: number } {
+  return obj.id !== null;
 }
 
 export function create(brev: BrevResponse): LetterEditorState {
@@ -355,7 +359,7 @@ export function splitMixedListBlock(draft: Draft<LetterEditorState>, blockIndex:
   // Template lists (id != null) may co-exist with other content — do not split them out.
   if (block.content.length <= 1) return 1;
   const contentSnap = current(block.content) as Content[];
-  const isNewList = (c: Content): c is ItemList => isItemList(c) && c.id === null;
+  const isNewList = (c: Content): c is ItemList => isItemList(c) && isNew(c);
   if (!contentSnap.some(isNewList)) return 1;
 
   // Step 3: partition into runs (maximal sequences of the same category).
@@ -423,7 +427,7 @@ export function splitMixedListBlock(draft: Draft<LetterEditorState>, blockIndex:
  * un-deletes the preserved id).
  */
 export function buildMergedItemList(lists: ItemList[], targetListType: ListType): ItemList {
-  const listWithId = lists.find((list) => list.id !== null) ?? lists[lists.length - 1];
+  const listWithId = lists.find(isFromTemplate) ?? lists[lists.length - 1];
   const allItems = lists.flatMap((list) => [...list.items]);
   const allDeletedItems = lists.flatMap((list) => [...list.deletedItems]);
 
@@ -563,7 +567,7 @@ function mergeSameTypeListsInBlock(
 
       // If first has no id but second did, promote second's id onto first (and undo the deletion
       // that removeElements just recorded, since we're reusing the id).
-      if (first.id === null && second.id !== null) {
+      if (isNew(first) && isFromTemplate(second)) {
         (first as Draft<ItemList>).id = second.id;
         const deletedIndex = deletedContent.indexOf(second.id);
         if (deletedIndex !== -1) deletedContent.splice(deletedIndex, 1);
@@ -596,7 +600,7 @@ function deleteElement(
   from: { content: Identifiable[]; deletedContent: Draft<number[]>; id: number | null },
 ) {
   if (
-    toDelete.id !== null &&
+    isFromTemplate(toDelete) &&
     toDelete.parentId === from.id &&
     !from.deletedContent.includes(toDelete.id) &&
     !from.content.map((c) => c.id).includes(toDelete.id)
@@ -671,9 +675,9 @@ export function mergeLiteralsIfPossible<T extends Identifiable>(first: Draft<T>,
     fontTypeOf(first) === fontTypeOf(second)
   ) {
     const mergedText = text(first) + text(second);
-    if (first.id !== null && second.id !== null) {
+    if (isFromTemplate(first) && isFromTemplate(second)) {
       return [first, second];
-    } else if (first.id === null) {
+    } else if (isNew(first)) {
       updateLiteralText(second, mergedText);
       return [second];
     } else {
@@ -954,7 +958,7 @@ export function breakOutEmptyItem(
   const survivingIds = new Set(firstPiece.map((c) => c.id).filter((id): id is number => id !== null));
   for (const childContent of block.content) {
     if (
-      childContent.id !== null &&
+      isFromTemplate(childContent) &&
       childContent.parentId === block.id &&
       !survivingIds.has(childContent.id) &&
       !block.deletedContent.includes(childContent.id)
