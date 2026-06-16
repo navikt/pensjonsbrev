@@ -10,7 +10,7 @@ class KlageOrienteringOmSaksbehandlingstidDto(
 ) : RedigerbarBrevdata<EmptySaksbehandlerValg, KlageOrienteringOmSaksbehandlingstidDto.PesysData> {
 
     data class PesysData(
-        val foedselsdato: Foedselsnummer, // PE_PersonSak_PSfnr_tssid
+        val foedselsnummer: Foedselsnummer, // PE_PersonSak_PSfnr_tssid
         val navn: String, // PE_PersonSak_PSNavn
         val navAvsenderEnhet: String // PE_kontaktinformasjon_NavnAvsenderEnhet
     ) : FagsystemBrevdata
