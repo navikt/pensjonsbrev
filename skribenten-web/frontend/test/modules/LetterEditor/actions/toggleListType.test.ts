@@ -218,7 +218,12 @@ describe("LetterEditorActions.toggleBulletList", () => {
       const state = letter(
         paragraph([itemList({ items: [item(literal({ text: "p1" })), item(literal({ text: "p2" }))] })]),
       );
-      const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
+      const result = Actions.toggleBulletList(state, {
+        blockIndex: 0,
+        contentIndex: 0,
+        itemIndex: 0,
+        itemContentIndex: 0,
+      });
 
       // The remaining list moves to a new block1; item0's id is in that list's deletedItems
       expect(select<ItemList>(result, { blockIndex: 1, contentIndex: 0 }).deletedItems).toContain(
@@ -228,8 +233,8 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
     test("when toggling off only item, then itemList is deleted", () => {
       const state = letter(paragraph([itemList({ items: [item(literal({ text: "p1" }))] })]));
-      const toggleIndex = { blockIndex: 0, contentIndex: 0, itemIndex: 0 };
-      const originalItem = select<Item>(state, toggleIndex);
+      const toggleIndex = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+      const originalItem = select<Item>(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
       const result = Actions.toggleBulletList(state, toggleIndex);
 
       expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
@@ -243,7 +248,12 @@ describe("LetterEditorActions.toggleBulletList", () => {
       const state = letter(
         paragraph([itemList({ items: [item(literal({ text: "p1" })), item(literal({ text: "p2" }))] })]),
       );
-      const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1 });
+      const result = Actions.toggleBulletList(state, {
+        blockIndex: 0,
+        contentIndex: 0,
+        itemIndex: 1,
+        itemContentIndex: 0,
+      });
 
       expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).deletedItems).toContain(
         select<Item>(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1 }).id,

@@ -10,6 +10,7 @@ import {
   addElements,
   coalesceAdjacentSameTypeLists,
   findAdjoiningContent,
+  isItemContentIndex,
   newItem,
   newItemList,
   newParagraph,
@@ -37,7 +38,7 @@ const toggleList = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex,
     const focusBlockIndex = draft.focus.blockIndex;
     splitMixedListBlock(draft, focusBlockIndex);
     mergeListWithAdjacentBlocks(draft, draft.focus.blockIndex, draft.focus.contentIndex, listType);
-  } else if (isItemList(blockContent) && "itemIndex" in literalIndex) {
+  } else if (isItemList(blockContent) && isItemContentIndex(literalIndex)) {
     if (effectiveListType(blockContent) === listType) {
       toggleListOff(draft, literalIndex as ItemContentIndex);
     } else {
@@ -51,7 +52,7 @@ const toggleList = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex,
       draft.focus = {
         blockIndex: literalIndex.blockIndex,
         contentIndex: newContentIndex,
-        itemIndex: itemIndexOffset + (literalIndex as ItemContentIndex).itemIndex,
+        itemIndex: itemIndexOffset + literalIndex.itemIndex,
         itemContentIndex: (literalIndex as ItemContentIndex).itemContentIndex,
         cursorPosition: draft.focus.cursorPosition,
       };
