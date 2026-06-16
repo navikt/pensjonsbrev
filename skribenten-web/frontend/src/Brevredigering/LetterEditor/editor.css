@@ -90,19 +90,25 @@
 }
 
 /* Synkroniser stil på lister med pdf */
-ul,
-ol {
+.PARAGRAPH > :is(ul, ol) {
   margin-top: var(--ax-space-6);
   margin-bottom: var(--ax-space-16);
   padding-left: var(--ax-space-28);
 }
 
-/* Avsnitt som slutter med liste får mindre margin-bottom, untatt før neste overskrift */
+/*
+Avsnitt som slutter med liste får mindre margin-bottom, untatt før neste overskrift
+Selectoren ´>´ betyr "direkte etterkommer"
+Selectoren ´+´ betyr "neste direkte søsken"
+*/
 .PARAGRAPH:has(> :last-child:is(ul, ol)):has(+ .PARAGRAPH) {
   margin-bottom: var(--ax-space-16);
 }
 
-/* Det skal ikke være luft mellom avsnitt og etterfølgende liste */
+/*
+Det skal bare være litt luft mellom avsnitt og etterfølgende liste 
+Selectoren ´+´ betyr "neste direkte søsken"
+*/
 .PARAGRAPH:has(+ .PARAGRAPH :first-child:is(ul, ol)) {
   margin-bottom: var(--ax-space-6);
 }
