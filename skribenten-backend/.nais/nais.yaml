@@ -20,7 +20,7 @@ spec:
   readiness:
     path: "/isReady"
     port: 8080
-    initialDelay: 7
+    initialDelay: 10
     timeout: 3
   replicas:
     min: 2
