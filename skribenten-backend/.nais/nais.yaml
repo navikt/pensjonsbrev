@@ -23,12 +23,9 @@ spec:
     initialDelay: 0
     timeout: 3
   startup:
-    failureThreshold: 10
     initialDelay: 4
     path: "/isStarted"
-    periodSeconds: 1
     port: 8080
-    timeout: 3
   replicas:
     min: 2
     max: 10
