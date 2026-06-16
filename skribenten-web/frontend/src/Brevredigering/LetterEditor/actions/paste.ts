@@ -9,9 +9,11 @@ import {
   isAtStartOfBlock,
   isAtStartOfItem,
   isBlockContentIndex,
+  isIndexAfter,
   isItemContentIndex,
   isNew,
   isTable,
+  isValidIndex,
   newColSpec,
   newItem,
   newItemList,
@@ -73,7 +75,13 @@ export const pasteReplacingSelection: Action<LetterEditorState, [selection: Sele
     if (selection.start.blockIndex === TITLE_INDEX) {
       return;
     }
-
+    if (
+      !isValidIndex(draft.redigertBrev, selection.start) ||
+      !isValidIndex(draft.redigertBrev, selection.end) ||
+      !isIndexAfter(selection.start, selection.end)
+    ) {
+      return;
+    }
     deleteSelectionRecipe(draft, selection);
 
     // After deletion, draft.focus is set to the collapsed position where the selection was.
