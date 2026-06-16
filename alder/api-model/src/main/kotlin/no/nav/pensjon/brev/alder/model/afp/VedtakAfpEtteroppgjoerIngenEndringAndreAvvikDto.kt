@@ -12,10 +12,10 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType
  * Konvertert fra Exstream-malen `PE_AF_04_110`. Auto-varianten av samme situasjon
  * er [VedtakAfpEtteroppgjoerIngenEndringAutoDto] (`PE_AF_04_102`).
  */
-data class VedtakAfpEtteroppgjoerIngenEndringDto(
+data class VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakAfpEtteroppgjoerIngenEndringDto.PesysData> {
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto.PesysData> {
 
     data class PesysData(
         // PE_Vedtaksdata_Oppgjorsar

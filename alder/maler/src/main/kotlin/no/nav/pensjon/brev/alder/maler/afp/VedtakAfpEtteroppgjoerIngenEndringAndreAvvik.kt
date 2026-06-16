@@ -6,8 +6,8 @@ import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDto.Scenario
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto.Scenario
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDtoSelectors.PesysDataSelectors.oppgjoersAar
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDtoSelectors.PesysDataSelectors.pgi
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDtoSelectors.PesysDataSelectors.scenario
@@ -34,9 +34,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * (se [no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDto.Scenario]).
  */
 @TemplateModelHelpers
-object VedtakAfpEtteroppgjoerIngenEndring : RedigerbarTemplate<VedtakAfpEtteroppgjoerIngenEndringDto> {
+object VedtakAfpEtteroppgjoerIngenEndringAndreAvvik : RedigerbarTemplate<VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto> {
 
-    override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_INGEN_ENDRING
+    override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_INGEN_ENDRING_ANDRE_AVVIK
 
     override val featureToggle = FeatureToggles.vedtakAfpEtteroppgjoerIngenEndring.toggle
 

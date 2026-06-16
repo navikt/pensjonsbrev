@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDto
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -53,12 +53,12 @@ fun createVedtakAfpEtteroppgjoerEtterbetalingDto(): VedtakAfpEtteroppgjoerEtterb
         ),
     )
 
-fun createVedtakAfpEtteroppgjoerIngenEndringDto(): VedtakAfpEtteroppgjoerIngenEndringDto =
-    VedtakAfpEtteroppgjoerIngenEndringDto(
+fun createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto(): VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto =
+    VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto(
         saksbehandlerValg = EmptySaksbehandlerValg,
-        pesysData = VedtakAfpEtteroppgjoerIngenEndringDto.PesysData(
+        pesysData = VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto.PesysData(
             oppgjoersAar = Year(2024),
             pgi = Kroner(280_000),
-            scenario = VedtakAfpEtteroppgjoerIngenEndringDto.Scenario.IKKE_AFP_FULL_INNTEKT,
+            scenario = VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto.Scenario.IKKE_AFP_FULL_INNTEKT,
         ),
     )
