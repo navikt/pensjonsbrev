@@ -43,7 +43,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
-        installRetry(logger)
+        installRetry(logger, maxRetries = 3)
         callIdAndOnBehalfOfClient(navansattScope, authService)
     }
 
@@ -68,8 +68,11 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
 
             return@cached if (response.status.isSuccess()) {
                 response.body()
+            } else if (response.status == HttpStatusCode.NotFound) {
+                logger.warn("Fant ikke navansatt ${ansattId.id}: ${response.status} - ${response.bodyAsText()}")
+                null
             } else {
-                logger.error("Fant ikke navansatt ${ansattId.id}: ${response.status} - ${response.bodyAsText()}")
+                logger.error("Klarte ikke å hente navansatt ${ansattId.id}: ${response.status} - ${response.bodyAsText()}")
                 null
             }
         }

@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.inntektFoerUttak
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.inntektIAfpPerioden
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.korrigertAfp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.medlemAvApotekerordningen
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.oppgjoersAar
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.opphorsdato
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.pensjonsgivendeInntekt
@@ -41,7 +42,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 /**
- * Redigerbart vedtak — AFP etteroppgjør (SPK) med etterbetaling.
+ * Redigerbart vedtak — AFP etteroppgjør med etterbetaling.
  *
  * Konvertert fra Exstream-malen `PE_AF_04_109`. Auto-varianten av samme situasjon
  * er [VedtakAfpEtteroppgjoerEtterbetalingAuto] (`PE_AF_04_101`).
@@ -150,20 +151,24 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
 
             includePhrase(AfpEtteroppgjoerInnhold.NedenforInntekterBruktOgBeregnet)
 
-            includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            showIf(pesysData.medlemAvApotekerordningen) {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
+            }.orShow {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            }
+
             includePhrase(AfpEtteroppgjoerInnhold.MeldingOmEndringerInnledning)
 
             includePhrase(AfpEtteroppgjoerInnhold.InntektUtenforEtteroppgjoerListe)
 
             includePhrase(AfpEtteroppgjoerInnhold.AnnenInntektInntektsproevd)
+
             includePhrase(AfpEtteroppgjoerInnhold.DokumenterInntekterUtenforAvkorting)
+
             includePhrase(AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon)
-            includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmCovidInntekterInnledning)
 
-            includePhrase(AfpEtteroppgjoerInnhold.CovidDokumentasjonskravFeriepenger)
-
-            includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(pesysData.oppgjoersAar))
+
             includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, oppgjoersAar = pesysData.oppgjoersAar))
 
             includePhrase(
@@ -190,7 +195,7 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
                             "lavere enn den arbeidsinntekten som ble lagt til grunn ved utbetalingen av " +
                             "pensjon. Denne forskjellen er større enn toleransebeløpet som i " +
                             pesysData.oppgjoersAar.format() + " var på " + pesysData.toleranseBeloep.format() + ". Pensjonen din er derfor " +
-                            "beregnet på ny for perioden."
+                            "beregnet på nytt for perioden."
                     },
                     nynorsk {
                         +"Ved berekninga av pensjonen din la vi til grunn at du ville ha ei forventa " +
@@ -239,23 +244,6 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
             }
 
             includePhrase(AfpEtteroppgjoerInnhold.RefusjonskravForbehold)
-
-            paragraph {
-                text(
-                    bokmal {
-                        +"I vår pensjonsberegning er det ikke tatt hensyn til eventuelt ektefelletillegg " +
-                            "til forsørget ektefelle over 60 år. Dersom du har fått utbetalt " +
-                            "ektefelletillegg, kan nye inntektsopplysninger føre til endring av tillegget. " +
-                            "Du vil da få eget vedtak om dette."
-                    },
-                    nynorsk {
-                        +"I pensjonsberekninga vår er det ikkje teke omsyn til eventuelt ektefelletillegg " +
-                            "til forsørgd ektefelle over 60 år. Dersom du har fått utbetalt " +
-                            "ektefelletillegg, kan nye inntektsopplysningar føre til at tillegget blir " +
-                            "endra. Du vil då få eige vedtak om dette."
-                    },
-                )
-            }
 
             includePhrase(AfpEtteroppgjoerAvslutning.DinePlikter)
             includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageMedDokumentasjonsfrist)

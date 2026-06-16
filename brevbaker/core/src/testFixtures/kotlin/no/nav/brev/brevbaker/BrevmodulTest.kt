@@ -197,7 +197,14 @@ abstract class BrevmodulTest(
             println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
-        val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
+
+        val felles = if (brevkode is Brevkode.Redigerbart) {
+            FellesFactory.felles
+        } else {
+            FellesFactory.fellesAuto
+        }
+
+        val letter = LetterTestImpl(template, fixtures, spraak, felles)
 
         letter.renderTestPDF(
             filnavn(brevkode, spraak),
