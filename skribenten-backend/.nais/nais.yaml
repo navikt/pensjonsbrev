@@ -25,6 +25,9 @@ spec:
   replicas:
     min: 2
     max: 10
+    scalingStrategy:
+      cpu:
+        thresholdPercentage: 70
   prometheus:
     enabled: true
     path: "/metrics"
