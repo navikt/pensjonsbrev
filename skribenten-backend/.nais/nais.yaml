@@ -25,7 +25,6 @@ spec:
   replicas:
     min: 2
     max: 10
-    cpuThresholdPercentage: 50
   prometheus:
     enabled: true
     path: "/metrics"
