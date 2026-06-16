@@ -57,7 +57,7 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<KlageOrienterin
             }
             paragraph {
                 text(
-                    bokmal { +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over " + pesysData.navAvsenderEnhet + " vedtak av " +fritekst("vedtaksdato") + "." },
+                    bokmal { +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over " + pesysData.navAvsenderEnhet + " vedtak av " + fritekst("vedtaksdato") + "." },
                     english { +"On " + fritekst("mottaksdato for klagen") + " we received an appeal about " + pesysData.navAvsenderEnhet + " decision of " + fritekst("vedtaksdato") + "." }
                 )
             }
