@@ -3,7 +3,7 @@ import { create } from "./common";
 import { cursorPosition, updateFocus } from "./cursorPosition";
 import { deleteSelection } from "./deleteSelection";
 import { merge } from "./merge";
-import { paste } from "./paste";
+import { paste, pasteReplacingSelection } from "./paste";
 import { split } from "./split";
 import { switchFontType } from "./switchFontType";
 import { switchTypography } from "./switchTypography";
@@ -38,6 +38,7 @@ const Actions = {
   merge,
   moveTableRow,
   paste,
+  pasteReplacingSelection,
   promoteRowToHeader,
   updateFocus,
   removeTable,
