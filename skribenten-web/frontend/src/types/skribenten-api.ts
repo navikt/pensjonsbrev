@@ -584,64 +584,7 @@ export interface paths {
                     "application/json": components["schemas"]["ApiOpprettBrevRequest"];
                 };
             };
-            responses: {
-                201: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiBrevResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         delete?: never;
         options?: never;
@@ -669,64 +612,7 @@ export interface paths {
                 cookie?: never;
             };
             requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiBrevResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         put: {
             parameters: {
@@ -745,64 +631,7 @@ export interface paths {
                     "application/json": components["schemas"]["ApiOppdaterBrevRequest"];
                 };
             };
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiBrevResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         post?: never;
         delete: {
@@ -816,62 +645,7 @@ export interface paths {
                 cookie?: never;
             };
             requestBody?: never;
-            responses: {
-                204: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         options?: never;
         head?: never;
@@ -890,64 +664,7 @@ export interface paths {
                     "application/json": components["schemas"]["ApiDelvisOppdaterBrevRequest"];
                 };
             };
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiBrevResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         trace?: never;
     };
@@ -974,64 +691,7 @@ export interface paths {
                     "application/json": components["schemas"]["ApiDistribusjonstypeRequest"];
                 };
             };
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiBrevInfo"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         post?: never;
         delete?: never;
@@ -1063,64 +723,7 @@ export interface paths {
                     "application/json": components["schemas"]["ApiValgteVedleggRequest"];
                 };
             };
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiBrevResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         post?: never;
         delete?: never;
@@ -1156,54 +759,6 @@ export interface paths {
                         "application/json": components["schemas"]["RedigerbartVedleggInfo"][];
                     };
                 };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
             };
         };
         put?: never;
@@ -1214,7 +769,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/sak/{saksId}/brev/{brevId}/vedlegg/{vedleggId}": {
+    "/sak/{saksId}/brev/{brevId}/redigerbareVedlegg/{vedleggId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -1242,54 +797,6 @@ export interface paths {
                         "application/json": components["schemas"]["EditAttachment"];
                     };
                 };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
             };
         };
         put: {
@@ -1304,64 +811,7 @@ export interface paths {
                 cookie?: never;
             };
             requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiBrevResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         post?: never;
         delete: {
@@ -1376,64 +826,7 @@ export interface paths {
                 cookie?: never;
             };
             requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiBrevResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         options?: never;
         head?: never;
@@ -1463,64 +856,7 @@ export interface paths {
                     "application/json": components["schemas"]["ApiOppdaterKlarStatusRequest"];
                 };
             };
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiBrevInfo"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         post?: never;
         delete?: never;
@@ -1552,64 +888,7 @@ export interface paths {
                     "application/json": components["schemas"]["ApiOppdaterMottakerRequest"];
                 };
             };
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiBrevInfo"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         post?: never;
         delete: {
@@ -1623,64 +902,7 @@ export interface paths {
                 cookie?: never;
             };
             requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiBrevInfo"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         options?: never;
         head?: never;
@@ -1705,64 +927,7 @@ export interface paths {
                 cookie?: never;
             };
             requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiPdfResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         put?: never;
         post?: never;
@@ -1792,64 +957,7 @@ export interface paths {
                 cookie?: never;
             };
             requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiBestillBrevResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         delete?: never;
         options?: never;
@@ -1877,64 +985,7 @@ export interface paths {
                 cookie?: never;
             };
             requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiBrevResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         put: {
             parameters: {
@@ -1953,64 +1004,7 @@ export interface paths {
                     "application/json": components["schemas"]["ApiOppdaterAttesteringRequest"];
                 };
             };
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["ApiBrevResponse"];
-                    };
-                };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-            };
+            responses: never;
         };
         post?: never;
         delete?: never;
@@ -3243,16 +2237,6 @@ export interface components {
             spraak: components["schemas"]["SpraakKode"];
             vedtaksId?: number | null;
         };
-        /** BrevExceptionDto */
-        BrevExceptionDto: {
-            melding: string;
-            tittel: string;
-        };
-        /** LetterMarkupWithDataUsageProperty */
-        LetterMarkupWithDataUsageProperty: {
-            propertyName: string;
-            typeName: string;
-        };
         /**
          * EditParagraphContentTextFontType
          * @enum {string}
@@ -3477,29 +2461,18 @@ export interface components {
             signatur: components["schemas"]["LetterMarkupSignatur"];
             title: components["schemas"]["EditTitle"];
         };
-        /** SaksbehandlerValgBrevdata */
-        SaksbehandlerValgBrevdata: Record<string, never>;
-        /** AlltidValgbartVedleggBrevkode */
-        AlltidValgbartVedleggBrevkode: {
-            kode: string;
-            spraak: components["schemas"]["LanguageCode"][];
-            visningstekst: string;
-        };
-        /** ApiBrevResponse */
-        ApiBrevResponse: {
-            info: components["schemas"]["ApiBrevInfo"];
-            propertyUsage?: components["schemas"]["LetterMarkupWithDataUsageProperty"][] | null;
-            redigertBrev: components["schemas"]["EditLetter"];
-            redigertBrevHash: string;
-            saksbehandlerValg: components["schemas"]["SaksbehandlerValgBrevdata"];
-            valgteVedlegg?: components["schemas"]["AlltidValgbartVedleggBrevkode"][] | null;
-        };
         /** ApiOppdaterBrevRequest */
         ApiOppdaterBrevRequest: {
             redigertBrev: components["schemas"]["EditLetter"];
             saksbehandlerValg: {
                 [key: string]: unknown;
             };
+        };
+        /** AlltidValgbartVedleggBrevkode */
+        AlltidValgbartVedleggBrevkode: {
+            kode: string;
+            spraak: components["schemas"]["LanguageCode"][];
+            visningstekst: string;
         };
         /** ApiDelvisOppdaterBrevRequest */
         ApiDelvisOppdaterBrevRequest: {
@@ -3533,22 +2506,6 @@ export interface components {
         ApiOppdaterMottakerRequest: {
             mottaker: components["schemas"]["ApiOverstyrtMottaker"];
         };
-        /** ApiPdfResponse */
-        ApiPdfResponse: {
-            pdf: Record<string, never>[];
-            rendretBrevErEndret: boolean;
-        };
-        /** ApiBestillBrevResponseError */
-        ApiBestillBrevResponseError: {
-            beskrivelse?: string | null;
-            brevIkkeStoettet?: string | null;
-            tekniskgrunn?: string | null;
-        };
-        /** ApiBestillBrevResponse */
-        ApiBestillBrevResponse: {
-            error?: components["schemas"]["ApiBestillBrevResponseError"] | null;
-            journalpostId?: number | null;
-        };
         /** ApiOppdaterAttesteringRequest */
         ApiOppdaterAttesteringRequest: {
             redigertBrev: components["schemas"]["EditLetter"];
@@ -3562,6 +2519,27 @@ export interface components {
             spraak: components["schemas"]["LanguageCode"][];
             tilgjengeligForSpraak: boolean;
             visningstekst: string;
+        };
+        /** BrevExceptionDto */
+        BrevExceptionDto: {
+            melding: string;
+            tittel: string;
+        };
+        /** LetterMarkupWithDataUsageProperty */
+        LetterMarkupWithDataUsageProperty: {
+            propertyName: string;
+            typeName: string;
+        };
+        /** SaksbehandlerValgBrevdata */
+        SaksbehandlerValgBrevdata: Record<string, never>;
+        /** ApiBrevResponse */
+        ApiBrevResponse: {
+            info: components["schemas"]["ApiBrevInfo"];
+            propertyUsage?: components["schemas"]["LetterMarkupWithDataUsageProperty"][] | null;
+            redigertBrev: components["schemas"]["EditLetter"];
+            redigertBrevHash: string;
+            saksbehandlerValg: components["schemas"]["SaksbehandlerValgBrevdata"];
+            valgteVedlegg?: components["schemas"]["AlltidValgbartVedleggBrevkode"][] | null;
         };
         /** Duration */
         Duration: {
@@ -3748,8 +2726,6 @@ export type ApiBrevStatusUnderRedigering = components['schemas']['ApiBrevStatusU
 export type ApiBrevStatus = components['schemas']['ApiBrevStatus'];
 export type ApiBrevInfo = components['schemas']['ApiBrevInfo'];
 export type ApiOpprettBrevRequest = components['schemas']['ApiOpprettBrevRequest'];
-export type BrevExceptionDto = components['schemas']['BrevExceptionDto'];
-export type LetterMarkupWithDataUsageProperty = components['schemas']['LetterMarkupWithDataUsageProperty'];
 export type EditParagraphContentTextFontType = components['schemas']['EditParagraphContentTextFontType'];
 export type ElementTags = components['schemas']['ElementTags'];
 export type EditParagraphContentType = components['schemas']['EditParagraphContentType'];
@@ -3777,10 +2753,8 @@ export type LetterMarkupSakspart = components['schemas']['LetterMarkupSakspart']
 export type LetterMarkupSignatur = components['schemas']['LetterMarkupSignatur'];
 export type EditTitle = components['schemas']['EditTitle'];
 export type EditLetter = components['schemas']['EditLetter'];
-export type SaksbehandlerValgBrevdata = components['schemas']['SaksbehandlerValgBrevdata'];
-export type AlltidValgbartVedleggBrevkode = components['schemas']['AlltidValgbartVedleggBrevkode'];
-export type ApiBrevResponse = components['schemas']['ApiBrevResponse'];
 export type ApiOppdaterBrevRequest = components['schemas']['ApiOppdaterBrevRequest'];
+export type AlltidValgbartVedleggBrevkode = components['schemas']['AlltidValgbartVedleggBrevkode'];
 export type ApiDelvisOppdaterBrevRequest = components['schemas']['ApiDelvisOppdaterBrevRequest'];
 export type ApiDistribusjonstypeRequest = components['schemas']['ApiDistribusjonstypeRequest'];
 export type ApiValgteVedleggRequest = components['schemas']['ApiValgteVedleggRequest'];
@@ -3788,11 +2762,12 @@ export type RedigerbartVedleggInfo = components['schemas']['RedigerbartVedleggIn
 export type EditAttachment = components['schemas']['EditAttachment'];
 export type ApiOppdaterKlarStatusRequest = components['schemas']['ApiOppdaterKlarStatusRequest'];
 export type ApiOppdaterMottakerRequest = components['schemas']['ApiOppdaterMottakerRequest'];
-export type ApiPdfResponse = components['schemas']['ApiPdfResponse'];
-export type ApiBestillBrevResponseError = components['schemas']['ApiBestillBrevResponseError'];
-export type ApiBestillBrevResponse = components['schemas']['ApiBestillBrevResponse'];
 export type ApiOppdaterAttesteringRequest = components['schemas']['ApiOppdaterAttesteringRequest'];
 export type ValgbartVedlegg = components['schemas']['ValgbartVedlegg'];
+export type BrevExceptionDto = components['schemas']['BrevExceptionDto'];
+export type LetterMarkupWithDataUsageProperty = components['schemas']['LetterMarkupWithDataUsageProperty'];
+export type SaksbehandlerValgBrevdata = components['schemas']['SaksbehandlerValgBrevdata'];
+export type ApiBrevResponse = components['schemas']['ApiBrevResponse'];
 export type Duration = components['schemas']['Duration'];
 export type ApiReservasjonResponse = components['schemas']['ApiReservasjonResponse'];
 export type DiffBrevHandlerResponse = components['schemas']['DiffBrevHandlerResponse'];

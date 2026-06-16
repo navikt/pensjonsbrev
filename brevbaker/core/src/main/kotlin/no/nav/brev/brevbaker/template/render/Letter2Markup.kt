@@ -105,13 +105,12 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         template: LetterTemplate<*, *>,
         vedleggId: VedleggId,
     ): Attachment? {
-        var result: Attachment? = null
         render(scope, template.attachments) { attachmentScope, editableId, attachment ->
-            if (result == null && editableId == vedleggId) {
-                result = renderAttachment(attachmentScope, attachment)
+            if (editableId == vedleggId) {
+                return renderAttachment(attachmentScope, attachment)
             }
         }
-        return result
+        return null
     }
 
     private fun renderAttachment(scope: ExpressionScope<*>, attachment: AttachmentTemplate<*, *>): Attachment =

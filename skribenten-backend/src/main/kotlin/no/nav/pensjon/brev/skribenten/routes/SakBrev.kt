@@ -134,101 +134,53 @@ fun Route.sakBrev(
                 apiRespond(dto2ApiService, brev)
             }
 
-            get("/redigerbareVedlegg") {
-                val brevId = call.parameters.brevId()
-
-                val result = brevredigeringFacade.hentRedigerbareVedlegg(
-                    HentRedigerbareVedleggHandler.Request(brevId = brevId)
-                )
-
-                respondOutcome(dto2ApiService, result) { respond(it) }
-            }
-
-            route("/vedlegg/{vedleggId}") {
+            route("/redigerbareVedlegg") {
                 get {
                     val brevId = call.parameters.brevId()
-                    val vedleggId = call.parameters.vedleggId()
 
-                    val result = brevredigeringFacade.hentRedigertVedlegg(
-                        HentRedigertVedleggHandler.Request(brevId = brevId, vedleggId = vedleggId)
+                    val result = brevredigeringFacade.hentRedigerbareVedlegg(
+                        HentRedigerbareVedleggHandler.Request(brevId = brevId)
                     )
 
                     respondOutcome(dto2ApiService, result) { respond(it) }
                 }
+                route("{vedleggId}") {
+                    get {
+                        val brevId = call.parameters.brevId()
+                        val vedleggId = call.parameters.vedleggId()
 
-                put<Api.RedigertVedleggRequest> { request ->
-                    val brevId = call.parameters.brevId()
-                    val vedleggId = call.parameters.vedleggId()
-
-                    val brev = brevredigeringFacade.endreRedigertVedlegg(
-                        EndreRedigertVedleggHandler.Request(
-                            brevId = brevId,
-                            vedleggId = vedleggId,
-                            redigertVedlegg = request.redigertVedlegg,
+                        val result = brevredigeringFacade.hentRedigertVedlegg(
+                            HentRedigertVedleggHandler.Request(brevId = brevId, vedleggId = vedleggId)
                         )
-                    )
 
-                    apiRespond(dto2ApiService, brev)
-                }
+                        respondOutcome(dto2ApiService, result) { respond(it) }
+                    }
 
-                delete {
-                    val brevId = call.parameters.brevId()
-                    val vedleggId = call.parameters.vedleggId()
+                    put<Api.RedigertVedleggRequest> { request ->
+                        val brevId = call.parameters.brevId()
+                        val vedleggId = call.parameters.vedleggId()
 
-                    val brev = brevredigeringFacade.slettRedigertVedlegg(
-                        SlettRedigertVedleggHandler.Request(brevId = brevId, vedleggId = vedleggId)
-                    )
-
-                    apiRespond(dto2ApiService, brev)
-                }
-            }
-
-            get("/redigerbareVedlegg") {
-                val brevId = call.parameters.brevId()
-
-                val result = brevredigeringFacade.hentRedigerbareVedlegg(
-                    HentRedigerbareVedleggHandler.Request(brevId = brevId)
-                )
-
-                respondOutcome(dto2ApiService, result) { respond(it) }
-            }
-
-            route("/vedlegg/{vedleggId}") {
-                get {
-                    val brevId = call.parameters.brevId()
-                    val vedleggId = call.parameters.vedleggId()
-
-                    val result = brevredigeringFacade.hentRedigertVedlegg(
-                        HentRedigertVedleggHandler.Request(brevId = brevId, vedleggId = vedleggId)
-                    )
-
-                    respondOutcome(dto2ApiService, result) { respond(it) }
-                }
-
-                put<Api.RedigertVedleggRequest> { request ->
-                    val brevId = call.parameters.brevId()
-                    val vedleggId = call.parameters.vedleggId()
-
-                    val brev = brevredigeringFacade.endreRedigertVedlegg(
-                        EndreRedigertVedleggHandler.Request(
-                            brevId = brevId,
-                            vedleggId = vedleggId,
-                            redigertVedlegg = request.redigertVedlegg,
+                        val brev = brevredigeringFacade.endreRedigertVedlegg(
+                            EndreRedigertVedleggHandler.Request(
+                                brevId = brevId,
+                                vedleggId = vedleggId,
+                                redigertVedlegg = request.redigertVedlegg,
+                            )
                         )
-                    )
 
-                    apiRespond(dto2ApiService, brev)
-                }
+                        apiRespond(dto2ApiService, brev)
+                    }
 
-                delete {
-                    val brevId = call.parameters.brevId()
-                    val vedleggId = call.parameters.vedleggId()
+                    delete {
+                        val brevId = call.parameters.brevId()
+                        val vedleggId = call.parameters.vedleggId()
 
-                    val brev = brevredigeringFacade.slettRedigertVedlegg(
-                        SlettRedigertVedleggHandler.Request(brevId = brevId, vedleggId = vedleggId)
-                    )
+                        val brev = brevredigeringFacade.slettRedigertVedlegg(
+                            SlettRedigertVedleggHandler.Request(brevId = brevId, vedleggId = vedleggId)
+                        )
 
-                    apiRespond(dto2ApiService, brev)
+                        apiRespond(dto2ApiService, brev)
+                    }
                 }
             }
 

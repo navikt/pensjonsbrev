@@ -21,8 +21,15 @@ export type OppdaterKlarStatusRequest = generated.ApiOppdaterKlarStatusRequest;
 export type DistribusjonstypeRequest = generated.ApiDistribusjonstypeRequest;
 export type OppdaterMottakerRequest = generated.ApiOppdaterMottakerRequest;
 export type ValgteVedleggRequest = generated.ApiValgteVedleggRequest;
-export type BestillBrevResponse = generated.ApiBestillBrevResponse;
-export type BestillBrevError = generated.ApiBestillBrevResponseError;
+export type BestillBrevError = {
+  brevIkkeStoettet?: string | null;
+  tekniskgrunn?: string | null;
+  beskrivelse?: string | null;
+};
+export type BestillBrevResponse = {
+  journalpostId?: number | null;
+  error?: BestillBrevError | null;
+};
 export type ReservasjonResponse = generated.ApiReservasjonResponse;
 export type NavAnsatt = generated.ApiNavAnsatt;
 export type BrevType = generated.LetterMetadataBrevtype;

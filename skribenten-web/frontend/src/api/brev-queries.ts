@@ -162,7 +162,7 @@ export const redigertVedleggKeys = {
 };
 
 const redigertVedleggUrl = (saksId: string, brevId: number, vedleggId: string) =>
-  `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/vedlegg/${vedleggId}`;
+  `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/redigerbareVedlegg/${vedleggId}`;
 
 // Forteller hvilke redigerbare vedlegg som er inkludert i brevet (back-end er kilden).
 export const redigerbareVedleggKeys = {
