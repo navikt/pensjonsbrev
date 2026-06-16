@@ -12,13 +12,13 @@ import java.time.LocalDate
  * innenfor toleransebeløpet.
  *
  * Konvertert fra Exstream-malen `PE_AF_04_108`. Auto-varianten av samme situasjon
- * er [VedtakAfpEtteroppgjoerToleransebeloepAutoDto] (`PE_AF_04_100`). Begge brev
+ * er [VedtakAfpEtteroppgjoerIngenEndringAuto] (`PE_AF_04_100`). Begge brev
  * deler innholdsfraser i [no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold].
  */
-data class VedtakAfpEtteroppgjoerToleransebeloepDto(
+data class VedtakAfpEtteroppgjoerIngenEndringDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakAfpEtteroppgjoerToleransebeloepDto.PesysData> {
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakAfpEtteroppgjoerIngenEndringDto.PesysData> {
 
     data class PesysData(
         val oppgjoersAar: BrevbakerType.Year,

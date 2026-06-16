@@ -7,8 +7,8 @@ import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDto.Periode
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDto.Periode
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.avvik
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.forventetPensjonsgivendeInntektBeregnet
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.inntektEtterOpphoer
@@ -39,13 +39,13 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * Redigerbart vedtak — AFP etteroppgjør (SPK), ingen endring innenfor toleransebeløpet.
  *
  * Konvertert fra Exstream-malen `PE_AF_04_108`. Auto-varianten er
- * [VedtakAfpEtteroppgjoerToleransebeloepAuto] (`PE_AF_04_100`). Innhold er
+ * [VedtakAfpEtteroppgjoerIngenEndringAutoDto] (`PE_AF_04_100`). Innhold er
  * tilnærmet identisk; saksbehandler kan tilpasse teksten ved behov.
  */
 @TemplateModelHelpers
-object VedtakAfpEtteroppgjoerToleransebeloep : RedigerbarTemplate<VedtakAfpEtteroppgjoerToleransebeloepDto> {
+object VedtakAfpEtteroppgjoerIngenEndring : RedigerbarTemplate<VedtakAfpEtteroppgjoerIngenEndringDto> {
 
-    override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_TOLERANSEBELOP
+    override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_INGEN_ENDRING
 
     override val featureToggle = FeatureToggles.vedtakAfpEtteroppgjoerToleransebeloep.toggle
 

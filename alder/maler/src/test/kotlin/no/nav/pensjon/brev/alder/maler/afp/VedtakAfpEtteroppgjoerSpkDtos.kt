@@ -3,16 +3,16 @@ package no.nav.pensjon.brev.alder.maler.afp
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDto
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 
-fun createVedtakAfpEtteroppgjoerToleransebeloepDto(): VedtakAfpEtteroppgjoerToleransebeloepDto =
-    VedtakAfpEtteroppgjoerToleransebeloepDto(
+fun createVedtakAfpEtteroppgjoerIngenEndringDto(): VedtakAfpEtteroppgjoerIngenEndringDto =
+    VedtakAfpEtteroppgjoerIngenEndringDto(
         saksbehandlerValg = EmptySaksbehandlerValg,
-        pesysData = VedtakAfpEtteroppgjoerToleransebeloepDto.PesysData(
+        pesysData = VedtakAfpEtteroppgjoerIngenEndringDto.PesysData(
             oppgjoersAar = Year(2024),
             pensjonsgivendeInntekt = Kroner(280_000),
             inntektFoerUttak = Kroner(40_000),
@@ -24,7 +24,7 @@ fun createVedtakAfpEtteroppgjoerToleransebeloepDto(): VedtakAfpEtteroppgjoerTole
             opphorsdato = null,
             medlemAvApotekerordningen = true,
             toleranseBeloep = Kroner(3000),
-            periode = VedtakAfpEtteroppgjoerToleransebeloepDto.Periode.UTTAK_I_AARET,
+            periode = VedtakAfpEtteroppgjoerIngenEndringDto.Periode.UTTAK_I_AARET,
         ),
     )
 
