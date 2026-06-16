@@ -8,10 +8,12 @@ import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto.Scenario
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDtoSelectors.PesysDataSelectors.oppgjoersAar
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDtoSelectors.PesysDataSelectors.pgi
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDtoSelectors.PesysDataSelectors.scenario
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDtoSelectors.pesysData
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDtoSelectors.PesysDataSelectors.medlemAvApotekerordningen
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDtoSelectors.PesysDataSelectors.oppgjoersAar
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDtoSelectors.PesysDataSelectors.pensjonsgivendeInntekt
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDtoSelectors.PesysDataSelectors.scenario
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDtoSelectors.PesysDataSelectors.toleranseBeloep
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.model.format
@@ -64,7 +66,11 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvik : RedigerbarTemplate<VedtakA
         outline {
             includePhrase(AfpEtteroppgjoerInnhold.EtteroppgjoerIntro)
             includePhrase(AfpEtteroppgjoerInnhold.IkkeFunnetGrunnlagForAaEndre(pesysData.oppgjoersAar))
-            includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            showIf(pesysData.medlemAvApotekerordningen) {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
+            }.orShow {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            }
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(pesysData.oppgjoersAar))
 
             showIf(pesysData.scenario.equalTo(Scenario.HEL_AFP_HELE_AARET_INNTEKT_FOER_UTTAK)) {
@@ -72,14 +78,14 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvik : RedigerbarTemplate<VedtakA
                     text(
                         bokmal {
                             +"Du har fått utbetalt 100 prosent AFP. Opplysninger fra Skatteetaten viser at du " +
-                                "har hatt en samlet pensjonsgivende inntekt på " + pesysData.pgi.format() + " for " +
+                                "har hatt en samlet pensjonsgivende inntekt på " + pesysData.pensjonsgivendeInntekt.format() + " for " +
                                 "inntektsåret " + pesysData.oppgjoersAar.format() + ". Vi antar at hele denne inntekten " +
                                 "er opptjent i perioden før du tok ut pensjon, og den blir derfor holdt utenfor " +
                                 "etteroppgjøret."
                         },
                         nynorsk {
                             +"Du har fått utbetalt 100 prosent AFP. Opplysningar frå Skatteetaten viser at du " +
-                                "har hatt ei samla pensjonsgivande inntekt på " + pesysData.pgi.format() + " for " +
+                                "har hatt ei samla pensjonsgivande inntekt på " + pesysData.pensjonsgivendeInntekt.format() + " for " +
                                 "inntektsåret " + pesysData.oppgjoersAar.format() + ". Vi reknar med at heile denne " +
                                 "inntekta er opptent i perioden før du tok ut pensjon, og ho blir derfor halden " +
                                 "utanfor etteroppgjeret."
@@ -114,14 +120,14 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvik : RedigerbarTemplate<VedtakA
                             +"Du har ikke fått utbetalt pensjon fra AFP-ordningen for året " +
                                 pesysData.oppgjoersAar.format() + " som følge av at du har vært i fullt inntektsgivende " +
                                 "arbeid. Opplysninger fra Skatteetaten viser at du har hatt en pensjonsgivende " +
-                                "inntekt på " + pesysData.pgi.format() + " for " + pesysData.oppgjoersAar.format() + ". " +
+                                "inntekt på " + pesysData.pensjonsgivendeInntekt.format() + " for " + pesysData.oppgjoersAar.format() + ". " +
                                 "Dette samsvarer med det som tidligere er lagt til grunn ved pensjonsberegningen."
                         },
                         nynorsk {
                             +"Du har ikkje fått utbetalt pensjon frå AFP-ordninga for året " +
                                 pesysData.oppgjoersAar.format() + " som følgje av at du har vore i fullt inntektsgivande " +
                                 "arbeid. Opplysningar frå Skatteetaten viser at du har hatt ei pensjonsgivande " +
-                                "inntekt på " + pesysData.pgi.format() + " for " + pesysData.oppgjoersAar.format() + ". " +
+                                "inntekt på " + pesysData.pensjonsgivendeInntekt.format() + " for " + pesysData.oppgjoersAar.format() + ". " +
                                 "Det samsvarer med det som tidlegare er lagt til grunn ved pensjonsberekninga."
                         },
                     )
@@ -134,14 +140,14 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvik : RedigerbarTemplate<VedtakA
                         bokmal {
                             +"Du har fått utbetalt 100 prosent AFP for deler av året. Ved beregningen av " +
                                 "pensjonen har vi lagt til grunn at du ikke ville ha arbeidsinntekt som " +
-                                "overstiger godkjent toleransebeløp på 15 000 kroner i perioden med AFP. " +
+                                "overstiger godkjent toleransebeløp på " + pesysData.toleranseBeloep.format() + " i perioden med AFP. " +
                                 "Ifølge opplysninger fra Skatteetaten har du heller ikke hatt slik " +
                                 "pensjonsgivende inntekt i " + pesysData.oppgjoersAar.format() + "."
                         },
                         nynorsk {
                             +"Du har fått utbetalt 100 prosent AFP for delar av året. Ved berekninga av " +
                                 "pensjonen har vi lagt til grunn at du ikkje ville ha arbeidsinntekt som " +
-                                "oversteig det godkjende toleransebeløpet på 15 000 kroner i perioden med " +
+                                "oversteig det godkjende toleransebeløpet på " + pesysData.toleranseBeloep.format() + " i perioden med " +
                                 "AFP. Ifølgje opplysningar frå Skatteetaten har du heller ikkje hatt slik " +
                                 "pensjonsgivande inntekt i " + pesysData.oppgjoersAar.format() + "."
                         },

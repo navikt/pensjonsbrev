@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 /**
  * Redigerbart vedtak — AFP etteroppgjør (offentlig sektor / SPK), ingen endring
@@ -18,10 +19,10 @@ data class VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto(
 ) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto.PesysData> {
 
     data class PesysData(
-        // PE_Vedtaksdata_Oppgjorsar
         val oppgjoersAar: BrevbakerType.Year,
-        // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_PGI
-        val pgi: BrevbakerType.Kroner,
+        val pensjonsgivendeInntekt: Kroner,
+        val medlemAvApotekerordningen: Boolean,
+        val toleranseBeloep: Kroner,
         val scenario: Scenario,
     ) : FagsystemBrevdata
 

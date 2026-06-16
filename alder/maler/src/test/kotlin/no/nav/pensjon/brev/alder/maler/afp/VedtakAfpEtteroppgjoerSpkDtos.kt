@@ -58,7 +58,9 @@ fun createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto(): VedtakAfpEtteroppgj
         saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto.PesysData(
             oppgjoersAar = Year(2024),
-            pgi = Kroner(280_000),
+            pensjonsgivendeInntekt = Kroner(280_000),
+            toleranseBeloep = Kroner(33000),
+            medlemAvApotekerordningen = true,
             scenario = VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto.Scenario.IKKE_AFP_FULL_INNTEKT,
         ),
     )
