@@ -90,7 +90,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
-        val ignorePaths = setOf("/isAlive", "/isReady", "/metrics")
+        val ignorePaths = setOf("/isAlive", "/isReady", "/isStarted", "/metrics")
         filter {
             !ignorePaths.contains(it.request.path())
         }
