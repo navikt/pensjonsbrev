@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.VedleggId
 
 class HentRedigertVedleggHandler(
     private val brevmalService: BrevmalService,
@@ -17,7 +18,7 @@ class HentRedigertVedleggHandler(
 
     data class Request(
         override val brevId: BrevId,
-        val vedleggId: String,
+        val vedleggId: VedleggId,
     ) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Edit.Attachment, BrevredigeringError>? {

@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.Tilbak
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.VedleggId
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.PdlService
 
@@ -88,4 +89,4 @@ fun Route.brev(
 
 fun Parameters.brevId() = BrevId(getOrFail<Long>("brevId"))
 
-fun Parameters.vedleggId(): String = getOrFail("vedleggId")
+fun Parameters.vedleggId(): VedleggId = VedleggId(getOrFail("vedleggId"))

@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.VedleggId
 
 /**
  * Forteller front-end hvilke redigerbare vedlegg som faktisk er inkludert i et gitt brev,
@@ -44,6 +45,6 @@ class HentRedigerbareVedleggHandler(
 }
 
 data class RedigerbartVedleggInfo(
-    val vedleggId: String,
+    val vedleggId: VedleggId,
     val tittel: String,
 )

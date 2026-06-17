@@ -11,14 +11,6 @@ import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 
-@RequiresOptIn(
-    message = "Redigerbare vedlegg skal kun brukes etter avtale. Bruk @OptIn(RedigerbartVedlegg::class) på malen når bruken er avklart.",
-    level = RequiresOptIn.Level.ERROR,
-)
-@Retention(AnnotationRetention.BINARY)
-@Target(AnnotationTarget.FUNCTION)
-annotation class RedigerbartVedlegg
-
 @LetterTemplateMarker
 class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
     val title: MutableList<TextElement<Lang>> = mutableListOf(),
@@ -56,6 +48,14 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     ) {
         attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate))
     }
+
+    @RequiresOptIn(
+        message = "Redigerbare vedlegg skal kun brukes etter avtale. Bruk @OptIn(RedigerbartVedlegg::class) på malen når bruken er avklart.",
+        level = RequiresOptIn.Level.ERROR,
+    )
+    @Retention(AnnotationRetention.BINARY)
+    @Target(AnnotationTarget.FUNCTION)
+    annotation class RedigerbartVedlegg
 
     /**
      * Opt-in: gjør et vedlegg redigerbart. Saksbehandler kan overstyre innholdet i Skribenten,

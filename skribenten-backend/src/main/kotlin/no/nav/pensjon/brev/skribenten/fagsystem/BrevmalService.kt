@@ -63,7 +63,7 @@ class BrevmalService(
             pesysData = pesysData,
         )
 
-    suspend fun hentRedigerbareVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data): Map<String, List<LetterMarkup.ParagraphContent.Text>> =
+    suspend fun hentRedigerbareVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data): Map<VedleggId, List<LetterMarkup.ParagraphContent.Text>> =
         brevbakerService.hentRedigerbareVedlegg(
             brevkode = brev.brevkode,
             spraak = brev.spraak,
@@ -74,7 +74,7 @@ class BrevmalService(
             felles = pesysData.felles,
         )
 
-    suspend fun renderRedigerbartVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data, vedleggId: String): LetterMarkup.Attachment? =
+    suspend fun renderRedigerbartVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data, vedleggId: VedleggId): LetterMarkup.Attachment? =
         brevbakerService.renderRedigerbartVedlegg(
             brevkode = brev.brevkode,
             spraak = brev.spraak,

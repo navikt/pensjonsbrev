@@ -298,10 +298,10 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         }
     }
 
-    fun hentRedigertVedlegg(vedleggId: String): Edit.Attachment? =
+    fun hentRedigertVedlegg(vedleggId: VedleggId): Edit.Attachment? =
         _redigerteVedlegg.firstOrNull { it.vedleggId == vedleggId }?.redigertVedlegg
 
-    fun settRedigertVedlegg(vedleggId: String, redigertVedlegg: Edit.Attachment): Boolean {
+    fun settRedigertVedlegg(vedleggId: VedleggId, redigertVedlegg: Edit.Attachment): Boolean {
         val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId == vedleggId }
         if (eksisterende != null) {
             if (eksisterende.redigertVedlegg == redigertVedlegg) {
@@ -319,7 +319,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         return true
     }
 
-    fun slettRedigertVedlegg(vedleggId: String): Boolean {
+    fun slettRedigertVedlegg(vedleggId: VedleggId): Boolean {
         val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId == vedleggId } ?: return false
         eksisterende.delete()
         refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til redigertVedlegg-tabellen

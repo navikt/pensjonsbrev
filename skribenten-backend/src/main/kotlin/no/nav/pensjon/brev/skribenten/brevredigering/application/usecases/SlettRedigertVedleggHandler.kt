@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.VedleggId
 
 class SlettRedigertVedleggHandler(
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
@@ -18,7 +19,7 @@ class SlettRedigertVedleggHandler(
 
     data class Request(
         override val brevId: BrevId,
-        val vedleggId: String,
+        val vedleggId: VedleggId,
     ) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {

@@ -24,6 +24,7 @@ import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.VedleggId
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationMixins
 import no.nav.pensjon.brev.skribenten.serialize.registerMixin
@@ -51,20 +52,20 @@ interface BrevbakerService {
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
-        redigerteVedlegg: Map<String, LetterMarkup.Attachment> = emptyMap(),
+        redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(),
     ): LetterResponse
     suspend fun hentRedigerbareVedlegg(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
-    ): Map<String, List<LetterMarkup.ParagraphContent.Text>>
+    ): Map<VedleggId, List<LetterMarkup.ParagraphContent.Text>>
     suspend fun renderRedigerbartVedlegg(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
-        vedleggId: String,
+        vedleggId: VedleggId,
     ): LetterMarkup.Attachment?
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
@@ -148,7 +149,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
-        redigerteVedlegg: Map<String, LetterMarkup.Attachment>,
+        redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment>,
     ): LetterResponse {
         val response = client.post("/letter/redigerbar/pdf") {
             contentType(ContentType.Application.Json)
@@ -160,7 +161,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
                     language = spraak,
                     letterMarkup = redigertBrev,
                     alltidValgbareVedlegg = alltidValgbareVedlegg,
-                    redigerteVedlegg = redigerteVedlegg,
+                    redigerteVedlegg = redigerteVedlegg.mapKeys { it.key.id },
                 )
             )
         }
@@ -180,7 +181,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
-    ): Map<String, List<LetterMarkup.ParagraphContent.Text>> {
+    ): Map<VedleggId, List<LetterMarkup.ParagraphContent.Text>> {
         val response = client.post("/letter/redigerbar/redigerbare-vedlegg/titler") {
             contentType(ContentType.Application.Json)
             setBody(
@@ -197,7 +198,9 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             // TODO(redigerbart-vedlegg): midlertidig 404-toleranse mens gammel brevbaker mangler endepunktet.
             //  Behandle 404 som feil igjen når både skribenten og brevbaker er deployet.
             response.status == HttpStatusCode.NotFound -> emptyMap()
-            response.status.isSuccess() -> response.body()
+            response.status.isSuccess() ->
+                response.body<Map<String, List<LetterMarkup.ParagraphContent.Text>>>()
+                    .mapKeys { VedleggId(it.key) }
             else -> throw BrevbakerServiceException(
                 response.bodyAsText().takeIf { it.isNotBlank() }?.let { "${response.status}: $it" }
                     ?: "Ukjent feil oppstod ved generering av redigerbare vedlegg for brevkode: $brevkode"
@@ -210,9 +213,9 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
-        vedleggId: String,
+        vedleggId: VedleggId,
     ): LetterMarkup.Attachment? {
-        val response = client.post("/letter/redigerbar/redigerbare-vedlegg/$vedleggId") {
+        val response = client.post("/letter/redigerbar/redigerbare-vedlegg/${vedleggId.id}") {
             contentType(ContentType.Application.Json)
             setBody(
                 BestillBrevRequest(

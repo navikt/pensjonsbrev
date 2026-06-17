@@ -97,7 +97,7 @@ object P1DataTable : IdTable<BrevId>() {
 object RedigertVedleggTable : LongIdTable() {
     val brevredigering: Column<EntityID<BrevId>> =
         reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE)
-    val vedleggId: Column<String> = varchar("vedleggId", 50)
+    val vedleggId: Column<VedleggId> = varchar("vedleggId", 50).transform(::VedleggId, VedleggId::id)
     val redigertVedleggKryptert: Column<Edit.Attachment> = encryptedBinary("redigertVedleggKryptert")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
         .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)

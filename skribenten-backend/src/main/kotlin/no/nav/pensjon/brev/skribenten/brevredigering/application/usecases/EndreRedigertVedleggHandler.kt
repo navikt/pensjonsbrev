@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.VedleggId
 
 class EndreRedigertVedleggHandler(
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
@@ -19,7 +20,7 @@ class EndreRedigertVedleggHandler(
 
     data class Request(
         override val brevId: BrevId,
-        val vedleggId: String,
+        val vedleggId: VedleggId,
         val redigertVedlegg: Edit.Attachment,
     ) : BrevredigeringRequest
 

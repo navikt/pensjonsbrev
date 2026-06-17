@@ -52,7 +52,7 @@ object Dto {
     }
 
     data class RedigertVedlegg(
-        val vedleggId: String,
+        val vedleggId: VedleggId,
         val redigertVedlegg: Edit.Attachment,
     )
 

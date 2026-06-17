@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.VedleggId
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -52,7 +53,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         withPrincipal(principal) {
             brevredigeringFacade.endreRedigertVedlegg(
-                EndreRedigertVedleggHandler.Request(brevId = brevId, vedleggId = vedleggId, redigertVedlegg = vedlegg)
+                EndreRedigertVedleggHandler.Request(brevId = brevId, vedleggId = VedleggId(vedleggId), redigertVedlegg = vedlegg)
             )
         }
 
@@ -63,7 +64,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     ): Outcome<Edit.Attachment, BrevredigeringError>? =
         withPrincipal(principal) {
             brevredigeringFacade.hentRedigertVedlegg(
-                HentRedigertVedleggHandler.Request(brevId = brevId, vedleggId = vedleggId)
+                HentRedigertVedleggHandler.Request(brevId = brevId, vedleggId = VedleggId(vedleggId))
             )
         }
 
@@ -74,7 +75,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         withPrincipal(principal) {
             brevredigeringFacade.slettRedigertVedlegg(
-                SlettRedigertVedleggHandler.Request(brevId = brevId, vedleggId = vedleggId)
+                SlettRedigertVedleggHandler.Request(brevId = brevId, vedleggId = VedleggId(vedleggId))
             )
         }
 
@@ -171,8 +172,8 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
 
         val sendteVedlegg = brevbakerService.renderPdfRedigerteVedleggKall.last()
-        assertThat(sendteVedlegg).containsOnlyKeys("vedlegg1")
-        assertThat(sendteVedlegg.getValue("vedlegg1")).isEqualTo(vedlegg.toMarkup())
+        assertThat(sendteVedlegg).containsOnlyKeys(VedleggId("vedlegg1"))
+        assertThat(sendteVedlegg.getValue(VedleggId("vedlegg1"))).isEqualTo(vedlegg.toMarkup())
     }
 
     @Test
@@ -244,7 +245,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         val info = hentRedigerbareVedlegg(brev.info.id).resultOrFail()
 
         assertThat(info).hasSize(1)
-        assertThat(info.first().vedleggId).isEqualTo("vedlegg1")
+        assertThat(info.first().vedleggId).isEqualTo(VedleggId("vedlegg1"))
         assertThat(info.first().tittel).isEqualTo("Mal tittel")
     }
 
@@ -259,7 +260,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         val info = hentRedigerbareVedlegg(brev.info.id).resultOrFail()
 
         assertThat(info).hasSize(1)
-        assertThat(info.first().vedleggId).isEqualTo("vedlegg1")
+        assertThat(info.first().vedleggId).isEqualTo(VedleggId("vedlegg1"))
         assertThat(info.first().tittel).isEqualTo("Redigert tittel")
     }
 }
