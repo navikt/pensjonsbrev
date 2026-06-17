@@ -39,7 +39,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * Redigerbart vedtak — AFP etteroppgjør (SPK), ingen endring innenfor toleransebeløpet.
  *
  * Konvertert fra Exstream-malen `PE_AF_04_108`. Auto-varianten er
- * [VedtakAfpEtteroppgjoerIngenEndringAutoDto] (`PE_AF_04_100`). Innhold er
+ * [VedtakAfpEtteroppgjoerIngenEndringAuto] (`PE_AF_04_100`). Innhold er
  * tilnærmet identisk; saksbehandler kan tilpasse teksten ved behov.
  */
 @TemplateModelHelpers
@@ -49,7 +49,7 @@ object VedtakAfpEtteroppgjoerIngenEndring : RedigerbarTemplate<VedtakAfpEtteropp
 
     override val featureToggle = FeatureToggles.vedtakAfpEtteroppgjoerToleransebeloep.toggle
 
-    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.ETTEROPPGJOER
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
 

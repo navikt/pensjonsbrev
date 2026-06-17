@@ -41,7 +41,7 @@ object VedtakAfpEtteroppgjoerIngenEndringNyeOpplysninger : RedigerbarTemplate<Ve
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_INGEN_ENDR_NYE_OPPL
 
-    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.ETTEROPPGJOER
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.AFP)
 
