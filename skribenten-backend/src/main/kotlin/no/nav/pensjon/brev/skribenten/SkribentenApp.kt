@@ -86,7 +86,7 @@ private fun run() {
     }.start(wait = true)
 }
 
-fun Application.skribentenApp(skribentenConfig: Config) {
+suspend fun Application.skribentenApp(skribentenConfig: Config) {
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
