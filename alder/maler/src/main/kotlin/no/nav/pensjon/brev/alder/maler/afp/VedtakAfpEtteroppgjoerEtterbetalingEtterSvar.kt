@@ -244,11 +244,8 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvar : RedigerbarTemplate<VedtakA
             // til "mulige/moglege" (plural).
             includePhrase(AfpEtteroppgjoerInnhold.RefusjonskravForbehold)
 
-            // Avslutning — gjenbrukes fra fellesfrasene. Mindre ordlydsavvik
-            // mot Exstream-originalen ("6 uker" → "seks uker" i klage-frasen)
-            // harmoniseres mot fellesfrasen, samme valg som i 107.
             includePhrase(AfpEtteroppgjoerAvslutning.DinePlikter)
-            includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageSeksUker)
+            includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageSeksUkerMedLenke)
             includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilInnsyn)
             includePhrase(HarDuSpoersmaal.afpEtteroppgjoer)
         }

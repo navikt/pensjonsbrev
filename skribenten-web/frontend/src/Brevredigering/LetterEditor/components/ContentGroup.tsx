@@ -29,6 +29,7 @@ import {
   getCharacterOffset,
   getCursorOffset,
   getCursorOffsetOrRange,
+  getSelectionFocus,
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import {
@@ -549,6 +550,24 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       }
 
       applyAction(Actions.paste, setEditorState, literalIndex, offset, event.clipboardData);
+    } else {
+      const root = event.currentTarget.closest<HTMLElement>("[data-editor-root]");
+      const selection = getSelectionFocus(root ?? undefined);
+      if (selection) {
+        const pastedText = event.clipboardData.getData("text/plain");
+        const pasteLength = pastedText.length;
+        if (pasteLength > 0) {
+          trackEvent("tekst erstattet", {
+            brevkode: editorState.info.brevkode,
+            antallTegn: pasteLength,
+            merEnn200: pasteLength > 200,
+            limInnMetode,
+          });
+        }
+
+        applyAction(Actions.pasteReplacingSelection, setEditorState, selection, event.clipboardData);
+        globalThis.getSelection()?.removeAllRanges();
+      }
     }
   };
 

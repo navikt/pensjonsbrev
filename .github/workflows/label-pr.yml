@@ -28,8 +28,11 @@ jobs:
               'madsop-nav',
               'mussie009',
               'stainawarjar',
-            ];
-            const author = context.payload.pull_request.user.login;
+              'sanderhaNav',
+              'dependabot',
+              'dependabot[bot]',
+            ].map(user => user.toLowerCase());
+            const author = context.payload.pull_request.user.login.toLowerCase();
             if (teamMembers.includes(author)) {
               await github.rest.issues.addLabels({
                 owner: context.repo.owner,

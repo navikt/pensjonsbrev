@@ -12,6 +12,7 @@ import {
   isItemContentIndex,
   isNew,
   isTable,
+  isValidIndex,
   newColSpec,
   newItem,
   newItemList,
@@ -22,6 +23,7 @@ import {
   splitLiteralAtOffset,
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
+import { deleteSelectionRecipe } from "~/Brevredigering/LetterEditor/actions/deleteSelection";
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
 import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -30,6 +32,7 @@ import {
   type ItemContentIndex,
   type LetterEditorState,
   type LiteralIndex,
+  type SelectionIndex,
   type TableCellIndex,
 } from "~/Brevredigering/LetterEditor/model/state";
 import {
@@ -56,6 +59,27 @@ export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
     // (Tests typically break this assertions)
     draft.focus = { ...literalIndex, cursorPosition: offset };
 
+    if (clipboard.types.includes("text/html")) {
+      insertHtmlClipboardInLetter(draft, clipboard);
+    } else if (clipboard.types.includes("text/plain")) {
+      insertTextInLetter(draft, clipboard.getData("text/plain"), FontType.PLAIN, false);
+    } else {
+      log(`unsupported clipboard datatype(s) - ${JSON.stringify(clipboard.types)}`);
+    }
+  });
+
+export const pasteReplacingSelection: Action<LetterEditorState, [selection: SelectionIndex, clipboard: DataTransfer]> =
+  withPatches((draft, selection, clipboard) => {
+    if (selection.start.blockIndex === TITLE_INDEX) {
+      return;
+    }
+    if (!isValidIndex(draft.redigertBrev, selection.start) || !isValidIndex(draft.redigertBrev, selection.end)) {
+      return;
+    }
+    deleteSelectionRecipe(draft, selection);
+
+    // After deletion, draft.focus is set to the collapsed position where the selection was.
+    // Now paste at that position.
     if (clipboard.types.includes("text/html")) {
       insertHtmlClipboardInLetter(draft, clipboard);
     } else if (clipboard.types.includes("text/plain")) {
