@@ -43,7 +43,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.15",
     "@navikt/aksel-stylelint": "8.11.0",
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "1.60.0",
     "@tanstack/react-query-devtools": "5.100.14",
     "@tanstack/react-router-devtools": "1.167.0",
     "@tanstack/router-vite-plugin": "1.167.11",
@@ -68,6 +68,9 @@
   "overrides": {
     "openapi-typescript": {
       "typescript": "$typescript"
+    },
+    "@redocly/openapi-core": {
+      "js-yaml": "^4.2.0"
     }
   }
 }
