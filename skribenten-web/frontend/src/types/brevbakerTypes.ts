@@ -61,19 +61,6 @@ export type Header = generated.EditParagraphContentTableHeader;
 export type ColumnSpec = generated.EditParagraphContentTableColumnSpec;
 export type ColumnAlignment = generated.EditParagraphContentTableColumnAlignment;
 
-// Edit-modell for et redigerbart vedlegg (Edit.Attachment i skribenten-backend).
-export interface EditAttachment {
-  readonly title: Title;
-  readonly blocks: AnyBlock[];
-  readonly deletedBlocks: number[];
-  readonly includeSakspart: boolean;
-}
-
-export interface RedigerbartVedleggInfo {
-  readonly vedleggId: string;
-  readonly tittel: string;
-}
-
 export interface PropertyUsage {
   readonly typeName: string;
   readonly propertyName: string;

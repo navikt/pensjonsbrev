@@ -19,15 +19,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Fragment, useState } from "react";
 import { Controller, type UseFormReturn, useForm } from "react-hook-form";
 
-import { getBrev, getRedigerbareVedlegg } from "~/api/brev-queries";
+import { getBrev } from "~/api/brev-queries";
 import { getBrevVedlegg, hentPdfForBrev, oppdaterVedlegg } from "~/api/sak-api-endpoints";
 import { P1EditModal } from "~/components/P1/P1EditModal";
 import { type SpraakKode } from "~/types/apiTypes";
 import { type AlltidValgbartVedlegg, type BrevInfo, P1_BREVKODE } from "~/types/brev";
 import { LANGUAGE_CODE_TO_TEXT, SPRAAK_ENUM_TO_TEXT, SPRAAKKODE_TO_LANGUAGE_CODE } from "~/types/nameMappings";
 import { getErrorMessage } from "~/utils/errorUtils";
-
-import { RedigertVedleggEditModal } from "./RedigertVedleggEditModal";
 
 type VedleggFormData = {
   valgteVedlegg: AlltidValgbartVedlegg[];
@@ -37,19 +35,12 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isP1ModalOpen, setIsP1ModalOpen] = useState(false);
-  const [openRedigerbartVedleggId, setOpenRedigerbartVedleggId] = useState<string | null>(null);
 
   const isP1Brev = props.brev.brevkode === P1_BREVKODE;
 
   const { data: brevData } = useQuery({
     queryKey: getBrev.queryKey(props.brev.id),
     queryFn: () => getBrev.queryFn(props.saksId, props.brev.id, false),
-  });
-
-  // Back-end forteller hvilke redigerbare vedlegg som er inkludert i dette brevet.
-  const { data: redigerbareVedlegg = [] } = useQuery({
-    queryKey: getRedigerbareVedlegg.queryKey(props.brev.id),
-    queryFn: () => getRedigerbareVedlegg.queryFn(props.saksId, props.brev.id),
   });
 
   const savedVedlegg: AlltidValgbartVedlegg[] = brevData?.valgteVedlegg ?? [];
@@ -110,7 +101,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
     leggTilVedleggMutation.mutate(data.valgteVedlegg);
   });
 
-  const hasVedleggToShow = isP1Brev || redigerbareVedlegg.length > 0 || savedVedlegg.length > 0;
+  const hasVedleggToShow = isP1Brev || savedVedlegg.length > 0;
   const hasVedleggToAdd = vedleggKoder && vedleggKoder.length > 0;
 
   if (props.erLaast && brevData && !hasVedleggToShow) {
@@ -192,24 +183,6 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
           )}
         </HStack>
       )}
-      {/* Redigerbare vedlegg (opt-in) – back-end forteller hvilke som er inkludert */}
-      {redigerbareVedlegg.map((vedlegg) => (
-        <HStack align="center" justify="space-between" key={vedlegg.vedleggId}>
-          <BodyShort size="small">{vedlegg.tittel}</BodyShort>
-          {!props.erLaast && (
-            <Box asChild borderRadius="4">
-              <Button
-                data-testid={`redigerbart-vedlegg-edit-button-${vedlegg.vedleggId}`}
-                icon={<PencilIcon />}
-                onClick={() => setOpenRedigerbartVedleggId(vedlegg.vedleggId)}
-                size="xsmall"
-                type="button"
-                variant="tertiary"
-              />
-            </Box>
-          )}
-        </HStack>
-      ))}
       {/* Other saved vedlegg */}
       {savedVedlegg.length > 0 && (
         <VStack gap="space-4">
@@ -236,16 +209,6 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
           onClose={() => setIsP1ModalOpen(false)}
           open={isP1ModalOpen}
           saksId={props.saksId}
-        />
-      )}
-      {/* Redigerbart vedlegg modal */}
-      {openRedigerbartVedleggId !== null && (
-        <RedigertVedleggEditModal
-          brev={props.brev}
-          onClose={() => setOpenRedigerbartVedleggId(null)}
-          open={openRedigerbartVedleggId !== null}
-          saksId={props.saksId}
-          vedleggId={openRedigerbartVedleggId}
         />
       )}
       {/* Add vedlegg modal */}
