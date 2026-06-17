@@ -5,6 +5,8 @@ import io.ktor.server.plugins.*
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import no.nav.pensjon.brev.skribenten.Features
+import no.nav.pensjon.brev.skribenten.Features.foersteside
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.*
@@ -12,8 +14,10 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.PDFMerger
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.toDto
+import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
@@ -181,6 +185,23 @@ fun Route.sakBrev(
                     val brevId = call.parameters.brevId()
 
                     val result = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brevId))
+
+                    if (Features.isEnabled(foersteside)) {
+                        result?.onSuccess { original ->
+                            val sak: Fagsak = call.attributes[SakKey]
+                            val resultat = brevredigeringFacade.opprettFoersteside(FoerstesideHandler.Request(brevId = brevId, pid = sak.pid, sakstype = Sakstype(sak.sakType.kode))) // TODO fjern sakstypetriksing her
+                            resultat?.onSuccess { foersteside ->
+                                val pdf = PDFMerger.merge(original.document.pdf, foersteside.foersteside)
+                                val returobjekt = original.copy(
+                                    document = original.document.copy(pdf = pdf)
+                                )
+                                call.respond(HttpStatusCode.OK, dto2ApiService.toApi(returobjekt))
+                                return@get
+                            }
+
+                        }
+                    }
+
                     apiRespond(dto2ApiService, result)
                 }
 
@@ -189,6 +210,15 @@ fun Route.sakBrev(
 
                     val resultat = brevredigeringFacade.sendBrev(SendBrevHandler.Request(brevId = brevId))
                     apiRespond(dto2ApiService, resultat)
+                }
+            }
+
+            route("/foersteside") {
+                post {
+                    val brevId = call.parameters.brevId()
+                    val sak: Fagsak = call.attributes[SakKey]
+                    val resultat = brevredigeringFacade.opprettFoersteside(FoerstesideHandler.Request(brevId = brevId, pid = sak.pid, sakstype = Sakstype(sak.sakType.kode))) // TODO kan sikkert fjerne sakstypetriksinga her når typegenereringa er inne
+                    call.respond(HttpStatusCode.Created) // TODO: bytt med apiRespond(dto2ApiService, resultat)
                 }
             }
 
