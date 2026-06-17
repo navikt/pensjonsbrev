@@ -18,11 +18,7 @@ class FagsakService(private val penClient: PenClient) {
                 sakType = sak.sakType,
                 pid = sak.pid,
                 behandlingsnumre = sak.behandlingsnumre,
-                tema = if (sak.sakType.kode == "UFO") {
-                    Tema("UFO")
-                } else {
-                    Tema("PEN")
-                }, // TODO: send med frå PEN
+                tema = sak.tema,
             )
         }
 
