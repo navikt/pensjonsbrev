@@ -19,9 +19,9 @@ class FagsakService(private val penClient: PenClient) {
                 pid = sak.pid,
                 behandlingsnumre = sak.behandlingsnumre,
                 tema = if (sak.sakType.kode == "UFO") {
-                    Tema.UFO
+                    Tema("UFO")
                 } else {
-                    Tema.PEN
+                    Tema("PEN")
                 }, // TODO: send med frå PEN
             )
         }
@@ -45,6 +45,5 @@ data class Fagsak(
     data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
 }
 
-enum class Tema {
-    PEN, UFO
-}
+@JvmInline
+value class Tema(val value: String)
