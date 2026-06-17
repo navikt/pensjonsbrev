@@ -53,7 +53,7 @@ const toggleList = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex,
         blockIndex: literalIndex.blockIndex,
         contentIndex: newContentIndex,
         itemIndex: itemIndexOffset + literalIndex.itemIndex,
-        itemContentIndex: (literalIndex as ItemContentIndex).itemContentIndex,
+        itemContentIndex: literalIndex.itemContentIndex,
         cursorPosition: draft.focus.cursorPosition,
       };
       mergeListWithAdjacentBlocks(draft, literalIndex.blockIndex, newContentIndex, listType);
