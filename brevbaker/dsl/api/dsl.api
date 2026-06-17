@@ -1303,9 +1303,6 @@ public final class no/nav/pensjon/brev/template/dsl/QuotationMarks$English : no/
 	public fun getStart ()Ljava/lang/String;
 }
 
-public abstract interface annotation class no/nav/pensjon/brev/template/dsl/RedigerbartVedlegg : java/lang/annotation/Annotation {
-}
-
 public final class no/nav/pensjon/brev/template/dsl/ShowElseScope {
 	public final fun getScope ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
 	public final fun orIfNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
@@ -1410,6 +1407,9 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public final fun outline (Lkotlin/jvm/functions/Function1;)V
 	public final fun title (Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface annotation class no/nav/pensjon/brev/template/dsl/TemplateRootScope$RedigerbartVedlegg : java/lang/annotation/Annotation {
 }
 
 public final class no/nav/pensjon/brev/template/dsl/TemplateTextKt {

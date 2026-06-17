@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.SimpleSelector
 import no.nav.pensjon.brev.template.VedleggId
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.RedigerbartVedlegg
+import no.nav.pensjon.brev.template.dsl.TemplateRootScope.RedigerbartVedlegg
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
