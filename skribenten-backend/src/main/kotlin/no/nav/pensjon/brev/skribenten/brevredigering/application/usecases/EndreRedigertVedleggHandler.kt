@@ -22,6 +22,7 @@ class EndreRedigertVedleggHandler(
         override val brevId: BrevId,
         val vedleggId: VedleggId,
         val redigertVedlegg: Edit.Attachment,
+        val frigiReservasjon: Boolean = false,
     ) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
@@ -30,11 +31,12 @@ class EndreRedigertVedleggHandler(
         val principal = PrincipalInContext.require()
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
 
-        // Om vedlegget faktisk endres, nullstiller vi dokumentet slik at det må rendres på nytt
         if (brev.settRedigertVedlegg(request.vedleggId, request.redigertVedlegg)) {
             brev.document = null
         }
-        brev.frigiReservasjon()
+        if (request.frigiReservasjon) {
+            brev.frigiReservasjon()
+        }
 
         return success(brev.toDto(brevreservasjonPolicy, null))
     }
