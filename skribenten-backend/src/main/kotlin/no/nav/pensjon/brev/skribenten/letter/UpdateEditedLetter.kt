@@ -176,7 +176,6 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
                 if (rendered is Edit.ParagraphContent.ItemList) {
                     edited.copy(
                         items = mergeList(edited, edited.items, rendered.items, edited.deletedItems, ::mergeItems, ::updateVariableValues, ::setMissing),
-                        editedListType = edited.editedListType,
                     )
                 } else {
                     throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
