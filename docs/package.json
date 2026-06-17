@@ -18,13 +18,13 @@
   },
   "overrides": {
     "@antora/content-aggregator": {
-      "js-yaml": ">=4.2.0"
+      "js-yaml": "^4.2.0"
     },
     "@antora/playbook-builder": {
-      "js-yaml": ">=4.2.0"
+      "js-yaml": "^4.2.0"
     },
     "@antora/ui-loader": {
-      "js-yaml": ">=4.2.0"
+      "js-yaml": "^4.2.0"
     },
     "glob": {
       "minimatch": "10.2.4"
