@@ -23,7 +23,7 @@ class GenererFoerstesideHandler(
     private val klient: FoerstesidegeneratorClient
 ) : BrevredigeringHandler<GenererFoerstesideHandler.Request, GenererFoerstesideResponse> {
 
-    data class Request(override val brevId: BrevId, val pid: BrevbakerType.Pid, val sakstype: Sakstype) : BrevredigeringRequest
+    data class Request(override val brevId: BrevId, val pid: BrevbakerType.Pid, val sakstype: Sakstype, val tema: Tema) : BrevredigeringRequest
 
     override fun requiresReservasjon(request: Request) = false
 
@@ -39,7 +39,7 @@ class GenererFoerstesideHandler(
                 brukerId = request.pid,
                 brukerType = Bruker.BrukerType.PERSON
             ),
-            tema = if (request.sakstype.kode == "UFO") { Tema.UFO } else { Tema.PEN }, // TODO: meh
+            tema = request.tema,
             behandlingstema = null,
             arkivtittel = tittel,
             vedleggsliste = listOf(), // TODO: må finne ut av kva vi sender her

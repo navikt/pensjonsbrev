@@ -35,6 +35,15 @@ data class Fagsak(
     val sakType: Sakstype,
     val pid: BrevbakerType.Pid,
     val behandlingsnumre: List<Behandlingsnummer>,
+    val tema: Tema = if (sakType.kode == "UFO") {
+        Tema.UFO
+    } else {
+        Tema.PEN
+    }, // TODO: send med frå PEN
 ) {
     data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
+}
+
+enum class Tema {
+    PEN, UFO
 }

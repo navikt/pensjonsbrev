@@ -17,6 +17,7 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brev.skribenten.fagsystem.Tema
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.EnhetId
@@ -109,10 +110,6 @@ class FoerstesidegeneratorClient(config: Config, authService: AuthService) {
         enum class BrukerType {
             PERSON, ORGANISASJON
         }
-    }
-
-    enum class Tema {
-        PEN, UFO
     }
 
     enum class Foerstesidetype {
