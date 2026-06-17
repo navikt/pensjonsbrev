@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmSaksbehandlingsti
 import org.junit.jupiter.api.Tag
 
 @Tag(TestTags.MANUAL_TEST)
-class KlageOrienteringOmSaksbehandlingstid {
+class KlageOrienteringOmSaksbehandlingstidTest {
 
     @Test
     fun testPdf() {

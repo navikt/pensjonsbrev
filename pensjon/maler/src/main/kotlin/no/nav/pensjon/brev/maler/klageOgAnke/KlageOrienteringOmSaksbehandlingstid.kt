@@ -6,8 +6,8 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.PesysDataSelectors.foedselsnummer
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.PesysDataSelectors.navAvsenderEnhet
 import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.PesysDataSelectors.navn
+import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.PesysDataSelectors.navnAvsenderEnhet
 import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.model.format
@@ -45,7 +45,7 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<KlageOrienterin
         title {
             text(
                 bokmal { +fritekst("ytelse") + " - orientering om saksbehandlingstid" },
-                english { +fritekst("ytelse") + " - indication of case prosessing time" }
+                english { +fritekst("ytelse") + " - indication of case processing time" }
             )
         }
 
@@ -57,12 +57,12 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<KlageOrienterin
             }
             paragraph {
                 text(bokmal { +"Klagemotpart: " }, english { +"Other party: " }, BOLD)
-                text(bokmal { +pesysData.navAvsenderEnhet }, english { +pesysData.navAvsenderEnhet })
+                text(bokmal { +pesysData.navnAvsenderEnhet }, english { +pesysData.navnAvsenderEnhet })
             }
             paragraph {
                 text(
-                    bokmal { +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over " + pesysData.navAvsenderEnhet + " vedtak av " + fritekst("vedtaksdato") + "." },
-                    english { +"On " + fritekst("mottaksdato for klagen") + " we received an appeal about " + pesysData.navAvsenderEnhet + " decision of " + fritekst("vedtaksdato") + "." }
+                    bokmal { +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over " + pesysData.navnAvsenderEnhet + " vedtak av " + fritekst("vedtaksdato") + "." },
+                    english { +"On " + fritekst("mottaksdato for klagen") + " we received an appeal about " + pesysData.navnAvsenderEnhet + " decision of " + fritekst("vedtaksdato") + "." }
                 )
             }
             title1 { text(bokmal { +"Behandlingstid" }, english { +"Processing time" }) }

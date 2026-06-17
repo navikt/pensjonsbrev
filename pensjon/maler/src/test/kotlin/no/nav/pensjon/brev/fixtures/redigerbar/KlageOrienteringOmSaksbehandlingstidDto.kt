@@ -10,6 +10,6 @@ fun createKlageOrienteringOmSaksbehandlingstidDto() =
         pesysData = KlageOrienteringOmSaksbehandlingstidDto.PesysData(
             foedselsnummer = Foedselsnummer("01010112345"),
             navn = "Per Pensjon",
-            navAvsenderEnhet = "NAV Oslo"
+            navnAvsenderEnhet = "NAV Oslo"
         )
     )
