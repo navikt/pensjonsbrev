@@ -29,6 +29,7 @@ jobs:
               'mussie009',
               'stainawarjar',
               'sanderhaNav',
+              'dependabot',
             ].map(user => user.toLowerCase());
             const author = context.payload.pull_request.user.login.toLowerCase();
             if (teamMembers.includes(author)) {
