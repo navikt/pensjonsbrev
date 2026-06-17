@@ -149,12 +149,10 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
             paragraph {
                 text(
                     bokmal {
-                        +"Hvis du mener at det er andre forhold ved vedtaket som ikke er riktig, har du " +
-                            "anledning til å klage på vedtaket. Fristen for å klage er seks uker fra vedtaket har kommet fram til deg."
+                        +"Hvis du mener at det er andre forhold ved vedtaket som ikke er riktig, kan du klage på vedtaket. Fristen for å klage er seks uker fra vedtaket har kommet fram til deg. Du finner skjema og informasjon på ${KLAGE_URL}."
                     },
                     nynorsk {
-                        +"Dersom du meiner at det er andre forhold ved vedtaket som ikkje er rette, har du " +
-                            "høve til å klage på vedtaket. Fristen for å klage er seks veker frå vedtaket har komme fram til deg."
+                        +"Om du meiner at det er andre forhold ved vedtaket som ikkje er rette, kan du klage på vedtaket. Fristen for å klage er seks veker frå vedtaket har komme fram til deg. Du finn skjema og informasjon på ${KLAGE_URL}."
                     },
                 )
             }

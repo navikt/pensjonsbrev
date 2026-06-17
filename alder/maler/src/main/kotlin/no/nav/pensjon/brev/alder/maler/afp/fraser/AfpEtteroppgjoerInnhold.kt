@@ -381,7 +381,7 @@ object AfpEtteroppgjoerInnhold {
                             bokmal {
                                 +"feriepenger etter særskilt sats for pensjonistavlønning fra arbeid med fordrevne fra Ukraina. Dette gjelder bare feriepenger fra arbeid til og med 31. desember 2024."
                             },
-                            nynorsk { //TODO: skal det være "inntekt som skriv seg frå arbeid i samband med fordrivne frå Ukraina"?
+                            nynorsk {
                                 +"feriepengar etter særskilt sats for pensjonistlønn frå arbeid med fordrivne frå Ukraina. Dette gjeld berre feriepengar frå arbeid til og med 31. desember 2024."
                             },
                         )

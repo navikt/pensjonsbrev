@@ -248,11 +248,6 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
             includePhrase(AfpTilbakekrevingBody.SkatteoppgjorParagraph(pesysData.oppgjoersAar))
             includePhrase(AfpTilbakekrevingBody.TilbakebetalingSection)
 
-            // Avslutning — Dine plikter / klage / innsyn / Har du spørsmål.
-            // Klage- og spørsmålsseksjonene gjenbruker fellesfrasene fra
-            // [AfpEtteroppgjoerAvslutning]. Mindre ordlydsavvik fra
-            // Exstream-originalen ("6 uker" → "seks uker" i bokmål/nynorsk,
-            // og manglende komma etter "nav.no") harmoniseres mot fellesfrasen.
             includePhrase(AfpEtteroppgjoerAvslutning.DinePlikter)
             includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageSeksUker)
             paragraph {

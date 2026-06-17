@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
+import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning.DinePlikter
-import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageSeksUker
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning.DuHarRettTilInnsyn
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
@@ -164,9 +164,8 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvik : RedigerbarTemplate<VedtakA
                 includePhrase(AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon)
             }
 
-            // TODO: hør om lenken til klage skal være med, om ikke kan vi endre de fire under til frase: AfpEtteroppgjoerAvslutning
             includePhrase(DinePlikter)
-            includePhrase(DuHarRettTilAaKlageSeksUker)
+            includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageSeksUkerMedLenke)
             includePhrase(DuHarRettTilInnsyn)
             includePhrase(HarDuSpoersmaal.afpEtteroppgjoer)
         }
