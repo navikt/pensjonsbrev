@@ -50,7 +50,7 @@ Every element implements `Identifiable = { id: number | null; parentId: number |
 | `Item` | `deletedContent` |
 | `Table` | `deletedRows` |
 
-These hold **integer IDs only** (never `null`). The backend uses them to suppress re-introduction of deleted template elements after re-merge.
+These `deleted*`-arrays hold **integer IDs only** (no point in adding IDs that are `null`). The backend uses these IDs to suppress re-introduction of deleted template elements after re-merge.
 
 - **Removing**: use `removeElements(index, count, parent)` — it handles all guards. If manual, push `element.id` only when `element.id !== null` and `element.parentId === parent.id` and the id is not already tracked.
 - **Re-adding**: use `addElements(elements, at, content, deletedContent)` — it removes the id from `deleted*` automatically.
