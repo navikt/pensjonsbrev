@@ -67,7 +67,9 @@
   },
   "overrides": {
     "openapi-typescript": {
-      "typescript": "$typescript",
+      "typescript": "$typescript"
+    },
+    "@redocly/openapi-core": {
       "js-yaml": "^4.2.0"
     }
   }
