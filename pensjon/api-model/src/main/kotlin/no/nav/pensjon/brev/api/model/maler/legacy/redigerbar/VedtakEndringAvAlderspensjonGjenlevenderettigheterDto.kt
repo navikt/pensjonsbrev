@@ -31,7 +31,7 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         val okningBelop: Boolean?,
         @DisplayText("Hvis ingen endring av pensjon")
         val ingenEndringBelop: Boolean?,
-        @DisplayText("Hvis økt tilleggspensjon, men fortsatt minstepensjonist")
+        @DisplayText("Hvis økt tilleggspensjon, men ingen endring i total alderspensjon")
         val oktTilleggMpn: Boolean?,
     ) : SaksbehandlerValgBrevdata
 
