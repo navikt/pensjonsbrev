@@ -111,7 +111,11 @@ object Fixtures : LetterDataFactory {
             VedtakOmFjerningAvOmsorgsopptjeningDto::class -> createVedtakOmFjerningAvOmsorgsopptjeningDto() as T
             VedtakOmInnvilgelseAvOmsorgspoengDto::class -> createVedtakOmInnvilgelseAvOmsorgspoengDto() as T
             InnvilgelseUfoeretrygdDto::class -> createInnvilgelseUfoeretrygdDto() as T
+            InnvilgelseUforetrygdBosattNorgeEtterUtlandDto::class -> createInnvilgelseUforetrygdBosattNorgeEtterUtlandDto() as T
+            InnvilgelseUforetrygdMedEndringDto::class -> createInnvilgelseUforetrygdMedEndringDto() as T
+            OkningUforegradDto::class -> createOkningUforegradDto() as T
             InnvilgelseUfoeretrygdUtlandDto::class -> createInnvilgelseUfoeretrygdUtlandDto() as T
+            InnvilgelseUfoeretrygdMellombehandlingDto::class -> createInnvilgelseUforetrygdMellombehandlingDto() as T
             EndringUfoeretrygdDto::class -> createEndringUfoeretrygdDto() as T
             EndringUfoeretrygdFlyttingUtlandDto::class -> createEndringUfoeretrygdFlyttingUtlandDto() as T
             OmregningUfoerepensjonTilUfoeretrygdDto::class -> createOmregningUfoerepensjonTilUfoeretrygdDto() as T

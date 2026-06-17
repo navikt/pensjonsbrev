@@ -3,11 +3,11 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.dineRettigheterOgPlikterUfore
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUforetrygdBosattNorgeEtterUtlandDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUforetrygdBosattNorgeEtterUtlandDtoSelectors.PesysDataSelectors.dineRettigheterOgPlikterUfore
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUforetrygdBosattNorgeEtterUtlandDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUforetrygdBosattNorgeEtterUtlandDtoSelectors.PesysDataSelectors.pe
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUforetrygdBosattNorgeEtterUtlandDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -31,7 +31,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object InnvilgelseUforetrygdBosattNorgeEtterUtland : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
+object InnvilgelseUforetrygdBosattNorgeEtterUtland : RedigerbarTemplate<InnvilgelseUforetrygdBosattNorgeEtterUtlandDto> {
 
     override val featureToggle = FeatureToggles.brevmalUtBosattNorgeEtterUtland.toggle
 
