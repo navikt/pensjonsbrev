@@ -36,7 +36,7 @@ object VedtakOmEndringBarnetilleggEPSAuto : AutobrevTemplate<VedtakOmEndringBarn
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - endring barnetillegg EPS ved regelendringer 1. juli 2026",
+            displayTitle = "Vedtak - endring barnetillegg berørt sak ved regelendringer 1. juli 2026",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
