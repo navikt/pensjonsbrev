@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
+import no.nav.brev.BrevLandmodell
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
@@ -39,11 +40,13 @@ data class InnvilgelseAvAlderspensjonDto(
         val avdodFnr: Foedselsnummer?, // v1.Avdod
         val avdodNavn: String?, // v1.Avdod
         val avtalelandNavn: String?, // v1.Avdod
+        val avtalelandKode: BrevLandmodell.Landkode?, // v1.Avdod
         val borIAvtaleland: Boolean, // v3.Person
         val borINorge: Boolean, // v3.Person
         val erEOSLand: Boolean, // v1.Land
         val erForstegangsbehandletNorgeUtland: Boolean, // v3.Krav
         val faktiskBostedsland: String?, // v3.Person
+        val faktiskBostedslandKode: BrevLandmodell.Landkode?,
         val fullTrygdtid: Boolean, // v4.AlderspensjonPerManed
         val gjenlevendetilleggKap19: Kroner?, // v4.AlderspensjonPerManed
         val inngangOgEksportVurdering: InngangOgEksportVurdering,
@@ -56,7 +59,7 @@ data class InnvilgelseAvAlderspensjonDto(
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
         val opplysningerBruktIBeregningenAlderspensjon: OpplysningerBruktIBeregningenAlderDto?,
         val opplysningerBruktIBeregningenAlderspensjonAP2025: OpplysningerBruktIBeregningenAlderAP2025Dto?,
-        val opplysningerOmAvdodBruktIBeregning: OpplysningerOmAvdoedBruktIBeregningDto?
+        val opplysningerOmAvdodBruktIBeregning: OpplysningerOmAvdoedBruktIBeregningDto?,
     ) : FagsystemBrevdata
    // v5.Alderspensjon / v1.AlderspensjonKap20
     data class AlderspensjonVedVirk(
