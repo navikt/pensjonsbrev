@@ -90,8 +90,8 @@ class OperationsTest {
     }
 
     @Nested
-    @DisplayName("Landnavn formatering")
-    inner class LandnavnFormattering {
+    @DisplayName("Landnavn-formatering")
+    inner class LandnavnFormatering {
 
         @Test
         fun `Landnavn returnerer riktig namn på bokmål`() {
