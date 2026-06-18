@@ -175,7 +175,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     private fun renderRows(context: RenderContext, rows: List<TableRowElement<*>>): List<ParagraphContent.Table.Row> =
         buildList {
             render(context, rows) { rowContext, row ->
-                add(ParagraphContentImpl.TableImpl.RowImpl(context.stableHash(row), row.cells.map { renderCell(rowContext, it) }))
+                add(ParagraphContentImpl.TableImpl.RowImpl(rowContext.stableHash(row), row.cells.map { renderCell(rowContext, it) }))
             }
         }
 
@@ -185,7 +185,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     private fun renderItemList(context: RenderContext, itemList: Element.OutlineContent.ParagraphContent.ItemList<*>): ParagraphContent.ItemList? =
         buildList {
             render(context, itemList.items) { itemContext, item ->
-                add(ParagraphContentImpl.ItemListImpl.ItemImpl(context.stableHash(item), renderText(itemContext, item.text)))
+                add(ParagraphContentImpl.ItemListImpl.ItemImpl(itemContext.stableHash(item), renderText(itemContext, item.text)))
             }
         }.takeIf { it.isNotEmpty() }?.let { items ->
             ParagraphContentImpl.ItemListImpl(context.stableHash(itemList), items, listType = itemList.type)
