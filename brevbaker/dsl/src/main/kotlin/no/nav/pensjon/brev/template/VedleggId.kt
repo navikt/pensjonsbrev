@@ -5,4 +5,8 @@ package no.nav.pensjon.brev.template
  * Brukes til å koble en saksbehandlers overstyring til riktig vedlegg.
  */
 @JvmInline
-value class VedleggId(val id: String)
+value class VedleggId(val id: String) {
+    init {
+        require(id.isNotBlank()) { "VedleggId kan ikke være blank" }
+    }
+}
