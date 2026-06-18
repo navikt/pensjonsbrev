@@ -175,27 +175,18 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
                     )
                 }
             }.orShow {
-                showIf(data.nettoBarnetilleggFB.equalTo(Kroner(0))) {
-                    paragraph {
-                        text(
-                            bokmal { +"Regelverksendringene fører til at barnetillegg for fellesbarn ikke blir utbetalt fordi den samlede inntekten til deg og barnets andre forelder er høyere enn " + data.samletInntektsgrenseBarnetillegg.format() + ", som er grensen for å få utbetalt barnetillegg. Får dere lavere inntekt i fremtiden, kan du få utbetalt barnetillegg igjen. " },
-                            nynorsk { +"Regelverksendringane fører til at barnetillegg for fellesbarn ikkje blir utbetalt fordi den samla inntekta til deg og barnets andre forelder er høgare enn " + data.samletInntektsgrenseBarnetillegg.format() + ", som er grensa for å få utbetalt barnetillegg. Får dere lågare inntekt i framtida, kan du få utbetalt barnetillegg igjen. " },
-                        )
-                    }
-                }.orShow {
-                    paragraph {
-                        text(
-                            bokmal { +"Regelverksendringene fører til at barnetillegg for fellesbarn blir redusert til " + data.nettoBarnetilleggFB.format() + " per måned, fordi den samlede inntekten til deg og barnets andre forelder er høyere enn fribeløpet på " + data.fribelop.format() + ". " },
-                            nynorsk { +"Regelverksendringane fører til at barnetillegg for fellesbarn blir redusert til " + data.nettoBarnetilleggFB.format() + " per månad, fordi den samla inntekta til deg og barnets andre forelder er høgare enn fribeløpet på " + data.fribelop.format() + ". " },
-                        )
-                    }
+                paragraph {
+                    text(
+                        bokmal { +"Regelverksendringene fører til at beregnet barnetillegg for fellesbarn i én eller flere perioder blir endret, fordi den samlede inntekten til deg og barnets andre forelder er høyere enn fribeløpet på " + data.fribelop.format() + ". " },
+                        nynorsk { +"Regelverksendringane fører til at berekna barnetillegg for fellesbarn i éin eller flere periodar blir endra, fordi den samla inntekta til deg og barnets andre forelder er høgare enn fribeløpet på " + data.fribelop.format() + ". " },
+                    )
+                }
 
-                    paragraph {
-                        text(
-                            bokmal { +"Ny beregning av barnetillegg fra 1. juli (før skatt) er " + data.nettoBarnetilleggFB.format() + ". " },
-                            nynorsk { +"Ny berekning av barnetillegg frå 1. juli (før skatt) er " + data.nettoBarnetilleggFB.format() + ". " },
-                        )
-                    }
+                paragraph {
+                    text(
+                        bokmal { +"Ny beregning av barnetillegg fra 1. juli (før skatt) er " + data.nettoBarnetilleggFB.format() + ". " },
+                        nynorsk { +"Ny berekning av barnetillegg frå 1. juli (før skatt) er " + data.nettoBarnetilleggFB.format() + ". " },
+                    )
                 }
 
                 paragraph {
