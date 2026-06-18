@@ -48,7 +48,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterWithAttachmentsMarkup =
         LetterWithAttachmentsMarkup(
             letterMarkup = renderLetterOnly(RenderContext(scope), template),
-            attachments = renderAttachmentsOnly(RenderContext(scope), template)
+            attachments = renderAttachmentsOnly(scope, template)
         )
 
     fun renderLetterOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterMarkup =
@@ -75,15 +75,18 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             }
         )
 
-    fun renderAttachmentsOnly(context: RenderContext, template: LetterTemplate<*, *>,         redigerteVedlegg: Map<VedleggId, Attachment> = emptyMap(),
+    fun renderAttachmentsOnly(
+        scope: ExpressionScope<*>,
+        template: LetterTemplate<*, *>,
+        redigerteVedlegg: Map<VedleggId, Attachment> = emptyMap(),
     ): List<Attachment> = buildList {
-        render(context, template.attachments) { attachmentContext, editableId, attachment ->
+        render(RenderContext(scope), template.attachments) { attachmentContext, editableId, attachment ->
             val override = editableId?.let { redigerteVedlegg[it] }
             add(
                 if (override != null) {
                     AttachmentImpl(override.title, override.blocks, override.includeSakspart)
                 } else {
-                    renderAttachment(attachmentScope, attachment)
+                    renderAttachment(attachmentContext, attachment)
                 }
             )
         }
@@ -93,9 +96,9 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         scope: ExpressionScope<*>,
         template: LetterTemplate<*, *>,
     ): Map<VedleggId, List<Text>> = buildMap {
-        render(scope, template.attachments) { attachmentScope, editableId, attachment ->
+        render(RenderContext(scope), template.attachments) { attachmentContext, editableId, attachment ->
             if (editableId != null) {
-                put(editableId, renderText(attachmentScope, attachment.title))
+                put(editableId, renderText(attachmentContext, attachment.title))
             }
         }
     }
@@ -105,15 +108,15 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         template: LetterTemplate<*, *>,
         vedleggId: VedleggId,
     ): Attachment? {
-        render(scope, template.attachments) { attachmentScope, editableId, attachment ->
+        render(RenderContext(scope), template.attachments) { attachmentContext, editableId, attachment ->
             if (editableId == vedleggId) {
-                return renderAttachment(attachmentScope, attachment)
+                return renderAttachment(attachmentContext, attachment)
             }
         }
         return null
     }
 
-    private fun renderAttachment(scope: ExpressionScope<*>, attachment: AttachmentTemplate<*, *>): Attachment =
+    private fun renderAttachment(attachmentContext: RenderContext, attachment: AttachmentTemplate<*, *>): Attachment =
         AttachmentImpl(
             renderText(attachmentContext, attachment.title),
             renderOutline(attachmentContext, attachment.outline),
