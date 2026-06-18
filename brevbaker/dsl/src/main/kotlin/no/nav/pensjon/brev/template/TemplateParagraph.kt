@@ -28,6 +28,7 @@ class ParagraphOnlyScope<Lang : LanguageSupport, LetterData : Any> internal cons
         _elements.add(e as TextElement<Lang>)
     }
 
+    @BrevbakerDSLInternal
     override fun addTextContent(e: TextElement<Lang>) {
         _elements.add(e)
     }
