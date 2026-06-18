@@ -178,7 +178,7 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosent {
                 paragraph {
                     text(
                         bokmal { +"Regelverksendringene fører til at beregnet barnetillegg for fellesbarn i én eller flere perioder blir endret, fordi den samlede inntekten til deg og barnets andre forelder er høyere enn fribeløpet på " + data.fribelop.format() + ". " },
-                        nynorsk { +"Regelverksendringane fører til at berekna barnetillegg for fellesbarn i éin eller flere periodar blir endra, fordi den samla inntekta til deg og barnets andre forelder er høgare enn fribeløpet på " + data.fribelop.format() + ". " },
+                        nynorsk { +"Regelverksendringane fører til at berekna barnetillegg for fellesbarn i éin eller fleire periodar blir endra, fordi den samla inntekta til deg og barnets andre forelder er høgare enn fribeløpet på " + data.fribelop.format() + ". " },
                     )
                 }
 
