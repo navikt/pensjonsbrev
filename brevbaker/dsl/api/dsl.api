@@ -1543,6 +1543,7 @@ public final class no/nav/pensjon/brev/template/dsl/expression/EqualsKt {
 
 public final class no/nav/pensjon/brev/template/dsl/expression/LandKt {
 	public static final fun format (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun formatNullable (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/expression/LegacyKt {
