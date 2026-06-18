@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
@@ -370,7 +371,7 @@ object OktMinsteIFUReduksjonsprosent {
                 }
             }
 
-            showIf(data.harBelopsendring) {
+            showIf(data.etterbetalingJuli.greaterThan(0)) {
                 title2 {
                     text(
                         bokmal { +"For deg betyr dette" },
@@ -410,7 +411,7 @@ object OktMinsteIFUReduksjonsprosent {
                         nynorsk { +"Har du gjeld som Skatteetaten krev inn, kan pengane frå etterbetalinga gå til å dekke gjelda. Eksempel på gjeld kan vere bidrags- eller feilutbetalingsgjeld hos Nav og refusjonskrav hos tenestepensjonsordning." },
                     )
                 }
-            }.orShow {
+            }.orShowIf(data.etterbetalingJuli.equalTo(0)) {
                 title2 {
                     text(
                         bokmal { +"For deg betyr dette" },
