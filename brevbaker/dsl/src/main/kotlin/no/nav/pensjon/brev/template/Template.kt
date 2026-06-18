@@ -7,12 +7,16 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.dsl.LiteralOrExpressionBuilder.LiteralOrExpression
 import no.nav.pensjon.brev.template.dsl.TextContentCreator.createTextContent
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.validation.BrevTemplateValidator
+import no.nav.pensjon.brev.template.validation.EmptyValidator
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 
 @LetterTemplateMarker
-class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor() : TemplateGlobalScope<LetterData> {
+class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
+    private val validator: BrevTemplateValidator = EmptyValidator,
+) : TemplateGlobalScope<LetterData> {
     private val _title: MutableList<TextElement<Lang>> = mutableListOf()
     internal val title: List<TextElement<Lang>> get() = _title
     private val _outline: MutableList<OutlineElement<Lang>> = mutableListOf()
@@ -27,7 +31,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     }
 
     fun outline(init: OutlineOnlyScope<Lang, LetterData>.() -> Unit) {
-        _outline.addAll(OutlineOnlyScope<Lang, LetterData>().apply(init).elements)
+        _outline.addAll(OutlineOnlyScope<Lang, LetterData>(validator.subScope()).apply(init).elements)
     }
 
     fun <AttachmentData : VedleggData> includeAttachment(
