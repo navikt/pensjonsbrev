@@ -41,28 +41,24 @@ java {
     targetCompatibility = JavaVersion.toVersion(apiModelJavaTarget)
 }
 
+val brevbakerInternAnnoteringer = listOf(
+    "no.nav.brev.InternKonstruktoer",
+    "no.nav.brev.InterneDataklasser",
+    "no.nav.pensjon.brev.template.BrevbakerDSLInternal",
+)
+
 tasks {
     test {
         useJUnitPlatform()
     }
     compileKotlin {
-        compilerOptions.optIn.addAll(
-            "no.nav.brev.InternKonstruktoer",
-            "no.nav.brev.InterneDataklasser",
-            "no.nav.pensjon.brev.template.BrevbakerDSLInternal"
-        )
+        compilerOptions.optIn.addAll(brevbakerInternAnnoteringer)
     }
     compileTestKotlin {
-        compilerOptions.optIn.addAll(
-            "no.nav.brev.InternKonstruktoer",
-            "no.nav.brev.InterneDataklasser",
-            "no.nav.pensjon.brev.template.BrevbakerDSLInternal"
-        )
+        compilerOptions.optIn.addAll(brevbakerInternAnnoteringer)
     }
 }
 
 apiValidation {
-    nonPublicMarkers.add("no.nav.brev.InterneDataklasser")
-    nonPublicMarkers.add("no.nav.brev.InternKonstruktoer")
-    nonPublicMarkers.add("no.nav.pensjon.brev.template.BrevbakerDSLInternal")
+    nonPublicMarkers.addAll(brevbakerInternAnnoteringer)
 }
