@@ -12,7 +12,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.IntValue
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
-import java.util.*
+import java.util.Objects
 import kotlin.reflect.KClass
 
 class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal constructor(

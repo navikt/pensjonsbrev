@@ -11,7 +11,9 @@ abstract class TemplateValidationException(msg: String) : Exception(msg) {
                 stackTrace = internalFrames.toTypedArray()
             })
         }
-        stackTrace = allFrames.drop(internalFrames.size).toTypedArray()
+        if (internalFrames.size < allFrames.size) {
+            stackTrace = allFrames.drop(internalFrames.size).toTypedArray()
+        }
     }
 }
 class MissingScopeForNextItemEvaluationException(msg: String) : TemplateValidationException(msg)
