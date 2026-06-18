@@ -37,11 +37,7 @@ object BrevLandmodell {
         val alleLandkoder: Set<String> = Locale.getISOCountries(Locale.IsoCountryCode.PART1_ALPHA2)
 
         fun formaterLandnavn(landkode: Landkode, spraak: LanguageCode): String =
-            when (spraak) {
-                LanguageCode.BOKMAL -> Locale.of("NB", "NO")
-                LanguageCode.NYNORSK -> Locale.of("NN", "NO")
-                LanguageCode.ENGLISH -> Locale.ENGLISH
-            }.let { Locale.of("", landkode.landkode.uppercase()).getDisplayCountry(it) }
+            Locale.of("", landkode.landkode.uppercase()).getDisplayCountry(spraak.locale())
 
         internal fun isValidLandkode(landkode: String): Boolean =
             landkode.length == 2 && alleLandkoder.contains(landkode.uppercase())
