@@ -215,6 +215,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC -> FontType.ITALIC
         }
 
+    @OptIn(BrevbakerDSLInternal::class)
     private fun StringExpression.toContent(context: RenderContext, fontType: FontType): List<Text> =
         when (this) {
             is Expression.Literal -> lagLiteral(context, fontType)

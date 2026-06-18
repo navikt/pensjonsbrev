@@ -46,13 +46,23 @@ tasks {
         useJUnitPlatform()
     }
     compileKotlin {
-        compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
+        compilerOptions.optIn.addAll(
+            "no.nav.brev.InternKonstruktoer",
+            "no.nav.brev.InterneDataklasser",
+            "no.nav.pensjon.brev.template.BrevbakerDSLInternal"
+        )
     }
     compileTestKotlin {
-        compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
+        compilerOptions.optIn.addAll(
+            "no.nav.brev.InternKonstruktoer",
+            "no.nav.brev.InterneDataklasser",
+            "no.nav.pensjon.brev.template.BrevbakerDSLInternal"
+        )
     }
 }
 
 apiValidation {
     nonPublicMarkers.add("no.nav.brev.InterneDataklasser")
+    nonPublicMarkers.add("no.nav.brev.InternKonstruktoer")
+    nonPublicMarkers.add("no.nav.pensjon.brev.template.BrevbakerDSLInternal")
 }

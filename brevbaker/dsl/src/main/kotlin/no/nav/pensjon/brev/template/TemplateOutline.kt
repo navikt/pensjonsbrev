@@ -5,28 +5,23 @@ import no.nav.pensjon.brev.template.*
 
 @LetterTemplateMarker
 class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constructor(): OutlineScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent<Lang>, OutlineOnlyScope<Lang, LetterData>> {
-    private val children = mutableListOf<OutlineElement<Lang>>()
-    override val elements: List<OutlineElement<Lang>>
-        get() = children
+    private val _elements = mutableListOf<OutlineElement<Lang>>()
+    @BrevbakerDSLInternal override val elements: List<OutlineElement<Lang>> get() = _elements
+    @BrevbakerDSLInternal override fun scopeFactory(): OutlineOnlyScope<Lang, LetterData> = OutlineOnlyScope()
+    @BrevbakerDSLInternal override fun addControlStructure(e: OutlineElement<Lang>) = addOutlineContent(e)
 
-    override fun scopeFactory(): OutlineOnlyScope<Lang, LetterData> = OutlineOnlyScope()
-
-    override fun addControlStructure(e: OutlineElement<Lang>) {
-        children.add(e)
-    }
-
+    @BrevbakerDSLInternal
     override fun addOutlineContent(e: OutlineElement<Lang>) {
-        children.add(e)
+        _elements.add(e)
     }
 
     fun includePhrase(phrase: OutlinePhrase<out Lang>) {
         phrase.apply(this)
     }
-
 }
 
 sealed interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {
-    fun addOutlineContent(e: OutlineElement<Lang>)
+    @BrevbakerDSLInternal fun addOutlineContent(e: OutlineElement<Lang>)
 
     fun title1(create: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
         PlainTextOnlyScope<Lang, LetterData>().apply(create)
@@ -48,8 +43,6 @@ sealed interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {
             .let { ContentOrControlStructure.Content(it) }
             .also { addOutlineContent(it) }
     }
-
-
 
     fun paragraph(create: ParagraphOnlyScope<Lang, LetterData>.() -> Unit) {
         ParagraphOnlyScope<Lang, LetterData>().apply(create)

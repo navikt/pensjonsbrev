@@ -7,32 +7,33 @@ import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
 
 @LetterTemplateMarker
 class ParagraphOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constructor(): ParagraphScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent<Lang>, ParagraphOnlyScope<Lang, LetterData>> {
-    private val children = mutableListOf<ParagraphContentElement<Lang>>()
-    override val elements: List<ParagraphContentElement<Lang>>
-        get() = children
+    private val _elements = mutableListOf<ParagraphContentElement<Lang>>()
+    @BrevbakerDSLInternal override val elements: List<ParagraphContentElement<Lang>> get() = _elements
+    @BrevbakerDSLInternal override fun scopeFactory(): ParagraphOnlyScope<Lang, LetterData> = ParagraphOnlyScope()
 
-    override fun scopeFactory(): ParagraphOnlyScope<Lang, LetterData> = ParagraphOnlyScope()
-
+    @BrevbakerDSLInternal
     override fun addControlStructure(e: ParagraphContentElement<Lang>) {
-        children.add(e)
+        _elements.add(e)
     }
 
+    @BrevbakerDSLInternal
     override fun addParagraphContent(e: ParagraphContentElement<Lang>) {
-        children.add(e)
+        _elements.add(e)
     }
 
+    @BrevbakerDSLInternal
     override fun addTextContentBaseLanguages(e: TextElement<BaseLanguages>) {
         // Safe because we know that a template that support BaseLanguages will support Lang
         @Suppress("UNCHECKED_CAST")
-        children.add(e as TextElement<Lang>)
+        _elements.add(e as TextElement<Lang>)
     }
 
     override fun addTextContent(e: TextElement<Lang>) {
-        children.add(e)
+        _elements.add(e)
     }
 
     override fun newline() {
-        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.NewLine<Lang>(children.size)))
+        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.NewLine<Lang>(_elements.size)))
     }
 
     fun includePhrase(phrase: ParagraphPhrase<out Lang>) {
