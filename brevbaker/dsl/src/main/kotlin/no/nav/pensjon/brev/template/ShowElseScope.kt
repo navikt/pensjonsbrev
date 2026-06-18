@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.template.dsl.expression.notNull
 class ShowElseScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>, Scope : ControlStructureScope<Lang, LetterData, C, Scope>> internal constructor(
     private val scopeFactory: () -> Scope,
 ) {
-    val scope: Scope = scopeFactory()
+    internal val scope: Scope = scopeFactory()
 
     infix fun orShow(body: Scope.() -> Unit) {
         scope.apply(body)

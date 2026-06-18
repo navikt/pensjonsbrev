@@ -3,12 +3,12 @@ package no.nav.pensjon.brev.template.render.dsl
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.render.dsl.ForEachViewTestSelectors.ListArgumentSelectors.liste
-import no.nav.pensjon.brev.template.render.dsl.ForEachViewTestSelectors.ListArgumentSelectors.listeSelector
+import no.nav.pensjon.brev.template.render.dsl.ForEachStableHashTestSelectors.ListArgumentSelectors.liste
+import no.nav.pensjon.brev.template.render.dsl.ForEachStableHashTestSelectors.ListArgumentSelectors.listeSelector
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class ForEachViewTest {
+class ForEachStableHashTest {
 
     data class ListArgument(val liste: List<String>)
 

@@ -5,9 +5,9 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 
 sealed interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>, Scope : ControlStructureScope<Lang, LetterData, C, Scope>> : TemplateGlobalScope<LetterData> {
-    fun scopeFactory(): Scope
-    fun addControlStructure(e: ContentOrControlStructure<Lang, C>)
-    val elements: List<ContentOrControlStructure<Lang, C>>
+    @BrevbakerDSLInternal fun scopeFactory(): Scope
+    @BrevbakerDSLInternal fun addControlStructure(e: ContentOrControlStructure<Lang, C>)
+    @BrevbakerDSLInternal val elements: List<ContentOrControlStructure<Lang, C>>
 
     fun showIf(predicate: Expression<Boolean>, showIf: Scope.() -> Unit): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(::scopeFactory).also { elseScope ->
