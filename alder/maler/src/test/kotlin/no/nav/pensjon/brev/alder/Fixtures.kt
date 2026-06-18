@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndr
 import no.nav.pensjon.brev.alder.maler.afpprivat.createInnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.alder.maler.afpprivat.createInnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpOffentligSektorDto
-import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerDto
+import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerEtterbetalingAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto
@@ -70,7 +70,7 @@ import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAnd
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto
@@ -151,7 +151,7 @@ object Fixtures : LetterDataFactory {
             VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto::class -> createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto() as T
             InnvilgelseAvAfpDto::class -> createInnvilgelseAvAfpDto() as T
             InnvilgelseAvAfpOffentligSektorDto::class -> createInnvilgelseAvAfpOffentligSektorDto() as T
-            VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerDto::class -> createVedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerDto() as T
+            VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto::class -> createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto() as T
             VedtakAfpEtteroppgjoerEtterbetalingAutoDto::class -> createVedtakAfpEtteroppgjoerEtterbetalingAutoDto() as T
             VedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto::class -> createVedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto() as T
             VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto::class -> createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto() as T
