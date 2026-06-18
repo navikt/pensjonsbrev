@@ -28,16 +28,6 @@ allprojects {
             }
         }
     }
-    tasks.withType<KotlinJvmCompile>{
-        /*
-        Denne er for å unngå unødige advarsler om https://youtrack.jetbrains.com/issue/KT-73255
-        Vi bruker egentlig bare konstruktør-varianten, men vil egentlig helst holde oss til kotlin sin standardvariant
-        Så når dette er blitt standarden i kotlin - som det skal bli - så kan vi skru av denne
-         */
-        compilerOptions {
-            freeCompilerArgs = listOf("-Xannotation-default-target=param-property")
-        }
-    }
     tasks.withType<KtLintCheckTask> {
         if (System.getenv("CI")?.toBoolean() != true) {
             dependsOn("ktlintFormat")
