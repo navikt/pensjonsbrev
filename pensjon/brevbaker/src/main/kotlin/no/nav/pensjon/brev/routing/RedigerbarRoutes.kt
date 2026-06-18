@@ -26,16 +26,19 @@ fun Route.redigerbarRoutes(
             call.respond(markup)
         }
 
-        post<BestillBrevRequest<Brevkode.Redigerbart>>("/redigerbare-vedlegg/titler") { brevbestilling ->
-            val titler = redigerbareBrev.renderRedigerbartVedleggMarkupTitler(brevbestilling)
-            call.respond(titler)
-        }
+        route("/redigerbare-vedlegg") {
 
-        post<BestillBrevRequest<Brevkode.Redigerbart>>("/redigerbare-vedlegg/{vedleggId}") { brevbestilling ->
-            val vedleggId = call.parameters.getOrFail("vedleggId")
-            when (val vedlegg = redigerbareBrev.renderRedigerbartVedleggMarkup(brevbestilling, vedleggId)) {
-                null -> call.respond(HttpStatusCode.NotFound)
-                else -> call.respond(vedlegg)
+            post<BestillBrevRequest<Brevkode.Redigerbart>>("/titler") { brevbestilling ->
+                val titler = redigerbareBrev.renderRedigerbartVedleggMarkupTitler(brevbestilling)
+                call.respond(titler)
+            }
+
+            post<BestillBrevRequest<Brevkode.Redigerbart>>("/{vedleggId}") { brevbestilling ->
+                val vedleggId = call.parameters.getOrFail("vedleggId")
+                when (val vedlegg = redigerbareBrev.renderRedigerbartVedleggMarkup(brevbestilling, vedleggId)) {
+                    null -> call.respond(HttpStatusCode.NotFound)
+                    else -> call.respond(vedlegg)
+                }
             }
         }
 
