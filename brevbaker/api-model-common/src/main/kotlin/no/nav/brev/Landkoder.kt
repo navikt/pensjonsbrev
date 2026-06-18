@@ -42,7 +42,7 @@ object BrevLandmodell {
                 LanguageCode.BOKMAL -> Locale.of("NB", "NO")
                 LanguageCode.NYNORSK -> Locale.of("NN", "NO")
                 LanguageCode.ENGLISH -> Locale.ENGLISH
-            }.let { Locale.of("", landkode.landkode).getDisplayCountry(it) }
+            }.let { Locale.of("", landkode.landkode.uppercase()).getDisplayCountry(it) }
 
         private fun formaterLandnavn(string: String): String = Locale.of("", string).getDisplayCountry(Locale.of("NB", "NO"))
 
