@@ -64,7 +64,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvar : RedigerbarTemplate<VedtakA
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_ETTERBETALING_ETTER_SVAR
 
-    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.ETTEROPPGJOER
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.AFP)
 
@@ -73,7 +73,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvar : RedigerbarTemplate<VedtakA
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - AFP etteroppgjør med etterbetaling",
+            displayTitle = "Vedtak - AFP etteroppgjør med etterbetaling etter mottatt svar",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
@@ -244,11 +244,8 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvar : RedigerbarTemplate<VedtakA
             // til "mulige/moglege" (plural).
             includePhrase(AfpEtteroppgjoerInnhold.RefusjonskravForbehold)
 
-            // Avslutning — gjenbrukes fra fellesfrasene. Mindre ordlydsavvik
-            // mot Exstream-originalen ("6 uker" → "seks uker" i klage-frasen)
-            // harmoniseres mot fellesfrasen, samme valg som i 107.
             includePhrase(AfpEtteroppgjoerAvslutning.DinePlikter)
-            includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageSeksUker)
+            includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageSeksUkerMedLenke)
             includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilInnsyn)
             includePhrase(HarDuSpoersmaal.afpEtteroppgjoer)
         }
