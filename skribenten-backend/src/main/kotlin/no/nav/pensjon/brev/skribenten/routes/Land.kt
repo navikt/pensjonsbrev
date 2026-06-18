@@ -7,11 +7,8 @@ import no.nav.brev.BrevLandmodell.Land
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.brev.BrevLandmodell.Landkoder
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import java.util.Locale
 
-
-private val landkoderMedNavn = Landkoder.alleLandkoder.map { Land(Landkode(it), formaterLandnavn(it)) }
-private fun formaterLandnavn(string: String): String = Locale.of("", string).getDisplayCountry(LanguageCode.BOKMAL.locale())
+private val landkoderMedNavn = Landkoder.alleLandkoder.map { Landkode(it) }.map { Land(it, Landkoder.formaterLandnavn(it, LanguageCode.BOKMAL)) }
 
 fun Route.landRoute() {
     get("/land") {

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg.pdf
 
+import no.nav.brev.BrevLandmodell
 import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto
 import no.nav.pensjon.brev.model.SakstypeNavn
 import no.nav.pensjon.brev.template.LangBokmalEnglish
@@ -11,7 +12,6 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.*
 
 private const val RADER_PER_SIDE = 5
 object P1pdfV2Dto {
@@ -102,8 +102,8 @@ object P1pdfV2Dto {
     }
 
     fun String.formaterLandkode(languageCode: LanguageCode): String? =
-        // this her er egentlig Landkode, bare ikke modellert som det
-        Locale.of(this, this).getDisplayCountry(languageCode.locale())
+        // this her er egentlig Landkode (som string), bare ikke modellert som det
+        takeIf { it.isNotEmpty() }?.let { BrevLandmodell.Landkode(this).let { BrevLandmodell.Landkoder.formaterLandnavn(it, languageCode) } }
 
     fun formaterDato(dato: LocalDate?): Map<LanguageCode, String?> = mapOf(
         BOKMAL to dato?.formater(BOKMAL),
