@@ -45,11 +45,12 @@ class BestillRedigertBrevRequest<T : Brevkode<T>>(
                 && felles == other.felles
                 && language == other.language
                 && letterMarkup == other.letterMarkup
+                && alltidValgbareVedlegg == other.alltidValgbareVedlegg
     }
 
-    override fun hashCode() = Objects.hash(kode, letterData, felles, language, letterMarkup)
+    override fun hashCode() = Objects.hash(kode, letterData, felles, language, letterMarkup, alltidValgbareVedlegg)
 
-    override fun toString() = "BestillRedigertBrevRequest(kode=$kode, letterData=$letterData, felles=$felles, language=$language, letterMarkup=$letterMarkup)"
+    override fun toString() = "BestillRedigertBrevRequest(kode=$kode, letterData=$letterData, felles=$felles, language=$language, letterMarkup=$letterMarkup, alltidValgbareVedlegg=$alltidValgbareVedlegg)"
 }
 
 interface BrevRequest<T : Brevkode<T>>
