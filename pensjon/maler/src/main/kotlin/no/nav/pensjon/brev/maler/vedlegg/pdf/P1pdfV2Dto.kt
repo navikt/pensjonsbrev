@@ -102,15 +102,8 @@ object P1pdfV2Dto {
     }
 
     fun String.formaterLandkode(languageCode: LanguageCode): String? =
-        this.formaterLandkode()[languageCode]
-
-    fun String.formaterLandkode(): Map<LanguageCode, String?> {
-        val country = Locale.of(this, this)
-        return mapOf(
-            BOKMAL to country.getDisplayCountry(Language.Bokmal.locale()),
-            ENGLISH to country.getDisplayCountry(Language.English.locale())
-        )
-    }
+        // this her er egentlig Landkode, bare ikke modellert som det
+        Locale.of(this, this).getDisplayCountry(languageCode.locale())
 
     fun formaterDato(dato: LocalDate?): Map<LanguageCode, String?> = mapOf(
         BOKMAL to dato?.formater(BOKMAL),
