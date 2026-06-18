@@ -36,6 +36,7 @@ public final class no/nav/brev/BrevLandmodell$Landkode {
 
 public final class no/nav/brev/BrevLandmodell$Landkoder {
 	public static final field INSTANCE Lno/nav/brev/BrevLandmodell$Landkoder;
+	public final fun formaterLandnavn-nR1mrgk (Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)Ljava/lang/String;
 	public final fun getLandkoderMedNavn ()Ljava/util/List;
 }
 
