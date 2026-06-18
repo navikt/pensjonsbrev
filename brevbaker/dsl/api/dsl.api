@@ -1172,7 +1172,6 @@ public final class no/nav/pensjon/brev/template/dsl/OutlineScope$DefaultImpls {
 }
 
 public final class no/nav/pensjon/brev/template/dsl/ParagraphOnlyScope : no/nav/pensjon/brev/template/dsl/ControlStructureScope, no/nav/pensjon/brev/template/dsl/ParagraphScope {
-	public fun addTextContent (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
 	public fun bokmal (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public fun english (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public fun eval (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
