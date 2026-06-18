@@ -493,6 +493,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LanguageCode : java/lang/E
 	public static final field ENGLISH Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
 	public static final field NYNORSK Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun locale ()Ljava/util/Locale;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
 }
