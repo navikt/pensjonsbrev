@@ -30,14 +30,14 @@ value class Hash<T>(private val hex: String) {
 
 class WithHash<T>(private val letter: Column<T>, private val hash: Column<Hash<T>>) {
 
-    operator fun <ID : Comparable<ID>> setValue(thisRef: Entity<ID>, property: KProperty<*>, value: T) {
+    operator fun <ID : Any> setValue(thisRef: Entity<ID>, property: KProperty<*>, value: T) {
         with(thisRef) {
             letter.setValue(thisRef, property, value)
             hash.setValue(thisRef, property, Hash.fromBytes(hash(value)))
         }
     }
 
-    operator fun <ID : Comparable<ID>> getValue(thisRef: Entity<ID>, property: KProperty<*>): T {
+    operator fun <ID : Any> getValue(thisRef: Entity<ID>, property: KProperty<*>): T {
         return with(thisRef) {
             letter.getValue(thisRef, property)
         }

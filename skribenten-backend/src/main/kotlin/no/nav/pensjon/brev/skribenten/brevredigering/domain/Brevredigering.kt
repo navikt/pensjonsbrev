@@ -11,6 +11,7 @@ import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.dao.id.CompositeID
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.dao.Entity
@@ -121,7 +122,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
 
     private val _redigerteVedlegg by RedigertVedlegg referrersOn RedigertVedleggTable.brevredigering
     override val redigerteVedlegg: List<Dto.RedigertVedlegg>
-        get() = _redigerteVedlegg.map { Dto.RedigertVedlegg(vedleggId = it.vedleggId, redigertVedlegg = it.redigertVedlegg) }
+        get() = _redigerteVedlegg.map { Dto.RedigertVedlegg(vedleggId = it.vedleggId.value, redigertVedlegg = it.redigertVedlegg) }
 
     override var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent
     override var brevtype by BrevredigeringTable.brevtype
@@ -299,19 +300,22 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     }
 
     fun hentRedigertVedlegg(vedleggId: VedleggId): Edit.Attachment? =
-        _redigerteVedlegg.firstOrNull { it.vedleggId == vedleggId }?.redigertVedlegg
+        _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }?.redigertVedlegg
 
     fun settRedigertVedlegg(vedleggId: VedleggId, redigertVedlegg: Edit.Attachment): Boolean {
-        val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId == vedleggId }
+        val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }
         if (eksisterende != null) {
             if (eksisterende.redigertVedlegg == redigertVedlegg) {
                 return false
             }
             eksisterende.redigertVedlegg = redigertVedlegg
         } else {
-            RedigertVedlegg.new {
-                this.brevredigering = this@BrevredigeringEntity.id
-                this.vedleggId = vedleggId
+            RedigertVedlegg.new(
+                CompositeID {
+                    it[RedigertVedleggTable.brevredigering] = this@BrevredigeringEntity.id
+                    it[RedigertVedleggTable.vedleggId] = vedleggId
+                }
+            ) {
                 this.redigertVedlegg = redigertVedlegg
             }
             refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til redigertVedlegg-tabellen
@@ -320,7 +324,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     }
 
     fun slettRedigertVedlegg(vedleggId: VedleggId): Boolean {
-        val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId == vedleggId } ?: return false
+        val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId } ?: return false
         eksisterende.delete()
         refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til redigertVedlegg-tabellen
         return true
