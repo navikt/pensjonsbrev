@@ -6,10 +6,10 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
-data class VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerDto(
+data class VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerDto.PesysData> {
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto.PesysData> {
 
     data class PesysData(
         val oppgjoersAar: Year,
