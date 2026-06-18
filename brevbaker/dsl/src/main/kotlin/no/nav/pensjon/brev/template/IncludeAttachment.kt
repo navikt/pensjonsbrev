@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import java.util.Objects
 
 fun <Lang : LanguageSupport, LetterData : VedleggData> createAttachment(

@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
-import no.nav.pensjon.brev.template.VedleggId
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
 import no.nav.brev.brevbaker.template.toScope

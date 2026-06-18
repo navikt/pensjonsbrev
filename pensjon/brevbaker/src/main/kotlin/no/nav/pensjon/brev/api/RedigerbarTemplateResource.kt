@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppenderImpl
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
-import no.nav.pensjon.brev.template.VedleggId
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 
@@ -29,8 +29,8 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     fun renderLetterMarkupWithDataUsage(brevbestilling: BestillBrevRequest<Kode>): LetterMarkupWithDataUsage =
         brevbaker.renderLetterMarkupWithDataUsage(createLetter(brevbestilling))
 
-    fun renderRedigerbartVedleggMarkupTitler(brevbestilling: BestillBrevRequest<Kode>): Map<String, List<LetterMarkup.ParagraphContent.Text>> =
-        brevbaker.renderRedigerbartVedleggTitler(createLetter(brevbestilling)).mapKeys { it.key.id }
+    fun renderRedigerbartVedleggMarkupTitler(brevbestilling: BestillBrevRequest<Kode>): Map<VedleggId, List<LetterMarkup.ParagraphContent.Text>> =
+        brevbaker.renderRedigerbartVedleggTitler(createLetter(brevbestilling))
 
     fun renderRedigerbartVedleggMarkup(brevbestilling: BestillBrevRequest<Kode>, vedleggId: String): LetterMarkup.Attachment? =
         brevbaker.renderRedigerbartVedleggMarkup(createLetter(brevbestilling), VedleggId(vedleggId))

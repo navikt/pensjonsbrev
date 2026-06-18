@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.VedleggId
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.StableHash

@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.SimpleSelector
-import no.nav.pensjon.brev.template.VedleggId
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope.RedigerbartVedlegg
 import no.nav.pensjon.brev.template.dsl.expression.select

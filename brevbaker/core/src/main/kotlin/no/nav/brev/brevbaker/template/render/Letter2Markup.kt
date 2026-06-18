@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brev.template.render.documentLanguageSettings
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
@@ -48,7 +49,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterWithAttachmentsMarkup =
         LetterWithAttachmentsMarkup(
             letterMarkup = renderLetterOnly(RenderContext(scope), template),
-            attachments = renderAttachmentsOnly(scope, template)
+            attachments = renderAttachmentsOnly(RenderContext(scope), template)
         )
 
     fun renderLetterOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterMarkup =
@@ -79,8 +80,15 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         scope: ExpressionScope<*>,
         template: LetterTemplate<*, *>,
         redigerteVedlegg: Map<VedleggId, Attachment> = emptyMap(),
+    ): List<Attachment> =
+        renderAttachmentsOnly(RenderContext(scope), template, redigerteVedlegg)
+
+    private fun renderAttachmentsOnly(
+        renderContext: RenderContext,
+        template: LetterTemplate<*, *>,
+        redigerteVedlegg: Map<VedleggId, Attachment> = emptyMap(),
     ): List<Attachment> = buildList {
-        render(RenderContext(scope), template.attachments) { attachmentContext, editableId, attachment ->
+        render(renderContext, template.attachments) { attachmentContext, editableId, attachment ->
             val override = editableId?.let { redigerteVedlegg[it] }
             add(
                 if (override != null) {

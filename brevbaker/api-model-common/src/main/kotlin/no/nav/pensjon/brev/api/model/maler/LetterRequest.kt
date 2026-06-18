@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import java.util.Objects
@@ -39,7 +40,7 @@ class BestillRedigertBrevRequest<T : Brevkode<T>>(
     val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
     // TODO(redigerbart-vedlegg): midlertidig nullable for bakoverkompatibilitet under utrulling.
     //  Gjør obligatorisk (Map<...> uten default) når både skribenten og brevbaker er deployet.
-    val redigerteVedlegg: Map<String, LetterMarkup.Attachment>? = null,
+    val redigerteVedlegg: Map<BrevbakerType.VedleggId, LetterMarkup.Attachment>? = null,
 ) : BrevRequest<T> {
     override fun equals(other: Any?): Boolean {
         if (other !is BestillRedigertBrevRequest<*>) return false
