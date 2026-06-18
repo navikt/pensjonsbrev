@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.brev.brevbaker.template.render.LetterRenderer
+import no.nav.brev.brevbaker.template.render.RenderContext
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.OutlineElement
 import no.nav.pensjon.brev.template.ParagraphContentElement
@@ -57,15 +58,15 @@ class LetterRendererTest {
         }
 
         @JvmName("publicRenderOutlineContent")
-        fun publicRender(scope: ExpressionScope<*>, elements: List<OutlineElement<*>>, renderBlock: (scope: ExpressionScope<*>, element: Element.OutlineContent<*>) -> Unit) =
-            render(scope, elements, renderBlock)
+        fun publicRender(context: RenderContext, elements: List<OutlineElement<*>>, renderBlock: (context: RenderContext, element: Element.OutlineContent<*>) -> Unit) =
+            render(context, elements, renderBlock)
 
         @JvmName("publicRenderParagraphContent")
-        fun publicRender(scope: ExpressionScope<*>, elements: List<ParagraphContentElement<*>>, renderBlock: (scope: ExpressionScope<*>, element: Element.OutlineContent.ParagraphContent<*>) -> Unit) =
-            render(scope, elements, renderBlock)
+        fun publicRender(context: RenderContext, elements: List<ParagraphContentElement<*>>, renderBlock: (context: RenderContext, element: Element.OutlineContent.ParagraphContent<*>) -> Unit) =
+            render(context, elements, renderBlock)
 
-        fun publicRenderAttachments(scope: ExpressionScope<*>, attachments: List<IncludeAttachment<*, *>>, renderBlock: (scope: ExpressionScope<*>, editableId: VedleggId?, attachment: AttachmentTemplate<*, *>) -> Unit) =
-            render(scope, attachments, renderBlock)
+        fun publicRenderAttachments(context: RenderContext, attachments: List<IncludeAttachment<*, *>>, renderBlock: (context: RenderContext, editableId: VedleggId?, attachment: AttachmentTemplate<*, *>) -> Unit) =
+            render(context, attachments, renderBlock)
     }
 
     @Test
@@ -74,13 +75,13 @@ class LetterRendererTest {
 
         renderer.render(letter)
 
-        assertScopeEquals(letter.toScope(), renderer.letterScope)
+        assertContextEquals(RenderContext(letter.toScope()), renderer.letterScope?.let(::RenderContext))
         assertEquals(letter.template, renderer.template)
     }
 
     @Test
     fun `render will pass each element of Content and letterScope to block`() {
-        val expectedScope = letter.toScope()
+        val expectedContext = RenderContext(letter.toScope())
         val expectedElements = listOf(
             createParagraph(
                 listOf(
@@ -100,17 +101,17 @@ class LetterRendererTest {
         )
 
         val actualElements = mutableListOf<Element.OutlineContent<*>>()
-        val actualScopes = mutableListOf<ExpressionScope<*>>()
+        val actualContexts = mutableListOf<RenderContext>()
         MockRenderer().publicRender(
-            expectedScope,
-            expectedElements.map { createContent(it) }) { scope, element ->
+            expectedContext,
+            expectedElements.map { createContent(it) }) { context, element ->
             actualElements.add(element)
-            actualScopes.add(scope)
+            actualContexts.add(context)
         }
 
         assertEquals(expectedElements, actualElements)
-        assertFalse(actualScopes.isEmpty())
-        actualScopes.forEach { assertScopeEquals(expectedScope, it) }
+        assertFalse(actualContexts.isEmpty())
+        actualContexts.forEach { assertContextEquals(expectedContext, it) }
     }
 
     @Test
@@ -131,17 +132,20 @@ class LetterRendererTest {
         )
 
         val actualElements = mutableListOf<Element.OutlineContent.ParagraphContent<*>>()
-        val actualScopes = mutableListOf<ExpressionScope<*>>()
-        MockRenderer().publicRender(ExpressionScope(Unit, felles, Bokmal), content.elements) { scope, element ->
+        val actualContexts = mutableListOf<RenderContext>()
+        MockRenderer().publicRender(
+            RenderContext(ExpressionScope(Unit, felles, Bokmal)),
+            content.elements,
+        ) { context, element ->
             actualElements.add(element)
-            actualScopes.add(scope)
+            actualContexts.add(context)
         }
 
         // Three times expectedElements because itemsExpr contains three items, so loop executes three times
         assertEquals(expectedElements + expectedElements + expectedElements, actualElements)
 
         // The actualScopes should allow us to evaluate nextExpression and end up with itemsExpr
-        assertEquals(itemsExpr, actualScopes.map { nextExpression.eval(it) }.distinct())
+        assertEquals(itemsExpr, actualContexts.map { nextExpression.eval(it.scope) }.distinct())
     }
 
     @Test
@@ -155,23 +159,23 @@ class LetterRendererTest {
             }
         }
 
-        val expectedScope = ExpressionScope(Unit, felles, Bokmal)
+        val expectedContext = RenderContext(ExpressionScope(Unit, felles, Bokmal))
         val expectedElements = listOf(
             createText(Bokmal to "hei "),
             createText(Bokmal to "person"),
         )
 
-        val actualScopes = mutableListOf<ExpressionScope<*>>()
+        val actualContexts = mutableListOf<RenderContext>()
         val actualElements = mutableListOf<Element.OutlineContent.ParagraphContent<*>>()
-        MockRenderer().publicRender(expectedScope, content.elements) { scope, element ->
+        MockRenderer().publicRender(expectedContext, content.elements) { context, element ->
             actualElements.add(element)
-            actualScopes.add(scope)
+            actualContexts.add(context)
         }
 
         assertEquals(expectedElements, actualElements)
         // No scope changes
-        assertFalse(actualScopes.isEmpty())
-        actualScopes.forEach { assertScopeEquals(expectedScope, it) }
+        assertFalse(actualContexts.isEmpty())
+        actualContexts.forEach { assertContextEquals(expectedContext, it) }
     }
 
     @Test
@@ -185,23 +189,23 @@ class LetterRendererTest {
             }
         }
 
-        val expectedScope = ExpressionScope(Unit, felles, Bokmal)
+        val expectedContext = RenderContext(ExpressionScope(Unit, felles, Bokmal))
         val expectedElements = listOf(
             createText(Bokmal to "hei "),
             createText(Bokmal to "person"),
         )
 
-        val actualScopes = mutableListOf<ExpressionScope<*>>()
+        val actualContexts = mutableListOf<RenderContext>()
         val actualElements = mutableListOf<Element.OutlineContent.ParagraphContent<*>>()
-        MockRenderer().publicRender(expectedScope, content.elements) { scope, element ->
+        MockRenderer().publicRender(expectedContext, content.elements) { context, element ->
             actualElements.add(element)
-            actualScopes.add(scope)
+            actualContexts.add(context)
         }
 
         assertEquals(expectedElements, actualElements)
         // No scope changes
-        assertFalse(actualScopes.isEmpty())
-        actualScopes.forEach { assertScopeEquals(expectedScope, it) }
+        assertFalse(actualContexts.isEmpty())
+        actualContexts.forEach { assertContextEquals(expectedContext, it) }
     }
 
     @Test
@@ -219,11 +223,9 @@ class LetterRendererTest {
 
         val actualAttachments = mutableListOf<AttachmentTemplate<*, *>>()
         MockRenderer().publicRenderAttachments(
-            ExpressionScope(
-                Unit,
-                felles,
-                Bokmal
-            ), attachments) { _, _, attachment ->
+            RenderContext(ExpressionScope(Unit, felles,Bokmal)),
+            attachments,
+        ) { _, _, attachment ->
             actualAttachments.add(attachment)
         }
 
@@ -251,19 +253,20 @@ class LetterRendererTest {
 
         var evaluatedAttachmentScopedExpr: String? = null
         MockRenderer().publicRenderAttachments(
-            ExpressionScope(letterData, felles, Bokmal),
+            RenderContext(ExpressionScope(letterData, felles, Bokmal)),
             listOf(createIncludeAttachment(vedleggDataExpr, attachment1, true.expr()))
-        ) { scope, _, _ ->
-            evaluatedAttachmentScopedExpr = attachmentScopedExpr?.eval(scope)
+        ) { context, _, _ ->
+            evaluatedAttachmentScopedExpr = attachmentScopedExpr?.eval(context.scope)
         }
 
         assertEquals(letterData.vedlegg.testVerdi1, evaluatedAttachmentScopedExpr)
     }
 
 
-    private fun assertScopeEquals(expected: ExpressionScope<*>, actual: ExpressionScope<*>?) {
-        assertEquals(expected.felles, actual?.felles)
-        assertEquals(expected.argument, actual?.argument)
-        assertEquals(expected.language, actual?.language)
+    private fun assertContextEquals(expected: RenderContext, actual: RenderContext?) {
+        assertEquals(expected.scope.felles, actual?.scope?.felles)
+        assertEquals(expected.scope.argument, actual?.scope?.argument)
+        assertEquals(expected.scope.language, actual?.scope?.language)
+        assertEquals(expected.stableHashProvider, actual?.stableHashProvider)
     }
 }
