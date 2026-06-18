@@ -183,7 +183,7 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: Int, second: Int): Int = first + second
     }
 
-    object Landnavn : BinaryOperation<BrevLandmodell.Landkode, Language, String>(), StableHash by StableHash.of("UnaryOperation.Landnavn") {
+    object Landnavn : BinaryOperation<BrevLandmodell.Landkode, Language, String>(), StableHash by StableHash.of("BinaryOperation.Landnavn") {
         override fun apply(first: BrevLandmodell.Landkode, second: Language): String = BrevLandmodell.Landkoder.formaterLandnavn(first, second.toCode())
     }
 
