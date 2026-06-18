@@ -36,7 +36,7 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<KlageOrienterin
     override val template = createTemplate(
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Klage - orientering om saksbehandlingstid ved Nav pensjon",
+            displayTitle = "Klage - orientering om saksbehandlingstid",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
