@@ -199,10 +199,4 @@ object P1pdfV2Dto {
         )
     }
 
-    fun LanguageCode.locale(): Locale =
-        when (this) {
-            BOKMAL -> Locale.forLanguageTag("no")
-            NYNORSK -> Locale.forLanguageTag("no")
-            ENGLISH -> Locale.UK
-        }
 }
