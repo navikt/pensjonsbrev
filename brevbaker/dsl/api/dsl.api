@@ -647,8 +647,10 @@ public abstract interface class no/nav/pensjon/brev/template/HasModel {
 }
 
 public final class no/nav/pensjon/brev/template/IncludeAttachment : no/nav/pensjon/brev/template/StableHash {
+	public synthetic fun <init> (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getData ()Lno/nav/pensjon/brev/template/Expression;
+	public final fun getEditableId-1gCV78Y ()Ljava/lang/String;
 	public final fun getPredicate ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun getTemplate ()Lno/nav/pensjon/brev/template/AttachmentTemplate;
 	public fun hashCode ()I
@@ -1079,6 +1081,20 @@ public final class no/nav/pensjon/brev/template/UnaryOperation$ToString : no/nav
 	public fun stableHashCode ()I
 }
 
+public final class no/nav/pensjon/brev/template/VedleggId {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/template/VedleggId;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
 public abstract interface class no/nav/pensjon/brev/template/dsl/ControlStructureScope : no/nav/pensjon/brev/template/dsl/TemplateGlobalScope {
 	public abstract fun addControlStructure (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
 	public fun forEach (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)V
@@ -1384,9 +1400,16 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 	public static synthetic fun includeAttachment$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
 	public final fun includeAttachmentIfNotNull (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun includeAttachmentIfNotNull (Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;Lno/nav/pensjon/brev/template/Expression;)V
+	public final fun includeAttachmentRedigerbar-PumKI1E (Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)V
+	public static synthetic fun includeAttachmentRedigerbar-PumKI1E$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
+	public final fun includeAttachmentRedigerbar-eJN5XNQ (Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
+	public static synthetic fun includeAttachmentRedigerbar-eJN5XNQ$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public final fun outline (Lkotlin/jvm/functions/Function1;)V
 	public final fun title (Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface annotation class no/nav/pensjon/brev/template/dsl/TemplateRootScope$RedigerbartVedlegg : java/lang/annotation/Annotation {
 }
 
 public final class no/nav/pensjon/brev/template/dsl/TemplateTextKt {

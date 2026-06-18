@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.routing
 
+import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.util.*
 import no.nav.pensjon.brev.api.RedigerbarTemplateResource
 import no.nav.pensjon.brev.api.countLetter
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
@@ -22,6 +24,19 @@ fun Route.redigerbarRoutes(
         post<BestillBrevRequest<Brevkode.Redigerbart>>("/markup-usage") { brevbestilling ->
             val markup = redigerbareBrev.renderLetterMarkupWithDataUsage(brevbestilling)
             call.respond(markup)
+        }
+
+        post<BestillBrevRequest<Brevkode.Redigerbart>>("/redigerbare-vedlegg/titler") { brevbestilling ->
+            val titler = redigerbareBrev.renderRedigerbartVedleggMarkupTitler(brevbestilling)
+            call.respond(titler)
+        }
+
+        post<BestillBrevRequest<Brevkode.Redigerbart>>("/redigerbare-vedlegg/{vedleggId}") { brevbestilling ->
+            val vedleggId = call.parameters.getOrFail("vedleggId")
+            when (val vedlegg = redigerbareBrev.renderRedigerbartVedleggMarkup(brevbestilling, vedleggId)) {
+                null -> call.respond(HttpStatusCode.NotFound)
+                else -> call.respond(vedlegg)
+            }
         }
 
         post<BestillRedigertBrevRequest<Brevkode.Redigerbart>>("/pdf") { brevbestilling ->

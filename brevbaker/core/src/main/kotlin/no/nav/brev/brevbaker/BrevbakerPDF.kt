@@ -8,14 +8,15 @@ import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.toCode
+import no.nav.pensjon.brev.template.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 internal class BrevbakerPDF(
     private val pdfByggerService: PDFByggerService,
     private val pdfVedleggAppender: PDFVedleggAppender,
 ) {
-    suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
-        renderCompleteMarkup(letter, redigertBrev).let { markup ->
+    suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null, redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()): LetterResponse =
+        renderCompleteMarkup(letter, redigertBrev, redigerteVedlegg).let { markup ->
             pdfByggerService.producePDF(
                 PDFRequest(
                     letterMarkup = markup.letterMarkup,
@@ -44,10 +45,11 @@ internal class BrevbakerPDF(
     private fun renderCompleteMarkup(
         letter: Letter<BrevbakerBrevdata>,
         redigertBrev: LetterMarkup? = null,
+        redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(),
     ): LetterWithAttachmentsMarkup = letter.toScope().let { scope ->
         LetterWithAttachmentsMarkup(
             redigertBrev ?: Letter2Markup.renderLetterOnly(scope, letter.template),
-            Letter2Markup.renderAttachmentsOnly(scope, letter.template),
+            Letter2Markup.renderAttachmentsOnly(scope, letter.template, redigerteVedlegg),
         )
     }
 }
