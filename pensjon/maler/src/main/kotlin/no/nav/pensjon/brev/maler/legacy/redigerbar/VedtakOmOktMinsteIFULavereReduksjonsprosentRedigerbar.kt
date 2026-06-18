@@ -42,7 +42,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -74,7 +74,7 @@ object VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar : RedigerbarTemplat
                     bokmal { +"Vedtaksbrev - Du får en etterbetaling av uføretrygd " },
                     nynorsk { +"Vedtaksbrev - Du får ein etterbetaling av uføretrygd " },
                 )
-            }.orShowIf(data.endringNettoUforetrygdUtenTillegg or data.endringNettoBarnetillegg or data.endringNettoGjenlevendetillegg) {
+            }.orShowIf(data.etterbetalingJuli.lessThan(0)) {
                 text(
                     bokmal { +"Vedtaksbrev - Endring av uføretrygd" },
                     nynorsk { +"Vedtaksbrev - Endring av uføretrygd" },
