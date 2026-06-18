@@ -44,7 +44,7 @@ object OktMinsteIFUReduksjonsprosent {
         val endringUforegrad: Expression<Boolean>,
         val endringInntektstak: Expression<Boolean>,
         val endringInntektsgrense: Expression<Boolean>,
-        val erInntektsavkortet: Expression<Boolean>,
+        val harBelopsendring: Expression<Boolean>,
         val tillegg: Expression<Collection<UTTillegg>>,
         val hjemler: Expression<Set<String>>,
         val visOktMinsteIFU: Expression<Boolean>,
@@ -369,11 +369,11 @@ object OktMinsteIFUReduksjonsprosent {
                     )
                 }
 
-                showIf(data.erInntektsavkortet) {
+                showIf(data.harBelopsendring) {
                     title2 {
                         text(
-                            bokmal { +"Fordi du har hatt inntekt over inntektsgrensen" },
-                            nynorsk { +"Fordi du har hatt inntekt over inntektsgrensa" },
+                            bokmal { +"For deg betyr dette" },
+                            nynorsk { +"For deg betyr dette" },
                         )
                     }
                     showIf(data.redigerbar) {
@@ -412,14 +412,14 @@ object OktMinsteIFUReduksjonsprosent {
                 }.orShow {
                     title2 {
                         text(
-                            bokmal { +"Fordi du ikke har hatt inntekt over inntektsgrensen" },
-                            nynorsk { +"Fordi du ikkje har hatt inntekt over inntektsgrensa" },
+                            bokmal { +"For deg betyr dette" },
+                            nynorsk { +"For deg betyr dette" },
                         )
                     }
                     paragraph {
                         text(
-                            bokmal { +"Fordi du ikke har hatt inntekt over inntektsgrensen, vil ikke regelendringene føre til endringer i utbetaling for deg." },
-                            nynorsk { +"Fordi du ikkje har hatt inntekt over inntektsgrensa, vil ikkje regelendringane føre til endringar i utbetaling for deg." },
+                            bokmal { +"For deg påvirker ikke dette utbetalingen din." },
+                            nynorsk { +"For deg påverkar ikkje dette utbetalinga di." },
                         )
                     }
                 }

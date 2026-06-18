@@ -93,7 +93,7 @@ object VedtakOmOktMinsteIFULavereReduksjonsprosentAuto : AutobrevTemplate<Vedtak
                         endringNettoBarnetillegg = data.endringNettoBarnetillegg,
                         endringNettoGjenlevendetillegg = data.endringNettoGjenlevendetillegg,
                         endringInntektstak = data.endringInntektstak,
-                        erInntektsavkortet = data.erInntektsavkortet,
+                        harBelopsendring = data.erInntektsavkortet,
                         tillegg = data.tillegg,
                         hjemler = data.hjemler,
                         visOktMinsteIFU = true.expr(),
