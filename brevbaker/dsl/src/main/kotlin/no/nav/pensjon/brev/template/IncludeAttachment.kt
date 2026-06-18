@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.validation.EmptyValidator
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import java.util.Objects
 
@@ -14,7 +15,7 @@ fun <Lang : LanguageSupport, LetterData : VedleggData> createAttachment(
     outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
 ) = AttachmentTemplate<Lang, LetterData>(
     PlainTextOnlyScope<Lang, LetterData>().apply(title).elements,
-    OutlineOnlyScope<Lang, LetterData>().apply(outline).elements,
+    OutlineOnlyScope<Lang, LetterData>(EmptyValidator).apply(outline).elements,
     includeSakspart
 )
 

@@ -2,13 +2,17 @@ package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
 import no.nav.brev.Listetype
+import no.nav.pensjon.brev.template.validation.InvalidListDeclarationException
+import no.nav.pensjon.brev.template.validation.InvalidScopeTypeException
+import no.nav.pensjon.brev.template.validation.InvalidTableDeclarationException
+import no.nav.pensjon.brev.template.validation.MissingTitleInTemplateException
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.IntValue
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
-import java.util.Objects
+import java.util.*
 import kotlin.reflect.KClass
 
 class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal constructor(
