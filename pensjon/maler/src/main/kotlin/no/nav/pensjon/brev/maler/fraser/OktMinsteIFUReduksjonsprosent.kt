@@ -190,8 +190,8 @@ object OktMinsteIFUReduksjonsprosent {
                         row {
                             cell {
                                 text(
-                                    bokmal { +"Ny inntekt før uførhet (IFU)" },
-                                    nynorsk { +"Ny inntekt før uførhet (IFU)" },
+                                    bokmal { +"Ny oppjustert inntekt før uførhet (IFU)" },
+                                    nynorsk { +"Ny oppjustert inntekt før uførhet (IFU)" },
                                 )
                             }
                             cell {
