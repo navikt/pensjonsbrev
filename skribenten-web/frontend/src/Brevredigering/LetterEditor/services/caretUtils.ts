@@ -17,7 +17,11 @@ export function getCursorOffset() {
   const selection = globalThis.getSelection();
   if ((selection?.rangeCount ?? 0) > 0) {
     const range = selection?.getRangeAt(0);
-    return range?.collapsed ? range.startOffset : -1;
+    if (range?.collapsed) {
+      return range.startContainer.textContent === ZERO_WIDTH_SPACE ? 0 : range.startOffset;
+    } else {
+      return -1;
+    }
   }
   return -1;
 }
@@ -30,9 +34,13 @@ export const getCursorOffsetOrRange = () => {
   const selection = globalThis.getSelection();
   if ((selection?.rangeCount ?? 0) > 0) {
     const range = selection?.getRangeAt(0);
-    return range?.collapsed ? range.startOffset : range;
+    if (range?.collapsed) {
+      return range.startContainer.textContent === ZERO_WIDTH_SPACE ? 0 : range.startOffset;
+    } else {
+      return range;
+    }
   }
-  return -1;
+  return undefined;
 };
 
 /**
