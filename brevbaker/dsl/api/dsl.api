@@ -220,13 +220,6 @@ public final class no/nav/pensjon/brev/template/BinaryOperation$IsOneOf : no/nav
 	public fun stableHashCode ()I
 }
 
-public final class no/nav/pensjon/brev/template/BinaryOperation$Landnavn : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/BinaryOperation$Landnavn;
-	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply-nR1mrgk (Ljava/lang/String;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
-	public fun stableHashCode ()I
-}
-
 public final class no/nav/pensjon/brev/template/BinaryOperation$LessThan : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public fun apply (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Boolean;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
@@ -807,6 +800,13 @@ public final class no/nav/pensjon/brev/template/LocalizedFormatter$IntFormat : n
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$IntFormat;
 	public fun apply (ILno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun stableHashCode ()I
+}
+
+public final class no/nav/pensjon/brev/template/LocalizedFormatter$LandnavnFormat : no/nav/pensjon/brev/template/LocalizedFormatter, no/nav/pensjon/brev/template/StableHash {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$LandnavnFormat;
+	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun apply-nR1mrgk (Ljava/lang/String;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public fun stableHashCode ()I
 }
 

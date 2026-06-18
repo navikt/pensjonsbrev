@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.brev.BrevLandmodell
-import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
@@ -181,10 +179,6 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
 
     object IntPlus : BinaryOperation<Int, Int, Int>(Documentation("+", Documentation.Notation.INFIX)), StableHash by StableHash.of("BinaryOperation.IntPlus") {
         override fun apply(first: Int, second: Int): Int = first + second
-    }
-
-    object Landnavn : BinaryOperation<BrevLandmodell.Landkode, Language, String>(), StableHash by StableHash.of("BinaryOperation.Landnavn") {
-        override fun apply(first: BrevLandmodell.Landkode, second: Language): String = BrevLandmodell.Landkoder.formaterLandnavn(first, second.toCode())
     }
 
     class IfNull<T : Any> internal constructor(): BinaryOperation<T?, T, T>(Documentation("?:", Documentation.Notation.INFIX)),
