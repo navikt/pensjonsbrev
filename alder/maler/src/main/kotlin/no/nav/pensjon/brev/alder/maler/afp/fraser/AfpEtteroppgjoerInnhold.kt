@@ -382,7 +382,7 @@ object AfpEtteroppgjoerInnhold {
                     }
                 }
             }
-            paragraph {
+            paragraph(uniqueness = "iueo") {
                 text(
                     bokmal { +"Reglene om inntekter fra arbeid med fordrevne fra Ukraina finnes i forskrift om kombinasjon av AFP og arbeidsinntekt § 2 tredje ledd." },
                     nynorsk { +"Reglane om inntekter frå arbeid med fordrivne frå Ukraina finst i forskrift om kombinasjon av AFP og arbeidsinntekt § 2 tredje ledd." }

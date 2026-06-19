@@ -138,7 +138,7 @@ data class OmregningAlderUfore2016Felles(
 
         ifNotNull(avdodNavn) { avdodNavn ->
             showIf(gjenlevendetilleggKap19Innvilget) {
-                title2 {
+                title2(uniqueness = "kap19") {
                     text(
                         bokmal { +"Gjenlevenderett i alderspensjon" },
                         nynorsk { +"Attlevenderett i alderspensjon" },
