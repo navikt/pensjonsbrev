@@ -185,22 +185,10 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
             paragraph {
                 text(
                     bokmal {
-                        +"Ved beregningen av pensjonen din la vi til grunn at du ville ha en forventet " +
-                                "arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Etter våre nye beregninger " +
-                                "har du hatt en arbeidsinntekt i den perioden du har mottatt AFP som er " +
-                                "lavere enn den arbeidsinntekten som ble lagt til grunn ved utbetalingen av " +
-                                "pensjon. Denne forskjellen er større enn toleransebeløpet som i " +
-                                oppgjoersAar.format() + " var på " + toleranseBeloep.format() + ". Pensjonen din er derfor " +
-                                "beregnet på nytt for perioden."
+                        +"Ved beregningen av pensjonen din la vi til grunn at du ville ha en forventet arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Etter våre nye beregninger har du hatt en arbeidsinntekt i den perioden du har mottatt AFP som er lavere enn den arbeidsinntekten som ble lagt til grunn ved utbetalingen av pensjon. Denne forskjellen er større enn toleransebeløpet som i " + oppgjoersAar.format() + " var på " + toleranseBeloep.format() + ". Pensjonen din er derfor beregnet på nytt for perioden."
                     },
                     nynorsk {
-                        +"Ved berekninga av pensjonen din la vi til grunn at du ville ha ei forventa " +
-                                "arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Etter dei nye berekningane " +
-                                "våre har du hatt ei arbeidsinntekt i den perioden du har fått AFP, som er " +
-                                "lågare enn den arbeidsinntekta som blei lagd til grunn ved utbetalinga av " +
-                                "pensjon. Denne forskjellen er større enn toleransebeløpet som i " +
-                                oppgjoersAar.format() + " var på " + toleranseBeloep.format() + ". Pensjonen din er derfor " +
-                                "berekna på nytt for perioden."
+                        +"Ved berekninga av pensjonen din la vi til grunn at du ville ha ei forventa arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Etter dei nye berekningane våre har du hatt ei arbeidsinntekt i den perioden du har fått AFP som er lågare enn den arbeidsinntekta som blei lagd til grunn ved utbetalinga av pensjon. Denne forskjellen er større enn toleransebeløpet som i " + oppgjoersAar.format() + " var på " + toleranseBeloep.format() + ". Pensjonen din er derfor berekna på nytt for perioden."
                     },
                 )
             }
