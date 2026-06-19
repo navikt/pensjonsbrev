@@ -57,6 +57,7 @@ object Api {
     data class DistribusjonstypeRequest(val distribusjon: Distribusjon)
     data class OppdaterMottakerRequest(val mottaker: OverstyrtMottaker)
     data class ValgteVedleggRequest(val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>)
+    data class RedigertVedleggRequest(val redigertVedlegg: Edit.Attachment)
 
     data class BrevInfo(
         val id: BrevId,

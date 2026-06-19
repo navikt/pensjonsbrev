@@ -35,6 +35,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.NavEnhet
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
@@ -392,6 +393,9 @@ abstract class BrevredigeringHandlerTestBase {
         override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
         val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
         val renderPdfKall = mutableListOf<LetterMarkup>()
+        val renderPdfRedigerteVedleggKall = mutableListOf<Map<VedleggId, LetterMarkup.Attachment>>()
+        var renderRedigerbareVedleggResultat: Map<String, LetterMarkup.Attachment> = emptyMap()
+        var harRedigerbareVedleggResultat: Boolean? = null
 
         override suspend fun renderMarkup(
             brevkode: Brevkode.Redigerbart,
@@ -409,11 +413,34 @@ abstract class BrevredigeringHandlerTestBase {
             brevdata: RedigerbarBrevdata<*, *>,
             felles: BrevbakerFelles,
             redigertBrev: LetterMarkup,
-            alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>
-        ) = renderPdfResultat.also { renderPdfKall.add(redigertBrev) }
+            alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
+            redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment>,
+        ) = renderPdfResultat.also {
+            renderPdfKall.add(redigertBrev)
+            renderPdfRedigerteVedleggKall.add(redigerteVedlegg)
+        }
 
         override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
         override suspend fun getAlltidValgbareVedlegg(brevId: BrevId) = notYetStubbed()
+
+        override suspend fun hentRedigerbareVedlegg(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            brevdata: RedigerbarBrevdata<*, *>,
+            felles: BrevbakerFelles,
+        ): Map<VedleggId, List<LetterMarkup.ParagraphContent.Text>> =
+            renderRedigerbareVedleggResultat.mapKeys { VedleggId(it.key) }.mapValues { it.value.title }
+
+        override suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean =
+            harRedigerbareVedleggResultat ?: renderRedigerbareVedleggResultat.isNotEmpty()
+
+        override suspend fun renderRedigerbartVedlegg(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            brevdata: RedigerbarBrevdata<*, *>,
+            felles: BrevbakerFelles,
+            vedleggId: VedleggId,
+        ): LetterMarkup.Attachment? = renderRedigerbareVedleggResultat[vedleggId.id]
 
         override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart) = modelSpecificationResultat
     }

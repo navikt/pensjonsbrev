@@ -126,6 +126,7 @@ enum class Cacheomraade(val prefix: String) {
     NORG("Norg"),
     SKJERMING("Skjerming"),
     REDIGERBAR_MAL("Redigerbar"),
+    HAR_REDIGERBARE_VEDLEGG("HarRedigerbareVedlegg"),
     SAMHANDLER("Samhandler"),
     SAMHANDLER_ADRESSE("SamhandlerAdresse"),
     PENSJON_REPRESENTASJON("PensjonRepresentasjon"),
