@@ -32,8 +32,10 @@ fun Project.nodeVersionFromToolVersions(): String {
 }
 
 node {
-    download.set(true)
-    version.set(project.nodeVersionFromToolVersions())
+    if (System.getenv("CI")?.toBoolean() != true) {
+        download.set(true)
+        version.set(project.nodeVersionFromToolVersions())
+    }
     nodeProjectDir.set(rootProject.file("skribenten-web/frontend"))
     npmInstallCommand.set("ci")
 }
