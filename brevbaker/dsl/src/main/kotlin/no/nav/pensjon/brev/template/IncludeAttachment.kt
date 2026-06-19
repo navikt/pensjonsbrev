@@ -24,7 +24,7 @@ class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : VedleggData
     val template: AttachmentTemplate<Lang, AttachmentData>,
     val predicate: Expression<Boolean> = Expression.Literal(true),
     val editableId: VedleggId? = null,
-): StableHash by StableHash.of(data, template, predicate) {
+): StableHash by StableHash.of(data, template, predicate, editableId?.let { StableHash.of(it.id) }) {
     override fun equals(other: Any?): Boolean {
         if (other !is IncludeAttachment<*, *>) return false
         return data == other.data && template == other.template && predicate == other.predicate && editableId == other.editableId
