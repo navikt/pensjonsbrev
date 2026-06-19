@@ -41,7 +41,6 @@ fun createInnvilgelseAvAlderspensjonDto() =
             avdodFnr = null,
             avdodNavn = null,
             avtalelandNavn = "Sverige",
-            avtalelandKode = BrevLandmodell.Landkode("SE"),
             borIAvtaleland = false,
             borINorge = false,
             erEOSLand = false,
