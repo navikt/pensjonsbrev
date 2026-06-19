@@ -72,7 +72,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
                         +"Vi viser til vårt forhåndsvarsel om etteroppgjør for avtalefestet pensjon (AFP) for " + oppgjoersAar.format() + ". Resultatet av etteroppgjøret viser at du har fått " + formyebetalt.format() + " for mye utbetalt. Dette er hele det feilutbetalte beløpet. I beløpet som kreves tilbake vil innbetalt skatt bli trukket fra."
                     },
                     nynorsk {
-                        +"Vi viser til førehandsvarselet vårt om etteroppgjer for avtalefesta pensjon (AFP) for " + oppgjoersAar.format() + ". Resultatet av etteroppgjeret viser at du har fått " + formyebetalt.format() + " for mykje utbetalt. Dette er heile det feilutbetalte " + "beløpet. I beløpet som Nav krev tilbake vil innbetalt skatt bli trekt frå."
+                        +"Vi viser til førehandsvarselet vårt om etteroppgjer for avtalefesta pensjon (AFP) for " + oppgjoersAar.format() + ". Resultatet av etteroppgjeret viser at du har fått " + formyebetalt.format() + " for mykje utbetalt. Dette er heile det feilutbetalte beløpet. I beløpet som Nav krev tilbake vil innbetalt skatt bli trekt frå."
                     },
                 )
             }
@@ -91,7 +91,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
                             +"Du har ikke lagt fram ny dokumentasjon som viser at din pensjonsgivende inntekt på " + pensjonsgivendeInntekt.format() + " skal holdes utenfor etteroppgjøret. I samsvar med den tidligere beregningen har vi derfor lagt til grunn at hele denne inntekten skal redusere AFP."
                         },
                         nynorsk {
-                            +"Du har ikkje lagt fram ny dokumentasjon som viser at den pensjonsgivande inntekta di på " + pensjonsgivendeInntekt.format() + " skal haldast utanfor etteroppgjeret. I samsvar med den tidlegare " + "berekninga har vi derfor lagt til grunn at denne inntekta skal gi " + "avkorting av AFP."
+                            +"Du har ikkje lagt fram ny dokumentasjon som viser at den pensjonsgivande inntekta di på " + pensjonsgivendeInntekt.format() + " skal haldast utanfor etteroppgjeret. I samsvar med den tidlegare berekninga har vi derfor lagt til grunn at denne inntekta skal gi avkorting av AFP."
                         },
                     )
                 }
@@ -104,17 +104,17 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
                             +"Du har ikke lagt fram ny dokumentasjon om arbeidsinntekten din før du tok ut AFP som skal holdes utenfor etteroppgjøret. Arbeidsinntekten som skal redusere AFP er derfor satt til " + inntektFoerUttak.format() + " i samsvar med den tidligere beregningen. Dette beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() + "."
                         },
                         nynorsk {
-                            +"Du har ikkje lagt fram ny dokumentasjon om arbeidsinntekta di før du tok ut AFP som skal haldast utanfor etteroppgjeret. Arbeidsinntekta som skal redusere AFP er derfor sett til " + inntektFoerUttak.format() + " i samsvar med den tidlegare berekninga. Dette beløpet " + "skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() + "."
+                            +"Du har ikkje lagt fram ny dokumentasjon om arbeidsinntekta di før du tok ut AFP som skal haldast utanfor etteroppgjeret. Arbeidsinntekta som skal redusere AFP er derfor sett til " + inntektFoerUttak.format() + " i samsvar med den tidlegare berekninga. Dette beløpet skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() + "."
                         },
                     )
                 }
                 paragraph {
                     text(
                         bokmal {
-                            +"Den faktiske arbeidsinntekten din i den perioden du har mottatt AFP er satt til " + inntektIAfpPerioden.format() + ". Dette beløpet er differansen mellom din pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og arbeidsinntekten din før uttak av AFP på " + inntektFoerUttak.format() + "."
+                            +"Den faktiske arbeidsinntekten din i den perioden du har mottatt AFP er satt til " + inntektIAfpPerioden.format() + ". Dette beløpet er forskjellen mellom din pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og arbeidsinntekten din før uttak av AFP på " + inntektFoerUttak.format() + "."
                         },
                         nynorsk {
-                            +"Den faktiske arbeidsinntekta di i den perioden du har fått AFP er sett til " + inntektIAfpPerioden.format() + ". Dette beløpet er differansen mellom den " + "pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og arbeidsinntekta di før uttak av AFP på " + inntektFoerUttak.format() + "."
+                            +"Den faktiske arbeidsinntekta di i den perioden du har fått AFP er sett til " + inntektIAfpPerioden.format() + ". Dette beløpet er forskjellen mellom den pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og arbeidsinntekta di før uttak av AFP på " + inntektFoerUttak.format() + "."
                         },
                     )
                 }
@@ -127,17 +127,17 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
                             +"Du har ikke lagt fram ny dokumentasjon om at arbeidsinntekten din før du tok ut AFP eller etter opphør av AFP skal holdes utenfor etteroppgjøret. Arbeidsinntekten din for perioden før uttak av AFP er derfor satt til " + inntektFoerUttak.format() + ". Arbeidsinntekten din for perioden etter opphør av AFP er satt til " + inntektEtterOpphoer.format() + ". Disse beløpene skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() + " i samsvar med den tidligere beregningen."
                         },
                         nynorsk {
-                            +"Du har ikkje lagt fram ny dokumentasjon om at arbeidsinntekta di før du tok ut AFP eller etter at AFP tok slutt skal haldast utanfor etteroppgjeret. Arbeidsinntekta di for perioden før uttak av AFP er sett til " + inntektFoerUttak.format() + ". Arbeidsinntekta di for perioden etter opphøyr av AFP er " + "sett til " + inntektEtterOpphoer.format() + ". Desse beløpa skal haldast utanfor " + "etteroppgjeret for " + oppgjoersAar.format() + " i samsvar med den " + "tidlegare berekninga."
+                            +"Du har ikkje lagt fram ny dokumentasjon om at arbeidsinntekta di før du tok ut AFP eller etter at AFP tok slutt skal haldast utanfor etteroppgjeret. Arbeidsinntekta di for perioden før uttak av AFP er sett til " + inntektFoerUttak.format() + ". Arbeidsinntekta di for perioden etter opphøyr av AFP er sett til " + inntektEtterOpphoer.format() + ". Desse beløpa skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() + " i samsvar med den tidlegare berekninga."
                         },
                     )
                 }
                 paragraph {
                     text(
                         bokmal {
-                            +"Den faktiske arbeidsinntekten i den perioden du har mottatt AFP, er " + inntektIAfpPerioden.format() + ". Dette beløpet er differansen mellom din pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og summen av arbeidsinntektene før uttak av AFP på " + inntektFoerUttak.format() + " og etter opphør av AFP på " + inntektEtterOpphoer.format() + "."
+                            +"Den faktiske arbeidsinntekten i den perioden du har mottatt AFP er " + inntektIAfpPerioden.format() + ". Dette beløpet er forskjellen mellom din pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og summen av arbeidsinntektene før uttak av AFP på " + inntektFoerUttak.format() + " og etter opphør av AFP på " + inntektEtterOpphoer.format() + "."
                         },
                         nynorsk {
-                            +"Den faktiske arbeidsinntekta i den perioden du har fått AFP, er sett til " + inntektIAfpPerioden.format() + ". Dette beløpet er differansen mellom den pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og summen av arbeidsinntektene før uttak av AFP på " + inntektFoerUttak.format() + " og etter at AFP tok slutt på " + inntektEtterOpphoer.format() + "."
+                            +"Den faktiske arbeidsinntekta i den perioden du har fått AFP er sett til " + inntektIAfpPerioden.format() + ". Dette beløpet er forskjellen mellom den pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og summen av arbeidsinntektene før uttak av AFP på " + inntektFoerUttak.format() + " og etter at AFP tok slutt på " + inntektEtterOpphoer.format() + "."
                         },
                     )
                 }
@@ -150,17 +150,17 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
                             +"Du har ikke lagt fram ny dokumentasjon om inntekt som skal holdes utenfor etteroppgjøret. Arbeidsinntekten din etter opphør av AFP er derfor satt til " + inntektEtterOpphoer.format() + " i samsvar med den tidligere beregningen. Dette beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() + "."
                         },
                         nynorsk {
-                            +"Du har ikkje lagt fram ny dokumentasjon om inntekt som skal haldast utanfor oppgjeret. Arbeidsinntekta di etter at AFP tok slutt er derfor sett til " + inntektEtterOpphoer.format() + " i " + "samsvar med den tidlegare berekninga. Dette beløpet skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() + "."
+                            +"Du har ikkje lagt fram ny dokumentasjon om inntekt som skal haldast utanfor oppgjeret. Arbeidsinntekta di etter at AFP tok slutt er derfor sett til " + inntektEtterOpphoer.format() + " i samsvar med den tidlegare berekninga. Dette beløpet skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() + "."
                         },
                     )
                 }
                 paragraph {
                     text(
                         bokmal {
-                            +"Den faktiske arbeidsinntekten i den perioden du har mottatt AFP er satt til " + inntektIAfpPerioden.format() + ". Dette beløpet er differansen mellom din pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og arbeidsinntekten din etter opphør av AFP på " + inntektEtterOpphoer.format() + "."
+                            +"Den faktiske arbeidsinntekten i den perioden du har mottatt AFP er satt til " + inntektIAfpPerioden.format() + ". Dette beløpet er forskjellen mellom din pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og arbeidsinntekten din etter opphør av AFP på " + inntektEtterOpphoer.format() + "."
                         },
                         nynorsk {
-                            +"Den faktiske arbeidsinntekta i den perioden du har fått AFP er sett til " + inntektIAfpPerioden.format() + ". Dette beløpet er differansen mellom den pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og arbeidsinntekta di etter at AFP tok slutt på " + inntektEtterOpphoer.format() + "."
+                            +"Den faktiske arbeidsinntekta i den perioden du har fått AFP er sett til " + inntektIAfpPerioden.format() + ". Dette beløpet er forskjellen mellom den pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og arbeidsinntekta di etter at AFP tok slutt på " + inntektEtterOpphoer.format() + "."
                         },
                     )
                 }

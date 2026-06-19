@@ -127,10 +127,10 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvar : RedigerbarTemplate<VedtakA
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye opplysninger har du hatt en høyere arbeidsinntekt enn tidligere beregnet i perioder du ikke har hatt rett til AFP. Arbeidsinntekten din for denne perioden er endret i samsvar med disse opplysningene til " + pesysData.inntektFoerUttak.format() + " for perioden før uttak av AFP og " + pesysData.inntektEtterOpphoer.format() + " for perioden etter opphør av AFP. Disse beløpene skal holdes utenfor etteroppgjøret for " + pesysData.oppgjoersAar.format() + "."
+                            +"Du har lagt fram nye opplysninger om inntekten din. Ifølge nye opplysninger har du hatt en høyere arbeidsinntekt enn tidligere beregnet i perioder du ikke har hatt rett til AFP. Arbeidsinntekten din for denne perioden er endret i samsvar med disse opplysningene til " + pesysData.inntektFoerUttak.format() + " for perioden før uttak av AFP og " + pesysData.inntektEtterOpphoer.format() + " for perioden etter opphør av AFP. Disse beløpene skal holdes utenfor etteroppgjøret for " + pesysData.oppgjoersAar.format() + "."
                         },
                         nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye opplysningar har du hatt ei høgare arbeidsinntekt enn tidlegare berekna i periodar der du ikkje har hatt rett til AFP. Arbeidsinntekta di for denne perioden er endra i samsvar med desse opplysningane til " + pesysData.inntektFoerUttak.format() + " for perioden før uttak av AFP og " + pesysData.inntektEtterOpphoer.format() + " for perioden etter at AFP tok slutt. Desse beløpa skal haldast utanfor etteroppgjeret for " + pesysData.oppgjoersAar.format() + "."
+                            +"Du har lagt fram nye opplysningar om inntekta di. Ifølgje nye opplysningar har du hatt ei høgare arbeidsinntekt enn tidlegare berekna i periodar der du ikkje har hatt rett til AFP. Arbeidsinntekta di for denne perioden er endra i samsvar med desse opplysningane til " + pesysData.inntektFoerUttak.format() + " for perioden før uttak av AFP og " + pesysData.inntektEtterOpphoer.format() + " for perioden etter at AFP tok slutt. Desse beløpa skal haldast utanfor etteroppgjeret for " + pesysData.oppgjoersAar.format() + "."
                         },
                     )
                 }
@@ -149,10 +149,10 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvar : RedigerbarTemplate<VedtakA
             paragraph {
                 text(
                     bokmal {
-                        +"Den arbeidsinntekten du har hatt i perioden med AFP, er " + pesysData.avvik.format() + " lavere enn den forventede arbeidsinntekten som ble lagt til grunn ved utbetalingen av pensjonen din i det aktuelle tidsrommet. Dette er mer enn toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + ". Vi har derfor beregnet ny pensjon for perioden."
+                        +"Den arbeidsinntekten du har hatt i perioden med AFP er " + pesysData.avvik.format() + " lavere enn den forventede arbeidsinntekten som ble lagt til grunn ved utbetalingen av pensjonen din i det aktuelle tidsrommet. Dette er mer enn toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + ". Vi har derfor beregnet ny pensjon for perioden."
                     },
                     nynorsk {
-                        +"Den arbeidsinntekta du har hatt i perioden med AFP, er " + pesysData.avvik.format() + " lågare enn den forventa arbeidsinntekta som blei lagd til grunn ved utbetalinga av pensjonen din i det aktuelle tidsrommet. Dette er meir enn toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + ". Vi har derfor berekna ny pensjon for perioden."
+                        +"Den arbeidsinntekta du har hatt i perioden med AFP er " + pesysData.avvik.format() + " lågare enn den forventa arbeidsinntekta som blei lagd til grunn ved utbetalinga av pensjonen din i det aktuelle tidsrommet. Dette er meir enn toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + ". Vi har derfor berekna ny pensjon for perioden."
                     },
                 )
             }
