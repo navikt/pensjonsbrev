@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
+import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerForklaringer
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpTilbakekrevingBody
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
@@ -43,7 +44,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * forventet og faktisk pensjonsgivende inntekt overstiger toleransebeløpet,
  * slik at det blir tilbakekreving av for mye utbetalt AFP. Forklaringen til
  * brukeren har fire periodevarianter avhengig av når AFP er tatt ut / opphørt
- * — se [VedtakAfpEtteroppgjoerTilbakekrevingAutoDto.Periode].
+ * — se [Periode].
  */
 @TemplateModelHelpers
 object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtteroppgjoerTilbakekrevingAutoDto> {
@@ -131,16 +132,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
                         },
                     )
                 }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Den faktiske arbeidsinntekten i den perioden du har mottatt AFP er " + inntektIAfpPerioden.format() + ". Dette beløpet er forskjellen mellom din pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og summen av arbeidsinntektene før uttak av AFP på " + inntektFoerUttak.format() + " og etter opphør av AFP på " + inntektEtterOpphoer.format() + "."
-                        },
-                        nynorsk {
-                            +"Den faktiske arbeidsinntekta i den perioden du har fått AFP er sett til " + inntektIAfpPerioden.format() + ". Dette beløpet er forskjellen mellom den pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " + pensjonsgivendeInntekt.format() + " og summen av arbeidsinntektene før uttak av AFP på " + inntektFoerUttak.format() + " og etter at AFP tok slutt på " + inntektEtterOpphoer.format() + "."
-                        },
-                    )
-                }
+                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenIfuOgIeo(inntektIAfpPerioden = inntektIAfpPerioden, oppgjoersAar = oppgjoersAar, pensjonsgivendeInntekt = pensjonsgivendeInntekt, inntektFoerUttak = inntektFoerUttak, inntektEtterOpphoer = inntektEtterOpphoer))
             }
 
             showIf(periode.equalTo(Periode.OPPHOER_I_AARET)) {

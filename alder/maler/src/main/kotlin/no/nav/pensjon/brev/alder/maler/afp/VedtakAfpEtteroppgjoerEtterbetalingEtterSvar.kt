@@ -100,7 +100,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvar : RedigerbarTemplate<VedtakA
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(pesysData.oppgjoersAar))
 
             showIf(pesysData.scenario.equalTo(Scenario.INGEN_OVERSTYRING_UTTAK_I_AARET)) {
-                includePhrase(AfpEtteroppgjoerForklaringer.IngenNyeOpplysningerOmEndretInntektFoerUttak(pesysData.inntektFoerUttak, pesysData.oppgjoersAar))
+                includePhrase(AfpEtteroppgjoerForklaringer.IngenNyeOpplysningerOmEndretInntektFoerUttak(inntektFoerUttak = pesysData.inntektFoerUttak, oppgjoersAar = pesysData.oppgjoersAar))
                 paragraph {
                     text(
                         bokmal {
@@ -142,8 +142,8 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvar : RedigerbarTemplate<VedtakA
             }
 
             showIf(pesysData.scenario.equalTo(Scenario.KUN_IEO_OVERSTYRT)) {
-                includePhrase(AfpEtteroppgjoerForklaringer.KunIeoOverstyrt(pesysData.inntektEtterOpphoer, pesysData.oppgjoersAar))
-                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIeo(pesysData.inntektIAfpPerioden, pesysData.oppgjoersAar, pesysData.pensjonsgivendeInntekt, pesysData.inntektEtterOpphoer))
+                includePhrase(AfpEtteroppgjoerForklaringer.KunIeoOverstyrt(inntektEtterOpphoer = pesysData.inntektEtterOpphoer, oppgjoersAar = pesysData.oppgjoersAar))
+                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIeo(inntektIAfpPerioden = pesysData.inntektIAfpPerioden, oppgjoersAar = pesysData.oppgjoersAar, pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, inntektEtterOpphoer = pesysData.inntektEtterOpphoer))
             }
 
             paragraph {
