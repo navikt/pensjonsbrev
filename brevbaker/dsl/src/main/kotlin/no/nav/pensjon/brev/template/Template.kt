@@ -74,7 +74,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         attachmentData: Expression<AttachmentData>,
         predicate: Expression<Boolean> = true.expr(),
     ) {
-        attachments.add(IncludeAttachment(attachmentData, template, predicate, vedleggId))
+        _attachments.add(IncludeAttachment(attachmentData, template, predicate, vedleggId))
     }
 
     @RedigerbartVedlegg
@@ -83,7 +83,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         template: AttachmentTemplate<Lang, EmptyVedleggData>,
         predicate: Expression<Boolean> = true.expr(),
     ) {
-        attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate, vedleggId))
+        _attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate, vedleggId))
     }
 
     fun <AttachmentData : VedleggData> includeAttachmentIfNotNull(
