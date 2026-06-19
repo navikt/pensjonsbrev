@@ -45,7 +45,6 @@ fun createInnvilgelseAvAlderspensjonDto() =
             borINorge = false,
             erEOSLand = false,
             erForstegangsbehandletNorgeUtland = false,
-            faktiskBostedsland = null,
             faktiskBostedslandKode = BrevLandmodell.Landkode("CH"),
             fullTrygdtid = false,
             gjenlevendetilleggKap19 = Kroner(0),
