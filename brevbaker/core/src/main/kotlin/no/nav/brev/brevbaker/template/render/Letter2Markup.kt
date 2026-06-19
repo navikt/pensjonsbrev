@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brev.template.render.documentLanguageSettings
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
@@ -75,20 +76,60 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             }
         )
 
-    fun renderAttachmentsOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<Attachment> =
-        renderAttachmentsOnly(RenderContext(scope), template)
+    fun renderAttachmentsOnly(
+        scope: ExpressionScope<*>,
+        template: LetterTemplate<*, *>,
+        redigerteVedlegg: Map<VedleggId, Attachment> = emptyMap(),
+    ): List<Attachment> =
+        renderAttachmentsOnly(RenderContext(scope), template, redigerteVedlegg)
 
-    private fun renderAttachmentsOnly(context: RenderContext, template: LetterTemplate<*, *>): List<Attachment> = buildList {
-        render(context, template.attachments) { attachmentContext, _, attachment ->
+    private fun renderAttachmentsOnly(
+        renderContext: RenderContext,
+        template: LetterTemplate<*, *>,
+        redigerteVedlegg: Map<VedleggId, Attachment> = emptyMap(),
+    ): List<Attachment> = buildList {
+        render(renderContext, template.attachments) { attachmentContext, editableId, attachment ->
+            val override = editableId?.let { redigerteVedlegg[it] }
             add(
-                AttachmentImpl(
-                    renderText(attachmentContext, attachment.title),
-                    renderOutline(attachmentContext, attachment.outline),
-                    attachment.includeSakspart,
-                )
+                if (override != null) {
+                    AttachmentImpl(override.title, override.blocks, override.includeSakspart)
+                } else {
+                    renderAttachment(attachmentContext, attachment)
+                }
             )
         }
     }
+
+    fun renderEditableAttachmentTitles(
+        scope: ExpressionScope<*>,
+        template: LetterTemplate<*, *>,
+    ): Map<VedleggId, List<Text>> = buildMap {
+        render(RenderContext(scope), template.attachments) { attachmentContext, editableId, attachment ->
+            if (editableId != null) {
+                put(editableId, renderText(attachmentContext, attachment.title))
+            }
+        }
+    }
+
+    fun renderEditableAttachment(
+        scope: ExpressionScope<*>,
+        template: LetterTemplate<*, *>,
+        vedleggId: VedleggId,
+    ): Attachment? {
+        render(RenderContext(scope), template.attachments) { attachmentContext, editableId, attachment ->
+            if (editableId == vedleggId) {
+                return renderAttachment(attachmentContext, attachment)
+            }
+        }
+        return null
+    }
+
+    private fun renderAttachment(attachmentContext: RenderContext, attachment: AttachmentTemplate<*, *>): Attachment =
+        AttachmentImpl(
+            renderText(attachmentContext, attachment.title),
+            renderOutline(attachmentContext, attachment.outline),
+            attachment.includeSakspart,
+        )
 
     fun renderPDFTitlesOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<PDFTittel> {
         val context = RenderContext(scope)

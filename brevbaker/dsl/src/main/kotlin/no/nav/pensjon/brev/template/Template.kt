@@ -7,12 +7,17 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.dsl.LiteralOrExpressionBuilder.LiteralOrExpression
 import no.nav.pensjon.brev.template.dsl.TextContentCreator.createTextContent
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.validation.BrevTemplateValidator
+import no.nav.pensjon.brev.template.validation.EmptyValidator
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 
 @LetterTemplateMarker
-class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor() : TemplateGlobalScope<LetterData> {
+class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
+    private val validator: BrevTemplateValidator = EmptyValidator,
+) : TemplateGlobalScope<LetterData> {
     private val _title: MutableList<TextElement<Lang>> = mutableListOf()
     internal val title: List<TextElement<Lang>> get() = _title
     private val _outline: MutableList<OutlineElement<Lang>> = mutableListOf()
@@ -27,7 +32,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     }
 
     fun outline(init: OutlineOnlyScope<Lang, LetterData>.() -> Unit) {
-        _outline.addAll(OutlineOnlyScope<Lang, LetterData>().apply(init).elements)
+        _outline.addAll(OutlineOnlyScope<Lang, LetterData>(validator.subScope()).apply(init).elements)
     }
 
     fun <AttachmentData : VedleggData> includeAttachment(
@@ -50,6 +55,39 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         predicate: Expression<Boolean> = true.expr(),
     ) {
         _attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate))
+    }
+
+    @RequiresOptIn(
+        message = "Redigerbare vedlegg skal kun brukes etter avtale. Bruk @OptIn(RedigerbartVedlegg::class) på malen når bruken er avklart.",
+        level = RequiresOptIn.Level.ERROR,
+    )
+    @Retention(AnnotationRetention.BINARY)
+    @Target(AnnotationTarget.FUNCTION)
+    annotation class RedigerbartVedlegg
+
+    /**
+     * Opt-in: gjør et vedlegg redigerbart. Saksbehandler kan overstyre innholdet i Skribenten,
+     * og overstyringen identifiseres med [vedleggId]. Skal kun brukes for vedlegg som bevisst
+     * gjøres redigerbare (de aller fleste vedlegg skal ikke være det). [vedleggId] må være
+     * stabil og unik innenfor brevet.
+     */
+    @RedigerbartVedlegg
+    fun <AttachmentData : VedleggData> includeAttachmentRedigerbar(
+        vedleggId: VedleggId,
+        template: AttachmentTemplate<Lang, AttachmentData>,
+        attachmentData: Expression<AttachmentData>,
+        predicate: Expression<Boolean> = true.expr(),
+    ) {
+        _attachments.add(IncludeAttachment(attachmentData, template, predicate, vedleggId))
+    }
+
+    @RedigerbartVedlegg
+    fun includeAttachmentRedigerbar(
+        vedleggId: VedleggId,
+        template: AttachmentTemplate<Lang, EmptyVedleggData>,
+        predicate: Expression<Boolean> = true.expr(),
+    ) {
+        _attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate, vedleggId))
     }
 
     fun <AttachmentData : VedleggData> includeAttachmentIfNotNull(

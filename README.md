@@ -55,7 +55,7 @@ docker-compose up -d --build
 
 5. Kjør alle backend-tjenester
    ```bash
-   docker-compose --profile skribenten up -d --build
+   docker compose --profile skribenten up -d --build
    ```
 6. Kjør front-end. Applikasjonen krever at du logger på med en @trygdeetaten.no test bruker med saksbehandler tilganger.
    ```bash

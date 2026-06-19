@@ -25,7 +25,7 @@ object AfpEtteroppgjoerVarselFraser {
 
     /**
      * Den foreløpige beregningen som viser at bruker kan ha fått for mye
-     * utbetalt. Tidsrommet varierer med [periode]-flaggene — samme firedeling
+     * utbetalt. Tidsrommet varierer med periode-flaggene — samme firedeling
      * som fordelingsfrasen
      * [AfpEtteroppgjoerInnhold.InntektFoerUttakInntektEtterOpphoerFordelingPerPeriode].
      */
@@ -175,7 +175,7 @@ object AfpEtteroppgjoerVarselFraser {
                     nynorsk {
                         +"Ved berekninga av pensjonen din la vi til grunn at du ville ha ei forventa " +
                                 "arbeidsinntekt på " + forventetInntekt.format() + ". Etter dei nye berekningane våre " +
-                                "har du hatt ei arbeidsinntekt i den perioden du har fått AFP, som er høgare enn " +
+                                "har du hatt ei arbeidsinntekt i den perioden du har fått AFP som er høgare enn " +
                                 "den arbeidsinntekta som blei lagd til grunn ved utbetalinga av pensjon for " +
                                 oppgjoersAar.format() + ". Denne forskjellen er større enn toleransebeløpet som i " +
                                 "2024 var på 15 000 kroner. Pensjonen din er derfor berekna på nytt og avrekna mot " +

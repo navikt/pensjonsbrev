@@ -87,10 +87,10 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
             paragraph {
                 text(
                     bokmal {
-                        +"Vi viser til vårt forhåndsvarsel om etteroppgjør av avtalefestet pensjon " + "(AFP) for " + pesysData.oppgjoersAar.format() + ". Resultatet av " + "etteroppgjøret viser at du har fått for mye utbetalt."
+                        +"Vi viser til vårt forhåndsvarsel om etteroppgjør av avtalefestet pensjon (AFP) for " + pesysData.oppgjoersAar.format() + ". Resultatet av etteroppgjøret viser at du har fått for mye utbetalt."
                     },
                     nynorsk {
-                        +"Vi viser til førehandsvarselet vårt om etteroppgjer av avtalefesta pensjon " + "(AFP) for " + pesysData.oppgjoersAar.format() + ". Resultatet av " + "etteroppgjeret viser at du har fått for mykje utbetalt."
+                        +"Vi viser til førehandsvarselet vårt om etteroppgjer av avtalefesta pensjon (AFP) for " + pesysData.oppgjoersAar.format() + ". Resultatet av etteroppgjeret viser at du har fått for mykje utbetalt."
                     },
                 )
             }
@@ -119,10 +119,10 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. " + "Dokumentasjonen som foreligger gir ikke tilstrekkelig grunnlag for å " + "godkjenne at din pensjonsgivende inntekt på " + pesysData.pensjonsgivendeInntekt.format() + " for " + pesysData.oppgjoersAar.format() + " helt eller delvis stammer " + "fra før uttak av AFP. Den faktiske arbeidsinntekten din i den perioden " + "du har mottatt AFP, er satt til " + pesysData.inntektIAfpPerioden.format() + "."
+                            +"Du har lagt fram nye opplysninger om inntekten din. Dokumentasjonen som foreligger gir ikke tilstrekkelig grunnlag for å godkjenne at din pensjonsgivende inntekt på " + pesysData.pensjonsgivendeInntekt.format() + " for " + pesysData.oppgjoersAar.format() + " helt eller delvis stammer fra før uttak av AFP. Den faktiske arbeidsinntekten din i den perioden du har mottatt AFP er satt til " + pesysData.inntektIAfpPerioden.format() + "."
                         },
                         nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Dokumentasjonen " + "som ligg føre, gir ikkje godt nok grunnlag for å godkjenne at den " + "pensjonsgivande inntekta di på " + pesysData.pensjonsgivendeInntekt.format() + " for " + pesysData.oppgjoersAar.format() + " heilt eller delvis stammar frå før du " + "tok ut AFP. Den faktiske arbeidsinntekta di i den perioden du har fått " + "AFP, er sett til " + pesysData.inntektIAfpPerioden.format() + "."
+                            +"Du har lagt fram nye opplysningar om inntekta di. Dokumentasjonen som ligg føre, gir ikkje godt nok grunnlag for å godkjenne at den pensjonsgivande inntekta di på " + pesysData.pensjonsgivendeInntekt.format() + " for " + pesysData.oppgjoersAar.format() + " heilt eller delvis stammar frå før du tok ut AFP. Den faktiske arbeidsinntekta di i den perioden du har fått AFP er sett til " + pesysData.inntektIAfpPerioden.format() + "."
                         },
                     )
                 }

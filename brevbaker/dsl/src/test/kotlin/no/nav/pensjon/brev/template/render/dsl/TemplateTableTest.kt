@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.template.render.dsl
 import no.nav.brev.brevbaker.newText
 import no.nav.pensjon.brev.template.ContentOrControlStructure
 import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.InvalidTableDeclarationException
+import no.nav.pensjon.brev.template.validation.InvalidTableDeclarationException
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.text
