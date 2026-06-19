@@ -347,11 +347,13 @@ public abstract class no/nav/pensjon/brev/template/Element : no/nav/pensjon/brev
 }
 
 public abstract class no/nav/pensjon/brev/template/Element$OutlineContent : no/nav/pensjon/brev/template/Element {
+	public abstract fun getStableHashModifier ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph : no/nav/pensjon/brev/template/Element$OutlineContent, no/nav/pensjon/brev/template/StableHash {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getParagraph ()Ljava/util/List;
+	public fun getStableHashModifier ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -518,6 +520,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$Title1 : no/nav/pensjon/brev/template/Element$OutlineContent, no/nav/pensjon/brev/template/StableHash {
 	public fun equals (Ljava/lang/Object;)Z
+	public fun getStableHashModifier ()Ljava/lang/String;
 	public final fun getText ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
@@ -526,6 +529,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Title1 : 
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$Title2 : no/nav/pensjon/brev/template/Element$OutlineContent, no/nav/pensjon/brev/template/StableHash {
 	public fun equals (Ljava/lang/Object;)Z
+	public fun getStableHashModifier ()Ljava/lang/String;
 	public final fun getText ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
@@ -534,6 +538,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Title2 : 
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$Title3 : no/nav/pensjon/brev/template/Element$OutlineContent, no/nav/pensjon/brev/template/StableHash {
 	public fun equals (Ljava/lang/Object;)Z
+	public fun getStableHashModifier ()Ljava/lang/String;
 	public final fun getText ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
@@ -955,6 +960,7 @@ public final class no/nav/pensjon/brev/template/StableHash$Companion {
 	public final fun of (Lno/nav/pensjon/brev/template/StableHash;[Lno/nav/pensjon/brev/template/StableHash;)Lno/nav/pensjon/brev/template/StableHash;
 	public final fun of (Z)Lno/nav/pensjon/brev/template/StableHash;
 	public final fun ofStringMap (Ljava/util/Map;)Lno/nav/pensjon/brev/template/StableHash;
+	public final fun with (Lno/nav/pensjon/brev/template/StableHash;Ljava/lang/String;)Lno/nav/pensjon/brev/template/StableHash;
 }
 
 public abstract interface class no/nav/pensjon/brev/template/TemplateModelSelector : no/nav/pensjon/brev/template/StableHash {
@@ -1138,26 +1144,34 @@ public final class no/nav/pensjon/brev/template/dsl/OutlineOnlyScope : no/nav/pe
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/OutlinePhrase;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
-	public fun paragraph (Lkotlin/jvm/functions/Function1;)V
+	public fun paragraph (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun scopeFactory ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
 	public fun showIf (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public fun title1 (Lkotlin/jvm/functions/Function1;)V
-	public fun title2 (Lkotlin/jvm/functions/Function1;)V
-	public fun title3 (Lkotlin/jvm/functions/Function1;)V
+	public fun title1 (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public fun title2 (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public fun title3 (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface class no/nav/pensjon/brev/template/dsl/OutlineScope {
-	public fun paragraph (Lkotlin/jvm/functions/Function1;)V
-	public fun title1 (Lkotlin/jvm/functions/Function1;)V
-	public fun title2 (Lkotlin/jvm/functions/Function1;)V
-	public fun title3 (Lkotlin/jvm/functions/Function1;)V
+	public fun paragraph (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun paragraph$default (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public fun title1 (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun title1$default (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public fun title2 (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun title2$default (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public fun title3 (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun title3$default (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 }
 
 public final class no/nav/pensjon/brev/template/dsl/OutlineScope$DefaultImpls {
-	public static fun paragraph (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Lkotlin/jvm/functions/Function1;)V
-	public static fun title1 (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Lkotlin/jvm/functions/Function1;)V
-	public static fun title2 (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Lkotlin/jvm/functions/Function1;)V
-	public static fun title3 (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Lkotlin/jvm/functions/Function1;)V
+	public static fun paragraph (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun paragraph$default (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static fun title1 (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun title1$default (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static fun title2 (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun title2$default (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static fun title3 (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public static synthetic fun title3$default (Lno/nav/pensjon/brev/template/dsl/OutlineScope;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 }
 
 public final class no/nav/pensjon/brev/template/dsl/ParagraphOnlyScope : no/nav/pensjon/brev/template/dsl/ControlStructureScope, no/nav/pensjon/brev/template/dsl/ParagraphScope {
