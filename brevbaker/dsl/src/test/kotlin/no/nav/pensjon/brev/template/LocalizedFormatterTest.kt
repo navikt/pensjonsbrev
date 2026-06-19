@@ -43,34 +43,37 @@ class LocalizedFormatterTest {
     @DisplayName("Landnavn-formatering")
     inner class LandnavnFormatering {
 
+        private val landkodeNorge = BrevLandmodell.Landkode("NO")
+
         @Test
         fun `Landnavn returnerer riktig namn på bokmål`() {
-            assertEquals("Norge", LocalizedFormatter.LandnavnFormat.apply(BrevLandmodell.Landkode("NO"), Language.Bokmal))
+            assertEquals("Norge", LocalizedFormatter.LandnavnFormat.apply(landkodeNorge, Language.Bokmal))
         }
 
         @Test
         fun `Landnavn returnerer riktig namn på nynorsk`() {
-            assertEquals("Noreg", LocalizedFormatter.LandnavnFormat.apply(BrevLandmodell.Landkode("NO"), Language.Nynorsk))
+            assertEquals("Noreg", LocalizedFormatter.LandnavnFormat.apply(landkodeNorge, Language.Nynorsk))
         }
 
         @Test
         fun `Landnavn returnerer riktig namn på engelsk`() {
-            assertEquals("Norway", LocalizedFormatter.LandnavnFormat.apply(BrevLandmodell.Landkode("NO"), Language.English))
+            assertEquals("Norway", LocalizedFormatter.LandnavnFormat.apply(landkodeNorge, Language.English))
         }
 
         @Test
         fun `Landnavn handterer lowercase landkode`() {
-            assertEquals("Norge", LocalizedFormatter.LandnavnFormat.apply(BrevLandmodell.Landkode("no"), Language.Bokmal))
-            assertEquals("Noreg", LocalizedFormatter.LandnavnFormat.apply(BrevLandmodell.Landkode("no"), Language.Nynorsk))
-            assertEquals("Norway", LocalizedFormatter.LandnavnFormat.apply(BrevLandmodell.Landkode("no"), Language.English))
+            assertEquals("Norge", LocalizedFormatter.LandnavnFormat.apply(landkodeNorge, Language.Bokmal))
+            assertEquals("Noreg", LocalizedFormatter.LandnavnFormat.apply(landkodeNorge, Language.Nynorsk))
+            assertEquals("Norway", LocalizedFormatter.LandnavnFormat.apply(landkodeNorge, Language.English))
         }
 
         @Test
         fun `format() på Landkode-expression brukar språket frå scope`() {
-            val expr = BrevLandmodell.Landkode("SE").expr().format()
-            assertEquals("Sverige", expr.eval(ExpressionScope(BrevLandmodell.Landkode("SE"), FellesFactory.felles, Language.Bokmal)))
-            assertEquals("Sverige", expr.eval(ExpressionScope(BrevLandmodell.Landkode("SE"), FellesFactory.felles, Language.Nynorsk)))
-            assertEquals("Sweden", expr.eval(ExpressionScope(BrevLandmodell.Landkode("SE"), FellesFactory.felles, Language.English)))
+            val landkodeSverige = BrevLandmodell.Landkode("SE")
+            val expr = landkodeSverige.expr().format()
+            assertEquals("Sverige", expr.eval(ExpressionScope(landkodeSverige, FellesFactory.felles, Language.Bokmal)))
+            assertEquals("Sverige", expr.eval(ExpressionScope(landkodeSverige, FellesFactory.felles, Language.Nynorsk)))
+            assertEquals("Sweden", expr.eval(ExpressionScope(landkodeSverige, FellesFactory.felles, Language.English)))
         }
     }
 }
