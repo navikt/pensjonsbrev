@@ -12,6 +12,7 @@ class RedigertVedlegg(id: EntityID<CompositeID>) : CompositeEntity(id) {
     var vedleggId by RedigertVedleggTable.vedleggId
     var redigertVedlegg by RedigertVedleggTable.redigertVedleggKryptert
         .writeHashTo(RedigertVedleggTable.redigertVedleggKryptertHash)
+    val redigertVedleggHash by RedigertVedleggTable.redigertVedleggKryptertHash
 
     companion object : CompositeEntityClass<RedigertVedlegg>(RedigertVedleggTable)
 }

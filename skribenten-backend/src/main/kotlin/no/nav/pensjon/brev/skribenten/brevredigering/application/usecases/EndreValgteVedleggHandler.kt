@@ -28,11 +28,6 @@ class EndreValgteVedleggHandler(
         val principal = PrincipalInContext.require()
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
 
-        // Om det er endringer i valgte vedlegg, så nullstiller vi dokumentet slik at det må rendres på nytt
-        if (brev.valgteVedlegg != request.alltidValgbareVedlegg) {
-            brev.document = null
-        }
-
         brev.valgteVedlegg = request.alltidValgbareVedlegg
         brev.frigiReservasjon()
 
