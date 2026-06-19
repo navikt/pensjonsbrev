@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.StableHash
@@ -75,9 +76,9 @@ internal abstract class LetterRenderer<R : Any> {
     }
 
     @JvmName("renderAttachments")
-    fun render(context: RenderContext, attachments: List<IncludeAttachment<*, *>>, renderAttachment: (ctx: RenderContext, id: Int, attachment: AttachmentTemplate<*, *>) -> Unit) {
+    inline fun render(context: RenderContext, attachments: List<IncludeAttachment<*, *>>, renderAttachment: (ctx: RenderContext, editableId: VedleggId?, attachment: AttachmentTemplate<*, *>) -> Unit) {
         attachments.filter { it.predicate.eval(context.scope) }
-            .mapIndexed { index, attachment -> renderAttachment(context.createFor(attachment), index, attachment.template) }
+            .forEach { attachment -> renderAttachment(context.createFor(attachment), attachment.editableId, attachment.template) }
     }
 
     abstract fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): R

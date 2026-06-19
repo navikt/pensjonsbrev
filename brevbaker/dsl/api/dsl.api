@@ -655,8 +655,10 @@ public abstract interface class no/nav/pensjon/brev/template/HasModel {
 }
 
 public final class no/nav/pensjon/brev/template/IncludeAttachment : no/nav/pensjon/brev/template/StableHash {
+	public synthetic fun <init> (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getData ()Lno/nav/pensjon/brev/template/Expression;
+	public final fun getEditableId-yHzbr6Y ()Ljava/lang/String;
 	public final fun getPredicate ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun getTemplate ()Lno/nav/pensjon/brev/template/AttachmentTemplate;
 	public fun hashCode ()I
@@ -1336,9 +1338,16 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 	public static synthetic fun includeAttachment$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
 	public final fun includeAttachmentIfNotNull (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun includeAttachmentIfNotNull (Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;Lno/nav/pensjon/brev/template/Expression;)V
+	public final fun includeAttachmentRedigerbar-RWxTZKQ (Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)V
+	public static synthetic fun includeAttachmentRedigerbar-RWxTZKQ$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
+	public final fun includeAttachmentRedigerbar-sE91ttY (Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
+	public static synthetic fun includeAttachmentRedigerbar-sE91ttY$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public final fun outline (Lkotlin/jvm/functions/Function1;)V
 	public final fun title (Lkotlin/jvm/functions/Function1;)V
+}
+
+public abstract interface annotation class no/nav/pensjon/brev/template/dsl/TemplateRootScope$RedigerbartVedlegg : java/lang/annotation/Annotation {
 }
 
 public final class no/nav/pensjon/brev/template/dsl/TemplateTextKt {

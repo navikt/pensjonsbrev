@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.OutlineElement
 import no.nav.pensjon.brev.template.ParagraphContentElement
 import no.nav.pensjon.brev.template.TemplateModelSelector
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -64,7 +65,7 @@ class LetterRendererTest {
         fun publicRender(context: RenderContext, elements: List<ParagraphContentElement<*>>, renderBlock: (context: RenderContext, element: Element.OutlineContent.ParagraphContent<*>) -> Unit) =
             render(context, elements, renderBlock)
 
-        fun publicRenderAttachments(context: RenderContext, attachments: List<IncludeAttachment<*, *>>, renderBlock: (context: RenderContext, id: Int, attachment: AttachmentTemplate<*, *>) -> Unit) =
+        fun publicRenderAttachments(context: RenderContext, attachments: List<IncludeAttachment<*, *>>, renderBlock: (context: RenderContext, editableId: VedleggId?, attachment: AttachmentTemplate<*, *>) -> Unit) =
             render(context, attachments, renderBlock)
     }
 

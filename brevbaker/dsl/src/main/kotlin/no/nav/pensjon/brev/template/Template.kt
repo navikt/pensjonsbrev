@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.template.validation.BrevTemplateValidator
 import no.nav.pensjon.brev.template.validation.EmptyValidator
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 
 @LetterTemplateMarker
@@ -54,6 +55,39 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         predicate: Expression<Boolean> = true.expr(),
     ) {
         _attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate))
+    }
+
+    @RequiresOptIn(
+        message = "Redigerbare vedlegg skal kun brukes etter avtale. Bruk @OptIn(RedigerbartVedlegg::class) på malen når bruken er avklart.",
+        level = RequiresOptIn.Level.ERROR,
+    )
+    @Retention(AnnotationRetention.BINARY)
+    @Target(AnnotationTarget.FUNCTION)
+    annotation class RedigerbartVedlegg
+
+    /**
+     * Opt-in: gjør et vedlegg redigerbart. Saksbehandler kan overstyre innholdet i Skribenten,
+     * og overstyringen identifiseres med [vedleggId]. Skal kun brukes for vedlegg som bevisst
+     * gjøres redigerbare (de aller fleste vedlegg skal ikke være det). [vedleggId] må være
+     * stabil og unik innenfor brevet.
+     */
+    @RedigerbartVedlegg
+    fun <AttachmentData : VedleggData> includeAttachmentRedigerbar(
+        vedleggId: VedleggId,
+        template: AttachmentTemplate<Lang, AttachmentData>,
+        attachmentData: Expression<AttachmentData>,
+        predicate: Expression<Boolean> = true.expr(),
+    ) {
+        _attachments.add(IncludeAttachment(attachmentData, template, predicate, vedleggId))
+    }
+
+    @RedigerbartVedlegg
+    fun includeAttachmentRedigerbar(
+        vedleggId: VedleggId,
+        template: AttachmentTemplate<Lang, EmptyVedleggData>,
+        predicate: Expression<Boolean> = true.expr(),
+    ) {
+        _attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate, vedleggId))
     }
 
     fun <AttachmentData : VedleggData> includeAttachmentIfNotNull(
