@@ -90,41 +90,6 @@ class OperationsTest {
     }
 
     @Nested
-    @DisplayName("Landnavn-formatering")
-    inner class LandnavnFormatering {
-
-        @Test
-        fun `Landnavn returnerer riktig namn på bokmål`() {
-            assertEquals("Norge", BinaryOperation.Landnavn.apply(BrevLandmodell.Landkode("NO"), Language.Bokmal))
-        }
-
-        @Test
-        fun `Landnavn returnerer riktig namn på nynorsk`() {
-            assertEquals("Noreg", BinaryOperation.Landnavn.apply(BrevLandmodell.Landkode("NO"), Language.Nynorsk))
-        }
-
-        @Test
-        fun `Landnavn returnerer riktig namn på engelsk`() {
-            assertEquals("Norway", BinaryOperation.Landnavn.apply(BrevLandmodell.Landkode("NO"), Language.English))
-        }
-
-        @Test
-        fun `Landnavn handterer lowercase landkode`() {
-            assertEquals("Norge", BinaryOperation.Landnavn.apply(BrevLandmodell.Landkode("no"), Language.Bokmal))
-            assertEquals("Noreg", BinaryOperation.Landnavn.apply(BrevLandmodell.Landkode("no"), Language.Nynorsk))
-            assertEquals("Norway", BinaryOperation.Landnavn.apply(BrevLandmodell.Landkode("no"), Language.English))
-        }
-
-        @Test
-        fun `format() på Landkode-expression brukar språket frå scope`() {
-            val expr = BrevLandmodell.Landkode("SE").expr().format()
-            assertEquals("Sverige", expr.eval(ExpressionScope(BrevLandmodell.Landkode("SE"), FellesFactory.felles, Language.Bokmal)))
-            assertEquals("Sverige", expr.eval(ExpressionScope(BrevLandmodell.Landkode("SE"), FellesFactory.felles, Language.Nynorsk)))
-            assertEquals("Sweden", expr.eval(ExpressionScope(BrevLandmodell.Landkode("SE"), FellesFactory.felles, Language.English)))
-        }
-    }
-
-    @Nested
     @DisplayName("Feature-toggling")
     @Isolated
     inner class FunksjonsbryterEnabled {

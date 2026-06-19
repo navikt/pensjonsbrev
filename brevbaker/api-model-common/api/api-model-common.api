@@ -37,7 +37,7 @@ public final class no/nav/brev/BrevLandmodell$Landkode {
 public final class no/nav/brev/BrevLandmodell$Landkoder {
 	public static final field INSTANCE Lno/nav/brev/BrevLandmodell$Landkoder;
 	public final fun formaterLandnavn-nR1mrgk (Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)Ljava/lang/String;
-	public final fun getLandkoderMedNavn ()Ljava/util/List;
+	public final fun getAlleLandkoder ()Ljava/util/Set;
 }
 
 public abstract interface annotation class no/nav/brev/InternKonstruktoer : java/lang/annotation/Annotation {
@@ -509,6 +509,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LanguageCode : java/lang/E
 	public static final field ENGLISH Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
 	public static final field NYNORSK Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun locale ()Ljava/util/Locale;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
 }

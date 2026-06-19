@@ -34,17 +34,10 @@ object BrevLandmodell {
      * Verktøy for å 2-bokstavers landkoder i henhold til iso3166-1 alfa-2.
      */
     object Landkoder {
-        private val alleLandkoder: Set<String> = Locale.getISOCountries(Locale.IsoCountryCode.PART1_ALPHA2)
-        val landkoderMedNavn = alleLandkoder.map { Land(Landkode(it), formaterLandnavn(it)) }
+        val alleLandkoder: Set<String> = Locale.getISOCountries(Locale.IsoCountryCode.PART1_ALPHA2)
 
         fun formaterLandnavn(landkode: Landkode, spraak: LanguageCode): String =
-            when (spraak) {
-                LanguageCode.BOKMAL -> Locale.of("NB", "NO")
-                LanguageCode.NYNORSK -> Locale.of("NN", "NO")
-                LanguageCode.ENGLISH -> Locale.ENGLISH
-            }.let { Locale.of("", landkode.landkode.uppercase()).getDisplayCountry(it) }
-
-        private fun formaterLandnavn(string: String): String = Locale.of("", string).getDisplayCountry(Locale.of("NB", "NO"))
+            Locale.of("", landkode.landkode.uppercase()).getDisplayCountry(spraak.locale())
 
         internal fun isValidLandkode(landkode: String): Boolean =
             landkode.length == 2 && alleLandkoder.contains(landkode.uppercase())
