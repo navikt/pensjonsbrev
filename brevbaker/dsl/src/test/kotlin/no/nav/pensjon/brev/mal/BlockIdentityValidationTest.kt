@@ -151,7 +151,7 @@ class BlockIdentityValidationTest {
             redigerbarMal {
                 title { text(bokmal { +"tittel" }) }
                 outline {
-                    ifNotNull(true.expr(), false.expr()) { e1, e2 ->
+                    ifNotNull(true.expr(), false.expr()) { _, _ ->
                         title1 { text(bokmal { +"hei" }) }
                     }.orIfNotNull(true.expr()) {
                         title1 { text(bokmal { +"hei" }) }
