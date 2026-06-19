@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 internal fun BrevTemplate<*, *>.validator(): BrevTemplateValidator =
     when (this) {
         is AutobrevTemplate<*> -> EmptyValidator
-        is RedigerbarTemplate<*> -> EmptyValidator
+        is RedigerbarTemplate<*> -> RedigerbarTemplateValidator()
     }
 
 internal interface BrevTemplateValidator {

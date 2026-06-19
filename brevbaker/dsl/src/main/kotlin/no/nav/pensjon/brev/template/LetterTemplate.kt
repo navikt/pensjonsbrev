@@ -195,6 +195,8 @@ sealed class Expression<out Out> : StableHash {
 typealias StringExpression = Expression<String>
 
 sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Element<Lang>> : StableHash {
+    abstract fun stableHashOfContent(): List<Int>
+
     class Content<out Lang : LanguageSupport, C : Element<Lang>> internal constructor(
         val content: C,
     ) : ContentOrControlStructure<Lang, C>(), StableHash by StableHash.of(content) {
@@ -204,6 +206,7 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
         }
         override fun hashCode() = Objects.hash(content)
         override fun toString() = "Content(content=$content)"
+        override fun stableHashOfContent(): List<Int> = listOf(content.stableHashCode())
     }
 
     class Conditional<out Lang : LanguageSupport, out C : Element<Lang>> internal constructor(
@@ -217,6 +220,7 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
         }
         override fun hashCode() = Objects.hash(predicate, showIf, showElse)
         override fun toString() = "Conditional(predicate=$predicate, showIf=$showIf, showElse=$showElse)"
+        override fun stableHashOfContent(): List<Int> = (showIf + showElse).flatMap { it.stableHashOfContent() }.distinct()
     }
 
     class ForEach<out Lang : LanguageSupport, C : Element<Lang>, Item : Any> internal constructor(
@@ -230,6 +234,7 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
         }
         override fun hashCode() = Objects.hash(items, body, next)
         override fun toString() = "ForEach(items=$items, body=$body, next=$next)"
+        override fun stableHashOfContent(): List<Int> = body.flatMap { it.stableHashOfContent() }
     }
 }
 

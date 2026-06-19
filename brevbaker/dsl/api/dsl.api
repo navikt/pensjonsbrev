@@ -291,6 +291,7 @@ public final class no/nav/pensjon/brev/template/BrevdataEllerFritekst : no/nav/p
 }
 
 public abstract class no/nav/pensjon/brev/template/ContentOrControlStructure : no/nav/pensjon/brev/template/StableHash {
+	public abstract fun stableHashOfContent ()Ljava/util/List;
 }
 
 public final class no/nav/pensjon/brev/template/ContentOrControlStructure$Conditional : no/nav/pensjon/brev/template/ContentOrControlStructure, no/nav/pensjon/brev/template/StableHash {
@@ -300,6 +301,7 @@ public final class no/nav/pensjon/brev/template/ContentOrControlStructure$Condit
 	public final fun getShowIf ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
+	public fun stableHashOfContent ()Ljava/util/List;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -308,6 +310,7 @@ public final class no/nav/pensjon/brev/template/ContentOrControlStructure$Conten
 	public final fun getContent ()Lno/nav/pensjon/brev/template/Element;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
+	public fun stableHashOfContent ()Ljava/util/List;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -318,6 +321,7 @@ public final class no/nav/pensjon/brev/template/ContentOrControlStructure$ForEac
 	public final fun getNext ()Lno/nav/pensjon/brev/template/Expression$FromScope$Assigned;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
+	public fun stableHashOfContent ()Ljava/util/List;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -1608,6 +1612,10 @@ public final class no/nav/pensjon/brev/template/render/LanguageSettingsKt {
 
 public final class no/nav/pensjon/brev/template/render/UtilsKt {
 	public static final fun fulltNavn (Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles$Bruker;)Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/template/validation/DuplicateBlockIdentity : no/nav/pensjon/brev/template/validation/TemplateValidationException {
+	public fun <init> (Ljava/lang/String;)V
 }
 
 public final class no/nav/pensjon/brev/template/validation/InvalidListDeclarationException : no/nav/pensjon/brev/template/validation/TemplateValidationException {
