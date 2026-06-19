@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -59,7 +58,6 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
 
 sealed interface SpesialkonstruksjonIMal
 
-@OptIn(InterneDataklasser::class)
 internal fun SpesialkonstruksjonIMal.somExpression() = when (this) {
     is Fritekst -> Expression.UnaryInvoke(Literal(str), UnaryOperation.Fritekst)
     is RedigerbarData -> Expression.UnaryInvoke(variabel, UnaryOperation.RedigerbarData)

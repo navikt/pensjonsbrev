@@ -24,7 +24,7 @@ class TemplateTest {
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
-            title.add(bokmalTittel)
+            bokmalTittel()
             outline {
                 title1 {
                     text(bokmal { +"Heisann. " })
@@ -80,7 +80,7 @@ class TemplateTest {
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
-            title.add(bokmalTittel)
+            bokmalTittel()
             includeAttachment(attachment, Expression.Literal(EmptyVedleggData))
         }
 
@@ -124,7 +124,7 @@ class TemplateTest {
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
-            title.add(bokmalTittel)
+            bokmalTittel()
             outline {
                 title1 { text(bokmal { +"jadda" }) }
             }
@@ -158,7 +158,7 @@ class TemplateTest {
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
-            title.add(bokmalTittel)
+            bokmalTittel()
             outline {
                 title1 { text(bokmal { +"Tittel" }) }
                 paragraph {

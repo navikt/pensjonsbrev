@@ -1,41 +1,27 @@
 package no.nav.brev.brevbaker
 
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.request.*
+import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
+import no.nav.brev.brevbaker.template.render.Letter2Markup
+import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.template.AttachmentTemplate
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmal
+import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.LanguageSupport
-import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.LetterImpl
-import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
-import no.nav.brev.brevbaker.template.render.Letter2Markup
-import no.nav.brev.brevbaker.template.toScope
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
-import no.nav.pensjon.brev.api.model.maler.VedleggData
-import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.nio.file.Path
@@ -164,14 +150,12 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
         languages = languages(Bokmal),
         letterMetadata = testLetterMetadata,
     ) {
-        title.add(bokmalTittel)
+        title { text(bokmal { +"test brev" }) }
         outline(function)
     }
 
 fun LetterTemplate<LangBokmal, EmptyAutobrevdata>.renderTestPDF(fileName: String, felles: BrevbakerFelles = FellesFactory.felles, pdfByggerService: PDFByggerService) =
     LetterImpl(this, EmptyAutobrevdata, Bokmal, felles).renderTestPDF(fileName, pdfByggerService = pdfByggerService)
-
-val bokmalTittel = newText(Bokmal to "test brev")
 
 val testLetterMetadata = LetterMetadata(
     displayTitle = "En fin display tittel",

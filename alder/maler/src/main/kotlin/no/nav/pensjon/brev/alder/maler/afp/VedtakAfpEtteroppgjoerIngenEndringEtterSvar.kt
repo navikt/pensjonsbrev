@@ -106,10 +106,10 @@ object VedtakAfpEtteroppgjoerIngenEndringEtterSvar : RedigerbarTemplate<VedtakAf
             paragraph {
                 text(
                     bokmal {
-                        +"Ved beregningen av pensjonen din for " + pesysData.oppgjoersAar.format() + " la vi til " + "grunn at du ville ha en forventet arbeidsinntekt på " + pesysData.forventetPensjonsgivendeInntektBeregnet.format() + ". Differansen mellom denne tidligere medregnede arbeidsinntekten og den " + "arbeidsinntekten du etter vår nye beregning har hatt i perioden, utgjør " + pesysData.avvik.format() + ". Denne differansen er ikke større enn toleransebeløpet " + "som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + "."
+                        +"Ved beregningen av pensjonen din for " + pesysData.oppgjoersAar.format() + " la vi til grunn at du ville ha en forventet arbeidsinntekt på " + pesysData.forventetPensjonsgivendeInntektBeregnet.format() + ". Differansen mellom denne tidligere medregnede arbeidsinntekten og den arbeidsinntekten du etter vår nye beregning har hatt i perioden, utgjør " + pesysData.avvik.format() + ". Denne differansen er ikke større enn toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + "."
                     },
                     nynorsk {
-                        +"Ved berekninga av pensjonen din for " + pesysData.oppgjoersAar.format() + " la vi til " + "grunn at du ville ha ei forventa arbeidsinntekt på " + pesysData.forventetPensjonsgivendeInntektBeregnet.format() + ". Differansen mellom denne tidlegare medrekna arbeidsinntekta og den " + "arbeidsinntekta du etter vår nye berekning har hatt i perioden, utgjer " + pesysData.avvik.format() + ". Denne differansen er ikkje større enn toleransebeløpet " + "som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + "."
+                        +"Ved berekninga av pensjonen din for " + pesysData.oppgjoersAar.format() + " la vi til grunn at du ville ha ei forventa arbeidsinntekt på " + pesysData.forventetPensjonsgivendeInntektBeregnet.format() + ". Differansen mellom denne tidlegare medrekna arbeidsinntekta og den arbeidsinntekta du etter vår nye berekning har hatt i perioden, utgjer " + pesysData.avvik.format() + ". Denne differansen er ikkje større enn toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + "."
                     },
                 )
             }
