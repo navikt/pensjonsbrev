@@ -24,7 +24,7 @@ import no.nav.pensjon.brev.template.dsl.text
 object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         includePhrase(DinePlikter)
-        includePhrase(DuHarRettTilAaKlageSeksUker)
+        includePhrase(DuHarRettTilAaKlageSeksUkerMedLenke)
         includePhrase(DuHarRettTilInnsyn)
         includePhrase(HarDuSpoersmaal.afpEtteroppgjoer)
     }
@@ -159,7 +159,6 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
         }
     }
 
-    /** Tittel «Du har rett til innsyn» + paragraf. */
     object DuHarRettTilInnsyn : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {

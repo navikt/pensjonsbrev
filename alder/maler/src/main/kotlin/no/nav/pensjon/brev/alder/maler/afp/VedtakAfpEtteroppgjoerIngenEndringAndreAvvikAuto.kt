@@ -1,10 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
-import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning.DinePlikter
-import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning.DuHarRettTilInnsyn
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto.Scenario
@@ -134,11 +131,7 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto : AutobrevTemplate<Vedta
                 includePhrase(AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon)
             }
 
-            // TODO: hør om lenken til klage skal være med, om ikke kan vi endre de fire under til frase: AfpEtteroppgjoerAvslutning
-            includePhrase(DinePlikter)
-            includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageSeksUkerMedLenke)
-            includePhrase(DuHarRettTilInnsyn)
-            includePhrase(HarDuSpoersmaal.afpEtteroppgjoer)
+            includePhrase(AfpEtteroppgjoerAvslutning)
         }
     }
 }

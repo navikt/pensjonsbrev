@@ -113,7 +113,6 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvar : RedigerbarTemplat
 
             includePhrase(AfpEtteroppgjoerInnhold.NyBeregningFoererIkkeTilTilbakekreving(pesysData.oppgjoersAar))
 
-            // Avslutning — rettigheter, plikter og kontaktinformasjon (alltid).
             includePhrase(AfpEtteroppgjoerAvslutning)
         }
     }
