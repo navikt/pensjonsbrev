@@ -8,6 +8,9 @@ import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import kotlin.also
 
 class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> internal constructor(val id: String, val displayText: String, val scope: TemplateRootScope<*, LetterData>) {
+    init {
+        require(scope.saksbehandlervalg.containsKey(id).not()) { "Saksbehandlervalg med id $id allerede definert" }
+    }
     fun bool(default: Boolean = false): Expression<Boolean> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
         .bool()
         .also { scope.saksbehandlervalg[id] = SaksbehandlervalgVerdi.Bool(default, displayText) }
