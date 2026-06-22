@@ -3,6 +3,7 @@ package no.nav.brev.brevbaker
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
+import kotlin.jvm.java
 
 class SaksbehandlervalgIDSLTestImpl(override val verdier: Map<String, SaksbehandlervalgVerdi> = emptyMap()) : SaksbehandlervalgIDSL {
     constructor(vararg verdier: Pair<String, SaksbehandlervalgVerdi>) : this(verdier.toMap())
@@ -30,4 +31,10 @@ fun saksbehandlervalgVerdiInteger(verdi: Int?, displayText: String) = Saksbehand
 fun saksbehandlervalgVerdiText(verdi: String?, displayText: String) = SaksbehandlervalgVerdi.Text(
     text = verdi,
     displayText = displayText
+)
+
+inline fun <reified T> saksbehandlervalgVerdiEnum(verdi: T, displayText: String) where T : SaksbehandlerValgEnum, T : Enum<T> = SaksbehandlervalgVerdi.Enum(
+    enum = verdi,
+    displayText = displayText,
+    clazz = T::class.java
 )
