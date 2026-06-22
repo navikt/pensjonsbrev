@@ -73,8 +73,8 @@ object OktMinsteIFUReduksjonsprosent {
             }
             paragraph {
                 text(
-                    bokmal { +"Vi endrer uføretrygden din fordi Stortinget har vedtatt lovendringer som trer i kraft 1. juli 2026, men gjelder fra 1. januar 2026. " },
-                    nynorsk { +"Vi endrar uføretrygda di fordi Stortinget har vedteke lovendringar som trer i kraft 1. juli 2026, men gjeld frå 1. januar 2026. " },
+                    bokmal { +"Vi endrer uføretrygden din fordi Stortinget har vedtatt lovendringer som trer i kraft 1. juli 2026, men gjelder fra 1. januar 2026. Endringene påvirker deg bare hvis du har inntekt over inntektsgrensen ved siden av uføretrygden. Endringene kan føre til at det blir mer lønnsomt for deg å kombinere jobb og uføretrygd. " },
+                    nynorsk { +"Vi endrar uføretrygda di fordi Stortinget har vedteke lovendringar som trer i kraft 1. juli 2026, men gjeld frå 1. januar 2026. Endringane påverkar deg berre hvis du har inntekt over inntektsgrensa ved sida av uføretrygda. Endringane kan føre til at det blir meir lønsamt for deg å kombinere jobb og uføretrygd. " },
                 )
                 table(header = {
                     column { text(bokmal { +"Ny beregning fra " + data.beregningFomDato.format() }, nynorsk { +"Ny berekning frå " + data.beregningFomDato.format() }) }
