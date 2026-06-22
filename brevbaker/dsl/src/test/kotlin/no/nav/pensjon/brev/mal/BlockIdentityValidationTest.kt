@@ -196,6 +196,59 @@ class BlockIdentityValidationTest {
     }
 
     @Test
+    fun `kan ikke ha lik blokk etter en orShowIf`() {
+        assertThrows<DuplicateBlockIdentity> {
+            redigerbarMal {
+                title { text(bokmal { +"tittel" }) }
+                outline {
+                    showIf(true.expr()) {
+                        title1 { text(bokmal { +"A" }) }
+                    }.orShowIf(true.expr()) {
+                        title1 { text(bokmal { +"B" }) }
+                    }
+                    title1 { text(bokmal { +"B" }) }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `kan ikke ha lik blokk etter en orIfNotNull`() {
+        assertThrows<DuplicateBlockIdentity> {
+            redigerbarMal {
+                title { text(bokmal { +"tittel" }) }
+                outline {
+                    showIf(true.expr()) {
+                        title1 { text(bokmal { +"A" }) }
+                    }.orIfNotNull(true.expr()) {
+                        title1 { text(bokmal { +"B" }) }
+                    }
+                    title1 { text(bokmal { +"B" }) }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `kan ikke ha lik blokk etter siste leddet i showIf-rekke`() {
+        assertThrows<DuplicateBlockIdentity> {
+            redigerbarMal {
+                title { text(bokmal { +"tittel" }) }
+                outline {
+                    showIf(true.expr()) {
+                        title1 { text(bokmal { +"A" }) }
+                    }.orIfNotNull(true.expr()) {
+                        title1 { text(bokmal { +"B" }) }
+                    } orShow {
+                        title1 { text(bokmal { +"C" }) }
+                    }
+                    title1 { text(bokmal { +"C" }) }
+                }
+            }
+        }
+    }
+
+    @Test
     fun `kan ikke ha lik blokk i forEach som i outline-root`() {
         assertThrows<DuplicateBlockIdentity> {
             redigerbarMal {

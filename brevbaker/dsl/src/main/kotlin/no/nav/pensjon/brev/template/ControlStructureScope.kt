@@ -9,6 +9,14 @@ sealed interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any,
     @BrevbakerDSLInternal fun addControlStructure(e: ContentOrControlStructure<Lang, C>)
     @BrevbakerDSLInternal val elements: List<ContentOrControlStructure<Lang, C>>
 
+    /**
+     * Registrer innhold i validator som allerede har blitt validert i sin blokk.
+     * Det er nødvendig for ShowElseScope siden etterfølgende or*-blokker evalueres
+     * etter at den ytre ContentOrContructure.Conditional er lagt til, som vil
+     * si at den har en tom muterbar showElse-liste.
+     */
+    @BrevbakerDSLInternal fun registerAddedContent(elements: List<ContentOrControlStructure<Lang, C>>): Unit = Unit
+
     fun showIf(predicate: Expression<Boolean>, showIf: Scope.() -> Unit): ShowElseScope<Lang, LetterData, C, Scope> =
         createElseScope { elseScope ->
             addControlStructure(
@@ -64,5 +72,5 @@ sealed interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any,
 
     private fun createElseScope(block: (elseScope: ShowElseScope<Lang, LetterData, C, Scope>) -> Unit) =
         // For scopeFactory argumentet til `ShowElseScope` lager vi først et nytt scope, slik at ShowElseScope ikke forurenses med det som skjer i `block`-lambda invokasjonen i `also`.
-        ShowElseScope(scopeFactory()::scopeFactory).also(block)
+        ShowElseScope(scopeFactory()::scopeFactory, this).also(block)
 }

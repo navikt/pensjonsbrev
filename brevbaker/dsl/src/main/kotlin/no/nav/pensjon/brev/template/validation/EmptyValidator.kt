@@ -5,4 +5,5 @@ import no.nav.pensjon.brev.template.OutlineElement
 internal object EmptyValidator : BrevTemplateValidator {
     override fun validate(e: OutlineElement<*>) = Unit
     override fun subScope(): BrevTemplateValidator = this
+    override fun addAlreadyValidated(e: OutlineElement<*>) = Unit
 }
