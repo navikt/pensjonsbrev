@@ -1,0 +1,4 @@
+DELETE
+FROM brevredigering
+WHERE id = 270
+  and brevkode = 'PE_FORHAANDSVARSEL_VED_TILBAKEKREVING';
