@@ -152,12 +152,12 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
             }
 
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = false),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true),
                 data.beregning,
                 data.tidligereFamiliepleier,
             )
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = false),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false),
                 data.beregning,
                 data.tidligereFamiliepleier.not(),
             )
