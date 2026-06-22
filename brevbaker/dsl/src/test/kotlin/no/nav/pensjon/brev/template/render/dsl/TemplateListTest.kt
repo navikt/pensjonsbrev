@@ -4,7 +4,7 @@ import no.nav.brev.Listetype
 import no.nav.brev.brevbaker.newText
 import no.nav.pensjon.brev.template.ContentOrControlStructure
 import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.InvalidListDeclarationException
+import no.nav.pensjon.brev.template.validation.InvalidListDeclarationException
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.text

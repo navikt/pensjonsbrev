@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg.pdf
 
+import no.nav.brev.BrevLandmodell
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.P1Dto
 import no.nav.pensjon.brev.model.SakstypeNavn
@@ -12,7 +13,6 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.*
 
 private const val RADER_PER_SIDE = 5
 
@@ -102,16 +102,9 @@ object P1PDFDto {
         }
     }
 
-    private fun String.formaterLandkode(languageCode: LanguageCode): String? =
-        this.formaterLandkode()[languageCode]
-
-    private fun String.formaterLandkode(): Map<LanguageCode, String?> {
-        val country = Locale.of(this, this)
-        return mapOf(
-            BOKMAL to country.getDisplayCountry(Language.Bokmal.locale()),
-            ENGLISH to country.getDisplayCountry(Language.English.locale())
-        )
-    }
+    fun String.formaterLandkode(languageCode: LanguageCode): String? =
+        // this her er egentlig Landkode (som string), bare ikke modellert som det
+        takeIf { it.isNotEmpty() }?.let { BrevLandmodell.Landkode(this).let { BrevLandmodell.Landkoder.formaterLandnavn(it, languageCode) } }
 
     private fun formaterDato(dato: LocalDate?): Map<LanguageCode, String?> = mapOf(
         BOKMAL to dato?.formater(BOKMAL),
@@ -335,10 +328,4 @@ object P1PDFDto {
             },
         )
 
-    fun LanguageCode.locale(): Locale =
-        when (this) {
-            BOKMAL -> Locale.forLanguageTag("no")
-            NYNORSK -> Locale.forLanguageTag("no")
-            ENGLISH -> Locale.UK
-        }
 }

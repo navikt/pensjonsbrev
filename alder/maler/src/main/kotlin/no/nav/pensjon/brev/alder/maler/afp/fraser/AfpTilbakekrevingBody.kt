@@ -45,7 +45,7 @@ object AfpTilbakekrevingBody {
                                 "har fått utbetalt i perioden."
                     },
                     nynorsk {
-                        +"Den arbeidsinntekta du har hatt i perioden med AFP, er " + avvik.format() +
+                        +"Den arbeidsinntekta du har hatt i perioden med AFP er " + avvik.format() +
                                 " høgare enn den forventa arbeidsinntekta som blei lagd til grunn ved " +
                                 "utbetalinga av pensjonen din i det aktuelle tidsrommet. Fordi dette er meir " +
                                 "enn toleransebeløpet som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + ", " +
@@ -187,12 +187,10 @@ object AfpTilbakekrevingBody {
             paragraph {
                 text(
                     bokmal {
-                        +"Dette beløpet er differansen mellom tidligere utbetalt AFP og AFP etter fradrag " +
-                                "for den nye inntekten."
+                        +"Dette beløpet er forskjellen mellom tidligere utbetalt AFP og AFP etter fradrag for den nye inntekten."
                     },
                     nynorsk {
-                        +"Dette beløpet er differansen mellom tidlegare utbetalt AFP og AFP etter frådrag " +
-                                "for den nye inntekta."
+                        +"Dette beløpet er forskjellen mellom tidlegare utbetalt AFP og AFP etter frådrag for den nye inntekta."
                     },
                 )
             }

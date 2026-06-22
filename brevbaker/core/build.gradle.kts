@@ -81,6 +81,7 @@ tasks {
         compileTestKotlin {
             compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
             compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
+            compilerOptions.optIn.add("no.nav.pensjon.brev.template.BrevbakerDSLInternal")
         }
         compileTestFixturesKotlin {
             compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
@@ -91,4 +92,5 @@ tasks {
 
 apiValidation {
     nonPublicMarkers.add("no.nav.brev.InterneDataklasser")
+    nonPublicMarkers.add("no.nav.brev.InternKonstruktoer")
 }

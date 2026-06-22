@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -12,6 +11,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.template.Expression.Literal
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
+import no.nav.pensjon.brev.template.validation.validator
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import kotlin.reflect.KClass
@@ -29,7 +29,7 @@ sealed interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkod
         letterMetadata: LetterMetadata,
         init: TemplateRootScope<Lang, LetterData>.() -> Unit
     ): LetterTemplate<Lang, LetterData> =
-        with(TemplateRootScope<Lang, LetterData>().apply(init)) {
+        with(TemplateRootScope<Lang, LetterData>(validator = validator()).apply(init)) {
             return LetterTemplate(title, letterDataType, languages, outline, attachments, pdfAttachments, letterMetadata)
         }
 }
@@ -59,7 +59,6 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
 
 sealed interface SpesialkonstruksjonIMal
 
-@OptIn(InterneDataklasser::class)
 internal fun SpesialkonstruksjonIMal.somExpression() = when (this) {
     is Fritekst -> Expression.UnaryInvoke(Literal(str), UnaryOperation.Fritekst)
     is RedigerbarData -> Expression.UnaryInvoke(variabel, UnaryOperation.RedigerbarData)
