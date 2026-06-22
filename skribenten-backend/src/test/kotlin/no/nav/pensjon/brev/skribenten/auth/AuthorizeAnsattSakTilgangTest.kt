@@ -13,10 +13,15 @@ import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.MockPrincipal
+import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.initADGroups
+import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Distribusjon
+import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
@@ -24,8 +29,10 @@ import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.time.Instant
 import java.time.LocalDate
 import java.time.Month
 
@@ -66,6 +73,27 @@ private val generellSak0002 = Pen.SakSelection(
 )
 
 
+private fun brevInfo(id: Long, saksId: SaksId) = Dto.BrevInfo(
+    id = BrevId(id),
+    saksId = saksId,
+    vedtaksId = null,
+    opprettetAv = navIdent,
+    opprettet = Instant.now(),
+    sistredigertAv = navIdent,
+    sistredigert = Instant.now(),
+    redigeresAv = null,
+    sistReservert = null,
+    brevkode = Testbrevkoder.INFORMASJONSBREV,
+    laastForRedigering = false,
+    distribusjonstype = Distribusjon.SENTRALPRINT,
+    mottaker = null,
+    avsenderEnhetId = EnhetId("0001"),
+    spraak = LanguageCode.BOKMAL,
+    journalpostId = null,
+    attestertAv = null,
+    status = Dto.BrevStatus.KLADD,
+)
+
 class AuthorizeAnsattSakTilgangTest {
     init {
         initADGroups()
@@ -91,10 +119,19 @@ class AuthorizeAnsattSakTilgangTest {
         override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = saker[saksId]
     }
 
+    private fun lagHentBrevService(brevInfoer: List<Dto.BrevInfo> = emptyList()) = object : HentBrevService {
+        private val brev = brevInfoer.associateBy { it.id }
+        override fun hentBrevForAlleSaker(saksIder: Set<SaksId>) = brevInfoer.filter { it.saksId in saksIder }
+        override fun hentBrevInfo(brevId: BrevId) = brev[brevId]
+    }
+
+    private val defaultHentBrevService = lagHentBrevService()
+
     private fun basicAuthTestApplication(
         principal: MockPrincipal = MockPrincipal(navIdent, "Ansatt, Veldig Bra"),
         penClient: PenClient = defaultPenService,
         pdlService: PdlService = defaultPdlService,
+        hentBrevService: HentBrevService = defaultHentBrevService,
         block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit,
     ): Unit = testApplication {
         install(Authentication) {
@@ -129,6 +166,15 @@ class AuthorizeAnsattSakTilgangTest {
                         val saksId = call.parameters.getOrFail("saksId")
                         call.respond(successResponse(saksId))
                     }
+                    route("/{saksId}/brev/{brevId}") {
+                        install(AuthorizeBrevTilhoererSak) {
+                            this.hentBrevService = hentBrevService
+                        }
+                        get {
+                            val brevId = call.parameters.getOrFail("brevId")
+                            call.respond(successResponse(brevId))
+                        }
+                    }
                 }
             }
         }
@@ -158,6 +204,33 @@ class AuthorizeAnsattSakTilgangTest {
     fun `krever saksId path param`() = basicAuthTestApplication { client ->
         val response = client.get("/sak/noSak/123")
         assertEquals(HttpStatusCode.BadRequest, response.status)
+    }
+
+    @Test
+    fun `gir tilgang til brev som tilhoerer saken`() = basicAuthTestApplication(
+        hentBrevService = lagHentBrevService(listOf(brevInfo(id = 99, saksId = testSak.saksId)))
+    ) { client ->
+        val response = client.get("/sak/${testSak.saksId.id}/brev/99")
+        assertEquals(HttpStatusCode.OK, response.status)
+        assertEquals(successResponse("99"), response.bodyAsText())
+    }
+
+    @Test
+    fun `avviser brev som tilhoerer en annen sak`() = basicAuthTestApplication(
+        hentBrevService = lagHentBrevService(listOf(brevInfo(id = 99, saksId = sakVikafossen.saksId)))
+    ) { client ->
+        val response = client.get("/sak/${testSak.saksId.id}/brev/99")
+        assertEquals(HttpStatusCode.NotFound, response.status)
+        assertEquals("Fant ikke brev", response.bodyAsText())
+    }
+
+    @Test
+    fun `avviser brev som ikke finnes`() = basicAuthTestApplication(
+        hentBrevService = lagHentBrevService(emptyList())
+    ) { client ->
+        val response = client.get("/sak/${testSak.saksId.id}/brev/99")
+        assertEquals(HttpStatusCode.NotFound, response.status)
+        assertEquals("Fant ikke brev", response.bodyAsText())
     }
 
     @Test

@@ -37,6 +37,25 @@ val AuthorizeAnsattSakTilgang =
         }
     }
 
+class AuthorizeBrevTilhoererSakConfiguration {
+    lateinit var hentBrevService: HentBrevService
+}
+
+val AuthorizeBrevTilhoererSak =
+    createRouteScopedPlugin("AuthorizeBrevTilhoererSak", ::AuthorizeBrevTilhoererSakConfiguration) {
+        on(PrincipalInContext.Hook) { call ->
+            if (call.isHandled) return@on
+
+            val saksId = SaksId(call.parameters.getOrFail<Long>(SAKSID_PARAM))
+            val brevId = call.parameters.brevId()
+            val brev = pluginConfig.hentBrevService.hentBrevInfo(brevId)
+            if (brev == null || brev.saksId != saksId) {
+                logger.warn("Tilgang til brev avvist: brev med id $brevId tilhører ikke sak med id $saksId")
+                call.respond(HttpStatusCode.NotFound, "Fant ikke brev")
+            }
+        }
+    }
+
 class AuthorizeAnsattSakTilgangForBrevConfiguration : AuthorizeAnsattSakTilgangConfiguration() {
     lateinit var hentBrevService: HentBrevService
 }

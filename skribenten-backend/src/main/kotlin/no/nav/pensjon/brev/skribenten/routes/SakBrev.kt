@@ -5,6 +5,7 @@ import io.ktor.server.plugins.*
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import no.nav.pensjon.brev.skribenten.auth.AuthorizeBrevTilhoererSak
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.*
@@ -56,6 +57,10 @@ fun Route.sakBrev(
         }
 
         route("/{brevId}") {
+            install(AuthorizeBrevTilhoererSak) {
+                this.hentBrevService = brevredigeringFacade
+            }
+
             get {
                 val brevId = call.parameters.brevId()
                 val reserver = call.request.queryParameters["reserver"].toBoolean()
