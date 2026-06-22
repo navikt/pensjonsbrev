@@ -394,7 +394,7 @@ abstract class BrevredigeringHandlerTestBase {
         val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
         val renderPdfKall = mutableListOf<LetterMarkup>()
         val renderPdfRedigerteVedleggKall = mutableListOf<Map<VedleggId, LetterMarkup.Attachment>>()
-        var renderRedigerbareVedleggResultat: Map<String, LetterMarkup.Attachment> = emptyMap()
+        var renderRedigerbareVedleggResultat: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()
         var harRedigerbareVedleggResultat: Boolean? = null
 
         override suspend fun renderMarkup(
@@ -429,7 +429,7 @@ abstract class BrevredigeringHandlerTestBase {
             brevdata: RedigerbarBrevdata<*, *>,
             felles: BrevbakerFelles,
         ): Map<VedleggId, List<LetterMarkup.ParagraphContent.Text>> =
-            renderRedigerbareVedleggResultat.mapKeys { VedleggId(it.key) }.mapValues { it.value.title }
+            renderRedigerbareVedleggResultat.mapValues { it.value.title }
 
         override suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean =
             harRedigerbareVedleggResultat ?: renderRedigerbareVedleggResultat.isNotEmpty()
@@ -440,7 +440,7 @@ abstract class BrevredigeringHandlerTestBase {
             brevdata: RedigerbarBrevdata<*, *>,
             felles: BrevbakerFelles,
             vedleggId: VedleggId,
-        ): LetterMarkup.Attachment? = renderRedigerbareVedleggResultat[vedleggId.id]
+        ): LetterMarkup.Attachment? = renderRedigerbareVedleggResultat[vedleggId]
 
         override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart) = modelSpecificationResultat
     }

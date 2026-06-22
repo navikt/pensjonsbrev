@@ -208,8 +208,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
 
         return when {
             response.status.isSuccess() ->
-                response.body<Map<String, List<LetterMarkup.ParagraphContent.Text>>>()
-                    .mapKeys { VedleggId(it.key) }
+                response.body<Map<VedleggId, List<LetterMarkup.ParagraphContent.Text>>>()
             else -> throw BrevbakerServiceException(
                 response.bodyAsText().takeIf { it.isNotBlank() }?.let { "${response.status}: $it" }
                     ?: "Ukjent feil oppstod ved generering av redigerbare vedlegg for brevkode: $brevkode"

@@ -101,7 +101,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `hent uten overstyring gir vedlegget slik det produseres fra mal`() {
         val brev = opprettBrev().resultOrFail()
-        brevbakerService.renderRedigerbareVedleggResultat = mapOf("vedlegg1" to attachment("Mal-innhold").toMarkup())
+        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold").toMarkup())
 
         val hentet = hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()
         assertThat(hentet.toMarkup()).isEqualTo(attachment("Mal-innhold").toMarkup())
@@ -240,7 +240,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `hentRedigerbareVedlegg bruker maltittelen naar vedlegget ikke er overstyrt`() {
         val brev = opprettBrev().resultOrFail()
         brevbakerService.renderRedigerbareVedleggResultat =
-            mapOf("vedlegg1" to attachment("Mal-innhold", tittel = "Mal tittel").toMarkup())
+            mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold", tittel = "Mal tittel").toMarkup())
 
         val info = hentRedigerbareVedlegg(brev.info.id).resultOrFail()
 
@@ -253,7 +253,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `hentRedigerbareVedlegg returnerer den redigerte tittelen naar vedlegget er overstyrt`() {
         val brev = opprettBrev().resultOrFail()
         brevbakerService.renderRedigerbareVedleggResultat =
-            mapOf("vedlegg1" to attachment("Mal-innhold", tittel = "Mal tittel").toMarkup())
+            mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold", tittel = "Mal tittel").toMarkup())
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", attachment("Redigert innhold", tittel = "Redigert tittel")))
             .isSuccess()
 
@@ -281,7 +281,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         val brev = opprettBrev().resultOrFail()
         brevbakerService.harRedigerbareVedleggResultat = true
         brevbakerService.renderRedigerbareVedleggResultat =
-            mapOf("vedlegg1" to attachment("Mal-innhold", tittel = "Mal tittel").toMarkup())
+            mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold", tittel = "Mal tittel").toMarkup())
 
         penService.utfoerteHentPesysBrevdataKall.clear()
         val info = hentRedigerbareVedlegg(brev.info.id).resultOrFail()
