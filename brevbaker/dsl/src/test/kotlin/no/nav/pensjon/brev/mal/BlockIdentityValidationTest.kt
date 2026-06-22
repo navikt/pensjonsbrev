@@ -179,6 +179,23 @@ class BlockIdentityValidationTest {
     }
 
     @Test
+    fun `kan ikke ha lik blokk etter en orShow`() {
+        assertThrows<DuplicateBlockIdentity> {
+            redigerbarMal {
+                title { text(bokmal { +"tittel" }) }
+                outline {
+                    showIf(true.expr()) {
+                        title1 { text(bokmal { +"A" }) }
+                    }.orShow {
+                        title1 { text(bokmal { +"B" }) }
+                    }
+                    title1 { text(bokmal { +"B" }) }
+                }
+            }
+        }
+    }
+
+    @Test
     fun `kan ikke ha lik blokk i forEach som i outline-root`() {
         assertThrows<DuplicateBlockIdentity> {
             redigerbarMal {
