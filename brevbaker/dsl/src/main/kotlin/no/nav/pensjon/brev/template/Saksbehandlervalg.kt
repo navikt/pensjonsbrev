@@ -20,7 +20,7 @@ class SaksbehandlervalgWrapper<LetterData : RedigerbarBrevdata<Saksbehandlervalg
         .text()
         .also { scope.saksbehandlervalg[id] = SaksbehandlervalgVerdi.Text(default, displayText) }
 
-    inline fun <reified T : SaksbehandlerValgEnum> enum(default: T? = null): Expression<T?> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
+    inline fun <reified T> enum(default: T? = null): Expression<T?> where T : SaksbehandlerValgEnum, T : Enum<T> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
         .enum<T?>()
         .also { scope.saksbehandlervalg[id] = SaksbehandlervalgVerdi.Enum(default, displayText, T::class.java as Class<out Enum<*>?>) }
 }
