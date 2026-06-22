@@ -26,7 +26,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 
 // Erstatte PE_IY_03_157
-object KlageOrienteringOmOversendelseTilKageinstans :
+object KlageOrienteringOmOversendelseTilKlageinstans :
     RedigerbarTemplate<KlageOrienteringOmOversendelseTilKlageinstansDto> {
 
     override val featureToggle = FeatureToggles.brevmalKlageOrienteringOmOversendelseTilKlageinstans.toggle
