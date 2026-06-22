@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.maler.klageOgAnke
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
-import no.nav.pensjon.brev.api.model.TemplateDescription.*
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmOversendelseTilKlageinstansDto
@@ -11,13 +10,9 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmOversend
 import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmOversendelseTilKlageinstansDtoSelectors.PesysDataSelectors.navnAvsenderEnhet
 import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmOversendelseTilKlageinstansDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KLAGEINSTANS
 import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.*
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
