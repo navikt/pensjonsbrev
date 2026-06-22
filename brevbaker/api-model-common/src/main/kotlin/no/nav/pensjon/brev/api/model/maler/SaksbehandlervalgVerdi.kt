@@ -61,7 +61,3 @@ sealed interface SaksbehandlervalgVerdi {
         override fun hashCode() = Text::class.java.hashCode() + (text?.hashCode() ?: 0)
     }
 }
-
-interface SaksbehandlerValgEnum {
-    val displayText: String
-}
