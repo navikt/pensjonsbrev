@@ -13,7 +13,7 @@ sealed interface SaksbehandlervalgVerdi {
     val type: Type
     val displayText: String
 
-    class Bool(val bool: Boolean, override val displayText: String) : SaksbehandlervalgVerdi {
+    class Bool private constructor(val bool: Boolean, override val displayText: String) : SaksbehandlervalgVerdi {
         override val type = Type.BOOL
         override fun toString() = "SaksbehandlervalgVerdi.Bool(bool=$bool)"
         override fun equals(other: Any?): Boolean {
@@ -22,7 +22,8 @@ sealed interface SaksbehandlervalgVerdi {
         }
         override fun hashCode() = Bool::class.java.hashCode() + bool.hashCode()
     }
-    class Integer(val int: Int?, override val displayText: String) : SaksbehandlervalgVerdi {
+
+    class Integer private constructor(val int: Int?, override val displayText: String) : SaksbehandlervalgVerdi {
         override val type = Type.INTEGER
         override fun toString() = "SaksbehandlervalgVerdi.Integer(int=$int)"
         override fun equals(other: Any?): Boolean {
@@ -31,7 +32,8 @@ sealed interface SaksbehandlervalgVerdi {
         }
         override fun hashCode() = Integer::class.java.hashCode() + (int?.hashCode() ?: 0)
     }
-    class Enum<T : SaksbehandlerValgEnum>(val enum: T?, override val displayText: String, val clazz: Class<out kotlin.Enum<*>?>) : SaksbehandlervalgVerdi {
+
+    class Enum<T : SaksbehandlerValgEnum> private constructor(val enum: T?, override val displayText: String, val clazz: Class<out kotlin.Enum<*>?>) : SaksbehandlervalgVerdi {
         override val type = Type.ENUM
         override fun toString() = "SaksbehandlervalgVerdi.Enum(enum=$enum)"
         override fun equals(other: Any?): Boolean {
@@ -48,7 +50,8 @@ sealed interface SaksbehandlervalgVerdi {
                 value?.let { java.lang.Enum.valueOf(clazz, it) as SaksbehandlerValgEnum }
         }
     }
-    class Text(val text: String?, override val displayText: String) : SaksbehandlervalgVerdi {
+
+    class Text private constructor(val text: String?, override val displayText: String) : SaksbehandlervalgVerdi {
         override val type = Type.TEXT
         override fun toString() = "SaksbehandlervalgVerdi.Text(text=$text)"
         override fun equals(other: Any?): Boolean {

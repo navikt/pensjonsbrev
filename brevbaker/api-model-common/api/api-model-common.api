@@ -293,7 +293,6 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/Saksbehandle
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Bool : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
-	public fun <init> (ZLjava/lang/String;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBool ()Z
 	public fun getDisplayText ()Ljava/lang/String;
@@ -309,7 +308,6 @@ public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$De
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Enum : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
 	public static final field Companion Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Enum$Companion;
-	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum;Ljava/lang/String;Ljava/lang/Class;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getClazz ()Ljava/lang/Class;
 	public fun getDisplayText ()Ljava/lang/String;
@@ -326,7 +324,6 @@ public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$En
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Integer : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
-	public fun <init> (Ljava/lang/Integer;Ljava/lang/String;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getDisplayText ()Ljava/lang/String;
 	public final fun getInt ()Ljava/lang/Integer;
@@ -337,7 +334,6 @@ public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$In
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Text : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getDisplayText ()Ljava/lang/String;
 	public final fun getText ()Ljava/lang/String;
