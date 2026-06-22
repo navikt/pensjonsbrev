@@ -29,6 +29,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDataSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDataSelectors.informasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDataSelectors.innvilgetMindreEnnFireMndEtterDoedsfall
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDataSelectors.nyRedigerbarDelBeregning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDataSelectors.omsRettUtenTidsbegrensning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDataSelectors.tidligereFamiliepleier
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadData
@@ -48,6 +49,7 @@ data class OmstillingsstoenadInnvilgelseData(
     val beregning: OmstillingsstoenadBeregning,
     val erSluttbehandling: Boolean = false,
     val datoVedtakOmgjoering: LocalDate? = null,
+    val nyRedigerbarDelBeregning: Boolean = false,
 ) {
     val informasjonOmOmstillingsstoenadData = InformasjonOmOmstillingsstoenadData(tidligereFamiliepleier, bosattUtland)
 }
@@ -117,12 +119,12 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = true),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = true, nyRedigerbarDel = data.nyRedigerbarDelBeregning),
                 data.beregning,
                 data.tidligereFamiliepleier,
             )
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = true),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = true, nyRedigerbarDel = data.nyRedigerbarDelBeregning),
                 data.beregning,
                 data.tidligereFamiliepleier.not(),
             )
