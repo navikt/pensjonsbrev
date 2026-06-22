@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmOversend
 import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmOversendelseTilKlageinstansDtoSelectors.PesysDataSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmOversendelseTilKlageinstansDtoSelectors.PesysDataSelectors.navnAvsenderEnhet
 import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmOversendelseTilKlageinstansDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KLAGEINSTANS
 import no.nav.pensjon.brev.model.Brevkategori.*
@@ -32,6 +33,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 // Erstatte PE_IY_03_157
 object KlageOrienteringOmOversendelseTilKageinstans :
     RedigerbarTemplate<KlageOrienteringOmOversendelseTilKlageinstansDto> {
+
+    override val featureToggle = FeatureToggles.brevmalKlageOrienteringOmOversendelseTilKlageinstans.toggle
 
     override val kode = PE_KLAGE_ORIENTERING_OM_OVERSENDELSE_KLAGEINSTANS
     override val kategori = KLAGE_OG_ANKE
