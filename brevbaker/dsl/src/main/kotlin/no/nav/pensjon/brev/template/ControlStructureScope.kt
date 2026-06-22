@@ -12,7 +12,7 @@ sealed interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any,
     /**
      * Registrer innhold i validator som allerede har blitt validert i sin blokk.
      * Det er nødvendig for ShowElseScope siden etterfølgende or*-blokker evalueres
-     * etter at den ytre ContentOrContructure.Conditional er lagt til, som vil
+     * etter at den ytre ContentOrControlStructure.Conditional er lagt til, som vil
      * si at den har en tom muterbar showElse-liste.
      */
     @BrevbakerDSLInternal fun registerAddedContent(elements: List<ContentOrControlStructure<Lang, C>>): Unit = Unit
