@@ -200,7 +200,8 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 }
                 derforHarDuIkkeGjenlevenderett(
                     initiertAvBrukerEllerVerge = initiertAvBrukerEllerVerge,
-                    initiertAvNav = initiertAvNav
+                    initiertAvNav = initiertAvNav,
+                    uniqueness = "NasjonalSak",
                 )
             }
 
@@ -209,7 +210,8 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 Under3Eller5Aar(EOSLand)
                 derforHarDuIkkeGjenlevenderett(
                     initiertAvBrukerEllerVerge = initiertAvBrukerEllerVerge,
-                    initiertAvNav = initiertAvNav
+                    initiertAvNav = initiertAvNav,
+                    uniqueness = "EOSSak",
                 )
             }
 
@@ -218,7 +220,8 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 Under3Eller5Aar(Avtaleland)
                 derforHarDuIkkeGjenlevenderett(
                     initiertAvBrukerEllerVerge = initiertAvBrukerEllerVerge,
-                    initiertAvNav = initiertAvNav
+                    initiertAvNav = initiertAvNav,
+                    uniqueness = "AvtaleSak",
                 )
             }
 
@@ -242,7 +245,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                         english { + ", the deceased must have 20 years of residence in Norway or be entitled to a supplementary pension." }
                     )
                 }
-                derforHarDuIkkeGjenlevenderett(initiertAvBrukerEllerVerge, initiertAvNav)
+                derforHarDuIkkeGjenlevenderett(initiertAvBrukerEllerVerge, initiertAvNav, uniqueness = "botid")
             }
 
             // avslagGJRettAPGiftUnder5aarSøknad_001 / avslagGjRettAPVilkårGift5aarNav_001
@@ -478,8 +481,9 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
     private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, AvslagPaaGjenlevenderettIAlderspensjonDto>.derforHarDuIkkeGjenlevenderett(
         initiertAvBrukerEllerVerge: Expression<Boolean>,
         initiertAvNav: Expression<Boolean>,
+        uniqueness: String? = null,
     ) {
-        paragraph {
+        paragraph(uniqueness = uniqueness) {
             showIf(initiertAvBrukerEllerVerge) {
                 text(
                     bokmal { + "Dette har ikke " + saksbehandlerValg.avdoedNavn + ". Derfor har vi avslått søknaden din." },
