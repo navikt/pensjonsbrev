@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -21,9 +22,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object KlageOrienteringOmOversendelseTilKageinstans : RedigerbarTemplate<KlageOrienteringOmOversendelseTilKlageinstansDto> {
 
     override val kode = PE_KLAGE_ORIENTERING_OM_OVERSENDELSE_KLAGEINSTANS
-     override val kategori = KLAGE_OG_ANKE
-     override val brevkontekst = ALLE
-     override val sakstyper: Set<Sakstype> = pensjon
+    override val kategori = KLAGE_OG_ANKE
+    override val brevkontekst = ALLE
+    override val sakstyper: Set<Sakstype> = pensjon
 
     override val template = createTemplate(
         languages = languages(Bokmal, English),
@@ -32,24 +33,19 @@ object KlageOrienteringOmOversendelseTilKageinstans : RedigerbarTemplate<KlageOr
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
-     ) {
-         title {
-             text(
-                 bokmal { +fritekst("ytelse") + " - orientering om oversendelse til klageinstans" },
-                 english { +fritekst("ytelse") + " - indication of forwarding to appeals instance" }
-             )
-         }
+    ) {
+        title { text(bokmal { +"Klage - " + fritekst("ytelse") }, english { +"Appeal - " + fritekst("ytelse") }) }
 
-         outline {
-             paragraph {
-                 text(bokmal { +"Klageren: " }, english { +"Appellant: " })
-                 text(bokmal { +pesysData.navn + " " }, english { +pesysData.navn + " " } )
-                 text(bokmal { +pesysData.foedselsnummer.format() }, english { +pesysData.foedselsnummer.format() })
-             }
-             paragraph {
-                 text(bokmal { +"Klagemotpart: " }, english { +"Other party: " })
-                 text(bokmal { +pesysData.navnAvsenderEnhet }, english { +pesysData.navnAvsenderEnhet })
-             }
-         }
-     }
+        outline {
+            paragraph {
+                text(bokmal { +"Klageren: " }, english { +"Appellant: " })
+                text(bokmal { +pesysData.navn + " " }, english { +pesysData.navn + " " })
+                text(bokmal { +pesysData.foedselsnummer.format() }, english { +pesysData.foedselsnummer.format() })
+            }
+            paragraph {
+                text(bokmal { +"Klagemotpart: " }, english { +"Other party: " })
+                text(bokmal { +pesysData.navnAvsenderEnhet }, english { +pesysData.navnAvsenderEnhet })
+            }
+        }
+    }
 }
