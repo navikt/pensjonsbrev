@@ -924,10 +924,21 @@ public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls 
 	public static fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
+public final class no/nav/pensjon/brev/template/SaksbehandlerValgBuilder {
+	public final fun bool (Z)Lno/nav/pensjon/brev/template/Expression;
+	public static synthetic fun bool$default (Lno/nav/pensjon/brev/template/SaksbehandlerValgBuilder;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getDisplayText ()Ljava/lang/String;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getScope ()Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;
+	public final fun int (Ljava/lang/Integer;)Lno/nav/pensjon/brev/template/Expression;
+	public static synthetic fun int$default (Lno/nav/pensjon/brev/template/SaksbehandlerValgBuilder;Ljava/lang/Integer;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun text (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
+}
+
 public final class no/nav/pensjon/brev/template/SaksbehandlervalgKt {
 	public static final fun bool (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
 	public static final fun int (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
-	public static final fun saksbehandlervalg (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brev/template/SaksbehandlervalgWrapper;
+	public static final fun saksbehandlervalg (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brev/template/SaksbehandlerValgBuilder;
 	public static final fun selector (Ljava/lang/String;)Lno/nav/pensjon/brev/template/SaksbehandlervalgSelector;
 	public static final fun text (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
 }
@@ -949,18 +960,6 @@ public final class no/nav/pensjon/brev/template/SaksbehandlervalgSelector : no/n
 	public fun hashCode ()I
 	public fun stableHashCode ()I
 	public fun toString ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/template/SaksbehandlervalgWrapper {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;)V
-	public final fun bool (Z)Lno/nav/pensjon/brev/template/Expression;
-	public static synthetic fun bool$default (Lno/nav/pensjon/brev/template/SaksbehandlervalgWrapper;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
-	public final fun getDisplayText ()Ljava/lang/String;
-	public final fun getId ()Ljava/lang/String;
-	public final fun getScope ()Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;
-	public final fun int (Ljava/lang/Integer;)Lno/nav/pensjon/brev/template/Expression;
-	public static synthetic fun int$default (Lno/nav/pensjon/brev/template/SaksbehandlervalgWrapper;Ljava/lang/Integer;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
-	public final fun text (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/SimpleSelector : no/nav/pensjon/brev/template/TemplateModelSelector {
