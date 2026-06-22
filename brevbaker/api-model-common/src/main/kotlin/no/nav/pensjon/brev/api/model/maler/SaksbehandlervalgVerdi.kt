@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler
 
+import no.nav.brev.InternKonstruktoer
+
 sealed interface SaksbehandlervalgVerdi {
     enum class Type {
         BOOL, INTEGER, ENUM, TEXT
@@ -13,7 +15,7 @@ sealed interface SaksbehandlervalgVerdi {
     val type: Type
     val displayText: String
 
-    class Bool private constructor(val bool: Boolean, override val displayText: String) : SaksbehandlervalgVerdi {
+    class Bool @InternKonstruktoer constructor(val bool: Boolean, override val displayText: String) : SaksbehandlervalgVerdi {
         override val type = Type.BOOL
         override fun toString() = "SaksbehandlervalgVerdi.Bool(bool=$bool)"
         override fun equals(other: Any?): Boolean {
@@ -23,7 +25,7 @@ sealed interface SaksbehandlervalgVerdi {
         override fun hashCode() = Bool::class.java.hashCode() + bool.hashCode()
     }
 
-    class Integer private constructor(val int: Int?, override val displayText: String) : SaksbehandlervalgVerdi {
+    class Integer @InternKonstruktoer constructor(val int: Int?, override val displayText: String) : SaksbehandlervalgVerdi {
         override val type = Type.INTEGER
         override fun toString() = "SaksbehandlervalgVerdi.Integer(int=$int)"
         override fun equals(other: Any?): Boolean {
@@ -33,7 +35,7 @@ sealed interface SaksbehandlervalgVerdi {
         override fun hashCode() = Integer::class.java.hashCode() + (int?.hashCode() ?: 0)
     }
 
-    class Enum<T : SaksbehandlerValgEnum> private constructor(val enum: T?, override val displayText: String, val clazz: Class<out kotlin.Enum<*>?>) : SaksbehandlervalgVerdi {
+    class Enum<T : SaksbehandlerValgEnum> @InternKonstruktoer constructor(val enum: T?, override val displayText: String, val clazz: Class<out kotlin.Enum<*>?>) : SaksbehandlervalgVerdi {
         override val type = Type.ENUM
         override fun toString() = "SaksbehandlervalgVerdi.Enum(enum=$enum)"
         override fun equals(other: Any?): Boolean {
@@ -42,6 +44,7 @@ sealed interface SaksbehandlervalgVerdi {
         }
         override fun hashCode() = Enum::class.java.hashCode() + (enum?.hashCode() ?: 0)
 
+        @OptIn(InternKonstruktoer::class)
         fun withRawValue(raw: Any?): Enum<*> = Enum(enum = parse(clazz, raw as? String), displayText = displayText, clazz = clazz)
 
         companion object {
@@ -51,7 +54,7 @@ sealed interface SaksbehandlervalgVerdi {
         }
     }
 
-    class Text private constructor(val text: String?, override val displayText: String) : SaksbehandlervalgVerdi {
+    class Text @InternKonstruktoer constructor(val text: String?, override val displayText: String) : SaksbehandlervalgVerdi {
         override val type = Type.TEXT
         override fun toString() = "SaksbehandlervalgVerdi.Text(text=$text)"
         override fun equals(other: Any?): Boolean {

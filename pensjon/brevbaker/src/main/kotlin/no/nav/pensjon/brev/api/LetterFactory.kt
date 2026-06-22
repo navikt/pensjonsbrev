@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api
 
 import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.NotFoundException
+import no.nav.brev.InternKonstruktoer
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
@@ -77,6 +78,7 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
             throw ParseLetterDataException("Could not deserialize letterData: ${e.message}", e)
         }
 
+    @OptIn(InternKonstruktoer::class)
     private fun oppdaterSaksbehandlervalg(
         template: LetterTemplate<*, BrevbakerBrevdata>,
         letterData: BrevbakerBrevdata,

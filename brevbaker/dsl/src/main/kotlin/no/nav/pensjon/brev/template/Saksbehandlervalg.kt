@@ -30,13 +30,14 @@ class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<Saksbehandlervalg
 
 fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg(id: String, displayText: String) = SaksbehandlerValgBuilder(id, displayText, this)
 
+@BrevbakerDSLInternal
 fun <T : SaksbehandlervalgVerdi, D : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> selector(id: String) = SaksbehandlervalgSelector<D, T>(
     propertyName = id,
     propertyType = SaksbehandlervalgVerdi::class.qualifiedName!!,
     selector = { saksbehandlerValg.get(id) }
 )
 
-fun Expression<SaksbehandlervalgVerdi>.bool(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, Boolean> =
+internal fun Expression<SaksbehandlervalgVerdi>.bool(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, Boolean> =
     Expression.UnaryInvoke(this, UnaryOperation.Select(object : TemplateModelSelector<SaksbehandlervalgVerdi, Boolean> {
         override val className = SaksbehandlervalgVerdi::class.qualifiedName!!
         override val propertyName = "bool"
@@ -44,7 +45,7 @@ fun Expression<SaksbehandlervalgVerdi>.bool(): Expression.UnaryInvoke<Saksbehand
         override val selector: SaksbehandlervalgVerdi.() -> Boolean = { this.unwrap() as Boolean }
     }))
 
-fun Expression<SaksbehandlervalgVerdi>.int(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, Int?> =
+internal fun Expression<SaksbehandlervalgVerdi>.int(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, Int?> =
     Expression.UnaryInvoke(this, UnaryOperation.Select(object : TemplateModelSelector<SaksbehandlervalgVerdi, Int?> {
         override val className = SaksbehandlervalgVerdi::class.qualifiedName!!
         override val propertyName = "int"
@@ -52,7 +53,7 @@ fun Expression<SaksbehandlervalgVerdi>.int(): Expression.UnaryInvoke<Saksbehandl
         override val selector: SaksbehandlervalgVerdi.() -> Int? = { this.unwrap() as Int? }
     }))
 
-fun Expression<SaksbehandlervalgVerdi>.text(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, String?> =
+internal fun Expression<SaksbehandlervalgVerdi>.text(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, String?> =
     Expression.UnaryInvoke(this, UnaryOperation.Select(object : TemplateModelSelector<SaksbehandlervalgVerdi, String?> {
         override val className = SaksbehandlervalgVerdi::class.qualifiedName!!
         override val propertyName = "string"
@@ -60,6 +61,7 @@ fun Expression<SaksbehandlervalgVerdi>.text(): Expression.UnaryInvoke<Saksbehand
         override val selector: SaksbehandlervalgVerdi.() -> String? = { this.unwrap() as String? }
     }))
 
+@BrevbakerDSLInternal
 inline fun <reified T : SaksbehandlerValgEnum?> Expression<SaksbehandlervalgVerdi>.enum(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, T?> =
     Expression.UnaryInvoke(this, UnaryOperation.Select(object : TemplateModelSelector<SaksbehandlervalgVerdi, T?> {
         override val className = SaksbehandlervalgVerdi::class.qualifiedName!!

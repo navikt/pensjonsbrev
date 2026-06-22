@@ -16,3 +16,18 @@ fun <T> T.tilSaksbehandlervalgverdiEnum(displayText: String): SaksbehandlervalgV
         displayText = displayText,
         clazz = this::class.java
     )
+
+fun saksbehandlervalgVerdiBool(verdi: Boolean, displayText: String) = SaksbehandlervalgVerdi.Bool(
+    bool = verdi,
+    displayText = displayText
+)
+
+fun saksbehandlervalgVerdiInteger(verdi: Int?, displayText: String) = SaksbehandlervalgVerdi.Integer(
+    int = verdi,
+    displayText = displayText
+)
+
+fun saksbehandlervalgVerdiText(verdi: String?, displayText: String) = SaksbehandlervalgVerdi.Text(
+    text = verdi,
+    displayText = displayText
+)
