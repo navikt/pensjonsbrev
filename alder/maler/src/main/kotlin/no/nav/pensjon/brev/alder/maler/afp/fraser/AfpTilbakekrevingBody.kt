@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.afp.fraser
 
+import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
@@ -40,11 +41,11 @@ object AfpTilbakekrevingBody {
                                 " høyere enn den forventede arbeidsinntekten som ble lagt til grunn ved " +
                                 "utbetalingen av pensjonen din i det aktuelle tidsrommet. Fordi dette er mer " +
                                 "enn toleransebeløpet som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + ", " +
-                                "er pensjonen din beregnet på ny og avregnet mot den pensjonen du allerede " +
+                                "er pensjonen din beregnet på nytt og avregnet mot den pensjonen du allerede " +
                                 "har fått utbetalt i perioden."
                     },
                     nynorsk {
-                        +"Den arbeidsinntekta du har hatt i perioden med AFP, er " + avvik.format() +
+                        +"Den arbeidsinntekta du har hatt i perioden med AFP er " + avvik.format() +
                                 " høgare enn den forventa arbeidsinntekta som blei lagd til grunn ved " +
                                 "utbetalinga av pensjonen din i det aktuelle tidsrommet. Fordi dette er meir " +
                                 "enn toleransebeløpet som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + ", " +
@@ -72,21 +73,61 @@ object AfpTilbakekrevingBody {
                     nynorsk { +"Ny pensjonsberekning" },
                 )
             }
+
             paragraph {
-                text(
-                    bokmal { +"Full AFP (uten fradrag for inntekt): " + fullAfp.format(denominator = false) + " kr" },
-                    nynorsk { +"Full AFP (utan frådrag for inntekt): " + fullAfp.format(denominator = false) + " kr" },
-                )
-                newline()
-                text(
-                    bokmal { +"− Nytt beregnet inntektsfradrag: " + fradragBeregnetArbeidsInntekt.format(denominator = false) + " kr" },
-                    nynorsk { +"− Nytt berekna inntektsfrådrag: " + fradragBeregnetArbeidsInntekt.format(denominator = false) + " kr" },
-                )
-                newline()
-                text(
-                    bokmal { +"= AFP etter fradrag for den nye inntekten: " + korrigertAfp.format(denominator = false) + " kr" },
-                    nynorsk { +"= AFP etter frådrag for den nye inntekta: " + korrigertAfp.format(denominator = false) + " kr" },
-                )
+                table(
+                    header = {
+                        column(columnSpan = 1) {
+                            text(
+                                bokmal {
+                                    +"Beregning"
+                                },
+                                nynorsk {
+                                    +"Berekning"
+                                },
+                            )
+                        }
+                        column(columnSpan = 1) {
+                            text(
+                                bokmal { +"" },
+                                nynorsk { +"" },
+                            )
+                        }
+                    }) {
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Full AFP (uten fradrag for inntekt)" },
+                                nynorsk { +"Full AFP (utan frådrag for inntekt)" },
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(fullAfp))
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"− Nytt beregnet inntektsfradrag" },
+                                nynorsk { +"− Nytt berekna inntektsfrådrag" },
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(fradragBeregnetArbeidsInntekt))
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"= AFP etter fradrag for den nye inntekten" },
+                                nynorsk { +"= AFP etter frådrag for den nye inntekta" },
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(korrigertAfp))
+                        }
+                    }
+                }
             }
         }
     }
@@ -146,30 +187,68 @@ object AfpTilbakekrevingBody {
             paragraph {
                 text(
                     bokmal {
-                        +"Dette beløpet er differansen mellom tidligere utbetalt AFP og AFP etter fradrag " +
-                                "for den nye inntekten."
+                        +"Dette beløpet er forskjellen mellom tidligere utbetalt AFP og AFP etter fradrag for den nye inntekten."
                     },
                     nynorsk {
-                        +"Dette beløpet er differansen mellom tidlegare utbetalt AFP og AFP etter frådrag " +
-                                "for den nye inntekta."
+                        +"Dette beløpet er forskjellen mellom tidlegare utbetalt AFP og AFP etter frådrag for den nye inntekta."
                     },
                 )
             }
+
             paragraph {
-                text(
-                    bokmal { +"Tidligere utbetalt AFP: " + utbetaltAfp.format(denominator = false) + " kr" },
-                    nynorsk { +"Tidlegare utbetalt AFP: " + utbetaltAfp.format(denominator = false) + " kr" },
-                )
-                newline()
-                text(
-                    bokmal { +"− AFP fratrukket nytt beregnet inntektsfradrag: " + korrigertAfp.format(denominator = false) + " kr" },
-                    nynorsk { +"− AFP fråtrekt nytt berekna inntektsfrådrag: " + korrigertAfp.format(denominator = false) + " kr" },
-                )
-                newline()
-                text(
-                    bokmal { +"= For mye utbetalt AFP: " + formyebetalt.format(denominator = false) + " kr" },
-                    nynorsk { +"= For mykje utbetalt AFP: " + formyebetalt.format(denominator = false) + " kr" },
-                )
+                table(
+                    header = {
+                        column(columnSpan = 1) {
+                            text(
+                                bokmal {
+                                    +"Beregning"
+                                },
+                                nynorsk {
+                                    +"Berekning"
+                                },
+                            )
+                        }
+                        column(columnSpan = 1) {
+                            text(
+                                bokmal { +"" },
+                                nynorsk { +"" },
+                            )
+                        }
+                    }) {
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Tidligere utbetalt AFP" },
+                                nynorsk { +"Tidlegare utbetalt AFP" },
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(utbetaltAfp))
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"− AFP fratrukket nytt beregnet inntektsfradrag" },
+                                nynorsk { +"− AFP fråtrekt nytt berekna inntektsfrådrag" },
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(korrigertAfp))
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"= For mye utbetalt AFP" },
+                                nynorsk { +"= For mykje utbetalt AFP" },
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(formyebetalt))
+                        }
+                    }
+                }
             }
         }
     }
@@ -198,14 +277,14 @@ object AfpTilbakekrevingBody {
             paragraph {
                 text(
                     bokmal {
-                        +"Du vil motta et eget brev med betalingsinformasjon. Beløpet skal som hovedregel " +
+                        +"Du vil få et eget brev med betalingsinformasjon. Beløpet skal som hovedregel " +
                                 "betales tilbake i løpet av 12 kalendermåneder, og vil trekkes i den månedlige " +
                                 "utbetalingen din av AFP eller alderspensjon fra folketrygden."
                     },
                     nynorsk {
                         +"Du vil få eit eige brev frå Skatteetaten med betalingsinformasjon. Beløpet skal " +
-                                "som hovudregel betalast tilbake i løpet av 12 kalendermånadar, og vil " +
-                                "trekkast i den månadlege utbetalinga di av AFP eller alderspensjon frå " +
+                                "som hovudregel betalast tilbake i løpet av 12 kalendermånader, og vil " +
+                                "bli trekt i den månadlege utbetalinga di av AFP eller alderspensjon frå " +
                                 "folketrygda."
                     },
                 )
@@ -213,11 +292,11 @@ object AfpTilbakekrevingBody {
             paragraph {
                 text(
                     bokmal {
-                        +"Etter du har mottatt brevet fra Skatteetaten kan du ta kontakt med dem for å " +
+                        +"Etter at du har fått brevet fra Skatteetaten, kan du ta kontakt med dem for å " +
                                 "endre trekkbeløpet."
                     },
                     nynorsk {
-                        +"Etter du har fått brevet frå Skatteetaten kan du ta kontakt med dei for å endre " +
+                        +"Etter at du har fått brevet frå Skatteetaten kan du ta kontakt med dei for å endre " +
                                 "trekkbeløpet."
                     },
                 )

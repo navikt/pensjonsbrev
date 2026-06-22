@@ -58,7 +58,7 @@ abstract class RedigerbarOutlinePhrase<Lang : LanguageSupport> : AbstractOutline
 sealed class AbstractOutlinePhrase<Lang : LanguageSupport> {
     abstract fun OutlineOnlyScope<Lang, Unit>.template()
     fun apply(scope: OutlineOnlyScope<in Lang, *>) {
-        OutlineOnlyScope<Lang, Unit>().apply { template() }.elements
+        OutlineOnlyScope<Lang, Unit>(scope.validator.subScope()).apply { template() }.elements
             .forEach { scope.addOutlineContent(it) }
     }
 }

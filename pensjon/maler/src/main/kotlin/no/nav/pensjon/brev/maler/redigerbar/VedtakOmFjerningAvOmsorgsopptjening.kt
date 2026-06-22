@@ -55,7 +55,7 @@ object VedtakOmFjerningAvOmsorgsopptjening : RedigerbarTemplate<VedtakOmFjerning
                     english { + "You were previously credited with care credits for " + saksbehandlerValg.aktuelleAar + ". Upon reviewing your case, we have become aware that you do not meet the conditions for entitlement to care credits for " + saksbehandlerValg.aktuelleAar + "." }
                 )
             }
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
             paragraph {
                 text(
                     bokmal { + "For å ha rett til omsorgsopptjening er det blant annet et krav at " + fritekst("omsorgsyteren har vært medlem i folketrygden i minst 6 måneder i det aktuelle året / angi evt. annet relevant vilkår") + ". Du har ikke rett til omsorgsopptjening for " + saksbehandlerValg.aktuelleAar + " fordi " + fritekst("du ikke var medlem i folketrygden i minst seks måneder / angi evt. annen årsak") + ". Vedtaket er gjort etter folketrygdloven §§ 3-16 og 20-8." },

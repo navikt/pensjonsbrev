@@ -80,7 +80,7 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
             )
 
 
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
             includePhrase(UngUfoer.EndringMinsteYtelseUngUfoerVed20aar(minsteytelseVedVirkSats))
             includePhrase(Ufoeretrygd.HjemmelSivilstand)
 

@@ -109,7 +109,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
                         nynorsk { +redigerbarData(pesysData.vurdering) } )
                 }
             }
-            paragraph {
+            paragraph(uniqueness = "vurdering1") {
                 text(bokmal { + fritekst("Individuell vurdering") },
                     nynorsk { + fritekst("Individuell vurdering") })
             }
@@ -122,7 +122,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
                 )
             }
 
-            paragraph {
+            paragraph(uniqueness = "vurdering2") {
                 text(bokmal { + fritekst("Individuell vurdering") },
                     nynorsk { + fritekst("Individuell vurdering") })
             }

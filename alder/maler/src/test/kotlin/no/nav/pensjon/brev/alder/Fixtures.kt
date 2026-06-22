@@ -8,18 +8,20 @@ import no.nav.pensjon.brev.alder.maler.afp.createAvslagAfpGammelDto
 import no.nav.pensjon.brev.alder.maler.afp.createAvslagAfpPrivatAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpPrivatEndringDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpPrivatEndringOpptjeningAutoDto
-import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerToleransebeloepDto
-import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerEtterbetalingDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringDto
+import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerEtterbetalingDto
+import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto
 import no.nav.pensjon.brev.alder.maler.afpprivat.createInnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.alder.maler.afpprivat.createInnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpOffentligSektorDto
-import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto
+import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerEtterbetalingAutoDto
-import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto
+import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto
-import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto
+import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringEtterSvarDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerTilbakekrevingAutoDto
+import no.nav.pensjon.brev.alder.maler.afp.createVarselAfpEtteroppgjoerForeloepigAutoDto
+import no.nav.pensjon.brev.alder.maler.afp.createVarselAfpEtteroppgjoerForeloepigDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakEndringAfpOffentligSektorDto
@@ -62,18 +64,20 @@ import no.nav.pensjon.brev.alder.model.afp.AvslagAfpGammelDto
 import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatAutoDto
 import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDto
 import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringOpptjeningAutoDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDto
+import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDto
+import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDto
@@ -142,17 +146,19 @@ object Fixtures : LetterDataFactory {
             AvslagAfpGammelDto::class -> createAvslagAfpGammelDto() as T
             VedtakAfpPrivatEndringOpptjeningAutoDto::class -> createVedtakAfpPrivatEndringOpptjeningAutoDto() as T
             VedtakAfpPrivatEndringDto::class -> createVedtakAfpPrivatEndringDto() as T
-            VedtakAfpEtteroppgjoerToleransebeloepDto::class -> createVedtakAfpEtteroppgjoerToleransebeloepDto() as T
-            VedtakAfpEtteroppgjoerEtterbetalingDto::class -> createVedtakAfpEtteroppgjoerEtterbetalingDto() as T
             VedtakAfpEtteroppgjoerIngenEndringDto::class -> createVedtakAfpEtteroppgjoerIngenEndringDto() as T
+            VedtakAfpEtteroppgjoerEtterbetalingDto::class -> createVedtakAfpEtteroppgjoerEtterbetalingDto() as T
+            VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto::class -> createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto() as T
             InnvilgelseAvAfpDto::class -> createInnvilgelseAvAfpDto() as T
             InnvilgelseAvAfpOffentligSektorDto::class -> createInnvilgelseAvAfpOffentligSektorDto() as T
-            VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto::class -> createVedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto() as T
+            VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto::class -> createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto() as T
             VedtakAfpEtteroppgjoerEtterbetalingAutoDto::class -> createVedtakAfpEtteroppgjoerEtterbetalingAutoDto() as T
-            VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto::class -> createVedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto() as T
+            VedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto::class -> createVedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto() as T
             VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto::class -> createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto() as T
-            VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto::class -> createVedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto() as T
+            VedtakAfpEtteroppgjoerIngenEndringEtterSvarDto::class -> createVedtakAfpEtteroppgjoerIngenEndringEtterSvarDto() as T
             VedtakAfpEtteroppgjoerTilbakekrevingAutoDto::class -> createVedtakAfpEtteroppgjoerTilbakekrevingAutoDto() as T
+            VarselAfpEtteroppgjoerForeloepigAutoDto::class -> createVarselAfpEtteroppgjoerForeloepigAutoDto() as T
+            VarselAfpEtteroppgjoerForeloepigDto::class -> createVarselAfpEtteroppgjoerForeloepigDto() as T
             VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto::class -> createVedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto() as T
             VedtakAfpEtteroppgjoerIngenEndringAutoDto::class -> createVedtakAfpEtteroppgjoerIngenEndringAutoDto() as T
             VedtakEndringAfpOffentligSektorDto::class -> createVedtakEndringAfpOffentligSektorDto() as T

@@ -26,6 +26,7 @@ function Kvittering() {
       context: "sendBrev",
       brevFørHandling: resultat.brevInfo,
       bestillBrevResponse: resultat.status === "success" ? resultat.response! : null,
+      bestillBrevError: resultat.status === "error" ? (resultat.error ?? null) : null,
       attesterResponse: null,
     }),
   );

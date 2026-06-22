@@ -265,7 +265,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                     // I doksys er dette radioknapper
 
                     // endringGradAPOktUFGBegrunn_001
-                    includePhrase(Vedtak.BegrunnelseOverskrift)
+                    includePhrase(Vedtak.BegrunnelseOverskrift(uniqueness = "ut_økt"))
                     paragraph {
                         text(
                             bokmal { + "Fordi uføregraden din har økt, kan du ikke ta ut like mye alderspensjon som før. Vi har derfor redusert alderspensjonen din til " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent, som er den høyest mulige graden." },
@@ -275,7 +275,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                     }
 
                     //  endringGradAPInnvUTBegrunn_001
-                    includePhrase(Vedtak.BegrunnelseOverskrift)
+                    includePhrase(Vedtak.BegrunnelseOverskrift(uniqueness = "ut_innvilget"))
                     paragraph {
                         text(
                             bokmal { + "Fordi du har fått innvilget uføretrygd, kan du ikke ta ut like mye alderspensjon som før. Vi har derfor redusert alderspensjonen din til " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent, som er den høyest mulige graden." },
@@ -285,7 +285,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                     }
                 }.orShow {
                     // endringAPOpptjenBegrunn_001
-                    includePhrase(Vedtak.BegrunnelseOverskrift)
+                    includePhrase(Vedtak.BegrunnelseOverskrift())
                     paragraph {
                         text(
                             bokmal { + "Fordi opptjeningsgrunnlaget ditt er endret kan du ikke lenger ta ut like mye pensjon som før. Vi har derfor redusert alderspensjonen din til " + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent." },

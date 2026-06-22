@@ -87,10 +87,10 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
             paragraph {
                 text(
                     bokmal {
-                        +"Vi viser til vårt forhåndsvarsel om etteroppgjør av avtalefestet pensjon " + "(AFP) for " + pesysData.oppgjoersAar.format() + ". Resultatet av " + "etteroppgjøret viser at du har fått for mye utbetalt."
+                        +"Vi viser til vårt forhåndsvarsel om etteroppgjør av avtalefestet pensjon (AFP) for " + pesysData.oppgjoersAar.format() + ". Resultatet av etteroppgjøret viser at du har fått for mye utbetalt."
                     },
                     nynorsk {
-                        +"Vi viser til førehandsvarselet vårt om etteroppgjer av avtalefesta pensjon " + "(AFP) for " + pesysData.oppgjoersAar.format() + ". Resultatet av " + "etteroppgjeret viser at du har fått for mykje utbetalt."
+                        +"Vi viser til førehandsvarselet vårt om etteroppgjer av avtalefesta pensjon (AFP) for " + pesysData.oppgjoersAar.format() + ". Resultatet av etteroppgjeret viser at du har fått for mykje utbetalt."
                     },
                 )
             }
@@ -106,27 +106,9 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
             }
 
             showIf(pesysData.medlemAvApotekerordningen) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Vedtaket er gjort etter lov om AFP for apotekvirksomhet §3."
-                        },
-                        nynorsk {
-                            +"Vedtaket er gjort etter reglane om AFP for apotekvirksomhet §3."
-                        },
-                    )
-                }
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
             }.orShow {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3 " + "bokstav d, og tilhørende forskrift om kombinasjon av avtalefestet pensjon " + "for medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende " + "inntekt)."
-                        },
-                        nynorsk {
-                            +"Vedtaket er fatta etter reglane om kombinasjon av AFP og arbeidsinntekt i lov " + "om AFP for medlemmer av Statens pensjonskasse paragraf 3 første ledd bokstav " + "d og tilhøyrande forskrift om kombinasjon av AFP og arbeidsinntekt."
-                        },
-                    )
-                }
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
             }
 
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(pesysData.oppgjoersAar))
@@ -137,16 +119,14 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. " + "Dokumentasjonen som foreligger gir ikke tilstrekkelig grunnlag for å " + "godkjenne at din pensjonsgivende inntekt på " + pesysData.pensjonsgivendeInntekt.format() + " for " + pesysData.oppgjoersAar.format() + " helt eller delvis stammer " + "fra før uttak av AFP. Den faktiske arbeidsinntekten din i den perioden " + "du har mottatt AFP, er satt til " + pesysData.inntektIAfpPerioden.format() + "."
+                            +"Du har lagt fram nye opplysninger om inntekten din. Dokumentasjonen som foreligger gir ikke tilstrekkelig grunnlag for å godkjenne at din pensjonsgivende inntekt på " + pesysData.pensjonsgivendeInntekt.format() + " for " + pesysData.oppgjoersAar.format() + " helt eller delvis stammer fra før uttak av AFP. Den faktiske arbeidsinntekten din i den perioden du har mottatt AFP er satt til " + pesysData.inntektIAfpPerioden.format() + "."
                         },
                         nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Dokumentasjonen " + "som ligg føre, gir ikkje godt nok grunnlag for å godkjenne at den " + "pensjonsgivande inntekta di på " + pesysData.pensjonsgivendeInntekt.format() + " for " + pesysData.oppgjoersAar.format() + " heilt eller delvis stammar frå før du " + "tok ut AFP. Den faktiske arbeidsinntekta di i den perioden du har fått " + "AFP, er sett til " + pesysData.inntektIAfpPerioden.format() + "."
+                            +"Du har lagt fram nye opplysningar om inntekta di. Dokumentasjonen som ligg føre, gir ikkje godt nok grunnlag for å godkjenne at den pensjonsgivande inntekta di på " + pesysData.pensjonsgivendeInntekt.format() + " for " + pesysData.oppgjoersAar.format() + " heilt eller delvis stammar frå før du tok ut AFP. Den faktiske arbeidsinntekta di i den perioden du har fått AFP er sett til " + pesysData.inntektIAfpPerioden.format() + "."
                         },
                     )
                 }
-            }
-
-            showIf(pesysData.scenario.equalTo(Scenario.INGEN_OVERSTYRING_UTTAK_I_AARET)) {
+            }.orShowIf(pesysData.scenario.equalTo(Scenario.INGEN_OVERSTYRING_UTTAK_I_AARET)) {
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.IngenNyeOpplysningerOmEndretInntektFoerUttak(
                         inntektFoerUttak = pesysData.inntektFoerUttak, oppgjoersAar = pesysData.oppgjoersAar,
@@ -157,9 +137,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
                         inntektIAfpPerioden = pesysData.inntektIAfpPerioden, oppgjoersAar = pesysData.oppgjoersAar, pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, inntektFoerUttak = pesysData.inntektFoerUttak,
                     )
                 )
-            }
-
-            showIf(pesysData.scenario.equalTo(Scenario.IFU_OVERSTYRT_UTTAK_I_AARET)) {
+            }.orShowIf(pesysData.scenario.equalTo(Scenario.IFU_OVERSTYRT_UTTAK_I_AARET)) {
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakIAaret(
                         inntektFoerUttak = pesysData.inntektFoerUttak, oppgjoersAar = pesysData.oppgjoersAar,
@@ -170,9 +148,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
                         inntektIAfpPerioden = pesysData.inntektIAfpPerioden, oppgjoersAar = pesysData.oppgjoersAar, pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, inntektFoerUttak = pesysData.inntektFoerUttak,
                     )
                 )
-            }
-
-            showIf(pesysData.scenario.equalTo(Scenario.IFU_OVERSTYRT_HEL_AFP)) {
+            }.orShowIf(pesysData.scenario.equalTo(Scenario.IFU_OVERSTYRT_HEL_AFP)) {
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakFoerAaret(
                         inntektFoerUttak = pesysData.inntektFoerUttak, oppgjoersAar = pesysData.oppgjoersAar,
@@ -183,9 +159,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
                         inntektIAfpPerioden = pesysData.inntektIAfpPerioden, oppgjoersAar = pesysData.oppgjoersAar, pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, inntektFoerUttak = pesysData.inntektFoerUttak,
                     )
                 )
-            }
-
-            showIf(pesysData.scenario.equalTo(Scenario.IFU_OG_IEO_OVERSTYRT)) {
+            }.orShowIf(pesysData.scenario.equalTo(Scenario.IFU_OG_IEO_OVERSTYRT)) {
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.IfuOgIeoOverstyrt(
                         inntektFoerUttak = pesysData.inntektFoerUttak, inntektEtterOpphoer = pesysData.inntektEtterOpphoer, oppgjoersAar = pesysData.oppgjoersAar,
@@ -196,9 +170,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
                         inntektIAfpPerioden = pesysData.inntektIAfpPerioden, oppgjoersAar = pesysData.oppgjoersAar, pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, inntektFoerUttak = pesysData.inntektFoerUttak, inntektEtterOpphoer = pesysData.inntektEtterOpphoer,
                     )
                 )
-            }
-
-            showIf(pesysData.scenario.equalTo(Scenario.KUN_IEO_OVERSTYRT)) {
+            }.orShowIf(pesysData.scenario.equalTo(Scenario.KUN_IEO_OVERSTYRT)) {
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.KunIeoOverstyrt(
                         inntektEtterOpphoer = pesysData.inntektEtterOpphoer, oppgjoersAar = pesysData.oppgjoersAar,
@@ -266,11 +238,6 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
             includePhrase(AfpTilbakekrevingBody.SkatteoppgjorParagraph(pesysData.oppgjoersAar))
             includePhrase(AfpTilbakekrevingBody.TilbakebetalingSection)
 
-            // Avslutning — Dine plikter / klage / innsyn / Har du spørsmål.
-            // Klage- og spørsmålsseksjonene gjenbruker fellesfrasene fra
-            // [AfpEtteroppgjoerAvslutning]. Mindre ordlydsavvik fra
-            // Exstream-originalen ("6 uker" → "seks uker" i bokmål/nynorsk,
-            // og manglende komma etter "nav.no") harmoniseres mot fellesfrasen.
             includePhrase(AfpEtteroppgjoerAvslutning.DinePlikter)
             includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageSeksUker)
             paragraph {

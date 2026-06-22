@@ -1,5 +1,6 @@
 package no.nav.brev
 
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import java.util.Locale
 import java.util.Objects
 
@@ -33,10 +34,10 @@ object BrevLandmodell {
      * Verktøy for å 2-bokstavers landkoder i henhold til iso3166-1 alfa-2.
      */
     object Landkoder {
-        private val alleLandkoder: Set<String> = Locale.getISOCountries(Locale.IsoCountryCode.PART1_ALPHA2)
-        val landkoderMedNavn = alleLandkoder.map {
-            Land(Landkode(it), Locale.of("", it).getDisplayCountry(Locale.of("NB", "NO")))
-        }
+        val alleLandkoder: Set<String> = Locale.getISOCountries(Locale.IsoCountryCode.PART1_ALPHA2)
+
+        fun formaterLandnavn(landkode: Landkode, spraak: LanguageCode): String =
+            Locale.of("", landkode.landkode.uppercase()).getDisplayCountry(spraak.locale())
 
         internal fun isValidLandkode(landkode: String): Boolean =
             landkode.length == 2 && alleLandkoder.contains(landkode.uppercase())

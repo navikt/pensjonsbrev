@@ -705,7 +705,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         )
                     }
                 }
-                includePhrase(TBU2412_Generated)
+                includePhrase(TBU2412_Generated(uniqueness = "12_4"))
                 //[TBU2413NN, TBU2413EN, TBU2413]
 
                 paragraph {
@@ -748,14 +748,14 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         english { + "Therefore, we are unable to assess whether illness or injury has caused your earning ability to be permanently reduced." },
                     )
                 }
-                paragraph {
+                paragraph(uniqueness = "12_5_1_i_1") {
                     text(
                         bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd." },
                         nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om uføretrygd." },
                         english { + "You do not meet the requirements, and your application for disability benefit is thus denied." },
                     )
                 }
-                includePhrase(TBU2422_Generated)
+                includePhrase(TBU2422_Generated(uniqueness = "12_5_1_i_1"))
             }
 
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigBehandlingResultat) = "ikke_oppfylt" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigArbeidsrettedeTiltakResultat) = "ikke_oppfylt" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigBehandlingBegrunnelse) = "stdbegr_12_5_1_i_1" AND PE_Vedtaksdata_Kravhode_KravGjelder = "sok_okn_ug") THEN      INCLUDE ENDIF
@@ -789,14 +789,8 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         english { + "Because relevant treatments and employment schemes have not been tried, we cannot conclude whether your earning ability is permanently reduced by more than " + ufoeregradFritekst + " percent." },
                     )
                 }
-                paragraph {
-                    text(
-                        bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføretrygd." },
-                        nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om auka uføretrygd." },
-                        english { + "You do not meet the requirements, and your application for disability benefit is thus denied." },
-                    )
-                }
-                includePhrase(TBU2423_Generated)
+                includePhrase(TBU2443_Generated(uniqueness = "12_5_1_i_1"))
+                includePhrase(TBU2423_Generated(uniqueness = "12_5_1_i_1"))
             }
 
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigBehandlingResultat) = "ikke_oppfylt" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigArbeidsrettedeTiltakResultat) = "ikke_oppfylt" AND FF_GetArrayElement_String(PE_Vedtaksdata_Kravhode_Kravlinjeliste_Kravlinje_Kravlinjetype) = "ut" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigBehandlingBegrunnelse) = "stdbegr_12_5_1_i_2" AND PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_okn_ug") THEN      INCLUDE ENDIF
@@ -829,14 +823,14 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         english { + "It is therefore too early to conclude whether illness or injury has caused your earning ability to be permanently reduced." },
                     )
                 }
-                paragraph {
+                paragraph(uniqueness = "12_5_1_i_2") {
                     text(
                         bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd." },
                         nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om uføretrygd." },
                         english { + "You do not meet the requirements, and your application for disability benefit is thus denied." },
                     )
                 }
-                includePhrase(TBU2422_Generated)
+                includePhrase(TBU2422_Generated(uniqueness = "12_5_1_i_2"))
             }
 
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigBehandlingResultat) = "ikke_oppfylt" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigArbeidsrettedeTiltakResultat) = "ikke_oppfylt" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigBehandlingBegrunnelse) = "stdbegr_12_5_1_i_2" AND PE_Vedtaksdata_Kravhode_KravGjelder = "sok_okn_ug") THEN      INCLUDE ENDIF
@@ -870,14 +864,8 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         english { + "It is likely that you, in the future, can be more active and complete employment schemes. We can therefore not conclude whether your earning ability is permanently reduced by more than " + ufoeregradFritekst + " percent." },
                     )
                 }
-                paragraph {
-                    text(
-                        bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføretrygd." },
-                        nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om auka uføretrygd." },
-                        english { + "You do not meet the requirements, and your application for increased disability benefit is thus denied." },
-                    )
-                }
-                includePhrase(TBU2423_Generated)
+                includePhrase(TBU2443_Generated(uniqueness = "12_5_1_i_2"))
+                includePhrase(TBU2423_Generated(uniqueness = "12_5_1_i_2"))
             }
 
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigBehandlingResultat) = "oppfylt" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigArbeidsrettedeTiltakResultat) = "ikke_oppfylt" AND FF_GetArrayElement_String(PE_Vedtaksdata_Kravhode_Kravlinjeliste_Kravlinje_Kravlinjetype) = "ut" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigArbeidsrettedeTiltakBegrunnelse) = "stdbegr_12_5_2_i_1" AND PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_okn_ug") THEN      INCLUDE ENDIF
@@ -910,14 +898,14 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         english { + "It is therefore too early to conclude on the degree to which your earning ability has been permanently reduced, and whether the reduction is due to illness or injury." },
                     )
                 }
-                paragraph {
+                paragraph(uniqueness = "12_5_2_i_1") {
                     text(
                         bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd." },
                         nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om uføretrygd." },
                         english { + "You do not meet the requirements, and your application for disability benefit is thus denied." },
                     )
                 }
-                includePhrase(TBU2422_Generated)
+                includePhrase(TBU2422_Generated(uniqueness = "12_5_2_i_1"))
             }
 
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigBehandlingResultat) = "oppfylt" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigArbeidsrettedeTiltakResultat) = "ikke_oppfylt" AND PE_Vedtaksdata_Kravhode_KravGjelder = "sok_okn_ug" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigArbeidsrettedeTiltakBegrunnelse) = "stdbegr_12_5_2_i_1") THEN      INCLUDE ENDIF
@@ -952,14 +940,8 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         english { + "There are no obvious reasons why you cannot complete employment schemes. We can therefore not conclude whether your earning ability is permanently reduced by more than " + ufoeregradFritekst + " percent." },
                     )
                 }
-                paragraph {
-                    text(
-                        bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføretrygd." },
-                        nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om auka uføretrygd." },
-                        english { + "You do not meet the requirements, and your application for increased disability benefit is thus denied." },
-                    )
-                }
-                includePhrase(TBU2423_Generated)
+                includePhrase(TBU2443_Generated(uniqueness = "12_5_2_i_1"))
+                includePhrase(TBU2423_Generated(uniqueness = "12_5_2_i_1"))
             }
 
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigBehandlingResultat) = "oppfylt" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigArbeidsrettedeTiltakResultat) = "ikke_oppfylt" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigArbeidsrettedeTiltakBegrunnelse) = "stdbegr_12_5_2_i_2" AND FF_GetArrayElement_String(PE_Vedtaksdata_Kravhode_Kravlinjeliste_Kravlinje_Kravlinjetype) = "ut" AND PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_okn_ug") THEN      INCLUDE ENDIF
@@ -986,21 +968,21 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         english { + "Given the information available in this case, we have concluded that you have completed all relevant treatment. However, you have not completed all relevant employment schemes, nor tried another line of work, which could improve your chances of earning an income in the job market. There are no obvious reasons why you cannot participate in more employment schemes." },
                     )
                 }
-                paragraph {
+                paragraph(uniqueness = "12_5_2_i_2") {
                     text(
                         bokmal { + "Det er derfor for tidlig å ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt, og om dette skyldes sykdom eller skade." },
                         nynorsk { + "Det er derfor for tidleg å ta stilling til i kor stor grad inntektsevna di er varig sett ned, og om dette kjem av sjukdom eller skade." },
                         english { + "It is therefore too early to conclude on the degree to which your earning ability has been permanently reduced, and whether the reduction is due to illness or injury." },
                     )
                 }
-                paragraph {
+                paragraph(uniqueness = "12_5_2_i_2") {
                     text(
                         bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd." },
                         nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om uføretrygd." },
                         english { + "You do not meet the requirements, and your application for disability benefit is thus denied." },
                     )
                 }
-                includePhrase(TBU2422_Generated)
+                includePhrase(TBU2422_Generated(uniqueness = "12_5_2_i_2"))
             }
 
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigBehandlingResultat) = "oppfylt" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigArbeidsrettedeTiltakResultat) = "ikke_oppfylt" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigArbeidsrettedeTiltakBegrunnelse) = "stdbegr_12_5_2_i_2" AND PE_Vedtaksdata_Kravhode_KravGjelder = "sok_okn_ug") THEN      INCLUDE ENDIF
@@ -1013,7 +995,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
             ) {
                 //[TBU2421NN, TBU2421EN, TBU2421]
 
-                paragraph {
+                paragraph(uniqueness = "12_5_2_i_2") {
                     val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
                     text(
                         bokmal { + begrunnelseFritekst + ". " },
@@ -1034,14 +1016,8 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         english { + "We can therefore not conclude whether your earning ability is permanently reduced by more than " + ufoeregradFritekst + " percent." },
                     )
                 }
-                paragraph {
-                    text(
-                        bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføretrygd." },
-                        nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om auka uføretrygd." },
-                        english { + "You do not meet the requirements, and your application for increased disability benefit is thus denied." },
-                    )
-                }
-                includePhrase(TBU2423_Generated)
+                includePhrase(TBU2443_Generated(uniqueness = "12_5_2_i_2"))
+                includePhrase(TBU2423_Generated(uniqueness = "12_5_2_i_2"))
             }
 
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigArbeidsrettedeTiltakResultat) <> "ikke_oppfylt" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_HensiktsmessigBehandlingResultat) <> "ikke_oppfylt" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_SykdomSkadeLyteResultat) = "ikke_oppfylt") THEN      INCLUDE ENDIF
@@ -1082,7 +1058,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                             english { + "Therefore, we cannot conclude on the degree to which your earning ability has been permanently reduced." },
                         )
                     }
-                    paragraph {
+                    paragraph(uniqueness = "12_6_1_i_1") {
                         text(
                             bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd." },
                             nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om uføretrygd." },
@@ -1114,14 +1090,14 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                             english { + "Given the information available in this case, we have concluded that you have an illness that has caused your functional ability to be reduced. However, it has not been documented that your illness is the primary cause behind your reduced functional ability." },
                         )
                     }
-                    paragraph {
+                    paragraph(uniqueness = "12_6_1_i_2") {
                         text(
                             bokmal { + "Vi kan derfor ikke ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt." },
                             nynorsk { + "Vi kan derfor ikkje ta stilling til i kor stor grad inntektsevna di er varig sett ned." },
                             english { + "Therefore, we cannot conclude on the degree to which your earning ability has been permanently reduced." },
                         )
                     }
-                    paragraph {
+                    paragraph(uniqueness = "12_6_1_i_2") {
                         text(
                             bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd." },
                             nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om uføretrygd." },
@@ -1155,7 +1131,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         ""
                     ))
                 ) {
-                    includePhrase(TBU2427_Generated)
+                    includePhrase(TBU2427_Generated(uniqueness = "12_6_12_7"))
                 }
 
                 //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_NedsattInntektsevneBegrunnelse) <> "" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "endring_ifu" AND PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_uu" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse) <> "stdbegr_12_17_1_i_1" AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_NedsattInntektsevneBegrunnelse(1) <> "stdbegr_12_7_2_i_4") THEN      INCLUDE ENDIF
@@ -1376,7 +1352,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     ) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat()
                         .equalTo("ikke_vurdert") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().equalTo("")))
                 ) {
-                    includePhrase(TBU2412_Generated)
+                    includePhrase(TBU2412_Generated(uniqueness = "12_7_yrkesskade_ikke_vurdert"))
                 }
 
                 //IF( PE_Vedtaksdata_Kravhode_KravGjelder = "sok_okn_ug"  AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_NedsattInntektsevneBegrunnelse(1) <> ""  AND PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_ys"   AND  (PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) = "ikke_vurdert"  OR PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) = "")  ) THEN      INCLUDE ENDIF
@@ -1387,7 +1363,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         .notEqualTo("sok_ys") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat()
                         .equalTo("ikke_vurdert") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().equalTo("")))
                 ) {
-                    includePhrase(TBU2443_Generated)
+                    includePhrase(TBU2443_Generated(uniqueness = "12_7_okn_ug_yrkesskade_ikke_vurdert"))
                 }
 
                 //IF( FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_NedsattInntektsevneBegrunnelse) <> ""  AND  FF_GetArrayElement_String(PE_Vedtaksdata_Kravhode_Kravlinjeliste_Kravlinje_Kravlinjetype) = "ut"  AND  PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_ys"  AND  PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_uu"  AND  PE_Vedtaksdata_Kravhode_KravArsakType <> "endring_ifu"  AND  PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_okn_ug"  AND  FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_AlderResultat) = "oppfylt"   AND  ( PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) = "ikke_vurdert"  OR PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) = "" )  ) THEN      INCLUDE ENDIF
@@ -1432,7 +1408,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
                 //PE_Vedtaksdata_Kravhode_KravGjelder = "sok_ys"
                 showIf(pe.vedtaksdata_kravhode_kravgjelder().equalTo("sok_ys")) {
-                    includePhrase(TBU2427_Generated)
+                    includePhrase(TBU2427_Generated(uniqueness = "sok_ys"))
                 }
 
                 //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_NedsattInntektsevneBegrunnelse) = "stdbegr_12_7_2_i_3" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "oppfylt" AND FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_YrkesskadeGrad) < 30 AND FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_YrkesskadeGrad) > 0 AND FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) < 30 AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse(1) = "stdbegr_12_17_1_o_1") THEN      INCLUDE ENDIF
@@ -1555,7 +1531,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         .notEqualTo("sok_ys") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat()
                         .notEqualTo("ikke_vurdert") and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().notEqualTo("")))
                 ) {
-                    includePhrase(TBU2412_Generated)
+                    includePhrase(TBU2412_Generated(uniqueness = "12_7_yrkesskade_vurdert"))
                 }
 
                 //IF( FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_NedsattInntektsevneResultat) = "ikke_oppfylt" AND PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_ys"  AND (PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) <> "ikke_vurdert" AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) <> "")  ) THEN      INCLUDE ENDIF
