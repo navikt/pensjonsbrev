@@ -14,10 +14,12 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
@@ -54,6 +56,7 @@ object OktMinsteIFUReduksjonsprosent {
 
     data class Outline(val data: Brevdata) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            val endringUtEllerTillegg = data.endringNettoUforetrygdUtenTillegg or data.endringNettoBarnetillegg or data.endringNettoGjenlevendetillegg
 
             title1 {
                 showIf(data.etterbetalingJuli.greaterThan(0) or data.endringNettoUforetrygdUtenTillegg or data.endringNettoBarnetillegg or data.endringNettoGjenlevendetillegg) {
@@ -411,7 +414,7 @@ object OktMinsteIFUReduksjonsprosent {
                         nynorsk { +"Har du gjeld som Skatteetaten krev inn, kan pengane frå etterbetalinga gå til å dekke gjelda. Eksempel på gjeld kan vere bidrags- eller feilutbetalingsgjeld hos Nav og refusjonskrav hos tenestepensjonsordning." },
                     )
                 }
-            }.orShowIf(data.etterbetalingJuli.equalTo(0)) {
+            }.orShowIf(data.etterbetalingJuli.equalTo(0) and not(endringUtEllerTillegg)) {
                 title2 {
                     text(
                         bokmal { +"For deg betyr dette" },
@@ -422,6 +425,19 @@ object OktMinsteIFUReduksjonsprosent {
                     text(
                         bokmal { +"For deg påvirker ikke dette utbetalingen din." },
                         nynorsk { +"For deg påverkar ikkje dette utbetalinga di." },
+                    )
+                }
+            }.orShow {
+                title2 {
+                    text(
+                        bokmal { +"For deg betyr dette" },
+                        nynorsk { +"For deg betyr dette" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i beregningene av uføretrygden din. Når lovendringen trer i kraft, skal ny reduksjonsprosent ha virkning tilbake i tid fra 1. januar i år." },
+                        nynorsk { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny reduksjonsprosent ha tilbakeverkande kraft frå 1. januar i år." },
                     )
                 }
             }
