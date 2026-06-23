@@ -20,7 +20,10 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
             omregnetTilEnsligISammeVedtak = true,
             brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar = true,
             avdoedeHarRedusertTrygdetidEllerPoengaar = true,
-            etterbetaling = true
+            etterbetaling = true,
+            okningBelop = true,
+            ingenEndringBelop = false,
+            oktTilleggMpn = false
         ),
         pesysData = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData(
             avdod = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.Avdod(

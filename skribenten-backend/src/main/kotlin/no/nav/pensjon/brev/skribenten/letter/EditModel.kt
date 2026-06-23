@@ -63,6 +63,13 @@ object Edit {
         )
     }
 
+    data class Attachment(
+        val title: Title,
+        val blocks: List<Edit.Block>,
+        val deletedBlocks: Set<Int>,
+        val includeSakspart: Boolean,
+    )
+
     interface Identifiable {
         val id: Int?
         val parentId: Int?
@@ -250,6 +257,14 @@ object Edit {
 fun LetterMarkup.toEdit(): Edit.Letter =
     Edit.Letter(Edit.Title(title.toEdit(null)), sakspart, blocks.toEdit(), signatur, emptySet())
 
+fun LetterMarkup.Attachment.toEdit(): Edit.Attachment =
+    Edit.Attachment(
+        title = Edit.Title(title.toEdit(null)),
+        blocks = blocks.toEdit(),
+        deletedBlocks = emptySet(),
+        includeSakspart = includeSakspart,
+    )
+
 fun List<Block>.toEdit(): List<Edit.Block> =
     map { it.toEdit() }
 
@@ -312,6 +327,13 @@ fun ParagraphContent.Table.ColumnAlignment.toEdit(): Edit.ParagraphContent.Table
 
 fun Edit.Letter.toMarkup(): LetterMarkup =
     LetterMarkupImpl(title = title.text.toMarkup(), sakspart = sakspart, blocks = blocks.map { it.toMarkup() }, signatur = signatur)
+
+fun Edit.Attachment.toMarkup(): LetterMarkup.Attachment =
+    LetterMarkupImpl.AttachmentImpl(
+        title = title.text.toMarkup(),
+        blocks = blocks.map { it.toMarkup() },
+        includeSakspart = includeSakspart,
+    )
 
 fun Edit.Block.toMarkup(): Block =
     when (this) {
