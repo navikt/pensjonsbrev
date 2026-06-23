@@ -108,7 +108,7 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
             )
 
             showIf(harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret) {
-                includePhrase(Vedtak.BegrunnelseOverskrift)
+                includePhrase(Vedtak.BegrunnelseOverskrift())
                 ifNotNull(minsteytelseVedvirk_sats) { minsteytelseVedVirkSats ->
                     showIf(inntektFoerUfoerhetVedVirk.erSannsynligEndret) {
                         includePhrase(

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
 import no.nav.brev.Listetype
+import no.nav.pensjon.brev.template.StableHash.Companion.with
 import no.nav.pensjon.brev.template.validation.InvalidListDeclarationException
 import no.nav.pensjon.brev.template.validation.InvalidScopeTypeException
 import no.nav.pensjon.brev.template.validation.InvalidTableDeclarationException
@@ -195,6 +196,8 @@ sealed class Expression<out Out> : StableHash {
 typealias StringExpression = Expression<String>
 
 sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Element<Lang>> : StableHash {
+    abstract fun stableHashOfContent(): List<Int>
+
     class Content<out Lang : LanguageSupport, C : Element<Lang>> internal constructor(
         val content: C,
     ) : ContentOrControlStructure<Lang, C>(), StableHash by StableHash.of(content) {
@@ -204,6 +207,7 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
         }
         override fun hashCode() = Objects.hash(content)
         override fun toString() = "Content(content=$content)"
+        override fun stableHashOfContent(): List<Int> = listOf(content.stableHashCode())
     }
 
     class Conditional<out Lang : LanguageSupport, out C : Element<Lang>> internal constructor(
@@ -217,6 +221,7 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
         }
         override fun hashCode() = Objects.hash(predicate, showIf, showElse)
         override fun toString() = "Conditional(predicate=$predicate, showIf=$showIf, showElse=$showElse)"
+        override fun stableHashOfContent(): List<Int> = (showIf + showElse).flatMap { it.stableHashOfContent() }.distinct()
     }
 
     class ForEach<out Lang : LanguageSupport, C : Element<Lang>, Item : Any> internal constructor(
@@ -230,6 +235,7 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
         }
         override fun hashCode() = Objects.hash(items, body, next)
         override fun toString() = "ForEach(items=$items, body=$body, next=$next)"
+        override fun stableHashOfContent(): List<Int> = body.flatMap { it.stableHashOfContent() }
     }
 }
 
@@ -242,7 +248,12 @@ typealias OutlineElement<Lang> = ContentOrControlStructure<Lang, Element.Outline
 sealed class Element<out Lang : LanguageSupport> : StableHash {
 
     sealed class OutlineContent<out Lang : LanguageSupport> : Element<Lang>() {
-        class Title1<out Lang : LanguageSupport> internal constructor(val text: List<TextElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(text) {
+        abstract val stableHashModifier: String?
+
+        class Title1<out Lang : LanguageSupport> internal constructor(
+            val text: List<TextElement<Lang>>,
+            override val stableHashModifier: String? = null,
+        ) : OutlineContent<Lang>(), StableHash by StableHash.of(text).with(optionalUnique = stableHashModifier) {
             override fun equals(other: Any?): Boolean {
                 if (other !is Title1<*>) return false
                 return text == other.text
@@ -251,7 +262,10 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
             override fun toString() = "Title1(text=$text)"
         }
 
-        class Title2<out Lang : LanguageSupport> internal constructor(val text: List<TextElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(text) {
+        class Title2<out Lang : LanguageSupport> internal constructor(
+            val text: List<TextElement<Lang>>,
+            override val stableHashModifier: String? = null,
+        ) : OutlineContent<Lang>(), StableHash by StableHash.of(text).with(optionalUnique = stableHashModifier) {
             override fun equals(other: Any?): Boolean {
                 if (other !is Title2<*>) return false
                 return text == other.text
@@ -260,7 +274,10 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
             override fun toString(): String = "Title2(text=$text)"
         }
 
-        class Title3<out Lang : LanguageSupport> internal constructor(val text: List<TextElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(text) {
+        class Title3<out Lang : LanguageSupport> internal constructor(
+            val text: List<TextElement<Lang>>,
+            override val stableHashModifier: String? = null,
+        ) : OutlineContent<Lang>(), StableHash by StableHash.of(text).with(optionalUnique = stableHashModifier) {
             override fun equals(other: Any?): Boolean {
                 if (other !is Title3<*>) return false
                 return text == other.text
@@ -270,7 +287,10 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
         }
 
 
-        class Paragraph<out Lang : LanguageSupport> internal constructor(val paragraph: List<ParagraphContentElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(paragraph) {
+        class Paragraph<out Lang : LanguageSupport> internal constructor(
+            val paragraph: List<ParagraphContentElement<Lang>>,
+            override val stableHashModifier: String? = null,
+        ) : OutlineContent<Lang>(), StableHash by StableHash.of(paragraph).with(optionalUnique = stableHashModifier) {
             override fun equals(other: Any?): Boolean {
                 if (other !is Paragraph<*>) return false
                 return paragraph == other.paragraph

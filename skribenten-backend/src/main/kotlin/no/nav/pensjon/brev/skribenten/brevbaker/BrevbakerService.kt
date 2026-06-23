@@ -58,16 +58,16 @@ interface BrevbakerService {
         redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(),
     ): LetterResponse
 
-    suspend fun hentRedigerbareVedlegg(
+    suspend fun hentRedigerbareVedleggTitler(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
-    ): Map<VedleggId, List<LetterMarkup.ParagraphContent.Text>>
+    ): RedigerbareVedleggTitler?
 
     /**
      * Lettvekts-sjekk som ikke krever brevdata: forteller om malen i det hele tatt har redigerbare
-     * vedlegg. Lar oss unngå tunge pesysdata-kall i [hentRedigerbareVedlegg] når svaret uansett blir tomt.
+     * vedlegg. Lar oss unngå tunge pesysdata-kall i [hentRedigerbareVedleggTitler] når svaret uansett blir tomt.
      */
     suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean
 
@@ -188,12 +188,12 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         }
     }
 
-    override suspend fun hentRedigerbareVedlegg(
+    override suspend fun hentRedigerbareVedleggTitler(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
-    ): Map<VedleggId, List<LetterMarkup.ParagraphContent.Text>> {
+    ): RedigerbareVedleggTitler? {
         val response = client.post("/letter/redigerbar/redigerbare-vedlegg/titler") {
             contentType(ContentType.Application.Json)
             setBody(
@@ -207,8 +207,8 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         }
 
         return when {
-            response.status.isSuccess() ->
-                response.body<Map<VedleggId, List<LetterMarkup.ParagraphContent.Text>>>()
+            response.status.isSuccess() -> response.body<RedigerbareVedleggTitler>()
+            response.status == HttpStatusCode.NotFound -> null
             else -> throw BrevbakerServiceException(
                 response.bodyAsText().takeIf { it.isNotBlank() }?.let { "${response.status}: $it" }
                     ?: "Ukjent feil oppstod ved generering av redigerbare vedlegg for brevkode: $brevkode"
