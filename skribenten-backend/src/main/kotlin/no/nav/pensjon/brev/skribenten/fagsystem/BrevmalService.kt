@@ -20,6 +20,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brevbaker.api.model.RedigerbareVedleggTitler
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.slf4j.LoggerFactory
@@ -64,8 +65,8 @@ class BrevmalService(
             pesysData = pesysData,
         )
 
-    suspend fun hentRedigerbareVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data): Map<VedleggId, List<LetterMarkup.ParagraphContent.Text>> =
-        brevbakerService.hentRedigerbareVedlegg(
+    suspend fun hentRedigerbareVedleggTitler(brev: Brevredigering, pesysData: BrevdataResponse.Data): RedigerbareVedleggTitler =
+        brevbakerService.hentRedigerbareVedleggTitler(
             brevkode = brev.brevkode,
             spraak = brev.spraak,
             brevdata = GeneriskRedigerbarBrevdata(

@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 
@@ -27,14 +28,13 @@ class HentRedigerbareVedleggHandler(
         }
 
         val pesysdata = brevdataService.hentBrevdata(brev)
-        val vedlegg = brevmalService.hentRedigerbareVedlegg(brev, pesysdata)
-            .map { (vedleggId, malTittel) ->
+        val vedlegg = brevmalService.hentRedigerbareVedleggTitler(brev, pesysdata).vedlegg
+            .map { vedlegg ->
                 // Bruk den redigerte tittelen dersom saksbehandler har overstyrt vedlegget, ellers maltittelen.
-                val redigertTittel = brev.hentRedigertVedlegg(vedleggId)?.title?.text
+                val redigertTittel = brev.hentRedigertVedlegg(vedlegg.id)?.title?.text
                 RedigerbartVedleggInfo(
-                    vedleggId = vedleggId,
-                    tittel = redigertTittel?.joinToString("") { it.text }
-                        ?: malTittel.joinToString("") { it.text },
+                    vedleggId = vedlegg.id,
+                    tittel = redigertTittel?.format() ?: vedlegg.tittel,
                 )
             }
 
@@ -44,6 +44,7 @@ class HentRedigerbareVedleggHandler(
     override fun requiresReservasjon(request: Request) = false
 }
 
+private fun List<Edit.ParagraphContent.Text>?.format() = this?.joinToString("") { it.text }
 data class RedigerbartVedleggInfo(
     val vedleggId: VedleggId,
     val tittel: String,

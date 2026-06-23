@@ -124,12 +124,12 @@ open class FakeBrevbakerService(
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
         redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment>,
     ): LetterResponse = notYetStubbed()
-    override suspend fun hentRedigerbareVedlegg(
+    override suspend fun hentRedigerbareVedleggTitler(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
-    ): Map<VedleggId, List<LetterMarkup.ParagraphContent.Text>> = notYetStubbed()
+    ): RedigerbareVedleggTitler = notYetStubbed()
     override suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean = notYetStubbed()
     override suspend fun renderRedigerbartVedlegg(
         brevkode: Brevkode.Redigerbart,

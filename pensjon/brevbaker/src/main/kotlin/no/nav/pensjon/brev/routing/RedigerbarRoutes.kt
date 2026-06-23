@@ -29,7 +29,7 @@ fun Route.redigerbarRoutes(
         route("/redigerbare-vedlegg") {
 
             post<BestillBrevRequest<Brevkode.Redigerbart>>("/titler") { brevbestilling ->
-                val titler = redigerbareBrev.renderRedigerbartVedleggMarkupTitler(brevbestilling)
+                val titler = redigerbareBrev.renderRedigerbareVedleggTitler(brevbestilling)
                 call.respond(titler)
             }
 
