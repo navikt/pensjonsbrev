@@ -6,12 +6,14 @@ sealed interface SaksbehandlervalgVerdi {
     enum class Type {
         BOOL, INTEGER, ENUM, TEXT
     }
+
     fun unwrap(): Any? = when (this) {
         is Bool -> bool
         is Integer -> int
         is Enum<*> -> enum
         is Text -> text
     }
+
     val type: Type
     val displayText: String
 
@@ -22,6 +24,7 @@ sealed interface SaksbehandlervalgVerdi {
             if (other !is Bool) return false
             return bool == other.bool
         }
+
         override fun hashCode() = Bool::class.java.hashCode() + bool.hashCode()
     }
 
@@ -32,6 +35,7 @@ sealed interface SaksbehandlervalgVerdi {
             if (other !is Integer) return false
             return int == other.int
         }
+
         override fun hashCode() = Integer::class.java.hashCode() + (int?.hashCode() ?: 0)
     }
 
@@ -42,6 +46,7 @@ sealed interface SaksbehandlervalgVerdi {
             if (other !is Enum<*>) return false
             return enum == other.enum
         }
+
         override fun hashCode() = Enum::class.java.hashCode() + (enum?.hashCode() ?: 0)
 
         @OptIn(InternKonstruktoer::class)
@@ -61,6 +66,7 @@ sealed interface SaksbehandlervalgVerdi {
             if (other !is Text) return false
             return text == other.text
         }
+
         override fun hashCode() = Text::class.java.hashCode() + (text?.hashCode() ?: 0)
     }
 }
