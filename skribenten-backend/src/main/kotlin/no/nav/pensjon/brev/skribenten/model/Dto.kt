@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.samhandler
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.utenlandskAdresse
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import java.time.Instant
@@ -50,6 +51,11 @@ object Dto {
     enum class BrevStatus {
         KLADD, ATTESTERING, KLAR, ARKIVERT
     }
+
+    data class RedigertVedlegg(
+        val vedleggId: BrevbakerType.VedleggId,
+        val redigertVedlegg: Edit.Attachment,
+    )
 
     data class Document(
         val dokumentDato: LocalDate,
