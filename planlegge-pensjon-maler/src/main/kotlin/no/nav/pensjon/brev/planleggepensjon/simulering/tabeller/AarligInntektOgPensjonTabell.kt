@@ -2,10 +2,7 @@ package no.nav.pensjon.brev.planleggepensjon.simulering.tabeller
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjon
-import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjonSelectors.alderLabel
-import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjonSelectors.alderspensjon
-import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjonSelectors.avtalefestetPensjon
-import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjonSelectors.pensjonsgivendeInntekt
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.aarligInntektOgPensjon.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression

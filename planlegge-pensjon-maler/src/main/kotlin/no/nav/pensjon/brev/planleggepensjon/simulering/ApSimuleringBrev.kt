@@ -7,11 +7,9 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.simulering
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringSelectors.afpOffentligLivsvarig
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringSelectors.afpOffentligTidsbegrenset
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringSelectors.afpPrivat
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringBrevDto.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringDto.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg.simuleringVedlegg
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
