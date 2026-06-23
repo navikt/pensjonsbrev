@@ -80,7 +80,7 @@ object BrevbakerBrevdataModule : SimpleModule() {
             val enumClass = rawClass as Class<out Enum<*>>
 
             return SaksbehandlervalgVerdi.Enum(
-                enum = SaksbehandlervalgVerdi.Enum.parse(enumClass, node.get("enum")?.textValue()),
+                defaultValue = SaksbehandlervalgVerdi.Enum.parse(enumClass, node.get("enum")?.textValue()),
                 displayText = node.get("displayText").textValue(),
                 clazz = enumClass,
             )

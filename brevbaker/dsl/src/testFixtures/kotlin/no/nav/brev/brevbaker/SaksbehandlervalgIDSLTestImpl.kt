@@ -13,28 +13,28 @@ fun lagSaksbehandlervalg(verdier: Map<String, SaksbehandlervalgVerdi> = emptyMap
 
 fun <T> T.tilSaksbehandlervalgverdiEnum(displayText: String): SaksbehandlervalgVerdi.Enum<*> where T : SaksbehandlerValgEnum, T: Enum<T> =
     SaksbehandlervalgVerdi.Enum(
-        enum = this,
+        defaultValue = this,
         displayText = displayText,
         clazz = this::class.java
     )
 
 fun saksbehandlervalgVerdiBool(verdi: Boolean, displayText: String) = SaksbehandlervalgVerdi.Bool(
-    bool = verdi,
+    defaultValue = verdi,
     displayText = displayText
 )
 
 fun saksbehandlervalgVerdiInteger(verdi: Int?, displayText: String) = SaksbehandlervalgVerdi.Integer(
-    int = verdi,
+    defaultValue = verdi,
     displayText = displayText
 )
 
 fun saksbehandlervalgVerdiText(verdi: String?, displayText: String) = SaksbehandlervalgVerdi.Text(
-    text = verdi,
+    defaultValue = verdi,
     displayText = displayText
 )
 
 inline fun <reified T> saksbehandlervalgVerdiEnum(verdi: T, displayText: String) where T : SaksbehandlerValgEnum, T : Enum<T> = SaksbehandlervalgVerdi.Enum(
-    enum = verdi,
+    defaultValue = verdi,
     displayText = displayText,
     clazz = T::class.java
 )

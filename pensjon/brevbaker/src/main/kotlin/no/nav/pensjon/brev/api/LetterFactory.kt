@@ -104,4 +104,4 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
 }
 
 @OptIn(InternKonstruktoer::class)
-private fun SaksbehandlervalgVerdi.Enum<*>.withRawValue(raw: Any?): SaksbehandlervalgVerdi.Enum<*> = SaksbehandlervalgVerdi.Enum(enum = SaksbehandlervalgVerdi.Enum.parse(clazz, raw as? String), displayText = displayText, clazz = clazz)
+private fun SaksbehandlervalgVerdi.Enum<*>.withRawValue(raw: Any?): SaksbehandlervalgVerdi.Enum<*> = SaksbehandlervalgVerdi.Enum(defaultValue = SaksbehandlervalgVerdi.Enum.parse(clazz, raw as? String), displayText = displayText, clazz = clazz)

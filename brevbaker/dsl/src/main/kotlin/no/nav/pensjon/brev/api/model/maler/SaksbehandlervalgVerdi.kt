@@ -8,46 +8,46 @@ sealed interface SaksbehandlervalgVerdi {
     }
 
     fun unwrap(): Any? = when (this) {
-        is Bool -> bool
-        is Integer -> int
-        is Enum<*> -> enum
-        is Text -> text
+        is Bool -> defaultValue
+        is Integer -> defaultValue
+        is Enum<*> -> defaultValue
+        is Text -> defaultValue
     }
 
     val type: Type
     val displayText: String
 
-    class Bool @InternKonstruktoer constructor(val bool: Boolean, override val displayText: String) : SaksbehandlervalgVerdi {
+    class Bool @InternKonstruktoer constructor(val defaultValue: Boolean, override val displayText: String) : SaksbehandlervalgVerdi {
         override val type = Type.BOOL
-        override fun toString() = "SaksbehandlervalgVerdi.Bool(bool=$bool)"
+        override fun toString() = "SaksbehandlervalgVerdi.Bool(bool=$defaultValue)"
         override fun equals(other: Any?): Boolean {
             if (other !is Bool) return false
-            return bool == other.bool
+            return defaultValue == other.defaultValue
         }
 
-        override fun hashCode() = Bool::class.java.hashCode() + bool.hashCode()
+        override fun hashCode() = Bool::class.java.hashCode() + defaultValue.hashCode()
     }
 
-    class Integer @InternKonstruktoer constructor(val int: Int?, override val displayText: String) : SaksbehandlervalgVerdi {
+    class Integer @InternKonstruktoer constructor(val defaultValue: Int?, override val displayText: String) : SaksbehandlervalgVerdi {
         override val type = Type.INTEGER
-        override fun toString() = "SaksbehandlervalgVerdi.Integer(int=$int)"
+        override fun toString() = "SaksbehandlervalgVerdi.Integer(int=$defaultValue)"
         override fun equals(other: Any?): Boolean {
             if (other !is Integer) return false
-            return int == other.int
+            return defaultValue == other.defaultValue
         }
 
-        override fun hashCode() = Integer::class.java.hashCode() + (int?.hashCode() ?: 0)
+        override fun hashCode() = Integer::class.java.hashCode() + (defaultValue?.hashCode() ?: 0)
     }
 
-    class Enum<T : SaksbehandlerValgEnum> @InternKonstruktoer constructor(val enum: T?, override val displayText: String, val clazz: Class<out kotlin.Enum<*>?>) : SaksbehandlervalgVerdi {
+    class Enum<T : SaksbehandlerValgEnum> @InternKonstruktoer constructor(val defaultValue: T?, override val displayText: String, val clazz: Class<out kotlin.Enum<*>?>) : SaksbehandlervalgVerdi {
         override val type = Type.ENUM
-        override fun toString() = "SaksbehandlervalgVerdi.Enum(enum=$enum)"
+        override fun toString() = "SaksbehandlervalgVerdi.Enum(enum=$defaultValue)"
         override fun equals(other: Any?): Boolean {
             if (other !is Enum<*>) return false
-            return enum == other.enum
+            return defaultValue == other.defaultValue
         }
 
-        override fun hashCode() = Enum::class.java.hashCode() + (enum?.hashCode() ?: 0)
+        override fun hashCode() = Enum::class.java.hashCode() + (defaultValue?.hashCode() ?: 0)
 
         companion object {
             @Suppress("UNCHECKED_CAST")
@@ -56,14 +56,14 @@ sealed interface SaksbehandlervalgVerdi {
         }
     }
 
-    class Text @InternKonstruktoer constructor(val text: String?, override val displayText: String) : SaksbehandlervalgVerdi {
+    class Text @InternKonstruktoer constructor(val defaultValue: String?, override val displayText: String) : SaksbehandlervalgVerdi {
         override val type = Type.TEXT
-        override fun toString() = "SaksbehandlervalgVerdi.Text(text=$text)"
+        override fun toString() = "SaksbehandlervalgVerdi.Text(text=$defaultValue)"
         override fun equals(other: Any?): Boolean {
             if (other !is Text) return false
-            return text == other.text
+            return defaultValue == other.defaultValue
         }
 
-        override fun hashCode() = Text::class.java.hashCode() + (text?.hashCode() ?: 0)
+        override fun hashCode() = Text::class.java.hashCode() + (defaultValue?.hashCode() ?: 0)
     }
 }
