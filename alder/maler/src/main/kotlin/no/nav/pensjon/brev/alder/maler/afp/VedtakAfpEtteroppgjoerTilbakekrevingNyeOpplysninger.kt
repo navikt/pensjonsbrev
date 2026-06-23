@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggDineRettigheterAfpEo
-import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggFolketrygden
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto
@@ -207,9 +206,6 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
                 )
             )
 
-
-
-
             title1 {
                 text(
                     bokmal { +"Beløpet du skal betale tilbake etter fradrag for innbetalt skatt" },
@@ -257,8 +253,8 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
                         }
                         cell {
                             text(
-                                bokmal { +"" + fritekst("fradrag") + " kr" },
-                                nynorsk { +"" + fritekst("fradrag") + " kr"  },
+                                bokmal { +fritekst("fradrag") + " kr" },
+                                nynorsk { +fritekst("fradrag") + " kr" },
                             )
                         }
                     }
@@ -271,8 +267,8 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
                         }
                         cell {
                             text(
-                                bokmal { +"" + fritekst("nettobeløp") + " kr" },
-                                nynorsk { +"" + fritekst("nettobeløp") + " kr"  },
+                                bokmal { +fritekst("nettobeløp") + " kr" },
+                                nynorsk { +fritekst("nettobeløp") + " kr" },
                             )
                         }
                     }
