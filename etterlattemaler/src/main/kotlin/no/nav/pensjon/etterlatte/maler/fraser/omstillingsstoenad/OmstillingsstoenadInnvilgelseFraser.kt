@@ -17,15 +17,10 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.Avdoed
-import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
-import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
+import no.nav.pensjon.etterlatte.maler.selectors.avdoed.*
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiodeNesteAar
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregning.*
+import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregningsperiode.*
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 

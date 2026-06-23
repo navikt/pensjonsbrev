@@ -17,9 +17,8 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.GRUNNBELOEP_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_ANDRE_STOENADER_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_URL
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDataSelectors.avdoedNavn
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDataSelectors.borIutland
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.selectors.omstillingstoenadInformasjonDoedsfallDTO.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.selectors.omstillingstoenadInformasjonDoedsfallData.*
 
 data class OmstillingstoenadInformasjonDoedsfallData(
     val avdoedNavn: String,
