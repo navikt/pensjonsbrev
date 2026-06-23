@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.brev.brevbaker.LetterTestImpl
-import no.nav.brev.brevbaker.SaksbehandlervalgIDSLTestImpl
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.brev.brevbaker.tilSaksbehandlervalgverdiEnum
@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test
 class VarselRevurderingAvPensjonTest {
 
     private val data = VarselRevurderingAvPensjonDto(
-        saksbehandlerValg = SaksbehandlervalgIDSLTestImpl(),
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = VarselRevurderingAvPensjonDto.PesysData(sakstype = Sakstype.FAM_PL)
     )
 
@@ -28,7 +28,7 @@ class VarselRevurderingAvPensjonTest {
     fun `med revurdering av rett`() {
         writeAllLanguages(
             "revurdering av rett",
-            data.copy(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl("tittelValg" to VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett.tilSaksbehandlervalgverdiEnum("Tittelvalg")))
+            data.copy(saksbehandlerValg = lagSaksbehandlervalg("tittelValg" to VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett.tilSaksbehandlervalgverdiEnum("Tittelvalg")))
         )
     }
 
@@ -36,7 +36,7 @@ class VarselRevurderingAvPensjonTest {
     fun `med revurdering av reduksjon`() {
         writeAllLanguages(
             "revurdering reduksjon",
-            data.copy(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl("tittelValg" to VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon.tilSaksbehandlervalgverdiEnum("Tittelvalg")))
+            data.copy(saksbehandlerValg = lagSaksbehandlervalg("tittelValg" to VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon.tilSaksbehandlervalgverdiEnum("Tittelvalg")))
         )
     }
 

@@ -1,15 +1,15 @@
+@file:OptIn(InternKonstruktoer::class)
+
 package no.nav.brev.brevbaker
 
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSLImpl
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import kotlin.jvm.java
 
-class SaksbehandlervalgIDSLTestImpl(override val verdier: Map<String, SaksbehandlervalgVerdi> = emptyMap()) : SaksbehandlervalgIDSL {
-    constructor(vararg verdier: Pair<String, SaksbehandlervalgVerdi>) : this(verdier.toMap())
-
-    override fun <T : SaksbehandlervalgVerdi> get(key: String): T = verdier[key] as T
-}
+fun lagSaksbehandlervalg(vararg verdier: Pair<String, SaksbehandlervalgVerdi>) = lagSaksbehandlervalg(verdier.toMap())
+fun lagSaksbehandlervalg(verdier: Map<String, SaksbehandlervalgVerdi> = emptyMap()) = SaksbehandlervalgIDSLImpl(verdier, emptyMap()) // TODO
 
 fun <T> T.tilSaksbehandlervalgverdiEnum(displayText: String): SaksbehandlervalgVerdi.Enum<*> where T : SaksbehandlerValgEnum, T: Enum<T> =
     SaksbehandlervalgVerdi.Enum(

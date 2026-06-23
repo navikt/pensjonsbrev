@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.ufore
 
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
-import no.nav.brev.brevbaker.SaksbehandlervalgIDSLTestImpl
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.saksbehandlervalgVerdiBool
 import no.nav.brev.brevbaker.saksbehandlervalgVerdiInteger
 import no.nav.brev.brevbaker.vilkaarligDato
@@ -73,7 +73,7 @@ object Fixtures : LetterDataFactory {
 
     private fun lagInnhentingOpplysningerSamboer() = InnhentingOpplysningerSamboerDto(
         pesysData = EmptyFagsystemdata,
-        saksbehandlerValg = SaksbehandlervalgIDSLTestImpl(
+        saksbehandlerValg = lagSaksbehandlervalg(
             "ukjentSamboer" to saksbehandlervalgVerdiBool(false, "tull"),
             "vilkaarlegInt" to saksbehandlervalgVerdiInteger(4, "tøys")
         )
