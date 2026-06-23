@@ -3,14 +3,9 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.erRedusert
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.kombinertMedAvdod
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUfore
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUforeAvdod
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaYrkesskade
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaYrkesskadeAvdod
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.maanedligPensjonFoerSkattDto.tilleggspensjonGjeldende.*
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabell
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.maanedligPensjonFoerSkattTabell.alderspensjonPerManed.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*

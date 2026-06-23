@@ -5,10 +5,8 @@ import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.PesysDataSelectors.foedselsnummer
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.PesysDataSelectors.navn
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.PesysDataSelectors.navnAvsenderEnhet
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.klageOrienteringOmSaksbehandlingstidDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.klageOrienteringOmSaksbehandlingstidDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.model.format

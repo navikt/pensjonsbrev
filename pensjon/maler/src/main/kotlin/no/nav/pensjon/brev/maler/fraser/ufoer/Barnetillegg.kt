@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarn
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.brukerBorMed
+import no.nav.pensjon.brev.api.model.maler.selectors.barnetilleggFellesbarn.*
 import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.model.*
 import no.nav.pensjon.brev.template.*

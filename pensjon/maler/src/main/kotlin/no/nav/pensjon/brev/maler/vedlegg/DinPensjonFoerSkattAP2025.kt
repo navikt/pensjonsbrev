@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.beregnetPensjonPerManedGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.beregnetPensjonperManed
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.kravVirkFom
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.maanedligPensjonFoerSkattAP2025Dto.*
 import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonFlerePerioderInnledning
 import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap20
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
