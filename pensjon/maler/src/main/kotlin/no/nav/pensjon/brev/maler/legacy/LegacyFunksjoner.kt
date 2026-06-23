@@ -90,24 +90,6 @@ fun Expression<PEgruppe10>.ut_tbu056v() = (
     vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
 )
 
-fun Expression<PEgruppe10>.ut_tbu056v_51() = (
-        pebrevkode().equalTo("PE_UT_04_102")
-                or pebrevkode().equalTo("PE_UT_04_116")
-                or pebrevkode().equalTo("PE_UT_04_101")
-                or pebrevkode().equalTo("PE_UT_04_114")
-                or pebrevkode().equalTo("PE_UT_04_300")
-                or pebrevkode().equalTo("PE_UT_14_300")
-                or pebrevkode().equalTo("PE_UT_04_500")
-                or (vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")
-                and vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().notEqualTo(
-            vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
-        )
-                )
-        ) and vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and
-        vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup() and
-        vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().lessThan(
-            vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-        )
 
 
 fun Expression<PEgruppe10>.pe_ut_tbu601v_tbu604v(): Expression<Boolean> {

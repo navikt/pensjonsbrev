@@ -127,14 +127,6 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
             //[TBU052V-TBU073V]
 
             paragraph {
-
-                //IF(PE_UT_TBU056V_51() = true) THEN      INCLUDE ENDIF
-                showIf(pe.ut_tbu056v_51()) {
-                    text(
-                        bokmal { + "Reduksjonsprosenten skal ved beregningen ikke settes høyere enn 70 prosent. " },
-                        nynorsk { + "Reduksjonsprosenten skal ikkje setjast høgare enn 70 prosent i berekninga. " },
-                    )
-                }
                 text(
                     bokmal { + "Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig reduksjonsprosent i beregningen." },
                     nynorsk { + "Dersom uføretrygda di blir endra i løpet av eit kalenderår, vil vi bruke ein gjennomsnittleg reduksjonsprosent i berekninga." },

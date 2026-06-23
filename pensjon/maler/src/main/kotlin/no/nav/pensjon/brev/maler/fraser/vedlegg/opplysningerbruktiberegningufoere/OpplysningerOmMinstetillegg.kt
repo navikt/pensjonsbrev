@@ -5,15 +5,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.UfoeretrygdGjeldendeSelectors.erKonvertert
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 
 data class OpplysningerOmMinstetillegg(
@@ -72,12 +69,7 @@ data class OpplysningerOmMinstetillegg(
                 )
             }
             includePhrase(VedleggBeregnUTKompGrad)
-
-            showIf(ufoeretrygdGjeldende.erKonvertert) {
-                includePhrase(VedleggBeregnUTKompGradGjsnttKonvUT)
-            }.orShow {
-                includePhrase(VedleggBeregnUTKompGradGjsntt)
-            }
+            includePhrase(VedleggBeregnUTKompGradGjsntt)
         }
     }
 
@@ -184,17 +176,6 @@ data class OpplysningerOmMinstetillegg(
                     bokmal { + "Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig reduksjonsprosent i beregningen." },
                     nynorsk { + "Dersom uføretrygda di i løpet av eit kalenderår vert endra, bruker vi ei gjennomsnittleg reduksjonsprosent i utrekninga." },
                     english { + "If your degree of compensation has changed over the course of a calendar year, your disability benefit payment will be recalculated based on your average degree of compensation." }
-                )
-            }
-    }
-
-    object VedleggBeregnUTKompGradGjsnttKonvUT : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            paragraph {
-                text(
-                    bokmal { + "Reduksjonsprosenten skal ved beregningen ikke settes høyere enn 70 prosent. Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig reduksjonsprosent i beregningen." },
-                    nynorsk { + "Reduksjonsprosenten skal ved utrekninga ikkje setjast høgare enn 70 prosent. Dersom uføretrygda di i løpet av eit kalenderår vert endra, bruker vi ei gjennomsnittleg reduksjonsprosent i utrekning." },
-                    english { + "Your degree of compensation will not be set higher than 70 percent. If your degree of compensation has changed over the course of a calendar year, your disability benefit payment will be recalculated based on your average degree of compensation." }
                 )
             }
     }
