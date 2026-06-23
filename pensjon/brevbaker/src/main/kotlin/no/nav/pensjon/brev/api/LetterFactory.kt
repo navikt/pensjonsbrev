@@ -68,7 +68,7 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         template: LetterTemplate<*, BrevbakerBrevdata>,
     ): BrevbakerBrevdata =
         try {
-            val data = if (letterData is Map<*, *> && template.saksbehandlervalg.isNotEmpty()) {
+            val data = if (letterData is Map<*, *> && template.saksbehandlervalg?.isNotEmpty() == true) {
                 letterData.toMutableMap().also { it["saksbehandlerValg"] = oppdaterSaksbehandlervalg(template, letterData) }
             } else {
                 letterData
@@ -84,10 +84,10 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         letterData: BrevbakerBrevdata,
     ): Map<String, SaksbehandlervalgVerdi> {
         val saksbehandlervalg = mutableMapOf<String, SaksbehandlervalgVerdi>()
-        saksbehandlervalg.putAll(template.saksbehandlervalg)
+        template.saksbehandlervalg?.let { saksbehandlervalg.putAll(it) }
         if (letterData is Map<*, *> && letterData.containsKey("saksbehandlerValg")) {
             (letterData["saksbehandlerValg"] as Map<String, Any?>).entries.forEach { nye -> // TODO: kva er eigentleg typen her?
-                saksbehandlervalg[nye.key] = when (val eksisterende = template.saksbehandlervalg[nye.key]) {
+                saksbehandlervalg[nye.key] = when (val eksisterende = template.saksbehandlervalg?.get(nye.key)) {
                     is SaksbehandlervalgVerdi.Bool -> SaksbehandlervalgVerdi.Bool(nye.value as? Boolean ?: false, eksisterende.displayText)
                     is SaksbehandlervalgVerdi.Enum<*> -> eksisterende.withRawValue(nye.value)
                     is SaksbehandlervalgVerdi.Integer -> SaksbehandlervalgVerdi.Integer(
