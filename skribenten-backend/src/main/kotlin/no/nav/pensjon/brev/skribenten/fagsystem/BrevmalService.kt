@@ -65,7 +65,7 @@ class BrevmalService(
             pesysData = pesysData,
         )
 
-    suspend fun hentRedigerbareVedleggTitler(brev: Brevredigering, pesysData: BrevdataResponse.Data): RedigerbareVedleggTitler =
+    suspend fun hentRedigerbareVedleggTitler(brev: Brevredigering, pesysData: BrevdataResponse.Data): RedigerbareVedleggTitler? =
         brevbakerService.hentRedigerbareVedleggTitler(
             brevkode = brev.brevkode,
             spraak = brev.spraak,

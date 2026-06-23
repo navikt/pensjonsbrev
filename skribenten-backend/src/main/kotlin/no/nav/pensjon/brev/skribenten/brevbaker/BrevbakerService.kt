@@ -63,7 +63,7 @@ interface BrevbakerService {
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
-    ): RedigerbareVedleggTitler
+    ): RedigerbareVedleggTitler?
 
     /**
      * Lettvekts-sjekk som ikke krever brevdata: forteller om malen i det hele tatt har redigerbare
@@ -193,7 +193,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
-    ): RedigerbareVedleggTitler {
+    ): RedigerbareVedleggTitler? {
         val response = client.post("/letter/redigerbar/redigerbare-vedlegg/titler") {
             contentType(ContentType.Application.Json)
             setBody(
@@ -207,8 +207,8 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         }
 
         return when {
-            response.status.isSuccess() ->
-                response.body<RedigerbareVedleggTitler>()
+            response.status.isSuccess() -> response.body<RedigerbareVedleggTitler>()
+            response.status == HttpStatusCode.NotFound -> null
             else -> throw BrevbakerServiceException(
                 response.bodyAsText().takeIf { it.isNotBlank() }?.let { "${response.status}: $it" }
                     ?: "Ukjent feil oppstod ved generering av redigerbare vedlegg for brevkode: $brevkode"
