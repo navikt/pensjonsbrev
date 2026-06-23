@@ -14,4 +14,5 @@ internal fun BrevTemplate<*, *>.validator(): BrevTemplateValidator =
 internal interface BrevTemplateValidator {
     fun validate(e: OutlineElement<*>)
     fun subScope(): BrevTemplateValidator
+    fun addAlreadyValidated(e: OutlineElement<*>)
 }
