@@ -254,9 +254,9 @@ object OmstillingsstoenadVedleggBeregningRedigerbartUtfall : EtterlatteTemplate<
                     val restanse = sisteBeregningsperiode.restanse.absoluteValue()
                     title2 {
                         text(
-                            bokmal { +ifElse(erRestanseTrekk, "Trekk", "Tillegg") + " i utbetalingen" },
-                            nynorsk { +ifElse(erRestanseTrekk, "Trekk", "Tillegg") + " i utbetalinga" },
-                            english { +ifElse(erRestanseTrekk, "Deduction from", "Addition to") + " payment" },
+                            bokmal { +ifElse(erRestanseTrekk, "Trekk i utbetalingen", "Tillegg i utbetalingen") },
+                            nynorsk { +ifElse(erRestanseTrekk, "Trekk i utbetalinga", "Tillegg i utbetalinga") },
+                            english { +ifElse(erRestanseTrekk, "Deduction from payment", "Addition to payment") },
                         )
                     }
                     paragraph {
