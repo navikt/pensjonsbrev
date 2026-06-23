@@ -96,6 +96,8 @@ class OpenApiSpecTest {
             put("services.unleash.host", "http://localhost:9999")
             put("services.unleash.apiToken", "fake:token.fake")
             put("services.leader.url", null)
+            put("services.foerstesidegenerator.url", "http://localhost:9999")
+            put("services.foerstesidegenerator.scope", "fake-scope")
 
             // Dedicated database for OpenApiSpecTest (separate from SharedPostgres)
             put("services.database.host", postgres.host)

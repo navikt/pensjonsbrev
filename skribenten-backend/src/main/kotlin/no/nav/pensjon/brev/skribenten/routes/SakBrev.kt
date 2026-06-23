@@ -181,6 +181,7 @@ fun Route.sakBrev(
                     val brevId = call.parameters.brevId()
 
                     val result = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brevId))
+
                     apiRespond(dto2ApiService, result)
                 }
 

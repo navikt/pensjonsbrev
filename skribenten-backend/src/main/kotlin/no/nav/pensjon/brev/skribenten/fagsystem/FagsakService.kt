@@ -17,7 +17,8 @@ class FagsakService(private val penClient: PenClient) {
                 navn = Fagsak.Navn(sak.navn.fornavn, sak.navn.mellomnavn, sak.navn.etternavn),
                 sakType = sak.sakType,
                 pid = sak.pid,
-                behandlingsnumre = sak.behandlingsnumre
+                behandlingsnumre = sak.behandlingsnumre,
+                tema = sak.tema,
             )
         }
 
@@ -35,6 +36,10 @@ data class Fagsak(
     val sakType: Sakstype,
     val pid: BrevbakerType.Pid,
     val behandlingsnumre: List<Behandlingsnummer>,
+    val tema: Tema,
 ) {
     data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
 }
+
+@JvmInline
+value class Tema(val value: String)

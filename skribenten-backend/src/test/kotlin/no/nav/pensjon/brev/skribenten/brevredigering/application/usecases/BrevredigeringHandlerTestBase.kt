@@ -2,6 +2,7 @@
 
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
+import com.typesafe.config.ConfigFactory
 import io.ktor.http.*
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -11,6 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
+import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
@@ -24,6 +26,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Service
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.*
@@ -221,6 +224,7 @@ abstract class BrevredigeringHandlerTestBase {
         navansattService = navAnsattService,
         p1Service = p1Service,
         renderService = RenderService(brevbakerService),
+        foerstesidegeneratorClient = FoerstesidegeneratorClient(ConfigFactory.parseMap(mapOf("url" to "http://localhost", "scope" to "test-scope")), FakeAuthService)
     )
 
     protected suspend fun opprettBrev(
