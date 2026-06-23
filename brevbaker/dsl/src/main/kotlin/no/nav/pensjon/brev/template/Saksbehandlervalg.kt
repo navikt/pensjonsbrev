@@ -42,12 +42,7 @@ internal fun Expression<SaksbehandlervalgVerdi>.bool(): Expression.UnaryInvoke<S
 
 @PublishedApi
 @BrevbakerDSLInternal
-internal fun <T> Expression<SaksbehandlervalgVerdi>.invoke(propertyName: String, propertyType: String): Expression.UnaryInvoke<SaksbehandlervalgVerdi, T> = Expression.UnaryInvoke(this, UnaryOperation.Select(object : TemplateModelSelector<SaksbehandlervalgVerdi, T> {
-    override val className = SaksbehandlervalgVerdi::class.qualifiedName!!
-    override val propertyName = propertyName
-    override val propertyType = propertyType
-    override val selector: SaksbehandlervalgVerdi.() -> T = { this.unwrap() as T }
-}))
+internal fun <T> Expression<SaksbehandlervalgVerdi>.invoke(propertyName: String, propertyType: String): Expression.UnaryInvoke<SaksbehandlervalgVerdi, T> = Expression.UnaryInvoke(this, UnaryOperation.Saksbehandlervalg(propertyName, propertyType))
 
 internal fun Expression<SaksbehandlervalgVerdi>.int(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, Int?> = invoke("int", "Int")
 

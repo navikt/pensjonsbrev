@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.util.Objects
@@ -94,6 +95,20 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     class Select<In : Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In, Out>() {
         override fun apply(input: In): Out = selector.selector(input)
         override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.Select"), StableHash.of(selector)).stableHashCode()
+    }
+
+    class Saksbehandlervalg<In>(val name: String, val type: String) : UnaryOperation<SaksbehandlervalgVerdi, In>() {
+        override fun apply(input: SaksbehandlervalgVerdi): In {
+            val templateModelSelector = object : TemplateModelSelector<SaksbehandlervalgVerdi, In> {
+                override val className = SaksbehandlervalgVerdi::class.qualifiedName!!
+                override val propertyName = name
+                override val propertyType = type
+                override val selector: SaksbehandlervalgVerdi.() -> In = { this.unwrap() as In }
+            }
+            return Select(templateModelSelector).apply(input)
+        }
+
+        override fun stableHashCode() = StableHash.of(StableHash.of("UnaryOperation.Saksbehandlervalg"), StableHash.of(name), StableHash.of(type)).stableHashCode()
     }
 
     object SizeOf : UnaryOperation<Collection<*>, Int>(), StableHash by StableHash.of("UnaryOperation.SizeOf") {

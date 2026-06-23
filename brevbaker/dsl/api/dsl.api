@@ -1161,6 +1161,15 @@ public final class no/nav/pensjon/brev/template/UnaryOperation$SafeCall : no/nav
 	public fun stableHashCode ()I
 }
 
+public final class no/nav/pensjon/brev/template/UnaryOperation$Saksbehandlervalg : no/nav/pensjon/brev/template/UnaryOperation {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun apply (Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi;)Ljava/lang/Object;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getType ()Ljava/lang/String;
+	public fun stableHashCode ()I
+}
+
 public final class no/nav/pensjon/brev/template/UnaryOperation$Select : no/nav/pensjon/brev/template/UnaryOperation {
 	public fun <init> (Lno/nav/pensjon/brev/template/TemplateModelSelector;)V
 	public fun apply (Ljava/lang/Object;)Ljava/lang/Object;
