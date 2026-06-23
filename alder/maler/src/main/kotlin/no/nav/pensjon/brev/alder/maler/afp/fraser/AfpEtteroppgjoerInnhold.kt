@@ -89,10 +89,10 @@ object AfpEtteroppgjoerInnhold {
             paragraph {
                 text(
                     bokmal {
-                        +"Vedtaket er gjort etter lov om AFP for apotekvirksomhet §3 og lov om AFP for medlemmer av Statens pensjonskasse § 3 bokstav d, og tilhørende forskrift om kombinasjon av avtalefestet pensjon for medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende inntekt)."
+                        +"Vedtaket er gjort etter lov om AFP for apotekvirksomhet § 3 og lov om AFP for medlemmer av Statens pensjonskasse § 3 bokstav d, og tilhørende forskrift om kombinasjon av avtalefestet pensjon for medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende inntekt)."
                     },
                     nynorsk {
-                        +"Vedtaket er gjort etter lov om AFP for apotekverksemd §3 og lov om AFP for medlemmar av Statens pensjonskasse § 3 bokstav d, og tilhøyrande forskrift om kombinasjon av avtalefesta pensjon for medlemmar av Statens pensjonskasse og arbeidsinntekt (pensjonsgivande inntekt)."
+                        +"Vedtaket er gjort etter lov om AFP for apotekverksemd § 3 og lov om AFP for medlemmar av Statens pensjonskasse § 3 bokstav d, og tilhøyrande forskrift om kombinasjon av avtalefesta pensjon for medlemmar av Statens pensjonskasse og arbeidsinntekt (pensjonsgivande inntekt)."
                     },
                 )
             }
@@ -155,14 +155,14 @@ object AfpEtteroppgjoerInnhold {
             paragraph {
                 text(
                     bokmal {
-                        +"Vi viser til tidligere brev om etteroppgjør av avtalefestet pensjon (AFP) for " +
+                        +"Vi viser til tidligere brev om etteroppgjør for avtalefestet pensjon (AFP) for " +
                                 oppgjoersAar.format() + ". Resultatet av etteroppgjøret for " +
                                 oppgjoersAar.format() + " viser at utbetalingen av AFP i " +
                                 oppgjoersAar.format() + " har vært riktig. Etteroppgjøret for " +
                                 oppgjoersAar.format() + " er derfor avsluttet."
                     },
                     nynorsk {
-                        +"Vi viser til tidlegare brev om etteroppgjer av avtalefesta pensjon (AFP) for " +
+                        +"Vi viser til tidlegare brev om etteroppgjer for avtalefesta pensjon (AFP) for " +
                                 oppgjoersAar.format() + ". Resultatet av etteroppgjeret for " +
                                 oppgjoersAar.format() + " viser at utbetalinga av AFP i " +
                                 oppgjoersAar.format() + " har vore rett. Etteroppgjeret for " +
@@ -180,10 +180,10 @@ object AfpEtteroppgjoerInnhold {
             paragraph {
                 text(
                     bokmal {
-                        +"Ny beregning av etteroppgjøret for " + oppgjoersAar.format() + " fører til at det ikke blir tilbakekreving."
+                        +"Ny beregning av etteroppgjøret for " + oppgjoersAar.format() + " viser at du ikke skal betale tilbake noe."
                     },
                     nynorsk {
-                        +"Ny berekning av etteroppgjeret for " + oppgjoersAar.format() + " fører til at det ikkje blir tilbakekrevjing."
+                        +"Ny berekning av etteroppgjeret for " + oppgjoersAar.format() + " viser at du ikkje skal betale tilbake noko."
                     },
                 )
             }
