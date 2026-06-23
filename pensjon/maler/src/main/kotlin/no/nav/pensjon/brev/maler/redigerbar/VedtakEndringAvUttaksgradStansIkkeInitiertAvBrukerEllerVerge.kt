@@ -87,7 +87,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
             }
 
             // stansAPUTgradBegrunn_001_]
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
             paragraph {
                 text(
                     bokmal { + "Du har ikke lenger rett til å ta ut alderspensjon fordi uføregraden din er høyere enn 80 prosent. Vi har derfor stanset alderspensjonen din." },

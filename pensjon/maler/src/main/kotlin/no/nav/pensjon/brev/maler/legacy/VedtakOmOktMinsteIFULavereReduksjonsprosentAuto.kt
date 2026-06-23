@@ -33,9 +33,12 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -62,15 +65,15 @@ object VedtakOmOktMinsteIFULavereReduksjonsprosentAuto : AutobrevTemplate<Vedtak
                     bokmal { +"Vedtaksbrev - Du får en etterbetaling av uføretrygd " },
                     nynorsk { +"Vedtaksbrev - Du får ein etterbetaling av uføretrygd " },
                 )
-            }.orShowIf(data.etterbetalingJuli.lessThan(0)) {
-                text(
-                    bokmal { +"Vedtaksbrev - Endring av uføretrygd" },
-                    nynorsk { +"Vedtaksbrev - Endring av uføretrygd" },
-                )
-            }.orShow {
+            }.orShowIf(data.etterbetalingJuli.equalTo(0) and not(data.endringNettoUforetrygdUtenTillegg or data.endringNettoBarnetillegg or data.endringNettoGjenlevendetillegg)) {
                 text(
                     bokmal { +"Vedtaksbrev - Ingen endring av utbetalt uføretrygd" },
                     nynorsk { +"Vedtaksbrev - Ingen endring av utbetalt uføretrygd" },
+                )
+            }.orShow {
+                text(
+                    bokmal { +"Vedtaksbrev - Endring av uføretrygd" },
+                    nynorsk { +"Vedtaksbrev - Endring av uføretrygd" },
                 )
             }
         }

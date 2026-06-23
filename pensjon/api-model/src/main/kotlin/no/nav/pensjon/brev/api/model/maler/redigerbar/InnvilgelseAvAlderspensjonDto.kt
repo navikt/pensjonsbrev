@@ -40,12 +40,10 @@ data class InnvilgelseAvAlderspensjonDto(
         val avdodFnr: Foedselsnummer?, // v1.Avdod
         val avdodNavn: String?, // v1.Avdod
         val avtalelandNavn: String? = null, // v1.Avdod
-        val avtalelandKode: BrevLandmodell.Landkode? = null,
         val borIAvtaleland: Boolean, // v3.Person
         val borINorge: Boolean, // v3.Person
         val erEOSLand: Boolean, // v1.Land
         val erForstegangsbehandletNorgeUtland: Boolean, // v3.Krav
-        val faktiskBostedsland: String? = null, // v3.Person
         val faktiskBostedslandKode: BrevLandmodell.Landkode? = null,
         val fullTrygdtid: Boolean, // v4.AlderspensjonPerManed
         val gjenlevendetilleggKap19: Kroner?, // v4.AlderspensjonPerManed

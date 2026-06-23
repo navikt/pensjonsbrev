@@ -101,7 +101,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                 )
             }
 
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
 
             showIf(saksbehandlerValg.omsorgsarbeidFoer1992) {
                 paragraph {

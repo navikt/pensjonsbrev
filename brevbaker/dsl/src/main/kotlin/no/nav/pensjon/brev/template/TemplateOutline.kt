@@ -24,30 +24,30 @@ class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constr
 sealed interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {
     @BrevbakerDSLInternal fun addOutlineContent(e: OutlineElement<Lang>)
 
-    fun title1(create: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
+    fun title1(uniqueness: String? = null, create: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
         PlainTextOnlyScope<Lang, LetterData>().apply(create)
-            .let { Element.OutlineContent.Title1(it.elements) }
+            .let { Element.OutlineContent.Title1(it.elements, stableHashModifier = uniqueness) }
             .let { ContentOrControlStructure.Content(it) }
             .also { addOutlineContent(it) }
     }
 
-    fun title2(create: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
+    fun title2(uniqueness: String? = null, create: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
         PlainTextOnlyScope<Lang, LetterData>().apply(create)
-            .let { Element.OutlineContent.Title2(it.elements) }
+            .let { Element.OutlineContent.Title2(it.elements, stableHashModifier = uniqueness) }
             .let { ContentOrControlStructure.Content(it) }
             .also { addOutlineContent(it) }
     }
 
-    fun title3(create: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
+    fun title3(uniqueness: String? = null, create: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
         PlainTextOnlyScope<Lang, LetterData>().apply(create)
-            .let { Element.OutlineContent.Title3(it.elements) }
+            .let { Element.OutlineContent.Title3(it.elements, stableHashModifier = uniqueness) }
             .let { ContentOrControlStructure.Content(it) }
             .also { addOutlineContent(it) }
     }
 
-    fun paragraph(create: ParagraphOnlyScope<Lang, LetterData>.() -> Unit) {
+    fun paragraph(uniqueness: String? = null, create: ParagraphOnlyScope<Lang, LetterData>.() -> Unit) {
         ParagraphOnlyScope<Lang, LetterData>().apply(create)
-            .let { Element.OutlineContent.Paragraph(it.elements) }
+            .let { Element.OutlineContent.Paragraph(it.elements, stableHashModifier = uniqueness) }
             .let { ContentOrControlStructure.Content(it) }
             .also { addOutlineContent(it) }
     }

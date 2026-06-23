@@ -71,7 +71,7 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
                     nynorsk { +"Kravet er avslått, fordi vilkåra for å få uførepensjon ikkje er oppfylte i ditt tilfelle." }
                 )
             }
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
             paragraph {
                 text(
                     bokmal { +fritekst("Vedtaket er gjort etter folketrygdloven paragraf") },

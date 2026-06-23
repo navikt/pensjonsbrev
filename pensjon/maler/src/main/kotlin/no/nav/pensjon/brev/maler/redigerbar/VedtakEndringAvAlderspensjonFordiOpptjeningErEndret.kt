@@ -153,7 +153,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
             }
 
             // endretOpptjeningBegrunn_004
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
             paragraph {
                 text(
                     bokmal { + "Pensjonsopptjeningen din er endret fordi:" },

@@ -215,7 +215,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                             english { +"If you were divorced from the deceased, and have not remarried, you may be entitled to a survivor's rights in a retirement pension. You must then have been married for at least 25 years, or at least 15 years if you had children together. The death must have occurred within 5 years after the divorce." },
                         )
                     }
-                    includePhrase(Felles.DuKanLeseMer)
+                    includePhrase(Felles.DuKanLeseMer(uniqueness = "gjenlevende_skilt"))
                 }
             }
             showIf(pesysData.sakstype.isOneOf(UFOREP)) {
@@ -291,7 +291,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     or saksbehandlerValg.infoHvordanSoekeOmstillingsstoenad
                     or saksbehandlerValg.infoVilkaarSkiltGjenlevende
                 )) {
-                includePhrase(Felles.DuKanLeseMer)
+                includePhrase(Felles.DuKanLeseMer(uniqueness = "uforep_omstillingsstoenad"))
             }
             showIf(pesysData.sakstype.isOneOf(UFOREP, ALDER)
                     and saksbehandlerValg.gjenlevendeHarBarnUnder18MedAvdoed) {
@@ -318,7 +318,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                         )
                     }
                 }
-                includePhrase(Felles.DuKanLeseMer)
+                includePhrase(Felles.DuKanLeseMer(uniqueness = "barn_under_18"))
             }
 
             showIf(pesysData.gjenlevendesAlder.lessThan(67).and(pesysData.gjenlevendesAlder.greaterThanOrEqual(61))) {
