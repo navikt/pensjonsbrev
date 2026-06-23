@@ -225,4 +225,8 @@ object Api {
             NAVANSATT_MANGLER_NAVN,
         }
     }
+
+    data class OppdaterFoerstesideRequest(
+        val leggVedFoersteside: Boolean,
+    )
 }

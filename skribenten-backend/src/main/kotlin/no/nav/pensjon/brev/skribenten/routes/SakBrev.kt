@@ -250,6 +250,14 @@ fun Route.sakBrev(
                 val brevId = call.parameters.brevId()
                 call.respond(brevmalService.getAlltidValgbareVedlegg(brevId))
             }
+
+            put("/foersteside") {
+                val brevId = call.parameters.brevId()
+                val request = call.receive<Api.OppdaterFoerstesideRequest>()
+                val resultat = brevredigeringFacade.setHarFoersteside(SetFoerstesideHandler.Request(brevId, request.leggVedFoersteside))
+
+                apiRespond(dto2ApiService, resultat)
+            }
         }
     }
 
