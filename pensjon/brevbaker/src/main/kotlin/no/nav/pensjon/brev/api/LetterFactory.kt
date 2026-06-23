@@ -95,16 +95,7 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
                         eksisterende.displayText
                     )
                     is SaksbehandlervalgVerdi.Text -> SaksbehandlervalgVerdi.Text(nye.value as? String, eksisterende.displayText)
-                    null -> // Dette kan skje hvis malen kombinerer ny og gammel løsning
-                        when (nye.value) {
-                            // TODO: lurer på om vi kkal støtte det her i det heile tatt, innfører ein del ekstra kompleksitet
-                            // Display text her blir i praksis ikke brukt, så det er ikke så farlig at den er uformatert
-                            is Boolean -> SaksbehandlervalgVerdi.Bool(nye.value as Boolean, nye.key)
-                            is Int -> SaksbehandlervalgVerdi.Integer(nye.value as Int, nye.key)
-                            //is Enum<*> -> saksbehandlervalg[nye.key] = SaksbehandlervalgVerdi.Enum<*>(nye.value as Enum<String>) // TODO: typing
-                            is String -> SaksbehandlervalgVerdi.Text(nye.value as String, nye.key)
-                            else -> throw IllegalArgumentException("Unsupported type for saksbehandlervalg: ${nye.value?.javaClass}")
-                        }
+                    null -> throw IllegalArgumentException("Saksbehandlervalg fins ikke, dette skal ikke skje: ${nye.key}, som har type ${nye.value?.javaClass}")
                 }
             }
         }
