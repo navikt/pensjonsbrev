@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSLImpl
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 
 object BrevbakerBrevdataModule : SimpleModule() {
@@ -42,7 +43,7 @@ object BrevbakerBrevdataModule : SimpleModule() {
             val verdier = root.properties().associate { (key, node) ->
                 key to parser.codec.treeToValue(node, SaksbehandlervalgVerdi::class.java)
             }
-            return SaksbehandlervalgIDSLImpl(verdier)
+            return SaksbehandlervalgIDSLImpl(verdier, mapOf()) // TODO andre param her
         }
     }
 
@@ -85,8 +86,4 @@ object BrevbakerBrevdataModule : SimpleModule() {
             )
         }
     }
-}
-
-class SaksbehandlervalgIDSLImpl(override val verdier: Map<String, SaksbehandlervalgVerdi>) : SaksbehandlervalgIDSL {
-    override fun <T : SaksbehandlervalgVerdi> get(key: String) = verdier[key]!! as T
 }
