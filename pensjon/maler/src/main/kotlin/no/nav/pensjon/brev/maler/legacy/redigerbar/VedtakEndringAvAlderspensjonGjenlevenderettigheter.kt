@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
+import no.nav.pensjon.brev.api.model.BeloepEndring.UENDRET
 import no.nav.pensjon.brev.api.model.BeloepEndring.ENDR_OKT
 import no.nav.pensjon.brev.api.model.BeloepEndring.ENDR_RED
 import no.nav.pensjon.brev.api.model.KravInitiertAv
@@ -44,6 +45,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.avdoedeHarRedusertTrygdetidEllerPoengaar
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.ingenEndringBelop
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.okningBelop
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.oktTilleggMpn
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.omregnetTilEnsligISammeVedtak
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.pesysData
@@ -149,38 +153,91 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     )
                 }
             }
+            showIf(pesysData.alderspensjonVedVirk.regelverkType.notEqualTo(AP1967)) {
 
-            // innvilgetGjRettAPIngenEndr_001
-            showIf(not(virkDatoFomEtter2023) and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt and pesysData.ytelseskomponentInformasjon.beloepEndring.notEqualTo(ENDR_OKT)) {
-                paragraph {
-                    val fritekst = fritekst("skriv inn aktuell ytelseskomponent")
-                    text(
-                        bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening. Dette fører til en endring av " + fritekst + ", men vil ikke gi deg en høyere pensjon totalt enn den du har tjent opp selv." },
-                        nynorsk { + "Vi har difor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening. Dette fører til ei endring av " + fritekst + ", men vil ikkje gi deg ein høgare pensjon enn kva du har tent opp sjølv." },
-                        english { + "We have therefore recalculated your pension on the basis of your and the deceased’s earned pension. This leads to a change in " + fritekst + ", but will not give you a higher pension than what you have accumulated yourself." }
-                    )
+                showIf(((pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016) and not(virkDatoFomEtter2023)))
+                        and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)
+                        and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
+                        and pesysData.ytelseskomponentInformasjon.beloepEndring.notEqualTo(ENDR_OKT)
+                ) {
+                    paragraph {
+                        val fritekst = fritekst("skriv inn aktuell ytelseskomponent")
+                        text(
+                            bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening. Dette fører til en endring av " + fritekst + ", men vil ikke gi deg en høyere pensjon totalt enn den du har tjent opp selv." },
+                            nynorsk { + "Vi har difor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening. Dette fører til ei endring av " + fritekst + ", men vil ikkje gi deg ein høgare pensjon enn kva du har tent opp sjølv." },
+                            english { + "We have therefore recalculated your pension on the basis of your and the deceased’s earned pension. This leads to a change in " + fritekst + ", but will not give you a higher pension than what you have accumulated yourself." }
+                        )
+                    }
                 }
-            }
+
+                // innvilgetGjRettAPIngenEndr2_001
+                showIf(
+                    ((pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
+                        and (brukerFoedtEtter1944.not()
+                        or virkDatoFomEtter2023.not()))
+                            and pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(UENDRET))
+                ) {
+                    paragraph {
+                        text(
+                            bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening, men du vil ikke få høyere alderspensjon enn den du har tjent opp selv." },
+                            nynorsk { + "Vi har difor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening, men du vil ikkje få høgare alderspensjon enn kva du har tent opp sjølv." },
+                            english { + "We have made a calculation on the basis of your and the deceased’s earned pension and you will not be entitled to a higher retirement pension than what you have accumulated yourself." }
+                        )
+                    }
+                }
+
+                // innvilgetGjRettAPEndr_001
+                showIf(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
+                        and pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(ENDR_OKT)
+                        and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)
+                        and ((virkDatoFomEtter2023.not() and pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)))
+                ) {
+                    paragraph {
+                        text(
+                            bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening, og det gir deg en høyere alderspensjon enn den du har tjent opp selv." },
+                            nynorsk { + "Vi har difor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening, og det gir deg ein høgare alderspensjon enn kva du har tent opp sjølv." },
+                            english { + "We have therefore recalculated your pension on the basis of your and the deceased’s earned pension, and you are entitled to a higher retirement pension than what you have accumulated yourself." }
+                        )
+                    }
+                }
+            }.orShow {
 
             // innvilgetGjRettAPIngenEndr2_001
-            showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016) and (brukerFoedtEtter1944.not() or virkDatoFomEtter2023.not())) {
-                paragraph {
-                    text(
-                        bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening, men du vil ikke få høyere alderspensjon enn den du har tjent opp selv." },
-                        nynorsk { + "Vi har difor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening, men du vil ikkje få høgare alderspensjon enn kva du har tent opp sjølv." },
-                        english { + "We have made a calculation on the basis of your and the deceased’s earned pension and you will not be entitled to a higher retirement pension than what you have accumulated yourself." }
-                    )
+                showIf(
+                    saksbehandlerValg.ingenEndringBelop.equalTo(true)
+                ) {
+                    paragraph {
+                        text(
+                            bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening, men du vil ikke få høyere alderspensjon enn den du har tjent opp selv." },
+                            nynorsk { + "Vi har difor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening, men du vil ikkje få høgare alderspensjon enn kva du har tent opp sjølv." },
+                            english { + "We have made a calculation on the basis of your and the deceased’s earned pension and you will not be entitled to a higher retirement pension than what you have accumulated yourself." }
+                        )
+                    }
                 }
-            }
 
-            // innvilgetGjRettAPEndr_001
-            showIf(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt and pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(ENDR_OKT) and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) and not(virkDatoFomEtter2023)) {
-                paragraph {
-                    text(
-                        bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening, og det gir deg en høyere alderspensjon enn den du har tjent opp selv." },
-                        nynorsk { + "Vi har difor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening, og det gir deg ein høgare alderspensjon enn kva du har tent opp sjølv." },
-                        english { + "We have therefore recalculated your pension on the basis of your and the deceased’s earned pension, and you are entitled to a higher retirement pension than what you have accumulated yourself." }
-                    )
+                // innvilgetGjRettAPEndr_001
+                showIf(
+                    saksbehandlerValg.okningBelop.equalTo(true)
+                ) {
+                    paragraph {
+                        text(
+                            bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening, og det gir deg en høyere alderspensjon enn den du har tjent opp selv." },
+                            nynorsk { + "Vi har difor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening, og det gir deg ein høgare alderspensjon enn kva du har tent opp sjølv." },
+                            english { + "We have therefore recalculated your pension on the basis of your and the deceased’s earned pension, and you are entitled to a higher retirement pension than what you have accumulated yourself." }
+                        )
+                    }
+                }
+                showIf(
+                    saksbehandlerValg.oktTilleggMpn.equalTo(true)
+                ) {
+                    paragraph {
+                        val fritekst = fritekst("skriv inn aktuell ytelseskomponent")
+                        text(
+                            bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening. Dette fører til en endring av " + fritekst + ", men vil ikke gi deg en høyere pensjon totalt enn den du har tjent opp selv." },
+                            nynorsk { + "Vi har difor berekna pensjonen din på nytt ut frå eigen og avdøde sin pensjonsopptening. Dette fører til ei endring av " + fritekst + ", men vil ikkje gi deg ein høgare pensjon enn kva du har tent opp sjølv." },
+                            english { + "We have therefore recalculated your pension on the basis of your and the deceased’s earned pension. This leads to a change in " + fritekst + ", but will not give you a higher pension than what you have accumulated yourself." }
+                        )
+                    }
                 }
             }
 
