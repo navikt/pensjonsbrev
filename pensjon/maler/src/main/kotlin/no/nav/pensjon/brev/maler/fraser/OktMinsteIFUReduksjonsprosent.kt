@@ -76,7 +76,7 @@ object OktMinsteIFUReduksjonsprosent {
             paragraph {
                 text(
                     bokmal { +"Vi endrer uføretrygden din fordi Stortinget har vedtatt lovendringer som trer i kraft 1. juli 2026, men gjelder fra 1. januar 2026. Endringene påvirker deg bare hvis du har inntekt over inntektsgrensen ved siden av uføretrygden. Endringene kan føre til at det blir mer lønnsomt for deg å kombinere jobb og uføretrygd. " },
-                    nynorsk { +"Vi endrar uføretrygda di fordi Stortinget har vedteke lovendringar som trer i kraft 1. juli 2026, men gjeld frå 1. januar 2026. Endringane påverkar deg berre hvis du har inntekt over inntektsgrensa ved sida av uføretrygda. Endringane kan føre til at det blir meir lønsamt for deg å kombinere jobb og uføretrygd. " },
+                    nynorsk { +"Vi endrar uføretrygda di fordi Stortinget har vedteke lovendringar som trer i kraft 1. juli 2026, men gjeld frå 1. januar 2026. Endringane påverkar deg berre dersom du har inntekt over inntektsgrensa ved sida av uføretrygda. Endringane kan føre til at det blir meir lønsamt for deg å kombinere jobb og uføretrygd. " },
                 )
                 table(header = {
                     column { text(bokmal { +"Ny beregning fra " + data.beregningFomDato.format() }, nynorsk { +"Ny berekning frå " + data.beregningFomDato.format() }) }
@@ -281,7 +281,7 @@ object OktMinsteIFUReduksjonsprosent {
             title1 {
                 text(
                     bokmal { +"Dette endres for deg" },
-                    nynorsk { +"Dette endres for deg" },
+                    nynorsk { +"Dette endrar seg for deg" },
                 )
             }
             showIf(data.visOktMinsteIFU) {
@@ -312,7 +312,7 @@ object OktMinsteIFUReduksjonsprosent {
                 paragraph {
                     text(
                         bokmal { +"Lovendringene har ført til at din inntekt før uførhet (IFU) har økt til " + data.ifu.format() },
-                        nynorsk { +"Lovendringane har ført til at inntekta di før uførleik (IFU) har auka til" + data.ifu.format() },
+                        nynorsk { +"Lovendringane har ført til at inntekta di før uførleik (IFU) har auka til " + data.ifu.format() },
                     )
                     showIf(data.endringUforegrad) {
                         text(
@@ -403,14 +403,14 @@ object OktMinsteIFUReduksjonsprosent {
                     paragraph {
                         text(
                             bokmal { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i beregningene av uføretrygden din. Når lovendringen trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha virkning tilbake i tid fra 1. januar i år. Du vil derfor få en etterbetaling på " + fritekst("Beløp etterbetaling") + " innen kort tid." },
-                            nynorsk { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " reduksjonsprosent i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha tilbakeverkande kraft frå 1. januar i år. Du vil derfor få ei etterbetaling på " + fritekst("Beløp etterbetaling") + " innan kort tid." },
+                            nynorsk { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha tilbakeverkande kraft frå 1. januar i år. Du vil derfor få ei etterbetaling på " + fritekst("Beløp etterbetaling") + " innan kort tid." },
                         )
                     }
                 }.orShow {
                     paragraph {
                         text(
                             bokmal { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i beregningene av uføretrygden din. Når lovendringen trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha virkning tilbake i tid fra 1. januar i år. Du vil derfor få en etterbetaling på " + data.etterbetalingJuli.format() + " innen kort tid." },
-                            nynorsk { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " reduksjonsprosent i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha tilbakeverkande kraft frå 1. januar i år. Du vil derfor få ei etterbetaling på " + data.etterbetalingJuli.format() + " innan kort tid." },
+                            nynorsk { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha tilbakeverkande kraft frå 1. januar i år. Du vil derfor få ei etterbetaling på " + data.etterbetalingJuli.format() + " innan kort tid." },
                         )
                     }
                 }
@@ -455,7 +455,7 @@ object OktMinsteIFUReduksjonsprosent {
                 paragraph {
                     text(
                         bokmal { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i beregningene av uføretrygden din. Når lovendringen trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha virkning tilbake i tid fra 1. januar i år. " },
-                        nynorsk { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " reduksjonsprosent i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha tilbakeverkande kraft frå 1. januar i år. " },
+                        nynorsk { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha tilbakeverkande kraft frå 1. januar i år. " },
                     )
                 }
             }
