@@ -5,9 +5,9 @@ import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.ModelWithFieldsThatHaveTypeParametersSelectors.ModelWithTypeParametersSelectors.NestedModelSelectors.SecondModelSelectors.lastName
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.ModelWithFieldsThatHaveTypeParametersSelectors.ModelWithTypeParametersSelectors.NestedModelSelectors.second
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.ModelWithFieldsThatHaveTypeParametersSelectors.ModelWithTypeParametersSelectors.otherList
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.modelWithFieldsThatHaveTypeParameters.modelWithTypeParameters.*
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.modelWithFieldsThatHaveTypeParameters.modelWithTypeParameters.nestedModel.*
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.modelWithFieldsThatHaveTypeParameters.modelWithTypeParameters.nestedModel.secondModel.*
 
 /**
  * Verify that selectors are generated for type parameters of model fields.
