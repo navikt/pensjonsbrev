@@ -14,19 +14,19 @@ class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<Saksbehandlervalg
     }
     fun bool(default: Boolean = false): Expression<Boolean> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
         .bool()
-        .also { scope.saksbehandlervalg[id] = SaksbehandlervalgVerdi.Bool(default, displayText) }
+        .also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Bool(default, displayText)) }
 
     fun int(default: Int? = null): Expression<Int?> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
         .int()
-        .also { scope.saksbehandlervalg[id] = SaksbehandlervalgVerdi.Integer(default, displayText) }
+        .also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Integer(default, displayText)) }
 
     fun text(default: String?): Expression<String?> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
         .text()
-        .also { scope.saksbehandlervalg[id] = SaksbehandlervalgVerdi.Text(default, displayText) }
+        .also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Text(default, displayText)) }
 
     inline fun <reified T> enum(default: T? = null): Expression<T?> where T : SaksbehandlerValgEnum, T : Enum<T> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
         .enum<T?>()
-        .also { scope.saksbehandlervalg[id] = SaksbehandlervalgVerdi.Enum(default, displayText, T::class.java as Class<out Enum<*>?>) }
+        .also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Enum(default, displayText, T::class.java as Class<out Enum<*>?>)) }
 }
 
 fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg(id: String, displayText: String) = SaksbehandlerValgBuilder(id, displayText, this)

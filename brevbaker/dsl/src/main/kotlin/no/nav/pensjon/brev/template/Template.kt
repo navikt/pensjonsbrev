@@ -18,7 +18,6 @@ import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 @LetterTemplateMarker
 class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
     private val validator: BrevTemplateValidator = EmptyValidator,
-    val saksbehandlervalg: MutableMap<String, SaksbehandlervalgVerdi> = mutableMapOf(),
 ) : TemplateGlobalScope<LetterData> {
     private val _title: MutableList<TextElement<Lang>> = mutableListOf()
     internal val title: List<TextElement<Lang>> get() = _title
@@ -28,6 +27,13 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     internal val attachments: List<IncludeAttachment<Lang, *>> get() = _attachments
     private val _pdfAttachments: MutableList<IncludeAttachmentPDF<Lang, *>> = mutableListOf()
     internal val pdfAttachments: List<IncludeAttachmentPDF<Lang, *>> get() = _pdfAttachments
+    private val _saksbehandlervalg: MutableMap<String, SaksbehandlervalgVerdi> = mutableMapOf()
+    internal val saksbehandlervalg: SaksbehandlervalgDeklarasjon get() = _saksbehandlervalg
+
+    @PublishedApi
+    internal fun saksbehandlervalg(key: String, verdi: SaksbehandlervalgVerdi) {
+        _saksbehandlervalg[key] = verdi
+    }
 
     fun title(init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
         _title.addAll(PlainTextOnlyScope<Lang, LetterData>().apply(init).elements)

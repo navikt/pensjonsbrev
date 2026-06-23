@@ -1458,7 +1458,6 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 	public fun english (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public fun getArgument ()Lno/nav/pensjon/brev/template/Expression;
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
-	public final fun getSaksbehandlervalg ()Ljava/util/Map;
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;Lno/nav/pensjon/brev/template/Expression;)V
@@ -1472,6 +1471,7 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 	public static synthetic fun includeAttachmentRedigerbar-sE91ttY$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public final fun outline (Lkotlin/jvm/functions/Function1;)V
+	public final fun saksbehandlervalg (Ljava/lang/String;Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi;)V
 	public final fun title (Lkotlin/jvm/functions/Function1;)V
 }
 
