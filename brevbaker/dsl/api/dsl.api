@@ -75,7 +75,6 @@ public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$En
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 	public fun unwrap ()Ljava/lang/Object;
-	public final fun withRawValue (Ljava/lang/Object;)Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Enum;
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Enum$Companion {
