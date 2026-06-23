@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Broek
 import no.nav.pensjon.brevbaker.api.model.DisplayText
@@ -14,7 +15,6 @@ import java.time.LocalDate
 import java.time.Period
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
-import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
 
@@ -40,18 +40,15 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                 if (!objectTypes.containsKey(name)) {
                     objectTypes[name] = createObjectTypeSpecification(parameters(current), isSaksbehandlervalg)
                 }
-                if (isSaksbehandlervalg) {
-                    objectTypes[name] = createObjectTypeSpecification(saksbehandlervalg.map { Parameter(
-                        name = it.key,
-                        type = when (val v = it.value) {
-                            is SaksbehandlervalgVerdi.Bool -> Boolean::class
-                            is SaksbehandlervalgVerdi.Integer -> Int::class
-                            is SaksbehandlervalgVerdi.Enum<*> -> v.clazz.kotlin
-                            is SaksbehandlervalgVerdi.Text -> String::class
-                        }.createType(),
-                        annotations = listOf(),
-                        displayText = it.value.displayText,
-                    ) }, false) + (objectTypes[name] ?: emptyMap())
+                if (current.isSubclassOf(SaksbehandlervalgIDSL::class) && saksbehandlervalg != null) {
+                    objectTypes[name] = saksbehandlervalg.mapValues {
+                        when (val v = it.value) {
+                            is SaksbehandlervalgVerdi.Bool -> FieldType.Scalar(false, FieldType.Scalar.Kind.BOOLEAN, displayText = it.value.displayText)
+                            is SaksbehandlervalgVerdi.Integer -> FieldType.Scalar(true, FieldType.Scalar.Kind.NUMBER, displayText = it.value.displayText)
+                            is SaksbehandlervalgVerdi.Text -> FieldType.Scalar(true, FieldType.Scalar.Kind.STRING, displayText = it.value.displayText)
+                            is SaksbehandlervalgVerdi.Enum<*> -> FieldType.Enum(true, enumVerdier(v.clazz.kotlin, false), displayText = it.value.displayText)
+                        }
+                    }
                 }
             }
 
