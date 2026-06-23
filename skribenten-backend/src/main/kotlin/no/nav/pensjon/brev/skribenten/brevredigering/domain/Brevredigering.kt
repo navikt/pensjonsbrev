@@ -12,7 +12,6 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
-import org.jetbrains.exposed.v1.core.dao.id.CompositeID
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.dao.Entity
@@ -312,13 +311,10 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             eksisterende.redigertVedlegg = redigertVedlegg
         } else {
             RedigertVedlegg.new(
-                CompositeID {
-                    it[RedigertVedleggTable.brevredigering] = this@BrevredigeringEntity.id
-                    it[RedigertVedleggTable.vedleggId] = vedleggId
-                }
-            ) {
-                this.redigertVedlegg = redigertVedlegg
-            }
+                brevredigering = this@BrevredigeringEntity.id,
+                vedleggId = vedleggId,
+                redigertVedlegg = redigertVedlegg,
+            )
             refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til redigertVedlegg-tabellen
         }
         return true
