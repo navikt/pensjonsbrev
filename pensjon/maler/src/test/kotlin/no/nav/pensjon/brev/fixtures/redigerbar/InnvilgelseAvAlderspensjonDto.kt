@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
+import no.nav.brev.BrevLandmodell
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Sakstype
@@ -44,7 +45,7 @@ fun createInnvilgelseAvAlderspensjonDto() =
             borINorge = false,
             erEOSLand = false,
             erForstegangsbehandletNorgeUtland = false,
-            faktiskBostedsland = null,
+            faktiskBostedslandKode = BrevLandmodell.Landkode("CH"),
             fullTrygdtid = false,
             gjenlevendetilleggKap19 = Kroner(0),
             harFlereBeregningsperioder = false,

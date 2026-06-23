@@ -1,16 +1,15 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 
-object TBU2443_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class TBU2443_Generated(val uniqueness: String? = null) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 		//[TBU2443NN, TBU2443EN, TBU2443]
 
-		paragraph {
+		paragraph(uniqueness = uniqueness) {
 			text (
 				bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføretrygd." },
 				nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om auka uføretrygd." },

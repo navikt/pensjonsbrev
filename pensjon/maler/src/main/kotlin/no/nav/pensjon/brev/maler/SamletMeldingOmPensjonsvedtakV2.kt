@@ -27,8 +27,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object SamletMeldingOmPensjonsvedtakV2 : RedigerbarTemplate<SamletMeldingOmPensjonsvedtakV2Dto> {
 
-    override val featureToggle = FeatureToggles.samletMeldingOmPensjonsvedtakV2.toggle
-
     override val kode = Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2 // BREVKODEN MÅ VÆRE I SYNC MED P1SERVICE I SKRIBENTEN!
     override val kategori = Brevkategori.SLUTTBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.ALLE

@@ -3,11 +3,16 @@ package no.nav.pensjon.brev.skribenten.routes
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
+import no.nav.brev.BrevLandmodell.Land
+import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.brev.BrevLandmodell.Landkoder
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
+
+private val landkoderMedNavn = Landkoder.alleLandkoder.map { Landkode(it) }.map { Land(it, Landkoder.formaterLandnavn(it, LanguageCode.BOKMAL)) }
 
 fun Route.landRoute() {
     get("/land") {
-        call.respond(Landkoder.landkoderMedNavn)
+        call.respond(landkoderMedNavn)
     }
     get("/landForP1") {
         call.respond((eoesLand + nordiskTrygdeavtaleland + trygdeavtaleMedStorbritanniaLand + sveits).distinct())
@@ -15,7 +20,7 @@ fun Route.landRoute() {
 }
 
 
-private val eoesLand = Landkoder.landkoderMedNavn.filter {
+private val eoesLand = landkoderMedNavn.filter {
     it.kode.landkode in setOf(
         // EU-land
         "AT", // Østerrike
@@ -53,7 +58,7 @@ private val eoesLand = Landkoder.landkoderMedNavn.filter {
     )
 }
 
-private val nordiskTrygdeavtaleland = Landkoder.landkoderMedNavn.filter {
+private val nordiskTrygdeavtaleland = landkoderMedNavn.filter {
     it.kode.landkode in setOf(
         "DK", // Danmark
         "FI", // Finland
@@ -66,7 +71,7 @@ private val nordiskTrygdeavtaleland = Landkoder.landkoderMedNavn.filter {
     )
 }
 
-private val trygdeavtaleMedStorbritanniaLand = Landkoder.landkoderMedNavn.filter {
+private val trygdeavtaleMedStorbritanniaLand = landkoderMedNavn.filter {
     it.kode.landkode in setOf(
         "IM", // Isle of Man
         "JE", // Jersey
@@ -74,6 +79,6 @@ private val trygdeavtaleMedStorbritanniaLand = Landkoder.landkoderMedNavn.filter
     )
 }
 
-private val sveits = Landkoder.landkoderMedNavn.filter {
+private val sveits = landkoderMedNavn.filter {
     it.kode.landkode == "CH" // Sveits
 }

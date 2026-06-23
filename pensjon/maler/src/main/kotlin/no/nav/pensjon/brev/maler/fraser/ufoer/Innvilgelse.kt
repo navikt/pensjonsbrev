@@ -362,7 +362,7 @@ object Innvilgelse {
             }
 
             showIf((ungUforResultat.equalTo("oppfylt"))) {
-                paragraph {
+                paragraph(uniqueness = "ung_ufør") {
                     text(
                         bokmal { +"Du kan lese mer om dette i vedlegget " },
                         nynorsk { +"Du kan lese meir om dette i vedlegget " },
@@ -613,7 +613,7 @@ object Innvilgelse {
             }
 
             showIf(((beregningsvilkarYrkesskadegrad).equalTo((beregningsvilkarUforegrad)) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadebest()))) {
-                paragraph {
+                paragraph(uniqueness = "yrkesskadegrad_eq_uforegrad") {
                     text(
                         bokmal { +"Inntekten din på skadetidspunktet er lavere enn beregningsgrunnlaget ditt, og uføretrygden din vil derfor ikke bli beregnet etter særbestemmelser for yrkesskade eller yrkessykdom." },
                         nynorsk { +"Inntekta di på skadetidspunktet er lågare enn berekningsgrunnlaget ditt, og uføretrygda di blir derfor ikkje berekna etter særreglar for yrkesskade eller yrkessjukdom." },
@@ -660,7 +660,7 @@ object Innvilgelse {
             }
 
             showIf(((beregningsvilkarYrkesskadegrad).lessThan((beregningsvilkarUforegrad)) and (beregningsvilkarYrkesskadegrad).greaterThan(0) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadebest()))) {
-                paragraph {
+                paragraph(uniqueness = "yrkesskadegrad_lt_uforegrad") {
                     text(
                         bokmal { +"Inntekten din på skadetidspunktet er lavere enn beregningsgrunnlaget ditt, og uføretrygden din vil derfor ikke bli beregnet etter særbestemmelser for yrkesskade eller yrkessykdom." },
                         nynorsk { +"Inntekta di på skadetidspunktet er lågare enn berekningsgrunnlaget ditt, og uføretrygda di blir derfor ikkje berekna etter særreglar for yrkesskade eller yrkessjukdom." },
@@ -919,7 +919,7 @@ object Innvilgelse {
                     )
                 }
             }
-            paragraph {
+            paragraph(uniqueness = "fastsatt-uføregrad") {
                 text(
                     bokmal { +"Du kan lese mer om dette i vedlegget " },
                     nynorsk { +"Du kan lese meir om dette i vedlegget " },

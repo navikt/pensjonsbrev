@@ -26,7 +26,6 @@ enum class FeatureToggles(private val key: String) {
     oversettelseAvDokumenter("oversettelseAvDokumenter"),
     pl7231ForventetSvartid("pl_7231.foreventet_svartid"),
     samletMeldingOmPensjonsvedtak("samletMeldingOmPensjonsvedtak"),
-    samletMeldingOmPensjonsvedtakV2("samletMeldingOmPensjonsvedtakV2"),
     vedtakAvslagPaaOmsorgsopptjening("vedtakAvslagPaaOmsorgsopptjening"),
     vedtakOmFjerningAvOmsorgspoeng("vedtakOmFjerningAvOmsorgspoeng"),
     vedtakOmInnvilgelseAvOmsorgspoeng("vedtakOmInnvilgelseAvOmsorgspoeng"),

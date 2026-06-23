@@ -100,7 +100,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 text(bokmal { +"Du flyttet til Norge " + fritekst("siste innflyttingsdato til Norge") + ", og ble da medlem av folketrygden. " })
             }
 
-            paragraph {
+            paragraph(uniqueness = "vurdering1") {
                 text(bokmal { + fritekst("Individuell vurdering") })
             }
 
@@ -108,7 +108,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 text(bokmal { +"Vi har fastsatt uføretidspunktet ditt til " + fritekst("dato") + ". Da ble inntektsevnen din varig nedsatt med minst halvparten. " })
             }
 
-            paragraph {
+            paragraph(uniqueness = "vurdering2") {
                 text(bokmal { + fritekst("Individuell vurdering") })
             }
 
