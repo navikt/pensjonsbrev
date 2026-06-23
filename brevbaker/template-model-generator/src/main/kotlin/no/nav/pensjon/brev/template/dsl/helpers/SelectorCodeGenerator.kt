@@ -5,8 +5,6 @@ import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
 import java.io.PrintWriter
 
-private const val INDENT = "    "
-
 internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>>) {
     private data class Node(val decl: KSClassDeclaration, var include: Boolean, val children: MutableMap<KSClassDeclaration, Node> = mutableMapOf())
     private data class Root(val node: Node, val dependencies: MutableSet<KSFile>)
@@ -33,32 +31,31 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
 
     fun generateCode(codeGenerator: CodeGenerator) {
         roots.values.forEach { root ->
-            createFile(codeGenerator, root) { writer ->
-                generateSelectors(root.node, "", writer)
-            }
+            val rootPkg = root.node.decl.packageName.asString()
+            val rootSegment = root.node.decl.simpleName.asString().replaceFirstChar { it.lowercase() }
+            // Default-package classes can't be referenced from sub-packages, so keep their selectors in the default package too
+            val selectorsPkg = if (rootPkg.isNotBlank()) "$rootPkg.selectors.$rootSegment" else ""
+            generateNodeCode(codeGenerator, root.node, selectorsPkg, root.dependencies)
         }
     }
 
     companion object {
-        private fun generateSelectors(node: Node, indent: String, writer: PrintWriter) {
-            val className = node.decl.simpleName.asString()
-            writer.println("${indent}object ${className}Selectors {")
-
+        private fun generateNodeCode(codeGenerator: CodeGenerator, node: Node, pkg: String, dependencies: Set<KSFile>) {
             if (node.include) {
-                node.decl.getAllProperties().forEach { generateSelectors(it, indent + INDENT, writer) }
+                val className = node.decl.simpleName.asString()
+                createFile(codeGenerator, pkg, className, dependencies) { writer ->
+                    node.decl.getAllProperties().forEach { generatePropertySelectors(it, writer) }
+                }
             }
-
-            writer.println()
-            node.children.values.forEach { generateSelectors(it, indent + INDENT, writer) }
-
-            writer.println("${indent}}")
+            node.children.values.forEach { child ->
+                val childSegment = child.decl.simpleName.asString().replaceFirstChar { it.lowercase() }
+                // If parent is in default package, keep children there too (can't reference default-package classes from sub-packages)
+                val childPkg = if (pkg.isBlank()) "" else "$pkg.$childSegment"
+                generateNodeCode(codeGenerator, child, childPkg, dependencies)
+            }
         }
 
-        private fun generateSelectors(
-            property: KSPropertyDeclaration,
-            indent: String,
-            writer: PrintWriter
-        ) {
+        private fun generatePropertySelectors(property: KSPropertyDeclaration, writer: PrintWriter) {
             val propertyName = property.simpleName.asString()
             val selectorName = "${propertyName}Selector"
 
@@ -95,31 +92,28 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
                 |        UnaryOperation.Select($selectorName)
                 |    )
                 |
-                """.trimMargin().prependIndent(indent)
+                """.trimMargin()
             )
         }
 
-        private fun <T> createFile(codeGenerator: CodeGenerator, root: Root, useBlock: (PrintWriter) -> T): T {
-            val className = root.node.decl.simpleName.asString()
-            val pkg = root.node.decl.packageName.asString()
-
-            return PrintWriter(codeGenerator.createNewFile(Dependencies(true, *root.dependencies.toTypedArray()), pkg, "${className}Selectors")).use { writer ->
+        private fun <T> createFile(codeGenerator: CodeGenerator, pkg: String, className: String, dependencies: Set<KSFile>, useBlock: (PrintWriter) -> T): T =
+            PrintWriter(codeGenerator.createNewFile(Dependencies(true, *dependencies.toTypedArray()), pkg, "${className}Selectors")).use { writer ->
                 writer.println(
                     """
-                ${if (pkg.isNotBlank()) "package $pkg" else ""}
+                    @file:OptIn(InternKonstruktoer::class)
 
-                import no.nav.pensjon.brev.template.Expression
-                import no.nav.pensjon.brev.template.UnaryOperation
-                import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
-                import no.nav.brev.InternKonstruktoer
-                import no.nav.pensjon.brev.template.SimpleSelector
+                    ${if (pkg.isNotBlank()) "package $pkg" else ""}
 
-                @OptIn(InternKonstruktoer::class)
-                """.trimIndent()
+                    import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.UnaryOperation
+                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.brev.InternKonstruktoer
+                    import no.nav.pensjon.brev.template.SimpleSelector
+
+                    """.trimIndent()
                 )
                 useBlock(writer)
             }
-        }
 
         private fun KSTypeReference.resolveWithTypeParameters(): String =
             resolve().let { resolved ->
@@ -136,6 +130,5 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
                     Nullability.PLATFORM -> throw InvalidModel("Don't know how to handle type with Nullability.PLATFORM of type: $typeName")
                 }
             }
-
     }
 }
