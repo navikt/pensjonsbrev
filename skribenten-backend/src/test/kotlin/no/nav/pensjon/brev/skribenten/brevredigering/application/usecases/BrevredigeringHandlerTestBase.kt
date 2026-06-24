@@ -259,6 +259,7 @@ abstract class BrevredigeringHandlerTestBase {
         brevredigeringFacade.oppdaterBrev(
             OppdaterBrevHandler.Request(
                 brevId = brevId,
+                saksId = sak1.saksId,
                 nyeSaksbehandlerValg = nyeSaksbehandlerValg,
                 nyttRedigertbrev = nyttRedigertbrev,
                 frigiReservasjon = frigiReservasjon
@@ -274,6 +275,7 @@ abstract class BrevredigeringHandlerTestBase {
         brevredigeringFacade.hentBrev(
             HentBrevHandler.Request(
                 brevId = brevId,
+                saksId = sak1.saksId,
                 reserverForRedigering = reserverForRedigering,
             )
         )
@@ -288,7 +290,7 @@ abstract class BrevredigeringHandlerTestBase {
         brevId: BrevId,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Unit, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.slettBrev(SlettBrevHandler.Request(brevId = brevId))
+        brevredigeringFacade.slettBrev(SlettBrevHandler.Request(brevId = brevId, saksId = sak1.saksId))
     }
 
     protected suspend fun attester(
@@ -301,6 +303,7 @@ abstract class BrevredigeringHandlerTestBase {
         brevredigeringFacade.attesterBrev(
             AttesterBrevHandler.Request(
                 brevId = brev.info.id,
+                saksId = sak1.saksId,
                 frigiReservasjon = frigiReservasjon,
                 nyeSaksbehandlerValg = nyeSaksbehandlerValg,
                 nyttRedigertbrev = nyttRedigertbrev,
@@ -316,6 +319,7 @@ abstract class BrevredigeringHandlerTestBase {
         brevredigeringFacade.veksleKlarStatus(
             VeksleKlarStatusHandler.Request(
                 brevId = brev.info.id,
+                saksId = sak1.saksId,
                 klar = klar
             )
         )
@@ -344,7 +348,7 @@ abstract class BrevredigeringHandlerTestBase {
         facade: BrevredigeringFacade = brevredigeringFacade,
     ): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
         withPrincipal(principal) {
-            facade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
+            facade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id, saksId = sak1.saksId))
         }
 
     protected suspend fun endreDistribusjonstype(
@@ -355,6 +359,7 @@ abstract class BrevredigeringHandlerTestBase {
         brevredigeringFacade.endreDistribusjonstype(
             EndreDistribusjonstypeHandler.Request(
                 brevId = brevId,
+                saksId = sak1.saksId,
                 type = nyDistribusjonstype,
             )
         )
@@ -362,7 +367,7 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected suspend fun sendBrev(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.SendBrevResult, BrevredigeringError>? =
         withPrincipal(principal) {
-            brevredigeringFacade.sendBrev(SendBrevHandler.Request(brevId = brev.info.id))
+            brevredigeringFacade.sendBrev(SendBrevHandler.Request(brevId = brev.info.id, saksId = sak1.saksId))
         }
 
     protected fun stagePdf(pdf: ByteArray) {

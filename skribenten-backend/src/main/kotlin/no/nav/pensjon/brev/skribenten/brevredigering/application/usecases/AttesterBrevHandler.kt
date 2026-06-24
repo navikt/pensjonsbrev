@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 
@@ -26,13 +27,14 @@ class AttesterBrevHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
         val nyeSaksbehandlerValg: SaksbehandlerValg? = null,
         val nyttRedigertbrev: Edit.Letter? = null,
         val frigiReservasjon: Boolean = false,
     ) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
         val principal = PrincipalInContext.require()
 
         attesterBrevPolicy.kanAttestere(brev, principal).onError { return failure(it) }

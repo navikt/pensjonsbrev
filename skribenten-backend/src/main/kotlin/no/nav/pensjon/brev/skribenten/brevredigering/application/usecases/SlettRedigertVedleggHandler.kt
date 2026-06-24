@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 
 class SlettRedigertVedleggHandler(
@@ -19,11 +20,12 @@ class SlettRedigertVedleggHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
         val vedleggId: VedleggId,
     ) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
         val principal = PrincipalInContext.require()
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }

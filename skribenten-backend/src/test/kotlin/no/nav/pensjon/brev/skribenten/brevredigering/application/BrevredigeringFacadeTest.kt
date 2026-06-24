@@ -43,7 +43,7 @@ class BrevredigeringFacadeTest {
     @Test
     suspend fun `reserverer brev for handler som krever det`() {
         val reserverBrev = ReserverBrevStub()
-        val request = HentBrevHandler.Request(brevId = BrevId(42L))
+        val request = HentBrevHandler.Request(brevId = BrevId(42L), saksId = SaksId(1))
 
         createFacade(
             hentBrev = object : BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering> {
@@ -59,7 +59,7 @@ class BrevredigeringFacadeTest {
     @Test
     suspend fun `reserverer ikke brev for handler som ikke krever det`() {
         val reserverBrev = ReserverBrevStub()
-        val request = HentBrevHandler.Request(brevId = BrevId(42L))
+        val request = HentBrevHandler.Request(brevId = BrevId(42L), saksId = SaksId(1))
 
         createFacade(
             hentBrev = object : BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering> {
@@ -90,7 +90,7 @@ class BrevredigeringFacadeTest {
             reserverBrev = ReserverBrevStub(),
         )
 
-        facade.hentBrev(HentBrevHandler.Request(BrevId(123L)))
+        facade.hentBrev(HentBrevHandler.Request(BrevId(123L), SaksId(1)))
         assertThat(interceptor.didRollback).isTrue()
     }
 
@@ -112,7 +112,7 @@ class BrevredigeringFacadeTest {
             reserverBrev = ReserverBrevStub(),
         )
 
-        facade.hentBrev(HentBrevHandler.Request(BrevId(123L)))
+        facade.hentBrev(HentBrevHandler.Request(BrevId(123L), SaksId(1)))
         assertThat(interceptor.didRollback).isFalse()
     }
 
@@ -130,7 +130,7 @@ class BrevredigeringFacadeTest {
                 }
             },
         )
-        facade.hentBrev(HentBrevHandler.Request(BrevId(123L)))
+        facade.hentBrev(HentBrevHandler.Request(BrevId(123L), SaksId(1)))
         assertThat(interceptor.didRollback).isTrue()
     }
 
@@ -152,7 +152,7 @@ class BrevredigeringFacadeTest {
                 }
             },
         )
-        facade.hentBrev(HentBrevHandler.Request(BrevId(123L)))
+        facade.hentBrev(HentBrevHandler.Request(BrevId(123L), SaksId(1)))
         assertThat(interceptor.didRollback).isFalse()
     }
 

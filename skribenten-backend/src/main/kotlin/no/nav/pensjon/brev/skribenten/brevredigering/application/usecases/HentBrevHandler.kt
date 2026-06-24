@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 
 class HentBrevHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
@@ -22,11 +23,12 @@ class HentBrevHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
         val reserverForRedigering: Boolean = false,
     ) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
         if (!request.reserverForRedigering) {
             return success(brev.toDto(brevreservasjonPolicy, null))

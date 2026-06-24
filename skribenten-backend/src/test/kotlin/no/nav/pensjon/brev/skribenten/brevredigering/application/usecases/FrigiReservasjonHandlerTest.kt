@@ -57,6 +57,6 @@ class FrigiReservasjonHandlerTest : BrevredigeringHandlerTestBase() {
         brevId: BrevId,
         principal: no.nav.pensjon.brev.skribenten.auth.UserPrincipal = saksbehandler1Principal,
     ): Outcome<Unit, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.frigiReservasjon(FrigiReservasjonHandler.Request(brevId = brevId))
+        brevredigeringFacade.frigiReservasjon(FrigiReservasjonHandler.Request(brevId = brevId, saksId = sak1.saksId))
     }
 }

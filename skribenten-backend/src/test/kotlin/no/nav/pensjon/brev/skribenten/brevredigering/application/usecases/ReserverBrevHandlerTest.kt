@@ -26,7 +26,7 @@ class ReserverBrevHandlerTest : BrevredigeringHandlerTestBase() {
         brev: Dto.Brevredigering,
         principal: MockPrincipal = saksbehandler1Principal
     ): Outcome<Reservasjon, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.reserverBrev(ReserverBrevHandler.Request(brevId = brev.info.id))
+        brevredigeringFacade.reserverBrev(ReserverBrevHandler.Request(brevId = brev.info.id, saksId = sak1.saksId))
     }
 
     @Test

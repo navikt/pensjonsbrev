@@ -131,12 +131,8 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override val isVedtaksbrev get() = brevtype == LetterMetadata.Brevtype.VEDTAKSBREV
 
     companion object : EntityClass<BrevId, BrevredigeringEntity>(BrevredigeringTable) {
-        fun findByIdAndSaksId(id: BrevId, saksId: SaksId?) =
-            if (saksId == null) {
-                findById(id)
-            } else {
-                find { (BrevredigeringTable.id eq id) and (BrevredigeringTable.saksId eq saksId) }.firstOrNull()
-            }
+        fun findByIdAndSaksId(id: BrevId, saksId: SaksId) =
+            find { (BrevredigeringTable.id eq id) and (BrevredigeringTable.saksId eq saksId) }.firstOrNull()
 
         fun opprettBrev(
             saksId: SaksId,

@@ -126,7 +126,7 @@ class BrevredigeringFacade(
     private suspend fun <Request : BrevredigeringRequest, Response> BrevredigeringHandler<Request, Response>.runHandler(request: Request): Outcome<Response, BrevredigeringError>? {
         if (requiresReservasjon(request)) {
             // Forsøk å reservere brevet før vi kjører handleren, om reservasjonen feiler returner feilen eller om brevet ikke finnes returner null.
-            reserverBrev(ReserverBrevHandler.Request(request.brevId))
+            reserverBrev(ReserverBrevHandler.Request(request.brevId, request.saksId))
                 ?.onError { return failure(it) }
                 ?: return null
         }

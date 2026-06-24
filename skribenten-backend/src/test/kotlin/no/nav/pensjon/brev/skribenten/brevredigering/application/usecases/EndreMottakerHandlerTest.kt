@@ -17,7 +17,7 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
 
     private suspend fun endreMottaker(brevId: BrevId, mottaker: Dto.Mottaker?, principal: UserPrincipal = saksbehandler1Principal) =
         withPrincipal(principal) {
-            brevredigeringFacade.endreMottaker(EndreMottakerHandler.Request(brevId, mottaker))
+            brevredigeringFacade.endreMottaker(EndreMottakerHandler.Request(brevId, sak1.saksId, mottaker))
         }
 
     @Test

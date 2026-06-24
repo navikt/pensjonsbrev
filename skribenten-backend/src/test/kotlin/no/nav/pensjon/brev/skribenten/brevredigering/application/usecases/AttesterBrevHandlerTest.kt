@@ -129,7 +129,7 @@ class AttesterBrevHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `returnerer null hvis brev ikke finnes`() {
         val resultat = withPrincipal(attestant1Principal) {
-            brevredigeringFacade.attesterBrev(AttesterBrevHandler.Request(brevId = BrevId(-9999L)))
+            brevredigeringFacade.attesterBrev(AttesterBrevHandler.Request(brevId = BrevId(-9999L), saksId = sak1.saksId))
         }
 
         assertThat(resultat).isNull()

@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Service
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 
 class HentEllerOpprettPdfHandler(
     private val brevdataService: BrevdataService,
@@ -24,10 +25,11 @@ class HentEllerOpprettPdfHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
     ) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Dto.HentDocumentResult, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
         val document = brev.document
 
         val pesysBrevdata = brevdataService.hentBrevdata(brev).withP1DataIfP1(brev)

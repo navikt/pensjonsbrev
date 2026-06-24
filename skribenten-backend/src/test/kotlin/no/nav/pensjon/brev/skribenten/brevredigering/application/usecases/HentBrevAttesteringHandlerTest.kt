@@ -32,6 +32,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringHandlerTestBase() {
             brevredigeringFacade.hentBrevAttestering(
                 HentBrevAttesteringHandler.Request(
                     brevId = brevId,
+                    saksId = sak1.saksId,
                     reserverForRedigering = reserverForRedigering
                 )
             )

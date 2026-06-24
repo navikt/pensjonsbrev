@@ -7,18 +7,19 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolic
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import java.time.Instant
 
 class ReserverBrevHandler(
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) : UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError> {
 
-    data class Request(override val brevId: BrevId) : BrevredigeringRequest
+    data class Request(override val brevId: BrevId, override val saksId: SaksId) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Reservasjon, BrevredigeringError>? {
         val principal = PrincipalInContext.require()
 
-        return BrevredigeringEntity.findById(request.brevId)
+        return BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId)
             ?.reserver(Instant.now(), principal.navIdent, brevreservasjonPolicy)
     }
 

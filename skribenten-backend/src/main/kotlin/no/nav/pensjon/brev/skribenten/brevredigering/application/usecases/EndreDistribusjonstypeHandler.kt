@@ -12,16 +12,17 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 
 class EndreDistribusjonstypeHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) : BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.BrevInfo> {
 
-    data class Request(override val brevId: BrevId, val type: Distribusjon) : BrevredigeringRequest
+    data class Request(override val brevId: BrevId, override val saksId: SaksId, val type: Distribusjon) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
         val principal = PrincipalInContext.require()
 
         // Utfør kun endring om nødvendig

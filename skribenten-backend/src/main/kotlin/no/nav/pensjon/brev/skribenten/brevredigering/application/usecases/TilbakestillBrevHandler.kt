@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 
 class TilbakestillBrevHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
@@ -20,10 +21,11 @@ class TilbakestillBrevHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
     ) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
         val principal = PrincipalInContext.require()
 
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }

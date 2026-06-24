@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 
 class EndreMottakerHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
@@ -18,10 +19,10 @@ class EndreMottakerHandler(
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) : BrevredigeringHandler<EndreMottakerHandler.Request, Dto.BrevInfo> {
 
-    data class Request(override val brevId: BrevId, val mottaker: Dto.Mottaker?) : BrevredigeringRequest
+    data class Request(override val brevId: BrevId, override val saksId: SaksId, val mottaker: Dto.Mottaker?) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
         val principal = PrincipalInContext.require()
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
