@@ -26,28 +26,26 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
 import no.nav.pensjon.brev.skribenten.common.InMemoryCache
 import no.nav.pensjon.brev.skribenten.common.Valkey
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
-import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
+import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Exception
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenDataException
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenFeilIDatabyggerException
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationMixins
 import no.nav.pensjon.brev.skribenten.serialize.registerMixin
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory
 import no.nav.pensjon.brev.skribenten.services.ServiceException
-import org.jetbrains.exposed.v1.core.and
-import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.core.dao.id.EntityID
+import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
@@ -197,10 +195,18 @@ suspend fun Application.skribentenApp(skribentenConfig: Config) {
         launch {
             delay(5.minutes)
             oneShotJobs(skribentenConfig) {
-                job("slettKladdBasertPaaSlettaMal") {
-                    transaction {
-                        BrevredigeringTable.deleteWhere { BrevredigeringTable.id eq BrevId(270) and (BrevredigeringTable.brevkode eq RedigerbarBrevkode("PE_FORHAANDSVARSEL_VED_TILBAKEKREVING")) }
+                job("leggTilVedleggHashIDocumentTable") {
+                    val dokumentIder = transaction {
+                        DocumentTable.select(DocumentTable.id).map { it[DocumentTable.id].value }
                     }
+                    dokumentIder.chunked(40).forEach { idChunk ->
+                        transaction {
+                            DocumentEntity.forEntityIds(idChunk.map { EntityID(it, DocumentTable) }).forEach { document ->
+                                document.vedleggHash = document.brevredigering.vedleggHash
+                            }
+                        }
+                    }
+
                 }
                 // Sett opp evt. jobber her
             }

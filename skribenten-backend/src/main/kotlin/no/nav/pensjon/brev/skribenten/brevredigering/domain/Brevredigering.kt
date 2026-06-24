@@ -52,11 +52,6 @@ interface Brevredigering {
     val brevtype: LetterMetadata.Brevtype
     val isVedtaksbrev: Boolean
     val redigerteVedlegg: List<Dto.RedigertVedlegg>
-
-    /**
-     * Hash av alt vedlegg-relatert (valgte vedlegg + redigerte vedlegg) som påvirker den
-     * rendrede PDF-en. Brukes til å avgjøre om et cachet dokument fortsatt er gyldig.
-     */
     val vedleggHash: Hash<VedleggSnapshot>
 
     fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon?
@@ -133,7 +128,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override val vedleggHash: Hash<VedleggSnapshot>
         get() = Hash.read(
             VedleggSnapshot(
-                valgteVedlegg = valgteVedlegg.map { it.kode },
+                valgteVedlegg = valgteVedlegg.map { it.kode }.sorted(),
                 redigerteVedlegg = _redigerteVedlegg
                     .map { VedleggSnapshot.RedigertVedleggHash(it.vedleggId.value.id, it.redigertVedleggHash.toString()) }
                     .sortedBy { it.vedleggId },

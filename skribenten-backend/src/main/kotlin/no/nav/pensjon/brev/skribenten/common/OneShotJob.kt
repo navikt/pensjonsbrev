@@ -34,7 +34,7 @@ class OneShotJobConfig {
             }
             if (existing == null) {
                 logger.info("One-shot job started: '$uniqeName'")
-                val job = JobConfig(uniqeName).apply(block)
+                val job = JobConfig(uniqeName).apply(block
 
                 transaction {
                     if (job.completed) {
