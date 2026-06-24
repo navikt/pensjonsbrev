@@ -18,7 +18,10 @@ import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.core.columnTransformer
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.jdbc.Database
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.sql.DataSource
+
+val databaseReady: AtomicBoolean = AtomicBoolean(false)
 
 internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
@@ -68,6 +71,7 @@ fun initDatabase(jdbcUrl: String, username: String, password: String, maxPoolSiz
     })
         .also { konfigurerFlyway(it) }
         .also { Database.connect(it) }
+        .also { databaseReady.set(true) }
 
 private fun konfigurerFlyway(dataSource: DataSource) = Flyway
     .configure()

@@ -16,6 +16,11 @@ class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constr
         _elements.add(e)
     }
 
+    @BrevbakerDSLInternal
+    override fun registerAddedContent(elements: List<ContentOrControlStructure<Lang, Element.OutlineContent<Lang>>>) {
+        elements.forEach { validator.addAlreadyValidated(it) }
+    }
+
     fun includePhrase(phrase: OutlinePhrase<out Lang>) {
         phrase.apply(this)
     }

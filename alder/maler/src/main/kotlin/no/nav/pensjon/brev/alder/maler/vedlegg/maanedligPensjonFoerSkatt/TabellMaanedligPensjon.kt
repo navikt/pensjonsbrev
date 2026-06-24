@@ -597,13 +597,34 @@ data class TabellMaanedligPensjonKap19og20(
                 }
             }
 
-            text(
-                bokmal { + "Sum pensjon før skatt: " },
-                nynorsk { + "Sum pensjon før skatt: " },
-                english { + "Total pension before tax: " },
-                FontType.BOLD
-            )
-            includePhrase(KronerText(beregnetPensjon.totalPensjon, FontType.BOLD))
+            table(header = {
+                column(columnSpan = 1) {
+                    text(
+                        bokmal { +"Sum pensjon" },
+                        nynorsk { +"Sum pensjon" },
+                        english { +"Total pension" },
+                    )
+                }
+                column(alignment = RIGHT, columnSpan = 1) {
+                    text(
+                        bokmal { +"" },
+                        nynorsk { +"" },
+                        english { +"" },
+                    )
+                }
+            }) {
+                row {
+                    cell {
+                        text(
+                            bokmal { +"Sum pensjon før skatt: " },
+                            nynorsk { +"Sum pensjon før skatt: " },
+                            english { +"Total pension before tax: " },
+                            FontType.BOLD
+                        )
+                    }
+                    cell { includePhrase(KronerText(beregnetPensjon.totalPensjon, FontType.BOLD)) }
+                }
+            }
         }
     }
 
