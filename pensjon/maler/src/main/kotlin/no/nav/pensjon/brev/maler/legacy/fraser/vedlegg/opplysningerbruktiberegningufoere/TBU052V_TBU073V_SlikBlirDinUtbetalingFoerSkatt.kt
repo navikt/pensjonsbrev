@@ -29,7 +29,7 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
                         column(columnSpan = 3) {
                             text (
                                 bokmal { + "Slik blir din utbetaling før skatt" },
-                                nynorsk { + "Slik blir den månadlege utbetalinga di før skatt" },
+                                nynorsk { + "Slik blir utbetalinga di før skatt" },
                             )
                         }
                         column(columnSpan = 1, ColumnAlignment.RIGHT) {
@@ -100,7 +100,7 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
             title1 {
                 text (
                     bokmal { + "Slik blir din utbetaling før skatt" },
-                    nynorsk { + "Slik blir den månadlege utbetalinga di før skatt" },
+                    nynorsk { + "Slik blir utbetalinga di før skatt" },
                 )
             }
         }
