@@ -1,12 +1,14 @@
 package no.nav.pensjon.brev.template.dsl.helpers.testcases
 
+import ModelFromDefaultPackage_TheModel
+import name
+import nameSelector
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.TemplateModelSelector
 import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.modelFromDefaultPackage_TheModel.*
 
 /**
  * Verify that selectors are generated when model resides in the same package as the template.
