@@ -69,4 +69,13 @@ class EndreValgteVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(brevbakerService.renderPdfKall.size).isEqualTo(rendringerFoer)
     }
 
+    @Test
+    suspend fun `kan ikke endre valgte vedlegg for brev som redigeres av andre`() {
+        val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
+
+        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf()))
+        assertThat(endreVedlegg(brev, vedlegg, saksbehandler2Principal))
+            .isFailure<BrevreservasjonPolicy.ReservertAvAnnen, _, _>()
+    }
+
 }
