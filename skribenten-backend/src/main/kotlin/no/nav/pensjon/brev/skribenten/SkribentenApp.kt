@@ -53,44 +53,18 @@ import kotlin.time.Duration.Companion.seconds
 
 private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.SkribentenApp")
 
-fun main() {
-    try {
-        run()
-    } catch (e: Exception) {
-        logger.error(e.message, e)
-        throw e
-    }
+fun main(args: Array<String>) = try {
+    EngineMain.main(args)
+} catch (e: Exception) {
+    logger.error(e.message, e)
+    throw e
 }
 
-private fun run() {
-    val skribentenConfig: Config =
-        ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-            .resolveWith(
-                ConfigFactory.load("azuread"),
-                ConfigResolveOptions.defaults().setAllowUnresolved(true)
-            ) // loads azuread secrets for local
-            .resolveWith(ConfigFactory.load("unleash"))
-            .getConfig("skribenten")
-
+suspend fun Application.skribentenApp() {
+    val skribentenConfig = ConfigFactory.parseMap(environment.config.config("skribenten").toMap())
     ADGroups.init(skribentenConfig.getConfig("groups"))
     KrypteringService.init(skribentenConfig.getString("krypteringsnoekkel"))
 
-    embeddedServer(
-        Netty,
-        configure = {
-            connectors.add(EngineConnectorBuilder().apply {
-                host = "0.0.0.0"
-                port = skribentenConfig.getInt("port")
-            })
-            shutdownGracePeriod = 25.seconds.inWholeMilliseconds
-            shutdownTimeout = 29.seconds.inWholeMilliseconds
-        },
-    ) {
-        skribentenApp(skribentenConfig)
-    }.start(wait = true)
-}
-
-suspend fun Application.skribentenApp(skribentenConfig: Config) {
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
