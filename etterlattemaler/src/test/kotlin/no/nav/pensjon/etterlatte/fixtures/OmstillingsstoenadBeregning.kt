@@ -21,7 +21,6 @@ fun createTomOmstillingsstoenadBeregningRedigerbartVedlegg(): Omstillingsstoenad
 fun createOmstillingsstoenadBeregningRedigerbartVedlegg(): OmstillingsstoenadBeregningRedigerbartVedlegg {
         return OmstillingsstoenadBeregningRedigerbartVedlegg(
         data = OmstillingsstoenadBeregningRedigerbartVedleggData(
-        innhold = emptyList(),
         omstillingsstoenadBeregning = OmstillingsstoenadBeregning(
             innhold = emptyList(),
             virkningsdato = LocalDate.of(2020,1,1),

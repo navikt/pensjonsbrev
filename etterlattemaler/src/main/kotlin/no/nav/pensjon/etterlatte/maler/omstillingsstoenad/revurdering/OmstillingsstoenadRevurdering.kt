@@ -37,6 +37,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.erOmgjoering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.informasjonOmOmstillingsstoenadData
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.nyRedigerbarDelBeregning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.omsRettUtenTidsbegrensning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.tidligereFamiliepleier
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadData
@@ -58,6 +59,7 @@ data class OmstillingsstoenadRevurderingData(
     val tidligereFamiliepleier: Boolean = false,
     val bosattUtland: Boolean = false,
     val erInnvilgelsesaar: Boolean,
+    val nyRedigerbarDelBeregning: Boolean = false,
 ) {
     val informasjonOmOmstillingsstoenadData = InformasjonOmOmstillingsstoenadData(tidligereFamiliepleier, bosattUtland)
 }
@@ -147,22 +149,22 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
             }
 
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = true),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = true, nyRedigerbarDel = data.nyRedigerbarDelBeregning),
                 data.beregning,
                 data.tidligereFamiliepleier.and(data.erInnvilgelsesaar),
             )
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = false),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = false, nyRedigerbarDel = data.nyRedigerbarDelBeregning),
                 data.beregning,
                 data.tidligereFamiliepleier.not().and(data.erInnvilgelsesaar.not()),
             )
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = false),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = false, nyRedigerbarDel = data.nyRedigerbarDelBeregning),
                 data.beregning,
                 data.tidligereFamiliepleier.and(data.erInnvilgelsesaar.not()),
             )
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = true),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = true, nyRedigerbarDel = data.nyRedigerbarDelBeregning),
                 data.beregning,
                 data.tidligereFamiliepleier.not().and(data.erInnvilgelsesaar),
             )

@@ -48,7 +48,6 @@ data class OmstillingsstoenadBeregning(
 ) : VedleggData, BrevDTO
 
 data class OmstillingsstoenadBeregningRedigerbartVedleggData(
-    val innhold: List<Element> = emptyList(),
     val omstillingsstoenadBeregning: OmstillingsstoenadBeregning,
     val erInnvilgelsesAar: Boolean,
 )
