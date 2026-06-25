@@ -212,8 +212,8 @@ data class TBU010V(val pe: Expression<PEgruppe10>) : OutlinePhrase<LangBokmalNyn
                     row {
                         cell {
                             text(
-                                bokmal { + "Kompensasjonsgrad" },
-                                nynorsk { + "Kompensasjonsgrad" },
+                                bokmal { + "Reduksjonsprosent" },
+                                nynorsk { + "Reduksjonsprosent" },
                             )
                         }
                         cell {

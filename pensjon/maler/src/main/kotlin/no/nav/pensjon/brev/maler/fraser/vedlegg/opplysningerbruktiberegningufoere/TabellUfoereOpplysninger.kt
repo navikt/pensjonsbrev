@@ -196,8 +196,8 @@ data class TabellUfoereOpplysninger(
                     row {
                         cell {
                             text(
-                                bokmal { + "Kompensasjonsgrad" },
-                                nynorsk { + "Kompensasjonsgrad" },
+                                bokmal { + "Reduksjonsprosent" },
+                                nynorsk { + "Reduksjonsprosent" },
                                 english { + "Percentage of compensation" }
                             )
                         }
