@@ -7,8 +7,8 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggFolketrygden
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.AvslagAfpGammelDto
-import no.nav.pensjon.brev.alder.model.afp.AvslagAfpGammelDtoSelectors.PesysDataSelectors.kravMottattDato
-import no.nav.pensjon.brev.alder.model.afp.AvslagAfpGammelDtoSelectors.pesysData
+import no.nav.pensjon.brev.alder.model.afp.selectors.avslagAfpGammelDto.pesysData.*
+import no.nav.pensjon.brev.alder.model.afp.selectors.avslagAfpGammelDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -19,8 +19,8 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.NavEnhetSelectors.navn
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.*
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 /**

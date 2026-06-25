@@ -18,11 +18,9 @@ import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFra
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.data as innholdData
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDataSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDataSelectors.sakType
+import no.nav.pensjon.etterlatte.maler.klage.selectors.avvistKlageFerdigDTO.*
+import no.nav.pensjon.etterlatte.maler.klage.selectors.avvistKlageInnholdDTO.data as innholdData
+import no.nav.pensjon.etterlatte.maler.klage.selectors.avvistKlageInnholdData.*
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 

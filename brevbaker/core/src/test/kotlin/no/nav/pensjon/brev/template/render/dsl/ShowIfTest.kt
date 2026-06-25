@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.render.LetterMarkupAsserter.Companion.assertThat
-import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.name
+import no.nav.pensjon.brev.template.render.dsl.selectors.someDto.*
 import org.junit.jupiter.api.Test
 
 class ShowIfTest {

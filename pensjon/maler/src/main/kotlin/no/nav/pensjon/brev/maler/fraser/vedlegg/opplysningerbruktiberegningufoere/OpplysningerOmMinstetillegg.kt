@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.InntektFoerUfoereGjeldendeSelectors.erSannsynligEndret
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.UfoeretrygdGjeldendeSelectors.erKonvertert
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTDto.inntektFoerUfoereGjeldende.*
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTDto.ufoeretrygdGjeldende.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language

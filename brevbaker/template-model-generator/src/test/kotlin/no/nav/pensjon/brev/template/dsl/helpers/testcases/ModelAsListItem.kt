@@ -6,8 +6,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.TemplateModelSelector
 import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.ModelAsListItemSelectors.TheModelSelectors
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.ModelAsListItemSelectors.TheModelSelectors.navn
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.modelAsListItem.theModel.*
 
 /**
  * Verify that it is possible to generate selectors for models in lists.
@@ -22,6 +21,6 @@ object ModelAsListItem : HasModel<List<ModelAsListItem.TheModel>> {
     fun someusage() {
         val scopeExtensionProperty: Expression<String> = SimpleTemplateScope<TheModel>().navn
         val expressionExtensionProperty: Expression<String> = Expression.Literal(TheModel("jadda")).navn
-        val actualSelector: TemplateModelSelector<TheModel, String> = TheModelSelectors.navnSelector
+        val actualSelector: TemplateModelSelector<TheModel, String> = navnSelector
     }
 }

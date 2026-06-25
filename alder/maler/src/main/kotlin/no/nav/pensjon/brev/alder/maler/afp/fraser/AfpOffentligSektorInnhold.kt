@@ -5,22 +5,11 @@ import no.nav.pensjon.brev.alder.maler.felles.Constants.SKATTEETATEN_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.SKATT_KONTAKT_TLF
 import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektor
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.afpTillegg
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.barnetilleggFelles
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.barnetilleggSerkull
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.brutto
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.ektefelletillegg
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.familietillegg
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.fasteUtgifterInstitusjon
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.grunnpensjon
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.minstenivaatilleggIndividuelt
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.netto
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.saertillegg
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.tilleggspensjon
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.EktefelletilleggSelectors.brutto as ektefelletilleggBrutto
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.EktefelletilleggSelectors.netto as ektefelletilleggNetto
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.YtelsesKomponentSelectors.brutto as ytelsesKomponentBrutto
-import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.YtelsesKomponentSelectors.netto as ytelsesKomponentNetto
+import no.nav.pensjon.brev.alder.model.afp.selectors.afpOffentligSektor.beregning.*
+import no.nav.pensjon.brev.alder.model.afp.selectors.afpOffentligSektor.ektefelletillegg.brutto as ektefelletilleggBrutto
+import no.nav.pensjon.brev.alder.model.afp.selectors.afpOffentligSektor.ektefelletillegg.netto as ektefelletilleggNetto
+import no.nav.pensjon.brev.alder.model.afp.selectors.afpOffentligSektor.ytelsesKomponent.brutto as ytelsesKomponentBrutto
+import no.nav.pensjon.brev.alder.model.afp.selectors.afpOffentligSektor.ytelsesKomponent.netto as ytelsesKomponentNetto
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD

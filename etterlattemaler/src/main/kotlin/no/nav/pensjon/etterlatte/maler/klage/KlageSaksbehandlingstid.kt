@@ -20,11 +20,8 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.SAKSBEHANDLINGSTI
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjonExpr
-import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDataSelectors.borIUtlandet
-import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDataSelectors.datoForVedtak
-import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDataSelectors.datoMottatKlage
-import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDataSelectors.sakType
+import no.nav.pensjon.etterlatte.maler.klage.selectors.klageSaksbehandlingstidDTO.*
+import no.nav.pensjon.etterlatte.maler.klage.selectors.klageSaksbehandlingstidData.*
 import java.time.LocalDate
 
 data class KlageSaksbehandlingstidData(

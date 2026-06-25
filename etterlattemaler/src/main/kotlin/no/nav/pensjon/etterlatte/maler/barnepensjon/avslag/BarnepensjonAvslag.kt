@@ -14,10 +14,8 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDataSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDataSelectors.brukerUnder18Aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.selectors.barnepensjonAvslagDTO.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.selectors.barnepensjonAvslagData.*
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
