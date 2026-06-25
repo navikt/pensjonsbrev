@@ -43,6 +43,9 @@ node {
 val generateOpenApiSpec by tasks.registering(Test::class) {
     description = "Generates build/openapi-spec.json by booting the application via OpenApiSpecTest"
     group = "build"
+    // Avoid running in parallel with the regular test suite when org.gradle.parallel=true
+    mustRunAfter(tasks.test)
+    maxParallelForks = 1
     useJUnitPlatform {
         includeTags("openapi-spec")
     }
