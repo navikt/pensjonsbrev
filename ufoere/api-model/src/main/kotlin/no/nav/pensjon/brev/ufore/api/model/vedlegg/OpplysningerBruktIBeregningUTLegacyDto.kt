@@ -164,6 +164,9 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
 
     data class Gjenlevendetillegg(
         val nyttGjenlevendetillegg: Boolean,
+        val gtInnvilget: Boolean,
+        val avdoedFoedselsnummer: String,
+        val avdoedErFlyktning: Boolean,
         val anvendtTrygdetid: Int?,
         val ufoeretidspunkt: LocalDate?,
         val yrkesskadegrad: Int?,
@@ -310,5 +313,7 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val visEosBeregningSammenlegging: Boolean,
         val visBilateralBeregningSammenlegging: Boolean,
         val visFolketrygdVurdertTrygdeavtale: Boolean,
+        // Avdoed opplysninger-tabell (TBUxx1V):
+        val visAvdoedOpplysningerTabell: Boolean,
     )
 }

@@ -29,6 +29,7 @@ import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.frase
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU011V_TBU016V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU034V_036V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU080V_TBU027V
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBUxx1V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBUxx2V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU1187
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU1382
@@ -80,6 +81,15 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                         beregning.grunnbeloep.format() + "."
                 },
             )
+        }
+
+        // Opplysninger om avdøde (gjenlevendetillegg)
+        ifNotNull(gjenlevendetillegg) { gt ->
+            ifNotNull(trygdetidAvdoed) { avdoed ->
+                showIf(visningsflagg.visAvdoedOpplysningerTabell) {
+                    includePhrase(TBUxx1V(beregning, gt, avdoed))
+                }
+            }
         }
 
         // Slik beregner vi uføretrygden din
