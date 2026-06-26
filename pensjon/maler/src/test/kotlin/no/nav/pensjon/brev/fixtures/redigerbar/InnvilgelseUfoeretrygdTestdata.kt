@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretr
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdMellombehandlingDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
 import no.nav.pensjon.brev.fixtures.createDineRettigheterOgPlikterUforeDto
@@ -19,7 +20,7 @@ import java.time.Month
 
 fun createInnvilgelseUfoeretrygdDto() =
     InnvilgelseUfoeretrygdDto(
-        saksbehandlerValg = InnvilgelseUfoeretrygdDto.Saksbehandlervalg(barnetilleggInfo = true),
+        saksbehandlerValg = InnvilgelseUfoeretrygdDto.Saksbehandlervalg(barnetilleggInfo = true, periodisertInntekt = PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT),
         pesysData = InnvilgelseUfoeretrygdDto.PesysData(
             pe = createPEgruppe10(),
             oifuVedVirkningstidspunkt = Kroner(10000),
@@ -67,7 +68,7 @@ fun createInnvilgelseUfoeretrygdDto() =
 
 fun createInnvilgelseUfoeretrygdUtlandDto() =
     InnvilgelseUfoeretrygdUtlandDto(
-        saksbehandlerValg = InnvilgelseUfoeretrygdUtlandDto.Saksbehandlervalg(refusjon = true, barnetilleggInfo = true, innvilgetEtter12_2Andreledd = true, innvilgetEtter12_2Tredjeledd = true),
+        saksbehandlerValg = InnvilgelseUfoeretrygdUtlandDto.Saksbehandlervalg(refusjon = true, barnetilleggInfo = true, innvilgetEtter12_2Andreledd = true, innvilgetEtter12_2Tredjeledd = true, periodisertInntekt = PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT),
         pesysData = InnvilgelseUfoeretrygdUtlandDto.PesysData(
             pe = createPEgruppe10(),
             oifuVedVirkningstidspunkt = Kroner(10000),
@@ -161,7 +162,7 @@ fun createInnvilgelseUforetrygdBosattNorgeEtterUtlandDto() =
     )
 fun createInnvilgelseUforetrygdMellombehandlingDto() =
     InnvilgelseUfoeretrygdMellombehandlingDto(
-        saksbehandlerValg = InnvilgelseUfoeretrygdMellombehandlingDto.Saksbehandlervalg(refusjon = true, barnetilleggInfo = true, innvilgetEtter12_2Andreledd = true, innvilgetEtter12_2Tredjeledd = true),
+        saksbehandlerValg = InnvilgelseUfoeretrygdMellombehandlingDto.Saksbehandlervalg(refusjon = true, barnetilleggInfo = true, innvilgetEtter12_2Andreledd = true, innvilgetEtter12_2Tredjeledd = true, periodisertInntekt = PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT),
         pesysData = InnvilgelseUfoeretrygdMellombehandlingDto.PesysData(
             pe = createPEgruppe10(),
             oifuVedVirkningstidspunkt = Kroner(10000),
@@ -209,7 +210,7 @@ fun createInnvilgelseUforetrygdMellombehandlingDto() =
 
 fun createInnvilgelseUforetrygdMedEndringDto() =
     InnvilgelseUforetrygdMedEndringDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = InnvilgelseUforetrygdMedEndringDto.Saksbehandlervalg(periodisertInntekt = PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT),
         pesysData = InnvilgelseUforetrygdMedEndringDto.PesysData(
             pe = createPEgruppe10(),
             oifuVedVirkningstidspunkt = Kroner(10000),
@@ -257,7 +258,7 @@ fun createInnvilgelseUforetrygdMedEndringDto() =
 
 fun createOkningUforegradDto() =
     OkningUforegradDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = OkningUforegradDto.Saksbehandlervalg(periodisertInntekt = PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT),
         pesysData = OkningUforegradDto.PesysData(
             pe = createPEgruppe10(),
             oifuVedVirkningstidspunkt = Kroner(10000),

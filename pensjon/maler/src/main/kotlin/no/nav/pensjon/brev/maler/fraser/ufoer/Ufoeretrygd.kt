@@ -1,12 +1,16 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer
 
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.barnetilleggUTDto.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
 import no.nav.pensjon.brev.maler.legacy.BarnetilleggFormatter
+import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut
+import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.model.format
@@ -414,20 +418,20 @@ object Ufoeretrygd {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
                 text(
-                    bokmal { + "Du har rett til innsyn" },
-                    nynorsk { + "Du har rett til innsyn" },
+                    bokmal { +"Du har rett til innsyn" },
+                    nynorsk { +"Du har rett til innsyn" },
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { + "Du har rett til å se dokumentene i saken din. Se vedlegg " },
-                    nynorsk { + "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg " },
+                    bokmal { +"Du har rett til å se dokumentene i saken din. Se vedlegg " },
+                    nynorsk { +"Du har rett til å sjå dokumenta i saka di. Sjå vedlegg " },
                 )
                 namedReference(vedleggDineRettigheterOgPlikterUfore)
                 text(
-                    bokmal { + " for informasjon om hvordan du går fram." },
-                    nynorsk { + " for informasjon om korleis du går fram." },
+                    bokmal { +" for informasjon om hvordan du går fram." },
+                    nynorsk { +" for informasjon om korleis du går fram." },
                 )
             }
         }
@@ -461,26 +465,101 @@ object Ufoeretrygd {
         }
     }
 
+    data class InntektBarnetillegg(
+        val btFellesInnvilget: Expression<Boolean>,
+        val btSerkullInnvilget: Expression<Boolean>,
+        val grunnbelop: Expression<Kroner>,
+        val pe: Expression<PEgruppe10>,
+        val periodisertInntekt: Expression<PeriodisertInntektBarnetillegg?>
+    ) :
+        RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+
+            paragraph {
+                showIf(periodisertInntekt.isNull() or periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.INGEN)) {
+                    fritekst("Sett inn aktuelt tekstvalg")
+                }.orShow {
+                    text(
+                        bokmal { +"Inntekten din består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") },
+                        nynorsk { +"Inntekta di består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") }
+                    )
+                    showIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT)) {
+                        text(
+                            bokmal { +" for de " + fritekst("antall mnd") + " gjenstående månedene av året" },
+                            nynorsk { +" for dei " + fritekst("antall mnd") + " gjenverande månadene av året" },
+                        )
+                    }
+                    text(
+                        bokmal { +". " },
+                        nynorsk { +". " },
+                    )
+                    showIf(btFellesInnvilget) {
+                        text(
+                            bokmal { +"Din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "s inntekt består av inntekt " + fritekst("erstatt evt med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. AAP eller DP/pensjon fra andre)") + " " },
+                            nynorsk { +"Din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + "s inntekt består av inntekt " + fritekst("erstatt evt med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. AAP eller DP/pensjon fra andre)") + " " }
+                        )
+
+                        showIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT)) {
+                            text(
+                                bokmal { +"de " + fritekst("antall mnd") + " gjenstående månedene av året, fratrukket " + fritekst("antall mnd") + "/12 av folketrygdens grunnbeløp. " },
+                                nynorsk { +"dei " + fritekst("antall mnd") + " gjenverande månedane av året, fråtrukke " + fritekst("antall mnd") + "/12 av grunnbeløpet i folketrygda. " },
+                            )
+
+                        }.orShowIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.BARN_FYLLER_18)) {
+                            text(
+                                bokmal { +"for " + fritekst("antall mnd") + " måneder, fordi barnet fyller 18 år i " + fritekst("måned") + ". " },
+                                nynorsk { +"for " + fritekst("antall mnd") + " månader, fordi barnet fyller 18 år i " + fritekst("månad") + ". " },
+                            )
+                        }.orShow {
+                            text(
+                                bokmal { +"fratrukket folketrygdens grunnbeløp. " },
+                                nynorsk { +"fråtrukket grunnbeløpet i folketrygda. " },
+                            )
+                        }
+
+                        text(
+                            bokmal { +"Folketrygdens grunnbeløp er for tiden " + grunnbelop.format() + ". " },
+                            nynorsk { +"Grunnbeløpet i folketrygda er for tida " + grunnbelop.format() + ". " },
+                        )
+
+                        showIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT)) {
+                            text(
+                                bokmal { +"Fra 1. januar neste år regnes inntekten om for å gjelde hele året. " },
+                                nynorsk { +"Frå 1. januar neste år vert inntekta rekna om for å gjelde heile året. " },
+                            )
+                        }
+                    }
+                    showIf(btFellesInnvilget and btSerkullInnvilget) {
+                        text(
+                            bokmal { +" Barnetillegget for barn som ikke bor med begge foreldre er kun beregnet utfra din inntekt." },
+                            nynorsk { +" Barnetillegget for barn som ikkje bur med begge foreldre er kun berekna utfra inntekta di." },
+                        )
+                    }
+                }
+            }
+        }
+    }
+
     object Etteroppgjor : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
                 text(
-                    bokmal { + "Etteroppgjør" },
-                    nynorsk { + "Etteroppgjer" },
+                    bokmal { +"Etteroppgjør" },
+                    nynorsk { +"Etteroppgjer" },
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { + "Hvert år sjekker vi inntektsopplysningene i skatteoppgjøret ditt for å se om du har fått utbetalt riktig beløp fra oss året før. Viser skatteoppgjøret at du har hatt en annen inntekt enn den inntekten vi brukte da vi beregnet utbetalingene dine, gjør vi en ny beregning. Dette kalles etteroppgjør. " },
-                    nynorsk { + "Kvart år sjekkar vi inntektsopplysningane i skatteoppgjeret ditt for å sjå om du fekk utbetalt rett beløp frå oss året før. Viser skatteoppgjeret at du har hatt ei anna inntekt enn den inntekta vi brukte då vi rekna ut utbetalingane dine, vil vi gjere ei ny utrekning. Dette vert kalla etteroppgjer. " }
+                    bokmal { +"Hvert år sjekker vi inntektsopplysningene i skatteoppgjøret ditt for å se om du har fått utbetalt riktig beløp fra oss året før. Viser skatteoppgjøret at du har hatt en annen inntekt enn den inntekten vi brukte da vi beregnet utbetalingene dine, gjør vi en ny beregning. Dette kalles etteroppgjør. " },
+                    nynorsk { +"Kvart år sjekkar vi inntektsopplysningane i skatteoppgjeret ditt for å sjå om du fekk utbetalt rett beløp frå oss året før. Viser skatteoppgjeret at du har hatt ei anna inntekt enn den inntekta vi brukte då vi rekna ut utbetalingane dine, vil vi gjere ei ny utrekning. Dette vert kalla etteroppgjer. " }
                 )
             }
 
             paragraph {
                 text(
-                    bokmal { + "Hvis du har fått for lite utbetalt, får du en etterbetaling fra oss. Har du fått for mye utbetalt, må du betale tilbake. " },
-                    nynorsk { + "Dersom du har fått for lite utbetalt, får du ei etterbetaling frå oss. Har du fått for mykje utbetalt, må du betale tilbake. " }
+                    bokmal { +"Hvis du har fått for lite utbetalt, får du en etterbetaling fra oss. Har du fått for mye utbetalt, må du betale tilbake. " },
+                    nynorsk { +"Dersom du har fått for lite utbetalt, får du ei etterbetaling frå oss. Har du fått for mykje utbetalt, må du betale tilbake. " }
                 )
             }
         }
@@ -496,10 +575,14 @@ object Ufoeretrygd {
             }
             paragraph {
                 text(
-                    bokmal { +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen vedtaket har kommet fram til deg. Du finner skjema og informasjon på " +
-                            "${Constants.KLAGE_URL}." },
-                    nynorsk { +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen vedtaket har kome fram til deg. Du finn skjema og informasjon på " +
-                            "${Constants.KLAGE_URL}." },
+                    bokmal {
+                        +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen vedtaket har kommet fram til deg. Du finner skjema og informasjon på " +
+                                "${Constants.KLAGE_URL}."
+                    },
+                    nynorsk {
+                        +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen vedtaket har kome fram til deg. Du finn skjema og informasjon på " +
+                                "${Constants.KLAGE_URL}."
+                    },
                 )
             }
             paragraph {

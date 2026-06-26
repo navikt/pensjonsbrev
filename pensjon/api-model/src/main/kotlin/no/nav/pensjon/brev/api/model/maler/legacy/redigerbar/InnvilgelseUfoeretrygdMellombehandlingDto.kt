@@ -24,6 +24,8 @@ data class InnvilgelseUfoeretrygdMellombehandlingDto(
         val innvilgetEtter12_2Andreledd: Boolean = false,
         @DisplayText("Innvilget etter 12-2 3.ledd")
         val innvilgetEtter12_2Tredjeledd: Boolean = false,
+        @DisplayText("Periodisert inntekt barnetillegg")
+        val periodisertInntekt: PeriodisertInntektBarnetillegg?,
         ) : SaksbehandlerValgBrevdata
 
     data class PesysData(

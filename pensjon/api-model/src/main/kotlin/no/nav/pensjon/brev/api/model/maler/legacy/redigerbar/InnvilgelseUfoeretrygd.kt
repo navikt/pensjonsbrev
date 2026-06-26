@@ -18,6 +18,8 @@ data class InnvilgelseUfoeretrygdDto(
     data class Saksbehandlervalg(
         @DisplayText("Info om rett til barnetillegg")
         val barnetilleggInfo: Boolean,
+        @DisplayText("Periodisert inntekt barnetillegg")
+        val periodisertInntekt: PeriodisertInntektBarnetillegg?,
     ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
