@@ -27,6 +27,10 @@ import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.frase
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU047V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU500v
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU010V
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikBeregnerViReduksjonenAvUfoeretrygden
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU011V_TBU016V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU034V_036V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU080V_TBU027V
@@ -199,4 +203,10 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         showIf(visningsflagg.visFastsetterInntektFoerUfoer) {
             includePhrase(TBUxx4v_og_TBU048V_TBU055V(visningsflagg, beregning))
         }
+
+        // Slik har vi fastsatt kompensasjonsgraden / reduksjon / utbetaling
+        includePhrase(TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(visningsflagg, beregning, inntektFoerUfoere, avkortning))
+        includePhrase(TBU052V_TBU073V_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(visningsflagg, avkortning))
+        includePhrase(TBU052V_TBU073V_SlikBeregnerViReduksjonenAvUfoeretrygden(visningsflagg, avkortning))
+        includePhrase(TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(visningsflagg, beregning, avkortning))
     }

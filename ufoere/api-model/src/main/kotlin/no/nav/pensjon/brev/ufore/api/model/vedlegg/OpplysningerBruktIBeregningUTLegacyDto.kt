@@ -67,6 +67,10 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val fradrag: Kroner?,
         val nettoAkk: Kroner?,
         val nettoRestAar: Kroner?,
+        val overskytendeInntekt: Kroner?,
+        val reduksjonPerAar: Kroner?,
+        val nettoAkkPlussNettoRestAar: Kroner?,
+        val nettoAkkPlussNettoRestAarPlussForventetInntekt: Kroner?,
     )
 
     data class Ytelsesgrunnlag(
@@ -344,5 +348,17 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val visFastsetterInntektFoerUfoer: Boolean,
         val visMinstenivaaInntektFoerUfoer: Boolean,
         val visSlikFastsetterViInntektEtterUfoer: Boolean,
+        // Kompensasjonsgrad/utbetaling (TBU052V_TBU073V_*):
+        val visKompensasjonOppjustertInntekt: Boolean,
+        val visReduksjonAvUforetrygd: Boolean,
+        val visUtbetalingNaarInntektEndres: Boolean,
+        val visUtbetalingNaarInntektEndresDetaljer: Boolean,
+        val visUtbetalingFoerSkattTabell: Boolean,
+        val visUtbetalingFoerSkattTittelKun: Boolean,
+        val visMaanedligReduksjon: Boolean,
+        val visUforetrygdInntektSum: Boolean,
+        val visUtbetalingRedusertIkkeUtbetalt: Boolean,
+        val visIkkeUtbetaltOver80Prosent: Boolean,
+        val visFaarTilbakeUtenSoknad: Boolean,
     )
 }
