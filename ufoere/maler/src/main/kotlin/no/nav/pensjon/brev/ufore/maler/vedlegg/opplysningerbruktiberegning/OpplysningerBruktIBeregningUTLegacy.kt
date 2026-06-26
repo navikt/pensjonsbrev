@@ -26,6 +26,7 @@ import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.frase
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU046V_1
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU047V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU500v
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU010V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU011V_TBU016V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU034V_036V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU080V_TBU027V
@@ -82,6 +83,23 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                 },
             )
         }
+
+        // Brukerens opplysningstabell
+        includePhrase(
+            TBU010V(
+                visningsflagg,
+                beregning,
+                avkortning,
+                ytelsesgrunnlag,
+                inntektFoerUfoere,
+                trygdetid,
+                person,
+                yrkesskade,
+                barnetilleggFelles,
+                barnetilleggSaerkull,
+                antallBarnTotalt,
+            )
+        )
 
         // Opplysninger om avdøde (gjenlevendetillegg)
         ifNotNull(gjenlevendetillegg) { gt ->

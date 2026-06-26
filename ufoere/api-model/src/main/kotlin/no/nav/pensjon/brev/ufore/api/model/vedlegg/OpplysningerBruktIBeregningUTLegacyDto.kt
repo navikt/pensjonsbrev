@@ -26,6 +26,7 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
     val gjenlevendetillegg: Gjenlevendetillegg?,
     val barnetilleggFelles: Barnetillegg?,
     val barnetilleggSaerkull: Barnetillegg?,
+    val antallBarnTotalt: Int?,
     val harEktefelletillegg: Boolean,
     val belopsendring: Belopsendring?,
     val yrkesskade: Yrkesskade?,
@@ -60,6 +61,8 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val utbetalingsgrad: Int,
         val oifu: Kroner?,
         val andelYtelseAvOifu: Double?,
+        val prosentsatsOifuForTak: Double?,
+        val gradertOppjustertIFU: Kroner?,
         val ugradertBruttoPerAar: Kroner?,
         val fradrag: Kroner?,
         val nettoAkk: Kroner?,
@@ -225,6 +228,7 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val borMedSivilstand: BorMedSivilstand?,
         val erFlyktning: Boolean,
         val bostedsland: String?,
+        val sivilstatusVisning: SivilstatusVisning?,
         val foedselsdatoTilBarnTilleggErInnvilgetFor: List<LocalDate>,
     )
 
@@ -315,5 +319,26 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val visFolketrygdVurdertTrygdeavtale: Boolean,
         // Avdoed opplysninger-tabell (TBUxx1V):
         val visAvdoedOpplysningerTabell: Boolean,
+        // Brukerens opplysningstabell (TBU010V):
+        val visBeregningsgrunnlag: Boolean,
+        val visInntektFoerUfoere: Boolean,
+        val visInntektsgrense: Boolean,
+        val visForventetInntekt: Boolean,
+        val visReduksjonsprosent: Boolean,
+        val inntektsgrenseLavereEnnInntektstak: Boolean,
+        val visSivilstatusRad: Boolean,
+        val visPartnerAnnetBosted: Boolean,
+        val visEktefelleAnnetBosted: Boolean,
+        val visUngUfoerRad: Boolean,
+        val beregningsmetodeErBilateral: Boolean,
+        val visNorskFramtidigTrygdetid: Boolean,
+        val visAarOver1G: Boolean,
+        val visTotaltAntallBarn: Boolean,
+        val visOifuFortak: Boolean,
+        val visSamletInntektBarnetillegg: Boolean,
+        val barnetilleggFellesInnvilget: Boolean,
+        val visSamletInntektAnnenForelder: Boolean,
+        val visBarnetilleggSaerkullIkkeUtbetalt: Boolean,
+        val visBarnetilleggFellesIkkeUtbetalt: Boolean,
     )
 }

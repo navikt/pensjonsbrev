@@ -37,6 +37,19 @@ enum class Beregningsmetode {
 }
 
 /**
+ * Hvilken sivilstatus-tekst som skal vises i opplysningstabellen (TBU010V). Avledes i databyggeren
+ * (del 2) fra anvendt sivilstand/brukers sivilstand, slik at malen slipper PE-strenglogikken.
+ */
+enum class SivilstatusVisning {
+    GIFT,
+    PARTNER,
+    SAMBOER_12_13,
+    SAMBOER_1_5,
+    ENKE,
+    ENSLIG,
+}
+
+/**
  * Kravårsakstypene vedlegget skiller på. Mappes fra PEN sin kravårsakskode i databyggeren (del 2).
  * ANNET dekker alle øvrige kravårsaker som vedlegget ikke har spesialbehandling for.
  */
