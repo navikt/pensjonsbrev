@@ -3,10 +3,12 @@
 package no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning
 
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.Beregningsmetode
+import no.nav.pensjon.brev.ufore.api.model.vedlegg.Kravaarsaktype
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.OpplysningerBruktIBeregningUTLegacyDto
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.*
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.beregning.*
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.gjenlevendetillegg.*
+import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.krav.*
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.trygdetid.*
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.trygdetidAvdoed.*
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.visningsflagg.*
@@ -23,6 +25,7 @@ import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.frase
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU045V_1
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU046V_1
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU047V
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU500v
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU1187
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU1382
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU1384
@@ -135,5 +138,10 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             showIf(visningsflagg.visTrygdetidAvdoedBilateral) {
                 includePhrase(TBU1384(avdoed.perioderBilateral))
             }
+        }
+
+        // Slik har vi fastsatt den nye inntektsgrensen din
+        showIf(krav.kravaarsaktype.equalTo(Kravaarsaktype.ENDRING_IFU)) {
+            includePhrase(TBU500v)
         }
     }
