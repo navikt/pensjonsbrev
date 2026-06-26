@@ -350,6 +350,74 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val visBarnetilleggIkkeUtbetaltPgaInntekt: Boolean,
         val visBarnetilleggRedusertTilDegOgPartner: Boolean,
         val visBarnetilleggRedusertDin: Boolean,
+        // Legacy: anvendt trygdetid < 40 og yrkesskaderesultat <> "oppfylt", når både felles- og særkullsbarnetillegg er innvilget og virkningstidspunkt > 01.01.2016.
+        val visBarnetilleggBeggeTyperKortTrygdetidEtter2016: Boolean,
+        // Legacy: kravårsakstype = "endret_inntekt".
+        val visBarnetilleggEndretInntekt: Boolean,
+        // Legacy: kravårsakstype <> "endret_inntekt".
+        val visBarnetilleggIkkeEndretInntekt: Boolean,
+        // Legacy: barnetillegg felles innvilget og beregningssivilstand anvendt er "bormed ektefelle"/"bormed registrert partner"/"bormed 1-5"/"bormed 1_5"/"bormed 3-2".
+        val visBarnetilleggFellesMedPartner: Boolean,
+        // Legacy: PE_UT_TBU605V_eller_til_din og barnetillegg felles innvilget og partner-sivilstand anvendt.
+        val visBarnetilleggTbu605EllerTilDinFellesMedPartner: Boolean,
+        // Legacy: kravårsakstype = "endret_inntekt" og barnetillegg felles innvilget og partner-sivilstand anvendt.
+        val visBarnetilleggEndretInntektFellesMedPartner: Boolean,
+        // Legacy: kravårsakstype <> "endret_inntekt" og partner-sivilstand anvendt.
+        val visBarnetilleggIkkeEndretInntektMedPartner: Boolean,
+        // Legacy: kravårsakstype = "endret_inntekt" og partner-sivilstand anvendt.
+        val visBarnetilleggEndretInntektMedPartner: Boolean,
+        // Legacy: fribeløp/inntekt er periodisert for felles- eller særkullsbarnetillegg.
+        val visBarnetilleggFribeloepEllerInntektPeriodisert: Boolean,
+        // Legacy: fribeløp/inntekt er ikke periodisert for verken felles- eller særkullsbarnetillegg.
+        val visBarnetilleggIngenPeriodisering: Boolean,
+        // Legacy: justeringsbeløp per år = 0 for både felles- og særkullsbarnetillegg.
+        val visBarnetilleggIngenJustering: Boolean,
+        // Legacy: justeringsbeløp per år <> 0 for felles- eller særkullsbarnetillegg.
+        val visBarnetilleggHarJustering: Boolean,
+        // Legacy: justeringsbeløp per år > 0 for felles- eller særkullsbarnetillegg.
+        val visBarnetilleggJusteringPositiv: Boolean,
+        // Legacy: justeringsbeløp per år < 0 for felles- eller særkullsbarnetillegg.
+        val visBarnetilleggJusteringNegativ: Boolean,
+        // Legacy: FF_CheckIfFirstDayAndMonthOfYear(vilkår virkning fom) = true.
+        val visBarnetilleggVirkningFomFoersteJanuar: Boolean,
+        // Legacy: FF_CheckIfFirstDayAndMonthOfYear(vilkår virkning fom) = false.
+        val visBarnetilleggVirkningFomIkkeFoersteJanuar: Boolean,
+        // Legacy: fellesbarnetillegg netto > 0 og TBU606/TBU608/TBU611-flagg.
+        val visBarnetilleggFellesNettoPositiv: Boolean,
+        // Legacy: fellesbarnetillegg netto = 0 og TBU606/TBU608/TBU611-flagg.
+        val visBarnetilleggFellesNettoNull: Boolean,
+        // Legacy: fellesbarnetillegg netto = 0 og justeringsbeløp per år <> 0.
+        val visBarnetilleggFellesNettoNullMedJustering: Boolean,
+        // Legacy: fellesbarnetillegg netto/justering tilsier at fribeløp og reduksjonsrader skal vises.
+        val visBarnetilleggFellesVisReduksjonsrader: Boolean,
+        // Legacy: fellesbarnetillegg avkortingsbeløp per år > 0 kombinert med visning av reduksjonsrader.
+        val visBarnetilleggFellesVisAvkortingsbeloep: Boolean,
+        // Legacy: fellesbarnetillegg justeringsbeløp per år <> 0.
+        val visBarnetilleggFellesHarJustering: Boolean,
+        // Legacy: fellesbarnetillegg justeringsbeløp per år > 0.
+        val visBarnetilleggFellesJusteringPositiv: Boolean,
+        // Legacy: fellesbarnetillegg justeringsbeløp per år < 0.
+        val visBarnetilleggFellesJusteringNegativ: Boolean,
+        // Legacy: fellesbarnetillegg netto = 0 og justeringsbeløp per år = 0 og TBU606/TBU608/TBU611-flagg.
+        val visBarnetilleggFellesVisInntektstak: Boolean,
+        // Legacy: særkullsbarnetillegg netto > 0 og TBU606/TBU609/TBU611-flagg.
+        val visBarnetilleggSaerkullNettoPositiv: Boolean,
+        // Legacy: særkullsbarnetillegg netto = 0 og TBU606/TBU609/TBU611-flagg.
+        val visBarnetilleggSaerkullNettoNull: Boolean,
+        // Legacy: særkullsbarnetillegg netto = 0 og justeringsbeløp per år <> 0.
+        val visBarnetilleggSaerkullNettoNullMedJustering: Boolean,
+        // Legacy: særkullsbarnetillegg netto/justering tilsier at fribeløp og reduksjonsrader skal vises.
+        val visBarnetilleggSaerkullVisReduksjonsrader: Boolean,
+        // Legacy: særkullsbarnetillegg avkortingsbeløp per år > 0 kombinert med visning av reduksjonsrader.
+        val visBarnetilleggSaerkullVisAvkortingsbeloep: Boolean,
+        // Legacy: særkullsbarnetillegg justeringsbeløp per år <> 0.
+        val visBarnetilleggSaerkullHarJustering: Boolean,
+        // Legacy: særkullsbarnetillegg justeringsbeløp per år > 0.
+        val visBarnetilleggSaerkullJusteringPositiv: Boolean,
+        // Legacy: særkullsbarnetillegg justeringsbeløp per år < 0.
+        val visBarnetilleggSaerkullJusteringNegativ: Boolean,
+        // Legacy: særkullsbarnetillegg netto = 0 og justeringsbeløp per år = 0 og TBU606/TBU609/TBU611-flagg.
+        val visBarnetilleggSaerkullVisInntektstak: Boolean,
         // Slik fastsetter vi inntekten din (TBUxx4v_og_TBU048V_TBU055V):
         val visFastsetterInntektFoerUfoer: Boolean,
         val visMinstenivaaInntektFoerUfoer: Boolean,

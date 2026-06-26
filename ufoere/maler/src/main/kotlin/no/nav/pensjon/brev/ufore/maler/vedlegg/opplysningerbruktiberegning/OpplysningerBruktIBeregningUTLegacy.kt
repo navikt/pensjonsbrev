@@ -28,6 +28,7 @@ import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.frase
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU500v
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU010V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_ForDegSomHarRettTilBarnetillegg
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikBeregnerViReduksjonenAvUfoeretrygden
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikRedusererViBarnetilleggetUtFraInntekt
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres
@@ -217,4 +218,12 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(TBU052V_TBU073V_SlikRedusererViBarnetilleggetUtFraInntekt(visningsflagg, person))
         }
         includePhrase(TBU052V_TBU073V_ForDegSomHarRettTilBarnetillegg(visningsflagg, person))
+        includePhrase(
+            TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
+                visningsflagg,
+                barnetilleggFelles,
+                barnetilleggSaerkull,
+                person,
+            )
+        )
     }
