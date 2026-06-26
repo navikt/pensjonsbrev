@@ -76,8 +76,13 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
     ) {
         data class OpptjeningUT(
             val aar: Int,
+            val brukt: Boolean,
+            val pensjonsgivendeInntekt: Kroner,
+            val justertBeloep: Kroner,
+            val avkortetBeloep: Kroner,
             val omsorgsaar: Boolean,
             val foerstegangstjeneste: Boolean,
+            val inntektIAvtaleland: Boolean,
         )
     }
 
@@ -162,6 +167,7 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val beregningsgrunnlagAvdoedAarsbeloep: Kroner?,
         val yrkesskadeAarsbeloep: Kroner?,
         val minsteytelseBenyttetUngUfoer: Boolean,
+        val opptjeningUTListeAvdoed: List<Ytelsesgrunnlag.OpptjeningUT>,
     )
 
     data class Barnetillegg(
@@ -233,6 +239,10 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val visTrygdetidEOS: Boolean,
         val visTrygdetidBilateral: Boolean,
         val visRedusertFramtidigTrygdetidTekst: Boolean,
+        // Inntekt-seksjon (TBU037V_*/TBU038V_*):
+        val visInntektsseksjon: Boolean,
+        val visInntektsgrunnlagAvdoed: Boolean,
+        val visInntektsgrunnlagAvdoedUtland: Boolean,
         val uforetidspunktFoer17: Boolean,
         val virkningstidspunktStoerreEnn01012016: Boolean,
         val sisteOpptjeningsaarLikUfoeretidspunkt: Boolean,

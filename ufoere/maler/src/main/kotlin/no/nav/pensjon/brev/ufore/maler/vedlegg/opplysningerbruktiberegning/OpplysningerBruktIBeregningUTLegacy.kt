@@ -2,11 +2,22 @@
 
 package no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning
 
+import no.nav.pensjon.brev.ufore.api.model.vedlegg.Beregningsmetode
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.OpplysningerBruktIBeregningUTLegacyDto
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.*
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.beregning.*
+import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.gjenlevendetillegg.*
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.trygdetid.*
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.visningsflagg.*
+import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.ytelsesgrunnlag.*
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU037V_1
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU037V_2
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU037V_3
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU037V_4
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU038V_1
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU038V_2
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU038V_3
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU038V_4
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU039V_TBU044V_1
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU045V_1
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU046V_1
@@ -17,6 +28,7 @@ import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.frase
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -57,6 +69,33 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                         beregning.grunnbeloep.format() + "."
                 },
             )
+        }
+
+        // Dette er inntektene vi har brukt i beregningen din
+        showIf(visningsflagg.visInntektsseksjon) {
+            title1 {
+                text(
+                    bokmal { +"Dette er inntektene vi har brukt i beregningen din" },
+                    nynorsk { +"Dette er inntektene vi har brukt i berekninga di" },
+                )
+            }
+            showIf(beregning.beregningsmetode.equalTo(Beregningsmetode.FOLKETRYGD)) {
+                includePhrase(TBU037V_1(beregning.beregningVirkningDatoFom, ytelsesgrunnlag.opptjeningUTListe))
+                includePhrase(TBU037V_2(visningsflagg))
+            }.orShow {
+                includePhrase(TBU038V_1(beregning.beregningVirkningDatoFom, ytelsesgrunnlag.opptjeningUTListe))
+                includePhrase(TBU038V_2(visningsflagg))
+            }
+            ifNotNull(gjenlevendetillegg) { gt ->
+                showIf(visningsflagg.visInntektsgrunnlagAvdoed) {
+                    includePhrase(TBU037V_3(beregning.beregningVirkningDatoFom, gt.opptjeningUTListeAvdoed))
+                    includePhrase(TBU037V_4(visningsflagg))
+                }
+                showIf(visningsflagg.visInntektsgrunnlagAvdoedUtland) {
+                    includePhrase(TBU038V_3(beregning.beregningVirkningDatoFom, gt.opptjeningUTListeAvdoed))
+                    includePhrase(TBU038V_4(visningsflagg))
+                }
+            }
         }
 
         // Dette er trygdetiden din
