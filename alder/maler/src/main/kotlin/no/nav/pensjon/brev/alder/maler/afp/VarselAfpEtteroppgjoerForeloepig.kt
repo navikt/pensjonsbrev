@@ -86,6 +86,7 @@ object VarselAfpEtteroppgjoerForeloepig : RedigerbarTemplate<VarselAfpEtteroppgj
                     korrigertAfp = pesysData.korrigertAfp,
                     tidligereArbeidsInntektBeregnet = pesysData.tidligereArbeidsInntektBeregnet,
                     utbetaltAfp = pesysData.utbetaltAfp,
+                    toleranseBeloep = pesysData.toleranseBeloep,
                 ),
             )
         }

@@ -215,7 +215,7 @@ object AfpEtteroppgjoerInnhold {
                     BOLD,
                 )
                 text(
-                    bokmal { +" fra du mottok dette brevet." },
+                    bokmal { +" fra du fikk dette brevet." },
                     nynorsk { +" frå du fekk dette brevet." },
                 )
             }
@@ -308,7 +308,7 @@ object AfpEtteroppgjoerInnhold {
      * henvisning til mer informasjon om Ukraina. Brukes i PE_AF_04_100,
      * PE_AF_04_101 og PE_AF_04_107.
      */
-    object InntektUtenforEtteroppgjoerListe : OutlinePhrase<LangBokmalNynorsk>() {
+    object  InntektUtenforEtteroppgjoerListe : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 text(
@@ -450,182 +450,6 @@ object AfpEtteroppgjoerInnhold {
                                 "nytte ved innsending av dokumentasjon."
                     },
                 )
-            }
-        }
-    }
-
-    /**
-     * Title1 «Spesielt om inntekter opptjent i forbindelse med covid-19» + de to
-     * påfølgende paragrafene som er identiske mellom PE_AF_04_100 og PE_AF_04_102.
-     */
-    object SpesieltOmCovidInntekterInnledning : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            title1 {
-                text(
-                    bokmal { +"Spesielt om inntekter opptjent i forbindelse med covid-19" },
-                    nynorsk { +"Spesielt om inntekter opptente i samband med covid-19" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Dersom du har påtatt deg ekstra covid-19-relatert arbeid ut over det du " +
-                                "vanligvis jobber, kan det hende at inntekten din fra dette arbeidet ikke " +
-                                "skal gi avkorting av AFP. Dette gjelder feriepenger av inntekt fra tjeneste " +
-                                "fram til 30. juni 2023 som var nødvendig for å ivareta et ekstraordinært " +
-                                "personellbehov ved TISK-tiltak (testing, isolering, smittesporing og " +
-                                "karantene) eller vaksinering. Det gjelder bare tjeneste med pensjonistlønn " +
-                                "etter særskilt sats."
-                    },
-                    nynorsk {
-                        +"Dersom du har teke på deg ekstra covid-19-relatert arbeid utover det du " +
-                                "vanlegvis jobbar, kan det hende at inntekta di frå dette arbeidet ikkje " +
-                                "skal gi avkorting av AFP. Dette gjeld feriepengane av inntekt frå teneste " +
-                                "fram til 30. juni 2023 som var naudsynt for å ivareta personellbehov ved " +
-                                "TISK-tiltak (testing, isolering, smittesporing og karantene) eller " +
-                                "vaksinering. Det gjeld berre teneste med pensjonistlønn etter særskilt sats."
-                    },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Reglene om dette finnes i forskrift 19. september 2023 nr. 1446 om endring i " +
-                                "forskrift om kombinasjon av avtalefestet pensjon for medlemmer av Statens " +
-                                "pensjonskasse og arbeidsinntekt (pensjonsgivende inntekt) kapittel II nr. 2."
-                    },
-                    nynorsk {
-                        +"Reglane om dette finst i forskrift 19. september 2023 nr. 1446 om endring i " +
-                                "forskrift om kombinasjon av avtalefestet pensjon for medlemmer av Statens " +
-                                "pensjonskasse og arbeidsinntekt (pensjonsgivande inntekt) kapittel II nr. 2."
-                    },
-                )
-            }
-        }
-    }
-
-    /**
-     * Title1 «Spesielt om unntak ... fordrevne fra Ukraina» + den påfølgende
-     * forklaringsparagrafen. Identisk mellom PE_AF_04_100 og PE_AF_04_102.
-     */
-    object SpesieltOmUkrainaUnntak : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            title1 {
-                text(
-                    bokmal {
-                        +"Spesielt om unntak for pensjonistlønn etter særskilt sats for pensjonister som " +
-                                "jobber med fordrevne fra Ukraina"
-                    },
-                    nynorsk {
-                        +"Spesielt om unntak for pensjonistlønn etter særskilt sats for pensjonistar som " +
-                                "har arbeidd med fordrivne frå Ukraina"
-                    },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Dersom du har arbeidet med fordrevne fra Ukraina og mottatt pensjonistlønn etter " +
-                                "særskilt sats kan inntekten for dette arbeidet unntas fra inntektsavkorting. " +
-                                "Det samme gjelder feriepenger for arbeid utført etter 1. april 2022."
-                    },
-                    nynorsk {
-                        +"Dersom du har arbeidd med fordrivne frå Ukraina og motteke pensjonistlønn etter " +
-                                "særskilt sats kan inntekta for dette arbeidet unntakas frå inntektsavkorting. " +
-                                "Det same gjeld feriepengar for slikt arbeid utført etter 1. april 2022."
-                    },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Reglene om inntekter fra arbeid med fordrevne fra Ukraina finnes i forskrift om " +
-                                "kombinasjon av AFP og arbeidsinntekt § 2 tredje ledd."
-                    },
-                    nynorsk {
-                        +"Reglane om inntekter frå arbeid med fordrivne frå Ukraina finst i forskrift " +
-                                "om kombinasjon av AFP og arbeidsinntekt § 2 tredje ledd."
-                    },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"For at Nav skal kunne holde slike inntekter utenfor avkorting, må du sende oss " +
-                                "dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
-                                "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
-                    },
-                    nynorsk {
-                        +"For at Nav skal kunne halde slike inntekter utanfor avkorting, må du sende oss " +
-                                "dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL om korleis du sender " +
-                                "dokumentasjon. Vi treng stadfesting frå arbeidsgivaren din om følgjande:"
-                    },
-                )
-                list {
-                    item {
-                        text(
-                            bokmal { +"hvor mye du har hatt i feriepenger fra slikt ekstra arbeid" },
-                            nynorsk { +"kor mykje du har hatt i feriepengar frå slikt ekstra arbeid" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"i hvilken tidsperiode(-r) dette gjelder" },
-                            nynorsk { +"i kva for tidsperiode (-periodar) dette gjeld" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"om utbetalingen er gjort etter særskilt sats for pensjonistavlønning" },
-                            nynorsk { +"om utbetalinga er gjort etter særskilt sats for pensjonistavlønning" },
-                        )
-                    }
-                }
-            }
-
-        }
-    }
-
-    /**
-     * Covid-dokumentasjonskrav, variant med «inntekter» i første punkt og kort nynorsk-intro
-     * (uten «om korleis du sender dokumentasjon»).
-     * Brukes i PE_AF_04_100 (IngenEndringAuto) og PE_AF_04_108 (Toleransebeloep).
-     */
-    object CovidDokumentasjonskravInntekter : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            paragraph {
-                text(
-                    bokmal {
-                        +"For at Nav skal kunne holde slike inntekter utenfor avkorting, må du sende " +
-                                "oss dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
-                                "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
-                    },
-                    nynorsk {
-                        +"For at Nav skal kunne halde slike inntekter utanfor avkorting, må du sende " +
-                                "oss dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL. Vi treng stadfesting " +
-                                "frå arbeidsgivaren din om følgjande:"
-                    },
-                )
-                list {
-                    item {
-                        text(
-                            bokmal { +"hvor mye du har hatt i inntekter fra slikt ekstra arbeid" },
-                            nynorsk { +"kor mykje du har hatt i feriepengar frå slikt ekstra arbeid" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"hvilken tidsperiode(-r) feriepengene er opptjent" },
-                            nynorsk { +"i kva for tidsperiode (-periodar) feriepengane er tent opp" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"om utbetalingen er gjort etter særskilt sats for pensjonistavlønning" },
-                            nynorsk { +"om utbetalinga er gjort etter særskilt sats for pensjonistavlønning" },
-                        )
-                    }
-                }
             }
         }
     }
