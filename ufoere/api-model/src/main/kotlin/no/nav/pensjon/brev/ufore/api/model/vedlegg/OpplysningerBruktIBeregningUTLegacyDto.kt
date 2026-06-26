@@ -278,5 +278,18 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val tbu613v1_3: Boolean,
         val tbu613v4_5: Boolean,
         val etteroppgjoerBtUtbetalt: Boolean,
+        // Slik beregner vi-seksjon (TBUxx2V / TBU011V_TBU016V / TBU034V_036V):
+        val visBrukerKonvertertUP: Boolean,
+        val visEndringBeregningsgrunnlag: Boolean,
+        val visEndringGjelderGjenlevende: Boolean,
+        val visOektUfoeregrad: Boolean,
+        val visGjenlevendetilleggOekerMedGrad: Boolean,
+        val visBeregningStandardFemAar: Boolean,
+        val visBeregningLigningIkkeFerdig: Boolean,
+        val visBeregningFoerstegangstjeneste: Boolean,
+        val visBeregningOmsorgsaar: Boolean,
+        val visBeregningEOS: Boolean,
+        val visGrunnbeloepJustering: Boolean,
+        val visYrkesskadeBeregning: Boolean,
     )
 }

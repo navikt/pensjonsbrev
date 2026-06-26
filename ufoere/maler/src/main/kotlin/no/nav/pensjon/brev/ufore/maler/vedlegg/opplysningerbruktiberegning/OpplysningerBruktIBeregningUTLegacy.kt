@@ -26,6 +26,9 @@ import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.frase
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU046V_1
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU047V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU500v
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU011V_TBU016V
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU034V_036V
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBUxx2V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU1187
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU1382
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU1384
@@ -77,6 +80,16 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                 },
             )
         }
+
+        // Slik beregner vi uføretrygden din
+        showIf(visningsflagg.visBrukerKonvertertUP) {
+            includePhrase(TBUxx2V(visningsflagg))
+        }.orShow {
+            includePhrase(TBU011V_TBU016V(visningsflagg))
+        }
+
+        // Generell G-justering + yrkesskade
+        includePhrase(TBU034V_036V(visningsflagg))
 
         // Dette er inntektene vi har brukt i beregningen din
         showIf(visningsflagg.visInntektsseksjon) {
