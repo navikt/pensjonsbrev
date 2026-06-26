@@ -177,7 +177,7 @@ object AfpEtteroppgjoerVarselFraser {
                                 "vedtak om kor høg AFP du hadde rett til i " + oppgjoersAar.format() + ". Dersom " +
                                 "berekninga framleis viser at du har fått utbetalt for mykje AFP, må du betale tilbake det som er " +
                                 "utbetalt for mykje. Du får nærmare informasjon om korleis " +
-                                "du betale tilbake i det same vedtaket. Innbetalt skatt vil bli trekt " +
+                                "du betaler tilbake i det same vedtaket. Innbetalt skatt vil bli trekt " +
                                 "frå beløpet vi krev tilbake."
                     },
                 )
@@ -198,7 +198,7 @@ object AfpEtteroppgjoerVarselFraser {
             paragraph {
                 text(
                     bokmal {
-                        +"Du har rett til å se dokumentene i saken din. Dette følger av forvaltningsloven § 18"
+                        +"Du har rett til å se dokumentene i saken din. Dette følger av forvaltningsloven § 18."
                     },
                     nynorsk {
                         +"Du har rett til å sjå dokumenta i saka di. Dette følgjer av forvaltningslova § 18."
@@ -218,18 +218,17 @@ object AfpEtteroppgjoerVarselFraser {
                 text(
                     bokmal {
                         +"Du finner informasjon om hvordan Nav behandler personopplysningene dine, og hvilke " +
-                                "rettigheter du har, på ${Constants.PERSONVERNERKLAERING_URL}"
+                                "rettigheter du har, på ${Constants.PERSONVERNERKLAERING_URL}."
                     },
                     nynorsk {
-                        +"Du finn informasjon om korleis Nav behandlar personopplysningane dine og kva rettar du" +
-                                "har på ${Constants.PERSONVERNERKLAERING_URL}"
+                        +"Du finn informasjon om korleis Nav behandlar personopplysningane dine og kva rettar du " +
+                                "har på ${Constants.PERSONVERNERKLAERING_URL}."
                     },
                 )
             }
 
             title2 {
                 text(
-
                     bokmal { +"Du har rett til å få hjelp fra andre" },
                     nynorsk { +"Du har rett til å få hjelp frå andre" }
                 )
@@ -242,7 +241,7 @@ object AfpEtteroppgjoerVarselFraser {
                                 "en organisasjon du er medlem av, eller en myndig person over 18 år. Dette følger av " +
                                 "forvaltningsloven § 12. Hvis den som hjelper deg ikke er advokat, må du gi denne personen " +
                                 "skriftlig fullmakt. Bruk skjemaet du finner på ${Constants.FULLMAKT_URL}. Ta kontakt på telefon " +
-                                "${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} hvis du ikke kan bruke det digitale skjemaet"
+                                "${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} hvis du ikke kan bruke det digitale skjemaet."
                     },
                     nynorsk {
                         +"Du kan be om hjelp frå andre under heile saksbehandlinga, til dømes frå ein advokat, rettshjelpar, " +

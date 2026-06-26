@@ -308,7 +308,7 @@ object AfpEtteroppgjoerInnhold {
      * henvisning til mer informasjon om Ukraina. Brukes i PE_AF_04_100,
      * PE_AF_04_101 og PE_AF_04_107.
      */
-    object  InntektUtenforEtteroppgjoerListe : OutlinePhrase<LangBokmalNynorsk>() {
+    object InntektUtenforEtteroppgjoerListe : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 text(
