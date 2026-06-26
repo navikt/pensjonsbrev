@@ -114,7 +114,21 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val redusertFramtidigTrygdetid: Boolean,
         val trygdetidFomNorge: LocalDate?,
         val trygdetidFomBilateral: LocalDate?,
-    )
+        val perioderNorge: List<Periode>,
+        val perioderEOS: List<PeriodeMedLand>,
+        val perioderBilateral: List<PeriodeMedLand>,
+    ) {
+        data class Periode(
+            val fom: LocalDate?,
+            val tom: LocalDate?,
+        )
+
+        data class PeriodeMedLand(
+            val land: String?,
+            val fom: LocalDate?,
+            val tom: LocalDate?,
+        )
+    }
 
     data class TrygdetidAvdoed(
         val faktiskTTNorge: Int?,
@@ -209,6 +223,16 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val visTrygdetid: Boolean,
         val visTrygdetidAvdoed: Boolean,
         val visAvdoed: Boolean,
+        // Trygdetid-seksjon (TBU039V_TBU044V_1 m.fl.):
+        val visStandardFastsettelseTrygdetid: Boolean,
+        val harFramtidigTrygdetid: Boolean,
+        val yrkesskadeVilkaarOppfylt: Boolean,
+        val ufoeregradLikYrkesskadegrad: Boolean,
+        val erMaanedEtterFoedsel: Boolean,
+        val visTrygdetidNorgeTabell: Boolean,
+        val visTrygdetidEOS: Boolean,
+        val visTrygdetidBilateral: Boolean,
+        val visRedusertFramtidigTrygdetidTekst: Boolean,
         val uforetidspunktFoer17: Boolean,
         val virkningstidspunktStoerreEnn01012016: Boolean,
         val sisteOpptjeningsaarLikUfoeretidspunkt: Boolean,
