@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.frase
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU080V_TBU027V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBUxx1V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBUxx2V
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBUxx4v_og_TBU048V_TBU055V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU1187
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU1382
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU1384
@@ -192,5 +193,10 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // Slik har vi fastsatt den nye inntektsgrensen din
         showIf(krav.kravaarsaktype.equalTo(Kravaarsaktype.ENDRING_IFU)) {
             includePhrase(TBU500v)
+        }
+
+        // Slik fastsetter vi inntekten din før/etter at du ble ufør
+        showIf(visningsflagg.visFastsetterInntektFoerUfoer) {
+            includePhrase(TBUxx4v_og_TBU048V_TBU055V(visningsflagg, beregning))
         }
     }

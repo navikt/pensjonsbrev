@@ -340,5 +340,9 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val visSamletInntektAnnenForelder: Boolean,
         val visBarnetilleggSaerkullIkkeUtbetalt: Boolean,
         val visBarnetilleggFellesIkkeUtbetalt: Boolean,
+        // Slik fastsetter vi inntekten din (TBUxx4v_og_TBU048V_TBU055V):
+        val visFastsetterInntektFoerUfoer: Boolean,
+        val visMinstenivaaInntektFoerUfoer: Boolean,
+        val visSlikFastsetterViInntektEtterUfoer: Boolean,
     )
 }
