@@ -138,9 +138,9 @@ object ApSoknadKvitteringAuto : AutobrevTemplate<ApSoknadKvitteringAutoDto> {
             outline {
                 paragraph {
                     table(header = seksjon("Innledning")) {
-                        tekstRad("Ønsket start for uttak av pensjon", innledning.iverksettelsesdato.formatMonthYear())
+                        tekstRad("Når vil du starte pensjonen din?", innledning.iverksettelsesdato.formatMonthYear())
                         showIf(innledning.erNyttRegelverk) {
-                            tekstRad("Ønsket uttaksgrad", innledning.uttaksgrad.format() + " %")
+                            tekstRad("Hvilken uttaksgrad (prosent) søker du?", innledning.uttaksgrad.format() + " prosent")
                         }
                     }
                 }
@@ -150,15 +150,17 @@ object ApSoknadKvitteringAuto : AutobrevTemplate<ApSoknadKvitteringAutoDto> {
                         tekstRad("Navn", personopplysninger.navn)
                         tekstRad("Fødselsnummer", personopplysninger.foedselsnummer)
                         adresseRad("Adresse", personopplysninger.adresselinjer)
-                        tekstRad("Telefonnummer", personopplysninger.telefon.ifNull(""))
+                        ifNotNull(personopplysninger.telefon) { telefon ->
+                            tekstRad("Telefonnummer", telefon)
+                        }
                         tekstRad("Statsborgerskap", ifElse(personopplysninger.erUtenlandsk, "Annet", "Norsk"))
                         ifNotNull(personopplysninger.statsborgerskapLand) { statsborgerskapsland ->
                             tekstRad("Statsborgerskap", statsborgerskapsland)
                         }
                         ifNotNull(personopplysninger.erFlyktning) { flyktning ->
-                            jaNeiRad("Registrert som flyktning", flyktning)
+                            jaNeiRad("Er du, eller har du vært, registrert som flyktning hos Utlendingsdirektoratet (UDI)?", flyktning)
                         }
-                        tekstRad("Kontonummer for utbetaling", personopplysninger.kontonummer.ifNull(""))
+                        tekstRad("Kontonummer for utbetaling fra Nav", personopplysninger.kontonummer.ifNull(""))
                     }
                 }
 
@@ -173,7 +175,7 @@ object ApSoknadKvitteringAuto : AutobrevTemplate<ApSoknadKvitteringAutoDto> {
                             tekstRad("Avdødes fødselsnummer", avdoedRelasjon.avdoedFoedselsnummer.ifNull(""))
                         }
                         ifNotNull(familieforhold.samboer) { samboerRelasjon ->
-                            tekstRad("Samboers navn", samboerRelasjon.samboerNavn)
+                            tekstRad("Samboers etternavn", samboerRelasjon.samboerNavn)
                             tekstRad("Samboers fødselsnummer", samboerRelasjon.samboerFoedselsnummer.ifNull(""))
                             ifNotNull(samboerRelasjon.samboerskapOpphoertDato) { opphoertDato ->
                                 tekstRad("Samboerskapet opphørte", opphoertDato.format(short = true))
@@ -181,7 +183,7 @@ object ApSoknadKvitteringAuto : AutobrevTemplate<ApSoknadKvitteringAutoDto> {
                         }
                         ifNotNull(familieforhold.harSamboerSpoersmaal) { spoersmaal ->
                             rad(
-                                "Jeg har ".expr() + ifElse(spoersmaal.erNySamboer, "ny samboer", "samboer"),
+                                "Har du ".expr() + ifElse(spoersmaal.erNySamboer, "ny samboer?", "samboer?"),
                                 ifElse(spoersmaal.svar, "Ja", "Nei"),
                             )
                         }
@@ -194,11 +196,11 @@ object ApSoknadKvitteringAuto : AutobrevTemplate<ApSoknadKvitteringAutoDto> {
                                 )
                             }
                             ifNotNull(ektefelle.epsSamboerFraDato) { fraDato ->
-                                tekstRad("Samboer fra dato", fraDato.format(short = true))
+                                tekstRad("Flyttet sammen", fraDato.format(short = true))
                             }
                             ifNotNull(ektefelle.giftOgBarn) { giftBarn ->
-                                jaNeiRad("Tidligere vært gift med", giftBarn.tidligereGift)
-                                jaNeiRad("Har barn med samboer", giftBarn.harFellesBarn)
+                                jaNeiRad("Har du tidligere vært gift med samboeren din?", giftBarn.tidligereGift)
+                                jaNeiRad("Har dere, eller har dere hatt, felles barn?", giftBarn.harFellesBarn)
                             }
                             ifNotNull(ektefelle.leverVarigAdskilt) { varigAdskilt ->
                                 jaNeiRad(
@@ -208,7 +210,7 @@ object ApSoknadKvitteringAuto : AutobrevTemplate<ApSoknadKvitteringAutoDto> {
                             }
                             ifNotNull(ektefelle.pensjonOgInntekt) { pensjonInntekt ->
                                 jaNeiRad(
-                                    "Mottar/søker din ".expr() + ektefelle.betegnelse + " AFP fra offentlig sektor?",
+                                    "Har ".expr() + ektefelle.betegnelse + " søkt om eller fått avtalefestet pensjon (AFP) i offentlig sektor?",
                                     pensjonInntekt.mottarAfp,
                                 )
                                 jaNeiRad(
@@ -235,9 +237,15 @@ object ApSoknadKvitteringAuto : AutobrevTemplate<ApSoknadKvitteringAutoDto> {
                             jaNeiRad("Arbeidet du i landet?", opphold.arbeidet)
                             tekstRad("Startdato for oppholdet", opphold.startDato.format(short = true).ifNull(""))
                             tekstRad("Sluttdato for oppholdet", opphold.sluttDato.format(short = true).ifNull(""))
-                            tekstRad("Pensjonsordning under oppholdet", opphold.pensjonsordning.ifNull(""))
-                            tekstRad("Identitetsnummeret ditt i landet eller i pensjonsordningen", opphold.utlandsId.ifNull(""))
-                            tekstRad("Tilleggsinformasjon", opphold.tilleggsinformasjon.ifNull(""))
+                            ifNotNull(opphold.pensjonsordning) { pensjonsordning ->
+                                tekstRad("Pensjonsordning under oppholdet", pensjonsordning)
+                            }
+                            ifNotNull(opphold.utlandsId) { utlandsId ->
+                                tekstRad("Identitetsnummeret ditt i landet eller i pensjonsordningen", utlandsId)
+                            }
+                            ifNotNull(opphold.tilleggsinformasjon) { tilleggsinformasjon ->
+                                tekstRad("Hva gjorde du i landet?", tilleggsinformasjon)
+                            }
                         }
                     }
                 }
