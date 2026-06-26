@@ -341,9 +341,15 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val visOifuFortak: Boolean,
         val visSamletInntektBarnetillegg: Boolean,
         val barnetilleggFellesInnvilget: Boolean,
+        val barnetilleggSaerkullInnvilget: Boolean,
         val visSamletInntektAnnenForelder: Boolean,
         val visBarnetilleggSaerkullIkkeUtbetalt: Boolean,
         val visBarnetilleggFellesIkkeUtbetalt: Boolean,
+        // Slik reduserer vi barnetillegget ut fra inntekt (TBU052V_TBU073V):
+        val visBarnetilleggRedusertKortTrygdetid: Boolean,
+        val visBarnetilleggIkkeUtbetaltPgaInntekt: Boolean,
+        val visBarnetilleggRedusertTilDegOgPartner: Boolean,
+        val visBarnetilleggRedusertDin: Boolean,
         // Slik fastsetter vi inntekten din (TBUxx4v_og_TBU048V_TBU055V):
         val visFastsetterInntektFoerUfoer: Boolean,
         val visMinstenivaaInntektFoerUfoer: Boolean,
