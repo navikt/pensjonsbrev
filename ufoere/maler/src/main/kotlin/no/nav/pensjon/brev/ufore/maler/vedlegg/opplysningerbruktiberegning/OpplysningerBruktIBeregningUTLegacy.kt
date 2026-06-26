@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIB
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.beregning.*
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.gjenlevendetillegg.*
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.trygdetid.*
+import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.trygdetidAvdoed.*
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.visningsflagg.*
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTLegacyDto.ytelsesgrunnlag.*
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU037V_1
@@ -22,6 +23,9 @@ import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.frase
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU045V_1
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU046V_1
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU047V
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU1187
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU1382
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU1384
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TrygdetidListeNorTabell
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TrygdetidsListeBilateralTabell
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TrygdetidsListeEOSTabell
@@ -119,5 +123,17 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         showIf(visningsflagg.visRedusertFramtidigTrygdetidTekst) {
             includePhrase(TBU047V)
+        }
+
+        ifNotNull(trygdetidAvdoed) { avdoed ->
+            showIf(visningsflagg.visTrygdetidAvdoedNorgeTabell) {
+                includePhrase(TBU1187(avdoed.perioderNorge))
+            }
+            showIf(visningsflagg.visTrygdetidAvdoedEOS) {
+                includePhrase(TBU1382(avdoed.perioderEOS))
+            }
+            showIf(visningsflagg.visTrygdetidAvdoedBilateral) {
+                includePhrase(TBU1384(avdoed.perioderBilateral))
+            }
         }
     }

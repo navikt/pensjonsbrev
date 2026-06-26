@@ -156,6 +156,9 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val framtidigTrygdetidUnder40Aar: Boolean,
         val trygdetidFomNorge: LocalDate?,
         val trygdetidFomBilateral: LocalDate?,
+        val perioderNorge: List<Trygdetid.Periode>,
+        val perioderEOS: List<Trygdetid.PeriodeMedLand>,
+        val perioderBilateral: List<Trygdetid.PeriodeMedLand>,
     )
 
     data class Gjenlevendetillegg(
@@ -243,6 +246,10 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val visInntektsseksjon: Boolean,
         val visInntektsgrunnlagAvdoed: Boolean,
         val visInntektsgrunnlagAvdoedUtland: Boolean,
+        // Avdoed trygdetid-tabeller (TBU1187/TBU1382/TBU1384):
+        val visTrygdetidAvdoedNorgeTabell: Boolean,
+        val visTrygdetidAvdoedEOS: Boolean,
+        val visTrygdetidAvdoedBilateral: Boolean,
         val uforetidspunktFoer17: Boolean,
         val virkningstidspunktStoerreEnn01012016: Boolean,
         val sisteOpptjeningsaarLikUfoeretidspunkt: Boolean,
