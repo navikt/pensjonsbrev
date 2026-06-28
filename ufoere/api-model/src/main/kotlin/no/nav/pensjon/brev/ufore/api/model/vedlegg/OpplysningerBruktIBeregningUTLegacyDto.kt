@@ -434,5 +434,13 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val visUtbetalingRedusertIkkeUtbetalt: Boolean,
         val visIkkeUtbetaltOver80Prosent: Boolean,
         val visFaarTilbakeUtenSoknad: Boolean,
+        // Gjenlevendetillegg (TBU052V_TBU073V_SlikBeregnerViGjenlevendetilleggetDitt):
+        val visGjenlevendetilleggBeregning: Boolean,
+        val visGjenlevendetilleggBeregningUP: Boolean,
+        // Ektefelletillegg (TBU052V_TBU073V_ForDegSomMottarEktefelletillegg):
+        val visEktefelletilleggInnvilgetIkkeUnntak: Boolean,
+        val visEktefelletilleggBeregningSeksjon: Boolean,
+        val visEktefelletilleggBeregningUP: Boolean,
+        val visEktefelletilleggMinstepensjon60: Boolean,
     )
 }

@@ -28,8 +28,10 @@ import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.frase
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU500v
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU010V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_ForDegSomHarRettTilBarnetillegg
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_ForDegSomMottarEktefelletillegg
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikBeregnerViReduksjonenAvUfoeretrygden
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikBeregnerViGjenlevendetilleggetDitt
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikRedusererViBarnetilleggetUtFraInntekt
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt
@@ -226,4 +228,8 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                 person,
             )
         )
+
+        // Gjenlevendetillegg / ektefelletillegg
+        includePhrase(TBU052V_TBU073V_SlikBeregnerViGjenlevendetilleggetDitt(visningsflagg))
+        includePhrase(TBU052V_TBU073V_ForDegSomMottarEktefelletillegg(visningsflagg))
     }
