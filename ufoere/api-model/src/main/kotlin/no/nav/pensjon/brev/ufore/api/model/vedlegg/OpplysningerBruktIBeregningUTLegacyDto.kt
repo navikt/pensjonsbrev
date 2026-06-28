@@ -442,5 +442,7 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val visEktefelletilleggBeregningSeksjon: Boolean,
         val visEktefelletilleggBeregningUP: Boolean,
         val visEktefelletilleggMinstepensjon60: Boolean,
+        // Etteroppgjør (TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg) – gating i vedlegget:
+        val visEtteroppgjoer: Boolean,
     )
 }

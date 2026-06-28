@@ -28,6 +28,7 @@ import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.frase
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU500v
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU010V
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_ForDegSomHarRettTilBarnetillegg
+import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_ForDegSomMottarEktefelletillegg
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt
 import no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser.TBU052V_TBU073V_SlikBeregnerViReduksjonenAvUfoeretrygden
@@ -232,4 +233,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // Gjenlevendetillegg / ektefelletillegg
         includePhrase(TBU052V_TBU073V_SlikBeregnerViGjenlevendetilleggetDitt(visningsflagg))
         includePhrase(TBU052V_TBU073V_ForDegSomMottarEktefelletillegg(visningsflagg))
+
+        // Etteroppgjør
+        showIf(visningsflagg.visEtteroppgjoer) {
+            includePhrase(TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(visningsflagg, person))
+        }
     }
