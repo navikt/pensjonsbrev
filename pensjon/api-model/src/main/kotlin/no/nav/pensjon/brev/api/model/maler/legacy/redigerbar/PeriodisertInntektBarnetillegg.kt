@@ -12,6 +12,6 @@ enum class PeriodisertInntektBarnetillegg {
     @DisplayText("Barn fyller 18 ila året")
     BARN_FYLLER_18,
 
-    @DisplayText("Ingen")
+    @DisplayText("Skriv begrunnelse selv")
     INGEN
 }

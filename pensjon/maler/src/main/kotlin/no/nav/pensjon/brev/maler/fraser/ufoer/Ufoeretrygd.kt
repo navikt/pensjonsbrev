@@ -478,8 +478,8 @@ object Ufoeretrygd {
             paragraph {
                 showIf(periodisertInntekt.isNull() or periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.INGEN)) {
                     text(
-                        bokmal { +fritekst("Sett inn aktuelt tekstvalg") },
-                        nynorsk { +fritekst("Sett inn aktuelt tekstvalg") }
+                        bokmal { +fritekst("Sett inn aktuelt tekstvalg eller din begrunnelse") },
+                        nynorsk { +fritekst("Sett inn aktuelt tekstvalg eller din begrunnelse") }
                     )
                 }.orShowIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.INNTEKT_HELE_ARET)) {
                     text(
