@@ -74,8 +74,8 @@ object Fixtures : LetterDataFactory {
     private fun lagInnhentingOpplysningerSamboer() = InnhentingOpplysningerSamboerDto(
         pesysData = EmptyFagsystemdata,
         saksbehandlerValg = lagSaksbehandlervalg(
-            "ukjentSamboer" to saksbehandlervalgVerdiBool(false, "tull"),
-            "vilkaarlegInt" to saksbehandlervalgVerdiInteger(4, "tøys")
+            "ukjentSamboer" to saksbehandlervalgVerdiBool(true, "tull"),
+            "vilkaarlegInt" to saksbehandlervalgVerdiInteger(41, "tøys")
         )
     )
 
