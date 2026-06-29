@@ -73,14 +73,18 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
       // https://support.microsoft.com/nb-no/office/hurtigtaster-i-word-95ef89dd-7142-4b50-afb2-f762f663ceb2
       if (!isMac) {
         if (event.ctrlKey) {
-          if (event.key === "f") {
+          // Omdirigerer både ctrl-f og ctrl-b, for å unngå innebygd fet tekst-snarvei i nettleser
+          if (event.key === "f" || event.key === "b") {
             event.preventDefault();
             applyAction(Actions.switchFontType, setEditorState, FontType.BOLD);
-          } else if (event.key === "i") {
+          }
+          // Omdirigerer ikke ctrl-k, siden det er en generell nettleser-snarvei for å fokusere addresselinjen
+          else if (event.key === "i") {
             event.preventDefault();
             applyAction(Actions.switchFontType, setEditorState, FontType.ITALIC);
-          } else if (event.key === "u") {
-            // block ctrl-u from applying underline
+          }
+          // Blokker innebygget ctrl-u for å hindre understreking, som vi ikke støtter
+          else if (event.key === "u") {
             event.preventDefault();
           }
         }

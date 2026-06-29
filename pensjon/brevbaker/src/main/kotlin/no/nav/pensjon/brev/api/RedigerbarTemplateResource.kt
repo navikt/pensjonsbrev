@@ -10,8 +10,10 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppenderImpl
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brevbaker.api.model.RedigerbareVedleggTitler
 
 class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
     override val name: String,
@@ -28,11 +30,24 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     fun renderLetterMarkupWithDataUsage(brevbestilling: BestillBrevRequest<Kode>): LetterMarkupWithDataUsage =
         brevbaker.renderLetterMarkupWithDataUsage(createLetter(brevbestilling))
 
+    fun renderRedigerbareVedleggTitler(brevbestilling: BestillBrevRequest<Kode>): RedigerbareVedleggTitler =
+        RedigerbareVedleggTitler(
+            brevbaker.renderRedigerbartVedleggTitler(createLetter(brevbestilling))
+                .map { (vedleggId, tittel) ->
+                    RedigerbareVedleggTitler.Vedlegg(vedleggId, tittel.joinToString("") { it.text })
+                }
+        )
+
+    fun renderRedigerbartVedleggMarkup(brevbestilling: BestillBrevRequest<Kode>, vedleggId: String): LetterMarkup.Attachment? =
+        brevbaker.renderRedigerbartVedleggMarkup(createLetter(brevbestilling), VedleggId(vedleggId))
+
     override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
-        brevbaker.renderRedigertBrevPDF(createLetter(brevbestilling), brevbestilling.letterMarkup)
+        // TODO(redigerbart-vedlegg): fjern '?: emptyMap()' når redigerteVedlegg gjøres obligatorisk etter utrulling.
+        brevbaker.renderRedigertBrevPDF(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg ?: emptyMap())
 
     override fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
-        brevbaker.renderRedigertBrevHTML(createLetter(brevbestilling), brevbestilling.letterMarkup)
+        // TODO(redigerbart-vedlegg): fjern '?: emptyMap()' når redigerteVedlegg gjøres obligatorisk etter utrulling.
+        brevbaker.renderRedigertBrevHTML(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg ?: emptyMap())
 
     private fun createLetter(brevbestilling: BestillBrevRequest<Kode>) =
         letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))

@@ -143,4 +143,32 @@ class Letter2MarkupTest {
         }
     }
 
+    @Test
+    fun `id for blokker i forEach blir unike for hver iterasjon`() {
+        val forEachListe = listOf("1", "2", "3")
+        val result = renderTemplate(EmptyAutobrevdata) {
+            forEach(forEachListe.expr()) {
+                title1 { text(bokmal { +"hei nr. " + it }) }
+            }
+        }
+        assertThat(result.letterMarkup.blocks.map { it.id }.distinct())
+            .describedAs { "innholdet i listene har ikke betydning" }
+            .hasSameSizeAs(forEachListe)
+    }
+
+    @Test
+    fun `id for blokker i noestet forEach blir unike for hver iterasjon`() {
+        val forEachListe = listOf("1", "2", "3")
+        val result = renderTemplate(EmptyAutobrevdata) {
+            forEach(forEachListe.expr()) {
+                forEach(forEachListe.expr()) {
+                    title1 { text(bokmal { +"hei nr. " + it }) }
+                }
+            }
+        }
+        assertThat(result.letterMarkup.blocks.map { it.id }.distinct())
+            .describedAs { "innholdet i listene har ikke betydning" }
+            .hasSameSizeAs(forEachListe.flatMap { forEachListe })
+    }
+
 }

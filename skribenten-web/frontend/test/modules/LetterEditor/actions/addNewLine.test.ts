@@ -28,7 +28,7 @@ describe("Actions.addNewLine", () => {
 
     expect(block.content).toHaveLength(3);
     expect(block.content[0]).toEqual(state.redigertBrev.blocks[0].content[0]);
-    expect(block.content[1].type).toEqual(NEW_LINE);
+    expect(block.content[1].type).toEqual("NEW_LINE");
   });
 
   test("adds new line to paragraph before literal", () => {
@@ -44,10 +44,9 @@ describe("Actions.addNewLine", () => {
       text: "",
       editedText: null,
       fontType: "PLAIN",
-      editedFontType: null,
       tags: [],
     });
-    expect(block.content[1].type).toEqual(NEW_LINE);
+    expect(block.content[1].type).toEqual("NEW_LINE");
     expect(block.content[2]).toEqual(state.redigertBrev.blocks[0].content[0]);
   });
 
@@ -58,7 +57,7 @@ describe("Actions.addNewLine", () => {
 
     expect(block.content).toHaveLength(3);
     expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).editedText).toEqual("l1");
-    expect(select<TextContent>(result, { blockIndex: 0, contentIndex: 1 }).type).toEqual(NEW_LINE);
+    expect(select<TextContent>(result, { blockIndex: 0, contentIndex: 1 }).type).toEqual("NEW_LINE");
     expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 2 }).editedText).toEqual("l2");
   });
 
@@ -69,7 +68,7 @@ describe("Actions.addNewLine", () => {
 
     expect(block.content).toHaveLength(3);
     expect(block.content[0]).toEqual(state.redigertBrev.blocks[0].content[0]);
-    expect(select<TextContent>(result, { blockIndex: 0, contentIndex: 1 }).type).toEqual(NEW_LINE);
+    expect(select<TextContent>(result, { blockIndex: 0, contentIndex: 1 }).type).toEqual("NEW_LINE");
     expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 2 }))).toEqual("");
   });
 });

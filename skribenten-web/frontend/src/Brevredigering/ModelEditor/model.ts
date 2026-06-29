@@ -57,9 +57,6 @@ export function initValueFromSpec(
           case "DATE": {
             return "";
           }
-          case "YEAR": {
-            return 0;
-          }
           default: {
             throw `Unsupported scalar kind ${spec.kind} for: ${JSON.stringify(spec)}`;
           }

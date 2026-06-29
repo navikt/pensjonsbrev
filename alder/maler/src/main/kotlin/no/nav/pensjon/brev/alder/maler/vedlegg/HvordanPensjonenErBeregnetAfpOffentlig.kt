@@ -1,19 +1,9 @@
 package no.nav.pensjon.brev.alder.maler.vedlegg
 
 import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDto
-import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDtoSelectors.EktefelletilleggSelectors.fribeloep
-import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDtoSelectors.TilleggspensjonSelectors.poengaarUtenOk
-import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDtoSelectors.TilleggspensjonSelectors.poengaarUtenOke91
-import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDtoSelectors.TilleggspensjonSelectors.poengaarUtenOkf92
-import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDtoSelectors.TilleggspensjonSelectors.sluttpoengtallUtenOk
-import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDtoSelectors.brukerErFlyktning
-import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDtoSelectors.ektefelleInntektOver2G
-import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDtoSelectors.ektefelleMottarPensjon
-import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDtoSelectors.ektefelletillegg
-import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDtoSelectors.grunnbeloep
-import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDtoSelectors.saertilleggInnvilget
-import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDtoSelectors.tilleggspensjon
-import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDtoSelectors.trygdetid
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.hvordanPensjonenErBeregnetAfpOffentligDto.ektefelletillegg.*
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.hvordanPensjonenErBeregnetAfpOffentligDto.tilleggspensjon.*
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.hvordanPensjonenErBeregnetAfpOffentligDto.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.LangBokmalNynorsk

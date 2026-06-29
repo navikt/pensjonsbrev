@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
@@ -25,23 +26,29 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.common.InMemoryCache
 import no.nav.pensjon.brev.skribenten.common.Valkey
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
-import no.nav.pensjon.brev.skribenten.common.updateBrevredigeringJson
+import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Exception
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenDataException
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenFeilIDatabyggerException
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
+import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationMixins
+import no.nav.pensjon.brev.skribenten.serialize.registerMixin
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
+import no.nav.pensjon.brev.skribenten.services.HttpClientFactory
 import no.nav.pensjon.brev.skribenten.services.ServiceException
+import org.jetbrains.exposed.v1.core.and
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -85,7 +92,7 @@ private fun run() {
     }.start(wait = true)
 }
 
-fun Application.skribentenApp(skribentenConfig: Config) {
+suspend fun Application.skribentenApp(skribentenConfig: Config) {
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
@@ -190,8 +197,10 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         launch {
             delay(5.minutes)
             oneShotJobs(skribentenConfig) {
-                job("leggPaaSpraakForValgbareVedlegg") {
-                    updateBrevredigeringJson()
+                job("slettKladdBasertPaaSlettaMal") {
+                    transaction {
+                        BrevredigeringTable.deleteWhere { BrevredigeringTable.id eq BrevId(270) and (BrevredigeringTable.brevkode eq RedigerbarBrevkode("PE_FORHAANDSVARSEL_VED_TILBAKEKREVING")) }
+                    }
                 }
                 // Sett opp evt. jobber her
             }
@@ -200,6 +209,9 @@ fun Application.skribentenApp(skribentenConfig: Config) {
 
     monitor.subscribe(ApplicationStopPreparing) {
         Features.shutdown()
+    }
+    monitor.subscribe(ApplicationStopping) {
+        HttpClientFactory.close()
     }
 }
 
@@ -226,13 +238,15 @@ private fun IllegalStateException.messageHasEditedLetter(): Boolean = message?.l
 fun Application.skribentenContenNegotiation() {
     install(ContentNegotiation) {
         jackson {
-            registerModule(JavaTimeModule())
-            registerModule(EditLetterJacksonModule)
-            registerModule(BrevkodeJacksonModule)
-            registerModule(SakstypeModule)
-            registerModule(LetterMarkupJacksonModule)
-            disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            skribentenServerJackson()
         }
     }
+}
+
+fun ObjectMapper.skribentenServerJackson() = apply {
+    registerModule(JavaTimeModule())
+    registerMixin(TemplateModelSpecificationMixins)
+    registerModule(LetterMarkupJacksonModule)
+    disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 }

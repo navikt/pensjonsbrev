@@ -1,10 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1Data
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -20,14 +16,14 @@ open class BrevredigeringStub : Brevredigering {
     override val id: EntityID<BrevId> get() = notYetStubbed()
     override val saksId: SaksId get() = notYetStubbed()
     override val vedtaksId: VedtaksId get() = notYetStubbed()
-    override val brevkode: Brevkode.Redigerbart get() = notYetStubbed()
+    override val brevkode: RedigerbarBrevkode get() = notYetStubbed()
     override val spraak: LanguageCode get() = notYetStubbed()
     override val avsenderEnhetId: EnhetId get() = notYetStubbed()
     override val saksbehandlerValg: SaksbehandlerValg get() = notYetStubbed()
     override val redigertBrev: Edit.Letter get() = notYetStubbed()
     override val redigertBrevHash: Hash<Edit.Letter> get() = notYetStubbed()
     override val laastForRedigering: Boolean get() = notYetStubbed()
-    override val distribusjonstype: Distribusjonstype get() = notYetStubbed()
+    override val distribusjonstype: Distribusjon get() = notYetStubbed()
     override val redigeresAv: NavIdent get() = notYetStubbed()
     override val sistRedigertAv: NavIdent get() = notYetStubbed()
     override val opprettetAv: NavIdent get() = notYetStubbed()
@@ -38,10 +34,11 @@ open class BrevredigeringStub : Brevredigering {
     override var document: Dto.Document? = null
     override val mottaker: Dto.Mottaker get() = notYetStubbed()
     override val p1Data: P1Data get() = notYetStubbed()
-    override val valgteVedlegg: List<AlltidValgbartVedleggKode> get() = notYetStubbed()
+    override val valgteVedlegg: List<AlltidValgbartVedleggBrevkode> get() = notYetStubbed()
     override val attestertAvNavIdent: NavIdent get() = notYetStubbed()
     override val brevtype: LetterMetadata.Brevtype get() = notYetStubbed()
     override val isVedtaksbrev: Boolean get() = notYetStubbed()
+    override val redigerteVedlegg: List<Dto.RedigertVedlegg> get() = notYetStubbed()
 
     override fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon? = notYetStubbed()
     override fun reserver(fra: Instant, saksbehandler: NavIdent, policy: BrevreservasjonPolicy): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen> = notYetStubbed()

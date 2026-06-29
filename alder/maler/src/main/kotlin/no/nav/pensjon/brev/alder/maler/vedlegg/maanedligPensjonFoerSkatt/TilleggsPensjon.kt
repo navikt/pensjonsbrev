@@ -3,14 +3,9 @@ package no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.erRedusert
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.kombinertMedAvdod
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUfore
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUforeAvdod
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaYrkesskade
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaYrkesskadeAvdod
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.maanedligPensjonFoerSkattDto.tilleggspensjonGjeldende.*
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabell
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.maanedligPensjonFoerSkattTabell.alderspensjonPerManed.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish

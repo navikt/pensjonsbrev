@@ -4,12 +4,10 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.erEksportberegnet
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.SaerskiltSatsGjeldendeSelectors.saerskiltSatsErBrukt
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.maanedligPensjonFoerSkattDto.alderspensjonGjeldende.*
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.maanedligPensjonFoerSkattDto.saerskiltSatsGjeldende.*
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabell
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.brukersSivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fullTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.pensjonstillegg
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.maanedligPensjonFoerSkattTabell.alderspensjonPerManed.*
 import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression

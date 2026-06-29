@@ -9,22 +9,8 @@ import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto.Periode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.forlitebetalt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.fpiberegnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.fradragberegnetai
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.fullafp
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.ieo
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.ifu
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.iiap
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.korrigertafp
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.oppgjoersAar
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.opphorsdato
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.periode
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.pgi
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.tpiberegnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.utbetaltafp
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.PesysDataSelectors.uttaksdato
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDtoSelectors.pesysData
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.*
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.model.format
@@ -40,7 +26,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 /**
- * Redigerbart vedtak — AFP etteroppgjør (SPK) med etterbetaling.
+ * Redigerbart vedtak — AFP etteroppgjør med etterbetaling.
  *
  * Konvertert fra Exstream-malen `PE_AF_04_109`. Auto-varianten av samme situasjon
  * er [VedtakAfpEtteroppgjoerEtterbetalingAuto] (`PE_AF_04_101`).
@@ -52,7 +38,7 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
 
     override val featureToggle = FeatureToggles.vedtakAfpEtteroppgjoerEtterbetaling.toggle
 
-    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.ETTEROPPGJOER
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
 
@@ -149,21 +135,25 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
 
             includePhrase(AfpEtteroppgjoerInnhold.NedenforInntekterBruktOgBeregnet)
 
-            includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            showIf(pesysData.medlemAvApotekerordningen) {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
+            }.orShow {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            }
+
             includePhrase(AfpEtteroppgjoerInnhold.MeldingOmEndringerInnledning)
 
             includePhrase(AfpEtteroppgjoerInnhold.InntektUtenforEtteroppgjoerListe)
 
             includePhrase(AfpEtteroppgjoerInnhold.AnnenInntektInntektsproevd)
+
             includePhrase(AfpEtteroppgjoerInnhold.DokumenterInntekterUtenforAvkorting)
+
             includePhrase(AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon)
-            includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmCovidInntekterInnledning)
 
-            includePhrase(AfpEtteroppgjoerInnhold.CovidDokumentasjonskravFeriepenger)
-
-            includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(pesysData.oppgjoersAar))
-            includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pensjonsgivendeInntekt = pesysData.pgi, oppgjoersAar = pesysData.oppgjoersAar))
+
+            includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, oppgjoersAar = pesysData.oppgjoersAar))
 
             includePhrase(
                 AfpEtteroppgjoerInnhold.InntektFoerUttakInntektEtterOpphoerFordelingPerPeriode(
@@ -174,31 +164,19 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
                     uttaksdato = pesysData.uttaksdato,
                     opphorsdato = pesysData.opphorsdato,
                     oppgjoersAar = pesysData.oppgjoersAar,
-                    inntektFoerUttak = pesysData.ifu,
-                    inntektEtterOpphoer = pesysData.ieo,
-                    inntektIAfpPerioden = pesysData.iiap,
+                    inntektFoerUttak = pesysData.inntektFoerUttak,
+                    inntektEtterOpphoer = pesysData.inntektEtterOpphoer,
+                    inntektIAfpPerioden = pesysData.inntektIAfpPerioden,
                 ),
             )
 
             paragraph {
                 text(
                     bokmal {
-                        +"Ved beregningen av pensjonen din la vi til grunn at du ville ha en forventet " +
-                            "arbeidsinntekt på " + pesysData.fpiberegnet.format() + ". Etter våre nye beregninger " +
-                            "har du hatt en arbeidsinntekt i den perioden du har mottatt AFP som er " +
-                            "lavere enn den arbeidsinntekten som ble lagt til grunn ved utbetalingen av " +
-                            "pensjon. Denne forskjellen er større enn toleransebeløpet som i " +
-                            pesysData.oppgjoersAar.format() + " var på 15 000 kroner. Pensjonen din er derfor " +
-                            "beregnet på ny for perioden."
+                        +"Ved beregningen av pensjonen din la vi til grunn at du ville ha en forventet arbeidsinntekt på " + pesysData.forventetPensjonsgivendeInntektBeregnet.format() + ". Etter våre nye beregninger har du hatt en arbeidsinntekt i den perioden du har mottatt AFP som er lavere enn den arbeidsinntekten som ble lagt til grunn ved utbetalingen av pensjon. Denne forskjellen er større enn toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var på " + pesysData.toleranseBeloep.format() + ". Pensjonen din er derfor beregnet på nytt for perioden."
                     },
                     nynorsk {
-                        +"Ved berekninga av pensjonen din la vi til grunn at du ville ha ei forventa " +
-                            "arbeidsinntekt på " + pesysData.fpiberegnet.format() + ". Etter dei nye berekningane " +
-                            "våre har du hatt ei arbeidsinntekt i den perioden du har fått AFP, som er " +
-                            "lågare enn den arbeidsinntekta som blei lagd til grunn ved utbetalinga av " +
-                            "pensjon. Denne forskjellen er større enn toleransebeløpet som i " +
-                            pesysData.oppgjoersAar.format() + " var på 15 000 kroner. Pensjonen din er derfor " +
-                            "berekna på nytt for perioden."
+                        +"Ved berekninga av pensjonen din la vi til grunn at du ville ha ei forventa arbeidsinntekt på " + pesysData.forventetPensjonsgivendeInntektBeregnet.format() + ". Etter dei nye berekningane våre har du hatt ei arbeidsinntekt i den perioden du har fått AFP som er lågare enn den arbeidsinntekta som blei lagd til grunn ved utbetalinga av pensjon. Denne forskjellen er større enn toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var på " + pesysData.toleranseBeloep.format() + ". Pensjonen din er derfor berekna på nytt for perioden."
                     },
                 )
             }
@@ -212,12 +190,12 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
                     uttaksdato = pesysData.uttaksdato,
                     opphorsdato = pesysData.opphorsdato,
                     oppgjoersAar = pesysData.oppgjoersAar,
-                    fullAfp = pesysData.fullafp,
-                    fradragBeregnetArbeidsInntekt = pesysData.fradragberegnetai,
-                    inntektIAfpPerioden = pesysData.iiap,
-                    tidligereArbeidsInntektBeregnet = pesysData.tpiberegnet,
-                    korrigertAfp = pesysData.korrigertafp,
-                    utbetaltAfp = pesysData.utbetaltafp,
+                    fullAfp = pesysData.fullAfp,
+                    fradragBeregnetArbeidsInntekt = pesysData.fradragBeregnetArbeidsInntekt,
+                    inntektIAfpPerioden = pesysData.inntektIAfpPerioden,
+                    tidligereArbeidsInntektBeregnet = pesysData.tidligereArbeidsInntektBeregnet,
+                    korrigertAfp = pesysData.korrigertAfp,
+                    utbetaltAfp = pesysData.utbetaltAfp,
                     forlitebetalt = pesysData.forlitebetalt,
                 ),
             )
@@ -225,36 +203,15 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
             paragraph {
                 text(
                     bokmal {
-                        +"Du vil få beløpet utbetalt etter at fristen for å sende ny dokumentasjon er " +
-                            "gått ut. Det vil bli trukket skatt av etterbetalingsbeløpet. Det må påregnes " +
-                            "noe saksbehandlingstid."
+                        +"Du vil få beløpet utbetalt etter at fristen for å sende ny dokumentasjon er gått ut. Det vil bli trukket skatt av etterbetalingsbeløpet. Det må påregnes noe saksbehandlingstid."
                     },
                     nynorsk {
-                        +"Du vil få beløpet utbetalt etter at fristen for å sende ny dokumentasjon er " +
-                            "gått ut. Det blir trekt skatt av etterbetalingsbeløpet. Du må rekne med noko " +
-                            "saksbehandlingstid."
+                        +"Du vil få beløpet utbetalt etter at fristen for å sende ny dokumentasjon er gått ut. Det blir trekt skatt av etterbetalingsbeløpet. Du må rekne med noko saksbehandlingstid."
                     },
                 )
             }
 
             includePhrase(AfpEtteroppgjoerInnhold.RefusjonskravForbehold)
-
-            paragraph {
-                text(
-                    bokmal {
-                        +"I vår pensjonsberegning er det ikke tatt hensyn til eventuelt ektefelletillegg " +
-                            "til forsørget ektefelle over 60 år. Dersom du har fått utbetalt " +
-                            "ektefelletillegg, kan nye inntektsopplysninger føre til endring av tillegget. " +
-                            "Du vil da få eget vedtak om dette."
-                    },
-                    nynorsk {
-                        +"I pensjonsberekninga vår er det ikkje teke omsyn til eventuelt ektefelletillegg " +
-                            "til forsørgd ektefelle over 60 år. Dersom du har fått utbetalt " +
-                            "ektefelletillegg, kan nye inntektsopplysningar føre til at tillegget blir " +
-                            "endra. Du vil då få eige vedtak om dette."
-                    },
-                )
-            }
 
             includePhrase(AfpEtteroppgjoerAvslutning.DinePlikter)
             includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageMedDokumentasjonsfrist)

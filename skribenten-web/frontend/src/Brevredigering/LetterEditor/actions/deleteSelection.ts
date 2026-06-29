@@ -161,7 +161,7 @@ function shouldMergeAfterDeletetion(indexAfterDeletion: Focus, { start, end }: S
 }
 
 function deleteInTextContentFromOffset(
-  parent: { content: Draft<Content[]>; deletedContent: Draft<number[]>; id: number | null },
+  parent: { content: Draft<Content[]>; deletedContent: Draft<number[]>; id?: number | null },
   content: Draft<TextContent>,
   contentIndex: number,
   offset: number,
@@ -185,7 +185,7 @@ function deleteInTextContentFromOffset(
 }
 
 function deleteInTextContentToOffset(
-  parent: { content: Draft<Content[]>; deletedContent: Draft<number[]>; id: number | null },
+  parent: { content: Draft<Content[]>; deletedContent: Draft<number[]>; id?: number | null },
   content: Draft<TextContent>,
   contentIndex: number,
   offset: number,
@@ -210,7 +210,7 @@ function deleteInTextContentToOffset(
 }
 
 function deleteInItemList(
-  parent: { content: Draft<Content[]>; deletedContent: Draft<number[]>; id: number | null },
+  parent: { content: Draft<Content[]>; deletedContent: Draft<number[]>; id?: number | null },
   itemList: Draft<ItemList>,
   start: ItemContentIndex & { cursorPosition: number },
   end?: ItemContentIndex & { cursorPosition: number },
@@ -276,7 +276,7 @@ function deleteInItemList(
 }
 
 function deleteInTable(
-  parent: { content: Draft<Content[]>; deletedContent: Draft<number[]>; id: number | null },
+  parent: { content: Draft<Content[]>; deletedContent: Draft<number[]>; id?: number | null },
   table: Draft<Table>,
   start: TableCellIndex & { cursorPosition: number },
   end?: TableCellIndex & { cursorPosition: number },
@@ -380,7 +380,7 @@ function makeSureBlockIsValid(block: Draft<AnyBlock>) {
 }
 
 function deleteInContent<T extends ItemList | Table>(
-  parent: { content: Draft<Content[]>; deletedContent: Draft<number[]>; id: number | null },
+  parent: { content: Draft<Content[]>; deletedContent: Draft<number[]>; id?: number | null },
   content: Draft<ItemList | Table>,
   start: ContentIndex<T> & { cursorPosition: number },
   end?: ContentIndex<T> & { cursorPosition: number },
@@ -396,7 +396,7 @@ function deleteInContent<T extends ItemList | Table>(
 }
 
 function deleteInContentToOffset(
-  parent: { content: Draft<Content[]>; deletedContent: Draft<number[]>; id: number | null },
+  parent: { content: Draft<Content[]>; deletedContent: Draft<number[]>; id?: number | null },
   content: Draft<Content>,
   end: SelectionIndex["end"],
 ): boolean {
@@ -417,7 +417,7 @@ function deleteInContentToOffset(
 }
 
 function removeInTextContentParent(
-  parent: { content: Draft<Content[]>; deletedContent: Draft<number[]>; id: number | null },
+  parent: { content: Draft<Content[]>; deletedContent: Draft<number[]>; id?: number | null },
   start: { contentIndex: number; cursorPosition: number },
   end?: { contentIndex: number; cursorPosition: number },
 ) {

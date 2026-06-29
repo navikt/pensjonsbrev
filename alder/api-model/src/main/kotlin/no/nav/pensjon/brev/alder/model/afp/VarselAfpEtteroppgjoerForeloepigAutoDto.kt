@@ -35,18 +35,19 @@ data class VarselAfpEtteroppgjoerForeloepigAutoDto(
     val tidligereArbeidsInntektBeregnet: Kroner,
     val utbetaltAfp: Kroner,
     val periode: Periode,
+    val toleranseBeloep: Kroner,
 ) : AutobrevData {
 
     /**
      * Periodevariant som styrer både tidsrommet i den foreløpige beregningen
      * («du kan ha fått … for mye») og fordelingen av inntekten før/etter uttak
      * og opphør av AFP. Exstream uttrykte dette som fire overlappende
-     * `showIf`-blokker over rådata for uttaksdato/opphorsdato mot 01.01 og 31.12
+     * `showIf`-blokker over rådata for uttaksdato/opphorsdato mot 01.02 og 31.12
      * i oppgjørsåret — her er logikken løftet ut av malen, identisk med
      * [VedtakAfpEtteroppgjoerTilbakekrevingAutoDto.Periode].
      */
     enum class Periode {
-        // Uttaksdato < 01.01 AND (Opphorsdato >= 31.12 OR tom): AFP løp hele året.
+        // Uttaksdato < 01.02 AND (Opphorsdato >= 31.12 OR tom): AFP løp hele året.
         HEL_AFP_HELE_AARET,
 
         // Uttak i året, ingen opphør: inntekten fordeles før uttak og i AFP-perioden.

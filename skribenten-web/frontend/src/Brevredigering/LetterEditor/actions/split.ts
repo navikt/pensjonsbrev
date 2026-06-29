@@ -1,13 +1,6 @@
 import { type Draft } from "immer";
 
-import {
-  type AnyBlock,
-  type Content,
-  ITEM_LIST,
-  type ItemList,
-  type TextContent,
-  TITLE_INDEX,
-} from "~/types/brevbakerTypes";
+import { type AnyBlock, type Content, type ItemList, type TextContent, TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
 import { type ItemContentIndex, type LetterEditorState, type LiteralIndex } from "../model/state";
@@ -156,7 +149,7 @@ function splitItemList(
 }
 
 function splitContentArrayAtLiteral<T extends Content | TextContent>(
-  from: { content: Draft<T[]>; deletedContent: Draft<number[]>; id: number | null },
+  from: { content: Draft<T[]>; deletedContent: Draft<number[]>; id?: number | null },
   atIndex: number,
   offset: number,
 ): Draft<T[]> {
@@ -183,7 +176,7 @@ function splitContentArrayAtLiteral<T extends Content | TextContent>(
     // prevent dangling empty content at end of from.content after itemList.
     const lastContent = from.content.at(-1);
     const secondToLastContent = from.content.at(-2);
-    if (isLiteral(lastContent) && isEmptyContent(lastContent) && secondToLastContent?.type === ITEM_LIST) {
+    if (isLiteral(lastContent) && isEmptyContent(lastContent) && secondToLastContent?.type === "ITEM_LIST") {
       from.content.pop();
     }
 

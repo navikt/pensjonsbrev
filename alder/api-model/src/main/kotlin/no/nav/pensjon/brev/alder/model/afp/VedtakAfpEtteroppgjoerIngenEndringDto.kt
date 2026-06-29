@@ -4,13 +4,16 @@ import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import java.time.LocalDate
 
 /**
  * Redigerbart vedtak — AFP etteroppgjør (offentlig sektor / SPK), ingen endring
- * (andre avvik enn toleransebeløp).
+ * innenfor toleransebeløpet.
  *
- * Konvertert fra Exstream-malen `PE_AF_04_110`. Auto-varianten av samme situasjon
- * er [VedtakAfpEtteroppgjoerIngenEndringAutoDto] (`PE_AF_04_102`).
+ * Konvertert fra Exstream-malen `PE_AF_04_108`. Auto-varianten av samme situasjon
+ * er [VedtakAfpEtteroppgjoerIngenEndringAuto] (`PE_AF_04_100`). Begge brev
+ * deler innholdsfraser i [no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold].
  */
 data class VedtakAfpEtteroppgjoerIngenEndringDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
@@ -18,22 +21,28 @@ data class VedtakAfpEtteroppgjoerIngenEndringDto(
 ) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakAfpEtteroppgjoerIngenEndringDto.PesysData> {
 
     data class PesysData(
-        // PE_Vedtaksdata_Oppgjorsar
         val oppgjoersAar: BrevbakerType.Year,
-        // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_PGI
-        val pgi: BrevbakerType.Kroner,
-        val scenario: Scenario,
+        val pensjonsgivendeInntekt: Kroner,
+        val inntektFoerUttak: Kroner,
+        val inntektEtterOpphoer: Kroner,
+        val inntektIAfpPerioden: Kroner,
+        val forventetPensjonsgivendeInntektBeregnet: Kroner,
+        val avvik: Kroner,
+        val uttaksdato: LocalDate,
+        val opphorsdato: LocalDate?,
+        val medlemAvApotekerordningen: Boolean,
+        val toleranseBeloep: Kroner,
+        val periode: Periode,
     ) : FagsystemBrevdata
 
     /**
-     * Scenariovariant av forklaringen som styrer hvilken showIf-blokk som vises i den
-     * redigerbare malen. Brevet utleder scenarioet fra Eksstream-feltene før det
-     * sendes til brevbaker.
+     * Periodevariant av forklaringen. Samme inndeling som
+     * [VedtakAfpEtteroppgjoerEtterbetalingAutoDto.Periode] / [VedtakAfpEtteroppgjoerIngenEndringAutoDto.Periode].
      */
-    enum class Scenario {
-        HEL_AFP_HELE_AARET_INNTEKT_FOER_UTTAK,
-        HEL_AFP_HELE_AARET_INGEN_INNTEKT,
-        IKKE_AFP_FULL_INNTEKT,
-        HEL_AFP_DELER_AV_AARET,
+    enum class Periode {
+        HEL_AFP_HELE_AARET,
+        UTTAK_I_AARET,
+        OPPHOER_I_AARET,
+        UTTAK_OG_OPPHOER_I_AARET,
     }
 }

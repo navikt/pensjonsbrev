@@ -2,9 +2,7 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 import com.typesafe.config.Config
-import io.ktor.client.*
 import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -21,6 +19,7 @@ import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerRespon
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto.FailureType.GENERISK
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto
+import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import org.slf4j.LoggerFactory
 
 interface SamhandlerService {
@@ -34,7 +33,7 @@ class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthServ
     private val samhandlerProxyUrl = configSamhandlerProxy.getString("url")
     private val samhandlerProxyScope = configSamhandlerProxy.getString("scope")
 
-    private val samhandlerProxyClient = HttpClient(CIO) {
+    private val samhandlerProxyClient = lagHttpClient {
         defaultRequest {
             url(samhandlerProxyUrl)
         }

@@ -11,24 +11,21 @@ import com.typesafe.config.Config
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
-import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.Table
 import org.jetbrains.exposed.v1.core.columnTransformer
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.jdbc.Database
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.sql.DataSource
+
+val databaseReady: AtomicBoolean = AtomicBoolean(false)
 
 internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
-    registerModule(EditLetterJacksonModule)
     registerModule(LetterMarkupJacksonModule)
-    registerModule(SakstypeModule)
-    registerModule(BrevkodeJacksonModule)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 }
@@ -74,6 +71,7 @@ fun initDatabase(jdbcUrl: String, username: String, password: String, maxPoolSiz
     })
         .also { konfigurerFlyway(it) }
         .also { Database.connect(it) }
+        .also { databaseReady.set(true) }
 
 private fun konfigurerFlyway(dataSource: DataSource) = Flyway
     .configure()

@@ -65,7 +65,7 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
       const headerLiteral = colSpec.headerContent.text[literalIndex.cellContentIndex];
 
       if (isLiteral(headerLiteral)) {
-        headerLiteral.editedFontType = headerLiteral.editedFontType === fontType ? null : fontType;
+        headerLiteral.editedFontType = headerLiteral.editedFontType === fontType ? undefined : fontType;
       }
       draft.focus = { ...draft.focus, cursorPosition: 0 };
       draft.saveStatus = "DIRTY";
@@ -78,7 +78,7 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
     const textContent = cell.text[literalIndex.cellContentIndex];
 
     if (isLiteral(textContent)) {
-      textContent.editedFontType = textContent.editedFontType === fontType ? null : fontType;
+      textContent.editedFontType = textContent.editedFontType === fontType ? undefined : fontType;
     }
 
     draft.focus = { ...draft.focus, cursorPosition: 0 };

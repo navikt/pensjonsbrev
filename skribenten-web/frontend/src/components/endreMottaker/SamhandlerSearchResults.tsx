@@ -5,7 +5,7 @@ import { useRef, useState } from "react";
 
 import { hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import { type Adresse, type Samhandler } from "~/types/apiTypes";
+import { type Samhandler, type SamhandlerPostadresse } from "~/types/apiTypes";
 import { type Nullable } from "~/types/Nullable";
 import { humanizeName } from "~/utils/stringUtils";
 import { trackEvent } from "~/utils/umami";
@@ -182,14 +182,14 @@ function SamhandlerAdresseDetaljer({ idTSSEkstern }: { idTSSEkstern: string }) {
   return <AdresseDetaljer adresse={data} />;
 }
 
-function AdresseDetaljer({ adresse }: { adresse: Adresse }) {
+function AdresseDetaljer({ adresse }: { adresse: SamhandlerPostadresse }) {
   const rows: { label: string; value: Nullable<string> }[] = [
     { label: "Navn", value: adresse.navn },
-    { label: "Adresselinje 1", value: adresse.linje1 },
-    { label: "Adresselinje 2", value: adresse.linje2 },
-    { label: "Postnummer", value: adresse.postnr },
-    { label: "Poststed", value: adresse.poststed },
-    { label: "Land", value: adresse.land },
+    { label: "Adresselinje 1", value: adresse.linje1 ?? null },
+    { label: "Adresselinje 2", value: adresse.linje2 ?? null },
+    { label: "Postnummer", value: adresse.postnr ?? null },
+    { label: "Poststed", value: adresse.poststed ?? null },
+    { label: "Land", value: adresse.land ?? null },
   ];
 
   return (

@@ -5,9 +5,8 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto.SaksbehandlerValg.FolketrygdlovenAlternativ.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDtoSelectors.SaksbehandlerValgSelectors.folketrygdlovenAlternativ
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDtoSelectors.SaksbehandlerValgSelectors.opphoerMedTilbakekreving
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.opphoerGjenlevendepensjonDto.saksbehandlerValg.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.opphoerGjenlevendepensjonDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.generated.TBU2212_Generated

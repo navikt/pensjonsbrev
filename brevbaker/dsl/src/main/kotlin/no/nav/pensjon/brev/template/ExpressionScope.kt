@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.template.expression.SelectorUsage
+import no.nav.pensjon.brev.template.validation.MissingScopeForNextItemEvaluationException
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 
 sealed interface ExpressionScope<Argument : Any> {

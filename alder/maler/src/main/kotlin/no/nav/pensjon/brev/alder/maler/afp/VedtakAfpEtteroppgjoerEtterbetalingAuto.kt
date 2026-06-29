@@ -6,23 +6,7 @@ import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto.Periode
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.forlitebetalt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.forventetPensjonsgivendeInntektBeregnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.fradragBeregnetArbeidsInntekt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.fullAfp
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.inntektEtterOpphoer
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.inntektFoerUttak
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.inntektIAfpPerioden
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.korrigertAfp
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.medlemAvApotekerordningen
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.oppgjoersAar
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.opphorsdato
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.pensjonsgivendeInntekt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.periode
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.tidligereArbeidsInntektBeregnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.toleranseBeloep
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.utbetaltAfp
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.uttaksdato
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -185,22 +169,10 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
             paragraph {
                 text(
                     bokmal {
-                        +"Ved beregningen av pensjonen din la vi til grunn at du ville ha en forventet " +
-                                "arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Etter våre nye beregninger " +
-                                "har du hatt en arbeidsinntekt i den perioden du har mottatt AFP som er " +
-                                "lavere enn den arbeidsinntekten som ble lagt til grunn ved utbetalingen av " +
-                                "pensjon. Denne forskjellen er større enn toleransebeløpet som i " +
-                                oppgjoersAar.format() + " var på " + toleranseBeloep.format() + ". Pensjonen din er derfor " +
-                                "beregnet på nytt for perioden."
+                        +"Ved beregningen av pensjonen din la vi til grunn at du ville ha en forventet arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Etter våre nye beregninger har du hatt en arbeidsinntekt i den perioden du har mottatt AFP som er lavere enn den arbeidsinntekten som ble lagt til grunn ved utbetalingen av pensjon. Denne forskjellen er større enn toleransebeløpet som i " + oppgjoersAar.format() + " var på " + toleranseBeloep.format() + ". Pensjonen din er derfor beregnet på nytt for perioden."
                     },
                     nynorsk {
-                        +"Ved berekninga av pensjonen din la vi til grunn at du ville ha ei forventa " +
-                                "arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Etter dei nye berekningane " +
-                                "våre har du hatt ei arbeidsinntekt i den perioden du har fått AFP, som er " +
-                                "lågare enn den arbeidsinntekta som blei lagd til grunn ved utbetalinga av " +
-                                "pensjon. Denne forskjellen er større enn toleransebeløpet som i " +
-                                oppgjoersAar.format() + " var på " + toleranseBeloep.format() + ". Pensjonen din er derfor " +
-                                "berekna på nytt for perioden."
+                        +"Ved berekninga av pensjonen din la vi til grunn at du ville ha ei forventa arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Etter dei nye berekningane våre har du hatt ei arbeidsinntekt i den perioden du har fått AFP som er lågare enn den arbeidsinntekta som blei lagd til grunn ved utbetalinga av pensjon. Denne forskjellen er større enn toleransebeløpet som i " + oppgjoersAar.format() + " var på " + toleranseBeloep.format() + ". Pensjonen din er derfor berekna på nytt for perioden."
                     },
                 )
             }
@@ -226,7 +198,6 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                 ),
             )
 
-            // Etterbetalingsfrist + skatt + saksbehandlingstid (kun i fase 1).
             paragraph {
                 text(
                     bokmal {
@@ -242,7 +213,6 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                 )
             }
 
-            // Forbehold om refusjonskrav — delt med PE_AF_04_105.
             includePhrase(AfpEtteroppgjoerInnhold.RefusjonskravForbehold)
 
             // Avslutning — gjenbrukes fra fellesfrasene.

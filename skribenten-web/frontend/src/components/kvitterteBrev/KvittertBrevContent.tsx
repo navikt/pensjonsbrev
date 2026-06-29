@@ -1,10 +1,11 @@
 import { BodyShort, Button, ExpansionCard, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 
 import { hentPdfForJournalpost } from "~/api/sak-api-endpoints";
 import { useSakGjelderNavnFormatert } from "~/hooks/useSakGjelderNavn";
 import Oppsummeringspar from "~/routes/saksnummer_/$saksId/kvittering/-components/Oppsummeringspar";
-import { type BrevInfo, Distribusjonstype } from "~/types/brev";
+import { type BestillBrevError, type BrevInfo, Distribusjonstype } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
 
 import { ApiError } from "../ApiError";
@@ -17,10 +18,17 @@ const KvittertBrevContent = (props: {
   onRetry: () => void;
   journalpostId: Nullable<number>;
   brev: BrevInfo;
+  sendtBrevError: Nullable<AxiosError | BestillBrevError>;
 }) => {
   switch (props.apiStatus) {
     case "error":
-      return <KvittertBrevContentError isPending={props.isPending} onPrøvIgjenClick={props.onRetry} />;
+      return (
+        <KvittertBrevContentError
+          error={props.sendtBrevError}
+          isPending={props.isPending}
+          onPrøvIgjenClick={props.onRetry}
+        />
+      );
 
     case "success":
       return <KvittertBrevContentSuccess brev={props.brev} journalpostId={props.journalpostId} saksId={props.saksId} />;
@@ -71,12 +79,20 @@ const KvittertBrevContentSuccess = (props: { saksId: string; brev: BrevInfo; jou
   );
 };
 
-const KvittertBrevContentError = (props: { onPrøvIgjenClick: () => void; isPending: boolean }) => {
+const KvittertBrevContentError = (props: {
+  onPrøvIgjenClick: () => void;
+  isPending: boolean;
+  error: Nullable<AxiosError | BestillBrevError>;
+}) => {
   return (
     <ExpansionCard.Content>
       <VStack align="start" gap="space-12">
         <VStack gap="space-20">
-          <BodyShort size="small">Skribenten klarte ikke å sende brevet.</BodyShort>
+          {props.error instanceof AxiosError ? (
+            <ApiError error={props.error} title="Kunne ikke sende brev" />
+          ) : (
+            <BodyShort size="small">Skribenten klarte ikke å sende brevet.</BodyShort>
+          )}
           <BodyShort size="small">Brevet ligger lagret i brevbehandler til brevet er sendt.</BodyShort>
         </VStack>
 

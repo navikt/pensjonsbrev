@@ -1,5 +1,5 @@
 import { type Focus, type LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
-import { FontType, NEW_LINE, type NewLine, VARIABLE, type VariableValue } from "~/types/brevbakerTypes";
+import { FontType, type NewLine, type VariableValue } from "~/types/brevbakerTypes";
 
 import { isBlockContentIndex, isItemContentIndex } from "../actions/common";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "../InsertedTekstValgHighlight";
@@ -18,10 +18,10 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
   const isInserted = isTekstValgHighlighted(highlightedIds, content);
 
   switch (content.type) {
-    case NEW_LINE: {
+    case "NEW_LINE": {
       return <br data-literal-index={JSON.stringify(literalIndex)} />;
     }
-    case VARIABLE: {
+    case "VARIABLE": {
       return (
         /**
          * biome-ignore lint/a11y/useKeyWithClickEvents: Klikk trenger ikke en tilsvarende

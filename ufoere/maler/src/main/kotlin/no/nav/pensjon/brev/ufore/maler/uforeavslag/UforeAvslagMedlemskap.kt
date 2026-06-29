@@ -12,12 +12,9 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_MEDLEMSKAP
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDtoSelectors.SaksbehandlervalgSelectors.visSupplerendeStonadUforeFlykninger
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDtoSelectors.UforeAvslagPendataSelectors.vurdering
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDtoSelectors.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagSupplerendeStonadEnkelDto.saksbehandlervalg.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagSupplerendeStonadEnkelDto.uforeAvslagPendata.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagSupplerendeStonadEnkelDto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
@@ -109,7 +106,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
                         nynorsk { +redigerbarData(pesysData.vurdering) } )
                 }
             }
-            paragraph {
+            paragraph(uniqueness = "vurdering1") {
                 text(bokmal { + fritekst("Individuell vurdering") },
                     nynorsk { + fritekst("Individuell vurdering") })
             }
@@ -122,7 +119,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
                 )
             }
 
-            paragraph {
+            paragraph(uniqueness = "vurdering2") {
                 text(bokmal { + fritekst("Individuell vurdering") },
                     nynorsk { + fritekst("Individuell vurdering") })
             }

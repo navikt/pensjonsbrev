@@ -16,7 +16,6 @@ import {
   type ItemList,
   ListType,
   type LiteralValue,
-  PARAGRAPH,
   type ParagraphBlock,
   type VariableValue,
 } from "~/types/brevbakerTypes";
@@ -1785,7 +1784,7 @@ describe("LetterEditorActions.paste", () => {
           // Parent structure and number of items
           expect(result.redigertBrev.blocks).toHaveLength(1);
           expect(select<ParagraphBlock>(result, { blockIndex: 0 })).toMatchObject({
-            type: PARAGRAPH,
+            type: "PARAGRAPH",
             id: 1,
             content: [
               {

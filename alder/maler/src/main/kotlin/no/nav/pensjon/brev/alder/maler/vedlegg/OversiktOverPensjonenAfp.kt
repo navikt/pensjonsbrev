@@ -7,34 +7,22 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDto.Perio
 import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDto.PeriodeBeregning
 import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDto.SistePeriode
 import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDto.YtelsesKomponent
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.EndringsaarsakerSelectors.endringIFasteUtgifterInstitusjon
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.EndringsaarsakerSelectors.endringIOpptjeningsgrunnlag
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.EndringsaarsakerSelectors.endringIUttaksgrad
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeBeregningSelectors.afpTillegg
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeBeregningSelectors.brutto
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeBeregningSelectors.ektefelletillegg
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeBeregningSelectors.familietillegg
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeBeregningSelectors.fasteUtgifterInstitusjon
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeBeregningSelectors.grunnpensjon
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeBeregningSelectors.minstenivaatilleggIndividuelt
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeBeregningSelectors.netto
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeBeregningSelectors.saertillegg
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeBeregningSelectors.tilleggspensjon
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeSelectors.beregning as periodeBeregning
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeSelectors.endringsaarsaker as periodeEndringsaarsaker
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeSelectors.framtidigArligInntekt as periodeFramtidigArligInntekt
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeSelectors.grunnbeloep as periodeGrunnbeloep
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeSelectors.virkDatoFom as periodeVirkDatoFom
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.PeriodeSelectors.virkDatoTom as periodeVirkDatoTom
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.SistePeriodeSelectors.beregning as sisteBeregning
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.SistePeriodeSelectors.endringsaarsaker as sisteEndringsaarsaker
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.SistePeriodeSelectors.framtidigArligInntekt as sisteFramtidigArligInntekt
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.SistePeriodeSelectors.grunnbeloep as sisteGrunnbeloep
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.SistePeriodeSelectors.virkDatoFom as sisteVirkDatoFom
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.YtelsesKomponentSelectors.brutto as komponentBrutto
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.YtelsesKomponentSelectors.netto as komponentNetto
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.perioder
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDtoSelectors.sistePeriode
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.endringsaarsaker.*
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.periodeBeregning.*
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.periode.beregning as periodeBeregning
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.periode.endringsaarsaker as periodeEndringsaarsaker
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.periode.framtidigArligInntekt as periodeFramtidigArligInntekt
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.periode.grunnbeloep as periodeGrunnbeloep
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.periode.virkDatoFom as periodeVirkDatoFom
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.periode.virkDatoTom as periodeVirkDatoTom
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.sistePeriode.beregning as sisteBeregning
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.sistePeriode.endringsaarsaker as sisteEndringsaarsaker
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.sistePeriode.framtidigArligInntekt as sisteFramtidigArligInntekt
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.sistePeriode.grunnbeloep as sisteGrunnbeloep
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.sistePeriode.virkDatoFom as sisteVirkDatoFom
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.ytelsesKomponent.brutto as komponentBrutto
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.ytelsesKomponent.netto as komponentNetto
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpDto.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Expression

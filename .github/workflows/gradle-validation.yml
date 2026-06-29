@@ -5,6 +5,7 @@ on:
       - 'gradlew'
       - 'gradlew.bat'
       - 'gradle/wrapper/**'
+      - '.github/workflows/gradle-validation.yml'
 
 jobs:
   wrapper-validation:

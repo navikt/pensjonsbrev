@@ -13,17 +13,13 @@ import {
 } from "~/Brevredigering/LetterEditor/actions/common";
 import {
   type AnyBlock,
-  ITEM_LIST,
   type ItemList,
-  LITERAL,
   type LiteralValue,
-  NEW_LINE,
   type ParagraphBlock,
   TITLE_INDEX,
   type Title1Block,
   type Title2Block,
   type Title3Block,
-  VARIABLE,
 } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
@@ -62,10 +58,10 @@ export function mergeRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
   if ("itemIndex" in literalIndex) {
     mergeFromItemList(draft, literalIndex, target);
     draft.saveStatus = "DIRTY";
-  } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === ITEM_LIST) {
+  } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === "ITEM_LIST") {
     mergeIntoItemList(draft, previousContentSameBlock, literalIndex);
     draft.saveStatus = "DIRTY";
-  } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === LITERAL) {
+  } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === "LITERAL") {
     const content = block?.content[literalIndex.contentIndex];
     const cursorPosition = text(previousContentSameBlock).length;
     if (isEmptyContent(content)) {
@@ -90,8 +86,8 @@ export function mergeRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
     mergeBlocks(draft, literalIndex, target);
     draft.saveStatus = "DIRTY";
   } else if (
-    (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === NEW_LINE) ||
-    (target === MergeTarget.NEXT && nextContentSameBlock?.type === NEW_LINE)
+    (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === "NEW_LINE") ||
+    (target === MergeTarget.NEXT && nextContentSameBlock?.type === "NEW_LINE")
   ) {
     const nextOrPrevMod = target === MergeTarget.NEXT ? 1 : -1;
     // Remove NEW_LINE
@@ -163,7 +159,7 @@ function mergeBlocks(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex
       mergeAdjacentListBlocks(draft, firstId - 1);
     } else if (isEmptyBlock(second)) {
       removeElements(secondId, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks, id: null });
-      if (first.content.at(-1)?.type === VARIABLE) {
+      if (first.content.at(-1)?.type === "VARIABLE") {
         first.content.push(newLiteral());
       }
       draft.focus = focusEndOfBlock(firstId, first);
@@ -413,7 +409,7 @@ function mergeIntoItemList(
   const lastContentOfLastItem = lastItem.content.at(-1);
 
   draft.focus =
-    lastContentOfLastItem?.type === LITERAL
+    lastContentOfLastItem?.type === "LITERAL"
       ? {
           blockIndex: literalIndex.blockIndex,
           contentIndex: literalIndex.contentIndex - 1,

@@ -2,10 +2,8 @@ package no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen
 
 import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
-import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.brukersSivilstand
-import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.borSammenMedBruker
-import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.harInntektOver2G
-import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.mottarPensjon
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderDto.alderspensjonPerManed.*
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderDto.ePSvedVirk.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
