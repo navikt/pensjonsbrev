@@ -149,24 +149,13 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
             includeAttachment(
                 beregningAvOmstillingsstoenad(tidligereFamiliepleier = true),
                 data.beregning,
-                data.tidligereFamiliepleier.and(data.erInnvilgelsesaar),
+                data.tidligereFamiliepleier,
             )
             includeAttachment(
                 beregningAvOmstillingsstoenad(tidligereFamiliepleier = false),
                 data.beregning,
-                data.tidligereFamiliepleier.not().and(data.erInnvilgelsesaar.not()),
+                data.tidligereFamiliepleier.not(),
             )
-            includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true),
-                data.beregning,
-                data.tidligereFamiliepleier.and(data.erInnvilgelsesaar.not()),
-            )
-            includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false),
-                data.beregning,
-                data.tidligereFamiliepleier.not().and(data.erInnvilgelsesaar),
-            )
-
 
             includeAttachment(informasjonOmOmstillingsstoenad(), data.informasjonOmOmstillingsstoenadData)
 
