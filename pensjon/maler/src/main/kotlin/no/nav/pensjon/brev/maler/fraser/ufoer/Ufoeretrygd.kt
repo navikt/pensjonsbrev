@@ -475,13 +475,16 @@ object Ufoeretrygd {
         RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
-            paragraph {
-                showIf(periodisertInntekt.isNull() or periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.INGEN)) {
+            showIf(periodisertInntekt.isNull() or periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.INGEN)) {
+                paragraph {
+
                     text(
                         bokmal { +fritekst("Sett inn aktuelt tekstvalg eller din begrunnelse") },
                         nynorsk { +fritekst("Sett inn aktuelt tekstvalg eller din begrunnelse") }
                     )
-                }.orShowIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.INNTEKT_HELE_ARET)) {
+                }
+            }.orShowIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.INNTEKT_HELE_ARET)) {
+                paragraph {
                     text(
                         bokmal { +"Inntekten din består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") + ". " },
                         nynorsk { +"Inntekta di består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") + ". " }
@@ -498,7 +501,9 @@ object Ufoeretrygd {
                             nynorsk { +" Barnetillegget for barn som ikkje bur med begge foreldre er kun berekna utfra inntekta di. " },
                         )
                     }
-                }.orShowIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT)) {
+                }
+            }.orShowIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT)) {
+                paragraph {
                     text(
                         bokmal { +"Inntekten din består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") + " for de " + fritekst("antall mnd") + " gjenstående månedene av året." },
                         nynorsk { +"Inntekta di består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") + " for dei " + fritekst("antall mnd") + " gjenverande månadene av året." }
@@ -515,7 +520,9 @@ object Ufoeretrygd {
                             nynorsk { +"Barnetillegget for barn som ikkje bur med begge foreldre er kun berekna utfra inntekta di." },
                         )
                     }
-                }.orShowIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.BARN_FYLLER_18)) {
+                }
+            }.orShowIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.BARN_FYLLER_18)) {
+                paragraph {
                     text(
                         bokmal { +"Inntekten din består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") + " for " + fritekst("antall mnd") + " måneder, fordi barnet fyller 18 år i " + fritekst("måned") + ". " },
                         nynorsk { +"Inntekta di består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") + " for " + fritekst("antall mnd") + " månader, fordi barnet fyller 18 år i " + fritekst("månad") + ". " }
