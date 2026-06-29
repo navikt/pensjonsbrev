@@ -16,8 +16,8 @@ import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerRedigerbartUtfallDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerRedigerbartUtfallDataSelectors.feilutbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.selectors.omstillingsstoenadOpphoerRedigerbartUtfallDTO.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.selectors.omstillingsstoenadOpphoerRedigerbartUtfallData.*
 
 
 data class OmstillingsstoenadOpphoerRedigerbartUtfallData(

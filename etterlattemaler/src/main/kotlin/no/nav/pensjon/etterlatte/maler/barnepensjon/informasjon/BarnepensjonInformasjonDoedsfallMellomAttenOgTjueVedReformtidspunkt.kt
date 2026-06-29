@@ -13,8 +13,8 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDataSelectors.borIutland
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.selectors.barnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.selectors.barnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktData.*
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.BARNEPENSJON_URL

@@ -3,9 +3,7 @@ package no.nav.pensjon.brev.alder.maler.vedlegg
 import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonFlerePerioderInnledning
 import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap20
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.beregnetPensjonPerManedGjeldende
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.beregnetPensjonperManed
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.kravVirkFom
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.maanedligPensjonFoerSkattAP2025Dto.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment

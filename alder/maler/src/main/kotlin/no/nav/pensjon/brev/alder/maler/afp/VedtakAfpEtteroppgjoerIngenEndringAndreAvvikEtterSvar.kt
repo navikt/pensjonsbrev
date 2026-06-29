@@ -8,12 +8,8 @@ import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto.Scenario
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDtoSelectors.PesysDataSelectors.inntektFoerUttak
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDtoSelectors.PesysDataSelectors.medlemAvApotekerordningen
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDtoSelectors.PesysDataSelectors.oppgjoersAar
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDtoSelectors.PesysDataSelectors.scenario
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDtoSelectors.PesysDataSelectors.toleranseBeloep
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDtoSelectors.pesysData
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto.pesysData.*
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -89,10 +85,10 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvar : RedigerbarTemplat
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har lagt fram nye opplysninger om inntekten din. Ifølge nye opplysninger i saken er " + pesysData.inntektFoerUttak.format() + " opptjent i perioden før du tok ut AFP. Den faktiske arbeidsinntekten du har hatt sammen med pensjonen overstiger ikke toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + "."
+                            +"Du har lagt fram nye opplysninger om inntekten din. Ifølge nye opplysninger i saken er " + pesysData.inntektFoerUttak.format() + " opptjent i perioden før du tok ut AFP. Den faktiske arbeidsinntekten du har hatt sammen med pensjonen er ikke høyere enn toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + "."
                         },
                         nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntekta di. Ifølgje nye opplysningar i saka er " + pesysData.inntektFoerUttak.format() + " opptente i perioden før du tok ut AFP. Den faktiske arbeidsinntekta du har hatt saman med pensjonen, overstig ikkje toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + "."
+                            +"Du har lagt fram nye opplysningar om inntekta di. Ifølgje nye opplysningar i saka er " + pesysData.inntektFoerUttak.format() + " opptente i perioden før du tok ut AFP. Den faktiske arbeidsinntekta du har hatt saman med pensjonen er ikkje høgare enn toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + "."
                         },
                     )
                 }
@@ -102,10 +98,10 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvar : RedigerbarTemplat
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har lagt fram nye opplysninger om inntekten din. Ifølge nye opplysninger er " + pesysData.inntektFoerUttak.format() + " opptjent i perioden før du tok ut AFP. Den faktiske arbeidsinntekten du har hatt sammen med pensjonen, svarer til det som tidligere har vært lagt til grunn ved utbetalingen av AFP."
+                            +"Du har lagt fram nye opplysninger om inntekten din. Ifølge nye opplysninger er " + pesysData.inntektFoerUttak.format() + " opptjent i perioden før du tok ut AFP. Den faktiske arbeidsinntekten du har hatt sammen med pensjonen er den samme som tidligere har vært lagt til grunn ved utbetalingen av AFP."
                         },
                         nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntekta di. Ifølgje nye opplysningar er " + pesysData.inntektFoerUttak.format() + " opptente i perioden før du tok ut AFP. Den faktiske arbeidsinntekta du har hatt saman med pensjonen, svarer til det som tidlegare har vore lagt til grunn ved utbetalinga av AFP."
+                            +"Du har lagt fram nye opplysningar om inntekta di. Ifølgje nye opplysningar er " + pesysData.inntektFoerUttak.format() + " opptente i perioden før du tok ut AFP. Den faktiske arbeidsinntekta du har hatt saman med pensjonen er den same som tidlegare har vore lagt til grunn ved utbetalinga av AFP."
                         },
                     )
                 }

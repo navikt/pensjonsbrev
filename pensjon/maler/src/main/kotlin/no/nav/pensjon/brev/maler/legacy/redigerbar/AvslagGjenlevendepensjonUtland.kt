@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonUtlandDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonUtlandDtoSelectors.PesysDataSelectors.kravMottattDato
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonUtlandDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagGjenlevendepensjonUtlandDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagGjenlevendepensjonUtlandDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.generated.TBU2212_Generated

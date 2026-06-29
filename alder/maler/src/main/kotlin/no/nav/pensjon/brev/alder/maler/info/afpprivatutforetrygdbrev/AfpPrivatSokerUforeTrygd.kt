@@ -6,10 +6,9 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.forbeholdTilBeregningeneAfpTIlUfo
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDto
-import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.PesysDataSelectors.vedleggDto
-import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.SaksBehandlerValgSelectors.harSoktUforeTrygd
-import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.pesysData
-import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.selectors.afpPrivatSokerUforeTrygdDto.pesysData.*
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.selectors.afpPrivatSokerUforeTrygdDto.saksBehandlerValg.*
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.selectors.afpPrivatSokerUforeTrygdDto.*
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
