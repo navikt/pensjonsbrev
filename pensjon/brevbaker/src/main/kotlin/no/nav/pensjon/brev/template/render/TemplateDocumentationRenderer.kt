@@ -287,8 +287,6 @@ object TemplateDocumentationRenderer {
             is UnaryOperation.RedigerbarData -> Operation("redigerbarData", Documentation.Notation.FUNCTION)
 
             is UnaryOperation.Fritekst -> Operation("fritekst", Documentation.Notation.FUNCTION)
-
-            is UnaryOperation.Saksbehandlervalg<*> -> Operation("saksbehandlervalg", Documentation.Notation.FUNCTION)
         }
 
     private fun renderOperation(operation: BinaryOperation<*, *, *>): Operation =

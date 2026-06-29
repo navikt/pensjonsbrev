@@ -100,20 +100,6 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.Select"), StableHash.of(selector)).stableHashCode()
     }
 
-    class Saksbehandlervalg<In>(val name: String, val type: String) : UnaryOperation<SaksbehandlervalgVerdi, In>() {
-        override fun apply(input: SaksbehandlervalgVerdi): In {
-            val templateModelSelector = object : TemplateModelSelector<SaksbehandlervalgVerdi, In> {
-                override val className = SaksbehandlervalgVerdi::class.qualifiedName!!
-                override val propertyName = name
-                override val propertyType = type
-                override val selector: SaksbehandlervalgVerdi.() -> In = { this.unwrap() as In }
-            }
-            return Select(templateModelSelector).apply(input)
-        }
-
-        override fun stableHashCode() = StableHash.of(StableHash.of("UnaryOperation.Saksbehandlervalg"), StableHash.of(name), StableHash.of(type)).stableHashCode()
-    }
-
     object SizeOf : UnaryOperation<Collection<*>, Int>(), StableHash by StableHash.of("UnaryOperation.SizeOf") {
         override fun apply(input: Collection<*>): Int = input.size
     }
