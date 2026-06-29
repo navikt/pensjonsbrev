@@ -28,6 +28,7 @@ data class InnvilgelseUfoeretrygdMellombehandlingDto(
 
     data class PesysData(
         val pe: PEgruppe10,
+        val kravFremsattDato: LocalDate?,
         val oifuVedVirkningstidspunkt: Kroner?,
         val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
         val dineRettigheterOgPlikterUfore: DineRettigheterOgPlikterUforeDto,
