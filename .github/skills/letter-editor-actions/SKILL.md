@@ -52,7 +52,7 @@ Every element implements `Identifiable = { id: number | null; parentId: number |
 
 These `deleted*`-arrays hold **integer IDs only** (no point in adding IDs that are `null`). The backend uses these IDs to suppress re-introduction of deleted template elements after re-merge.
 
-- **Removing**: use `removeElements(index, count, parent)` — it handles all guards. If manual, push `element.id` only when `element.id !== null` and `element.parentId === parent.id` and the id is not already tracked.
+- **Removing**: use `removeElements(index, count, parent)` — it handles all guards. If manual, push `element.id` only when `typeof element.id === "number"` and `element.parentId === parent.id` and the id is not already tracked.
 - **Re-adding**: use `addElements(elements, at, content, deletedContent)` — it removes the id from `deleted*` automatically.
 - **Split-persistence**: when splitting a block/list, remove moved content via `removeElements` (not raw `splice`). The resulting deletion records are intentional — they prevent the backend from re-introducing that content in the source container after re-merge. The destination has `id: null` and is preserved verbatim.
 - **Splitting containers**: when ambiguous which `deleted*` entries belong to each half, propagate all entries to both halves. The backend prunes stale IDs; silently dropping entries is unsafe.

@@ -252,7 +252,7 @@ export function isNew(obj: Identifiable): obj is Identifiable & { id: null } {
 }
 
 export function isFromTemplate(obj: Identifiable): obj is Identifiable & { id: number } {
-  return obj.id !== null;
+  return typeof obj.id === "number";
 }
 
 export function create(brev: BrevResponse): LetterEditorState {
