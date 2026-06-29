@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger.typst
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runInterruptible
@@ -8,6 +9,8 @@ import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import org.slf4j.LoggerFactory
 import java.io.IOException
+import java.io.InterruptedIOException
+import java.nio.channels.ClosedByInterruptException
 import java.nio.file.Path
 
 
@@ -82,6 +85,9 @@ open class TypstCompileService(
                     Execution.Failure.Compilation(error = stderrContent)
                 }
             } catch (e: IOException) {
+                if (e is InterruptedIOException || e is ClosedByInterruptException) {
+                    throw CancellationException("Typst compile process was cancelled", e)
+                }
                 Execution.Failure.Execution(e)
             } finally {
                 process?.destroyForcibly()
