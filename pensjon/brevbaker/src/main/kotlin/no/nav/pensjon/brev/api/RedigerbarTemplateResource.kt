@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brevbaker.api.model.RedigerbareVedleggTitler
 
 class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
     override val name: String,
@@ -29,8 +30,13 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     fun renderLetterMarkupWithDataUsage(brevbestilling: BestillBrevRequest<Kode>): LetterMarkupWithDataUsage =
         brevbaker.renderLetterMarkupWithDataUsage(createLetter(brevbestilling))
 
-    fun renderRedigerbartVedleggMarkupTitler(brevbestilling: BestillBrevRequest<Kode>): Map<VedleggId, List<LetterMarkup.ParagraphContent.Text>> =
-        brevbaker.renderRedigerbartVedleggTitler(createLetter(brevbestilling))
+    fun renderRedigerbareVedleggTitler(brevbestilling: BestillBrevRequest<Kode>): RedigerbareVedleggTitler =
+        RedigerbareVedleggTitler(
+            brevbaker.renderRedigerbartVedleggTitler(createLetter(brevbestilling))
+                .map { (vedleggId, tittel) ->
+                    RedigerbareVedleggTitler.Vedlegg(vedleggId, tittel.joinToString("") { it.text })
+                }
+        )
 
     fun renderRedigerbartVedleggMarkup(brevbestilling: BestillBrevRequest<Kode>, vedleggId: String): LetterMarkup.Attachment? =
         brevbaker.renderRedigerbartVedleggMarkup(createLetter(brevbestilling), VedleggId(vedleggId))

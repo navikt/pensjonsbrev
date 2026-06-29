@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.alleRedigerbareMaler
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
+import no.nav.pensjon.brev.maler.redigerbar.BrukerTestBrev
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.render.TemplateDocumentation
@@ -88,6 +89,20 @@ class TemplateRoutesTest {
             val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}")
             assertEquals(HttpStatusCode.OK, response.status)
             assertEquals(InformasjonOmSaksbehandlingstid.description(), response.body<TemplateDescription.Redigerbar>())
+        }
+
+        @Test
+        fun `har-redigerbare-vedlegg er true for mal med redigerbart vedlegg`() = testBrevbakerApp(enableAllToggles = true, isIntegrationTest = false) { client ->
+            val response = client.get("/templates/redigerbar/${BrukerTestBrev.kode.name}/har-redigerbare-vedlegg")
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(true, response.body<Boolean>())
+        }
+
+        @Test
+        fun `har-redigerbare-vedlegg er false for mal uten redigerbart vedlegg`() = testBrevbakerApp(isIntegrationTest = false) { client ->
+            val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}/har-redigerbare-vedlegg")
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(false, response.body<Boolean>())
         }
     }
 

@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.db
 
-import no.nav.pensjon.brev.skribenten.letter.Edit
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
 import org.jetbrains.exposed.v1.core.Column
@@ -9,7 +8,7 @@ import org.jetbrains.exposed.v1.core.columnTransformer
 import org.jetbrains.exposed.v1.dao.Entity
 import kotlin.reflect.KProperty
 
-fun Column<Edit.Letter>.writeHashTo(hash: Column<Hash<Edit.Letter>>) =
+fun <T> Column<T>.writeHashTo(hash: Column<Hash<T>>) =
     WithHash(this, hash)
 
 fun <T> Table.hashColumn(name: String): Column<Hash<T>> =
@@ -31,14 +30,14 @@ value class Hash<T>(private val hex: String) {
 
 class WithHash<T>(private val letter: Column<T>, private val hash: Column<Hash<T>>) {
 
-    operator fun <ID : Comparable<ID>> setValue(thisRef: Entity<ID>, property: KProperty<*>, value: T) {
+    operator fun <ID : Any> setValue(thisRef: Entity<ID>, property: KProperty<*>, value: T) {
         with(thisRef) {
             letter.setValue(thisRef, property, value)
             hash.setValue(thisRef, property, Hash.fromBytes(hash(value)))
         }
     }
 
-    operator fun <ID : Comparable<ID>> getValue(thisRef: Entity<ID>, property: KProperty<*>): T {
+    operator fun <ID : Any> getValue(thisRef: Entity<ID>, property: KProperty<*>): T {
         return with(thisRef) {
             letter.getValue(thisRef, property)
         }

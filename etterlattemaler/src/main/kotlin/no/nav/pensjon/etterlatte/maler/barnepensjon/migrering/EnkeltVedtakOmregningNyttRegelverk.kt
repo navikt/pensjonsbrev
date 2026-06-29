@@ -10,9 +10,8 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDataSelectors.utbetaltEtterReform
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDataSelectors.utbetaltFoerReform
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.selectors.barnepensjonOmregnetNyttRegelverkDTO.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.selectors.barnepensjonOmregnetNyttRegelverkData.*
 
 
 @TemplateModelHelpers

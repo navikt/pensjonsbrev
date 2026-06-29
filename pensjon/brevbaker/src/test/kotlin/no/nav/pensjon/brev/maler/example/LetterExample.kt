@@ -3,10 +3,8 @@ package no.nav.pensjon.brev.maler.example
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.VedleggData
-import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.datoInnvilget
-import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.pensjonInnvilget
-import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi1
-import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi2
+import no.nav.pensjon.brev.maler.example.selectors.letterExampleDto.*
+import no.nav.pensjon.brev.maler.example.selectors.testVedleggDto.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -17,7 +15,7 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.dokumentDato
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate

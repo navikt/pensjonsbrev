@@ -806,6 +806,30 @@ public final class no/nav/pensjon/brevbaker/api/model/PDFTittel : no/nav/pensjon
 public abstract interface class no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
 }
 
+public final class no/nav/pensjon/brevbaker/api/model/RedigerbareVedleggTitler {
+	public fun <init> (Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;)Lno/nav/pensjon/brevbaker/api/model/RedigerbareVedleggTitler;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/RedigerbareVedleggTitler;Ljava/util/List;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/RedigerbareVedleggTitler;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getVedlegg ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/RedigerbareVedleggTitler$Vedlegg {
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1-Atnw-NM ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy-n4HVavU (Ljava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/RedigerbareVedleggTitler$Vedlegg;
+	public static synthetic fun copy-n4HVavU$default (Lno/nav/pensjon/brevbaker/api/model/RedigerbareVedleggTitler$Vedlegg;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/RedigerbareVedleggTitler$Vedlegg;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId-Atnw-NM ()Ljava/lang/String;
+	public final fun getTittel ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification {
 	public fun <init> (Ljava/util/Map;Ljava/lang/String;)V
 	public fun equals (Ljava/lang/Object;)Z

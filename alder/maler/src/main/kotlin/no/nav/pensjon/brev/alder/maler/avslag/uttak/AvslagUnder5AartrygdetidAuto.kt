@@ -10,10 +10,7 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggDineRettigheterOgMulighetT
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUnder5AarTrygdetidAutoDto
-import no.nav.pensjon.brev.alder.model.avslag.AvslagUnder5AarTrygdetidAutoDtoSelectors.borINorge
-import no.nav.pensjon.brev.alder.model.avslag.AvslagUnder5AarTrygdetidAutoDtoSelectors.dineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brev.alder.model.avslag.AvslagUnder5AarTrygdetidAutoDtoSelectors.regelverkType
-import no.nav.pensjon.brev.alder.model.avslag.AvslagUnder5AarTrygdetidAutoDtoSelectors.trygdeperioderNorge
+import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagUnder5AarTrygdetidAutoDto.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createTemplate

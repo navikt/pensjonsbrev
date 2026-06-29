@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDtoSelectors.utland
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.dineRettigheterOgPlikterUforeDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants.FULLMAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL

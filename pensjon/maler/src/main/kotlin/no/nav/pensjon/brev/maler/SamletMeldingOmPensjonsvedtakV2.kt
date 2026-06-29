@@ -4,9 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2Dto
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2DtoSelectors.PesysDataSelectors.p1Vedlegg
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2DtoSelectors.PesysDataSelectors.sakstype
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2DtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.selectors.samletMeldingOmPensjonsvedtakV2Dto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.selectors.samletMeldingOmPensjonsvedtakV2Dto.*
 import no.nav.pensjon.brev.maler.vedlegg.pdf.P1pdfV2Dto
 import no.nav.pensjon.brev.maler.vedlegg.pdf.informasjonOmP1Vedlegg
 import no.nav.pensjon.brev.model.Brevkategori

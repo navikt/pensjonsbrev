@@ -13,8 +13,8 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysningerDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysningerDataSelectors.borIUtlandet
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.selectors.omstillingsstoenadInnhentingAvOpplysningerDTO.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.selectors.omstillingsstoenadInnhentingAvOpplysningerData.*
 
 data class OmstillingsstoenadInnhentingAvOpplysningerData(
     val borIUtlandet: Boolean,
