@@ -1007,8 +1007,6 @@ public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls 
 public final class no/nav/pensjon/brev/template/SaksbehandlerValgBuilder {
 	public final fun bool (Z)Lno/nav/pensjon/brev/template/Expression;
 	public static synthetic fun bool$default (Lno/nav/pensjon/brev/template/SaksbehandlerValgBuilder;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
-	public final fun boolOrig (Z)Lno/nav/pensjon/brev/template/Expression;
-	public static synthetic fun boolOrig$default (Lno/nav/pensjon/brev/template/SaksbehandlerValgBuilder;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getDisplayText ()Ljava/lang/String;
 	public final fun getId ()Ljava/lang/String;
 	public final fun getScope ()Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;

@@ -14,37 +14,29 @@ class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<Saksbehandlervalg
         require(scope.saksbehandlervalg.containsKey(id).not()) { "Saksbehandlervalg med id $id allerede definert" }
     }
 
-    fun bool(default: Boolean = false): Expression<Boolean> {
-        val selector = SaksbehandlervalgSelector<RedigerbarBrevdata<SaksbehandlervalgIDSL, *>, SaksbehandlervalgVerdi.Bool>(
-            propertyName = id,
-            propertyType = SaksbehandlervalgVerdi::class.qualifiedName!!,
-            selector = { (saksbehandlerValg as SaksbehandlervalgIDSLImpl).get(id) } // TODO denne er sårbar
-        )
-        val unaryInvoke = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector))
-        val unaryInvoke2 = Expression.UnaryInvoke(unaryInvoke, UnaryOperation.Saksbehandlervalg<Boolean>("bool", "kotlin.Boolean"))
+    fun bool(default: Boolean = false): Expression<Boolean> = Expression.BinaryInvoke(
+        scope.argument,
+        id.expr(),
+        BinaryOperation.EttSaksbehandlervalg<LetterData, Boolean, SaksbehandlervalgVerdi.Bool>()
+    ).also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Bool(default, displayText)) }
 
-        val alternativt: Expression.BinaryInvoke<LetterData, String, Boolean> =
-            Expression.BinaryInvoke(scope.argument, id.expr(), BinaryOperation.EttSaksbehandlervalg<LetterData, Boolean, SaksbehandlervalgVerdi.Bool>())
+    fun int(default: Int? = null): Expression<Int?> = Expression.BinaryInvoke(
+        scope.argument,
+        id.expr(),
+        BinaryOperation.EttSaksbehandlervalg<LetterData, Int?, SaksbehandlervalgVerdi.Integer>()
+    ).also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Integer(default, displayText)) }
 
-        return alternativt
-            .also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Bool(default, displayText)) }
-    }
+    fun text(default: String?): Expression<String?> = Expression.BinaryInvoke(
+        scope.argument,
+        id.expr(),
+        BinaryOperation.EttSaksbehandlervalg<LetterData, String, SaksbehandlervalgVerdi.Text>()
+    ).also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Text(default, displayText)) }
 
-    fun boolOrig(default: Boolean = false): Expression<Boolean> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
-        .bool()
-        .also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Bool(default, displayText)) }
-
-    fun int(default: Int? = null): Expression<Int?> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
-        .int()
-        .also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Integer(default, displayText)) }
-
-    fun text(default: String?): Expression<String?> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
-        .text()
-        .also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Text(default, displayText)) }
-
-    inline fun <reified T> enum(default: T? = null): Expression<T?> where T : SaksbehandlerValgEnum, T : Enum<T> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
-        .enum<T?>()
-        .also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Enum(default, displayText, T::class.java as Class<out Enum<*>?>)) }
+    inline fun <reified T> enum(default: T? = null): Expression<T?> where T : SaksbehandlerValgEnum, T : Enum<T> = Expression.BinaryInvoke(
+        scope.argument,
+        id.expr(),
+        BinaryOperation.EttSaksbehandlervalg<LetterData, T, SaksbehandlervalgVerdi.Enum<T>>()
+    ).also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Enum(default, displayText, T::class.java as Class<out Enum<*>?>)) }
 }
 
 fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg(id: String, displayText: String) = SaksbehandlerValgBuilder(id, displayText, this)
@@ -55,16 +47,3 @@ fun <T : SaksbehandlervalgVerdi, D : RedigerbarBrevdata<SaksbehandlervalgIDSL, *
     propertyType = SaksbehandlervalgVerdi::class.qualifiedName!!,
     selector = { (saksbehandlerValg as SaksbehandlervalgIDSLImpl).get(id) } // TODO denne er sårbar
 )
-internal fun Expression<SaksbehandlervalgVerdi>.bool(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, Boolean> =
-    invoke("bool", "kotlin.Boolean")
-
-@PublishedApi
-@BrevbakerDSLInternal
-internal fun <T> Expression<SaksbehandlervalgVerdi>.invoke(propertyName: String, propertyType: String): Expression.UnaryInvoke<SaksbehandlervalgVerdi, T> = Expression.UnaryInvoke(this, UnaryOperation.Saksbehandlervalg(propertyName, propertyType))
-
-internal fun Expression<SaksbehandlervalgVerdi>.int(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, Int?> = invoke("int", "Int")
-
-internal fun Expression<SaksbehandlervalgVerdi>.text(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, String?> = invoke("string", "kotlin.String")
-
-@BrevbakerDSLInternal
-inline fun <reified T : SaksbehandlerValgEnum?> Expression<SaksbehandlervalgVerdi>.enum(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, T?> = invoke(T::class.simpleName!!, T::class.qualifiedName!!)
