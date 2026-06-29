@@ -25,22 +25,6 @@ import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregningRedi
 import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregningRedigerbartVedleggData.*
 import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregning.*
 import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregningsperiode.*
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedleggDataSelectors.erInnvilgelsesAar
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedleggDataSelectors.omstillingsstoenadBeregning
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedleggSelectors.data
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.opphoerNesteAar
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.oppphoersdato
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiodeNesteAar
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.fratrekkInnAar
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.innvilgaMaaneder
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.oppgittInntekt
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.restanse
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.Vedlegg
 import no.nav.pensjon.etterlatte.maler.formatAar
 
