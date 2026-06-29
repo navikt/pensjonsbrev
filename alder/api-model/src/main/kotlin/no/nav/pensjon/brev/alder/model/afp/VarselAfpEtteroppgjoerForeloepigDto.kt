@@ -30,7 +30,7 @@ data class VarselAfpEtteroppgjoerForeloepigDto(
      * og opphør av AFP. Identisk med [VarselAfpEtteroppgjoerForeloepigAutoDto.Periode].
      */
     enum class Periode {
-        // Uttaksdato < 01.01 AND (Opphorsdato >= 31.12 OR tom): AFP løp hele året.
+        // Uttaksdato < 01.02 AND (Opphorsdato >= 31.12 OR tom): AFP løp hele året.
         HEL_AFP_HELE_AARET,
 
         // Uttak i året, ingen opphør: inntekten fordeles før uttak og i AFP-perioden.
