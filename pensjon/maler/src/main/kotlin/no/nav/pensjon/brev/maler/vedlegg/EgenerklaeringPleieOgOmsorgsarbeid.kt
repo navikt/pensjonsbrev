@@ -71,9 +71,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
 
     paragraph {
         text(
-            bokmal { +"Navn på pleietrengende: ____________________________________________________________" },
-            nynorsk { +"Namn på pleietrengande: ___________________________________________________________" },
-            english { +"I have provided care work for: ___________________________________________________" },
+            bokmal { +"Navn på pleietrengende: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " },
+            nynorsk { +"Namn på pleietrengande: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " },
+            english { +"I have provided care work for: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " },
         )
         newline()
         text(
@@ -82,10 +82,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
             english { +"The work has lasted for:" },
         )
         newline()
-        text(bokmal { +"☐ minst seks måneder" }, nynorsk { +"☐ minst seks månader" }, english { +"☐ at least six months" })
+        text(bokmal { +"☐  minst seks måneder" }, nynorsk { +"☐  minst seks månader" }, english { +"☐  at least six months" })
         newline()
-        text(bokmal { +"☐ under seks måneder" }, nynorsk { +"☐ under seks månader" }, english { +"☐ less than six months" })
-        newline()
+        text(bokmal { +"☐  under seks måneder" }, nynorsk { +"☐  under seks månader" }, english { +"☐  less than six months" })
     }
 
     title2 {
@@ -97,25 +96,26 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
     }
     paragraph {
         text(
-            bokmal { +"Oppgi dato for opphøret: _________________________" },
-            nynorsk { +"Dato for opphøyr: ________________________________" },
-            english { +"State date if ceased: ____________________________" },
+            bokmal { +"Oppgi dato for opphøret: . . . . . . . . . . . . . . . . . . . . . . . . . " },
+            nynorsk { +"Dato for opphøyr: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " },
+            english { +"State date if ceased: . . . . . . . . . . . . . . . . . . . . . . . . . . . . " },
         )
         newline()
         text(
-            bokmal { +"Oppgi årsaken til opphøret: ____________________________________________________________" },
-            nynorsk { +"Grunnen til opphøyr: ___________________________________________________________________" },
-            english { +"State reason if ceased: ________________________________________________________________" },
+            bokmal { +"Oppgi årsaken til opphøret: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " },
+            nynorsk { +"Grunnen til opphøyr: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " },
+            english { +"State reason if ceased: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " },
         )
         newline()
-        text(bokmal { +"Dato: _________________________" }, nynorsk { +"Dato: _________________________" }, english { +"Date: _________________________" })
+        text(bokmal { +"Dato: . . . . . . . . . . . . . . . . . . . . . . . . . " },
+            nynorsk { +"Dato: . . . . . . . . . . . . . . . . . . . . . . . . . " },
+            english { +"Date: . . . . . . . . . . . . . . . . . . . . . . . . . " })
         newline()
         text(
-            bokmal { +"Underskrift: ____________________________________________________________" },
-            nynorsk { +"Underskrift: ____________________________________________________________" },
-            english { +"Signature: ______________________________________________________________" },
+            bokmal { +"Underskrift: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " },
+            nynorsk { +"Underskrift: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " },
+            english { +"Signature: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " },
         )
-        newline()
     }
 
     paragraph {

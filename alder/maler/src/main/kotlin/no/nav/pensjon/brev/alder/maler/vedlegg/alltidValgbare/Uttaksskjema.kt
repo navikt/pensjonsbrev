@@ -22,7 +22,8 @@ val uttaksskjema = createAttachment<LangBokmalEnglish, EmptyVedleggData>(
             bokmal { +"Vi ber deg vennligst oppgi hvordan du ønsker å ta ut alderspensjonen din. For mer informasjon om de ulike alternativene kan du se det vedlagte informasjonsskrivet. Den samme informasjonen finner du også på våre nettsider ${Constants.NAV_URL}." },
             english { +"Please state how you would like to withdraw your retirement pension. For more information about the various options, you can see the attached information letter. You can also find the same information on our website ${Constants.NAV_URL}." }
         )
-        newline()
+    }
+    paragraph {
         text(
             bokmal { +"☐ Jeg ønsker å ta ut full alderspensjon (100 %) fra ordinær uttaksdato i Norge– måneden etter jeg fyller 67 år." },
             english { +"☐ I want to draw a full retirement pension (100%) from the ordinary withdrawal date in Norway - the month after I turn 67." }
@@ -36,8 +37,8 @@ val uttaksskjema = createAttachment<LangBokmalEnglish, EmptyVedleggData>(
     }
     paragraph {
         text(
-            bokmal { +"Oppgi ønsket tidspunkt for uttak av alderspensjon: _________________________" },
-            english { +"State the desired time for withdrawal of retirement pension: _______________" }
+            bokmal { +"Oppgi ønsket tidspunkt for uttak av alderspensjon: . . . . . . . . . . . . . . . . . . . . . . . . ." },
+            english { +"State the desired time for withdrawal of retirement pension: . . . . . . . . . . . . . . . . . . . . . . . . ." }
         )
     }
     paragraph {
@@ -46,17 +47,17 @@ val uttaksskjema = createAttachment<LangBokmalEnglish, EmptyVedleggData>(
             english { +"Tick off the desired withdrawal rate:" }
         )
         newline()
-        text(bokmal { +"☐ 20 %" }, english { +"☐ 20 %" })
+        text(bokmal { +"☐  20 %" }, english { +"☐  20 %" })
         newline()
-        text(bokmal { +"☐ 40 %" }, english { +"☐ 40 %" })
+        text(bokmal { +"☐  40 %" }, english { +"☐  40 %" })
         newline()
-        text(bokmal { +"☐ 50 %" }, english { +"☐ 50 %" })
+        text(bokmal { +"☐  50 %" }, english { +"☐  50 %" })
         newline()
-        text(bokmal { +"☐ 60 %" }, english { +"☐ 60 %" })
+        text(bokmal { +"☐  60 %" }, english { +"☐  60 %" })
         newline()
-        text(bokmal { +"☐ 80 %" }, english { +"☐ 80 %" })
+        text(bokmal { +"☐  80 %" }, english { +"☐  80 %" })
         newline()
-        text(bokmal { +"☐ 100 %" }, english { +"☐ 100 %" })
+        text(bokmal { +"☐  100 %" }, english { +"☐  100 %" })
     }
     paragraph {
         text(
@@ -72,20 +73,20 @@ val uttaksskjema = createAttachment<LangBokmalEnglish, EmptyVedleggData>(
     }
     paragraph {
         text(
-            bokmal { +"Navn (i blokkbokstaver) og fødselsdato: _____________________________________" },
-            english { +"Name (in block letters) and date of birth: __________________________________" }
+            bokmal { +  "Navn (i blokkbokstaver) og fødselsdato: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ." },
+            english { + "Name (in block letters) and date of birth: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ." }
         )
     }
     paragraph {
         text(
-            bokmal { +"Dato, sted og signatur: ___________________________________________________" },
-            english { +"Date, place, and signature: _______________________________________________" }
+            bokmal { +  "Dato, sted og signatur: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ." },
+            english { + "Date, place, and signature: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ." }
         )
     }
     paragraph {
         text(
-            bokmal { +"Telefonnummer: _________________________" },
-            english { +"Phone number: _________________________" }
+            bokmal { +"Telefonnummer: . . . . . . . . . . . . . . . . . . . . . . . . ." },
+            english { +"Phone number: . . . . . . . . . . . . . . . . . . . . . . . . ." }
         )
         newline()
         text(
