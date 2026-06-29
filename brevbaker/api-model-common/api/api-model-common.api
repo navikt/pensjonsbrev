@@ -152,7 +152,6 @@ public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar 
 
 public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar$Brevkategori : no/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori {
 	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar$Brevkategori;
-	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
 	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
@@ -166,7 +165,6 @@ public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar$
 
 public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar$Sakstype {
 	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar$Sakstype;
-	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
 	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
