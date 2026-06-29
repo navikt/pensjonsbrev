@@ -227,12 +227,12 @@ describe("buildMergedItemList", () => {
     expect(merged.editedListType).toBe(ListType.NUMMERERT_LISTE);
   });
 
-  test("leaves editedListType null when target equals the surviving list's listType", () => {
+  test("leaves editedListType cleared when target equals the surviving list's listType", () => {
     const merged = buildMergedItemList(
-      [itemList({ id: 7, listType: ListType.PUNKTLISTE, editedListType: null, items: [item(literal("a"))] })],
+      [itemList({ id: 7, listType: ListType.PUNKTLISTE, items: [item(literal("a"))] })],
       ListType.PUNKTLISTE,
     );
-    expect(merged.editedListType).toBeNull();
+    expect(merged.editedListType).toBeUndefined();
   });
 });
 

@@ -67,7 +67,7 @@ const toggleList = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex,
 const switchListType = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, listType: ListType) => {
   const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
   const itemList = block.content[literalIndex.contentIndex] as Draft<ItemList>;
-  itemList.editedListType = listType !== itemList.listType ? listType : null;
+  itemList.editedListType = listType !== itemList.listType ? listType : undefined;
   draft.saveStatus = "DIRTY";
 };
 

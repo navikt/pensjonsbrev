@@ -585,7 +585,7 @@ describe("switchListType (via toggleBulletList / toggleNumberList on an existing
     });
 
     const list = select<ItemList>(afterRevert, { blockIndex: 0, contentIndex: 0 });
-    expect(list.editedListType).toBeNull();
+    expect(list.editedListType).toBeUndefined();
   });
 
   test("after switching type, adjacent block with the new type is merged", () => {

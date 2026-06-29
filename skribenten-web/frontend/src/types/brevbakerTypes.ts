@@ -48,7 +48,7 @@ export type Content = generated.EditParagraphContent;
 export type LiteralValue = generated.EditParagraphContentTextLiteral;
 export type VariableValue = generated.EditParagraphContentTextVariable;
 export type NewLine = generated.EditParagraphContentTextNewLine;
-export type ItemList = generated.EditParagraphContentItemList & { editedListType?: ListType | null };
+export type ItemList = generated.EditParagraphContentItemList & { editedListType?: ListType };
 export type Table = generated.EditParagraphContentTable;
 
 export type ElementTags = generated.ElementTags;
