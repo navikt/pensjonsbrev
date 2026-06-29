@@ -238,8 +238,8 @@ export function fontTypeOf(content: TextContent): FontType {
   }
 }
 
-export function isNew(obj: Identifiable): obj is Identifiable & { id: null } {
-  return obj.id === null;
+export function isNew(obj: Identifiable): obj is Identifiable & { id: null | undefined } {
+  return typeof obj.id !== "number";
 }
 
 export function isFromTemplate(obj: Identifiable): obj is Identifiable & { id: number } {

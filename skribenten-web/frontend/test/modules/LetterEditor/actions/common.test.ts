@@ -6,6 +6,8 @@ import {
   buildMergedItemList,
   coalesceAdjacentSameTypeLists,
   findAdjoiningContent,
+  isFromTemplate,
+  isNew,
   removeElements,
   splitMixedListBlock,
   text,
@@ -415,5 +417,26 @@ describe("splitMixedListBlock", () => {
       splitMixedListBlock(draft, 0);
     });
     expect(result.focus).toMatchObject({ blockIndex: 2, contentIndex: 0 });
+  });
+});
+
+describe("isNew / isFromTemplate", () => {
+  test("a null id is new and not from template", () => {
+    const obj: Identifiable = { id: null, parentId: null };
+    expect(isNew(obj)).toBe(true);
+    expect(isFromTemplate(obj)).toBe(false);
+  });
+
+  test("a numeric id is from template and not new", () => {
+    const obj: Identifiable = { id: 42, parentId: null };
+    expect(isNew(obj)).toBe(false);
+    expect(isFromTemplate(obj)).toBe(true);
+  });
+
+  test("isNew and isFromTemplate are exact complements, so an undefined id never falls between them", () => {
+    const obj: Identifiable = { id: undefined };
+    expect(isNew(obj)).toBe(true);
+    expect(isFromTemplate(obj)).toBe(false);
+    expect(isNew(obj)).toBe(!isFromTemplate(obj));
   });
 });
