@@ -14,5 +14,3 @@ data object EmptyRedigerbarBrevdata : RedigerbarBrevdata<EmptySaksbehandlerValg,
 }
 
 data object EmptyVedleggData : VedleggData
-
-interface SaksbehandlervalgIDSL : SaksbehandlerValgBrevdata
