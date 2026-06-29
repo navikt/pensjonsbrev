@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.pdfbygger.typst
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
@@ -64,13 +65,13 @@ open class TypstCompileService(
                     .directory(templateDir.toFile())
                     .start()
 
-                process.outputStream.writer(Charsets.UTF_8).use { writeLetter(TypstFileWriter(it)) }
+                runInterruptible { process.outputStream.writer(Charsets.UTF_8).use { writeLetter(TypstFileWriter(it)) } }
 
-                val stdoutDeferred = async(Dispatchers.IO) { process.inputStream.readAllBytes() }
-                val stderrContent = String(process.errorStream.readAllBytes(), Charsets.UTF_8)
+                val stdoutDeferred = async(Dispatchers.IO) { runInterruptible { process.inputStream.readAllBytes() } }
+                val stderrContent = runInterruptible { String(process.errorStream.readAllBytes(), Charsets.UTF_8) }
                 val pdfBytes = stdoutDeferred.await()
 
-                val exitCode = process.waitFor()
+                val exitCode = runInterruptible { process.waitFor() }
 
                 if (exitCode == 0) {
                     if (stderrContent.isNotBlank()) {
