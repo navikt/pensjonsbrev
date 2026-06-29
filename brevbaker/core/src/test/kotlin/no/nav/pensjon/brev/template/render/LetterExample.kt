@@ -13,11 +13,9 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.render.LetterExampleDtoSelectors.datoInnvilget
-import no.nav.pensjon.brev.template.render.LetterExampleDtoSelectors.pensjonInnvilget
-import no.nav.pensjon.brev.template.render.TestVedleggDtoSelectors.testVerdi1
-import no.nav.pensjon.brev.template.render.TestVedleggDtoSelectors.testVerdi2
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.dokumentDato
+import no.nav.pensjon.brev.template.render.selectors.letterExampleDto.*
+import no.nav.pensjon.brev.template.render.selectors.testVedleggDto.*
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate

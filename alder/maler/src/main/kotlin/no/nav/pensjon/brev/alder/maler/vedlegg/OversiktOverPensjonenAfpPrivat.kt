@@ -5,18 +5,13 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDto.AfpBeregning
 import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDto.Periode
 import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDto.SistePeriode
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDtoSelectors.PeriodeSelectors.beregning as periodeBeregning
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDtoSelectors.PeriodeSelectors.virkDatoFom as periodeVirkDatoFom
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDtoSelectors.PeriodeSelectors.virkDatoTom as periodeVirkDatoTom
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDtoSelectors.SistePeriodeSelectors.beregning as sisteBeregning
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDtoSelectors.SistePeriodeSelectors.virkDatoFom as sisteVirkDatoFom
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDtoSelectors.AfpBeregningSelectors.kompensasjonstilleggBrutto
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDtoSelectors.AfpBeregningSelectors.kronetilleggBrutto
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDtoSelectors.AfpBeregningSelectors.livsvarigBrutto
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDtoSelectors.AfpBeregningSelectors.totalPensjon
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDtoSelectors.perioder
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDtoSelectors.sistePeriode
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDtoSelectors.virkningFom
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpPrivatDto.periode.beregning as periodeBeregning
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpPrivatDto.periode.virkDatoFom as periodeVirkDatoFom
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpPrivatDto.periode.virkDatoTom as periodeVirkDatoTom
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpPrivatDto.sistePeriode.beregning as sisteBeregning
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpPrivatDto.sistePeriode.virkDatoFom as sisteVirkDatoFom
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpPrivatDto.afpBeregning.*
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.oversiktOverPensjonenAfpPrivatDto.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression

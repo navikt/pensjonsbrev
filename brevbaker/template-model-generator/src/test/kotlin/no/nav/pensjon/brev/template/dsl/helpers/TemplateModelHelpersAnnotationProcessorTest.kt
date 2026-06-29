@@ -125,10 +125,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
         assertThat(result.exitCode).isEqualTo(KotlinSymbolProcessing.ExitCode.OK)
 
         val generatedSources = result.generatedSources.map { it.name }
-        assertThat(generatedSources).contains("AMotherSelectors.kt")
+        assertThat(generatedSources).doesNotContain("AMotherSelectors.kt")
         assertThat(generatedSources).contains("ParentModelSelectors.kt")
-        assertThat(generatedSources).doesNotContain("ChildModelSelectors.kt")
-        assertThat(generatedSources).doesNotContain("UncleModelSelectors.kt")
+        assertThat(generatedSources).contains("ChildModelSelectors.kt")
+        assertThat(generatedSources).contains("UncleModelSelectors.kt")
     }
 
     @Test

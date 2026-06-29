@@ -21,6 +21,10 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedlegg
+import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregningRedigerbartVedlegg.*
+import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregningRedigerbartVedleggData.*
+import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregning.*
+import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregningsperiode.*
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedleggDataSelectors.erInnvilgelsesAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedleggDataSelectors.omstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedleggSelectors.data

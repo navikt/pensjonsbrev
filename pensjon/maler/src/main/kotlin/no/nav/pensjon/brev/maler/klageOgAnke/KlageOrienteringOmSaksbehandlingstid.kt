@@ -2,14 +2,13 @@ package no.nav.pensjon.brev.maler.klageOgAnke
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
-import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.PesysDataSelectors.foedselsnummer
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.PesysDataSelectors.navn
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.PesysDataSelectors.navnAvsenderEnhet
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.klageOrienteringOmSaksbehandlingstidDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.klageOrienteringOmSaksbehandlingstidDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -28,9 +27,9 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<KlageOrienterin
 
     override val featureToggle = FeatureToggles.brevmalKlageOrienteringOmSaksbehandlingstid.toggle
 
-    override val kode = Pesysbrevkoder.Redigerbar.PE_KLAGE_ORIENTERING_OM_SAKSBEHANDLINGSTID
-    override val kategori = no.nav.pensjon.brev.model.Brevkategori.KLAGE_OG_ANKE
-    override val brevkontekst: Brevkontekst = Brevkontekst.ALLE
+    override val kode = PE_KLAGE_ORIENTERING_OM_SAKSBEHANDLINGSTID
+    override val kategori = KLAGE_OG_ANKE
+    override val brevkontekst = ALLE
     override val sakstyper: Set<Sakstype> = pensjon
 
     override val template = createTemplate(

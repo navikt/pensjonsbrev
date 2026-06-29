@@ -100,6 +100,22 @@ object BrevredigeringFacadeFactory {
                 redigerBrevPolicy = redigerBrevPolicy,
                 brevreservasjonPolicy = brevreservasjonPolicy,
             ),
+            endreRedigertVedlegg = EndreRedigertVedleggHandler(
+                redigerBrevPolicy = redigerBrevPolicy,
+                brevreservasjonPolicy = brevreservasjonPolicy,
+            ),
+            hentRedigertVedlegg = HentRedigertVedleggHandler(
+                brevmalService = brevmalService,
+                brevdataService = brevdataService,
+            ),
+            hentRedigerbareVedlegg = HentRedigerbareVedleggHandler(
+                brevmalService = brevmalService,
+                brevdataService = brevdataService,
+            ),
+            slettRedigertVedlegg = SlettRedigertVedleggHandler(
+                redigerBrevPolicy = redigerBrevPolicy,
+                brevreservasjonPolicy = brevreservasjonPolicy,
+            ),
             sendBrev = SendBrevHandler(
                 sendBrevPolicy = sendBrevPolicy,
                 brevService = brevService,

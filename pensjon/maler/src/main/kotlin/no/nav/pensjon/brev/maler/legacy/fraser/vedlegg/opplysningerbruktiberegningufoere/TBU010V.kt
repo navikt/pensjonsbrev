@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.personsak
-import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSakSelectors.foedselsdato
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.*
+import no.nav.pensjon.brev.api.model.maler.legacy.personsak.selectors.personSak.*
 import no.nav.pensjon.brev.maler.fraser.common.BroekText
 import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.fraser.ufoer.erUforetidspunktMaanedEtterFoedsel
@@ -212,8 +212,8 @@ data class TBU010V(val pe: Expression<PEgruppe10>) : OutlinePhrase<LangBokmalNyn
                     row {
                         cell {
                             text(
-                                bokmal { + "Kompensasjonsgrad" },
-                                nynorsk { + "Kompensasjonsgrad" },
+                                bokmal { + "Reduksjonsprosent" },
+                                nynorsk { + "Reduksjonsprosent" },
                             )
                         }
                         cell {

@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.HvilendeRettUforetrygdDto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.HvilendeRettUforetrygdDtoSelectors.senesteHvilendeAr
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.selectors.hvilendeRettUforetrygdDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal

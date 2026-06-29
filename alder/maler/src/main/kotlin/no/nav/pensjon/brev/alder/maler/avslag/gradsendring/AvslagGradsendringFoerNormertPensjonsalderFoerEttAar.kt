@@ -6,8 +6,8 @@ import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.alder.model.avslag.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
-import no.nav.pensjon.brev.alder.model.avslag.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDtoSelectors.regelverkType
-import no.nav.pensjon.brev.alder.model.avslag.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDtoSelectors.pesysData
+import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto.*
+import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagGradsendringFoerNormertPensjonsalderFoerEttAarDto.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate

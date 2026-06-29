@@ -6,8 +6,7 @@ import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggFolketrygden
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatAutoDto
-import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatAutoDtoSelectors.begrunnelse
-import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatAutoDtoSelectors.kravMottattDato
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.avslagAfpPrivatAutoDto.*
 import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDto.Begrunnelse
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal

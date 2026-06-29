@@ -17,4 +17,10 @@ internal class RedigerbarTemplateValidator private constructor(blockIdentities: 
     }
 
     override fun subScope(): BrevTemplateValidator = RedigerbarTemplateValidator(blockIdentities)
+
+    override fun addAlreadyValidated(e: OutlineElement<*>) {
+        e.stableHashOfContent().forEach {
+            blockIdentities.add(it)
+        }
+    }
 }
