@@ -17,6 +17,7 @@ fun createEndringUfoeretrygdDto() =
         saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = EndringUfoeretrygdDto.PesysData(
             pe = createPEgruppe10(),
+            kravFremsattDato = LocalDate.of(2020, Month.JANUARY, 1),
             opphortEktefelletillegg = true,
             opphortGjenlevendetillegg = true,
             opphoersbegrunnelseEktefelletillegg = EndringUfoeretrygdDto.Opphoersbegrunnelse(

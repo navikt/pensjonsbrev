@@ -53,6 +53,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
         }
         outline {
             val pe = pesysData.pe
+            val soknadsdato = pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato())
 
             //IF(PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_uu" AND PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_ys" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "endring_ifu" AND FF_GetArrayElement_String(PE_Vedtaksdata_Kravhode_Kravlinjeliste_Kravlinje_Kravlinjetype) = "ut" AND PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_okn_ug") THEN      INCLUDE ENDIF
             showIf(
@@ -62,7 +63,13 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     "ut"
                 ) and pe.vedtaksdata_kravhode_kravgjelder().notEqualTo("sok_okn_ug"))
             ) {
-                includePhrase(TBU2384_Generated(pe))
+                paragraph {
+                    text (
+                        bokmal { + "Vi har avslått søknaden din om uføretrygd som vi mottok " + soknadsdato.format() + "." },
+                        nynorsk { + "Vi har avslått søknaden din om uføretrygd som vi fekk " + soknadsdato.format() + "." },
+                        english { + "We have denied your application for disability benefit, which we received on " + soknadsdato.format() + "." },
+                    )
+                }
             }
 
             //PE_Vedtaksdata_Kravhode_KravGjelder = "sok_okn_ug"
@@ -71,11 +78,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
                 paragraph {
                     text(
-                        bokmal { + "Vi har avslått søknaden din om økt uføretrygd som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato()
+                        bokmal { + "Vi har avslått søknaden din om økt uføretrygd som vi mottok " + soknadsdato
                             .format() + "." },
-                        nynorsk { + "Vi har avslått søknaden din om auka uføretrygd som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato()
+                        nynorsk { + "Vi har avslått søknaden din om auka uføretrygd som vi fekk " + soknadsdato
                             .format() + "." },
-                        english { + "We have denied your application for increased disability benefit, which we received on " + pe.vedtaksdata_kravhode_kravmottatdato()
+                        english { + "We have denied your application for increased disability benefit, which we received on " + soknadsdato
                             .format() + "." },
                     )
                 }
@@ -87,11 +94,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
                 paragraph {
                     text(
-                        bokmal { + "Vi har avslått søknaden din om særbestemmelser for yrkesskade eller yrkessykdom i uføretrygden, som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato()
+                        bokmal { + "Vi har avslått søknaden din om særbestemmelser for yrkesskade eller yrkessykdom i uføretrygden, som vi mottok " + soknadsdato
                             .format() + "." },
-                        nynorsk { + "Vi har avslått søknaden din om særreglar for yrkesskade eller yrkessjukdom i uføretrygda som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato()
+                        nynorsk { + "Vi har avslått søknaden din om særreglar for yrkesskade eller yrkessjukdom i uføretrygda som vi fekk " + soknadsdato
                             .format() + "." },
-                        english { + "We have denied your application for special rules pertaining to occupational injury or occupational illness to be applied to your disability benefit, which we received on " + pe.vedtaksdata_kravhode_kravmottatdato()
+                        english { + "We have denied your application for special rules pertaining to occupational injury or occupational illness to be applied to your disability benefit, which we received on " + soknadsdato
                             .format() + "." },
                     )
                 }
@@ -103,11 +110,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
                 paragraph {
                     text(
-                        bokmal { + "Vi har avslått søknaden din om rettighet som ung ufør som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato()
+                        bokmal { + "Vi har avslått søknaden din om rettighet som ung ufør som vi mottok " + soknadsdato
                             .format() + "." },
-                        nynorsk { + "Vi har avslått søknaden din om rett som ung ufør som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato()
+                        nynorsk { + "Vi har avslått søknaden din om rett som ung ufør som vi fekk " + soknadsdato
                             .format() + "." },
-                        english { + "We have denied your application to be granted rights as a young disabled person, which we received on " + pe.vedtaksdata_kravhode_kravmottatdato()
+                        english { + "We have denied your application to be granted rights as a young disabled person, which we received on " + soknadsdato
                             .format() + "." },
                     )
                 }
@@ -119,11 +126,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
                 paragraph {
                     text(
-                        bokmal { + "Vi har avslått søknaden din om å endre den fastsatte inntekten din før du ble ufør, som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato()
+                        bokmal { + "Vi har avslått søknaden din om å endre den fastsatte inntekten din før du ble ufør, som vi mottok " + soknadsdato
                             .format() + "." },
-                        nynorsk { + "Vi har avslått søknaden din om å endre den fastsette inntekta di før du blei ufør, som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato()
+                        nynorsk { + "Vi har avslått søknaden din om å endre den fastsette inntekta di før du blei ufør, som vi fekk " + soknadsdato
                             .format() + "." },
-                        english { + "We have denied your application to change your determined income prior to your disability, which we received on " + pe.vedtaksdata_kravhode_kravmottatdato()
+                        english { + "We have denied your application to change your determined income prior to your disability, which we received on " + soknadsdato
                             .format() + "." },
                     )
                 }
