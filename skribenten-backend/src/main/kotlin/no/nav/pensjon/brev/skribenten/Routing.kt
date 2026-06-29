@@ -6,19 +6,15 @@ import io.ktor.http.*
 import io.ktor.openapi.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.routing.*
 import io.ktor.server.routing.openapi.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.withContext
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceHttp
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacadeFactory
 import no.nav.pensjon.brev.skribenten.common.Cache
-import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.eksterntApi.ExternalAPIService
 import no.nav.pensjon.brev.skribenten.eksterntApi.externalAPI
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
@@ -36,19 +32,13 @@ import no.nav.pensjon.brev.skribenten.routes.samhandler.samhandlerRoute
 import no.nav.pensjon.brev.skribenten.services.*
 
 suspend fun Application.configureRouting(
-    authConfig: JwtConfig,
+    authConfig: AzureADConfig,
     skribentenConfig: Config,
     cache: Cache,
 ) {
-    val authService = AzureADService(authConfig, cache = cache)
+    val authService = AzureADService(authConfig, cache = dependencies.resolve())
     val servicesConfig = skribentenConfig.getConfig("services")
 
-    withContext(Dispatchers.IO) {
-        awaitAll(
-            async { initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopping) { db.close() } } },
-            async { Features.initUnleash(servicesConfig.getConfig("unleash")) }
-        )
-    }
     val safService = SafServiceHttp(servicesConfig.getConfig("saf"), authService)
     val penClient = PentHttpClient(servicesConfig.getConfig("pen"), authService)
     val skjermingService = SkjermingServiceHttp(servicesConfig.getConfig("skjerming"), authService, cache)
@@ -97,7 +87,7 @@ suspend fun Application.configureRouting(
             remotePath = "documentation.json"
         }
 
-        authenticate(authConfig.name) {
+        authenticate(AUTHENTICATION_REALM_NAME) {
             install(PrincipalInContext)
             install(PrincipalHasGroup) {
                 requireOneOf(ADGroups.alleBrukergrupper)
@@ -138,6 +128,6 @@ suspend fun Application.configureRouting(
 
         }
 
-        externalAPI(authConfig, externalAPIService, pdlService, fagsakService)
+        externalAPI(externalAPIService, pdlService, fagsakService)
     }
 }

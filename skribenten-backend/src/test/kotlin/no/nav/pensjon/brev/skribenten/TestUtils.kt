@@ -20,6 +20,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ObjectAssert
+import org.jetbrains.exposed.v1.jdbc.Database
 import org.testcontainers.postgresql.PostgreSQLContainer
 import java.time.LocalDate
 import java.util.concurrent.atomic.AtomicBoolean
@@ -95,6 +96,23 @@ inline fun <reified ExpectedE : E, T, E> ObjectAssert<Outcome<T, E>?>.isFailure(
     return this
 }
 
+private class TestFeatureToggleService : FeatureToggleService {
+    val overrides = mutableMapOf<String, Boolean>()
+    override suspend fun isEnabled(toggle: UnleashToggle): Boolean = overrides[toggle.name] ?: false
+    override fun close() { }
+}
+
+fun Features.override(key: UnleashToggle, value: Boolean) {
+    var currentService = toggleService as? TestFeatureToggleService
+
+    if (currentService == null) {
+        currentService = TestFeatureToggleService()
+        init(currentService)
+    }
+
+    currentService.overrides[key.name] = value
+}
+
 object SharedPostgres {
     private val subscriptions = ConcurrentSet<Any>()
 
@@ -109,7 +127,7 @@ object SharedPostgres {
         synchronized(this) {
             if (initialized.compareAndSet(false, true)) {
                 val c = container
-                initDatabase(jdbcUrl = c.jdbcUrl, username = c.username, password = c.password, maxPoolSize = 20)
+                Database.connect(initDatabase(jdbcUrl = c.jdbcUrl, username = c.username, password = c.password, maxPoolSize = 20))
             }
             subscriptions.add(subscriber)
         }

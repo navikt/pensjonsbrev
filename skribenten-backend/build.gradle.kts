@@ -7,6 +7,7 @@ val javaTarget: String by System.getProperties()
 plugins {
     application
     kotlin("jvm")
+    kotlin("plugin.serialization") version libs.versions.kotlinVersion
     alias(libs.plugins.ktor)
     alias(libs.plugins.gradle.node)
 }
@@ -134,6 +135,7 @@ dependencies {
     implementation(libs.ktor.server.auth.jwt)
     implementation(libs.ktor.server.caching.headers)
     implementation(libs.ktor.server.callId)
+    implementation(libs.ktor.server.di)
     implementation(libs.ktor.server.callLogging)
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.server.core)

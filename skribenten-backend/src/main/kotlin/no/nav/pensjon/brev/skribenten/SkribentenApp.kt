@@ -1,55 +1,41 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.core.JacksonException
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
-import com.typesafe.config.ConfigParseOptions
-import com.typesafe.config.ConfigResolveOptions
+import com.zaxxer.hikari.HikariDataSource
 import io.ktor.http.*
 import io.ktor.serialization.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.engine.*
+import io.ktor.server.config.getAs
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.callid.*
 import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.plugins.di.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
-import no.nav.pensjon.brev.skribenten.common.InMemoryCache
-import no.nav.pensjon.brev.skribenten.common.Valkey
-import no.nav.pensjon.brev.skribenten.common.oneShotJobs
-import no.nav.pensjon.brev.skribenten.db.DocumentTable
+import no.nav.pensjon.brev.skribenten.common.*
+import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Exception
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenDataException
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenFeilIDatabyggerException
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationMixins
-import no.nav.pensjon.brev.skribenten.serialize.registerMixin
-import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
-import no.nav.pensjon.brev.skribenten.services.HttpClientFactory
-import no.nav.pensjon.brev.skribenten.services.ServiceException
-import org.jetbrains.exposed.v1.core.dao.id.EntityID
-import org.jetbrains.exposed.v1.jdbc.select
+import no.nav.pensjon.brev.skribenten.serialize.*
+import no.nav.pensjon.brev.skribenten.services.*
+import org.jetbrains.exposed.v1.core.*
+import org.jetbrains.exposed.v1.jdbc.*
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.SkribentenApp")
 
@@ -60,10 +46,13 @@ fun main(args: Array<String>) = try {
     throw e
 }
 
+// Er satt i application.conf slik at EngineMain kaller på skribentenApp.
+@Suppress("unused")
 suspend fun Application.skribentenApp() {
-    val skribentenConfig = ConfigFactory.parseMap(environment.config.config("skribenten").toMap())
-    ADGroups.init(skribentenConfig.getConfig("groups"))
-    KrypteringService.init(skribentenConfig.getString("krypteringsnoekkel"))
+    val skribentenConfig = environment.config.config("skribenten").getAs<SkribentenConfig>()
+    val skribentenConfigOld = ConfigFactory.parseMap(environment.config.config("skribenten").toMap())
+    ADGroups.init(skribentenConfigOld.getConfig("groups"))
+    KrypteringService.init(skribentenConfigOld.getString("krypteringsnoekkel"))
 
     install(CallLogging) {
         callIdMdc("x_correlationId")
@@ -142,7 +131,7 @@ suspend fun Application.skribentenApp() {
         allowHeader(HttpHeaders.Authorization)
         allowHeader(HttpHeaders.ContentType)
         allowHeader("X-Request-ID")
-        skribentenConfig.getConfig("cors").also {
+        skribentenConfigOld.getConfig("cors").also {
             val schemes = it.getStringList("schemes")
             it.getString("host").split(",").forEach { host ->
                 allowHost(host, schemes = schemes)
@@ -150,25 +139,33 @@ suspend fun Application.skribentenApp() {
         }
     }
 
-    val valkeyConfig = skribentenConfig.getConfig("valkey")
-    val cache = if (valkeyConfig.getBoolean("enabled")) {
-        Valkey(valkeyConfig)
-    } else {
-        log.warn("Valkey is disabled, this is not recommended for production")
-        InMemoryCache()
+    install(Authentication) {
+        skribentenJwt(skribentenConfig.azureAD)
     }
 
-    val azureADConfig = skribentenConfig.requireAzureADConfig()
-    install(Authentication) {
-        skribentenJwt(azureADConfig)
+    dependencies {
+        provide { skribentenConfig }
+
+        provide<Cache>(::cacheFactory)
+        provide<AuthService>(AzureADService::class)
+        provide<HikariDataSource>(::dataSourceFactory)
+        provide<FeatureToggleService>(UnleashService::class)
     }
-    configureRouting(azureADConfig, skribentenConfig, cache)
+
+    launch {
+        Database.connect(dependencies.resolve<HikariDataSource>())
+        databaseReady.set(true)
+    }
+    Features.init(dependencies.resolve())
+
+    val cache: Cache by dependencies
+    configureRouting(skribentenConfig.azureAD, skribentenConfigOld, cache)
     configureMetrics()
 
     monitor.subscribe(ServerReady) {
         launch {
             delay(5.minutes)
-            oneShotJobs(skribentenConfig) {
+            oneShotJobs(skribentenConfigOld) {
                 job("2026-06-24-document-vedlegghash") {
                     val dokumentIder = transaction {
                         DocumentTable.select(DocumentTable.id).map { it[DocumentTable.id].value }
@@ -180,16 +177,12 @@ suspend fun Application.skribentenApp() {
                             }
                         }
                     }
-
                 }
                 // Sett opp evt. jobber her
             }
         }
     }
 
-    monitor.subscribe(ApplicationStopPreparing) {
-        Features.shutdown()
-    }
     monitor.subscribe(ApplicationStopping) {
         HttpClientFactory.close()
     }

@@ -57,6 +57,7 @@ abstract class BrevredigeringHandlerTestBase {
     @BeforeAll
     fun startDbOnce() {
         SharedPostgres.subscribeAndEnsureDatabaseInitialized(this)
+        Features.override(UnleashToggle("må sørge for at det finnes en FeatureToggleService"), false)
     }
 
     @AfterAll

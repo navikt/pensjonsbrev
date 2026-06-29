@@ -1,28 +1,35 @@
 package no.nav.pensjon.brev.skribenten.common
 
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.typesafe.config.Config
 import io.ktor.utils.io.*
-import io.valkey.DefaultJedisClientConfig
-import io.valkey.HostAndPort
-import io.valkey.JedisPool
+import io.ktor.utils.io.core.Closeable
+import io.valkey.*
 import io.valkey.params.SetParams
+import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.time.Duration
+import kotlin.io.use
+import kotlin.time.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.TimeMark
-import kotlin.time.TimeSource
 
 val defaultTtl = 10.minutes
 
-sealed class Cache {
+sealed class Cache : Closeable {
     val objectMapper = databaseObjectMapper
     abstract suspend fun read(key: String): String?
     abstract suspend fun update(key: String, value: String, ttl: Duration)
 }
+
+private val factoryLogger = LoggerFactory.getLogger(Cache::class.java)
+fun cacheFactory(config: SkribentenConfig): Cache =
+    if (config.valkey.enabled) {
+        Valkey(config.valkey)
+    } else {
+        factoryLogger.warn("Valkey is disabled, this is not recommended for production")
+        InMemoryCache()
+    }
 
 suspend inline fun <K, reified V> Cache.cached(
     omraade: Cacheomraade,
@@ -47,9 +54,8 @@ suspend inline fun <K, reified V> Cache.cached(
         }
 }
 
-class Valkey(config: Config) : Cache() {
+class Valkey(config: ValkeyConfig) : Cache() {
     private val logger = LoggerFactory.getLogger(Valkey::class.java)
-
     private val jedisPool = setupJedis(config)
 
     override suspend fun read(key: String): String? = try {
@@ -81,21 +87,19 @@ class Valkey(config: Config) : Cache() {
         }
     }
 
-    private fun setupJedis(config: Config): JedisPool {
-        val host = config.getString("host")
-        val port = config.getString("port").toInt()
-        val username = config.getString("username")
-        val password = config.getString("password")
-        val ssl = config.getBoolean("ssl")
-
+    private fun setupJedis(config: ValkeyConfig): JedisPool = with(config) {
         return JedisPool(
-            HostAndPort(host, port),
+            HostAndPort(host, port.toInt()),
             DefaultJedisClientConfig.builder()
                 .ssl(ssl)
                 .user(username)
                 .password(password)
                 .build()
         )
+    }
+
+    override fun close() {
+        jedisPool.close()
     }
 }
 
@@ -113,6 +117,10 @@ class InMemoryCache : Cache() {
 
     override suspend fun update(key: String, value: String, ttl: Duration) {
         cache[key] = Value(timesource.markNow() + ttl, value)
+    }
+
+    override fun close() {
+        cache.clear()
     }
 
     private data class Value(val invalidAt: TimeMark, val value: String)
