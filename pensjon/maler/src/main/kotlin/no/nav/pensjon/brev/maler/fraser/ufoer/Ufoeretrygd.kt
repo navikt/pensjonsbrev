@@ -481,66 +481,55 @@ object Ufoeretrygd {
                         bokmal { +fritekst("Sett inn aktuelt tekstvalg") },
                         nynorsk { +fritekst("Sett inn aktuelt tekstvalg") }
                     )
-                }.orShow {
+                }.orShowIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.INNTEKT_HELE_ARET)) {
                     text(
-                        bokmal { +"Inntekten din består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") },
-                        nynorsk { +"Inntekta di består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") }
-                    )
-                    showIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT)) {
-                        text(
-                            bokmal { +" for de " + fritekst("antall mnd") + " gjenstående månedene av året" },
-                            nynorsk { +" for dei " + fritekst("antall mnd") + " gjenverande månadene av året" },
-                        )
-                    }.orShowIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.BARN_FYLLER_18)) {
-                        text(
-                            bokmal { +" for " + fritekst("antall mnd") + " måneder, fordi barnet fyller 18 år i " + fritekst("måned") },
-                            nynorsk { +" for " + fritekst("antall mnd") + " månader, fordi barnet fyller 18 år i " + fritekst("månad") },
-                        )
-                    }
-                    text(
-                        bokmal { +". " },
-                        nynorsk { +". " },
+                        bokmal { +"Inntekten din består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") + ". " },
+                        nynorsk { +"Inntekta di består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") + ". " }
                     )
                     showIf(btFellesInnvilget) {
                         text(
-                            bokmal { +"Din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "s inntekt består av inntekt " + fritekst("erstatt evt med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. AAP eller DP/pensjon fra andre)") + " " },
-                            nynorsk { +"Din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + "s inntekt består av inntekt " + fritekst("erstatt evt med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. AAP eller DP/pensjon fra andre)") + " " }
+                            bokmal { +"Din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "s inntekt består av inntekt " + fritekst("erstatt evt med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. AAP eller DP/pensjon fra andre)") + " fratrukket folketrygdens grunnbeløp. Folketrygdens grunnbeløp er for tiden " + grunnbelop.format() + ". " },
+                            nynorsk { +"Din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + "s inntekt består av inntekt " + fritekst("erstatt evt med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. AAP eller DP/pensjon fra andre)") + " fratrukket folketrygdens grunnbeløp. Grunnbeløpet i folketrygda er for tida " + grunnbelop.format() + ". " }
                         )
-
-                        showIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT)) {
-                            text(
-                                bokmal { +"de " + fritekst("antall mnd") + " gjenstående månedene av året, fratrukket " + fritekst("antall mnd") + "/12 av folketrygdens grunnbeløp. " },
-                                nynorsk { +"dei " + fritekst("antall mnd") + " gjenverande månedane av året, fråtrukke " + fritekst("antall mnd") + "/12 av grunnbeløpet i folketrygda. " },
-                            )
-
-                        }.orShowIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.BARN_FYLLER_18)) {
-                            text(
-                                bokmal { +"for " + fritekst("antall mnd") + " måneder fratrukket " + fritekst("antall mnd") + "/12 av folketrygdens grunnbeløp. " },
-                                nynorsk { +"for " + fritekst("antall mnd") + " månader fråtrukke " + fritekst("antall mnd") + "/12 av grunnbeløpet i folketrygda. " },
-                            )
-                        }.orShow {
-                            text(
-                                bokmal { +"fratrukket folketrygdens grunnbeløp. " },
-                                nynorsk { +"fråtrukket grunnbeløpet i folketrygda. " },
-                            )
-                        }
-
-                        text(
-                            bokmal { +"Folketrygdens grunnbeløp er for tiden " + grunnbelop.format() + ". " },
-                            nynorsk { +"Grunnbeløpet i folketrygda er for tida " + grunnbelop.format() + ". " },
-                        )
-
-                        showIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT)) {
-                            text(
-                                bokmal { +"Fra 1. januar neste år regnes inntekten om for å gjelde hele året. " },
-                                nynorsk { +"Frå 1. januar neste år vert inntekta rekna om for å gjelde heile året. " },
-                            )
-                        }
                     }
                     showIf(btFellesInnvilget and btSerkullInnvilget) {
                         text(
-                            bokmal { +" Barnetillegget for barn som ikke bor med begge foreldre er kun beregnet utfra din inntekt." },
-                            nynorsk { +" Barnetillegget for barn som ikkje bur med begge foreldre er kun berekna utfra inntekta di." },
+                            bokmal { +" Barnetillegget for barn som ikke bor med begge foreldre er kun beregnet utfra din inntekt. " },
+                            nynorsk { +" Barnetillegget for barn som ikkje bur med begge foreldre er kun berekna utfra inntekta di. " },
+                        )
+                    }
+                }.orShowIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT)) {
+                    text(
+                        bokmal { +"Inntekten din består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") + " for de " + fritekst("antall mnd") + " gjenstående månedene av året." },
+                        nynorsk { +"Inntekta di består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") + " for dei " + fritekst("antall mnd") + " gjenverande månadene av året." }
+                    )
+                    showIf(btFellesInnvilget) {
+                        text(
+                            bokmal { +"Din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "s inntekt består av inntekt " + fritekst("erstatt evt med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. AAP eller DP/pensjon fra andre)") + " de " + fritekst("antall mnd") + " gjenstående månedene av året, fratrukket " + fritekst("antall mnd") + "/12 av folketrygdens grunnbeløp. Folketrygdens grunnbeløp er for tiden " + grunnbelop.format() + ". Fra 1. januar neste år regnes inntekten om for å gjelde hele året. " },
+                            nynorsk { +"Din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + "s inntekt består av inntekt " + fritekst("erstatt evt med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. AAP eller DP/pensjon fra andre)") + " dei " + fritekst("antall mnd") + " gjenverande månedane av året, fråtrukke " + fritekst("antall mnd") + "/12 av grunnbeløpet i folketrygda. Grunnbeløpet i folketrygda er for tida " + grunnbelop.format() + ". Frå 1. januar neste år vert inntekta rekna om for å gjelde heile året. " }
+                        )
+                    }
+                    showIf(btFellesInnvilget and btSerkullInnvilget) {
+                        text(
+                            bokmal { +"Barnetillegget for barn som ikke bor med begge foreldre er kun beregnet utfra din inntekt. " },
+                            nynorsk { +"Barnetillegget for barn som ikkje bur med begge foreldre er kun berekna utfra inntekta di." },
+                        )
+                    }
+                }.orShowIf(periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.BARN_FYLLER_18)) {
+                    text(
+                        bokmal { +"Inntekten din består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") + " for " + fritekst("antall mnd") + " måneder, fordi barnet fyller 18 år i " + fritekst("måned") + ". " },
+                        nynorsk { +"Inntekta di består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") + " for " + fritekst("antall mnd") + " månader, fordi barnet fyller 18 år i " + fritekst("månad") + ". " }
+                    )
+                    showIf(btFellesInnvilget) {
+                        text(
+                            bokmal { +"Din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "s inntekt består av inntekt " + fritekst("erstatt evt med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. AAP eller DP/pensjon fra andre)") + " for " + fritekst("antall mnd") + " måneder fratrukket " + fritekst("antall mnd") + "/12 av folketrygdens grunnbeløp. Folketrygdens grunnbeløp er for tiden " + grunnbelop.format() + ". " },
+                            nynorsk { +"Din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + "s inntekt består av inntekt " + fritekst("erstatt evt med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. AAP eller DP/pensjon fra andre)") + " for " + fritekst("antall mnd") + " månader fråtrukke " + fritekst("antall mnd") + "/12 av grunnbeløpet i folketrygda. Grunnbeløpet i folketrygda er for tida " + grunnbelop.format() + ". " }
+                        )
+                    }
+                    showIf(btFellesInnvilget and btSerkullInnvilget) {
+                        text(
+                            bokmal { +" Barnetillegget for barn som ikke bor med begge foreldre er kun beregnet utfra din inntekt. " },
+                            nynorsk { +" Barnetillegget for barn som ikkje bur med begge foreldre er kun berekna utfra inntekta di. " },
                         )
                     }
                 }
