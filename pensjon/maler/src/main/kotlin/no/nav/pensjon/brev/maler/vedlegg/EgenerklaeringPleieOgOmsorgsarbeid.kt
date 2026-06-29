@@ -9,12 +9,10 @@ import no.nav.pensjon.brev.api.model.vedlegg.selectors.egenerklaeringOmsorgsarbe
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresse
 import no.nav.pensjon.brev.api.model.vedlegg.selectors.returAdresse.*
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -72,32 +70,22 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
     }
 
     paragraph {
-        formText(
-            Size.LONG, { text(
-                bokmal { +"Navn på pleietrengende:" },
-                nynorsk { +"Namn på pleietrengande:" },
-                english { +"I have provided care work for:" }
-            ) }
+        text(
+            bokmal { +"Navn på pleietrengende: ____________________________________________________________" },
+            nynorsk { +"Namn på pleietrengande: ___________________________________________________________" },
+            english { +"I have provided care work for: ___________________________________________________" },
         )
-
-        formChoice(
-            { text(
-                bokmal { +"Arbeidet har vart i:" },
-                nynorsk { +"Arbeidet har vart i:" },
-                english { +"The work has lasted for:" }
-            ) }
-        ) {
-            choice(
-                bokmal { +"minst seks måneder" },
-                nynorsk { +"minst seks månader" },
-                english { +"at least six months" }
-            )
-            choice(
-                bokmal { +"under seks måneder" },
-                nynorsk { +"under seks månader" },
-                english { +"less than six months" }
-            )
-        }
+        newline()
+        text(
+            bokmal { +"Arbeidet har vart i:" },
+            nynorsk { +"Arbeidet har vart i:" },
+            english { +"The work has lasted for:" },
+        )
+        newline()
+        text(bokmal { +"☐ minst seks måneder" }, nynorsk { +"☐ minst seks månader" }, english { +"☐ at least six months" })
+        newline()
+        text(bokmal { +"☐ under seks måneder" }, nynorsk { +"☐ under seks månader" }, english { +"☐ less than six months" })
+        newline()
     }
 
     title2 {
@@ -108,33 +96,26 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
         )
     }
     paragraph {
-        formText(
-            size = Size.SHORT,
-            vspace = false,
-            prompt = {
-                text (
-                    bokmal { +"Oppgi dato for opphøret:" },
-                    nynorsk { +"Dato for opphøyr:" },
-                    english { +"State date if ceased:" }
-                )
-            }
+        text(
+            bokmal { +"Oppgi dato for opphøret: _________________________" },
+            nynorsk { +"Dato for opphøyr: ________________________________" },
+            english { +"State date if ceased: ____________________________" },
         )
-        formText(
-            size = Size.LONG,
-            vspace = false,
-            prompt = { text(
-                bokmal { +"Oppgi årsaken til opphøret:" },
-                nynorsk { +"Grunnen til opphøyr: " },
-                english { +"State reason if ceased" }
-            ) }
+        newline()
+        text(
+            bokmal { +"Oppgi årsaken til opphøret: ____________________________________________________________" },
+            nynorsk { +"Grunnen til opphøyr: ___________________________________________________________________" },
+            english { +"State reason if ceased: ________________________________________________________________" },
         )
-
-        formText(size = Size.SHORT, prompt = { text(bokmal { +"Dato:" }, nynorsk { +"Dato:" }, english { +"Date" }) })
-        formText(
-            size = Size.LONG,
-            vspace = false,
-            prompt = { text(bokmal { +"Underskrift:" }, nynorsk { +"Underskrift:" }, english { +"Signature:" }) }
+        newline()
+        text(bokmal { +"Dato: _________________________" }, nynorsk { +"Dato: _________________________" }, english { +"Date: _________________________" })
+        newline()
+        text(
+            bokmal { +"Underskrift: ____________________________________________________________" },
+            nynorsk { +"Underskrift: ____________________________________________________________" },
+            english { +"Signature: ______________________________________________________________" },
         )
+        newline()
     }
 
     paragraph {

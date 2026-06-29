@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.vedlegg.alltidValgbare
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -18,58 +17,33 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
     includeSakspart = false
 ) {
     paragraph {
-        formText(
-            Size.FILL,
-            {
-                text(
-                    bokmal { +"Norsk personnummer (11 siffer):" },
-                    english { +"Norwegian Identity number (11 digits):" }
-                )
-            }
+        text(
+            bokmal { +"Norsk personnummer (11 siffer): ___________________________________________" },
+            english { +"Norwegian Identity number (11 digits): ___________________________________" },
         )
     }
     paragraph {
-        formText(
-            Size.FILL,
-            {
-                text(
-                    bokmal { +"Navn:" },
-                    english { +"Name:" }
-                )
-            }
+        text(
+            bokmal { +"Navn: ___________________________________________________________________" },
+            english { +"Name: ___________________________________________________________________" },
         )
     }
     paragraph {
-        formText(
-            Size.FILL,
-            {
-                text(
-                    bokmal { +"Adresse:" },
-                    english { +"Address:" }
-                )
-            }
+        text(
+            bokmal { +"Adresse: ________________________________________________________________" },
+            english { +"Address: ________________________________________________________________" },
         )
     }
     paragraph {
-        formText(
-            Size.FILL,
-            {
-                text(
-                    bokmal { +"IBAN-nummer/ kontonummer:" },
-                    english { +"IBAN-number/ account number:" }
-                )
-            }
+        text(
+            bokmal { +"IBAN-nummer/ kontonummer: ________________________________________________" },
+            english { +"IBAN-number/ account number: _____________________________________________" },
         )
     }
     paragraph {
-        formText(
-            Size.FILL,
-            {
-                text(
-                    bokmal { +"SWIFT/BIC-kode:" },
-                    english { +"SWIFT/ BIC-code:" }
-                )
-            }
+        text(
+            bokmal { +"SWIFT/BIC-kode: __________________________________________________________" },
+            english { +"SWIFT/ BIC-code: _________________________________________________________" },
         )
     }
     paragraph {
@@ -79,36 +53,21 @@ val skjemaForBankopplysninger = createAttachment<LangBokmalEnglish, EmptyVedlegg
         )
     }
     paragraph {
-        formText(
-            Size.FILL,
-            {
-                text(
-                    bokmal { +"Bankens navn:" },
-                    english { +"Name of your bank:" }
-                )
-            }
+        text(
+            bokmal { +"Bankens navn: ___________________________________________________________" },
+            english { +"Name of your bank: _______________________________________________________" },
         )
     }
     paragraph {
-        formText(
-            Size.FILL,
-            {
-                text(
-                    bokmal { +"Bankens adresse:" },
-                    english { +"Bank address:" }
-                )
-            }
+        text(
+            bokmal { +"Bankens adresse: ________________________________________________________" },
+            english { +"Bank address: ___________________________________________________________" },
         )
     }
     paragraph {
-        formText(
-            Size.FILL,
-            {
-                text(
-                    bokmal { +"Underskrift:" },
-                    english { +"Signature:" }
-                )
-            }
+        text(
+            bokmal { +"Underskrift: ____________________________________________________________" },
+            english { +"Signature: ______________________________________________________________" },
         )
     }
     paragraph {

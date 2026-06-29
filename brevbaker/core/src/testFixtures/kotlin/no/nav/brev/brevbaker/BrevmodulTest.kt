@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker
 
+import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -254,6 +255,7 @@ abstract class BrevmodulTest(
 
     @ParameterizedTest(name = "{3}, {2}", allowZeroInvocations = true)
     @MethodSource("filtrerAlltidValgbareVedlegg")
+    @Tag(TestTags.INTEGRATION_TEST)
     fun <T : VedleggData> testAlltidValgbareVedlegg(
         template: AttachmentTemplate<LanguageSupport, T>,
         fixtures: T,
@@ -267,7 +269,7 @@ abstract class BrevmodulTest(
                     fixtures,
                     spraak,
                     FellesFactory.felles,
-                ).renderTestHtml("${clazzName}_${spraak.javaClass.simpleName}", "test_alltid_valgbare_vedlegg")
+                ).renderTestPDF("${clazzName}_${spraak.javaClass.simpleName}", Path.of("test_alltid_valgbare_vedlegg"))
             }
     }
 
