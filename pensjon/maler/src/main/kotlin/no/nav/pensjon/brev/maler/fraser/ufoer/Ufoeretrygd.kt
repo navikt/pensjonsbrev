@@ -477,7 +477,10 @@ object Ufoeretrygd {
 
             paragraph {
                 showIf(periodisertInntekt.isNull() or periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.INGEN)) {
-                    fritekst("Sett inn aktuelt tekstvalg")
+                    text(
+                        bokmal { +fritekst("Sett inn aktuelt tekstvalg") },
+                        nynorsk { +fritekst("Sett inn aktuelt tekstvalg") }
+                    )
                 }.orShow {
                     text(
                         bokmal { +"Inntekten din består av uføretrygd " + fritekst("ta evt også med arbeidsinntekt/hvilke ytelser fra Nav (f.eks. DP/pensjon fra andre)") },
