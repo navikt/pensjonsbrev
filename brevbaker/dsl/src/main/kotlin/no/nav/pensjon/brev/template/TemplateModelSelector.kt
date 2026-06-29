@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
-
 interface TemplateModelSelector<Model : Any, Property> : StableHash {
     val className: String
     val propertyName: String
@@ -18,13 +16,6 @@ interface TemplateModelSelector<Model : Any, Property> : StableHash {
 
 data class SimpleSelector<Model : Any, Property>(
     override val className: String,
-    override val propertyName: String,
-    override val propertyType: String,
-    override val selector: Model.() -> Property
-) : TemplateModelSelector<Model, Property>
-
-data class SaksbehandlervalgSelector<Model: Any, Property>(
-    override val className: String = SaksbehandlervalgVerdi::class.qualifiedName!!,
     override val propertyName: String,
     override val propertyType: String,
     override val selector: Model.() -> Property

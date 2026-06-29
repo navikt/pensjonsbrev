@@ -1012,25 +1012,6 @@ public final class no/nav/pensjon/brev/template/SaksbehandlervalgKt {
 	public static final fun saksbehandlervalg (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brev/template/SaksbehandlerValgBuilder;
 }
 
-public final class no/nav/pensjon/brev/template/SaksbehandlervalgSelector : no/nav/pensjon/brev/template/TemplateModelSelector {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Ljava/lang/String;
-	public final fun component4 ()Lkotlin/jvm/functions/Function1;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/SaksbehandlervalgSelector;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brev/template/SaksbehandlervalgSelector;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/SaksbehandlervalgSelector;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getClassName ()Ljava/lang/String;
-	public fun getPropertyName ()Ljava/lang/String;
-	public fun getPropertyType ()Ljava/lang/String;
-	public fun getSelector ()Lkotlin/jvm/functions/Function1;
-	public fun hashCode ()I
-	public fun stableHashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class no/nav/pensjon/brev/template/SimpleSelector : no/nav/pensjon/brev/template/TemplateModelSelector {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
 	public final fun component1 ()Ljava/lang/String;
