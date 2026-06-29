@@ -35,6 +35,7 @@ data class VarselAfpEtteroppgjoerForeloepigAutoDto(
     val tidligereArbeidsInntektBeregnet: Kroner,
     val utbetaltAfp: Kroner,
     val periode: Periode,
+    val toleranseBeloep: Kroner,
 ) : AutobrevData {
 
     /**
