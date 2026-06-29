@@ -553,36 +553,6 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                 }
             }
 
-            sealed class Form<out Lang : LanguageSupport> : ParagraphContent<Lang>() {
-                class Text<out Lang : LanguageSupport> internal constructor(
-                    val prompt: TextElement<Lang>,
-                    val size: Size,
-                    val vspace: Boolean = true,
-                ) : Form<Lang>(), StableHash by StableHash.of(prompt, StableHash.of(size), StableHash.of(vspace)) {
-                    enum class Size { NONE, SHORT, LONG, FILL }
-
-                    override fun equals(other: Any?): Boolean {
-                        if (other !is Text<*>) return false
-                        return prompt == other.prompt && size == other.size && vspace == other.vspace
-                    }
-                    override fun hashCode() = Objects.hash(size, prompt, vspace)
-                    override fun toString() = "Text(prompt=$prompt, size=$size, vspace=$vspace)"
-                }
-
-                class MultipleChoice<out Lang : LanguageSupport> internal constructor(
-                    // TODO: Denne bør ikke være TextElement, bør være Element.OutlineContent.ParagraphContent.Text
-                    val prompt: TextElement<Lang>,
-                    val choices: List<ParagraphContent.Text<Lang>>,
-                    val vspace: Boolean = true,
-                ) : Form<Lang>(), StableHash by StableHash.of(prompt, StableHash.of(choices), StableHash.of(vspace)) {
-                    override fun equals(other: Any?): Boolean {
-                        if (other !is MultipleChoice<*>) return false
-                        return prompt == other.prompt && choices == other.choices && vspace == other.vspace
-                    }
-                    override fun hashCode() = Objects.hash(choices, prompt, vspace)
-                    override fun toString() = "MultipleChoice(prompt=$prompt, choices=$choices, vspace=$vspace)"
-                }
-            }
         }
     }
 

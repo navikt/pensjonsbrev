@@ -145,10 +145,10 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
 
     private fun FlowContent.renderParagraphContent(element: ParagraphContent) {
         when (element) {
-            is ParagraphContent.Form -> renderForm(element)
             is ParagraphContent.Text -> renderTextContent(element)
             is ParagraphContent.ItemList -> renderList(element)
             is ParagraphContent.Table -> renderTable(element)
+            else -> {}
         }
     }
 
@@ -177,35 +177,6 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             is ParagraphContent.Text.Variable -> text(element.text)
             is ParagraphContent.Text.Literal -> text(element.text)
             is ParagraphContent.Text.NewLine -> br
-        }
-    }
-
-    private fun FlowContent.renderForm(element: ParagraphContent.Form) {
-        when (element) {
-            is ParagraphContent.Form.MultipleChoice -> {
-                div(classes("form-choice")) {
-                    div { renderText(element.prompt) }
-                    element.choices.forEach {
-                        div {
-                            div(classes("form-choice-checkbox"))
-                            div { renderText(it.text) }
-                        }
-                    }
-                }
-            }
-
-            is ParagraphContent.Form.Text -> {
-                div(classes("form-text")) {
-                    div { renderText(element.prompt) }
-                    val size = when (element.size) {
-                        ParagraphContent.Form.Text.Size.NONE -> "none"
-                        ParagraphContent.Form.Text.Size.SHORT -> "short"
-                        ParagraphContent.Form.Text.Size.LONG -> "long"
-                        ParagraphContent.Form.Text.Size.FILL -> "fill"
-                    }
-                    div(classes("form-line-$size")) { }
-                }
-            }
         }
     }
 

@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -434,92 +433,4 @@ val testVedlegg = createAttachment<LangBokmalNynorsk, EmptyVedleggData>(
         }
     }
 
-    // ── TITLE1 + skjemadel ──────────────────────────────────────────────────────
-    title1 {
-        text(bokmal { +"Egenerklæring – fyll ut og returner" }, nynorsk { +"Eigenerklæring – fyll ut og returner" })
-    }
-
-    paragraph {
-        text(
-            bokmal { +"Fyll ut alle feltene og send skjemaet til NAV. Ufullstendig utfylt skjema kan forsinke saksbehandlingen." },
-            nynorsk { +"Fyll ut alle felta og send skjemaet til NAV. Ufullstendig utfylt skjema kan forseinka sakshandsaminga." }
-        )
-    }
-
-    // ── formText – ulike størrelser ──────────────────────────────────────────────
-    paragraph {
-        formText(
-            size = Size.LONG,
-            prompt = {
-                text(bokmal { +"Saksnummer (" + testVerdi1 + "):" }, nynorsk { +"Saksnummer (" + testVerdi1 + "):" })
-            },
-            vspace = false
-        )
-        formText(
-            size = Size.SHORT,
-            prompt = {
-                text(bokmal { +"Referanse (" + testVerdi2 + "):" }, nynorsk { +"Referanse (" + testVerdi2 + "):" })
-            },
-            vspace = false
-        )
-        formText(
-            size = Size.FILL,
-            prompt = {
-                text(bokmal { +"Adresse:" }, nynorsk { +"Adresse:" })
-            }
-        )
-        formText(
-            size = Size.SHORT,
-            vspace = false,
-            prompt = {
-                text(bokmal { +"Dato:" }, nynorsk { +"Dato:" })
-            }
-        )
-        formText(
-            size = Size.LONG,
-            vspace = false,
-            prompt = {
-                text(bokmal { +"Underskrift:" }, nynorsk { +"Underskrift:" })
-            }
-        )
-    }
-
-    // ── formChoice ───────────────────────────────────────────────────────────────
-    paragraph {
-        formChoice(
-            prompt = {
-                text(
-                    bokmal { +"Har du hatt inntekt fra utlandet de siste 12 månedene?" },
-                    nynorsk { +"Har du hatt inntekt frå utlandet dei siste 12 månadene?" }
-                )
-            }
-        ) {
-            choice(bokmal { +"Ja" }, nynorsk { +"Ja" })
-            choice(bokmal { +"Nei" }, nynorsk { +"Nei" })
-            choice(
-                bokmal { +"Vet ikke" },
-                nynorsk { +"Veit ikkje" }
-            )
-        }
-    }
-    for (lipsum in lipsums.take(2)) {
-        paragraph { text(bokmal { +lipsum }, nynorsk { +lipsum }) }
-    }
-
-    paragraph{
-
-        formChoice(
-            prompt = {
-                text(
-                    bokmal { +"Hvilken type bolig bor du i?" },
-                    nynorsk { +"Kva for ein type bustad bur du i?" }
-                )
-            },
-            vspace = true
-        ) {
-            choice(bokmal { +"Selveierbolig" }, nynorsk { +"Sjølveigarbustad" })
-            choice(bokmal { +"Leiebolig" }, nynorsk { +"Leigebustad" })
-            choice(bokmal { +"Institusjon / bofellesskap" }, nynorsk { +"Institusjon / bufellesskap" })
-        }
-    }
 }

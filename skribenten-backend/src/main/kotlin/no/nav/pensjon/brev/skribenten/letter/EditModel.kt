@@ -283,8 +283,8 @@ fun ParagraphContent.toEdit(parentId: Int?): Edit.ParagraphContent =
     when (this) {
         is ParagraphContent.ItemList -> Edit.ParagraphContent.ItemList(id = id, items = items.map { it.toEdit(id) }, parentId = parentId, listType = listType)
         is ParagraphContent.Text -> toEdit(parentId)
-        is ParagraphContent.Form -> throw UnsupportedOperationException("Skribenten does not support element type: $type")
         is ParagraphContent.Table -> toEdit(parentId)
+        else -> throw UnsupportedOperationException("Skribenten does not support element type: $type")
     }
 
 fun ParagraphContent.Text.toEdit(parentId: Int?): Edit.ParagraphContent.Text =
@@ -399,7 +399,5 @@ fun Edit.ParagraphContent.Table.Row.toMarkup(): ParagraphContent.Table.Row =
 
 fun Edit.ParagraphContent.Table.Cell.toMarkup(): ParagraphContent.Table.Cell =
     ParagraphContentImpl.TableImpl.CellImpl(id = id ?: 0, text = text.toMarkup())
-
-
 
 

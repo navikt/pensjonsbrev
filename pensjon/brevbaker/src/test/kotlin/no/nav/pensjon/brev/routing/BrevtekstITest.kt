@@ -23,7 +23,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title1
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title2
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title3
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.MultipleChoice
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.Header
@@ -124,18 +123,14 @@ private fun finnTekst(block: Block): List<String> = when (block) {
 
 private fun finnTekstForParagraph(paragraph: Paragraph): List<String> = paragraph.content.flatMap {
     when (it) {
-        is MultipleChoice -> finnTekstForMultipleChoice(it)
-        is ParagraphContent.Form.Text -> it.prompt.map { t -> t.text }
         is ItemList -> finnTekstForItemList(it)
         is Table -> finnTekstForTabell(it)
         is Literal -> listOf(it.text)
         is NewLine -> listOf(it.text)
         is Variable -> listOf(it.text)
+        else -> emptyList()
     }
 }
-
-private fun finnTekstForMultipleChoice(element: MultipleChoice): List<String> =
-    element.prompt.map { it.text } + element.choices.map { it.text }.map { it.tekst() }
 
 private fun finnTekstForTabell(table: Table): List<String> {
     val header = finnTekstForHeader(table.header)
