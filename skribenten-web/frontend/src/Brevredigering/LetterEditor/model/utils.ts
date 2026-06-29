@@ -10,7 +10,6 @@ import {
   type Identifiable,
   type Item,
   type ItemList,
-  LITERAL,
   type ListType,
   type LiteralValue,
   type NewLine,

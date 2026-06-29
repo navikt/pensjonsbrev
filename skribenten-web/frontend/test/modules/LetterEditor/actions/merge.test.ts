@@ -7,7 +7,6 @@ import {
   type AnyBlock,
   type Item,
   type ItemList,
-  LITERAL,
   ListType,
   type LiteralValue,
   type ParagraphBlock,

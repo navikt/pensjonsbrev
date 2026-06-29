@@ -109,6 +109,7 @@ export const editedLetter = ({
         newLiteral({ id: -1_114_690_237, parentId: 272_720_182, text: "." }),
       ],
       deletedContent: [],
+      missingFromTemplate: false,
       type: "PARAGRAPH",
     },
     {
@@ -125,6 +126,7 @@ export const editedLetter = ({
         newLiteral({ id: 1_838_606_639, parentId: 822_540_105, text: " weeks." }),
       ],
       deletedContent: [],
+      missingFromTemplate: false,
       type: "PARAGRAPH",
     },
   ],
@@ -148,7 +150,7 @@ export const brevInfo = (args: {
   spraak?: SpraakKode;
   journalpostId?: Nullable<number>;
   vedtaksId?: Nullable<number>;
-  saksId?: string;
+  saksId?: number;
 }): BrevInfo => ({
   id: args.id ?? 1,
   opprettetAv: args.opprettetAv ?? { id: "Z990297", navn: "Opp R. av" },
@@ -165,13 +167,12 @@ export const brevInfo = (args: {
   spraak: args.spraak ?? SpraakKode.Engelsk,
   journalpostId: args.journalpostId ?? null,
   vedtaksId: args.vedtaksId ?? null,
-  saksId: args.saksId ?? "22981081",
+  saksId: args.saksId ?? 22981081,
 });
 
 function defaultSignatur(): Signatur {
   return {
     hilsenTekst: "Sincerely",
-    saksbehandlerRolleTekst: "Caseworker",
     saksbehandlerNavn: "Sak S. Behandler",
     attesterendeSaksbehandlerNavn: "Attest S. Behandler",
     navAvsenderEnhet: "Nav Arbeid og ytelser Sørlandet",
@@ -181,14 +182,12 @@ function defaultSignatur(): Signatur {
 export const signatur = (
   args: {
     hilsenTekst?: string;
-    saksbehandlerRolleTekst?: string;
     saksbehandlerNavn?: string;
     attesterendeSaksbehandlerNavn?: string;
     navAvsenderEnhet?: string;
   } = {},
 ): Signatur => ({
   hilsenTekst: args.hilsenTekst ?? "Sincerely",
-  saksbehandlerRolleTekst: args.saksbehandlerRolleTekst ?? "Caseworker",
   saksbehandlerNavn: args.saksbehandlerNavn ?? "Sak S. Behandler",
   attesterendeSaksbehandlerNavn: args.attesterendeSaksbehandlerNavn ?? "Attest S. Behandler",
   navAvsenderEnhet: args.navAvsenderEnhet ?? "Nav Arbeid og ytelser Sørlandet",
@@ -244,15 +243,32 @@ function makeTitle<T extends typeof TITLE1 | typeof TITLE2 | typeof TITLE3>(
   type: T;
   deletedContent: number[];
   content: TextContent[];
+  missingFromTemplate: boolean;
 } {
   if ("content" in contentOrArgs && !("text" in contentOrArgs)) {
     const args = contentOrArgs as TitleArgs;
     const id = args.id ?? randomId();
-    return { id, parentId: null, editable: true, type, deletedContent: [], content: withParent(args.content, id) };
+    return {
+      id,
+      parentId: null,
+      editable: true,
+      type,
+      deletedContent: [],
+      content: withParent(args.content, id),
+      missingFromTemplate: false,
+    };
   }
   const id = randomId();
   const content = [contentOrArgs as TextContent, ...rest];
-  return { id, parentId: null, editable: true, type, deletedContent: [], content: withParent(content, id) };
+  return {
+    id,
+    parentId: null,
+    editable: true,
+    type,
+    deletedContent: [],
+    content: withParent(content, id),
+    missingFromTemplate: false,
+  };
 }
 
 export function title1(contentOrArgs: TextContent | TitleArgs, ...rest: TextContent[]): Title1Block {
@@ -301,7 +317,7 @@ export function variable(text: string): VariableValue {
 }
 
 export function newLine(): NewLine {
-  return { id: randomId(), parentId: null, type: NEW_LINE, text: "" };
+  return { id: randomId(), parentId: null, type: NEW_LINE, text: "", fontType: "PLAIN" };
 }
 
 export function itemList(args: {

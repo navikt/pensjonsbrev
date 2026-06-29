@@ -14,7 +14,9 @@ import {
 import {
   type AnyBlock,
   type ItemList,
+  LITERAL,
   type LiteralValue,
+  NEW_LINE,
   type ParagraphBlock,
   TITLE_INDEX,
   type Title1Block,
@@ -286,7 +288,7 @@ function mergeFromItemList(draft: Draft<LetterEditorState>, literalIndex: ItemCo
   const block = blocks[literalIndex.blockIndex];
 
   const itemList = block.content[literalIndex.contentIndex];
-  if (itemList.type === ITEM_LIST) {
+  if (isItemList(itemList)) {
     const currentItem = itemList.items[literalIndex.itemIndex];
 
     // If the adjacent content within the same item is a NEW_LINE, remove it (and merge surrounding

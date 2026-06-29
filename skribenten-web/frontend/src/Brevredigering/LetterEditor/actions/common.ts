@@ -23,7 +23,6 @@ import {
   type Identifiable,
   type Item,
   type ItemList,
-  LITERAL,
   ListType,
   type LiteralValue,
   type NewLine,
@@ -344,7 +343,7 @@ export function splitMixedListBlock(draft: Draft<LetterEditorState>, blockIndex:
   if (!isParagraph(block) || block.content.length <= 1) return 1;
 
   // Step 1: merge adjacent same-type ItemLists within this block.
-  mergeSameTypeListsInBlock(block.content, block.deletedContent, block.id);
+  mergeSameTypeListsInBlock(block.content, block.deletedContent, block.id ?? null);
 
   // Step 2: check whether a split is needed at all.
   // Only id:null (user-created) lists must be isolated in their own block.
@@ -825,7 +824,6 @@ export function newItemList(args: {
     editedListType: args.editedListType ?? null,
     items: args.items,
     deletedItems: args.deletedItems ?? [],
-    listType: "PUNKTLISTE",
   };
 }
 

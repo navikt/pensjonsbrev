@@ -38,7 +38,6 @@ import {
   ElementTags,
   FontType,
   ITEM_LIST,
-  LITERAL,
   ListType,
   type LiteralValue,
   TITLE_INDEX,
