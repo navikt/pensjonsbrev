@@ -712,9 +712,12 @@ object Innvilgelse {
 
     data class Virkningstidspunkt(
         val pe: Expression<PEgruppe10>,
+        val kravFremsattDato: Expression<LocalDate>,
         val virkningbegrunnelseStdbegr_22_12_1_5: Expression<Boolean>,
     ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            val kravFremsattDatoEvtMottattDato = kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato())
+
             title1 {
                 text(
                     bokmal { +"Dette er virkningstidspunktet ditt" },
@@ -776,8 +779,8 @@ object Innvilgelse {
                 ifNotNull(pe.vedtaksdata_kravhode_onsketvirkningsdato()) { virkningsdato ->
                     paragraph {
                         text(
-                            bokmal { +"Du har fått innvilget uføretrygd fra " + virkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Vi mottok søknaden din " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " },
-                            nynorsk { +"Du har fått innvilga uføretrygd frå " + virkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Vi fekk søknaden din " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " },
+                            bokmal { +"Du har fått innvilget uføretrygd fra " + virkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Vi mottok søknaden din " + kravFremsattDatoEvtMottattDato.format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " },
+                            nynorsk { +"Du har fått innvilga uføretrygd frå " + virkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Vi fekk søknaden din " + kravFremsattDatoEvtMottattDato.format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " },
                         )
                     }
                 }
