@@ -4,6 +4,9 @@ import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSLImpl
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -260,6 +263,44 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun hashCode() = Objects.hash(operation, doc)
         override fun toString(): String = "SafeCall(operation=$operation,doc=$doc)"
 
+    }
+
+
+    class EttSaksbehandlervalg<In1 : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>, Out, Type : SaksbehandlervalgVerdi> : BinaryOperation<In1, String, Out>() {
+        override fun apply(first: In1, second: String): Out {
+            /*val sbvSelector = object : TemplateModelSelector<In1, SaksbehandlervalgIDSLImpl> {
+                override val className = SaksbehandlervalgVerdi::class.qualifiedName!!
+                override val propertyName = "saksbehandlerValg"
+                override val propertyType = SaksbehandlervalgIDSLImpl::class.qualifiedName!!
+                override val selector: In1.() -> SaksbehandlervalgIDSLImpl = { this.saksbehandlerValg as SaksbehandlervalgIDSLImpl }
+            }*/
+            val t: Type = (first.saksbehandlerValg as SaksbehandlervalgIDSLImpl).get(second)
+            return t.unwrap() as Out
+
+//            val sbv = Select(sbvSelector).apply(in1)
+
+            /*val templateModelSelector = object : TemplateModelSelector<SaksbehandlervalgIDSLImpl, Out> {
+                override val className = SaksbehandlervalgVerdi::class.qualifiedName!!
+                override val propertyName = when (type) {
+                    is SaksbehandlervalgVerdi.Bool -> "bool"
+                    is SaksbehandlervalgVerdi.Enum<*> -> TODO()
+                    is SaksbehandlervalgVerdi.Integer -> TODO()
+                    is SaksbehandlervalgVerdi.Text -> TODO()
+                }
+                override val propertyType = when (type) {
+                    is SaksbehandlervalgVerdi.Bool -> "kotlin.Boolean"
+                    is SaksbehandlervalgVerdi.Enum<*> -> TODO()
+                    is SaksbehandlervalgVerdi.Integer -> TODO()
+                    is SaksbehandlervalgVerdi.Text -> TODO()
+                }
+                override val selector: SaksbehandlervalgIDSLImpl.() -> Out = { this.get() as Out }
+            }
+
+            val first = Expression.UnaryInvoke(input, Select(templateModelSelector))
+            return Select(templateModelSelector).apply(input)*/
+        }
+
+        override fun stableHashCode() = StableHash.of(StableHash.of("UnaryOperation.EttSaksbehandlervalg")).stableHashCode()
     }
 
 }

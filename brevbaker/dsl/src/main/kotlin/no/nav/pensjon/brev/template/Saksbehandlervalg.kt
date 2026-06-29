@@ -6,13 +6,31 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSLImpl
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import kotlin.also
 
 class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> internal constructor(val id: String, val displayText: String, val scope: TemplateRootScope<*, LetterData>) {
     init {
         require(scope.saksbehandlervalg.containsKey(id).not()) { "Saksbehandlervalg med id $id allerede definert" }
     }
-    fun bool(default: Boolean = false): Expression<Boolean> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
+
+    fun bool(default: Boolean = false): Expression<Boolean> {
+        val selector = SaksbehandlervalgSelector<RedigerbarBrevdata<SaksbehandlervalgIDSL, *>, SaksbehandlervalgVerdi.Bool>(
+            propertyName = id,
+            propertyType = SaksbehandlervalgVerdi::class.qualifiedName!!,
+            selector = { (saksbehandlerValg as SaksbehandlervalgIDSLImpl).get(id) } // TODO denne er sårbar
+        )
+        val unaryInvoke = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector))
+        val unaryInvoke2 = Expression.UnaryInvoke(unaryInvoke, UnaryOperation.Saksbehandlervalg<Boolean>("bool", "kotlin.Boolean"))
+
+        val alternativt: Expression.BinaryInvoke<LetterData, String, Boolean> =
+            Expression.BinaryInvoke(scope.argument, id.expr(), BinaryOperation.EttSaksbehandlervalg<LetterData, Boolean, SaksbehandlervalgVerdi.Bool>())
+
+        return alternativt
+            .also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Bool(default, displayText)) }
+    }
+
+    fun boolOrig(default: Boolean = false): Expression<Boolean> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selector(id)))
         .bool()
         .also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Bool(default, displayText)) }
 
