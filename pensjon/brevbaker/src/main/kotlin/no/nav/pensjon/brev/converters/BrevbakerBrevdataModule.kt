@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSLImpl
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
+import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 
 object BrevbakerBrevdataModule : SimpleModule() {
     private fun readResolve(): Any = BrevbakerBrevdataModule
@@ -37,6 +38,8 @@ object BrevbakerBrevdataModule : SimpleModule() {
         override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): RedigerbarBrevdata<*,*> =
             ctxt.readValue(parser, GenericRedigerbarBrevdata::class.java)
     }
+
+    @OptIn(BrevbakerDSLInternal::class)
     private object SaksbehandlervalgIDSLDeserializer : JsonDeserializer<SaksbehandlervalgIDSL>() {
         override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgIDSL {
             val root = parser.codec.readTree<JsonNode>(parser)

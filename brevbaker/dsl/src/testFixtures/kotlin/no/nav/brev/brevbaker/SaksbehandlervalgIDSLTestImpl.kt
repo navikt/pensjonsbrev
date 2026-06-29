@@ -1,15 +1,17 @@
-@file:OptIn(InternKonstruktoer::class)
+@file:OptIn(InternKonstruktoer::class, BrevbakerDSLInternal::class)
 
 package no.nav.brev.brevbaker
 
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSLImpl
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
+import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 import kotlin.jvm.java
 
-fun lagSaksbehandlervalg(vararg verdier: Pair<String, SaksbehandlervalgVerdi>) = lagSaksbehandlervalg(verdier.toMap())
-fun lagSaksbehandlervalg(verdier: Map<String, SaksbehandlervalgVerdi> = emptyMap()) = SaksbehandlervalgIDSLImpl(verdier, emptyMap()) // TODO
+fun lagSaksbehandlervalg(vararg verdier: Pair<String, SaksbehandlervalgVerdi>): SaksbehandlervalgIDSL = lagSaksbehandlervalg(verdier.toMap())
+fun lagSaksbehandlervalg(verdier: Map<String, SaksbehandlervalgVerdi> = emptyMap()): SaksbehandlervalgIDSL = SaksbehandlervalgIDSLImpl(verdier, emptyMap()) // TODO
 
 fun <T> T.tilSaksbehandlervalgverdiEnum(displayText: String): SaksbehandlervalgVerdi.Enum<*> where T : SaksbehandlerValgEnum, T: Enum<T> =
     SaksbehandlervalgVerdi.Enum(

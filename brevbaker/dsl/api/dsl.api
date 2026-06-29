@@ -38,13 +38,6 @@ public final class no/nav/pensjon/brev/api/model/FeatureToggleSingleton {
 	public final fun verifiserAtAlleBrytereErDefinert (Ljava/util/List;)V
 }
 
-public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSLImpl : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL {
-	public fun <init> (Ljava/util/Map;Ljava/util/Map;)V
-	public final fun get (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi;
-	public final fun getFraMalen ()Ljava/util/Map;
-	public final fun getVerdier ()Ljava/util/Map;
-}
-
 public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
 	public abstract fun getDisplayText ()Ljava/lang/String;
 	public abstract fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
