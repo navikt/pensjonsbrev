@@ -25,5 +25,6 @@ fun createVarselAfpEtteroppgjoerForeloepigDto(): VarselAfpEtteroppgjoerForeloepi
             tidligereArbeidsInntektBeregnet = Kroner(300_000),
             utbetaltAfp = Kroner(195_000),
             periode = VarselAfpEtteroppgjoerForeloepigDto.Periode.UTTAK_OG_OPPHOER_I_AARET,
+            toleranseBeloep = Kroner(32100),
         ),
     )

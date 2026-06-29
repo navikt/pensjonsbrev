@@ -76,6 +76,7 @@ object VarselAfpEtteroppgjoerForeloepigAuto : AutobrevTemplate<VarselAfpEtteropp
                     korrigertAfp = korrigertAfp,
                     tidligereArbeidsInntektBeregnet = tidligereArbeidsInntektBeregnet,
                     utbetaltAfp = utbetaltAfp,
+                    toleranseBeloep = toleranseBeloep
                 ),
             )
         }
