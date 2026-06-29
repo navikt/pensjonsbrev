@@ -19,16 +19,6 @@ export type Identifiable = {
   readonly parentId?: number | null;
 };
 
-export const LITERAL = "LITERAL";
-export const VARIABLE = "VARIABLE";
-export const NEW_LINE = "NEW_LINE";
-export const ITEM_LIST = "ITEM_LIST";
-export const TABLE = "TABLE";
-export const PARAGRAPH = "PARAGRAPH";
-export const TITLE1 = "TITLE1";
-export const TITLE2 = "TITLE2";
-export const TITLE3 = "TITLE3";
-
 export type EditedLetter = generated.EditLetter;
 export type Sakspart = generated.LetterMarkupSakspart;
 export type Signatur = generated.LetterMarkupSignatur;
@@ -36,7 +26,6 @@ export const TITLE_INDEX = -1;
 export type Title = generated.EditTitle;
 
 export type AnyBlock = Title1Block | Title2Block | Title3Block | ParagraphBlock;
-export type Block = generated.EditBlock;
 export type ParagraphBlock = generated.EditBlockParagraph;
 export type Title1Block = generated.EditBlockTitle1;
 export type Title2Block = generated.EditBlockTitle2;
@@ -48,7 +37,7 @@ export type Content = generated.EditParagraphContent;
 export type LiteralValue = generated.EditParagraphContentTextLiteral;
 export type VariableValue = generated.EditParagraphContentTextVariable;
 export type NewLine = generated.EditParagraphContentTextNewLine;
-export type ItemList = generated.EditParagraphContentItemList & { editedListType?: ListType };
+export type ItemList = generated.EditParagraphContentItemList;
 export type Table = generated.EditParagraphContentTable;
 
 export type ElementTags = generated.ElementTags;

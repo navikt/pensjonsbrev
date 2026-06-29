@@ -12,7 +12,7 @@ import {
 import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type Focus, type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { isEmptyContent, isItemList, isLiteral, isParagraph } from "~/Brevredigering/LetterEditor/model/utils";
-import { type Content, NEW_LINE, TITLE_INDEX, VARIABLE } from "~/types/brevbakerTypes";
+import { type Content, TITLE_INDEX } from "~/types/brevbakerTypes";
 
 export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches((draft, focus) => {
   if (focus.blockIndex === TITLE_INDEX) return;
@@ -82,22 +82,22 @@ function insertNewLineInContent(
   const atEndOfCurrent = offset >= text(literal).length;
 
   if (isEmptyContent(literal)) {
-    if (previousContentType === NEW_LINE || nextContentType === NEW_LINE) return null;
+    if (previousContentType === "NEW_LINE" || nextContentType === "NEW_LINE") return null;
     addElements([createNewLine()], contentIndex, content, deletedContent);
     return contentIndex + 1;
   } else if (atStartOfCurrent) {
-    if (previousContentType === NEW_LINE) return null;
+    if (previousContentType === "NEW_LINE") return null;
 
     const isFirstInBlock = contentIndex === 0;
     const toAdd =
-      isFirstInBlock || previousContentType === VARIABLE ? [newLiteral(), createNewLine()] : [createNewLine()];
+      isFirstInBlock || previousContentType === "VARIABLE" ? [newLiteral(), createNewLine()] : [createNewLine()];
     addElements(toAdd, contentIndex, content, deletedContent);
     return contentIndex + toAdd.length;
   } else if (atEndOfCurrent) {
-    if (nextContentType === NEW_LINE) return null;
+    if (nextContentType === "NEW_LINE") return null;
 
     const isLastInBlock = contentIndex + 1 === content.length;
-    const toAdd = isLastInBlock || nextContentType === VARIABLE ? [createNewLine(), newLiteral()] : [createNewLine()];
+    const toAdd = isLastInBlock || nextContentType === "VARIABLE" ? [createNewLine(), newLiteral()] : [createNewLine()];
     addElements(toAdd, contentIndex + 1, content, deletedContent);
     return contentIndex + toAdd.length;
   } else {

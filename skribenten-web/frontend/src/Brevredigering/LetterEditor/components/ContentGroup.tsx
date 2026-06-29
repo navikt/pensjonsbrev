@@ -37,7 +37,6 @@ import {
   type EditedLetter,
   ElementTags,
   FontType,
-  ITEM_LIST,
   ListType,
   type LiteralValue,
   TITLE_INDEX,
@@ -120,7 +119,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
               />
             );
           }
-          case ITEM_LIST: {
+          case "ITEM_LIST": {
             const ListTag = effectiveListType(content) === ListType.PUNKTLISTE ? "ul" : "ol";
             return (
               <ListTag key={contentIndex}>

@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { text } from "~/Brevredigering/LetterEditor/actions/common";
-import { ListType, type LiteralValue, NEW_LINE, type ParagraphBlock, type TextContent } from "~/types/brevbakerTypes";
+import { ListType, type LiteralValue, type ParagraphBlock, type TextContent } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, newLine, paragraph, select, title1, title2 } from "../utils";
 
@@ -88,7 +88,7 @@ describe("Actions.addNewLine inside list item", () => {
     const resultItem = select<typeof it>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
     expect(resultItem.content).toHaveLength(3);
     expect(resultItem.content[0]).toEqual(it.content[0]);
-    expect(resultItem.content[1].type).toEqual(NEW_LINE);
+    expect(resultItem.content[1].type).toEqual("NEW_LINE");
     expect(text(resultItem.content[2] as LiteralValue)).toEqual("");
     expect(result.focus).toMatchObject({
       blockIndex: 0,
@@ -113,7 +113,7 @@ describe("Actions.addNewLine inside list item", () => {
     const resultItem = select<typeof it>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
     expect(resultItem.content).toHaveLength(3);
     expect(resultItem.content[0]).toMatchObject({ type: "LITERAL", text: "" });
-    expect(resultItem.content[1].type).toEqual(NEW_LINE);
+    expect(resultItem.content[1].type).toEqual("NEW_LINE");
     expect(resultItem.content[2]).toEqual(it.content[0]);
     expect(result.focus).toMatchObject({
       blockIndex: 0,
@@ -138,7 +138,7 @@ describe("Actions.addNewLine inside list item", () => {
     const resultItem = select<typeof it>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
     expect(resultItem.content).toHaveLength(3);
     expect(text(resultItem.content[0] as LiteralValue)).toEqual("abc");
-    expect(resultItem.content[1].type).toEqual(NEW_LINE);
+    expect(resultItem.content[1].type).toEqual("NEW_LINE");
     expect(text(resultItem.content[2] as LiteralValue)).toEqual("def");
     expect(result.focus).toMatchObject({ itemContentIndex: 2, cursorPosition: 0 });
   });
@@ -169,6 +169,6 @@ describe("Actions.addNewLine inside list item", () => {
 
     const resultItem = select<typeof it>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
     expect(resultItem.content).toHaveLength(3);
-    expect(resultItem.content[1].type).toEqual(NEW_LINE);
+    expect(resultItem.content[1].type).toEqual("NEW_LINE");
   });
 });

@@ -14,9 +14,7 @@ import {
 import {
   type AnyBlock,
   type ItemList,
-  LITERAL,
   type LiteralValue,
-  NEW_LINE,
   type ParagraphBlock,
   TITLE_INDEX,
   type Title1Block,
@@ -174,8 +172,8 @@ function mergeBlocks(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex
         // Previous block ends with a list: merge text into last item, then merge adjacent lists
         mergeBlockIntoList(draft, firstId, secondId, lastContentOfFirst);
       } else {
-        const nextContentIndexFocus = first.content.length - (lastContentOfFirst?.type === LITERAL ? 1 : 0);
-        const nextStartOffset = lastContentOfFirst?.type === LITERAL ? text(lastContentOfFirst).length : 0;
+        const nextContentIndexFocus = first.content.length - (lastContentOfFirst?.type === "LITERAL" ? 1 : 0);
+        const nextStartOffset = lastContentOfFirst?.type === "LITERAL" ? text(lastContentOfFirst).length : 0;
         draft.focus = {
           contentIndex: nextContentIndexFocus,
           cursorPosition: nextStartOffset,
@@ -296,7 +294,7 @@ function mergeFromItemList(draft: Draft<LetterEditorState>, literalIndex: ItemCo
     if (currentItem != null) {
       const mod = target === MergeTarget.PREVIOUS ? -1 : 1;
       const adjacentInItem = currentItem.content[literalIndex.itemContentIndex + mod];
-      if (adjacentInItem?.type === NEW_LINE) {
+      if (adjacentInItem?.type === "NEW_LINE") {
         const newLineIndex = literalIndex.itemContentIndex + mod;
         removeElements(newLineIndex, 1, {
           content: currentItem.content,
@@ -460,6 +458,6 @@ function focusEndOfBlock(blockId: number, block: AnyBlock): Focus {
   return {
     blockIndex: blockId,
     contentIndex,
-    cursorPosition: lastContent?.type === LITERAL ? text(lastContent).length : 0,
+    cursorPosition: lastContent?.type === "LITERAL" ? text(lastContent).length : 0,
   };
 }

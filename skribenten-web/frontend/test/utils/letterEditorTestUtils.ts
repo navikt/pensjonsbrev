@@ -21,23 +21,17 @@ import {
   type EditedLetter,
   type ElementTags,
   type Identifiable,
-  ITEM_LIST,
   type Item,
   type ItemList,
   ListType,
   type LiteralValue,
-  NEW_LINE,
   type NewLine,
   type ParagraphBlock,
   type Row,
   type Sakspart,
   type Signatur,
-  TABLE,
   type Table,
   type TextContent,
-  TITLE1,
-  TITLE2,
-  TITLE3,
   type Title,
   type Title1Block,
   type Title2Block,
@@ -232,7 +226,7 @@ export function withDeleted<T extends AnyBlock>(block: T, deletedContent: number
 
 type TitleArgs = { id?: Nullable<number>; content: TextContent[] };
 
-function makeTitle<T extends typeof TITLE1 | typeof TITLE2 | typeof TITLE3>(
+function makeTitle<T extends "TITLE1" | "TITLE2" | "TITLE3">(
   type: T,
   contentOrArgs: TextContent | TitleArgs,
   rest: TextContent[],
@@ -272,15 +266,15 @@ function makeTitle<T extends typeof TITLE1 | typeof TITLE2 | typeof TITLE3>(
 }
 
 export function title1(contentOrArgs: TextContent | TitleArgs, ...rest: TextContent[]): Title1Block {
-  return makeTitle(TITLE1, contentOrArgs, rest);
+  return makeTitle("TITLE1", contentOrArgs, rest);
 }
 
 export function title2(contentOrArgs: TextContent | TitleArgs, ...rest: TextContent[]): Title2Block {
-  return makeTitle(TITLE2, contentOrArgs, rest);
+  return makeTitle("TITLE2", contentOrArgs, rest);
 }
 
 export function title3(contentOrArgs: TextContent | TitleArgs, ...rest: TextContent[]): Title3Block {
-  return makeTitle(TITLE3, contentOrArgs, rest);
+  return makeTitle("TITLE3", contentOrArgs, rest);
 }
 
 // ─── Content builders ─────────────────────────────────────────────────────────
@@ -317,7 +311,7 @@ export function variable(text: string): VariableValue {
 }
 
 export function newLine(): NewLine {
-  return { id: randomId(), parentId: null, type: NEW_LINE, text: "", fontType: "PLAIN" };
+  return { id: randomId(), parentId: null, type: "NEW_LINE", text: "", fontType: "PLAIN" };
 }
 
 export function itemList(args: {
@@ -332,7 +326,7 @@ export function itemList(args: {
   return {
     id,
     parentId: args.parentId ?? null,
-    type: ITEM_LIST,
+    type: "ITEM_LIST",
     listType: args.listType ?? ListType.PUNKTLISTE,
     editedListType: args.editedListType,
     items: withParent(args.items, id),
@@ -365,7 +359,7 @@ export function table(headerCells: Cell[], rows: Row[]): Table {
   return {
     id: tableId,
     parentId: null,
-    type: TABLE,
+    type: "TABLE",
     rows: withParent(rows, tableId),
     header: {
       id: headerId,
