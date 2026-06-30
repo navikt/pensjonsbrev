@@ -42,7 +42,6 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/Saksbehandle
 	public abstract fun getDefaultValue ()Ljava/lang/Object;
 	public abstract fun getDisplayText ()Ljava/lang/String;
 	public abstract fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
-	public fun unwrap ()Ljava/lang/Object;
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Bool : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
@@ -53,12 +52,6 @@ public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Bo
 	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public fun unwrap ()Ljava/lang/Boolean;
-	public synthetic fun unwrap ()Ljava/lang/Object;
-}
-
-public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$DefaultImpls {
-	public static fun unwrap (Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi;)Ljava/lang/Object;
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Enum : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
@@ -71,8 +64,6 @@ public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$En
 	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public synthetic fun unwrap ()Ljava/lang/Object;
-	public fun unwrap ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum;
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Enum$Companion {
@@ -87,8 +78,6 @@ public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$In
 	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public fun unwrap ()Ljava/lang/Integer;
-	public synthetic fun unwrap ()Ljava/lang/Object;
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Text : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
@@ -99,8 +88,6 @@ public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Te
 	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public synthetic fun unwrap ()Ljava/lang/Object;
-	public fun unwrap ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type : java/lang/Enum {

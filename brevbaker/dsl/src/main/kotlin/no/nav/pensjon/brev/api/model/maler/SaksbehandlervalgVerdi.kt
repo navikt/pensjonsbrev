@@ -11,8 +11,6 @@ sealed interface SaksbehandlervalgVerdi<out T> {
     val type: Type
     val displayText: String
 
-    fun unwrap(): T = defaultValue
-
     class Bool @InternKonstruktoer constructor(override val defaultValue: Boolean, override val displayText: String) : SaksbehandlervalgVerdi<Boolean> {
         override val type = Type.BOOL
         override fun toString() = "SaksbehandlervalgVerdi.Bool(bool=$defaultValue)"
