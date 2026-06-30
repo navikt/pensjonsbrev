@@ -4,7 +4,12 @@ import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 
 @BrevbakerDSLInternal
 class SaksbehandlervalgIDSLImpl(val verdier: Map<String, EttSaksbehandlervalgIDSLImpl<*>>) : SaksbehandlervalgIDSL {
-    fun <T> get(key: String): T = (verdier[key])?.get() as T
+    @Suppress("UNCHECKED_CAST")
+    fun <T> get(key: String): T {
+        val entry = verdier[key]
+            ?: throw NoSuchElementException("Ukjent saksbehandlervalg '$key'. Tilgjengelige valg: ${verdier.keys.sorted()}")
+        return entry.get() as T
+    }
 }
 
 @BrevbakerDSLInternal
