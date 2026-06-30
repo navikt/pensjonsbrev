@@ -1,14 +1,13 @@
 package no.nav.pensjon.brevbaker.api.model
 
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.ParagraphContentV2
 
 interface AttachmentTitle {
     val title: List<ParagraphContent.Text>
 }
 
 interface AttachmentTitleV2 {
-    val title: List<ParagraphContentV2.Text>
+    val title: List<LetterMarkupV2.Text>
 }
 
 class PDFTittel(override val title: List<ParagraphContent.Text>) : AttachmentTitle {

@@ -1,7 +1,6 @@
 package no.nav.pensjon.brevbaker.api.model
 
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.ParagraphContentV2.Text
 import java.time.LocalDate
 
 interface LetterMarkupWithDataUsageV2 {
@@ -16,7 +15,7 @@ interface LetterMarkupWithDataUsageV2 {
 }
 
 interface LetterMarkupV2 {
-    val title: List<Text>
+    val title1: List<Text>
     val sakspart: Sakspart
     val blocks: List<Block>
     val signatur: Signatur
@@ -40,6 +39,7 @@ interface LetterMarkupV2 {
         val saksbehandlerSignatur: SaksbehandlerSignatur?
         val navAvsenderEnhet: String
     }
+
     interface SaksbehandlerSignatur {
         val saksbehandlerNavn: String
         val attesterendeSaksbehandlerNavn: String?
@@ -55,25 +55,41 @@ interface LetterMarkupV2 {
 
         sealed interface Title : Block {
             val content: List<Text>
-            interface Title2: Title { override val type: Type get() = Type.TITLE2; }
-            interface Title3: Title { override val type: Type get() = Type.TITLE3; }
-            interface Title4: Title { override val type: Type get() = Type.TITLE4; }
+
+            interface Title2 : Title {
+                override val type: Type get() = Type.TITLE2
+            }
+
+            interface Title3 : Title {
+                override val type: Type get() = Type.TITLE3
+            }
+
+            interface Title4 : Title {
+                override val type: Type get() = Type.TITLE4
+            }
         }
 
         interface Paragraph : Block {
-            val content: List<ParagraphContentV2>
+            val content: List<Text>
             override val type: Type
                 get() = Type.PARAGRAPH
         }
 
-        sealed interface ListContent {
+        sealed interface ListContent : Block {
             val items: List<Item>
+
             interface Item {
                 val id: Int
                 val content: List<Text>
             }
-            interface ItemList : Block { override val type: Type get() = Type.ITEM_LIST; }
-            interface NumberedList : Block { override val type: Type get() = Type.NUMBERED_LIST; }
+
+            interface ItemList : ListContent {
+                override val type: Type get() = Type.ITEM_LIST
+            }
+
+            interface NumberedList : ListContent {
+                override val type: Type get() = Type.NUMBERED_LIST
+            }
         }
 
         interface Table : Block {
@@ -109,36 +125,30 @@ interface LetterMarkupV2 {
         }
     }
 
-    sealed interface ParagraphContentV2 {
+    sealed interface Text {
         val id: Int
         val type: Type
-        enum class Type {
-            LITERAL, VARIABLE, NEW_LINE
+        enum class Type { LITERAL, VARIABLE, NEW_LINE }
+        val text: String
+        val fontType: FontType
+
+        enum class FontType { PLAIN, BOLD, ITALIC }
+
+        interface Literal : Text {
+            val tags: Set<ElementTags>
+            override val type: Type
+                get() = Type.LITERAL
         }
 
-        sealed interface Text : ParagraphContentV2 {
-            val text: String
-            val fontType: FontType
-
-            enum class FontType { PLAIN, BOLD, ITALIC }
-
-            interface Literal : Text {
-                val tags: Set<ElementTags>
-                override val type: Type
-                    get() = Type.LITERAL
-            }
-
-            interface Variable : Text {
-                val tags: Set<ElementTags>
-                override val type: Type
-                    get() = Type.VARIABLE
-            }
-
-            interface NewLine : Text {
-                override val type: Type
-                    get() = Type.NEW_LINE
-            }
+        interface Variable : Text {
+            val tags: Set<ElementTags>
+            override val type: Type
+                get() = Type.VARIABLE
         }
 
+        interface NewLine : Text {
+            override val type: Type
+                get() = Type.NEW_LINE
+        }
     }
 }
