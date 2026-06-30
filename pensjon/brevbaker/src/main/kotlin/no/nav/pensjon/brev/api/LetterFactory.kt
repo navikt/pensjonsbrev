@@ -82,8 +82,8 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
     private fun oppdaterSaksbehandlervalg(
         template: LetterTemplate<*, BrevbakerBrevdata>,
         letterData: BrevbakerBrevdata,
-    ): Map<String, SaksbehandlervalgVerdi> {
-        val saksbehandlervalg = mutableMapOf<String, SaksbehandlervalgVerdi>()
+    ): Map<String, SaksbehandlervalgVerdi<*>> {
+        val saksbehandlervalg = mutableMapOf<String, SaksbehandlervalgVerdi<*>>()
         template.saksbehandlervalg?.let { saksbehandlervalg.putAll(it) }
         if (letterData is Map<*, *> && letterData.containsKey("saksbehandlerValg")) {
             (letterData["saksbehandlerValg"] as Map<String, Any?>).entries.forEach { nye -> // TODO: kva er eigentleg typen her?

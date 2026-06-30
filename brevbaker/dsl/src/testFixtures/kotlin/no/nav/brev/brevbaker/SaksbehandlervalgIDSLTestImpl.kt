@@ -10,8 +10,8 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 import kotlin.jvm.java
 
-fun lagSaksbehandlervalg(vararg verdier: Pair<String, SaksbehandlervalgVerdi>): SaksbehandlervalgIDSL = lagSaksbehandlervalg(verdier.toMap())
-fun lagSaksbehandlervalg(verdier: Map<String, SaksbehandlervalgVerdi> = emptyMap()): SaksbehandlervalgIDSL = SaksbehandlervalgIDSLImpl(verdier, emptyMap()) // TODO
+fun lagSaksbehandlervalg(vararg verdier: Pair<String, SaksbehandlervalgVerdi<*>>): SaksbehandlervalgIDSL = lagSaksbehandlervalg(verdier.toMap())
+fun lagSaksbehandlervalg(verdier: Map<String, SaksbehandlervalgVerdi<*>> = emptyMap()): SaksbehandlervalgIDSL = SaksbehandlervalgIDSLImpl(verdier, emptyMap()) // TODO
 
 fun <T> T.tilSaksbehandlervalgverdiEnum(displayText: String): SaksbehandlervalgVerdi.Enum<*> where T : SaksbehandlerValgEnum, T: Enum<T> =
     SaksbehandlervalgVerdi.Enum(

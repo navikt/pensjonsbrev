@@ -251,7 +251,7 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
 
     }
 
-    class EttSaksbehandlervalg<In1 : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>, Out, Type : SaksbehandlervalgVerdi> : BinaryOperation<In1, String, Out>() {
+    class EttSaksbehandlervalg<In1 : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>, Out, Type : SaksbehandlervalgVerdi<*>> : BinaryOperation<In1, String, Out>() {
         override fun apply(first: In1, second: String): Out {
             val verdi: Type = (first.saksbehandlerValg as SaksbehandlervalgIDSLImpl).get(second)
             return verdi.unwrap() as Out

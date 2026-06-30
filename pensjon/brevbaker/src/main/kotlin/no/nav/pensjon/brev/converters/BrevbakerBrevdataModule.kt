@@ -27,8 +27,10 @@ object BrevbakerBrevdataModule : SimpleModule() {
         addDeserializer(BrevbakerBrevdata::class.java, BrevdataDeserializer)
         addDeserializer(RedigerbarBrevdata::class.java, RedigerbarBrevdataDeserializer)
         addDeserializer(SaksbehandlervalgIDSL::class.java, SaksbehandlervalgIDSLDeserializer)
-        addDeserializer(SaksbehandlervalgVerdi::class.java, SaksbehandlervalgDeserializer)
-        addDeserializer(SaksbehandlervalgVerdi.Enum::class.java, SaksbehandlervalgEnumDeserializer)
+        @Suppress("UNCHECKED_CAST")
+        addDeserializer(SaksbehandlervalgVerdi::class.java as Class<SaksbehandlervalgVerdi<*>>, SaksbehandlervalgDeserializer)
+        @Suppress("UNCHECKED_CAST")
+        addDeserializer(SaksbehandlervalgVerdi.Enum::class.java as Class<SaksbehandlervalgVerdi.Enum<*>>, SaksbehandlervalgEnumDeserializer)
     }
 
     private object BrevdataDeserializer : JsonDeserializer<BrevbakerBrevdata>() {
@@ -44,14 +46,15 @@ object BrevbakerBrevdataModule : SimpleModule() {
         override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgIDSL {
             val root = parser.codec.readTree<JsonNode>(parser)
             val verdier = root.properties().associate { (key, node) ->
-                key to parser.codec.treeToValue(node, SaksbehandlervalgVerdi::class.java)
+                key to parser.codec.treeToValue(node, SaksbehandlervalgVerdi::class.java) as SaksbehandlervalgVerdi<*>
             }
             return SaksbehandlervalgIDSLImpl(verdier, mapOf()) // TODO andre param her
         }
     }
 
-    private object SaksbehandlervalgDeserializer : JsonDeserializer<SaksbehandlervalgVerdi>() {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgVerdi {
+    @Suppress("UNCHECKED_CAST")
+    private object SaksbehandlervalgDeserializer : JsonDeserializer<SaksbehandlervalgVerdi<*>>() {
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgVerdi<*> {
                 val node = p.codec.readTree<JsonNode>(p)
                 val type = when (SaksbehandlervalgVerdi.Type.valueOf(node.get("type").textValue())) {
                     SaksbehandlervalgVerdi.Type.BOOL -> SaksbehandlervalgVerdi.Bool::class.java

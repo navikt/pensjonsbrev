@@ -17,7 +17,7 @@ import java.time.LocalDate
 import java.util.Objects
 import kotlin.reflect.KClass
 
-typealias SaksbehandlervalgDeklarasjon = Map<String, SaksbehandlervalgVerdi>
+typealias SaksbehandlervalgDeklarasjon = Map<String, SaksbehandlervalgVerdi<*>>
 
 class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal constructor(
     val title: List<TextElement<Lang>>,

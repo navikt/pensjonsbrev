@@ -39,6 +39,7 @@ public final class no/nav/pensjon/brev/api/model/FeatureToggleSingleton {
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
+	public abstract fun getDefaultValue ()Ljava/lang/Object;
 	public abstract fun getDisplayText ()Ljava/lang/String;
 	public abstract fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
 	public fun unwrap ()Ljava/lang/Object;
@@ -46,12 +47,14 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/Saksbehandle
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Bool : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getDefaultValue ()Z
+	public fun getDefaultValue ()Ljava/lang/Boolean;
+	public synthetic fun getDefaultValue ()Ljava/lang/Object;
 	public fun getDisplayText ()Ljava/lang/String;
 	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public fun unwrap ()Ljava/lang/Object;
+	public fun unwrap ()Ljava/lang/Boolean;
+	public synthetic fun unwrap ()Ljava/lang/Object;
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$DefaultImpls {
@@ -62,12 +65,14 @@ public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$En
 	public static final field Companion Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Enum$Companion;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getClazz ()Ljava/lang/Class;
-	public final fun getDefaultValue ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum;
+	public synthetic fun getDefaultValue ()Ljava/lang/Object;
+	public fun getDefaultValue ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum;
 	public fun getDisplayText ()Ljava/lang/String;
 	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public fun unwrap ()Ljava/lang/Object;
+	public synthetic fun unwrap ()Ljava/lang/Object;
+	public fun unwrap ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum;
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Enum$Companion {
@@ -76,22 +81,26 @@ public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$En
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Integer : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getDefaultValue ()Ljava/lang/Integer;
+	public fun getDefaultValue ()Ljava/lang/Integer;
+	public synthetic fun getDefaultValue ()Ljava/lang/Object;
 	public fun getDisplayText ()Ljava/lang/String;
 	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public fun unwrap ()Ljava/lang/Object;
+	public fun unwrap ()Ljava/lang/Integer;
+	public synthetic fun unwrap ()Ljava/lang/Object;
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Text : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getDefaultValue ()Ljava/lang/String;
+	public synthetic fun getDefaultValue ()Ljava/lang/Object;
+	public fun getDefaultValue ()Ljava/lang/String;
 	public fun getDisplayText ()Ljava/lang/String;
 	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public fun unwrap ()Ljava/lang/Object;
+	public synthetic fun unwrap ()Ljava/lang/Object;
+	public fun unwrap ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type : java/lang/Enum {

@@ -2,22 +2,18 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.brev.InternKonstruktoer
 
-sealed interface SaksbehandlervalgVerdi {
+sealed interface SaksbehandlervalgVerdi<out T> {
     enum class Type {
         BOOL, INTEGER, ENUM, TEXT
     }
 
-    fun unwrap(): Any? = when (this) {
-        is Bool -> defaultValue
-        is Integer -> defaultValue
-        is Enum<*> -> defaultValue
-        is Text -> defaultValue
-    }
-
+    val defaultValue: T
     val type: Type
     val displayText: String
 
-    class Bool @InternKonstruktoer constructor(val defaultValue: Boolean, override val displayText: String) : SaksbehandlervalgVerdi {
+    fun unwrap(): T = defaultValue
+
+    class Bool @InternKonstruktoer constructor(override val defaultValue: Boolean, override val displayText: String) : SaksbehandlervalgVerdi<Boolean> {
         override val type = Type.BOOL
         override fun toString() = "SaksbehandlervalgVerdi.Bool(bool=$defaultValue)"
         override fun equals(other: Any?): Boolean {
@@ -28,7 +24,7 @@ sealed interface SaksbehandlervalgVerdi {
         override fun hashCode() = Bool::class.java.hashCode() + defaultValue.hashCode()
     }
 
-    class Integer @InternKonstruktoer constructor(val defaultValue: Int?, override val displayText: String) : SaksbehandlervalgVerdi {
+    class Integer @InternKonstruktoer constructor(override val defaultValue: Int?, override val displayText: String) : SaksbehandlervalgVerdi<Int?> {
         override val type = Type.INTEGER
         override fun toString() = "SaksbehandlervalgVerdi.Integer(int=$defaultValue)"
         override fun equals(other: Any?): Boolean {
@@ -39,7 +35,7 @@ sealed interface SaksbehandlervalgVerdi {
         override fun hashCode() = Integer::class.java.hashCode() + (defaultValue?.hashCode() ?: 0)
     }
 
-    class Enum<T : SaksbehandlerValgEnum> @InternKonstruktoer constructor(val defaultValue: T?, override val displayText: String, val clazz: Class<out kotlin.Enum<*>?>) : SaksbehandlervalgVerdi {
+    class Enum<T : SaksbehandlerValgEnum> @InternKonstruktoer constructor(override val defaultValue: T?, override val displayText: String, val clazz: Class<out kotlin.Enum<*>?>) : SaksbehandlervalgVerdi<T?> {
         override val type = Type.ENUM
         override fun toString() = "SaksbehandlervalgVerdi.Enum(enum=$defaultValue)"
         override fun equals(other: Any?): Boolean {
@@ -56,7 +52,7 @@ sealed interface SaksbehandlervalgVerdi {
         }
     }
 
-    class Text @InternKonstruktoer constructor(val defaultValue: String?, override val displayText: String) : SaksbehandlervalgVerdi {
+    class Text @InternKonstruktoer constructor(override val defaultValue: String?, override val displayText: String) : SaksbehandlervalgVerdi<String?> {
         override val type = Type.TEXT
         override fun toString() = "SaksbehandlervalgVerdi.Text(text=$defaultValue)"
         override fun equals(other: Any?): Boolean {
