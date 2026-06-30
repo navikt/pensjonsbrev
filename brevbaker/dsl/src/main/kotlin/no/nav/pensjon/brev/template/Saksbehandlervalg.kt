@@ -28,13 +28,13 @@ class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<Saksbehandlervalg
     fun text(default: String?): Expression<String?> = Expression.BinaryInvoke(
         scope.argument,
         id.expr(),
-        BinaryOperation.EttSaksbehandlervalg<LetterData, String, SaksbehandlervalgVerdi.Text>()
+        BinaryOperation.EttSaksbehandlervalg<LetterData, String?, SaksbehandlervalgVerdi.Text>()
     ).also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Text(default, displayText)) }
 
     inline fun <reified T> enum(default: T? = null): Expression<T?> where T : SaksbehandlerValgEnum, T : Enum<T> = Expression.BinaryInvoke(
         scope.argument,
         id.expr(),
-        BinaryOperation.EttSaksbehandlervalg<LetterData, T, SaksbehandlervalgVerdi.Enum<T>>()
+        BinaryOperation.EttSaksbehandlervalg<LetterData, T?, SaksbehandlervalgVerdi.Enum<T>>()
     ).also { scope.saksbehandlervalg(id, SaksbehandlervalgVerdi.Enum(default, displayText, T::class.java as Class<out Enum<*>?>)) }
 }
 
