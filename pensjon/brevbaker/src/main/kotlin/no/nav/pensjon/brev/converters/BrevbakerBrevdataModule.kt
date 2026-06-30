@@ -27,10 +27,8 @@ object BrevbakerBrevdataModule : SimpleModule() {
         addDeserializer(BrevbakerBrevdata::class.java, BrevdataDeserializer)
         addDeserializer(RedigerbarBrevdata::class.java, RedigerbarBrevdataDeserializer)
         addDeserializer(SaksbehandlervalgIDSL::class.java, SaksbehandlervalgIDSLDeserializer)
-        @Suppress("UNCHECKED_CAST")
-        addDeserializer(SaksbehandlervalgVerdi::class.java as Class<SaksbehandlervalgVerdi<*>>, SaksbehandlervalgDeserializer)
-        @Suppress("UNCHECKED_CAST")
-        addDeserializer(SaksbehandlervalgVerdi.Enum::class.java as Class<SaksbehandlervalgVerdi.Enum<*>>, SaksbehandlervalgEnumDeserializer)
+        addDeserializer(SaksbehandlervalgVerdi::class.java, SaksbehandlervalgDeserializer)
+        addDeserializer(SaksbehandlervalgVerdi.Enum::class.java, SaksbehandlervalgEnumDeserializer)
     }
 
     private object BrevdataDeserializer : JsonDeserializer<BrevbakerBrevdata>() {
