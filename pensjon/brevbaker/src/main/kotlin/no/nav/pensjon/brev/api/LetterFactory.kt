@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.api
 
 import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.NotFoundException
-import no.nav.brev.InternKonstruktoer
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
@@ -81,23 +80,21 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
             throw ParseLetterDataException("Could not deserialize letterData: ${e.message}", e)
         }
 
-    @OptIn(InternKonstruktoer::class, BrevbakerDSLInternal::class)
+    @OptIn(BrevbakerDSLInternal::class)
     private fun oppdaterSaksbehandlervalg(
         template: LetterTemplate<*, BrevbakerBrevdata>,
         letterData: BrevbakerBrevdata,
     ): Map<String, EttSaksbehandlervalgIDSLImpl<*>> {
-        val saksbehandlervalg = mutableMapOf<String, EttSaksbehandlervalgIDSLImpl<*>>()
-        if (letterData is Map<*, *> && letterData.containsKey("saksbehandlerValg")) {
-            (letterData["saksbehandlerValg"] as Map<String, Any?>).entries.forEach { nye ->
-                saksbehandlervalg[nye.key] = when (val eksisterende = template.saksbehandlervalg?.get(nye.key)) {
-                    is SaksbehandlervalgVerdi.Bool -> EttSaksbehandlervalgIDSLImpl(nye.key, nye.value as? Boolean ?: false, eksisterende)
-                    is SaksbehandlervalgVerdi.Enum<*> -> EttSaksbehandlervalgIDSLImpl(nye.key, nye.value, eksisterende)
-                    is SaksbehandlervalgVerdi.Integer -> EttSaksbehandlervalgIDSLImpl(nye.key, (nye.value as? Number)?.toInt() ?: (nye.value as? String)?.toIntOrNull(), eksisterende)
-                    is SaksbehandlervalgVerdi.Text -> EttSaksbehandlervalgIDSLImpl(nye.key, nye.value, eksisterende)
-                    null -> throw IllegalArgumentException("Saksbehandlervalg fins ikke, dette skal ikke skje: ${nye.key}, som har type ${nye.value?.javaClass}")
-                }
+        val nyeVerdier = (letterData as? Map<*, *>)?.get("saksbehandlerValg") as? Map<*, *> ?: emptyMap<Any?, Any?>()
+        return template.saksbehandlervalg.orEmpty().mapValues { (key, fraMalen) ->
+            val nyVerdi = nyeVerdier[key]
+            val verdi = when (fraMalen) {
+                is SaksbehandlervalgVerdi.Bool -> nyVerdi as? Boolean
+                is SaksbehandlervalgVerdi.Integer -> (nyVerdi as? Number)?.toInt() ?: (nyVerdi as? String)?.toIntOrNull()
+                is SaksbehandlervalgVerdi.Text -> nyVerdi as? String
+                is SaksbehandlervalgVerdi.Enum<*> -> (nyVerdi as? String)?.let { java.lang.Enum.valueOf(fraMalen.clazz, it) }
             }
+            EttSaksbehandlervalgIDSLImpl(key, verdi, fraMalen)
         }
-        return saksbehandlervalg
     }
 }
