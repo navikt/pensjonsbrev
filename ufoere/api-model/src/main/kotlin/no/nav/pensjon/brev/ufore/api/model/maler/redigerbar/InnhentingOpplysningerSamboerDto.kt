@@ -8,7 +8,7 @@ import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 data class InnhentingOpplysningerSamboerDto(
     override val pesysData: EmptyFagsystemdata,
-    override val saksbehandlerValg: Saksbehandlervalg,
+    override val saksbehandlerValg: Saksbehandlervalg
 ) : RedigerbarBrevdata<Saksbehandlervalg, EmptyFagsystemdata> {
 
     data class Saksbehandlervalg(

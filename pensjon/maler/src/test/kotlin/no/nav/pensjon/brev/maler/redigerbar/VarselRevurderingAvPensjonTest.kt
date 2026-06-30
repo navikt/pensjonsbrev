@@ -23,7 +23,6 @@ class VarselRevurderingAvPensjonTest {
         pesysData = VarselRevurderingAvPensjonDto.PesysData(sakstype = Sakstype.FAM_PL)
     )
 
-
     @Test
     fun `med revurdering av rett`() {
         writeAllLanguages(
