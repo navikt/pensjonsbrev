@@ -38,50 +38,8 @@ public final class no/nav/pensjon/brev/api/model/FeatureToggleSingleton {
 	public final fun verifiserAtAlleBrytereErDefinert (Ljava/util/List;)V
 }
 
-public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Bool : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getDefaultValue ()Ljava/lang/Boolean;
-	public synthetic fun getDefaultValue ()Ljava/lang/Object;
-	public fun getDisplayText ()Ljava/lang/String;
-	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Enum : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
-	public static final field Companion Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Enum$Companion;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getClazz ()Ljava/lang/Class;
-	public synthetic fun getDefaultValue ()Ljava/lang/Object;
-	public fun getDefaultValue ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum;
-	public fun getDisplayText ()Ljava/lang/String;
-	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Enum$Companion {
 	public final fun parse (Ljava/lang/Class;Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum;
-}
-
-public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Integer : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getDefaultValue ()Ljava/lang/Integer;
-	public synthetic fun getDefaultValue ()Ljava/lang/Object;
-	public fun getDisplayText ()Ljava/lang/String;
-	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Text : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
-	public fun equals (Ljava/lang/Object;)Z
-	public synthetic fun getDefaultValue ()Ljava/lang/Object;
-	public fun getDefaultValue ()Ljava/lang/String;
-	public fun getDisplayText ()Ljava/lang/String;
-	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type : java/lang/Enum {
