@@ -113,7 +113,7 @@ interface LetterMarkupV2 {
         val id: Int
         val type: Type
         enum class Type {
-            LITERAL, VARIABLE, TABLE, FORM_TEXT, FORM_CHOICE, NEW_LINE
+            LITERAL, VARIABLE, NEW_LINE
         }
 
         sealed interface Text : ParagraphContentV2 {
@@ -122,7 +122,6 @@ interface LetterMarkupV2 {
 
             enum class FontType { PLAIN, BOLD, ITALIC }
 
-            // TODO Går det an å løse REDIGERBAR_DATA på en bedre måte?
             interface Literal : Text {
                 val tags: Set<ElementTags>
                 override val type: Type
@@ -141,31 +140,5 @@ interface LetterMarkupV2 {
             }
         }
 
-        // TODO kan vi fjerne form choice?
-        sealed interface Form : ParagraphContentV2 {
-
-            interface Text : Form {
-                val prompt: List<ParagraphContentV2.Text>
-                val size: Size
-                val vspace: Boolean
-                override val type: Type
-                    get() = Type.FORM_TEXT
-
-                enum class Size { NONE, SHORT, LONG, FILL }
-            }
-
-            interface MultipleChoice : Form {
-                val prompt: List<ParagraphContentV2.Text>
-                val choices: List<Choice>
-                val vspace: Boolean
-                override val type: Type
-                    get() = Type.FORM_CHOICE
-
-                interface Choice {
-                    val id: Int
-                    val text: List<ParagraphContentV2.Text>
-                }
-            }
-        }
     }
 }
