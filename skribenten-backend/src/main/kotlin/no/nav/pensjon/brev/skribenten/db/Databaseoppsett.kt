@@ -32,7 +32,7 @@ val databaseReady: AtomicBoolean = AtomicBoolean(false)
 
 object ValgteVedleggModule : SimpleModule() {
     @Suppress("unused")
-    private fun readResolve(): Any = LetterMarkupJacksonModule
+    private fun readResolve(): Any = ValgteVedleggModule
 
     init {
         addDeserializer(AlltidValgbartVedleggKode::class.java, alltidValgbartVedleggBrevkodeDeserializer())
