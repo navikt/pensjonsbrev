@@ -86,7 +86,7 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         val saksbehandlervalg = mutableMapOf<String, SaksbehandlervalgVerdi<*>>()
         template.saksbehandlervalg?.let { saksbehandlervalg.putAll(it) }
         if (letterData is Map<*, *> && letterData.containsKey("saksbehandlerValg")) {
-            (letterData["saksbehandlerValg"] as Map<String, Any?>).entries.forEach { nye -> // TODO: kva er eigentleg typen her?
+            (letterData["saksbehandlerValg"] as Map<String, Any?>).entries.forEach { nye ->
                 saksbehandlervalg[nye.key] = when (val eksisterende = template.saksbehandlervalg?.get(nye.key)) {
                     is SaksbehandlervalgVerdi.Bool -> SaksbehandlervalgVerdi.Bool(nye.value as? Boolean ?: false, eksisterende.displayText)
                     is SaksbehandlervalgVerdi.Enum<*> -> eksisterende.withRawValue(nye.value)
