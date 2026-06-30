@@ -7,14 +7,6 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
-/**
- * Redigerbart vedtak — AFP etteroppgjør (offentlig sektor / SPK), ingen endring
- * innenfor toleransebeløpet.
- *
- * Konvertert fra Exstream-malen `PE_AF_04_108`. Auto-varianten av samme situasjon
- * er [VedtakAfpEtteroppgjoerIngenEndringAuto] (`PE_AF_04_100`). Begge brev
- * deler innholdsfraser i [no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold].
- */
 data class VedtakAfpEtteroppgjoerIngenEndringDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,
@@ -32,17 +24,6 @@ data class VedtakAfpEtteroppgjoerIngenEndringDto(
         val opphorsdato: LocalDate?,
         val medlemAvApotekerordningen: Boolean,
         val toleranseBeloep: Kroner,
-        val periode: Periode,
+        val periode: AfpPeriode,
     ) : FagsystemBrevdata
-
-    /**
-     * Periodevariant av forklaringen. Samme inndeling som
-     * [VedtakAfpEtteroppgjoerEtterbetalingAutoDto.Periode] / [VedtakAfpEtteroppgjoerIngenEndringAutoDto.Periode].
-     */
-    enum class Periode {
-        HEL_AFP_HELE_AARET,
-        UTTAK_I_AARET,
-        OPPHOER_I_AARET,
-        UTTAK_OG_OPPHOER_I_AARET,
-    }
 }

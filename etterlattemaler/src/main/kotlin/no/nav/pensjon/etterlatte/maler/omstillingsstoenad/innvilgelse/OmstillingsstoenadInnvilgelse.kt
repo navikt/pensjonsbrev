@@ -109,12 +109,12 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = true),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true),
                 data.beregning,
                 data.tidligereFamiliepleier,
             )
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = true),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false),
                 data.beregning,
                 data.tidligereFamiliepleier.not(),
             )
