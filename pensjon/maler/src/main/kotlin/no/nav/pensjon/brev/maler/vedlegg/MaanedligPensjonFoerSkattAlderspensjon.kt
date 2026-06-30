@@ -4,11 +4,9 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDtoSelectors.AlderspensjonGjeldendeSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDtoSelectors.KravSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDtoSelectors.alderspensjonGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDtoSelectors.alderspensjonPerManed
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDtoSelectors.krav
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.maanedligPensjonFoerSkattAlderspensjonDto.alderspensjonGjeldende.*
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.maanedligPensjonFoerSkattAlderspensjonDto.krav.*
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.maanedligPensjonFoerSkattAlderspensjonDto.*
 import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap19
 import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap19og20
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish

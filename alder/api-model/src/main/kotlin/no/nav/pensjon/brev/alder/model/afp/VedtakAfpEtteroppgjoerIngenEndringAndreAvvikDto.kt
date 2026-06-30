@@ -6,13 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
-/**
- * Redigerbart vedtak — AFP etteroppgjør (offentlig sektor / SPK), ingen endring
- * (andre avvik enn toleransebeløp).
- *
- * Konvertert fra Exstream-malen `PE_AF_04_110`. Auto-varianten av samme situasjon
- * er [VedtakAfpEtteroppgjoerIngenEndringAutoDto] (`PE_AF_04_102`).
- */
 data class VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,
@@ -26,11 +19,6 @@ data class VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto(
         val scenario: Scenario,
     ) : FagsystemBrevdata
 
-    /**
-     * Scenariovariant av forklaringen som styrer hvilken showIf-blokk som vises i den
-     * redigerbare malen. Brevet utleder scenarioet fra Eksstream-feltene før det
-     * sendes til brevbaker.
-     */
     enum class Scenario {
         HEL_AFP_HELE_AARET_INNTEKT_FOER_UTTAK,
         HEL_AFP_HELE_AARET_INGEN_INNTEKT,

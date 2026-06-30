@@ -6,8 +6,7 @@ interface AlltidValgbartVedleggKode {
     val spraak: Set<LanguageCode>
 }
 
-// TODO: Fjern default-verdi for spraak etter første deploy
-class AlltidValgbartVedleggBrevkode(override val kode: String, override val visningstekst: String, override val spraak: Set<LanguageCode> = setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH)): AlltidValgbartVedleggKode {
+class AlltidValgbartVedleggBrevkode(override val kode: String, override val visningstekst: String, override val spraak: Set<LanguageCode>) : AlltidValgbartVedleggKode {
     init {
         require(kode.length <= 50)
     }

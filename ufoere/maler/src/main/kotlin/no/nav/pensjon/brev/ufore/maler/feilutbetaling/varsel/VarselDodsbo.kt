@@ -12,11 +12,10 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_FEILUTBETALING_VARSEL_DODSBO
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingDodsboSaksbehandlervalgSelectors.kjentBobestyrer
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.feilutbetalingDodsboSaksbehandlervalg.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDtoSelectors.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysDataSelectors.feilutbetaltBrutto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.feilutbetalingVarselDodsboDto.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.varselFeilutbetalingPesysData.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori.FEILUTBETALING
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants

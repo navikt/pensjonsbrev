@@ -5,24 +5,10 @@ import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerVarselForeloep
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
+import no.nav.pensjon.brev.alder.model.afp.AfpPeriode
 import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDto
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDto.Periode
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.PesysDataSelectors.forventetInntekt
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.PesysDataSelectors.formyebetalt
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.PesysDataSelectors.fradragBeregnetArbeidsInntekt
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.PesysDataSelectors.fullAfp
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.PesysDataSelectors.inntektEtterOpphoer
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.PesysDataSelectors.inntektFoerUttak
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.PesysDataSelectors.inntektIAfpPerioden
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.PesysDataSelectors.korrigertAfp
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.PesysDataSelectors.oppgjoersAar
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.PesysDataSelectors.opphorsdato
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.PesysDataSelectors.pensjonsgivendeInntekt
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.PesysDataSelectors.periode
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.PesysDataSelectors.tidligereArbeidsInntektBeregnet
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.PesysDataSelectors.utbetaltAfp
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.PesysDataSelectors.uttaksdato
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDtoSelectors.pesysData
+import no.nav.pensjon.brev.alder.model.afp.selectors.varselAfpEtteroppgjoerForeloepigDto.pesysData.*
+import no.nav.pensjon.brev.alder.model.afp.selectors.varselAfpEtteroppgjoerForeloepigDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.model.format
@@ -82,10 +68,10 @@ object VarselAfpEtteroppgjoerForeloepig : RedigerbarTemplate<VarselAfpEtteroppgj
         outline {
             includePhrase(
                 AfpEtteroppgjoerVarselForeloepigInnhold(
-                    erHelAfpHeleAaret = pesysData.periode.equalTo(Periode.HEL_AFP_HELE_AARET),
-                    erUttakIAaret = pesysData.periode.equalTo(Periode.UTTAK_I_AARET),
-                    erOpphoerIAaret = pesysData.periode.equalTo(Periode.OPPHOER_I_AARET),
-                    erUttakOgOpphoerIAaret = pesysData.periode.equalTo(Periode.UTTAK_OG_OPPHOER_I_AARET),
+                    erHelAfpHeleAaret = pesysData.periode.equalTo(AfpPeriode.HEL_AFP_HELE_AARET),
+                    erUttakIAaret = pesysData.periode.equalTo(AfpPeriode.UTTAK_I_AARET),
+                    erOpphoerIAaret = pesysData.periode.equalTo(AfpPeriode.OPPHOER_I_AARET),
+                    erUttakOgOpphoerIAaret = pesysData.periode.equalTo(AfpPeriode.UTTAK_OG_OPPHOER_I_AARET),
                     uttaksdato = pesysData.uttaksdato,
                     opphorsdato = pesysData.opphorsdato,
                     oppgjoersAar = pesysData.oppgjoersAar,
@@ -100,6 +86,7 @@ object VarselAfpEtteroppgjoerForeloepig : RedigerbarTemplate<VarselAfpEtteroppgj
                     korrigertAfp = pesysData.korrigertAfp,
                     tidligereArbeidsInntektBeregnet = pesysData.tidligereArbeidsInntektBeregnet,
                     utbetaltAfp = pesysData.utbetaltAfp,
+                    toleranseBeloep = pesysData.toleranseBeloep,
                 ),
             )
         }

@@ -4,25 +4,25 @@ import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
+import no.nav.pensjon.brev.alder.model.afp.AfpPeriode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto.Periode
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.forlitebetalt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.forventetPensjonsgivendeInntektBeregnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.fradragBeregnetArbeidsInntekt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.fullAfp
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.inntektEtterOpphoer
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.inntektFoerUttak
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.inntektIAfpPerioden
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.korrigertAfp
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.medlemAvApotekerordningen
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.oppgjoersAar
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.opphorsdato
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.pensjonsgivendeInntekt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.periode
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.tidligereArbeidsInntektBeregnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.toleranseBeloep
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.utbetaltAfp
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.uttaksdato
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.forlitebetalt
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.forventetPensjonsgivendeInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.fradragBeregnetArbeidsInntekt
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.fullAfp
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.inntektEtterOpphoer
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.inntektFoerUttak
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.inntektIAfpPerioden
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.korrigertAfp
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.medlemAvApotekerordningen
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.oppgjoersAar
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.opphorsdato
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.pensjonsgivendeInntekt
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.periode
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.tidligereArbeidsInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.toleranseBeloep
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.utbetaltAfp
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingAutoDto.uttaksdato
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -74,7 +74,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
             includePhrase(AfpEtteroppgjoerInnhold.EtteroppgjoerIntro)
 
             // Periodevariert «for lite utbetalt»-paragraf.
-            showIf(periode.equalTo(Periode.HEL_AFP_HELE_AARET)) {
+            showIf(periode.equalTo(AfpPeriode.HEL_AFP_HELE_AARET)) {
                 paragraph {
                     text(
                         bokmal {
@@ -90,7 +90,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                     )
                 }
             }
-            showIf(periode.equalTo(Periode.UTTAK_I_AARET)) {
+            showIf(periode.equalTo(AfpPeriode.UTTAK_I_AARET)) {
                 paragraph {
                     text(
                         bokmal {
@@ -106,7 +106,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                     )
                 }
             }
-            showIf(periode.equalTo(Periode.OPPHOER_I_AARET)) {
+            showIf(periode.equalTo(AfpPeriode.OPPHOER_I_AARET)) {
                 ifNotNull(opphorsdato) { opphor ->
                     paragraph {
                         text(
@@ -126,7 +126,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                     }
                 }
             }
-            showIf(periode.equalTo(Periode.UTTAK_OG_OPPHOER_I_AARET)) {
+            showIf(periode.equalTo(AfpPeriode.UTTAK_OG_OPPHOER_I_AARET)) {
                 ifNotNull(opphorsdato) { opphor ->
                     paragraph {
                         text(
@@ -169,10 +169,10 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
 
             includePhrase(
                 AfpEtteroppgjoerInnhold.InntektFoerUttakInntektEtterOpphoerFordelingPerPeriode(
-                    erHelAfpHeleAaret = periode.equalTo(Periode.HEL_AFP_HELE_AARET),
-                    erUttakIAaret = periode.equalTo(Periode.UTTAK_I_AARET),
-                    erOpphoerIAaret = periode.equalTo(Periode.OPPHOER_I_AARET),
-                    erUttakOgOpphoerIAaret = periode.equalTo(Periode.UTTAK_OG_OPPHOER_I_AARET),
+                    erHelAfpHeleAaret = periode.equalTo(AfpPeriode.HEL_AFP_HELE_AARET),
+                    erUttakIAaret = periode.equalTo(AfpPeriode.UTTAK_I_AARET),
+                    erOpphoerIAaret = periode.equalTo(AfpPeriode.OPPHOER_I_AARET),
+                    erUttakOgOpphoerIAaret = periode.equalTo(AfpPeriode.UTTAK_OG_OPPHOER_I_AARET),
                     uttaksdato = uttaksdato,
                     opphorsdato = opphorsdato,
                     oppgjoersAar = oppgjoersAar,
@@ -197,10 +197,10 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
             // sum). Delt med PE_AF_04_105.
             includePhrase(
                 AfpEtteroppgjoerInnhold.NyPensjonsberegningEtterbetalingBlokk(
-                    erHeleAaret = periode.equalTo(Periode.HEL_AFP_HELE_AARET),
-                    erUttakIAaret = periode.equalTo(Periode.UTTAK_I_AARET),
-                    erOpphoerIAaret = periode.equalTo(Periode.OPPHOER_I_AARET),
-                    erUttakOgOpphoerIAaret = periode.equalTo(Periode.UTTAK_OG_OPPHOER_I_AARET),
+                    erHeleAaret = periode.equalTo(AfpPeriode.HEL_AFP_HELE_AARET),
+                    erUttakIAaret = periode.equalTo(AfpPeriode.UTTAK_I_AARET),
+                    erOpphoerIAaret = periode.equalTo(AfpPeriode.OPPHOER_I_AARET),
+                    erUttakOgOpphoerIAaret = periode.equalTo(AfpPeriode.UTTAK_OG_OPPHOER_I_AARET),
                     uttaksdato = uttaksdato,
                     opphorsdato = opphorsdato,
                     oppgjoersAar = oppgjoersAar,

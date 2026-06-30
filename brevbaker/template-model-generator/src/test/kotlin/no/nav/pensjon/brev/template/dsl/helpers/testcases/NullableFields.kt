@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.NullableFieldsSelectors.TheModelSelectors.name
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.nullableFields.theModel.*
 
 /**
  * Verify that selectors are generated for nullable fields of models.

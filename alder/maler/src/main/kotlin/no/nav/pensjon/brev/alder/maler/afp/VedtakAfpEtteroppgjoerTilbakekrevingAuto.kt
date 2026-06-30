@@ -7,23 +7,23 @@ import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpTilbakekrevingBody
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggDineRettigheterAfpEo
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
+import no.nav.pensjon.brev.alder.model.afp.AfpPeriode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDto.Periode
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.avvik
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.formyebetalt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.fradragBeregnetArbeidsInntekt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.fullAfp
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.inntektEtterOpphoer
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.inntektFoerUttak
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.inntektIAfpPerioden
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.korrigertAfp
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.medlemAvApotekerordningen
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.oppgjoersAar
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.pensjonsgivendeInntekt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.periode
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.tidligereArbeidsInntektBeregnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.toleranseBeloep
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.utbetaltAfp
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingAutoDto.avvik
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingAutoDto.formyebetalt
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingAutoDto.fradragBeregnetArbeidsInntekt
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingAutoDto.fullAfp
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingAutoDto.inntektEtterOpphoer
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingAutoDto.inntektFoerUttak
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingAutoDto.inntektIAfpPerioden
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingAutoDto.korrigertAfp
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingAutoDto.medlemAvApotekerordningen
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingAutoDto.oppgjoersAar
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingAutoDto.pensjonsgivendeInntekt
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingAutoDto.periode
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingAutoDto.tidligereArbeidsInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingAutoDto.toleranseBeloep
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingAutoDto.utbetaltAfp
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -85,7 +85,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
             }
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
-            showIf(periode.equalTo(Periode.HEL_AFP_HELE_AARET)) {
+            showIf(periode.equalTo(AfpPeriode.HEL_AFP_HELE_AARET)) {
                 paragraph {
                     text(
                         bokmal {
@@ -98,7 +98,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
                 }
             }
 
-            showIf(periode.equalTo(Periode.UTTAK_I_AARET)) {
+            showIf(periode.equalTo(AfpPeriode.UTTAK_I_AARET)) {
                 paragraph {
                     text(
                         bokmal {
@@ -121,7 +121,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
                 }
             }
 
-            showIf(periode.equalTo(Periode.UTTAK_OG_OPPHOER_I_AARET)) {
+            showIf(periode.equalTo(AfpPeriode.UTTAK_OG_OPPHOER_I_AARET)) {
                 paragraph {
                     text(
                         bokmal {
@@ -135,7 +135,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
                 includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenIfuOgIeo(inntektIAfpPerioden = inntektIAfpPerioden, oppgjoersAar = oppgjoersAar, pensjonsgivendeInntekt = pensjonsgivendeInntekt, inntektFoerUttak = inntektFoerUttak, inntektEtterOpphoer = inntektEtterOpphoer))
             }
 
-            showIf(periode.equalTo(Periode.OPPHOER_I_AARET)) {
+            showIf(periode.equalTo(AfpPeriode.OPPHOER_I_AARET)) {
                 paragraph {
                     text(
                         bokmal {

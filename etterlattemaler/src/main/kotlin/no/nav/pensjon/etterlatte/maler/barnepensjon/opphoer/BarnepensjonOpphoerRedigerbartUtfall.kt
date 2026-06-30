@@ -12,8 +12,8 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerRedigerbartUtfallDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerRedigerbartUtfallDataSelectors.feilutbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.selectors.barnepensjonOpphoerRedigerbartUtfallDTO.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.selectors.barnepensjonOpphoerRedigerbartUtfallData.*
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak

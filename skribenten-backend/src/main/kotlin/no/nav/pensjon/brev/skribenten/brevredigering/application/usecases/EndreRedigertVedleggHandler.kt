@@ -32,9 +32,7 @@ class EndreRedigertVedleggHandler(
         val principal = PrincipalInContext.require()
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
 
-        if (brev.settRedigertVedlegg(request.vedleggId, request.redigertVedlegg)) {
-            brev.document = null
-        }
+        brev.settRedigertVedlegg(request.vedleggId, request.redigertVedlegg)
         if (request.frigiReservasjon) {
             brev.frigiReservasjon()
         }

@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.model
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -62,6 +63,7 @@ object Dto {
         val pdf: ByteArray,
         val redigertBrevHash: Hash<Edit.Letter>,
         val brevdataHash: Hash<BrevdataResponse.Data>,
+        val vedleggHash: Hash<VedleggSnapshot>,
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -73,6 +75,7 @@ object Dto {
             if (!pdf.contentEquals(other.pdf)) return false
             if (redigertBrevHash != other.redigertBrevHash) return false
             if (brevdataHash != other.brevdataHash) return false
+            if (vedleggHash != other.vedleggHash) return false
 
             return true
         }
@@ -82,6 +85,7 @@ object Dto {
             result = 31 * result + pdf.contentHashCode()
             result = 31 * result + redigertBrevHash.hashCode()
             result = 31 * result + brevdataHash.hashCode()
+            result = 31 * result + vedleggHash.hashCode()
             return result
         }
     }

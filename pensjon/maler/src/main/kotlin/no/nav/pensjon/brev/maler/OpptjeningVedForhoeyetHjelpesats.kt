@@ -1,8 +1,7 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.maler.*
-import no.nav.pensjon.brev.api.model.maler.OpptjeningVedForhoeyetHjelpesatsDtoSelectors.aarInnvilgetOmsorgspoeng
-import no.nav.pensjon.brev.api.model.maler.OpptjeningVedForhoeyetHjelpesatsDtoSelectors.foedtEtter1953
+import no.nav.pensjon.brev.api.model.maler.selectors.opptjeningVedForhoeyetHjelpesatsDto.*
 import no.nav.pensjon.brev.maler.fraser.Omsorgsopptjening
 import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.model.format

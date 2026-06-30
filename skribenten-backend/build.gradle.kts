@@ -40,16 +40,23 @@ node {
     npmInstallCommand.set("ci")
 }
 
-// Declare openapi-spec.json as a test output so Gradle's build cache includes and restores
-// it when the test result is cached. Without this, running clean then generateApiTypes would
-// use the cached test result but leave build/openapi-spec.json absent.
-tasks.test {
+val generateOpenApiSpec by tasks.registering(Test::class) {
+    description = "Generates build/openapi-spec.json by booting the application via OpenApiSpecTest"
+    group = "build"
+    // Avoid running in parallel with the regular test suite when org.gradle.parallel=true
+    mustRunAfter(tasks.test)
+    maxParallelForks = 1
+    useJUnitPlatform {
+        includeTags("openapi-spec")
+    }
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
     outputs.file(layout.buildDirectory.file("openapi-spec.json"))
 }
 
 val generateApiTypes by tasks.registering(NpxTask::class) {
     description = "Generates TypeScript types from the OpenAPI spec into skribenten-web/frontend/src/types/skribenten-api.ts"
-    dependsOn(tasks.test, tasks.npmInstall)
+    dependsOn(generateOpenApiSpec, tasks.npmInstall)
     command.set("openapi-typescript")
     val specFile = layout.buildDirectory.file("openapi-spec.json")
     val outputFile = rootProject.file("skribenten-web/frontend/src/types/skribenten-api.ts")
@@ -94,7 +101,9 @@ tasks {
         targetCompatibility = javaTarget
     }
     test {
-        useJUnitPlatform()
+        useJUnitPlatform {
+            excludeTags("openapi-spec")
+        }
     }
     kotlin {
         compileTestKotlin {

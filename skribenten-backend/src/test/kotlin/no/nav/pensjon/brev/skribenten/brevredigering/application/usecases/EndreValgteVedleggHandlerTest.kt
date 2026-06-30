@@ -43,11 +43,39 @@ class EndreValgteVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
-    suspend fun `kan ikke endre vedlegg for brev som redigeres av andre`() {
+    suspend fun `endring av valgte vedlegg foerer til ny rendring ved neste pdf-henting`() {
+        val brev = opprettBrev().resultOrFail()
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+        val rendringerFoer = brevbakerService.renderPdfKall.size
+
+        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf()))
+        assertThat(endreVedlegg(brev, vedlegg)).isSuccess()
+
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+        assertThat(brevbakerService.renderPdfKall.size).isGreaterThan(rendringerFoer)
+    }
+
+    @Test
+    suspend fun `uendrede valgte vedlegg gjenbruker dokumentet uten ny rendring`() {
+        val brev = opprettBrev().resultOrFail()
+        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf()))
+        assertThat(endreVedlegg(brev, vedlegg)).isSuccess()
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+        val rendringerFoer = brevbakerService.renderPdfKall.size
+
+        assertThat(endreVedlegg(brev, vedlegg)).isSuccess()
+
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+        assertThat(brevbakerService.renderPdfKall.size).isEqualTo(rendringerFoer)
+    }
+
+    @Test
+    suspend fun `kan ikke endre valgte vedlegg for brev som redigeres av andre`() {
         val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
 
-        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf()), AlltidValgbartVedleggBrevkode("kode2", "Visningstekst 2", setOf()))
-        assertThat(endreVedlegg(brev, vedlegg, saksbehandler2Principal)).isFailure<BrevreservasjonPolicy.ReservertAvAnnen, _, _>()
+        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf()))
+        assertThat(endreVedlegg(brev, vedlegg, saksbehandler2Principal))
+            .isFailure<BrevreservasjonPolicy.ReservertAvAnnen, _, _>()
     }
 
 }

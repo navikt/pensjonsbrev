@@ -12,11 +12,8 @@ import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDataSelectors.beregning
-import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDataSelectors.erBosattUtlandet
-import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDataSelectors.erUnder18Aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.selectors.barnepensjonVarselDTO.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.selectors.barnepensjonVarselData.*
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonNyttRegelverk

@@ -2,11 +2,7 @@ package no.nav.pensjon.brev.planleggepensjon.simulering.tabeller
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.planleggepensjon.simulering.TidsbegrensetOffentligAfp
-import no.nav.pensjon.brev.planleggepensjon.simulering.TidsbegrensetOffentligAfpSelectors.afpTillegg
-import no.nav.pensjon.brev.planleggepensjon.simulering.TidsbegrensetOffentligAfpSelectors.grunnpensjon
-import no.nav.pensjon.brev.planleggepensjon.simulering.TidsbegrensetOffentligAfpSelectors.saertillegg
-import no.nav.pensjon.brev.planleggepensjon.simulering.TidsbegrensetOffentligAfpSelectors.tilleggspensjon
-import no.nav.pensjon.brev.planleggepensjon.simulering.TidsbegrensetOffentligAfpSelectors.totaltAfpBeloep
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.tidsbegrensetOffentligAfp.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression

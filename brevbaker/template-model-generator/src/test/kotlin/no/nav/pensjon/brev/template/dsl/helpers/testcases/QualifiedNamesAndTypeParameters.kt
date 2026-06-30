@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.otherpkg.QualifiedNamesAndTypeParameters_Model2
 import no.nav.pensjon.brev.template.somepkg.QualifiedNamesAndTypeParameters_Model1
-import no.nav.pensjon.brev.template.somepkg.QualifiedNamesAndTypeParameters_Model1Selectors.thing
+import no.nav.pensjon.brev.template.somepkg.selectors.qualifiedNamesAndTypeParameters_Model1.*
 import no.nav.pensjon.brev.template.thirdpkg.QualifiedNamesAndTypeParameters_Model3
 
 /**
