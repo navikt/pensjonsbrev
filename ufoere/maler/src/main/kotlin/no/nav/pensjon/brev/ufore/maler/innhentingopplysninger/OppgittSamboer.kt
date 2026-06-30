@@ -29,6 +29,7 @@ object OppgittSamboer : RedigerbarTemplate<InnhentingOpplysningerSamboerDto> {
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
+
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
