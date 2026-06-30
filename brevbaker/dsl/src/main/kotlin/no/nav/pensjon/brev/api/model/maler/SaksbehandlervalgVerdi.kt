@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 
 @BrevbakerDSLInternal
 sealed interface SaksbehandlervalgVerdi<out T> {
+    @BrevbakerDSLInternal
     enum class Type {
         BOOL, INTEGER, ENUM, TEXT
     }
