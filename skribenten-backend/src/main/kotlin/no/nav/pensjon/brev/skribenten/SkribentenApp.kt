@@ -203,7 +203,7 @@ suspend fun Application.skribentenApp(skribentenConfig: Config) {
             oneShotJobs(skribentenConfig) {
                 job("2026-06-30-valgbare-vedlegg-spraak") {
                     val alleValgteVedlegg = transaction {
-                        ValgteVedleggTable.select(ValgteVedleggTable.id, ValgteVedleggTable.valgteVedlegg)
+                        ValgteVedleggTable.select(ValgteVedleggTable.id, ValgteVedleggTable.valgteVedlegg).toList()
                     }
                     alleValgteVedlegg.forEach { v ->
                         transaction {
