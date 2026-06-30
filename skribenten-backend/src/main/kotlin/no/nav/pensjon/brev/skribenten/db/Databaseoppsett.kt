@@ -35,11 +35,22 @@ object ValgteVedleggModule : SimpleModule() {
     private fun readResolve(): Any = ValgteVedleggModule
 
     init {
-        addDeserializer(AlltidValgbartVedleggKode::class.java, alltidValgbartVedleggBrevkodeDeserializer())
+        addDeserializer(AlltidValgbartVedleggKode::class.java, alltidValgbartVedleggKodeDeserializer())
+        addDeserializer(AlltidValgbartVedleggBrevkode::class.java, alltidValgbartVedleggBrevkodeDeserializer())
     }
 
-    fun alltidValgbartVedleggBrevkodeDeserializer() = object : JsonDeserializer<AlltidValgbartVedleggKode>() {
+    fun alltidValgbartVedleggKodeDeserializer() = object : JsonDeserializer<AlltidValgbartVedleggKode>() {
         override fun deserialize(p: com.fasterxml.jackson.core.JsonParser, ctxt: com.fasterxml.jackson.databind.DeserializationContext): AlltidValgbartVedleggKode {
+            val node = p.codec.readTree<com.fasterxml.jackson.databind.JsonNode>(p)
+            val kode = node.get("kode").textValue()
+            val visningstekst = node.get("visningstekst").textValue()
+            val spraak = setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH)
+            return AlltidValgbartVedleggBrevkode(kode = kode, visningstekst = visningstekst, spraak = spraak)
+        }
+    }
+
+    fun alltidValgbartVedleggBrevkodeDeserializer() = object : JsonDeserializer<AlltidValgbartVedleggBrevkode>() {
+        override fun deserialize(p: com.fasterxml.jackson.core.JsonParser, ctxt: com.fasterxml.jackson.databind.DeserializationContext): AlltidValgbartVedleggBrevkode {
             val node = p.codec.readTree<com.fasterxml.jackson.databind.JsonNode>(p)
             val kode = node.get("kode").textValue()
             val visningstekst = node.get("visningstekst").textValue()
