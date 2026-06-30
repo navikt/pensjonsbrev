@@ -63,6 +63,6 @@ object Features {
     }
 
     suspend fun isEnabled(toggle: UnleashToggle): Boolean =
-        toggleService!!.isEnabled(toggle)
+        toggleService?.isEnabled(toggle) ?: false
 
 }

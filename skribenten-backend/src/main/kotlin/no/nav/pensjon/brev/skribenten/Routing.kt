@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.typesafe.config.Config
 import io.ktor.http.*
 import io.ktor.openapi.*
 import io.ktor.server.application.*
@@ -31,27 +30,25 @@ import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.samhandler.samhandlerRoute
 import no.nav.pensjon.brev.skribenten.services.*
 
-suspend fun Application.configureRouting(
-    authConfig: AzureADConfig,
-    skribentenConfig: Config,
-    cache: Cache,
-) {
-    val authService = AzureADService(authConfig, cache = dependencies.resolve())
-    val servicesConfig = skribentenConfig.getConfig("services")
+fun Application.configureRouting() {
+    val cache: Cache by dependencies
+    val authService: AuthService by dependencies
+    val skribentenConfig: SkribentenConfig by dependencies
+    val services = skribentenConfig.services
 
-    val safService = SafServiceHttp(servicesConfig.getConfig("saf"), authService)
-    val penClient = PentHttpClient(servicesConfig.getConfig("pen"), authService)
-    val skjermingService = SkjermingServiceHttp(servicesConfig.getConfig("skjerming"), authService, cache)
-    val pensjonPersonDataService = PensjonPersonDataServiceImpl(servicesConfig.getConfig("pensjon_persondata"), authService, cache = cache)
-    val pensjonRepresentasjonService = PensjonRepresentasjonService(servicesConfig.getConfig("pensjonRepresentasjon"), authService, cache)
-    val pdlService = PdlServiceHttp(servicesConfig.getConfig("pdl"), authService)
-    val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
-    val brevbakerService = BrevbakerServiceHttp(servicesConfig.getConfig("brevbaker"), authService, cache)
-    val brevmetadataService = BrevmetadataServiceHttp(servicesConfig.getConfig("brevmetadata"))
-    val samhandlerService = SamhandlerServiceHttp(servicesConfig.getConfig("samhandlerProxy"), authService, cache)
-    val navansattService = NavansattServiceHttp(servicesConfig.getConfig("navansatt"), authService, cache)
+    val safService = SafServiceHttp(services.saf, authService)
+    val penClient = PentHttpClient(services.pen, authService)
+    val skjermingService = SkjermingServiceHttp(services.skjerming, authService, cache)
+    val pensjonPersonDataService = PensjonPersonDataServiceImpl(services.pensjonPersondata, authService, cache = cache)
+    val pensjonRepresentasjonService = PensjonRepresentasjonService(services.pensjonRepresentasjon, authService, cache)
+    val pdlService = PdlServiceHttp(services.pdl, authService)
+    val krrService = KrrService(services.krr, authService)
+    val brevbakerService = BrevbakerServiceHttp(services.brevbaker, authService, cache)
+    val brevmetadataService = BrevmetadataServiceHttp(services.brevmetadata)
+    val samhandlerService = SamhandlerServiceHttp(services.samhandlerProxy, authService, cache)
+    val navansattService = NavansattServiceHttp(services.navansatt, authService, cache)
     val legacyBrevService = LegacyBrevServiceImpl(brevmetadataService, safService, penClient, navansattService, pensjonPersonDataService)
-    val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"), cache)
+    val norg2Service = Norg2ServiceHttp(services.norg2, cache)
     val p1Service = P1ServiceImpl(penClient)
 
     val brevService = BrevService(penClient, legacyBrevService)
@@ -62,7 +59,7 @@ suspend fun Application.configureRouting(
 
     val dto2ApiService = Dto2ApiService(brevmalService, navansattService, norg2Service, samhandlerService)
     val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevService, brevdataService, brevmalService, navansattService, p1Service, renderService)
-    val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringFacade, brevmalService, brevredigeringFacade)
+    val externalAPIService = ExternalAPIService(services.externalApi, brevredigeringFacade, brevmalService, brevredigeringFacade)
 
     routing {
         healthRoute()

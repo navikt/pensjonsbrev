@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.eksterntApi
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.typesafe.config.ConfigValueFactory
+import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -72,7 +72,7 @@ class ExternalAPIServiceTest {
         sakstyper = emptySet(),
     )
     private val externalAPIService = ExternalAPIService(
-        config = ConfigValueFactory.fromMap(mapOf("skribentenWebUrl" to skribentenWebUrl)).toConfig(),
+        config = ExternalApiConfig(skribentenWebUrl = skribentenWebUrl),
         hentBrevService = object : HentBrevService {
             override fun hentBrevForAlleSaker(saksIder: Set<SaksId>) = listOf(brevDto)
             override fun hentBrevInfo(brevId: BrevId): Dto.BrevInfo? = brevDto

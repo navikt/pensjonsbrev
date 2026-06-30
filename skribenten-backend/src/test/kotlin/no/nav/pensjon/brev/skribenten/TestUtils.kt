@@ -1,8 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
-import com.typesafe.config.ConfigFactory
-import com.typesafe.config.ConfigParseOptions.defaults
-import com.typesafe.config.ConfigResolveOptions
+import io.ktor.server.config.ApplicationConfig
+import io.ktor.server.config.getAs
 import io.ktor.util.collections.*
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
@@ -32,12 +31,7 @@ data class MockPrincipal(override val navIdent: NavIdent, override val fullName:
     override fun isInGroup(groupId: ADGroup) = groups.contains(groupId)
 }
 
-fun initADGroups() = ADGroups.init(
-ConfigFactory
-    .load("application-local", defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-    .getConfig("skribenten")
-    .getConfig("groups")
-)
+fun initADGroups() = ADGroups.init(ApplicationConfig("application-test.conf").config("skribenten.groups").getAs())
 
 object Testbrevkoder {
     val TESTBREV = RedigerbarBrevkode("TESTBREV")

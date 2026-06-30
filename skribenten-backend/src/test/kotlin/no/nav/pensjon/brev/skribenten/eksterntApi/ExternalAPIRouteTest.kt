@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.eksterntApi
 
-import com.typesafe.config.ConfigValueFactory
+import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
@@ -109,7 +109,7 @@ class ExternalAPIRouteTest {
     private fun lagExternalAPIService(
         opprettBrevResult: Outcome<Dto.Brevredigering, BrevredigeringError> = Outcome.success(successBrevredigering)
     ) = ExternalAPIService(
-        config = ConfigValueFactory.fromMap(mapOf("skribentenWebUrl" to "https://example.com")).toConfig(),
+        config = ExternalApiConfig(skribentenWebUrl = "https://example.com"),
         hentBrevService = hentBrevService,
         brevmalService = BrevmalService(
             brevbakerService = FakeBrevbakerService(),

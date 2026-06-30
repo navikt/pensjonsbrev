@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.SafConfig
 import io.ktor.client.call.body
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -51,10 +51,10 @@ interface SafService {
 
 class SafServiceException(message: String) : ServiceException(message)
 
-class SafServiceHttp(config: Config, authService: AuthService) : SafService, ServiceStatus {
-    private val safUrl = config.getString("url")
-    private val safRestUrl = config.getString("rest_url")
-    private val safScope = config.getString("scope")
+class SafServiceHttp(config: SafConfig, authService: AuthService) : SafService, ServiceStatus {
+    private val safUrl = config.url
+    private val safRestUrl = config.restUrl
+    private val safScope = config.scope
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     //TODO vurder å bruke en egen client for graphql: (https://opensource.expediagroup.com/graphql-kotlin/docs/client/client-overview/)

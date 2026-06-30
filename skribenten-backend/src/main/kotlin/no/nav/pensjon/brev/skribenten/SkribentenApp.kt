@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.skribenten
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.typesafe.config.ConfigFactory
 import com.zaxxer.hikari.HikariDataSource
 import io.ktor.http.*
 import io.ktor.serialization.*
@@ -24,6 +23,7 @@ import io.ktor.server.response.*
 import kotlinx.coroutines.*
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
 import no.nav.pensjon.brev.skribenten.common.*
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
@@ -31,7 +31,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.serialize.*
 import no.nav.pensjon.brev.skribenten.services.*
-import org.jetbrains.exposed.v1.core.*
+import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.jdbc.*
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.slf4j.LoggerFactory
@@ -48,11 +48,10 @@ fun main(args: Array<String>) = try {
 
 // Er satt i application.conf slik at EngineMain kaller på skribentenApp.
 @Suppress("unused")
-suspend fun Application.skribentenApp() {
+fun Application.skribentenApp() {
     val skribentenConfig = environment.config.config("skribenten").getAs<SkribentenConfig>()
-    val skribentenConfigOld = ConfigFactory.parseMap(environment.config.config("skribenten").toMap())
-    ADGroups.init(skribentenConfigOld.getConfig("groups"))
-    KrypteringService.init(skribentenConfigOld.getString("krypteringsnoekkel"))
+    ADGroups.init(skribentenConfig.groups)
+    KrypteringService.init(skribentenConfig.krypteringsnoekkel)
 
     install(CallLogging) {
         callIdMdc("x_correlationId")
@@ -131,11 +130,8 @@ suspend fun Application.skribentenApp() {
         allowHeader(HttpHeaders.Authorization)
         allowHeader(HttpHeaders.ContentType)
         allowHeader("X-Request-ID")
-        skribentenConfigOld.getConfig("cors").also {
-            val schemes = it.getStringList("schemes")
-            it.getString("host").split(",").forEach { host ->
-                allowHost(host, schemes = schemes)
-            }
+        skribentenConfig.cors.host.split(",").forEach { host ->
+            allowHost(host, schemes = skribentenConfig.cors.schemes)
         }
     }
 
@@ -150,22 +146,23 @@ suspend fun Application.skribentenApp() {
         provide<AuthService>(AzureADService::class)
         provide<HikariDataSource>(::dataSourceFactory)
         provide<FeatureToggleService>(UnleashService::class)
+
+        provide(NaisLeaderService::class)
     }
 
     launch {
         Database.connect(dependencies.resolve<HikariDataSource>())
         databaseReady.set(true)
     }
-    Features.init(dependencies.resolve())
+    launch { Features.init(dependencies.resolve()) }
 
-    val cache: Cache by dependencies
-    configureRouting(skribentenConfig.azureAD, skribentenConfigOld, cache)
+    configureRouting()
     configureMetrics()
 
     monitor.subscribe(ServerReady) {
         launch {
             delay(5.minutes)
-            oneShotJobs(skribentenConfigOld) {
+            oneShotJobs(dependencies.resolve()) {
                 job("2026-06-24-document-vedlegghash") {
                     val dokumentIder = transaction {
                         DocumentTable.select(DocumentTable.id).map { it[DocumentTable.id].value }

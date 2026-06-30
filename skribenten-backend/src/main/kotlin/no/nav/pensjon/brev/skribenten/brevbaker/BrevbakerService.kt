@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.brevbaker
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -84,11 +84,11 @@ interface BrevbakerService {
     suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggBrevkode>
 }
 
-class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus {
+class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus {
     private val logger = LoggerFactory.getLogger(BrevbakerServiceHttp::class.java)!!
 
-    private val brevbakerUrl = config.getString("url")
-    private val scope = config.getString("scope")
+    private val brevbakerUrl = config.url
+    private val scope = config.scope
     private val client = lagHttpClient {
         defaultRequest {
             url(brevbakerUrl)

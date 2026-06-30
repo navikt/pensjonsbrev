@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -48,9 +48,9 @@ class PenServiceException(message: String) : ServiceException(message)
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
 class PenFeilIDatabyggerException(message: String) : ServiceException(message)
 
-class PentHttpClient(config: Config, authService: AuthService) : PenClient, ServiceStatus {
-    private val penUrl = config.getString("url")
-    private val penScope = config.getString("scope")
+class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenClient, ServiceStatus {
+    private val penUrl = config.url
+    private val penScope = config.scope
 
     private val client = lagHttpClient {
         defaultRequest {
