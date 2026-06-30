@@ -21,7 +21,7 @@ class VarselRevurderingAvPensjonTest {
             tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett
         ),
         pesysData = VarselRevurderingAvPensjonDto.PesysData(sakstype = Sakstype.FAM_PL)
-    )
+        )
 
     @Test
     fun `med revurdering av rett`() {
