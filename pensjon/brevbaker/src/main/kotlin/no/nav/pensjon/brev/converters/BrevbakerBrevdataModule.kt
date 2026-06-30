@@ -51,7 +51,7 @@ object BrevbakerBrevdataModule : SimpleModule() {
                         SaksbehandlervalgVerdi.Type.BOOL -> it.booleanValue()
                         SaksbehandlervalgVerdi.Type.INTEGER -> it.intValue()
                         SaksbehandlervalgVerdi.Type.TEXT -> it.textValue()
-                        else -> parser.codec.treeToValue(it, fraMalen.type.javaClass)
+                        SaksbehandlervalgVerdi.Type.ENUM -> parser.codec.treeToValue(it, fraMalen.type.javaClass)
                     }
                 }
                 key to EttSaksbehandlervalgIDSLImpl(key, verdi, fraMalen)
