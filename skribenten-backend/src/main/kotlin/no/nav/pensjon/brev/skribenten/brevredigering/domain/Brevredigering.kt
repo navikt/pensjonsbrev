@@ -52,6 +52,7 @@ interface Brevredigering {
     val brevtype: LetterMetadata.Brevtype
     val isVedtaksbrev: Boolean
     val redigerteVedlegg: List<Dto.RedigertVedlegg>
+    val vedleggHash: Hash<VedleggSnapshot>
 
     fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon?
     fun reserver(
@@ -123,6 +124,16 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     private val _redigerteVedlegg by RedigertVedlegg referrersOn RedigertVedleggTable.brevredigering
     override val redigerteVedlegg: List<Dto.RedigertVedlegg>
         get() = _redigerteVedlegg.map { Dto.RedigertVedlegg(vedleggId = it.vedleggId.value, redigertVedlegg = it.redigertVedlegg) }
+
+    override val vedleggHash: Hash<VedleggSnapshot>
+        get() = Hash.read(
+            VedleggSnapshot(
+                valgteVedlegg = valgteVedlegg.map { it.kode }.sorted(),
+                redigerteVedlegg = _redigerteVedlegg
+                    .map { VedleggSnapshot.RedigertVedleggHash(it.vedleggId.value.id, it.redigertVedleggHash.toString()) }
+                    .sortedBy { it.vedleggId },
+            )
+        )
 
     override var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent
     override var brevtype by BrevredigeringTable.brevtype
@@ -274,6 +285,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
                 this.dokumentDato = documentDto.dokumentDato
                 this.redigertBrevHash = documentDto.redigertBrevHash
                 this.brevdataHash = documentDto.brevdataHash
+                this.vedleggHash = documentDto.vedleggHash
             }
         } else {
             DocumentEntity.new {
@@ -282,6 +294,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
                 this.dokumentDato = documentDto.dokumentDato
                 this.redigertBrevHash = documentDto.redigertBrevHash
                 this.brevdataHash = documentDto.brevdataHash
+                this.vedleggHash = documentDto.vedleggHash
             }
             refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til document-tabellen
         }

@@ -142,24 +142,28 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
-    suspend fun `lagring av vedlegg nullstiller dokumentet`() {
+    suspend fun `endring av redigert vedlegg foerer til ny rendring ved neste pdf-henting`() {
         val brev = opprettBrev().resultOrFail()
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
-        assertThat(antallDokumenter(brev.info.id)).isEqualTo(1)
+        val rendringerFoer = brevbakerService.renderPdfKall.size
 
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", attachment("Innhold"))).isSuccess()
-        assertThat(antallDokumenter(brev.info.id)).isEqualTo(0)
+
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+        assertThat(brevbakerService.renderPdfKall.size).isGreaterThan(rendringerFoer)
     }
 
     @Test
-    suspend fun `sletting av vedlegg nullstiller dokumentet`() {
+    suspend fun `sletting av redigert vedlegg foerer til ny rendring ved neste pdf-henting`() {
         val brev = opprettBrev().resultOrFail()
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", attachment("Innhold"))).isSuccess()
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
-        assertThat(antallDokumenter(brev.info.id)).isEqualTo(1)
+        val rendringerFoer = brevbakerService.renderPdfKall.size
 
         assertThat(slettVedlegg(brev.info.id, "vedlegg1")).isSuccess()
-        assertThat(antallDokumenter(brev.info.id)).isEqualTo(0)
+
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+        assertThat(brevbakerService.renderPdfKall.size).isGreaterThan(rendringerFoer)
     }
 
     @Test

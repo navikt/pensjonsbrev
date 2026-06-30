@@ -28,10 +28,7 @@ class SlettRedigertVedleggHandler(
         val principal = PrincipalInContext.require()
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
 
-        // Om vedlegget faktisk slettes, nullstiller vi dokumentet slik at det må rendres på nytt (fra mal)
-        if (brev.slettRedigertVedlegg(request.vedleggId)) {
-            brev.document = null
-        }
+        brev.slettRedigertVedlegg(request.vedleggId)
         brev.frigiReservasjon()
 
         return success(brev.toDto(brevreservasjonPolicy, null))
