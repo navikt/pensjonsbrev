@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerVarselForeloepigInnhold
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
+import no.nav.pensjon.brev.alder.model.afp.AfpPeriode
 import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDto
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDto.Periode
 import no.nav.pensjon.brev.alder.model.afp.selectors.varselAfpEtteroppgjoerForeloepigAutoDto.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -58,10 +58,10 @@ object VarselAfpEtteroppgjoerForeloepigAuto : AutobrevTemplate<VarselAfpEtteropp
         outline {
             includePhrase(
                 AfpEtteroppgjoerVarselForeloepigInnhold(
-                    erHelAfpHeleAaret = periode.equalTo(Periode.HEL_AFP_HELE_AARET),
-                    erUttakIAaret = periode.equalTo(Periode.UTTAK_I_AARET),
-                    erOpphoerIAaret = periode.equalTo(Periode.OPPHOER_I_AARET),
-                    erUttakOgOpphoerIAaret = periode.equalTo(Periode.UTTAK_OG_OPPHOER_I_AARET),
+                    erHelAfpHeleAaret = periode.equalTo(AfpPeriode.HEL_AFP_HELE_AARET),
+                    erUttakIAaret = periode.equalTo(AfpPeriode.UTTAK_I_AARET),
+                    erOpphoerIAaret = periode.equalTo(AfpPeriode.OPPHOER_I_AARET),
+                    erUttakOgOpphoerIAaret = periode.equalTo(AfpPeriode.UTTAK_OG_OPPHOER_I_AARET),
                     uttaksdato = uttaksdato,
                     opphorsdato = opphorsdato,
                     oppgjoersAar = oppgjoersAar,
