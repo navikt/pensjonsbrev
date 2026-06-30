@@ -1,3 +1,5 @@
+@file:OptIn(BrevbakerDSLInternal::class)
+
 package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer

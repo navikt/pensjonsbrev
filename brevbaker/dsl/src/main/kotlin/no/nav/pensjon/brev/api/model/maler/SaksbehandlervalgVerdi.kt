@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.brev.InternKonstruktoer
+import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 
+@BrevbakerDSLInternal
 sealed interface SaksbehandlervalgVerdi<out T> {
     enum class Type {
         BOOL, INTEGER, ENUM, TEXT

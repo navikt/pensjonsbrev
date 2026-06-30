@@ -9,6 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import java.time.LocalDate
 
+@OptIn(BrevbakerDSLInternal::class)
 class TemplateModelSpecificationFactoryTest {
     data class AModel(
         val tekst: String,

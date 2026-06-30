@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSLImpl
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 
+@OptIn(BrevbakerDSLInternal::class)
 object BrevbakerBrevdataModule : SimpleModule() {
     private fun readResolve(): Any = BrevbakerBrevdataModule
 
@@ -60,6 +61,7 @@ object BrevbakerBrevdataModule : SimpleModule() {
         }
     }
 
+    @OptIn(BrevbakerDSLInternal::class)
     @Suppress("UNCHECKED_CAST")
     private object SaksbehandlervalgDeserializer : JsonDeserializer<SaksbehandlervalgVerdi<*>>() {
         override fun deserialize(p: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgVerdi<*> {
@@ -74,6 +76,7 @@ object BrevbakerBrevdataModule : SimpleModule() {
             }
         }
 
+    @OptIn(BrevbakerDSLInternal::class)
     private object SaksbehandlervalgEnumDeserializer : JsonDeserializer<SaksbehandlervalgVerdi.Enum<*>>() {
         @OptIn(InternKonstruktoer::class)
         override fun deserialize(p: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgVerdi.Enum<*> {

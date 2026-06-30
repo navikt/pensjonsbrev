@@ -22,6 +22,7 @@ class TemplateModelSpecificationError(msg: String) : Error(msg)
 class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     private val toProcess = mutableListOf<KClass<*>>()
 
+    @OptIn(BrevbakerDSLInternal::class)
     fun build(saksbehandlervalg: SaksbehandlervalgDeklarasjon?): TemplateModelSpecification =
         if (from.objectInstance == Unit || from.objectInstance in setOf(EmptyAutobrevdata, EmptyRedigerbarBrevdata, EmptyVedleggData)) {
             TemplateModelSpecification(emptyMap(), null)
