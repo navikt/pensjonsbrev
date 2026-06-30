@@ -8,9 +8,11 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.EttSaksbehandlervalgIDSLImpl
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.BrevTemplate
+import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -63,6 +65,7 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         )
     }
 
+    @OptIn(BrevbakerDSLInternal::class)
     private fun parseArgument(
         letterData: BrevbakerBrevdata,
         template: LetterTemplate<*, BrevbakerBrevdata>,
@@ -78,23 +81,19 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
             throw ParseLetterDataException("Could not deserialize letterData: ${e.message}", e)
         }
 
-    @OptIn(InternKonstruktoer::class)
+    @OptIn(InternKonstruktoer::class, BrevbakerDSLInternal::class)
     private fun oppdaterSaksbehandlervalg(
         template: LetterTemplate<*, BrevbakerBrevdata>,
         letterData: BrevbakerBrevdata,
-    ): Map<String, SaksbehandlervalgVerdi<*>> {
-        val saksbehandlervalg = mutableMapOf<String, SaksbehandlervalgVerdi<*>>()
-        template.saksbehandlervalg?.let { saksbehandlervalg.putAll(it) }
+    ): Map<String, EttSaksbehandlervalgIDSLImpl<*>> {
+        val saksbehandlervalg = mutableMapOf<String, EttSaksbehandlervalgIDSLImpl<*>>()
         if (letterData is Map<*, *> && letterData.containsKey("saksbehandlerValg")) {
             (letterData["saksbehandlerValg"] as Map<String, Any?>).entries.forEach { nye ->
                 saksbehandlervalg[nye.key] = when (val eksisterende = template.saksbehandlervalg?.get(nye.key)) {
-                    is SaksbehandlervalgVerdi.Bool -> SaksbehandlervalgVerdi.Bool(nye.value as? Boolean ?: false, eksisterende.displayText)
-                    is SaksbehandlervalgVerdi.Enum<*> -> eksisterende.withRawValue(nye.value)
-                    is SaksbehandlervalgVerdi.Integer -> SaksbehandlervalgVerdi.Integer(
-                        (nye.value as? Number)?.toInt() ?: (nye.value as? String)?.toIntOrNull(),
-                        eksisterende.displayText
-                    )
-                    is SaksbehandlervalgVerdi.Text -> SaksbehandlervalgVerdi.Text(nye.value as? String, eksisterende.displayText)
+                    is SaksbehandlervalgVerdi.Bool -> EttSaksbehandlervalgIDSLImpl(nye.key, nye.value as? Boolean ?: false, eksisterende)
+                    is SaksbehandlervalgVerdi.Enum<*> -> EttSaksbehandlervalgIDSLImpl(nye.key, nye.value, eksisterende)
+                    is SaksbehandlervalgVerdi.Integer -> EttSaksbehandlervalgIDSLImpl(nye.key, (nye.value as? Number)?.toInt() ?: (nye.value as? String)?.toIntOrNull(), eksisterende)
+                    is SaksbehandlervalgVerdi.Text -> EttSaksbehandlervalgIDSLImpl(nye.key, nye.value, eksisterende)
                     null -> throw IllegalArgumentException("Saksbehandlervalg fins ikke, dette skal ikke skje: ${nye.key}, som har type ${nye.value?.javaClass}")
                 }
             }
@@ -102,6 +101,3 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         return saksbehandlervalg
     }
 }
-
-@OptIn(InternKonstruktoer::class)
-private fun SaksbehandlervalgVerdi.Enum<*>.withRawValue(raw: Any?): SaksbehandlervalgVerdi.Enum<*> = SaksbehandlervalgVerdi.Enum(defaultValue = SaksbehandlervalgVerdi.Enum.parse(clazz, raw as? String), displayText = displayText, clazz = clazz)

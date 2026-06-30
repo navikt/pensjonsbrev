@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.EttSaksbehandlervalgIDSLImpl
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
@@ -44,9 +45,18 @@ object BrevbakerBrevdataModule : SimpleModule() {
         override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgIDSL {
             val root = parser.codec.readTree<JsonNode>(parser)
             val verdier = root.properties().associate { (key, node) ->
-                key to parser.codec.treeToValue(node, SaksbehandlervalgVerdi::class.java) as SaksbehandlervalgVerdi<*>
+                val fraMalen = parser.codec.treeToValue(node.get("fraMalen"), SaksbehandlervalgVerdi::class.java) as SaksbehandlervalgVerdi<*>
+                val verdi = node.get("verdi")?.let {
+                    when (fraMalen.type) {
+                        SaksbehandlervalgVerdi.Type.BOOL -> it.booleanValue()
+                        SaksbehandlervalgVerdi.Type.INTEGER -> it.intValue()
+                        SaksbehandlervalgVerdi.Type.TEXT -> it.textValue()
+                        else -> parser.codec.treeToValue(it, fraMalen.type.javaClass)
+                    }
+                }
+                key to EttSaksbehandlervalgIDSLImpl(key, verdi, fraMalen)
             }
-            return SaksbehandlervalgIDSLImpl(verdier, mapOf()) // TODO andre param her
+            return SaksbehandlervalgIDSLImpl(verdier)
         }
     }
 

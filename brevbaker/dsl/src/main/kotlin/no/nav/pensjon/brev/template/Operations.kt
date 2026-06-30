@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSLImpl
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.util.Objects
@@ -252,10 +251,7 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
     }
 
     class EttSaksbehandlervalg<In1 : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>, Out> : BinaryOperation<In1, String, Out>() {
-        override fun apply(first: In1, second: String): Out {
-            val verdi: SaksbehandlervalgVerdi<Out> = (first.saksbehandlerValg as SaksbehandlervalgIDSLImpl).get(second)
-            return verdi.unwrap()
-        }
+        override fun apply(first: In1, second: String): Out = (first.saksbehandlerValg as SaksbehandlervalgIDSLImpl).get(second)
 
         override fun stableHashCode() = StableHash.of(StableHash.of("UnaryOperation.EttSaksbehandlervalg")).stableHashCode()
     }
