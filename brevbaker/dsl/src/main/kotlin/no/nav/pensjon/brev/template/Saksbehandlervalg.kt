@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import kotlin.also
 
-class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> internal constructor(val id: String, val displayText: String, val scope: TemplateRootScope<*, LetterData>) {
+class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> internal constructor(val id: String, val displayText: String, @PublishedApi internal val scope: TemplateRootScope<*, LetterData>) {
     init {
         require(scope.saksbehandlervalg.containsKey(id).not()) { "Saksbehandlervalg med id $id allerede definert" }
     }
