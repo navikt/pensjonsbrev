@@ -202,8 +202,11 @@ suspend fun Application.skribentenApp(skribentenConfig: Config) {
             delay(5.minutes)
             oneShotJobs(skribentenConfig) {
                 job("2026-06-30-valgbare-vedlegg-spraak") {
-                    transaction {
-                        ValgteVedleggTable.select(ValgteVedleggTable.id, ValgteVedleggTable.valgteVedlegg).forEach { v ->
+                    val alleValgteVedlegg = transaction {
+                        ValgteVedleggTable.select(ValgteVedleggTable.id, ValgteVedleggTable.valgteVedlegg)
+                    }
+                    alleValgteVedlegg.forEach { v ->
+                        transaction {
                             ValgteVedleggTable.update({ ValgteVedleggTable.id eq v[ValgteVedleggTable.id] }) {
                                 it[ValgteVedleggTable.valgteVedlegg] = v[ValgteVedleggTable.valgteVedlegg].map { vedlegg ->
                                     AlltidValgbartVedleggBrevkode(
