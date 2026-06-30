@@ -47,14 +47,13 @@ object BrevbakerBrevdataModule : SimpleModule() {
             val root = parser.codec.readTree<JsonNode>(parser)
             val verdier = root.properties().associate { (key, node) ->
                 val fraMalen = parser.codec.treeToValue(node.get("fraMalen"), SaksbehandlervalgVerdi::class.java) as SaksbehandlervalgVerdi<*>
-            val verdi = node.get("verdi")?.let {
-                when (fraMalen) {
-                    is SaksbehandlervalgVerdi.Bool -> it.booleanValue()
-                    is SaksbehandlervalgVerdi.Integer -> it.intValue()
-                    is SaksbehandlervalgVerdi.Text -> it.textValue()
-                    is SaksbehandlervalgVerdi.Enum<*> -> java.lang.Enum.valueOf(fraMalen.clazz as Class<out Enum<*>>, it.textValue())
-                }
-            }
+                val verdi = node.get("verdi")?.takeUnless { it.isEmpty }?.let {
+                    when (fraMalen) {
+                        is SaksbehandlervalgVerdi.Bool -> it.booleanValue()
+                        is SaksbehandlervalgVerdi.Integer -> it.intValue()
+                        is SaksbehandlervalgVerdi.Text -> it.textValue()
+                        is SaksbehandlervalgVerdi.Enum<*> -> java.lang.Enum.valueOf(fraMalen.clazz, it.textValue())
+                    }
                 }
                 key to EttSaksbehandlervalgIDSLImpl(key, verdi, fraMalen)
             }
