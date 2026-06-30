@@ -47,12 +47,6 @@ sealed interface SaksbehandlervalgVerdi<out T> {
         }
 
         override fun hashCode() = Enum::class.java.hashCode() + (defaultValue?.hashCode() ?: 0)
-
-        companion object {
-            @Suppress("UNCHECKED_CAST")
-            fun parse(clazz: Class<out kotlin.Enum<*>>, value: String?): SaksbehandlerValgEnum? =
-                value?.let { java.lang.Enum.valueOf(clazz, it) as SaksbehandlerValgEnum }
-        }
     }
 
     @BrevbakerDSLInternal
