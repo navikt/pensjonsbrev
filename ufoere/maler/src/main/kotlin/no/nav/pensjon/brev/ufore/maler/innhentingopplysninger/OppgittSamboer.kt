@@ -4,15 +4,14 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_OPPGITT_SAMBOER
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerSamboerDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.innhentingOpplysningerSamboerDto.saksbehandlervalg.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.innhentingOpplysningerSamboerDto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants
@@ -39,9 +38,6 @@ object OppgittSamboer : RedigerbarTemplate<InnhentingOpplysningerSamboerDto> {
         ),
     )
     {
-        val ukjentSamboer = saksbehandlervalg("ukjentSamboer", "Ukjent samboer").bool()
-        val vilkaarlegInt = saksbehandlervalg("vilkaarlegInt", "Vilkaarleg int").int(1)
-
         title {
             text (bokmal { + "Du må sende flere opplysninger" })
         }
@@ -49,15 +45,8 @@ object OppgittSamboer : RedigerbarTemplate<InnhentingOpplysningerSamboerDto> {
             paragraph {
                 text(bokmal { +"Vi har mottatt melding om at du har blitt samboer. " })
             }
-            ifNotNull(vilkaarlegInt) { i ->
-                showIf(i.greaterThan(0)) {
-                    paragraph {
-                        text(bokmal { +"teeeeest" + i.format() })
-                    }
-                }
-            }
 
-            showIf(ukjentSamboer) {
+            showIf(saksbehandlerValg.ukjentSamboer) {
                 paragraph {
                     text(bokmal { +"Vi ber om at du sender oss navn og fødselsnummer på din samboer. Vi trenger også informasjon om hvilken dato dere ble samboere. Dersom du og din samboer ikke har samme registrerte bostedsadresser må dere melde flytting til Folkeregisteret. Du kan melde flytting her: ${Constants.SKATTEETATEN_MELD_FLYTTING}" })
                 }

@@ -2,10 +2,8 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
-import no.nav.brev.brevbaker.tilSaksbehandlervalgverdiEnum
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto
@@ -19,7 +17,9 @@ import org.junit.jupiter.api.Test
 class VarselRevurderingAvPensjonTest {
 
     private val data = VarselRevurderingAvPensjonDto(
-        saksbehandlerValg = lagSaksbehandlervalg(),
+        saksbehandlerValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg(
+            tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett
+        ),
         pesysData = VarselRevurderingAvPensjonDto.PesysData(sakstype = Sakstype.FAM_PL)
     )
 
@@ -28,7 +28,7 @@ class VarselRevurderingAvPensjonTest {
     fun `med revurdering av rett`() {
         writeAllLanguages(
             "revurdering av rett",
-            data.copy(saksbehandlerValg = lagSaksbehandlervalg("tittelValg" to VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett.tilSaksbehandlervalgverdiEnum("Tittelvalg")))
+            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett))
         )
     }
 
@@ -36,7 +36,7 @@ class VarselRevurderingAvPensjonTest {
     fun `med revurdering av reduksjon`() {
         writeAllLanguages(
             "revurdering reduksjon",
-            data.copy(saksbehandlerValg = lagSaksbehandlervalg("tittelValg" to VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon.tilSaksbehandlervalgverdiEnum("Tittelvalg")))
+            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon))
         )
     }
 
