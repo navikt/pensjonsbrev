@@ -250,10 +250,8 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
 
     }
 
-    class EttSaksbehandlervalg<In1 : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>, Out> : BinaryOperation<In1, String, Out>() {
+    class EttSaksbehandlervalg<In1 : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>, Out> : BinaryOperation<In1, String, Out>(), StableHash by StableHash.of("BinaryOperation.EttSaksbehandlervalg") {
         override fun apply(first: In1, second: String): Out = (first.saksbehandlerValg as SaksbehandlervalgIDSLImpl).get(second)
-
-        override fun stableHashCode() = StableHash.of(StableHash.of("UnaryOperation.EttSaksbehandlervalg")).stableHashCode()
     }
 
 }
