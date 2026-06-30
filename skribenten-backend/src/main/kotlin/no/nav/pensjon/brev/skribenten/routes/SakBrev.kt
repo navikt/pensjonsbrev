@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.skribenten.routes
 
 import io.ktor.http.*
+import io.ktor.server.application.Application
 import io.ktor.server.plugins.*
+import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -17,13 +19,14 @@ import no.nav.pensjon.brev.skribenten.model.toDto
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
-fun Route.sakBrev(
-    brevmalService: BrevmalService,
-    p1Service: P1ServiceImpl,
-    brevredigeringFacade: BrevredigeringFacade,
-    dto2ApiService: Dto2ApiService,
-) =
+context(app: Application)
+fun Route.sakBrev() =
     route("/brev") {
+        val brevmalService: BrevmalService by app.dependencies
+        val p1Service: P1ServiceImpl by app.dependencies
+        val brevredigeringFacade: BrevredigeringFacade by app.dependencies
+        val dto2ApiService: Dto2ApiService by app.dependencies
+
         get {
             val sak: Fagsak = call.attributes[SakKey]
 

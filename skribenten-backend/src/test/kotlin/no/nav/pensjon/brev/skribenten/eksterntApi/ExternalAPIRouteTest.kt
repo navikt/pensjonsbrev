@@ -13,6 +13,8 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.basic
+import io.ktor.server.plugins.di.dependencies
+import io.ktor.server.routing.routing
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import no.nav.pensjon.brev.skribenten.MockPrincipal
@@ -135,13 +137,31 @@ class ExternalAPIRouteTest {
         }
         application {
             skribentenContenNegotiation()
-        }
-        routing {
-            externalAPI(externalAPIService, object : PdlServiceStub() {
-                override suspend fun hentAdressebeskyttelse(ident: BrevbakerType.Pid, behandlingsnumre: List<Behandlingsnummer>) = null
-            }, FagsakService(object : PenClientStub() {
-                override suspend fun hentSak(saksId: SaksId) = Pen.SakSelection(saksId, LocalDate.now(), Pen.SakSelection.Navn("fornavn1", mellomnavn = null, "etternavn2"), Sakstype("hei"), BrevbakerType.Pid("123"), listOf())
-            }))
+            dependencies {
+                provide { externalAPIService }
+                provide {
+                    object : PdlServiceStub() {
+                        override suspend fun hentAdressebeskyttelse(ident: BrevbakerType.Pid, behandlingsnumre: List<Behandlingsnummer>) = null
+                    }
+                }
+                provide {
+                    FagsakService(
+                        object : PenClientStub() {
+                            override suspend fun hentSak(saksId: SaksId) = Pen.SakSelection(
+                                saksId = saksId,
+                                foedselsdato = LocalDate.now(),
+                                navn = Pen.SakSelection.Navn("fornavn1", mellomnavn = null, "etternavn2"),
+                                sakType = Sakstype("hei"),
+                                pid = BrevbakerType.Pid("123"),
+                                behandlingsnumre = listOf()
+                            )
+                        }
+                    )
+                }
+            }
+            routing {
+                externalAPI()
+            }
         }
 
         val client = createClient {

@@ -12,6 +12,7 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
 import no.nav.pensjon.brev.skribenten.AzureADConfig
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.common.Cache
@@ -49,7 +50,7 @@ interface AuthService {
     suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse.OnBehalfOfToken
 }
 
-class AzureADService(private val jwtConfig: AzureADConfig, private val cache: Cache, engine: HttpClientEngine = CIO.create()) : AuthService {
+class AzureADService(private val jwtConfig: AzureADConfig, private val cache: Cache, engine: HttpClientEngine = CIO.create()) : AuthService, Closeable {
     @Suppress("unused") // Brukes av ktor-di
     constructor(config: SkribentenConfig, cache: Cache, engine: HttpClientEngine = CIO.create()): this(config.azureAD, cache, engine)
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -83,4 +84,6 @@ class AzureADService(private val jwtConfig: AzureADConfig, private val cache: Ca
             }
             response.body<TokenResponse.OnBehalfOfToken>()
         }
+
+    override fun close() { client.close() }
 }

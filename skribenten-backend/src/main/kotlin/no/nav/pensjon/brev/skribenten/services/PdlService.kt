@@ -11,6 +11,8 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.model.Pdl
@@ -37,7 +39,11 @@ interface PdlService {
 
 class PdlServiceException(message: String, status: HttpStatusCode = HttpStatusCode.InternalServerError) : ServiceException(message, status = status)
 
-class PdlServiceHttp(config: OboClientConfig, authService: AuthService) : PdlService, ServiceStatus {
+class PdlServiceHttp(config: OboClientConfig, authService: AuthService) : PdlService, ServiceStatus, Closeable {
+
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, authService: AuthService): this(config.services.pdl, authService)
+
     private val pdlUrl = config.url
     private val pdlScope = config.scope
 
@@ -168,5 +174,7 @@ class PdlServiceHttp(config: OboClientConfig, authService: AuthService) : PdlSer
 
     override suspend fun ping() =
         ping("PDL") { client.options("") }
+
+    override fun close() { client.close() }
 
 }

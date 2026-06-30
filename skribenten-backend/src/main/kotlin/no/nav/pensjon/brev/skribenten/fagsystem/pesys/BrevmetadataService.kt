@@ -9,6 +9,8 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
@@ -25,7 +27,11 @@ interface BrevmetadataService {
 
 class BrevmetadataServiceHttp(
     config: NoAuthClientConfig,
-) : BrevmetadataService, ServiceStatus {
+) : BrevmetadataService, ServiceStatus, Closeable {
+
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig): this(config.services.brevmetadata)
+
     private val brevmetadataUrl = config.url
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
     private val httpClient = lagHttpClient {
@@ -77,6 +83,8 @@ class BrevmetadataServiceHttp(
 
     override suspend fun ping() =
         ping("Brevmetadata") { httpClient.get("/api/internal/isReady") }
+
+    override fun close() { httpClient.close() }
 
 }
 

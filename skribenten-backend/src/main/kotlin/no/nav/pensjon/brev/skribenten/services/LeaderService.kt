@@ -7,6 +7,7 @@ import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
 import no.nav.pensjon.brev.skribenten.NoAuthClientConfig
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
@@ -23,7 +24,7 @@ interface LeaderService {
 class NaisLeaderService(
     config: NoAuthClientConfig?,
     clientEngine: HttpClientEngine = CIO.create(),
-) : LeaderService {
+) : LeaderService, Closeable {
     private val url: String? = config?.url
 
     @Suppress("unused") // Brukes av ktor-di
@@ -57,6 +58,8 @@ class NaisLeaderService(
             )
         }
     }
+
+    override fun close() { client.close() }
 
     companion object {
         fun thisInstanceName(): String = InetAddress.getLocalHost().hostName

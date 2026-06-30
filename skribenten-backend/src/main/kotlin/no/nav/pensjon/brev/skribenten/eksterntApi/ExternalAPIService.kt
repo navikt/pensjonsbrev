@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.eksterntApi
 
 import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.OpprettBrevService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OpprettBrevHandlerImpl
@@ -22,6 +23,11 @@ class ExternalAPIService(
     private val brevmalService: BrevmalService,
     private val opprettBrevService: OpprettBrevService
 ) {
+
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, hentBrevService: HentBrevService, brevmalService: BrevmalService, opprettBrevService: OpprettBrevService):
+            this(config.services.externalApi, hentBrevService, brevmalService, opprettBrevService)
+
     private val skribentenWebUrl = config.skribentenWebUrl
 
     companion object {

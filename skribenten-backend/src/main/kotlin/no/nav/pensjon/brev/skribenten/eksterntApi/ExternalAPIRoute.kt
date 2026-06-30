@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.skribenten.eksterntApi
 
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
 import io.ktor.server.auth.authenticate
+import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.get
@@ -20,11 +22,8 @@ import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("ExternalApi")
 
-fun Route.externalAPI(
-    externalAPIService: ExternalAPIService,
-    pdlService: PdlService,
-    fagsakService: FagsakService,
-) =
+context(app: Application)
+fun Route.externalAPI() =
     authenticate(AUTHENTICATION_REALM_NAME) {
         install(PrincipalInContext)
         install(PrincipalHasGroup) {
@@ -32,6 +31,10 @@ fun Route.externalAPI(
             onRejection { respond(emptyList<String>()) }
         }
         route("/external/api/v1") {
+            val externalAPIService: ExternalAPIService by app.dependencies
+            val pdlService: PdlService by app.dependencies
+            val fagsakService: FagsakService by app.dependencies
+
             route("/brev") {
                 get {
                     val saksIder = call.queryParameters.getAll("saksId")

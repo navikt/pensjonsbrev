@@ -9,6 +9,8 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
@@ -21,8 +23,12 @@ interface Norg2Service {
 }
 
 // docs: https://confluence.adeo.no/display/FEL/NORG2+-+Teknisk+beskrivelse - trykk på droppdown
-class Norg2ServiceHttp(config: NoAuthClientConfig, val cache: Cache) : Norg2Service {
+class Norg2ServiceHttp(config: NoAuthClientConfig, val cache: Cache) : Norg2Service, Closeable {
     private val logger = LoggerFactory.getLogger(Norg2ServiceHttp::class.java)
+
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, cache: Cache): this(config.services.norg2, cache)
+
     private val norgUrl = config.url
 
     private val client = lagHttpClient {
@@ -49,6 +55,8 @@ class Norg2ServiceHttp(config: NoAuthClientConfig, val cache: Cache) : Norg2Serv
                 throw Norg2EnhetException(enhetId)
             }
         }
+
+    override fun close() { client.close() }
 }
 
 data class NavEnhet(

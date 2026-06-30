@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.skribenten.routes
 
 import io.ktor.http.*
+import io.ktor.server.application.Application
+import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
@@ -18,12 +20,13 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.PdlService
 
-fun Route.brev(
-    pdlService: PdlService,
-    fagsakService: FagsakService,
-    brevredigeringFacade: BrevredigeringFacade,
-    dto2ApiService: Dto2ApiService,
-) {
+context(app: Application)
+fun Route.brev() {
+    val pdlService: PdlService by app.dependencies
+    val fagsakService: FagsakService by app.dependencies
+    val brevredigeringFacade: BrevredigeringFacade by app.dependencies
+    val dto2ApiService: Dto2ApiService by app.dependencies
+
     route("/brev/{brevId}") {
         install(AuthorizeAnsattSakTilgangForBrev) {
             this.pdlService = pdlService
