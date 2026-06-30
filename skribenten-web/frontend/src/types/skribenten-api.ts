@@ -3192,7 +3192,7 @@ export interface components {
         };
         /** ApiBrevStatusKlar */
         ApiBrevStatusKlar: {
-            attestertAv?: components["schemas"]["ApiNavAnsatt"] | null;
+            attestertAv?: components["schemas"]["ApiNavAnsatt"];
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -3543,10 +3543,10 @@ export interface components {
             beskrivelse?: string | null;
             brevIkkeStoettet?: string | null;
             tekniskgrunn?: string | null;
-        };
+        } | null;
         /** ApiBestillBrevResponse */
         ApiBestillBrevResponse: {
-            error?: components["schemas"]["ApiBestillBrevResponseError"] | null;
+            error?: components["schemas"]["ApiBestillBrevResponseError"];
             journalpostId?: number | null;
         };
         /** ApiOppdaterAttesteringRequest */
@@ -3648,11 +3648,11 @@ export interface components {
             navn: string;
             offentligId: string;
             samhandlerType: string;
-        };
+        } | null;
         /** HentSamhandlerResponseDto */
         HentSamhandlerResponseDto: {
             failure?: components["schemas"]["HentSamhandlerResponseDtoFailureType"];
-            success?: components["schemas"]["HentSamhandlerResponseDtoSuccess"] | null;
+            success?: components["schemas"]["HentSamhandlerResponseDtoSuccess"];
         };
         /** HentSamhandlerAdresseRequestDto */
         HentSamhandlerAdresseRequestDto: {
@@ -3667,7 +3667,7 @@ export interface components {
             navn: string;
             postnr?: string | null;
             poststed?: string | null;
-        };
+        } | null;
         /**
          * HentSamhandlerAdresseResponseDtoFailureType
          * @enum {string|null}
@@ -3675,7 +3675,7 @@ export interface components {
         HentSamhandlerAdresseResponseDtoFailureType: "NOT_FOUND" | "GENERISK" | null;
         /** HentSamhandlerAdresseResponseDto */
         HentSamhandlerAdresseResponseDto: {
-            adresse?: components["schemas"]["HentSamhandlerAdresseResponseDtoSamhandlerPostadresse"] | null;
+            adresse?: components["schemas"]["HentSamhandlerAdresseResponseDtoSamhandlerPostadresse"];
             failureType?: components["schemas"]["HentSamhandlerAdresseResponseDtoFailureType"];
         };
         /** ApiUserInfo */
