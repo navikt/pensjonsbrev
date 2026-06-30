@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto
+import no.nav.pensjon.brev.alder.model.afp.AfpPeriode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDto
@@ -24,7 +24,7 @@ fun createVedtakAfpEtteroppgjoerIngenEndringDto(): VedtakAfpEtteroppgjoerIngenEn
             opphorsdato = null,
             medlemAvApotekerordningen = true,
             toleranseBeloep = Kroner(3000),
-            periode = VedtakAfpEtteroppgjoerIngenEndringDto.Periode.UTTAK_I_AARET,
+            periode = AfpPeriode.UTTAK_I_AARET,
         ),
     )
 
@@ -48,7 +48,7 @@ fun createVedtakAfpEtteroppgjoerEtterbetalingDto(): VedtakAfpEtteroppgjoerEtterb
             opphorsdato = null,
             medlemAvApotekerordningen = true,
             toleranseBeloep = Kroner(33_240),
-            periode = VedtakAfpEtteroppgjoerEtterbetalingAutoDto.Periode.UTTAK_I_AARET,
+            periode = AfpPeriode.UTTAK_I_AARET,
 
         ),
     )

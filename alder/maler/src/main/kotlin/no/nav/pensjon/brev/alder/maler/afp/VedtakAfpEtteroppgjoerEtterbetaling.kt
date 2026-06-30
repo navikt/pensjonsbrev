@@ -7,10 +7,26 @@ import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto.Periode
+import no.nav.pensjon.brev.alder.model.afp.AfpPeriode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDto
-import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.*
-import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.*
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.forlitebetalt
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.forventetPensjonsgivendeInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.fradragBeregnetArbeidsInntekt
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.fullAfp
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.inntektEtterOpphoer
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.inntektFoerUttak
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.inntektIAfpPerioden
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.korrigertAfp
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.medlemAvApotekerordningen
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.oppgjoersAar
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.opphorsdato
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.pensjonsgivendeInntekt
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.periode
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.tidligereArbeidsInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.toleranseBeloep
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.utbetaltAfp
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerEtterbetalingDto.pesysData.uttaksdato
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.model.format
@@ -62,7 +78,7 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
         outline {
             includePhrase(AfpEtteroppgjoerInnhold.EtteroppgjoerIntro)
 
-            showIf(pesysData.periode.equalTo(Periode.HEL_AFP_HELE_AARET)) {
+            showIf(pesysData.periode.equalTo(AfpPeriode.HEL_AFP_HELE_AARET)) {
                 paragraph {
                     text(
                         bokmal {
@@ -78,7 +94,7 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
                     )
                 }
             }
-            showIf(pesysData.periode.equalTo(Periode.UTTAK_I_AARET)) {
+            showIf(pesysData.periode.equalTo(AfpPeriode.UTTAK_I_AARET)) {
                 paragraph {
                     text(
                         bokmal {
@@ -94,7 +110,7 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
                     )
                 }
             }
-            showIf(pesysData.periode.equalTo(Periode.OPPHOER_I_AARET)) {
+            showIf(pesysData.periode.equalTo(AfpPeriode.OPPHOER_I_AARET)) {
                 ifNotNull(pesysData.opphorsdato) { opphor ->
                     paragraph {
                         text(
@@ -114,7 +130,7 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
                     }
                 }
             }
-            showIf(pesysData.periode.equalTo(Periode.UTTAK_OG_OPPHOER_I_AARET)) {
+            showIf(pesysData.periode.equalTo(AfpPeriode.UTTAK_OG_OPPHOER_I_AARET)) {
                 ifNotNull(pesysData.opphorsdato) { opphor ->
                     paragraph {
                         text(
@@ -157,10 +173,10 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
 
             includePhrase(
                 AfpEtteroppgjoerInnhold.InntektFoerUttakInntektEtterOpphoerFordelingPerPeriode(
-                    erHelAfpHeleAaret = pesysData.periode.equalTo(Periode.HEL_AFP_HELE_AARET),
-                    erUttakIAaret = pesysData.periode.equalTo(Periode.UTTAK_I_AARET),
-                    erOpphoerIAaret = pesysData.periode.equalTo(Periode.OPPHOER_I_AARET),
-                    erUttakOgOpphoerIAaret = pesysData.periode.equalTo(Periode.UTTAK_OG_OPPHOER_I_AARET),
+                    erHelAfpHeleAaret = pesysData.periode.equalTo(AfpPeriode.HEL_AFP_HELE_AARET),
+                    erUttakIAaret = pesysData.periode.equalTo(AfpPeriode.UTTAK_I_AARET),
+                    erOpphoerIAaret = pesysData.periode.equalTo(AfpPeriode.OPPHOER_I_AARET),
+                    erUttakOgOpphoerIAaret = pesysData.periode.equalTo(AfpPeriode.UTTAK_OG_OPPHOER_I_AARET),
                     uttaksdato = pesysData.uttaksdato,
                     opphorsdato = pesysData.opphorsdato,
                     oppgjoersAar = pesysData.oppgjoersAar,
@@ -183,10 +199,10 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
 
             includePhrase(
                 AfpEtteroppgjoerInnhold.NyPensjonsberegningEtterbetalingBlokk(
-                    erHeleAaret = pesysData.periode.equalTo(Periode.HEL_AFP_HELE_AARET),
-                    erUttakIAaret = pesysData.periode.equalTo(Periode.UTTAK_I_AARET),
-                    erOpphoerIAaret = pesysData.periode.equalTo(Periode.OPPHOER_I_AARET),
-                    erUttakOgOpphoerIAaret = pesysData.periode.equalTo(Periode.UTTAK_OG_OPPHOER_I_AARET),
+                    erHeleAaret = pesysData.periode.equalTo(AfpPeriode.HEL_AFP_HELE_AARET),
+                    erUttakIAaret = pesysData.periode.equalTo(AfpPeriode.UTTAK_I_AARET),
+                    erOpphoerIAaret = pesysData.periode.equalTo(AfpPeriode.OPPHOER_I_AARET),
+                    erUttakOgOpphoerIAaret = pesysData.periode.equalTo(AfpPeriode.UTTAK_OG_OPPHOER_I_AARET),
                     uttaksdato = pesysData.uttaksdato,
                     opphorsdato = pesysData.opphorsdato,
                     oppgjoersAar = pesysData.oppgjoersAar,

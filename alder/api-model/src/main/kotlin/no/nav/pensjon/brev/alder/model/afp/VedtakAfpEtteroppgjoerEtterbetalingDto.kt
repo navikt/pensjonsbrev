@@ -7,12 +7,6 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 
-/**
- * Redigerbart vedtak — AFP etteroppgjør (offentlig sektor / SPK) med etterbetaling.
- *
- * Konvertert fra Exstream-malen `PE_AF_04_109`. Auto-varianten av samme situasjon
- * er [VedtakAfpEtteroppgjoerEtterbetalingAutoDto] (`PE_AF_04_101`).
- */
 data class VedtakAfpEtteroppgjoerEtterbetalingDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,
@@ -26,11 +20,8 @@ data class VedtakAfpEtteroppgjoerEtterbetalingDto(
         val inntektEtterOpphoer: Kroner,
         val inntektIAfpPerioden: Kroner,
         val forventetPensjonsgivendeInntektBeregnet: Kroner,
-        // full AFP uten fradrag for inntekt
         val fullAfp: Kroner,
-        // inntektsfradraget i AFP
         val fradragBeregnetArbeidsInntekt: Kroner,
-        // tidligere arbeidsinntekt brukt i fradragsberegningen
         val tidligereArbeidsInntektBeregnet: Kroner,
         val korrigertAfp: Kroner,
         val utbetaltAfp: Kroner,
@@ -38,6 +29,6 @@ data class VedtakAfpEtteroppgjoerEtterbetalingDto(
         val opphorsdato: LocalDate?,
         val medlemAvApotekerordningen: Boolean,
         val toleranseBeloep: Kroner,
-        val periode: VedtakAfpEtteroppgjoerEtterbetalingAutoDto.Periode,
+        val periode: AfpPeriode,
     ) : FagsystemBrevdata
 }
