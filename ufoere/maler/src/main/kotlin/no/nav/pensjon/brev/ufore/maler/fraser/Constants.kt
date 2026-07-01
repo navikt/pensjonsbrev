@@ -9,6 +9,7 @@ object Constants {
     const val KLAGE_URL = "$NAV_URL/klage"
     const val KLAGERETTIGHETER_URL = "$NAV_URL/klagerettigheter"
     const val UFORE_URL = "$NAV_URL/uforetrygd"
+    const val GRUNNBELOEP_URL = "$NAV_URL/grunnbelop"
     const val NAV_KONTAKTSENTER_AAPNINGSTID = "09.00-15.00"
     const val KONTAKT_URL = "$NAV_URL/kontakt"
     const val FULLMAKT_URL = "$NAV_URL/fullmakt"
