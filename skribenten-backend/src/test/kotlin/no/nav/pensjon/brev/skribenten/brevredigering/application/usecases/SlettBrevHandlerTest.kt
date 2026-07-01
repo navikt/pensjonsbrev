@@ -1,10 +1,9 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.SlettBrevPolicy
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Dto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -28,18 +27,18 @@ class SlettBrevHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
-    suspend fun `kan ikke slette arkivert brev`() {
+    suspend fun `kan slette arkivert brev`() {
         val brev = opprettBrev().resultOrFail()
 
-        arkiverBrev(brev)
-
-        val result = slettBrev(brev)
-        assertThat(result).isFailure<SlettBrevPolicy.KanIkkeSlette.ArkivertBrev, Unit, BrevredigeringError> {
-            assertThat(it.journalpostId).isEqualTo(penService.sendBrevResponse?.journalpostId!!)
+        assertThat(arkiverBrev(brev)).isSuccess().also {
+            // Verify the brev is actually archived
+            assertThat(hentBrev(brev.info.id).resultOrFail().info.status).isEqualTo(Dto.BrevStatus.ARKIVERT)
         }
 
-        // Verify the brev still exists
-        assertThat(hentBrev(brev.info.id)).isNotNull()
+        assertThat(slettBrev(brev)).isSuccess()
+
+        // Verify the brev is actually deleted
+        assertThat(hentBrev(brev.info.id)).isNull()
     }
 
     @Test
