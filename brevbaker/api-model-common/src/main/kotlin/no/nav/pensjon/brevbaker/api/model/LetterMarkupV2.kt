@@ -16,7 +16,7 @@ interface LetterMarkupWithDataUsageV2 {
 
 interface LetterMarkupV2 {
     val title1: List<Text>
-    val sakspart: Sakspart
+    val saksinformasjon: Saksinformasjon
     val blocks: List<Block>
     val signatur: Signatur
 
@@ -26,13 +26,16 @@ interface LetterMarkupV2 {
         val includeSakspart: Boolean
     }
 
-    interface Sakspart {
+    interface Saksinformasjon {
         val gjelderNavn: String
         val gjelderFoedselsnummer: Foedselsnummer
         val annenMottakerNavn: String?
-        val saksnummer: String
+        val saksnummer: Saksnummer
         val dokumentDato: LocalDate
     }
+
+    @JvmInline
+    value class Saksnummer(val saksnummer: String)
 
     interface Signatur {
         val hilsenTekst: String
