@@ -101,12 +101,12 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             val oifuMerEnnIfu = oifuKroner.greaterThan(ifuinntekt)
 
             val txtOgEllerEktefelle = if (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().equals(true)) " og/eller ektefelle" else ""
-            val kravFremsattDatoEvtMottatt = pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato())
+            val soknadsdato = pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato())
 
             paragraph {
                 text(
-                    bokmal { +"Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + kravFremsattDatoEvtMottatt.format() + ". " },
-                    nynorsk { +"Vi har innvilga søknaden din om auka uføretrygd som vi fekk " + kravFremsattDatoEvtMottatt.format() + ". " },
+                    bokmal { +"Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + soknadsdato.format() + ". " },
+                    nynorsk { +"Vi har innvilga søknaden din om auka uføretrygd som vi fekk " + soknadsdato.format() + ". " },
                 )
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().isNotAnyOf("omgj_etter_klage", "omgj_etter_anke")) {
                     text(
@@ -597,8 +597,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))) {
                 paragraph {
                     text(
-                        bokmal { +"Du har fått innvilget økt uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + ". Dette kaller vi virkningstidspunktet. Vi mottok søknaden din " + kravFremsattDatoEvtMottatt.format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen.<FRITEKST>." },
-                        nynorsk { +"Du har fått innvilga auka uføretrygd frå " + pe.vedtaksdata_virkningfom().format() + ". Dette kallar vi verknadstidspunktet. Vi fekk søknaden din " + kravFremsattDatoEvtMottatt.format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd for opptil tre månader før denne datoen.<FRITEKST>." },
+                        bokmal { +"Du har fått innvilget økt uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + ". Dette kaller vi virkningstidspunktet. Vi mottok søknaden din " + soknadsdato.format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen.<FRITEKST>." },
+                        nynorsk { +"Du har fått innvilga auka uføretrygd frå " + pe.vedtaksdata_virkningfom().format() + ". Dette kallar vi verknadstidspunktet. Vi fekk søknaden din " + soknadsdato.format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd for opptil tre månader før denne datoen.<FRITEKST>." },
                     )
                 }
             }
