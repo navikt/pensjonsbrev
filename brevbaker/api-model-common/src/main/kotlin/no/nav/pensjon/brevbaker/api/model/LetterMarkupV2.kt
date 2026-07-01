@@ -21,9 +21,9 @@ interface LetterMarkupV2 {
     val signatur: Signatur
 
     interface Attachment : AttachmentTitleV2 {
-        override val title: List<Text>
+        override val title1: List<Text>
         val blocks: List<Block>
-        val includeSakspart: Boolean
+        val inkluderSaksinformasjon: Boolean
     }
 
     interface Saksinformasjon {

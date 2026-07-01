@@ -7,7 +7,7 @@ interface AttachmentTitle {
 }
 
 interface AttachmentTitleV2 {
-    val title: List<LetterMarkupV2.Text>
+    val title1: List<LetterMarkupV2.Text>
 }
 
 class PDFTittel(override val title: List<ParagraphContent.Text>) : AttachmentTitle {
