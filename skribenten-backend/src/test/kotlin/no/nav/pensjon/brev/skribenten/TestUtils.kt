@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroup
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserAccessToken
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1_BREVKODE
@@ -20,6 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ObjectAssert
 import org.jetbrains.exposed.v1.jdbc.Database
+import org.opentest4j.AssertionFailedError
 import org.testcontainers.postgresql.PostgreSQLContainer
 import java.time.LocalDate
 import java.util.concurrent.atomic.AtomicBoolean
@@ -117,11 +119,14 @@ object SharedPostgres {
 
     private val initialized = AtomicBoolean(false)
 
+    lateinit var database: Database
+        private set
+
     fun subscribeAndEnsureDatabaseInitialized(subscriber: Any) {
         synchronized(this) {
             if (initialized.compareAndSet(false, true)) {
                 val c = container
-                Database.connect(initDatabase(jdbcUrl = c.jdbcUrl, username = c.username, password = c.password, maxPoolSize = 20))
+                database = Database.connect(initDatabase(jdbcUrl = c.jdbcUrl, username = c.username, password = c.password, maxPoolSize = 20))
             }
             subscriptions.add(subscriber)
         }

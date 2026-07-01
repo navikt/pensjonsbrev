@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.function.Predicate
+import kotlin.time.Duration.Companion.milliseconds
 
 class ReserverBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
@@ -86,7 +87,7 @@ class ReserverBrevHandlerTest : BrevredigeringHandlerTestBase() {
         val brev = opprettBrev().resultOrFail()
 
         brevbakerService.renderMarkupResultat = {
-            delay(100)
+            delay(100.milliseconds)
             letter
         }
 

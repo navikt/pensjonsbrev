@@ -13,6 +13,9 @@ import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceHttp
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacadeFactory
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OppdaterBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.cacheFactory
 import no.nav.pensjon.brev.skribenten.db.dataSourceFactory
@@ -51,6 +54,10 @@ fun Application.configureDependencies() {
         provide<Cache>(::cacheFactory)
         provide<AuthService>(AzureADService::class)
         provide<HikariDataSource>(::dataSourceFactory)
+        provide { datasource: HikariDataSource ->
+            Database.connect(datasource).also { databaseReady.set(true) }
+        }
+
         provide<FeatureToggleService>(UnleashService::class)
 
         provide(NaisLeaderService::class)
@@ -79,11 +86,11 @@ fun Application.configureDependencies() {
         provide(Dto2ApiService::class)
         provide<BrevredigeringFacade>(BrevredigeringFacadeFactory::create)
         provide(ExternalAPIService::class)
+
+        provide(RedigerBrevPolicy::class)
+        provide(BrevreservasjonPolicy::class)
+        provide(OppdaterBrevHandler::class)
     }
 
-    launch {
-        Database.connect(dependencies.resolve<HikariDataSource>())
-        databaseReady.set(true)
-    }
     launch { Features.init(dependencies.resolve()) }
 }

@@ -45,9 +45,10 @@ fun Route.brev() {
             }
         }
 
+        val oppdaterBrev: OppdaterBrevHandler by app.dependencies
         put<Edit.Letter>("/redigertBrev") { request ->
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
-            val resultat = brevredigeringFacade.oppdaterBrev(
+            val resultat = oppdaterBrev(
                 OppdaterBrevHandler.Request(
                     brevId = call.parameters.brevId(),
                     nyeSaksbehandlerValg = null,

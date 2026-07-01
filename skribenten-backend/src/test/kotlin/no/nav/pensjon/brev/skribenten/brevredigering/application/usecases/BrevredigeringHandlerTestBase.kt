@@ -4,30 +4,19 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
 import io.ktor.http.*
 import no.nav.brev.InternKonstruktoer
-import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
-import no.nav.pensjon.brev.skribenten.auth.ADGroups
-import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
-import no.nav.pensjon.brev.skribenten.auth.withPrincipal
+import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacadeFactory
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.brevredigering.application.*
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Service
-import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.letter.letter
+import no.nav.pensjon.brev.skribenten.fagsystem.*
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
+import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.*
-import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.*
@@ -41,9 +30,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.*
 import org.opentest4j.AssertionFailedError
 import java.time.LocalDate
 
@@ -102,10 +89,21 @@ abstract class BrevredigeringHandlerTestBase {
     protected val brevbakerService = BrevredigeringFakeBrevbakerService()
     protected val penService = FakePenClient()
     protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
+    protected val brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService())
+    protected val brevdataService = BrevdataService(penService, samhandlerService)
 
+    protected val oppdaterBrev by lazy {
+        OppdaterBrevHandler(
+            redigerBrevPolicy = RedigerBrevPolicy(),
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            brevreservasjonPolicy = BrevreservasjonPolicy(),
+            database = SharedPostgres.database,
+        )
+    }
     protected val brevredigeringFacade = createFacade()
 
-    protected companion object Fixtures {
+    companion object Fixtures {
         init {
             KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
             Features.override(UnleashToggle("må sørge for at det finnes en FeatureToggleService"), false)
@@ -214,6 +212,15 @@ abstract class BrevredigeringHandlerTestBase {
                     annenMottakerNavn = navn,
                 )
             )
+
+        class ResultFailure(error: BrevredigeringError) :
+            AssertionFailedError(null, Outcome.Success::class.java, error::class.java)
+
+        fun <T> Outcome<T, BrevredigeringError>?.resultOrFail(): T = when (this) {
+            is Outcome.Success -> value
+            is Outcome.Failure -> throw ResultFailure(error)
+            null -> throw AssertionError("Resultat var null")
+        }
     }
 
     protected fun createFacade(p1Service: P1Service = FakeP1Service()): BrevredigeringFacade = BrevredigeringFacadeFactory.create(
@@ -257,7 +264,7 @@ abstract class BrevredigeringHandlerTestBase {
         frigiReservasjon: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.oppdaterBrev(
+        oppdaterBrev.handle(
             OppdaterBrevHandler.Request(
                 brevId = brevId,
                 nyeSaksbehandlerValg = nyeSaksbehandlerValg,
@@ -376,15 +383,6 @@ abstract class BrevredigeringHandlerTestBase {
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
             )
         )
-    }
-
-    protected class ResultFailure(error: BrevredigeringError) :
-        AssertionFailedError(null, Outcome.Success::class.java, error::class.java)
-
-    protected fun <T> Outcome<T, BrevredigeringError>?.resultOrFail(): T = when (this) {
-        is Outcome.Success -> value
-        is Outcome.Failure -> throw ResultFailure(error)
-        null -> throw AssertionError("Resultat var null")
     }
 
     protected class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {

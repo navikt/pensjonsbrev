@@ -20,7 +20,6 @@ import java.sql.Connection
 
 class BrevredigeringFacade(
     private val opprettBrev: OpprettBrevHandler,
-    private val oppdaterBrev: BrevredigeringHandler<OppdaterBrevHandler.Request, Dto.Brevredigering>,
     private val hentBrev: BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering>,
     private val hentBrevAttestering: BrevredigeringHandler<HentBrevAttesteringHandler.Request, Dto.Brevredigering>,
     private val veksleKlarStatus: BrevredigeringHandler<VeksleKlarStatusHandler.Request, Dto.BrevInfo>,
@@ -46,9 +45,6 @@ class BrevredigeringFacade(
         suspendTransaction {
             opprettBrev.handle(request)
         }
-
-    suspend fun oppdaterBrev(request: OppdaterBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        oppdaterBrev.runHandler(request)
 
     override fun hentBrevInfo(brevId: BrevId): Dto.BrevInfo? =
         transaction { BrevredigeringEntity.findById(brevId)?.toBrevInfo(brevreservasjonPolicy) }

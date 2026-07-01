@@ -14,13 +14,15 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import org.jetbrains.exposed.v1.jdbc.Database
 
 class OppdaterBrevHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-) : BrevredigeringHandler<OppdaterBrevHandler.Request, Dto.Brevredigering> {
+    database: Database,
+) : ReservertBrevHandler<OppdaterBrevHandler.Request, Dto.Brevredigering>(database, brevreservasjonPolicy) {
 
     data class Request(
         override val brevId: BrevId,
@@ -29,7 +31,7 @@ class OppdaterBrevHandler(
         val frigiReservasjon: Boolean = false,
     ) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
+    override suspend fun execute(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
         val principal = PrincipalInContext.require()
 
@@ -52,6 +54,7 @@ class OppdaterBrevHandler(
 
         return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
     }
+
 
     override fun requiresReservasjon(request: Request) = true
 }

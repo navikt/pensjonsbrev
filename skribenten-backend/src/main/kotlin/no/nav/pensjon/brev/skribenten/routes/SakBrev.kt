@@ -73,12 +73,13 @@ fun Route.sakBrev() =
                 apiRespond(dto2ApiService, brev)
             }
 
+            val oppdaterBrev: OppdaterBrevHandler by app.dependencies
             put {
                 val request = call.receive<Api.OppdaterBrevRequest>()
                 val brevId = call.parameters.brevId()
                 val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
 
-                val result = brevredigeringFacade.oppdaterBrev(
+                val result = oppdaterBrev(
                     OppdaterBrevHandler.Request(
                         brevId = brevId,
                         nyeSaksbehandlerValg = request.saksbehandlerValg,
