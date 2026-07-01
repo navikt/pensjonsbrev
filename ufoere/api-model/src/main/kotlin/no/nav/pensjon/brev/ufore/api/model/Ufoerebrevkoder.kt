@@ -12,7 +12,7 @@ object Ufoerebrevkoder {
         UT_VARSEL_OKT_MINSTE_IFU,
         UT_VARSEL_LAVERE_REDUKSJONSPROSENT,
         UT_VARSEL_OKT_MINSTE_IFU_LAVERE_REDPROS,
-        UT_VARSEL_REVERSERING_AV_MINSTESATS,
+        UT_INFO_REVERSERING_AV_MINSTESATS,
         ;
         override fun kode(): String = this.name
     }

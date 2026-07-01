@@ -8,15 +8,15 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.AutoBrev.UT_VARSEL_REVERSERING_AV_MINSTESATS
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.AutoBrev.UT_INFO_REVERSERING_AV_MINSTESATS
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object VarselOmReverseringAvMinstesats : AutobrevTemplate<EmptyAutobrevdata> {
+object InfoOmReverseringAvMinstesats : AutobrevTemplate<EmptyAutobrevdata> {
 
-    override val kode = UT_VARSEL_REVERSERING_AV_MINSTESATS
+    override val kode = UT_INFO_REVERSERING_AV_MINSTESATS
 
     override val template = createTemplate(
         languages = languages(Bokmal, Language.Nynorsk),
@@ -60,8 +60,8 @@ object VarselOmReverseringAvMinstesats : AutobrevTemplate<EmptyAutobrevdata> {
             }
             paragraph {
                 text(
-                    bokmal { +"Du skal ha utbetalt uføretrygd etter en minstesats på 2,379 G" },
-                    nynorsk { +"Du skal ha utbetalt uføretrygd etter ein minstesats på 2,379 G" },
+                    bokmal { +"Du skal ha utbetalt uføretrygd etter en minstesats på 2,329 G." },
+                    nynorsk { +"Du skal ha utbetalt uføretrygd etter ein minstesats på 2,329 G." },
                 )
             }
             title2 {

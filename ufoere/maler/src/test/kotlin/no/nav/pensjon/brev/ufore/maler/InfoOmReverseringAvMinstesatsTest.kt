@@ -6,20 +6,20 @@ import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.ufore.Fixtures
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmReverseringAvMinstesats
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.InfoOmReverseringAvMinstesats
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
-class VarselOmReverseringAvMinstesatsTest {
+class InfoOmReverseringAvMinstesatsTest {
 
     @Test
     fun testHtml() {
         LetterTestImpl(
-            template = VarselOmReverseringAvMinstesats.template,
+            template = InfoOmReverseringAvMinstesats.template,
             argument = EmptyAutobrevdata,
             language = Language.Bokmal,
             felles = Fixtures.felles
-        ).renderTestHtml(VarselOmReverseringAvMinstesats.kode.name)
+        ).renderTestHtml(InfoOmReverseringAvMinstesats.kode.name)
     }
 }
