@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Dto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -29,7 +30,10 @@ class SlettBrevHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `kan slette arkivert brev`() {
         val brev = opprettBrev().resultOrFail()
 
-        arkiverBrev(brev)
+        assertThat(arkiverBrev(brev)).isSuccess().also {
+            // Verify the brev is actually archived
+            assertThat(hentBrev(brev.info.id).resultOrFail().info.status).isEqualTo(Dto.BrevStatus.ARKIVERT)
+        }
 
         assertThat(slettBrev(brev)).isSuccess()
 
