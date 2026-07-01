@@ -79,7 +79,7 @@ const SlettBrevModal = (properties: {
       <Modal.Body>
         <BodyLong>
           {!slett.isSuccess
-            ? (properties.texts?.body ?? "Brevet vil bli slettet, og du kan ikke angre denne handlingen.")
+            ? (properties.texts?.body ?? "Brevet vil bli slettet, og du kan ikke angre denne handlingen. Hvis brevet allerede er journalført, må du huske å følge rutinen for feilregistrering av journalpost")
             : `Brevet med id ${properties.brevId} er slettet. Vil du gå til brevbehandler?`}
         </BodyLong>
         {slett.isError && <ErrorMessage>Kunne ikke slette brev {properties.brevId}. Vil du prøve igjen?</ErrorMessage>}
