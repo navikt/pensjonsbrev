@@ -34,7 +34,7 @@ import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAktivitetsplik
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAktivitetspliktInformasjon6mndDto
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagRedigerbartUtfallDTO
-import no.nav.pensjon.etterlatte.fixtures.createTomOmstillingsstoenadBeregningRedigerbartVedlegg
+import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadBeregningRedigerbartVedlegg
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInformasjonDoedsfallDto
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnhentingAvOpplysningerDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInntektsjusteringVedtakDTO
@@ -161,7 +161,7 @@ object Fixtures : LetterDataFactory {
             OmstillingsstoenadVarselAktivitetspliktDTO::class -> createOmstillingsstoenadVarselAktivitetspliktDTO() as T
             OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO::class -> createOmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO() as T
             OmstillingsstoenadBeregningRedigerbartVedlegg::class ->
-                createTomOmstillingsstoenadBeregningRedigerbartVedlegg() as T
+                createOmstillingsstoenadBeregningRedigerbartVedlegg() as T
 
             // Inntektsjustering
             AarligInntektsjusteringVedtakDTO::class -> createOmstillingsstoenadInntektsjusteringVedtakDTO() as T

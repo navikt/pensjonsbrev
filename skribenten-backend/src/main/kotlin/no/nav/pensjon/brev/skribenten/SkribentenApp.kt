@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.skribenten.common.InMemoryCache
 import no.nav.pensjon.brev.skribenten.common.Valkey
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
+import no.nav.pensjon.brev.skribenten.db.ValgteVedleggTable
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Exception
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenDataException
@@ -44,10 +45,15 @@ import no.nav.pensjon.brev.skribenten.serialize.registerMixin
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory
 import no.nav.pensjon.brev.skribenten.services.ServiceException
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
+import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.v1.jdbc.update
 import org.slf4j.LoggerFactory
+import kotlin.collections.forEach
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
@@ -195,6 +201,24 @@ suspend fun Application.skribentenApp(skribentenConfig: Config) {
         launch {
             delay(5.minutes)
             oneShotJobs(skribentenConfig) {
+                job("2026-06-30-valgbare-vedlegg-spraak") {
+                    val alleValgteVedlegg = transaction {
+                        ValgteVedleggTable.select(ValgteVedleggTable.id, ValgteVedleggTable.valgteVedlegg).toList()
+                    }
+                    alleValgteVedlegg.forEach { v ->
+                        transaction {
+                            ValgteVedleggTable.update({ ValgteVedleggTable.id eq v[ValgteVedleggTable.id] }) {
+                                it[ValgteVedleggTable.valgteVedlegg] = v[ValgteVedleggTable.valgteVedlegg].map { vedlegg ->
+                                    AlltidValgbartVedleggBrevkode(
+                                        kode = vedlegg.kode,
+                                        visningstekst = vedlegg.visningstekst,
+                                        spraak = setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH)
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
                 job("2026-06-24-document-vedlegghash") {
                     val dokumentIder = transaction {
                         DocumentTable.select(DocumentTable.id).map { it[DocumentTable.id].value }

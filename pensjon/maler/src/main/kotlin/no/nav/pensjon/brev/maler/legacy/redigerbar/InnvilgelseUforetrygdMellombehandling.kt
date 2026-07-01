@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEF
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Innvilgelse
+import no.nav.pensjon.brev.maler.fraser.ufoer.Innvilgelse.BarnetilleggOgInntekt
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -298,14 +299,17 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
                 gjenlevendetilleggInnvilget = gjenlevendetilleggInnvilget,
             ))
 
-            includePhrase(Innvilgelse.BarnetilleggOgInntekt(
-                pe = pe,
-                btInnvilget = btInnvilget,
-                btFellesInnvilget = btFellesInnvilget,
-                btSerkullInnvilget = btSerkullInnvilget,
-                btSerkullNetto0 = btSerkullNetto0,
-                btFellesNetto0 = btFellesNetto0,
-            ))
+            includePhrase(
+                BarnetilleggOgInntekt(
+                    pe = pe,
+                    btInnvilget = btInnvilget,
+                    btFellesInnvilget = btFellesInnvilget,
+                    btSerkullInnvilget = btSerkullInnvilget,
+                    btSerkullNetto0 = btSerkullNetto0,
+                    btFellesNetto0 = btFellesNetto0,
+                    periodisertInntekt = saksbehandlerValg.periodisertInntekt
+                )
+            )
 
             includePhrase(Innvilgelse.BarnetilleggOgUtland(
                 pe = pe,
