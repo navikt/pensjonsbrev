@@ -298,7 +298,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/AttachmentTit
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/AttachmentTitleV2 {
-	public abstract fun getTitle ()Ljava/util/List;
+	public abstract fun getTitle1 ()Ljava/util/List;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/BrevbakerFelles {
@@ -763,15 +763,15 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$Paragraph
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupV2 {
 	public abstract fun getBlocks ()Ljava/util/List;
-	public abstract fun getSakspart ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkupV2$Sakspart;
+	public abstract fun getSaksinformasjon ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkupV2$Saksinformasjon;
 	public abstract fun getSignatur ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkupV2$Signatur;
 	public abstract fun getTitle1 ()Ljava/util/List;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupV2$Attachment : no/nav/pensjon/brevbaker/api/model/AttachmentTitleV2 {
 	public abstract fun getBlocks ()Ljava/util/List;
-	public abstract fun getIncludeSakspart ()Z
-	public abstract fun getTitle ()Ljava/util/List;
+	public abstract fun getInkluderSaksinformasjon ()Z
+	public abstract fun getTitle1 ()Ljava/util/List;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupV2$Block {
@@ -899,12 +899,26 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupV
 	public abstract fun getSaksbehandlerNavn ()Ljava/lang/String;
 }
 
-public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupV2$Sakspart {
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupV2$Saksinformasjon {
 	public abstract fun getAnnenMottakerNavn ()Ljava/lang/String;
 	public abstract fun getDokumentDato ()Ljava/time/LocalDate;
 	public abstract fun getGjelderFoedselsnummer-BtG0LY8 ()Ljava/lang/String;
 	public abstract fun getGjelderNavn ()Ljava/lang/String;
-	public abstract fun getSaksnummer ()Ljava/lang/String;
+	public abstract fun getSaksnummer-8XYnv_I ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupV2$Saksnummer {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupV2$Saksnummer;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getSaksnummer ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupV2$Signatur {
@@ -962,6 +976,14 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupV
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupV2$Text$Variable$DefaultImpls {
 	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupV2$Text$Variable;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupV2$Text$Type;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupV2Impl$BlockImpl {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/LetterMarkupV2Impl$BlockImpl;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupV2Impl$TextImpl {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/LetterMarkupV2Impl$TextImpl;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupWithDataUsage {

@@ -12,7 +12,9 @@ import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageV2
 import no.nav.pensjon.brevbaker.api.model.RedigerbareVedleggTitler
 
 class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
@@ -40,6 +42,23 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
 
     fun renderRedigerbartVedleggMarkup(brevbestilling: BestillBrevRequest<Kode>, vedleggId: String): LetterMarkup.Attachment? =
         brevbaker.renderRedigerbartVedleggMarkup(createLetter(brevbestilling), VedleggId(vedleggId))
+
+    fun renderLetterMarkupV2(brevbestilling: BestillBrevRequest<Kode>): LetterMarkupV2 =
+        brevbaker.renderLetterMarkupV2(createLetter(brevbestilling))
+
+    fun renderLetterMarkupWithDataUsageV2(brevbestilling: BestillBrevRequest<Kode>): LetterMarkupWithDataUsageV2 =
+        brevbaker.renderLetterMarkupWithDataUsageV2(createLetter(brevbestilling))
+
+    fun renderRedigerbareVedleggV2Titler(brevbestilling: BestillBrevRequest<Kode>): RedigerbareVedleggTitler =
+        RedigerbareVedleggTitler(
+            brevbaker.renderRedigerbartVedleggV2Titler(createLetter(brevbestilling))
+                .map { (vedleggId, tittel) ->
+                    RedigerbareVedleggTitler.Vedlegg(vedleggId, tittel.joinToString("") { it.text })
+                }
+        )
+
+    fun renderRedigerbartVedleggV2Markup(brevbestilling: BestillBrevRequest<Kode>, vedleggId: String): LetterMarkupV2.Attachment? =
+        brevbaker.renderRedigerbartVedleggV2Markup(createLetter(brevbestilling), VedleggId(vedleggId))
 
     override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         // TODO(redigerbart-vedlegg): fjern '?: emptyMap()' når redigerteVedlegg gjøres obligatorisk etter utrulling.
