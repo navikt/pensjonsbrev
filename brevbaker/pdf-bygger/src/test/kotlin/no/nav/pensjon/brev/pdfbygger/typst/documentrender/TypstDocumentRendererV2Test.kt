@@ -1,11 +1,15 @@
 package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.PDFRequestV2
 import no.nav.pensjon.brev.pdfbygger.attachmentV2
 import no.nav.pensjon.brev.pdfbygger.letterMarkupV2
 import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2Impl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.PDFTittelV2
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
@@ -177,5 +181,78 @@ class TypstDocumentRendererV2Test {
         val typst = render(request)
 
         assertThat(typst).contains("signerendeSaksbehandler: none")
+    }
+
+    @Test
+    fun `formChoice renderes med formChoice-funksjonen fra content-form typ`() {
+        val request = PDFRequestV2(
+            letterMarkup = letterMarkupV2 {
+                title1 { text("Tittel") }
+                outline {
+                    paragraph { text("Før skjema") }
+                    formChoice {
+                        prompt { text("Velg et alternativ") }
+                        choice { text("Ja") }
+                        choice { text("Nei") }
+                    }
+                    paragraph { text("Etter skjema") }
+                }
+            },
+            attachments = emptyList(),
+            language = LanguageCode.BOKMAL,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+        )
+
+        val typst = render(request)
+
+        assertThat(typst).contains("""#import "content/form.typ": formChoice, formText""")
+        assertThat(typst).contains("formChoice[")
+        assertThat(typst).contains("Velg et alternativ")
+        assertThat(typst).contains("Ja")
+        assertThat(typst).contains("Nei")
+    }
+
+    @Test
+    fun `formText renderes med formText-funksjonen fra content-form typ`() {
+        val request = PDFRequestV2(
+            letterMarkup = letterMarkupV2 {
+                title1 { text("Tittel") }
+                outline {
+                    paragraph { text("Før skjema") }
+                    formText(size = Block.FormText.Size.SHORT) {
+                        prompt { text("Skriv inn navn") }
+                    }
+                    paragraph { text("Etter skjema") }
+                }
+            },
+            attachments = emptyList(),
+            language = LanguageCode.BOKMAL,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+        )
+
+        val typst = render(request)
+
+        assertThat(typst).contains("""#import "content/form.typ": formChoice, formText""")
+        assertThat(typst).contains("formText[")
+        assertThat(typst).contains("Skriv inn navn")
+    }
+
+    @OptIn(InterneDataklasser::class)
+    @Test
+    fun `pdfVedlegg med PDFTittelV2 renderes i attachments-listen`() {
+        val request = PDFRequestV2(
+            letterMarkup = letterMarkupV2 {
+                title1 { text("Tittel") }
+                outline { paragraph { text("Innhold") } }
+            },
+            attachments = emptyList(),
+            language = LanguageCode.BOKMAL,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+            pdfVedlegg = listOf(PDFTittelV2(listOf(LiteralImpl(1, "Skannet vedleggstittel")))),
+        )
+
+        val typst = render(request)
+
+        assertThat(typst).contains("Skannet vedleggstittel")
     }
 }

@@ -114,6 +114,29 @@ data class LetterMarkupV2Impl(
                 override val span: Int,
             ) : Table.ColumnSpec
         }
+
+        @InterneDataklasser
+        data class FormTextImpl(
+            override val id: Int,
+            override val prompt: List<Text>,
+            override val size: FormText.Size,
+            override val vspace: Boolean,
+        ) : FormText {
+            override val type = Type.FORM_TEXT
+        }
+
+        @InterneDataklasser
+        data class FormChoiceImpl(
+            override val id: Int,
+            override val prompt: List<Text>,
+            override val choices: List<FormChoice.Choice>,
+            override val vspace: Boolean,
+        ) : FormChoice {
+            override val type = Type.FORM_CHOICE
+
+            @InterneDataklasser
+            data class ChoiceImpl(override val id: Int, override val text: List<Text>) : FormChoice.Choice
+        }
     }
 
     object TextImpl {

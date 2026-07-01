@@ -1015,6 +1015,8 @@ components:
         - $ref: "#/components/schemas/LetterMarkupV2_Paragraph"
         - $ref: "#/components/schemas/LetterMarkupV2_ItemList"
         - $ref: "#/components/schemas/LetterMarkupV2_Table"
+        - $ref: "#/components/schemas/LetterMarkupV2_FormText"
+        - $ref: "#/components/schemas/LetterMarkupV2_FormChoice"
 
     LetterMarkupV2_BlockBase:
       type: object
@@ -1098,6 +1100,75 @@ components:
                 $ref: "#/components/schemas/LetterMarkup_Row"
             header:
               $ref: "#/components/schemas/LetterMarkup_Header"
+
+    LetterMarkupV2_FormText:
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.FormText`
+      allOf:
+        - $ref: "#/components/schemas/LetterMarkupV2_BlockBase"
+        - type: object
+          required:
+            - type
+            - prompt
+            - size
+            - vspace
+          properties:
+            type:
+              type: string
+              enum: [ "FORM_TEXT" ]
+            prompt:
+              type: array
+              items:
+                oneOf:
+                  - $ref: "#/components/schemas/LetterMarkup_Text"
+                  - $ref: "#/components/schemas/LetterMarkup_NewLine"
+            size:
+              type: string
+              enum: [ "NONE", "SHORT", "LONG", "FILL" ]
+            vspace:
+              type: boolean
+
+    LetterMarkupV2_FormChoice:
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.FormChoice`
+      allOf:
+        - $ref: "#/components/schemas/LetterMarkupV2_BlockBase"
+        - type: object
+          required:
+            - type
+            - prompt
+            - choices
+            - vspace
+          properties:
+            type:
+              type: string
+              enum: [ "FORM_CHOICE" ]
+            prompt:
+              type: array
+              items:
+                oneOf:
+                  - $ref: "#/components/schemas/LetterMarkup_Text"
+                  - $ref: "#/components/schemas/LetterMarkup_NewLine"
+            choices:
+              type: array
+              items:
+                $ref: "#/components/schemas/LetterMarkupV2_FormChoiceOption"
+            vspace:
+              type: boolean
+
+    LetterMarkupV2_FormChoiceOption:
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.FormChoice.Choice`
+      type: object
+      required:
+        - id
+        - text
+      properties:
+        id:
+          $ref: "#/components/schemas/LetterMarkup_ID"
+        text:
+          type: array
+          items:
+            oneOf:
+              - $ref: "#/components/schemas/LetterMarkup_Text"
+              - $ref: "#/components/schemas/LetterMarkup_NewLine"
 
     TemplateDoc:
       type: object

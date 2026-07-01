@@ -4,7 +4,6 @@ import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.brev.brevbaker.template.render.Letter2MarkupV2
-import no.nav.brev.brevbaker.template.render.UnsupportedInLetterMarkupV2
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.model.format
@@ -13,6 +12,7 @@ import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -20,7 +20,6 @@ import no.nav.pensjon.brev.template.render.LetterMarkupV2Asserter.Companion.asse
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -207,14 +206,79 @@ class Letter2MarkupV2Test {
     }
 
     @Test
-    fun `form content throws UnsupportedInLetterMarkupV2`() {
-        assertThatThrownBy {
-            renderTemplate(EmptyAutobrevdata) {
-                paragraph {
-                    formText(size = Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT, prompt = { text(bokmal { +"prompt" }) })
-                }
+    fun `formText in the middle of a paragraph splits it into three blocks`() {
+        val result = renderTemplate(EmptyAutobrevdata) {
+            paragraph {
+                text(bokmal { +"before" })
+                formText(size = Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT, prompt = { text(bokmal { +"prompt" }) })
+                text(bokmal { +"after" })
             }
-        }.isInstanceOf(UnsupportedInLetterMarkupV2::class.java)
+        }
+
+        assertThat(result).hasBlocks {
+            paragraph { literal("before") }
+            formText { prompt { literal("prompt") } }
+            paragraph { literal("after") }
+        }
+    }
+
+    @Test
+    fun `formText at the start of a paragraph does not produce a leading empty paragraph`() {
+        val result = renderTemplate(EmptyAutobrevdata) {
+            paragraph {
+                formText(size = Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT, prompt = { text(bokmal { +"prompt" }) })
+                text(bokmal { +"after" })
+            }
+        }
+
+        assertThat(result).hasBlocks {
+            formText { prompt { literal("prompt") } }
+            paragraph { literal("after") }
+        }
+    }
+
+    @Test
+    fun `formChoice in the middle of a paragraph splits it into three blocks`() {
+        val result = renderTemplate(EmptyAutobrevdata) {
+            paragraph {
+                text(bokmal { +"before" })
+                formChoice({ text(bokmal { +"velg et alternativ" }) }) {
+                    choice(bokmal { +"ja" })
+                    choice(bokmal { +"nei" })
+                }
+                text(bokmal { +"after" })
+            }
+        }
+
+        assertThat(result).hasBlocks {
+            paragraph { literal("before") }
+            formChoice {
+                prompt { literal("velg et alternativ") }
+                choice { literal("ja") }
+                choice { literal("nei") }
+            }
+            paragraph { literal("after") }
+        }
+    }
+
+    @Test
+    fun `formChoice at the start of a paragraph does not produce a leading empty paragraph`() {
+        val result = renderTemplate(EmptyAutobrevdata) {
+            paragraph {
+                formChoice({ text(bokmal { +"velg" }) }) {
+                    choice(bokmal { +"a" })
+                }
+                text(bokmal { +"after" })
+            }
+        }
+
+        assertThat(result).hasBlocks {
+            formChoice {
+                prompt { literal("velg") }
+                choice { literal("a") }
+            }
+            paragraph { literal("after") }
+        }
     }
 
     @Test

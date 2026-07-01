@@ -78,6 +78,20 @@ class BlocksAssertV2(private val matchSize: Boolean) {
         })
     }
 
+    fun formChoice(that: FormChoiceAssertV2.() -> Unit) {
+        blockMatchers.add({
+            assertThat(it).isInstanceOf(Block.FormChoice::class.java)
+            FormChoiceAssertV2().apply(that).build()(it as Block.FormChoice)
+        })
+    }
+
+    fun formText(that: FormTextAssertV2.() -> Unit) {
+        blockMatchers.add({
+            assertThat(it).isInstanceOf(Block.FormText::class.java)
+            FormTextAssertV2().apply(that).build()(it as Block.FormText)
+        })
+    }
+
     fun build(): MatcherV2<List<Block>> = { actual ->
         if (matchSize) {
             assertThat(actual).hasSameSizeAs(blockMatchers)
@@ -208,5 +222,40 @@ class TextAssertV2<T : Text> {
 
     fun build(): MatcherV2<T> = { actual ->
         textMatchers.forEach { it(actual.text) }
+    }
+}
+
+class FormChoiceAssertV2 {
+    private var promptMatcher: MatcherV2<List<Text>>? = null
+    private val choiceMatchers = mutableListOf<MatcherV2<Block.FormChoice.Choice>>()
+
+    fun prompt(that: TextContentAssertV2.() -> Unit) {
+        promptMatcher = TextContentAssertV2().apply(that).build()
+    }
+
+    fun choice(that: TextContentAssertV2.() -> Unit) {
+        choiceMatchers.add({
+            assertThat(it.text).satisfies(TextContentAssertV2().apply(that).build())
+        })
+    }
+
+    fun build(): MatcherV2<Block.FormChoice> = { actual ->
+        promptMatcher?.let { assertThat(actual.prompt).satisfies(it) }
+        assertThat(actual.choices).hasSameSizeAs(choiceMatchers)
+        choiceMatchers.forEachIndexed { index, assertion ->
+            assertThat(actual.choices[index]).satisfies(assertion)
+        }
+    }
+}
+
+class FormTextAssertV2 {
+    private var promptMatcher: MatcherV2<List<Text>>? = null
+
+    fun prompt(that: TextContentAssertV2.() -> Unit) {
+        promptMatcher = TextContentAssertV2().apply(that).build()
+    }
+
+    fun build(): MatcherV2<Block.FormText> = { actual ->
+        promptMatcher?.let { assertThat(actual.prompt).satisfies(it) }
     }
 }

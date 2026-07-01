@@ -159,7 +159,55 @@ class LetterMarkupV2BlocksBuilder {
         )
     }
 
+    fun formChoice(vspace: Boolean = false, block: FormChoiceV2Builder.() -> Unit) {
+        blocks.add(FormChoiceV2Builder(vspace).apply(block).build())
+    }
+
+    fun formText(vspace: Boolean = false, size: Block.FormText.Size = Block.FormText.Size.SHORT, block: FormTextV2Builder.() -> Unit) {
+        blocks.add(FormTextV2Builder(vspace, size).apply(block).build())
+    }
+
     fun build(): List<Block> = blocks
+}
+
+@LetterMarkupV2BuilderDsl
+class FormTextV2Builder(private val vspace: Boolean, private val size: Block.FormText.Size) {
+    private var prompt = emptyList<Text>()
+
+    fun prompt(block: TextV2Builder.() -> Unit) {
+        prompt = TextV2Builder().apply(block).build()
+    }
+
+    fun build(): Block.FormText =
+        BlockImpl.FormTextImpl(
+            id = prompt.fold(1) { hash, e -> 31 * hash + e.id },
+            prompt = prompt,
+            size = size,
+            vspace = vspace,
+        )
+}
+
+@LetterMarkupV2BuilderDsl
+class FormChoiceV2Builder(private val vspace: Boolean) {
+    private var prompt = emptyList<Text>()
+    private val choices = mutableListOf<Block.FormChoice.Choice>()
+
+    fun prompt(block: TextV2Builder.() -> Unit) {
+        prompt = TextV2Builder().apply(block).build()
+    }
+
+    fun choice(block: TextV2Builder.() -> Unit) {
+        val text = TextV2Builder().apply(block).build()
+        choices.add(BlockImpl.FormChoiceImpl.ChoiceImpl(id = text.fold(1) { hash, e -> 31 * hash + e.id }, text = text))
+    }
+
+    fun build(): Block.FormChoice =
+        BlockImpl.FormChoiceImpl(
+            id = choices.fold(prompt.fold(1) { hash, e -> 31 * hash + e.id }) { hash, e -> 31 * hash + e.id },
+            prompt = prompt,
+            choices = choices,
+            vspace = vspace,
+        )
 }
 
 @LetterMarkupV2BuilderDsl

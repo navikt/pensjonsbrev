@@ -33,6 +33,9 @@ internal object LetterMarkupV2Module : SimpleModule() {
         addAbstractTypeMapping<LetterMarkupV2.Block.Table.Cell, BlockImpl.TableImpl.CellImpl>()
         addAbstractTypeMapping<LetterMarkupV2.Block.Table.Header, BlockImpl.TableImpl.HeaderImpl>()
         addAbstractTypeMapping<LetterMarkupV2.Block.Table.ColumnSpec, BlockImpl.TableImpl.ColumnSpecImpl>()
+        addAbstractTypeMapping<LetterMarkupV2.Block.FormChoice, BlockImpl.FormChoiceImpl>()
+        addAbstractTypeMapping<LetterMarkupV2.Block.FormChoice.Choice, BlockImpl.FormChoiceImpl.ChoiceImpl>()
+        addAbstractTypeMapping<LetterMarkupV2.Block.FormText, BlockImpl.FormTextImpl>()
         addAbstractTypeMapping<LetterMarkupV2, LetterMarkupV2Impl>()
     }
 
@@ -48,6 +51,8 @@ internal object LetterMarkupV2Module : SimpleModule() {
                     LetterMarkupV2.Block.Type.ITEM_LIST -> BlockImpl.ItemListImpl::class.java
                     LetterMarkupV2.Block.Type.NUMBERED_LIST -> BlockImpl.NumberedListImpl::class.java
                     LetterMarkupV2.Block.Type.TABLE -> BlockImpl.TableImpl::class.java
+                    LetterMarkupV2.Block.Type.FORM_TEXT -> BlockImpl.FormTextImpl::class.java
+                    LetterMarkupV2.Block.Type.FORM_CHOICE -> BlockImpl.FormChoiceImpl::class.java
                 }
                 return p.codec.treeToValue(node, type)
             }

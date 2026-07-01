@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brev.template.render.documentLanguageSettings
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.PDFTittel
+import no.nav.pensjon.brevbaker.api.model.PDFTittelV2
 import java.time.format.FormatStyle
 
 object TypstDocumentRendererV2 {
@@ -31,7 +31,7 @@ object TypstDocumentRendererV2 {
         attachments: List<LetterMarkupV2.Attachment>,
         language: Language,
         brevtype: LetterMetadata.Brevtype,
-        pdfVedlegg: List<PDFTittel>,
+        pdfVedlegg: List<PDFTittelV2>,
         typstWriter: TypstFileWriter,
     ): Unit = typstWriter.codeScope {
         appendInputData(letter, attachments, language, brevtype, pdfVedlegg)
@@ -46,7 +46,7 @@ object TypstDocumentRendererV2 {
         attachments: List<LetterMarkupV2.Attachment>,
         language: Language,
         brevtype: LetterMetadata.Brevtype,
-        pdfVedlegg: List<PDFTittel>,
+        pdfVedlegg: List<PDFTittelV2>,
     ) {
         // Language settings dictionary
         appendDictionary("languageSettings", documentLanguageSettings.languageSettings(language))
@@ -74,13 +74,13 @@ object TypstDocumentRendererV2 {
      */
     private fun buildAttachmentTitleList(
         attachments: List<LetterMarkupV2.Attachment>,
-        pdfVedlegg: List<PDFTittel>
+        pdfVedlegg: List<PDFTittelV2>
     ): List<String> {
         val attachmentTitles = attachments.map { attachment ->
             attachment.title1.renderToPlainStringV2()
         }
         val pdfVedleggTitles = pdfVedlegg.map { vedlegg ->
-            vedlegg.title.joinToString("") { it.text }
+            vedlegg.title1.renderToPlainStringV2()
         }
         return attachmentTitles + pdfVedleggTitles
     }
@@ -103,6 +103,7 @@ object TypstDocumentRendererV2 {
         appendCodeln("""#import "content/paragraph.typ": paragraph""")
         appendCodeln("""#import "content/list.typ": bulletlist, numberedlist""")
         appendCodeln("""#import "content/table.typ": letter-table""")
+        appendCodeln("""#import "content/form.typ": formChoice, formText""")
         appendCodeln("""#import "attachment.typ": startAttachment, endAttachment""")
         appendCodeln("""#import "closing.typ": closing""")
 

@@ -25,12 +25,6 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
 /**
- * Thrown when a template contains content that has no representation in LetterMarkupV2,
- * e.g. Form.Text/Form.MultipleChoice, which v2 does not support.
- */
-internal class UnsupportedInLetterMarkupV2(message: String) : Exception(message)
-
-/**
  * Renders a LetterTemplate directly to LetterMarkupV2. This is an independent renderer from
  * Letter2Markup (v1) - it does not go through v1's LetterMarkup at any point. The only stable,
  * well-defined direction for converting between the two markup shapes is v1 -> v2 (v2 -> v1 is
@@ -147,14 +141,43 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterMarkupV2>() {
                     flushParagraph()
                     renderTable(paragraphContext, element)?.let { blocks.add(it) }
                 }
-                is Element.OutlineContent.ParagraphContent.Form ->
-                    throw UnsupportedInLetterMarkupV2("Form content is not supported in LetterMarkupV2 (found ${element::class.simpleName})")
+                is Element.OutlineContent.ParagraphContent.Form.Text -> {
+                    flushParagraph()
+                    blocks.add(renderFormText(paragraphContext, element))
+                }
+                is Element.OutlineContent.ParagraphContent.Form.MultipleChoice -> {
+                    flushParagraph()
+                    blocks.add(renderFormChoice(paragraphContext, element))
+                }
             }
         }
         flushParagraph()
 
         return blocks
     }
+
+    private fun renderFormText(context: RenderContext, form: Element.OutlineContent.ParagraphContent.Form.Text<*>): Block.FormText =
+        BlockImpl.FormTextImpl(
+            id = context.stableHash(form),
+            prompt = renderText(context, listOf(form.prompt)),
+            size = when (form.size) {
+                Element.OutlineContent.ParagraphContent.Form.Text.Size.NONE -> Block.FormText.Size.NONE
+                Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT -> Block.FormText.Size.SHORT
+                Element.OutlineContent.ParagraphContent.Form.Text.Size.LONG -> Block.FormText.Size.LONG
+                Element.OutlineContent.ParagraphContent.Form.Text.Size.FILL -> Block.FormText.Size.FILL
+            },
+            vspace = form.vspace,
+        )
+
+    private fun renderFormChoice(context: RenderContext, form: Element.OutlineContent.ParagraphContent.Form.MultipleChoice<*>): Block.FormChoice =
+        BlockImpl.FormChoiceImpl(
+            id = context.stableHash(form),
+            prompt = renderText(context, listOf(form.prompt)),
+            choices = form.choices.map { choice ->
+                BlockImpl.FormChoiceImpl.ChoiceImpl(context.stableHash(choice), renderTextContent(context, choice))
+            },
+            vspace = form.vspace,
+        )
 
     private fun renderTable(context: RenderContext, table: Element.OutlineContent.ParagraphContent.Table<*>): Block.Table? =
         renderRows(context, table.rows).takeIf { it.isNotEmpty() }?.let { rows ->

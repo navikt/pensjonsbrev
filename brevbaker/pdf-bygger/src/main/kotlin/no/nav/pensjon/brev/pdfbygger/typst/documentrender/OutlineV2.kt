@@ -23,6 +23,8 @@ internal fun TypstCodeScope.renderBlocksV2(blocks: List<Block>) {
  * - Paragraph: Text-only content.
  * - ItemList/NumberedList: Top-level list blocks (nested inside a paragraph in v1).
  * - Table: Top-level table block (nested inside a paragraph in v1).
+ * - FormText/FormChoice: Top-level form blocks (nested inside a paragraph in v1).
+ *   Not persisted anywhere yet (no v2 editing model exists).
  */
 private fun TypstCodeScope.renderBlockV2(block: Block) {
     when (block) {
@@ -32,6 +34,8 @@ private fun TypstCodeScope.renderBlockV2(block: Block) {
         is Block.Title.Title4 -> renderTitleV2("title3", block.content)
         is Block.ListContent -> renderListV2(block)
         is Block.Table -> renderTableV2(block)
+        is Block.FormText -> renderFormTextV2(block)
+        is Block.FormChoice -> renderFormChoiceV2(block)
     }
 }
 

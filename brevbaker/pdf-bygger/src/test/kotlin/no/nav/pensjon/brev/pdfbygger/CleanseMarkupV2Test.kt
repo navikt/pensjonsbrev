@@ -179,6 +179,68 @@ class CleanseMarkupV2Test {
     }
 
     @Test
+    fun `tom formChoice fjernes ikke`() {
+        val cleansed = letterMarkupV2 {
+            outline {
+                paragraph { text("Før form") }
+                formChoice { }
+                paragraph { text("Etter form") }
+            }
+        }.clean()
+        Assertions.assertThat(cleansed.blocks).hasSize(3)
+        Assertions.assertThat(cleansed.blocks[1]).isInstanceOf(LetterMarkupV2Impl.BlockImpl.FormChoiceImpl::class.java)
+    }
+
+    @Test
+    fun `formChoice med prompt og choices beholdes uendret`() {
+        val cleansed = letterMarkupV2 {
+            outline {
+                formChoice {
+                    prompt { text("Velg et alternativ") }
+                    choice { text("Ja") }
+                    choice { text("Nei") }
+                }
+            }
+        }.clean()
+        Assertions.assertThat(cleansed.blocks).hasSize(1)
+        Assertions.assertThat(cleansed.blocks[0])
+            .isInstanceOfSatisfying(LetterMarkupV2Impl.BlockImpl.FormChoiceImpl::class.java) { formChoice ->
+                Assertions.assertThat(formChoice.prompt).hasSize(1)
+                Assertions.assertThat(formChoice.choices).hasSize(2)
+            }
+    }
+
+    @Test
+    fun `tom formText fjernes ikke`() {
+        val cleansed = letterMarkupV2 {
+            outline {
+                paragraph { text("Før form") }
+                formText { }
+                paragraph { text("Etter form") }
+            }
+        }.clean()
+        Assertions.assertThat(cleansed.blocks).hasSize(3)
+        Assertions.assertThat(cleansed.blocks[1]).isInstanceOf(LetterMarkupV2Impl.BlockImpl.FormTextImpl::class.java)
+    }
+
+    @Test
+    fun `formText med prompt beholdes uendret`() {
+        val cleansed = letterMarkupV2 {
+            outline {
+                formText(size = LetterMarkupV2.Block.FormText.Size.LONG) {
+                    prompt { text("Skriv inn navn") }
+                }
+            }
+        }.clean()
+        Assertions.assertThat(cleansed.blocks).hasSize(1)
+        Assertions.assertThat(cleansed.blocks[0])
+            .isInstanceOfSatisfying(LetterMarkupV2Impl.BlockImpl.FormTextImpl::class.java) { formText ->
+                Assertions.assertThat(formText.prompt).hasSize(1)
+                Assertions.assertThat(formText.size).isEqualTo(LetterMarkupV2.Block.FormText.Size.LONG)
+            }
+    }
+
+    @Test
     fun `renser ogsaa vedlegg`() {
         val cleansed = attachmentV2 {
             title1 {

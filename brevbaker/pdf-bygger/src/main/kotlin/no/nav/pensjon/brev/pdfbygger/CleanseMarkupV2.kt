@@ -41,6 +41,9 @@ private fun isEmpty(block: Block): Boolean =
         is Block.Paragraph -> block.content.all { isEmpty(it) }
         is Block.ListContent -> block.items.isEmpty()
         is Block.Table -> block.rows.isEmpty() && block.header.colSpec.isEmpty()
+        // FormText and FormChoice are never removed as empty, mirroring v1's Form handling in CleanseMarkup.kt.
+        is Block.FormText -> false
+        is Block.FormChoice -> false
     }
 
 private fun isEmpty(text: Text): Boolean =
@@ -57,6 +60,8 @@ private fun clean(block: Block): Block? = when (block) {
     is Block.ListContent.ItemList -> block.takeIf { !isEmpty(it) }
     is Block.ListContent.NumberedList -> block.takeIf { !isEmpty(it) }
     is Block.Table -> block.takeIf { !isEmpty(it) }
+    is Block.FormText -> block
+    is Block.FormChoice -> block
 }
 
 @OptIn(InterneDataklasser::class)

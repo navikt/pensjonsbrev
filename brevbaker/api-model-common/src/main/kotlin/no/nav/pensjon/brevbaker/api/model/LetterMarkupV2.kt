@@ -53,7 +53,7 @@ interface LetterMarkupV2 {
         val type: Type
 
         enum class Type {
-            TITLE2, TITLE3, TITLE4, PARAGRAPH, ITEM_LIST, NUMBERED_LIST, TABLE,
+            TITLE2, TITLE3, TITLE4, PARAGRAPH, ITEM_LIST, NUMBERED_LIST, TABLE, FORM_TEXT, FORM_CHOICE,
         }
 
         sealed interface Title : Block {
@@ -125,6 +125,31 @@ interface LetterMarkupV2 {
             }
 
             enum class ColumnAlignment { LEFT, RIGHT }
+        }
+
+        interface FormText : Block {
+            val prompt: List<Text>
+            val size: Size
+            val vspace: Boolean
+
+            override val type: Type
+                get() = Type.FORM_TEXT
+
+            enum class Size { NONE, SHORT, LONG, FILL }
+        }
+
+        interface FormChoice : Block {
+            val prompt: List<Text>
+            val choices: List<Choice>
+            val vspace: Boolean
+
+            override val type: Type
+                get() = Type.FORM_CHOICE
+
+            interface Choice {
+                val id: Int
+                val text: List<Text>
+            }
         }
     }
 
