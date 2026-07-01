@@ -501,6 +501,15 @@ object Innvilgelse {
                     )
                 }
 
+                showIf(!(innvilgetEtter12_2_andreledd or innvilgetEtter12_2_tredjeledd)) {
+                    paragraph {
+                        text(
+                            bokmal { +fritekst("Sett inn rett begrunnelse fra tekstvalg") },
+                            nynorsk { +fritekst("Sett inn rett begrunnelse fra tekstvalg") },
+                        )
+                    }
+                }
+
                 showIf(yrkesskadeResultat.equalTo("oppfylt")) {
                     paragraph {
                         text(
