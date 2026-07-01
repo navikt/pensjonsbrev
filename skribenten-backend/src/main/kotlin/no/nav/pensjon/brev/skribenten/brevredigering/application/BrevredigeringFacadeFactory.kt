@@ -120,8 +120,7 @@ object BrevredigeringFacadeFactory {
                 brevService = brevService,
                 brevmalService = brevmalService,
             ),
-            slettBrev = SlettBrevHandler(
-            ),
+            slettBrev = SlettBrevHandler(),
             brevreservasjonPolicy = brevreservasjonPolicy,
             diffBrev = DiffBrevHandler(
                 brevmalService = brevmalService,
