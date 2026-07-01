@@ -21,7 +21,7 @@ jobs:
       id-token: "write"
     steps:
       - name: NAIS login
-        uses: nais/login@d0fcfa8591d10b57312f58e7f6269de58bdab1df # v0
+        uses: nais/login@bb6c3e1e14e53d40d69d0d092bd2fce2e39ae3bf # v0
         id: login
         with:
           team: pensjonsbrev
