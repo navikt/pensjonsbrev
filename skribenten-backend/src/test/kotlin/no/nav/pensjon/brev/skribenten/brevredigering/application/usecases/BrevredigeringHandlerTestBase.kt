@@ -96,6 +96,14 @@ abstract class BrevredigeringHandlerTestBase {
     protected val attesterBrevPolicy = AttesterBrevPolicy()
     protected val ferdigRedigertPolicy = FerdigRedigertPolicy()
 
+    protected val endreMottaker by lazy {
+        EndreMottakerHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevdataService = brevdataService,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            database = SharedPostgres.database,
+        )
+    }
     protected val endreDistribusjonstype by lazy {
         EndreDistribusjonstypeHandler(
             redigerBrevPolicy = redigerBrevPolicy,

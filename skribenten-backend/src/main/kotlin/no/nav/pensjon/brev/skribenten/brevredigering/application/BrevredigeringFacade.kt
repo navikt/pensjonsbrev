@@ -20,7 +20,6 @@ import java.sql.Connection
 
 class BrevredigeringFacade(
     private val opprettBrev: OpprettBrevHandler,
-    private val endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.BrevInfo>,
     private val reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError>,
     private val frigiReservasjon: UseCaseHandler<FrigiReservasjonHandler.Request, Unit, BrevredigeringError>,
     private val hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult>,
@@ -58,9 +57,6 @@ class BrevredigeringFacade(
 
     suspend fun tilbakestillBrev(request: TilbakestillBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         tilbakestillBrev.runHandler(request)
-
-    suspend fun endreMottaker(request: EndreMottakerHandler.Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
-        endreMottaker.runHandler(request)
 
     suspend fun endreValgteVedlegg(request: EndreValgteVedleggHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         endreValgteVedlegg.runHandler(request)

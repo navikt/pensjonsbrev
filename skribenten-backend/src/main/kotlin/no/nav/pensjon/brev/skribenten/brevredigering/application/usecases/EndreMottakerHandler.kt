@@ -11,16 +11,18 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import org.jetbrains.exposed.v1.jdbc.Database
 
 class EndreMottakerHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val brevdataService: BrevdataService,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-) : BrevredigeringHandler<EndreMottakerHandler.Request, Dto.BrevInfo> {
+    database: Database,
+) : ReservertBrevHandler<EndreMottakerHandler.Request, Dto.BrevInfo>(database, brevreservasjonPolicy) {
 
     data class Request(override val brevId: BrevId, val mottaker: Dto.Mottaker?) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
+    override suspend fun execute(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
 
         val principal = PrincipalInContext.require()

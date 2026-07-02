@@ -214,10 +214,12 @@ fun Route.sakBrev() =
             }
 
             route("/mottaker") {
+                val endreMottaker: EndreMottakerHandler by app.dependencies
+
                 put {
                     val request = call.receive<Api.OppdaterMottakerRequest>()
                     val brevId = call.parameters.brevId()
-                    val brevInfo = brevredigeringFacade.endreMottaker(
+                    val brevInfo = endreMottaker(
                         EndreMottakerHandler.Request(brevId = brevId, mottaker = request.mottaker.toDto())
                     )
 
@@ -226,7 +228,7 @@ fun Route.sakBrev() =
 
                 delete {
                     val brevId = call.parameters.brevId()
-                    val brevInfo = brevredigeringFacade.endreMottaker(
+                    val brevInfo = endreMottaker(
                         EndreMottakerHandler.Request(brevId = brevId, mottaker = null)
                     )
 
