@@ -24,7 +24,6 @@ class BrevredigeringFacade(
     private val sendBrev: BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult>,
     private val slettBrev: BrevredigeringHandler<SlettBrevHandler.Request, Unit>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-    private val diffBrev: BrevredigeringHandler<DiffBrevHandler.Request, DiffBrevHandler.Response>,
 ) : HentBrevService, OpprettBrevService {
 
     override suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
@@ -62,9 +61,6 @@ class BrevredigeringFacade(
 
     suspend fun slettBrev(request: SlettBrevHandler.Request): Outcome<Unit, BrevredigeringError>? =
         slettBrev.runHandler(request)
-
-    suspend fun diffBrev(request: DiffBrevHandler.Request): Outcome<DiffBrevHandler.Response, BrevredigeringError>? =
-        diffBrev.runHandler(request)
 
     private suspend fun <Request : BrevredigeringRequest, Response> BrevredigeringHandler<Request, Response>.runHandler(request: Request): Outcome<Response, BrevredigeringError>? {
         if (requiresReservasjon(request)) {

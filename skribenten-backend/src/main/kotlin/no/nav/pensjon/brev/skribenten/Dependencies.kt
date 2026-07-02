@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.Attest
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreDistribusjonstypeHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreMottakerHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreRedigertVedleggHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.DiffBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentEllerOpprettPdfHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigerbareVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigertVedleggHandler
@@ -120,6 +121,7 @@ fun Application.configureDependencies() {
         provide(HentRedigertVedleggHandler::class)
         provide(HentRedigerbareVedleggHandler::class)
         provide(HentEllerOpprettPdfHandler::class)
+        provide(DiffBrevHandler::class)
     }
 
     launch { Features.init(dependencies.resolve()) }

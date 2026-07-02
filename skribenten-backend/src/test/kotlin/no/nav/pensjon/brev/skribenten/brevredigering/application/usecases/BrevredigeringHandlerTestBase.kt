@@ -216,6 +216,14 @@ abstract class BrevredigeringHandlerTestBase {
             database = SharedPostgres.database,
         )
     }
+    protected val diffBrev by lazy {
+        DiffBrevHandler(
+            brevdataService = brevdataService,
+            brevmalService = brevmalService,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            database = SharedPostgres.database,
+        )
+    }
     protected val brevredigeringFacade = createFacade()
 
     companion object Fixtures {

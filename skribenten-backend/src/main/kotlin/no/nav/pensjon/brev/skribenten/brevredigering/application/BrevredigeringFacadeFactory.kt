@@ -41,10 +41,6 @@ object BrevredigeringFacadeFactory {
             ),
             slettBrev = SlettBrevHandler(),
             brevreservasjonPolicy = brevreservasjonPolicy,
-            diffBrev = DiffBrevHandler(
-                brevmalService = brevmalService,
-                brevdataService = brevdataService,
-            ),
         )
     }
 }

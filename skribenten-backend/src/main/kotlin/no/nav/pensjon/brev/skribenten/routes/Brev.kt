@@ -80,11 +80,12 @@ fun Route.brev() {
             apiRespond(dto2ApiService, resultat)
         }
 
+        val diffBrev: DiffBrevHandler by app.dependencies
         post<Edit.Letter>("/diff") { request ->
             val brevId = call.parameters.brevId()
             val split = call.request.queryParameters["split"]?.toBoolean() ?: false
 
-            val result = brevredigeringFacade.diffBrev(DiffBrevHandler.Request(brevId, request, split))
+            val result = diffBrev(DiffBrevHandler.Request(brevId, request, split))
             respondOutcome(dto2ApiService, result) {
                 respond(HttpStatusCode.OK, it)
             }
