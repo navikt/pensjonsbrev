@@ -99,14 +99,17 @@ class BrevmalService(
 
     suspend fun getAlltidValgbareVedlegg(brevId: BrevId): List<ValgbartVedlegg> {
         val spraakIBrevet = transaction {
-            BrevredigeringEntity.findById(brevId)?.spraak ?: throw IllegalStateException("Finner ikke brev med id $brevId")
+            BrevredigeringEntity.findById(brevId)?.spraak
+        }
+        if (spraakIBrevet == null) {
+            logger.warn("Fant ikke brev med id $brevId ved henting av alltid valgbare vedlegg. Ofte betyr dette at brevet er sletta eller sendt allerede.")
         }
         return brevbakerService.getAlltidValgbareVedlegg(brevId).map {
             ValgbartVedlegg(
                 kode = it.kode,
                 visningstekst = it.visningstekst,
                 spraak = it.spraak,
-                tilgjengeligForSpraak = it.spraak.contains(spraakIBrevet),
+                tilgjengeligForSpraak = spraakIBrevet?.let { spraak -> it.spraak.contains(spraak) } ?: false
             )
         }.sortedBy { it.visningstekst }
     }
