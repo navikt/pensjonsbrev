@@ -68,6 +68,7 @@ ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = 
 ktor-server-caching-headers = { module = "io.ktor:ktor-server-caching-headers", version.ref = "ktorVersion" }
 ktor-server-callId = { module = "io.ktor:ktor-server-call-id", version.ref = "ktorVersion" }
 ktor-server-callLogging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktorVersion" }
+ktor-server-conditional-headers = { module = "io.ktor:ktor-server-conditional-headers", version.ref = "ktorVersion" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktorVersion" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktorVersion" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktorVersion" }
