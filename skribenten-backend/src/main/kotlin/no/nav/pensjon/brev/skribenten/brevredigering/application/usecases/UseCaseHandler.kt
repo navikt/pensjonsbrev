@@ -27,6 +27,8 @@ abstract class ReservertBrevHandler<Request : BrevredigeringRequest, Response>(
     private val brevreservasjonPolicy: BrevreservasjonPolicy
 ) : BrevredigeringHandler<Request, Response> {
 
+    override fun requiresReservasjon(request: Request) = true
+
     suspend operator fun invoke(request: Request): Outcome<Response, BrevredigeringError>? = handle(request)
 
     final override suspend fun handle(request: Request): Outcome<Response, BrevredigeringError>? {

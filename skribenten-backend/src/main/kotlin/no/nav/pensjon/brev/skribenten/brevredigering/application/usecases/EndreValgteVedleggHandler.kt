@@ -11,18 +11,20 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
+import org.jetbrains.exposed.v1.jdbc.Database
 
 class EndreValgteVedleggHandler(
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
     private val redigerBrevPolicy: RedigerBrevPolicy,
-) : BrevredigeringHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering> {
+    database: Database,
+) : ReservertBrevHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering>(database, brevreservasjonPolicy) {
 
     data class Request(
         override val brevId: BrevId,
         val alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
     ) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
+    override suspend fun execute(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
 
         val principal = PrincipalInContext.require()
@@ -33,6 +35,4 @@ class EndreValgteVedleggHandler(
 
         return success(brev.toDto(brevreservasjonPolicy, null))
     }
-
-    override fun requiresReservasjon(request: Request) = true
 }

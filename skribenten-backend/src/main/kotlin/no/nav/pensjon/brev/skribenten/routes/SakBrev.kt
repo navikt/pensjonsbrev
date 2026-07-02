@@ -94,12 +94,13 @@ fun Route.sakBrev() =
             }
 
             // TODO: fjern når frontend er oppdatert til å bruke endreValgteVedlegg-endepunktet
+            val endreValgteVedlegg: EndreValgteVedleggHandler by app.dependencies
             patch {
                 val request = call.receive<Api.DelvisOppdaterBrevRequest>()
                 val brevId = call.parameters.brevId()
 
                 if (request.alltidValgbareVedlegg != null) {
-                    val brev = brevredigeringFacade.endreValgteVedlegg(
+                    val brev = endreValgteVedlegg(
                         EndreValgteVedleggHandler.Request(
                             brevId = brevId,
                             alltidValgbareVedlegg = request.alltidValgbareVedlegg,
@@ -131,7 +132,7 @@ fun Route.sakBrev() =
                 val request = call.receive<Api.ValgteVedleggRequest>()
                 val brevId = call.parameters.brevId()
 
-                val brev = brevredigeringFacade.endreValgteVedlegg(
+                val brev = endreValgteVedlegg(
                     EndreValgteVedleggHandler.Request(
                         brevId = brevId,
                         alltidValgbareVedlegg = request.valgteVedlegg,
