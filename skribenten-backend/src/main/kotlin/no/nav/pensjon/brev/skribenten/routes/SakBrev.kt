@@ -112,11 +112,12 @@ fun Route.sakBrev() =
                 }
             }
 
+            val endreDistribusjonstype: EndreDistribusjonstypeHandler by app.dependencies
             put("/distribusjon") {
                 val request = call.receive<Api.DistribusjonstypeRequest>()
                 val brevId = call.parameters.brevId()
 
-                val brevInfo = brevredigeringFacade.endreDistribusjonstype(
+                val brevInfo = endreDistribusjonstype(
                     EndreDistribusjonstypeHandler.Request(
                         brevId = brevId,
                         type = request.distribusjon,

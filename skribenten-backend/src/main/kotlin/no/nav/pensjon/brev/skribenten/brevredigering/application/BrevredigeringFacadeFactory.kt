@@ -34,10 +34,6 @@ object BrevredigeringFacadeFactory {
                 brevdataService = brevdataService,
                 navansattService = navansattService,
             ),
-            endreDistribusjonstype = EndreDistribusjonstypeHandler(
-                redigerBrevPolicy = redigerBrevPolicy,
-                brevreservasjonPolicy = brevreservasjonPolicy,
-            ),
             endreMottaker = EndreMottakerHandler(
                 redigerBrevPolicy = redigerBrevPolicy,
                 brevdataService = brevdataService,

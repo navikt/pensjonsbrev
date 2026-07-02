@@ -96,6 +96,13 @@ abstract class BrevredigeringHandlerTestBase {
     protected val attesterBrevPolicy = AttesterBrevPolicy()
     protected val ferdigRedigertPolicy = FerdigRedigertPolicy()
 
+    protected val endreDistribusjonstype by lazy {
+        EndreDistribusjonstypeHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            database = SharedPostgres.database,
+        )
+    }
     protected val veksleKlarStatus by lazy {
         VeksleKlarStatusHandler(
             ferdigRedigertPolicy = ferdigRedigertPolicy,
@@ -404,7 +411,7 @@ abstract class BrevredigeringHandlerTestBase {
         nyDistribusjonstype: Distribusjon,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.endreDistribusjonstype(
+        endreDistribusjonstype(
             EndreDistribusjonstypeHandler.Request(
                 brevId = brevId,
                 type = nyDistribusjonstype,

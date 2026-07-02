@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacadeFactory
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.AttesterBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreDistribusjonstypeHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevAttesteringHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OppdaterBrevHandler
@@ -102,6 +103,7 @@ fun Application.configureDependencies() {
         provide(HentBrevHandler::class)
         provide(HentBrevAttesteringHandler::class)
         provide(VeksleKlarStatusHandler::class)
+        provide(EndreDistribusjonstypeHandler::class)
     }
 
     launch { Features.init(dependencies.resolve()) }
