@@ -261,12 +261,13 @@ fun Route.sakBrev() =
                     apiRespond(dto2ApiService, resultat)
                 }
 
+                val attesterBrev: AttesterBrevHandler by app.dependencies
                 put {
                     val request = call.receive<Api.OppdaterAttesteringRequest>()
                     val brevId = call.parameters.brevId()
                     val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
 
-                    val resultat = brevredigeringFacade.attesterBrev(
+                    val resultat = attesterBrev(
                         AttesterBrevHandler.Request(
                             brevId = brevId,
                             nyeSaksbehandlerValg = request.saksbehandlerValg,

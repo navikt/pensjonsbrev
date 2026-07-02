@@ -91,13 +91,27 @@ abstract class BrevredigeringHandlerTestBase {
     protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
     protected val brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService())
     protected val brevdataService = BrevdataService(penService, samhandlerService)
+    protected val redigerBrevPolicy = RedigerBrevPolicy()
+    protected val brevreservasjonPolicy = BrevreservasjonPolicy()
 
-    protected val oppdaterBrev by lazy {
-        OppdaterBrevHandler(
-            redigerBrevPolicy = RedigerBrevPolicy(),
+    protected val attesterBrev by lazy {
+        AttesterBrevHandler(
+            attesterBrevPolicy = AttesterBrevPolicy(),
+            ferdigRedigertPolicy = FerdigRedigertPolicy(),
+            redigerBrevPolicy = redigerBrevPolicy,
             brevmalService = brevmalService,
             brevdataService = brevdataService,
-            brevreservasjonPolicy = BrevreservasjonPolicy(),
+            navansattService = navAnsattService,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val oppdaterBrev by lazy {
+        OppdaterBrevHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            brevreservasjonPolicy = brevreservasjonPolicy,
             database = SharedPostgres.database,
         )
     }
@@ -306,7 +320,7 @@ abstract class BrevredigeringHandlerTestBase {
         nyeSaksbehandlerValg: SaksbehandlerValg? = null,
         nyttRedigertbrev: Edit.Letter? = null,
     ) = withPrincipal(attestant) {
-        brevredigeringFacade.attesterBrev(
+        attesterBrev(
             AttesterBrevHandler.Request(
                 brevId = brev.info.id,
                 frigiReservasjon = frigiReservasjon,

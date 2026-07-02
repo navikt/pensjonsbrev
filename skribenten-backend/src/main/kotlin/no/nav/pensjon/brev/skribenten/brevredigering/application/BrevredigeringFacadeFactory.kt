@@ -74,15 +74,6 @@ object BrevredigeringFacadeFactory {
                 brevmalService = brevmalService,
                 p1Service = p1Service,
             ),
-            attesterBrev = AttesterBrevHandler(
-                attesterBrevPolicy = attesterBrevPolicy,
-                ferdigRedigertPolicy = ferdigRedigertPolicy,
-                redigerBrevPolicy = redigerBrevPolicy,
-                brevmalService = brevmalService,
-                brevdataService = brevdataService,
-                navansattService = navansattService,
-                brevreservasjonPolicy = brevreservasjonPolicy,
-            ),
             tilbakestillBrev = TilbakestillBrevHandler(
                 redigerBrevPolicy = redigerBrevPolicy,
                 brevmalService = brevmalService,

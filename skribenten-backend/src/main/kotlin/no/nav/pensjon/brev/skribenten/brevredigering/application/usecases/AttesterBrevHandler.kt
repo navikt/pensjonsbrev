@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.NavansattService
+import org.jetbrains.exposed.v1.jdbc.Database
 
 class AttesterBrevHandler(
     private val attesterBrevPolicy: AttesterBrevPolicy,
@@ -22,7 +23,8 @@ class AttesterBrevHandler(
     private val brevdataService: BrevdataService,
     private val navansattService: NavansattService,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-) : BrevredigeringHandler<AttesterBrevHandler.Request, Dto.Brevredigering> {
+    database: Database,
+) : ReservertBrevHandler<AttesterBrevHandler.Request, Dto.Brevredigering>(database, brevreservasjonPolicy) {
 
     data class Request(
         override val brevId: BrevId,
@@ -31,7 +33,7 @@ class AttesterBrevHandler(
         val frigiReservasjon: Boolean = false,
     ) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
+    override suspend fun execute(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
         val principal = PrincipalInContext.require()
 
