@@ -46,7 +46,6 @@ jobs:
     needs: build-skribenten-backend
     secrets: inherit
     with:
-      digest: ${{ needs.build-skribenten-backend.outputs.digest }}
       image: ${{ needs.build-skribenten-backend.outputs.image }}
 
   deploy-skribenten-backend-dev:

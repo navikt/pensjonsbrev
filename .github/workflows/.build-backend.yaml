@@ -42,9 +42,6 @@ on:
       image:
         description: "Image name"
         value: ${{ jobs.build.outputs.image }}
-      digest:
-        description: "Image digest"
-        value: ${{ jobs.build.outputs.digest }}
 
 env:
   JavaDistribution: "temurin"
@@ -59,7 +56,6 @@ jobs:
       id-token: "write"
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
-      digest: ${{ steps.docker-push.outputs.digest }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:

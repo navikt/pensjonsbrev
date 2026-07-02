@@ -94,7 +94,6 @@ jobs:
     needs: buildPdfbygger
     secrets: inherit
     with:
-      digest: ${{ needs.buildPdfbygger.outputs.digest }}
       image: ${{ needs.buildPdfbygger.outputs.image }}
 
   changes:

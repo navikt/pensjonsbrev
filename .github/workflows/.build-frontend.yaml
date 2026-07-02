@@ -67,14 +67,12 @@ jobs:
           salsa: false
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
-      digest: ${{ steps.docker-build-push.outputs.digest }}
 
   salsa:
     uses: ./.github/workflows/.salsa.yaml
     needs: build
     secrets: inherit
     with:
-      digest: ${{ needs.build.outputs.digest }}
       image: ${{ needs.build.outputs.image }}
 
   deploy-dev:
