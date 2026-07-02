@@ -32,6 +32,7 @@ object UfoereTemplates : AllTemplates {
     )
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
+        UforeAvslagTestmal,
         UforeAvslagHensiktsmessigBehandling,
         UforeAvslagHensiktsmessigArbTiltakI1,
         UforeAvslagHensiktsmessigArbTiltakI2,

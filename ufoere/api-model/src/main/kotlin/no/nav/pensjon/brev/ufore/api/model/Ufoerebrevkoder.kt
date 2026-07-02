@@ -18,6 +18,7 @@ object Ufoerebrevkoder {
     }
 
     enum class Redigerbar : Redigerbart {
+        UT_AVSLAG_TESTMAL,
         UT_AVSLAG_HENSIKTSMESSIG_BEHANDLING,
         UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I1,
         UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I2,
