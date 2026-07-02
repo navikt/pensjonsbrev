@@ -45,45 +45,68 @@ object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<AnkeTilsvarTilAnkendePartD
     ) {
         title {
             text(
-                bokmal { +"Anke " +fritekst("ytelse") },
-                english { +"Appeal " +fritekst("ytelse") }
+                bokmal { +"Anke " + fritekst("ytelse") },
+                english { +"Appeal " + fritekst("ytelse") }
             )
         }
 
         outline {
             paragraph {
-                text(bokmal { +"Klageren: " }, english { +"Appellant: " }, BOLD)
-                text(bokmal { +pesysData.navn + " " }, english { +pesysData.navn + " " } )
+                text(bokmal { +"Den ankende part: " }, english { +"The appellant: " }, BOLD)
+                text(bokmal { +pesysData.navn + " " }, english { +pesysData.navn + " " })
                 text(bokmal { +pesysData.foedselsnummer.format() }, english { +pesysData.foedselsnummer.format() })
             }
             paragraph {
-                text(bokmal { +"Klagemotpart: " }, english { +"Other party: " }, BOLD)
-                text(bokmal { +pesysData.navnAvsenderEnhet }, english { +pesysData.navnAvsenderEnhet })
+                text(bokmal { +"Ankemotpart: " }, english { +"Other party: " }, BOLD)
+                text(bokmal { +"Nav Klageinstans" }, english { +"Nav Klageinstans" })
             }
             paragraph {
                 text(
-                    bokmal { +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over " + pesysData.navnAvsenderEnhet + " vedtak av " + fritekst("vedtaksdato") + "." },
-                    english { +"On " + fritekst("mottaksdato for klagen") + " we received an appeal about " + pesysData.navnAvsenderEnhet + "'s decision of " + fritekst("vedtaksdato") + "." }
+                    bokmal { +"Nav Klageinstans har vurdert vedtaket vårt av " + fritekst("vedtaksdato") + " på nytt, men har ikke funnet grunnlag for å gjøre det om." },
+                    english { +"Nav Klageinstans has reviewed our decision of " + fritekst("vedtaksdato") + " again, but has found no grounds for amending it." }
                 )
             }
-            title1 { text(bokmal { +"Behandlingstid" }, english { +"Processing time" }) }
+            title1 { text(bokmal { +"Anledning til ytterligere merknader" }, english { +"Processing time" }) }
             paragraph {
                 text(
-                    bokmal { +"Saksbehandlingstiden er vanligvis " + fritekst("antall dager/uker/måneder") + ". " },
+                    bokmal {
+                        +"I vedlagte kopi av vårt brev til Trygderetten har vi gjort rede for saksforholdet med nærmere begrunnelse for hvorfor vi opprettholder vedtaket."
+                        +" Brevet er foreløpig ikke sendt til Trygderetten."
+                    },
                     english { +"The processing time is normally " + fritekst("number of days/weeks/months") + ". " }
                 )
-                text(
-                    bokmal { +"Hvis saken din ikke er ferdigbehandlet av oss i løpet av denne tiden, vil du få nærmere beskjed." },
-                    english { +"If the processing of your case has not been completed within that time, you will be notified." }
-                )
             }
-            title1 { text(bokmal { +"Meld fra om endringer" }, english { +"Please notify us of changes" }) }
             paragraph {
                 text(
-                    bokmal { +"Vi ber om at du holder oss orientert om forhold som kan ha betydning for avgjørelsen av saken din. Det kan være endringer i medisinske forhold, arbeid, inntekt, sivilstand og lignende." },
-                    english { +"Please keep us informed about circumstances that can affect the decision on your case. These might be changes in circumstances relating to health, work, income, civil status and similar." }
+                    bokmal {
+                        +"Du har anledning til å komme med merknader til brevet innen tre uker fra du mottar dette brevet."
+                        +" Saken vil bli sendt til Trygderetten til videre behandling, når fristen for å gi merknader er gått ut."
+                    },
+                    english { +"" }
                 )
             }
+            paragraph {
+                text(
+                    bokmal { +"Hvis du ønsker å komme med merknader til brevet, må du skrive til oss på følgende adresse:" },
+                    english { +"If you would like to comment on the letter, please write to us at the following address:" }
+                )
+            }
+            paragraph {
+                text(bokmal { +pesysData.navnAvsenderEnhet }, english { +pesysData.navnAvsenderEnhet })
+                newline()
+                text(bokmal { +"Postboks 6600 Etterstad" }, english { +"Postboks 6600 Etterstad" })
+                newline()
+                text(bokmal { +"0607 OSLO" }, english { +"0607 OSLO" })
+                newline()
+                text(bokmal { +"" }, english { +"NORWAY" })
+            }
+            paragraph {
+                text(
+                    bokmal { +"Når saken er avgjort, vil du få melding om resultatet direkte fra Trygderetten." },
+                    english { +"When the case has been decided, you will be notified of the result directly by the National Insurance Court." }
+                )
+            }
+
         }
     }
 }
