@@ -6,11 +6,13 @@ import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.brev.brevbaker.template.render.Letter2MarkupV2
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -26,7 +28,7 @@ import org.junit.jupiter.api.Test
 class Letter2MarkupV2Test {
 
     private inline fun <reified LetterData : AutobrevData> renderTemplate(data: LetterData, noinline template: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit) =
-        Letter2MarkupV2.render(LetterImpl(outlineTestTemplate(template), data, Bokmal, felles))
+        Letter2MarkupV2.render(LetterImpl(outlineTestTemplate(template), data, Bokmal, felles)).letterMarkup
 
     @Test
     fun `template title is rendered as title1`() {
@@ -42,7 +44,7 @@ class Letter2MarkupV2Test {
                 paragraph { }
             }
         }
-        val result = Letter2MarkupV2.render(LetterImpl(template, EmptyAutobrevdata, Bokmal, felles))
+        val result = Letter2MarkupV2.render(LetterImpl(template, EmptyAutobrevdata, Bokmal, felles)).letterMarkup
 
         assertThat(result.title1.joinToString("") { it.text }).isEqualTo("noe tekst 2024")
     }
@@ -278,6 +280,37 @@ class Letter2MarkupV2Test {
                 choice { literal("a") }
             }
             paragraph { literal("after") }
+        }
+    }
+
+    @Test
+    fun `renderLetter includes rendered attachments`() {
+        val vedlegg = createAttachment<LangBokmal, EmptyVedleggData>(
+            title = { text(bokmal { +"Vedleggstittel" }) },
+            includeSakspart = true,
+        ) {
+            paragraph { text(bokmal { +"vedleggsinnhold" }) }
+        }
+
+        val template = createTemplate(
+            letterDataType = EmptyAutobrevdata::class,
+            languages = languages(Bokmal),
+            letterMetadata = testLetterMetadata,
+        ) {
+            title { text(bokmal { +"tittel" }) }
+            outline { paragraph { text(bokmal { +"brevtekst" }) } }
+            includeAttachment(vedlegg)
+        }
+
+        val result = Letter2MarkupV2.render(LetterImpl(template, EmptyAutobrevdata, Bokmal, felles))
+
+        LetterWithAttachmentsMarkupV2Asserter.assertThat(result).hasAttachments {
+            attachment {
+                title { literal("Vedleggstittel") }
+                blocks {
+                    paragraph { literal("vedleggsinnhold") }
+                }
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
+import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkupV2
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.ListContent
@@ -10,6 +11,51 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.Title
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Text
 import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.Assertions.assertThat
+
+class LetterWithAttachmentsMarkupV2Asserter(actual: LetterWithAttachmentsMarkupV2) :
+    AbstractAssert<LetterWithAttachmentsMarkupV2Asserter, LetterWithAttachmentsMarkupV2>(actual, LetterWithAttachmentsMarkupV2Asserter::class.java) {
+
+    fun hasAttachments(matchSize: Boolean = true, builder: AttachmentsAssertV2.() -> Unit) =
+        assertThat(actual.attachments).satisfies(AttachmentsAssertV2(matchSize).apply(builder).build())
+
+    companion object {
+        fun assertThat(actual: LetterWithAttachmentsMarkupV2) = LetterWithAttachmentsMarkupV2Asserter(actual)
+    }
+}
+
+@LetterMarkupMatcherDsl
+class AttachmentsAssertV2(private val matchSize: Boolean) {
+    private val attachmentMatchers = mutableListOf<(LetterMarkupV2.Attachment) -> Unit>()
+
+    fun attachment(builder: AttachmentAssertV2.() -> Unit) {
+        attachmentMatchers.add(AttachmentAssertV2().apply(builder).build())
+    }
+
+    fun build(): (List<LetterMarkupV2.Attachment>) -> Unit = { actual ->
+        if (matchSize) {
+            assertThat(actual).hasSameSizeAs(attachmentMatchers)
+        }
+        attachmentMatchers.forEachIndexed { index, assertion ->
+            assertThat(actual[index]).satisfies(assertion)
+        }
+    }
+}
+
+class AttachmentAssertV2 {
+    private val matchers = mutableListOf<(LetterMarkupV2.Attachment) -> Unit>()
+
+    fun title(that: TextContentAssertV2.() -> Unit) {
+        matchers.add({ assertThat(it.title1).satisfies(TextContentAssertV2().apply(that).build()) })
+    }
+
+    fun blocks(matchSize: Boolean = true, that: BlocksAssertV2.() -> Unit) {
+        matchers.add({ assertThat(it.blocks).satisfies(BlocksAssertV2(matchSize).apply(that).build()) })
+    }
+
+    fun build(): (LetterMarkupV2.Attachment) -> Unit = { actual ->
+        matchers.forEach { it(actual) }
+    }
+}
 
 class LetterMarkupV2Asserter(actual: LetterMarkupV2) : AbstractAssert<LetterMarkupV2Asserter, LetterMarkupV2>(actual, LetterMarkupV2Asserter::class.java) {
     fun hasBlocks(matchSize: Boolean = true, builder: BlocksAssertV2.() -> Unit) =

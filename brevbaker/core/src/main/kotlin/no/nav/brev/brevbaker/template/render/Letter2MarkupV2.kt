@@ -4,25 +4,28 @@ import no.nav.brev.InterneDataklasser
 import no.nav.brev.Listetype
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.LanguageSetting
-import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brev.template.render.documentLanguageSettings
+import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.*
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.ListContent.ItemList
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.ListContent.NumberedList
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Saksnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Text
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Text.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Text.FontType
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Text.Literal
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2Impl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2Impl.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2Impl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2Impl.TextImpl.NewLineImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2Impl.TextImpl.VariableImpl
+import no.nav.pensjon.brevbaker.api.model.PDFTittelV2
 import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
+
+data class LetterWithAttachmentsMarkupV2(val letterMarkup: LetterMarkupV2, val attachments: List<LetterMarkupV2.Attachment>)
 
 /**
  * Renders a LetterTemplate directly to LetterMarkupV2. This is an independent renderer from
@@ -33,11 +36,14 @@ import kotlin.contracts.contract
  * renderer.
  */
 @OptIn(InterneDataklasser::class)
-internal object Letter2MarkupV2 : LetterRenderer<LetterMarkupV2>() {
+internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>() {
     private val languageSettings = documentLanguageSettings
 
-    override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterMarkupV2 =
-        renderLetterOnly(RenderContext(scope), template)
+    override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterWithAttachmentsMarkupV2 =
+        LetterWithAttachmentsMarkupV2(
+            letterMarkup = renderLetterOnly(RenderContext(scope), template),
+            attachments = renderAttachmentsOnly(RenderContext(scope), template),
+        )
 
     fun renderLetterOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterMarkupV2 =
         renderLetterOnly(RenderContext(scope), template)
@@ -49,7 +55,7 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterMarkupV2>() {
                 gjelderNavn = context.scope.felles.bruker.fulltNavn(),
                 gjelderFoedselsnummer = context.scope.felles.bruker.foedselsnummer,
                 annenMottakerNavn = context.scope.felles.annenMottakerNavn,
-                saksnummer = LetterMarkupV2.Saksnummer(context.scope.felles.saksnummer),
+                saksnummer = Saksnummer(context.scope.felles.saksnummer),
                 dokumentDato = context.scope.felles.dokumentDato,
             ),
             blocks = renderOutline(context, template.outline),
@@ -61,6 +67,30 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterMarkupV2>() {
                 )
             }
         )
+
+    fun renderAttachmentsOnly(
+        scope: ExpressionScope<*>,
+        template: LetterTemplate<*, *>,
+        redigerteVedlegg: Map<VedleggId, LetterMarkupV2.Attachment> = emptyMap(),
+    ): List<LetterMarkupV2.Attachment> =
+        renderAttachmentsOnly(RenderContext(scope), template, redigerteVedlegg)
+
+    private fun renderAttachmentsOnly(
+        renderContext: RenderContext,
+        template: LetterTemplate<*, *>,
+        redigerteVedlegg: Map<VedleggId, LetterMarkupV2.Attachment> = emptyMap(),
+    ): List<LetterMarkupV2.Attachment> = buildList {
+        render(renderContext, template.attachments) { attachmentContext, editableId, attachment ->
+            val override = editableId?.let { redigerteVedlegg[it] }
+            add(
+                if (override != null) {
+                    AttachmentImpl(override.title1, override.blocks, override.inkluderSaksinformasjon)
+                } else {
+                    renderAttachment(attachmentContext, attachment)
+                }
+            )
+        }
+    }
 
     fun renderEditableAttachmentTitles(
         scope: ExpressionScope<*>,
@@ -92,6 +122,11 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterMarkupV2>() {
             renderOutline(attachmentContext, attachment.outline),
             attachment.includeSakspart,
         )
+
+    fun renderPDFTitlesOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<PDFTittelV2> {
+        val context = RenderContext(scope)
+        return template.pdfAttachments.map { PDFTittelV2(renderText(context, it.template.title)) }
+    }
 
     private fun renderOutline(context: RenderContext, outline: List<OutlineElement<*>>): List<Block> =
         buildList {
@@ -156,20 +191,20 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterMarkupV2>() {
         return blocks
     }
 
-    private fun renderFormText(context: RenderContext, form: Element.OutlineContent.ParagraphContent.Form.Text<*>): Block.FormText =
+    private fun renderFormText(context: RenderContext, form: Element.OutlineContent.ParagraphContent.Form.Text<*>): FormText =
         BlockImpl.FormTextImpl(
             id = context.stableHash(form),
             prompt = renderText(context, listOf(form.prompt)),
             size = when (form.size) {
-                Element.OutlineContent.ParagraphContent.Form.Text.Size.NONE -> Block.FormText.Size.NONE
-                Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT -> Block.FormText.Size.SHORT
-                Element.OutlineContent.ParagraphContent.Form.Text.Size.LONG -> Block.FormText.Size.LONG
-                Element.OutlineContent.ParagraphContent.Form.Text.Size.FILL -> Block.FormText.Size.FILL
+                Element.OutlineContent.ParagraphContent.Form.Text.Size.NONE -> FormText.Size.NONE
+                Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT -> FormText.Size.SHORT
+                Element.OutlineContent.ParagraphContent.Form.Text.Size.LONG -> FormText.Size.LONG
+                Element.OutlineContent.ParagraphContent.Form.Text.Size.FILL -> FormText.Size.FILL
             },
             vspace = form.vspace,
         )
 
-    private fun renderFormChoice(context: RenderContext, form: Element.OutlineContent.ParagraphContent.Form.MultipleChoice<*>): Block.FormChoice =
+    private fun renderFormChoice(context: RenderContext, form: Element.OutlineContent.ParagraphContent.Form.MultipleChoice<*>): FormChoice =
         BlockImpl.FormChoiceImpl(
             id = context.stableHash(form),
             prompt = renderText(context, listOf(form.prompt)),
@@ -179,7 +214,7 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterMarkupV2>() {
             vspace = form.vspace,
         )
 
-    private fun renderTable(context: RenderContext, table: Element.OutlineContent.ParagraphContent.Table<*>): Block.Table? =
+    private fun renderTable(context: RenderContext, table: Element.OutlineContent.ParagraphContent.Table<*>): Table? =
         renderRows(context, table.rows).takeIf { it.isNotEmpty() }?.let { rows ->
             BlockImpl.TableImpl(
                 id = context.stableHash(table),
@@ -188,27 +223,27 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterMarkupV2>() {
             )
         }
 
-    private fun renderHeader(context: RenderContext, header: Element.OutlineContent.ParagraphContent.Table.Header<*>): Block.Table.Header =
+    private fun renderHeader(context: RenderContext, header: Element.OutlineContent.ParagraphContent.Table.Header<*>): Table.Header =
         BlockImpl.TableImpl.HeaderImpl(context.stableHash(header), header.colSpec.map { columnSpec ->
             BlockImpl.TableImpl.ColumnSpecImpl(
                 id = context.stableHash(columnSpec),
                 headerContent = renderCell(context, columnSpec.headerContent),
                 alignment = when (columnSpec.alignment) {
-                    Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT -> Block.Table.ColumnAlignment.LEFT
-                    Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT -> Block.Table.ColumnAlignment.RIGHT
+                    Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT -> Table.ColumnAlignment.LEFT
+                    Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT -> Table.ColumnAlignment.RIGHT
                 },
                 span = columnSpec.columnSpan,
             )
         })
 
-    private fun renderRows(context: RenderContext, rows: List<TableRowElement<*>>): List<Block.Table.Row> =
+    private fun renderRows(context: RenderContext, rows: List<TableRowElement<*>>): List<Table.Row> =
         buildList {
             render(context, rows) { rowContext, row ->
                 add(BlockImpl.TableImpl.RowImpl(rowContext.stableHash(row), row.cells.map { renderCell(rowContext, it) }))
             }
         }
 
-    private fun renderCell(context: RenderContext, cell: Element.OutlineContent.ParagraphContent.Table.Cell<*>): Block.Table.Cell =
+    private fun renderCell(context: RenderContext, cell: Element.OutlineContent.ParagraphContent.Table.Cell<*>): Table.Cell =
         BlockImpl.TableImpl.CellImpl(context.stableHash(cell), renderText(context, cell.text))
 
     private fun renderItemList(context: RenderContext, itemList: Element.OutlineContent.ParagraphContent.ItemList<*>): ListContent? =
