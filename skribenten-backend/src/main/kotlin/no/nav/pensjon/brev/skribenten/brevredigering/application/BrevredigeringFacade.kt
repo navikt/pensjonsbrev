@@ -23,7 +23,6 @@ class BrevredigeringFacade(
     private val reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError>,
     private val frigiReservasjon: UseCaseHandler<FrigiReservasjonHandler.Request, Unit, BrevredigeringError>,
     private val hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult>,
-    private val endreRedigertVedlegg: BrevredigeringHandler<EndreRedigertVedleggHandler.Request, Dto.Brevredigering>,
     private val hentRedigertVedlegg: BrevredigeringHandler<HentRedigertVedleggHandler.Request, Edit.Attachment>,
     private val hentRedigerbareVedlegg: BrevredigeringHandler<HentRedigerbareVedleggHandler.Request, List<RedigerbartVedleggInfo>>,
     private val slettRedigertVedlegg: BrevredigeringHandler<SlettRedigertVedleggHandler.Request, Dto.Brevredigering>,
@@ -52,9 +51,6 @@ class BrevredigeringFacade(
             BrevredigeringEntity.find { BrevredigeringTable.saksId inList saksIder }
                 .map { it.toBrevInfo(brevreservasjonPolicy) }
         }
-
-    suspend fun endreRedigertVedlegg(request: EndreRedigertVedleggHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        endreRedigertVedlegg.runHandler(request)
 
     suspend fun hentRedigertVedlegg(request: HentRedigertVedleggHandler.Request): Outcome<Edit.Attachment, BrevredigeringError>? =
         hentRedigertVedlegg.runHandler(request)

@@ -176,6 +176,13 @@ abstract class BrevredigeringHandlerTestBase {
             database = SharedPostgres.database,
         )
     }
+    protected val endreRedigertVedlegg by lazy {
+        EndreRedigertVedleggHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            database = SharedPostgres.database,
+        )
+    }
     protected val brevredigeringFacade = createFacade()
 
     companion object Fixtures {

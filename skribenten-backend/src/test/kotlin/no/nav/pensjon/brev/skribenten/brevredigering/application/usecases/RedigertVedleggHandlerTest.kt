@@ -52,7 +52,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         withPrincipal(principal) {
-            brevredigeringFacade.endreRedigertVedlegg(
+            endreRedigertVedlegg(
                 EndreRedigertVedleggHandler.Request(brevId = brevId, vedleggId = VedleggId(vedleggId), redigertVedlegg = vedlegg)
             )
         }
