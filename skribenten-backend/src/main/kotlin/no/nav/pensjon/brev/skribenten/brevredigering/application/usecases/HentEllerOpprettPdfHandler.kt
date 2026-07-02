@@ -32,9 +32,10 @@ class HentEllerOpprettPdfHandler(
 
         val pesysBrevdata = brevdataService.hentBrevdata(brev).withP1DataIfP1(brev)
         val nyBrevdataHash = Hash.read(pesysBrevdata)
+        val nyVedleggHash = brev.vedleggHash
 
         // Sjekk om cachet pdf er oppdatert
-        return if (document != null && document.redigertBrevHash == brev.redigertBrevHash && nyBrevdataHash == document.brevdataHash) {
+        return if (document != null && document.redigertBrevHash == brev.redigertBrevHash && nyBrevdataHash == document.brevdataHash && nyVedleggHash == document.vedleggHash) {
             success(Dto.HentDocumentResult(document = document, rendretBrevErEndret = false))
         } else {
             // Sjekk om innholdet i brevet har endret seg. Kan skje om pesysdata har endret seg.
@@ -48,7 +49,8 @@ class HentEllerOpprettPdfHandler(
                 pdf = pdfBytes,
                 dokumentDato = pesysBrevdata.felles.dokumentDato,
                 redigertBrevHash = brev.redigertBrevHash,
-                brevdataHash = nyBrevdataHash
+                brevdataHash = nyBrevdataHash,
+                vedleggHash = nyVedleggHash
             )
             brev.document = newDocument
             success(Dto.HentDocumentResult(document = newDocument, rendretBrevErEndret = rendretBrevErEndret))

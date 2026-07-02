@@ -25,7 +25,6 @@ object BrevredigeringFacadeFactory {
         val attesterBrevPolicy = AttesterBrevPolicy()
         val ferdigRedigertPolicy = FerdigRedigertPolicy()
         val sendBrevPolicy = SendBrevPolicy(ferdigRedigertPolicy)
-        val slettBrevPolicy = SlettBrevPolicy()
 
         return BrevredigeringFacade(
             opprettBrev = OpprettBrevHandlerImpl(
@@ -121,9 +120,7 @@ object BrevredigeringFacadeFactory {
                 brevService = brevService,
                 brevmalService = brevmalService,
             ),
-            slettBrev = SlettBrevHandler(
-                slettBrevPolicy = slettBrevPolicy,
-            ),
+            slettBrev = SlettBrevHandler(),
             brevreservasjonPolicy = brevreservasjonPolicy,
             diffBrev = DiffBrevHandler(
                 brevmalService = brevmalService,

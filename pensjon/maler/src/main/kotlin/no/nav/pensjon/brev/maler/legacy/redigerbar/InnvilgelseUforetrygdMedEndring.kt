@@ -6,10 +6,12 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUforetrygdMedEndringDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUforetrygdMedEndringDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUforetrygdMedEndringDto.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUforetrygdMedEndringDto.saksbehandlervalg.periodisertInntekt
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.InntektBarnetillegg
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -738,24 +740,14 @@ object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUforetryg
                 }
 
                 showIf(barnetilleggFellesInnvilget or barnetilleggSerkullInnvilget) {
-                    paragraph {
-                        text(
-                            bokmal { +"Inntekten din består av uføretrygd for de " + fritekst("antall mnd") + " gjenstående månedene av året." },
-                            nynorsk { +"Inntekta di består av uføretrygd for dei " + fritekst("antall mnd") + " gjenstående månedene av året." }
-                        )
-                        showIf(barnetilleggFellesInnvilget) {
-                            text(
-                                bokmal { +" Din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "s inntekt består av inntekt de " + fritekst("antall mnd") + " gjenstående månedene av året, fratrukket " + fritekst("antall mnd") + "/12 av folketrygdens grunnbeløp. Folketrygdens grunnbeløp er for tiden " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + "." },
-                                nynorsk { +" Din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + "s inntekt består av inntekt de " + fritekst("antall mnd") + " gjenstående månedene av året, fratrukket " + fritekst("antall mnd") + "/12 av grunnbeløpet i folketrygda. Grunnbeløpet i folketrygda er for tida " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + "." }
-                            )
-                        }
-                        showIf(barnetilleggFellesInnvilget and barnetilleggSerkullInnvilget) {
-                            text(
-                                bokmal { +" Barnetillegget for barn som ikke bor med begge foreldre er kun beregnet utfra din inntekt." },
-                                nynorsk { +" Barnetillegget for barn som ikkje bur med begge foreldre er kun berekna utfra inntekta di." },
-                            )
-                        }
-                    }
+                    includePhrase(
+                        InntektBarnetillegg(
+                            btFellesInnvilget = barnetilleggFellesInnvilget,
+                            btSerkullInnvilget = barnetilleggSerkullInnvilget,
+                            grunnbelop = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop(),
+                            pe = pe,
+                            periodisertInntekt = saksbehandlerValg.periodisertInntekt)
+                    )
                 }
 
                 //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)  ) THEN      INCLUDE ENDIF

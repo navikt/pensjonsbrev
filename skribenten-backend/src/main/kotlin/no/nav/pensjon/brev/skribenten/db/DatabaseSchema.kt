@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.db
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -67,6 +68,7 @@ object DocumentTable : LongIdTable() {
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
     val redigertBrevHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevHash")
     val brevdataHash: Column<Hash<BrevdataResponse.Data>> = hashColumn("brevdataHash")
+    val vedleggHash: Column<Hash<VedleggSnapshot>> = hashColumn("vedleggHash")
 }
 
 object MottakerTable : IdTable<BrevId>() {

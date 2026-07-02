@@ -23,6 +23,7 @@ import javax.sql.DataSource
 
 val databaseReady: AtomicBoolean = AtomicBoolean(false)
 
+
 internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
     registerModule(LetterMarkupJacksonModule)

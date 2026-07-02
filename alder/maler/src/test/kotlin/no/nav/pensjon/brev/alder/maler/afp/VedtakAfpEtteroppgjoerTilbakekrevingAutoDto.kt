@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
+import no.nav.pensjon.brev.alder.model.afp.AfpPeriode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
@@ -18,7 +19,7 @@ fun createVedtakAfpEtteroppgjoerTilbakekrevingAutoDto(): VedtakAfpEtteroppgjoerT
         korrigertAfp = Kroner(156_500),
         tidligereArbeidsInntektBeregnet = Kroner(300_000),
         utbetaltAfp = Kroner(195_000),
-        periode = VedtakAfpEtteroppgjoerTilbakekrevingAutoDto.Periode.UTTAK_OG_OPPHOER_I_AARET,
+        periode = AfpPeriode.UTTAK_OG_OPPHOER_I_AARET,
         medlemAvApotekerordningen = false,
         toleranseBeloep = Kroner(15001),
     )

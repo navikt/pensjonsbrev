@@ -279,7 +279,6 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData 
 
 public final class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggBrevkode : no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getKode ()Ljava/lang/String;
 	public fun getSpraak ()Ljava/util/Set;

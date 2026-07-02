@@ -5,8 +5,8 @@ import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerVarselForeloep
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
+import no.nav.pensjon.brev.alder.model.afp.AfpPeriode
 import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDto
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDto.Periode
 import no.nav.pensjon.brev.alder.model.afp.selectors.varselAfpEtteroppgjoerForeloepigDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.afp.selectors.varselAfpEtteroppgjoerForeloepigDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -68,10 +68,10 @@ object VarselAfpEtteroppgjoerForeloepig : RedigerbarTemplate<VarselAfpEtteroppgj
         outline {
             includePhrase(
                 AfpEtteroppgjoerVarselForeloepigInnhold(
-                    erHelAfpHeleAaret = pesysData.periode.equalTo(Periode.HEL_AFP_HELE_AARET),
-                    erUttakIAaret = pesysData.periode.equalTo(Periode.UTTAK_I_AARET),
-                    erOpphoerIAaret = pesysData.periode.equalTo(Periode.OPPHOER_I_AARET),
-                    erUttakOgOpphoerIAaret = pesysData.periode.equalTo(Periode.UTTAK_OG_OPPHOER_I_AARET),
+                    erHelAfpHeleAaret = pesysData.periode.equalTo(AfpPeriode.HEL_AFP_HELE_AARET),
+                    erUttakIAaret = pesysData.periode.equalTo(AfpPeriode.UTTAK_I_AARET),
+                    erOpphoerIAaret = pesysData.periode.equalTo(AfpPeriode.OPPHOER_I_AARET),
+                    erUttakOgOpphoerIAaret = pesysData.periode.equalTo(AfpPeriode.UTTAK_OG_OPPHOER_I_AARET),
                     uttaksdato = pesysData.uttaksdato,
                     opphorsdato = pesysData.opphorsdato,
                     oppgjoersAar = pesysData.oppgjoersAar,
