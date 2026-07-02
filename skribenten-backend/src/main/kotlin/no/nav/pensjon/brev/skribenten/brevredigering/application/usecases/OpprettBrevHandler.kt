@@ -25,7 +25,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import java.time.Instant
 
 interface OpprettBrevHandler : UseCaseHandler<OpprettBrevHandlerImpl.Request, Dto.Brevredigering, BrevredigeringError> {
-    override suspend fun handle(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError>
+    override suspend fun invoke(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError>
 }
 
 class OpprettBrevHandlerImpl(
@@ -46,7 +46,7 @@ class OpprettBrevHandlerImpl(
         val mottaker: Dto.Mottaker? = null,
     )
 
-    override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
+    override suspend operator fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
         val principal = PrincipalInContext.require()
 
         val parametre = opprettBrevPolicy.kanOppretteBrev(request, principal).getOrElse { return failure(it) }

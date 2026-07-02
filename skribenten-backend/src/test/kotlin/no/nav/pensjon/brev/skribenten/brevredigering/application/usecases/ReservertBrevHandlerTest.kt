@@ -63,7 +63,7 @@ class ReservertBrevHandlerTest {
 
     private suspend fun opprettBrev(reserverBrev: Boolean = false) = withPrincipal(saksbehandler1Principal) {
         suspendTransaction(SharedPostgres.database) {
-            opprettBrevHandler.handle(
+            opprettBrevHandler.invoke(
                 OpprettBrevHandlerImpl.Request(
                     saksId = SaksId(1),
                     vedtaksId = VedtaksId(2),

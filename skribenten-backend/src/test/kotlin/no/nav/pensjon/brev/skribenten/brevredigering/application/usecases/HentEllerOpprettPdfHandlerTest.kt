@@ -218,7 +218,6 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
             renderService = RenderService(brevbakerService),
             brevmalService = brevmalService,
             p1Service = p1Service,
-            brevreservasjonPolicy = brevreservasjonPolicy,
             database = SharedPostgres.database,
         )
         assertThat(hentEllerOpprettPdf(brev, handler = handler)).isSuccess {

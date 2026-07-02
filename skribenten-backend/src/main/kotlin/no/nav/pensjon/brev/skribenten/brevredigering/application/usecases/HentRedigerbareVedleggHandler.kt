@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
@@ -15,17 +13,14 @@ import org.jetbrains.exposed.v1.jdbc.Database
 class HentRedigerbareVedleggHandler(
     private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
-    brevreservasjonPolicy: BrevreservasjonPolicy,
     database: Database,
-) : ReservertBrevHandler<HentRedigerbareVedleggHandler.Request, List<RedigerbartVedleggInfo>>(database, brevreservasjonPolicy) {
-
-    override fun requiresReservasjon(request: Request) = false
+) : TransactionHandler<HentRedigerbareVedleggHandler.Request, List<RedigerbartVedleggInfo>, Nothing>(database) {
 
     data class Request(
         override val brevId: BrevId,
     ) : BrevredigeringRequest
 
-    override suspend fun execute(request: Request): Outcome<List<RedigerbartVedleggInfo>, BrevredigeringError>? {
+    override suspend fun execute(request: Request): Outcome<List<RedigerbartVedleggInfo>, Nothing>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
 
         // Trenger ikke å gå videre med tyngre kall om det ikke er noe redigerbare vedlegg på malen.

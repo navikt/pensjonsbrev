@@ -15,7 +15,7 @@ class ReserverBrevHandler(
 
     data class Request(override val brevId: BrevId) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Reservasjon, BrevredigeringError>? {
+    override suspend operator fun invoke(request: Request): Outcome<Reservasjon, BrevredigeringError>? {
         val principal = PrincipalInContext.require()
 
         return BrevredigeringEntity.findById(request.brevId)

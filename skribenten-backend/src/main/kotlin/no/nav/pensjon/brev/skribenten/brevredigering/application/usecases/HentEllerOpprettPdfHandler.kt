@@ -2,9 +2,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.db.Hash
@@ -22,17 +20,14 @@ class HentEllerOpprettPdfHandler(
     private val renderService: RenderService,
     private val brevmalService: BrevmalService,
     private val p1Service: P1Service,
-    brevreservasjonPolicy: BrevreservasjonPolicy,
     database: Database,
-) : ReservertBrevHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult>(database, brevreservasjonPolicy) {
-
-    override fun requiresReservasjon(request: Request) = false
+) : TransactionHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult, Nothing>(database) {
 
     data class Request(
         override val brevId: BrevId,
     ) : BrevredigeringRequest
 
-    override suspend fun execute(request: Request): Outcome<Dto.HentDocumentResult, BrevredigeringError>? {
+    override suspend fun execute(request: Request): Outcome<Dto.HentDocumentResult, Nothing>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
         val document = brev.document
 

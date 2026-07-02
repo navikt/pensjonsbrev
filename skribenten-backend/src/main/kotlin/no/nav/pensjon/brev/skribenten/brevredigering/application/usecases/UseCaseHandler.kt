@@ -13,25 +13,30 @@ import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import java.sql.Connection
 import java.time.Instant
 
-interface UseCaseHandler<Request, Success, Failure> {
-    suspend fun handle(request: Request): Outcome<Success, Failure>?
+interface UseCaseHandler<Request, Response, Error> {
+    suspend operator fun invoke(request: Request): Outcome<Response, Error>?
 }
 
-interface BrevredigeringHandler<Request : BrevredigeringRequest, Response> : UseCaseHandler<Request, Response, BrevredigeringError> {
-    fun requiresReservasjon(request: Request): Boolean
-    fun transactionIsolation(): Int? = null
+abstract class TransactionHandler<Request, Response, Error>(private val database: Database): UseCaseHandler<Request, Response, Error> {
+    abstract suspend fun execute(request: Request): Outcome<Response, Error>?
+    open fun transactionIsolation(): Int? = null
+
+    final override suspend fun invoke(request: Request): Outcome<Response, Error>? =
+        isolatedTransaction(database = database, isolation = transactionIsolation()) {
+            execute(request)?.onError { rollback() }
+        }
 }
 
 abstract class ReservertBrevHandler<Request : BrevredigeringRequest, Response>(
     private val database: Database,
     private val brevreservasjonPolicy: BrevreservasjonPolicy
-) : BrevredigeringHandler<Request, Response> {
+) : UseCaseHandler<Request, Response, BrevredigeringError> {
 
-    override fun requiresReservasjon(request: Request) = true
+    open fun transactionIsolation(): Int? = null
+    open fun requiresReservasjon(request: Request) = true
+    abstract suspend fun execute(request: Request): Outcome<Response, BrevredigeringError>?
 
-    suspend operator fun invoke(request: Request): Outcome<Response, BrevredigeringError>? = handle(request)
-
-    final override suspend fun handle(request: Request): Outcome<Response, BrevredigeringError>? {
+    final override suspend fun invoke(request: Request): Outcome<Response, BrevredigeringError>? {
         if (requiresReservasjon(request)) {
             // Forsøk å reservere brevet før vi kjører handleren, om reservasjonen feiler returner feilen eller om brevet ikke finnes returner null.
             reserverBrev(request)
@@ -39,21 +44,11 @@ abstract class ReservertBrevHandler<Request : BrevredigeringRequest, Response>(
                 ?: return null
         }
 
-        return isolatedTransaction {
+        return isolatedTransaction(database = database, isolation = transactionIsolation()) {
             execute(request)?.onError { rollback() }
         }
     }
 
-    abstract suspend fun execute(request: Request): Outcome<Response, BrevredigeringError>?
-
-    private suspend fun <T> isolatedTransaction(block: suspend JdbcTransaction.() -> T): T {
-        val isolation = transactionIsolation()
-        return if (isolation != null) {
-            suspendTransaction(db = database, transactionIsolation = isolation, statement = block)
-        } else {
-            suspendTransaction(db = database, statement = block)
-        }
-    }
 
     private suspend fun reserverBrev(request: Request) =
         suspendTransaction(db = database, transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
@@ -63,6 +58,14 @@ abstract class ReservertBrevHandler<Request : BrevredigeringRequest, Response>(
                 ?.reserver(Instant.now(), principal.navIdent, brevreservasjonPolicy)
                 ?.onError { rollback() }
         }
+}
+
+private suspend fun <T> isolatedTransaction(database: Database, isolation: Int?, block: suspend JdbcTransaction.() -> T): T {
+    return if (isolation != null) {
+        suspendTransaction(db = database, transactionIsolation = isolation, statement = block)
+    } else {
+        suspendTransaction(db = database, statement = block)
+    }
 }
 
 interface BrevredigeringRequest {

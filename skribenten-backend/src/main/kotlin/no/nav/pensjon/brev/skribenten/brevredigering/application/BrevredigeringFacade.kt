@@ -25,7 +25,7 @@ class BrevredigeringFacade(
 
     override suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
         suspendTransaction {
-            opprettBrev.handle(request)
+            opprettBrev.invoke(request)
         }
 
     override fun hentBrevInfo(brevId: BrevId): Dto.BrevInfo? =
@@ -45,11 +45,11 @@ class BrevredigeringFacade(
 
     suspend fun reserverBrev(request: ReserverBrevHandler.Request): Outcome<Reservasjon, BrevredigeringError>? =
         suspendTransaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
-            reserverBrev.handle(request)?.onError { rollback() }
+            reserverBrev.invoke(request)?.onError { rollback() }
         }
 
     suspend fun frigiReservasjon(request: FrigiReservasjonHandler.Request): Outcome<Unit, BrevredigeringError>? =
         suspendTransaction {
-            frigiReservasjon.handle(request)?.onError { rollback() }
+            frigiReservasjon.invoke(request)?.onError { rollback() }
         }
 }

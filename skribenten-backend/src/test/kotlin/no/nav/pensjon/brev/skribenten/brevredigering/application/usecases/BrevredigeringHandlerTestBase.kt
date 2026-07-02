@@ -204,7 +204,6 @@ abstract class BrevredigeringHandlerTestBase {
         HentRedigerbareVedleggHandler(
             brevmalService = brevmalService,
             brevdataService = brevdataService,
-            brevreservasjonPolicy = brevreservasjonPolicy,
             database = SharedPostgres.database,
         )
     }
@@ -214,7 +213,6 @@ abstract class BrevredigeringHandlerTestBase {
             renderService = RenderService(brevbakerService),
             brevmalService = brevmalService,
             p1Service = FakeP1Service(),
-            brevreservasjonPolicy = brevreservasjonPolicy,
             database = SharedPostgres.database,
         )
     }
@@ -394,7 +392,7 @@ abstract class BrevredigeringHandlerTestBase {
         frigiReservasjon: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
-        oppdaterBrev.handle(
+        oppdaterBrev.invoke(
             OppdaterBrevHandler.Request(
                 brevId = brevId,
                 nyeSaksbehandlerValg = nyeSaksbehandlerValg,

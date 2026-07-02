@@ -15,7 +15,7 @@ class FrigiReservasjonHandler(
 
     data class Request(override val brevId: BrevId) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Unit, BrevredigeringError>? {
+    override suspend operator fun invoke(request: Request): Outcome<Unit, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
         val principal = PrincipalInContext.require()
         val reservasjon = brev.gjeldendeReservasjon(brevreservasjonPolicy) ?: return success(Unit)

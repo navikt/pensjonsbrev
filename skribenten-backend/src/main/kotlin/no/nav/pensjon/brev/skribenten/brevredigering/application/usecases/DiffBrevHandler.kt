@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
@@ -19,11 +17,8 @@ import org.jetbrains.exposed.v1.jdbc.Database
 class DiffBrevHandler(
     private val brevdataService: BrevdataService,
     private val brevmalService: BrevmalService,
-    brevreservasjonPolicy: BrevreservasjonPolicy,
     database: Database,
-) : ReservertBrevHandler<DiffBrevHandler.Request, DiffBrevHandler.Response>(database, brevreservasjonPolicy) {
-
-    override fun requiresReservasjon(request: Request) = false
+) : TransactionHandler<DiffBrevHandler.Request, DiffBrevHandler.Response, Nothing>(database) {
 
     sealed class Response {
         data class Unified(
@@ -44,7 +39,7 @@ class DiffBrevHandler(
         val split: Boolean = false,
     ) : BrevredigeringRequest
 
-    override suspend fun execute(request: Request): Outcome<Response, BrevredigeringError>? {
+    override suspend fun execute(request: Request): Outcome<Response, Nothing>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
 
         val pesysdata = brevdataService.hentBrevdata(brev)
