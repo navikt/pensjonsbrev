@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
 import io.ktor.client.engine.cio.*
@@ -18,11 +18,11 @@ import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 
-class KrrService(config: Config, authService: AuthService, engine: HttpClientEngine = CIO.create()) : ServiceStatus {
+class KrrService(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine = CIO.create()) : ServiceStatus {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val client = lagHttpClient(engine) {
         defaultRequest {
-            url(config.getString("url"))
+            url(config.url)
         }
         install(ContentNegotiation) {
             jackson {
@@ -30,7 +30,7 @@ class KrrService(config: Config, authService: AuthService, engine: HttpClientEng
             }
         }
         installRetry(logger)
-        callIdAndOnBehalfOfClient(config.getString("scope"), authService)
+        callIdAndOnBehalfOfClient(config.scope, authService)
     }
 
     @Suppress("EnumEntryName")

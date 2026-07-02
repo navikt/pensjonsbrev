@@ -1,14 +1,14 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.typesafe.config.Config
 import io.ktor.client.call.*
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.serialization.jackson.*
-import io.ktor.server.config.*
+import no.nav.pensjon.brev.skribenten.NoAuthClientConfig
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import java.net.InetAddress
 
@@ -21,13 +21,13 @@ interface LeaderService {
 }
 
 class NaisLeaderService(
-    private val url: String?,
+    config: NoAuthClientConfig?,
     clientEngine: HttpClientEngine = CIO.create(),
 ) : LeaderService {
-    constructor(config: Config, clientEngine: HttpClientEngine = CIO.create()) : this(
-        url = config.tryGetString("url"),
-        clientEngine = clientEngine
-    )
+    private val url: String? = config?.url
+
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, clientEngine: HttpClientEngine = CIO.create()) : this(config.services.leader, clientEngine)
 
     private val client = lagHttpClient(clientEngine) {
         install(ContentNegotiation) {

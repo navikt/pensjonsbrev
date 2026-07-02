@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.NoAuthClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -21,9 +21,9 @@ interface Norg2Service {
 }
 
 // docs: https://confluence.adeo.no/display/FEL/NORG2+-+Teknisk+beskrivelse - trykk på droppdown
-class Norg2ServiceHttp(val config: Config, val cache: Cache) : Norg2Service {
+class Norg2ServiceHttp(config: NoAuthClientConfig, val cache: Cache) : Norg2Service {
     private val logger = LoggerFactory.getLogger(Norg2ServiceHttp::class.java)
-    private val norgUrl = config.getString("url")
+    private val norgUrl = config.url
 
     private val client = lagHttpClient {
         defaultRequest {

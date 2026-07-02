@@ -12,7 +12,6 @@ class SkribentenConfigTest {
         val config = ConfigFactory
             .load("application-local", defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
             .getConfig("skribenten")
-            .getConfig("services")
 
         assertThat(config.getInt("database.maxPoolSize")).isEqualTo(2)
     }

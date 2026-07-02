@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -37,9 +37,9 @@ interface PdlService {
 
 class PdlServiceException(message: String, status: HttpStatusCode = HttpStatusCode.InternalServerError) : ServiceException(message, status = status)
 
-class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, ServiceStatus {
-    private val pdlUrl = config.getString("url")
-    private val pdlScope = config.getString("scope")
+class PdlServiceHttp(config: OboClientConfig, authService: AuthService) : PdlService, ServiceStatus {
+    private val pdlUrl = config.url
+    private val pdlScope = config.scope
 
     private val client = lagHttpClient {
         defaultRequest {

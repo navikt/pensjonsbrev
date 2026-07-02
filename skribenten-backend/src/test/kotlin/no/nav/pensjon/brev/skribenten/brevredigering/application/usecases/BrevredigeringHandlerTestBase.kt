@@ -108,6 +108,7 @@ abstract class BrevredigeringHandlerTestBase {
     protected companion object Fixtures {
         init {
             KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
+            Features.override(UnleashToggle("må sørge for at det finnes en FeatureToggleService"), false)
             initADGroups()
         }
 

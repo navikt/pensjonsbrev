@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.eksterntApi
 
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.OpprettBrevService
@@ -17,12 +17,12 @@ import no.nav.pensjon.brev.skribenten.services.toApi
 import org.slf4j.LoggerFactory
 
 class ExternalAPIService(
-    config: Config,
+    config: ExternalApiConfig,
     private val hentBrevService: HentBrevService,
     private val brevmalService: BrevmalService,
     private val opprettBrevService: OpprettBrevService
 ) {
-    private val skribentenWebUrl = config.getString("skribentenWebUrl")
+    private val skribentenWebUrl = config.skribentenWebUrl
 
     companion object {
         private val logger = LoggerFactory.getLogger(ExternalAPIService::class.java)
