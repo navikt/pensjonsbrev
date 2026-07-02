@@ -21,7 +21,6 @@ class BrevredigeringFacade(
     private val opprettBrev: OpprettBrevHandler,
     private val reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError>,
     private val frigiReservasjon: UseCaseHandler<FrigiReservasjonHandler.Request, Unit, BrevredigeringError>,
-    private val sendBrev: BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult>,
     private val slettBrev: BrevredigeringHandler<SlettBrevHandler.Request, Unit>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) : HentBrevService, OpprettBrevService {
@@ -55,9 +54,6 @@ class BrevredigeringFacade(
         suspendTransaction {
             frigiReservasjon.handle(request)?.onError { rollback() }
         }
-
-    suspend fun sendBrev(request: SendBrevHandler.Request): Outcome<Dto.SendBrevResult, BrevredigeringError>? =
-        sendBrev.runHandler(request)
 
     suspend fun slettBrev(request: SlettBrevHandler.Request): Outcome<Unit, BrevredigeringError>? =
         slettBrev.runHandler(request)

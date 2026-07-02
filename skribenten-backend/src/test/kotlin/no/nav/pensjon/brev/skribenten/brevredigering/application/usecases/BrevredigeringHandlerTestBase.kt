@@ -91,10 +91,12 @@ abstract class BrevredigeringHandlerTestBase {
     protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
     protected val brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService())
     protected val brevdataService = BrevdataService(penService, samhandlerService)
+    protected val brevService = BrevService(penService, LegacyBrevServiceStub())
     protected val redigerBrevPolicy = RedigerBrevPolicy()
     protected val brevreservasjonPolicy = BrevreservasjonPolicy()
     protected val attesterBrevPolicy = AttesterBrevPolicy()
     protected val ferdigRedigertPolicy = FerdigRedigertPolicy()
+    protected val sendBrevPolicy = SendBrevPolicy(ferdigRedigertPolicy)
 
     protected val endreMottaker by lazy {
         EndreMottakerHandler(
@@ -216,9 +218,10 @@ abstract class BrevredigeringHandlerTestBase {
             database = SharedPostgres.database,
         )
     }
-    protected val diffBrev by lazy {
-        DiffBrevHandler(
-            brevdataService = brevdataService,
+    protected val sendBrevHandler by lazy {
+        SendBrevHandler(
+            sendBrevPolicy = sendBrevPolicy,
+            brevService = brevService,
             brevmalService = brevmalService,
             brevreservasjonPolicy = brevreservasjonPolicy,
             database = SharedPostgres.database,
@@ -347,9 +350,8 @@ abstract class BrevredigeringHandlerTestBase {
     }
 
     protected fun createFacade(): BrevredigeringFacade = BrevredigeringFacadeFactory.create(
-        brevService = BrevService(penService, LegacyBrevServiceStub()),
-        brevdataService = BrevdataService(penService, samhandlerService),
-        brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService()),
+        brevdataService = brevdataService,
+        brevmalService = brevmalService,
         navansattService = navAnsattService,
     )
 
@@ -491,7 +493,7 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected suspend fun sendBrev(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.SendBrevResult, BrevredigeringError>? =
         withPrincipal(principal) {
-            brevredigeringFacade.sendBrev(SendBrevHandler.Request(brevId = brev.info.id))
+            sendBrevHandler(SendBrevHandler.Request(brevId = brev.info.id))
         }
 
     protected fun stagePdf(pdf: ByteArray) {

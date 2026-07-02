@@ -250,10 +250,11 @@ fun Route.sakBrev() =
                     apiRespond(dto2ApiService, result)
                 }
 
+                val sendBrev: SendBrevHandler by app.dependencies
                 post("/send") {
                     val brevId = call.parameters.brevId()
 
-                    val resultat = brevredigeringFacade.sendBrev(SendBrevHandler.Request(brevId = brevId))
+                    val resultat = sendBrev(SendBrevHandler.Request(brevId = brevId))
                     apiRespond(dto2ApiService, resultat)
                 }
             }

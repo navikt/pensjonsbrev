@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreD
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreMottakerHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.DiffBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SendBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentEllerOpprettPdfHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigerbareVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigertVedleggHandler
@@ -31,6 +32,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.Veksle
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.AttesterBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.FerdigRedigertPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.SendBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.cacheFactory
@@ -107,6 +109,7 @@ fun Application.configureDependencies() {
         provide(BrevreservasjonPolicy::class)
         provide(AttesterBrevPolicy::class)
         provide(FerdigRedigertPolicy::class)
+        provide(SendBrevPolicy::class)
         provide(OppdaterBrevHandler::class)
         provide(AttesterBrevHandler::class)
         provide(HentBrevHandler::class)
@@ -122,6 +125,7 @@ fun Application.configureDependencies() {
         provide(HentRedigerbareVedleggHandler::class)
         provide(HentEllerOpprettPdfHandler::class)
         provide(DiffBrevHandler::class)
+        provide(SendBrevHandler::class)
     }
 
     launch { Features.init(dependencies.resolve()) }

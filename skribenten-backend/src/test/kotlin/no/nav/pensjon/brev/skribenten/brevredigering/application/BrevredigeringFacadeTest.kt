@@ -97,7 +97,6 @@ private fun createFacade(
     },
     reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError> = handlerStub(),
     frigiReservasjon: UseCaseHandler<FrigiReservasjonHandler.Request, Unit, BrevredigeringError> = handlerStub(),
-    sendBrev: BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult> = handlerStub(),
     brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
 ): BrevredigeringFacade {
     return BrevredigeringFacade(
@@ -105,7 +104,6 @@ private fun createFacade(
         reserverBrev = reserverBrev,
         frigiReservasjon = frigiReservasjon,
         brevreservasjonPolicy = brevreservasjonPolicy,
-        sendBrev = sendBrev,
         slettBrev = handlerStub(),
     )
 }

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.SendBrevPolicy
@@ -11,18 +12,23 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.*
 import java.sql.Connection
+import org.jetbrains.exposed.v1.jdbc.Database
 
 class SendBrevHandler(
     private val sendBrevPolicy: SendBrevPolicy,
     private val brevService: BrevService,
     private val brevmalService: BrevmalService,
-) : BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult> {
+    brevreservasjonPolicy: BrevreservasjonPolicy,
+    database: Database,
+) : ReservertBrevHandler<SendBrevHandler.Request, Dto.SendBrevResult>(database, brevreservasjonPolicy) {
+
+    override fun transactionIsolation(): Int = Connection.TRANSACTION_REPEATABLE_READ
 
     data class Request(
         override val brevId: BrevId,
     ) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Dto.SendBrevResult, BrevredigeringError>? {
+    override suspend fun execute(request: Request): Outcome<Dto.SendBrevResult, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
         val document = brev.document ?: return null
 
@@ -54,9 +60,6 @@ class SendBrevHandler(
 
         return success(Dto.SendBrevResult(journalpostId = response.journalpostId, error = response.error))
     }
-
-    override fun requiresReservasjon(request: Request): Boolean = true
-    override fun transactionIsolation(): Int = Connection.TRANSACTION_REPEATABLE_READ
 }
 
 
