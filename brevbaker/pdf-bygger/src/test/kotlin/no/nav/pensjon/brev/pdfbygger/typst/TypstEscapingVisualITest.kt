@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.pdfbygger.attachment
 import no.nav.pensjon.brev.pdfbygger.letterMarkup
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
@@ -136,44 +135,6 @@ class TypstEscapingVisualITest {
                     )
                 }
 
-                paragraph {
-                    formText(
-                        size = LetterMarkup.ParagraphContent.Form.Text.Size.LONG,
-                        vspace = true
-                    ) {
-                        text(ALL_THE_SYMBOLS)
-                    }
-                }
-
-                paragraph {
-                    formText(
-                        size = LetterMarkup.ParagraphContent.Form.Text.Size.SHORT,
-                        vspace = false
-                    ) {
-                        text(ALL_THE_SYMBOLS)
-                    }
-                }
-
-                paragraph {
-                    formText(
-                        size = LetterMarkup.ParagraphContent.Form.Text.Size.FILL,
-                        vspace = true
-                    ) {
-                        text(ALL_THE_SYMBOLS)
-                    }
-                }
-
-                paragraph {
-                    formChoice(
-                        vspace = true,
-                        prompt = { text(ALL_THE_SYMBOLS) },
-                        choices = {
-                            choice { text(ALL_THE_SYMBOLS) }
-                            choice { text(ALL_THE_SYMBOLS) }
-                            choice { text(ALL_THE_SYMBOLS) }
-                        }
-                    )
-                }
             }
         }
 
@@ -211,23 +172,6 @@ class TypstEscapingVisualITest {
                     )
                 }
 
-                paragraph {
-                    formText(
-                        size = LetterMarkup.ParagraphContent.Form.Text.Size.LONG
-                    ) {
-                        text(ALL_THE_SYMBOLS)
-                    }
-                }
-
-                paragraph {
-                    formChoice(
-                        vspace = true,
-                        prompt = { text(ALL_THE_SYMBOLS) },
-                        choices = {
-                            choice { text(ALL_THE_SYMBOLS) }
-                        }
-                    )
-                }
             }
         }
 

@@ -610,8 +610,6 @@ components:
                   - $ref: "#/components/schemas/LetterMarkup_NewLine"
                   - $ref: "#/components/schemas/LetterMarkup_ItemList"
                   - $ref: "#/components/schemas/LetterMarkup_Table"
-                  - $ref: "#/components/schemas/LetterMarkup_FormText"
-                  - $ref: "#/components/schemas/LetterMarkup_FormChoice"
 
     LetterMarkup_Text:
       type: object
@@ -765,74 +763,6 @@ components:
           type: number
           format: int32
 
-    LetterMarkup_FormText:
-      type: object
-      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text`
-      required:
-        - id
-        - type
-        - prompt
-        - size
-        - vspace
-      properties:
-        id:
-          $ref: "#/components/schemas/LetterMarkup_ID"
-        type:
-          type: string
-          enum: [ "FORM_TEXT" ]
-        prompt:
-          type: array
-          items:
-            oneOf:
-              - $ref: "#/components/schemas/LetterMarkup_Text"
-              - $ref: "#/components/schemas/LetterMarkup_NewLine"
-        size:
-          type: string
-          enum: [ "NONE", "SHORT", "LONG" ]
-        vspace:
-          type: boolean
-
-    LetterMarkup_FormChoice:
-      type: object
-      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.MultipleChoice`
-      required:
-        - id
-        - type
-        - prompt
-        - choices
-        - vspace
-      properties:
-        id:
-          $ref: "#/components/schemas/LetterMarkup_ID"
-        type:
-          type: string
-          enum: [ "FORM_CHOICE" ]
-        prompt:
-          type: array
-          items:
-            oneOf:
-              - $ref: "#/components/schemas/LetterMarkup_Text"
-              - $ref: "#/components/schemas/LetterMarkup_NewLine"
-        choices:
-          type: array
-          items:
-            type: object
-            required:
-              - id
-              - text
-            properties:
-              id:
-                $ref: "#/components/schemas/LetterMarkup_ID"
-              text:
-                type: array
-                items:
-                  oneOf:
-                    - $ref: "#/components/schemas/LetterMarkup_Text"
-                    - $ref: "#/components/schemas/LetterMarkup_NewLine"
-        vspace:
-          type: boolean
-
     TemplateDoc:
       type: object
       description: Se data klasse `no.nav.pensjon.brev.template.render.TemplateDocumentation`.
-

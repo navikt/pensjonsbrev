@@ -166,29 +166,6 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             is Element.OutlineContent.ParagraphContent.Text -> renderTextContent(context, element)
             is Element.OutlineContent.ParagraphContent.ItemList -> listOfNotNull(renderItemList(context, element))
             is Element.OutlineContent.ParagraphContent.Table -> listOfNotNull(renderTable(context, element))
-            is Element.OutlineContent.ParagraphContent.Form -> listOf(renderForm(context, element))
-        }
-
-    private fun renderForm(context: RenderContext, form: Element.OutlineContent.ParagraphContent.Form<*>): ParagraphContent.Form =
-        when (form) {
-            is Element.OutlineContent.ParagraphContent.Form.Text -> ParagraphContentImpl.Form.TextImpl(
-                id = context.stableHash(form),
-                prompt = renderText(context, listOf(form.prompt)),
-                size = when (form.size) {
-                    Element.OutlineContent.ParagraphContent.Form.Text.Size.NONE -> ParagraphContent.Form.Text.Size.NONE
-                    Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT -> ParagraphContent.Form.Text.Size.SHORT
-                    Element.OutlineContent.ParagraphContent.Form.Text.Size.LONG -> ParagraphContent.Form.Text.Size.LONG
-                    Element.OutlineContent.ParagraphContent.Form.Text.Size.FILL -> ParagraphContent.Form.Text.Size.FILL
-                },
-                vspace = form.vspace,
-            )
-
-            is Element.OutlineContent.ParagraphContent.Form.MultipleChoice -> ParagraphContentImpl.Form.MultipleChoiceImpl(
-                id = context.stableHash(form),
-                prompt = renderText(context, listOf(form.prompt)),
-                choices = form.choices.map { ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl(context.stableHash(it), renderTextContent(context, it)) },
-                vspace = form.vspace,
-            )
         }
 
     private fun renderTable(context: RenderContext, table: Element.OutlineContent.ParagraphContent.Table<*>): ParagraphContent.Table? =

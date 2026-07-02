@@ -80,7 +80,7 @@ interface LetterMarkup {
         val id: Int
         val type: Type
         enum class Type {
-            ITEM_LIST, LITERAL, VARIABLE, TABLE, FORM_TEXT, FORM_CHOICE, NEW_LINE
+            ITEM_LIST, LITERAL, VARIABLE, TABLE, NEW_LINE
         }
 
         interface ItemList : ParagraphContent {
@@ -148,30 +148,5 @@ interface LetterMarkup {
             enum class ColumnAlignment { LEFT, RIGHT }
         }
 
-        sealed interface Form : ParagraphContent {
-
-            interface Text : Form {
-                val prompt: List<ParagraphContent.Text>
-                val size: Size
-                val vspace: Boolean
-                override val type: Type
-                    get() = Type.FORM_TEXT
-
-                enum class Size { NONE, SHORT, LONG, FILL }
-            }
-
-            interface MultipleChoice : Form {
-                val prompt: List<ParagraphContent.Text>
-                val choices: List<Choice>
-                val vspace: Boolean
-                override val type: Type
-                    get() = Type.FORM_CHOICE
-
-                interface Choice {
-                    val id: Int
-                    val text: List<ParagraphContent.Text>
-                }
-            }
-        }
     }
 }

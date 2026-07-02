@@ -4,13 +4,11 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -67,10 +65,6 @@ object EnkeltRedigerbartTestbrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                     item {
                         text(bokmal { +"Test1" }, nynorsk { +"Test1" })
                     }
-                }
-                formText(size = Size.LONG, { text(bokmal { +"Formtittel1" }, nynorsk { +"Formtittel1" }) })
-                formChoice({text(bokmal{+"Formtittel2"}, nynorsk{+"Formtittel 2"})}) {
-                    choice(bokmal{+"Valg1"}, nynorsk{+"Valg1"})
                 }
             }
 

@@ -109,7 +109,6 @@ object TemplateDocumentationRenderer {
         lang: Language,
     ): List<TemplateDocumentation.Element.ParagraphContent> =
         when (element) {
-            is Element.OutlineContent.ParagraphContent.Form -> listOf(TemplateDocumentation.Element.ParagraphContent.Text.Literal("## missing documentation ##"))
             is Element.OutlineContent.ParagraphContent.ItemList -> listOf(
                 TemplateDocumentation.Element.ParagraphContent.ItemList(
                     renderContentOrStructure(element.items) { listOf(renderItem(it, lang)) }

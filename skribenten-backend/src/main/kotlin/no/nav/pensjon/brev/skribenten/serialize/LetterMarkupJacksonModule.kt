@@ -36,9 +36,6 @@ internal object LetterMarkupJacksonModule : SimpleModule() {
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.Cell, LetterMarkupImpl.ParagraphContentImpl.TableImpl.CellImpl>()
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.Header, LetterMarkupImpl.ParagraphContentImpl.TableImpl.HeaderImpl>()
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Table.ColumnSpec, LetterMarkupImpl.ParagraphContentImpl.TableImpl.ColumnSpecImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice, LetterMarkupImpl.ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.MultipleChoice, LetterMarkupImpl.ParagraphContentImpl.Form.MultipleChoiceImpl>()
-        addAbstractTypeMapping<LetterMarkup.ParagraphContent.Form.Text, LetterMarkupImpl.ParagraphContentImpl.Form.TextImpl>()
         addAbstractTypeMapping<LetterMarkup, LetterMarkupImpl>()
         addAbstractTypeMapping<LetterMarkupWithDataUsage, LetterMarkupWithDataUsageImpl>()
         addAbstractTypeMapping<LetterMarkupWithDataUsage.Property, LetterMarkupWithDataUsageImpl.PropertyImpl>()
@@ -67,9 +64,8 @@ internal object LetterMarkupJacksonModule : SimpleModule() {
                     LetterMarkup.ParagraphContent.Type.LITERAL -> LetterMarkup.ParagraphContent.Text.Literal::class.java
                     LetterMarkup.ParagraphContent.Type.VARIABLE -> LetterMarkup.ParagraphContent.Text.Variable::class.java
                     LetterMarkup.ParagraphContent.Type.TABLE -> LetterMarkup.ParagraphContent.Table::class.java
-                    LetterMarkup.ParagraphContent.Type.FORM_TEXT -> LetterMarkupImpl.ParagraphContentImpl.Form.TextImpl::class.java
-                    LetterMarkup.ParagraphContent.Type.FORM_CHOICE -> LetterMarkupImpl.ParagraphContentImpl.Form.MultipleChoiceImpl::class.java
                     LetterMarkup.ParagraphContent.Type.NEW_LINE -> LetterMarkup.ParagraphContent.Text.NewLine::class.java
+                    else -> throw BrevbakerServiceException("Unsupported paragraph content type")
                 }
                 return p.codec.treeToValue(node, type)
             }
@@ -84,9 +80,8 @@ internal object LetterMarkupJacksonModule : SimpleModule() {
                     LetterMarkup.ParagraphContent.Type.VARIABLE -> LetterMarkup.ParagraphContent.Text.Variable::class.java
                     LetterMarkup.ParagraphContent.Type.NEW_LINE -> LetterMarkup.ParagraphContent.Text.NewLine::class.java
                     LetterMarkup.ParagraphContent.Type.TABLE,
-                    LetterMarkup.ParagraphContent.Type.FORM_TEXT,
-                    LetterMarkup.ParagraphContent.Type.FORM_CHOICE,
                     LetterMarkup.ParagraphContent.Type.ITEM_LIST -> throw BrevbakerServiceException("$contentType is not allowed in a text-only block.")
+                    else -> throw BrevbakerServiceException("$contentType is not allowed in a text-only block.")
                 }
                 return p.codec.treeToValue(node, clazz)
             }

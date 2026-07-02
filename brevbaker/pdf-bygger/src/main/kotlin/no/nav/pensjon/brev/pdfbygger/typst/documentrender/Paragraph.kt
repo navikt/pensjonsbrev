@@ -2,13 +2,12 @@ package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text
 
-// Note: renderForm, renderList, renderTable, and renderTextContent are extension functions
-// defined in Form.kt, List.kt, Table.kt, and Text.kt respectively.
+// Note: renderList, renderTable, and renderTextContent are extension functions
+// defined in List.kt, Table.kt, and Text.kt respectively.
 
 internal fun TypstCodeScope.renderParagraph(
     element: LetterMarkup.Block.Paragraph,
@@ -23,10 +22,10 @@ internal fun TypstCodeScope.renderParagraph(
         }
 
         when (current) {
-            is Form -> renderForm(current)
             is ItemList -> renderList(current)
             is Table -> renderTable(current)
             is Text -> continuousTextContent.add(current)
+            else -> {}
         }
     }
 

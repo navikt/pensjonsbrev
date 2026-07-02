@@ -3,13 +3,11 @@ package no.nav.pensjon.brev.pdfbygger
 import no.nav.brev.brevbaker.*
 import no.nav.brev.brevbaker.VedleggPDFTestUtils.renderTestPdfOutline
 import no.nav.brev.brevbaker.VedleggPDFTestUtils.renderTestVedleggPdf
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
-import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.SignerendeSaksbehandlere
@@ -117,21 +115,6 @@ class RenderPDFVisualITest {
     }
 
     @Test
-    fun `form choice med vspace`() {
-        render {
-            title1 { text(bokmal { +"Form choice" }) }
-            paragraph {
-                formChoice(prompt = { text (bokmal {+"Hvor lenge har du jobba?"})}, true) {
-                    choice(bokmal{+"0 år"})
-                    choice(bokmal{+"1 år"})
-                    choice(bokmal{+"2 til 5 år"})
-                    choice(bokmal{+"6 år eller mer"})
-                }
-            }
-        }
-    }
-
-    @Test
     fun `title should not be put on a separate page`() {
         render {
             repeat(14) {
@@ -140,53 +123,6 @@ class RenderPDFVisualITest {
             title1 { text(bokmal { +"Title 1" }) }
             title2 { text(bokmal { +"Title 2" }) }
             title3 { text(bokmal { +"Title 3" }) }
-        }
-    }
-
-    @Test
-    fun `form choice uten vspace`() {
-        render {
-            title1 { text(bokmal { +"Form choice uten vspace" }) }
-            paragraph {
-                formChoice(prompt = { text(bokmal {+"Hvor lenge vil du jobbe?"})}, false) {
-                    choice(bokmal{+"0 år"})
-                    choice(bokmal{+"1 år"})
-                    choice(bokmal{+"2 til 5 år"})
-                    choice(bokmal{+"6 år eller mer"})
-                }
-            }
-        }
-    }
-
-    @Test
-    fun `short form text med vspace`() {
-        render {
-            title1 { text(bokmal { +"Form text short med vspace" }) }
-            paragraph { formText(Size.SHORT, { text(bokmal{+"test"}) }, true) }
-        }
-    }
-
-    @Test
-    fun `long form text med vspace`() {
-        render {
-            title1 { text(bokmal { +"Form text long med vspace" }) }
-            paragraph { formText(Size.LONG, { text(bokmal{+"test"}) }, true) }
-        }
-    }
-
-    @Test
-    fun `short form text uten vspace`() {
-        render {
-            title1 { text(bokmal { +"Form text short uten vspace" }) }
-            paragraph { formText(Size.SHORT, { text(bokmal{+"test"}) }, false) }
-        }
-    }
-
-    @Test
-    fun `long form text uten vspace`() {
-        render {
-            title1 { text(bokmal { +"Form text long uten vspace" }) }
-            paragraph { formText(Size.LONG, { text(bokmal{+"test"}) }, false) }
         }
     }
 
@@ -399,13 +335,6 @@ class RenderPDFVisualITest {
                 }
             }
 
-            ElementType.FORM -> {
-                paragraph {
-                    formText(Size.FILL, {
-                        text(bokmal { +"Underskrift:" })
-                    }, false)
-                }
-            }
         }
     }
 
@@ -466,7 +395,6 @@ class RenderPDFVisualITest {
         PAR("Paragraph"),
         TABLE("Table"),
         LIST("Item list"),
-        FORM("Form"),
         NUMBERED_LIST("Numbered list")
     }
 

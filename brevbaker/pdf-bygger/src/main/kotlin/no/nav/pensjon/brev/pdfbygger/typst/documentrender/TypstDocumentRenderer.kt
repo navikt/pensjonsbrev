@@ -106,7 +106,6 @@ object TypstDocumentRenderer {
         appendCodeln("""#import "content/paragraph.typ": paragraph""")
         appendCodeln("""#import "content/list.typ": bulletlist, numberedlist""")
         appendCodeln("""#import "content/table.typ": letter-table""")
-        appendCodeln("""#import "content/form.typ": formChoice, formText""")
         appendCodeln("""#import "attachment.typ": startAttachment, endAttachment""")
         appendCodeln("""#import "closing.typ": closing""")
 

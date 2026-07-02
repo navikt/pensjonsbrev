@@ -18,7 +18,7 @@ createTemplate(...) {                       // TemplateRootScope
                 header { column { ... } }   //         PlainTextScope inside column
                 row { cell { ... } }        //         TextScope inside cell
             }
-            formText() / formChoice() / newline()
+            newline()
             includePhrase(ParagraphPhrase | TextOnlyPhrase | PlainTextOnlyPhrase)
         }
         includePhrase(OutlinePhrase)
@@ -34,7 +34,7 @@ createTemplate(...) {                       // TemplateRootScope
 |---|---|---|
 | **TemplateRootScope** | `title`, `outline`, `includeAttachment`, `includeAttachmentIfNotNull` | text, paragraphs, phrases — those go inside `title`/`outline` |
 | **OutlineScope** | `title1`/`title2`/`title3`, `paragraph`, `includePhrase(OutlinePhrase)`, control structures (`showIf`, `ifNotNull`, `forEach`) | inline `text(...)` — wrap it in `paragraph { }` |
-| **ParagraphScope** | `text(...)`, `list`, `table`, `formText`, `formChoice`, `newline`, `includePhrase(ParagraphPhrase \| TextOnlyPhrase \| PlainTextOnlyPhrase)` | titles, nested paragraphs, attachments |
+| **ParagraphScope** | `text(...)`, `list`, `table`, `newline`, `includePhrase(ParagraphPhrase \| TextOnlyPhrase \| PlainTextOnlyPhrase)` | titles, nested paragraphs, attachments |
 | **TextScope** (inside `item { … }` / `cell { … }`) | `text(...)`, `newline()`, `includePhrase(TextOnlyPhrase \| PlainTextOnlyPhrase)` | lists, tables, ParagraphPhrases |
 | **PlainTextScope** (inside `title { }`, `title1/2/3`, `column { }`) | `text(...)` with **no** formatting (no bold/italic), `includePhrase(PlainTextOnlyPhrase)` | TextOnlyPhrase, ParagraphPhrase, lists, tables |
 

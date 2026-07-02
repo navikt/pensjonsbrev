@@ -46,12 +46,12 @@ private fun isEmpty(block: Block): Boolean =
 
 private fun isEmpty(content: LetterMarkup.ParagraphContent) =
     when (content) {
-        is LetterMarkup.ParagraphContent.Form,
         is LetterMarkup.ParagraphContent.ItemList,
         is LetterMarkup.ParagraphContent.Table -> false
         is LetterMarkup.ParagraphContent.Text.NewLine -> true
         is LetterMarkup.ParagraphContent.Text.Literal,
         is LetterMarkup.ParagraphContent.Text.Variable -> content.text.isBlank()
+        else -> false
     }
 
 private fun clean(block: Block): Block? = when (block) {
@@ -111,5 +111,3 @@ private fun List<LetterMarkup.ParagraphContent>.endsWithLinebreakableContent(): 
     }.lastOrNull().let {
         it is LetterMarkup.ParagraphContent.Text && it.text.isNotBlank()
     }
-
-

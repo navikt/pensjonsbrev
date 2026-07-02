@@ -6,7 +6,6 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.MultipleChoice
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
@@ -137,19 +136,5 @@ data class LetterMarkupImpl(
             data class ColumnSpecImpl(override val id: Int, override val headerContent: Table.Cell, override val alignment: Table.ColumnAlignment, override val span: Int) : Table.ColumnSpec
         }
 
-        object Form {
-            @InterneDataklasser
-            data class TextImpl(override val id: Int, override val prompt: List<ParagraphContent.Text>, override val size: ParagraphContent.Form.Text.Size, override val vspace: Boolean) : ParagraphContent.Form.Text {
-                override val type = ParagraphContent.Type.FORM_TEXT
-            }
-
-            @InterneDataklasser
-            data class MultipleChoiceImpl(override val id: Int, override val prompt: List<ParagraphContent.Text>, override val choices: List<MultipleChoice.Choice>, override val vspace: Boolean) : MultipleChoice {
-                override val type = ParagraphContent.Type.FORM_CHOICE
-
-                @InterneDataklasser
-                data class ChoiceImpl(override val id: Int, override val text: List<ParagraphContent.Text>) : MultipleChoice.Choice
-            }
-        }
     }
 }

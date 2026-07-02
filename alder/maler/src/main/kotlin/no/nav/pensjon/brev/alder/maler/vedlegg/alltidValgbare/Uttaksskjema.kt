@@ -2,10 +2,8 @@ package no.nav.pensjon.brev.alder.maler.vedlegg.alltidValgbare
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
@@ -20,64 +18,46 @@ val uttaksskjema = createAttachment<LangBokmalEnglish, EmptyVedleggData>(
     includeSakspart = false
 ) {
     paragraph {
-        formChoice({
-            text(
-                bokmal { +"Vi ber deg vennligst oppgi hvordan du ønsker å ta ut alderspensjonen din. For mer informasjon om de ulike alternativene kan du se det vedlagte informasjonsskrivet. Den samme informasjonen finner du også på våre nettsider ${Constants.NAV_URL}." },
-                english { +"Please state how you would like to withdraw your retirement pension. For more information about the various options, you can see the attached information letter. You can also find the same information on our website ${Constants.NAV_URL}." }
-            )
-        }) {
-            choice(
-                bokmal { +"Jeg ønsker å ta ut full alderspensjon (100 %) fra ordinær uttaksdato i Norge– måneden etter jeg fyller 67 år." },
-                english { +"I want to draw a full retirement pension (100%) from the ordinary withdrawal date in Norway - the month after I turn 67." }
-            )
-            choice(
-                bokmal { +"Jeg ønsker å ta ut alderspensjon etter en bestemt uttaksgrad fra et bestemt tidspunkt." },
-                english { +"I want to withdraw retirement pension according to a specific withdrawal rate from a specific withdrawal time." }
-            )
-        }
+        text(
+            bokmal { +"Vi ber deg vennligst oppgi hvordan du ønsker å ta ut alderspensjonen din. For mer informasjon om de ulike alternativene kan du se det vedlagte informasjonsskrivet. Den samme informasjonen finner du også på våre nettsider ${Constants.NAV_URL}." },
+            english { +"Please state how you would like to withdraw your retirement pension. For more information about the various options, you can see the attached information letter. You can also find the same information on our website ${Constants.NAV_URL}." }
+        )
     }
     paragraph {
-        formText(Size.SHORT, {
-            text(
-                bokmal { +"Oppgi ønsket tidspunkt for uttak av alderspensjon:" },
-                english { +"State the desired time for withdrawal of retirement pension:" }
-            )
-        })
+        text(
+            bokmal { +"☐ Jeg ønsker å ta ut full alderspensjon (100 %) fra ordinær uttaksdato i Norge– måneden etter jeg fyller 67 år." },
+            english { +"☐ I want to draw a full retirement pension (100%) from the ordinary withdrawal date in Norway - the month after I turn 67." }
+        )
+        newline()
+        text(
+            bokmal { +"☐ Jeg ønsker å ta ut alderspensjon etter en bestemt uttaksgrad fra et bestemt tidspunkt." },
+            english { +"☐ I want to withdraw retirement pension according to a specific withdrawal rate from a specific withdrawal time." }
+        )
+        newline()
     }
     paragraph {
-        formChoice(
-            {
-                text(
-                    bokmal { +"Oppgi ønsket uttaksgrad:" },
-                    english { +"Tick off the desired withdrawal rate:" }
-                )
-            }
-        ) {
-            choice(
-                bokmal { +"20 %" },
-                english { +"20 %" },
-            )
-            choice(
-                bokmal { +"40 %" },
-                english { +"40 %" },
-            )
-            choice(
-                bokmal { +"50 %" },
-                english { +"50 %" },
-            )
-            choice(
-                bokmal { +"60 %" },
-                english { +"60 %" },
-            )
-            choice(
-                bokmal { +"80 %" },
-                english { +"80 %" },
-            )
-            choice(
-                bokmal { +"100 %" },
-                english { +"100 %" },
-            )
-        }
+        text(
+            bokmal { +"Oppgi ønsket tidspunkt for uttak av alderspensjon: . . . . . . . . . . . . . . . . . . . . . . . . ." },
+            english { +"State the desired time for withdrawal of retirement pension: . . . . . . . . . . . . . . . . . . . . . . . . ." }
+        )
+    }
+    paragraph {
+        text(
+            bokmal { +"Oppgi ønsket uttaksgrad:" },
+            english { +"Tick off the desired withdrawal rate:" }
+        )
+        newline()
+        text(bokmal { +"☐  20 %" }, english { +"☐  20 %" })
+        newline()
+        text(bokmal { +"☐  40 %" }, english { +"☐  40 %" })
+        newline()
+        text(bokmal { +"☐  50 %" }, english { +"☐  50 %" })
+        newline()
+        text(bokmal { +"☐  60 %" }, english { +"☐  60 %" })
+        newline()
+        text(bokmal { +"☐  80 %" }, english { +"☐  80 %" })
+        newline()
+        text(bokmal { +"☐  100 %" }, english { +"☐  100 %" })
     }
     paragraph {
         text(
@@ -92,28 +72,23 @@ val uttaksskjema = createAttachment<LangBokmalEnglish, EmptyVedleggData>(
         )
     }
     paragraph {
-        formText(Size.FILL, {
-            text(
-                bokmal { +"Navn (i blokkbokstaver) og fødselsdato" },
-                english { +"Name (in block letters) and date of birth" }
-            )
-        })
+        text(
+            bokmal { +  "Navn (i blokkbokstaver) og fødselsdato: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ." },
+            english { + "Name (in block letters) and date of birth: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ." }
+        )
     }
     paragraph {
-        formText(Size.FILL, {
-            text(
-                bokmal { +"Dato, sted og signatur:" },
-                english { +"Date, place, and signature" }
-            )
-        })
+        text(
+            bokmal { +  "Dato, sted og signatur: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ." },
+            english { + "Date, place, and signature: . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . ." }
+        )
     }
     paragraph {
-        formText(Size.SHORT, {
-            text(
-                bokmal { +"Telefonnummer:" },
-                english { +"Phone number:" }
-            )
-        })
+        text(
+            bokmal { +"Telefonnummer: . . . . . . . . . . . . . . . . . . . . . . . . ." },
+            english { +"Phone number: . . . . . . . . . . . . . . . . . . . . . . . . ." }
+        )
+        newline()
         text(
             bokmal { +"(for at vi lettere kan komme i kontakt, hvis vi trenger mer informasjon fra deg)." },
             english { +"(so that we can more easily get in touch if we need more information from you)." }
