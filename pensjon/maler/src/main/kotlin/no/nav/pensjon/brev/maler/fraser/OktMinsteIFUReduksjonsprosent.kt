@@ -237,10 +237,10 @@ object OktMinsteIFUReduksjonsprosent {
             paragraph {
                 text(
                     bokmal {
-                        +"Du får " + data.totalbelop.format() + " i " + data.tillegg.format(UTOgTilleggMapper) + " per måned før skatt fra 1. juli 2026."
+                        +"Du får " + data.totalbelop.format() + " i " + data.tillegg.format(UTOgTilleggMapper) + " per måned før skatt fra " + data.beregningFomDato.format() + "."
                     },
                     nynorsk {
-                        +"Du får " + data.totalbelop.format() + " i " + data.tillegg.format(UTOgTilleggMapper) + " per månad før skatt frå 1. juli 2026."
+                        +"Du får " + data.totalbelop.format() + " i " + data.tillegg.format(UTOgTilleggMapper) + " per månad før skatt frå " + data.beregningFomDato.format() + "."
                     },
                 )
             }
