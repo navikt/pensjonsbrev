@@ -5,6 +5,10 @@ import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AnkeTilsvarTilAnkendePartDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.ankeTilsvarTilAnkendePartDto.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.ankeTilsvarTilAnkendePartDto.pesysData.foedselsnummer
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.ankeTilsvarTilAnkendePartDto.pesysData.navn
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.ankeTilsvarTilAnkendePartDto.pesysData.navnAvsenderEnhet
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.model.format
@@ -52,10 +56,6 @@ object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<AnkeTilsvarTilAnkendePartD
                 text(bokmal { +pesysData.navn + " " }, english { +pesysData.navn + " " } )
                 text(bokmal { +pesysData.foedselsnummer.format() }, english { +pesysData.foedselsnummer.format() })
             }
-            paragraph{
-                text(bokmal { +pesys })
-            }
-            )
             paragraph {
                 text(bokmal { +"Klagemotpart: " }, english { +"Other party: " }, BOLD)
                 text(bokmal { +pesysData.navnAvsenderEnhet }, english { +pesysData.navnAvsenderEnhet })
