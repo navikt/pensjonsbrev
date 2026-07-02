@@ -206,6 +206,16 @@ abstract class BrevredigeringHandlerTestBase {
             database = SharedPostgres.database,
         )
     }
+    protected val hentEllerOpprettPdf by lazy {
+        HentEllerOpprettPdfHandler(
+            brevdataService = brevdataService,
+            renderService = RenderService(brevbakerService),
+            brevmalService = brevmalService,
+            p1Service = FakeP1Service(),
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            database = SharedPostgres.database,
+        )
+    }
     protected val brevredigeringFacade = createFacade()
 
     companion object Fixtures {
@@ -328,13 +338,11 @@ abstract class BrevredigeringHandlerTestBase {
         }
     }
 
-    protected fun createFacade(p1Service: P1Service = FakeP1Service()): BrevredigeringFacade = BrevredigeringFacadeFactory.create(
+    protected fun createFacade(): BrevredigeringFacade = BrevredigeringFacadeFactory.create(
         brevService = BrevService(penService, LegacyBrevServiceStub()),
         brevdataService = BrevdataService(penService, samhandlerService),
         brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService()),
         navansattService = navAnsattService,
-        p1Service = p1Service,
-        renderService = RenderService(brevbakerService),
     )
 
     protected suspend fun opprettBrev(
@@ -454,10 +462,10 @@ abstract class BrevredigeringHandlerTestBase {
     protected suspend fun hentEllerOpprettPdf(
         brev: Dto.Brevredigering,
         principal: UserPrincipal = saksbehandler1Principal,
-        facade: BrevredigeringFacade = brevredigeringFacade,
+        handler: HentEllerOpprettPdfHandler = hentEllerOpprettPdf,
     ): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
         withPrincipal(principal) {
-            facade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
+            handler(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
         }
 
     protected suspend fun endreDistribusjonstype(

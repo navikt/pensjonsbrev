@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -14,19 +15,24 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Service
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import org.jetbrains.exposed.v1.jdbc.Database
 
 class HentEllerOpprettPdfHandler(
     private val brevdataService: BrevdataService,
     private val renderService: RenderService,
     private val brevmalService: BrevmalService,
     private val p1Service: P1Service,
-) : BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult> {
+    brevreservasjonPolicy: BrevreservasjonPolicy,
+    database: Database,
+) : ReservertBrevHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult>(database, brevreservasjonPolicy) {
+
+    override fun requiresReservasjon(request: Request) = false
 
     data class Request(
         override val brevId: BrevId,
     ) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Dto.HentDocumentResult, BrevredigeringError>? {
+    override suspend fun execute(request: Request): Outcome<Dto.HentDocumentResult, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
         val document = brev.document
 
@@ -56,8 +62,6 @@ class HentEllerOpprettPdfHandler(
             success(Dto.HentDocumentResult(document = newDocument, rendretBrevErEndret = rendretBrevErEndret))
         }
     }
-
-    override fun requiresReservasjon(request: Request): Boolean = false
 
     private suspend fun BrevdataResponse.Data.withP1DataIfP1(brev: Brevredigering): BrevdataResponse.Data =
         p1Service.patchMedP1DataOmP1(

@@ -4,6 +4,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
@@ -209,10 +211,17 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
         })
         brevbakerService.redigerbareMaler[Testbrevkoder.P1] = informasjonsbrev
 
-        val facade = createFacade(p1Service = p1Service)
-        val brev = opprettBrev(facade = facade, brevkode = Testbrevkoder.P1).resultOrFail()
+        val brev = opprettBrev(brevkode = Testbrevkoder.P1).resultOrFail()
 
-        assertThat(hentEllerOpprettPdf(brev, facade = facade)).isSuccess {
+        val handler = HentEllerOpprettPdfHandler(
+            brevdataService = brevdataService,
+            renderService = RenderService(brevbakerService),
+            brevmalService = brevmalService,
+            p1Service = p1Service,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            database = SharedPostgres.database,
+        )
+        assertThat(hentEllerOpprettPdf(brev, handler = handler)).isSuccess {
             assertThat(it.document.pdf).isEqualTo(stagetPDF)
         }
     }

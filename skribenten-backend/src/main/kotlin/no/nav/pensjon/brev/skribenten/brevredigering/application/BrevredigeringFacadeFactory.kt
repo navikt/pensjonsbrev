@@ -1,12 +1,10 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application
 
-import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Service
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 
 object BrevredigeringFacadeFactory {
@@ -16,13 +14,9 @@ object BrevredigeringFacadeFactory {
         brevdataService: BrevdataService,
         brevmalService: BrevmalService,
         navansattService: NavansattService,
-        p1Service: P1Service,
-        renderService: RenderService,
     ): BrevredigeringFacade {
-        val redigerBrevPolicy = RedigerBrevPolicy()
         val opprettBrevPolicy = OpprettBrevPolicy(brevmalService, navansattService)
         val brevreservasjonPolicy = BrevreservasjonPolicy()
-        val attesterBrevPolicy = AttesterBrevPolicy()
         val ferdigRedigertPolicy = FerdigRedigertPolicy()
         val sendBrevPolicy = SendBrevPolicy(ferdigRedigertPolicy)
 
@@ -39,12 +33,6 @@ object BrevredigeringFacadeFactory {
             ),
             frigiReservasjon = FrigiReservasjonHandler(
                 brevreservasjonPolicy = brevreservasjonPolicy,
-            ),
-            hentEllerOpprettPdf = HentEllerOpprettPdfHandler(
-                brevdataService = brevdataService,
-                renderService = renderService,
-                brevmalService = brevmalService,
-                p1Service = p1Service,
             ),
             sendBrev = SendBrevHandler(
                 sendBrevPolicy = sendBrevPolicy,

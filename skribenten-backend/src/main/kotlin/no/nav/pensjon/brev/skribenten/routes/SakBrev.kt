@@ -242,10 +242,11 @@ fun Route.sakBrev() =
             }
 
             route("/pdf") {
+                val hentEllerOpprettPdf: HentEllerOpprettPdfHandler by app.dependencies
                 get {
                     val brevId = call.parameters.brevId()
 
-                    val result = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brevId))
+                    val result = hentEllerOpprettPdf(HentEllerOpprettPdfHandler.Request(brevId = brevId))
                     apiRespond(dto2ApiService, result)
                 }
 
