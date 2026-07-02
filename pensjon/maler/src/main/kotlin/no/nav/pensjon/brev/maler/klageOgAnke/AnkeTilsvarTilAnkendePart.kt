@@ -66,14 +66,16 @@ object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<AnkeTilsvarTilAnkendePartD
                     english { +"Nav Klageinstans has reviewed our decision of " + fritekst("vedtaksdato") + " again, but has found no grounds for amending it." }
                 )
             }
-            title1 { text(bokmal { +"Anledning til ytterligere merknader" }, english { +"Processing time" }) }
+            title1 { text(bokmal { +"Anledning til ytterligere merknader" }, english { +"Opportunity to make further comments" }) }
             paragraph {
                 text(
                     bokmal {
                         +"I vedlagte kopi av vårt brev til Trygderetten har vi gjort rede for saksforholdet med nærmere begrunnelse for hvorfor vi opprettholder vedtaket."
                         +" Brevet er foreløpig ikke sendt til Trygderetten."
                     },
-                    english { +"The processing time is normally " + fritekst("number of days/weeks/months") + ". " }
+                    english { +"In the enclosed copy of our letter to the National Insurance Court,"
+                        +" we have explained the circumstances of the case with further reasons why we uphold the decision."
+                        +" For the moment, the letter has not been sent to the National Insurance Court." }
                 )
             }
             paragraph {
@@ -82,7 +84,8 @@ object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<AnkeTilsvarTilAnkendePartD
                         +"Du har anledning til å komme med merknader til brevet innen tre uker fra du mottar dette brevet."
                         +" Saken vil bli sendt til Trygderetten til videre behandling, når fristen for å gi merknader er gått ut."
                     },
-                    english { +"" }
+                    english { +"You have the opportunity to comment on the letter within three weeks from when you receive this letter."
+                        +" The case will be passed to the National Insurance Court for further review once the time limit for commenting has expired." }
                 )
             }
             paragraph {
