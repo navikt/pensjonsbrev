@@ -60,8 +60,8 @@ object InfoOmReverseringAvMinstesats : AutobrevTemplate<EmptyAutobrevdata> {
             }
             paragraph {
                 text(
-                    bokmal { +"Du skal ha utbetalt uføretrygd etter en minstesats på 2,329 G, eller egenopptjent minstesats hvis den er høyere." },
-                    nynorsk { +"Du skal ha utbetalt uføretrygd etter ein minstesats på 2,329 G, eller eigenopptent minstesats dersom den er høgare." },
+                    bokmal { +"Du skal ha utbetalt uføretrygd etter en minstesats på 2,329 G, eller egenopptjent uføretrygd hvis den er høyere." },
+                    nynorsk { +"Du skal ha utbetalt uføretrygd etter ein minstesats på 2,329 G, eller eigenopptent uføretrygd dersom den er høgare." },
                 )
             }
             title2 {
