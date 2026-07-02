@@ -249,11 +249,13 @@ fun Route.sakBrev() =
             }
 
             route("/attestering") {
+                val hentBrevAttestering: HentBrevAttesteringHandler by app.dependencies
+
                 get {
                     val brevId = call.parameters.brevId()
                     val reserver = call.request.queryParameters["reserver"].toBoolean()
 
-                    val resultat = brevredigeringFacade.hentBrevAttestering(
+                    val resultat = hentBrevAttestering(
                         HentBrevAttesteringHandler.Request(
                             brevId = brevId,
                             reserverForRedigering = reserver,

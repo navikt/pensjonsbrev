@@ -71,7 +71,7 @@ abstract class BrevredigeringHandlerTestBase {
     }
 
 
-    private val navAnsattService = FakeNavansattService(
+    protected val navAnsattService = FakeNavansattService(
         harTilgangTilEnhet = mapOf(
             Pair(saksbehandler1Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
             Pair(saksbehandler2Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
@@ -93,7 +93,19 @@ abstract class BrevredigeringHandlerTestBase {
     protected val brevdataService = BrevdataService(penService, samhandlerService)
     protected val redigerBrevPolicy = RedigerBrevPolicy()
     protected val brevreservasjonPolicy = BrevreservasjonPolicy()
+    val attesterBrevPolicy = AttesterBrevPolicy()
 
+    protected val hentBrevAttestering by lazy {
+        HentBrevAttesteringHandler(
+            attesterBrevPolicy = attesterBrevPolicy,
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            navansattService = navAnsattService,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            database = SharedPostgres.database,
+        )
+    }
     protected val hentBrev by lazy {
         HentBrevHandler(
             redigerBrevPolicy = redigerBrevPolicy,
@@ -105,7 +117,7 @@ abstract class BrevredigeringHandlerTestBase {
     }
     protected val attesterBrev by lazy {
         AttesterBrevHandler(
-            attesterBrevPolicy = AttesterBrevPolicy(),
+            attesterBrevPolicy = attesterBrevPolicy,
             ferdigRedigertPolicy = FerdigRedigertPolicy(),
             redigerBrevPolicy = redigerBrevPolicy,
             brevmalService = brevmalService,

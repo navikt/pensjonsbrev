@@ -101,7 +101,6 @@ private fun createFacade(
     opprettBrev: OpprettBrevHandler = object : OpprettBrevHandler {
         override suspend fun handle(request: OpprettBrevHandlerImpl.Request) = notYetStubbed()
     },
-    hentBrevAttestering: BrevredigeringHandler<HentBrevAttesteringHandler.Request, Dto.Brevredigering> = handlerStub(),
     veksleKlarStatus: BrevredigeringHandler<VeksleKlarStatusHandler.Request, Dto.BrevInfo> = handlerStub(),
     endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.BrevInfo> = handlerStub(),
     endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.BrevInfo> = handlerStub(),
@@ -120,7 +119,6 @@ private fun createFacade(
 ): BrevredigeringFacade {
     return BrevredigeringFacade(
         opprettBrev = opprettBrev,
-        hentBrevAttestering = hentBrevAttestering,
         veksleKlarStatus = veksleKlarStatus,
         endreDistribusjonstype = endreDistribusjonstype,
         endreMottaker = endreMottaker,
