@@ -501,20 +501,20 @@ object Innvilgelse {
                     )
                 }
 
-                showIf(!(innvilgetEtter12_2_andreledd or innvilgetEtter12_2_tredjeledd)) {
-                    paragraph {
-                        text(
-                            bokmal { +fritekst("Sett inn rett begrunnelse fra tekstvalg") },
-                            nynorsk { +fritekst("Sett inn rett begrunnelse fra tekstvalg") },
-                        )
-                    }
-                }
-
                 showIf(yrkesskadeResultat.equalTo("oppfylt")) {
                     paragraph {
                         text(
                             bokmal { +"Du er innvilget uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom, og oppfyller derfor vilkåret om medlemskap i folketrygden." },
                             nynorsk { +"Du er innvilga uføretrygd etter særreglar for yrkesskade eller yrkessjukdom, og oppfyller derfor vilkåret om medlemskap i folketrygda." },
+                        )
+                    }
+                }
+
+                showIf(!(innvilgetEtter12_2_andreledd or innvilgetEtter12_2_tredjeledd)) {
+                    paragraph {
+                        text(
+                            bokmal { +fritekst("Sett inn rett begrunnelse fra tekstvalg") },
+                            nynorsk { +fritekst("Sett inn rett begrunnelse fra tekstvalg") },
                         )
                     }
                 }
