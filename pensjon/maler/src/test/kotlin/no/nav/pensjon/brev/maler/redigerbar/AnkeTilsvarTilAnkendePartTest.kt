@@ -29,7 +29,7 @@ class AnkeTilsvarTilAnkendePartTest {
         LetterTestImpl(
             AnkeTilsvarTilAnkendePart.template,
             Fixtures.create<AnkeTilsvarTilAnkendePartDto>(),
-            Language.Bokmal,
+            Language.English,
             Fixtures.felles
         ).renderTestHtml(AnkeTilsvarTilAnkendePart.kode.name)
     }

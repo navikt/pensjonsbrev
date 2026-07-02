@@ -22,7 +22,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-// Erstatte PE_IY_03_153 Klage - orientering om saksbehandlingstid ved Nav pensjon
+// Erstatte PE_IY_03_151
 
 @TemplateModelHelpers
 object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<AnkeTilsvarTilAnkendePartDto> {
@@ -63,7 +63,7 @@ object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<AnkeTilsvarTilAnkendePartD
             paragraph {
                 text(
                     bokmal { +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over " + pesysData.navnAvsenderEnhet + " vedtak av " + fritekst("vedtaksdato") + "." },
-                    english { +"On " + fritekst("mottaksdato for klagen") + " we received an appeal about " + pesysData.navnAvsenderEnhet + " decision of " + fritekst("vedtaksdato") + "." }
+                    english { +"On " + fritekst("mottaksdato for klagen") + " we received an appeal about " + pesysData.navnAvsenderEnhet + "'s decision of " + fritekst("vedtaksdato") + "." }
                 )
             }
             title1 { text(bokmal { +"Behandlingstid" }, english { +"Processing time" }) }
