@@ -74,7 +74,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         withPrincipal(principal) {
-            brevredigeringFacade.slettRedigertVedlegg(
+            slettRedigertVedlegg(
                 SlettRedigertVedleggHandler.Request(brevId = brevId, vedleggId = VedleggId(vedleggId))
             )
         }

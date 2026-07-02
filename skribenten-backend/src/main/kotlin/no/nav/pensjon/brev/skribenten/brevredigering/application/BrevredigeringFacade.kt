@@ -25,7 +25,6 @@ class BrevredigeringFacade(
     private val hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult>,
     private val hentRedigertVedlegg: BrevredigeringHandler<HentRedigertVedleggHandler.Request, Edit.Attachment>,
     private val hentRedigerbareVedlegg: BrevredigeringHandler<HentRedigerbareVedleggHandler.Request, List<RedigerbartVedleggInfo>>,
-    private val slettRedigertVedlegg: BrevredigeringHandler<SlettRedigertVedleggHandler.Request, Dto.Brevredigering>,
     private val sendBrev: BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult>,
     private val slettBrev: BrevredigeringHandler<SlettBrevHandler.Request, Unit>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
@@ -57,9 +56,6 @@ class BrevredigeringFacade(
 
     suspend fun hentRedigerbareVedlegg(request: HentRedigerbareVedleggHandler.Request): Outcome<List<RedigerbartVedleggInfo>, BrevredigeringError>? =
         hentRedigerbareVedlegg.runHandler(request)
-
-    suspend fun slettRedigertVedlegg(request: SlettRedigertVedleggHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        slettRedigertVedlegg.runHandler(request)
 
     suspend fun reserverBrev(request: ReserverBrevHandler.Request): Outcome<Reservasjon, BrevredigeringError>? =
         suspendTransaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {

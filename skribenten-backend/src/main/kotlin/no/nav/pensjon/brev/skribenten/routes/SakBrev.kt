@@ -180,11 +180,12 @@ fun Route.sakBrev() =
                         apiRespond(dto2ApiService, brev)
                     }
 
+                    val slettRedigertVedlegg: SlettRedigertVedleggHandler by app.dependencies
                     delete {
                         val brevId = call.parameters.brevId()
                         val vedleggId = call.parameters.vedleggId()
 
-                        val brev = brevredigeringFacade.slettRedigertVedlegg(
+                        val brev = slettRedigertVedlegg(
                             SlettRedigertVedleggHandler.Request(brevId = brevId, vedleggId = vedleggId)
                         )
 
