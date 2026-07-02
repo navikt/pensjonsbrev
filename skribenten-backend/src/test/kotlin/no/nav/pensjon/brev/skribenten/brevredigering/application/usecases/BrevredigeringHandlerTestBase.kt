@@ -160,6 +160,15 @@ abstract class BrevredigeringHandlerTestBase {
             database = SharedPostgres.database,
         )
     }
+    protected val tilbakestillBrev by lazy {
+        TilbakestillBrevHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            database = SharedPostgres.database,
+        )
+    }
     protected val brevredigeringFacade = createFacade()
 
     companion object Fixtures {

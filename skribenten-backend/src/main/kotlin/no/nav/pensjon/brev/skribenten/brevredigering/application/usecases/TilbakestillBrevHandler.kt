@@ -10,19 +10,21 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import org.jetbrains.exposed.v1.jdbc.Database
 
 class TilbakestillBrevHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-) : BrevredigeringHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering> {
+    database: Database,
+) : ReservertBrevHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering>(database, brevreservasjonPolicy) {
 
     data class Request(
         override val brevId: BrevId,
     ) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
+    override suspend fun execute(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
         val principal = PrincipalInContext.require()
 

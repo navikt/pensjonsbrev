@@ -73,9 +73,10 @@ fun Route.brev() {
             }
         }
 
+        val tilbakestillBrev: TilbakestillBrevHandler by app.dependencies
         post("/tilbakestill") {
             val brevId = call.parameters.brevId()
-            val resultat = brevredigeringFacade.tilbakestillBrev(TilbakestillBrevHandler.Request(brevId = brevId))
+            val resultat = tilbakestillBrev(TilbakestillBrevHandler.Request(brevId = brevId))
             apiRespond(dto2ApiService, resultat)
         }
 
