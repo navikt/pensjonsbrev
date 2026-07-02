@@ -34,8 +34,6 @@ class EndreMottakerHandler(
         return success(brev.toBrevInfo(brevreservasjonPolicy))
     }
 
-    override fun requiresReservasjon(request: Request) = true
-
     private suspend fun Dto.Mottaker.hentAnnenMottakerNavn(): String? =
         brevdataService.hentAnnenMottakerNavn(this)
 

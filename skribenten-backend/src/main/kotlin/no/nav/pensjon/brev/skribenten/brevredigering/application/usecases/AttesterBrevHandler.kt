@@ -68,7 +68,5 @@ class AttesterBrevHandler(
 
         return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
     }
-
-    override fun requiresReservasjon(request: Request) = true
 }
 
