@@ -45,8 +45,8 @@ object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<AnkeTilsvarTilAnkendePartD
     ) {
         title {
             text(
-                bokmal { +"Anke " +fritekst("ytelse") },
-                english { +"Appeal " +fritekst("ytelse") }
+                bokmal { +"Anke " + fritekst("ytelse") },
+                english { +"Appeal " + fritekst("ytelse") }
             )
         }
 
