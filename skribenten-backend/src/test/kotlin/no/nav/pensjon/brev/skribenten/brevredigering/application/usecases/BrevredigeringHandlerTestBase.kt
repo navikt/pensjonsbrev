@@ -190,6 +190,14 @@ abstract class BrevredigeringHandlerTestBase {
             database = SharedPostgres.database,
         )
     }
+    protected val hentRedigertVedlegg by lazy {
+        HentRedigertVedleggHandler(
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            database = SharedPostgres.database,
+        )
+    }
     protected val brevredigeringFacade = createFacade()
 
     companion object Fixtures {

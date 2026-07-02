@@ -63,7 +63,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Edit.Attachment, BrevredigeringError>? =
         withPrincipal(principal) {
-            brevredigeringFacade.hentRedigertVedlegg(
+            hentRedigertVedlegg(
                 HentRedigertVedleggHandler.Request(brevId = brevId, vedleggId = VedleggId(vedleggId))
             )
         }

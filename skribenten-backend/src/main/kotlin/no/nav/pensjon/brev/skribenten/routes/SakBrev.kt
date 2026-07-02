@@ -153,18 +153,19 @@ fun Route.sakBrev() =
                     respondOutcome(dto2ApiService, result) { respond(it) }
                 }
                 route("{vedleggId}") {
-                    val endreRedigertVedlegg: EndreRedigertVedleggHandler by app.dependencies
+                    val hentRedigertVedlegg: HentRedigertVedleggHandler by app.dependencies
                     get {
                         val brevId = call.parameters.brevId()
                         val vedleggId = call.parameters.vedleggId()
 
-                        val result = brevredigeringFacade.hentRedigertVedlegg(
+                        val result = hentRedigertVedlegg(
                             HentRedigertVedleggHandler.Request(brevId = brevId, vedleggId = vedleggId)
                         )
 
                         respondOutcome(dto2ApiService, result) { respond(it) }
                     }
 
+                    val endreRedigertVedlegg: EndreRedigertVedleggHandler by app.dependencies
                     put<Api.RedigertVedleggRequest> { request ->
                         val brevId = call.parameters.brevId()
                         val vedleggId = call.parameters.vedleggId()

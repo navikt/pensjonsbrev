@@ -46,10 +46,6 @@ object BrevredigeringFacadeFactory {
                 brevmalService = brevmalService,
                 p1Service = p1Service,
             ),
-            hentRedigertVedlegg = HentRedigertVedleggHandler(
-                brevmalService = brevmalService,
-                brevdataService = brevdataService,
-            ),
             hentRedigerbareVedlegg = HentRedigerbareVedleggHandler(
                 brevmalService = brevmalService,
                 brevdataService = brevdataService,
