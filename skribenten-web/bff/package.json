@@ -20,7 +20,7 @@
     "express": "5.2.1",
     "http-proxy-middleware": "^4.1.1",
     "jwt-decode": "4.0.0",
-    "morgan": "^1.10.1"
+    "morgan": "^1.11.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.1",
@@ -28,7 +28,7 @@
     "@types/express": "5.0.6",
     "@types/lusca": "^1.7.5",
     "@types/morgan": "^1.9.10",
-    "lint-staged": "17.0.5",
+    "lint-staged": "17.0.8",
     "typescript": "6.0.3"
   }
 }
