@@ -59,11 +59,13 @@ fun Route.sakBrev() =
         }
 
         route("/{brevId}") {
+            val hentBrev: HentBrevHandler by app.dependencies
+
             get {
                 val brevId = call.parameters.brevId()
                 val reserver = call.request.queryParameters["reserver"].toBoolean()
 
-                val brev = brevredigeringFacade.hentBrev(
+                val brev = hentBrev(
                     HentBrevHandler.Request(
                         brevId = brevId,
                         reserverForRedigering = reserver,
@@ -105,7 +107,7 @@ fun Route.sakBrev() =
                     )
                     apiRespond(dto2ApiService, brev)
                 } else {
-                    val brev = brevredigeringFacade.hentBrev(HentBrevHandler.Request(brevId = brevId, reserverForRedigering = false))
+                    val brev = hentBrev(HentBrevHandler.Request(brevId = brevId, reserverForRedigering = false))
                     apiRespond(dto2ApiService, brev)
                 }
             }

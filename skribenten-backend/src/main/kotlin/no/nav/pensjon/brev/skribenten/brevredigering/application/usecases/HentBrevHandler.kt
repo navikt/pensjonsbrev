@@ -12,20 +12,22 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import org.jetbrains.exposed.v1.jdbc.Database
 
 class HentBrevHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-) : BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering> {
+    database: Database,
+) : ReservertBrevHandler<HentBrevHandler.Request, Dto.Brevredigering>(database, brevreservasjonPolicy) {
 
     data class Request(
         override val brevId: BrevId,
         val reserverForRedigering: Boolean = false,
     ) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
+    override suspend fun execute(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
 
         if (!request.reserverForRedigering) {

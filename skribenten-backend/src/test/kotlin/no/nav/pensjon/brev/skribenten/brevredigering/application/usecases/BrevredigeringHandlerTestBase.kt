@@ -94,6 +94,15 @@ abstract class BrevredigeringHandlerTestBase {
     protected val redigerBrevPolicy = RedigerBrevPolicy()
     protected val brevreservasjonPolicy = BrevreservasjonPolicy()
 
+    protected val hentBrev by lazy {
+        HentBrevHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            database = SharedPostgres.database,
+        )
+    }
     protected val attesterBrev by lazy {
         AttesterBrevHandler(
             attesterBrevPolicy = AttesterBrevPolicy(),
@@ -293,7 +302,7 @@ abstract class BrevredigeringHandlerTestBase {
         reserverForRedigering: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.hentBrev(
+        hentBrev(
             HentBrevHandler.Request(
                 brevId = brevId,
                 reserverForRedigering = reserverForRedigering,
