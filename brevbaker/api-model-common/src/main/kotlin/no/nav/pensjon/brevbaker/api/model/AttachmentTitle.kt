@@ -6,6 +6,10 @@ interface AttachmentTitle {
     val title: List<ParagraphContent.Text>
 }
 
+interface AttachmentTitleV2 {
+    val title1: List<LetterMarkupV2.Text>
+}
+
 class PDFTittel(override val title: List<ParagraphContent.Text>) : AttachmentTitle {
     override fun equals(other: Any?): Boolean {
         if (other !is PDFTittel) return false
