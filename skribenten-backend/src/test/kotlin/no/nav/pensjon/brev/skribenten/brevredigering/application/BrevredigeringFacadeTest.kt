@@ -104,7 +104,6 @@ private fun createFacade(
         reserverBrev = reserverBrev,
         frigiReservasjon = frigiReservasjon,
         brevreservasjonPolicy = brevreservasjonPolicy,
-        slettBrev = handlerStub(),
     )
 }
 

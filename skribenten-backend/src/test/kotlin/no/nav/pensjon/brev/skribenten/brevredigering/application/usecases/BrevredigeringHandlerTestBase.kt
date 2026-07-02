@@ -227,6 +227,13 @@ abstract class BrevredigeringHandlerTestBase {
             database = SharedPostgres.database,
         )
     }
+    protected val slettBrevHandler by lazy {
+        SlettBrevHandler(
+            slettBrevPolicy = SlettBrevPolicy(),
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            database = SharedPostgres.database,
+        )
+    }
     protected val brevredigeringFacade = createFacade()
 
     companion object Fixtures {
@@ -419,7 +426,7 @@ abstract class BrevredigeringHandlerTestBase {
         brevId: BrevId,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Unit, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.slettBrev(SlettBrevHandler.Request(brevId = brevId))
+        slettBrevHandler(SlettBrevHandler.Request(brevId = brevId))
     }
 
     protected suspend fun attester(

@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreM
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.DiffBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SendBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SlettBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentEllerOpprettPdfHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigerbareVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigertVedleggHandler
@@ -33,6 +34,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.AttesterBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.FerdigRedigertPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.SendBrevPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.SlettBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.cacheFactory
@@ -110,6 +112,7 @@ fun Application.configureDependencies() {
         provide(AttesterBrevPolicy::class)
         provide(FerdigRedigertPolicy::class)
         provide(SendBrevPolicy::class)
+        provide(SlettBrevPolicy::class)
         provide(OppdaterBrevHandler::class)
         provide(AttesterBrevHandler::class)
         provide(HentBrevHandler::class)
@@ -126,6 +129,7 @@ fun Application.configureDependencies() {
         provide(HentEllerOpprettPdfHandler::class)
         provide(DiffBrevHandler::class)
         provide(SendBrevHandler::class)
+        provide(SlettBrevHandler::class)
     }
 
     launch { Features.init(dependencies.resolve()) }

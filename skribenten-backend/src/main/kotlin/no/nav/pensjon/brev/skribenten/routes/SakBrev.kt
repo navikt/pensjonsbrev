@@ -211,10 +211,11 @@ fun Route.sakBrev() =
                 apiRespond(dto2ApiService, brevInfo)
             }
 
+            val slettBrev: SlettBrevHandler by app.dependencies
             delete {
                 val brevId = call.parameters.brevId()
 
-                val result = brevredigeringFacade.slettBrev(SlettBrevHandler.Request(brevId = brevId))
+                val result = slettBrev(SlettBrevHandler.Request(brevId = brevId))
                 apiRespond(dto2ApiService, result)
             }
 

@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.common.Outcome
-import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -21,7 +20,6 @@ class BrevredigeringFacade(
     private val opprettBrev: OpprettBrevHandler,
     private val reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError>,
     private val frigiReservasjon: UseCaseHandler<FrigiReservasjonHandler.Request, Unit, BrevredigeringError>,
-    private val slettBrev: BrevredigeringHandler<SlettBrevHandler.Request, Unit>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) : HentBrevService, OpprettBrevService {
 
@@ -54,27 +52,4 @@ class BrevredigeringFacade(
         suspendTransaction {
             frigiReservasjon.handle(request)?.onError { rollback() }
         }
-
-    suspend fun slettBrev(request: SlettBrevHandler.Request): Outcome<Unit, BrevredigeringError>? =
-        slettBrev.runHandler(request)
-
-    private suspend fun <Request : BrevredigeringRequest, Response> BrevredigeringHandler<Request, Response>.runHandler(request: Request): Outcome<Response, BrevredigeringError>? {
-        if (requiresReservasjon(request)) {
-            // Forsøk å reservere brevet før vi kjører handleren, om reservasjonen feiler returner feilen eller om brevet ikke finnes returner null.
-            reserverBrev(ReserverBrevHandler.Request(request.brevId))
-                ?.onError { return failure(it) }
-                ?: return null
-        }
-
-        val isolation = transactionIsolation()
-        return if (isolation != null) {
-            suspendTransaction(transactionIsolation = isolation) {
-                handle(request)?.onError { rollback() }
-            }
-        } else {
-            suspendTransaction {
-                handle(request)?.onError { rollback() }
-            }
-        }
-    }
 }

@@ -15,7 +15,6 @@ object BrevredigeringFacadeFactory {
     ): BrevredigeringFacade {
         val opprettBrevPolicy = OpprettBrevPolicy(brevmalService, navansattService)
         val brevreservasjonPolicy = BrevreservasjonPolicy()
-        val slettBrevPolicy = SlettBrevPolicy()
 
         return BrevredigeringFacade(
             opprettBrev = OpprettBrevHandlerImpl(
@@ -30,9 +29,6 @@ object BrevredigeringFacadeFactory {
             ),
             frigiReservasjon = FrigiReservasjonHandler(
                 brevreservasjonPolicy = brevreservasjonPolicy,
-            ),
-            slettBrev = SlettBrevHandler(
-                slettBrevPolicy = slettBrevPolicy,
             ),
             brevreservasjonPolicy = brevreservasjonPolicy,
         )
