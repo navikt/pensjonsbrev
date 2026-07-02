@@ -36,7 +36,9 @@ export type HentSamhandlerRequestDto = generated.HentSamhandlerRequestDto;
 export type HentSamhandlerResponseDto = generated.HentSamhandlerResponseDto;
 export type HentSamhandlerAdresseRequestDto = generated.HentSamhandlerAdresseRequestDto;
 export type HentSamhandlerAdresseResponseDto = generated.HentSamhandlerAdresseResponseDto;
-export type SamhandlerPostadresse = generated.HentSamhandlerAdresseResponseDtoSamhandlerPostadresse;
+// Skjemaet tillater `null`, men hentSamhandlerAdresse-endepunktet kaster feil (failureType) i stedet for å returnere null,
+// så all bruk her forholder seg til den non-nullable varianten.
+export type SamhandlerPostadresse = NonNullable<generated.HentSamhandlerAdresseResponseDtoSamhandlerPostadresse>;
 
 /*
   vi har '2' typer adresser vi kan få. Denne, og KontaktAdresseResponse. Dette formatet brukes for samhandler / manuell, mens KontaktAdresseResponse brukes ved getKontaktAdresse
