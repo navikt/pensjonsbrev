@@ -40,7 +40,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<List<RedigerbartVedleggInfo>, BrevredigeringError>? =
         withPrincipal(principal) {
-            brevredigeringFacade.hentRedigerbareVedlegg(
+            hentRedigerbareVedlegg(
                 HentRedigerbareVedleggHandler.Request(brevId = brevId)
             )
         }

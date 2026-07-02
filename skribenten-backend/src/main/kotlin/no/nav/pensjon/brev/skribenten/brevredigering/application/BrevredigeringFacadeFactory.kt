@@ -46,10 +46,6 @@ object BrevredigeringFacadeFactory {
                 brevmalService = brevmalService,
                 p1Service = p1Service,
             ),
-            hentRedigerbareVedlegg = HentRedigerbareVedleggHandler(
-                brevmalService = brevmalService,
-                brevdataService = brevdataService,
-            ),
             sendBrev = SendBrevHandler(
                 sendBrevPolicy = sendBrevPolicy,
                 brevService = brevService,

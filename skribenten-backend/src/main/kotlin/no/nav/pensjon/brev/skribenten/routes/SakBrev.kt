@@ -143,10 +143,11 @@ fun Route.sakBrev() =
             }
 
             route("/redigerbareVedlegg") {
+                val hentRedigerbareVedlegg: HentRedigerbareVedleggHandler by app.dependencies
                 get {
                     val brevId = call.parameters.brevId()
 
-                    val result = brevredigeringFacade.hentRedigerbareVedlegg(
+                    val result = hentRedigerbareVedlegg(
                         HentRedigerbareVedleggHandler.Request(brevId = brevId)
                     )
 

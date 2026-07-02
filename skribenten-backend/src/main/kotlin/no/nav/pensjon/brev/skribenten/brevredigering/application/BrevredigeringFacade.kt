@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -23,7 +22,6 @@ class BrevredigeringFacade(
     private val reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError>,
     private val frigiReservasjon: UseCaseHandler<FrigiReservasjonHandler.Request, Unit, BrevredigeringError>,
     private val hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult>,
-    private val hentRedigerbareVedlegg: BrevredigeringHandler<HentRedigerbareVedleggHandler.Request, List<RedigerbartVedleggInfo>>,
     private val sendBrev: BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult>,
     private val slettBrev: BrevredigeringHandler<SlettBrevHandler.Request, Unit>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
@@ -49,9 +47,6 @@ class BrevredigeringFacade(
             BrevredigeringEntity.find { BrevredigeringTable.saksId inList saksIder }
                 .map { it.toBrevInfo(brevreservasjonPolicy) }
         }
-
-    suspend fun hentRedigerbareVedlegg(request: HentRedigerbareVedleggHandler.Request): Outcome<List<RedigerbartVedleggInfo>, BrevredigeringError>? =
-        hentRedigerbareVedlegg.runHandler(request)
 
     suspend fun reserverBrev(request: ReserverBrevHandler.Request): Outcome<Reservasjon, BrevredigeringError>? =
         suspendTransaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
