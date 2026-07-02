@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.BrevTemplate
@@ -70,7 +71,9 @@ abstract class BrevmodulTest(
     fun `alle redigerbare brev har displaytext for alle saksbehandlervalg`() {
         templates.hentRedigerbareMaler().map { it.template.letterDataType.java }.forEach { clazz ->
             val saksbehandlervalg = clazz.declaredFields.map { it.type }.filter { field -> SaksbehandlerValgBrevdata::class.java.isAssignableFrom(field) }.map { it.kotlin }
-            saksbehandlervalg.flatMap { it.members }.filterIsInstance<KProperty<*>>().forEach { field ->
+            saksbehandlervalg
+                .filterNot { it.java.isAssignableFrom(SaksbehandlervalgIDSL::class.java) }
+                .flatMap { it.members }.filterIsInstance<KProperty<*>>().forEach { field ->
                 val hasDisplayText = field.annotations.filterIsInstance<DisplayText>().any()
                 assertTrue(hasDisplayText, "Alle saksbehandlervalg må ha displaytext, ${field.name} i klasse ${clazz.name} mangler det")
             }

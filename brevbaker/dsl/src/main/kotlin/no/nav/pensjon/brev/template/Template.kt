@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -14,6 +15,7 @@ import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 
+@OptIn(BrevbakerDSLInternal::class)
 @LetterTemplateMarker
 class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
     private val validator: BrevTemplateValidator = EmptyValidator,
@@ -26,6 +28,13 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     internal val attachments: List<IncludeAttachment<Lang, *>> get() = _attachments
     private val _pdfAttachments: MutableList<IncludeAttachmentPDF<Lang, *>> = mutableListOf()
     internal val pdfAttachments: List<IncludeAttachmentPDF<Lang, *>> get() = _pdfAttachments
+    private val _saksbehandlervalg: MutableMap<String, SaksbehandlervalgVerdi<*>> = mutableMapOf()
+    internal val saksbehandlervalg: SaksbehandlervalgDeklarasjon get() = _saksbehandlervalg
+
+    @PublishedApi
+    internal fun saksbehandlervalg(key: String, verdi: SaksbehandlervalgVerdi<*>) {
+        _saksbehandlervalg[key] = verdi
+    }
 
     fun title(init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
         _title.addAll(PlainTextOnlyScope<Lang, LetterData>().apply(init).elements)

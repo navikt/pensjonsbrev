@@ -9,6 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import java.time.LocalDate
 
+@OptIn(BrevbakerDSLInternal::class)
 class TemplateModelSpecificationFactoryTest {
     data class AModel(
         val tekst: String,
@@ -25,7 +26,7 @@ class TemplateModelSpecificationFactoryTest {
         data class SubModel(val navn: String, val alder: Int)
     }
 
-    private val spec = TemplateModelSpecificationFactory(AModel::class).build()
+    private val spec = TemplateModelSpecificationFactory(AModel::class).build(emptyMap())
     private val aModelSpec = spec.types[AModel::class.qualifiedName!!]!!
 
     @Test
@@ -98,14 +99,14 @@ class TemplateModelSpecificationFactoryTest {
 
     @Test
     fun `fails for Model classes without primary constructor`() {
-        assertThrows<TemplateModelSpecificationError> { TemplateModelSpecificationFactory(NoPrimaryConstructor::class).build() }
+        assertThrows<TemplateModelSpecificationError> { TemplateModelSpecificationFactory(NoPrimaryConstructor::class).build(emptyMap()) }
     }
 
     class NotADataClass(val navn: String, @Suppress("unused") val alder: Int)
 
     @Test
     fun `fails for non data class`() {
-        assertThrows<TemplateModelSpecificationError> { TemplateModelSpecificationFactory(NotADataClass::class).build() }
+        assertThrows<TemplateModelSpecificationError> { TemplateModelSpecificationFactory(NotADataClass::class).build(emptyMap()) }
     }
 
     data class WithEnumeration(val navn: String, val anEnum: AnEnum) {
@@ -117,7 +118,7 @@ class TemplateModelSpecificationFactoryTest {
 
     @Test
     fun `enum fields have Enum type with all enum-values`() {
-        val spec = TemplateModelSpecificationFactory(WithEnumeration::class).build().types[WithEnumeration::class.qualifiedName!!]!!
+        val spec = TemplateModelSpecificationFactory(WithEnumeration::class).build(emptyMap()).types[WithEnumeration::class.qualifiedName!!]!!
         assertThat(spec["anEnum"]).isEqualTo(FieldType.Enum(false, setOf(FieldType.EnumEntry("FLAG1", "Flag 1"), FieldType.EnumEntry("FLAG2", "Flag 2"))))
     }
 
@@ -128,7 +129,7 @@ class TemplateModelSpecificationFactoryTest {
 
     @Test
     fun `value class fields have Scalar type`() {
-        val spec = TemplateModelSpecificationFactory(WithValueClass::class).build()
+        val spec = TemplateModelSpecificationFactory(WithValueClass::class).build(emptyMap())
         val withValueClassSpec = spec.types[WithValueClass::class.qualifiedName!!]!!
         assertThat(withValueClassSpec["aValueClass"]).isEqualTo(FieldType.Scalar(false, Kind.NUMBER))
         assertThat(spec.types[WithValueClass::class.qualifiedName!!]!!).isEqualTo(mapOf("navn" to FieldType.Scalar(false, Kind.STRING), "aValueClass" to FieldType.Scalar(false, Kind.NUMBER)))
@@ -138,7 +139,7 @@ class TemplateModelSpecificationFactoryTest {
 
     @Test
     fun `nullable fields are mapped correctly`() {
-        val spec = TemplateModelSpecificationFactory(WithNullable::class).build()
+        val spec = TemplateModelSpecificationFactory(WithNullable::class).build(emptyMap())
 
         assertThat(
             spec.types[WithNullable::class.qualifiedName!!]!!)
@@ -166,10 +167,10 @@ class TemplateModelSpecificationFactoryTest {
     @Test
     fun `recursive model structures causes failure`() {
         assertThrows<TemplateModelSpecificationError>("Should not support self-recursive types") {
-            TemplateModelSpecificationFactory(Recursive::class).build()
+            TemplateModelSpecificationFactory(Recursive::class).build(emptyMap())
         }
         assertThrows<TemplateModelSpecificationError>("Should not support circular-recursive types") {
-            TemplateModelSpecificationFactory(SubRecursive::class).build()
+            TemplateModelSpecificationFactory(SubRecursive::class).build(emptyMap())
         }
     }
 

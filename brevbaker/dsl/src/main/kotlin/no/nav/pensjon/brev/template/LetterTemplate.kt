@@ -1,3 +1,5 @@
+@file:OptIn(BrevbakerDSLInternal::class)
+
 package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
@@ -7,6 +9,7 @@ import no.nav.pensjon.brev.template.validation.InvalidListDeclarationException
 import no.nav.pensjon.brev.template.validation.InvalidScopeTypeException
 import no.nav.pensjon.brev.template.validation.InvalidTableDeclarationException
 import no.nav.pensjon.brev.template.validation.MissingTitleInTemplateException
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.IntValue
@@ -16,6 +19,8 @@ import java.time.LocalDate
 import java.util.Objects
 import kotlin.reflect.KClass
 
+typealias SaksbehandlervalgDeklarasjon = Map<String, SaksbehandlervalgVerdi<*>>
+
 class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal constructor(
     val title: List<TextElement<Lang>>,
     val letterDataType: KClass<out LetterData>,
@@ -23,6 +28,7 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
     val outline: List<OutlineElement<Lang>>,
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
     val pdfAttachments: List<IncludeAttachmentPDF<Lang,*>> = emptyList(),
+    val saksbehandlervalg: SaksbehandlervalgDeklarasjon? = null,
     val letterMetadata: LetterMetadata,
 ) {
     init {
@@ -52,6 +58,7 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
                 outline = this.outline,
                 attachments = this.attachments + attachments,
                 pdfAttachments = this.pdfAttachments,
+                saksbehandlervalg = this.saksbehandlervalg,
                 letterMetadata = this.letterMetadata
             )
         }

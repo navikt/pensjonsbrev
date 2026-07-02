@@ -4,6 +4,9 @@ import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSLImpl
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.util.Objects
@@ -245,6 +248,10 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun hashCode() = Objects.hash(operation, doc)
         override fun toString(): String = "SafeCall(operation=$operation,doc=$doc)"
 
+    }
+
+    class EttSaksbehandlervalg<In1 : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>, Out> : BinaryOperation<In1, String, Out>(), StableHash by StableHash.of("BinaryOperation.EttSaksbehandlervalg") {
+        override fun apply(first: In1, second: String): Out = (first.saksbehandlerValg as SaksbehandlervalgIDSLImpl).get(second)
     }
 
 }
