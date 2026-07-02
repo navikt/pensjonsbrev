@@ -101,7 +101,7 @@ object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<AnkeTilsvarTilAnkendePartD
                 newline()
                 text(bokmal { +"0607 OSLO" }, english { +"0607 OSLO" })
                 newline()
-                text(bokmal { +"" }, english { +"NORWAY" })
+                text(bokmal { +"NORWAY" }, english { +"NORWAY" })
             }
             paragraph {
                 text(
@@ -109,7 +109,6 @@ object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<AnkeTilsvarTilAnkendePartD
                     english { +"When the case has been decided, you will be notified of the result directly by the National Insurance Court." }
                 )
             }
-
         }
     }
 }
