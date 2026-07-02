@@ -1,6 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 import org.jlleitschuh.gradle.ktlint.tasks.KtLintCheckTask
 import kotlin.time.Duration.Companion.minutes
@@ -26,16 +25,6 @@ allprojects {
                 // api-model-common
                 includeGroup("no.nav.brev.brevbaker")
             }
-        }
-    }
-    tasks.withType<KotlinJvmCompile>{
-        /*
-        Denne er for å unngå unødige advarsler om https://youtrack.jetbrains.com/issue/KT-73255
-        Vi bruker egentlig bare konstruktør-varianten, men vil egentlig helst holde oss til kotlin sin standardvariant
-        Så når dette er blitt standarden i kotlin - som det skal bli - så kan vi skru av denne
-         */
-        compilerOptions {
-            freeCompilerArgs = listOf("-Xannotation-default-target=param-property")
         }
     }
     tasks.withType<KtLintCheckTask> {
