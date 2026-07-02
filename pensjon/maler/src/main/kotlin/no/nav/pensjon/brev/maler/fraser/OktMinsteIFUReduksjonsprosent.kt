@@ -217,18 +217,10 @@ object OktMinsteIFUReduksjonsprosent {
                                 )
                             }
                             cell {
-                                showIf(data.redigerbar) {
-                                    text(
-                                        bokmal { +fritekst("Beløp etterbetaling") },
-                                        nynorsk { +fritekst("Beløp etterbetaling") },
-                                    )
-
-                                }.orShow {
-                                    text(
-                                        bokmal { +data.etterbetalingJuli.format() },
-                                        nynorsk { +data.etterbetalingJuli.format() },
-                                    )
-                                }
+                                text(
+                                    bokmal { +data.etterbetalingJuli.format() },
+                                    nynorsk { +data.etterbetalingJuli.format() },
+                                )
                             }
                         }
                     }
@@ -399,20 +391,11 @@ object OktMinsteIFUReduksjonsprosent {
                         nynorsk { +"For deg betyr dette" },
                     )
                 }
-                showIf(data.redigerbar) {
-                    paragraph {
-                        text(
-                            bokmal { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i beregningene av uføretrygden din. Når lovendringen trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha virkning tilbake i tid fra 1. januar i år. Du vil derfor få en etterbetaling på " + fritekst("Beløp etterbetaling") + " innen kort tid." },
-                            nynorsk { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha tilbakeverkande kraft frå 1. januar i år. Du vil derfor få ei etterbetaling på " + fritekst("Beløp etterbetaling") + " innan kort tid." },
-                        )
-                    }
-                }.orShow {
-                    paragraph {
-                        text(
-                            bokmal { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i beregningene av uføretrygden din. Når lovendringen trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha virkning tilbake i tid fra 1. januar i år. Du vil derfor få en etterbetaling på " + data.etterbetalingJuli.format() + " innen kort tid." },
-                            nynorsk { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha tilbakeverkande kraft frå 1. januar i år. Du vil derfor få ei etterbetaling på " + data.etterbetalingJuli.format() + " innan kort tid." },
-                        )
-                    }
+                paragraph {
+                    text(
+                        bokmal { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i beregningene av uføretrygden din. Når lovendringen trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha virkning tilbake i tid fra 1. januar i år. Du vil derfor få en etterbetaling på " + data.etterbetalingJuli.format() + " innen kort tid." },
+                        nynorsk { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha tilbakeverkande kraft frå 1. januar i år. Du vil derfor få ei etterbetaling på " + data.etterbetalingJuli.format() + " innan kort tid." },
+                    )
                 }
                 title2 {
                     text(
