@@ -9,16 +9,18 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import org.jetbrains.exposed.v1.jdbc.Database
 
 class VeksleKlarStatusHandler(
     private val ferdigRedigertPolicy: FerdigRedigertPolicy,
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-) : BrevredigeringHandler<VeksleKlarStatusHandler.Request, Dto.BrevInfo> {
+    database: Database,
+) : ReservertBrevHandler<VeksleKlarStatusHandler.Request, Dto.BrevInfo>(database, brevreservasjonPolicy) {
 
     data class Request(override val brevId: BrevId, val klar: Boolean) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
+    override suspend fun execute(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
 
         // Om ingen endring, returner vellykket uten å gjøre noe

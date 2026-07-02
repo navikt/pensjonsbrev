@@ -93,8 +93,17 @@ abstract class BrevredigeringHandlerTestBase {
     protected val brevdataService = BrevdataService(penService, samhandlerService)
     protected val redigerBrevPolicy = RedigerBrevPolicy()
     protected val brevreservasjonPolicy = BrevreservasjonPolicy()
-    val attesterBrevPolicy = AttesterBrevPolicy()
+    protected val attesterBrevPolicy = AttesterBrevPolicy()
+    protected val ferdigRedigertPolicy = FerdigRedigertPolicy()
 
+    protected val veksleKlarStatus by lazy {
+        VeksleKlarStatusHandler(
+            ferdigRedigertPolicy = ferdigRedigertPolicy,
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            database = SharedPostgres.database,
+        )
+    }
     protected val hentBrevAttestering by lazy {
         HentBrevAttesteringHandler(
             attesterBrevPolicy = attesterBrevPolicy,
@@ -118,7 +127,7 @@ abstract class BrevredigeringHandlerTestBase {
     protected val attesterBrev by lazy {
         AttesterBrevHandler(
             attesterBrevPolicy = attesterBrevPolicy,
-            ferdigRedigertPolicy = FerdigRedigertPolicy(),
+            ferdigRedigertPolicy = ferdigRedigertPolicy,
             redigerBrevPolicy = redigerBrevPolicy,
             brevmalService = brevmalService,
             brevdataService = brevdataService,
@@ -356,7 +365,7 @@ abstract class BrevredigeringHandlerTestBase {
         klar: Boolean,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.veksleKlarStatus(
+        veksleKlarStatus(
             VeksleKlarStatusHandler.Request(
                 brevId = brev.info.id,
                 klar = klar

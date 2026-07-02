@@ -190,11 +190,12 @@ fun Route.sakBrev() =
                 }
             }
 
+            val veksleKlarStatus: VeksleKlarStatusHandler by app.dependencies
             put("/status") {
                 val request = call.receive<Api.OppdaterKlarStatusRequest>()
                 val brevId = call.parameters.brevId()
 
-                val brevInfo = brevredigeringFacade.veksleKlarStatus(
+                val brevInfo = veksleKlarStatus(
                     VeksleKlarStatusHandler.Request(
                         brevId = brevId,
                         klar = request.klar,
