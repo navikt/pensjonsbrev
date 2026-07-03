@@ -5,6 +5,7 @@ import io.ktor.server.plugins.NotFoundException
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
+import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
@@ -27,6 +28,9 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         with(brevbestilling) { createLetter(template,kode, letterData, language, felles, listOf()) }
 
     fun createLetter(brevbestilling: BestillRedigertBrevRequest<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
+        with(brevbestilling) { createLetter(template, kode, letterData, language, felles, alltidValgbareVedlegg) }
+
+    fun createLetter(brevbestilling: BestillRedigertBrevRequestV2<Kode>, template: BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?) =
         with(brevbestilling) { createLetter(template, kode, letterData, language, felles, alltidValgbareVedlegg) }
 
     private fun createLetter(

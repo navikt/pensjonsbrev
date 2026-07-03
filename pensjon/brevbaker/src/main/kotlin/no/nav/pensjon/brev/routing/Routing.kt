@@ -43,6 +43,11 @@ fun Application.brevRouting(
                 redigerbarRoutes(redigerbareBrev)
             }
 
+            route("/v2/letter") {
+                autobrevRoutesV2(autobrev)
+                redigerbarRoutesV2(redigerbareBrev)
+            }
+
             route("etterlatte") {
                 val etterlatteResource = AutobrevTemplateResource(
                     "",

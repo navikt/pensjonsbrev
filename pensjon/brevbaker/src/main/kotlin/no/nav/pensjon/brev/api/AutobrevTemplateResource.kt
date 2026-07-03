@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppenderImpl
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2
 
 class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<AutobrevData, Kode>>(
     override val name: String,
@@ -21,11 +22,17 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Autob
     override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         brevbaker.renderPDF(createLetter(brevbestilling))
 
+    suspend fun renderPDFV2(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
+        brevbaker.renderPDFV2(createLetter(brevbestilling))
+
     override fun renderHTML(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         brevbaker.renderHTML(createLetter(brevbestilling))
 
     override fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         brevbaker.renderLetterMarkup(createLetter(brevbestilling))
+
+    fun renderLetterMarkupV2(brevbestilling: BestillBrevRequest<Kode>): LetterMarkupV2 =
+        brevbaker.renderLetterMarkupV2(createLetter(brevbestilling))
 
     private fun createLetter(brevbestilling: BestillBrevRequest<Kode>) =
         letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))

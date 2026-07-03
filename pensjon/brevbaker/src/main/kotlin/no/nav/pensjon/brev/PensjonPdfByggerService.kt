@@ -104,5 +104,19 @@ class PensjonPdfByggerService(
         throw PDFTimeoutException("Spent more than $timeout trying to compile pdf", e)
     } ?: throw PDFTimeoutException("Spent more than $timeout trying to compile pdf")
 
+    override suspend fun producePDFV2(pdfRequest: PDFRequestV2): PDFCompilationOutput = try {
+        withTimeoutOrNull(timeout) {
+            httpClient.post("$pdfByggerUrl/v2/produserBrev") {
+                contentType(ContentType.Application.Json)
+                accept(ContentType.Application.Json)
+                header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
+                // Se kommentar i producePDF om hvorfor body settes via objectmapper og ikke content-negotiation.
+                setBody(objectmapper.writeValueAsBytes(pdfRequest))
+            }.body()
+        }
+    } catch (e: CancellationException) {
+        throw PDFTimeoutException("Spent more than $timeout trying to compile pdf", e)
+    } ?: throw PDFTimeoutException("Spent more than $timeout trying to compile pdf")
+
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
 }

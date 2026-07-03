@@ -195,6 +195,146 @@ paths:
         '404':
           description: Malen eksisterer ikke
 
+  /v2/letter/autobrev/json:
+    post:
+      summary: Bestill brev i LetterMarkupV2-format (JSON)
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BestillBrevRequest"
+      responses:
+        '200':
+          description: Brev i LetterMarkupV2 format. Se data klasse `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LetterMarkupV2"
+        '404':
+          description: Malen eksisterer ikke
+
+  /v2/letter/autobrev/pdf:
+    post:
+      summary: Bestill autobrev i PDF format, rendret fra LetterMarkupV2
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BestillBrevRequest"
+      responses:
+        '200':
+          $ref: "#/components/responses/LetterResponse_PDF"
+        '404':
+          description: Malen eksisterer ikke
+
+  /v2/letter/redigerbar/markup:
+    post:
+      summary: Bestill brev i redigerbart LetterMarkupV2 format
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BestillBrevRequest"
+      responses:
+        '200':
+          description: Brev i redigerbart LetterMarkupV2 format. Se data klasse `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LetterMarkupV2"
+        '404':
+          description: Malen eksisterer ikke
+
+  /v2/letter/redigerbar/markup-usage:
+    post:
+      summary: Bestill brev i redigerbart LetterMarkupV2 format, sammen med informasjon om hvilke felter i brevdataene som ble brukt
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BestillBrevRequest"
+      responses:
+        '200':
+          description: Se data klasse `no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageV2`.
+        '404':
+          description: Malen eksisterer ikke
+
+  /v2/letter/redigerbar/pdf:
+    post:
+      summary: Bestill redigerbart brev i PDF format, rendret fra redigert LetterMarkupV2
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2`.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          $ref: "#/components/responses/LetterResponse_PDF"
+        '404':
+          description: Malen eksisterer ikke
+
+  /v2/letter/redigerbar/redigerbare-vedlegg/titler:
+    post:
+      summary: Hent titler for alle redigerbare vedlegg i LetterMarkupV2-format
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BestillBrevRequest"
+      responses:
+        '200':
+          description: Se data klasse `no.nav.pensjon.brevbaker.api.model.RedigerbareVedleggTitler`.
+        '404':
+          description: Malen eksisterer ikke
+
+  /v2/letter/redigerbar/redigerbare-vedlegg/{vedleggId}:
+    post:
+      summary: Hent et redigerbart vedlegg i LetterMarkupV2-format
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - in: path
+          name: vedleggId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BestillBrevRequest"
+      responses:
+        '200':
+          description: Se data klasse `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Attachment`.
+        '404':
+          description: Malen eller vedlegget eksisterer ikke
+
 components:
   securitySchemes:
     BearerAuth:
@@ -831,6 +971,240 @@ components:
                     - $ref: "#/components/schemas/LetterMarkup_NewLine"
         vspace:
           type: boolean
+
+    LetterMarkupV2:
+      type: object
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2`
+      required:
+        - title1
+        - saksinformasjon
+        - blocks
+        - signatur
+      properties:
+        title1:
+          type: array
+          items:
+            oneOf:
+              - $ref: "#/components/schemas/LetterMarkup_Text"
+              - $ref: "#/components/schemas/LetterMarkup_NewLine"
+        saksinformasjon:
+          $ref: "#/components/schemas/LetterMarkupV2_Saksinformasjon"
+        blocks:
+          type: array
+          items:
+            $ref: "#/components/schemas/LetterMarkupV2_Block"
+        signatur:
+          $ref: "#/components/schemas/LetterMarkupV2_Signatur"
+
+    LetterMarkupV2_Saksinformasjon:
+      type: object
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Saksinformasjon`
+      readOnly: true
+      required:
+        - gjelderNavn
+        - gjelderFoedselsnummer
+        - saksnummer
+        - dokumentDato
+      properties:
+        gjelderNavn:
+          type: string
+        gjelderFoedselsnummer:
+          type: string
+        annenMottakerNavn:
+          type: string
+        saksnummer:
+          type: string
+        dokumentDato:
+          type: string
+
+    LetterMarkupV2_Signatur:
+      type: object
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Signatur`
+      readOnly: true
+      required:
+        - hilsenTekst
+        - navAvsenderEnhet
+      properties:
+        hilsenTekst:
+          type: string
+        saksbehandlerSignatur:
+          $ref: "#/components/schemas/LetterMarkupV2_SaksbehandlerSignatur"
+        navAvsenderEnhet:
+          type: string
+
+    LetterMarkupV2_SaksbehandlerSignatur:
+      type: object
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.SaksbehandlerSignatur`
+      readOnly: true
+      required:
+        - saksbehandlerNavn
+      properties:
+        saksbehandlerNavn:
+          type: string
+        attesterendeSaksbehandlerNavn:
+          type: string
+
+    LetterMarkupV2_Block:
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block`
+      oneOf:
+        - $ref: "#/components/schemas/LetterMarkupV2_Title"
+        - $ref: "#/components/schemas/LetterMarkupV2_Paragraph"
+        - $ref: "#/components/schemas/LetterMarkupV2_ItemList"
+        - $ref: "#/components/schemas/LetterMarkupV2_Table"
+        - $ref: "#/components/schemas/LetterMarkupV2_FormText"
+        - $ref: "#/components/schemas/LetterMarkupV2_FormChoice"
+
+    LetterMarkupV2_BlockBase:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          $ref: "#/components/schemas/LetterMarkup_ID"
+
+    LetterMarkupV2_Title:
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.Title.Title2/Title3/Title4`
+      allOf:
+        - $ref: "#/components/schemas/LetterMarkupV2_BlockBase"
+        - type: object
+          required:
+            - type
+            - content
+          properties:
+            type:
+              type: string
+              enum: [ "TITLE2", "TITLE3", "TITLE4" ]
+            content:
+              type: array
+              items:
+                oneOf:
+                  - $ref: "#/components/schemas/LetterMarkup_Text"
+                  - $ref: "#/components/schemas/LetterMarkup_NewLine"
+
+    LetterMarkupV2_Paragraph:
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.Paragraph`
+      allOf:
+        - $ref: "#/components/schemas/LetterMarkupV2_BlockBase"
+        - type: object
+          required:
+            - type
+            - content
+          properties:
+            type:
+              type: string
+              enum: [ "PARAGRAPH" ]
+            content:
+              type: array
+              items:
+                oneOf:
+                  - $ref: "#/components/schemas/LetterMarkup_Text"
+                  - $ref: "#/components/schemas/LetterMarkup_NewLine"
+
+    LetterMarkupV2_ItemList:
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.ListContent.ItemList/NumberedList`
+      allOf:
+        - $ref: "#/components/schemas/LetterMarkupV2_BlockBase"
+        - type: object
+          required:
+            - type
+            - items
+          properties:
+            type:
+              type: string
+              enum: [ "ITEM_LIST", "NUMBERED_LIST" ]
+            items:
+              type: array
+              items:
+                $ref: "#/components/schemas/LetterMarkup_Item"
+
+    LetterMarkupV2_Table:
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.Table`
+      allOf:
+        - $ref: "#/components/schemas/LetterMarkupV2_BlockBase"
+        - type: object
+          required:
+            - type
+            - rows
+            - header
+          properties:
+            type:
+              type: string
+              enum: [ "TABLE" ]
+            rows:
+              type: array
+              items:
+                $ref: "#/components/schemas/LetterMarkup_Row"
+            header:
+              $ref: "#/components/schemas/LetterMarkup_Header"
+
+    LetterMarkupV2_FormText:
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.FormText`
+      allOf:
+        - $ref: "#/components/schemas/LetterMarkupV2_BlockBase"
+        - type: object
+          required:
+            - type
+            - prompt
+            - size
+            - vspace
+          properties:
+            type:
+              type: string
+              enum: [ "FORM_TEXT" ]
+            prompt:
+              type: array
+              items:
+                oneOf:
+                  - $ref: "#/components/schemas/LetterMarkup_Text"
+                  - $ref: "#/components/schemas/LetterMarkup_NewLine"
+            size:
+              type: string
+              enum: [ "NONE", "SHORT", "LONG", "FILL" ]
+            vspace:
+              type: boolean
+
+    LetterMarkupV2_FormChoice:
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.FormChoice`
+      allOf:
+        - $ref: "#/components/schemas/LetterMarkupV2_BlockBase"
+        - type: object
+          required:
+            - type
+            - prompt
+            - choices
+            - vspace
+          properties:
+            type:
+              type: string
+              enum: [ "FORM_CHOICE" ]
+            prompt:
+              type: array
+              items:
+                oneOf:
+                  - $ref: "#/components/schemas/LetterMarkup_Text"
+                  - $ref: "#/components/schemas/LetterMarkup_NewLine"
+            choices:
+              type: array
+              items:
+                $ref: "#/components/schemas/LetterMarkupV2_FormChoiceOption"
+            vspace:
+              type: boolean
+
+    LetterMarkupV2_FormChoiceOption:
+      description: Se `no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.FormChoice.Choice`
+      type: object
+      required:
+        - id
+        - text
+      properties:
+        id:
+          $ref: "#/components/schemas/LetterMarkup_ID"
+        text:
+          type: array
+          items:
+            oneOf:
+              - $ref: "#/components/schemas/LetterMarkup_Text"
+              - $ref: "#/components/schemas/LetterMarkup_NewLine"
 
     TemplateDoc:
       type: object
