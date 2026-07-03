@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
 import kotlinx.coroutines.*
 import no.nav.pensjon.brev.skribenten.MockPrincipal
+import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
@@ -23,11 +24,13 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class ReserverBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
+    private val reserverBrevHandler by lazy { ReserverBrevHandler(brevreservasjonPolicy, SharedPostgres.database) }
+
     suspend fun reserverBrev(
         brev: Dto.Brevredigering,
         principal: MockPrincipal = saksbehandler1Principal
     ): Outcome<Reservasjon, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.reserverBrev(ReserverBrevHandler.Request(brevId = brev.info.id))
+        reserverBrevHandler(ReserverBrevHandler.Request(brevId = brev.info.id))
     }
 
     @Test

@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.model.BrevId
@@ -18,7 +17,6 @@ import java.sql.Connection
 
 class BrevredigeringFacade(
     private val opprettBrev: OpprettBrevHandler,
-    private val reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError>,
     private val frigiReservasjon: UseCaseHandler<FrigiReservasjonHandler.Request, Unit, BrevredigeringError>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) : HentBrevService, OpprettBrevService {
@@ -41,11 +39,6 @@ class BrevredigeringFacade(
         transaction {
             BrevredigeringEntity.find { BrevredigeringTable.saksId inList saksIder }
                 .map { it.toBrevInfo(brevreservasjonPolicy) }
-        }
-
-    suspend fun reserverBrev(request: ReserverBrevHandler.Request): Outcome<Reservasjon, BrevredigeringError>? =
-        suspendTransaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
-            reserverBrev.invoke(request)?.onError { rollback() }
         }
 
     suspend fun frigiReservasjon(request: FrigiReservasjonHandler.Request): Outcome<Unit, BrevredigeringError>? =

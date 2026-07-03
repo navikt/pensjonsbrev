@@ -24,9 +24,6 @@ object BrevredigeringFacadeFactory {
                 brevdataService = brevdataService,
                 navansattService = navansattService,
             ),
-            reserverBrev = ReserverBrevHandler(
-                brevreservasjonPolicy = brevreservasjonPolicy
-            ),
             frigiReservasjon = FrigiReservasjonHandler(
                 brevreservasjonPolicy = brevreservasjonPolicy,
             ),

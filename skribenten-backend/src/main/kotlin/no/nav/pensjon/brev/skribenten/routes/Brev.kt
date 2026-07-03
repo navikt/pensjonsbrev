@@ -60,9 +60,10 @@ fun Route.brev() {
         }
 
         route("/reservasjon") {
+            val reserverBrev: ReserverBrevHandler by app.dependencies
             get {
                 val brevId = call.parameters.brevId()
-                val reservasjon = brevredigeringFacade.reserverBrev(ReserverBrevHandler.Request(brevId = brevId))
+                val reservasjon = reserverBrev(ReserverBrevHandler.Request(brevId = brevId))
                 apiRespond(dto2ApiService, reservasjon)
             }
 
