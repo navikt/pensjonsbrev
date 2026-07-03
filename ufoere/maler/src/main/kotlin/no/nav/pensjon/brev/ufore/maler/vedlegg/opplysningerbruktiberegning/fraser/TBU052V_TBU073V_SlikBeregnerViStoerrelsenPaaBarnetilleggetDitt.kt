@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
@@ -59,7 +60,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
             }
 
-            showIf(flagg.barnetilleggFellesInnvilget and not(flagg.barnetilleggSaerkullInnvilget)) {
+            showIf(barnetilleggFelles.notNull() and not(barnetilleggSaerkull.notNull())) {
                 paragraph {
                     text(
                         bokmal { + "Vi fastsetter størrelsen på barnetillegget ut fra den samlede inntekten til begge foreldrene." },
@@ -86,7 +87,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
             }
 
-            showIf(not(flagg.barnetilleggFellesInnvilget) and flagg.barnetilleggSaerkullInnvilget) {
+            showIf(not(barnetilleggFelles.notNull()) and barnetilleggSaerkull.notNull()) {
                 paragraph {
                     text(
                         bokmal { + "Vi fastsetter størrelsen på barnetillegget ut fra inntekten din. Inntekt til en ektefelle/partner/samboer som ikke er forelder til barnet, har ikke betydning for størrelsen på barnetillegget. " },
@@ -113,7 +114,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 }
             }
 
-            showIf(flagg.barnetilleggFellesInnvilget and flagg.barnetilleggSaerkullInnvilget) {
+            showIf(barnetilleggFelles.notNull() and barnetilleggSaerkull.notNull()) {
                 ifNotNull(barnetilleggFelles) { felles ->
                     paragraph {
                         text(bokmal { + "Vi fastsetter størrelsen på barnetillegget ut fra inntekten til deg og din " }, nynorsk { + "Vi fastset storleiken på barnetillegget ut frå inntekta til deg og " })
@@ -326,7 +327,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             bokmal { + "Du vil få utbetalt " + felles.netto.format() + " i måneden før skatt i barnetillegg" },
                             nynorsk { + "Du vil få utbetalt " + felles.netto.format() + " i månaden før skatt i barnetillegg" },
                         )
-                        showIf(flagg.barnetilleggFellesInnvilget and flagg.barnetilleggSaerkullInnvilget and flagg.etteroppgjoerBtUtbetalt) {
+                        showIf(barnetilleggFelles.notNull() and barnetilleggSaerkull.notNull() and flagg.etteroppgjoerBtUtbetalt) {
                             text(bokmal { + " for " }, nynorsk { + " for " })
                             barnetBarna(felles)
                             text(
@@ -342,7 +343,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         showIf(flagg.tbu608FaarIkke) {
                             text(bokmal { + "Du får ikke utbetalt barnetillegget " }, nynorsk { + "Du får ikkje utbetalt barnetillegget " })
                         }
-                        showIf(flagg.tbu608FaarIkke and flagg.barnetilleggFellesInnvilget and flagg.barnetilleggSaerkullInnvilget) {
+                        showIf(flagg.tbu608FaarIkke and barnetilleggFelles.notNull() and barnetilleggSaerkull.notNull()) {
                             text(bokmal { + "for " }, nynorsk { + "for " })
                             barnetBarna(felles)
                             text(
@@ -389,7 +390,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             bokmal { + "Du vil få utbetalt " + saerkull.netto.format() + " i måneden før skatt i barnetillegg" },
                             nynorsk { + "Du vil få utbetalt " + saerkull.netto.format() + " i månaden før skatt i barnetillegg" },
                         )
-                        showIf(flagg.barnetilleggFellesInnvilget and flagg.barnetilleggSaerkullInnvilget and flagg.etteroppgjoerBtUtbetalt) {
+                        showIf(barnetilleggFelles.notNull() and barnetilleggSaerkull.notNull() and flagg.etteroppgjoerBtUtbetalt) {
                             text(bokmal { + " for " }, nynorsk { + " for " })
                             barnetBarna(saerkull)
                             text(
@@ -405,7 +406,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         showIf(flagg.tbu611FaarIkke) {
                             text(bokmal { + "Du får ikke utbetalt barnetillegget " }, nynorsk { + "Du får ikkje utbetalt barnetillegget " })
                         }
-                        showIf(flagg.tbu611FaarIkke and flagg.barnetilleggFellesInnvilget and flagg.barnetilleggSaerkullInnvilget) {
+                        showIf(flagg.tbu611FaarIkke and barnetilleggFelles.notNull() and barnetilleggSaerkull.notNull()) {
                             text(bokmal { + "for " }, nynorsk { + "for " })
                             barnetBarna(saerkull)
                             text(
@@ -620,14 +621,14 @@ private fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.avkortingsbeloepForInnvi
     barnetilleggSaerkull: Expression<Barnetillegg?>,
     flagg: Expression<Visningsflagg>,
 ) {
-    showIf(flagg.barnetilleggFellesInnvilget) {
+    showIf(barnetilleggFelles.notNull()) {
         ifNotNull(barnetilleggFelles) { felles ->
             ifNotNull(felles.avkortingsbeloepPerAar) { avkorting ->
                 text(bokmal { + avkorting.format(false) }, nynorsk { + avkorting.format(false) })
             }
         }
     }
-    showIf(flagg.barnetilleggSaerkullInnvilget and not(flagg.barnetilleggFellesInnvilget)) {
+    showIf(barnetilleggSaerkull.notNull() and not(barnetilleggFelles.notNull())) {
         ifNotNull(barnetilleggSaerkull) { saerkull ->
             ifNotNull(saerkull.avkortingsbeloepPerAar) { avkorting ->
                 text(bokmal { + avkorting.format(false) }, nynorsk { + avkorting.format(false) })
@@ -641,14 +642,14 @@ private fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.justeringsbeloepForInnvi
     barnetilleggSaerkull: Expression<Barnetillegg?>,
     flagg: Expression<Visningsflagg>,
 ) {
-    showIf(flagg.barnetilleggFellesInnvilget) {
+    showIf(barnetilleggFelles.notNull()) {
         ifNotNull(barnetilleggFelles) { felles ->
             ifNotNull(felles.justeringsbeloepPerAarUtenMinus) { justering ->
                 text(bokmal { + justering.format() }, nynorsk { + justering.format() })
             }
         }
     }
-    showIf(flagg.barnetilleggSaerkullInnvilget) {
+    showIf(barnetilleggSaerkull.notNull()) {
         ifNotNull(barnetilleggSaerkull) { saerkull ->
             ifNotNull(saerkull.justeringsbeloepPerAarUtenMinus) { justering ->
                 text(bokmal { + justering.format() }, nynorsk { + justering.format() })

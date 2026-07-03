@@ -218,7 +218,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         // Barnetillegg
         showIf(visningsflagg.tbu601v604v) {
-            includePhrase(TBU052V_TBU073V_SlikRedusererViBarnetilleggetUtFraInntekt(visningsflagg, person))
+            includePhrase(TBU052V_TBU073V_SlikRedusererViBarnetilleggetUtFraInntekt(visningsflagg, barnetilleggFelles, barnetilleggSaerkull, person))
         }
         includePhrase(TBU052V_TBU073V_ForDegSomHarRettTilBarnetillegg(visningsflagg, person))
         includePhrase(
@@ -236,6 +236,6 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         // Etteroppgjør
         showIf(visningsflagg.visEtteroppgjoer) {
-            includePhrase(TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(visningsflagg, person))
+            includePhrase(TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(visningsflagg, barnetilleggFelles, barnetilleggSaerkull, person))
         }
     }

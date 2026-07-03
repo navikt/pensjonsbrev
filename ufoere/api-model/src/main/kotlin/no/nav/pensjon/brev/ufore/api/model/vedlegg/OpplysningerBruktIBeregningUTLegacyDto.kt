@@ -331,8 +331,6 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val visNorskFramtidigTrygdetid: Boolean,
         val visAarOver1G: Boolean,
         val visOifuFortak: Boolean,
-        val barnetilleggFellesInnvilget: Boolean,
-        val barnetilleggSaerkullInnvilget: Boolean,
         val visBarnetilleggSaerkullIkkeUtbetalt: Boolean,
         val visBarnetilleggFellesIkkeUtbetalt: Boolean,
         // Slik reduserer vi barnetillegget ut fra inntekt (TBU052V_TBU073V):

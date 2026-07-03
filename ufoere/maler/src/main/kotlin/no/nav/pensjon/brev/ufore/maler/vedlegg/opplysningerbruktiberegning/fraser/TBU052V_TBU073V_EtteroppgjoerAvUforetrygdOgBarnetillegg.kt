@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser
 
+import no.nav.pensjon.brev.ufore.api.model.vedlegg.OpplysningerBruktIBeregningUTLegacyDto.Barnetillegg
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.OpplysningerBruktIBeregningUTLegacyDto.Person
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.OpplysningerBruktIBeregningUTLegacyDto.Visningsflagg
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.SivilstatusVisning
@@ -14,6 +15,7 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
@@ -25,6 +27,8 @@ import no.nav.pensjon.brev.template.dsl.text
  */
 data class TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(
     val flagg: Expression<Visningsflagg>,
+    val barnetilleggFelles: Expression<Barnetillegg?>,
+    val barnetilleggSaerkull: Expression<Barnetillegg?>,
     val person: Expression<Person>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
@@ -33,7 +37,7 @@ data class TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 bokmal { + "Etteroppgjør av uføretrygd" },
                 nynorsk { + "Etteroppgjer av uføretrygd" },
             )
-            showIf(flagg.barnetilleggFellesInnvilget or flagg.barnetilleggSaerkullInnvilget) {
+            showIf(barnetilleggFelles.notNull() or barnetilleggSaerkull.notNull()) {
                 text(
                     bokmal { + " og barnetillegg" },
                     nynorsk { + " og barnetillegg" },
@@ -46,7 +50,7 @@ data class TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 bokmal { + "Hvert år når skattefastsettingen er klar mottar vi opplysninger om inntekten" },
                 nynorsk { + "Kvart år når skattefastsettinga er klar, får vi opplysningar om inntekta" },
             )
-            showIf(flagg.barnetilleggFellesInnvilget) {
+            showIf(barnetilleggFelles.notNull()) {
                 text(
                     bokmal { + " til deg og din " },
                     nynorsk { + " til deg og " },
@@ -67,7 +71,7 @@ data class TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(
                     nynorsk { + " din" },
                 )
             }
-            showIf(not(flagg.barnetilleggFellesInnvilget)) {
+            showIf(not(barnetilleggFelles.notNull())) {
                 text(
                     bokmal { + " din" },
                     nynorsk { + " di" },
@@ -77,7 +81,7 @@ data class TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 bokmal { + " fra Skatteetaten. Vi bruker opplysningene fra skattefastsettingen til å beregne riktig utbetaling av uføretrygd" },
                 nynorsk { + " frå Skatteetaten. Vi bruker opplysningane frå skattefastsettinga til å berekne riktig utbetaling av uføretrygd" },
             )
-            showIf(flagg.barnetilleggFellesInnvilget or flagg.barnetilleggSaerkullInnvilget) {
+            showIf(barnetilleggFelles.notNull() or barnetilleggSaerkull.notNull()) {
                 text(
                     bokmal { + " og barnetillegg" },
                     nynorsk { + " og barnetillegg" },
@@ -87,7 +91,7 @@ data class TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 bokmal { + " for året fastsettingen gjelder for. Har du fått for mye eller for lite utbetalt i uføretrygd" },
                 nynorsk { + " for det året som fastsettinga gjeld for. Har du fått for mykje eller for lite utbetalt i uføretrygd" },
             )
-            showIf(flagg.barnetilleggFellesInnvilget or flagg.barnetilleggSaerkullInnvilget) {
+            showIf(barnetilleggFelles.notNull() or barnetilleggSaerkull.notNull()) {
                 text(
                     bokmal { + " og barnetillegg" },
                     nynorsk { + " og barnetillegg" },
@@ -115,7 +119,7 @@ data class TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 bokmal { + "Det er viktig at du melder fra om inntektsendringer slik at uføretrygden" },
                 nynorsk { + "Det er viktig at du melder frå om inntektsendringar slik at uføretrygda " },
             )
-            showIf(flagg.barnetilleggFellesInnvilget or flagg.barnetilleggSaerkullInnvilget) {
+            showIf(barnetilleggFelles.notNull() or barnetilleggSaerkull.notNull()) {
                 text(
                     bokmal { + " og barnetillegget" },
                     nynorsk { + "og barnetillegget " },

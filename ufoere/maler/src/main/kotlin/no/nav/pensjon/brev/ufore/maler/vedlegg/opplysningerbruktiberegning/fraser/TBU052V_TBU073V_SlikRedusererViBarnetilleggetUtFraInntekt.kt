@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.ufore.maler.vedlegg.opplysningerbruktiberegning.fraser
 
+import no.nav.pensjon.brev.ufore.api.model.vedlegg.OpplysningerBruktIBeregningUTLegacyDto.Barnetillegg
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.OpplysningerBruktIBeregningUTLegacyDto.Person
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.OpplysningerBruktIBeregningUTLegacyDto.Visningsflagg
 import no.nav.pensjon.brev.ufore.api.model.vedlegg.SivilstatusVisning
@@ -13,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
 
@@ -25,6 +27,8 @@ private const val SKATTEETATEN_URL = "skatteetaten.no"
  */
 data class TBU052V_TBU073V_SlikRedusererViBarnetilleggetUtFraInntekt(
     val flagg: Expression<Visningsflagg>,
+    val barnetilleggFelles: Expression<Barnetillegg?>,
+    val barnetilleggSaerkull: Expression<Barnetillegg?>,
     val person: Expression<Person>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
@@ -65,10 +69,10 @@ data class TBU052V_TBU073V_SlikRedusererViBarnetilleggetUtFraInntekt(
                 bokmal { + "Det er inntekten " },
                 nynorsk { + "Det er inntekta " },
             )
-            showIf(flagg.barnetilleggFellesInnvilget) {
+            showIf(barnetilleggFelles.notNull()) {
                 tilDegOgDinPartner(person)
             }
-            showIf(flagg.barnetilleggSaerkullInnvilget and not(flagg.barnetilleggFellesInnvilget)) {
+            showIf(barnetilleggSaerkull.notNull() and not(barnetilleggFelles.notNull())) {
                 text(bokmal { + "din " }, nynorsk { + "di " })
             }
             text(
@@ -78,13 +82,13 @@ data class TBU052V_TBU073V_SlikRedusererViBarnetilleggetUtFraInntekt(
         }
 
         paragraph {
-            showIf(flagg.barnetilleggFellesInnvilget) {
+            showIf(barnetilleggFelles.notNull()) {
                 text(
                     bokmal { + "For barn som bor sammen med begge sine foreldre, er fribeløpet 4,6 ganger folketrygdens grunnbeløp. " },
                     nynorsk { + "For barn som bur saman med begge foreldra sine, er fribeløpet 4,6 gonger grunnbeløpet i folketrygda. " },
                 )
             }
-            showIf(flagg.barnetilleggSaerkullInnvilget) {
+            showIf(barnetilleggSaerkull.notNull()) {
                 text(
                     bokmal { + "For barn som ikke bor sammen med begge sine foreldre, er fribeløpet 3,1 ganger folketrygdens grunnbeløp. " },
                     nynorsk { + "For barn som ikkje bur saman med begge foreldra, er fribeløpet 3,1 gonger grunnbeløpet i folketrygda. " },

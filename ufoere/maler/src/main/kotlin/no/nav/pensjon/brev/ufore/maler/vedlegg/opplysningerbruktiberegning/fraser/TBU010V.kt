@@ -509,7 +509,7 @@ data class TBU010V(
                             )
                         }
                         cell {
-                            showIf(flagg.barnetilleggFellesInnvilget) {
+                            showIf(barnetilleggFelles.notNull()) {
                                 ifNotNull(barnetilleggFelles) { felles ->
                                     ifNotNull(felles.brukersInntektTilAvkortning) { inntekt ->
                                         text(bokmal { + inntekt.format(false) + " kr" }, nynorsk { + inntekt.format(false) + " kr" })
