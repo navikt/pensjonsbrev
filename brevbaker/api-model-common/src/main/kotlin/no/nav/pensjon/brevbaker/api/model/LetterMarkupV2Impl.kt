@@ -85,11 +85,11 @@ data class LetterMarkupV2Impl(
         }
 
         @InterneDataklasser
+        data class ItemImpl(override val id: Int, override val content: List<Text>) : ListContent.Item
+
+        @InterneDataklasser
         data class ItemListImpl(override val id: Int, override val items: List<ListContent.Item>) : ItemList {
             override val type = Type.ITEM_LIST
-
-            @InterneDataklasser
-            data class ItemImpl(override val id: Int, override val content: List<Text>) : ListContent.Item
         }
 
         @InterneDataklasser
