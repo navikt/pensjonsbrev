@@ -4,6 +4,7 @@ import no.nav.brev.brevbaker.Brevbaker
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
+import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -64,6 +65,9 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
         // TODO(redigerbart-vedlegg): fjern '?: emptyMap()' når redigerteVedlegg gjøres obligatorisk etter utrulling.
         brevbaker.renderRedigertBrevPDF(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg ?: emptyMap())
 
+    suspend fun renderPDFV2(brevbestilling: BestillRedigertBrevRequestV2<Kode>): LetterResponse =
+        brevbaker.renderRedigertBrevV2PDF(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg)
+
     override fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         // TODO(redigerbart-vedlegg): fjern '?: emptyMap()' når redigerteVedlegg gjøres obligatorisk etter utrulling.
         brevbaker.renderRedigertBrevHTML(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg ?: emptyMap())
@@ -72,5 +76,8 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
         letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))
 
     private fun createLetter(brevbestilling: BestillRedigertBrevRequest<Kode>) =
+        letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))
+
+    private fun createLetter(brevbestilling: BestillRedigertBrevRequestV2<Kode>) =
         letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))
 }

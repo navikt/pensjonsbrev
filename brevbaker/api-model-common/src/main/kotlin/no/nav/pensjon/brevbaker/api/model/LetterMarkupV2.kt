@@ -15,10 +15,15 @@ interface LetterMarkupWithDataUsageV2 {
 }
 
 interface LetterMarkupV2 {
+    val version: Int
     val title1: List<Text>
     val saksinformasjon: Saksinformasjon
     val blocks: List<Block>
     val signatur: Signatur
+
+    companion object {
+        const val VERSION = 2
+    }
 
     interface Attachment : AttachmentTitleV2 {
         override val title1: List<Text>

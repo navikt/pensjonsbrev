@@ -217,6 +217,24 @@ paths:
         '404':
           description: Malen eksisterer ikke
 
+  /v2/letter/autobrev/pdf:
+    post:
+      summary: Bestill autobrev i PDF format, rendret fra LetterMarkupV2
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BestillBrevRequest"
+      responses:
+        '200':
+          $ref: "#/components/responses/LetterResponse_PDF"
+        '404':
+          description: Malen eksisterer ikke
+
   /v2/letter/redigerbar/markup:
     post:
       summary: Bestill brev i redigerbart LetterMarkupV2 format
@@ -254,6 +272,24 @@ paths:
       responses:
         '200':
           description: Se data klasse `no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageV2`.
+        '404':
+          description: Malen eksisterer ikke
+
+  /v2/letter/redigerbar/pdf:
+    post:
+      summary: Bestill redigerbart brev i PDF format, rendret fra redigert LetterMarkupV2
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2`.
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          $ref: "#/components/responses/LetterResponse_PDF"
         '404':
           description: Malen eksisterer ikke
 

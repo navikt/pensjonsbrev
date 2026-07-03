@@ -22,6 +22,9 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Autob
     override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         brevbaker.renderPDF(createLetter(brevbestilling))
 
+    suspend fun renderPDFV2(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
+        brevbaker.renderPDFV2(createLetter(brevbestilling))
+
     override fun renderHTML(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         brevbaker.renderHTML(createLetter(brevbestilling))
 

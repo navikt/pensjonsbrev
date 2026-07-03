@@ -18,8 +18,14 @@ class Brevbaker(
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>): LetterResponse =
         brevbakerPDF.renderPDF(letter, null)
 
+    suspend fun renderPDFV2(letter: Letter<BrevbakerBrevdata>): LetterResponse =
+        brevbakerPDF.renderPDFV2(letter, null)
+
     suspend fun renderRedigertBrevPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup, redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()) =
         brevbakerPDF.renderPDF(letter, redigertBrev, redigerteVedlegg)
+
+    suspend fun renderRedigertBrevV2PDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkupV2, redigerteVedlegg: Map<VedleggId, LetterMarkupV2.Attachment> = emptyMap()) =
+        brevbakerPDF.renderPDFV2(letter, redigertBrev, redigerteVedlegg)
 
     fun renderHTML(letter: Letter<BrevbakerBrevdata>): LetterResponse =
         BrevbakerHTML.renderHTML(letter, null)

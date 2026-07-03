@@ -30,6 +30,7 @@ data class LetterMarkupV2Impl(
     override val saksinformasjon: LetterMarkupV2.Saksinformasjon,
     override val blocks: List<Block>,
     override val signatur: LetterMarkupV2.Signatur,
+    override val version: Int = LetterMarkupV2.VERSION,
 ) : LetterMarkupV2 {
 
     @InterneDataklasser
