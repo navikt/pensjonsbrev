@@ -450,7 +450,7 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 header = {
                     column(columnSpan = 4) {
                         text(bokmal { + tittelBokmal }, nynorsk { + tittelNynorsk })
-                        showIf(flagg.visBarnetilleggVirkningFomIkkeFoersteJanuar) {
+                        showIf(not(flagg.visBarnetilleggVirkningFomFoersteJanuar)) {
                             text(bokmal { + "i år" }, nynorsk { + "i år" })
                         }
                         showIf(flagg.visBarnetilleggVirkningFomFoersteJanuar) {

@@ -242,8 +242,6 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
      */
     data class Visningsflagg(
         val visTrygdetid: Boolean,
-        val visTrygdetidAvdoed: Boolean,
-        val visAvdoed: Boolean,
         // Trygdetid-seksjon (TBU039V_TBU044V_1 m.fl.):
         val visStandardFastsettelseTrygdetid: Boolean,
         val harFramtidigTrygdetid: Boolean,
@@ -262,11 +260,6 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         val visTrygdetidAvdoedNorgeTabell: Boolean,
         val visTrygdetidAvdoedEOS: Boolean,
         val visTrygdetidAvdoedBilateral: Boolean,
-        val uforetidspunktFoer17: Boolean,
-        val virkningstidspunktStoerreEnn01012016: Boolean,
-        val sisteOpptjeningsaarLikUfoeretidspunkt: Boolean,
-        val foerstegangstjenesteIkkeNull: Boolean,
-        val harOpptjeningUTMedOmsorg: Boolean,
         val harOpptjeningUTMedFoerstegangstjenesteOgOmsorg: Boolean,
         val harOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg: Boolean,
         val harOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste: Boolean,
@@ -357,7 +350,6 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         // Legacy: kravårsakstype <> "endret_inntekt".
         val visBarnetilleggIkkeEndretInntekt: Boolean,
         // Legacy: barnetillegg felles innvilget og beregningssivilstand anvendt er "bormed ektefelle"/"bormed registrert partner"/"bormed 1-5"/"bormed 1_5"/"bormed 3-2".
-        val visBarnetilleggFellesMedPartner: Boolean,
         // Legacy: PE_UT_TBU605V_eller_til_din og barnetillegg felles innvilget og partner-sivilstand anvendt.
         val visBarnetilleggTbu605EllerTilDinFellesMedPartner: Boolean,
         // Legacy: kravårsakstype = "endret_inntekt" og barnetillegg felles innvilget og partner-sivilstand anvendt.
@@ -381,7 +373,6 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         // Legacy: FF_CheckIfFirstDayAndMonthOfYear(vilkår virkning fom) = true.
         val visBarnetilleggVirkningFomFoersteJanuar: Boolean,
         // Legacy: FF_CheckIfFirstDayAndMonthOfYear(vilkår virkning fom) = false.
-        val visBarnetilleggVirkningFomIkkeFoersteJanuar: Boolean,
         // Legacy: fellesbarnetillegg netto > 0 og TBU606/TBU608/TBU611-flagg.
         val visBarnetilleggFellesNettoPositiv: Boolean,
         // Legacy: fellesbarnetillegg netto = 0 og TBU606/TBU608/TBU611-flagg.
@@ -397,7 +388,6 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         // Legacy: fellesbarnetillegg justeringsbeløp per år > 0.
         val visBarnetilleggFellesJusteringPositiv: Boolean,
         // Legacy: fellesbarnetillegg justeringsbeløp per år < 0.
-        val visBarnetilleggFellesJusteringNegativ: Boolean,
         // Legacy: fellesbarnetillegg netto = 0 og justeringsbeløp per år = 0 og TBU606/TBU608/TBU611-flagg.
         val visBarnetilleggFellesVisInntektstak: Boolean,
         // Legacy: særkullsbarnetillegg netto > 0 og TBU606/TBU609/TBU611-flagg.
@@ -415,7 +405,6 @@ data class OpplysningerBruktIBeregningUTLegacyDto(
         // Legacy: særkullsbarnetillegg justeringsbeløp per år > 0.
         val visBarnetilleggSaerkullJusteringPositiv: Boolean,
         // Legacy: særkullsbarnetillegg justeringsbeløp per år < 0.
-        val visBarnetilleggSaerkullJusteringNegativ: Boolean,
         // Legacy: særkullsbarnetillegg netto = 0 og justeringsbeløp per år = 0 og TBU606/TBU609/TBU611-flagg.
         val visBarnetilleggSaerkullVisInntektstak: Boolean,
         // Slik fastsetter vi inntekten din (TBUxx4v_og_TBU048V_TBU055V):
