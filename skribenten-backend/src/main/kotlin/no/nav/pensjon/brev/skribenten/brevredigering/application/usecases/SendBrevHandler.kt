@@ -1,26 +1,21 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.SendBrevPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.*
 import no.nav.pensjon.brev.skribenten.model.*
-import java.sql.Connection
 import org.jetbrains.exposed.v1.jdbc.Database
+import java.sql.Connection
 
 class SendBrevHandler(
     private val sendBrevPolicy: SendBrevPolicy,
     private val brevService: BrevService,
     private val brevmalService: BrevmalService,
-    brevreservasjonPolicy: BrevreservasjonPolicy,
+    reserverBrevHandler: ReserverBrevHandler,
     database: Database,
-) : ReservertBrevHandler<SendBrevHandler.Request, Dto.SendBrevResult>(database, brevreservasjonPolicy) {
+) : ReservertBrevHandler<SendBrevHandler.Request, Dto.SendBrevResult>(database, reserverBrevHandler) {
 
     override fun transactionIsolation(): Int = Connection.TRANSACTION_REPEATABLE_READ
 

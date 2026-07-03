@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.hentSignatur
+import no.nav.pensjon.brev.skribenten.brevredigering.application.OpprettBrevService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
@@ -22,19 +23,18 @@ import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import java.time.Instant
 
-interface OpprettBrevHandler : UseCaseHandler<OpprettBrevHandlerImpl.Request, Dto.Brevredigering, BrevredigeringError> {
-    override suspend fun invoke(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError>
-}
-
-class OpprettBrevHandlerImpl(
+class OpprettBrevHandler(
     private val opprettBrevPolicy: OpprettBrevPolicy,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
     private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
     private val navansattService: NavansattService,
-) : OpprettBrevHandler {
+    private val database: Database,
+) : UseCaseHandler<OpprettBrevHandler.Request, Dto.Brevredigering, BrevredigeringError>, OpprettBrevService {
     data class Request(
         val saksId: SaksId,
         val vedtaksId: VedtaksId?,
@@ -46,7 +46,12 @@ class OpprettBrevHandlerImpl(
         val mottaker: Dto.Mottaker? = null,
     )
 
-    override suspend operator fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
+    override suspend fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
+        suspendTransaction(db = database) {
+            execute(request)
+        }
+
+    private suspend fun execute(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
         val principal = PrincipalInContext.require()
 
         val parametre = opprettBrevPolicy.kanOppretteBrev(request, principal).getOrElse { return failure(it) }

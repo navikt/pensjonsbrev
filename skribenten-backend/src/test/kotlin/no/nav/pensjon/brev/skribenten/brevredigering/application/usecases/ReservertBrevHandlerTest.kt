@@ -52,33 +52,35 @@ class ReservertBrevHandlerTest {
     }
     private val brevmalService = BrevmalService(brevbakerService, penClient, FakeBrevmetadataService())
     private val navansattService = FakeNavansattService(mapOf(saksbehandler1Principal.navIdent to principalEnhet to true))
-    private val opprettBrevHandler = OpprettBrevHandlerImpl(
-        opprettBrevPolicy = OpprettBrevPolicy(brevmalService, navansattService),
-        brevreservasjonPolicy = brevreservasjonPolicy,
-        brevmalService = brevmalService,
-        brevdataService = BrevdataService(penClient, FakeSamhandlerService()),
-        navansattService = navansattService,
-    )
+    private val opprettBrevHandler by lazy {
+        OpprettBrevHandler(
+            opprettBrevPolicy = OpprettBrevPolicy(brevmalService, navansattService),
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            brevmalService = brevmalService,
+            brevdataService = BrevdataService(penClient, FakeSamhandlerService()),
+            navansattService = navansattService,
+            database = SharedPostgres.database,
+        )
+    }
+    private val reserverBrevHandler by lazy { ReserverBrevHandler(brevreservasjonPolicy, SharedPostgres.database) }
 
 
     private suspend fun opprettBrev(reserverBrev: Boolean = false) = withPrincipal(saksbehandler1Principal) {
-        suspendTransaction(SharedPostgres.database) {
-            opprettBrevHandler.invoke(
-                OpprettBrevHandlerImpl.Request(
-                    saksId = SaksId(1),
-                    vedtaksId = VedtaksId(2),
-                    brevkode = Testbrevkoder.INFORMASJONSBREV,
-                    spraak = LanguageCode.BOKMAL,
-                    avsenderEnhetsId = principalEnhet,
-                    saksbehandlerValg = Api.GeneriskBrevdata(),
-                    reserverForRedigering = reserverBrev,
-                    mottaker = null,
-                )
+        opprettBrevHandler.invoke(
+            OpprettBrevHandler.Request(
+                saksId = SaksId(1),
+                vedtaksId = VedtaksId(2),
+                brevkode = Testbrevkoder.INFORMASJONSBREV,
+                spraak = LanguageCode.BOKMAL,
+                avsenderEnhetsId = principalEnhet,
+                saksbehandlerValg = Api.GeneriskBrevdata(),
+                reserverForRedigering = reserverBrev,
+                mottaker = null,
             )
-        }
+        )
     }
 
-    abstract inner class HentBrevStub : ReservertBrevHandler<HentBrevHandler.Request, Dto.Brevredigering>(SharedPostgres.database, brevreservasjonPolicy) {
+    abstract inner class HentBrevStub : ReservertBrevHandler<HentBrevHandler.Request, Dto.Brevredigering>(SharedPostgres.database, reserverBrevHandler) {
         override suspend fun execute(request: HentBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
             success(BrevredigeringEntity[request.brevId].toDto(brevreservasjonPolicy, null))
     }
@@ -139,7 +141,7 @@ class ReservertBrevHandlerTest {
         val brev = opprettBrev().resultOrFail()
 
         withPrincipal(saksbehandler1Principal) {
-            object : ReservertBrevHandler<HentBrevHandler.Request, Dto.Brevredigering>(SharedPostgres.database, brevreservasjonPolicy) {
+            object : ReservertBrevHandler<HentBrevHandler.Request, Dto.Brevredigering>(SharedPostgres.database, reserverBrevHandler) {
                 override suspend fun execute(request: HentBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
                     // Rollback i ytre transaksjon vil også utløse rollback i denne indre transaksjonen.
                     transaction {

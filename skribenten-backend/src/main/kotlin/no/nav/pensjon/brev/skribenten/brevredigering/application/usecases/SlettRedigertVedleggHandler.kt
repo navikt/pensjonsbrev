@@ -16,8 +16,9 @@ import org.jetbrains.exposed.v1.jdbc.Database
 class SlettRedigertVedleggHandler(
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
     private val redigerBrevPolicy: RedigerBrevPolicy,
+    reserverBrevHandler: ReserverBrevHandler,
     database: Database,
-) : ReservertBrevHandler<SlettRedigertVedleggHandler.Request, Dto.Brevredigering>(database, brevreservasjonPolicy) {
+) : ReservertBrevHandler<SlettRedigertVedleggHandler.Request, Dto.Brevredigering>(database, reserverBrevHandler) {
 
     data class Request(
         override val brevId: BrevId,

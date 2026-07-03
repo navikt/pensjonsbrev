@@ -22,8 +22,6 @@ import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AUTHENTICATION_REALM_NAME
 import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
-import no.nav.pensjon.brev.skribenten.brevredigering.application.OpprettBrevService
-import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OpprettBrevHandlerImpl
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
@@ -118,9 +116,7 @@ class ExternalAPIRouteTest {
             penClient = PenClientStub(),
             brevmetadataService = FakeBrevmetadataService(),
         ),
-        opprettBrevService = object : OpprettBrevService {
-            override suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request) = opprettBrevResult
-        }
+        opprettBrevHandler = { opprettBrevResult }
     )
 
     private fun routeTestApplication(

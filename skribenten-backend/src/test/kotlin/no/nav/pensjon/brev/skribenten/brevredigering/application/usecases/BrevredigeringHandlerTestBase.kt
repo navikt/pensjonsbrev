@@ -97,12 +97,14 @@ abstract class BrevredigeringHandlerTestBase {
     protected val attesterBrevPolicy = AttesterBrevPolicy()
     protected val ferdigRedigertPolicy = FerdigRedigertPolicy()
     protected val sendBrevPolicy = SendBrevPolicy(ferdigRedigertPolicy)
+    protected val reserverBrevHandler by lazy { ReserverBrevHandler(brevreservasjonPolicy, SharedPostgres.database) }
 
     protected val endreMottaker by lazy {
         EndreMottakerHandler(
             redigerBrevPolicy = redigerBrevPolicy,
             brevdataService = brevdataService,
             brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
@@ -110,6 +112,7 @@ abstract class BrevredigeringHandlerTestBase {
         EndreDistribusjonstypeHandler(
             redigerBrevPolicy = redigerBrevPolicy,
             brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
@@ -118,6 +121,7 @@ abstract class BrevredigeringHandlerTestBase {
             ferdigRedigertPolicy = ferdigRedigertPolicy,
             redigerBrevPolicy = redigerBrevPolicy,
             brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
@@ -129,6 +133,7 @@ abstract class BrevredigeringHandlerTestBase {
             brevdataService = brevdataService,
             navansattService = navAnsattService,
             brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
@@ -138,6 +143,7 @@ abstract class BrevredigeringHandlerTestBase {
             brevmalService = brevmalService,
             brevdataService = brevdataService,
             brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
@@ -150,6 +156,7 @@ abstract class BrevredigeringHandlerTestBase {
             brevdataService = brevdataService,
             navansattService = navAnsattService,
             brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
@@ -159,7 +166,18 @@ abstract class BrevredigeringHandlerTestBase {
             brevmalService = brevmalService,
             brevdataService = brevdataService,
             brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
+        )
+    }
+    protected val opprettBrev by lazy {
+        OpprettBrevHandler(
+            opprettBrevPolicy = OpprettBrevPolicy(brevmalService, navAnsattService),
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            navansattService = navAnsattService,
+            database = SharedPostgres.database
         )
     }
     protected val tilbakestillBrev by lazy {
@@ -168,6 +186,7 @@ abstract class BrevredigeringHandlerTestBase {
             brevmalService = brevmalService,
             brevdataService = brevdataService,
             brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
@@ -175,6 +194,7 @@ abstract class BrevredigeringHandlerTestBase {
         EndreValgteVedleggHandler(
             redigerBrevPolicy = redigerBrevPolicy,
             brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
@@ -182,6 +202,7 @@ abstract class BrevredigeringHandlerTestBase {
         EndreRedigertVedleggHandler(
             redigerBrevPolicy = redigerBrevPolicy,
             brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
@@ -189,6 +210,7 @@ abstract class BrevredigeringHandlerTestBase {
         SlettRedigertVedleggHandler(
             redigerBrevPolicy = redigerBrevPolicy,
             brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
@@ -196,7 +218,7 @@ abstract class BrevredigeringHandlerTestBase {
         HentRedigertVedleggHandler(
             brevmalService = brevmalService,
             brevdataService = brevdataService,
-            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
@@ -221,14 +243,14 @@ abstract class BrevredigeringHandlerTestBase {
             sendBrevPolicy = sendBrevPolicy,
             brevService = brevService,
             brevmalService = brevmalService,
-            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
     protected val slettBrevHandler by lazy {
         SlettBrevHandler(
             slettBrevPolicy = SlettBrevPolicy(),
-            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
@@ -354,14 +376,9 @@ abstract class BrevredigeringHandlerTestBase {
         }
     }
 
-    protected fun createFacade(): BrevredigeringFacade = BrevredigeringFacadeFactory.create(
-        brevdataService = brevdataService,
-        brevmalService = brevmalService,
-        navansattService = navAnsattService,
-    )
+    protected fun createFacade(): BrevredigeringFacade = BrevredigeringFacadeFactory.create()
 
     protected suspend fun opprettBrev(
-        facade: BrevredigeringFacade = brevredigeringFacade,
         principal: UserPrincipal = saksbehandler1Principal,
         reserverForRedigering: Boolean = false,
         mottaker: Dto.Mottaker? = null,
@@ -371,8 +388,8 @@ abstract class BrevredigeringHandlerTestBase {
         sak: Pen.SakSelection = sak1,
         avsenderEnhetsId: EnhetId = PRINCIPAL_NAVENHET_ID,
     ): Outcome<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
-        facade.opprettBrev(
-            OpprettBrevHandlerImpl.Request(
+        opprettBrev.invoke(
+            OpprettBrevHandler.Request(
                 saksId = sak.saksId,
                 vedtaksId = vedtaksId,
                 brevkode = brevkode,

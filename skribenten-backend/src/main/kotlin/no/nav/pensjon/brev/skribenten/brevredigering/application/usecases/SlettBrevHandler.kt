@@ -1,17 +1,15 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import org.jetbrains.exposed.v1.jdbc.Database
 
 class SlettBrevHandler(
-    brevreservasjonPolicy: BrevreservasjonPolicy,
+    reserverBrevHandler: ReserverBrevHandler,
     database: Database,
-) : ReservertBrevHandler<SlettBrevHandler.Request, Unit>(database, brevreservasjonPolicy) {
+) : ReservertBrevHandler<SlettBrevHandler.Request, Unit>(database, reserverBrevHandler) {
 
     data class Request(override val brevId: BrevId) : BrevredigeringRequest
 

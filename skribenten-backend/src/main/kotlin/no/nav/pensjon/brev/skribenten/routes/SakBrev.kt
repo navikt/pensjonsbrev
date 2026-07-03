@@ -36,14 +36,15 @@ fun Route.sakBrev() =
             )
         }
 
+        val opprettBrev: OpprettBrevHandler by app.dependencies
         post {
             val request = call.receive<Api.OpprettBrevRequest>()
             val sak: Fagsak = call.attributes[SakKey]
             val spraak = request.spraak.toLanguageCode()
             val avsenderEnhetsId = request.avsenderEnhetsId
 
-            val brev = brevredigeringFacade.opprettBrev(
-                OpprettBrevHandlerImpl.Request(
+            val brev = opprettBrev(
+                OpprettBrevHandler.Request(
                     saksId = sak.saksId,
                     vedtaksId = request.vedtaksId,
                     brevkode = request.brevkode,

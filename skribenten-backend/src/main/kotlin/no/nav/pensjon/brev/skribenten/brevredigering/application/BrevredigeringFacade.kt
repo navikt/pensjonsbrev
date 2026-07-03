@@ -13,18 +13,12 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
-import java.sql.Connection
 
 class BrevredigeringFacade(
-    private val opprettBrev: OpprettBrevHandler,
     private val frigiReservasjon: UseCaseHandler<FrigiReservasjonHandler.Request, Unit, BrevredigeringError>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-) : HentBrevService, OpprettBrevService {
+) : HentBrevService {
 
-    override suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
-        suspendTransaction {
-            opprettBrev.invoke(request)
-        }
 
     override fun hentBrevInfo(brevId: BrevId): Dto.BrevInfo? =
         transaction { BrevredigeringEntity.findById(brevId)?.toBrevInfo(brevreservasjonPolicy) }

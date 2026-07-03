@@ -5,11 +5,9 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.*
 import no.nav.pensjon.brev.skribenten.letter.toEdit
-import no.nav.pensjon.brev.skribenten.model.BrevId
-import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.*
 import org.jetbrains.exposed.v1.jdbc.Database
 
 class TilbakestillBrevHandler(
@@ -17,8 +15,9 @@ class TilbakestillBrevHandler(
     private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
+    reserverBrevHandler: ReserverBrevHandler,
     database: Database,
-) : ReservertBrevHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering>(database, brevreservasjonPolicy) {
+) : ReservertBrevHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering>(database, reserverBrevHandler) {
 
     data class Request(
         override val brevId: BrevId,

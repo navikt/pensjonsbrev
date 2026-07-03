@@ -1,22 +1,21 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
-import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
-import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy.KanIkkeRedigere.LaastBrev
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
-import no.nav.pensjon.brev.skribenten.model.BrevId
-import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.*
 import org.jetbrains.exposed.v1.jdbc.Database
 
 class VeksleKlarStatusHandler(
     private val ferdigRedigertPolicy: FerdigRedigertPolicy,
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
+    reserverBrevHandler: ReserverBrevHandler,
     database: Database,
-) : ReservertBrevHandler<VeksleKlarStatusHandler.Request, Dto.BrevInfo>(database, brevreservasjonPolicy) {
+) : ReservertBrevHandler<VeksleKlarStatusHandler.Request, Dto.BrevInfo>(database, reserverBrevHandler) {
 
     data class Request(override val brevId: BrevId, val klar: Boolean) : BrevredigeringRequest
 

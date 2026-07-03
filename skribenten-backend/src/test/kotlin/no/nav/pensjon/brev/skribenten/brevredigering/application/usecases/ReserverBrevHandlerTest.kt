@@ -24,8 +24,6 @@ import kotlin.time.Duration.Companion.milliseconds
 
 class ReserverBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
-    private val reserverBrevHandler by lazy { ReserverBrevHandler(brevreservasjonPolicy, SharedPostgres.database) }
-
     suspend fun reserverBrev(
         brev: Dto.Brevredigering,
         principal: MockPrincipal = saksbehandler1Principal
