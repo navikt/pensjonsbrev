@@ -450,7 +450,7 @@ data class TBU010V(
                     }
                 }
 
-                showIf(flagg.visTotaltAntallBarn) {
+                showIf(barnetilleggFelles.notNull() or barnetilleggSaerkull.notNull()) {
                     ifNotNull(antallBarnTotalt) { antall ->
                         row {
                             cell {
@@ -500,7 +500,7 @@ data class TBU010V(
                     }
                 }
 
-                showIf(flagg.visSamletInntektBarnetillegg) {
+                showIf(barnetilleggFelles.notNull() or barnetilleggSaerkull.notNull()) {
                     row {
                         cell {
                             text(
@@ -526,7 +526,7 @@ data class TBU010V(
                     }
                 }
 
-                showIf(flagg.visSamletInntektAnnenForelder) {
+                showIf(barnetilleggFelles.notNull()) {
                     ifNotNull(barnetilleggFelles) { felles ->
                         ifNotNull(felles.inntektAnnenForelder) { inntekt ->
                             row {
