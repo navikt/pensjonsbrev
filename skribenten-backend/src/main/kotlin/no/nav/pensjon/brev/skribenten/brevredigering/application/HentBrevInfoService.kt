@@ -8,24 +8,31 @@ import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
+import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
-class BrevredigeringFacade(
-    private val brevreservasjonPolicy: BrevreservasjonPolicy,
-) : HentBrevService {
+interface HentBrevInfoService {
+    fun hentBrevForAlleSaker(saksIder: Set<SaksId>): List<Dto.BrevInfo>
+    fun hentBrevInfo(brevId: BrevId): Dto.BrevInfo?
+    fun hentBrevForSak(saksId: SaksId): List<Dto.BrevInfo>
+}
 
+class HentBrevInfoServiceImpl(
+    private val brevreservasjonPolicy: BrevreservasjonPolicy,
+    private val database: Database,
+) : HentBrevInfoService {
 
     override fun hentBrevInfo(brevId: BrevId): Dto.BrevInfo? =
-        transaction { BrevredigeringEntity.findById(brevId)?.toBrevInfo(brevreservasjonPolicy) }
+        transaction(db = database) { BrevredigeringEntity.findById(brevId)?.toBrevInfo(brevreservasjonPolicy) }
 
-    fun hentBrevForSak(saksId: SaksId): List<Dto.BrevInfo> =
-        transaction {
+    override fun hentBrevForSak(saksId: SaksId): List<Dto.BrevInfo> =
+        transaction(db = database) {
             BrevredigeringEntity.find { BrevredigeringTable.saksId eq saksId }
                 .map { it.toBrevInfo(brevreservasjonPolicy) }
         }
 
     override fun hentBrevForAlleSaker(saksIder: Set<SaksId>): List<Dto.BrevInfo> =
-        transaction {
+        transaction(db = database) {
             BrevredigeringEntity.find { BrevredigeringTable.saksId inList saksIder }
                 .map { it.toBrevInfo(brevreservasjonPolicy) }
         }

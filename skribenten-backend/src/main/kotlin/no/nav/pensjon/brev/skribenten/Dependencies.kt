@@ -11,8 +11,7 @@ import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceHttp
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacadeFactory
+import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevInfoServiceImpl
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.AttesterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreDistribusjonstypeHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreMottakerHandler
@@ -108,8 +107,8 @@ fun Application.configureDependencies() {
         provide(RenderService::class)
 
         provide(Dto2ApiService::class)
-        provide<BrevredigeringFacade>(BrevredigeringFacadeFactory::create)
         provide(ExternalAPIService::class)
+        provide(HentBrevInfoServiceImpl::class)
 
         provide(AttesterBrevPolicy::class)
         provide(BrevreservasjonPolicy::class)

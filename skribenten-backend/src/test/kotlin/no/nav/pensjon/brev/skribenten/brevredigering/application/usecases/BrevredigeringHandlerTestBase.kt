@@ -254,7 +254,6 @@ abstract class BrevredigeringHandlerTestBase {
             database = SharedPostgres.database,
         )
     }
-    protected val brevredigeringFacade = createFacade()
 
     companion object Fixtures {
         init {
@@ -375,8 +374,6 @@ abstract class BrevredigeringHandlerTestBase {
             null -> throw AssertionError("Resultat var null")
         }
     }
-
-    protected fun createFacade(): BrevredigeringFacade = BrevredigeringFacadeFactory.create()
 
     protected suspend fun opprettBrev(
         principal: UserPrincipal = saksbehandler1Principal,

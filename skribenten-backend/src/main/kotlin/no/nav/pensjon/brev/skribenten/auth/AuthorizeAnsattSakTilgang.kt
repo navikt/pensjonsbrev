@@ -5,7 +5,7 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.util.*
 import io.ktor.util.*
-import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevInfoService
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.model.Pdl
@@ -38,14 +38,14 @@ val AuthorizeAnsattSakTilgang =
     }
 
 class AuthorizeAnsattSakTilgangForBrevConfiguration : AuthorizeAnsattSakTilgangConfiguration() {
-    lateinit var hentBrevService: HentBrevService
+    lateinit var hentBrevInfoService: HentBrevInfoService
 }
 
 val AuthorizeAnsattSakTilgangForBrev =
     createRouteScopedPlugin("AuthorizeAnsattSakTilgangForBrev", ::AuthorizeAnsattSakTilgangForBrevConfiguration) {
         on(PrincipalInContext.Hook) { call ->
             val brevId = call.parameters.brevId()
-            val brev = pluginConfig.hentBrevService.hentBrevInfo(brevId)
+            val brev = pluginConfig.hentBrevInfoService.hentBrevInfo(brevId)
 
             if (brev != null) {
                 validerTilgangTilSak(call, brev.saksId)

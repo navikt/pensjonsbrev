@@ -21,7 +21,7 @@ import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AUTHENTICATION_REALM_NAME
-import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevInfoService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
@@ -101,16 +101,17 @@ class ExternalAPIRouteTest {
         }
     """.trimIndent()
 
-    private val hentBrevService = object : HentBrevService {
+    private val hentBrevInfoService = object : HentBrevInfoService {
         override fun hentBrevForAlleSaker(saksIder: Set<SaksId>) = listOf(brevInfo)
         override fun hentBrevInfo(brevId: BrevId) = brevInfo
+        override fun hentBrevForSak(saksId: SaksId): List<Dto.BrevInfo> = hentBrevForAlleSaker(setOf(saksId))
     }
 
     private fun lagExternalAPIService(
         opprettBrevResult: Outcome<Dto.Brevredigering, BrevredigeringError> = Outcome.success(successBrevredigering)
     ) = ExternalAPIService(
         config = ExternalApiConfig(skribentenWebUrl = "https://example.com"),
-        hentBrevService = hentBrevService,
+        hentBrevInfoService = hentBrevInfoService,
         brevmalService = BrevmalService(
             brevbakerService = FakeBrevbakerService(),
             penClient = PenClientStub(),

@@ -7,7 +7,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
+import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevInfoService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.DiffBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.FrigiReservasjonHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OppdaterBrevHandler
@@ -24,19 +24,19 @@ context(app: Application)
 fun Route.brev() {
     val pdlService: PdlService by app.dependencies
     val fagsakService: FagsakService by app.dependencies
-    val brevredigeringFacade: BrevredigeringFacade by app.dependencies
     val dto2ApiService: Dto2ApiService by app.dependencies
 
     route("/brev/{brevId}") {
+        val hentBrevInfoService: HentBrevInfoService by app.dependencies
         install(AuthorizeAnsattSakTilgangForBrev) {
             this.pdlService = pdlService
             this.fagsakService = fagsakService
-            this.hentBrevService = brevredigeringFacade
+            this.hentBrevInfoService = hentBrevInfoService
         }
 
         get("/info") {
             val brevId = call.parameters.brevId()
-            val brev = brevredigeringFacade.hentBrevInfo(brevId)?.let { dto2ApiService.toApi(it) }
+            val brev = hentBrevInfoService.hentBrevInfo(brevId)?.let { dto2ApiService.toApi(it) }
 
             if (brev != null) {
                 call.respond(HttpStatusCode.OK, brev)
