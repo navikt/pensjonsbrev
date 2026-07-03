@@ -15,7 +15,7 @@ abstract class TransactionHandler<Request, Response, Error>(private val database
     abstract suspend fun execute(request: Request): Outcome<Response, Error>?
     open fun transactionIsolation(): Int? = null
 
-    override suspend fun invoke(request: Request): Outcome<Response, Error>? =
+    final override suspend fun invoke(request: Request): Outcome<Response, Error>? =
         isolatedTransaction(database = database, isolation = transactionIsolation()) {
             execute(request)?.onError { rollback() }
         }

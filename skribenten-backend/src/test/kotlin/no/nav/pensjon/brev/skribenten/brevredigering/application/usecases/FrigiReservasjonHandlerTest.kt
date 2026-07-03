@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
+import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -52,10 +53,12 @@ class FrigiReservasjonHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(etterFrigi.info.redigeresAv).isNull()
     }
 
+    private val frigiReservasjonHandler by lazy { FrigiReservasjonHandler(brevreservasjonPolicy, SharedPostgres.database) }
+
     private suspend fun frigiReservasjon(
         brevId: BrevId,
         principal: no.nav.pensjon.brev.skribenten.auth.UserPrincipal = saksbehandler1Principal,
     ): Outcome<Unit, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.frigiReservasjon(FrigiReservasjonHandler.Request(brevId = brevId))
+        frigiReservasjonHandler(FrigiReservasjonHandler.Request(brevId = brevId))
     }
 }

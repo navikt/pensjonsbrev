@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
 import kotlinx.coroutines.*
 import no.nav.pensjon.brev.skribenten.MockPrincipal
-import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError

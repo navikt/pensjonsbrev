@@ -67,9 +67,10 @@ fun Route.brev() {
                 apiRespond(dto2ApiService, reservasjon)
             }
 
+            val frigiReservasjon: FrigiReservasjonHandler by app.dependencies
             delete {
                 val brevId = call.parameters.brevId()
-                val result = brevredigeringFacade.frigiReservasjon(FrigiReservasjonHandler.Request(brevId = brevId))
+                val result = frigiReservasjon(FrigiReservasjonHandler.Request(brevId = brevId))
                 apiRespond(dto2ApiService, result)
             }
         }

@@ -7,15 +7,17 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolic
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import org.jetbrains.exposed.v1.jdbc.Database
 import org.slf4j.LoggerFactory
 
 class FrigiReservasjonHandler(
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-) : UseCaseHandler<FrigiReservasjonHandler.Request, Unit, BrevredigeringError> {
+    database: Database,
+) : TransactionHandler<FrigiReservasjonHandler.Request, Unit, BrevredigeringError>(database) {
 
     data class Request(override val brevId: BrevId) : BrevredigeringRequest
 
-    override suspend operator fun invoke(request: Request): Outcome<Unit, BrevredigeringError>? {
+    override suspend fun execute(request: Request): Outcome<Unit, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
         val principal = PrincipalInContext.require()
         val reservasjon = brev.gjeldendeReservasjon(brevreservasjonPolicy) ?: return success(Unit)

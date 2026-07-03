@@ -66,7 +66,7 @@ class ExternalAPIServiceTest {
         config = ExternalApiConfig(skribentenWebUrl = skribentenWebUrl),
         hentBrevService = object : HentBrevService {
             override fun hentBrevForAlleSaker(saksIder: Set<SaksId>) = listOf(brevDto)
-            override fun hentBrevInfo(brevId: BrevId): Dto.BrevInfo? = brevDto
+            override fun hentBrevInfo(brevId: BrevId): Dto.BrevInfo = brevDto
         },
         brevmalService = BrevmalService(
             brevbakerService = FakeBrevbakerService(redigerbareMaler = mutableMapOf(Testbrevkoder.INFORMASJONSBREV to brevmal)),
