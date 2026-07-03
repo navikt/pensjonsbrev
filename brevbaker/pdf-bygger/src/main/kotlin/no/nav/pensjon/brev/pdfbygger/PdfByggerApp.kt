@@ -22,8 +22,10 @@ import io.ktor.util.logging.Logger
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.PDFRequestV2
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
+import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2
 import org.slf4j.LoggerFactory
 
 fun main(args: Array<String>) = EngineMain.main(args)
@@ -94,6 +96,14 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
             val request = call.receive<PDFRequest>()
             val result = typstCompileService.createLetter {
                 TypstDocumentRenderer.render(request, it)
+            }
+            handleResult(result, call.application.environment.log)
+        }
+
+        post("/v2/produserBrev") {
+            val request = call.receive<PDFRequestV2>()
+            val result = typstCompileService.createLetter {
+                TypstDocumentRendererV2.render(request, it)
             }
             handleResult(result, call.application.environment.log)
         }
