@@ -25,14 +25,18 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRe
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SlettRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreValgteVedleggHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.FrigiReservasjonHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.TilbakestillBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevAttesteringHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OppdaterBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OpprettBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.ReserverBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.VeksleKlarStatusHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.AttesterBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.FerdigRedigertPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.SendBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.SlettBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
@@ -107,29 +111,34 @@ fun Application.configureDependencies() {
         provide<BrevredigeringFacade>(BrevredigeringFacadeFactory::create)
         provide(ExternalAPIService::class)
 
-        provide(RedigerBrevPolicy::class)
-        provide(BrevreservasjonPolicy::class)
         provide(AttesterBrevPolicy::class)
+        provide(BrevreservasjonPolicy::class)
         provide(FerdigRedigertPolicy::class)
+        provide(OpprettBrevPolicy::class)
+        provide(RedigerBrevPolicy::class)
         provide(SendBrevPolicy::class)
         provide(SlettBrevPolicy::class)
-        provide(OppdaterBrevHandler::class)
+
         provide(AttesterBrevHandler::class)
-        provide(HentBrevHandler::class)
-        provide(HentBrevAttesteringHandler::class)
-        provide(VeksleKlarStatusHandler::class)
+        provide(DiffBrevHandler::class)
         provide(EndreDistribusjonstypeHandler::class)
         provide(EndreMottakerHandler::class)
-        provide(TilbakestillBrevHandler::class)
-        provide(EndreValgteVedleggHandler::class)
         provide(EndreRedigertVedleggHandler::class)
-        provide(SlettRedigertVedleggHandler::class)
-        provide(HentRedigertVedleggHandler::class)
-        provide(HentRedigerbareVedleggHandler::class)
+        provide(EndreValgteVedleggHandler::class)
+        provide(FrigiReservasjonHandler::class)
+        provide(HentBrevAttesteringHandler::class)
+        provide(HentBrevHandler::class)
         provide(HentEllerOpprettPdfHandler::class)
-        provide(DiffBrevHandler::class)
+        provide(HentRedigerbareVedleggHandler::class)
+        provide(HentRedigertVedleggHandler::class)
+        provide(OppdaterBrevHandler::class)
+        provide(OpprettBrevHandler::class)
+        provide(ReserverBrevHandler::class)
         provide(SendBrevHandler::class)
         provide(SlettBrevHandler::class)
+        provide(SlettRedigertVedleggHandler::class)
+        provide(TilbakestillBrevHandler::class)
+        provide(VeksleKlarStatusHandler::class)
     }
 
     launch { Features.init(dependencies.resolve()) }
