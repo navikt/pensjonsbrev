@@ -27,14 +27,6 @@ import kotlin.contracts.contract
 
 data class LetterWithAttachmentsMarkupV2(val letterMarkup: LetterMarkupV2, val attachments: List<LetterMarkupV2.Attachment>)
 
-/**
- * Renders a LetterTemplate directly to LetterMarkupV2. This is an independent renderer from
- * Letter2Markup (v1) - it does not go through v1's LetterMarkup at any point. The only stable,
- * well-defined direction for converting between the two markup shapes is v1 -> v2 (v2 -> v1 is
- * ambiguous, since v1 nests tables/lists inside a paragraph while v2 has them as sibling blocks).
- * That v1 -> v2 conversion is a separate future concern (used by pdf-bygger integration), not this
- * renderer.
- */
 @OptIn(InterneDataklasser::class)
 internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>() {
     private val languageSettings = documentLanguageSettings
@@ -145,13 +137,6 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
             is Element.OutlineContent.Title3 -> listOf(BlockImpl.Title4Impl(context.stableHash(element), renderText(context, element.text)))
         }
 
-    /**
-     * v1 nests tables/lists as ParagraphContent *inside* a Paragraph block. v2 makes them
-     * top-level sibling blocks. To preserve reading order without ambiguity, a paragraph
-     * containing a table/list mid-stream is split: any accumulated text becomes its own
-     * Paragraph block, then the table/list becomes its own block, and text accumulation
-     * continues in a fresh Paragraph block afterward.
-     */
     private fun renderParagraphAsBlocks(context: RenderContext, paragraph: Element.OutlineContent.Paragraph<*>): List<Block> {
         val blocks = mutableListOf<Block>()
         var currentText = mutableListOf<Text>()
