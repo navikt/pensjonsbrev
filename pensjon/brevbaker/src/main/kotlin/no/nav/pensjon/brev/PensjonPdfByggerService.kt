@@ -18,6 +18,7 @@ import kotlinx.io.IOException
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFTimeoutException
+import no.nav.pensjon.brev.PDFRequestV2
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration
@@ -97,6 +98,19 @@ class PensjonPdfByggerService(
                 // The solution is to seemingly do the same, but with creating a objectmapper outside of content-negotiation instead of simply using the following line:
                 // setBody(pdfRequest)
                 // this needs further investigation
+                setBody(objectmapper.writeValueAsBytes(pdfRequest))
+            }.body()
+        }
+    } catch (e: CancellationException) {
+        throw PDFTimeoutException("Spent more than $timeout trying to compile pdf", e)
+    } ?: throw PDFTimeoutException("Spent more than $timeout trying to compile pdf")
+
+    override suspend fun producePDFV2(pdfRequest: PDFRequestV2): PDFCompilationOutput = try {
+        withTimeoutOrNull(timeout) {
+            httpClient.post("$pdfByggerUrl/v2/produserBrev") {
+                contentType(ContentType.Application.Json)
+                accept(ContentType.Application.Json)
+                header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
                 setBody(objectmapper.writeValueAsBytes(pdfRequest))
             }.body()
         }
