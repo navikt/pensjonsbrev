@@ -3,6 +3,7 @@ package no.nav.brev.brevbaker.template.render
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.Listetype
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.StableHash.Companion.with
 import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.documentLanguageSettings
 import no.nav.pensjon.brev.template.render.fulltNavn
@@ -140,34 +141,45 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
     private fun renderParagraphAsBlocks(context: RenderContext, paragraph: Element.OutlineContent.Paragraph<*>): List<Block> {
         val blocks = mutableListOf<Block>()
         var currentText = mutableListOf<Text>()
-        var fragmentIndex = 0
+        var currentSources = mutableListOf<StableHash>()
 
+        // A split-out paragraph fragment's id is derived only from its own text content, hashed
+        // exactly as a standalone Paragraph element would be (StableHash.of(content) folds each
+        // Content wrapper's hash, which equals the wrapped element's hash). This keeps the id
+        // independent of sibling content and of the fragment's position, so that hoisting
+        // tables/lists/forms out of a paragraph — here, or later in a v2 DSL that authors them as
+        // sibling elements — produces the same stable id. See the id-stability contract test in
+        // Letter2MarkupV2Test.
         fun flushParagraph() {
             if (currentText.isNotEmpty()) {
-                blocks.add(BlockImpl.ParagraphImpl(Objects.hash(context.stableHash(paragraph), fragmentIndex), currentText))
-                fragmentIndex++
+                val fragmentHash = StableHash.of(currentSources.toList()).with(paragraph.stableHashModifier)
+                blocks.add(BlockImpl.ParagraphImpl(context.stableHash(fragmentHash), currentText))
                 currentText = mutableListOf()
+                currentSources = mutableListOf()
             }
         }
 
-        render(context, paragraph.paragraph) { paragraphContext, element ->
+        render(context, paragraph.paragraph) { context, element ->
             when (element) {
-                is Element.OutlineContent.ParagraphContent.Text -> currentText.addAll(renderTextContent(paragraphContext, element))
+                is Element.OutlineContent.ParagraphContent.Text -> {
+                    currentText.addAll(renderTextContent(context, element))
+                    currentSources.add(element)
+                }
                 is Element.OutlineContent.ParagraphContent.ItemList -> {
                     flushParagraph()
-                    renderItemList(paragraphContext, element)?.let { blocks.add(it) }
+                    renderItemList(context, element)?.let { blocks.add(it) }
                 }
                 is Element.OutlineContent.ParagraphContent.Table -> {
                     flushParagraph()
-                    renderTable(paragraphContext, element)?.let { blocks.add(it) }
+                    renderTable(context, element)?.let { blocks.add(it) }
                 }
                 is Element.OutlineContent.ParagraphContent.Form.Text -> {
                     flushParagraph()
-                    blocks.add(renderFormText(paragraphContext, element))
+                    blocks.add(renderFormText(context, element))
                 }
                 is Element.OutlineContent.ParagraphContent.Form.MultipleChoice -> {
                     flushParagraph()
-                    blocks.add(renderFormChoice(paragraphContext, element))
+                    blocks.add(renderFormChoice(context, element))
                 }
             }
         }

@@ -67,6 +67,35 @@ class Letter2MarkupV2Test {
     }
 
     @Test
+    fun `paragraph fragment ids are independent of hoisted siblings and position`() {
+        // Compatibility contract for a future v2 DSL: a paragraph that gets split by a table must
+        // yield the same paragraph-block ids as if the author had written the texts and the table as
+        // separate sibling elements. Fragment ids therefore depend only on the fragment's own text,
+        // not on the surrounding paragraph content or the fragment's position.
+        val combined = renderTemplate(EmptyAutobrevdata) {
+            paragraph {
+                text(bokmal { +"a" })
+                table(header = { column { text(bokmal { +"col" }) } }) {
+                    row { cell { text(bokmal { +"x" }) } }
+                }
+                text(bokmal { +"b" })
+            }
+        }
+        val split = renderTemplate(EmptyAutobrevdata) {
+            paragraph { text(bokmal { +"a" }) }
+            paragraph {
+                table(header = { column { text(bokmal { +"col" }) } }) {
+                    row { cell { text(bokmal { +"x" }) } }
+                }
+            }
+            paragraph { text(bokmal { +"b" }) }
+        }
+
+        assertEquals(3, combined.blocks.size)
+        assertEquals(combined.blocks.map { it.id }, split.blocks.map { it.id })
+    }
+
+    @Test
     fun `list in the middle of a paragraph splits it into three blocks`() {
         val result = renderTemplate(EmptyAutobrevdata) {
             paragraph {
