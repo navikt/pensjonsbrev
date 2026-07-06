@@ -131,8 +131,6 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
     private fun renderOutlineContent(context: RenderContext, element: Element.OutlineContent<*>): List<Block> =
         when (element) {
             is Element.OutlineContent.Paragraph -> renderParagraphAsBlocks(context, element)
-            // Title renumbering is a pure rename: outline title1/title2/title3 become Title2/Title3/Title4
-            // in v2, since the letter's own title (template.title) now occupies the name "title1".
             is Element.OutlineContent.Title1 -> listOf(BlockImpl.Title2Impl(context.stableHash(element), renderText(context, element.text)))
             is Element.OutlineContent.Title2 -> listOf(BlockImpl.Title3Impl(context.stableHash(element), renderText(context, element.text)))
             is Element.OutlineContent.Title3 -> listOf(BlockImpl.Title4Impl(context.stableHash(element), renderText(context, element.text)))
@@ -143,13 +141,6 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
         var currentText = mutableListOf<Text>()
         var currentSources = mutableListOf<StableHash>()
 
-        // A split-out paragraph fragment's id is derived only from its own text content, hashed
-        // exactly as a standalone Paragraph element would be (StableHash.of(content) folds each
-        // Content wrapper's hash, which equals the wrapped element's hash). This keeps the id
-        // independent of sibling content and of the fragment's position, so that hoisting
-        // tables/lists/forms out of a paragraph — here, or later in a v2 DSL that authors them as
-        // sibling elements — produces the same stable id. See the id-stability contract test in
-        // Letter2MarkupV2Test.
         fun flushParagraph() {
             if (currentText.isNotEmpty()) {
                 val fragmentHash = StableHash.of(currentSources.toList()).with(paragraph.stableHashModifier)
