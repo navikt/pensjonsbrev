@@ -20,7 +20,7 @@ data class SkribentenConfig(
 data class ValkeyConfig(
     val enabled: Boolean,
     val host: String,
-    val port: String,
+    val port: Int,
     val username: String,
     val password: String,
     val ssl: Boolean,

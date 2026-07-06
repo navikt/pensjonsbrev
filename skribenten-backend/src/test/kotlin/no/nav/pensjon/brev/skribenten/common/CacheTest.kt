@@ -24,7 +24,7 @@ class CacheTest {
         valkeyContainer.start()
         valkeyConfig = ValkeyConfig(
             host = valkeyContainer.host,
-            port = valkeyContainer.getMappedPort(6379).toString(),
+            port = valkeyContainer.getMappedPort(6379),
             username = "default",
             password = "",
             ssl = false,
