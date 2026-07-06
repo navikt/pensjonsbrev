@@ -231,7 +231,7 @@ class ItemListV2Builder {
 
     fun item(block: TextV2Builder.() -> Unit) {
         val text = TextV2Builder().apply(block).build()
-        items.add(BlockImpl.ItemListImpl.ItemImpl(id = text.fold(1) { hash, e -> 31 * hash + e.id }, content = text))
+        items.add(BlockImpl.ItemImpl(id = text.fold(1) { hash, e -> 31 * hash + e.id }, content = text))
     }
 
     fun build(): Block.ListContent.ItemList =

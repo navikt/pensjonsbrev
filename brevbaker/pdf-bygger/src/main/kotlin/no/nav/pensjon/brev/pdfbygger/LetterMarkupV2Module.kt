@@ -23,7 +23,7 @@ internal object LetterMarkupV2Module : SimpleModule() {
         addAbstractTypeMapping<LetterMarkupV2.Saksinformasjon, LetterMarkupV2Impl.SaksinformasjonImpl>()
         addAbstractTypeMapping<LetterMarkupV2.Signatur, LetterMarkupV2Impl.SignaturImpl>()
         addAbstractTypeMapping<LetterMarkupV2.SaksbehandlerSignatur, LetterMarkupV2Impl.SaksbehandlerSignaturImpl>()
-        addAbstractTypeMapping<LetterMarkupV2.Block.ListContent.Item, BlockImpl.ItemListImpl.ItemImpl>()
+        addAbstractTypeMapping<LetterMarkupV2.Block.ListContent.Item, BlockImpl.ItemImpl>()
         addAbstractTypeMapping<LetterMarkupV2.Text.Literal, TextImpl.LiteralImpl>()
         addAbstractTypeMapping<LetterMarkupV2.Text.Variable, TextImpl.VariableImpl>()
         addAbstractTypeMapping<LetterMarkupV2.Text.NewLine, TextImpl.NewLineImpl>()
