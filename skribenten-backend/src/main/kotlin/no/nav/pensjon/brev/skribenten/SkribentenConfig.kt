@@ -53,7 +53,9 @@ data class AzureADConfig(
     val clientId: String,
     val tokenEndpoint: String,
     val clientSecret: String,
-    val preAuthApps: List<PreAuthorizedApp>,
+    // NB: HOCON env-var substitution only exposes this as an opaque JSON string (not a real
+    // HOCON list), so it must be parsed manually - see Authorization.kt's `preAuthorizedApps`.
+    val preAuthApps: String,
 ) {
     @Serializable
     data class PreAuthorizedApp(val name: String, val clientId: String)

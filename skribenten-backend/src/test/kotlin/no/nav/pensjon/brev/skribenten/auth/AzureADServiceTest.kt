@@ -42,7 +42,7 @@ private val fakeJwtPayload = object : Payload {
 }
 
 class AzureADServiceTest {
-    private val jwtConfig = AzureADConfig("utsteder", "jwks url", "skribenten-client-id", "http://localhost:9991/token", "skribenten-secret", emptyList())
+    private val jwtConfig = AzureADConfig("utsteder", "jwks url", "skribenten-client-id", "http://localhost:9991/token", "skribenten-secret", "[]")
     private val objectMapper = jacksonObjectMapper()
     private val principal = JwtUserPrincipal(UserAccessToken("access_token 123532"), fakeJwtPayload)
 

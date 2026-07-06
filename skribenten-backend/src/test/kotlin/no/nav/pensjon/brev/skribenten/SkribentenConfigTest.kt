@@ -5,6 +5,7 @@ import com.typesafe.config.ConfigParseOptions.defaults
 import com.typesafe.config.ConfigResolveOptions
 import io.ktor.server.config.HoconApplicationConfig
 import io.ktor.server.config.getAs
+import kotlinx.serialization.json.Json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -24,7 +25,16 @@ class SkribentenConfigTest {
             .withFallback(fakeSubstitutionsFor("application.conf"))
             .resolve()
 
-        HoconApplicationConfig(resolved).config("skribenten").getAs<SkribentenConfig>()
+        val config = HoconApplicationConfig(resolved).config("skribenten").getAs<SkribentenConfig>()
+
+        // preAuthApps is only ever exposed as an opaque JSON string by HOCON env-var substitution
+        // (it is not parsed into a real HOCON list), so it must be decoded explicitly here too -
+        // see Authorization.kt's `parsePreAuthorizedApps`.
+        val preAuthApps = Json.decodeFromString<List<AzureADConfig.PreAuthorizedApp>>(config.azureAD.preAuthApps)
+        assertThat(preAuthApps).containsExactly(
+            AzureADConfig.PreAuthorizedApp("abc:def:hij", "1234"),
+            AzureADConfig.PreAuthorizedApp("klm:nop:qrs", "567"),
+        )
     }
 
     /**
@@ -52,7 +62,7 @@ class SkribentenConfigTest {
      */
     private fun fakeValueFor(name: String): Any = when {
         name.contains("PORT") -> 0
-        name == "AZURE_APP_PRE_AUTHORIZED_APPS" -> emptyList<String>()
+        name == "AZURE_APP_PRE_AUTHORIZED_APPS" -> """[{"name":"abc:def:hij", "clientId": "1234"}, {"name":"klm:nop:qrs", "clientId": "567"}]"""
         else -> "fake-$name"
     }
 }
