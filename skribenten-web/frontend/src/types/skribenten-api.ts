@@ -2894,9 +2894,9 @@ export interface components {
         BrevSystem: "EXSTREAM" | "BREVBAKER";
         /**
          * BrevdataDtoDokumentkategoriCode
-         * @enum {string|null}
+         * @enum {string}
          */
-        BrevdataDtoDokumentkategoriCode: "B" | "E_BLANKETT" | "IB" | "SED" | "VB" | null;
+        BrevdataDtoDokumentkategoriCode: "B" | "E_BLANKETT" | "IB" | "SED" | "VB";
         /**
          * SpraakKode
          * @enum {string}
@@ -2906,7 +2906,7 @@ export interface components {
         ApiBrevmal: {
             brevkategori?: string | null;
             brevsystem: components["schemas"]["BrevSystem"];
-            dokumentkategoriCode?: components["schemas"]["BrevdataDtoDokumentkategoriCode"];
+            dokumentkategoriCode?: components["schemas"]["BrevdataDtoDokumentkategoriCode"] | null;
             id: string;
             name: string;
             redigerbarBrevtittel: boolean;
@@ -3068,12 +3068,12 @@ export interface components {
         };
         /**
          * ApiBestillOgRedigerBrevResponseFailureType
-         * @enum {string|null}
+         * @enum {string}
          */
-        ApiBestillOgRedigerBrevResponseFailureType: "EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT" | "EXSTREAM_REDIGERING_GENERELL" | "FERDIGSTILLING_TIMEOUT" | "SAF_ERROR" | "SKRIBENTEN_INTERNAL_ERROR" | "ENHET_UNAUTHORIZED" | "NAVANSATT_MANGLER_NAVN" | null;
+        ApiBestillOgRedigerBrevResponseFailureType: "EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT" | "EXSTREAM_REDIGERING_GENERELL" | "FERDIGSTILLING_TIMEOUT" | "SAF_ERROR" | "SKRIBENTEN_INTERNAL_ERROR" | "ENHET_UNAUTHORIZED" | "NAVANSATT_MANGLER_NAVN";
         /** ApiBestillOgRedigerBrevResponse */
         ApiBestillOgRedigerBrevResponse: {
-            failureType?: components["schemas"]["ApiBestillOgRedigerBrevResponseFailureType"];
+            failureType?: components["schemas"]["ApiBestillOgRedigerBrevResponseFailureType"] | null;
             journalpostId?: number | null;
             url?: string | null;
         };
@@ -3097,13 +3097,13 @@ export interface components {
         };
         /**
          * KrrServiceKontaktinfoResponseFailureType
-         * @enum {string|null}
+         * @enum {string}
          */
-        KrrServiceKontaktinfoResponseFailureType: "NOT_FOUND" | "ERROR" | null;
+        KrrServiceKontaktinfoResponseFailureType: "NOT_FOUND" | "ERROR";
         /** KrrServiceKontaktinfoResponse */
         KrrServiceKontaktinfoResponse: {
-            failure?: components["schemas"]["KrrServiceKontaktinfoResponseFailureType"];
-            spraakKode?: components["schemas"]["SpraakKode"];
+            failure?: components["schemas"]["KrrServiceKontaktinfoResponseFailureType"] | null;
+            spraakKode?: components["schemas"]["SpraakKode"] | null;
         };
         /** NavEnhet */
         NavEnhet: {
@@ -3117,15 +3117,15 @@ export interface components {
         Distribusjon: "SENTRALPRINT" | "LOKALPRINT";
         /**
          * DtoMottakerManueltAdressertTil
-         * @enum {string|null}
+         * @enum {string}
          */
-        DtoMottakerManueltAdressertTil: "BRUKER" | "ANNEN" | "IKKE_RELEVANT" | null;
+        DtoMottakerManueltAdressertTil: "BRUKER" | "ANNEN" | "IKKE_RELEVANT";
         /** ApiOverstyrtMottakerNorskAdresse */
         ApiOverstyrtMottakerNorskAdresse: {
             adresselinje1?: string | null;
             adresselinje2?: string | null;
             adresselinje3?: string | null;
-            manueltAdressertTil?: components["schemas"]["DtoMottakerManueltAdressertTil"];
+            manueltAdressertTil?: components["schemas"]["DtoMottakerManueltAdressertTil"] | null;
             navn: string;
             postnummer: string;
             poststed: string;
@@ -3151,7 +3151,7 @@ export interface components {
             adresselinje2?: string | null;
             adresselinje3?: string | null;
             landkode: string;
-            manueltAdressertTil?: components["schemas"]["DtoMottakerManueltAdressertTil"];
+            manueltAdressertTil?: components["schemas"]["DtoMottakerManueltAdressertTil"] | null;
             navn: string;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -3160,7 +3160,7 @@ export interface components {
             type: "UtenlandskAdresse";
         };
         /** ApiOverstyrtMottaker */
-        ApiOverstyrtMottaker: components["schemas"]["ApiOverstyrtMottakerNorskAdresse"] | components["schemas"]["ApiOverstyrtMottakerSamhandler"] | components["schemas"]["ApiOverstyrtMottakerUtenlandskAdresse"] | null;
+        ApiOverstyrtMottaker: components["schemas"]["ApiOverstyrtMottakerNorskAdresse"] | components["schemas"]["ApiOverstyrtMottakerSamhandler"] | components["schemas"]["ApiOverstyrtMottakerUtenlandskAdresse"];
         /** ApiNavAnsatt */
         ApiNavAnsatt: {
             id: string;
@@ -3192,7 +3192,7 @@ export interface components {
         };
         /** ApiBrevStatusKlar */
         ApiBrevStatusKlar: {
-            attestertAv?: components["schemas"]["ApiNavAnsatt"];
+            attestertAv?: components["schemas"]["ApiNavAnsatt"] | null;
             /**
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
@@ -3219,7 +3219,7 @@ export interface components {
             distribusjonstype: components["schemas"]["Distribusjon"];
             id: number;
             journalpostId?: number | null;
-            mottaker?: components["schemas"]["ApiOverstyrtMottaker"];
+            mottaker?: components["schemas"]["ApiOverstyrtMottaker"] | null;
             /** Format: date-time */
             opprettet: string;
             opprettetAv: components["schemas"]["ApiNavAnsatt"];
@@ -3235,7 +3235,7 @@ export interface components {
         ApiOpprettBrevRequest: {
             avsenderEnhetsId: string;
             brevkode: string;
-            mottaker?: components["schemas"]["ApiOverstyrtMottaker"];
+            mottaker?: components["schemas"]["ApiOverstyrtMottaker"] | null;
             reserverForRedigering?: boolean | null;
             saksbehandlerValg: {
                 [key: string]: unknown;
@@ -3270,7 +3270,7 @@ export interface components {
         EditParagraphContentType: "ITEM_LIST" | "LITERAL" | "VARIABLE" | "TABLE" | "NEW_LINE";
         /** EditParagraphContentTextLiteral */
         EditParagraphContentTextLiteral: {
-            editedFontType?: components["schemas"]["EditParagraphContentTextFontType"];
+            editedFontType?: components["schemas"]["EditParagraphContentTextFontType"] | null;
             editedText?: string | null;
             fontType: components["schemas"]["EditParagraphContentTextFontType"];
             id?: number | null;
@@ -3393,7 +3393,7 @@ export interface components {
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
-            originalType?: components["schemas"]["EditBlockType"];
+            originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -3408,7 +3408,7 @@ export interface components {
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
-            originalType?: components["schemas"]["EditBlockType"];
+            originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -3423,7 +3423,7 @@ export interface components {
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
-            originalType?: components["schemas"]["EditBlockType"];
+            originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -3438,7 +3438,7 @@ export interface components {
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
-            originalType?: components["schemas"]["EditBlockType"];
+            originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -3543,10 +3543,10 @@ export interface components {
             beskrivelse?: string | null;
             brevIkkeStoettet?: string | null;
             tekniskgrunn?: string | null;
-        } | null;
+        };
         /** ApiBestillBrevResponse */
         ApiBestillBrevResponse: {
-            error?: components["schemas"]["ApiBestillBrevResponseError"];
+            error?: components["schemas"]["ApiBestillBrevResponseError"] | null;
             journalpostId?: number | null;
         };
         /** ApiOppdaterAttesteringRequest */
@@ -3639,20 +3639,20 @@ export interface components {
         };
         /**
          * HentSamhandlerResponseDtoFailureType
-         * @enum {string|null}
+         * @enum {string}
          */
-        HentSamhandlerResponseDtoFailureType: "GENERISK" | "IKKE_FUNNET" | null;
+        HentSamhandlerResponseDtoFailureType: "GENERISK" | "IKKE_FUNNET";
         /** HentSamhandlerResponseDtoSuccess */
         HentSamhandlerResponseDtoSuccess: {
             idType: string;
             navn: string;
             offentligId: string;
             samhandlerType: string;
-        } | null;
+        };
         /** HentSamhandlerResponseDto */
         HentSamhandlerResponseDto: {
-            failure?: components["schemas"]["HentSamhandlerResponseDtoFailureType"];
-            success?: components["schemas"]["HentSamhandlerResponseDtoSuccess"];
+            failure?: components["schemas"]["HentSamhandlerResponseDtoFailureType"] | null;
+            success?: components["schemas"]["HentSamhandlerResponseDtoSuccess"] | null;
         };
         /** HentSamhandlerAdresseRequestDto */
         HentSamhandlerAdresseRequestDto: {
@@ -3667,16 +3667,16 @@ export interface components {
             navn: string;
             postnr?: string | null;
             poststed?: string | null;
-        } | null;
+        };
         /**
          * HentSamhandlerAdresseResponseDtoFailureType
-         * @enum {string|null}
+         * @enum {string}
          */
-        HentSamhandlerAdresseResponseDtoFailureType: "NOT_FOUND" | "GENERISK" | null;
+        HentSamhandlerAdresseResponseDtoFailureType: "NOT_FOUND" | "GENERISK";
         /** HentSamhandlerAdresseResponseDto */
         HentSamhandlerAdresseResponseDto: {
-            adresse?: components["schemas"]["HentSamhandlerAdresseResponseDtoSamhandlerPostadresse"];
-            failureType?: components["schemas"]["HentSamhandlerAdresseResponseDtoFailureType"];
+            adresse?: components["schemas"]["HentSamhandlerAdresseResponseDtoSamhandlerPostadresse"] | null;
+            failureType?: components["schemas"]["HentSamhandlerAdresseResponseDtoFailureType"] | null;
         };
         /** ApiUserInfo */
         ApiUserInfo: {
