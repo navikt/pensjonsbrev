@@ -249,7 +249,7 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
     private fun renderItemList(context: RenderContext, itemList: Element.OutlineContent.ParagraphContent.ItemList<*>): ListContent? =
         buildList {
             render(context, itemList.items) { itemContext, item ->
-                add(BlockImpl.ItemListImpl.ItemImpl(itemContext.stableHash(item), renderText(itemContext, item.text)))
+                add(BlockImpl.ItemImpl(itemContext.stableHash(item), renderText(itemContext, item.text)))
             }
         }.takeIf { it.isNotEmpty() }?.let { items ->
             when (itemList.type) {
