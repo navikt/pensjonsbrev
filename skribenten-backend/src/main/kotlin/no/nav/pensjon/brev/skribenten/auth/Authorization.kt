@@ -6,8 +6,6 @@ import io.ktor.http.auth.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.json.Json
 import no.nav.pensjon.brev.skribenten.AzureADConfig
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import org.slf4j.LoggerFactory
@@ -17,20 +15,8 @@ private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.aut
 
 const val AUTHENTICATION_REALM_NAME = "AZURE_AD"
 
-// HOCON env-var substitution only exposes preAuthApps as an opaque JSON string, not a real
-// HOCON list, so it must be parsed explicitly rather than relying on Hocon deserialization.
-private fun parsePreAuthorizedApps(preAuthApps: String): List<AzureADConfig.PreAuthorizedApp> =
-    try {
-        Json.decodeFromString(preAuthApps)
-    } catch (e: SerializationException) {
-        logger.error("Failed to deserialize preAuthorizedApps, value was: $preAuthApps", e)
-        emptyList()
-    }
-
 fun AuthenticationConfig.skribentenJwt(config: AzureADConfig) =
     jwt(AUTHENTICATION_REALM_NAME) {
-        val preAuthorizedApps = parsePreAuthorizedApps(config.preAuthApps)
-
         realm = "skribenten-$name"
         verifier(JwkProviderBuilder(URI(config.jwksUrl).toURL()).build(), config.issuer) {
             withAnyOfAudience(config.clientId)
@@ -44,7 +30,7 @@ fun AuthenticationConfig.skribentenJwt(config: AzureADConfig) =
         validate {
             val azp = it["azp"]
 
-            if (preAuthorizedApps.any { app -> app.clientId == azp }) {
+            if (config.preAuthApps.any { app -> app.clientId == azp }) {
                 JwtUserPrincipal(userAccessToken(), it.payload)
             } else {
                 logger.info("Invalid authorization - claim 'azp' is not a preAuthorizedApp: $azp")

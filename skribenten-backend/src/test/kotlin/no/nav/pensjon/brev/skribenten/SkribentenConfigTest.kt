@@ -5,7 +5,6 @@ import com.typesafe.config.ConfigParseOptions.defaults
 import com.typesafe.config.ConfigResolveOptions
 import io.ktor.server.config.HoconApplicationConfig
 import io.ktor.server.config.getAs
-import kotlinx.serialization.json.Json
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -27,11 +26,8 @@ class SkribentenConfigTest {
 
         val config = HoconApplicationConfig(resolved).config("skribenten").getAs<SkribentenConfig>()
 
-        // preAuthApps is only ever exposed as an opaque JSON string by HOCON env-var substitution
-        // (it is not parsed into a real HOCON list), so it must be decoded explicitly here too -
-        // see Authorization.kt's `parsePreAuthorizedApps`.
-        val preAuthApps = Json.decodeFromString<List<AzureADConfig.PreAuthorizedApp>>(config.azureAD.preAuthApps)
-        assertThat(preAuthApps).containsExactly(
+        // PreAuthorizedAppsSerializer decodes the raw JSON string HOCON gives us into a real list.
+        assertThat(config.azureAD.preAuthApps).containsExactly(
             AzureADConfig.PreAuthorizedApp("abc:def:hij", "1234"),
             AzureADConfig.PreAuthorizedApp("klm:nop:qrs", "567"),
         )
