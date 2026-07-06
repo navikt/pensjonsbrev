@@ -12,11 +12,13 @@ object Ufoerebrevkoder {
         UT_VARSEL_OKT_MINSTE_IFU,
         UT_VARSEL_LAVERE_REDUKSJONSPROSENT,
         UT_VARSEL_OKT_MINSTE_IFU_LAVERE_REDPROS,
+        UT_INFO_REVERSERING_AV_MINSTESATS,
         ;
         override fun kode(): String = this.name
     }
 
     enum class Redigerbar : Redigerbart {
+        UT_AVSLAG_TESTMAL,
         UT_AVSLAG_HENSIKTSMESSIG_BEHANDLING,
         UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I1,
         UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I2,

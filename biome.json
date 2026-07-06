@@ -1,4 +1,5 @@
 {
+  "root": false,
   "root": true,
   "$schema": "./skribenten-web/frontend/node_modules/@biomejs/biome/configuration_schema.json",
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
@@ -16,7 +17,7 @@
   },
   "linter": {
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "complexity": {
         "noAdjacentSpacesInRegex": "error",
         "noArguments": "error",
@@ -37,10 +38,7 @@
         "noUnusedVariables": "error"
       },
       "nursery": {
-        "noDuplicateEnumValues": "error",
-        "useExhaustiveSwitchCases": "error",
-        "useGlobalThis": "error",
-        "useSpread": "error"
+        "useExhaustiveSwitchCases": "error"
       },
       "style": {
         "noCommonJs": "error",
@@ -56,7 +54,9 @@
           "options": { "style": "inlineType" }
         },
         "useSelfClosingElements": "error",
-        "useThrowNewError": "error"
+        "useThrowNewError": "error",
+        "useGlobalThis": "error",
+        "useSpreadOverApply": "error"
       },
       "suspicious": {
         "noCatchAssign": "error",
@@ -75,7 +75,8 @@
         "noPrototypeBuiltins": "error",
         "noTsIgnore": "error",
         "noUselessRegexBackrefs": "error",
-        "noVar": "error"
+        "noVar": "error",
+        "noDuplicateEnumValues": "error"
       }
     }
   },
