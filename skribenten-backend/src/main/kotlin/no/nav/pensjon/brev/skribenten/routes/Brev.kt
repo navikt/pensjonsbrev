@@ -13,26 +13,18 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.FrigiR
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.ReserverBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.TilbakestillBrevHandler
-import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
-import no.nav.pensjon.brev.skribenten.services.PdlService
 
 context(app: Application)
 fun Route.brev() {
-    val pdlService: PdlService by app.dependencies
-    val fagsakService: FagsakService by app.dependencies
     val dto2ApiService: Dto2ApiService by app.dependencies
 
     route("/brev/{brevId}") {
         val hentBrevInfoService: HentBrevInfoService by app.dependencies
-        install(AuthorizeAnsattSakTilgangForBrev) {
-            this.pdlService = pdlService
-            this.fagsakService = fagsakService
-            this.hentBrevInfoService = hentBrevInfoService
-        }
+        install(AuthorizeAnsattSakTilgangForBrev)
 
         get("/info") {
             val brevId = call.parameters.brevId()

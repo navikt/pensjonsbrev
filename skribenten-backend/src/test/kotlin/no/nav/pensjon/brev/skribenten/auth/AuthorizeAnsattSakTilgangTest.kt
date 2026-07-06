@@ -6,28 +6,23 @@ import io.ktor.client.plugins.auth.providers.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.plugins.di.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import io.ktor.server.util.*
-import no.nav.pensjon.brev.skribenten.MockPrincipal
-import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
-import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
+import no.nav.pensjon.brev.skribenten.*
+import no.nav.pensjon.brev.skribenten.fagsystem.*
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
-import no.nav.pensjon.brev.skribenten.initADGroups
-import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.model.Pdl
-import no.nav.pensjon.brev.skribenten.model.Pen
-import no.nav.pensjon.brev.skribenten.model.SaksId
-import no.nav.pensjon.brev.skribenten.model.Sakstype
+import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
-import java.time.Month
+import java.time.*
 
 private val navIdent = NavIdent("månedens ansatt")
 private val testSak = Pen.SakSelection(
@@ -97,37 +92,42 @@ class AuthorizeAnsattSakTilgangTest {
         pdlService: PdlService = defaultPdlService,
         block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit,
     ): Unit = testApplication {
-        install(Authentication) {
-            basic("my domain") {
-                validate {
-                    if (it.name == creds.username && it.password == creds.password) {
-                        principal
-                    } else null
+        application {
+            install(Authentication) {
+                basic("my domain") {
+                    validate {
+                        if (it.name == creds.username && it.password == creds.password) {
+                            principal
+                        } else null
+                    }
                 }
             }
-        }
-        install(StatusPages) {
-            exception<UnauthorizedException> { call, cause -> call.respond(HttpStatusCode.Unauthorized, cause.msg) }
-            exception<PdlServiceException> { call, cause -> call.respond(status = cause.status, message = cause.message) }
-        }
-        routing {
-            authenticate("my domain") {
-                install(PrincipalInContext)
+            install(StatusPages) {
+                exception<UnauthorizedException> { call, cause -> call.respond(HttpStatusCode.Unauthorized, cause.msg) }
+                exception<PdlServiceException> { call, cause -> call.respond(status = cause.status, message = cause.message) }
+            }
+            dependencies {
+                provide<PdlService> { pdlService }
+                provide<PenClient> { penClient }
+                provide(FagsakService::class)
+            }
 
-                route("/sak") {
-                    install(AuthorizeAnsattSakTilgang) {
-                        this.pdlService = pdlService
-                        this.fagsakService = FagsakService(penClient)
-                    }
+            routing {
+                authenticate("my domain") {
+                    install(PrincipalInContext)
 
-                    get("/noSak/{noSak}") { call.respond("ingen sak") }
-                    get("/sakFromPlugin/{saksId}") {
-                        val sak = call.attributes[SakKey]
-                        call.respond(successResponse(sak.pid.value))
-                    }
-                    get("/{saksId}") {
-                        val saksId = call.parameters.getOrFail("saksId")
-                        call.respond(successResponse(saksId))
+                    route("/sak") {
+                        install(AuthorizeAnsattSakTilgang)
+
+                        get("/noSak/{noSak}") { call.respond("ingen sak") }
+                        get("/sakFromPlugin/{saksId}") {
+                            val sak = call.attributes[SakKey]
+                            call.respond(successResponse(sak.pid.value))
+                        }
+                        get("/{saksId}") {
+                            val saksId = call.parameters.getOrFail("saksId")
+                            call.respond(successResponse(saksId))
+                        }
                     }
                 }
             }

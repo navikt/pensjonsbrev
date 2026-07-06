@@ -28,17 +28,13 @@ fun Route.sakRoute() {
     val brevmalService: BrevmalService by app.dependencies
     val krrService: KrrService by app.dependencies
     val pdlService: PdlService by app.dependencies
-    val fagsakService: FagsakService by app.dependencies
     val pensjonPersonDataService: PensjonPersonDataService by app.dependencies
     val safService: SafService by app.dependencies
     val skjermingService: SkjermingServiceHttp by app.dependencies
     val pensjonRepresentasjonService: PensjonRepresentasjonService by app.dependencies
 
     route("/sak/{saksId}") {
-        install(AuthorizeAnsattSakTilgang) {
-            this.pdlService = pdlService
-            this.fagsakService = fagsakService
-        }
+        install(AuthorizeAnsattSakTilgang)
 
         get {
             val sak: Fagsak = call.attributes[SakKey]
