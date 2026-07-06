@@ -31,17 +31,15 @@ class UnleashService(config: UnleashCfg) : FeatureToggleService {
         unleash.shutdown()
     }
 
-    private fun initUnleash(config: UnleashCfg): Unleash {
-        return DefaultUnleash(
-            UnleashConfig.builder()
-                .appName(config.appName)
-                // TODO: Slett environment her når vi oppgraderer til neste unleash-sdk
-                .environment(config.environment)
-                .unleashAPI(config.host + "/api")
-                .apiKey(config.apiToken)
-                .build()
-        )
-    }
+    private fun initUnleash(config: UnleashCfg): Unleash = DefaultUnleash(
+        UnleashConfig.builder()
+            .appName(config.appName)
+            // TODO: Slett environment her når vi oppgraderer til neste unleash-sdk
+            .environment(config.environment)
+            .unleashAPI(config.host + "/api")
+            .apiKey(config.apiToken)
+            .build()
+    )
 
     private suspend fun context(): UnleashContext =
         PrincipalInContext.get()
