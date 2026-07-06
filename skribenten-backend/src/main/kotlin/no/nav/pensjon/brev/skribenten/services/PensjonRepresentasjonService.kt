@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -19,13 +19,13 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 class PensjonRepresentasjonService(
-    config: Config,
+    config: OboClientConfig,
     authService: AuthService,
     private val cache: Cache,
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
-    private val pensjonPersondataURL = config.getString("url")
-    private val scope = config.getString("scope")
+    private val pensjonPersondataURL = config.url
+    private val scope = config.scope
 
     private val client = lagHttpClient {
         defaultRequest {

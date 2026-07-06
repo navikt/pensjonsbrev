@@ -8,7 +8,7 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
-import no.nav.pensjon.brev.skribenten.auth.JwtConfig
+import no.nav.pensjon.brev.skribenten.auth.AUTHENTICATION_REALM_NAME
 import no.nav.pensjon.brev.skribenten.auth.PrincipalHasGroup
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.validerTilgangTilSak
@@ -21,12 +21,11 @@ import org.slf4j.LoggerFactory
 private val logger = LoggerFactory.getLogger("ExternalApi")
 
 fun Route.externalAPI(
-    authConfig: JwtConfig,
     externalAPIService: ExternalAPIService,
     pdlService: PdlService,
     fagsakService: FagsakService,
 ) =
-    authenticate(authConfig.name) {
+    authenticate(AUTHENTICATION_REALM_NAME) {
         install(PrincipalInContext)
         install(PrincipalHasGroup) {
             requireOneOf(ADGroups.alleBrukergrupper)

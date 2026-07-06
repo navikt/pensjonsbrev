@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.engine.*
 import io.ktor.client.engine.cio.*
@@ -49,14 +49,14 @@ interface PensjonPersonDataService {
 }
 
 class PensjonPersonDataServiceImpl(
-    config: Config,
+    config: OboClientConfig,
     authService: AuthService,
     clientEngine: HttpClientEngine = CIO.create(),
     private val cache: Cache,
 ): ServiceStatus, PensjonPersonDataService {
     private val logger = LoggerFactory.getLogger(javaClass)
-    private val pensjonPersondataURL = config.getString("url")
-    private val scope = config.getString("scope")
+    private val pensjonPersondataURL = config.url
+    private val scope = config.scope
     private val client = lagHttpClient(clientEngine) {
         defaultRequest {
             url(pensjonPersondataURL)

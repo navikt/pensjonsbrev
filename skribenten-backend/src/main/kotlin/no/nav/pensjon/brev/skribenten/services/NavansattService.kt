@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -27,11 +27,11 @@ interface NavansattService {
 
 class NavansattServiceException(message: String) : ServiceException(message)
 
-class NavansattServiceHttp(config: Config, authService: AuthService, private val cache: Cache) : NavansattService, ServiceStatus {
+class NavansattServiceHttp(config: OboClientConfig, authService: AuthService, private val cache: Cache) : NavansattService, ServiceStatus {
     private val logger = LoggerFactory.getLogger(NavansattServiceHttp::class.java)
 
-    private val navansattUrl = config.getString("url")
-    private val navansattScope = config.getString("scope")
+    private val navansattUrl = config.url
+    private val navansattScope = config.scope
 
     private val client = lagHttpClient {
         defaultRequest {

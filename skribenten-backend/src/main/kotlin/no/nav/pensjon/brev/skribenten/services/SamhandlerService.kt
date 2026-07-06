@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -29,9 +29,9 @@ interface SamhandlerService {
     suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto
 }
 
-class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthService, private val cache: Cache) : SamhandlerService, ServiceStatus {
-    private val samhandlerProxyUrl = configSamhandlerProxy.getString("url")
-    private val samhandlerProxyScope = configSamhandlerProxy.getString("scope")
+class SamhandlerServiceHttp(configSamhandlerProxy: OboClientConfig, authService: AuthService, private val cache: Cache) : SamhandlerService, ServiceStatus {
+    private val samhandlerProxyUrl = configSamhandlerProxy.url
+    private val samhandlerProxyScope = configSamhandlerProxy.scope
 
     private val samhandlerProxyClient = lagHttpClient {
         defaultRequest {
