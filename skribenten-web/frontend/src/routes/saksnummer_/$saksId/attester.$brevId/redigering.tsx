@@ -300,8 +300,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     );
   };
 
-  const freeze =
-    oppdaterBrevMutation.isPending || attesterMutation.isPending || editorState.saveStatus === "SAVE_PENDING";
+  const freeze = oppdaterBrevMutation.isPending || attesterMutation.isPending;
   const error = oppdaterBrevMutation.isError || attesterMutation.isError;
 
   const saveDirtyLetter = (state: {

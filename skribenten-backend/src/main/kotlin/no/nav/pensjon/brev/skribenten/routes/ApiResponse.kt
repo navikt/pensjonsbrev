@@ -100,9 +100,6 @@ suspend inline fun <T> RoutingContext.respondOutcome(
                 is RedigerBrevPolicy.KanIkkeRedigere.IkkeReservert ->
                     call.respond(HttpStatusCode.Conflict, "Brev er ikke reservert for redigering av deg")
 
-                is SlettBrevPolicy.KanIkkeSlette.ArkivertBrev ->
-                    call.respond(HttpStatusCode.Conflict, "Kan ikke slette arkivert brev med journalpostId: ${outcome.error.journalpostId}")
-
                 is RedigerBrevPolicy.KanIkkeRedigere.LaastBrev ->
                     call.respond(HttpStatusCode.Locked, "Brev er låst for redigering")
 
