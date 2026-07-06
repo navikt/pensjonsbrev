@@ -8,11 +8,11 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDataSelectors.innholdForhaandsvarsel as innholdForhaandsvarselOpphoer
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.selectors.omstillingsstoenadOpphoerData.innholdForhaandsvarsel as innholdForhaandsvarselOpphoer
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.innholdForhaandsvarsel as innholdForhaandsvarselRevurdering
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.data as dataOpphoer
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.data as dataRevurdering
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.selectors.omstillingsstoenadRevurderingData.innholdForhaandsvarsel as innholdForhaandsvarselRevurdering
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.selectors.omstillingsstoenadOpphoerDTO.data as dataOpphoer
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.selectors.omstillingsstoenadRevurderingDTO.data as dataRevurdering
 
 
 @TemplateModelHelpers

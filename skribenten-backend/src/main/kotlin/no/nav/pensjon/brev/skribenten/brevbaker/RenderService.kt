@@ -20,5 +20,6 @@ class RenderService(private val brevbakerService: BrevbakerService) {
             redigertBrev = brev.redigertBrev.withSakspart(dokumentDato = pesysData.felles.dokumentDato)
                 .toMarkup(),
             alltidValgbareVedlegg = brev.valgteVedlegg,
+            redigerteVedlegg = brev.redigerteVedlegg.associate { it.vedleggId to it.redigertVedlegg.toMarkup() },
         ).file
 }

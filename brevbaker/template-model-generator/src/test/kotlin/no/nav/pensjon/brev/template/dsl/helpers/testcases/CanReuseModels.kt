@@ -4,9 +4,9 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.CanReuseModelsDto1Selectors.ChildModelSelectors.childName
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.CanReuseModelsDto2Selectors.ChildModelSelectors.uncle
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.CanReuseModelsDto2Selectors.child
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.canReuseModelsDto1.childModel.*
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.canReuseModelsDto2.*
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.canReuseModelsDto2.childModel.*
 
 data class CanReuseModelsDto1(val name: String) {
     data class ChildModel(val childName: String)

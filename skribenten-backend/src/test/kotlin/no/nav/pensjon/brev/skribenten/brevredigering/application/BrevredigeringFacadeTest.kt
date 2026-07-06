@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.db.Hash
+import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
@@ -168,7 +169,7 @@ class BrevredigeringFacadeTest {
             sistReservert = null,
             brevkode = Testbrevkoder.INFORMASJONSBREV,
             laastForRedigering = false,
-            distribusjonstype = Distribusjonstype.SENTRALPRINT,
+            distribusjonstype = Distribusjon.SENTRALPRINT,
             mottaker = null,
             avsenderEnhetId = EnhetId("9876"),
             spraak = LanguageCode.ENGLISH,
@@ -223,9 +224,14 @@ private fun createFacade(
     endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.BrevInfo> = handlerStub(),
     endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.BrevInfo> = handlerStub(),
     reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError> = handlerStub(),
+    frigiReservasjon: UseCaseHandler<FrigiReservasjonHandler.Request, Unit, BrevredigeringError> = handlerStub(),
     hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult> = handlerStub(),
     attesterBrev: BrevredigeringHandler<AttesterBrevHandler.Request, Dto.Brevredigering> = handlerStub(),
     endreValgteVedlegg: BrevredigeringHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering> = handlerStub(),
+    endreRedigertVedlegg: BrevredigeringHandler<EndreRedigertVedleggHandler.Request, Dto.Brevredigering> = handlerStub(),
+    hentRedigertVedlegg: BrevredigeringHandler<HentRedigertVedleggHandler.Request, Edit.Attachment> = handlerStub(),
+    hentRedigerbareVedlegg: BrevredigeringHandler<HentRedigerbareVedleggHandler.Request, List<RedigerbartVedleggInfo>> = handlerStub(),
+    slettRedigertVedlegg: BrevredigeringHandler<SlettRedigertVedleggHandler.Request, Dto.Brevredigering> = handlerStub(),
     tilbakestillBrev: BrevredigeringHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering> = handlerStub(),
     sendBrev: BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult> = handlerStub(),
     brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
@@ -240,11 +246,16 @@ private fun createFacade(
         endreDistribusjonstype = endreDistribusjonstype,
         endreMottaker = endreMottaker,
         reserverBrev = reserverBrev,
+        frigiReservasjon = frigiReservasjon,
         brevreservasjonPolicy = brevreservasjonPolicy,
         hentEllerOpprettPdf = hentEllerOpprettPdf,
         attesterBrev = attesterBrev,
         tilbakestillBrev = tilbakestillBrev,
         endreValgteVedlegg = endreValgteVedlegg,
+        endreRedigertVedlegg = endreRedigertVedlegg,
+        hentRedigertVedlegg = hentRedigertVedlegg,
+        hentRedigerbareVedlegg = hentRedigerbareVedlegg,
+        slettRedigertVedlegg = slettRedigertVedlegg,
         sendBrev = sendBrev,
         slettBrev = handlerStub(),
         diffBrev = diffBrev,

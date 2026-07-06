@@ -16,6 +16,9 @@ import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoring
 import no.nav.pensjon.brev.maler.alder.EndringAvUttaksgradAuto
 import no.nav.pensjon.brev.maler.alder.InnvilgelseAvAlderspensjonAuto
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
+import no.nav.pensjon.brev.maler.klageOgAnke.AnkeTilsvarTilAnkendePart
+import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmOversendelseTilKlageinstans
+import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmSaksbehandlingstid
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.VedtakOmEtterbetalingOpphor2026Auto
@@ -138,6 +141,7 @@ object ProductionTemplates : AllTemplates {
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
+        AnkeTilsvarTilAnkendePart,
         AvslagForLiteTrygdetidAP,
         AvslagGjenlevendepensjon,
         AvslagGjenlevendepensjonUtland,
@@ -167,6 +171,8 @@ object ProductionTemplates : AllTemplates {
         InnvilgelseUforetrygdMellombehandling,
         InnvilgelseUforetrygdBosattNorgeEtterUtland,
         InnvilgelseUforetrygdMedEndring,
+        KlageOrienteringOmOversendelseTilKlageinstans,
+        KlageOrienteringOmSaksbehandlingstid,
         OkningUforegrad,
         OmregningUfoerepensjonTilUfoeretrygd,
         OmsorgEgenManuell,

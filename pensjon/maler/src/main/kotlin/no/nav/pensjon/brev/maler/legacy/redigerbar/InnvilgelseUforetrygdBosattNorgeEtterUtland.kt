@@ -3,11 +3,9 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.dineRettigheterOgPlikterUfore
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUforetrygdBosattNorgeEtterUtlandDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUforetrygdBosattNorgeEtterUtlandDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUforetrygdBosattNorgeEtterUtlandDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -31,7 +29,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object InnvilgelseUforetrygdBosattNorgeEtterUtland : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
+object InnvilgelseUforetrygdBosattNorgeEtterUtland : RedigerbarTemplate<InnvilgelseUforetrygdBosattNorgeEtterUtlandDto> {
 
     override val featureToggle = FeatureToggles.brevmalUtBosattNorgeEtterUtland.toggle
 
@@ -308,18 +306,18 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtland : RedigerbarTemplate<Innvilge
             }
             paragraph {
                 text(
-                    bokmal { +"Vi bruker en fastsatt prosentandel når vi justerer uføretrygden din ut fra inntekt. Denne prosentandelen kaller vi kompensasjonsgrad." },
-                    nynorsk { +"Vi bruker ein fastsett prosentdel når vi justerer uføretrygda di ut frå inntekt. Denne prosentdelen kallar vi kompensasjonsgrad. " },
+                    bokmal { +"Vi bruker en fastsatt prosentandel når vi justerer uføretrygden din ut fra inntekt. Denne prosentandelen kaller vi reduksjonsprosent." },
+                    nynorsk { +"Vi bruker ein fastsett prosentdel når vi justerer uføretrygda di ut frå inntekt. Denne prosentdelen kallar vi reduksjonsprosent. " },
                 )
             }
             paragraph {
                 text(
                     bokmal {
-                        +"For deg utgjør kompensasjonsgraden " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er bare den delen av inntekten din som overstiger " + pe.ut_inntektsgrense_faktisk().format()
+                        +"For deg utgjør reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er bare den delen av inntekten din som overstiger " + pe.ut_inntektsgrense_faktisk().format()
                         +", som vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av den inntekten du har over " + pe.ut_inntektsgrense_faktisk().format() + " trekkes fra uføretrygden din."
                     },
                     nynorsk {
-                        +"For deg utgjer kompensasjonsgraden " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er berre den delen av inntekta di som overstig " + pe.ut_inntektsgrense_faktisk().format()
+                        +"For deg utgjer reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er berre den delen av inntekta di som overstig " + pe.ut_inntektsgrense_faktisk().format()
                         +", som vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av inntekta du har over " + pe.ut_inntektsgrense_faktisk().format() + " blir trekt frå uføretrygda di."
                     },
                 )

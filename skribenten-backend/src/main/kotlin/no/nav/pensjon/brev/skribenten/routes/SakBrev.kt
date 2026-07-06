@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.routes
 
 import io.ktor.http.*
 import io.ktor.server.plugins.*
+import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.SakKey
@@ -32,7 +33,8 @@ fun Route.sakBrev(
             )
         }
 
-        post<Api.OpprettBrevRequest> { request ->
+        post {
+            val request = call.receive<Api.OpprettBrevRequest>()
             val sak: Fagsak = call.attributes[SakKey]
             val spraak = request.spraak.toLanguageCode()
             val avsenderEnhetsId = request.avsenderEnhetsId
@@ -68,7 +70,8 @@ fun Route.sakBrev(
                 apiRespond(dto2ApiService, brev)
             }
 
-            put<Api.OppdaterBrevRequest> { request ->
+            put {
+                val request = call.receive<Api.OppdaterBrevRequest>()
                 val brevId = call.parameters.brevId()
                 val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
 
@@ -85,7 +88,8 @@ fun Route.sakBrev(
             }
 
             // TODO: fjern når frontend er oppdatert til å bruke endreValgteVedlegg-endepunktet
-            patch<Api.DelvisOppdaterBrevRequest> { request ->
+            patch {
+                val request = call.receive<Api.DelvisOppdaterBrevRequest>()
                 val brevId = call.parameters.brevId()
 
                 if (request.alltidValgbareVedlegg != null) {
@@ -102,7 +106,8 @@ fun Route.sakBrev(
                 }
             }
 
-            put<Api.DistribusjonstypeRequest>("/distribusjon") { request ->
+            put("/distribusjon") {
+                val request = call.receive<Api.DistribusjonstypeRequest>()
                 val brevId = call.parameters.brevId()
 
                 val brevInfo = brevredigeringFacade.endreDistribusjonstype(
@@ -115,7 +120,8 @@ fun Route.sakBrev(
                 apiRespond(dto2ApiService, brevInfo)
             }
 
-            put<Api.ValgteVedleggRequest>("/valgteVedlegg") { request ->
+            put("/valgteVedlegg") {
+                val request = call.receive<Api.ValgteVedleggRequest>()
                 val brevId = call.parameters.brevId()
 
                 val brev = brevredigeringFacade.endreValgteVedlegg(
@@ -128,7 +134,58 @@ fun Route.sakBrev(
                 apiRespond(dto2ApiService, brev)
             }
 
-            put<Api.OppdaterKlarStatusRequest>("/status") { request ->
+            route("/redigerbareVedlegg") {
+                get {
+                    val brevId = call.parameters.brevId()
+
+                    val result = brevredigeringFacade.hentRedigerbareVedlegg(
+                        HentRedigerbareVedleggHandler.Request(brevId = brevId)
+                    )
+
+                    respondOutcome(dto2ApiService, result) { respond(it) }
+                }
+                route("{vedleggId}") {
+                    get {
+                        val brevId = call.parameters.brevId()
+                        val vedleggId = call.parameters.vedleggId()
+
+                        val result = brevredigeringFacade.hentRedigertVedlegg(
+                            HentRedigertVedleggHandler.Request(brevId = brevId, vedleggId = vedleggId)
+                        )
+
+                        respondOutcome(dto2ApiService, result) { respond(it) }
+                    }
+
+                    put<Api.RedigertVedleggRequest> { request ->
+                        val brevId = call.parameters.brevId()
+                        val vedleggId = call.parameters.vedleggId()
+
+                        val brev = brevredigeringFacade.endreRedigertVedlegg(
+                            EndreRedigertVedleggHandler.Request(
+                                brevId = brevId,
+                                vedleggId = vedleggId,
+                                redigertVedlegg = request.redigertVedlegg,
+                            )
+                        )
+
+                        apiRespond(dto2ApiService, brev)
+                    }
+
+                    delete {
+                        val brevId = call.parameters.brevId()
+                        val vedleggId = call.parameters.vedleggId()
+
+                        val brev = brevredigeringFacade.slettRedigertVedlegg(
+                            SlettRedigertVedleggHandler.Request(brevId = brevId, vedleggId = vedleggId)
+                        )
+
+                        apiRespond(dto2ApiService, brev)
+                    }
+                }
+            }
+
+            put("/status") {
+                val request = call.receive<Api.OppdaterKlarStatusRequest>()
                 val brevId = call.parameters.brevId()
 
                 val brevInfo = brevredigeringFacade.veksleKlarStatus(
@@ -149,7 +206,8 @@ fun Route.sakBrev(
             }
 
             route("/mottaker") {
-                put<Api.OppdaterMottakerRequest> { request ->
+                put {
+                    val request = call.receive<Api.OppdaterMottakerRequest>()
                     val brevId = call.parameters.brevId()
                     val brevInfo = brevredigeringFacade.endreMottaker(
                         EndreMottakerHandler.Request(brevId = brevId, mottaker = request.mottaker.toDto())
@@ -199,7 +257,8 @@ fun Route.sakBrev(
                     apiRespond(dto2ApiService, resultat)
                 }
 
-                put<Api.OppdaterAttesteringRequest> { request ->
+                put {
+                    val request = call.receive<Api.OppdaterAttesteringRequest>()
                     val brevId = call.parameters.brevId()
                     val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
 
@@ -216,6 +275,7 @@ fun Route.sakBrev(
                 }
             }
 
+            // TODO: Request/response body er sterkt typet i frontend, men ikke her i backend.
             route("/p1") {
                 get {
                     val brevId = call.parameters.brevId()

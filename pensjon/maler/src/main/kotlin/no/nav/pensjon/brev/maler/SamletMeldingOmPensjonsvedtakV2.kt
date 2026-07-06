@@ -4,9 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2Dto
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2DtoSelectors.PesysDataSelectors.p1Vedlegg
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2DtoSelectors.PesysDataSelectors.sakstype
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2DtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.selectors.samletMeldingOmPensjonsvedtakV2Dto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.selectors.samletMeldingOmPensjonsvedtakV2Dto.*
 import no.nav.pensjon.brev.maler.vedlegg.pdf.P1pdfV2Dto
 import no.nav.pensjon.brev.maler.vedlegg.pdf.informasjonOmP1Vedlegg
 import no.nav.pensjon.brev.model.Brevkategori
@@ -26,8 +25,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 // Mal 000090 i doksys
 @TemplateModelHelpers
 object SamletMeldingOmPensjonsvedtakV2 : RedigerbarTemplate<SamletMeldingOmPensjonsvedtakV2Dto> {
-
-    override val featureToggle = FeatureToggles.samletMeldingOmPensjonsvedtakV2.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2 // BREVKODEN MÅ VÆRE I SYNC MED P1SERVICE I SKRIBENTEN!
     override val kategori = Brevkategori.SLUTTBEHANDLING

@@ -8,13 +8,7 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOrienteringOmRettigheterOg
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDto
-import no.nav.pensjon.brev.alder.model.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.harFlereBeregningsperioder
-import no.nav.pensjon.brev.alder.model.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.kravVirkDatoFom
-import no.nav.pensjon.brev.alder.model.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.maanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.alder.model.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.opplysningerBruktIBeregningenAlder
-import no.nav.pensjon.brev.alder.model.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.orienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brev.alder.model.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.regelverkType
-import no.nav.pensjon.brev.alder.model.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAutoDtoSelectors.totalPensjon
+import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.endringAvAlderspensjonFordiDuFyller75AarAutoDto.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createTemplate

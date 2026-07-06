@@ -29,6 +29,7 @@ const Kvittering = () => {
       context: "sendBrev",
       brevFørHandling: brevResult.brevInfo,
       bestillBrevResponse: brevResult.status === "success" ? brevResult.response! : null,
+      bestillBrevError: brevResult.status === "error" ? (brevResult.error ?? null) : null,
       attesterResponse: null,
     }),
   );

@@ -27,32 +27,25 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Service
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.*
-import no.nav.pensjon.brev.skribenten.serialize.Sakstype
+import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
+import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.NavEnhet
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.opentest4j.AssertionFailedError
 import java.time.LocalDate
-import kotlin.collections.get
 
 /**
  * Har valgt å gjøre det på denne måten underveis for å understøtte steg-for-steg refaktorering med blanding mellom ny og gammel stil.
@@ -93,16 +86,16 @@ abstract class BrevredigeringHandlerTestBase {
 
     private val navAnsattService = FakeNavansattService(
         harTilgangTilEnhet = mapOf(
-            Pair(saksbehandler1Principal.navIdent.id, PRINCIPAL_NAVENHET_ID) to true,
-            Pair(saksbehandler2Principal.navIdent.id, PRINCIPAL_NAVENHET_ID) to true,
-            Pair(attestant1Principal.navIdent.id, PRINCIPAL_NAVENHET_ID) to true,
-            Pair(attestant2Principal.navIdent.id, PRINCIPAL_NAVENHET_ID) to true,
+            Pair(saksbehandler1Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
+            Pair(saksbehandler2Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
+            Pair(attestant1Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
+            Pair(attestant2Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
         ),
         navansatte = mapOf(
-            saksbehandler1Principal.navIdent.id to saksbehandler1Principal.fullName,
-            saksbehandler2Principal.navIdent.id to saksbehandler2Principal.fullName,
-            attestant1Principal.navIdent.id to attestant1Principal.fullName,
-            attestant2Principal.navIdent.id to attestant2Principal.fullName,
+            saksbehandler1Principal.navIdent to saksbehandler1Principal.fullName,
+            saksbehandler2Principal.navIdent to saksbehandler2Principal.fullName,
+            attestant1Principal.navIdent to attestant1Principal.fullName,
+            attestant2Principal.navIdent to attestant2Principal.fullName,
         )
     )
 
@@ -237,7 +230,7 @@ abstract class BrevredigeringHandlerTestBase {
         reserverForRedigering: Boolean = false,
         mottaker: Dto.Mottaker? = null,
         saksbehandlerValg: SaksbehandlerValg = SaksbehandlerValg().apply { put("valg", true) },
-        brevkode: Brevkode.Redigerbart = Testbrevkoder.INFORMASJONSBREV,
+        brevkode: RedigerbarBrevkode = Testbrevkoder.INFORMASJONSBREV,
         vedtaksId: VedtaksId? = null,
         sak: Pen.SakSelection = sak1,
         avsenderEnhetsId: EnhetId = PRINCIPAL_NAVENHET_ID,
@@ -356,7 +349,7 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected suspend fun endreDistribusjonstype(
         brevId: BrevId,
-        nyDistribusjonstype: Distribusjonstype,
+        nyDistribusjonstype: Distribusjon,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
         brevredigeringFacade.endreDistribusjonstype(
@@ -400,6 +393,9 @@ abstract class BrevredigeringHandlerTestBase {
         override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
         val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
         val renderPdfKall = mutableListOf<LetterMarkup>()
+        val renderPdfRedigerteVedleggKall = mutableListOf<Map<VedleggId, LetterMarkup.Attachment>>()
+        var renderRedigerbareVedleggResultat: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()
+        var harRedigerbareVedleggResultat: Boolean? = null
 
         override suspend fun renderMarkup(
             brevkode: Brevkode.Redigerbart,
@@ -417,11 +413,38 @@ abstract class BrevredigeringHandlerTestBase {
             brevdata: RedigerbarBrevdata<*, *>,
             felles: BrevbakerFelles,
             redigertBrev: LetterMarkup,
-            alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
-        ) = renderPdfResultat.also { renderPdfKall.add(redigertBrev) }
+            alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
+            redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment>,
+        ) = renderPdfResultat.also {
+            renderPdfKall.add(redigertBrev)
+            renderPdfRedigerteVedleggKall.add(redigerteVedlegg)
+        }
 
         override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
         override suspend fun getAlltidValgbareVedlegg(brevId: BrevId) = notYetStubbed()
+
+        override suspend fun hentRedigerbareVedleggTitler(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            brevdata: RedigerbarBrevdata<*, *>,
+            felles: BrevbakerFelles,
+        ): RedigerbareVedleggTitler =
+            RedigerbareVedleggTitler(
+                renderRedigerbareVedleggResultat.map { (vedleggId, attachment) ->
+                    RedigerbareVedleggTitler.Vedlegg(vedleggId, attachment.title.joinToString("") { it.text })
+                }
+            )
+
+        override suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean =
+            harRedigerbareVedleggResultat ?: renderRedigerbareVedleggResultat.isNotEmpty()
+
+        override suspend fun renderRedigerbartVedlegg(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            brevdata: RedigerbarBrevdata<*, *>,
+            felles: BrevbakerFelles,
+            vedleggId: VedleggId,
+        ): LetterMarkup.Attachment? = renderRedigerbareVedleggResultat[vedleggId]
 
         override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart) = modelSpecificationResultat
     }

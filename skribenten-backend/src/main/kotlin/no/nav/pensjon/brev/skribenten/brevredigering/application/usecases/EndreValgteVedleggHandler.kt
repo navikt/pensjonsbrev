@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
 
 class EndreValgteVedleggHandler(
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
@@ -19,7 +19,7 @@ class EndreValgteVedleggHandler(
 
     data class Request(
         override val brevId: BrevId,
-        val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
+        val alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
     ) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
@@ -27,11 +27,6 @@ class EndreValgteVedleggHandler(
 
         val principal = PrincipalInContext.require()
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
-
-        // Om det er endringer i valgte vedlegg, så nullstiller vi dokumentet slik at det må rendres på nytt
-        if (brev.valgteVedlegg != request.alltidValgbareVedlegg) {
-            brev.document = null
-        }
 
         brev.valgteVedlegg = request.alltidValgbareVedlegg
         brev.frigiReservasjon()

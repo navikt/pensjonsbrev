@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagUfoerepensjonDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagUfoerepensjonDtoSelectors.PesysDataSelectors.kravMottattDato
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagUfoerepensjonDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagUfoerepensjonDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagUfoerepensjonDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
@@ -71,7 +71,7 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
                     nynorsk { +"Kravet er avslått, fordi vilkåra for å få uførepensjon ikkje er oppfylte i ditt tilfelle." }
                 )
             }
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
             paragraph {
                 text(
                     bokmal { +fritekst("Vedtaket er gjort etter folketrygdloven paragraf") },

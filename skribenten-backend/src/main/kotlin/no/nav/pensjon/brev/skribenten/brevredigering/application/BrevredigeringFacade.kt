@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
+import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -26,10 +27,15 @@ class BrevredigeringFacade(
     private val endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.BrevInfo>,
     private val endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.BrevInfo>,
     private val reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError>,
+    private val frigiReservasjon: UseCaseHandler<FrigiReservasjonHandler.Request, Unit, BrevredigeringError>,
     private val hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult>,
     private val attesterBrev: BrevredigeringHandler<AttesterBrevHandler.Request, Dto.Brevredigering>,
     private val tilbakestillBrev: BrevredigeringHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering>,
     private val endreValgteVedlegg: BrevredigeringHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering>,
+    private val endreRedigertVedlegg: BrevredigeringHandler<EndreRedigertVedleggHandler.Request, Dto.Brevredigering>,
+    private val hentRedigertVedlegg: BrevredigeringHandler<HentRedigertVedleggHandler.Request, Edit.Attachment>,
+    private val hentRedigerbareVedlegg: BrevredigeringHandler<HentRedigerbareVedleggHandler.Request, List<RedigerbartVedleggInfo>>,
+    private val slettRedigertVedlegg: BrevredigeringHandler<SlettRedigertVedleggHandler.Request, Dto.Brevredigering>,
     private val sendBrev: BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult>,
     private val slettBrev: BrevredigeringHandler<SlettBrevHandler.Request, Unit>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
@@ -83,9 +89,26 @@ class BrevredigeringFacade(
     suspend fun endreValgteVedlegg(request: EndreValgteVedleggHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         endreValgteVedlegg.runHandler(request)
 
+    suspend fun endreRedigertVedlegg(request: EndreRedigertVedleggHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        endreRedigertVedlegg.runHandler(request)
+
+    suspend fun hentRedigertVedlegg(request: HentRedigertVedleggHandler.Request): Outcome<Edit.Attachment, BrevredigeringError>? =
+        hentRedigertVedlegg.runHandler(request)
+
+    suspend fun hentRedigerbareVedlegg(request: HentRedigerbareVedleggHandler.Request): Outcome<List<RedigerbartVedleggInfo>, BrevredigeringError>? =
+        hentRedigerbareVedlegg.runHandler(request)
+
+    suspend fun slettRedigertVedlegg(request: SlettRedigertVedleggHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        slettRedigertVedlegg.runHandler(request)
+
     suspend fun reserverBrev(request: ReserverBrevHandler.Request): Outcome<Reservasjon, BrevredigeringError>? =
         suspendTransaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
             reserverBrev.handle(request)?.onError { rollback() }
+        }
+
+    suspend fun frigiReservasjon(request: FrigiReservasjonHandler.Request): Outcome<Unit, BrevredigeringError>? =
+        suspendTransaction {
+            frigiReservasjon.handle(request)?.onError { rollback() }
         }
 
     suspend fun hentPDF(request: HentEllerOpprettPdfHandler.Request): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =

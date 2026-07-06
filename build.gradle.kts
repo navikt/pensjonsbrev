@@ -51,6 +51,7 @@ allprojects {
         systemProperties["junit.jupiter.execution.parallel.enabled"] = true
         systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
         systemProperties["junit.jupiter.execution.parallel.mode.classes.default"] = "concurrent"
+        systemProperties["junit.jupiter.execution.parallel.config.executor-service"] = "FORK_JOIN_POOL"
         systemProperties["junit.jupiter.execution.parallel.config.strategy"] = "dynamic"
         maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
         forkEvery = 100
@@ -80,6 +81,7 @@ subprojects {
             group = LifecycleBasePlugin.VERIFICATION_GROUP
             timeout = 15.minutes.toJavaDuration()
             systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.5
+            systemProperties["junit.jupiter.execution.parallel.config.executor-service"] = "FORK_JOIN_POOL"
             forkEvery = 0 // for å dele test-container uten å spinne opp ny.
             useJUnitPlatform {
                 includeTags = setOf("integration-test")

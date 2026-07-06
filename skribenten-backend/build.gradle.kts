@@ -1,3 +1,5 @@
+import com.github.gradle.node.npm.task.NpmTask
+import com.github.gradle.node.npm.task.NpxTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
@@ -5,7 +7,79 @@ val javaTarget: String by System.getProperties()
 plugins {
     application
     kotlin("jvm")
+    alias(libs.plugins.ktor)
+    alias(libs.plugins.gradle.node)
 }
+
+ktor {
+    openApi {
+        enabled = true
+        codeInferenceEnabled = true
+    }
+}
+fun Project.nodeVersionFromToolVersions(): String {
+    val toolVersions = rootProject.file(".tool-versions")
+    require(toolVersions.exists()) { "Mangler .tool-versions i ${rootProject.projectDir}" }
+
+    val version = toolVersions
+        .readLines()
+        .firstOrNull { it.startsWith("nodejs ") }
+        ?.substringAfter("nodejs ")
+        ?.trim()
+
+    require(!version.isNullOrBlank()) { "Fant ikke 'nodejs <versjon>' i ${toolVersions.path}" }
+    return version
+}
+
+node {
+    if (System.getenv("CI")?.toBoolean() != true) {
+        download.set(true)
+        version.set(project.nodeVersionFromToolVersions())
+    }
+    nodeProjectDir.set(rootProject.file("skribenten-web/frontend"))
+    npmInstallCommand.set("ci")
+}
+
+val generateOpenApiSpec by tasks.registering(Test::class) {
+    description = "Generates build/openapi-spec.json by booting the application via OpenApiSpecTest"
+    group = "build"
+    // Avoid running in parallel with the regular test suite when org.gradle.parallel=true
+    mustRunAfter(tasks.test)
+    maxParallelForks = 1
+    useJUnitPlatform {
+        includeTags("openapi-spec")
+    }
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    outputs.file(layout.buildDirectory.file("openapi-spec.json"))
+}
+
+val generateApiTypes by tasks.registering(NpxTask::class) {
+    description = "Generates TypeScript types from the OpenAPI spec into skribenten-web/frontend/src/types/skribenten-api.ts"
+    dependsOn(generateOpenApiSpec, tasks.npmInstall)
+    command.set("openapi-typescript")
+    val specFile = layout.buildDirectory.file("openapi-spec.json")
+    val outputFile = rootProject.file("skribenten-web/frontend/src/types/skribenten-api.ts")
+    args.set(
+        listOf(
+            specFile.get().asFile.absolutePath,
+            "--output", outputFile.absolutePath,
+            "--root-types",
+            "--root-types-no-schema-prefix",
+        )
+    )
+    inputs.file(specFile)
+    outputs.file(outputFile)
+}
+
+val typeCheckFrontend by tasks.registering(NpmTask::class) {
+    description = "Runs TypeScript type checking on the frontend after API type generation"
+    dependsOn(generateApiTypes)
+    npmCommand.set(listOf("run", "check-types"))
+    inputs.files(rootProject.fileTree("skribenten-web/frontend/src"))
+    outputs.upToDateWhen { true }
+}
+
 
 group = "no.nav.pensjon.brev.skribenten"
 version = "0.0.1"
@@ -27,7 +101,9 @@ tasks {
         targetCompatibility = javaTarget
     }
     test {
-        useJUnitPlatform()
+        useJUnitPlatform {
+            excludeTags("openapi-spec")
+        }
     }
     kotlin {
         compileTestKotlin {
@@ -36,6 +112,7 @@ tasks {
     }
     build {
         dependsOn(installDist)
+        dependsOn(typeCheckFrontend)
     }
 }
 
@@ -64,6 +141,7 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.swagger)
+    implementation(libs.ktor.openapi.schema.reflect)
 
     // Exposed
     implementation(libs.exposed.core)

@@ -2,14 +2,7 @@ package no.nav.pensjon.brev.planleggepensjon.simulering.tabeller
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjon
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.forholdstall
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.grunnbeloep
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.kapittel19AndelTeller
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.kapittel19Trygdetid
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.minstePensjonsnivaaBeloep
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.poengaarFom1992
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.poengaarTom1991
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.sluttpoengtall
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringV1MaanedligAlderspensjon.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal

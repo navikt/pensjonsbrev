@@ -80,10 +80,25 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
                     call.respond(HttpStatusCode.NotFound)
                 }
             }
+
+            // Lettvekts-sjekk som ikke krever brevdata: forteller om malen i det hele tatt har
+            // redigerbare vedlegg. Lar konsumenter unngå tunge data-kall når svaret uansett blir tomt.
+            get("/har-redigerbare-vedlegg") {
+                val template = call.kode(resource)
+                    .let { resource.getTemplate(it)?.template }
+
+                if (template != null) {
+                    call.respond(template.harRedigerbareVedlegg())
+                } else {
+                    call.respond(HttpStatusCode.NotFound)
+                }
+            }
         }
     }
 
 fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactory(this.letterDataType).build()
+
+fun LetterTemplate<*, *>.harRedigerbareVedlegg(): Boolean = attachments.any { it.editableId != null }
 
 // TODO: Med riktig typing burde heile denne metoden vera unødvendig
 fun <Kode : Brevkode<Kode>> ApplicationCall.kode(resource: TemplateResource<Kode, *, *>): Kode = parameters.getOrFail<String>("kode")

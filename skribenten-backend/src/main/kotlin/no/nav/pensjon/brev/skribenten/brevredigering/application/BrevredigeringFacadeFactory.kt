@@ -25,7 +25,6 @@ object BrevredigeringFacadeFactory {
         val attesterBrevPolicy = AttesterBrevPolicy()
         val ferdigRedigertPolicy = FerdigRedigertPolicy()
         val sendBrevPolicy = SendBrevPolicy(ferdigRedigertPolicy)
-        val slettBrevPolicy = SlettBrevPolicy()
 
         return BrevredigeringFacade(
             opprettBrev = OpprettBrevHandlerImpl(
@@ -72,6 +71,9 @@ object BrevredigeringFacadeFactory {
             reserverBrev = ReserverBrevHandler(
                 brevreservasjonPolicy = brevreservasjonPolicy
             ),
+            frigiReservasjon = FrigiReservasjonHandler(
+                brevreservasjonPolicy = brevreservasjonPolicy,
+            ),
             hentEllerOpprettPdf = HentEllerOpprettPdfHandler(
                 brevdataService = brevdataService,
                 renderService = renderService,
@@ -97,14 +99,28 @@ object BrevredigeringFacadeFactory {
                 redigerBrevPolicy = redigerBrevPolicy,
                 brevreservasjonPolicy = brevreservasjonPolicy,
             ),
+            endreRedigertVedlegg = EndreRedigertVedleggHandler(
+                redigerBrevPolicy = redigerBrevPolicy,
+                brevreservasjonPolicy = brevreservasjonPolicy,
+            ),
+            hentRedigertVedlegg = HentRedigertVedleggHandler(
+                brevmalService = brevmalService,
+                brevdataService = brevdataService,
+            ),
+            hentRedigerbareVedlegg = HentRedigerbareVedleggHandler(
+                brevmalService = brevmalService,
+                brevdataService = brevdataService,
+            ),
+            slettRedigertVedlegg = SlettRedigertVedleggHandler(
+                redigerBrevPolicy = redigerBrevPolicy,
+                brevreservasjonPolicy = brevreservasjonPolicy,
+            ),
             sendBrev = SendBrevHandler(
                 sendBrevPolicy = sendBrevPolicy,
                 brevService = brevService,
                 brevmalService = brevmalService,
             ),
-            slettBrev = SlettBrevHandler(
-                slettBrevPolicy = slettBrevPolicy,
-            ),
+            slettBrev = SlettBrevHandler(),
             brevreservasjonPolicy = brevreservasjonPolicy,
             diffBrev = DiffBrevHandler(
                 brevmalService = brevmalService,

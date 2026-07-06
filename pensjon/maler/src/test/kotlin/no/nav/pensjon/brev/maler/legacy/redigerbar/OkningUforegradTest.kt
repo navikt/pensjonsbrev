@@ -5,8 +5,8 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
-import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createOkningUforegradDto
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import org.junit.jupiter.api.Tag
@@ -20,7 +20,7 @@ class OkningUforegradTest {
     fun testPdf() {
         LetterTestImpl(
             OkningUforegrad.template,
-            Fixtures.create<InnvilgelseUfoeretrygdDto>(),
+            Fixtures.create<OkningUforegradDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("UT_OKNING_UFOREGRAD")
@@ -30,7 +30,7 @@ class OkningUforegradTest {
     fun testHtml() {
         LetterTestImpl(
             OkningUforegrad.template,
-            Fixtures.create<InnvilgelseUfoeretrygdDto>(),
+            Fixtures.create<OkningUforegradDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestHtml("UT_OKNING_UFOREGRAD")
@@ -40,7 +40,7 @@ class OkningUforegradTest {
     fun `testPdf - nynorsk`() {
         LetterTestImpl(
             OkningUforegrad.template,
-            Fixtures.create<InnvilgelseUfoeretrygdDto>(),
+            Fixtures.create<OkningUforegradDto>(),
             Language.Nynorsk,
             Fixtures.fellesAuto
         ).renderTestPDF("UT_OKNING_UFOREGRAD_NYNORSK")
@@ -48,7 +48,7 @@ class OkningUforegradTest {
 
     @Test
     fun `testPdf - ung ufor`() {
-        val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
+        val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe
             val vilkarsvedtaklist = pe.vedtaksbrev.vedtaksdata!!.vilkarsvedtaklist!!
             dto.copy(
@@ -75,7 +75,7 @@ class OkningUforegradTest {
 
     @Test
     fun `testPdf - omgjoring etter klage`() {
-        val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
+        val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe
             val vedtaksdata = pe.vedtaksbrev.vedtaksdata!!
             dto.copy(
@@ -96,7 +96,7 @@ class OkningUforegradTest {
 
     @Test
     fun `testPdf - omgjoring etter anke med ung ufor`() {
-        val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
+        val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe
             val vedtaksdata = pe.vedtaksbrev.vedtaksdata!!
             val vilkarsvedtaklist = vedtaksdata.vilkarsvedtaklist!!
@@ -125,7 +125,7 @@ class OkningUforegradTest {
 
     @Test
     fun `testPdf - hel yrkesskade lik uforegrad`() {
-        val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
+        val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe
             val vedtaksdata = pe.vedtaksbrev.vedtaksdata!!
             val vilkarsvedtaklist = vedtaksdata.vilkarsvedtaklist!!
@@ -172,7 +172,7 @@ class OkningUforegradTest {
 
     @Test
     fun `testPdf - delvis yrkesskade`() {
-        val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
+        val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe
             val vedtaksdata = pe.vedtaksbrev.vedtaksdata!!
             val vilkarsvedtaklist = vedtaksdata.vilkarsvedtaklist!!
@@ -212,7 +212,7 @@ class OkningUforegradTest {
 
     @Test
     fun `testPdf - yrkesskade ikke oppfylt`() {
-        val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
+        val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe
             val vedtaksdata = pe.vedtaksbrev.vedtaksdata!!
             val vilkarsvedtaklist = vedtaksdata.vilkarsvedtaklist!!
@@ -252,7 +252,7 @@ class OkningUforegradTest {
 
     @Test
     fun `testPdf - barnetillegg felles og serkull`() {
-        val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
+        val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe
             val vedtaksdata = pe.vedtaksbrev.vedtaksdata!!
             val beregningufore = vedtaksdata.beregningsdata!!.beregningufore!!
@@ -296,7 +296,7 @@ class OkningUforegradTest {
 
     @Test
     fun `testPdf - kun ektefelletillegg`() {
-        val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
+        val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe
             val vedtaksdata = pe.vedtaksbrev.vedtaksdata!!
             val beregningufore = vedtaksdata.beregningsdata!!.beregningufore!!
@@ -334,7 +334,7 @@ class OkningUforegradTest {
 
     @Test
     fun `testPdf - gjenlevendetillegg`() {
-        val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
+        val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe
             val vedtaksdata = pe.vedtaksbrev.vedtaksdata!!
             val beregningufore = vedtaksdata.beregningsdata!!.beregningufore!!
@@ -376,7 +376,7 @@ class OkningUforegradTest {
 
     @Test
     fun `testPdf - helseinstitusjon reduksjon anvendt med forsorgeransvar`() {
-        val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
+        val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe
             val vedtaksdata = pe.vedtaksbrev.vedtaksdata!!
             val beregningufore = vedtaksdata.beregningsdata!!.beregningufore!!
@@ -414,7 +414,7 @@ class OkningUforegradTest {
 
     @Test
     fun `testPdf - straffegjennomforing reduksjon anvendt`() {
-        val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
+        val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe
             val vedtaksdata = pe.vedtaksbrev.vedtaksdata!!
             val beregningufore = vedtaksdata.beregningsdata!!.beregningufore!!
@@ -464,7 +464,7 @@ class OkningUforegradTest {
 
     @Test
     fun `testPdf - bosted utland med etterbetaling`() {
-        val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
+        val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe
             val vedtaksdata = pe.vedtaksbrev.vedtaksdata!!
             val beregningufore = vedtaksdata.beregningsdata!!.beregningufore!!
@@ -513,7 +513,7 @@ class OkningUforegradTest {
 
     @Test
     fun `testPdf - 100 prosent uforegrad med IFU begrunnelse og OIFU oppjustering`() {
-        val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
+        val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe
             val vedtaksdata = pe.vedtaksbrev.vedtaksdata!!
             val beregningufore = vedtaksdata.beregningsdata!!.beregningufore!!
@@ -567,7 +567,7 @@ class OkningUforegradTest {
 
     @Test
     fun `testPdf - delvis uforegrad med IEU begrunnelse`() {
-        val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
+        val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe
             val vedtaksdata = pe.vedtaksbrev.vedtaksdata!!
             val beregningufore = vedtaksdata.beregningsdata!!.beregningufore!!
@@ -621,7 +621,7 @@ class OkningUforegradTest {
 
     @Test
     fun `testPdf - lopende alderspensjon`() {
-        val dto = createInnvilgelseUfoeretrygdDto().let { dto ->
+        val dto = createOkningUforegradDto().let { dto ->
             val pe = dto.pesysData.pe
             val vedtaksdata = pe.vedtaksbrev.vedtaksdata!!
             val beregningufore = vedtaksdata.beregningsdata!!.beregningufore!!

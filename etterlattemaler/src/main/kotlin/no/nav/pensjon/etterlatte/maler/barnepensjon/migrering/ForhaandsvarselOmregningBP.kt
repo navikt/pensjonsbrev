@@ -9,9 +9,8 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDataSelectors.erBosattUtlandet
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDataSelectors.erForeldreloes
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.selectors.barnepensjonOmregnetNyttRegelverkDTO.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.selectors.barnepensjonOmregnetNyttRegelverkData.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 

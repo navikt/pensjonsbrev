@@ -264,7 +264,7 @@ object TemplateDocumentationRenderer {
         )
     }
 
-    @OptIn(InterneDataklasser::class)
+    @OptIn(BrevbakerDSLInternal::class)
     private fun renderOperation(operation: UnaryOperation<*, *>): Operation =
         when (operation) {
             is UnaryOperation.AbsoluteValue -> Operation("abs", Documentation.Notation.FUNCTION)

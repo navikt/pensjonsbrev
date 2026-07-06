@@ -30,6 +30,7 @@ object Fixtures : LetterDataFactory {
         when (letterDataType) {
             InfoEndretUTPgaInntektDto::class -> lagInfoEndretUTPgaInntektDto() as T
             UforeAvslagUtenVurderingDto::class -> lagUforeAvslagUtenVurderingDto() as T
+            UforeAvslagTestmalDto::class -> lagUforeAvslagTestmalDto() as T
             UforeAvslagEnkelDto::class -> lagUforeAvslagEnkelDto() as T
             UforeAvslagInntektDto::class -> lagUforeAvslagInntektDto() as T
             UforeAvslagUforetidspunkt26Dto::class -> lagUforeAvslagUforetidspunkt26Dto() as T
@@ -109,6 +110,16 @@ object Fixtures : LetterDataFactory {
             vurdering = "Vurdering 1"
         ),
         saksbehandlerValg = UforeAvslagEnkelDto.Saksbehandlervalg(
+            VisVurderingFraVilkarvedtak = true
+        )
+    )
+
+    private fun lagUforeAvslagTestmalDto() = UforeAvslagTestmalDto(
+        pesysData = UforeAvslagTestmalDto.UforeAvslagPendata(
+            kravMottattDato = vilkaarligDato,
+            vurdering = listOf("Vurdering 1", "Vurdering 2")
+        ),
+        saksbehandlerValg = UforeAvslagTestmalDto.Saksbehandlervalg(
             VisVurderingFraVilkarvedtak = true
         )
     )

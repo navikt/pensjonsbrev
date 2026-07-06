@@ -4,15 +4,16 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDtoSelectors.PesysDataSelectors.dineRettigheterOgPlikterUfore
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDtoSelectors.PesysDataSelectors.etterbetaling
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDtoSelectors.PesysDataSelectors.hjemler
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmEtterbetalingOpphor2026RedigerbarDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmEtterbetalingOpphor2026RedigerbarDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.VedtakOmEtterbetalingOpphor2026
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
+import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -55,11 +56,13 @@ object VedtakOmEtterbetalingOpphor2026Redigerbar : RedigerbarTemplate<VedtakOmEt
             }
         }
         outline {
-            includePhrase(VedtakOmEtterbetalingOpphor2026.Outline(etterbetaling = pesysData.etterbetaling, hjemler = pesysData.hjemler, erRedigerbar = true.expr()))
+            includePhrase(VedtakOmEtterbetalingOpphor2026.Outline(etterbetaling = pesysData.etterbetaling, hjemler = pesysData.hjemler, reduksjonsprosent = pesysData.reduksjonsprosent, uforegrad = pesysData.uforegrad, ifu = pesysData.ifu, endringUforegrad = pesysData.endringUforegrad, endringIfu = pesysData.endringIfu, erRedigerbar = true.expr()))
             includePhrase(VedtakOmEtterbetalingOpphor2026.RettTilAAKlage)
             includePhrase(Ufoeretrygd.RettTilInnsyn)
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
+        includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
+        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
         includeAttachment(vedleggDineRettigheterOgPlikterUfore, pesysData.dineRettigheterOgPlikterUfore)
     }
 }

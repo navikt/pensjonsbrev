@@ -17,9 +17,8 @@ import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktDataSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.selectors.omstillingsstoenadVarselAktivitetspliktDTO.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.selectors.omstillingsstoenadVarselAktivitetspliktData.*
 
 data class OmstillingsstoenadVarselAktivitetspliktData(
     val bosattUtland: Boolean,

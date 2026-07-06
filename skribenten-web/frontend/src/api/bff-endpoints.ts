@@ -3,6 +3,7 @@
 
 import axios from "axios";
 
+import type * as generated from "../types/skribenten-api";
 import { CACHE_FOR } from "./cache";
 
 const BFF_BASE_URL = "/bff/api";
@@ -11,11 +12,7 @@ export type BaseUrls = {
   psak: string;
 };
 
-export type UserInfo = {
-  name: string;
-  navident: string;
-  erAttestant: boolean;
-};
+export type UserInfo = generated.ApiUserInfo;
 
 export const getUserInfo = {
   queryKey: ["USER"],
@@ -38,6 +35,7 @@ export type Feilmelding = {
   message: unknown;
   stack: unknown;
   requestId?: string;
+  level: string;
   status: number | undefined;
   jsonContent: unknown;
 };

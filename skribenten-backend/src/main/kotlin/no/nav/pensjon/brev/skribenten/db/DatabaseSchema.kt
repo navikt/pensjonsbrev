@@ -1,21 +1,23 @@
 package no.nav.pensjon.brev.skribenten.db
 
 import no.nav.brev.BrevLandmodell.Landkode
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.services.EnhetId
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.ReferenceOption
 import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.core.dao.id.CompositeIdTable
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
@@ -27,8 +29,8 @@ import java.time.LocalDate
 
 object Favourites : Table() {
     val id: Column<Int> = integer("id").autoIncrement()
-    val userId: Column<String> = varchar("User Id", length = 50)
-    val letterCode: Column<String> = varchar("Letter Code", length = 50)
+    val userId: Column<NavIdent> = varchar("User Id", length = 50).transform(::NavIdent, NavIdent::id)
+    val letterCode: Column<RedigerbarBrevkode> = varchar("Letter Code", length = 50).transform({ RedigerbarBrevkode(it) }, RedigerbarBrevkode::kode)
     override val primaryKey = PrimaryKey(id, name = "PK_Favourite_ID")
 }
 
@@ -38,7 +40,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
 
     val saksId: Column<SaksId> = long("saksId").index().transform(::SaksId, SaksId::id)
     val vedtaksId: Column<VedtaksId?> = long("vedtaksId").transform(::VedtaksId, VedtaksId::id).nullable()
-    val brevkode: Column<Brevkode.Redigerbart> = varchar("brevkode", length = 50).transform({ RedigerbarBrevkode(it) }, Brevkode.Redigerbart::kode)
+    val brevkode: Column<RedigerbarBrevkode> = varchar("brevkode", length = 50).transform(::RedigerbarBrevkode, RedigerbarBrevkode::kode)
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<EnhetId> = varchar("avsenderEnhetId", 50).transform(::EnhetId, EnhetId::value)
     val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonString)
@@ -47,7 +49,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
         .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
     val redigertBrevKryptertHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevKryptertHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
-    val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
+    val distribusjonstype: Column<Distribusjon> = varchar("distribusjonstype", length = 50).transform(Distribusjon::valueOf, Distribusjon::name)
     val redigeresAvNavIdent: Column<NavIdent?> = varchar("redigeresAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).nullable()
     val sistRedigertAvNavIdent: Column<NavIdent> = varchar("sistRedigertAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id)
     val opprettetAvNavIdent: Column<NavIdent> = varchar("opprettetAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).index()
@@ -66,6 +68,7 @@ object DocumentTable : LongIdTable() {
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
     val redigertBrevHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevHash")
     val brevdataHash: Column<Hash<BrevdataResponse.Data>> = hashColumn("brevdataHash")
+    val vedleggHash: Column<Hash<VedleggSnapshot>> = hashColumn("vedleggHash")
 }
 
 object MottakerTable : IdTable<BrevId>() {
@@ -95,6 +98,23 @@ object P1DataTable : IdTable<BrevId>() {
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
+object RedigertVedleggTable : CompositeIdTable() {
+    val brevredigering: Column<EntityID<BrevId>> =
+        reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE)
+    val vedleggId: Column<EntityID<VedleggId>> =
+        varchar("vedleggId", 50).transform(::VedleggId, VedleggId::id).entityId()
+    val redigertVedleggKryptert: Column<Edit.Attachment> = encryptedBinary("redigertVedleggKryptert")
+        .transform(KrypteringService::dekrypter, KrypteringService::krypter)
+        .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
+    val redigertVedleggKryptertHash: Column<Hash<Edit.Attachment>> = hashColumn("redigertVedleggKryptertHash")
+
+    override val primaryKey = PrimaryKey(brevredigering, vedleggId)
+
+    init {
+        addIdColumn(brevredigering)
+    }
+}
+
 object OneShotJobTable : IdTable<String>() {
     override val id: Column<EntityID<String>> = varchar("name", 255).entityId()
     val completedAt: Column<Instant> = timestamp("completedAt")
@@ -103,7 +123,7 @@ object OneShotJobTable : IdTable<String>() {
 
 object ValgteVedleggTable : IdTable<BrevId>() {
     override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
-    val valgteVedlegg = json<List<AlltidValgbartVedleggKode>>("valgtevedlegg", databaseObjectMapper::writeValueAsString, ::readJsonString)
+    val valgteVedlegg = json<List<AlltidValgbartVedleggBrevkode>>("valgtevedlegg", databaseObjectMapper::writeValueAsString, ::readJsonString)
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }

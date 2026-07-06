@@ -8,7 +8,7 @@ import {
 import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type Focus, type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { isParagraph, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
-import { LITERAL, NEW_LINE, TITLE_INDEX, VARIABLE } from "~/types/brevbakerTypes";
+import { TITLE_INDEX } from "~/types/brevbakerTypes";
 
 export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches((draft, focus) => {
   if (focus.blockIndex === TITLE_INDEX) {
@@ -23,17 +23,17 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
 
     if (isTextContent(content) && !("itemIndex" in focus) && offset !== undefined) {
       switch (content.type) {
-        case LITERAL: {
+        case "LITERAL": {
           const atStartOfNonEmptyContent = offset === 0 && text(content).length > 0;
           const atEndOfContentOrContentZeroLength = offset >= text(content).length;
           if (atStartOfNonEmptyContent) {
-            if (block.content[focus.contentIndex - 1]?.type === NEW_LINE) {
+            if (block.content[focus.contentIndex - 1]?.type === "NEW_LINE") {
               break;
             }
 
             const isAtStartOfBlock = focus.contentIndex === 0;
             const toAdd = isAtStartOfBlock ? [newLiteral(), createNewLine()] : [createNewLine()];
-            const previousIsVariable = block.content[focus.contentIndex - 1]?.type === VARIABLE;
+            const previousIsVariable = block.content[focus.contentIndex - 1]?.type === "VARIABLE";
             if (previousIsVariable) {
               toAdd.unshift(newLiteral());
             }
@@ -45,14 +45,14 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
             };
           } else if (atEndOfContentOrContentZeroLength) {
             if (
-              block.content[focus.contentIndex + 1]?.type === NEW_LINE ||
-              block.content[focus.contentIndex - 1]?.type === NEW_LINE
+              block.content[focus.contentIndex + 1]?.type === "NEW_LINE" ||
+              block.content[focus.contentIndex - 1]?.type === "NEW_LINE"
             ) {
               break;
             }
             const isAtEndOfBlock = focus.contentIndex + 1 === block.content.length;
             const toAdd = isAtEndOfBlock ? [createNewLine(), newLiteral()] : [createNewLine()];
-            const nextIsVariable = block.content[focus.contentIndex + 1]?.type === VARIABLE;
+            const nextIsVariable = block.content[focus.contentIndex + 1]?.type === "VARIABLE";
             if (nextIsVariable) {
               toAdd.push(newLiteral());
             }
@@ -74,10 +74,10 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = withPatches
           draft.saveStatus = "DIRTY";
           break;
         }
-        case VARIABLE: {
+        case "VARIABLE": {
           break;
         }
-        case NEW_LINE: {
+        case "NEW_LINE": {
           break;
         }
       }

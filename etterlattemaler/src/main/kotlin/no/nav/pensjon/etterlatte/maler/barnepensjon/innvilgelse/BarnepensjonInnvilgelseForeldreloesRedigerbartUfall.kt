@@ -12,17 +12,8 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriode
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.erEtterbetaling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.erGjenoppretting
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.erSluttbehandling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.flerePerioder
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.forskjelligAvdoedPeriode
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.harUtbetaling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.sisteBeregningsperiodeBeloep
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.sisteBeregningsperiodeDatoFom
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.vedtattIPesys
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.selectors.barnepensjonForeldreloesRedigerbarDTO.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.selectors.barnepensjonForeldreloesRedigerbarData.*
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonForeldreloesFraser
 import java.time.LocalDate
 

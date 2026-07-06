@@ -24,14 +24,8 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjonExpr
 import no.nav.pensjon.etterlatte.maler.fraser.common.mottakersFoedselsnummer
 import no.nav.pensjon.etterlatte.maler.fraser.common.saksbehandlingstiderUrl
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDataSelectors.bosattIUtlandet
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDataSelectors.harVerge
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDataSelectors.innstillingTekstLinjer
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDataSelectors.klageDato
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDataSelectors.sakType
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDataSelectors.under18Aar
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDataSelectors.vedtakDato
+import no.nav.pensjon.etterlatte.maler.klage.selectors.klageOversendelseBrukerDTO.*
+import no.nav.pensjon.etterlatte.maler.klage.selectors.klageOversendelseBrukerData.*
 import java.time.LocalDate
 
 data class KlageOversendelseBrukerData(

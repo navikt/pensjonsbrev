@@ -18,26 +18,17 @@ import {
   type ElementTags,
   FontType,
   type Identifiable,
-  ITEM_LIST,
   type Item,
   type ItemList,
-  LITERAL,
   type LiteralValue,
-  NEW_LINE,
   type NewLine,
-  PARAGRAPH,
   type ParagraphBlock,
   type Row,
-  TABLE,
   type Table,
   type TextContent,
-  TITLE1,
-  TITLE2,
-  TITLE3,
   type Title1Block,
   type Title2Block,
   type Title3Block,
-  VARIABLE,
   type VariableValue,
 } from "~/types/brevbakerTypes";
 import { type Nullable } from "~/types/Nullable";
@@ -56,7 +47,7 @@ export function cleanseText(text: string): string {
 }
 
 export function isEditableContent(content: Content | undefined | null): boolean {
-  return content != null && (content.type === VARIABLE || content.type === ITEM_LIST);
+  return content != null && (content.type === "VARIABLE" || content.type === "ITEM_LIST");
 }
 
 export function isBlockContentIndex(f: Focus | LiteralIndex | undefined): f is BlockContentIndex {
@@ -72,7 +63,7 @@ export function isBlockContentIndex(f: Focus | LiteralIndex | undefined): f is B
 }
 
 export function isTable(content: Content | undefined | null): content is Table {
-  return content?.type === TABLE;
+  return content?.type === "TABLE";
 }
 
 export function isItemContentIndex(f: Focus | LiteralIndex | undefined): f is ItemContentIndex {
@@ -223,9 +214,9 @@ export function isAtStartOfItem(f: Focus, offset?: number): boolean {
 export function text<T extends TextContent | undefined>(
   content: T,
 ): string | (undefined extends T ? undefined : never) {
-  if (content?.type === LITERAL) {
+  if (content?.type === "LITERAL") {
     return content.editedText ?? content.text;
-  } else if (content?.type === VARIABLE || content?.type === NEW_LINE) {
+  } else if (content?.type === "VARIABLE" || content?.type === "NEW_LINE") {
     return content.text;
   } else {
     return undefined as undefined extends T ? undefined : never;
@@ -289,7 +280,7 @@ export function applyTableSeparatorNormalization(draft: Draft<EditedLetter>) {
   const blocks = draft.blocks;
   for (let blockIndex = 0; blockIndex < blocks.length; blockIndex++) {
     const block = blocks[blockIndex];
-    if (block.type !== PARAGRAPH) continue;
+    if (block.type !== "PARAGRAPH") continue;
 
     // Insert a separator between any two adjacent tables in the same block
     let contentIndex = 0;
@@ -313,7 +304,7 @@ export function applyTableSeparatorNormalization(draft: Draft<EditedLetter>) {
 export function removeElements<T extends Identifiable>(
   startIndex: number,
   count: number,
-  from: { content: Draft<T[]>; deletedContent: Draft<number[]>; id: number | null },
+  from: { content: Draft<T[]>; deletedContent: Draft<number[]>; id?: number | null },
 ): Draft<T[]> {
   const removedElements = from.content.splice(startIndex, count);
   for (const e of removedElements) deleteElement(e, from);
@@ -322,10 +313,10 @@ export function removeElements<T extends Identifiable>(
 
 function deleteElement(
   toDelete: Identifiable,
-  from: { content: Identifiable[]; deletedContent: Draft<number[]>; id: number | null },
+  from: { content: Identifiable[]; deletedContent: Draft<number[]>; id?: number | null },
 ) {
   if (
-    toDelete.id !== null &&
+    typeof toDelete.id === "number" &&
     toDelete.parentId === from.id &&
     !from.deletedContent.includes(toDelete.id) &&
     !from.content.map((c) => c.id).includes(toDelete.id)
@@ -432,18 +423,17 @@ export function splitLiteralAtOffset(literal: Draft<LiteralValue>, offset: numbe
 }
 
 export function newTitle(args: {
-  id?: Nullable<number>;
   content: TextContent[];
-  type: typeof TITLE1 | typeof TITLE2 | typeof TITLE3;
+  type: "TITLE1" | "TITLE2" | "TITLE3";
   deletedContent?: number[];
 }): Title1Block | Title2Block | Title3Block {
   return {
     type: args.type,
-    id: args.id ?? null,
-    parentId: null,
+    id: null,
     editable: true,
     deletedContent: args.deletedContent ?? [],
     content: args.content,
+    missingFromTemplate: false,
   };
 }
 
@@ -454,11 +444,12 @@ export function newParagraph(args: {
   deletedContent?: number[];
 }): ParagraphBlock {
   return {
-    type: PARAGRAPH,
+    type: "PARAGRAPH",
     id: args.id ?? null,
     parentId: args.parentId ?? null,
     editable: true,
     deletedContent: args.deletedContent ?? [],
+    missingFromTemplate: false,
     content: args.content,
   };
 }
@@ -474,7 +465,7 @@ export function newTable(rows: Row[]): Table {
     throw new Error("newTable: all rows must have an identical column count");
   }
   return {
-    type: TABLE,
+    type: "TABLE",
     id: null,
     parentId: null,
     header: {
@@ -494,18 +485,17 @@ export function newLiteral(
     text?: string;
     editedText?: Nullable<string>;
     fontType?: Nullable<FontType>;
-    // TODO: Gir ikke mening å sette editedFontType i nye literals.
     editedFontType?: Nullable<FontType>;
     tags?: ElementTags[];
   } = {},
 ): LiteralValue {
   return {
-    type: LITERAL,
+    type: "LITERAL",
     id: args?.id ?? null,
     parentId: args?.parentId ?? null,
     text: args?.text ?? "",
     editedText: args?.editedText ?? null,
-    editedFontType: args?.editedFontType ?? null,
+    editedFontType: args?.editedFontType ?? undefined,
     fontType: args?.fontType ?? FontType.PLAIN,
     tags: args?.tags ?? [],
   };
@@ -518,11 +508,12 @@ export const newVariable = (args: {
   fontType?: FontType;
 }): VariableValue => {
   return {
-    type: VARIABLE,
+    type: "VARIABLE",
     id: args.id ?? null,
     parentId: args.parentId ?? null,
     text: args.text,
     fontType: args.fontType ?? FontType.PLAIN,
+    tags: [],
   };
 };
 
@@ -550,6 +541,7 @@ export function newItemList(args: { id?: Nullable<number>; items: Item[]; delete
     type: "ITEM_LIST",
     items: args.items,
     deletedItems: args.deletedItems ?? [],
+    listType: "PUNKTLISTE",
   };
 }
 
@@ -557,8 +549,9 @@ export function createNewLine(): NewLine {
   return {
     id: null,
     parentId: null,
-    type: NEW_LINE,
+    type: "NEW_LINE",
     text: "",
+    fontType: "PLAIN",
   };
 }
 
@@ -678,11 +671,11 @@ export function normalizeDeletedArrays(obj: unknown): unknown {
 export function collectAllLiteralValues(letter: EditedLetter): LiteralValue[] {
   const blockLiterals = letter.blocks.flatMap((block) => {
     switch (block.type) {
-      case TITLE1:
-      case TITLE2:
-      case TITLE3:
+      case "TITLE1":
+      case "TITLE2":
+      case "TITLE3":
         return (block.content ?? []).filter((content) => isLiteral(content));
-      case PARAGRAPH:
+      case "PARAGRAPH":
         return (block.content ?? []).flatMap((content) => {
           if (isLiteral(content)) return [content];
           if (isItemList(content))

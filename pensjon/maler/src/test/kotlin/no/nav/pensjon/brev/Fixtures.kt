@@ -56,6 +56,7 @@ object Fixtures : LetterDataFactory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
+            AnkeTilsvarTilAnkendePartDto::class -> createAnkeTilsvarTilAnkendePartDto() as T
             FullmektigBprofAutoDto::class -> createFullmektigBprofAutoDto() as T
             FullmaktsgiverBprofAutoDto::class -> createFullmaktsgiverBprofAutoDto() as T
             AvslagForLiteTrygdetidAPDto::class -> createAvslagForLiteTrygdetidAPDto() as T
@@ -85,6 +86,8 @@ object Fixtures : LetterDataFactory {
             InnvilgelseAvAlderspensjonDto::class -> createInnvilgelseAvAlderspensjonDto() as T
             InnvilgelseAvAlderspensjonAutoDto::class -> createInnvilgelseAvAlderspensjonAutoDto() as T
             InnvilgelseAvAlderspensjonTrygdeavtaleDto::class -> createInnvilgelseAvAlderspensjonTrygdeavtaleDto() as T
+            KlageOrienteringOmOversendelseTilKlageinstansDto::class -> createKlageOrienteringOmOversendelseTilKlageinstansDto() as T
+            KlageOrienteringOmSaksbehandlingstidDto::class -> createKlageOrienteringOmSaksbehandlingstidDto() as T
             LetterExampleDto::class -> createLetterExampleDto() as T
             OmsorgEgenAutoDto::class -> createOmsorgEgenAutoDto() as T
             OmsorgEgenManuellDto::class -> createOmsorgManuellDto() as T
@@ -111,7 +114,11 @@ object Fixtures : LetterDataFactory {
             VedtakOmFjerningAvOmsorgsopptjeningDto::class -> createVedtakOmFjerningAvOmsorgsopptjeningDto() as T
             VedtakOmInnvilgelseAvOmsorgspoengDto::class -> createVedtakOmInnvilgelseAvOmsorgspoengDto() as T
             InnvilgelseUfoeretrygdDto::class -> createInnvilgelseUfoeretrygdDto() as T
+            InnvilgelseUforetrygdBosattNorgeEtterUtlandDto::class -> createInnvilgelseUforetrygdBosattNorgeEtterUtlandDto() as T
+            InnvilgelseUforetrygdMedEndringDto::class -> createInnvilgelseUforetrygdMedEndringDto() as T
+            OkningUforegradDto::class -> createOkningUforegradDto() as T
             InnvilgelseUfoeretrygdUtlandDto::class -> createInnvilgelseUfoeretrygdUtlandDto() as T
+            InnvilgelseUfoeretrygdMellombehandlingDto::class -> createInnvilgelseUforetrygdMellombehandlingDto() as T
             EndringUfoeretrygdDto::class -> createEndringUfoeretrygdDto() as T
             EndringUfoeretrygdFlyttingUtlandDto::class -> createEndringUfoeretrygdFlyttingUtlandDto() as T
             OmregningUfoerepensjonTilUfoeretrygdDto::class -> createOmregningUfoerepensjonTilUfoeretrygdDto() as T
