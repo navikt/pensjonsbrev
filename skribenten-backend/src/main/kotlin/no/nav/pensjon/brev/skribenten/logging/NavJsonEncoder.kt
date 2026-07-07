@@ -13,8 +13,14 @@ import java.time.format.DateTimeFormatter
  * Output format matches LogstashEncoder defaults so that existing Kibana index mappings work without changes.
  * Fields: @timestamp, @version, message, logger_name, thread_name, level, level_value, MDC fields (root), stack_trace.
  */
+import java.time.format.DateTimeFormatterBuilder
+
 class NavJsonEncoder : EncoderBase<ILoggingEvent>() {
-    private val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC)
+    private val formatter = DateTimeFormatterBuilder()
+        .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        .appendOffset("+HH:MM", "+00:00")
+        .toFormatter()
+        .withZone(ZoneOffset.UTC)
 
     override fun headerBytes(): ByteArray = ByteArray(0)
     override fun footerBytes(): ByteArray = ByteArray(0)
