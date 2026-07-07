@@ -2,10 +2,11 @@ package no.nav.pensjon.brev.skribenten.auth
 
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.response.*
 import io.ktor.server.util.*
 import io.ktor.util.*
-import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevInfoService
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.model.Pdl
@@ -19,44 +20,46 @@ val SakKey = AttributeKey<Fagsak>("AuthorizeAnsattSakTilgang:sak")
 
 private val logger = LoggerFactory.getLogger("AuthorizeAnsattSakTilgang")
 
-open class AuthorizeAnsattSakTilgangConfiguration {
-    lateinit var pdlService: PdlService
-    lateinit var fagsakService: FagsakService
-}
+open class AuthorizeAnsattSakTilgangConfiguration
 
 // TODO: Vurder om disse to pluginene bør erstattes med policy-klasser som kan brukes i usecasene direkte.
 //       Fordelen er at det blir mer eksplisitt, men samtidig så må det huskes på å kalle dem i alle usecasene.
 
 val AuthorizeAnsattSakTilgang =
     createRouteScopedPlugin("AuthorizeAnsattSakTilgang", ::AuthorizeAnsattSakTilgangConfiguration) {
+        val pdlService: PdlService by application.dependencies
+        val fagsakService: FagsakService by application.dependencies
+
         on(PrincipalInContext.Hook) { call ->
             if (call.isHandled) return@on
 
             val saksId = SaksId(call.parameters.getOrFail<Long>(SAKSID_PARAM))
-            validerTilgangTilSak(call, saksId)
+            validerTilgangTilSak(fagsakService, pdlService, call, saksId)
         }
     }
 
-class AuthorizeAnsattSakTilgangForBrevConfiguration : AuthorizeAnsattSakTilgangConfiguration() {
-    lateinit var hentBrevService: HentBrevService
-}
-
 val AuthorizeAnsattSakTilgangForBrev =
-    createRouteScopedPlugin("AuthorizeAnsattSakTilgangForBrev", ::AuthorizeAnsattSakTilgangForBrevConfiguration) {
+    createRouteScopedPlugin("AuthorizeAnsattSakTilgangForBrev", ::AuthorizeAnsattSakTilgangConfiguration) {
+        val pdlService: PdlService by application.dependencies
+        val fagsakService: FagsakService by application.dependencies
+        val hentBrevInfoService: HentBrevInfoService by application.dependencies
+
         on(PrincipalInContext.Hook) { call ->
             val brevId = call.parameters.brevId()
-            val brev = pluginConfig.hentBrevService.hentBrevInfo(brevId)
+            val brev = hentBrevInfoService.hentBrevInfo(brevId)
 
             if (brev != null) {
-                validerTilgangTilSak(call, brev.saksId)
+                validerTilgangTilSak(fagsakService, pdlService, call, brev.saksId)
             }
         }
     }
 
-private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfiguration>.validerTilgangTilSak(
+private suspend fun validerTilgangTilSak(
+    fagsakService: FagsakService,
+    pdlService: PdlService,
     call: ApplicationCall,
     saksId: SaksId
-) = validerTilgangTilSak(pluginConfig.fagsakService, saksId, pluginConfig.pdlService)
+) = validerTilgangTilSak(fagsakService, saksId, pdlService)
         ?.also { call.attributes.put(SakKey, it) }
         ?: call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
 

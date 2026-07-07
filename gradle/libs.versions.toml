@@ -1,12 +1,12 @@
 [versions]
-kotlinVersion = "2.3.21"
+kotlinVersion = "2.4.0"
 kotlinKspVersion = "2.3.9"
-ktorVersion = "3.4.3"
+ktorVersion = "3.5.1"
 assertJVersion = "3.27.7"
 binaryCompatibilityValidatorVersion = "0.18.1"
 classGraphVersion = "4.8.184"
 commonsCodecVersion = "1.22.0"
-commonVersion = "2.38.0"
+commonVersion = "2.39.0"
 exposedVersion = "1.3.0"
 flywayVersion = "12.9.0"
 gradleNodePluginVersion = "7.1.0"
@@ -71,6 +71,7 @@ ktor-server-callLogging = { module = "io.ktor:ktor-server-call-logging", version
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktorVersion" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktorVersion" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktorVersion" }
+ktor-server-di = { module = "io.ktor:ktor-server-di", version.ref = "ktorVersion" }
 ktor-server-metrics = { module = "io.ktor:ktor-server-metrics", version.ref = "ktorVersion" }
 ktor-server-metrics-micrometer = { module = "io.ktor:ktor-server-metrics-micrometer", version.ref = "ktorVersion" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktorVersion" }

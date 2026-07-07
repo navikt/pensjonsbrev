@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.skribenten.routes
 
 import io.ktor.http.*
+import io.ktor.server.application.Application
+import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
@@ -11,8 +13,10 @@ import no.nav.pensjon.brev.skribenten.model.LetterMetadata
 import no.nav.pensjon.brev.skribenten.principal
 import org.slf4j.LoggerFactory
 
-fun Route.brevmal(brevmalService: BrevmalService) {
+context(app: Application)
+fun Route.brevmal() {
     val logger = LoggerFactory.getLogger("brevbakerRoute")
+    val brevmalService: BrevmalService by app.dependencies
 
     route("/brevmal") {
 
