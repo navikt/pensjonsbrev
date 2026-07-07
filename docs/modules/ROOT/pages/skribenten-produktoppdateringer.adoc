@@ -42,7 +42,7 @@ I mai har vi jobbet mye med tekstvalg og saksbehandlervalg i brevmaler, samt lag
 * Saksbehandlervalg kan nå være valgfritt (nullable) i flere brev, slik at malen ikke krever et valg der det ikke er naturlig https://github.com/navikt/pensjonsbrev/commit/6372e7b9e[#3135]
 * Fokus tas nå automatisk til stedet der innhold settes inn i brevet https://github.com/navikt/pensjonsbrev/commit/52cbade7d[#3112] https://github.com/navikt/pensjonsbrev/commit/9949f42c6[#3142]
 * Viser en mer informativ feilmelding når brevet mangler, og begrenser antall automatiske forsøk på nytt til 3 https://github.com/navikt/pensjonsbrev/commit/b5f06c4fd[#3215]
-* Valgt avsenderenhet holdes nå synkronisert med url-en https://github.com/navikt/pensjonsbrev/commit/973a27988[#3218]
+* Valgt avsenderenhet holdes nå synkronisert med URL-en https://github.com/navikt/pensjonsbrev/commit/973a27988[#3218]
 
 === Ting vi har fikset
 * Håndterer nå at reservertAv.navn kan være tomt, uten at dette gir feil i Skribenten https://github.com/navikt/pensjonsbrev/commit/00f80f392[#3227]
