@@ -5,11 +5,13 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
+import no.nav.pensjon.brev.skribenten.common.getOrElse
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Service
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1_BREVKODE
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1_VEDLEGG_KEY
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -19,7 +21,7 @@ class HentEllerOpprettPdfHandler(
     private val brevdataService: BrevdataService,
     private val renderService: RenderService,
     private val brevmalService: BrevmalService,
-    private val p1Service: P1Service,
+    private val hentP1DataHandler: HentP1DataHandler,
     database: Database,
 ) : TransactionHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult, Nothing>(database) {
 
@@ -59,12 +61,12 @@ class HentEllerOpprettPdfHandler(
     }
 
     private suspend fun BrevdataResponse.Data.withP1DataIfP1(brev: Brevredigering): BrevdataResponse.Data =
-        p1Service.patchMedP1DataOmP1(
-            brevdataResponse = this,
-            brevkode = brev.brevkode,
-            brevId = brev.id.value,
-            saksId = brev.saksId
-        )
+        if (brev.brevkode.kode() == P1_BREVKODE) {
+            val p1Data = hentP1DataHandler(HentP1DataHandler.Request(brevId = brev.id.value, saksId = brev.saksId))
+                ?.getOrElse { error("Uventet feil ved henting av P1-data for brev ${brev.id.value}") }
+
+            copy(brevdata = brevdata.apply { put(P1_VEDLEGG_KEY, p1Data) })
+        } else this
 }
 
 

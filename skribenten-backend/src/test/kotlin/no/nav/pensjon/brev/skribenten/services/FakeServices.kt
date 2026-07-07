@@ -64,15 +64,6 @@ open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : Samh
     override suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto = notYetStubbed()
 }
 
-open class FakeP1Service: P1Service {
-    override suspend fun patchMedP1DataOmP1(
-        brevdataResponse: BrevdataResponse.Data,
-        brevkode: Brevkode.Redigerbart,
-        brevId: BrevId?,
-        saksId: SaksId,
-    ): BrevdataResponse.Data = brevdataResponse
-}
-
 open class FakeBrevmetadataService(
     val eblanketter: List<BrevdataDto> = listOf(),
     val brevmaler: List<BrevdataDto> = listOf(),

@@ -52,7 +52,6 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataServiceHttp
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.LegacyBrevServiceImpl
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PentHttpClient
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.KrrService
@@ -99,7 +98,6 @@ fun Application.configureDependencies() {
         provide(NavansattServiceHttp::class)
         provide(LegacyBrevServiceImpl::class)
         provide(Norg2ServiceHttp::class)
-        provide(P1ServiceImpl::class)
 
         provide(BrevService::class)
         provide(BrevdataService::class)
