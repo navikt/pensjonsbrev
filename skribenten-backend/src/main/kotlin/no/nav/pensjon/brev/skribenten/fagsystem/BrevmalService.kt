@@ -97,10 +97,10 @@ class BrevmalService(
     suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification? =
         brevbakerService.getModelSpecification(brevkode)
 
-    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): List<ValgbartVedlegg> {
+    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): List<ValgbartVedlegg>? {
         val spraakIBrevet = transaction {
-            BrevredigeringEntity.findById(brevId)?.spraak ?: throw IllegalStateException("Finner ikke brev med id $brevId")
-        }
+            BrevredigeringEntity.findById(brevId)?.spraak
+        } ?: return null
         return brevbakerService.getAlltidValgbareVedlegg(brevId).map {
             ValgbartVedlegg(
                 kode = it.kode,
