@@ -9,12 +9,11 @@ import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
-import no.nav.pensjon.brev.skribenten.brevredigering.application.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.*
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.*
@@ -249,7 +248,6 @@ abstract class BrevredigeringHandlerTestBase {
     }
     protected val slettBrevHandler by lazy {
         SlettBrevHandler(
-            slettBrevPolicy = SlettBrevPolicy(),
             reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
