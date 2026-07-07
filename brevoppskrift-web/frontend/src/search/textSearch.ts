@@ -60,16 +60,26 @@ type BrevRecord = {
   id: string;
 };
 
+/** Per-term fuzzy match tuning, shared between the token-search index (below)
+ *  and single-term highlighting (`highlight.tsx`, via `Fuse.match()`), so the
+ *  two never drift out of sync on what counts as a "fuzzy" match. Tuned
+ *  tighter than Fuse's default threshold (0.6) so short brevkoder/terms don't
+ *  match unrelated text. `ignoreLocation` mirrors what Fuse's own per-term
+ *  token search uses internally. */
+export const FUZZY_MATCH_OPTIONS = {
+  threshold: 0.3,
+  minMatchCharLength: 2,
+  ignoreLocation: true,
+} as const;
+
 /** Multi-word queries are typo-tolerant per term (token search) and must match
  *  every term (`tokenMatch: "all"`), mirroring the previous AND-of-terms
- *  behaviour while adding fuzziness. Tuned tighter than Fuse's default
- *  (0.6) so short brevkoder/terms don't match unrelated text. */
+ *  behaviour while adding fuzziness. */
 const TOKEN_SEARCH_OPTIONS = {
+  ...FUZZY_MATCH_OPTIONS,
   useTokenSearch: true,
   tokenMatch: "all",
   includeScore: true,
-  threshold: 0.3,
-  minMatchCharLength: 2,
   // Lines/titles vary a lot in length; without this, matches in longer text
   // are penalized purely for being longer, which isn't a signal we want here.
   ignoreFieldNorm: true,

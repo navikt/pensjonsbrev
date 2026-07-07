@@ -1,7 +1,61 @@
 import { css } from "@emotion/react";
-import { Fragment } from "react";
+import Fuse from "fuse.js";
+import { Fragment, type ReactNode } from "react";
 
-import { type Line } from "~/search/textSearch";
+import { FUZZY_MATCH_OPTIONS, type Line } from "~/search/textSearch";
+
+type Range = [number, number];
+
+/** All start/end indices (end exclusive) of `term` in `text`, case-insensitive. */
+function exactRanges(text: string, term: string): Range[] {
+  const ranges: Range[] = [];
+  const lowerText = text.toLowerCase();
+  const lowerTerm = term.toLowerCase();
+  if (!lowerTerm) {
+    return ranges;
+  }
+  let from = 0;
+  for (;;) {
+    const at = lowerText.indexOf(lowerTerm, from);
+    if (at === -1) {
+      break;
+    }
+    ranges.push([at, at + lowerTerm.length]);
+    from = at + lowerTerm.length;
+  }
+  return ranges;
+}
+
+/** The single best fuzzy-match location of `term` in `text`, or none. Uses the
+ *  same tuning as the search index (`FUZZY_MATCH_OPTIONS`) so a term only
+ *  highlights here if it would also have counted as a match in search. */
+function fuzzyRange(text: string, term: string): Range | undefined {
+  const result = Fuse.match(term, text, { ...FUZZY_MATCH_OPTIONS, includeMatches: true });
+  if (!result.isMatch) {
+    return undefined;
+  }
+  const range = result.indices?.[0];
+  // Fuse indices are inclusive [start, end]; convert to exclusive end.
+  return range ? [range[0], range[1] + 1] : undefined;
+}
+
+/** Merges overlapping/adjacent ranges into a minimal non-overlapping set. */
+function mergeRanges(ranges: Range[]): Range[] {
+  if (ranges.length === 0) {
+    return ranges;
+  }
+  const sorted = [...ranges].sort((a, b) => a[0] - b[0]);
+  const merged: Range[] = [sorted[0]];
+  for (const [start, end] of sorted.slice(1)) {
+    const last = merged[merged.length - 1];
+    if (start <= last[1]) {
+      last[1] = Math.max(last[1], end);
+    } else {
+      merged.push([start, end]);
+    }
+  }
+  return merged;
+}
 
 function VariableChip({ label }: { label: string }) {
   return (
@@ -27,38 +81,57 @@ function VariableChip({ label }: { label: string }) {
   );
 }
 
-/** Renders text with all occurrences of each needle term wrapped in `<mark>`. */
+/**
+ * Renders text with needle terms wrapped in `<mark>`. Per term: if it's an
+ * exact (case-insensitive) substring, all its occurrences are highlighted;
+ * otherwise, if it only fuzzy-matches (e.g. query "ble" matching "blue"),
+ * only its single best-match location is highlighted. Terms with no match at
+ * all in this particular text are left unhighlighted.
+ */
 function HighlightText({ text, needle }: { text: string; needle: string }) {
   const terms = needle.split(/\s+/).filter((t) => t.length > 0);
   if (terms.length === 0) {
     return <>{text}</>;
   }
-  const escaped = terms.map((t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
-  const regex = new RegExp(`(${escaped.join("|")})`, "gi");
-  const parts = text.split(regex);
-  if (parts.length === 1) {
+
+  const ranges = mergeRanges(
+    terms.flatMap((term) => {
+      const exact = exactRanges(text, term);
+      if (exact.length > 0) {
+        return exact;
+      }
+      const fuzzy = fuzzyRange(text, term);
+      return fuzzy ? [fuzzy] : [];
+    }),
+  );
+  if (ranges.length === 0) {
     return <>{text}</>;
   }
-  return (
-    <>
-      {parts.map((part, i) =>
-        i % 2 === 1 ? (
-          <mark
-            css={{
-              background: "transparent",
-              color: "inherit",
-              fontWeight: "var(--ax-font-weight-bold)",
-            }}
-            key={i}
-          >
-            {part}
-          </mark>
-        ) : (
-          <Fragment key={i}>{part}</Fragment>
-        ),
-      )}
-    </>
-  );
+
+  const nodes: ReactNode[] = [];
+  let cursor = 0;
+  ranges.forEach(([start, end], i) => {
+    if (start > cursor) {
+      nodes.push(<Fragment key={`plain-${i}`}>{text.slice(cursor, start)}</Fragment>);
+    }
+    nodes.push(
+      <mark
+        css={{
+          background: "transparent",
+          color: "inherit",
+          fontWeight: "var(--ax-font-weight-bold)",
+        }}
+        key={`mark-${i}`}
+      >
+        {text.slice(start, end)}
+      </mark>,
+    );
+    cursor = end;
+  });
+  if (cursor < text.length) {
+    nodes.push(<Fragment key="plain-end">{text.slice(cursor)}</Fragment>);
+  }
+  return <>{nodes}</>;
 }
 
 /** Renders a line of segments (text + variable chips), with optional needle highlighting. */
