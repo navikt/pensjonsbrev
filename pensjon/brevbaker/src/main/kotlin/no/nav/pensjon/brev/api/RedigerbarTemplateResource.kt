@@ -45,7 +45,6 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
         brevbaker.renderRedigertBrevPDF(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg)
 
     override fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
-        // TODO(redigerbart-vedlegg): fjern '?: emptyMap()' når redigerteVedlegg gjøres obligatorisk etter utrulling.
         brevbaker.renderRedigertBrevHTML(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg)
 
     private fun createLetter(brevbestilling: BestillBrevRequest<Kode>) =
