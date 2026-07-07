@@ -10,8 +10,6 @@ import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1_BREVKODE
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1_VEDLEGG_KEY
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -68,5 +66,9 @@ class HentEllerOpprettPdfHandler(
             copy(brevdata = brevdata.apply { put(P1_VEDLEGG_KEY, p1Data) })
         } else this
 }
+
+// Disse må være i sync med api-modellen
+const val P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2"
+const val P1_VEDLEGG_KEY = "p1Vedlegg"
 
 
