@@ -1,15 +1,10 @@
 package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1Data
-import no.nav.pensjon.brev.skribenten.db.P1DataTable
-import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentP1DataHandler
+import no.nav.pensjon.brev.skribenten.common.getOrElse
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksId
-import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
 // Disse må være i sync med api-modellen
 const val P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2"
@@ -21,8 +16,6 @@ sealed class P1Exception(override val message: String): Exception(){
 
 interface P1Service {
 
-    suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: BrevId, saksId: SaksId): Api.GeneriskBrevdata
-    suspend fun hentP1Data(brevId: BrevId, saksId: SaksId): Api.GeneriskBrevdata?
     suspend fun patchMedP1DataOmP1(
         brevdataResponse: BrevdataResponse.Data,
         brevkode: Brevkode.Redigerbart,
@@ -31,26 +24,9 @@ interface P1Service {
     ): BrevdataResponse.Data
 }
 
-class P1ServiceImpl(private val penClient: PenClient) : P1Service {
-
-    override suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: BrevId, saksId: SaksId): Api.GeneriskBrevdata = suspendTransaction {
-        val brevredigering = BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
-        if (brevredigering != null) {
-            val entity = P1Data.findSingleByAndUpdate(P1DataTable.id eq brevredigering.id) { p1Data ->
-                p1Data.p1data = p1DataInput
-            } ?: P1Data.new(brevId) {
-                p1data = p1DataInput
-            }
-            entity.p1data
-        } else throw IllegalArgumentException("Fant ikke brev med id: $brevId")
-    }
-
-    override suspend fun hentP1Data(brevId: BrevId, saksId: SaksId): Api.GeneriskBrevdata? = suspendTransaction {
-        BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)?.let {
-            it.p1Data?.p1data
-                ?: penClient.hentP1VedleggData(saksId, it.spraak)
-        }
-    }
+// Selve henting og lagring av P1-data skjer nå i egne handlere, se HentP1DataHandler og LagreP1DataHandler,
+// slik at logikken kan gjenbrukes fra routes/SakBrev.kt uten å måtte gå via P1Service.
+class P1ServiceImpl(private val hentP1DataHandler: HentP1DataHandler) : P1Service {
 
     override suspend fun patchMedP1DataOmP1(
         brevdataResponse: BrevdataResponse.Data,
@@ -58,8 +34,11 @@ class P1ServiceImpl(private val penClient: PenClient) : P1Service {
         brevId: BrevId?,
         saksId: SaksId
     ): BrevdataResponse.Data = if (brevkode.kode() == P1_BREVKODE && brevId != null) {
+        val p1Data = hentP1DataHandler(HentP1DataHandler.Request(brevId, saksId))
+            ?.getOrElse { error("Uventet feil ved henting av P1-data for brev $brevId") }
+
         brevdataResponse.copy(
-            brevdata = brevdataResponse.brevdata.apply { put(P1_VEDLEGG_KEY, hentP1Data(brevId, saksId)) }
+            brevdata = brevdataResponse.brevdata.apply { put(P1_VEDLEGG_KEY, p1Data) }
         )
     } else brevdataResponse
 }

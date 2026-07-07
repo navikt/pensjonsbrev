@@ -204,11 +204,15 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan hente pdf for p1`() {
-        val p1Service = P1ServiceImpl(penClient = object : PenClientStub() {
-            override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode) = Api.GeneriskBrevdata().apply {
-                put("noeData", true)
-            }
-        })
+        val hentP1DataHandler = HentP1DataHandler(
+            penClient = object : PenClientStub() {
+                override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode) = Api.GeneriskBrevdata().apply {
+                    put("noeData", true)
+                }
+            },
+            database = SharedPostgres.database,
+        )
+        val p1Service = P1ServiceImpl(hentP1DataHandler = hentP1DataHandler)
         brevbakerService.redigerbareMaler[Testbrevkoder.P1] = informasjonsbrev
 
         val brev = opprettBrev(brevkode = Testbrevkoder.P1).resultOrFail()

@@ -65,17 +65,6 @@ open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : Samh
 }
 
 open class FakeP1Service: P1Service {
-    override suspend fun lagreP1Data(
-        p1DataInput: Api.GeneriskBrevdata,
-        brevId: BrevId,
-        saksId: SaksId,
-    ): Api.GeneriskBrevdata = notYetStubbed()
-
-    override suspend fun hentP1Data(
-        brevId: BrevId,
-        saksId: SaksId,
-    ): Api.GeneriskBrevdata? = notYetStubbed()
-
     override suspend fun patchMedP1DataOmP1(
         brevdataResponse: BrevdataResponse.Data,
         brevkode: Brevkode.Redigerbart,

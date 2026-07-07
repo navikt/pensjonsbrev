@@ -20,6 +20,8 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.DiffBr
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SendBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SlettBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentEllerOpprettPdfHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentP1DataHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.LagreP1DataHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigerbareVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SlettRedigertVedleggHandler
@@ -126,8 +128,10 @@ fun Application.configureDependencies() {
         provide(HentBrevAttesteringHandler::class)
         provide(HentBrevHandler::class)
         provide(HentEllerOpprettPdfHandler::class)
+        provide(HentP1DataHandler::class)
         provide(HentRedigerbareVedleggHandler::class)
         provide(HentRedigertVedleggHandler::class)
+        provide(LagreP1DataHandler::class)
         provide(OppdaterBrevHandler::class)
         provide(OpprettBrevHandler::class)
         provide(ReserverBrevHandler::class)
