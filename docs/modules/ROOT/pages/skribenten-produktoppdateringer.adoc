@@ -2,6 +2,91 @@
 
 Her publiserer Team Pensjonsbrev månedlige oppdateringer om hva som er nytt i Skribenten. Du finner informasjon om nye funksjoner, forbedringer og feilrettinger.
 
+== Juni 2026
+Juni har vært preget av bedre feilhåndtering og en del arbeid med attestering og reservasjon av brev, i tillegg til at vi har lagt grunnlaget for redigerbare vedlegg!
+
+=== Nye ting vi har laget
+* Støtte for redigerbare vedlegg i skribenten-backend. Dette er starten på arbeidet med å kunne redigere innholdet i vedlegg, ikke bare velge dem inn https://github.com/navikt/pensjonsbrev/commit/7a646530d[#3376]
+* Lim inn over markert tekst erstatter nå den markerte teksten, i stedet for å legge seg ved siden av https://github.com/navikt/pensjonsbrev/commit/3485dcb4a[#3333]
+
+=== Ting vi har forbedret
+* Reservasjonen på et brev sies nå opp når fanen lukkes, slik at brevet blir tilgjengelig for andre saksbehandlere raskere https://github.com/navikt/pensjonsbrev/commit/fa7d2755f[#3280]
+* Bedre navigering for attestant fra Pesys, rett fra kladd til attestering https://github.com/navikt/pensjonsbrev/commit/5514fe592[#3265]
+* Vi bruker nå behandlingsnumre vi får fra PEN i flere sammenhenger https://github.com/navikt/pensjonsbrev/commit/a6b5f3d6a[#3262]
+* Oppdatert liste over representasjonstyper etter endringer i tjenesten https://github.com/navikt/pensjonsbrev/commit/18d68f0a6[#3250]
+
+=== Ting vi har fikset
+* En kladd kunne hindre åpning av dokumentlisten – dette er nå rettet https://github.com/navikt/pensjonsbrev/commit/c86d7af53[#3375]
+* Ctrl+b omdirigeres nå til vår egen fet-skrift håndtering i stedet for nettleserens standard https://github.com/navikt/pensjonsbrev/commit/8c57014cd[#3332]
+* Viser nå en tydeligere feilmelding på kvitteringssiden hvis sending av brev feiler https://github.com/navikt/pensjonsbrev/commit/6f2f8a0ac[#3313]
+* Attestant ble ikke alltid sendt riktig vei ved informasjonsbrev i status kladd/under redigering – dette er nå rettet https://github.com/navikt/pensjonsbrev/commit/cf8252bd5[#3291]
+
+=== Ting vi jobber med
+* Videre arbeid med redigerbare vedlegg
+* Opprydding og forenkling i feilhåndtering mot flere av tjenestene vi er avhengig av (PEN, KRR, Navansatt m.fl.)
+
+=== Kjente problemer og behov vi tenker på
+* Håndtering av duplikate avsnitt
+
+== Mai 2026
+I mai har vi jobbet mye med tekstvalg og saksbehandlervalg i brevmaler, samt lagt grunnlaget for bedre sporing av endringer i brev(her kommer det kule greier i Skribenten etterhvert).
+
+=== Nye ting vi har laget
+* Highlighting av tekstvalg på attesteringsredigering https://github.com/navikt/pensjonsbrev/commit/36f72b8c2[#3233]
+* Angre/gjør om (undo/redo) for saksbehandlers tekstvalg https://github.com/navikt/pensjonsbrev/commit/ea6c876ad[#3196]
+* Støtte for liste-typer i saksbehandlervalg, blant annet for å kunne bygge kalkulator-integrasjon i brevmaler https://github.com/navikt/pensjonsbrev/commit/607918cc9[#3180]
+
+=== Ting vi har forbedret
+* Åpner nå for å tilbakestille brev også for brev som ikke har saksbehandlervalg https://github.com/navikt/pensjonsbrev/commit/9ae84a4b3[#3167]
+* Saksbehandlervalg kan nå være valgfritt (nullable) i flere brev, slik at malen ikke krever et valg der det ikke er naturlig https://github.com/navikt/pensjonsbrev/commit/6372e7b9e[#3135]
+* Fokus tas nå automatisk til stedet innhold settes inn i brevet https://github.com/navikt/pensjonsbrev/commit/52cbade7d[#3112] https://github.com/navikt/pensjonsbrev/commit/9949f42c6[#3142]
+* Viser en mer informativ feilmelding når brevet mangler, og begrenser antall automatiske forsøk på nytt til 3 https://github.com/navikt/pensjonsbrev/commit/b5f06c4fd[#3215]
+* Valgt avsenderenhet holdes nå synkronisert med url-en https://github.com/navikt/pensjonsbrev/commit/973a27988[#3218]
+
+=== Ting vi har fikset
+* Håndterer nå at reservertAv.navn kan være tomt, uten at dette gir feil i Skribenten https://github.com/navikt/pensjonsbrev/commit/00f80f392[#3227]
+* Fjernet hermetegn som ved en feil dukket opp i tittelen på brevet https://github.com/navikt/pensjonsbrev/commit/6b9a188f7[#3193]
+* Rettet feil med tekstoverflyt i varsler (alerts) https://github.com/navikt/pensjonsbrev/commit/3e0f4b1a4[#3137]
+* Navigering med pil opp/ned i tabeller fungerer nå riktig basert på fokus https://github.com/navikt/pensjonsbrev/commit/1ec3f88b3[#3091]
+
+=== Ting vi jobber med
+* Videre arbeid med redigerbare vedlegg
+* Bedre sporing og visning av endringer i redigerte brev (diff-visning)
+* Fritekstfelter som ikke lar seg slette
+
+=== Kjente problemer og behov vi tenker på
+* Autolagring kan i enkelte tilfeller henge seg litt opp hvis fanen har vært åpen lenge
+
+== April 2026
+April har vært en travel måned på tabeller, vedlegg og redigering av mottaker!
+
+=== Nye ting vi har laget
+* Vedlegg v2 – ny frontend for å velge og vise vedlegg til brev https://github.com/navikt/pensjonsbrev/commit/5c0dc0caf[#3059]
+* Nytt hurtigtastsett for tabeller: flytt rad med shift+alt+pil opp/ned, og slett rad med shift+backspace https://github.com/navikt/pensjonsbrev/commit/1d28665bd[#3077] https://github.com/navikt/pensjonsbrev/commit/138245c8c[#3069]
+* Sletter nå hele tabellen automatisk når shift+backspace brukes på den siste tomme raden https://github.com/navikt/pensjonsbrev/commit/77e6c4dad[#3075]
+* Mulig å sende brev til verge også for exstream-brev https://github.com/navikt/pensjonsbrev/commit/a92d33220[#3100]
+
+=== Ting vi har forbedret
+* Oppdatert design på "Endre mottaker" https://github.com/navikt/pensjonsbrev/commit/2dbaef4fc[#2919]
+* Tillater nå redigering når tabellen er siste element i brevet https://github.com/navikt/pensjonsbrev/commit/13c8a307f[#3096]
+* Gjort plass til sidetall med to eller flere siffer, slik at disse ikke lenger klippes https://github.com/navikt/pensjonsbrev/commit/bf068deb4[#2991]
+
+=== Ting vi har fikset
+* Rettet feil som gjorde at annen mottaker i redigert brev ble overstyrt, slik at data fra Pesys ikke lenger alltid ble fjernet https://github.com/navikt/pensjonsbrev/commit/818de62d9[#3092]
+* Rettet feil sortering av brev i ferdigstill-modalen https://github.com/navikt/pensjonsbrev/commit/0a2688a62[#3064]
+* Rettet feil som kunne oppstå ved sammenslåing av redigert og maskinelt generert tekst i brev https://github.com/navikt/pensjonsbrev/commit/23d840966[#3099]
+* Rettet et par ulike feil knyttet til lesing og lagring av data i brevet P1 https://github.com/navikt/pensjonsbrev/commit/7f75b396f[#3035] https://github.com/navikt/pensjonsbrev/commit/3990ad2ca[#3029]
+* Rettet feil plassering av punktum i redigeringsvisningen https://github.com/navikt/pensjonsbrev/commit/5ee65a827[#2970]
+
+=== Ting vi jobber med
+* Videre arbeid med redigerbare vedlegg
+* Nummererte lister i Skribenten
+* Forbedret pdf-generering og henting til forhåndsvisning av brev
+
+=== Kjente problemer og behov vi tenker på
+* Avbryt-knappen i endre mottaker fungerer ikke når søketype er satt
+* Autolagring kan i enkelte tilfeller henge seg litt opp hvis fanen har vært åpen lenge
+
 == Mars 2026
 Vi har brukt mye tid på utseende denne måneden, også har vi fått ombord hele gjengen som saksbehandler uføretrygd! Det er stas :-) Vi begynner også å kunne måle mer av det som skjer i Skribenten på et generelt nivå, og det er veldig gøy!
 
