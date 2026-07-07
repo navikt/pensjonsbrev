@@ -70,5 +70,3 @@ class HentEllerOpprettPdfHandler(
 // Disse må være i sync med api-modellen
 const val P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2"
 const val P1_VEDLEGG_KEY = "p1Vedlegg"
-
-
