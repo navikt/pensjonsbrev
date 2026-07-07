@@ -50,6 +50,7 @@ allprojects {
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+        version.set("1.8.0")
         outputToConsole.set(true)
         reporters {
             reporter(ReporterType.JSON)
