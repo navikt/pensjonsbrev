@@ -14,13 +14,10 @@ object HttpClientFactory {
         lagHttpClient(CIO, config)
 
     fun lagHttpClient(engine: HttpClientEngine, config: HttpClientConfig<*>.() -> Unit): HttpClient =
-        HttpClient(engine) {
-            config()
-        }
+        lagHttpClient(engine, config)
 
     private fun <C : HttpClientEngineConfig, T : HttpClientEngineFactory<C>> lagHttpClient(engine: T, config: HttpClientConfig<C>.() -> Unit): HttpClient =
         HttpClient(engine) {
             config()
         }
-
 }
