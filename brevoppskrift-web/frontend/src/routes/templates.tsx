@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { BodyShort, Detail, Heading, HStack, Loader, Search, Tabs, Tag, VStack } from "@navikt/ds-react";
+import { Bleed, BodyShort, Box, Detail, Heading, HStack, Loader, Search, Tabs, Tag, VStack } from "@navikt/ds-react";
 import { type QueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
@@ -8,8 +8,9 @@ import { getBrevkoderMedMetadata, getTemplateDescription, type MalType } from "~
 import { type TemplateDescription } from "~/api/brevbakerTypes";
 import {
   BrevResultList,
+  CONTENT_PAGE_SIZE,
+  LETTER_PAGE_SIZE,
   MIN_QUERY_LENGTH,
-  PAGE_SIZE,
   SearchResultsPanel,
   SearchSnippet,
   type TemplateRef,
@@ -116,149 +117,137 @@ function AllTemplates() {
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset pagination whenever the query or tab changes.
   useEffect(() => setPage(1), [query, activeTab]);
   const activeHits = activeTab === "innhold" ? contentHits : brevHits;
-  const pageCount = Math.max(1, Math.ceil(activeHits.length / PAGE_SIZE));
+  const pageCount = Math.max(
+    1,
+    Math.ceil(activeHits.length / (activeTab === "innhold" ? CONTENT_PAGE_SIZE : LETTER_PAGE_SIZE)),
+  );
   const safePage = Math.min(page, pageCount);
-  const pageStart = (safePage - 1) * PAGE_SIZE;
-  const contentItems = contentHits.slice(pageStart, pageStart + PAGE_SIZE);
-  const brevItems = brevHits.slice(pageStart, pageStart + PAGE_SIZE);
+  const pageStart = (safePage - 1) * (activeTab === "innhold" ? CONTENT_PAGE_SIZE : LETTER_PAGE_SIZE);
+  const contentItems = contentHits.slice(pageStart, pageStart + CONTENT_PAGE_SIZE);
+  const brevItems = brevHits.slice(pageStart, pageStart + LETTER_PAGE_SIZE);
   return (
-    <div
-      css={css`
-        flex: 1;
-        margin: 0 -24px;
-        padding: var(--ax-space-24) 24px var(--ax-space-32);
-        background: var(--ax-bg-default);
-      `}
-    >
-      <Heading level="1" size="small">
-        Brevoppskrift
-      </Heading>
-      <div
-        css={css`
-          display: flex;
-          gap: var(--ax-space-12);
-          align-items: center;
-          margin-top: var(--ax-space-16);
-        `}
-      >
-        <Search
-          css={css`
-            width: 100%;
-            max-width: 480px;
-          `}
-          hideLabel={false}
-          label="Søk i innholdet i alle maler"
-          onChange={setQuery}
-          onClear={() => setQuery("")}
-          size="small"
-          value={query}
-          variant="simple"
-        />
-      </div>
-      <Detail
-        aria-live="polite"
-        css={css`
-          margin-top: var(--ax-space-8);
-        `}
-        textColor="subtle"
-      >
-        {isLoading
-          ? "Indekserer innhold …"
-          : `Søker i innholdet til ${templateTotal} maler på ${languageTotal} språk${
-              failedCount > 0 ? ` (${failedCount} feilet)` : ""
-            }`}
-      </Detail>
-      <Tabs
-        css={css`
-          margin-top: var(--ax-space-16);
-        `}
-        onChange={(tab) => setActiveTab(tab === "brev" ? "brev" : "innhold")}
-        value={activeTab}
-      >
-        <Tabs.List>
-          <Tabs.Tab
-            label={<TabLabel count={contentTemplateCount} isSearching={isSearching} label="Innhold" />}
-            value="innhold"
+    <Box asChild background="default" height="100vh" overflow="hidden">
+      <VStack flexGrow="1" gap="space-16" paddingBlock="space-16 space-0" paddingInline="space-16">
+        <Heading level="1" size="small">
+          Brevoppskrift
+        </Heading>
+        <Box maxWidth="480px" width="100%">
+          <Search
+            hideLabel={false}
+            label="Søk i innholdet i alle maler"
+            onChange={setQuery}
+            onClear={() => setQuery("")}
+            size="small"
+            value={query}
+            variant="simple"
           />
-          <Tabs.Tab
-            label={<TabLabel count={brevTemplateCount} isSearching={isSearching} label="Brev" />}
-            value="brev"
-          />
-        </Tabs.List>
-        <Tabs.Panel value="innhold">
-          <SearchResultsPanel
-            page={safePage}
-            pageCount={Math.max(1, Math.ceil(contentHits.length / PAGE_SIZE))}
-            setPage={setPage}
-            summary={
-              isSearching && contentHits.length > 0 ? (
-                <>
-                  Frasen du søker på er brukt i <b>{contentTemplateCount} maler</b> i {contentLineCount} avsnitt
-                </>
-              ) : undefined
-            }
-          >
-            {isLoading ? (
-              <HStack flexGrow="1" justify="center">
-                <BodyShort>
-                  <Loader size="3xlarge" title={"Laster maler"} />
-                </BodyShort>
-              </HStack>
-            ) : !isSearching ? (
-              <BodyShort textColor="subtle">
-                Skriv minst {MIN_QUERY_LENGTH} tegn for å søke i innholdet i malene.
-              </BodyShort>
-            ) : contentHits.length === 0 ? (
-              <BodyShort>Ingen treff i innholdet</BodyShort>
-            ) : (
-              contentItems.map((hit) => (
-                <SearchSnippet
-                  hit={hit}
-                  key={`${hit.template.malType}/${hit.template.id}/${hit.template.language}`}
-                  needle={query}
+        </Box>
+        <Detail aria-live="polite" textColor="subtle">
+          {isLoading
+            ? "Indekserer innhold …"
+            : `Søker i innholdet til ${templateTotal} maler på ${languageTotal} språk${
+                failedCount > 0 ? ` (${failedCount} feilet)` : ""
+              }`}
+        </Detail>
+        <VStack asChild flexGrow="1" overflow="hidden">
+          <Bleed asChild marginInline="space-16">
+            <Tabs
+              css={{ ">div:first-of-type": { marginInline: "var(--ax-space-16)" } }}
+              onChange={(tab) => setActiveTab(tab === "brev" ? "brev" : "innhold")}
+              value={activeTab}
+            >
+              <Tabs.List>
+                <Tabs.Tab
+                  label={<TabLabel count={contentTemplateCount} isSearching={isSearching} label="Innhold" />}
+                  value="innhold"
                 />
-              ))
-            )}
-          </SearchResultsPanel>
-        </Tabs.Panel>
-        <Tabs.Panel value="brev">
-          <SearchResultsPanel
-            page={safePage}
-            pageCount={Math.max(1, Math.ceil(brevHits.length / PAGE_SIZE))}
-            setPage={setPage}
-            summary={
-              isSearching && brevHits.length > 0 ? (
-                <>
-                  Søket traff tittel, navn eller brevkode i <b>{brevTemplateCount} maler</b>
-                </>
-              ) : undefined
-            }
-          >
-            {isSearching ? (
-              brevHits.length === 0 ? (
-                <BodyShort>Ingen treff i tittel, navn eller brevkode</BodyShort>
-              ) : (
-                <BrevResultList hits={brevItems} needle={query} />
-              )
-            ) : (
-              <VStack gap="space-20">
-                <VStack gap="space-8">
-                  <Heading level="2" size="xsmall">
-                    Automatiske brev
-                  </Heading>
-                  <TemplateList malType="autobrev" templates={autobrev} />
-                </VStack>
-                <VStack gap="space-8">
-                  <Heading level="2" size="xsmall">
-                    Redigerbare brev
-                  </Heading>
-                  <TemplateList malType="redigerbar" templates={redigerbar} />
-                </VStack>
-              </VStack>
-            )}
-          </SearchResultsPanel>
-        </Tabs.Panel>
-      </Tabs>
-    </div>
+                <Tabs.Tab
+                  label={<TabLabel count={brevTemplateCount} isSearching={isSearching} label="Brev" />}
+                  value="brev"
+                />
+              </Tabs.List>
+
+              <Box asChild flexGrow="1" overflow="hidden">
+                <Tabs.Panel value="innhold">
+                  <SearchResultsPanel
+                    page={safePage}
+                    pageCount={Math.max(1, Math.ceil(contentHits.length / CONTENT_PAGE_SIZE))}
+                    setPage={setPage}
+                    summary={
+                      isSearching && contentHits.length > 0 ? (
+                        <>
+                          Frasen du søker på er brukt i <b>{contentTemplateCount} maler</b> i {contentLineCount} avsnitt
+                        </>
+                      ) : undefined
+                    }
+                  >
+                    {isLoading ? (
+                      <HStack flexGrow="1" justify="center">
+                        <BodyShort>
+                          <Loader size="3xlarge" title={"Henter maler"} />
+                        </BodyShort>
+                      </HStack>
+                    ) : !isSearching ? (
+                      <BodyShort textColor="subtle">
+                        Skriv minst {MIN_QUERY_LENGTH} tegn for å søke i innholdet i malene.
+                      </BodyShort>
+                    ) : contentHits.length === 0 ? (
+                      <BodyShort>Ingen treff i innholdet</BodyShort>
+                    ) : (
+                      contentItems.map((hit) => (
+                        <SearchSnippet
+                          hit={hit}
+                          key={`${hit.template.malType}/${hit.template.id}/${hit.template.language}`}
+                          needle={query}
+                        />
+                      ))
+                    )}
+                  </SearchResultsPanel>
+                </Tabs.Panel>
+              </Box>
+              <Box asChild flexGrow="1" overflow="hidden">
+                <Tabs.Panel value="brev">
+                  <SearchResultsPanel
+                    page={safePage}
+                    pageCount={Math.max(1, Math.ceil(brevHits.length / LETTER_PAGE_SIZE))}
+                    setPage={setPage}
+                    summary={
+                      isSearching && brevHits.length > 0 ? (
+                        <>
+                          Søket traff tittel, navn eller brevkode i <b>{brevTemplateCount} maler</b>
+                        </>
+                      ) : undefined
+                    }
+                  >
+                    {isSearching ? (
+                      brevHits.length === 0 ? (
+                        <BodyShort>Ingen treff i tittel, navn eller brevkode</BodyShort>
+                      ) : (
+                        <BrevResultList hits={brevItems} needle={query} />
+                      )
+                    ) : (
+                      <VStack gap="space-20">
+                        <VStack gap="space-8">
+                          <Heading level="2" size="xsmall">
+                            Automatiske brev
+                          </Heading>
+                          <TemplateList malType="autobrev" templates={autobrev} />
+                        </VStack>
+                        <VStack gap="space-8">
+                          <Heading level="2" size="xsmall">
+                            Redigerbare brev
+                          </Heading>
+                          <TemplateList malType="redigerbar" templates={redigerbar} />
+                        </VStack>
+                      </VStack>
+                    )}
+                  </SearchResultsPanel>
+                </Tabs.Panel>
+              </Box>
+            </Tabs>
+          </Bleed>
+        </VStack>
+      </VStack>
+    </Box>
   );
 }

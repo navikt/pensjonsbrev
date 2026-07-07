@@ -1,8 +1,9 @@
 import { css } from "@emotion/react";
-import { Detail, HStack, Pagination } from "@navikt/ds-react";
+import { Box, Detail, HStack, Pagination, VStack } from "@navikt/ds-react";
 import { type ReactNode } from "react";
 
-export const PAGE_SIZE = 10;
+export const CONTENT_PAGE_SIZE = 10;
+export const LETTER_PAGE_SIZE = 100;
 
 export function SearchResultsPanel({
   page,
@@ -18,31 +19,17 @@ export function SearchResultsPanel({
   children: ReactNode;
 }) {
   return (
-    <div
-      css={css`
-        display: flex;
-        flex-direction: column;
-        margin-top: var(--ax-space-16);
-        height: 70vh;
-      `}
-    >
+    <VStack height="100%" paddingBlock="space-16 space-0">
       {summary ? (
-        <Detail aria-live="polite" css={css`margin-bottom: var(--ax-space-12); flex-shrink: 0;`} textColor="subtle">
-          {summary}
-        </Detail>
+        <Box asChild paddingBlock="space-0 space-4" paddingInline="space-16">
+          <Detail aria-live="polite" textColor="subtle">
+            {summary}
+          </Detail>
+        </Box>
       ) : null}
-      <div
-        css={css`
-          flex: 1;
-          min-height: 0;
-          overflow-y: auto;
-          display: flex;
-          flex-direction: column;
-          gap: var(--ax-space-12);
-        `}
-      >
+      <VStack flexGrow="1" gap="space-8" overflow="auto" paddingBlock="space-12 space-16" paddingInline="space-16">
         {children}
-      </div>
+      </VStack>
       {pageCount > 1 ? (
         <HStack
           css={css`
@@ -55,6 +42,7 @@ export function SearchResultsPanel({
           <Pagination count={pageCount} onPageChange={setPage} page={page} size="small" />
         </HStack>
       ) : null}
-    </div>
+      {/* </div> */}
+    </VStack>
   );
 }

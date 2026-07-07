@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { BodyLong, Heading, Select, VStack } from "@navikt/ds-react";
+import { BodyLong, Box, Heading, HGrid, Select, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
@@ -106,9 +106,16 @@ function TemplateExplorer() {
   }, [index, documentation]);
 
   return (
-    <>
+    <HGrid columns="minmax(360px, 35%) 1fr" height="100%" overflow="hidden">
       <DataClasses templateModelSpecification={documentation.templateModelSpecification} />
-      <VStack align="center" gap="space-16">
+      <VStack
+        align="center"
+        gap="space-16"
+        overflow="auto"
+        paddingBlock="space-16"
+        paddingInline="space-16"
+        width="100%"
+      >
         <Heading size="medium" spacing>
           Oppskrift for {templateId}
         </Heading>
@@ -131,7 +138,7 @@ function TemplateExplorer() {
           ))}
         </div>
       </VStack>
-    </>
+    </HGrid>
   );
 }
 
@@ -162,7 +169,7 @@ function SelectLanguage() {
 
 function Document({ templateDocumentation }: { templateDocumentation: TemplateDocumentation | Attachment }) {
   return (
-    <div className="preview">
+    <Box background="default" padding="space-48">
       <div>
         {templateDocumentation.title.map((cocs, index) => {
           return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
@@ -173,7 +180,7 @@ function Document({ templateDocumentation }: { templateDocumentation: TemplateDo
           return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
         })}
       </div>
-    </div>
+    </Box>
   );
 }
 

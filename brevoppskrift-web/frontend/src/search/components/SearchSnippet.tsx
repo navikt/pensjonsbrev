@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { BodyShort, Detail, HStack } from "@navikt/ds-react";
+import { BodyShort, Box, Detail, HStack } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
 
 import { languageLabel } from "~/search/components/format";
@@ -12,45 +12,27 @@ export function SearchSnippet({ hit, needle }: { hit: ContentHit; needle?: strin
   const start = Math.max(0, lineIndex - 1);
   const visibleLines = template.lines.slice(start, lineIndex + 2);
   return (
-    <div
-      css={css`
-        padding: var(--ax-space-4) 0;
-      `}
-    >
+    <div>
       <HStack align="baseline" gap="space-8" wrap>
         <Link
-          css={css`
-            font-weight: var(--ax-font-weight-bold);
-          `}
           params={{ malType: template.malType, templateId: template.id }}
           preload="intent"
           search={{ language: template.language, index: template.indexes[lineIndex] }}
           to="/template/$malType/$templateId"
         >
-          {template.title}
+          <BodyShort weight="semibold">{template.title}</BodyShort>
         </Link>
         <Detail textColor="subtle">
           {template.id} · {languageLabel(template.language)} · {matchCount} treff i malen
         </Detail>
       </HStack>
-      <div
-        css={css`
-          margin-top: var(--ax-space-2);
-
-          mark {
-            background: transparent;
-            color: inherit;
-            font-weight: var(--ax-font-weight-bold);
-          }
-        `}
-      >
+      <Box marginBlock="space-2 space-0">
         {visibleLines.map((line, i) => {
           const absoluteIndex = start + i;
           const isPrimary = absoluteIndex === lineIndex;
           return (
             <BodyShort
               css={css`
-                white-space: normal;
                 overflow-wrap: anywhere;
                 ${
                   !isPrimary &&
@@ -62,6 +44,7 @@ export function SearchSnippet({ hit, needle }: { hit: ContentHit; needle?: strin
               key={absoluteIndex}
               size="small"
               textColor={isPrimary ? "default" : "subtle"}
+              truncate
             >
               <LineContent
                 line={isPrimary ? line : truncateLine(line, SNIPPET_CHARS)}
@@ -70,7 +53,7 @@ export function SearchSnippet({ hit, needle }: { hit: ContentHit; needle?: strin
             </BodyShort>
           );
         })}
-      </div>
+      </Box>
     </div>
   );
 }

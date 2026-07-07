@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import { VStack } from "@navikt/ds-react";
+import { Box, VStack } from "@navikt/ds-react";
 import { Link, useSearch } from "@tanstack/react-router";
 import { capitalize } from "lodash";
 import { useEffect, useRef } from "react";
@@ -8,25 +7,13 @@ import { type FieldType, type LetterModelSpecification, type ObjectTypeSpecifica
 
 export function DataClasses({ templateModelSpecification }: { templateModelSpecification: LetterModelSpecification }) {
   return (
-    <VStack
-      css={css`
-        position: fixed;
-        width: 800px;
-        max-width: 20%;
-        background: var(--ax-bg-neutral-soft);
-        left: 0;
-        height: 100%;
-        border-right: 1px solid var(--ax-border-neutral-subtle);
-        padding: var(--ax-space-16);
-        white-space: nowrap;
-        overflow: scroll;
-      `}
-      gap="space-16"
-    >
-      {Object.entries(templateModelSpecification.types).map(([name, value]) => (
-        <DataPresentation key={name} name={name} objectTypeSpecification={value} />
-      ))}
-    </VStack>
+    <Box asChild background="neutral-soft" borderColor="neutral-subtle" borderWidth="1">
+      <VStack css={{ whiteSpace: "nowrap" }} gap="space-16" height="100%" overflow="auto" padding="space-16">
+        {Object.entries(templateModelSpecification.types).map(([name, value]) => (
+          <DataPresentation key={name} name={name} objectTypeSpecification={value} />
+        ))}
+      </VStack>
+    </Box>
   );
 }
 
@@ -49,13 +36,14 @@ function DataPresentation({
   }, [isHighlighted]);
 
   return (
-    <VStack className={isHighlighted ? "highlight" : undefined} gap="space-4">
+    <VStack className={isHighlighted ? "highlight" : undefined} gap="space-4" minWidth="100%" width="fit-content">
       <span ref={reference}>
         <span
-          css={css`
-            color: var(--ax-danger-600);
-          `}
+          css={{
+            color: "var(--ax-danger-600)",
+          }}
         >
+          {" "}
           data class
         </span>{" "}
         {trimClassName(name)}(
@@ -81,19 +69,12 @@ function DataField({ name, fieldType }: { name: string; fieldType: FieldType }) 
   }, [isHighlighted]);
 
   return (
-    <span
-      className={isHighlighted ? "highlight" : undefined}
-      css={[
-        css`
-          margin-left: var(--ax-space-64);
-        `,
-      ]}
-      key={name}
-      ref={reference}
-    >
-      {name}: <Type fieldType={fieldType} />
-      {fieldType.nullable ? "?" : ""}
-    </span>
+    <Box asChild marginInline="space-32 space-0">
+      <span className={isHighlighted ? "highlight" : undefined} key={name} ref={reference}>
+        {name}: <Type fieldType={fieldType} />
+        {fieldType.nullable ? "?" : ""}
+      </span>
+    </Box>
   );
 }
 
@@ -102,9 +83,9 @@ function Type({ fieldType }: { fieldType: FieldType }) {
     case "scalar": {
       return (
         <span
-          css={css`
-            color: var(--ax-meta-purple-600);
-          `}
+          css={{
+            color: "var(--ax-meta-purple-600)",
+          }}
         >
           {capitalize(fieldType.kind)}
         </span>
@@ -113,9 +94,9 @@ function Type({ fieldType }: { fieldType: FieldType }) {
     case "enum": {
       return (
         <span
-          css={css`
-            color: var(--ax-success-600);
-          `}
+          css={{
+            color: "var(--ax-success-600)",
+          }}
         >
           {fieldType.values.join(" | ")}
         </span>

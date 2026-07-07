@@ -40,7 +40,24 @@ function HighlightText({ text, needle }: { text: string; needle: string }) {
     return <>{text}</>;
   }
   return (
-    <>{parts.map((part, i) => (i % 2 === 1 ? <mark key={i}>{part}</mark> : <Fragment key={i}>{part}</Fragment>))}</>
+    <>
+      {parts.map((part, i) =>
+        i % 2 === 1 ? (
+          <mark
+            css={{
+              background: "transparent",
+              color: "inherit",
+              fontWeight: "var(--ax-font-weight-bold)",
+            }}
+            key={i}
+          >
+            {part}
+          </mark>
+        ) : (
+          <Fragment key={i}>{part}</Fragment>
+        ),
+      )}
+    </>
   );
 }
 
