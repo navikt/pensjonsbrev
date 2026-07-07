@@ -48,7 +48,6 @@ updates:
           - "org.postgresql:postgresql"
       backend:
         patterns:
-          - "ch.qos.logback:logback-classic"
           - "com.fasterxml.jackson*"
           - "com.google*"
           - "commons-codec:commons-codec"
@@ -57,7 +56,7 @@ updates:
           - "io.getunleash*"
           - "io.ktor*"
           - "io.micrometer*"
-          - "net.logstash.logback:logstash-logback-encoder"
+          - "org.apache.logging.log4j*"
           - "no.nav*"
           - "org.apache.pdfbox*"
           - "org.assertj:assertj-core"
