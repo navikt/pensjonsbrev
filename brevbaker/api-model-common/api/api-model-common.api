@@ -75,7 +75,6 @@ public final class no/nav/pensjon/brev/api/model/BestillBrevRequest : no/nav/pen
 
 public final class no/nav/pensjon/brev/api/model/BestillRedigertBrevRequest : no/nav/pensjon/brev/api/model/BrevRequest {
 	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Ljava/util/Map;)V
-	public synthetic fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAlltidValgbareVedlegg ()Ljava/util/List;
 	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;

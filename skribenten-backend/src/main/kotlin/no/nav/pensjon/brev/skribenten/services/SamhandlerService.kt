@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -10,6 +10,8 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
@@ -29,9 +31,13 @@ interface SamhandlerService {
     suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto
 }
 
-class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthService, private val cache: Cache) : SamhandlerService, ServiceStatus {
-    private val samhandlerProxyUrl = configSamhandlerProxy.getString("url")
-    private val samhandlerProxyScope = configSamhandlerProxy.getString("scope")
+class SamhandlerServiceHttp(config: OboClientConfig, authService: AuthService, private val cache: Cache) : SamhandlerService, ServiceStatus, Closeable {
+
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache): this(config.services.samhandlerProxy, authService, cache)
+
+    private val samhandlerProxyUrl = config.url
+    private val samhandlerProxyScope = config.scope
 
     private val samhandlerProxyClient = lagHttpClient {
         defaultRequest {
@@ -191,4 +197,6 @@ class SamhandlerServiceHttp(configSamhandlerProxy: Config, authService: AuthServ
             ),
             failure = null
         )
+
+    override fun close() { samhandlerProxyClient.close() }
 }
