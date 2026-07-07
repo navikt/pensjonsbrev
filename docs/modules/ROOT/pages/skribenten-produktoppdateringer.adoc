@@ -23,7 +23,8 @@ Juni har vært preget av bedre feilhåndtering og en del arbeid med attestering 
 
 === Ting vi jobber med
 * Videre arbeid med redigerbare vedlegg
-* Opprydding og forenkling i feilhåndtering mot flere av tjenestene vi er avhengig av (PEN, KRR, Navansatt m.fl.)
+* Legge til førsteside på brev
+* Nummererte lister i Skribenten
 
 === Kjente problemer og behov vi tenker på
 * Håndtering av duplikate avsnitt
@@ -53,6 +54,7 @@ I mai har vi jobbet mye med tekstvalg og saksbehandlervalg i brevmaler, samt lag
 * Videre arbeid med redigerbare vedlegg
 * Bedre sporing og visning av endringer i redigerte brev (diff-visning)
 * Fritekstfelter som ikke lar seg slette
+* Nummererte lister i Skribenten
 
 === Kjente problemer og behov vi tenker på
 * Autolagring kan i enkelte tilfeller henge seg litt opp hvis fanen har vært åpen lenge
