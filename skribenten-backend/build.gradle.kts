@@ -177,7 +177,7 @@ dependencies {
 
     // Caching
     implementation(libs.valkey)
-    
+
     // Test
     testImplementation(libs.bundles.junit)
     testImplementation(libs.ktor.server.test.host) {
