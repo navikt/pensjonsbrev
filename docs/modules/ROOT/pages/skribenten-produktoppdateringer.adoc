@@ -30,7 +30,7 @@ Juni har vært preget av bedre feilhåndtering og en del arbeid med attestering 
 * Håndtering av duplikate avsnitt
 
 == Mai 2026
-I mai har vi jobbet mye med tekstvalg og saksbehandlervalg i brevmaler, samt lagt grunnlaget for bedre sporing av endringer i brev(her kommer det kule greier i Skribenten etterhvert).
+I mai har vi jobbet mye med tekstvalg og saksbehandlervalg i brevmaler, samt lagt grunnlaget for bedre sporing av endringer i brev (her kommer det kule greier i Skribenten etter hvert).
 
 === Nye ting vi har laget
 * Highlighting av tekstvalg på attesteringsredigering https://github.com/navikt/pensjonsbrev/commit/36f72b8c2[#3233]
