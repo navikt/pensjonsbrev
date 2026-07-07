@@ -1,6 +1,6 @@
 <configuration>
     <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
+        <encoder class="no.nav.pensjon.brev.skribenten.logging.NavJsonEncoder"/>
     </appender>
     <root level="INFO">
         <appender-ref ref="stdout_json"/>

@@ -19,7 +19,6 @@ kotlinxHtmlVersion = "0.12.0"
 kotlinxCoroutinesVersion = "1.11.0"
 ktlintVersion = "14.2.0"
 logbackVersion = "1.5.35"
-logstashVersion = "9.0"
 micrometerVersion = "1.17.0"
 pdfboxVersion = "3.0.7"
 postgresqlVersion = "42.7.11"
@@ -49,7 +48,6 @@ ksp-symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processin
 ksp-symbol-processing-aa = { module = "com.google.devtools.ksp:symbol-processing-aa", version.ref = "kotlinKspVersion"}
 ksp-symbol-processing-common = { module = "com.google.devtools.ksp:symbol-processing-common-deps", version.ref = "kotlinKspVersion"}
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logbackVersion" }
-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstashVersion" }
 micrometer-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometerVersion" }
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfboxVersion" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
@@ -99,5 +97,5 @@ testcontainers-core = { module = "org.testcontainers:testcontainers", version.re
 
 [bundles]
 junit = ["junit-jupiter", "junit-platform-launcher", "assertJ"]
-logging = ["logback-classic", "logback-encoder"]
+logging = ["logback-classic"]
 metrics = ["micrometer-prometheus", "ktor-server-metrics", "ktor-server-metrics-micrometer"]
