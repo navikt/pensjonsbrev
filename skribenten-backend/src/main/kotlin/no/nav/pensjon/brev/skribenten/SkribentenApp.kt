@@ -3,13 +3,11 @@ package no.nav.pensjon.brev.skribenten
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.zaxxer.hikari.HikariDataSource
 import io.ktor.http.*
 import io.ktor.serialization.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.config.getAs
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.callid.*
@@ -24,15 +22,14 @@ import kotlinx.coroutines.*
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
-import no.nav.pensjon.brev.skribenten.common.*
-import no.nav.pensjon.brev.skribenten.db.*
-import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
+import no.nav.pensjon.brev.skribenten.common.oneShotJobs
+import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.serialize.*
 import no.nav.pensjon.brev.skribenten.services.*
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
-import org.jetbrains.exposed.v1.jdbc.*
+import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
@@ -49,10 +46,6 @@ fun main(args: Array<String>) = try {
 // Er satt i application.conf slik at EngineMain kaller på skribentenApp.
 @Suppress("unused")
 fun Application.skribentenApp() {
-    val skribentenConfig = environment.config.config("skribenten").getAs<SkribentenConfig>()
-    ADGroups.init(skribentenConfig.groups)
-    KrypteringService.init(skribentenConfig.krypteringsnoekkel)
-
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
@@ -121,6 +114,9 @@ fun Application.skribentenApp() {
     }
 
     skribentenContenNegotiation()
+    configureDependencies()
+
+    val skribentenConfig: SkribentenConfig by dependencies
 
     install(CORS) {
         allowMethod(HttpMethod.Options)
@@ -139,30 +135,15 @@ fun Application.skribentenApp() {
         skribentenJwt(skribentenConfig.azureAD)
     }
 
-    dependencies {
-        provide { skribentenConfig }
-
-        provide<Cache>(::cacheFactory)
-        provide<AuthService>(AzureADService::class)
-        provide<HikariDataSource>(::dataSourceFactory)
-        provide<FeatureToggleService>(UnleashService::class)
-
-        provide(NaisLeaderService::class)
-    }
-
-    launch {
-        Database.connect(dependencies.resolve<HikariDataSource>())
-        databaseReady.set(true)
-    }
-    launch { Features.init(dependencies.resolve()) }
-
     configureRouting()
     configureMetrics()
 
     monitor.subscribe(ServerReady) {
         launch {
             delay(5.minutes)
-            oneShotJobs(dependencies.resolve()) {
+
+            val leaderService: NaisLeaderService by dependencies
+            oneShotJobs(leaderService) {
                 job("2026-06-24-document-vedlegghash") {
                     val dokumentIder = transaction {
                         DocumentTable.select(DocumentTable.id).map { it[DocumentTable.id].value }
@@ -178,10 +159,6 @@ fun Application.skribentenApp() {
                 // Sett opp evt. jobber her
             }
         }
-    }
-
-    monitor.subscribe(ApplicationStopping) {
-        HttpClientFactory.close()
     }
 }
 

@@ -12,13 +12,19 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 
-class KrrService(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine = CIO.create()) : ServiceStatus {
+class KrrService(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine = CIO.create()) : ServiceStatus, Closeable {
+
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, authService: AuthService): this(config.services.krr, authService)
+
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val client = lagHttpClient(engine) {
         defaultRequest {
@@ -110,4 +116,6 @@ class KrrService(config: OboClientConfig, authService: AuthService, engine: Http
 
     override suspend fun ping() =
         ping("KRR") { client.get("/internal/health/readiness") }
+
+    override fun close() { client.close() }
 }

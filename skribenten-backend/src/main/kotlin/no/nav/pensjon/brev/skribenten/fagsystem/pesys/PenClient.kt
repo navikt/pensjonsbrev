@@ -10,8 +10,10 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
 import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.model.*
@@ -48,9 +50,12 @@ class PenServiceException(message: String) : ServiceException(message)
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
 class PenFeilIDatabyggerException(message: String) : ServiceException(message)
 
-class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenClient, ServiceStatus {
+class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenClient, ServiceStatus, Closeable {
     private val penUrl = config.url
     private val penScope = config.scope
+
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, authService: AuthService): this(config.services.pen, authService)
 
     private val client = lagHttpClient {
         defaultRequest {
@@ -166,6 +171,8 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenCli
             contentType(ContentType.Application.Json)
             url { parameters.append("distribuer", distribuer.toString()) }
         }.bodyOrThrow()!!
+
+    override fun close() { client.close() }
 
 
     private data class SakResponseDto(

@@ -1,14 +1,20 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application
 
+import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.BrevredigeringHandlerTestBase
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 // Utvider BrevredigeringHandlerTestBase for å kunne gjenbruke fixtures derfra.
-class HentBrevServiceTest : BrevredigeringHandlerTestBase() {
+class HentBrevInfoServiceTest : BrevredigeringHandlerTestBase() {
 
-    private val hentBrevService: HentBrevService = brevredigeringFacade
+    private val hentBrevInfoService: HentBrevInfoService by lazy {
+        HentBrevInfoServiceImpl(
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            database = SharedPostgres.database,
+        )
+    }
 
     @Test
     suspend fun `kan hente brev for flere saker`() {
@@ -22,7 +28,7 @@ class HentBrevServiceTest : BrevredigeringHandlerTestBase() {
 
         val ikkeForventetBrev = opprettBrev(sak = sak3).resultOrFail().info
 
-        val resultat = hentBrevService.hentBrevForAlleSaker(setOf(sak1.saksId, sak2.saksId)).toSet()
+        val resultat = hentBrevInfoService.hentBrevForAlleSaker(setOf(sak1.saksId, sak2.saksId)).toSet()
         assertThat(resultat).containsAll(forventedeBrev)
         assertThat(resultat).doesNotContain(ikkeForventetBrev)
     }

@@ -1,18 +1,15 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
-import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
-import no.nav.pensjon.brev.skribenten.auth.hentSignatur
+import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.model.BrevId
-import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.NavansattService
+import org.jetbrains.exposed.v1.jdbc.Database
 
 class AttesterBrevHandler(
     private val attesterBrevPolicy: AttesterBrevPolicy,
@@ -22,7 +19,9 @@ class AttesterBrevHandler(
     private val brevdataService: BrevdataService,
     private val navansattService: NavansattService,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-) : BrevredigeringHandler<AttesterBrevHandler.Request, Dto.Brevredigering> {
+    reserverBrevHandler: ReserverBrevHandler,
+    database: Database,
+) : ReservertBrevHandler<AttesterBrevHandler.Request, Dto.Brevredigering>(database, reserverBrevHandler) {
 
     data class Request(
         override val brevId: BrevId,
@@ -31,7 +30,7 @@ class AttesterBrevHandler(
         val frigiReservasjon: Boolean = false,
     ) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
+    override suspend fun execute(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
         val principal = PrincipalInContext.require()
 
@@ -66,7 +65,5 @@ class AttesterBrevHandler(
 
         return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
     }
-
-    override fun requiresReservasjon(request: Request) = true
 }
 

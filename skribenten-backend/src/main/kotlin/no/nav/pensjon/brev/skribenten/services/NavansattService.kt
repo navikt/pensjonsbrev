@@ -11,6 +11,8 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
@@ -27,8 +29,11 @@ interface NavansattService {
 
 class NavansattServiceException(message: String) : ServiceException(message)
 
-class NavansattServiceHttp(config: OboClientConfig, authService: AuthService, private val cache: Cache) : NavansattService, ServiceStatus {
+class NavansattServiceHttp(config: OboClientConfig, authService: AuthService, private val cache: Cache) : NavansattService, ServiceStatus, Closeable {
     private val logger = LoggerFactory.getLogger(NavansattServiceHttp::class.java)
+
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache): this(config.services.navansatt, authService, cache)
 
     private val navansattUrl = config.url
     private val navansattScope = config.scope
@@ -83,6 +88,8 @@ class NavansattServiceHttp(config: OboClientConfig, authService: AuthService, pr
 
     override suspend fun ping() =
         ping("NAV Ansatt") { client.get("ping-authenticated") }
+
+    override fun close() { client.close() }
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)

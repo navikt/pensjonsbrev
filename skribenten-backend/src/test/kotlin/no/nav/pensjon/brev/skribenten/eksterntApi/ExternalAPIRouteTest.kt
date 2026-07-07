@@ -13,15 +13,15 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.basic
+import io.ktor.server.plugins.di.dependencies
+import io.ktor.server.routing.routing
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AUTHENTICATION_REALM_NAME
-import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
-import no.nav.pensjon.brev.skribenten.brevredigering.application.OpprettBrevService
-import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OpprettBrevHandlerImpl
+import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevInfoService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
@@ -101,24 +101,23 @@ class ExternalAPIRouteTest {
         }
     """.trimIndent()
 
-    private val hentBrevService = object : HentBrevService {
+    private val hentBrevInfoService = object : HentBrevInfoService {
         override fun hentBrevForAlleSaker(saksIder: Set<SaksId>) = listOf(brevInfo)
         override fun hentBrevInfo(brevId: BrevId) = brevInfo
+        override fun hentBrevForSak(saksId: SaksId): List<Dto.BrevInfo> = hentBrevForAlleSaker(setOf(saksId))
     }
 
     private fun lagExternalAPIService(
         opprettBrevResult: Outcome<Dto.Brevredigering, BrevredigeringError> = Outcome.success(successBrevredigering)
     ) = ExternalAPIService(
         config = ExternalApiConfig(skribentenWebUrl = "https://example.com"),
-        hentBrevService = hentBrevService,
+        hentBrevInfoService = hentBrevInfoService,
         brevmalService = BrevmalService(
             brevbakerService = FakeBrevbakerService(),
             penClient = PenClientStub(),
             brevmetadataService = FakeBrevmetadataService(),
         ),
-        opprettBrevService = object : OpprettBrevService {
-            override suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request) = opprettBrevResult
-        }
+        opprettBrevHandler = { opprettBrevResult }
     )
 
     private fun routeTestApplication(
@@ -135,13 +134,31 @@ class ExternalAPIRouteTest {
         }
         application {
             skribentenContenNegotiation()
-        }
-        routing {
-            externalAPI(externalAPIService, object : PdlServiceStub() {
-                override suspend fun hentAdressebeskyttelse(ident: BrevbakerType.Pid, behandlingsnumre: List<Behandlingsnummer>) = null
-            }, FagsakService(object : PenClientStub() {
-                override suspend fun hentSak(saksId: SaksId) = Pen.SakSelection(saksId, LocalDate.now(), Pen.SakSelection.Navn("fornavn1", mellomnavn = null, "etternavn2"), Sakstype("hei"), BrevbakerType.Pid("123"), listOf())
-            }))
+            dependencies {
+                provide { externalAPIService }
+                provide {
+                    object : PdlServiceStub() {
+                        override suspend fun hentAdressebeskyttelse(ident: BrevbakerType.Pid, behandlingsnumre: List<Behandlingsnummer>) = null
+                    }
+                }
+                provide {
+                    FagsakService(
+                        object : PenClientStub() {
+                            override suspend fun hentSak(saksId: SaksId) = Pen.SakSelection(
+                                saksId = saksId,
+                                foedselsdato = LocalDate.now(),
+                                navn = Pen.SakSelection.Navn("fornavn1", mellomnavn = null, "etternavn2"),
+                                sakType = Sakstype("hei"),
+                                pid = BrevbakerType.Pid("123"),
+                                behandlingsnumre = listOf()
+                            )
+                        }
+                    )
+                }
+            }
+            routing {
+                externalAPI()
+            }
         }
 
         val client = createClient {

@@ -1,12 +1,14 @@
 package no.nav.pensjon.brev.skribenten.routes
 
 import io.ktor.http.*
+import io.ktor.server.application.Application
 import io.ktor.server.plugins.*
+import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.SakKey
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
+import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevInfoService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.*
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
@@ -17,30 +19,32 @@ import no.nav.pensjon.brev.skribenten.model.toDto
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
-fun Route.sakBrev(
-    brevmalService: BrevmalService,
-    p1Service: P1ServiceImpl,
-    brevredigeringFacade: BrevredigeringFacade,
-    dto2ApiService: Dto2ApiService,
-) =
+context(app: Application)
+fun Route.sakBrev() =
     route("/brev") {
+        val brevmalService: BrevmalService by app.dependencies
+        val p1Service: P1ServiceImpl by app.dependencies
+        val dto2ApiService: Dto2ApiService by app.dependencies
+        val hentBrevInfoService: HentBrevInfoService by app.dependencies
+
         get {
             val sak: Fagsak = call.attributes[SakKey]
 
             call.respond(
                 HttpStatusCode.OK,
-                brevredigeringFacade.hentBrevForSak(sak.saksId).map { dto2ApiService.toApi(it) }
+                hentBrevInfoService.hentBrevForSak(sak.saksId).map { dto2ApiService.toApi(it) }
             )
         }
 
+        val opprettBrev: OpprettBrevHandler by app.dependencies
         post {
             val request = call.receive<Api.OpprettBrevRequest>()
             val sak: Fagsak = call.attributes[SakKey]
             val spraak = request.spraak.toLanguageCode()
             val avsenderEnhetsId = request.avsenderEnhetsId
 
-            val brev = brevredigeringFacade.opprettBrev(
-                OpprettBrevHandlerImpl.Request(
+            val brev = opprettBrev(
+                OpprettBrevHandler.Request(
                     saksId = sak.saksId,
                     vedtaksId = request.vedtaksId,
                     brevkode = request.brevkode,
@@ -56,11 +60,13 @@ fun Route.sakBrev(
         }
 
         route("/{brevId}") {
+            val hentBrev: HentBrevHandler by app.dependencies
+
             get {
                 val brevId = call.parameters.brevId()
                 val reserver = call.request.queryParameters["reserver"].toBoolean()
 
-                val brev = brevredigeringFacade.hentBrev(
+                val brev = hentBrev(
                     HentBrevHandler.Request(
                         brevId = brevId,
                         reserverForRedigering = reserver,
@@ -70,12 +76,13 @@ fun Route.sakBrev(
                 apiRespond(dto2ApiService, brev)
             }
 
+            val oppdaterBrev: OppdaterBrevHandler by app.dependencies
             put {
                 val request = call.receive<Api.OppdaterBrevRequest>()
                 val brevId = call.parameters.brevId()
                 val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
 
-                val result = brevredigeringFacade.oppdaterBrev(
+                val result = oppdaterBrev(
                     OppdaterBrevHandler.Request(
                         brevId = brevId,
                         nyeSaksbehandlerValg = request.saksbehandlerValg,
@@ -88,12 +95,13 @@ fun Route.sakBrev(
             }
 
             // TODO: fjern når frontend er oppdatert til å bruke endreValgteVedlegg-endepunktet
+            val endreValgteVedlegg: EndreValgteVedleggHandler by app.dependencies
             patch {
                 val request = call.receive<Api.DelvisOppdaterBrevRequest>()
                 val brevId = call.parameters.brevId()
 
                 if (request.alltidValgbareVedlegg != null) {
-                    val brev = brevredigeringFacade.endreValgteVedlegg(
+                    val brev = endreValgteVedlegg(
                         EndreValgteVedleggHandler.Request(
                             brevId = brevId,
                             alltidValgbareVedlegg = request.alltidValgbareVedlegg,
@@ -101,16 +109,17 @@ fun Route.sakBrev(
                     )
                     apiRespond(dto2ApiService, brev)
                 } else {
-                    val brev = brevredigeringFacade.hentBrev(HentBrevHandler.Request(brevId = brevId, reserverForRedigering = false))
+                    val brev = hentBrev(HentBrevHandler.Request(brevId = brevId, reserverForRedigering = false))
                     apiRespond(dto2ApiService, brev)
                 }
             }
 
+            val endreDistribusjonstype: EndreDistribusjonstypeHandler by app.dependencies
             put("/distribusjon") {
                 val request = call.receive<Api.DistribusjonstypeRequest>()
                 val brevId = call.parameters.brevId()
 
-                val brevInfo = brevredigeringFacade.endreDistribusjonstype(
+                val brevInfo = endreDistribusjonstype(
                     EndreDistribusjonstypeHandler.Request(
                         brevId = brevId,
                         type = request.distribusjon,
@@ -124,7 +133,7 @@ fun Route.sakBrev(
                 val request = call.receive<Api.ValgteVedleggRequest>()
                 val brevId = call.parameters.brevId()
 
-                val brev = brevredigeringFacade.endreValgteVedlegg(
+                val brev = endreValgteVedlegg(
                     EndreValgteVedleggHandler.Request(
                         brevId = brevId,
                         alltidValgbareVedlegg = request.valgteVedlegg,
@@ -135,32 +144,35 @@ fun Route.sakBrev(
             }
 
             route("/redigerbareVedlegg") {
+                val hentRedigerbareVedlegg: HentRedigerbareVedleggHandler by app.dependencies
                 get {
                     val brevId = call.parameters.brevId()
 
-                    val result = brevredigeringFacade.hentRedigerbareVedlegg(
+                    val result = hentRedigerbareVedlegg(
                         HentRedigerbareVedleggHandler.Request(brevId = brevId)
                     )
 
                     respondOutcome(dto2ApiService, result) { respond(it) }
                 }
                 route("{vedleggId}") {
+                    val hentRedigertVedlegg: HentRedigertVedleggHandler by app.dependencies
                     get {
                         val brevId = call.parameters.brevId()
                         val vedleggId = call.parameters.vedleggId()
 
-                        val result = brevredigeringFacade.hentRedigertVedlegg(
+                        val result = hentRedigertVedlegg(
                             HentRedigertVedleggHandler.Request(brevId = brevId, vedleggId = vedleggId)
                         )
 
                         respondOutcome(dto2ApiService, result) { respond(it) }
                     }
 
+                    val endreRedigertVedlegg: EndreRedigertVedleggHandler by app.dependencies
                     put<Api.RedigertVedleggRequest> { request ->
                         val brevId = call.parameters.brevId()
                         val vedleggId = call.parameters.vedleggId()
 
-                        val brev = brevredigeringFacade.endreRedigertVedlegg(
+                        val brev = endreRedigertVedlegg(
                             EndreRedigertVedleggHandler.Request(
                                 brevId = brevId,
                                 vedleggId = vedleggId,
@@ -171,11 +183,12 @@ fun Route.sakBrev(
                         apiRespond(dto2ApiService, brev)
                     }
 
+                    val slettRedigertVedlegg: SlettRedigertVedleggHandler by app.dependencies
                     delete {
                         val brevId = call.parameters.brevId()
                         val vedleggId = call.parameters.vedleggId()
 
-                        val brev = brevredigeringFacade.slettRedigertVedlegg(
+                        val brev = slettRedigertVedlegg(
                             SlettRedigertVedleggHandler.Request(brevId = brevId, vedleggId = vedleggId)
                         )
 
@@ -184,11 +197,12 @@ fun Route.sakBrev(
                 }
             }
 
+            val veksleKlarStatus: VeksleKlarStatusHandler by app.dependencies
             put("/status") {
                 val request = call.receive<Api.OppdaterKlarStatusRequest>()
                 val brevId = call.parameters.brevId()
 
-                val brevInfo = brevredigeringFacade.veksleKlarStatus(
+                val brevInfo = veksleKlarStatus(
                     VeksleKlarStatusHandler.Request(
                         brevId = brevId,
                         klar = request.klar,
@@ -198,18 +212,21 @@ fun Route.sakBrev(
                 apiRespond(dto2ApiService, brevInfo)
             }
 
+            val slettBrev: SlettBrevHandler by app.dependencies
             delete {
                 val brevId = call.parameters.brevId()
 
-                val result = brevredigeringFacade.slettBrev(SlettBrevHandler.Request(brevId = brevId))
+                val result = slettBrev(SlettBrevHandler.Request(brevId = brevId))
                 apiRespond(dto2ApiService, result)
             }
 
             route("/mottaker") {
+                val endreMottaker: EndreMottakerHandler by app.dependencies
+
                 put {
                     val request = call.receive<Api.OppdaterMottakerRequest>()
                     val brevId = call.parameters.brevId()
-                    val brevInfo = brevredigeringFacade.endreMottaker(
+                    val brevInfo = endreMottaker(
                         EndreMottakerHandler.Request(brevId = brevId, mottaker = request.mottaker.toDto())
                     )
 
@@ -218,7 +235,7 @@ fun Route.sakBrev(
 
                 delete {
                     val brevId = call.parameters.brevId()
-                    val brevInfo = brevredigeringFacade.endreMottaker(
+                    val brevInfo = endreMottaker(
                         EndreMottakerHandler.Request(brevId = brevId, mottaker = null)
                     )
 
@@ -227,27 +244,31 @@ fun Route.sakBrev(
             }
 
             route("/pdf") {
+                val hentEllerOpprettPdf: HentEllerOpprettPdfHandler by app.dependencies
                 get {
                     val brevId = call.parameters.brevId()
 
-                    val result = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brevId))
+                    val result = hentEllerOpprettPdf(HentEllerOpprettPdfHandler.Request(brevId = brevId))
                     apiRespond(dto2ApiService, result)
                 }
 
+                val sendBrev: SendBrevHandler by app.dependencies
                 post("/send") {
                     val brevId = call.parameters.brevId()
 
-                    val resultat = brevredigeringFacade.sendBrev(SendBrevHandler.Request(brevId = brevId))
+                    val resultat = sendBrev(SendBrevHandler.Request(brevId = brevId))
                     apiRespond(dto2ApiService, resultat)
                 }
             }
 
             route("/attestering") {
+                val hentBrevAttestering: HentBrevAttesteringHandler by app.dependencies
+
                 get {
                     val brevId = call.parameters.brevId()
                     val reserver = call.request.queryParameters["reserver"].toBoolean()
 
-                    val resultat = brevredigeringFacade.hentBrevAttestering(
+                    val resultat = hentBrevAttestering(
                         HentBrevAttesteringHandler.Request(
                             brevId = brevId,
                             reserverForRedigering = reserver,
@@ -257,12 +278,13 @@ fun Route.sakBrev(
                     apiRespond(dto2ApiService, resultat)
                 }
 
+                val attesterBrev: AttesterBrevHandler by app.dependencies
                 put {
                     val request = call.receive<Api.OppdaterAttesteringRequest>()
                     val brevId = call.parameters.brevId()
                     val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
 
-                    val resultat = brevredigeringFacade.attesterBrev(
+                    val resultat = attesterBrev(
                         AttesterBrevHandler.Request(
                             brevId = brevId,
                             nyeSaksbehandlerValg = request.saksbehandlerValg,

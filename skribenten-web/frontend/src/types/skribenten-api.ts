@@ -4,40 +4,6 @@
  */
 
 export interface paths {
-    "/status": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["StatusResponse"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/land": {
         parameters: {
             query?: never;
@@ -2872,16 +2838,6 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** StatusResponse */
-        StatusResponse: {
-            errors: {
-                [key: string]: string;
-            };
-            overall: boolean;
-            services: {
-                [key: string]: boolean;
-            };
-        };
         /** BrevLandmodellLand */
         BrevLandmodellLand: {
             kode: string;
@@ -3698,7 +3654,6 @@ export interface components {
     headers: never;
     pathItems: never;
 }
-export type StatusResponse = components['schemas']['StatusResponse'];
 export type BrevLandmodellLand = components['schemas']['BrevLandmodellLand'];
 export type BrevSystem = components['schemas']['BrevSystem'];
 export type BrevdataDtoDokumentkategoriCode = components['schemas']['BrevdataDtoDokumentkategoriCode'];
