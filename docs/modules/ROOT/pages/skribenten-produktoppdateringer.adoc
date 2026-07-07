@@ -17,7 +17,7 @@ Juni har vært preget av bedre feilhåndtering og en del arbeid med attestering 
 
 === Ting vi har fikset
 * En kladd kunne hindre åpning av dokumentlisten – dette er nå rettet https://github.com/navikt/pensjonsbrev/commit/c86d7af53[#3375]
-* Ctrl+b omdirigeres nå til vår egen fet-skrift håndtering i stedet for nettleserens standard https://github.com/navikt/pensjonsbrev/commit/8c57014cd[#3332]
+* Ctrl+b omdirigeres nå til vår egen håndtering av fet skrift i stedet for nettleserens standard https://github.com/navikt/pensjonsbrev/commit/8c57014cd[#3332]
 * Viser nå en tydeligere feilmelding på kvitteringssiden hvis sending av brev feiler https://github.com/navikt/pensjonsbrev/commit/6f2f8a0ac[#3313]
 * Attestant ble ikke alltid sendt riktig vei ved informasjonsbrev i status kladd/under redigering – dette er nå rettet https://github.com/navikt/pensjonsbrev/commit/cf8252bd5[#3291]
 
