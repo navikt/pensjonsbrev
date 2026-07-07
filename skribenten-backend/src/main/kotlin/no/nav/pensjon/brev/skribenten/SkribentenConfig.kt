@@ -1,6 +1,13 @@
 package no.nav.pensjon.brev.skribenten
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.Json
 import no.nav.pensjon.brev.skribenten.auth.ADGroup
 import no.nav.pensjon.brev.skribenten.auth.SkribentenADGroups
 
@@ -53,12 +60,27 @@ data class AzureADConfig(
     val clientId: String,
     val tokenEndpoint: String,
     val clientSecret: String,
-    // NB: HOCON env-var substitution only exposes this as an opaque JSON string (not a real
-    // HOCON list), so it must be parsed manually - see Authorization.kt's `preAuthorizedApps`.
-    val preAuthApps: String,
+    @Serializable(with = PreAuthorizedAppsSerializer::class)
+    val preAuthApps: List<PreAuthorizedApp>,
 ) {
     @Serializable
     data class PreAuthorizedApp(val name: String, val clientId: String)
+}
+
+// Ktor's HoconApplicationConfig#getAs flattens config into a Map<String, String> and detects
+// lists via a "path.size" key. HOCON env-var substitution (${AZURE_APP_PRE_AUTHORIZED_APPS})
+// only ever exposes this as a single opaque JSON string, never a real HOCON list, so the
+// default list decoding silently yields an empty list. PreAuthorizedAppsSerializer works
+// around this by decoding the raw string ourselves and parsing it as JSON.
+object PreAuthorizedAppsSerializer : KSerializer<List<AzureADConfig.PreAuthorizedApp>> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("PreAuthorizedApps", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): List<AzureADConfig.PreAuthorizedApp> =
+        Json.decodeFromString(decoder.decodeString())
+
+    override fun serialize(encoder: Encoder, value: List<AzureADConfig.PreAuthorizedApp>) {
+        encoder.encodeString(Json.encodeToString(value))
+    }
 }
 
 @Serializable
