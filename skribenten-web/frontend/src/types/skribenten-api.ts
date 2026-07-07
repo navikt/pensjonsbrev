@@ -2114,6 +2114,12 @@ export interface paths {
                         "application/json": components["schemas"]["ValgbartVedlegg"][];
                     };
                 };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
             };
         };
         put?: never;

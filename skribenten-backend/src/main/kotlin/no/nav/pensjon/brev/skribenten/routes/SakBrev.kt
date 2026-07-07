@@ -298,7 +298,12 @@ fun Route.sakBrev(
 
             get("/alltidValgbareVedlegg") {
                 val brevId = call.parameters.brevId()
-                call.respond(brevmalService.getAlltidValgbareVedlegg(brevId))
+                val valgbareVedlegg = brevmalService.getAlltidValgbareVedlegg(brevId)
+                if (valgbareVedlegg != null) {
+                    call.respond(valgbareVedlegg)
+                } else {
+                    call.respond(HttpStatusCode.NotFound)
+                }
             }
         }
     }
