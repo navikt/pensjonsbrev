@@ -37,7 +37,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolic
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.FerdigRedigertPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.SendBrevPolicy
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.SlettBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.cacheFactory
@@ -116,7 +115,6 @@ fun Application.configureDependencies() {
         provide(OpprettBrevPolicy::class)
         provide(RedigerBrevPolicy::class)
         provide(SendBrevPolicy::class)
-        provide(SlettBrevPolicy::class)
 
         provide(AttesterBrevHandler::class)
         provide(DiffBrevHandler::class)
