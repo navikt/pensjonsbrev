@@ -105,7 +105,6 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var sistReservert by BrevredigeringTable.sistReservert
         private set
     override var journalpostId by BrevredigeringTable.journalpostId
-        // TODO: private set?
 
     private val _documentEntityList by DocumentEntity referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
     override var document: Dto.Document?
