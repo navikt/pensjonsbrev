@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
-import no.nav.pensjon.brev.skribenten.common.getOrElse
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
@@ -60,11 +59,14 @@ class HentEllerOpprettPdfHandler(
 
     private suspend fun BrevdataResponse.Data.withP1DataIfP1(brev: Brevredigering): BrevdataResponse.Data =
         if (brev.brevkode.kode() == P1_BREVKODE) {
-            val p1Data = hentP1DataHandler(HentP1DataHandler.Request(brevId = brev.id.value, saksId = brev.saksId))
-                ?.getOrElse { error("Uventet feil ved henting av P1-data for brev ${brev.id.value}") }
-
-            copy(brevdata = brevdata.apply { put(P1_VEDLEGG_KEY, p1Data) })
-        } else this
+            when (val p1Data = hentP1DataHandler(HentP1DataHandler.Request(brevId = brev.id.value, saksId = brev.saksId))) {
+                is Outcome.Success<*> -> copy(brevdata = brevdata.apply { put(P1_VEDLEGG_KEY, p1Data) })
+                is Outcome.Failure<*> -> throw IllegalStateException("Feil under henting av P1-data for brev ${brev.id.value}")
+                null -> throw IllegalStateException("Fant ikke P1-data for brev ${brev.id.value}")
+            }
+        } else {
+            this
+        }
 }
 
 // Disse må være i sync med api-modellen
