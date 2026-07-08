@@ -22,12 +22,6 @@ fun Route.redigerbarRoutes(
         }
 
         post<BestillBrevRequest<Brevkode.Redigerbart>>("/markup-usage") { brevbestilling ->
-            try {
-                throw IllegalStateException("For testing")
-            } catch (e: Exception) {
-                e.addSuppressed(NumberFormatException("test"))
-                throw IllegalArgumentException("outer", e)
-            }
             val markup = redigerbareBrev.renderLetterMarkupWithDataUsage(brevbestilling)
             call.respond(markup)
         }
