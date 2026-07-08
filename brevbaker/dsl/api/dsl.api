@@ -162,13 +162,6 @@ public final class no/nav/pensjon/brev/template/BinaryOperation$Equal : no/nav/p
 	public fun stableHashCode ()I
 }
 
-public final class no/nav/pensjon/brev/template/BinaryOperation$EttSaksbehandlervalg : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
-	public fun <init> ()V
-	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply (Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Ljava/lang/String;)Ljava/lang/Object;
-	public fun stableHashCode ()I
-}
-
 public final class no/nav/pensjon/brev/template/BinaryOperation$Flip : no/nav/pensjon/brev/template/BinaryOperation {
 	public fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun equals (Ljava/lang/Object;)Z
@@ -932,18 +925,17 @@ public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls 
 }
 
 public final class no/nav/pensjon/brev/template/SaksbehandlerValgBuilder {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/reflect/KClass;Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;)V
 	public final fun bool (Z)Lno/nav/pensjon/brev/template/Expression;
 	public static synthetic fun bool$default (Lno/nav/pensjon/brev/template/SaksbehandlerValgBuilder;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getClazz ()Lkotlin/reflect/KClass;
 	public final fun getDisplayText ()Ljava/lang/String;
 	public final fun getId ()Ljava/lang/String;
 	public final fun getScope ()Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;
-	public final fun int (Ljava/lang/Integer;)Lno/nav/pensjon/brev/template/Expression;
-	public static synthetic fun int$default (Lno/nav/pensjon/brev/template/SaksbehandlerValgBuilder;Ljava/lang/Integer;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun int ()Lno/nav/pensjon/brev/template/Expression;
+	public final fun int (I)Lno/nav/pensjon/brev/template/Expression;
+	public final fun text ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun text (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
-}
-
-public final class no/nav/pensjon/brev/template/SaksbehandlervalgKt {
-	public static final fun saksbehandlervalg (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brev/template/SaksbehandlerValgBuilder;
 }
 
 public final class no/nav/pensjon/brev/template/SimpleSelector : no/nav/pensjon/brev/template/TemplateModelSelector {
@@ -1383,9 +1375,9 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 	public static synthetic fun includeAttachmentRedigerbar-RWxTZKQ$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
 	public final fun includeAttachmentRedigerbar-sE91ttY (Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
 	public static synthetic fun includeAttachmentRedigerbar-sE91ttY$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
+	public final fun lagreSaksbehandlervalg (Ljava/lang/String;Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public final fun outline (Lkotlin/jvm/functions/Function1;)V
-	public final fun saksbehandlervalg (Ljava/lang/String;Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi;)V
 	public final fun title (Lkotlin/jvm/functions/Function1;)V
 }
 

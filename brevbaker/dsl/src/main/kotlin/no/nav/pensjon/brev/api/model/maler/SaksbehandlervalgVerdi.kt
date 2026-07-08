@@ -6,56 +6,52 @@ import kotlin.reflect.KClass
 
 @BrevbakerDSLInternal
 sealed interface SaksbehandlervalgVerdi<out T> {
-    @BrevbakerDSLInternal
-    enum class Type {
-        BOOL, INTEGER, ENUM, TEXT
-    }
-
     val id: String
-    val defaultValue: T
-    val type: Type
     val displayText: String
-
     val typename: String
 
     fun getValue(saksbehandlervalg: Map<String, *>): T
 
     @BrevbakerDSLInternal
-    data class Bool @InternKonstruktoer constructor(override val id: String, override val defaultValue: Boolean, override val displayText: String) : SaksbehandlervalgVerdi<Boolean> {
-        override val type = Type.BOOL
+    data class Bool @InternKonstruktoer constructor(override val id: String, override val displayText: String) : SaksbehandlervalgVerdi<Boolean?> {
         override val typename: String = "Boolean"
-        override fun getValue(saksbehandlervalg: Map<String, *>): Boolean = saksbehandlervalg[id] as? Boolean ?: defaultValue
+        override fun getValue(saksbehandlervalg: Map<String, *>): Boolean? = saksbehandlervalg[id] as? Boolean
     }
 
     @BrevbakerDSLInternal
-    data class Integer @InternKonstruktoer constructor(override val id: String, override val defaultValue: Int?, override val displayText: String) : SaksbehandlervalgVerdi<Int?> {
-        override val type = Type.INTEGER
+    data class Integer @InternKonstruktoer constructor(override val id: String, override val displayText: String) : SaksbehandlervalgVerdi<Int?> {
         override val typename: String = "Int"
-        override fun getValue(saksbehandlervalg: Map<String, *>): Int? = saksbehandlervalg[id] as? Int ?: defaultValue
+        override fun getValue(saksbehandlervalg: Map<String, *>): Int? = saksbehandlervalg[id] as? Int
+    }
+
+    @BrevbakerDSLInternal
+    data class WithDefault<T : Any> @InternKonstruktoer constructor(val saksbehandlervalgVerdi: SaksbehandlervalgVerdi<T?>, val defaultValue: T) : SaksbehandlervalgVerdi<T> {
+        override val id: String
+            get() = saksbehandlervalgVerdi.id
+        override val displayText: String
+            get() = saksbehandlervalgVerdi.displayText
+        override val typename: String
+            get() = saksbehandlervalgVerdi.typename
+        override fun getValue(saksbehandlervalg: Map<String, *>): T = saksbehandlervalgVerdi.getValue(saksbehandlervalg) ?: defaultValue
     }
 
     @BrevbakerDSLInternal
     data class Enum<T> @InternKonstruktoer constructor(
         override val id: String,
-        override val defaultValue: T?,
         override val displayText: String,
         val clazz: KClass<T>,
     ) : SaksbehandlervalgVerdi<T?> where T : kotlin.Enum<T>, T : SaksbehandlerValgEnum {
-        override val type = Type.ENUM
         override val typename: String = clazz.qualifiedName!!
         override fun getValue(saksbehandlervalg: Map<String, *>): T? = (saksbehandlervalg[id] as? String)
             ?.let { java.lang.Enum.valueOf(clazz.java, it) }
-            ?: defaultValue
     }
 
     @BrevbakerDSLInternal
     data class Text @InternKonstruktoer constructor(
         override val id: String,
-        override val defaultValue: String?,
         override val displayText: String,
     ) : SaksbehandlervalgVerdi<String?> {
-        override val type = Type.TEXT
         override val typename: String = "String"
-        override fun getValue(saksbehandlervalg: Map<String, *>): String? = saksbehandlervalg[id] as? String ?: defaultValue
+        override fun getValue(saksbehandlervalg: Map<String, *>): String? = saksbehandlervalg[id] as? String
     }
 }

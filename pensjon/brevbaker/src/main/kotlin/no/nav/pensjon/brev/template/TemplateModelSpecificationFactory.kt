@@ -36,15 +36,16 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
             while (toProcess.isNotEmpty()) {
                 val current = toProcess.removeFirst()
                 val name = current.qualifiedName!!
-                if (current.isSubclassOf(SaksbehandlervalgIDSL::class) && saksbehandlervalg != null) {
-                    objectTypes[name] = saksbehandlervalg.mapValues {
-                        when (val v = it.value) {
-                            is SaksbehandlervalgVerdi.Bool -> FieldType.Scalar(false, FieldType.Scalar.Kind.BOOLEAN, displayText = it.value.displayText)
-                            is SaksbehandlervalgVerdi.Integer -> FieldType.Scalar(true, FieldType.Scalar.Kind.NUMBER, displayText = it.value.displayText)
-                            is SaksbehandlervalgVerdi.Text -> FieldType.Scalar(true, FieldType.Scalar.Kind.STRING, displayText = it.value.displayText)
-                            is SaksbehandlervalgVerdi.Enum<*> -> FieldType.Enum(true, enumVerdier(v.clazz.kotlin, false), displayText = it.value.displayText)
-                        }
-                    }
+                if (current.isSubclassOf(SaksbehandlervalgIDSL::class)) {
+                    // TODO må vel truleg oppdatere denne
+//                    objectTypes[name] = saksbehandlervalg.mapValues {
+//                        when (val v = it.value) {
+//                            is SaksbehandlervalgVerdi.Bool -> FieldType.Scalar(false, FieldType.Scalar.Kind.BOOLEAN, displayText = it.value.displayText)
+//                            is SaksbehandlervalgVerdi.Integer -> FieldType.Scalar(true, FieldType.Scalar.Kind.NUMBER, displayText = it.value.displayText)
+//                            is SaksbehandlervalgVerdi.Text -> FieldType.Scalar(true, FieldType.Scalar.Kind.STRING, displayText = it.value.displayText)
+//                            is SaksbehandlervalgVerdi.Enum<*> -> FieldType.Enum(true, enumVerdier(v.clazz, false), displayText = it.value.displayText)
+//                        }
+//                    }
                 } else if (!objectTypes.containsKey(name)) {
                     objectTypes[name] = createObjectTypeSpecification(current)
                 }
