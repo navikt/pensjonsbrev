@@ -68,7 +68,7 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         template: LetterTemplate<*, BrevbakerBrevdata>,
     ): BrevbakerBrevdata =
         try {
-            return objectMapper.convertValue(letterData, template.letterDataType.java)
+            objectMapper.convertValue(letterData, template.letterDataType.java)
         } catch (e: IllegalArgumentException) {
             throw ParseLetterDataException("Could not deserialize letterData: ${e.message}", e)
         }
