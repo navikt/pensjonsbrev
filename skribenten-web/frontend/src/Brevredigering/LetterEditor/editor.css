@@ -124,18 +124,31 @@
   animation: none;
 }
 
-/* Persistent (non-fading) highlight for blocks the backend could not match to a fresh
-   template render (missingFromTemplate). Unlike inserted-flash-block this stays until the
-   saksbehandler resolves it. */
 .missing-from-template-block {
-  background-color: var(--ax-bg-warning-soft);
-  border: 1px solid var(--ax-border-warning-subtle);
-  border-radius: var(--ax-radius-2);
-  padding: var(--ax-space-4);
+  position: relative;
+  border-radius: 0.5rem;
+  border: 0.125rem solid var(--ax-border-accent-strong);
+  background: var(--ax-bg-accent-soft);
+  padding: 0.5rem;
+  padding-top: 1rem;
 }
 
 .missing-from-template-actions {
-  margin-bottom: var(--ax-space-4);
+  position: absolute;
+  right: 0.5rem;
+  top: 0;
+  transform: translateY(-50%);
+  z-index: 3;
+}
+
+.missing-from-template-actions button {
+  background: var(--ax-bg-accent-soft);
+}
+
+.missing-from-template-actions button:hover,
+.missing-from-template-actions button:focus-visible,
+.missing-from-template-actions button:active {
+  background: var(--ax-bg-accent-moderate-hover);
 }
 
 /* Brukere som har aktivert "prefers-reduced-motion" (f.eks. i virtuelle miljøer eller av

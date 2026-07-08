@@ -169,7 +169,7 @@ export const LetterEditor = ({
                       <Button
                         icon={<CheckmarkIcon aria-hidden />}
                         onClick={() => applyAction(Actions.keepMissingFromTemplateBlock, setEditorState, blockIndex)}
-                        size="small"
+                        size="xsmall"
                         type="button"
                         variant="secondary"
                       >
@@ -178,7 +178,7 @@ export const LetterEditor = ({
                       <Button
                         icon={<XMarkIcon aria-hidden />}
                         onClick={() => applyAction(Actions.removeMissingFromTemplateBlock, setEditorState, blockIndex)}
-                        size="small"
+                        size="xsmall"
                         type="button"
                         variant="secondary"
                       >
