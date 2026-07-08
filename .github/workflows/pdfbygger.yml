@@ -145,7 +145,7 @@ jobs:
           "TESTCONTAINERS_REUSE_ENABLE": "true"
       - name: Publish Test Report
         if: ${{ always() }}
-        uses: ScalableCapital/action-surefire-report@v2.0.3
+        uses: ScalableCapital/action-surefire-report@v2.0.4
         with:
           fail_if_no_tests: true
           fail_on_test_failures: true
