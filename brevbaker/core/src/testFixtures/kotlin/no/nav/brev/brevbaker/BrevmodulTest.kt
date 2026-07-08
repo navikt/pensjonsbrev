@@ -70,10 +70,13 @@ abstract class BrevmodulTest(
     @Test
     fun `alle redigerbare brev har displaytext for alle saksbehandlervalg`() {
         templates.hentRedigerbareMaler().map { it.template.letterDataType.java }.forEach { clazz ->
-            val saksbehandlervalg = clazz.declaredFields.map { it.type }.filter { field -> SaksbehandlerValgBrevdata::class.java.isAssignableFrom(field) }.map { it.kotlin }
-            saksbehandlervalg
+            val saksbehandlervalg = clazz.declaredFields.asSequence().map { it.type }
+                .filter { field -> SaksbehandlerValgBrevdata::class.java.isAssignableFrom(field) }
+                .map { it.kotlin }
                 .filterNot { it.java.isAssignableFrom(SaksbehandlervalgIDSL::class.java) }
-                .flatMap { it.members }.filterIsInstance<KProperty<*>>().forEach { field ->
+                .singleOrNull()
+
+            saksbehandlervalg?.members?.forEach { field ->
                 val hasDisplayText = field.annotations.filterIsInstance<DisplayText>().any()
                 assertTrue(hasDisplayText, "Alle saksbehandlervalg må ha displaytext, ${field.name} i klasse ${clazz.name} mangler det")
             }
