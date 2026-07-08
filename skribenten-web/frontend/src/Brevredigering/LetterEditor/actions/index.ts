@@ -42,7 +42,6 @@ const Actions = {
   paste,
   pasteReplacingSelection,
   promoteRowToHeader,
-  updateFocus,
   removeMissingFromTemplateBlock,
   removeTable,
   removeTableColumn,
@@ -52,6 +51,7 @@ const Actions = {
   switchTypography,
   toggleBulletList,
   updateContentText,
+  updateFocus,
   updateSignatur,
 };
 export default Actions;

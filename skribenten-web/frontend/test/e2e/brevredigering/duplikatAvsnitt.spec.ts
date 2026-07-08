@@ -67,7 +67,7 @@ test.describe("Duplikate/ukoblede avsnitt (missingFromTemplate)", () => {
     await expect(page.getByText("1 avsnitt er ikke lenger en del av malen")).toBeVisible();
     await expect(
       page.getByText(
-        "Disse avsnittene er markert i brevet. Velg «Behold» eller «Slett» for hvert av dem. Du kan fortsette til brevbehandler, men brevet kan ikke sendes før dette er gjort.",
+        "Disse avsnittene er markert i brevet. Velg «Behold» eller «Slett» for hvert av dem. Du kan fortsette, men brevet kan ikke sendes før dette er gjort.",
       ),
     ).toBeVisible();
 

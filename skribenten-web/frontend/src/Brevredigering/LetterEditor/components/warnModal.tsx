@@ -68,7 +68,7 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
       case "fritekstOgTekstValg":
         return "Du kan fortsette til brevbehandler, men brevet kan ikke sendes før alle fritekstfelter er fylt ut og du har valgt et eller flere obligatoriske tekstvalg.";
       case "duplikatAvsnitt":
-        return "Disse avsnittene er markert i brevet. Velg «Behold» eller «Slett» for hvert av dem. Du kan fortsette til brevbehandler, men brevet kan ikke sendes før dette er gjort.";
+        return "Disse avsnittene er markert i brevet. Velg «Behold» eller «Slett» for hvert av dem. Du kan fortsette, men brevet kan ikke sendes før dette er gjort.";
     }
   })();
 
@@ -95,4 +95,3 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
     </Modal>
   );
 };
-

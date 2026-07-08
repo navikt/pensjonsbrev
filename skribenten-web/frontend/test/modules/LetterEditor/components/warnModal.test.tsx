@@ -42,12 +42,11 @@ describe("WarnModal", () => {
   test("renders duplikatAvsnitt as its own heading and body, separate from fritekst/tekstValg", () => {
     render(<WarnModal count={2} kind="duplikatAvsnitt" onClose={vi.fn()} onFortsett={vi.fn()} open />);
 
-    expect(screen.queryByText("Brevet inneholder 2 avsnitt som ikke lenger er del av malen")).not.toBeNull();
+    expect(screen.queryByText("2 avsnitt er ikke lenger en del av malen")).not.toBeNull();
     expect(
       screen.queryByText(
-        "Du kan fortsette til brevbehandler, men brevet kan ikke sendes før avsnittene som ikke lenger kan kobles til malen (markert i brevet) er fjernet eller redigert.",
+        "Disse avsnittene er markert i brevet. Velg «Behold» eller «Slett» for hvert av dem. Du kan fortsette, men brevet kan ikke sendes før dette er gjort.",
       ),
     ).not.toBeNull();
   });
 });
-
