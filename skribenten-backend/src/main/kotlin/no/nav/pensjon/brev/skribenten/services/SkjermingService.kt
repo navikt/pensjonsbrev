@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import com.typesafe.config.Config
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -8,6 +7,9 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
+import no.nav.pensjon.brev.skribenten.OboClientConfig
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
@@ -23,9 +25,16 @@ interface SkjermingService {
 
 private val logger = LoggerFactory.getLogger(SkjermingService::class.java)
 
-class SkjermingServiceHttp(config: Config, authService: AuthService, private val cache: Cache) : SkjermingService {
-    private val url = config.getString("url")
-    private val scope = config.getString("scope")
+class SkjermingServiceHttp(
+    config: OboClientConfig,
+    authService: AuthService,
+    private val cache: Cache
+) : SkjermingService, Closeable {
+    private val url: String = config.url
+    private val scope: String = config.scope
+
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache): this(config.services.skjerming, authService, cache)
 
     private val client = lagHttpClient {
         defaultRequest { url(this@SkjermingServiceHttp.url) }
@@ -48,5 +57,5 @@ class SkjermingServiceHttp(config: Config, authService: AuthService, private val
             }
         }
 
-
+    override fun close() { client.close() }
 }

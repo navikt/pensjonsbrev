@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.skribenten.routes
 
 import io.ktor.http.*
+import io.ktor.server.application.Application
+import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -10,37 +12,29 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.auth.SakKey
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
 
-fun Route.sakRoute(
-    brevService: BrevService,
-    brevmalService: BrevmalService,
-    krrService: KrrService,
-    pdlService: PdlService,
-    fagsakService: FagsakService,
-    pensjonPersonDataService: PensjonPersonDataService,
-    safService: SafService,
-    skjermingService: SkjermingServiceHttp,
-    p1Service: P1ServiceImpl,
-    pensjonRepresentasjonService: PensjonRepresentasjonService,
-    brevredigeringFacade: BrevredigeringFacade,
-    dto2ApiService: Dto2ApiService,
-) {
+context(app: Application)
+fun Route.sakRoute() {
+    val brevService: BrevService by app.dependencies
+    val brevmalService: BrevmalService by app.dependencies
+    val krrService: KrrService by app.dependencies
+    val pdlService: PdlService by app.dependencies
+    val pensjonPersonDataService: PensjonPersonDataService by app.dependencies
+    val safService: SafService by app.dependencies
+    val skjermingService: SkjermingServiceHttp by app.dependencies
+    val pensjonRepresentasjonService: PensjonRepresentasjonService by app.dependencies
+
     route("/sak/{saksId}") {
-        install(AuthorizeAnsattSakTilgang) {
-            this.pdlService = pdlService
-            this.fagsakService = fagsakService
-        }
+        install(AuthorizeAnsattSakTilgang)
 
         get {
             val sak: Fagsak = call.attributes[SakKey]
@@ -140,7 +134,7 @@ fun Route.sakRoute(
             }
         }
 
-        sakBrev(brevmalService, p1Service, brevredigeringFacade, dto2ApiService)
+        sakBrev()
     }
 }
 

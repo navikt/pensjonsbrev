@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 class EndreValgteVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun endreVedlegg(brev: Dto.Brevredigering, vedlegg: List<AlltidValgbartVedleggBrevkode>, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         withPrincipal(principal) {
-            brevredigeringFacade.endreValgteVedlegg(EndreValgteVedleggHandler.Request(brev.info.id, vedlegg))
+            endreValgteVedlegg(EndreValgteVedleggHandler.Request(brev.info.id, vedlegg))
         }
 
     @Test

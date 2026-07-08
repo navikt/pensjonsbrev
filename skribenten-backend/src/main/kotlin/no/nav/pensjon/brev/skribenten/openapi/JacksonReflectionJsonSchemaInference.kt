@@ -242,7 +242,38 @@ class JacksonReflectionJsonSchemaInference(
             }
         } else {
             try {
-                ReferenceOr.Value(buildSchemaInternal(type, visiting, includeAnnotations))
+                // For named nullable types, build the schema as non-nullable first.
+                // - If the schema has a title (will be extracted to components by Ktor), express
+                //   nullability via oneOf at the call site. This mirrors Ktor 3.4.x behavior where
+                //   wrapIfNullable on a JsonSchema produced a oneOf wrapper; the 3.5.x approach
+                //   (type: ["object","null"] on the schema itself) silently drops null when the same
+                //   type is used in both nullable and non-nullable positions.
+                // - If the schema has no title (primitives, transparent value classes), it won't be
+                //   extracted to components, so rebuild with the original nullable type so that
+                //   wrapIfNullable handles it inline (e.g. type: ["integer","null"]).
+                val typeForSchema = if (nullable && name != null) {
+                    (type.classifier as? KClass<*>)?.createType(type.arguments, nullable = false) ?: type
+                } else {
+                    type
+                }
+                val schema = buildSchemaInternal(typeForSchema, visiting, includeAnnotations)
+                when {
+                    nullable && schema.title != null ->
+                        ReferenceOr.Value(
+                            JsonSchema(
+                                oneOf = listOf(
+                                    ReferenceOr.Value(schema),
+                                    ReferenceOr.Value(JsonSchema(type = JsonType.NULL))
+                                )
+                            )
+                        )
+                    nullable && name != null && schema.title == null ->
+                        // Untitled (primitive or transparent value class): rebuild with nullable so
+                        // wrapIfNullable produces the inline array form (e.g. type: ["integer","null"]).
+                        ReferenceOr.Value(buildSchemaInternal(type, visiting, includeAnnotations))
+                    else ->
+                        ReferenceOr.Value(schema)
+                }
             } finally {
                 visiting.remove(name)
             }

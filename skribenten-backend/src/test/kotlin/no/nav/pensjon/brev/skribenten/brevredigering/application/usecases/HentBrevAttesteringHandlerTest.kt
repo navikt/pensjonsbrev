@@ -29,7 +29,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringHandlerTestBase() {
         principal: MockPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         withPrincipal(principal) {
-            brevredigeringFacade.hentBrevAttestering(
+            hentBrevAttestering(
                 HentBrevAttesteringHandler.Request(
                     brevId = brevId,
                     reserverForRedigering = reserverForRedigering

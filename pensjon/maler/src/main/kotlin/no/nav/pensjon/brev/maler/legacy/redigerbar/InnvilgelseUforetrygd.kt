@@ -268,6 +268,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 btSerkullInnvilget = btSerkullInnvilget,
                 btSerkullNetto0 = btSerkullNetto0,
                 btFellesNetto0 = btFellesNetto0,
+                periodisertInntekt = saksbehandlerValg.periodisertInntekt
             ))
 
             includePhrase(Innvilgelse.BarnetilleggOgUtland(
