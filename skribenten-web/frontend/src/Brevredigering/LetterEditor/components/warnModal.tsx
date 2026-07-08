@@ -1,10 +1,10 @@
 import { BodyLong, Button, Modal } from "@navikt/ds-react";
 import type React from "react";
 
-export type WarnModalKind = "fritekst" | "tekstValg" | "fritekstOgTekstValg";
+export type WarnModalKind = "fritekst" | "tekstValg" | "fritekstOgTekstValg" | "duplikatAvsnitt";
 
 // Used discriminated props so that only relevant props are required for each kind.
-// here in this case "count" is only relevant for "fritekst" and "fritekstOgTekstValg" kinds.
+// here in this case "count" is only relevant for "fritekst", "fritekstOgTekstValg" and "duplikatAvsnitt" kinds.
 type WarnModalProps =
   | {
       kind: "tekstValg";
@@ -21,6 +21,13 @@ type WarnModalProps =
     }
   | {
       kind: "fritekstOgTekstValg";
+      count: number;
+      open: boolean;
+      onClose: () => void;
+      onFortsett: () => void;
+    }
+  | {
+      kind: "duplikatAvsnitt";
       count: number;
       open: boolean;
       onClose: () => void;
@@ -44,6 +51,8 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
         return `Du må fylle ut ${count} fritekstfelt`;
       case "fritekstOgTekstValg":
         return `Du må fylle ut ${count} fritekstfelt og velge tekst`;
+      case "duplikatAvsnitt":
+        return `Brevet inneholder ${count} avsnitt som ikke lenger er del av malen`;
       default:
         return "";
     }
@@ -58,6 +67,8 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
         return "Du kan fortsette til brevbehandler, men brevet kan ikke sendes før alle fritekstfelter er fylt ut.";
       case "fritekstOgTekstValg":
         return "Du kan fortsette til brevbehandler, men brevet kan ikke sendes før alle fritekstfelter er fylt ut og du har valgt et eller flere obligatoriske tekstvalg.";
+      case "duplikatAvsnitt":
+        return "Du kan fortsette til brevbehandler, men brevet kan ikke sendes før avsnittene som ikke lenger kan kobles til malen (markert i brevet) er fjernet eller redigert.";
     }
   })();
 
@@ -84,3 +95,4 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
     </Modal>
   );
 };
+

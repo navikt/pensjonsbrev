@@ -124,6 +124,20 @@
   animation: none;
 }
 
+/* Persistent (non-fading) highlight for blocks the backend could not match to a fresh
+   template render (missingFromTemplate). Unlike inserted-flash-block this stays until the
+   saksbehandler resolves it. */
+.missing-from-template-block {
+  background-color: var(--ax-bg-warning-soft);
+  border: 1px solid var(--ax-border-warning-subtle);
+  border-radius: var(--ax-radius-2);
+  padding: var(--ax-space-4);
+}
+
+.missing-from-template-actions {
+  margin-bottom: var(--ax-space-4);
+}
+
 /* Brukere som har aktivert "prefers-reduced-motion" (f.eks. i virtuelle miljøer eller av
    tilgjengelighetsgrunner) ser ikke keyframe-animasjonen over. Vi erstatter den med en statisk
    bakgrunnsfarge som vises til JS-timeren fjerner klassen etter ~2,2 sekunder. */

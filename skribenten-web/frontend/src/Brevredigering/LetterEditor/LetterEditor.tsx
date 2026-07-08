@@ -1,6 +1,7 @@
 import "./editor.css";
 
-import { Box, Heading, VStack } from "@navikt/ds-react";
+import { CheckmarkIcon, XMarkIcon } from "@navikt/aksel-icons";
+import { Box, Button, Heading, HStack, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
 import React, { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useState } from "react";
 
@@ -8,7 +9,7 @@ import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEdito
 import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
-import { TITLE_INDEX } from "~/types/brevbakerTypes";
+import { type AnyBlock, TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
 import { ContentGroup } from "./components/ContentGroup";
@@ -18,6 +19,17 @@ import { SignaturView } from "./components/SignaturView";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { type LetterEditorState } from "./model/state";
 import { useEditorKeyboardShortcuts } from "./utils";
+
+function getBlockClassName(block: AnyBlock, isFlashHighlighted: boolean): string {
+  const classNames: string[] = [block.type];
+  if (isFlashHighlighted) {
+    classNames.push("inserted-flash-block");
+  }
+  if (block.missingFromTemplate) {
+    classNames.push("missing-from-template-block");
+  }
+  return classNames.join(" ");
+}
 
 const DebugPanel = React.lazy(() => import("./components/DebugPanel"));
 
@@ -149,11 +161,31 @@ export const LetterEditor = ({
             >
               {blocks.map((block, blockIndex) => (
                 <div
-                  className={
-                    isTekstValgHighlighted(highlightedIds, block) ? `${block.type} inserted-flash-block` : block.type
-                  }
+                  className={getBlockClassName(block, isTekstValgHighlighted(highlightedIds, block))}
                   key={blockIndex}
                 >
+                  {block.missingFromTemplate && (
+                    <HStack className="missing-from-template-actions" gap="space-4" justify="end">
+                      <Button
+                        icon={<CheckmarkIcon aria-hidden />}
+                        onClick={() => applyAction(Actions.keepMissingFromTemplateBlock, setEditorState, blockIndex)}
+                        size="small"
+                        type="button"
+                        variant="secondary"
+                      >
+                        Behold
+                      </Button>
+                      <Button
+                        icon={<XMarkIcon aria-hidden />}
+                        onClick={() => applyAction(Actions.removeMissingFromTemplateBlock, setEditorState, blockIndex)}
+                        size="small"
+                        type="button"
+                        variant="secondary"
+                      >
+                        Slett
+                      </Button>
+                    </HStack>
+                  )}
                   <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
                 </div>
               ))}
