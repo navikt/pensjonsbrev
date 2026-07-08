@@ -19,8 +19,6 @@ import java.time.LocalDate
 import java.util.Objects
 import kotlin.reflect.KClass
 
-typealias SaksbehandlervalgDeklarasjon = Map<String, SaksbehandlervalgVerdi<*>>
-
 class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal constructor(
     val title: List<TextElement<Lang>>,
     val letterDataType: KClass<out LetterData>,
@@ -28,7 +26,7 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
     val outline: List<OutlineElement<Lang>>,
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
     val pdfAttachments: List<IncludeAttachmentPDF<Lang,*>> = emptyList(),
-    val saksbehandlervalg: SaksbehandlervalgDeklarasjon? = null,
+    val saksbehandlervalg: Map<String, *>? = null,
     val letterMetadata: LetterMetadata,
 ) {
     init {

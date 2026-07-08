@@ -21,7 +21,7 @@ sealed interface SaksbehandlervalgVerdi<out T> {
     @BrevbakerDSLInternal
     data class Integer @InternKonstruktoer constructor(override val id: String, override val displayText: String) : SaksbehandlervalgVerdi<Int?> {
         override val typename: String = "Int"
-        override fun getValue(saksbehandlervalg: Map<String, *>): Int? = saksbehandlervalg[id] as? Int
+        override fun getValue(saksbehandlervalg: Map<String, *>): Int? = (saksbehandlervalg[id] as? Int) ?: ((saksbehandlervalg[id] as? String)?.toIntOrNull())
     }
 
     @BrevbakerDSLInternal

@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 
 @OptIn(BrevbakerDSLInternal::class)
@@ -21,6 +22,7 @@ object BrevbakerBrevdataModule : SimpleModule() {
     init {
         addDeserializer(BrevbakerBrevdata::class.java, BrevdataDeserializer)
         addDeserializer(RedigerbarBrevdata::class.java, RedigerbarBrevdataDeserializer)
+        addDeserializer(SaksbehandlervalgIDSL::class.java, SaksbehandlervalgIDSLDeserializer)
     }
 
     private object BrevdataDeserializer : JsonDeserializer<BrevbakerBrevdata>() {
@@ -30,4 +32,10 @@ object BrevbakerBrevdataModule : SimpleModule() {
         override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): RedigerbarBrevdata<*,*> =
             ctxt.readValue(parser, GenericRedigerbarBrevdata::class.java)
     }
+    private object SaksbehandlervalgIDSLDeserializer : JsonDeserializer<SaksbehandlervalgIDSL>() {
+        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgIDSL =
+            ctxt.readValue(parser, SaksbehandlervalgMap::class.java)
+    }
 }
+
+class SaksbehandlervalgMap : SaksbehandlervalgIDSL, LinkedHashMap<String, Any?>()

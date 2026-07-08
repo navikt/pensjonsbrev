@@ -29,7 +29,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     private val _pdfAttachments: MutableList<IncludeAttachmentPDF<Lang, *>> = mutableListOf()
     internal val pdfAttachments: List<IncludeAttachmentPDF<Lang, *>> get() = _pdfAttachments
     private val _saksbehandlervalg: MutableMap<String, SaksbehandlervalgVerdi<*>> = mutableMapOf()
-    internal val saksbehandlervalg: SaksbehandlervalgDeklarasjon get() = _saksbehandlervalg
+    internal val saksbehandlervalg: Map<String, *> get() = _saksbehandlervalg
 
     @PublishedApi
     internal fun lagreSaksbehandlervalg(key: String, verdi: SaksbehandlervalgVerdi<*>) {

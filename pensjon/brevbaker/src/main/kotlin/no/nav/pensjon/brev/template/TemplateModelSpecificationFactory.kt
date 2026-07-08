@@ -23,7 +23,16 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     private val toProcess = mutableListOf<KClass<*>>()
 
     @OptIn(BrevbakerDSLInternal::class)
-    fun build(saksbehandlervalg: SaksbehandlervalgDeklarasjon?): TemplateModelSpecification =
+    private fun mapValue(entry: Pair<String, SaksbehandlervalgVerdi<*>>, nullable: Boolean = true): FieldType = when (val it = entry.second) {
+        is SaksbehandlervalgVerdi.Bool -> FieldType.Scalar(nullable, FieldType.Scalar.Kind.BOOLEAN, displayText = it.displayText)
+        is SaksbehandlervalgVerdi.Integer -> FieldType.Scalar(nullable, FieldType.Scalar.Kind.NUMBER, displayText = it.displayText)
+        is SaksbehandlervalgVerdi.Text -> FieldType.Scalar(nullable, FieldType.Scalar.Kind.STRING, displayText = it.displayText)
+        is SaksbehandlervalgVerdi.Enum<*> -> FieldType.Enum(nullable, enumVerdier(it.clazz, false), displayText = it.displayText)
+        is SaksbehandlervalgVerdi.WithDefault<*> -> mapValue(Pair(it.id, it.saksbehandlervalgVerdi), false)
+    }
+
+    @OptIn(BrevbakerDSLInternal::class)
+    fun build(saksbehandlervalg: Map<String, *>?): TemplateModelSpecification =
         if (from.objectInstance == Unit || from.objectInstance in setOf(EmptyAutobrevdata, EmptyRedigerbarBrevdata, EmptyVedleggData)) {
             TemplateModelSpecification(emptyMap(), null)
         } else if (from.primaryConstructor == null) {
@@ -37,15 +46,10 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                 val current = toProcess.removeFirst()
                 val name = current.qualifiedName!!
                 if (current.isSubclassOf(SaksbehandlervalgIDSL::class)) {
+                    objectTypes[name] = saksbehandlervalg?.mapValues {
+                        mapValue(it.key to (it.value as SaksbehandlervalgVerdi<*>))
+                    } ?: emptyMap()
                     // TODO må vel truleg oppdatere denne
-//                    objectTypes[name] = saksbehandlervalg.mapValues {
-//                        when (val v = it.value) {
-//                            is SaksbehandlervalgVerdi.Bool -> FieldType.Scalar(false, FieldType.Scalar.Kind.BOOLEAN, displayText = it.value.displayText)
-//                            is SaksbehandlervalgVerdi.Integer -> FieldType.Scalar(true, FieldType.Scalar.Kind.NUMBER, displayText = it.value.displayText)
-//                            is SaksbehandlervalgVerdi.Text -> FieldType.Scalar(true, FieldType.Scalar.Kind.STRING, displayText = it.value.displayText)
-//                            is SaksbehandlervalgVerdi.Enum<*> -> FieldType.Enum(true, enumVerdier(v.clazz, false), displayText = it.value.displayText)
-//                        }
-//                    }
                 } else if (!objectTypes.containsKey(name)) {
                     objectTypes[name] = createObjectTypeSpecification(current)
                 }
