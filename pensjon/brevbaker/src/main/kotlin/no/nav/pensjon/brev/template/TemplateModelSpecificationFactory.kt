@@ -32,7 +32,6 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
         else -> throw IllegalArgumentException("Forventa at andre parameter i pair er Saksbehandlervalg")
     }
 
-    @OptIn(BrevbakerDSLInternal::class)
     fun build(saksbehandlervalg: Map<String, *>?): TemplateModelSpecification =
         if (from.objectInstance == Unit || from.objectInstance in setOf(EmptyAutobrevdata, EmptyRedigerbarBrevdata, EmptyVedleggData)) {
             TemplateModelSpecification(emptyMap(), null)

@@ -9,9 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
-import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 
-@OptIn(BrevbakerDSLInternal::class)
 object BrevbakerBrevdataModule : SimpleModule() {
     private fun readResolve(): Any = BrevbakerBrevdataModule
 

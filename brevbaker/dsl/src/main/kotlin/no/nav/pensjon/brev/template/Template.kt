@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 
-@OptIn(BrevbakerDSLInternal::class)
 @LetterTemplateMarker
 class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
     private val validator: BrevTemplateValidator = EmptyValidator,
@@ -31,7 +30,6 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     private val _saksbehandlervalg: MutableMap<String, SaksbehandlervalgVerdi<*>> = mutableMapOf()
     internal val saksbehandlervalg: Map<String, *> get() = _saksbehandlervalg
 
-    @PublishedApi
     internal fun lagreSaksbehandlervalg(key: String, verdi: SaksbehandlervalgVerdi<*>) {
         _saksbehandlervalg[key] = verdi
     }

@@ -4,7 +4,6 @@ import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.pensjonOgUfoereProductionTemplates
 import no.nav.pensjon.brev.template.BinaryOperation
-import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -203,5 +202,4 @@ object ExpressionVisitor {
         }
 }
 
-@OptIn(BrevbakerDSLInternal::class)
 fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactory(this.letterDataType).build(saksbehandlervalg)

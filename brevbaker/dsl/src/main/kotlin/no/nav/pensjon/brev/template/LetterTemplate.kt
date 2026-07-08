@@ -1,5 +1,3 @@
-@file:OptIn(BrevbakerDSLInternal::class)
-
 package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
@@ -9,7 +7,6 @@ import no.nav.pensjon.brev.template.validation.InvalidListDeclarationException
 import no.nav.pensjon.brev.template.validation.InvalidScopeTypeException
 import no.nav.pensjon.brev.template.validation.InvalidTableDeclarationException
 import no.nav.pensjon.brev.template.validation.MissingTitleInTemplateException
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.IntValue

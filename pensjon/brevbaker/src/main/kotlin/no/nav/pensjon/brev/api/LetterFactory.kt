@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.BrevTemplate
-import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -62,7 +61,6 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         )
     }
 
-    @OptIn(BrevbakerDSLInternal::class)
     private fun parseArgument(
         letterData: BrevbakerBrevdata,
         template: LetterTemplate<*, BrevbakerBrevdata>,

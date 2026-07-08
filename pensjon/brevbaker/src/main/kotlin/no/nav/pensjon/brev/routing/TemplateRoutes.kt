@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.template.BrevTemplate
-import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.TemplateModelSpecificationFactory
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
@@ -82,7 +81,6 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
         }
     }
 
-@OptIn(BrevbakerDSLInternal::class)
 fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactory(this.letterDataType).build(saksbehandlervalg)
 
 fun LetterTemplate<*, *>.harRedigerbareVedlegg(): Boolean = attachments.any { it.editableId != null }

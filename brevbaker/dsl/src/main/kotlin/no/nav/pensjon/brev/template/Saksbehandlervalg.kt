@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.template.UnaryOperation.Select
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import kotlin.reflect.KClass
 
-@OptIn(BrevbakerDSLInternal::class)
 class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>>(val id: String, val displayText: String, val clazz: KClass<LetterData>, @PublishedApi internal val scope: TemplateRootScope<*, LetterData>) {
     init {
         require(scope.saksbehandlervalg.containsKey(id).not()) { "Saksbehandlervalg med id $id allerede definert" }
@@ -51,6 +50,7 @@ private class SaksbehandlervalgIDSLSelector<LetterData : RedigerbarBrevdata<Saks
 ) : TemplateModelSelector<LetterData, Map<String, *>> {
     override val className = clazz.qualifiedName!!
     override val selector: LetterData.() -> Map<String, *> = { (saksbehandlerValg as Map<String, *>) }
+    // TODO: prøv å bli kvitt denne casten
 }
 
 private class EttSaksbehandlervalgSelector<Type>(
