@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -11,6 +11,8 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.model.Pdl
@@ -37,9 +39,13 @@ interface PdlService {
 
 class PdlServiceException(message: String, status: HttpStatusCode = HttpStatusCode.InternalServerError) : ServiceException(message, status = status)
 
-class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, ServiceStatus {
-    private val pdlUrl = config.getString("url")
-    private val pdlScope = config.getString("scope")
+class PdlServiceHttp(config: OboClientConfig, authService: AuthService) : PdlService, ServiceStatus, Closeable {
+
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, authService: AuthService): this(config.services.pdl, authService)
+
+    private val pdlUrl = config.url
+    private val pdlScope = config.scope
 
     private val client = lagHttpClient {
         defaultRequest {
@@ -168,5 +174,7 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
 
     override suspend fun ping() =
         ping("PDL") { client.options("") }
+
+    override fun close() { client.close() }
 
 }

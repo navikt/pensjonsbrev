@@ -3,6 +3,7 @@ package no.nav.brev.brevbaker.template.render
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.Listetype
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.StableHash.Companion.with
 import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.documentLanguageSettings
 import no.nav.pensjon.brev.template.render.fulltNavn
@@ -27,14 +28,6 @@ import kotlin.contracts.contract
 
 data class LetterWithAttachmentsMarkupV2(val letterMarkup: LetterMarkupV2, val attachments: List<LetterMarkupV2.Attachment>)
 
-/**
- * Renders a LetterTemplate directly to LetterMarkupV2. This is an independent renderer from
- * Letter2Markup (v1) - it does not go through v1's LetterMarkup at any point. The only stable,
- * well-defined direction for converting between the two markup shapes is v1 -> v2 (v2 -> v1 is
- * ambiguous, since v1 nests tables/lists inside a paragraph while v2 has them as sibling blocks).
- * That v1 -> v2 conversion is a separate future concern (used by pdf-bygger integration), not this
- * renderer.
- */
 @OptIn(InterneDataklasser::class)
 internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>() {
     private val languageSettings = documentLanguageSettings
@@ -138,51 +131,46 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
     private fun renderOutlineContent(context: RenderContext, element: Element.OutlineContent<*>): List<Block> =
         when (element) {
             is Element.OutlineContent.Paragraph -> renderParagraphAsBlocks(context, element)
-            // Title renumbering is a pure rename: outline title1/title2/title3 become Title2/Title3/Title4
-            // in v2, since the letter's own title (template.title) now occupies the name "title1".
             is Element.OutlineContent.Title1 -> listOf(BlockImpl.Title2Impl(context.stableHash(element), renderText(context, element.text)))
             is Element.OutlineContent.Title2 -> listOf(BlockImpl.Title3Impl(context.stableHash(element), renderText(context, element.text)))
             is Element.OutlineContent.Title3 -> listOf(BlockImpl.Title4Impl(context.stableHash(element), renderText(context, element.text)))
         }
 
-    /**
-     * v1 nests tables/lists as ParagraphContent *inside* a Paragraph block. v2 makes them
-     * top-level sibling blocks. To preserve reading order without ambiguity, a paragraph
-     * containing a table/list mid-stream is split: any accumulated text becomes its own
-     * Paragraph block, then the table/list becomes its own block, and text accumulation
-     * continues in a fresh Paragraph block afterward.
-     */
     private fun renderParagraphAsBlocks(context: RenderContext, paragraph: Element.OutlineContent.Paragraph<*>): List<Block> {
         val blocks = mutableListOf<Block>()
         var currentText = mutableListOf<Text>()
-        var fragmentIndex = 0
+        var currentSources = mutableListOf<StableHash>()
 
         fun flushParagraph() {
             if (currentText.isNotEmpty()) {
-                blocks.add(BlockImpl.ParagraphImpl(Objects.hash(context.stableHash(paragraph), fragmentIndex), currentText))
-                fragmentIndex++
+                val fragmentHash = StableHash.of(currentSources.toList()).with(paragraph.stableHashModifier)
+                blocks.add(BlockImpl.ParagraphImpl(context.stableHash(fragmentHash), currentText))
                 currentText = mutableListOf()
+                currentSources = mutableListOf()
             }
         }
 
-        render(context, paragraph.paragraph) { paragraphContext, element ->
+        render(context, paragraph.paragraph) { context, element ->
             when (element) {
-                is Element.OutlineContent.ParagraphContent.Text -> currentText.addAll(renderTextContent(paragraphContext, element))
+                is Element.OutlineContent.ParagraphContent.Text -> {
+                    currentText.addAll(renderTextContent(context, element))
+                    currentSources.add(element)
+                }
                 is Element.OutlineContent.ParagraphContent.ItemList -> {
                     flushParagraph()
-                    renderItemList(paragraphContext, element)?.let { blocks.add(it) }
+                    renderItemList(context, element)?.let { blocks.add(it) }
                 }
                 is Element.OutlineContent.ParagraphContent.Table -> {
                     flushParagraph()
-                    renderTable(paragraphContext, element)?.let { blocks.add(it) }
+                    renderTable(context, element)?.let { blocks.add(it) }
                 }
                 is Element.OutlineContent.ParagraphContent.Form.Text -> {
                     flushParagraph()
-                    blocks.add(renderFormText(paragraphContext, element))
+                    blocks.add(renderFormText(context, element))
                 }
                 is Element.OutlineContent.ParagraphContent.Form.MultipleChoice -> {
                     flushParagraph()
-                    blocks.add(renderFormChoice(paragraphContext, element))
+                    blocks.add(renderFormChoice(context, element))
                 }
             }
         }
@@ -249,7 +237,7 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
     private fun renderItemList(context: RenderContext, itemList: Element.OutlineContent.ParagraphContent.ItemList<*>): ListContent? =
         buildList {
             render(context, itemList.items) { itemContext, item ->
-                add(BlockImpl.ItemListImpl.ItemImpl(itemContext.stableHash(item), renderText(itemContext, item.text)))
+                add(BlockImpl.ItemImpl(itemContext.stableHash(item), renderText(itemContext, item.text)))
             }
         }.takeIf { it.isNotEmpty() }?.let { items ->
             when (itemList.type) {

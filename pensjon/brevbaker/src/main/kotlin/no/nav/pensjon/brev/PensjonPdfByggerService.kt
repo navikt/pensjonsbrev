@@ -111,7 +111,6 @@ class PensjonPdfByggerService(
                 contentType(ContentType.Application.Json)
                 accept(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
-                // Se kommentar i producePDF om hvorfor body settes via objectmapper og ikke content-negotiation.
                 setBody(objectmapper.writeValueAsBytes(pdfRequest))
             }.body()
         }

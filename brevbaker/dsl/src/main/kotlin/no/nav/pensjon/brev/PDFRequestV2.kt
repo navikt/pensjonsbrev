@@ -23,7 +23,7 @@ class PDFRequestV2(
                 && pdfVedlegg == other.pdfVedlegg
     }
 
-    override fun hashCode() = Objects.hash(letterMarkup, language, attachments, language, brevtype, pdfVedlegg)
+    override fun hashCode() = Objects.hash(letterMarkup, attachments, language, brevtype, pdfVedlegg)
     override fun toString(): String {
         return "PDFRequestV2(letterMarkup=$letterMarkup, attachments=$attachments, language=$language, brevtype=$brevtype, pdfVedlegg=$pdfVedlegg)"
     }
