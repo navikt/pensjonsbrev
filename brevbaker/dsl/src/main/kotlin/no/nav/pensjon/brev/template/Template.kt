@@ -32,7 +32,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     internal val saksbehandlervalg: SaksbehandlervalgDeklarasjon get() = _saksbehandlervalg
 
     @PublishedApi
-    internal fun saksbehandlervalg(key: String, verdi: SaksbehandlervalgVerdi<*>) {
+    internal fun lagreSaksbehandlervalg(key: String, verdi: SaksbehandlervalgVerdi<*>) {
         _saksbehandlervalg[key] = verdi
     }
 
