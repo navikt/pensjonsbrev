@@ -52,7 +52,7 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
       case "fritekstOgTekstValg":
         return `Du må fylle ut ${count} fritekstfelt og velge tekst`;
       case "duplikatAvsnitt":
-        return `Brevet inneholder ${count} avsnitt som ikke lenger er del av malen`;
+        return `${count} avsnitt er ikke lenger en del av malen`;
       default:
         return "";
     }
@@ -68,7 +68,7 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
       case "fritekstOgTekstValg":
         return "Du kan fortsette til brevbehandler, men brevet kan ikke sendes før alle fritekstfelter er fylt ut og du har valgt et eller flere obligatoriske tekstvalg.";
       case "duplikatAvsnitt":
-        return "Du kan fortsette til brevbehandler, men brevet kan ikke sendes før avsnittene som ikke lenger kan kobles til malen (markert i brevet) er fjernet eller redigert.";
+        return "Disse avsnittene er markert i brevet. Velg «Behold» eller «Slett» for hvert av dem. Du kan fortsette til brevbehandler nå, men brevet kan ikke sendes før dette er gjort.";
     }
   })();
 
