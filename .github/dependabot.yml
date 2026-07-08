@@ -43,9 +43,6 @@ updates:
     ignore:
       - dependency-name: "no.nav.brev.brevbaker:api-model-common"
     groups:
-      postgresql:
-        patterns:
-          - "org.postgresql:postgresql"
       backend:
         patterns:
           - "com.fasterxml.jackson*"
@@ -63,6 +60,7 @@ updates:
           - "org.flyway*"
           - "org.jetbrains*"
           - "org.junit*"
+          - "org.postgresql:postgresql"
           - "org.testcontainers*"
           - "io.github.classgraph:classgraph"
 
@@ -104,6 +102,13 @@ updates:
       day: "sunday"
     cooldown:
       default-days: 7
+    groups:
+      codeql:
+        patterns:
+          - "github/codeql-action*"
+      nais:
+        patterns:
+          - "nais/*"
 
   # ==============
   # Docker frontend
