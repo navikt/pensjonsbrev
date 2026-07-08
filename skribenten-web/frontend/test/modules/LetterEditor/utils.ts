@@ -119,6 +119,13 @@ export function withDeleted<T extends AnyBlock>(block: T, deletedContent: number
   };
 }
 
+export function withMissingFromTemplate<T extends AnyBlock>(block: T, missingFromTemplate = true): T {
+  return {
+    ...block,
+    missingFromTemplate,
+  };
+}
+
 export function title1(...content: TextContent[]): Title1Block {
   const id = randomId();
   return {
