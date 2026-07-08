@@ -76,7 +76,7 @@ abstract class BrevmodulTest(
                 .filterNot { it.java.isAssignableFrom(SaksbehandlervalgIDSL::class.java) }
                 .singleOrNull()
 
-            saksbehandlervalg?.members?.forEach { field ->
+            saksbehandlervalg?.members?.filterIsInstance<KProperty<*>>()?.forEach { field ->
                 val hasDisplayText = field.annotations.filterIsInstance<DisplayText>().any()
                 assertTrue(hasDisplayText, "Alle saksbehandlervalg må ha displaytext, ${field.name} i klasse ${clazz.name} mangler det")
             }
