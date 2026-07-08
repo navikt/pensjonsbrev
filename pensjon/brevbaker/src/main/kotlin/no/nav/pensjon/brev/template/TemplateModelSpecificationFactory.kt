@@ -23,12 +23,13 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     private val toProcess = mutableListOf<KClass<*>>()
 
     @OptIn(BrevbakerDSLInternal::class)
-    private fun mapValue(entry: Pair<String, SaksbehandlervalgVerdi<*>>, nullable: Boolean = true): FieldType = when (val it = entry.second) {
+    private fun mapValue(entry: Pair<String, Any?>, nullable: Boolean = true): FieldType = when (val it = entry.second) {
         is SaksbehandlervalgVerdi.Bool -> FieldType.Scalar(nullable, FieldType.Scalar.Kind.BOOLEAN, displayText = it.displayText)
         is SaksbehandlervalgVerdi.Integer -> FieldType.Scalar(nullable, FieldType.Scalar.Kind.NUMBER, displayText = it.displayText)
         is SaksbehandlervalgVerdi.Text -> FieldType.Scalar(nullable, FieldType.Scalar.Kind.STRING, displayText = it.displayText)
         is SaksbehandlervalgVerdi.Enum<*> -> FieldType.Enum(nullable, enumVerdier(it.clazz, false), displayText = it.displayText)
         is SaksbehandlervalgVerdi.WithDefault<*> -> mapValue(Pair(it.id, it.saksbehandlervalgVerdi), false)
+        else -> throw IllegalArgumentException("Forventa at andre parameter i pair er Saksbehandlervalg")
     }
 
     @OptIn(BrevbakerDSLInternal::class)
@@ -46,10 +47,10 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                 val current = toProcess.removeFirst()
                 val name = current.qualifiedName!!
                 if (current.isSubclassOf(SaksbehandlervalgIDSL::class)) {
-                    objectTypes[name] = saksbehandlervalg?.mapValues {
-                        mapValue(it.key to (it.value as SaksbehandlervalgVerdi<*>))
-                    } ?: emptyMap()
-                    // TODO må vel truleg oppdatere denne
+                    if (saksbehandlervalg == null) {
+                        throw IllegalArgumentException("saksbehandlervalg must be provided when building specification for ${from.qualifiedName}")
+                    }
+                    objectTypes[name] = saksbehandlervalg.mapValues { mapValue(it.key to it.value) }
                 } else if (!objectTypes.containsKey(name)) {
                     objectTypes[name] = createObjectTypeSpecification(current)
                 }
