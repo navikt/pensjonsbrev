@@ -138,7 +138,6 @@
   right: 0.5rem;
   top: 0;
   transform: translateY(-50%);
-  z-index: 3;
 }
 
 .missing-from-template-actions button {
