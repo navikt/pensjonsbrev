@@ -1,6 +1,7 @@
 package no.nav.brev.brevbaker.markup
 
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
+import no.nav.brev.brevbaker.markup.dsl.letterMarkupWithVariables
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
 import no.nav.brev.brevbaker.markup.outline.Block.Table.ColumnAlignment
@@ -12,7 +13,7 @@ import java.time.LocalDate
 
 class LetterMarkupDslTest {
 
-    private fun fullLetter(): LetterMarkupV2 = letterMarkup {
+    private fun fullLetter(): LetterMarkupV2 = letterMarkupWithVariables {
         title { literal("Vedtak om uføretrygd") }
         saksinformasjon(
             gjelderNavn = "Ola Nordmann",
@@ -111,10 +112,29 @@ class LetterMarkupDslTest {
     }
 
     @Test
-    fun `json uses type discriminator for blocks and text`() {
-        val letter = fullLetter()
-        val json = MarkupJson.encodeToString(LetterMarkupV2.serializer(), letter)
-        assertTrue(json.contains("\"type\":\"PARAGRAPH\""))
-        assertTrue(json.contains("\"type\":\"LITERAL\""))
+    fun `base letterMarkup builds without variables`() {
+        val letter = letterMarkup {
+            title { literal("Tittel") }
+            saksinformasjon(
+                gjelderNavn = "Ola Nordmann",
+                gjelderFoedselsnummer = "12345678901",
+                saksnummer = "9876543",
+                dokumentDato = LocalDate.of(2026, 7, 9),
+            )
+            outline {
+                paragraph {
+                    literal("Kun litteral tekst.")
+                    newLine()
+                }
+            }
+            signatur(
+                hilsenTekst = "Med vennlig hilsen",
+                navAvsenderEnhet = "NAV",
+                saksbehandlerNavn = "Sak S.Behandler",
+            )
+        }
+
+        val paragraph = letter.blocks.filterIsInstance<Block.Paragraph>().single()
+        assertEquals(listOf(Text.Type.LITERAL, Text.Type.NEW_LINE), paragraph.content.map { it.type })
     }
 }

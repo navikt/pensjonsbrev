@@ -305,17 +305,20 @@ public final class no/nav/brev/brevbaker/markup/Signatur$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public abstract class no/nav/brev/brevbaker/markup/dsl/AbstractContentBuilder {
+	protected final fun getTexts ()Ljava/util/List;
+	public final fun literal (Ljava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;)V
+	public static synthetic fun literal$default (Lno/nav/brev/brevbaker/markup/dsl/AbstractContentBuilder;Ljava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;ILjava/lang/Object;)V
+	public final fun newLine ()V
+	protected final fun nextId ()I
+}
+
 public final class no/nav/brev/brevbaker/markup/dsl/AttachmentBuilder {
 	public final fun outline (Lkotlin/jvm/functions/Function1;)V
 	public final fun title (Lkotlin/jvm/functions/Function1;)V
 }
 
-public final class no/nav/brev/brevbaker/markup/dsl/ContentBuilder {
-	public final fun literal (Ljava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;)V
-	public static synthetic fun literal$default (Lno/nav/brev/brevbaker/markup/dsl/ContentBuilder;Ljava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;ILjava/lang/Object;)V
-	public final fun newLine ()V
-	public final fun variable (Ljava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;)V
-	public static synthetic fun variable$default (Lno/nav/brev/brevbaker/markup/dsl/ContentBuilder;Ljava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;ILjava/lang/Object;)V
+public final class no/nav/brev/brevbaker/markup/dsl/ContentBuilder : no/nav/brev/brevbaker/markup/dsl/AbstractContentBuilder {
 }
 
 public final class no/nav/brev/brevbaker/markup/dsl/FormChoiceBuilder {
@@ -343,12 +346,18 @@ public final class no/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder {
 
 public final class no/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilderKt {
 	public static final fun attachment (ZLkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/Attachment;
+	public static final fun attachmentWithVariables (ZLkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/Attachment;
 	public static final fun dataUsageProperty (Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2$Property;
 	public static final fun letterMarkup (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkupV2;
 	public static final fun letterMarkupWithDataUsage (Lno/nav/brev/brevbaker/markup/Brevtype;Ljava/util/Set;Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2;
 	public static synthetic fun letterMarkupWithDataUsage$default (Lno/nav/brev/brevbaker/markup/Brevtype;Ljava/util/Set;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2;
+	public static final fun letterMarkupWithDataUsageWithVariables (Lno/nav/brev/brevbaker/markup/Brevtype;Ljava/util/Set;Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2;
+	public static synthetic fun letterMarkupWithDataUsageWithVariables$default (Lno/nav/brev/brevbaker/markup/Brevtype;Ljava/util/Set;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2;
+	public static final fun letterMarkupWithVariables (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkupV2;
 	public static final fun outline (Lkotlin/jvm/functions/Function1;)Ljava/util/List;
+	public static final fun outlineWithVariables (Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun pdfTittel (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/PDFTittelV2;
+	public static final fun pdfTittelWithVariables (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/PDFTittelV2;
 }
 
 public abstract interface annotation class no/nav/brev/brevbaker/markup/dsl/MarkupDsl : java/lang/annotation/Annotation {
@@ -377,104 +386,55 @@ public final class no/nav/brev/brevbaker/markup/dsl/TableBuilder {
 	public final fun row (Lkotlin/jvm/functions/Function1;)V
 }
 
-public final class no/nav/brev/brevbaker/markup/elements/BlockElementsKt {
-	public static final fun cellElement (ILkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell;
-	public static synthetic fun cellElement$default (ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell;
-	public static final fun choiceElement (ILkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice;
-	public static synthetic fun choiceElement$default (ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice;
-	public static final fun columnSpecElement (ILno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;IILkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec;
-	public static synthetic fun columnSpecElement$default (ILno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;IILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec;
-	public static final fun formChoiceElement (IZLkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice;
-	public static synthetic fun formChoiceElement$default (IZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice;
-	public static final fun formTextElement (Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;IZLkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/outline/Block$FormText;
-	public static synthetic fun formTextElement$default (Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;IZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$FormText;
-	public static final fun headerElement (ILkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;
-	public static synthetic fun headerElement$default (ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;
-	public static final fun itemElement (ILkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/outline/Block$Item;
-	public static synthetic fun itemElement$default (ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Item;
-	public static final fun itemListElement (ILkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/outline/Block$ItemList;
-	public static synthetic fun itemListElement$default (ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$ItemList;
-	public static final fun numberedListElement (ILkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/outline/Block$NumberedList;
-	public static synthetic fun numberedListElement$default (ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$NumberedList;
-	public static final fun paragraphElement (ILkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/outline/Block$Paragraph;
-	public static synthetic fun paragraphElement$default (ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Paragraph;
-	public static final fun rowElement (ILkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Row;
-	public static synthetic fun rowElement$default (ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Row;
-	public static final fun tableElement (ILkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/outline/Block$Table;
-	public static synthetic fun tableElement$default (ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Table;
-	public static final fun title2Element (ILkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/outline/Block$Title2;
-	public static synthetic fun title2Element$default (ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Title2;
-	public static final fun title3Element (ILkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/outline/Block$Title3;
-	public static synthetic fun title3Element$default (ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Title3;
-	public static final fun title4Element (ILkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/outline/Block$Title4;
-	public static synthetic fun title4Element$default (ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Title4;
+public final class no/nav/brev/brevbaker/markup/dsl/VariableContentBuilder : no/nav/brev/brevbaker/markup/dsl/AbstractContentBuilder {
+	public final fun variable (Ljava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;)V
+	public static synthetic fun variable$default (Lno/nav/brev/brevbaker/markup/dsl/VariableContentBuilder;Ljava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;ILjava/lang/Object;)V
 }
 
-public final class no/nav/brev/brevbaker/markup/elements/ElementContentScope {
-	public final fun literal (Ljava/lang/String;ILno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;)V
-	public static synthetic fun literal$default (Lno/nav/brev/brevbaker/markup/elements/ElementContentScope;Ljava/lang/String;ILno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;ILjava/lang/Object;)V
-	public final fun newLine (I)V
-	public static synthetic fun newLine$default (Lno/nav/brev/brevbaker/markup/elements/ElementContentScope;IILjava/lang/Object;)V
-	public final fun variable (Ljava/lang/String;ILno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;)V
-	public static synthetic fun variable$default (Lno/nav/brev/brevbaker/markup/elements/ElementContentScope;Ljava/lang/String;ILno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;ILjava/lang/Object;)V
-}
-
-public final class no/nav/brev/brevbaker/markup/elements/ElementFormChoiceScope {
-	public final fun choice (ILkotlin/jvm/functions/Function1;)V
-	public static synthetic fun choice$default (Lno/nav/brev/brevbaker/markup/elements/ElementFormChoiceScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public final fun prompt (Lkotlin/jvm/functions/Function1;)V
-}
-
-public final class no/nav/brev/brevbaker/markup/elements/ElementHeaderScope {
-	public final fun column (ILno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;IILkotlin/jvm/functions/Function1;)V
-	public static synthetic fun column$default (Lno/nav/brev/brevbaker/markup/elements/ElementHeaderScope;ILno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;IILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-}
-
-public final class no/nav/brev/brevbaker/markup/elements/ElementItemsScope {
-	public final fun item (ILkotlin/jvm/functions/Function1;)V
-	public static synthetic fun item$default (Lno/nav/brev/brevbaker/markup/elements/ElementItemsScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-}
-
-public final class no/nav/brev/brevbaker/markup/elements/ElementRowScope {
-	public final fun cell (ILkotlin/jvm/functions/Function1;)V
-	public static synthetic fun cell$default (Lno/nav/brev/brevbaker/markup/elements/ElementRowScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-}
-
-public final class no/nav/brev/brevbaker/markup/elements/ElementTableScope {
-	public final fun header (ILkotlin/jvm/functions/Function1;)V
-	public static synthetic fun header$default (Lno/nav/brev/brevbaker/markup/elements/ElementTableScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public final fun row (ILkotlin/jvm/functions/Function1;)V
-	public static synthetic fun row$default (Lno/nav/brev/brevbaker/markup/elements/ElementTableScope;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-}
-
-public final class no/nav/brev/brevbaker/markup/elements/LetterElementsKt {
-	public static final fun attachmentElement (ZLjava/util/List;Ljava/util/List;)Lno/nav/brev/brevbaker/markup/Attachment;
-	public static synthetic fun attachmentElement$default (ZLjava/util/List;Ljava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/Attachment;
-	public static final fun dataUsagePropertyElement (Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2$Property;
-	public static final fun letterMarkupElement (Lno/nav/brev/brevbaker/markup/Saksinformasjon;Lno/nav/brev/brevbaker/markup/Signatur;Ljava/util/List;Ljava/util/List;I)Lno/nav/brev/brevbaker/markup/LetterMarkupV2;
-	public static synthetic fun letterMarkupElement$default (Lno/nav/brev/brevbaker/markup/Saksinformasjon;Lno/nav/brev/brevbaker/markup/Signatur;Ljava/util/List;Ljava/util/List;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterMarkupV2;
-	public static final fun letterMarkupWithDataUsageElement (Lno/nav/brev/brevbaker/markup/LetterMarkupV2;Lno/nav/brev/brevbaker/markup/Brevtype;Ljava/util/Set;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2;
-	public static synthetic fun letterMarkupWithDataUsageElement$default (Lno/nav/brev/brevbaker/markup/LetterMarkupV2;Lno/nav/brev/brevbaker/markup/Brevtype;Ljava/util/Set;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2;
-	public static final fun pdfTittelElement (Ljava/util/List;)Lno/nav/brev/brevbaker/markup/PDFTittelV2;
-	public static synthetic fun pdfTittelElement$default (Ljava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/PDFTittelV2;
-	public static final fun saksbehandlerSignaturElement (Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;
-	public static synthetic fun saksbehandlerSignaturElement$default (Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;
-	public static final fun saksinformasjonElement (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/time/LocalDate;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Saksinformasjon;
-	public static synthetic fun saksinformasjonElement$default (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/time/LocalDate;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/Saksinformasjon;
-	public static final fun signaturElement (Ljava/lang/String;Ljava/lang/String;Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;)Lno/nav/brev/brevbaker/markup/Signatur;
-	public static synthetic fun signaturElement$default (Ljava/lang/String;Ljava/lang/String;Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/Signatur;
+public final class no/nav/brev/brevbaker/markup/elements/MarkupElementScope {
+	public final fun cell ([Lno/nav/brev/brevbaker/markup/outline/Text;I)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell;
+	public static synthetic fun cell$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;[Lno/nav/brev/brevbaker/markup/outline/Text;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell;
+	public final fun choice ([Lno/nav/brev/brevbaker/markup/outline/Text;I)Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice;
+	public static synthetic fun choice$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;[Lno/nav/brev/brevbaker/markup/outline/Text;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice;
+	public final fun columnSpec (Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell;Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;II)Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec;
+	public static synthetic fun columnSpec$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell;Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;IIILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec;
+	public final fun formChoice (Ljava/util/List;[Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice;ZI)Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice;
+	public static synthetic fun formChoice$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;Ljava/util/List;[Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice;ZIILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice;
+	public final fun formText (Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;[Lno/nav/brev/brevbaker/markup/outline/Text;ZI)Lno/nav/brev/brevbaker/markup/outline/Block$FormText;
+	public static synthetic fun formText$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;[Lno/nav/brev/brevbaker/markup/outline/Text;ZIILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$FormText;
+	public final fun header ([Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec;I)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;
+	public static synthetic fun header$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;[Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;
+	public final fun item ([Lno/nav/brev/brevbaker/markup/outline/Text;I)Lno/nav/brev/brevbaker/markup/outline/Block$Item;
+	public static synthetic fun item$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;[Lno/nav/brev/brevbaker/markup/outline/Text;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Item;
+	public final fun itemList ([Lno/nav/brev/brevbaker/markup/outline/Block$Item;I)Lno/nav/brev/brevbaker/markup/outline/Block$ItemList;
+	public static synthetic fun itemList$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;[Lno/nav/brev/brevbaker/markup/outline/Block$Item;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$ItemList;
+	public final fun literal (Ljava/lang/String;ILno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;)Lno/nav/brev/brevbaker/markup/outline/Text$Literal;
+	public static synthetic fun literal$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;Ljava/lang/String;ILno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Text$Literal;
+	public final fun newLine (I)Lno/nav/brev/brevbaker/markup/outline/Text$NewLine;
+	public static synthetic fun newLine$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Text$NewLine;
+	public final fun numberedList ([Lno/nav/brev/brevbaker/markup/outline/Block$Item;I)Lno/nav/brev/brevbaker/markup/outline/Block$NumberedList;
+	public static synthetic fun numberedList$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;[Lno/nav/brev/brevbaker/markup/outline/Block$Item;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$NumberedList;
+	public final fun paragraph ([Lno/nav/brev/brevbaker/markup/outline/Text;I)Lno/nav/brev/brevbaker/markup/outline/Block$Paragraph;
+	public static synthetic fun paragraph$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;[Lno/nav/brev/brevbaker/markup/outline/Text;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Paragraph;
+	public final fun row ([Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell;I)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Row;
+	public static synthetic fun row$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;[Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Row;
+	public final fun table (Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;[Lno/nav/brev/brevbaker/markup/outline/Block$Table$Row;I)Lno/nav/brev/brevbaker/markup/outline/Block$Table;
+	public static synthetic fun table$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;[Lno/nav/brev/brevbaker/markup/outline/Block$Table$Row;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Table;
+	public final fun title2 ([Lno/nav/brev/brevbaker/markup/outline/Text;I)Lno/nav/brev/brevbaker/markup/outline/Block$Title2;
+	public static synthetic fun title2$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;[Lno/nav/brev/brevbaker/markup/outline/Text;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Title2;
+	public final fun title3 ([Lno/nav/brev/brevbaker/markup/outline/Text;I)Lno/nav/brev/brevbaker/markup/outline/Block$Title3;
+	public static synthetic fun title3$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;[Lno/nav/brev/brevbaker/markup/outline/Text;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Title3;
+	public final fun title4 ([Lno/nav/brev/brevbaker/markup/outline/Text;I)Lno/nav/brev/brevbaker/markup/outline/Block$Title4;
+	public static synthetic fun title4$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;[Lno/nav/brev/brevbaker/markup/outline/Text;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Title4;
+	public final fun variable (Ljava/lang/String;ILno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;)Lno/nav/brev/brevbaker/markup/outline/Text$Variable;
+	public static synthetic fun variable$default (Lno/nav/brev/brevbaker/markup/elements/MarkupElementScope;Ljava/lang/String;ILno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Text$Variable;
 }
 
 public abstract interface annotation class no/nav/brev/brevbaker/markup/elements/MarkupElementsDsl : java/lang/annotation/Annotation {
 }
 
-public final class no/nav/brev/brevbaker/markup/elements/TextElementsKt {
-	public static final fun literalElement (Ljava/lang/String;ILno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;)Lno/nav/brev/brevbaker/markup/outline/Text$Literal;
-	public static synthetic fun literalElement$default (Ljava/lang/String;ILno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Text$Literal;
-	public static final fun newLineElement (I)Lno/nav/brev/brevbaker/markup/outline/Text$NewLine;
-	public static synthetic fun newLineElement$default (IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Text$NewLine;
-	public static final fun variableElement (Ljava/lang/String;ILno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;)Lno/nav/brev/brevbaker/markup/outline/Text$Variable;
-	public static synthetic fun variableElement$default (Ljava/lang/String;ILno/nav/brev/brevbaker/markup/outline/Text$FontType;Ljava/util/Set;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Text$Variable;
+public final class no/nav/brev/brevbaker/markup/elements/MarkupElementsDslKt {
+	public static final fun markupElement (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
 public abstract class no/nav/brev/brevbaker/markup/outline/Block {
