@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 import kotlin.reflect.KClass
 
 @BrevbakerDSLInternal
-sealed interface SaksbehandlervalgVerdi<out T> {
+sealed interface SaksbehandlervalgVerdi<T> {
     val id: String
     val displayText: String
     val typename: String
