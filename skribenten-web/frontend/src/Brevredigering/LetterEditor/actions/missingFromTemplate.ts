@@ -4,7 +4,6 @@ import { type Action, withPatches } from "../lib/actions";
 import { type LetterEditorState } from "../model/state";
 import { removeElements } from "./common";
 
-
 export const removeMissingFromTemplateBlock: Action<LetterEditorState, [blockIndex: number]> = withPatches(
   (draft, blockIndex) => {
     const blocks = draft.redigertBrev.blocks;
@@ -20,7 +19,6 @@ export const removeMissingFromTemplateBlock: Action<LetterEditorState, [blockInd
         : { blockIndex: TITLE_INDEX, contentIndex: 0, cursorPosition: 0 };
   },
 );
-
 
 export const keepMissingFromTemplateBlock: Action<LetterEditorState, [blockIndex: number]> = withPatches(
   (draft, blockIndex) => {

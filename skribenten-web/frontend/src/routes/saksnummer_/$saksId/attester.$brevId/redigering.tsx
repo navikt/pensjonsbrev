@@ -10,7 +10,7 @@ import { z } from "zod";
 
 import { getBrevAttestering, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
-import { type WarnModalKind, WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
+import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
   createLetterSnapshot,
   createSaksbehandlerValgEndretHistoryEntry,

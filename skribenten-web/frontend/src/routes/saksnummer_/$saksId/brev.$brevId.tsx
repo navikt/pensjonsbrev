@@ -7,7 +7,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { getBrev, getBrevmetadata, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
-import { type WarnModalKind, WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
+import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import { createLetterSnapshot, createSaksbehandlerValgEndretHistoryEntry } from "~/Brevredigering/LetterEditor/history";
 import {
   collectAllIds,

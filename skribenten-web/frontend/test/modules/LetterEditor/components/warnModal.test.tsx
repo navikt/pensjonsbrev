@@ -6,13 +6,13 @@ import { WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
 describe("WarnModal", () => {
   test("renders nothing when closed", () => {
     const { container } = render(
-      <WarnModal kind="fritekst" count={1} onClose={vi.fn()} onFortsett={vi.fn()} open={false} />,
+      <WarnModal count={1} kind="fritekst" onClose={vi.fn()} onFortsett={vi.fn()} open={false} />,
     );
     expect(container.innerHTML).toBe("");
   });
 
   test("renders fritekst heading and body", () => {
-    render(<WarnModal kind="fritekst" count={2} onClose={vi.fn()} onFortsett={vi.fn()} open />);
+    render(<WarnModal count={2} kind="fritekst" onClose={vi.fn()} onFortsett={vi.fn()} open />);
 
     expect(screen.queryByText("Du må fylle ut 2 fritekstfelt")).not.toBeNull();
     expect(
@@ -58,7 +58,13 @@ describe("WarnModal", () => {
 
   test("renders a configurable fortsett label", () => {
     render(
-      <WarnModal fortsettLabel="Fortsett til forhåndsvisning" kind="tekstValg" onClose={vi.fn()} onFortsett={vi.fn()} open />,
+      <WarnModal
+        fortsettLabel="Fortsett til forhåndsvisning"
+        kind="tekstValg"
+        onClose={vi.fn()}
+        onFortsett={vi.fn()}
+        open
+      />,
     );
 
     expect(screen.queryByText("Fortsett til forhåndsvisning")).not.toBeNull();
