@@ -69,7 +69,6 @@ jobs:
     needs: buildBrevbaker
     secrets: inherit
     with:
-      digest: ${{ needs.buildBrevbaker.outputs.digest }}
       image: ${{ needs.buildBrevbaker.outputs.image }}
 
   runIntegrationTests:
