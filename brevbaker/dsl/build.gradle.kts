@@ -27,6 +27,7 @@ dependencies {
 
     testImplementation(libs.bundles.junit)
     testImplementation(kotlin("reflect"))
+    testImplementation(testFixtures(project(":brevbaker:dsl")))
 
     testFixturesImplementation(libs.brevbaker.common)
 }
