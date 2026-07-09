@@ -6,7 +6,7 @@ import { letter, literal, paragraph, withMissingFromTemplate } from "../utils";
 
 describe("LetterEditorActions.removeMissingFromTemplateBlock", () => {
   test("removes the block and records its id in deletedBlocks", () => {
-    const flagged = withMissingFromTemplate(paragraph([literal({ text: "duplikat" })]));
+    const flagged = withMissingFromTemplate(paragraph([literal({ text: "avsnitt utenfor mal" })]));
     const other = paragraph([literal({ text: "resten av brevet" })]);
     const state = letter(flagged, other);
 
@@ -15,6 +15,21 @@ describe("LetterEditorActions.removeMissingFromTemplateBlock", () => {
     expect(result.redigertBrev.blocks).toHaveLength(1);
     expect(result.redigertBrev.blocks[0]).toEqual(other);
     expect(result.redigertBrev.deletedBlocks).toEqual([flagged.id]);
+    expect(result.saveStatus).toBe("DIRTY");
+  });
+
+  test("removes a flagged block with id null without recording null in deletedBlocks", () => {
+    const flagged = withMissingFromTemplate(paragraph({ content: [literal({ text: "nytt avsnitt" })] }));
+    const other = paragraph([literal({ text: "resten av brevet" })]);
+    const state = letter(flagged, other);
+
+    expect(flagged.id).toBeNull();
+
+    const result = Actions.removeMissingFromTemplateBlock(state, 0);
+
+    expect(result.redigertBrev.blocks).toHaveLength(1);
+    expect(result.redigertBrev.blocks[0]).toEqual(other);
+    expect(result.redigertBrev.deletedBlocks).toEqual([]);
     expect(result.saveStatus).toBe("DIRTY");
   });
 });

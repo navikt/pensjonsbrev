@@ -39,14 +39,29 @@ describe("WarnModal", () => {
     expect(screen.queryByText("Du må fylle ut 3 fritekstfelt og velge tekst")).not.toBeNull();
   });
 
-  test("renders duplikatAvsnitt as its own heading and body, separate from fritekst/tekstValg", () => {
-    render(<WarnModal count={2} kind="duplikatAvsnitt" onClose={vi.fn()} onFortsett={vi.fn()} open />);
+  test("renders avsnittIkkeIMal as its own heading and body, separate from fritekst/tekstValg", () => {
+    render(<WarnModal count={2} kind="avsnittIkkeIMal" onClose={vi.fn()} onFortsett={vi.fn()} open />);
 
-    expect(screen.queryByText("2 avsnitt er ikke lenger en del av malen")).not.toBeNull();
+    expect(screen.queryByText("Du må velge om du vil beholde eller slette 2 avsnitt")).not.toBeNull();
     expect(
       screen.queryByText(
         "Disse avsnittene er markert i brevet. Velg «Behold» eller «Slett» for hvert av dem. Du kan fortsette, men brevet kan ikke sendes før dette er gjort.",
       ),
     ).not.toBeNull();
+  });
+
+  test("uses the default fortsett label when none is provided", () => {
+    render(<WarnModal kind="tekstValg" onClose={vi.fn()} onFortsett={vi.fn()} open />);
+
+    expect(screen.queryByText("Fortsett til brevbehandler")).not.toBeNull();
+  });
+
+  test("renders a configurable fortsett label", () => {
+    render(
+      <WarnModal fortsettLabel="Fortsett til forhåndsvisning" kind="tekstValg" onClose={vi.fn()} onFortsett={vi.fn()} open />,
+    );
+
+    expect(screen.queryByText("Fortsett til forhåndsvisning")).not.toBeNull();
+    expect(screen.queryByText("Fortsett til brevbehandler")).toBeNull();
   });
 });

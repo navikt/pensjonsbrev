@@ -386,6 +386,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     <form onSubmit={guardedSubmit}>
       <WarnModal
         count={warn?.count ?? 0}
+        fortsettLabel="Fortsett til forhåndsvisning"
         kind={warn?.kind ?? "fritekst"}
         onClose={() => {
           setWarnOpen(false);
