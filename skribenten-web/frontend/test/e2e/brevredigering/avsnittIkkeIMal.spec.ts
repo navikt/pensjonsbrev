@@ -66,7 +66,7 @@ test.describe("Avsnitt som ikke finnes i malen (missingFromTemplate)", () => {
     await expect(page.getByText("Du må velge om du vil beholde eller slette 1 avsnitt")).toBeVisible();
     await expect(
       page.getByText(
-        "Disse avsnittene er markert i brevet. Velg «Behold» eller «Slett» for hvert av dem. Du kan fortsette, men brevet kan ikke sendes før dette er gjort.",
+        "Dette avsnittet er markert i brevet. Velg «Behold» eller «Slett». Du kan fortsette, men brevet kan ikke sendes før dette er gjort.",
       ),
     ).toBeVisible();
 

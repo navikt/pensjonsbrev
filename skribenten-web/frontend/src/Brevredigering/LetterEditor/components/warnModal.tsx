@@ -64,7 +64,9 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
       case "fritekstOgTekstValg":
         return "Du kan fortsette, men brevet kan ikke sendes før alle fritekstfelter er fylt ut og du har valgt et eller flere obligatoriske tekstvalg.";
       case "avsnittIkkeIMal":
-        return "Disse avsnittene er markert i brevet. Velg «Behold» eller «Slett» for hvert av dem. Du kan fortsette, men brevet kan ikke sendes før dette er gjort.";
+        return count === 1
+          ? "Dette avsnittet er markert i brevet. Velg «Behold» eller «Slett». Du kan fortsette, men brevet kan ikke sendes før dette er gjort."
+          : "Disse avsnittene er markert i brevet. Velg «Behold» eller «Slett» for hvert av dem. Du kan fortsette, men brevet kan ikke sendes før dette er gjort.";
     }
   })();
 

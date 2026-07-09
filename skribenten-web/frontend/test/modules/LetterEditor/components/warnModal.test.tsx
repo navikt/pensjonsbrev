@@ -50,6 +50,17 @@ describe("WarnModal", () => {
     ).not.toBeNull();
   });
 
+  test("renders avsnittIkkeIMal body in singular when count is 1", () => {
+    render(<WarnModal count={1} kind="avsnittIkkeIMal" onClose={vi.fn()} onFortsett={vi.fn()} open />);
+
+    expect(screen.queryByText("Du må velge om du vil beholde eller slette 1 avsnitt")).not.toBeNull();
+    expect(
+      screen.queryByText(
+        "Dette avsnittet er markert i brevet. Velg «Behold» eller «Slett». Du kan fortsette, men brevet kan ikke sendes før dette er gjort.",
+      ),
+    ).not.toBeNull();
+  });
+
   test("uses the default fortsett label when none is provided", () => {
     render(<WarnModal kind="tekstValg" onClose={vi.fn()} onFortsett={vi.fn()} open />);
 
