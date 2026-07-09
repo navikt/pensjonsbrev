@@ -17,7 +17,7 @@ class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<Saksbehandlervalg
 
     fun bool(default: Boolean = false): Expression<Boolean> = createSaksbehandlervalg(WithDefault(SaksbehandlervalgVerdi.Bool(id, displayText), default))
 
-    fun int(default: Int): Expression<Int?> = createSaksbehandlervalg(WithDefault(SaksbehandlervalgVerdi.Integer(id, displayText), default))
+    fun int(default: Int): Expression<Int> = createSaksbehandlervalg(WithDefault(SaksbehandlervalgVerdi.Integer(id, displayText), default))
     fun int(): Expression<Int?> = createSaksbehandlervalg(SaksbehandlervalgVerdi.Integer(id, displayText))
 
     fun text(default: String): Expression<String> = createSaksbehandlervalg(WithDefault(SaksbehandlervalgVerdi.Text(id, displayText), default))
