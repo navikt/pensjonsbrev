@@ -88,7 +88,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     }
 
     private fun createObjectTypeSpecification(type: KClass<*>): ObjectTypeSpecification =
-        type.primaryConstructor?.parameters?.associate { it.name!! to it.type.toFieldType(it.annotations, type.isSubclassOf(SaksbehandlerValgBrevdata::class) && !type.isSubclassOf(SaksbehandlervalgIDSL::class), it.name!!) }
+        type.primaryConstructor?.parameters?.associate { it.name!! to it.type.toFieldType(it.annotations, type.isSubclassOf(SaksbehandlerValgBrevdata::class), it.name!!) }
             ?: emptyMap()
 
     private fun KType.toFieldType(annotations: List<Annotation>, paakrevDisplayText: Boolean, name: String): FieldType {
