@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Broek
@@ -11,10 +12,10 @@ import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.ObjectTypeSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType.Scalar.Kind
 import java.time.Period
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
-import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
 
@@ -41,9 +42,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                     if (saksbehandlervalg == null) {
                         throw IllegalArgumentException("saksbehandlervalg must be provided when building specification for ${from.qualifiedName}")
                     }
-                    objectTypes[name] = saksbehandlervalg.entries.associate { (key, verdi) ->
-                        key to createType(verdi).toFieldType(annotations = listOf(), paakrevDisplayText = false, name = key)
-                    }
+                    objectTypes[name] = saksbehandlervalg.entries.associate { (key, verdi) -> key to verdi.toFieldType() }
                 } else if (!objectTypes.containsKey(name)) {
                     objectTypes[name] = createObjectTypeSpecification(current)
                 }
@@ -58,13 +57,12 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
         }
 
     @OptIn(BrevbakerDSLInternal::class)
-    private fun createType(verdi: SaksbehandlervalgVerdi<*>?, nullable: Boolean = true): KType = when (verdi) {
-        is SaksbehandlervalgVerdi.Bool -> Boolean::class.createType(nullable = false)
-        is SaksbehandlervalgVerdi.Integer -> Int::class.createType(nullable = nullable)
-        is SaksbehandlervalgVerdi.Text -> String::class.createType(nullable = nullable)
-        is SaksbehandlervalgVerdi.Enum<*> -> verdi.clazz.createType(nullable = nullable)
-        is SaksbehandlervalgVerdi.WithDefault<*> -> createType(verdi.saksbehandlervalgVerdi, nullable = false)
-        null -> throw IllegalArgumentException("Saksbehandlervalg mangla type")
+    private fun SaksbehandlervalgVerdi<*>.toFieldType(): FieldType = when (this) {
+        is SaksbehandlervalgVerdi.Bool -> FieldType.Scalar(nullable = true, kind = Kind.BOOLEAN, displayText = displayText)
+        is SaksbehandlervalgVerdi.Integer -> FieldType.Scalar(nullable = true, kind = Kind.NUMBER, displayText = displayText)
+        is SaksbehandlervalgVerdi.Text -> FieldType.Scalar(nullable = true, kind = Kind.STRING, displayText = displayText)
+        is SaksbehandlervalgVerdi.Enum<*> -> FieldType.Enum(nullable = true, clazz.java.enumConstants.map { FieldType.EnumEntry(it.name, (it as SaksbehandlerValgEnum).displayText) }.toSet())
+        is SaksbehandlervalgVerdi.WithDefault<*> -> saksbehandlervalgVerdi.toFieldType()
     }
 
     private fun validate(spec: TemplateModelSpecification): TemplateModelSpecification {
@@ -101,17 +99,17 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
             }
 
             when (val qname = theClassifier.qualifiedName) {
-                "kotlin.String" -> FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.STRING, displayText = displayedText)
+                "kotlin.String" -> FieldType.Scalar(isMarkedNullable, Kind.STRING, displayText = displayedText)
 
-                "kotlin.Int", "kotlin.Long" -> FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.NUMBER, displayText = displayedText)
+                "kotlin.Int", "kotlin.Long" -> FieldType.Scalar(isMarkedNullable, Kind.NUMBER, displayText = displayedText)
 
-                "kotlin.Double", "kotlin.Float" -> FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DOUBLE, displayText = displayedText)
+                "kotlin.Double", "kotlin.Float" -> FieldType.Scalar(isMarkedNullable, Kind.DOUBLE, displayText = displayedText)
 
-                "kotlin.Boolean" -> FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.BOOLEAN, displayText = displayedText)
+                "kotlin.Boolean" -> FieldType.Scalar(isMarkedNullable, Kind.BOOLEAN, displayText = displayedText)
 
                 "kotlin.collections.List" -> FieldType.Array(isMarkedNullable, arguments.first().type!!.toFieldType(listOf(), false, name))
 
-                "java.time.LocalDate" -> FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DATE, displayText = displayedText)
+                "java.time.LocalDate" -> FieldType.Scalar(isMarkedNullable, Kind.DATE, displayText = displayedText)
 
                 "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata", "no.nav.pensjon.brev.api.model.maler.EmptyVedlegg" -> {
                     toProcess.add(theClassifier)
