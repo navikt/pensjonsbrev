@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import com.typesafe.config.ConfigFactory
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.services.KrrService.*
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 
 class KrrServiceTest {
-    private val config = ConfigFactory.parseMap(mapOf("scope" to "test-scope", "url" to "http://krr.test"))
+    private val config = OboClientConfig(url = "http://krr.test", scope = "test-scope")
 
     @Test
     fun `kan hente foretrukket spraak fra KRR`() {

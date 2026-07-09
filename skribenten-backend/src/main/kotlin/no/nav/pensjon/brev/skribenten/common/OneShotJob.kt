@@ -1,11 +1,9 @@
 package no.nav.pensjon.brev.skribenten.common
 
-import com.typesafe.config.Config
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.OneShotJobTable
 import no.nav.pensjon.brev.skribenten.services.LeaderService
-import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.select
@@ -64,16 +62,6 @@ class JobConfig(val jobName: String) {
 }
 
 private val logger = LoggerFactory.getLogger("OneShotJob")
-
-/**
- * Executes one-shot jobs if this instance is the leader in a leader election setup.
- * If leader election is disabled, it assumes single-instance and executes the jobs.
- *
- * @param skribentenConfig The configuration for Skribenten, including leader service settings.
- * @param block The block of one-shot job definitions to execute.
- */
-suspend fun oneShotJobs(skribentenConfig: Config, block: OneShotJobConfig.() -> Unit) =
-    oneShotJobs(NaisLeaderService(skribentenConfig.getConfig("services.leader")), block)
 
 /**
  * Executes one-shot jobs if this instance is the leader in a leader election setup.

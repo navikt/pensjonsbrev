@@ -11,8 +11,7 @@ private val logger = LoggerFactory.getLogger("PrincipalHasGroup")
 
 class PrincipalHasGroupConfiguration {
     // requires at least one of the groups in each list to be present in the principal's groups
-    private val _groups = mutableListOf<Set<ADGroup>>()
-    val groupRequirements: List<Set<ADGroup>> get() = _groups
+    val groupRequirements: List<Set<ADGroup>> field = mutableListOf<Set<ADGroup>>()
 
     var responseHandler: suspend ApplicationCall.() -> Unit =
         { respond(HttpStatusCode.Forbidden, "Access denied: You do not have the required group access.") }
@@ -24,7 +23,7 @@ class PrincipalHasGroupConfiguration {
 
     fun requireOneOf(groups: Set<ADGroup>) {
         if (groups.isNotEmpty()) {
-            _groups.add(groups)
+            groupRequirements.add(groups)
         }
     }
 

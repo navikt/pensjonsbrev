@@ -421,7 +421,7 @@ function RedigerBrev({
     form.reset(defaultValuesModelEditor);
   }, [defaultValuesModelEditor, form]);
 
-  const freeze = oppdaterBrevMutation.isPending || editorState.saveStatus === "SAVE_PENDING";
+  const freeze = oppdaterBrevMutation.isPending;
 
   const error = oppdaterBrevMutation.isError;
 

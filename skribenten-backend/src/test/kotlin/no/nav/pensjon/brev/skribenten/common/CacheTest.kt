@@ -1,8 +1,7 @@
 package no.nav.pensjon.brev.skribenten.common
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.skribenten.ValkeyConfig
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -17,20 +16,19 @@ val valkeyContainer = GenericContainer("valkey/valkey:8.0.0")
 
 class CacheTest {
 
-    val valkeyConfig: Config
+    val valkeyConfig: ValkeyConfig
 
     init {
         valkeyContainer.withExposedPorts(6379)
         valkeyContainer.waitingFor(Wait.forListeningPort())
         valkeyContainer.start()
-        valkeyConfig = ConfigFactory.parseMap(
-            mapOf(
-                "host" to valkeyContainer.host,
-                "port" to valkeyContainer.getMappedPort(6379).toString(),
-                "username" to "default",
-                "password" to "",
-                "ssl" to "false",
-            )
+        valkeyConfig = ValkeyConfig(
+            host = valkeyContainer.host,
+            port = valkeyContainer.getMappedPort(6379),
+            username = "default",
+            password = "",
+            ssl = false,
+            enabled = true,
         )
     }
 

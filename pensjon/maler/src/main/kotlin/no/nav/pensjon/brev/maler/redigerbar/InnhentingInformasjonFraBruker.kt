@@ -124,9 +124,9 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
                 paragraph {
                     text(
-                        bokmal { + "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysninger. Gå inn på Din Profil og velg " + quoted("Bankkonto for utbetaling") +". Du kan logge inn med BankID, Buypass, MinID eller Commfides." },
-                        nynorsk { + "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysningar. Gå inn på Din Profil og vel " + quoted("Bankkonto for utbetaling") +". Du kan logge inn med BankID, Buypass, MinID eller Commfides." },
-                        english { + "You can register the necessary bank details in the " + quoted("Din pensjon") +" portal at $DIN_PENSJON_URL. Log in on your personal page " + quoted("Din Profil") + " and select " + quoted("Bank account for payment") +". You can log in using BankID, Buypass, MinID or Commfides." },
+                        bokmal { + "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysninger. Gå inn på Din Profil og velg " + quoted("Bankkonto for utbetaling") +". Du kan logge inn med BankID, Buypass eller Commfides." },
+                        nynorsk { + "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysningar. Gå inn på Din Profil og vel " + quoted("Bankkonto for utbetaling") +". Du kan logge inn med BankID, Buypass eller Commfides." },
+                        english { + "You can register the necessary bank details in the " + quoted("Din pensjon") +" portal at $DIN_PENSJON_URL. Log in on your personal page " + quoted("Din Profil") + " and select " + quoted("Bank account for payment") +". You can log in using BankID, Buypass or Commfides." },
                     )
                 }
             }
