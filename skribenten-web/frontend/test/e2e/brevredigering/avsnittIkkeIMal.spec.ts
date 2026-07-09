@@ -10,11 +10,10 @@ const brevResponse = JSON.parse(fs.readFileSync(path.join(fixturesDir, "brevResp
 
 // Simulates the backend having flagged a block as missingFromTemplate: the saksbehandler edited
 // this block previously, but it can no longer be matched against a fresh render of the template
-// (see UpdateEditedLetter.mergeList/FerdigRedigertPolicy on the backend).
+
 const brevMedAvsnittIkkeIMal = JSON.parse(JSON.stringify(brevResponse));
 brevMedAvsnittIkkeIMal.redigertBrev.blocks[0].missingFromTemplate = true;
-// Fill in the (nullable, but flagged-as-missing-until-set) tekstvalg field so that the
-// tekstValg warning doesn't take priority over the avsnittIkkeIMal warning we're testing here.
+
 brevMedAvsnittIkkeIMal.saksbehandlerValg.ettEllerIngenAvMangeAlternativer = "RULLEKAKE";
 
 test.describe("Avsnitt som ikke finnes i malen (missingFromTemplate)", () => {
@@ -97,8 +96,9 @@ test.describe("Avsnitt som ikke finnes i malen (missingFromTemplate)", () => {
 
     await page.getByRole("button", { name: "Slett" }).click();
 
-    // The whole block is removed, so its text and the flagged styling are gone.
-    await expect(page.getByText("Saksbehandlingstiden vår er vanligvis")).toBeHidden();
-    await expect(page.locator(".missing-from-template-block")).toBeHidden();
+    // The flagged block is removed entirely, and the action buttons disappear with it.
+    await expect(page.locator(".missing-from-template-block")).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Behold" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: "Slett" })).toHaveCount(0);
   });
 });
