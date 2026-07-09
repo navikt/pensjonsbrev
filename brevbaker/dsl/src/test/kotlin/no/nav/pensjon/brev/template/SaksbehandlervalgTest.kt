@@ -21,11 +21,6 @@ private class SaksbehandlervalgTest {
         )
     }
 
-    @Test
-    fun `genererer opp malen`() {
-
-    }
-
     private fun expressionScope(saksbehandlerValg: SaksbehandlervalgIDSL) =
         ExpressionScope(
             SaksbehandlervalgTestDto(saksbehandlerValg = saksbehandlerValg),
