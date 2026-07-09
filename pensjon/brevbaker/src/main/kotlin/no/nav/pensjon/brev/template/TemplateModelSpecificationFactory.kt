@@ -14,6 +14,7 @@ import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import java.time.Period
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
+import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
 
@@ -23,15 +24,6 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     private val toProcess = mutableListOf<KClass<*>>()
 
     @OptIn(BrevbakerDSLInternal::class)
-    private fun mapValue(entry: Pair<String, Any?>, nullable: Boolean = true): FieldType = when (val it = entry.second) {
-        is SaksbehandlervalgVerdi.Bool -> FieldType.Scalar(nullable, FieldType.Scalar.Kind.BOOLEAN, displayText = it.displayText)
-        is SaksbehandlervalgVerdi.Integer -> FieldType.Scalar(nullable, FieldType.Scalar.Kind.NUMBER, displayText = it.displayText)
-        is SaksbehandlervalgVerdi.Text -> FieldType.Scalar(nullable, FieldType.Scalar.Kind.STRING, displayText = it.displayText)
-        is SaksbehandlervalgVerdi.Enum<*> -> FieldType.Enum(nullable, enumVerdier(it.clazz, false), displayText = it.displayText)
-        is SaksbehandlervalgVerdi.WithDefault<*> -> mapValue(Pair(it.id, it.saksbehandlervalgVerdi), false)
-        else -> throw IllegalArgumentException("Forventa at andre parameter i pair er Saksbehandlervalg")
-    }
-
     fun build(saksbehandlervalg: Map<String, *>?): TemplateModelSpecification =
         if (from.objectInstance == Unit || from.objectInstance in setOf(EmptyAutobrevdata, EmptyRedigerbarBrevdata, EmptyVedleggData)) {
             TemplateModelSpecification(emptyMap(), null)
@@ -49,7 +41,9 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                     if (saksbehandlervalg == null) {
                         throw IllegalArgumentException("saksbehandlervalg must be provided when building specification for ${from.qualifiedName}")
                     }
-                    objectTypes[name] = saksbehandlervalg.mapValues { mapValue(it.key to it.value) }
+                    objectTypes[name] = saksbehandlervalg.entries.associate { (key, verdi) ->
+                        key to createType(verdi).toFieldType(annotations = listOf(), paakrevDisplayText = false, name = key)
+                    }
                 } else if (!objectTypes.containsKey(name)) {
                     objectTypes[name] = createObjectTypeSpecification(current)
                 }
@@ -62,6 +56,16 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                 )
             )
         }
+
+    @OptIn(BrevbakerDSLInternal::class)
+    private fun createType(verdi: Any?, nullable: Boolean = true): KType = when (verdi) {
+        is SaksbehandlervalgVerdi.Bool -> Boolean::class.createType(nullable = false)
+        is SaksbehandlervalgVerdi.Integer -> Int::class.createType(nullable = nullable)
+        is SaksbehandlervalgVerdi.Text -> String::class.createType(nullable = nullable)
+        is SaksbehandlervalgVerdi.Enum<*> -> verdi.clazz.createType(nullable = nullable)
+        is SaksbehandlervalgVerdi.WithDefault<*> -> createType(verdi.saksbehandlervalgVerdi, nullable = false)
+        else -> throw IllegalArgumentException("Saksbehandlervalg av uventa type: ${verdi?.javaClass}")
+    }
 
     private fun validate(spec: TemplateModelSpecification): TemplateModelSpecification {
         spec.types.forEach { (name, fieldType) -> validateTypes(spec, listOf(name), fieldType) }
@@ -84,7 +88,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     }
 
     private fun createObjectTypeSpecification(type: KClass<*>): ObjectTypeSpecification =
-        type.primaryConstructor?.parameters?.associate { it.name!! to it.type.toFieldType(it.annotations, type.isSubclassOf(SaksbehandlerValgBrevdata::class), it.name!!) }
+        type.primaryConstructor?.parameters?.associate { it.name!! to it.type.toFieldType(it.annotations, type.isSubclassOf(SaksbehandlerValgBrevdata::class) && !type.isSubclassOf(SaksbehandlervalgIDSL::class), it.name!!) }
             ?: emptyMap()
 
     private fun KType.toFieldType(annotations: List<Annotation>, paakrevDisplayText: Boolean, name: String): FieldType {
