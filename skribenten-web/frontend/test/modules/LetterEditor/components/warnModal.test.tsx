@@ -17,7 +17,7 @@ describe("WarnModal", () => {
     expect(screen.queryByText("Du må fylle ut 2 fritekstfelt")).not.toBeNull();
     expect(
       screen.queryByText(
-        "Du kan fortsette til brevbehandler, men brevet kan ikke sendes før alle fritekstfelter er fylt ut.",
+        "Du kan fortsette, men brevet kan ikke sendes før alle fritekstfelter er fylt ut.",
       ),
     ).not.toBeNull();
   });
@@ -28,7 +28,7 @@ describe("WarnModal", () => {
     expect(screen.queryByText("Du må velge tekst")).not.toBeNull();
     expect(
       screen.queryByText(
-        "Du kan fortsette til brevbehandler, men brevet kan ikke sendes før du har valgt et eller flere obligatoriske tekstvalg.",
+        "Du kan fortsette, men brevet kan ikke sendes før du har valgt et eller flere obligatoriske tekstvalg.",
       ),
     ).not.toBeNull();
   });
