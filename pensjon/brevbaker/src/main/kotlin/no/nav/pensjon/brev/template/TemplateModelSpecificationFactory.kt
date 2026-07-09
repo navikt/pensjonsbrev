@@ -24,7 +24,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     private val toProcess = mutableListOf<KClass<*>>()
 
     @OptIn(BrevbakerDSLInternal::class)
-    fun build(saksbehandlervalg: Map<String, *>?): TemplateModelSpecification =
+    fun build(saksbehandlervalg: Map<String, SaksbehandlervalgVerdi<*>>?): TemplateModelSpecification =
         if (from.objectInstance == Unit || from.objectInstance in setOf(EmptyAutobrevdata, EmptyRedigerbarBrevdata, EmptyVedleggData)) {
             TemplateModelSpecification(emptyMap(), null)
         } else if (from.primaryConstructor == null) {
@@ -58,13 +58,13 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
         }
 
     @OptIn(BrevbakerDSLInternal::class)
-    private fun createType(verdi: Any?, nullable: Boolean = true): KType = when (verdi) {
+    private fun createType(verdi: SaksbehandlervalgVerdi<*>?, nullable: Boolean = true): KType = when (verdi) {
         is SaksbehandlervalgVerdi.Bool -> Boolean::class.createType(nullable = false)
         is SaksbehandlervalgVerdi.Integer -> Int::class.createType(nullable = nullable)
         is SaksbehandlervalgVerdi.Text -> String::class.createType(nullable = nullable)
         is SaksbehandlervalgVerdi.Enum<*> -> verdi.clazz.createType(nullable = nullable)
         is SaksbehandlervalgVerdi.WithDefault<*> -> createType(verdi.saksbehandlervalgVerdi, nullable = false)
-        else -> throw IllegalArgumentException("Saksbehandlervalg av uventa type: ${verdi?.javaClass}")
+        null -> throw IllegalArgumentException("Saksbehandlervalg mangla type")
     }
 
     private fun validate(spec: TemplateModelSpecification): TemplateModelSpecification {
