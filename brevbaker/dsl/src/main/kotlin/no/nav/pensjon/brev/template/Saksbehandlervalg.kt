@@ -47,10 +47,9 @@ private class SaksbehandlervalgIDSLSelector<LetterData : RedigerbarBrevdata<Saks
     override val propertyType: String,
     override val propertyName: String,
     clazz: KClass<LetterData>
-) : TemplateModelSelector<LetterData, Map<String, *>> {
+) : TemplateModelSelector<LetterData, SaksbehandlervalgIDSL> {
     override val className = clazz.qualifiedName!!
-    override val selector: LetterData.() -> Map<String, *> = { (saksbehandlerValg as Map<String, *>) }
-    // TODO: prøv å bli kvitt denne casten
+    override val selector: LetterData.() -> SaksbehandlervalgIDSL = { saksbehandlerValg }
 }
 
 private class EttSaksbehandlervalgSelector<Type>(
