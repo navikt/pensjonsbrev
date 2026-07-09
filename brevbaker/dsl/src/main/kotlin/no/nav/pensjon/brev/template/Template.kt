@@ -19,27 +19,22 @@ import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
     private val validator: BrevTemplateValidator = EmptyValidator,
 ) : TemplateGlobalScope<LetterData> {
-    private val _title: MutableList<TextElement<Lang>> = mutableListOf()
-    internal val title: List<TextElement<Lang>> get() = _title
-    private val _outline: MutableList<OutlineElement<Lang>> = mutableListOf()
-    internal val outline: List<OutlineElement<Lang>> get() = _outline
-    private val _attachments: MutableList<IncludeAttachment<Lang, *>> = mutableListOf()
-    internal val attachments: List<IncludeAttachment<Lang, *>> get() = _attachments
-    private val _pdfAttachments: MutableList<IncludeAttachmentPDF<Lang, *>> = mutableListOf()
-    internal val pdfAttachments: List<IncludeAttachmentPDF<Lang, *>> get() = _pdfAttachments
-    private val _saksbehandlervalg: MutableMap<String, SaksbehandlervalgVerdi<*>> = mutableMapOf()
-    internal val saksbehandlervalg: Map<String, *> get() = _saksbehandlervalg
+    internal val title: List<TextElement<Lang>> field: MutableList<TextElement<Lang>> = mutableListOf()
+    internal val outline: List<OutlineElement<Lang>> field: MutableList<OutlineElement<Lang>> = mutableListOf()
+    internal val attachments: List<IncludeAttachment<Lang, *>> field: MutableList<IncludeAttachment<Lang, *>> = mutableListOf()
+    internal val pdfAttachments: List<IncludeAttachmentPDF<Lang, *>> field: MutableList<IncludeAttachmentPDF<Lang, *>> = mutableListOf()
+    internal val saksbehandlervalg: Map<String, *> field: MutableMap<String, SaksbehandlervalgVerdi<*>> = mutableMapOf()
 
     internal fun lagreSaksbehandlervalg(key: String, verdi: SaksbehandlervalgVerdi<*>) {
-        _saksbehandlervalg[key] = verdi
+        saksbehandlervalg[key] = verdi
     }
 
     fun title(init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
-        _title.addAll(PlainTextOnlyScope<Lang, LetterData>().apply(init).elements)
+        title.addAll(PlainTextOnlyScope<Lang, LetterData>().apply(init).elements)
     }
 
     fun outline(init: OutlineOnlyScope<Lang, LetterData>.() -> Unit) {
-        _outline.addAll(OutlineOnlyScope<Lang, LetterData>(validator.subScope()).apply(init).elements)
+        outline.addAll(OutlineOnlyScope<Lang, LetterData>(validator.subScope()).apply(init).elements)
     }
 
     fun <AttachmentData : VedleggData> includeAttachment(
@@ -47,21 +42,21 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         attachmentData: Expression<AttachmentData>,
         predicate: Expression<Boolean> = true.expr(),
     ) {
-        _attachments.add(IncludeAttachment(attachmentData, template, predicate))
+        attachments.add(IncludeAttachment(attachmentData, template, predicate))
     }
 
     fun <AttachmentData : PDFVedleggData> includeAttachment(
         template: PDFTemplate<Lang, AttachmentData>,
         attachmentData: Expression<AttachmentData>,
     ) {
-        _pdfAttachments.add(IncludeAttachmentPDF(attachmentData, template))
+        pdfAttachments.add(IncludeAttachmentPDF(attachmentData, template))
     }
 
     fun includeAttachment(
         template: AttachmentTemplate<Lang, EmptyVedleggData>,
         predicate: Expression<Boolean> = true.expr(),
     ) {
-        _attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate))
+        attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate))
     }
 
     @RequiresOptIn(
@@ -85,7 +80,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         attachmentData: Expression<AttachmentData>,
         predicate: Expression<Boolean> = true.expr(),
     ) {
-        _attachments.add(IncludeAttachment(attachmentData, template, predicate, vedleggId))
+        attachments.add(IncludeAttachment(attachmentData, template, predicate, vedleggId))
     }
 
     @RedigerbartVedlegg
@@ -94,7 +89,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         template: AttachmentTemplate<Lang, EmptyVedleggData>,
         predicate: Expression<Boolean> = true.expr(),
     ) {
-        _attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate, vedleggId))
+        attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate, vedleggId))
     }
 
     fun <AttachmentData : VedleggData> includeAttachmentIfNotNull(
@@ -102,7 +97,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         attachmentData: Expression<AttachmentData?>,
     ) {
         @Suppress("UNCHECKED_CAST")
-        _attachments.add(IncludeAttachment(attachmentData as Expression<AttachmentData>, template, attachmentData.notNull()))
+        attachments.add(IncludeAttachment(attachmentData as Expression<AttachmentData>, template, attachmentData.notNull()))
     }
 
     fun <AttachmentData : PDFVedleggData> includeAttachmentIfNotNull(
@@ -110,7 +105,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         attachmentData: Expression<AttachmentData?>,
     ) {
         @Suppress("UNCHECKED_CAST")
-        _pdfAttachments.add(IncludeAttachmentPDF(attachmentData as Expression<AttachmentData>, template, attachmentData.notNull()))
+        pdfAttachments.add(IncludeAttachmentPDF(attachmentData as Expression<AttachmentData>, template, attachmentData.notNull()))
     }
 
 }
