@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
 import no.nav.brev.Listetype
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.StableHash.Companion.with
 import no.nav.pensjon.brev.template.validation.InvalidListDeclarationException
 import no.nav.pensjon.brev.template.validation.InvalidScopeTypeException
@@ -23,7 +24,7 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
     val outline: List<OutlineElement<Lang>>,
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
     val pdfAttachments: List<IncludeAttachmentPDF<Lang,*>> = emptyList(),
-    val saksbehandlervalg: Map<String, *>? = null,
+    val saksbehandlervalg: Map<String, SaksbehandlervalgVerdi<*>>? = null,
     val letterMetadata: LetterMetadata,
 ) {
     init {

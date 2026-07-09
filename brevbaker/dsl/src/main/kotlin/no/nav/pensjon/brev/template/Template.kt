@@ -23,7 +23,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     internal val outline: List<OutlineElement<Lang>> field: MutableList<OutlineElement<Lang>> = mutableListOf()
     internal val attachments: List<IncludeAttachment<Lang, *>> field: MutableList<IncludeAttachment<Lang, *>> = mutableListOf()
     internal val pdfAttachments: List<IncludeAttachmentPDF<Lang, *>> field: MutableList<IncludeAttachmentPDF<Lang, *>> = mutableListOf()
-    internal val saksbehandlervalg: Map<String, *> field: MutableMap<String, SaksbehandlervalgVerdi<*>> = mutableMapOf()
+    internal val saksbehandlervalg: Map<String, SaksbehandlervalgVerdi<*>> field: MutableMap<String, SaksbehandlervalgVerdi<*>> = mutableMapOf()
 
     internal fun lagreSaksbehandlervalg(key: String, verdi: SaksbehandlervalgVerdi<*>) {
         saksbehandlervalg[key] = verdi
