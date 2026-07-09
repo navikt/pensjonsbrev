@@ -4,10 +4,7 @@ import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.pensjon.brev.pdfbygger.typst.typstStringEscape
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2
 
-/**
- * Render a v2 attachment using start/end pattern (see [renderAttachment] for the
- * v1 equivalent output format).
- */
+
 internal fun TypstCodeScope.renderAttachmentV2(attachment: LetterMarkupV2.Attachment, sectionNumber: Int) {
     val title = attachment.title1.renderToPlainStringV2()
 

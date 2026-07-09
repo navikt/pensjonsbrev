@@ -3,12 +3,7 @@ package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.Table
 
-/**
- * Render a table block using the letter-table function from Typst template.
- *
- * See [renderTable] (v1 equivalent) for output format details. v2's Table is a
- * top-level sibling Block instead of being nested inside a Paragraph.
- */
+
 internal fun TypstCodeScope.renderTableV2(table: Table) {
     if (table.rows.isEmpty() && table.header.colSpec.isEmpty()) return
 

@@ -38,9 +38,6 @@ object TypstDocumentRendererV2 {
         renderLetterTemplate(letter, attachments)
     }
 
-    /**
-     * Prepend language settings and input data dictionaries into the letter content (stdin).
-     */
     private fun TypstCodeScope.appendInputData(
         letter: LetterMarkupV2,
         attachments: List<LetterMarkupV2.Attachment>,
