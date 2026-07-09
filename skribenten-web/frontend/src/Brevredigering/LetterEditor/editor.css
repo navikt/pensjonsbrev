@@ -129,8 +129,7 @@
   border-radius: 0.5rem;
   border: 0.125rem solid var(--ax-border-accent-strong);
   background: var(--ax-bg-accent-soft);
-  padding: 0.5rem;
-  padding-top: 1rem;
+  padding: 1rem 0.5rem 0.5rem;
 }
 
 .missing-from-template-actions {
