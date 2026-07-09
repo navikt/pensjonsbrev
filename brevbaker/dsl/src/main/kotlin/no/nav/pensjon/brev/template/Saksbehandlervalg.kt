@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.template.UnaryOperation.Select
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import kotlin.reflect.KClass
 
-class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>>(val id: String, val displayText: String, val clazz: KClass<LetterData>, @PublishedApi internal val scope: TemplateRootScope<*, LetterData>) {
+class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>>(private val id: String, private val displayText: String, private val clazz: KClass<LetterData>, private val scope: TemplateRootScope<*, LetterData>) {
     init {
         require(scope.saksbehandlervalg.containsKey(id).not()) { "Saksbehandlervalg med id $id allerede definert" }
     }

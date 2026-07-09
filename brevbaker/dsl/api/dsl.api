@@ -928,10 +928,6 @@ public final class no/nav/pensjon/brev/template/SaksbehandlerValgBuilder {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/reflect/KClass;Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;)V
 	public final fun bool (Z)Lno/nav/pensjon/brev/template/Expression;
 	public static synthetic fun bool$default (Lno/nav/pensjon/brev/template/SaksbehandlerValgBuilder;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
-	public final fun getClazz ()Lkotlin/reflect/KClass;
-	public final fun getDisplayText ()Ljava/lang/String;
-	public final fun getId ()Ljava/lang/String;
-	public final fun getScope ()Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;
 	public final fun int ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun int (I)Lno/nav/pensjon/brev/template/Expression;
 	public final fun text ()Lno/nav/pensjon/brev/template/Expression;
