@@ -11,6 +11,7 @@ import {
 } from "~/Brevredigering/LetterEditor/model/utils";
 import { type BrevResponse } from "~/types/brev";
 import {
+  type AnyBlock,
   type Cell,
   type ColumnSpec,
   type Content,
@@ -711,6 +712,17 @@ export const countUnfilledFritekstPlaceholders = (letter: EditedLetter): number 
 export const countMissingFromTemplateBlocks = (letter: EditedLetter): number => {
   return letter.blocks.filter((block) => block.missingFromTemplate).length;
 };
+
+export function getBlockClassName(block: AnyBlock, isFlashHighlighted: boolean): string {
+  const classNames: string[] = [block.type];
+  if (isFlashHighlighted) {
+    classNames.push("inserted-flash-block");
+  }
+  if (block.missingFromTemplate) {
+    classNames.push("missing-from-template-block");
+  }
+  return classNames.join(" ");
+}
 
 export const base64ToPdfBlob = (b64: string) =>
   new Blob([Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))], { type: "application/pdf" });

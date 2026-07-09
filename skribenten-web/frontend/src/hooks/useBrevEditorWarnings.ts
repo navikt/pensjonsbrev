@@ -83,7 +83,7 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
       return { kind: "tekstValg" };
     }
     if (missingFromTemplate > 0) {
-      return { kind: "duplikatAvsnitt", count: missingFromTemplate };
+      return { kind: "avsnittIkkeIMal", count: missingFromTemplate };
     }
     return null;
   }, [hasMissingRequiredSaksbehandlerValg, numberOfUnfilledFritekstPlaceholders, numberOfMissingFromTemplateBlocks]);

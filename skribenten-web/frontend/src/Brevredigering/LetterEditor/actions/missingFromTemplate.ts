@@ -4,10 +4,7 @@ import { type Action, withPatches } from "../lib/actions";
 import { type LetterEditorState } from "../model/state";
 import { removeElements } from "./common";
 
-/**
- * "Slett": removes the whole block using the same mechanism as other whole-block removals
- * (e.g. mergeBlocks) - splices it out of `blocks` and records its id in `deletedBlocks`.
- */
+
 export const removeMissingFromTemplateBlock: Action<LetterEditorState, [blockIndex: number]> = withPatches(
   (draft, blockIndex) => {
     const blocks = draft.redigertBrev.blocks;
@@ -24,10 +21,7 @@ export const removeMissingFromTemplateBlock: Action<LetterEditorState, [blockInd
   },
 );
 
-/**
- * "Behold": keeps the block's content but detaches it from the old template id, so it's
- * treated as a brand new block (isNew()) on the next merge and stops being flagged.
- */
+
 export const keepMissingFromTemplateBlock: Action<LetterEditorState, [blockIndex: number]> = withPatches(
   (draft, blockIndex) => {
     const block = draft.redigertBrev.blocks[blockIndex];

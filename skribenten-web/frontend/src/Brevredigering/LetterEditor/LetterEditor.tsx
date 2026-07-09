@@ -9,9 +9,10 @@ import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEdito
 import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
-import { type AnyBlock, TITLE_INDEX } from "~/types/brevbakerTypes";
+import { TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
+import { getBlockClassName } from "./actions/common";
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
@@ -19,17 +20,6 @@ import { SignaturView } from "./components/SignaturView";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { type LetterEditorState } from "./model/state";
 import { useEditorKeyboardShortcuts } from "./utils";
-
-function getBlockClassName(block: AnyBlock, isFlashHighlighted: boolean): string {
-  const classNames: string[] = [block.type];
-  if (isFlashHighlighted) {
-    classNames.push("inserted-flash-block");
-  }
-  if (block.missingFromTemplate) {
-    classNames.push("missing-from-template-block");
-  }
-  return classNames.join(" ");
-}
 
 const DebugPanel = React.lazy(() => import("./components/DebugPanel"));
 
