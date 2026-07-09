@@ -20,7 +20,7 @@ object BrevbakerBrevdataModule : SimpleModule() {
     init {
         addDeserializer(BrevbakerBrevdata::class.java, BrevdataDeserializer)
         addDeserializer(RedigerbarBrevdata::class.java, RedigerbarBrevdataDeserializer)
-        addDeserializer(SaksbehandlervalgIDSL::class.java, SaksbehandlervalgIDSLDeserializer)
+        addAbstractTypeMapping<SaksbehandlervalgIDSL, SaksbehandlervalgMap>()
     }
 
     private object BrevdataDeserializer : JsonDeserializer<BrevbakerBrevdata>() {
@@ -29,10 +29,6 @@ object BrevbakerBrevdataModule : SimpleModule() {
     private object RedigerbarBrevdataDeserializer : JsonDeserializer<RedigerbarBrevdata<*,*>>() {
         override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): RedigerbarBrevdata<*,*> =
             ctxt.readValue(parser, GenericRedigerbarBrevdata::class.java)
-    }
-    private object SaksbehandlervalgIDSLDeserializer : JsonDeserializer<SaksbehandlervalgIDSL>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgIDSL =
-            ctxt.readValue(parser, SaksbehandlervalgMap::class.java)
     }
 }
 
