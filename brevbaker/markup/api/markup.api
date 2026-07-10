@@ -362,7 +362,9 @@ public final class no/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder {
 
 public final class no/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilderKt {
 	public static final fun attachment (ZLkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/Attachment;
+	public static synthetic fun attachment$default (ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/Attachment;
 	public static final fun attachmentExtended (ZLkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/Attachment;
+	public static synthetic fun attachmentExtended$default (ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/Attachment;
 	public static final fun dataUsageProperty (Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Property;
 	public static final fun letterMarkup (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
 	public static final fun letterMarkupExtended (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkup;

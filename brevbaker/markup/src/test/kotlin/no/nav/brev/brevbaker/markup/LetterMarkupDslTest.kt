@@ -277,15 +277,6 @@ class LetterMarkupDslTest {
 
         val titleTexts = letter.title1.filterIsInstance<Text.Literal>().map { it.text }
         assertTrue(titleTexts.contains("Tittel fra builder "))
-        letter.blocks.filterIsInstance<Block.Title2>().firstOrNull()?.let {
-            it.content.map { el ->
-                when(el) {
-                    is Text.Literal -> TODO()
-                    is Text.NewLine -> TODO()
-                    is Text.Variable -> TODO()
-                }
-            }
-        }
 
         val title2 = letter.blocks.filterIsInstance<Block.Title2>().first()
         assertEquals(FontType.PLAIN, title2.content.filterIsInstance<Text.Literal>().first().fontType)
@@ -298,5 +289,46 @@ class LetterMarkupDslTest {
 
         val cell = letter.blocks.filterIsInstance<Block.Table>().single().rows.single().cells.first()
         assertEquals(FontType.BOLD, (cell.text.single() as Text.Literal).fontType)
+    }
+
+    @Test
+    fun `pdfTittel builds standalone title`() {
+        val tittel = pdfTittel { text("Vedtak om uføretrygd") }
+
+        assertEquals(1, tittel.title1.size)
+        assertEquals("Vedtak om uføretrygd", (tittel.title1.single() as Text.Literal).text)
+    }
+
+    @Test
+    fun `attachment builds standalone attachment`() {
+        val vedlegg = attachment(inkluderSaksinformasjon = true) {
+            title1("Vedlegg 1")
+            outline {
+                paragraph("Innhold")
+            }
+        }
+
+        assertEquals(true, vedlegg.inkluderSaksinformasjon)
+        assertEquals("Vedlegg 1", (vedlegg.title1.single() as Text.Literal).text)
+        val paragraph = vedlegg.blocks.single() as Block.Paragraph
+        assertEquals("Innhold", (paragraph.content.single() as Text.Literal).text)
+    }
+
+    @Test
+    fun `attachmentExtended supports variable text`() {
+        val vedlegg = attachmentExtended(inkluderSaksinformasjon = false) {
+            title1("Vedlegg 2")
+            outline {
+                paragraph {
+                    text("Sats ")
+                    variable("2G")
+                }
+            }
+        }
+
+        assertEquals(false, vedlegg.inkluderSaksinformasjon)
+        val paragraph = vedlegg.blocks.single() as Block.Paragraph
+        val textTypes = paragraph.content.map { it.type }
+        assertTrue(textTypes.containsAll(listOf(Text.Type.LITERAL, Text.Type.VARIABLE)))
     }
 }
