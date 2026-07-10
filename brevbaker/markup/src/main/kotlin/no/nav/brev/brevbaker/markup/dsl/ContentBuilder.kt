@@ -5,9 +5,14 @@ import no.nav.brev.brevbaker.markup.outline.Text
 import no.nav.brev.brevbaker.markup.outline.Text.FontType
 
 /**
- * Basis-scope for tekstinnhold i brev-DSL-en. Har [text] og [newLine], men ikke `variable` — de fleste
- * konsumenter trenger ikke variabler. Bruk [VariableContentBuilder] (via `*WithVariables`-inngangene) når du
- * trenger `variable`.
+ * Basis-scope for tekstinnhold i brev-DSL-en.
+ *
+ * Tilgjengelige funksjoner:
+ * - [text] for vanlig tekst
+ * - [newLine] for linjeskift
+ *
+ * Bruk [ExtendedContentBuilder] (via `*Extended`-inngangene) når du også trenger [ExtendedContentBuilder.variable]
+ * og støtte for metadata som tags.
  */
 @MarkupDsl
 abstract class AbstractContentBuilder internal constructor(private val ids: IdGenerator) {
@@ -15,10 +20,29 @@ abstract class AbstractContentBuilder internal constructor(private val ids: IdGe
 
     protected fun nextId(): Int = ids.next()
 
+    /**
+     * Legg til fast tekst i innholdet, valgfritt med [fontType].
+     *
+     * ```
+     * text("Vanlig tekst ")
+     * text("uthevet", FontType.BOLD)
+     * ```
+     */
     fun text(text: String, fontType: FontType = FontType.PLAIN) {
         texts.add(Text.Literal(nextId(), text, fontType))
     }
 
+    /**
+     * Legg til et linjeskift i innholdet.
+     *
+     * Linjeskift bør kun brukes mellom tekst. Linjeskift på starten eller slutten av ett avsnitt fjernes automatisk.
+     *
+     * ```
+     * text("Linje 1")
+     * newLine()
+     * text("Linje 2")
+     * ```
+     */
     fun newLine() {
         texts.add(Text.NewLine(nextId()))
     }
@@ -30,9 +54,17 @@ abstract class AbstractContentBuilder internal constructor(private val ids: IdGe
 @MarkupDsl
 class ContentBuilder internal constructor(ids: IdGenerator) : AbstractContentBuilder(ids)
 
-/** Tekstinnhold som også tillater [variable]. Beregnet på brevbaker/skribenten. */
+/** Tekstinnhold som også tillater [variable] og tags. */
 @MarkupDsl
-class VariableContentBuilder internal constructor(ids: IdGenerator) : AbstractContentBuilder(ids) {
+class ExtendedContentBuilder internal constructor(ids: IdGenerator) : AbstractContentBuilder(ids) {
+    /**
+     * Legg til en variabel (datafelt som fylles ut ved rendring), valgfritt med [fontType] og [tags].
+     *
+     * ```
+     * text("Du får ")
+     * variable("1000 kr", tags = setOf(ElementTags.REDIGERBAR_DATA))
+     * ```
+     */
     fun variable(text: String, fontType: FontType = FontType.PLAIN, tags: Set<ElementTags> = emptySet()) {
         texts.add(Text.Variable(nextId(), text, fontType, tags))
     }
@@ -43,13 +75,28 @@ class VariableContentBuilder internal constructor(ids: IdGenerator) : AbstractCo
  * Tillater kun ren tekst: [text] og [variable] uten [FontType] (alltid [FontType.PLAIN]) og uten linjeskift.
  */
 @MarkupDsl
-class PlainVariableTextBuilder internal constructor(private val ids: IdGenerator) {
+class PlainExtendedTextBuilder internal constructor(private val ids: IdGenerator) {
     private val texts: MutableList<Text> = mutableListOf()
 
+    /**
+     * Vanlig tittle.
+     *
+     * ```
+     * text("Vedtak")
+     * ```
+     */
     fun text(text: String) {
         texts.add(Text.Literal(ids.next(), text, FontType.PLAIN))
     }
 
+    /**
+     * Legg til en variabel.
+     *
+     * ```
+     * text("Vedtak for ")
+     * variable("navn")
+     * ```
+     */
     fun variable(text: String) {
         texts.add(Text.Variable(ids.next(), text, FontType.PLAIN))
     }
@@ -62,6 +109,13 @@ class PlainVariableTextBuilder internal constructor(private val ids: IdGenerator
 class PlainTextBuilder internal constructor(private val ids: IdGenerator) {
     private val texts: MutableList<Text> = mutableListOf()
 
+    /**
+     * Legg til fast tekst i overskriften/ledeteksten.
+     *
+     * ```
+     * text("Innledning")
+     * ```
+     */
     fun text(text: String) {
         texts.add(Text.Literal(ids.next(), text, FontType.PLAIN))
     }
@@ -77,10 +131,10 @@ internal fun <C : AbstractContentBuilder> IdGenerator.content(factory: ContentFa
 /** Ren tekst fra en enkel [String] (kun [Text.Literal], [FontType.PLAIN]). */
 internal fun IdGenerator.plainText(text: String): List<Text> = listOf(Text.Literal(next(), text, FontType.PLAIN))
 
-/** Ren tekst fra builder (kun [Text.Literal], [FontType.PLAIN], ingen linjeskift). */
+/** Ren tekst fra DSL-blokk (kun [Text.Literal], [FontType.PLAIN], ingen linjeskift). */
 internal fun IdGenerator.plainText(build: PlainTextBuilder.() -> Unit): List<Text> =
     PlainTextBuilder(this).apply(build).build()
 
 /** Ren tekst med `variable` (kun [Text.Literal]/[Text.Variable], [FontType.PLAIN], ingen linjeskift). */
-internal fun IdGenerator.plainVariableText(build: PlainVariableTextBuilder.() -> Unit): List<Text> =
-    PlainVariableTextBuilder(this).apply(build).build()
+internal fun IdGenerator.plainExtendedText(build: PlainExtendedTextBuilder.() -> Unit): List<Text> =
+    PlainExtendedTextBuilder(this).apply(build).build()

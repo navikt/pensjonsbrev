@@ -15,7 +15,7 @@ import java.time.LocalDate
 
 class LetterMarkupDslTest {
 
-    private fun fullLetter(): LetterMarkup = letterMarkupWithVariables {
+    private fun fullLetter(): LetterMarkup = letterMarkupExtended {
         title1 { text("Vedtak om uføretrygd") }
         saksinformasjon(
             gjelderNavn = "Ola Nordmann",
@@ -165,7 +165,7 @@ class LetterMarkupDslTest {
                     }
                 }
 
-                formText(Size.SHORT, "Ledetekst", fontType = FontType.BOLD)
+                formText("Ledetekst", Size.SHORT, fontType = FontType.BOLD)
                 formText(Size.LONG) { text("Ledetekst fra builder") }
                 formChoice(vspace = false) {
                     prompt("Velg")
@@ -186,7 +186,7 @@ class LetterMarkupDslTest {
 
     @Test
     fun `extended DSL supports shorthand string methods with font type on content`() {
-        val letter = letterMarkupWithVariables {
+        val letter = letterMarkupExtended {
             title1("Vedtak")
             title1 {
                 text("Tittel fra builder ")
@@ -272,6 +272,15 @@ class LetterMarkupDslTest {
 
         val titleTexts = letter.title1.filterIsInstance<Text.Literal>().map { it.text }
         assertTrue(titleTexts.contains("Tittel fra builder "))
+        letter.blocks.filterIsInstance<Block.Title2>().firstOrNull()?.let {
+            it.content.map { el ->
+                when(el) {
+                    is Text.Literal -> TODO()
+                    is Text.NewLine -> TODO()
+                    is Text.Variable -> TODO()
+                }
+            }
+        }
 
         val title2 = letter.blocks.filterIsInstance<Block.Title2>().first()
         assertEquals(FontType.PLAIN, title2.content.filterIsInstance<Text.Literal>().first().fontType)
