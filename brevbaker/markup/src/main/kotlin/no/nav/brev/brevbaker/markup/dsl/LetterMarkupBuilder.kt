@@ -13,6 +13,7 @@ import no.nav.brev.brevbaker.markup.Signatur
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Text
 import java.time.LocalDate
+import kotlin.jvm.JvmName
 
 /**
  * Bygg en [LetterMarkupV2] via DSL. `variable` er ikke tilgjengelig her; bruk [lettermarkupExtended]
@@ -154,6 +155,11 @@ class AttachmentBuilder<C : AbstractContentBuilder> internal constructor(
 
 /** Tittel som ren tekst (gjelder både [letterMarkup] og [lettermarkupExtended]). */
 fun <C : AbstractContentBuilder> LetterMarkupBuilder<C>.title1(text: String) = setTitle { plainText(text) }
+
+/** Tittel via builder uten `variable` ([letterMarkup]). */
+@JvmName("title1WithPlainTextBuilder")
+fun LetterMarkupBuilder<ContentBuilder>.title1(content: PlainTextBuilder.() -> Unit) =
+    setTitle { plainText(content) }
 
 /** Tittel som ren tekst med `variable` ([lettermarkupExtended]). */
 fun LetterMarkupBuilder<VariableContentBuilder>.title1(content: PlainVariableTextBuilder.() -> Unit) =

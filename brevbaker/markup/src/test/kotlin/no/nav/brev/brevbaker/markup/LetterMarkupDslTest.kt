@@ -1,13 +1,14 @@
 package no.nav.brev.brevbaker.markup
 
 import no.nav.brev.brevbaker.markup.ElementTags.FRITEKST
-import no.nav.brev.brevbaker.markup.dsl.attachment
 import no.nav.brev.brevbaker.markup.dsl.column
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
 import no.nav.brev.brevbaker.markup.dsl.lettermarkupExtended
 import no.nav.brev.brevbaker.markup.dsl.prompt
 import no.nav.brev.brevbaker.markup.dsl.title1
 import no.nav.brev.brevbaker.markup.dsl.title2
+import no.nav.brev.brevbaker.markup.dsl.title3
+import no.nav.brev.brevbaker.markup.dsl.title4
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
 import no.nav.brev.brevbaker.markup.outline.Block.Table.ColumnAlignment
@@ -33,9 +34,9 @@ class LetterMarkupDslTest {
             title2 { text("Innledning") }
             paragraph {
                 text("Du får ")
+                newLine()
                 variable("uføretrygd")
                 text(".")
-                newLine()
             }
             itemList {
                 item { text("Punkt 1") }
@@ -125,7 +126,6 @@ class LetterMarkupDslTest {
 
     @Test
     fun `base letterMarkup builds without variables`() {
-        val text = listOf("a", "b")
         val letter = letterMarkup {
             saksinformasjon(
                 gjelderNavn = "Ola Nordmann",
@@ -134,47 +134,49 @@ class LetterMarkupDslTest {
                 dokumentDato = LocalDate.of(2026, 7, 9),
             )
             title1("Tittel")
+            title1 { text("Tittel fra builder") }
             outline {
-                title2("")
-                text.forEach {
-                    paragraph(it)
-                }
-                title2 {
-                    text("", FontType.BOLD)
-                    newLine()
-                }
+                title2("Title 2")
+                title2 { text("Title 2 builder") }
+                title3("Title 3")
+                title3 { text("Title 3 builder") }
+                title4("Title 4")
+                title4 { text("Title 4 builder") }
+
+                paragraph("Paragraph literal", fontType = FontType.BOLD)
                 paragraph {
                     text("Kun litteral tekst.")
-                    if(1==2) {
-                        text("the end is nigh!")
-                    } else {
-                        text("phew")
-                    }
+                    newLine()
+                    text("Ny linje.")
                 }
 
-                paragraph("Literally just the usual literal.")
+                itemList {
+                    item("Punkt 1", fontType = FontType.BOLD)
+                    item { text("Punkt 2 fra builder") }
+                }
+                numberedList {
+                    item("Steg 1")
+                    item { text("Steg 2 fra builder") }
+                }
+
                 table {
                     header {
-                        column(alignment = ColumnAlignment.LEFT, span = 2) {
-                            text("Bla!")
-                        }
-                        column("Bla!", alignment = ColumnAlignment.LEFT, span = 2)
-                        column("Bla!")
-                        column("Bla!")
+                        column("Kolonne 1")
+                        column(alignment = ColumnAlignment.RIGHT) { text("Kolonne 2 builder") }
                     }
 
                     row {
-                        cell {
-                            text("mø")
-                        }
-                        cell {
-                            text("mø")
-                        }
-                        cell {
-                            text("mø")
-                        }
-                        cell("mø")
+                        cell("A1", fontType = FontType.BOLD)
+                        cell { text("B1") }
                     }
+                }
+
+                formText(Size.SHORT, "Ledetekst", fontType = FontType.BOLD)
+                formText(Size.LONG) { text("Ledetekst fra builder") }
+                formChoice(vspace = false) {
+                    prompt("Velg")
+                    choice("Ja", fontType = FontType.BOLD)
+                    choice { text("Nei fra builder") }
                 }
             }
             signatur(
@@ -182,21 +184,10 @@ class LetterMarkupDslTest {
                 navAvsenderEnhet = "NAV",
                 saksbehandlerNavn = "Sak S.Behandler",
             )
-            attachment(false) {
-                title1 ("Vedlegg er niz")
-                outline {
-                    table{
-                        header { column("mø") }
-                        row {
-                            cell("mø")
-                        }
-                    }
-                }
-            }
         }
 
-        val paragraph = letter.blocks.filterIsInstance<Block.Paragraph>().single()
-        assertEquals(listOf(Text.Type.LITERAL), paragraph.content.map { it.type })
+        val types = letter.blocks.map { it.type }
+        assertTrue(types.containsAll(Block.Type.entries))
     }
 
     @Test
@@ -204,8 +195,8 @@ class LetterMarkupDslTest {
         val letter = lettermarkupExtended {
             title1("Vedtak")
             title1 {
-                text("something")
-                variable("something")
+                text("Tittel fra builder ")
+                variable("x")
             }
             saksinformasjon(
                 gjelderNavn = "Ola Nordmann",
@@ -215,7 +206,26 @@ class LetterMarkupDslTest {
             )
             outline {
                 title2("Innledning")
+                title2 {
+                    text("Innledning ")
+                    variable("x")
+                }
+                title3("Mellomtittel")
+                title3 {
+                    text("Mellomtittel ")
+                    variable("x")
+                }
+                title4("Detaljer")
+                title4 {
+                    text("Detaljer ")
+                    variable("x")
+                }
                 paragraph("Ingress", fontType = FontType.BOLD)
+                paragraph {
+                    text("Du får ")
+                    variable("1000 Kr", tags = setOf(ElementTags.REDIGERBAR_DATA))
+                    newLine()
+                }
                 itemList {
                     item("Punkt", fontType = FontType.BOLD)
                     item {
@@ -226,16 +236,24 @@ class LetterMarkupDslTest {
                 table {
                     header {
                         column("Kolonne")
-                        column("Kolonne 2")
+                        column {
+                            text("Kolonne ")
+                            variable("2")
+                        }
                     }
                     row {
                         cell("Celle", fontType = FontType.BOLD)
                         cell {
                             text("bla")
+                            variable("2")
                         }
                     }
                 }
                 formText(Size.SHORT, "Ledetekst", fontType = FontType.BOLD)
+                formText(Size.LONG) {
+                    text("Skriv ")
+                    variable("her")
+                }
                 formChoice {
                     prompt("Velg")
                     prompt {
@@ -257,12 +275,13 @@ class LetterMarkupDslTest {
             )
         }
 
-        assertEquals("Vedtak", (letter.title1.single() as Text.Literal).text)
+        val titleTexts = letter.title1.filterIsInstance<Text.Literal>().map { it.text }
+        assertTrue(titleTexts.contains("Tittel fra builder "))
 
-        val title2 = letter.blocks.filterIsInstance<Block.Title2>().single()
-        assertEquals(FontType.PLAIN, (title2.content.single() as Text.Literal).fontType)
+        val title2 = letter.blocks.filterIsInstance<Block.Title2>().first()
+        assertEquals(FontType.PLAIN, title2.content.filterIsInstance<Text.Literal>().first().fontType)
 
-        val paragraph = letter.blocks.filterIsInstance<Block.Paragraph>().single()
+        val paragraph = letter.blocks.filterIsInstance<Block.Paragraph>().first()
         assertEquals(FontType.BOLD, (paragraph.content.single() as Text.Literal).fontType)
 
         val item = letter.blocks.filterIsInstance<Block.ItemList>().single().items.first()

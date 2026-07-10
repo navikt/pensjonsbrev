@@ -361,6 +361,7 @@ public final class no/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilderKt {
 	public static final fun title1 (Lno/nav/brev/brevbaker/markup/dsl/AttachmentBuilder;Ljava/lang/String;)V
 	public static final fun title1 (Lno/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder;Ljava/lang/String;)V
 	public static final fun title1 (Lno/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder;Lkotlin/jvm/functions/Function1;)V
+	public static final fun title1WithPlainTextBuilder (Lno/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder;Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface annotation class no/nav/brev/brevbaker/markup/dsl/MarkupDsl : java/lang/annotation/Annotation {
