@@ -404,7 +404,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           if (!values) return;
           submitAttest(values);
         }}
-
         open={warnOpen}
       />
       {forbidReason && <AttestForbiddenModal onClose={() => setForbidReason(null)} reason={forbidReason} />}

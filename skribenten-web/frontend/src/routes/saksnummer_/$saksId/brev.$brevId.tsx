@@ -460,7 +460,7 @@ function RedigerBrev({
               }}
               onFortsett={() => {
                 const values = pendingSubmitValuesRef.current;
-                
+
                 pendingSubmitValuesRef.current = null;
                 setWarnOpen(false);
                 setWarn(null);
