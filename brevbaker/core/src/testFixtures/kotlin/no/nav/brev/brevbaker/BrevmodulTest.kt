@@ -73,7 +73,7 @@ abstract class BrevmodulTest(
             val saksbehandlervalg = clazz.declaredFields.asSequence().map { it.type }
                 .filter { field -> SaksbehandlerValgBrevdata::class.java.isAssignableFrom(field) }
                 .map { it.kotlin }
-                .filterNot { it.java.isAssignableFrom(SaksbehandlervalgIDSL::class.java) }
+                .filterNot { SaksbehandlervalgIDSL::class.java.isAssignableFrom(it.java) }
                 .singleOrNull()
 
             saksbehandlervalg?.members?.filterIsInstance<KProperty<*>>()?.forEach { field ->
