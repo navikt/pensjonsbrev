@@ -87,7 +87,7 @@ fun outlineExtended(build: OutlineBuilder<ExtendedContentBuilder>.() -> Unit): L
  * }
  * ```
  */
-fun attachment(inkluderSaksinformasjon: Boolean, build: AttachmentBuilder<ContentBuilder>.() -> Unit): Attachment =
+fun attachment(inkluderSaksinformasjon: Boolean = false, build: AttachmentBuilder<ContentBuilder>.() -> Unit): Attachment =
     AttachmentBuilder(IdGenerator(), ::ContentBuilder, inkluderSaksinformasjon).apply(build).build()
 
 /**
@@ -99,7 +99,7 @@ fun attachment(inkluderSaksinformasjon: Boolean, build: AttachmentBuilder<Conten
  * }
  * ```
  */
-fun attachmentExtended(inkluderSaksinformasjon: Boolean, build: AttachmentBuilder<ExtendedContentBuilder>.() -> Unit): Attachment =
+fun attachmentExtended(inkluderSaksinformasjon: Boolean = false, build: AttachmentBuilder<ExtendedContentBuilder>.() -> Unit): Attachment =
     AttachmentBuilder(IdGenerator(), ::ExtendedContentBuilder, inkluderSaksinformasjon).apply(build).build()
 
 /**
@@ -210,7 +210,7 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
      * - `gjelderFoedselsnummer`: fødselsnummeret til personen brevet gjelder
      * - `saksnummer`: saksnummer for brevet
      * - `dokumentDato`: dokumentdato som vises i brevet
-     * - `annenMottakerNavn`: valgfritt navn på annen mottaker (verge/fullmektig)
+     * - `annenMottakerNavn`: valgfritt navn på annen mottaker (f.eks verge/fullmektig)
      *
      * ```
      * saksinformasjon(gjelderNavn = "Ola Nordmann", gjelderFoedselsnummer = "12345678901",
@@ -234,7 +234,7 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
     }
 
     /**
-     * Bygg brødteksten (blokkene) i brevet.
+     * Bygg innholdet i brevet.
      *
      * Parametere:
      * - `build`: blokker som `title2`, `paragraph`, `itemList`, `table`, `formText` og `formChoice`
@@ -243,6 +243,7 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
      * outline {
      *     title2("Innledning")
      *     paragraph("Første avsnitt.")
+     *     ...
      * }
      * ```
      */
@@ -333,7 +334,7 @@ class AttachmentBuilder<C : AbstractContentBuilder> internal constructor(
 
 /**
  * Sett brevets hoved-tittel som en string.
- * Se også DSL-variantene `title1 { text("...") }` og `title1 { text("..."); variable("...") }`.
+ * Har også en DSL-variant `title1 { text("...") }`.
  *
  * ```
  * title1("Vedtak om uføretrygd")
@@ -343,7 +344,7 @@ fun <C : AbstractContentBuilder> LetterMarkupBuilder<C>.title1(text: String) = s
 
 /**
  * Setter brevets hoved-tittel som plaintext
- * Se også shorthand-varianten `title1("...")`.
+ * Se også kort-varianten `title1("...")`.
  *
  * ```
  * title1 { text("Vedtak om "); text("uføretrygd") }

@@ -31,6 +31,11 @@ class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
      * ```
      * paragraph("Dette er et avsnitt.")
      * ```
+     *
+     * Se også dsl-variant:
+     * ```
+     *  paragraph { ... }
+     * ```
      */
     fun paragraph(text: String, fontType: FontType = FontType.PLAIN) {
         blocks.add(Block.Paragraph(ids.next(), listOf(Text.Literal(ids.next(), text, fontType))))
@@ -72,6 +77,10 @@ class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
      * - `span` for kolonner som skal dekke flere kolonner
      * - celleinnhold som ren tekst eller sammensatt tekst med `text(...)` og `variable(...)`
      *
+     *   I de visuelle retningslinjene i Nav står det at:
+     *  * Tekst er alltid venstrestilt for leseretning.
+     *  * Tall høyrestilles.
+     *  * I tabeller hvor kolonner blander tall og bokstaver bør det vurderes pr. tabell om innholdet skal venstrestilles eller høyrestilles.
      * ```
      * table {
      *     header {
@@ -90,7 +99,7 @@ class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
     /**
      * Legg til et skjemafelt for fritekst med angitt [size] og valgfri [vspace] (luft rundt feltet).
      * Ledeteksten settes i DSL-blokken.
-     * Se også shorthand-varianten `formText("...", Size.SHORT)`.
+     * Se også kort-varianten `formText("...", Size.SHORT)`.
      *
      * ```
      * formText(Size.LONG) { text("Skriv her") }
@@ -172,7 +181,7 @@ fun <C : AbstractContentBuilder> OutlineBuilder<C>.title2(text: String) =
 
 /**
  * Legg til en nivå-2-overskrift via DSL-blokk (uten `variable`).
- * Se også shorthand-varianten `title2("...")`.
+ * Se også kort-varianten `title2("...")`.
  *
  * ```
  * title2 { text("Innledning "); text("del 1") }
@@ -184,7 +193,7 @@ fun OutlineBuilder<ContentBuilder>.title2(content: PlainTextBuilder.() -> Unit) 
 
 /**
  * Legg til en nivå-2-overskrift via DSL-blokk med `variable`.
- * Se også shorthand-varianten `title2("...")`.
+ * Se også kort-varianten `title2("...")`.
  *
  * ```
  * title2 { text("Vedtak for "); variable("navn") }
@@ -207,7 +216,7 @@ fun <C : AbstractContentBuilder> OutlineBuilder<C>.title3(text: String) =
 
 /**
  * Legg til en nivå-3-overskrift via DSL-blokk (uten `variable`).
- * Se også shorthand-varianten `title3("...")`.
+ * Se også kort-varianten `title3("...")`.
  *
  * ```
  * title3 { text("Mellomtittel") }
@@ -219,7 +228,7 @@ fun OutlineBuilder<ContentBuilder>.title3(content: PlainTextBuilder.() -> Unit) 
 
 /**
  * Legg til en nivå-3-overskrift via DSL-blokk med `variable`.
- * Se også shorthand-varianten `title3("...")`.
+ * Se også kort-varianten `title3("...")`.
  *
  * ```
  * title3 { text("Mellomtittel "); variable("nr") }
@@ -242,7 +251,7 @@ fun <C : AbstractContentBuilder> OutlineBuilder<C>.title4(text: String) =
 
 /**
  * Legg til en nivå-4-overskrift via DSL-blokk (uten `variable`).
- * Se også shorthand-varianten `title4("...")`.
+ * Se også kort-varianten `title4("...")`.
  *
  * ```
  * title4 { text("Detaljer") }
@@ -254,7 +263,7 @@ fun OutlineBuilder<ContentBuilder>.title4(content: PlainTextBuilder.() -> Unit) 
 
 /**
  * Legg til en nivå-4-overskrift via DSL-blokk med `variable`.
- * Se også shorthand-varianten `title4("...")`.
+ * Se også kort-varianten `title4("...")`.
  *
  * ```
  * title4 { text("Detaljer "); variable("nr") }
@@ -273,10 +282,10 @@ class ItemsBuilder<C : AbstractContentBuilder> internal constructor(
 
     /**
      * Legg til et listepunkt via DSL-blokk.
-     * Se også shorthand-varianten `item("...")`.
+     * Se også kort-varianten `item("...")`.
      *
      * ```
-     * itemList { item { text("Du får "); variable("uføretrygd") } }
+     * itemList/numberedList { item { text("Du får "); variable("uføretrygd") } }
      * ```
      */
     fun item(content: C.() -> Unit) {
@@ -288,7 +297,7 @@ class ItemsBuilder<C : AbstractContentBuilder> internal constructor(
      * Se også DSL-varianten `item { ... }`.
      *
      * ```
-     * itemList { item("Punkt 1") }
+     * itemList/numberedList { item("Punkt 1") }
      * ```
      */
     fun item(text: String, fontType: FontType = FontType.PLAIN) {
@@ -404,11 +413,11 @@ fun <C : AbstractContentBuilder> HeaderBuilder<C>.column(
 
 /**
  * Legg til en kolonne i header med sammensatt tekst.
- * Se også shorthand-varianten `column("...")`.
+ * Se også kort-varianten `column("...")`.
  *
  * Parametere:
  * - `alignment`: justering av kolonneinnhold ([ColumnAlignment.LEFT] som standard)
- * - `span`: hvor mange kolonner overskriften skal dekke (`1` som standard)
+ * - `span`: hvor mange kolonner overskriften skal dekke (`1` som standard). Brukes som forholdstall for hvor stor andel av bredden en kolonne skal bruke.
  *
  * ```
  * header { column(alignment = ColumnAlignment.RIGHT) { text("Beløp") } }
@@ -423,12 +432,16 @@ fun HeaderBuilder<ContentBuilder>.column(
 
 /**
  * Legg til en kolonne i header med tekst som kan kombineres med `variable(...)`.
- * Se også shorthand-varianten `column("...")`.
+ * Se også kort-varianten `column("...")`.
  *
  * Parametere:
  * - `alignment`: justering av kolonneinnhold ([ColumnAlignment.LEFT] som standard)
- * - `span`: hvor mange kolonner overskriften skal dekke (`1` som standard)
+ * - `span`: hvor mange kolonner overskriften skal dekke (`1` som standard). Brukes som forholdstall for hvor stor andel av bredden en kolonne skal bruke.
  *
+ *   I de visuelle retningslinjene i Nav står det at:
+ *  * Tekst er alltid venstrestilt for leseretning.
+ *  * Tall høyrestilles.
+ *  * I tabeller hvor kolonner blander tall og bokstaver bør det vurderes pr. tabell om innholdet skal venstrestilles eller høyrestilles.
  * ```
  * header { column { text("Beløp "); variable("år") } }
  * ```
@@ -449,7 +462,7 @@ class RowBuilder<C : AbstractContentBuilder> internal constructor(
 
     /**
      * Legg til en celle med sammensatt tekst.
-     * Se også shorthand-varianten `cell("...")`.
+     * Se også kort-varianten `cell("...")`.
      *
      * ```
      * row { cell { text("Sum: "); variable("beløp") } }
@@ -489,7 +502,7 @@ class FormChoiceBuilder<C : AbstractContentBuilder> internal constructor(
 
     /**
      * Legg til et svaralternativ via DSL-blokk. Teksten må være ikke-tom.
-     * Se også shorthand-varianten `choice("...")`.
+     * Se også kort-varianten `choice("...")`.
      *
      * ```
      * formChoice { prompt("Velg"); choice { text("Ja, jeg samtykker") }; choice("Nei") }
@@ -551,7 +564,7 @@ fun <C : AbstractContentBuilder> FormChoiceBuilder<C>.prompt(text: String) =
 
 /**
  * Sett avkrysningsfeltets ledetekst via DSL-blokk med `variable`.
- * Se også shorthand-varianten `prompt("...")`.
+ * Se også kort-varianten `prompt("...")`.
  *
  * ```
  * formChoice { prompt { text("Svar innen "); variable("frist") }; choice("Ja"); choice("Nei") }

@@ -35,6 +35,7 @@ class LetterMarkupDslTest {
             itemList {
                 item { text("Punkt 1") }
                 item { text("Punkt 2") }
+                item("")
             }
             numberedList {
                 item {
@@ -79,15 +80,19 @@ class LetterMarkupDslTest {
         assertEquals("9876543", letter.saksinformasjon.saksnummer.saksnummer)
 
         val types = letter.blocks.map { it.type }
-        assertTrue(types.containsAll(listOf(
-            Block.Type.TITLE2,
-            Block.Type.PARAGRAPH,
-            Block.Type.ITEM_LIST,
-            Block.Type.NUMBERED_LIST,
-            Block.Type.TABLE,
-            Block.Type.FORM_TEXT,
-            Block.Type.FORM_CHOICE,
-        )))
+        assertTrue(
+            types.containsAll(
+                listOf(
+                    Block.Type.TITLE2,
+                    Block.Type.PARAGRAPH,
+                    Block.Type.ITEM_LIST,
+                    Block.Type.NUMBERED_LIST,
+                    Block.Type.TABLE,
+                    Block.Type.FORM_TEXT,
+                    Block.Type.FORM_CHOICE,
+                )
+            )
+        )
 
         val paragraph = letter.blocks.filterIsInstance<Block.Paragraph>().single()
         val textTypes = paragraph.content.map { it.type }
