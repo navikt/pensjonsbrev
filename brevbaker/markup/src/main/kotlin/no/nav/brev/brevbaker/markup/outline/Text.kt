@@ -4,6 +4,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import no.nav.brev.brevbaker.markup.ElementTags
 
+/**
+ * Et tekst-element på laveste nivå: fast tekst ([Literal]), en variabel ([Variable]) eller et
+ * linjeskift ([NewLine]). Hvert element har en unik [id] og en [type] for enkel oppslag uten `is`-sjekk.
+ */
 @Serializable
 sealed class Text {
     abstract val id: Int

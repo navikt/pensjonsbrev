@@ -3,9 +3,9 @@ package no.nav.brev.brevbaker.markup.dsl
 import no.nav.brev.brevbaker.markup.Attachment
 import no.nav.brev.brevbaker.markup.Brevtype
 import no.nav.brev.brevbaker.markup.Foedselsnummer
-import no.nav.brev.brevbaker.markup.LetterMarkupV2
-import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsageV2
-import no.nav.brev.brevbaker.markup.PDFTittelV2
+import no.nav.brev.brevbaker.markup.LetterMarkup
+import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage
+import no.nav.brev.brevbaker.markup.PDFTittel
 import no.nav.brev.brevbaker.markup.SaksbehandlerSignatur
 import no.nav.brev.brevbaker.markup.Saksinformasjon
 import no.nav.brev.brevbaker.markup.Saksnummer
@@ -16,14 +16,14 @@ import java.time.LocalDate
 import kotlin.jvm.JvmName
 
 /**
- * Bygg en [LetterMarkupV2] via DSL. `variable` er ikke tilgjengelig her; bruk [lettermarkupExtended]
+ * Bygg en [LetterMarkup] via DSL. `variable` er ikke tilgjengelig her; bruk [letterMarkupWithVariables]
  * dersom du (som brevbaker/skribenten) trenger variabler.
  */
-fun letterMarkup(build: LetterMarkupBuilder<ContentBuilder>.() -> Unit): LetterMarkupV2 =
+fun letterMarkup(build: LetterMarkupBuilder<ContentBuilder>.() -> Unit): LetterMarkup =
     LetterMarkupBuilder(IdGenerator(), ::ContentBuilder).apply(build).build()
 
 /** Som [letterMarkup], men med `variable` tilgjengelig i tekstinnholdet. */
-fun lettermarkupExtended(build: LetterMarkupBuilder<VariableContentBuilder>.() -> Unit): LetterMarkupV2 =
+fun letterMarkupWithVariables(build: LetterMarkupBuilder<VariableContentBuilder>.() -> Unit): LetterMarkup =
     LetterMarkupBuilder(IdGenerator(), ::VariableContentBuilder).apply(build).build()
 
 /** Bygg en gjenbrukbar outline (liste av [Block]). */
@@ -42,24 +42,24 @@ fun attachment(inkluderSaksinformasjon: Boolean, build: AttachmentBuilder<Conten
 fun attachmentWithVariables(inkluderSaksinformasjon: Boolean, build: AttachmentBuilder<VariableContentBuilder>.() -> Unit): Attachment =
     AttachmentBuilder(IdGenerator(), ::VariableContentBuilder, inkluderSaksinformasjon).apply(build).build()
 
-/** Bygg en [PDFTittelV2] via DSL. */
-fun pdfTittel(content: ContentBuilder.() -> Unit): PDFTittelV2 =
-    PDFTittelV2(IdGenerator().content(::ContentBuilder, content))
+/** Bygg en [PDFTittel] via DSL. */
+fun pdfTittel(content: ContentBuilder.() -> Unit): PDFTittel =
+    PDFTittel(IdGenerator().content(::ContentBuilder, content))
 
 /** Som [pdfTittel], men med `variable` tilgjengelig. */
-fun pdfTittelWithVariables(content: VariableContentBuilder.() -> Unit): PDFTittelV2 =
-    PDFTittelV2(IdGenerator().content(::VariableContentBuilder, content))
+fun pdfTittelWithVariables(content: VariableContentBuilder.() -> Unit): PDFTittel =
+    PDFTittel(IdGenerator().content(::VariableContentBuilder, content))
 
-/** Bygg en [LetterMarkupWithDataUsageV2.Property] via DSL. */
-fun dataUsageProperty(typeName: String, propertyName: String): LetterMarkupWithDataUsageV2.Property =
-    LetterMarkupWithDataUsageV2.Property(typeName, propertyName)
+/** Bygg en [LetterMarkupWithDataUsage.Property] via DSL. */
+fun dataUsageProperty(typeName: String, propertyName: String): LetterMarkupWithDataUsage.Property =
+    LetterMarkupWithDataUsage.Property(typeName, propertyName)
 
-/** Bygg en [LetterMarkupWithDataUsageV2] via DSL. */
+/** Bygg en [LetterMarkupWithDataUsage] via DSL. */
 fun letterMarkupWithDataUsage(
     brevtype: Brevtype,
-    letterDataUsage: Set<LetterMarkupWithDataUsageV2.Property> = emptySet(),
+    letterDataUsage: Set<LetterMarkupWithDataUsage.Property> = emptySet(),
     build: LetterMarkupBuilder<ContentBuilder>.() -> Unit,
-): LetterMarkupWithDataUsageV2 = LetterMarkupWithDataUsageV2(
+): LetterMarkupWithDataUsage = LetterMarkupWithDataUsage(
     markup = letterMarkup(build),
     letterDataUsage = letterDataUsage,
     brevtype = brevtype,
@@ -68,10 +68,10 @@ fun letterMarkupWithDataUsage(
 /** Som [letterMarkupWithDataUsage], men med `variable` tilgjengelig. */
 fun letterMarkupWithDataUsageWithVariables(
     brevtype: Brevtype,
-    letterDataUsage: Set<LetterMarkupWithDataUsageV2.Property> = emptySet(),
+    letterDataUsage: Set<LetterMarkupWithDataUsage.Property> = emptySet(),
     build: LetterMarkupBuilder<VariableContentBuilder>.() -> Unit,
-): LetterMarkupWithDataUsageV2 = LetterMarkupWithDataUsageV2(
-    markup = lettermarkupExtended(build),
+): LetterMarkupWithDataUsage = LetterMarkupWithDataUsage(
+    markup = letterMarkupWithVariables(build),
     letterDataUsage = letterDataUsage,
     brevtype = brevtype,
 )
@@ -125,11 +125,11 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
         )
     }
 
-    internal fun build(): LetterMarkupV2 = LetterMarkupV2(
+    internal fun build(): LetterMarkup = LetterMarkup(
         title1 = title1,
-        saksinformasjon = requireNotNull(saksinformasjon) { "LetterMarkupV2 must have saksinformasjon" },
+        saksinformasjon = requireNotNull(saksinformasjon) { "LetterMarkup must have saksinformasjon" },
         blocks = blocks,
-        signatur = requireNotNull(signatur) { "LetterMarkupV2 must have signatur" },
+        signatur = requireNotNull(signatur) { "LetterMarkup must have signatur" },
     )
 }
 
@@ -153,7 +153,7 @@ class AttachmentBuilder<C : AbstractContentBuilder> internal constructor(
     internal fun build(): Attachment = Attachment(title1, blocks, inkluderSaksinformasjon)
 }
 
-/** Tittel som ren tekst (gjelder både [letterMarkup] og [lettermarkupExtended]). */
+/** Tittel som ren tekst (gjelder både [letterMarkup] og [letterMarkupWithVariables]). */
 fun <C : AbstractContentBuilder> LetterMarkupBuilder<C>.title1(text: String) = setTitle { plainText(text) }
 
 /** Tittel via builder uten `variable` ([letterMarkup]). */
@@ -161,14 +161,11 @@ fun <C : AbstractContentBuilder> LetterMarkupBuilder<C>.title1(text: String) = s
 fun LetterMarkupBuilder<ContentBuilder>.title1(content: PlainTextBuilder.() -> Unit) =
     setTitle { plainText(content) }
 
-/** Tittel som ren tekst med `variable` ([lettermarkupExtended]). */
+/** Tittel som ren tekst med `variable` ([letterMarkupWithVariables]). */
 fun LetterMarkupBuilder<VariableContentBuilder>.title1(content: PlainVariableTextBuilder.() -> Unit) =
     setTitle { plainVariableText(content) }
 
 /** Vedleggstittel som ren tekst (gjelder både [attachment] og [attachmentWithVariables]). */
 fun <C : AbstractContentBuilder> AttachmentBuilder<C>.title1(text: String) {
     title1 { this.text(text) }
-    outline {
-
-    }
 }

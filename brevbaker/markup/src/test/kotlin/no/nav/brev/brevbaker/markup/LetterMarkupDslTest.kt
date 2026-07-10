@@ -2,13 +2,7 @@ package no.nav.brev.brevbaker.markup
 
 import no.nav.brev.brevbaker.markup.ElementTags.FRITEKST
 import no.nav.brev.brevbaker.markup.dsl.column
-import no.nav.brev.brevbaker.markup.dsl.letterMarkup
-import no.nav.brev.brevbaker.markup.dsl.lettermarkupExtended
-import no.nav.brev.brevbaker.markup.dsl.prompt
-import no.nav.brev.brevbaker.markup.dsl.title1
-import no.nav.brev.brevbaker.markup.dsl.title2
-import no.nav.brev.brevbaker.markup.dsl.title3
-import no.nav.brev.brevbaker.markup.dsl.title4
+import no.nav.brev.brevbaker.markup.dsl.*
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
 import no.nav.brev.brevbaker.markup.outline.Block.Table.ColumnAlignment
@@ -21,7 +15,7 @@ import java.time.LocalDate
 
 class LetterMarkupDslTest {
 
-    private fun fullLetter(): LetterMarkupV2 = lettermarkupExtended {
+    private fun fullLetter(): LetterMarkup = letterMarkupWithVariables {
         title1 { text("Vedtak om uføretrygd") }
         saksinformasjon(
             gjelderNavn = "Ola Nordmann",
@@ -119,8 +113,8 @@ class LetterMarkupDslTest {
     @Test
     fun `letter round-trips through json`() {
         val letter = fullLetter()
-        val json = MarkupJson.encodeToString(LetterMarkupV2.serializer(), letter)
-        val decoded = MarkupJson.decodeFromString(LetterMarkupV2.serializer(), json)
+        val json = letter.toJson()
+        val decoded = decodeLetterMarkup(json)
         assertEquals(letter, decoded)
     }
 
@@ -192,7 +186,7 @@ class LetterMarkupDslTest {
 
     @Test
     fun `extended DSL supports shorthand string methods with font type on content`() {
-        val letter = lettermarkupExtended {
+        val letter = letterMarkupWithVariables {
             title1("Vedtak")
             title1 {
                 text("Tittel fra builder ")
@@ -211,6 +205,7 @@ class LetterMarkupDslTest {
                     variable("x")
                 }
                 title3("Mellomtittel")
+                formText("TEXT", Size.SHORT)
                 title3 {
                     text("Mellomtittel ")
                     variable("x")
@@ -249,7 +244,7 @@ class LetterMarkupDslTest {
                         }
                     }
                 }
-                formText(Size.SHORT, "Ledetekst", fontType = FontType.BOLD)
+                formText("Ledetekst", Size.SHORT, fontType = FontType.BOLD)
                 formText(Size.LONG) {
                     text("Skriv ")
                     variable("her")

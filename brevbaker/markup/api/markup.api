@@ -1,4 +1,4 @@
-public final class no/nav/brev/brevbaker/markup/Attachment : no/nav/brev/brevbaker/markup/AttachmentTitleV2 {
+public final class no/nav/brev/brevbaker/markup/Attachment : no/nav/brev/brevbaker/markup/AttachmentTitle {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/Attachment$Companion;
 	public final fun component1 ()Ljava/util/List;
 	public final fun component2 ()Ljava/util/List;
@@ -26,7 +26,7 @@ public final class no/nav/brev/brevbaker/markup/Attachment$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public abstract interface class no/nav/brev/brevbaker/markup/AttachmentTitleV2 {
+public abstract interface class no/nav/brev/brevbaker/markup/AttachmentTitle {
 	public abstract fun getTitle1 ()Ljava/util/List;
 }
 
@@ -75,8 +75,8 @@ public final class no/nav/brev/brevbaker/markup/Foedselsnummer$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/LetterMarkupV2 {
-	public static final field Companion Lno/nav/brev/brevbaker/markup/LetterMarkupV2$Companion;
+public final class no/nav/brev/brevbaker/markup/LetterMarkup {
+	public static final field Companion Lno/nav/brev/brevbaker/markup/LetterMarkup$Companion;
 	public static final field VERSION I
 	public final fun component1 ()Ljava/util/List;
 	public final fun component2 ()Lno/nav/brev/brevbaker/markup/Saksinformasjon;
@@ -93,51 +93,51 @@ public final class no/nav/brev/brevbaker/markup/LetterMarkupV2 {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final synthetic class no/nav/brev/brevbaker/markup/LetterMarkupV2$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/LetterMarkupV2$$serializer;
+public final synthetic class no/nav/brev/brevbaker/markup/LetterMarkup$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/LetterMarkup$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lno/nav/brev/brevbaker/markup/LetterMarkupV2;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lno/nav/brev/brevbaker/markup/LetterMarkupV2;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lno/nav/brev/brevbaker/markup/LetterMarkup;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/LetterMarkupV2$Companion {
+public final class no/nav/brev/brevbaker/markup/LetterMarkup$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2 {
-	public static final field Companion Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2$Companion;
-	public final fun component1 ()Lno/nav/brev/brevbaker/markup/LetterMarkupV2;
+public final class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage {
+	public static final field Companion Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Companion;
+	public final fun component1 ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
 	public final fun component2 ()Ljava/util/Set;
 	public final fun component3 ()Lno/nav/brev/brevbaker/markup/Brevtype;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBrevtype ()Lno/nav/brev/brevbaker/markup/Brevtype;
 	public final fun getLetterDataUsage ()Ljava/util/Set;
-	public final fun getMarkup ()Lno/nav/brev/brevbaker/markup/LetterMarkupV2;
+	public final fun getMarkup ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final synthetic class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2$$serializer;
+public final synthetic class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2$Companion {
+public final class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2$Property {
-	public static final field Companion Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2$Property$Companion;
+public final class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Property {
+	public static final field Companion Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Property$Companion;
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
@@ -147,27 +147,38 @@ public final class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2$Prop
 	public fun toString ()Ljava/lang/String;
 }
 
-public final synthetic class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2$Property$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2$Property$$serializer;
+public final synthetic class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Property$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Property$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2$Property;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Property;
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2$Property;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Property;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2$Property$Companion {
+public final class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Property$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/MarkupJsonKt {
-	public static final fun getMarkupJson ()Lkotlinx/serialization/json/Json;
+public final class no/nav/brev/brevbaker/markup/MarkupSerializationKt {
+	public static final fun decodeAttachment (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Attachment;
+	public static final fun decodeBlock (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/outline/Block;
+	public static final fun decodeLetterMarkup (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
+	public static final fun decodeLetterMarkupWithDataUsage (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;
+	public static final fun decodePDFTittel (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/PDFTittel;
+	public static final fun decodeText (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/outline/Text;
+	public static final fun toJson (Lno/nav/brev/brevbaker/markup/Attachment;)Ljava/lang/String;
+	public static final fun toJson (Lno/nav/brev/brevbaker/markup/LetterMarkup;)Ljava/lang/String;
+	public static final fun toJson (Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;)Ljava/lang/String;
+	public static final fun toJson (Lno/nav/brev/brevbaker/markup/PDFTittel;)Ljava/lang/String;
+	public static final fun toJson (Lno/nav/brev/brevbaker/markup/outline/Block;)Ljava/lang/String;
+	public static final fun toJson (Lno/nav/brev/brevbaker/markup/outline/Text;)Ljava/lang/String;
 }
 
-public final class no/nav/brev/brevbaker/markup/PDFTittelV2 : no/nav/brev/brevbaker/markup/AttachmentTitleV2 {
-	public static final field Companion Lno/nav/brev/brevbaker/markup/PDFTittelV2$Companion;
+public final class no/nav/brev/brevbaker/markup/PDFTittel : no/nav/brev/brevbaker/markup/AttachmentTitle {
+	public static final field Companion Lno/nav/brev/brevbaker/markup/PDFTittel$Companion;
 	public final fun component1 ()Ljava/util/List;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getTitle1 ()Ljava/util/List;
@@ -175,18 +186,18 @@ public final class no/nav/brev/brevbaker/markup/PDFTittelV2 : no/nav/brev/brevba
 	public fun toString ()Ljava/lang/String;
 }
 
-public final synthetic class no/nav/brev/brevbaker/markup/PDFTittelV2$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/PDFTittelV2$$serializer;
+public final synthetic class no/nav/brev/brevbaker/markup/PDFTittel$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/PDFTittel$$serializer;
 	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
 	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lno/nav/brev/brevbaker/markup/PDFTittelV2;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lno/nav/brev/brevbaker/markup/PDFTittel;
 	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
 	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lno/nav/brev/brevbaker/markup/PDFTittelV2;)V
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lno/nav/brev/brevbaker/markup/PDFTittel;)V
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/PDFTittelV2$Companion {
+public final class no/nav/brev/brevbaker/markup/PDFTittel$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -347,17 +358,17 @@ public final class no/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder {
 public final class no/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilderKt {
 	public static final fun attachment (ZLkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/Attachment;
 	public static final fun attachmentWithVariables (ZLkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/Attachment;
-	public static final fun dataUsageProperty (Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2$Property;
-	public static final fun letterMarkup (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkupV2;
-	public static final fun letterMarkupWithDataUsage (Lno/nav/brev/brevbaker/markup/Brevtype;Ljava/util/Set;Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2;
-	public static synthetic fun letterMarkupWithDataUsage$default (Lno/nav/brev/brevbaker/markup/Brevtype;Ljava/util/Set;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2;
-	public static final fun letterMarkupWithDataUsageWithVariables (Lno/nav/brev/brevbaker/markup/Brevtype;Ljava/util/Set;Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2;
-	public static synthetic fun letterMarkupWithDataUsageWithVariables$default (Lno/nav/brev/brevbaker/markup/Brevtype;Ljava/util/Set;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsageV2;
-	public static final fun lettermarkupExtended (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkupV2;
+	public static final fun dataUsageProperty (Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Property;
+	public static final fun letterMarkup (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
+	public static final fun letterMarkupWithDataUsage (Lno/nav/brev/brevbaker/markup/Brevtype;Ljava/util/Set;Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;
+	public static synthetic fun letterMarkupWithDataUsage$default (Lno/nav/brev/brevbaker/markup/Brevtype;Ljava/util/Set;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;
+	public static final fun letterMarkupWithDataUsageWithVariables (Lno/nav/brev/brevbaker/markup/Brevtype;Ljava/util/Set;Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;
+	public static synthetic fun letterMarkupWithDataUsageWithVariables$default (Lno/nav/brev/brevbaker/markup/Brevtype;Ljava/util/Set;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;
+	public static final fun letterMarkupWithVariables (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
 	public static final fun outline (Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun outlineWithVariables (Lkotlin/jvm/functions/Function1;)Ljava/util/List;
-	public static final fun pdfTittel (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/PDFTittelV2;
-	public static final fun pdfTittelWithVariables (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/PDFTittelV2;
+	public static final fun pdfTittel (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/PDFTittel;
+	public static final fun pdfTittelWithVariables (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/PDFTittel;
 	public static final fun title1 (Lno/nav/brev/brevbaker/markup/dsl/AttachmentBuilder;Ljava/lang/String;)V
 	public static final fun title1 (Lno/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder;Ljava/lang/String;)V
 	public static final fun title1 (Lno/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder;Lkotlin/jvm/functions/Function1;)V

@@ -38,7 +38,7 @@ class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
         blocks.add(Block.FormText(ids.next(), ids.content(contentFactory, prompt), size, vspace))
     }
 
-    fun formText(size: Size, text: String, fontType: FontType = FontType.PLAIN, vspace: Boolean = true) {
+    fun formText(text: String, size: Size, fontType: FontType = FontType.PLAIN, vspace: Boolean = true) {
         blocks.add(Block.FormText(ids.next(), listOf(Text.Literal(ids.next(), text, fontType)), size, vspace))
     }
 
@@ -50,6 +50,9 @@ class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
 
     internal fun build(): List<Block> = blocks.toList()
 
+    // Tittel/kolonne/prompt tilbys som extension-funksjoner (ikke medlemmer) slik at plain- og
+    // variabel-varianten kan velges via overload-resolution på C. Disse companion-hjelperne gir
+    // extensionene tilgang til privat tilstand uten å eksponere den på DSL-scopet.
     internal companion object {
         internal fun addTitle2(builder: OutlineBuilder<*>, content: List<Text>) {
             builder.blocks.add(Block.Title2(builder.ids.next(), content))
@@ -207,7 +210,7 @@ fun HeaderBuilder<ContentBuilder>.column(
     content: PlainTextBuilder.() -> Unit,
 ) = HeaderBuilder.addColumn(this, alignment, span, HeaderBuilder.plainText(this, content))
 
-/** Kolonneoverskrift som ren tekst med `variable` ([lettermarkupExtended]). */
+/** Kolonneoverskrift som ren tekst med `variable` ([letterMarkupWithVariables]). */
 @JvmName("columnWithPlainVariableTextBuilder")
 fun HeaderBuilder<VariableContentBuilder>.column(
     alignment: ColumnAlignment = ColumnAlignment.LEFT,
@@ -281,6 +284,6 @@ class FormChoiceBuilder<C : AbstractContentBuilder> internal constructor(
 fun <C : AbstractContentBuilder> FormChoiceBuilder<C>.prompt(text: String) =
     FormChoiceBuilder.addPrompt(this, FormChoiceBuilder.plainText(this, text))
 
-/** Form-choice-ledetekst som ren tekst med `variable` ([lettermarkupExtended]). */
+/** Form-choice-ledetekst som ren tekst med `variable` ([letterMarkupWithVariables]). */
 fun FormChoiceBuilder<VariableContentBuilder>.prompt(content: PlainVariableTextBuilder.() -> Unit) =
     FormChoiceBuilder.addPrompt(this, FormChoiceBuilder.plainVariableText(this, content))

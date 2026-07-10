@@ -21,10 +21,9 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.kotlinx.serialization.json)
+    api(libs.kotlinx.serialization.json)
 
     testImplementation(libs.bundles.junit)
-    testImplementation(libs.kotlinx.serialization.json)
 }
 
 tasks.test {
@@ -45,6 +44,15 @@ publishing {
     publications {
         register<MavenPublication>("gpr") {
             from(components["java"])
+            pom {
+                name.set("brevbaker-markup")
+                description.set("Markup-modell og DSL for å bygge og serialisere Nav-brev.")
+                url.set("https://github.com/navikt/pensjonsbrev")
+                scm {
+                    url.set("https://github.com/navikt/pensjonsbrev")
+                    connection.set("scm:git:https://github.com/navikt/pensjonsbrev.git")
+                }
+            }
         }
     }
 }

@@ -5,9 +5,14 @@ import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Text
 import java.time.LocalDate
 
+/**
+ * Et ferdig bygget brev i markup-format: tittel, saksinformasjon, brødtekst ([blocks]) og signatur.
+ * Bygg via DSL-en ([no.nav.brev.brevbaker.markup.dsl.letterMarkup]) og serialiser med [toJson].
+ * [version] angir markup-formatets versjon på wire.
+ */
 @ConsistentCopyVisibility
 @Serializable
-data class LetterMarkupV2 internal constructor(
+data class LetterMarkup internal constructor(
     val title1: List<Text>,
     val saksinformasjon: Saksinformasjon,
     val blocks: List<Block>,
@@ -19,14 +24,16 @@ data class LetterMarkupV2 internal constructor(
     }
 }
 
+/** Et vedlegg til et brev: egen tittel og brødtekst, med valgfri gjentakelse av saksinformasjon. */
 @ConsistentCopyVisibility
 @Serializable
 data class Attachment internal constructor(
     override val title1: List<Text>,
     val blocks: List<Block>,
     val inkluderSaksinformasjon: Boolean,
-) : AttachmentTitleV2
+) : AttachmentTitle
 
+/** Informasjon om saken og mottakeren brevet gjelder. */
 @ConsistentCopyVisibility
 @Serializable
 data class Saksinformasjon internal constructor(
@@ -38,6 +45,7 @@ data class Saksinformasjon internal constructor(
     val dokumentDato: LocalDate,
 )
 
+/** Avsluttende hilsen og avsenderinformasjon for brevet. */
 @ConsistentCopyVisibility
 @Serializable
 data class Signatur internal constructor(
@@ -46,6 +54,7 @@ data class Signatur internal constructor(
     val navAvsenderEnhet: String,
 )
 
+/** Navn på saksbehandler(e) som står bak brevet. */
 @ConsistentCopyVisibility
 @Serializable
 data class SaksbehandlerSignatur internal constructor(
@@ -53,23 +62,30 @@ data class SaksbehandlerSignatur internal constructor(
     val attesterendeSaksbehandlerNavn: String?,
 )
 
-interface AttachmentTitleV2 {
+/** Felles tittel-kontrakt for elementer med egen tittel ([Attachment], [PDFTittel]). */
+interface AttachmentTitle {
     val title1: List<Text>
 }
 
+/** En frittstående PDF-tittel. */
 @ConsistentCopyVisibility
 @Serializable
-data class PDFTittelV2 internal constructor(
+data class PDFTittel internal constructor(
     override val title1: List<Text>,
-) : AttachmentTitleV2
+) : AttachmentTitle
 
+/**
+ * Et [LetterMarkup] beriket med metadata: hvilke datafelter brevet bruker ([letterDataUsage]) og
+ * hvilken [Brevtype] det er. Beregnet på interne konsumenter (brevbaker/skribenten).
+ */
 @ConsistentCopyVisibility
 @Serializable
-data class LetterMarkupWithDataUsageV2 internal constructor(
-    val markup: LetterMarkupV2,
+data class LetterMarkupWithDataUsage internal constructor(
+    val markup: LetterMarkup,
     val letterDataUsage: Set<Property>,
     val brevtype: Brevtype,
 ) {
+    /** Et enkelt datafelt (type og property) brevet leser fra. */
     @ConsistentCopyVisibility
     @Serializable
     data class Property internal constructor(
