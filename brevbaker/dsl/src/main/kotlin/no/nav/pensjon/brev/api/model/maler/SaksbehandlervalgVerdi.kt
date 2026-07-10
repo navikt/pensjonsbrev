@@ -10,29 +10,18 @@ sealed interface SaksbehandlervalgVerdi<T> {
     val displayText: String
     val typename: String
 
-    fun getValue(saksbehandlervalg: Map<String, *>): T
+    fun getValue(saksbehandlervalg: SaksbehandlervalgIDSL): T
 
     @BrevbakerDSLInternal
     data class Bool @InternKonstruktoer constructor(override val id: String, override val displayText: String) : SaksbehandlervalgVerdi<Boolean?> {
         override val typename: String = "Boolean"
-        override fun getValue(saksbehandlervalg: Map<String, *>): Boolean? = saksbehandlervalg[id] as? Boolean
+        override fun getValue(saksbehandlervalg: SaksbehandlervalgIDSL): Boolean? = saksbehandlervalg[id] as? Boolean
     }
 
     @BrevbakerDSLInternal
     data class Integer @InternKonstruktoer constructor(override val id: String, override val displayText: String) : SaksbehandlervalgVerdi<Int?> {
         override val typename: String = "Int"
-        override fun getValue(saksbehandlervalg: Map<String, *>): Int? = (saksbehandlervalg[id] as? Int) ?: ((saksbehandlervalg[id] as? String)?.toIntOrNull())
-    }
-
-    @BrevbakerDSLInternal
-    data class WithDefault<T : Any> @InternKonstruktoer constructor(val saksbehandlervalgVerdi: SaksbehandlervalgVerdi<T?>, val defaultValue: T) : SaksbehandlervalgVerdi<T> {
-        override val id: String
-            get() = saksbehandlervalgVerdi.id
-        override val displayText: String
-            get() = saksbehandlervalgVerdi.displayText
-        override val typename: String
-            get() = saksbehandlervalgVerdi.typename
-        override fun getValue(saksbehandlervalg: Map<String, *>): T = saksbehandlervalgVerdi.getValue(saksbehandlervalg) ?: defaultValue
+        override fun getValue(saksbehandlervalg: SaksbehandlervalgIDSL): Int? = (saksbehandlervalg[id] as? Int) ?: ((saksbehandlervalg[id] as? String)?.toIntOrNull())
     }
 
     @BrevbakerDSLInternal
@@ -42,7 +31,7 @@ sealed interface SaksbehandlervalgVerdi<T> {
         val clazz: KClass<T>,
     ) : SaksbehandlervalgVerdi<T?> where T : kotlin.Enum<T>, T : SaksbehandlerValgEnum {
         override val typename: String = clazz.qualifiedName!!
-        override fun getValue(saksbehandlervalg: Map<String, *>): T? = (saksbehandlervalg[id] as? String)
+        override fun getValue(saksbehandlervalg: SaksbehandlervalgIDSL): T? = (saksbehandlervalg[id] as? String)
             ?.let { java.lang.Enum.valueOf(clazz.java, it) }
     }
 
@@ -52,6 +41,6 @@ sealed interface SaksbehandlervalgVerdi<T> {
         override val displayText: String,
     ) : SaksbehandlervalgVerdi<String?> {
         override val typename: String = "String"
-        override fun getValue(saksbehandlervalg: Map<String, *>): String? = saksbehandlervalg[id] as? String
+        override fun getValue(saksbehandlervalg: SaksbehandlervalgIDSL): String? = saksbehandlervalg[id] as? String
     }
 }
