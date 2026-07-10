@@ -141,7 +141,7 @@
 }
 
 .missing-from-template-actions button {
-  background: var(--ax-bg-accent-soft);
+  background: var(--ax-bg-default);
 }
 
 .missing-from-template-actions button:hover,
