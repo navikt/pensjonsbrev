@@ -32,4 +32,4 @@ object BrevbakerBrevdataModule : SimpleModule() {
     }
 }
 
-class SaksbehandlervalgMap : SaksbehandlervalgIDSL, LinkedHashMap<String, Any?>()
+private class SaksbehandlervalgMap : SaksbehandlervalgIDSL, LinkedHashMap<String, Any?>()
