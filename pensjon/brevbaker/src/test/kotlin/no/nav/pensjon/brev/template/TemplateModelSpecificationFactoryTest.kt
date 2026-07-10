@@ -2,6 +2,10 @@
 
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.InternKonstruktoer
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType.Scalar.Kind
@@ -172,6 +176,65 @@ class TemplateModelSpecificationFactoryTest {
         assertThrows<TemplateModelSpecificationError>("Should not support circular-recursive types") {
             TemplateModelSpecificationFactory(SubRecursive::class).build(emptyMap())
         }
+    }
+
+    data class WithSaksbehandlervalg(val navn: String, val valg: SaksbehandlervalgIDSL)
+
+    enum class TestEnum(override val displayText: String) : SaksbehandlerValgEnum {
+        ALTERNATIV_EN("Alternativ en"),
+        ALTERNATIV_TO("Alternativ to"),
+    }
+
+    @OptIn(InternKonstruktoer::class)
+    private val saksbehandlervalg: Map<String, SaksbehandlervalgVerdi<*>> = mapOf(
+        "boolValg" to SaksbehandlervalgVerdi.Bool("boolValg", "Bool display"),
+        "intValg" to SaksbehandlervalgVerdi.Integer("intValg", "Int display"),
+        "textValg" to SaksbehandlervalgVerdi.Text("textValg", "Text display"),
+        "enumValg" to SaksbehandlervalgVerdi.Enum("enumValg", "Enum display", TestEnum::class),
+    )
+
+    @Test
+    fun `SaksbehandlervalgIDSL field gets Object type pointing to its own type spec`() {
+        val spec = TemplateModelSpecificationFactory(WithSaksbehandlervalg::class).build(saksbehandlervalg)
+        val withValgSpec = spec.types[WithSaksbehandlervalg::class.qualifiedName!!]!!
+
+        assertThat(withValgSpec["valg"]).isEqualTo(FieldType.Object(false, SaksbehandlervalgIDSL::class.qualifiedName!!))
+    }
+
+    @Test
+    fun `SaksbehandlervalgIDSL type spec has one field per registered saksbehandlervalg`() {
+        val spec = TemplateModelSpecificationFactory(WithSaksbehandlervalg::class).build(saksbehandlervalg)
+        val valgSpec = spec.types[SaksbehandlervalgIDSL::class.qualifiedName!!]!!
+
+        assertThat(valgSpec.keys).containsExactlyInAnyOrder("boolValg", "intValg", "textValg", "enumValg")
+    }
+
+    @Test
+    fun `SaksbehandlervalgVerdi types are mapped to correct FieldType`() {
+        val spec = TemplateModelSpecificationFactory(WithSaksbehandlervalg::class).build(saksbehandlervalg)
+        val valgSpec = spec.types[SaksbehandlervalgIDSL::class.qualifiedName!!]!!
+
+        assertThat(valgSpec["boolValg"]).isEqualTo(FieldType.Scalar(true, Kind.BOOLEAN, "Bool display"))
+        assertThat(valgSpec["intValg"]).isEqualTo(FieldType.Scalar(true, Kind.NUMBER, "Int display"))
+        assertThat(valgSpec["textValg"]).isEqualTo(FieldType.Scalar(true, Kind.STRING, "Text display"))
+        assertThat(valgSpec["enumValg"]).isEqualTo(
+            FieldType.Enum(
+                true,
+                setOf(FieldType.EnumEntry("ALTERNATIV_EN", "Alternativ en"), FieldType.EnumEntry("ALTERNATIV_TO", "Alternativ to")),
+            )
+        )
+    }
+
+    @Test
+    fun `fails when SaksbehandlervalgIDSL is present but no saksbehandlervalg map is provided`() {
+        assertThrows<IllegalArgumentException> {
+            TemplateModelSpecificationFactory(WithSaksbehandlervalg::class).build(null)
+        }
+    }
+
+    @Test
+    fun `model without SaksbehandlervalgIDSL fields does not require a saksbehandlervalg map`() {
+        assertThat(TemplateModelSpecificationFactory(AModel::class).build(null)).isEqualTo(spec)
     }
 
 }
