@@ -1,7 +1,12 @@
 package no.nav.brev.brevbaker.markup
 
+import no.nav.brev.brevbaker.markup.dsl.HeaderBuilder
+import no.nav.brev.brevbaker.markup.dsl.column
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
-import no.nav.brev.brevbaker.markup.dsl.letterMarkupWithVariables
+import no.nav.brev.brevbaker.markup.dsl.lettermarkupExtended
+import no.nav.brev.brevbaker.markup.dsl.prompt
+import no.nav.brev.brevbaker.markup.dsl.title
+import no.nav.brev.brevbaker.markup.dsl.title2
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
 import no.nav.brev.brevbaker.markup.outline.Block.Table.ColumnAlignment
@@ -13,7 +18,7 @@ import java.time.LocalDate
 
 class LetterMarkupDslTest {
 
-    private fun fullLetter(): LetterMarkupV2 = letterMarkupWithVariables {
+    private fun fullLetter(): LetterMarkupV2 = lettermarkupExtended {
         title { literal("Vedtak om uføretrygd") }
         saksinformasjon(
             gjelderNavn = "Ola Nordmann",
@@ -23,35 +28,38 @@ class LetterMarkupDslTest {
             annenMottakerNavn = "Kari Nordmann",
         )
         outline {
-            title2 { literal("Innledning") }
+            title2 { text("Innledning") }
             paragraph {
-                literal("Du får ")
+                text("Du får ")
                 variable("uføretrygd")
-                literal(".")
+                text(".")
                 newLine()
             }
             itemList {
-                item { literal("Punkt 1") }
-                item { literal("Punkt 2") }
+                item { text("Punkt 1") }
+                item { text("Punkt 2") }
             }
             numberedList {
-                item { literal("Steg 1") }
+                item { text("Steg 1") }
             }
             table {
                 header {
-                    column(ColumnAlignment.LEFT) { literal("Kolonne A") }
+                    column(ColumnAlignment.LEFT) {
+                        literal("Kolonne ")
+                        variable("A")
+                    }
                     column(ColumnAlignment.RIGHT, span = 2) { literal("Kolonne B") }
                 }
                 row {
-                    cell { literal("A1") }
-                    cell { literal("B1") }
+                    cell { text("A1") }
+                    cell { text("B1") }
                 }
             }
-            formText(Size.LONG) { literal("Skriv her") }
+            formText(Size.LONG) { text("Skriv her") }
             formChoice {
                 prompt { literal("Velg") }
-                choice { literal("Ja") }
-                choice { literal("Nei") }
+                choice { text("Ja") }
+                choice { text("Nei") }
             }
         }
         signatur(
@@ -114,7 +122,7 @@ class LetterMarkupDslTest {
     @Test
     fun `base letterMarkup builds without variables`() {
         val letter = letterMarkup {
-            title { literal("Tittel") }
+            title("Tittel")
             saksinformasjon(
                 gjelderNavn = "Ola Nordmann",
                 gjelderFoedselsnummer = "12345678901",
@@ -122,9 +130,30 @@ class LetterMarkupDslTest {
                 dokumentDato = LocalDate.of(2026, 7, 9),
             )
             outline {
+                title2("")
                 paragraph {
-                    literal("Kun litteral tekst.")
-                    newLine()
+                    text("Kun litteral tekst.")
+                }
+                table{
+                    header {
+                        column("Bla!")
+                        column("Bla!")
+                        HeaderBuilder.plainText(HeaderB)
+                        column("Bla!")
+                    }
+
+                    row {
+                        cell {
+                            text("mø")
+                        }
+                        cell {
+                            text("mø")
+                        }
+                        cell {
+                            text("mø")
+                        }
+                        cell("mø")
+                    }
                 }
             }
             signatur(
@@ -135,6 +164,6 @@ class LetterMarkupDslTest {
         }
 
         val paragraph = letter.blocks.filterIsInstance<Block.Paragraph>().single()
-        assertEquals(listOf(Text.Type.LITERAL, Text.Type.NEW_LINE), paragraph.content.map { it.type })
+        assertEquals(listOf(Text.Type.LITERAL), paragraph.content.map { it.type })
     }
 }

@@ -15,14 +15,14 @@ import no.nav.brev.brevbaker.markup.outline.Text
 import java.time.LocalDate
 
 /**
- * Bygg en [LetterMarkupV2] via DSL. `variable` er ikke tilgjengelig her; bruk [letterMarkupWithVariables]
+ * Bygg en [LetterMarkupV2] via DSL. `variable` er ikke tilgjengelig her; bruk [lettermarkupExtended]
  * dersom du (som brevbaker/skribenten) trenger variabler.
  */
 fun letterMarkup(build: LetterMarkupBuilder<ContentBuilder>.() -> Unit): LetterMarkupV2 =
     LetterMarkupBuilder(IdGenerator(), ::ContentBuilder).apply(build).build()
 
 /** Som [letterMarkup], men med `variable` tilgjengelig i tekstinnholdet. */
-fun letterMarkupWithVariables(build: LetterMarkupBuilder<VariableContentBuilder>.() -> Unit): LetterMarkupV2 =
+fun lettermarkupExtended(build: LetterMarkupBuilder<VariableContentBuilder>.() -> Unit): LetterMarkupV2 =
     LetterMarkupBuilder(IdGenerator(), ::VariableContentBuilder).apply(build).build()
 
 /** Bygg en gjenbrukbar outline (liste av [Block]). */
@@ -70,7 +70,7 @@ fun letterMarkupWithDataUsageWithVariables(
     letterDataUsage: Set<LetterMarkupWithDataUsageV2.Property> = emptySet(),
     build: LetterMarkupBuilder<VariableContentBuilder>.() -> Unit,
 ): LetterMarkupWithDataUsageV2 = LetterMarkupWithDataUsageV2(
-    markup = letterMarkupWithVariables(build),
+    markup = lettermarkupExtended(build),
     letterDataUsage = letterDataUsage,
     brevtype = brevtype,
 )
@@ -85,8 +85,8 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
     private var blocks: List<Block> = emptyList()
     private var signatur: Signatur? = null
 
-    fun title(content: C.() -> Unit) {
-        title1 = ids.content(contentFactory, content)
+    internal fun setTitle(content: IdGenerator.() -> List<Text>) {
+        title1 = ids.content()
     }
 
     fun saksinformasjon(
@@ -151,3 +151,10 @@ class AttachmentBuilder<C : AbstractContentBuilder> internal constructor(
 
     internal fun build(): Attachment = Attachment(title1, blocks, inkluderSaksinformasjon)
 }
+
+/** Tittel som ren tekst ([letterMarkup] uten variabler). */
+fun LetterMarkupBuilder<ContentBuilder>.title(text: String) = setTitle { plainText(text) }
+
+/** Tittel som ren tekst med `variable` ([lettermarkupExtended]). */
+fun LetterMarkupBuilder<VariableContentBuilder>.title(content: PlainVariableTextBuilder.() -> Unit) =
+    setTitle { plainVariableText(content) }

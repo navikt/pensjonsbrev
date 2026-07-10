@@ -323,12 +323,9 @@ public final class no/nav/brev/brevbaker/markup/dsl/ContentBuilder : no/nav/brev
 
 public final class no/nav/brev/brevbaker/markup/dsl/FormChoiceBuilder {
 	public final fun choice (Lkotlin/jvm/functions/Function1;)V
-	public final fun prompt (Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class no/nav/brev/brevbaker/markup/dsl/HeaderBuilder {
-	public final fun column (Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;ILkotlin/jvm/functions/Function1;)V
-	public static synthetic fun column$default (Lno/nav/brev/brevbaker/markup/dsl/HeaderBuilder;Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
 }
 
 public final class no/nav/brev/brevbaker/markup/dsl/ItemsBuilder {
@@ -341,7 +338,6 @@ public final class no/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder {
 	public static synthetic fun saksinformasjon$default (Lno/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/time/LocalDate;Ljava/lang/String;ILjava/lang/Object;)V
 	public final fun signatur (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public static synthetic fun signatur$default (Lno/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)V
-	public final fun title (Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class no/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilderKt {
@@ -358,6 +354,8 @@ public final class no/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilderKt {
 	public static final fun outlineWithVariables (Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun pdfTittel (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/PDFTittelV2;
 	public static final fun pdfTittelWithVariables (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/PDFTittelV2;
+	public static final fun title (Lno/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder;Ljava/lang/String;)V
+	public static final fun title (Lno/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder;Lkotlin/jvm/functions/Function1;)V
 }
 
 public abstract interface annotation class no/nav/brev/brevbaker/markup/dsl/MarkupDsl : java/lang/annotation/Annotation {
@@ -372,9 +370,26 @@ public final class no/nav/brev/brevbaker/markup/dsl/OutlineBuilder {
 	public final fun numberedList (Lkotlin/jvm/functions/Function1;)V
 	public final fun paragraph (Lkotlin/jvm/functions/Function1;)V
 	public final fun table (Lkotlin/jvm/functions/Function1;)V
-	public final fun title2 (Lkotlin/jvm/functions/Function1;)V
-	public final fun title3 (Lkotlin/jvm/functions/Function1;)V
-	public final fun title4 (Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class no/nav/brev/brevbaker/markup/dsl/OutlineBuilderKt {
+	public static final fun column (Lno/nav/brev/brevbaker/markup/dsl/HeaderBuilder;Ljava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;I)V
+	public static final fun column (Lno/nav/brev/brevbaker/markup/dsl/HeaderBuilder;Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;ILkotlin/jvm/functions/Function1;)V
+	public static synthetic fun column$default (Lno/nav/brev/brevbaker/markup/dsl/HeaderBuilder;Ljava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;IILjava/lang/Object;)V
+	public static synthetic fun column$default (Lno/nav/brev/brevbaker/markup/dsl/HeaderBuilder;Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;ILkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static final fun prompt (Lno/nav/brev/brevbaker/markup/dsl/FormChoiceBuilder;Ljava/lang/String;)V
+	public static final fun prompt (Lno/nav/brev/brevbaker/markup/dsl/FormChoiceBuilder;Lkotlin/jvm/functions/Function1;)V
+	public static final fun title2 (Lno/nav/brev/brevbaker/markup/dsl/OutlineBuilder;Ljava/lang/String;)V
+	public static final fun title2 (Lno/nav/brev/brevbaker/markup/dsl/OutlineBuilder;Lkotlin/jvm/functions/Function1;)V
+	public static final fun title3 (Lno/nav/brev/brevbaker/markup/dsl/OutlineBuilder;Ljava/lang/String;)V
+	public static final fun title3 (Lno/nav/brev/brevbaker/markup/dsl/OutlineBuilder;Lkotlin/jvm/functions/Function1;)V
+	public static final fun title4 (Lno/nav/brev/brevbaker/markup/dsl/OutlineBuilder;Ljava/lang/String;)V
+	public static final fun title4 (Lno/nav/brev/brevbaker/markup/dsl/OutlineBuilder;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class no/nav/brev/brevbaker/markup/dsl/PlainVariableTextBuilder {
+	public final fun literal (Ljava/lang/String;)V
+	public final fun variable (Ljava/lang/String;)V
 }
 
 public final class no/nav/brev/brevbaker/markup/dsl/RowBuilder {
