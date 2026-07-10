@@ -161,6 +161,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const [unexpectedError, setUnexpectedError] = useState<AxiosError | null>(null);
   const [warnOpen, setWarnOpen] = useState(false);
   const [warn, setWarn] = useState<{ kind: WarnModalKind; count?: number } | null>(null);
+  const pendingSubmitValuesRef = useRef<VedtakSidemenyFormData | null>(null);
 
   const lastSeenLetterIdsRef = useRef<ReadonlySet<number>>(collectAllIds(props.brev.redigertBrev));
   const previousTekstvalgRef = useRef(props.brev.saksbehandlerValg);
@@ -375,10 +376,12 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const guardedSubmit = form.handleSubmit((values) => {
     const warning = getWarning();
     if (warning) {
+      pendingSubmitValuesRef.current = values;
       setWarn(warning);
       setWarnOpen(true);
       return;
     }
+    pendingSubmitValuesRef.current = null;
     submitAttest(values);
   });
 
@@ -389,14 +392,19 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         fortsettLabel="Fortsett til forhåndsvisning"
         kind={warn?.kind ?? "fritekst"}
         onClose={() => {
+          pendingSubmitValuesRef.current = null;
           setWarnOpen(false);
           setWarn(null);
         }}
         onFortsett={() => {
+          const values = pendingSubmitValuesRef.current;
+          pendingSubmitValuesRef.current = null;
           setWarnOpen(false);
           setWarn(null);
-          submitAttest(form.getValues());
+          if (!values) return;
+          submitAttest(values);
         }}
+
         open={warnOpen}
       />
       {forbidReason && <AttestForbiddenModal onClose={() => setForbidReason(null)} reason={forbidReason} />}

@@ -81,8 +81,8 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
         </Button>
         <Button
           onClick={() => {
-            onClose();
             onFortsett();
+            onClose();
           }}
           type="button"
           variant="tertiary"
