@@ -141,7 +141,7 @@ class AttachmentBuilder<C : AbstractContentBuilder> internal constructor(
     private var title1: List<Text> = emptyList()
     private var blocks: List<Block> = emptyList()
 
-    fun title(content: C.() -> Unit) {
+    fun title1(content: C.() -> Unit) {
         title1 = ids.content(contentFactory, content)
     }
 
@@ -152,9 +152,17 @@ class AttachmentBuilder<C : AbstractContentBuilder> internal constructor(
     internal fun build(): Attachment = Attachment(title1, blocks, inkluderSaksinformasjon)
 }
 
-/** Tittel som ren tekst ([letterMarkup] uten variabler). */
-fun LetterMarkupBuilder<ContentBuilder>.title(text: String) = setTitle { plainText(text) }
+/** Tittel som ren tekst (gjelder både [letterMarkup] og [lettermarkupExtended]). */
+fun <C : AbstractContentBuilder> LetterMarkupBuilder<C>.title1(text: String) = setTitle { plainText(text) }
 
 /** Tittel som ren tekst med `variable` ([lettermarkupExtended]). */
-fun LetterMarkupBuilder<VariableContentBuilder>.title(content: PlainVariableTextBuilder.() -> Unit) =
+fun LetterMarkupBuilder<VariableContentBuilder>.title1(content: PlainVariableTextBuilder.() -> Unit) =
     setTitle { plainVariableText(content) }
+
+/** Vedleggstittel som ren tekst (gjelder både [attachment] og [attachmentWithVariables]). */
+fun <C : AbstractContentBuilder> AttachmentBuilder<C>.title1(text: String) {
+    title1 { this.text(text) }
+    outline {
+
+    }
+}

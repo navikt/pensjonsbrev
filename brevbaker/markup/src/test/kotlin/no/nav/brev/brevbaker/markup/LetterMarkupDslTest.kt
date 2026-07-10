@@ -1,16 +1,18 @@
 package no.nav.brev.brevbaker.markup
 
-import no.nav.brev.brevbaker.markup.dsl.HeaderBuilder
+import no.nav.brev.brevbaker.markup.ElementTags.FRITEKST
+import no.nav.brev.brevbaker.markup.dsl.attachment
 import no.nav.brev.brevbaker.markup.dsl.column
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
 import no.nav.brev.brevbaker.markup.dsl.lettermarkupExtended
 import no.nav.brev.brevbaker.markup.dsl.prompt
-import no.nav.brev.brevbaker.markup.dsl.title
+import no.nav.brev.brevbaker.markup.dsl.title1
 import no.nav.brev.brevbaker.markup.dsl.title2
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
 import no.nav.brev.brevbaker.markup.outline.Block.Table.ColumnAlignment
 import no.nav.brev.brevbaker.markup.outline.Text
+import no.nav.brev.brevbaker.markup.outline.Text.FontType
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -19,7 +21,7 @@ import java.time.LocalDate
 class LetterMarkupDslTest {
 
     private fun fullLetter(): LetterMarkupV2 = lettermarkupExtended {
-        title { literal("Vedtak om uføretrygd") }
+        title1 { text("Vedtak om uføretrygd") }
         saksinformasjon(
             gjelderNavn = "Ola Nordmann",
             gjelderFoedselsnummer = "12345678901",
@@ -40,15 +42,17 @@ class LetterMarkupDslTest {
                 item { text("Punkt 2") }
             }
             numberedList {
-                item { text("Steg 1") }
+                item {
+                    text("Steg 1")
+                }
             }
             table {
                 header {
                     column(ColumnAlignment.LEFT) {
-                        literal("Kolonne ")
+                        text("Kolonne ")
                         variable("A")
                     }
-                    column(ColumnAlignment.RIGHT, span = 2) { literal("Kolonne B") }
+                    column(ColumnAlignment.RIGHT, span = 2) { text("Kolonne B") }
                 }
                 row {
                     cell { text("A1") }
@@ -57,7 +61,7 @@ class LetterMarkupDslTest {
             }
             formText(Size.LONG) { text("Skriv her") }
             formChoice {
-                prompt { literal("Velg") }
+                prompt { text("Velg") }
                 choice { text("Ja") }
                 choice { text("Nei") }
             }
@@ -121,24 +125,41 @@ class LetterMarkupDslTest {
 
     @Test
     fun `base letterMarkup builds without variables`() {
+        val text = listOf("a", "b")
         val letter = letterMarkup {
-            title("Tittel")
             saksinformasjon(
                 gjelderNavn = "Ola Nordmann",
                 gjelderFoedselsnummer = "12345678901",
                 saksnummer = "9876543",
                 dokumentDato = LocalDate.of(2026, 7, 9),
             )
+            title1("Tittel")
             outline {
                 title2("")
+                text.forEach {
+                    paragraph(it)
+                }
+                title2 {
+                    text("", FontType.BOLD)
+                    newLine()
+                }
                 paragraph {
                     text("Kun litteral tekst.")
+                    if(1==2) {
+                        text("the end is nigh!")
+                    } else {
+                        text("phew")
+                    }
                 }
-                table{
+
+                paragraph("Literally just the usual literal.")
+                table {
                     header {
+                        column(alignment = ColumnAlignment.LEFT, span = 2) {
+                            text("Bla!")
+                        }
+                        column("Bla!", alignment = ColumnAlignment.LEFT, span = 2)
                         column("Bla!")
-                        column("Bla!")
-                        HeaderBuilder.plainText(HeaderB)
                         column("Bla!")
                     }
 
@@ -161,9 +182,93 @@ class LetterMarkupDslTest {
                 navAvsenderEnhet = "NAV",
                 saksbehandlerNavn = "Sak S.Behandler",
             )
+            attachment(false) {
+                title1 ("Vedlegg er niz")
+                outline {
+                    table{
+                        header { column("mø") }
+                        row {
+                            cell("mø")
+                        }
+                    }
+                }
+            }
         }
 
         val paragraph = letter.blocks.filterIsInstance<Block.Paragraph>().single()
         assertEquals(listOf(Text.Type.LITERAL), paragraph.content.map { it.type })
+    }
+
+    @Test
+    fun `extended DSL supports shorthand string methods with font type on content`() {
+        val letter = lettermarkupExtended {
+            title1("Vedtak")
+            title1 {
+                text("something")
+                variable("something")
+            }
+            saksinformasjon(
+                gjelderNavn = "Ola Nordmann",
+                gjelderFoedselsnummer = "12345678901",
+                saksnummer = "9876543",
+                dokumentDato = LocalDate.of(2026, 7, 9),
+            )
+            outline {
+                title2("Innledning")
+                paragraph("Ingress", fontType = FontType.BOLD)
+                itemList {
+                    item("Punkt", fontType = FontType.BOLD)
+                    item {
+                        text("Du får ")
+                        variable("1000 Kr")
+                    }
+                }
+                table {
+                    header {
+                        column("Kolonne")
+                        column("Kolonne 2")
+                    }
+                    row {
+                        cell("Celle", fontType = FontType.BOLD)
+                        cell {
+                            text("bla")
+                        }
+                    }
+                }
+                formText(Size.SHORT, "Ledetekst", fontType = FontType.BOLD)
+                formChoice {
+                    prompt("Velg")
+                    prompt {
+                        text("Du får svar innen ")
+                        variable("x")
+                        text("uker.")
+                    }
+                    choice("Ja", fontType = FontType.BOLD)
+                    choice("Nei")
+                    choice {
+                        text("kanskje")
+                        variable("eller?", tags = setOf(FRITEKST))
+                    }
+                }
+            }
+            signatur(
+                hilsenTekst = "Hilsen",
+                navAvsenderEnhet = "NAV",
+            )
+        }
+
+        assertEquals("Vedtak", (letter.title1.single() as Text.Literal).text)
+
+        val title2 = letter.blocks.filterIsInstance<Block.Title2>().single()
+        assertEquals(FontType.PLAIN, (title2.content.single() as Text.Literal).fontType)
+
+        val paragraph = letter.blocks.filterIsInstance<Block.Paragraph>().single()
+        assertEquals(FontType.BOLD, (paragraph.content.single() as Text.Literal).fontType)
+
+        val item = letter.blocks.filterIsInstance<Block.ItemList>().single().items.first()
+        assertEquals(FontType.BOLD, (item.content.single() as Text.Literal).fontType)
+
+        val cell = letter.blocks.filterIsInstance<Block.Table>().single().rows.single().cells.first()
+        assertEquals(FontType.BOLD, (cell.text.single() as Text.Literal).fontType)
     }
 }

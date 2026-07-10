@@ -40,18 +40,30 @@ class VariableContentBuilder internal constructor(ids: IdGenerator) : AbstractCo
 
 /**
  * Begrenset tekst-scope for overskrifter/ledetekster (titler, kolonneoverskrifter, form-choice-ledetekst).
- * Tillater kun ren tekst: [literal] og [variable] uten [FontType] (alltid [FontType.PLAIN]) og uten linjeskift.
+ * Tillater kun ren tekst: [text] og [variable] uten [FontType] (alltid [FontType.PLAIN]) og uten linjeskift.
  */
 @MarkupDsl
 class PlainVariableTextBuilder internal constructor(private val ids: IdGenerator) {
     private val texts: MutableList<Text> = mutableListOf()
 
-    fun literal(text: String) {
+    fun text(text: String) {
         texts.add(Text.Literal(ids.next(), text, FontType.PLAIN))
     }
 
     fun variable(text: String) {
         texts.add(Text.Variable(ids.next(), text, FontType.PLAIN))
+    }
+
+    internal fun build(): List<Text> = texts.toList()
+}
+
+/** Begrenset tekst-scope uten `variable` for plain-only overskrifter i [letterMarkup]. */
+@MarkupDsl
+class PlainTextBuilder internal constructor(private val ids: IdGenerator) {
+    private val texts: MutableList<Text> = mutableListOf()
+
+    fun text(text: String) {
+        texts.add(Text.Literal(ids.next(), text, FontType.PLAIN))
     }
 
     internal fun build(): List<Text> = texts.toList()
@@ -64,6 +76,10 @@ internal fun <C : AbstractContentBuilder> IdGenerator.content(factory: ContentFa
 
 /** Ren tekst fra en enkel [String] (kun [Text.Literal], [FontType.PLAIN]). */
 internal fun IdGenerator.plainText(text: String): List<Text> = listOf(Text.Literal(next(), text, FontType.PLAIN))
+
+/** Ren tekst fra builder (kun [Text.Literal], [FontType.PLAIN], ingen linjeskift). */
+internal fun IdGenerator.plainText(build: PlainTextBuilder.() -> Unit): List<Text> =
+    PlainTextBuilder(this).apply(build).build()
 
 /** Ren tekst med `variable` (kun [Text.Literal]/[Text.Variable], [FontType.PLAIN], ingen linjeskift). */
 internal fun IdGenerator.plainVariableText(build: PlainVariableTextBuilder.() -> Unit): List<Text> =

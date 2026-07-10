@@ -4,6 +4,8 @@ import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
 import no.nav.brev.brevbaker.markup.outline.Block.Table.ColumnAlignment
 import no.nav.brev.brevbaker.markup.outline.Text
+import no.nav.brev.brevbaker.markup.outline.Text.FontType
+import kotlin.jvm.JvmName
 
 @MarkupDsl
 class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
@@ -12,20 +14,12 @@ class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
 ) {
     private val blocks = mutableListOf<Block>()
 
-    fun title2(content: C.() -> Unit) {
-        blocks.add(Block.Title2(ids.next(), ids.content(contentFactory, content)))
-    }
-
-    fun title3(content: C.() -> Unit) {
-        blocks.add(Block.Title3(ids.next(), ids.content(contentFactory, content)))
-    }
-
-    fun title4(content: C.() -> Unit) {
-        blocks.add(Block.Title4(ids.next(), ids.content(contentFactory, content)))
-    }
-
     fun paragraph(content: C.() -> Unit) {
         blocks.add(Block.Paragraph(ids.next(), ids.content(contentFactory, content)))
+    }
+
+    fun paragraph(text: String, fontType: FontType = FontType.PLAIN) {
+        blocks.add(Block.Paragraph(ids.next(), listOf(Text.Literal(ids.next(), text, fontType))))
     }
 
     fun itemList(build: ItemsBuilder<C>.() -> Unit) {
@@ -42,6 +36,10 @@ class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
 
     fun formText(size: Size, vspace: Boolean = true, prompt: C.() -> Unit) {
         blocks.add(Block.FormText(ids.next(), ids.content(contentFactory, prompt), size, vspace))
+    }
+
+    fun formText(size: Size, text: String, fontType: FontType = FontType.PLAIN, vspace: Boolean = true) {
+        blocks.add(Block.FormText(ids.next(), listOf(Text.Literal(ids.next(), text, fontType)), size, vspace))
     }
 
     fun formChoice(vspace: Boolean = true, build: FormChoiceBuilder<C>.() -> Unit) {
@@ -67,6 +65,9 @@ class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
 
         internal fun plainText(builder: OutlineBuilder<*>, text: String): List<Text> = builder.ids.plainText(text)
 
+        internal fun plainText(builder: OutlineBuilder<*>, content: PlainTextBuilder.() -> Unit): List<Text> =
+            builder.ids.plainText(content)
+
         internal fun plainVariableText(
             builder: OutlineBuilder<*>,
             content: PlainVariableTextBuilder.() -> Unit,
@@ -74,21 +75,36 @@ class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
     }
 }
 
-fun OutlineBuilder<ContentBuilder>.title2(text: String) =
+fun <C : AbstractContentBuilder> OutlineBuilder<C>.title2(text: String) =
     OutlineBuilder.addTitle2(this, OutlineBuilder.plainText(this, text))
 
+@JvmName("title2WithPlainTextBuilder")
+fun OutlineBuilder<ContentBuilder>.title2(content: PlainTextBuilder.() -> Unit) =
+    OutlineBuilder.addTitle2(this, OutlineBuilder.plainText(this, content))
+
+@JvmName("title2WithPlainVariableTextBuilder")
 fun OutlineBuilder<VariableContentBuilder>.title2(content: PlainVariableTextBuilder.() -> Unit) =
     OutlineBuilder.addTitle2(this, OutlineBuilder.plainVariableText(this, content))
 
-fun OutlineBuilder<ContentBuilder>.title3(text: String) =
+fun <C : AbstractContentBuilder> OutlineBuilder<C>.title3(text: String) =
     OutlineBuilder.addTitle3(this, OutlineBuilder.plainText(this, text))
 
+@JvmName("title3WithPlainTextBuilder")
+fun OutlineBuilder<ContentBuilder>.title3(content: PlainTextBuilder.() -> Unit) =
+    OutlineBuilder.addTitle3(this, OutlineBuilder.plainText(this, content))
+
+@JvmName("title3WithPlainVariableTextBuilder")
 fun OutlineBuilder<VariableContentBuilder>.title3(content: PlainVariableTextBuilder.() -> Unit) =
     OutlineBuilder.addTitle3(this, OutlineBuilder.plainVariableText(this, content))
 
-fun OutlineBuilder<ContentBuilder>.title4(text: String) =
+fun <C : AbstractContentBuilder> OutlineBuilder<C>.title4(text: String) =
     OutlineBuilder.addTitle4(this, OutlineBuilder.plainText(this, text))
 
+@JvmName("title4WithPlainTextBuilder")
+fun OutlineBuilder<ContentBuilder>.title4(content: PlainTextBuilder.() -> Unit) =
+    OutlineBuilder.addTitle4(this, OutlineBuilder.plainText(this, content))
+
+@JvmName("title4WithPlainVariableTextBuilder")
 fun OutlineBuilder<VariableContentBuilder>.title4(content: PlainVariableTextBuilder.() -> Unit) =
     OutlineBuilder.addTitle4(this, OutlineBuilder.plainVariableText(this, content))
 
@@ -101,6 +117,10 @@ class ItemsBuilder<C : AbstractContentBuilder> internal constructor(
 
     fun item(content: C.() -> Unit) {
         items.add(Block.Item(ids.next(), ids.content(contentFactory, content)))
+    }
+
+    fun item(text: String, fontType: FontType = FontType.PLAIN) {
+        items.add(Block.Item(ids.next(), listOf(Text.Literal(ids.next(), text, fontType))))
     }
 
     internal fun build(): List<Block.Item> {
@@ -162,6 +182,9 @@ class HeaderBuilder<C : AbstractContentBuilder> internal constructor(
 
         internal fun plainText(builder: HeaderBuilder<*>, text: String): List<Text> = builder.ids.plainText(text)
 
+        internal fun plainText(builder: HeaderBuilder<*>, content: PlainTextBuilder.() -> Unit): List<Text> =
+            builder.ids.plainText(content)
+
         internal fun plainVariableText(
             builder: HeaderBuilder<*>,
             content: PlainVariableTextBuilder.() -> Unit,
@@ -170,13 +193,22 @@ class HeaderBuilder<C : AbstractContentBuilder> internal constructor(
 }
 
 /** Kolonneoverskrift som ren tekst ([letterMarkup] uten variabler). */
-fun HeaderBuilder<ContentBuilder>.column(
+fun <C : AbstractContentBuilder> HeaderBuilder<C>.column(
     text: String,
     alignment: ColumnAlignment = ColumnAlignment.LEFT,
     span: Int = 1,
 ) = HeaderBuilder.addColumn(this, alignment, span, HeaderBuilder.plainText(this, text))
 
+/** Kolonneoverskrift via builder uten `variable` ([letterMarkup]). */
+@JvmName("columnWithPlainTextBuilder")
+fun HeaderBuilder<ContentBuilder>.column(
+    alignment: ColumnAlignment = ColumnAlignment.LEFT,
+    span: Int = 1,
+    content: PlainTextBuilder.() -> Unit,
+) = HeaderBuilder.addColumn(this, alignment, span, HeaderBuilder.plainText(this, content))
+
 /** Kolonneoverskrift som ren tekst med `variable` ([lettermarkupExtended]). */
+@JvmName("columnWithPlainVariableTextBuilder")
 fun HeaderBuilder<VariableContentBuilder>.column(
     alignment: ColumnAlignment = ColumnAlignment.LEFT,
     span: Int = 1,
@@ -194,8 +226,8 @@ class RowBuilder<C : AbstractContentBuilder> internal constructor(
         cells.add(Block.Table.Cell(ids.next(), ids.content(contentFactory, content)))
     }
 
-    fun cell(text: String) {
-        cells.add(Block.Table.Cell(ids.next(), ids.plainText(text)))
+    fun cell(text: String, fontType: FontType = FontType.PLAIN) {
+        cells.add(Block.Table.Cell(ids.next(), listOf(Text.Literal(ids.next(), text, fontType))))
     }
 
     internal fun build(): Block.Table.Row = Block.Table.Row(ids.next(), cells.toList())
@@ -214,6 +246,11 @@ class FormChoiceBuilder<C : AbstractContentBuilder> internal constructor(
         val choiceContent = ids.content(contentFactory, content)
         require(choiceContent.any { it.text.isNotBlank() }) { "Form choice option text must be non-empty" }
         choices.add(Block.FormChoice.Choice(ids.next(), choiceContent))
+    }
+
+    fun choice(text: String, fontType: FontType = FontType.PLAIN) {
+        require(text.isNotBlank()) { "Form choice option text must be non-empty" }
+        choices.add(Block.FormChoice.Choice(ids.next(), listOf(Text.Literal(ids.next(), text, fontType))))
     }
 
     internal fun build(): Block.FormChoice {
@@ -241,7 +278,7 @@ class FormChoiceBuilder<C : AbstractContentBuilder> internal constructor(
 }
 
 /** Form-choice-ledetekst som ren tekst ([letterMarkup] uten variabler). */
-fun FormChoiceBuilder<ContentBuilder>.prompt(text: String) =
+fun <C : AbstractContentBuilder> FormChoiceBuilder<C>.prompt(text: String) =
     FormChoiceBuilder.addPrompt(this, FormChoiceBuilder.plainText(this, text))
 
 /** Form-choice-ledetekst som ren tekst med `variable` ([lettermarkupExtended]). */
