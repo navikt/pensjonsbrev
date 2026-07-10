@@ -63,9 +63,14 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
                 property.closestClassDeclaration()
                     ?: throw InvalidVisitorState("Couldn't find class of $propertyName")
 
-            val dataClassName =
+            val className =
                 declaringClass.qualifiedName?.asString()
                     ?: throw InvalidModel("Couldn't find qualified name of $declaringClass")
+            val dataClassName = if (className == Map::class.qualifiedName) {
+                "$className<*,*>"
+            } else {
+                className
+            }
 
             val type = property.type.resolveWithTypeParameters()
 
