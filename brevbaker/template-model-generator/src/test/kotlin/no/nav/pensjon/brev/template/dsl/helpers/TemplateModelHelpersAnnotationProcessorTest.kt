@@ -148,4 +148,37 @@ class TemplateModelHelpersAnnotationProcessorTest {
         // Neither List nor String should get generators
         assertThat(result.generatedSources).isEmpty()
     }
+
+    @Test
+    fun `generates selectors for a SaksbehandlervalgIDSL field as a regular Map-backed interface`() {
+        val result = KotlinSourceFile(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+
+                    data class MyLetterData(val saksbehandlerValg: SaksbehandlervalgIDSL)
+
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<MyLetterData>
+                    """.trimIndent()
+        ).generateSelectors()
+
+        assertThat(result.exitCode).isEqualTo(KotlinSymbolProcessing.ExitCode.OK)
+
+        val generatedSources = result.generatedSources.map { it.name }
+        assertThat(generatedSources).contains("MyLetterDataSelectors.kt", "SaksbehandlervalgIDSLSelectors.kt")
+
+        val myLetterDataSelectors = result.generatedSources.first { it.name == "MyLetterDataSelectors.kt" }.content
+        assertThat(myLetterDataSelectors).contains("val saksbehandlerValgSelector")
+        assertThat(myLetterDataSelectors).contains("no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL")
+
+        val saksbehandlervalgSelectors = result.generatedSources.first { it.name == "SaksbehandlervalgIDSLSelectors.kt" }.content
+        // SaksbehandlervalgIDSL is not special-cased by the processor when reached through a plain property
+        // reference: it is treated as a regular interface extending Map<String, Any?>, so the underlying
+        // Map-properties get their own (unused, but harmless) selectors generated.
+        assertThat(saksbehandlervalgSelectors).contains("val sizeSelector")
+        assertThat(saksbehandlervalgSelectors).contains("val keysSelector")
+        assertThat(saksbehandlervalgSelectors).contains("val valuesSelector")
+    }
 }
