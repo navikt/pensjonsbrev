@@ -38,8 +38,8 @@ class SaksbehandlervalgTest {
             "intMedDefault" to if (nullable) null else -1,
             "tekstUtenDefault" to if (nullable) null else "hei",
             "tekstMedDefault" to if (nullable) null else "hallo",
-            "enumUtenDefault" to if (nullable) null else TestValgEnum.ALTERNATIV_EN,
-            "enumMedDefault" to if (nullable) null else TestValgEnum.ALTERNATIV_TO,
+            "enumUtenDefault" to if (nullable) null else TestValgEnum.ALTERNATIV_EN.name,
+            "enumMedDefault" to if (nullable) null else TestValgEnum.ALTERNATIV_TO.name,
         )
     )
 }
