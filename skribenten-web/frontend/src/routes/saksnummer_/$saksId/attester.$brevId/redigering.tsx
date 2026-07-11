@@ -4,12 +4,13 @@ import { BodyShort, Box, Button, Heading, Hide, Label, Switch, VStack } from "@n
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { getBrevAttestering, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
+import { getBrevAttestering, getBrevDiff, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
+import { AttestantDiffProvider } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
 import {
   createLetterSnapshot,
   createSaksbehandlerValgEndretHistoryEntry,
@@ -200,6 +201,20 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     currentUserNavIdent: currentUser?.navident,
     reservationOwnerNavIdent: reservasjonQuery.data?.reservertAv.id,
   });
+
+  const diffQuery = useQuery({
+    queryKey: getBrevDiff.queryKey(props.brev.info.id),
+    queryFn: () => getBrevDiff.queryFn(props.brev.info.id, props.brev.redigertBrev),
+  });
+
+  const [dismissedDiffs, setDismissedDiffs] = useState<Set<string>>(() => new Set());
+  const dismissLiteral = useCallback((key: string) => {
+    setDismissedDiffs((current) => {
+      const next = new Set(current);
+      next.add(key);
+      return next;
+    });
+  }, []);
 
   const defaultValuesModelEditor = useMemo(
     () => ({
@@ -421,15 +436,17 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         }
         right={
           <>
-            <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
-              <ManagedLetterEditor
-                brev={props.brev}
-                error={error}
-                freeze={freeze}
-                saveDirtyLetter={saveDirtyLetter}
-                showDebug={showDebug}
-              />
-            </InsertedTekstValgHighlightProvider>
+            <AttestantDiffProvider diff={diffQuery.data} dismissedKeys={dismissedDiffs} dismissLiteral={dismissLiteral}>
+              <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
+                <ManagedLetterEditor
+                  brev={props.brev}
+                  error={error}
+                  freeze={freeze}
+                  saveDirtyLetter={saveDirtyLetter}
+                  showDebug={showDebug}
+                />
+              </InsertedTekstValgHighlightProvider>
+            </AttestantDiffProvider>
             {/* Modal som ikke tar opp plass i DOM her */}
             <ReservertBrevError
               doRetry={props.doReload}
