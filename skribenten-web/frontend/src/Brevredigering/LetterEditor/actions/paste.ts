@@ -42,6 +42,7 @@ import {
   type ColumnSpec,
   type Content,
   FontType,
+  ListType,
   type LiteralValue,
   type Row,
   type TextContent,
@@ -463,12 +464,16 @@ function insertItem(draft: Draft<LetterEditorState>, element: ItemElement) {
     }
   } else if (!isItemContentIndex(draft.focus) && !isItemList(blockContent)) {
     // We're also validating that current blockContent isn't an ItemList, because then the focus should also have been an ItemContentIndex.
-    toggleItemListAndSplitAtCursor(draft, currentBlock);
+    toggleItemListAndSplitAtCursor(draft, currentBlock, element.listType);
     insertTextElement(draft, element.content);
   }
 }
 
-function toggleItemListAndSplitAtCursor(draft: Draft<LetterEditorState>, currentBlock: Draft<AnyBlock>) {
+function toggleItemListAndSplitAtCursor(
+  draft: Draft<LetterEditorState>,
+  currentBlock: Draft<AnyBlock>,
+  listType?: ListType,
+) {
   let itemContent: TextContent[] = [];
 
   // Finn første indeks for all sammenhengende TextContent før der vi limer inn.
@@ -517,7 +522,7 @@ function toggleItemListAndSplitAtCursor(draft: Draft<LetterEditorState>, current
     };
   } else {
     addElements(
-      [newItemList({ items: [theItem] })],
+      [newItemList({ items: [theItem], listType })],
       draft.focus.contentIndex,
       currentBlock.content,
       currentBlock.deletedContent,
@@ -539,6 +544,7 @@ interface Text {
 interface ItemElement {
   type: "ITEM";
   content: Text[];
+  listType?: ListType;
 }
 
 interface ParagraphElement {
@@ -770,13 +776,22 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
       }
     }
 
+    case "UL":
+    case "OL": {
+      const listType = element.tagName === "OL" ? ListType.NUMMERERT_LISTE : ListType.PUNKTLISTE;
+      // Preserve listType already set on nested items (e.g. an <ol> inside a <ul> keeps NUMMERERT_LISTE).
+      return traverseChildren(element, font).map((child) =>
+        child.type === "ITEM" && child.listType == null ? { ...child, listType } : child,
+      );
+    }
+
     case "LI": {
       if (element.children.length === 0) {
         const text = cleansePastedText(element.textContent ?? "");
 
         return text.length >= 0 ? [{ type: "ITEM", content: [{ type: "TEXT", font: font, text }] }] : [];
       } else {
-        return [{ type: "ITEM", content: traverseItemChildren(element, font) }];
+        return traverseLiChildren(element, font);
       }
     }
 
@@ -824,28 +839,59 @@ function traverseContainer(element: Element, font: FontType): TraversedElement[]
   }
 }
 
-function traverseItemChildren(item: Element, font: FontType): Text[] {
-  return traverseChildren(item, font).flatMap((traversedElement) => {
-    switch (traversedElement.type) {
+/**
+ * Traverses the children of an `<li>` element and returns one or more `ItemElement`s.
+ * When nested `<ul>`/`<ol>` elements are encountered, their items are emitted as siblings
+ * rather than being concatenated into the parent item's text. This flattens nested lists
+ * into a single level, which is the closest representation the edit model supports.
+ *
+ * Example: `<li>A <ol><li>B</li></ol></li>` → [ITEM("A"), ITEM("B", NUMMERERT_LISTE)]
+ */
+function traverseLiChildren(li: Element, font: FontType): ItemElement[] {
+  const result: ItemElement[] = [];
+  let directText: Text[] = [];
+
+  const flushDirectText = () => {
+    if (directText.length > 0) {
+      result.push({ type: "ITEM", content: directText });
+      directText = [];
+    }
+  };
+
+  for (const child of traverseChildren(li, font)) {
+    switch (child.type) {
       case "TEXT": {
-        return [traversedElement];
+        directText.push(child);
+        break;
       }
-      case "ITEM":
+      case "ITEM": {
+        // Nested list item — flush any accumulated direct text as the parent item first.
+        flushDirectText();
+        result.push(child);
+        break;
+      }
       case "P":
       case "H1":
       case "H2":
       case "H3": {
-        return traversedElement.content;
+        directText.push(...child.content);
+        break;
       }
       case "TABLE": {
-        // Should not happen, but if it does, we just ignore it.
-        return [];
-      }
-      default: {
-        return [];
+        // Tables nested inside list items are not supported; ignore.
+        break;
       }
     }
-  });
+  }
+
+  flushDirectText();
+
+  // Ensure at least one item is produced (e.g. a purely nested-list LI with no direct text).
+  if (result.length === 0) {
+    result.push({ type: "ITEM", content: [{ type: "TEXT", font, text: "" }] });
+  }
+
+  return result;
 }
 
 type ParagraphChild = ParagraphElement | ItemElement | Title1Element | Title2Element | Title3Element;

@@ -35,7 +35,7 @@ class SendBrevHandler(
             sendRedigerbartBrevRequest = Pen.SendRedigerbartBrevRequest(
                 dokumentDato = document.dokumentDato,
                 saksId = brev.saksId,
-                enhetId = brev.avsenderEnhetId,
+                enhetsId = brev.avsenderEnhetId,
                 templateDescription = template,
                 brevkode = brev.brevkode,
                 pdf = document.pdf,

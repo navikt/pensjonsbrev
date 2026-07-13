@@ -974,4 +974,103 @@ class UpdateRenderedLetterTest {
         assertEquals(expected, editedLetter1.updateEditedLetter(brevdataVariabelHarEnVerdi))
     }
 
+    @Test
+    fun `editedListType is preserved when list content is not otherwise edited`() {
+        val next = letter(
+            ParagraphImpl(
+                1, true, listOf(
+                    ItemListImpl(
+                        10, listOf(
+                            ItemImpl(100, listOf(LiteralImpl(101, "punkt 1"))),
+                            ItemImpl(200, listOf(LiteralImpl(201, "punkt 2"))),
+                        ),
+                        Listetype.PUNKTLISTE,
+                    ),
+                )
+            )
+        )
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                itemList(id = 10, listType = Listetype.PUNKTLISTE, editedListType = Listetype.NUMMERERT_LISTE) {
+                    item(id = 100) {
+                        literal(id = 101, text = "punkt 1")
+                    }
+                    item(id = 200) {
+                        literal(id = 201, text = "punkt 2")
+                    }
+                }
+            }
+        }
+
+        val result = edited.updateEditedLetter(next)
+
+        val resultList = (result.blocks[0] as Edit.Block.Paragraph).content[0] as Edit.ParagraphContent.ItemList
+        assertEquals(Listetype.NUMMERERT_LISTE, resultList.editedListType)
+        assertEquals(Listetype.PUNKTLISTE, resultList.listType)
+    }
+
+    @Test
+    fun `editedListType null means list type follows rendered version`() {
+        val next = letter(
+            ParagraphImpl(
+                1, true, listOf(
+                    ItemListImpl(
+                        10, listOf(
+                            ItemImpl(100, listOf(LiteralImpl(101, "punkt 1"))),
+                        ),
+                        Listetype.NUMMERERT_LISTE,
+                    ),
+                )
+            )
+        )
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                itemList(id = 10, listType = Listetype.PUNKTLISTE) {
+                    item(id = 100) {
+                        literal(id = 101, text = "punkt 1")
+                    }
+                }
+            }
+        }
+
+        val result = edited.updateEditedLetter(next)
+
+        val resultList = (result.blocks[0] as Edit.Block.Paragraph).content[0] as Edit.ParagraphContent.ItemList
+        assertEquals(null, resultList.editedListType)
+        assertEquals(Listetype.NUMMERERT_LISTE, resultList.listType)
+    }
+
+    @Test
+    fun `editedListType is preserved when the list content is also edited`() {
+        val next = letter(
+            ParagraphImpl(
+                1, true, listOf(
+                    ItemListImpl(
+                        10, listOf(
+                            ItemImpl(100, listOf(LiteralImpl(101, "punkt 1 fra mal"))),
+                        ),
+                        Listetype.PUNKTLISTE,
+                    ),
+                )
+            )
+        )
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                itemList(id = 10, listType = Listetype.PUNKTLISTE, editedListType = Listetype.NUMMERERT_LISTE) {
+                    item(id = 100) {
+                        literal(id = 101, text = "punkt 1 fra mal", editedText = "punkt 1 redigert")
+                    }
+                }
+            }
+        }
+
+        val result = edited.updateEditedLetter(next)
+
+        val resultList = (result.blocks[0] as Edit.Block.Paragraph).content[0] as Edit.ParagraphContent.ItemList
+        assertEquals(Listetype.NUMMERERT_LISTE, resultList.editedListType)
+        assertEquals(Listetype.PUNKTLISTE, resultList.listType)
+        val resultLiteral = resultList.items[0].content[0] as Edit.ParagraphContent.Text.Literal
+        assertEquals("punkt 1 redigert", resultLiteral.editedText)
+    }
+
 }
