@@ -150,6 +150,21 @@ describe("buildDiffSegments", () => {
     ]);
   });
 
+  it("renders API delete text even when an earlier insert shifts the current text length", () => {
+    // Deletes are expressed in original-text coordinates, inserts in current-text coordinates.
+    // A large insert before the delete used to push the cursor past the delete offset and drop it.
+    const currentText = "Nye opplysninger i saken viser at du har rett. Vi søknaden mottatt.";
+    const inserts: DiffInsert[] = [{ index: idx, startOffset: 0, endOffset: 47 }];
+    const deletes: DiffDelete[] = [{ index: idx, startOffset: 3, endOffset: 12, text: "gamle " }];
+    const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes }), currentText);
+    expect(segments).toEqual([
+      { type: "inserted", text: "Nye opplysninger i saken viser at du har rett. " },
+      { type: "unchanged", text: "Vi " },
+      { type: "deleted", text: "gamle " },
+      { type: "unchanged", text: "søknaden mottatt." },
+    ]);
+  });
+
   it("handles Norwegian characters", () => {
     const currentText = "Søknaden om uføretrygd er ferdigbehandlet.";
     const inserts: DiffInsert[] = [{ index: idx, startOffset: 12, endOffset: 23 }];

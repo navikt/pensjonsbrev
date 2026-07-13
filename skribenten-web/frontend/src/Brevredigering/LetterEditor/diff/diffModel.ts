@@ -94,51 +94,59 @@ export function buildDiffSegments({ currentText, inserts, deletes }: BuildDiffSe
     }
   }
 
-  type Event = { offset: number; kind: "insert" | "delete"; entry: DiffInsert | DiffDelete };
-  const events: Event[] = [
-    ...sortedInserts.map((e) => ({ offset: e.startOffset, kind: "insert" as const, entry: e })),
-    ...sortedDeletes.map((e) => ({ offset: e.startOffset, kind: "delete" as const, entry: e })),
-  ];
-  events.sort((a, b) => {
-    if (a.offset !== b.offset) return a.offset - b.offset;
-    if (a.kind === "delete" && b.kind === "insert") return -1;
-    if (a.kind === "insert" && b.kind === "delete") return 1;
-    return 0;
+  // Inserts are expressed in current-text (new) coordinates, deletes in original-text (old) coordinates.
+  // Map both into the shared "unchanged" coordinate space so they can be interleaved without a single
+  // cursor drifting out of sync when inserts and deletes change the text length differently.
+  type MergedEvent =
+    | { kind: "insert"; commonPos: number; order: number; entry: DiffInsert }
+    | { kind: "delete"; commonPos: number; order: number; entry: DiffDelete };
+
+  let insertedBefore = 0;
+  const insertEvents: MergedEvent[] = sortedInserts.map((ins) => {
+    const event: MergedEvent = { kind: "insert", commonPos: ins.startOffset - insertedBefore, order: ins.startOffset, entry: ins };
+    insertedBefore += ins.endOffset - ins.startOffset;
+    return event;
+  });
+
+  let deletedBefore = 0;
+  const deleteEvents: MergedEvent[] = sortedDeletes.map((del) => {
+    const event: MergedEvent = { kind: "delete", commonPos: del.startOffset - deletedBefore, order: del.startOffset, entry: del };
+    deletedBefore += del.endOffset - del.startOffset;
+    return event;
+  });
+
+  const merged = [...deleteEvents, ...insertEvents].sort((a, b) => {
+    if (a.commonPos !== b.commonPos) return a.commonPos - b.commonPos;
+    if (a.kind !== b.kind) return a.kind === "delete" ? -1 : 1;
+    return a.order - b.order;
   });
 
   const segments: DiffSegment[] = [];
-  let cursor = 0;
+  let newCursor = 0;
+  let commonCursor = 0;
 
-  for (const event of events) {
+  for (const event of merged) {
+    const unchangedLen = event.commonPos - commonCursor;
+    if (unchangedLen > 0) {
+      const end = Math.min(newCursor + unchangedLen, currentText.length);
+      if (end > newCursor) {
+        segments.push({ type: "unchanged", text: currentText.slice(newCursor, end) });
+      }
+      newCursor = end;
+      commonCursor = event.commonPos;
+    }
+
     if (event.kind === "delete") {
-      const del = event.entry as DiffDelete;
-      if (del.startOffset < cursor) {
-        return { ok: false, reason: `Delete at offset ${del.startOffset} is behind cursor ${cursor}` };
-      }
-
-      if (cursor < del.startOffset && cursor < currentText.length) {
-        const unchangedEnd = Math.min(del.startOffset, currentText.length);
-        segments.push({ type: "unchanged", text: currentText.slice(cursor, unchangedEnd) });
-        cursor = unchangedEnd;
-      }
-      segments.push({ type: "deleted", text: del.text });
+      segments.push({ type: "deleted", text: event.entry.text });
     } else {
-      const ins = event.entry as DiffInsert;
-      if (ins.startOffset < cursor) {
-        return { ok: false, reason: `Insert at offset ${ins.startOffset} is behind cursor ${cursor}` };
-      }
-
-      if (cursor < ins.startOffset) {
-        segments.push({ type: "unchanged", text: currentText.slice(cursor, ins.startOffset) });
-        cursor = ins.startOffset;
-      }
+      const ins = event.entry;
       segments.push({ type: "inserted", text: currentText.slice(ins.startOffset, ins.endOffset) });
-      cursor = ins.endOffset;
+      newCursor = ins.endOffset;
     }
   }
 
-  if (cursor < currentText.length) {
-    segments.push({ type: "unchanged", text: currentText.slice(cursor) });
+  if (newCursor < currentText.length) {
+    segments.push({ type: "unchanged", text: currentText.slice(newCursor) });
   }
 
   return { ok: true, segments };
