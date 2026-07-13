@@ -21,13 +21,11 @@ import kotlin.collections.listOf
 
 class GenererFoerstesideHandler(
     private val klient: FoerstesidegeneratorClient
-) : BrevredigeringHandler<GenererFoerstesideHandler.Request, GenererFoerstesideResponse> {
+) : UseCaseHandler<GenererFoerstesideHandler.Request, GenererFoerstesideResponse, Nothing> {
 
     data class Request(override val brevId: BrevId, val pid: BrevbakerType.Pid, val sakstype: Sakstype, val tema: Tema) : BrevredigeringRequest
 
-    override fun requiresReservasjon(request: Request) = false
-
-    override suspend fun handle(request: Request): Outcome<GenererFoerstesideResponse, BrevredigeringError>? {
+    override suspend fun invoke(request: Request): Outcome<GenererFoerstesideResponse, Nothing>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
 
         val tittel = brev.redigertBrev.title.text.joinToString(" ") { it.text }.trim()
