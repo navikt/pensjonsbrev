@@ -2,7 +2,12 @@ package no.nav.brev.brevbaker.markup.outline
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import no.nav.brev.brevbaker.markup.ElementTags
+
+/** Semantiske merkelapper på et tekst-element, brukt av redigeringsverktøy. */
+enum class ElementTags {
+    FRITEKST,
+    REDIGERBAR_DATA,
+}
 
 /**
  * Et tekst-element på laveste nivå: fast tekst ([Literal]), en variabel ([Variable]) eller et

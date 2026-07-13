@@ -1,6 +1,6 @@
 package no.nav.brev.brevbaker.markup.elements
 
-import no.nav.brev.brevbaker.markup.ElementTags
+import no.nav.brev.brevbaker.markup.outline.ElementTags
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
 import no.nav.brev.brevbaker.markup.outline.Block.Table.ColumnAlignment

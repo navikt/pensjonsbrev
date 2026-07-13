@@ -9,7 +9,7 @@ import kotlin.jvm.JvmName
 
 @MarkupDsl
 class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
-    private val ids: IdGenerator,
+    internal val ids: IdGenerator,
     private val contentFactory: ContentFactory<C>,
 ) {
     private val blocks = mutableListOf<Block>()
@@ -160,11 +160,6 @@ class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
 
         internal fun plainText(builder: OutlineBuilder<*>, content: PlainTextBuilder.() -> Unit): List<Text> =
             builder.ids.plainText(content)
-
-        internal fun plainExtendedText(
-            builder: OutlineBuilder<*>,
-            content: PlainExtendedTextBuilder.() -> Unit,
-        ): List<Text> = builder.ids.plainExtendedText(content)
     }
 }
 
@@ -192,18 +187,6 @@ fun OutlineBuilder<ContentBuilder>.title2(content: PlainTextBuilder.() -> Unit) 
     OutlineBuilder.addTitle2(this, OutlineBuilder.plainText(this, content))
 
 /**
- * Legg til en nivå-2-overskrift via DSL-blokk med `variable`.
- * Se også kort-varianten `title2("...")`.
- *
- * ```
- * title2 { text("Vedtak for "); variable("navn") }
- * ```
- */
-@JvmName("title2WithPlainExtendedTextBuilder")
-fun OutlineBuilder<ExtendedContentBuilder>.title2(content: PlainExtendedTextBuilder.() -> Unit) =
-    OutlineBuilder.addTitle2(this, OutlineBuilder.plainExtendedText(this, content))
-
-/**
  * Legg til en nivå-3-overskrift som ren tekst. Gjelder både med og uten `variable`.
  * Se også DSL-variantene `title3 { text("...") }` og `title3 { text("..."); variable("...") }`.
  *
@@ -227,18 +210,6 @@ fun OutlineBuilder<ContentBuilder>.title3(content: PlainTextBuilder.() -> Unit) 
     OutlineBuilder.addTitle3(this, OutlineBuilder.plainText(this, content))
 
 /**
- * Legg til en nivå-3-overskrift via DSL-blokk med `variable`.
- * Se også kort-varianten `title3("...")`.
- *
- * ```
- * title3 { text("Mellomtittel "); variable("nr") }
- * ```
- */
-@JvmName("title3WithPlainExtendedTextBuilder")
-fun OutlineBuilder<ExtendedContentBuilder>.title3(content: PlainExtendedTextBuilder.() -> Unit) =
-    OutlineBuilder.addTitle3(this, OutlineBuilder.plainExtendedText(this, content))
-
-/**
  * Legg til en nivå-4-overskrift som ren tekst. Gjelder både med og uten `variable`.
  * Se også DSL-variantene `title4 { text("...") }` og `title4 { text("..."); variable("...") }`.
  *
@@ -260,18 +231,6 @@ fun <C : AbstractContentBuilder> OutlineBuilder<C>.title4(text: String) =
 @JvmName("title4WithPlainTextBuilder")
 fun OutlineBuilder<ContentBuilder>.title4(content: PlainTextBuilder.() -> Unit) =
     OutlineBuilder.addTitle4(this, OutlineBuilder.plainText(this, content))
-
-/**
- * Legg til en nivå-4-overskrift via DSL-blokk med `variable`.
- * Se også kort-varianten `title4("...")`.
- *
- * ```
- * title4 { text("Detaljer "); variable("nr") }
- * ```
- */
-@JvmName("title4WithPlainExtendedTextBuilder")
-fun OutlineBuilder<ExtendedContentBuilder>.title4(content: PlainExtendedTextBuilder.() -> Unit) =
-    OutlineBuilder.addTitle4(this, OutlineBuilder.plainExtendedText(this, content))
 
 @MarkupDsl
 class ItemsBuilder<C : AbstractContentBuilder> internal constructor(
@@ -367,7 +326,7 @@ class TableBuilder<C : AbstractContentBuilder> internal constructor(
 
 @MarkupDsl
 class HeaderBuilder<C : AbstractContentBuilder> internal constructor(
-    private val ids: IdGenerator,
+    internal val ids: IdGenerator,
 ) {
     private val colSpec = mutableListOf<Block.Table.ColumnSpec>()
 
@@ -384,11 +343,6 @@ class HeaderBuilder<C : AbstractContentBuilder> internal constructor(
 
         internal fun plainText(builder: HeaderBuilder<*>, content: PlainTextBuilder.() -> Unit): List<Text> =
             builder.ids.plainText(content)
-
-        internal fun plainExtendedText(
-            builder: HeaderBuilder<*>,
-            content: PlainExtendedTextBuilder.() -> Unit,
-        ): List<Text> = builder.ids.plainExtendedText(content)
     }
 }
 
@@ -430,29 +384,6 @@ fun HeaderBuilder<ContentBuilder>.column(
     content: PlainTextBuilder.() -> Unit,
 ) = HeaderBuilder.addColumn(this, alignment, span, HeaderBuilder.plainText(this, content))
 
-/**
- * Legg til en kolonne i header med tekst som kan kombineres med `variable(...)`.
- * Se også kort-varianten `column("...")`.
- *
- * Parametere:
- * - `alignment`: justering av kolonneinnhold ([ColumnAlignment.LEFT] som standard)
- * - `span`: hvor mange kolonner overskriften skal dekke (`1` som standard). Brukes som forholdstall for hvor stor andel av bredden en kolonne skal bruke.
- *
- *   I de visuelle retningslinjene i Nav står det at:
- *  * Tekst er alltid venstrestilt for leseretning.
- *  * Tall høyrestilles.
- *  * I tabeller hvor kolonner blander tall og bokstaver bør det vurderes pr. tabell om innholdet skal venstrestilles eller høyrestilles.
- * ```
- * header { column { text("Beløp "); variable("år") } }
- * ```
- */
-@JvmName("columnWithPlainExtendedTextBuilder")
-fun HeaderBuilder<ExtendedContentBuilder>.column(
-    alignment: ColumnAlignment = ColumnAlignment.LEFT,
-    span: Int = 1,
-    content: PlainExtendedTextBuilder.() -> Unit,
-) = HeaderBuilder.addColumn(this, alignment, span, HeaderBuilder.plainExtendedText(this, content))
-
 @MarkupDsl
 class RowBuilder<C : AbstractContentBuilder> internal constructor(
     private val ids: IdGenerator,
@@ -493,7 +424,7 @@ class RowBuilder<C : AbstractContentBuilder> internal constructor(
 
 @MarkupDsl
 class FormChoiceBuilder<C : AbstractContentBuilder> internal constructor(
-    private val ids: IdGenerator,
+    internal val ids: IdGenerator,
     private val contentFactory: ContentFactory<C>,
 ) {
     private var vspace: Boolean = true
@@ -540,11 +471,6 @@ class FormChoiceBuilder<C : AbstractContentBuilder> internal constructor(
 
         internal fun plainText(builder: FormChoiceBuilder<*>, text: String): List<Text> = builder.ids.plainText(text)
 
-        internal fun plainExtendedText(
-            builder: FormChoiceBuilder<*>,
-            content: PlainExtendedTextBuilder.() -> Unit,
-        ): List<Text> = builder.ids.plainExtendedText(content)
-
         internal fun setVspace(builder: FormChoiceBuilder<*>, value: Boolean) {
             builder.vspace = value
         }
@@ -561,14 +487,3 @@ class FormChoiceBuilder<C : AbstractContentBuilder> internal constructor(
  */
 fun <C : AbstractContentBuilder> FormChoiceBuilder<C>.prompt(text: String) =
     FormChoiceBuilder.addPrompt(this, FormChoiceBuilder.plainText(this, text))
-
-/**
- * Sett avkrysningsfeltets ledetekst via DSL-blokk med `variable`.
- * Se også kort-varianten `prompt("...")`.
- *
- * ```
- * formChoice { prompt { text("Svar innen "); variable("frist") }; choice("Ja"); choice("Nei") }
- * ```
- */
-fun FormChoiceBuilder<ExtendedContentBuilder>.prompt(content: PlainExtendedTextBuilder.() -> Unit) =
-    FormChoiceBuilder.addPrompt(this, FormChoiceBuilder.plainExtendedText(this, content))

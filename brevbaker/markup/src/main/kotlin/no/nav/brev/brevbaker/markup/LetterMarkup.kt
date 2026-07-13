@@ -1,6 +1,12 @@
 package no.nav.brev.brevbaker.markup
 
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Text
 import java.time.LocalDate
@@ -28,10 +34,10 @@ data class LetterMarkup internal constructor(
 @ConsistentCopyVisibility
 @Serializable
 data class Attachment internal constructor(
-    override val title1: List<Text>,
+    val title1: List<Text>,
     val blocks: List<Block>,
     val inkluderSaksinformasjon: Boolean,
-) : AttachmentTitle
+)
 
 /** Informasjon om saken og mottakeren brevet gjelder. */
 @ConsistentCopyVisibility
@@ -44,6 +50,32 @@ data class Saksinformasjon internal constructor(
     @Serializable(with = LocalDateSerializer::class)
     val dokumentDato: LocalDate,
 )
+
+/** Fødselsnummeret til den brevet gjelder. */
+@Serializable
+@JvmInline
+value class Foedselsnummer internal constructor(val value: String) {
+    override fun toString() = value
+}
+
+/** Saksnummeret brevet er knyttet til. */
+@Serializable
+@JvmInline
+value class Saksnummer internal constructor(val saksnummer: String) {
+    override fun toString() = saksnummer
+}
+
+internal object LocalDateSerializer : KSerializer<LocalDate> {
+    override val descriptor: SerialDescriptor =
+        PrimitiveSerialDescriptor("java.time.LocalDate", PrimitiveKind.STRING)
+
+    override fun serialize(encoder: Encoder, value: LocalDate) {
+        encoder.encodeString(value.toString())
+    }
+
+    override fun deserialize(decoder: Decoder): LocalDate =
+        LocalDate.parse(decoder.decodeString())
+}
 
 /** Avsluttende hilsen og avsenderinformasjon for brevet. */
 @ConsistentCopyVisibility
@@ -62,34 +94,9 @@ data class SaksbehandlerSignatur internal constructor(
     val attesterendeSaksbehandlerNavn: String?,
 )
 
-/** Felles tittel-kontrakt for elementer med egen tittel ([Attachment], [PDFTittel]). */
-interface AttachmentTitle {
-    val title1: List<Text>
-}
-
 /** En frittstående PDF-tittel. */
 @ConsistentCopyVisibility
 @Serializable
 data class PDFTittel internal constructor(
-    override val title1: List<Text>,
-) : AttachmentTitle
-
-/**
- * Et [LetterMarkup] beriket med metadata: hvilke datafelter brevet bruker ([letterDataUsage]) og
- * hvilken [Brevtype] det er. Beregnet på interne konsumenter (brevbaker/skribenten).
- */
-@ConsistentCopyVisibility
-@Serializable
-data class LetterMarkupWithDataUsage internal constructor(
-    val markup: LetterMarkup,
-    val letterDataUsage: Set<Property>,
-    val brevtype: Brevtype,
-) {
-    /** Et enkelt datafelt (type og property) brevet leser fra. */
-    @ConsistentCopyVisibility
-    @Serializable
-    data class Property internal constructor(
-        val typeName: String,
-        val propertyName: String,
-    )
-}
+    val title1: List<Text>,
+)

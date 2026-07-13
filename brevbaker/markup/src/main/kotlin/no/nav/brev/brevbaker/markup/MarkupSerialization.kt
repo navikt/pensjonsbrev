@@ -22,14 +22,6 @@ fun LetterMarkup.toJson(): String = markupJson.encodeToString(LetterMarkup.seria
 fun decodeLetterMarkup(json: String): LetterMarkup =
     markupJson.decodeFromString(LetterMarkup.serializer(), json)
 
-/** Serialiser et [LetterMarkupWithDataUsage] til JSON. */
-fun LetterMarkupWithDataUsage.toJson(): String =
-    markupJson.encodeToString(LetterMarkupWithDataUsage.serializer(), this)
-
-/** Deserialiser et [LetterMarkupWithDataUsage] fra JSON. */
-fun decodeLetterMarkupWithDataUsage(json: String): LetterMarkupWithDataUsage =
-    markupJson.decodeFromString(LetterMarkupWithDataUsage.serializer(), json)
-
 /** Serialiser et [Attachment] til JSON. */
 fun Attachment.toJson(): String = markupJson.encodeToString(Attachment.serializer(), this)
 

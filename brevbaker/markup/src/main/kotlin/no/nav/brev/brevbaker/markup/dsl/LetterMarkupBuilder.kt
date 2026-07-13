@@ -1,10 +1,8 @@
 package no.nav.brev.brevbaker.markup.dsl
 
 import no.nav.brev.brevbaker.markup.Attachment
-import no.nav.brev.brevbaker.markup.Brevtype
 import no.nav.brev.brevbaker.markup.Foedselsnummer
 import no.nav.brev.brevbaker.markup.LetterMarkup
-import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage
 import no.nav.brev.brevbaker.markup.PDFTittel
 import no.nav.brev.brevbaker.markup.SaksbehandlerSignatur
 import no.nav.brev.brevbaker.markup.Saksinformasjon
@@ -19,7 +17,8 @@ import kotlin.jvm.JvmName
  * DSL som bygger opp innholdet til ett brevbaker brev.
  *
  * Denne varianten støtter alt som påvirker hvordan noe blir til slutt i brevet.
- * [letterMarkupExtended] støtter variabler, tags osv som kun brukes under redigeringen i skribenten.
+ * En utvidet variant med variabler, tags osv (kun brukt under redigering i skribenten)
+ * finnes i api-internal-modulen.
  *
  * ```
  * val brev = letterMarkup {
@@ -33,21 +32,6 @@ import kotlin.jvm.JvmName
  */
 fun letterMarkup(build: LetterMarkupBuilder<ContentBuilder>.() -> Unit): LetterMarkup =
     LetterMarkupBuilder(IdGenerator(), ::ContentBuilder).apply(build).build()
-
-/**
- * Bygg en [LetterMarkup] med utvidet DSL.
- *
- * Denne varianten støtter `variable(...)` i tekstinnhold, og metadata som tags på variabler som kun brukes i skribenten
- *
- * ```
- * val brev = letterMarkupExtended {
- *     outline { paragraph { text("Du får "); variable("uføretrygd") } }
- *     // ... saksinformasjon, signatur
- * }
- * ```
- */
-fun letterMarkupExtended(build: LetterMarkupBuilder<ExtendedContentBuilder>.() -> Unit): LetterMarkup =
-    LetterMarkupBuilder(IdGenerator(), ::ExtendedContentBuilder).apply(build).build()
 
 /**
  * Bygg et [Attachment] (brevvedlegg) via DSL. [inkluderSaksinformasjon] styrer om saksinformasjonen
@@ -68,18 +52,6 @@ fun attachment(inkluderSaksinformasjon: Boolean = false, build: AttachmentBuilde
     AttachmentBuilder(IdGenerator(), ::ContentBuilder, inkluderSaksinformasjon).apply(build).build()
 
 /**
- * Som [attachment], men med støtte for elementer som ikke brukes til rendring av pdf.
- *
- * ```
- * val vedlegg = attachmentExtended(inkluderSaksinformasjon = false) {
- *     outline { paragraph { text("Sats: "); variable("2G") } }
- * }
- * ```
- */
-fun attachmentExtended(inkluderSaksinformasjon: Boolean = false, build: AttachmentBuilder<ExtendedContentBuilder>.() -> Unit): Attachment =
-    AttachmentBuilder(IdGenerator(), ::ExtendedContentBuilder, inkluderSaksinformasjon).apply(build).build()
-
-/**
  * Bygg en frittstående [PDFTittel] via DSL.
  *
  * ```
@@ -88,82 +60,6 @@ fun attachmentExtended(inkluderSaksinformasjon: Boolean = false, build: Attachme
  */
 fun pdfTittel(content: ContentBuilder.() -> Unit): PDFTittel =
     PDFTittel(IdGenerator().content(::ContentBuilder, content))
-
-/**
- * Som [pdfTittel], men med støtte for elementer som ikke brukes til rendring av pdf.
- *
- * ```
- * val tittel = pdfTittelExtended { text("Vedtak for "); variable("navn") }
- * ```
- */
-fun pdfTittelExtended(content: ExtendedContentBuilder.() -> Unit): PDFTittel =
-    PDFTittel(IdGenerator().content(::ExtendedContentBuilder, content))
-
-/**
- * Lag en [LetterMarkupWithDataUsage.Property] – ett datafelt (type + property) brevet leser fra.
- *
- * Parametere:
- * - `typeName`: navnet på datatypen (for eksempel `UngUfoerDto`)
- * - `propertyName`: navnet på feltet i typen
- *
- * ```
- * val prop = dataUsageProperty(typeName = "UngUfoerDto", propertyName = "totaltUfoerePerMnd")
- * ```
- */
-fun dataUsageProperty(typeName: String, propertyName: String): LetterMarkupWithDataUsage.Property =
-    LetterMarkupWithDataUsage.Property(typeName, propertyName)
-
-/**
- * Bygg et [LetterMarkupWithDataUsage] – et [LetterMarkup] beriket med [brevtype] og hvilke datafelter
- * brevet bruker ([letterDataUsage]).
- *
- * Parametere:
- * - `brevtype`: hvilken brevtype markuppen tilhører
- * - `letterDataUsage`: sett av datafelter brevet bruker (kan stå tomt)
- * - `build`: selve brevinnholdet
- *
- * ```
- * val brev = letterMarkupWithDataUsage(
- *     brevtype = Brevtype.VEDTAKSBREV,
- *     letterDataUsage = setOf(dataUsageProperty("UngUfoerDto", "belop")),
- * ) {
- *     saksinformasjon(/* ... */); outline { paragraph("...") }; signatur(/* ... */)
- * }
- * ```
- */
-fun letterMarkupWithDataUsage(
-    brevtype: Brevtype,
-    letterDataUsage: Set<LetterMarkupWithDataUsage.Property> = emptySet(),
-    build: LetterMarkupBuilder<ContentBuilder>.() -> Unit,
-): LetterMarkupWithDataUsage = LetterMarkupWithDataUsage(
-    markup = letterMarkup(build),
-    letterDataUsage = letterDataUsage,
-    brevtype = brevtype,
-)
-
-/**
- * Som [letterMarkupWithDataUsage], men med støtte for elementer som ikke brukes til rendring av pdf.
- *
- * Parametere:
- * - `brevtype`: hvilken brevtype markuppen tilhører
- * - `letterDataUsage`: sett av datafelter brevet bruker (kan stå tomt)
- * - `build`: selve brevinnholdet
- *
- * ```
- * val brev = letterMarkupWithDataUsageExtended(brevtype = Brevtype.INFORMASJONSBREV) {
- *     outline { paragraph { text("Beløp: "); variable("1000 kr") } }
- * }
- * ```
- */
-fun letterMarkupWithDataUsageExtended(
-    brevtype: Brevtype,
-    letterDataUsage: Set<LetterMarkupWithDataUsage.Property> = emptySet(),
-    build: LetterMarkupBuilder<ExtendedContentBuilder>.() -> Unit,
-): LetterMarkupWithDataUsage = LetterMarkupWithDataUsage(
-    markup = letterMarkupExtended(build),
-    letterDataUsage = letterDataUsage,
-    brevtype = brevtype,
-)
 
 @MarkupDsl
 class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
@@ -320,7 +216,7 @@ class AttachmentBuilder<C : AbstractContentBuilder> internal constructor(
 fun <C : AbstractContentBuilder> LetterMarkupBuilder<C>.title1(text: String) = setTitle { plainText(text) }
 
 /**
- * Setter brevets hoved-tittel som plaintext
+ *  Setter brevets hoved-tittel som plaintext
  * Se også kort-varianten `title1("...")`.
  *
  * ```
@@ -330,17 +226,6 @@ fun <C : AbstractContentBuilder> LetterMarkupBuilder<C>.title1(text: String) = s
 @JvmName("title1WithPlainTextBuilder")
 fun LetterMarkupBuilder<ContentBuilder>.title1(content: PlainTextBuilder.() -> Unit) =
     setTitle { plainText(content) }
-
-/**
- *  Setter brevets hoved-tittel via dsl. Støtter også variable:
- * Se også shorthand-varianten `title1("...")`.
- *
- * ```
- * title1 { text("Vedtak for "); variable("navn") }
- * ```
- */
-fun LetterMarkupBuilder<ExtendedContentBuilder>.title1(content: PlainExtendedTextBuilder.() -> Unit) =
-    setTitle { plainExtendedText(content) }
 
 /**
  * Sett vedleggets tittel som ren tekst.
