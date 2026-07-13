@@ -812,7 +812,7 @@ export function newItem({
 export function newItemList(args: {
   id?: Nullable<number>;
   listType?: ListType;
-  editedListType?: ListType;
+  editedListType?: ListType | null;
   items: Item[];
   deletedItems?: number[];
 }): ItemList {
@@ -821,7 +821,7 @@ export function newItemList(args: {
     parentId: null,
     type: "ITEM_LIST",
     listType: args.listType ?? ListType.PUNKTLISTE,
-    editedListType: args.editedListType,
+    editedListType: args.editedListType ?? undefined,
     items: args.items,
     deletedItems: args.deletedItems ?? [],
   };
