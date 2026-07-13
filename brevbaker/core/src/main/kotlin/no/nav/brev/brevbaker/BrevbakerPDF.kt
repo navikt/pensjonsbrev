@@ -33,19 +33,21 @@ internal class BrevbakerPDF(
                 ),
             )
         }.let { pdf ->
-            if (!medPDFVedlegg) return@let pdf
-            pdfVedleggAppender.leggPaaVedlegg(
+            val pdfvedlegg = letter.template.pdfAttachments
+                .filter { a -> a.predicate.eval(letter.toScope()) }
+                .map { a -> a.eval(letter.toScope()) }
+            if (!medPDFVedlegg) return@let Pair(pdf, pdfvedlegg)
+            Pair(pdfVedleggAppender.leggPaaVedlegg(
                 pdf,
-                letter.template.pdfAttachments
-                    .filter { a -> a.predicate.eval(letter.toScope()) }
-                    .map { a -> a.eval(letter.toScope()) },
+                pdfvedlegg,
                 letter.language.toCode()
-            )
+            ), pdfvedlegg)
         }.let { pdf ->
             LetterResponse(
-                file = pdf.bytes,
+                file = pdf.first.bytes,
                 contentType = ContentTypes.PDF,
-                letterMetadata = letter.template.letterMetadata
+                letterMetadata = letter.template.letterMetadata,
+                pdfvedlegg = pdf.second
             )
         }
 
