@@ -79,7 +79,7 @@ class PlainExtendedTextBuilder internal constructor(private val ids: IdGenerator
     private val texts: MutableList<Text> = mutableListOf()
 
     /**
-     * Vanlig tittle.
+     * Vanlig tekst.
      *
      * ```
      * text("Vedtak")
@@ -110,7 +110,7 @@ class PlainTextBuilder internal constructor(private val ids: IdGenerator) {
     private val texts: MutableList<Text> = mutableListOf()
 
     /**
-     * Legg til fast tekst i overskriften/ledeteksten.
+     * Legg til brødtekst.
      *
      * ```
      * text("Innledning")

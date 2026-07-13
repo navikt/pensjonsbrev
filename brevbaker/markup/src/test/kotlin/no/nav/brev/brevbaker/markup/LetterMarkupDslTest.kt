@@ -300,6 +300,82 @@ class LetterMarkupDslTest {
     }
 
     @Test
+    fun `pdfTittelExtended supports variables and round-trips through json`() {
+        val tittel = pdfTittelExtended {
+            text("Vedtak for ")
+            variable("Ola Nordmann")
+        }
+
+        assertEquals(listOf(Text.Type.LITERAL, Text.Type.VARIABLE), tittel.title1.map { it.type })
+
+        val decoded = decodePDFTittel(tittel.toJson())
+        assertEquals(tittel, decoded)
+    }
+
+    @Test
+    fun `letterMarkupWithDataUsage includes brevtype and data usage`() {
+        val property = dataUsageProperty(typeName = "UngUfoerDto", propertyName = "totaltUfoerePerMnd")
+
+        val letter = letterMarkupWithDataUsage(
+            brevtype = Brevtype.VEDTAKSBREV,
+            letterDataUsage = setOf(property),
+        ) {
+            saksinformasjon(
+                gjelderNavn = "Ola Nordmann",
+                gjelderFoedselsnummer = "12345678901",
+                saksnummer = "9876543",
+                dokumentDato = LocalDate.of(2026, 7, 9),
+            )
+            title1("Vedtak")
+            outline {
+                paragraph("Innhold")
+            }
+            signatur(
+                hilsenTekst = "Med vennlig hilsen",
+                navAvsenderEnhet = "NAV",
+            )
+        }
+
+        assertEquals(Brevtype.VEDTAKSBREV, letter.brevtype)
+        assertEquals(setOf(property), letter.letterDataUsage)
+        assertEquals("Vedtak", (letter.markup.title1.single() as Text.Literal).text)
+    }
+
+    @Test
+    fun `letterMarkupWithDataUsageExtended supports variable content and round-trips through json`() {
+        val property = dataUsageProperty(typeName = "UngUfoerDto", propertyName = "belop")
+
+        val letter = letterMarkupWithDataUsageExtended(
+            brevtype = Brevtype.INFORMASJONSBREV,
+            letterDataUsage = setOf(property),
+        ) {
+            saksinformasjon(
+                gjelderNavn = "Ola Nordmann",
+                gjelderFoedselsnummer = "12345678901",
+                saksnummer = "9876543",
+                dokumentDato = LocalDate.of(2026, 7, 9),
+            )
+            title1("Orientering")
+            outline {
+                paragraph {
+                    text("Beløp: ")
+                    variable("1000 kr")
+                }
+            }
+            signatur(
+                hilsenTekst = "Med vennlig hilsen",
+                navAvsenderEnhet = "NAV",
+            )
+        }
+
+        val paragraph = letter.markup.blocks.single() as Block.Paragraph
+        assertEquals(listOf(Text.Type.LITERAL, Text.Type.VARIABLE), paragraph.content.map { it.type })
+
+        val decoded = decodeLetterMarkupWithDataUsage(letter.toJson())
+        assertEquals(letter, decoded)
+    }
+
+    @Test
     fun `attachment builds standalone attachment`() {
         val vedlegg = attachment(inkluderSaksinformasjon = true) {
             title1("Vedlegg 1")

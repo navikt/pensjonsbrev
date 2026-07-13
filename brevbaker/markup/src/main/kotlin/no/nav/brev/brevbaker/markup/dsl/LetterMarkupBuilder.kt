@@ -16,10 +16,10 @@ import java.time.LocalDate
 import kotlin.jvm.JvmName
 
 /**
- * Bygg en [LetterMarkup] med grunnleggende DSL.
+ * DSL som bygger opp innholdet til ett brevbaker brev.
  *
- * Denne varianten støtter vanlig tekst, men ikke `variable(...)`.
- * Bruk [letterMarkupExtended] når du trenger utvidet tekststøtte.
+ * Denne varianten støtter alt som påvirker hvordan noe blir til slutt i brevet.
+ * [letterMarkupExtended] støtter variabler, tags osv som kun brukes under redigeringen i skribenten.
  *
  * ```
  * val brev = letterMarkup {
@@ -37,7 +37,7 @@ fun letterMarkup(build: LetterMarkupBuilder<ContentBuilder>.() -> Unit): LetterM
 /**
  * Bygg en [LetterMarkup] med utvidet DSL.
  *
- * Denne varianten støtter `variable(...)` i tekstinnhold, og metadata som tags på variabler.
+ * Denne varianten støtter `variable(...)` i tekstinnhold, og metadata som tags på variabler som kun brukes i skribenten
  *
  * ```
  * val brev = letterMarkupExtended {
@@ -48,29 +48,6 @@ fun letterMarkup(build: LetterMarkupBuilder<ContentBuilder>.() -> Unit): LetterM
  */
 fun letterMarkupExtended(build: LetterMarkupBuilder<ExtendedContentBuilder>.() -> Unit): LetterMarkup =
     LetterMarkupBuilder(IdGenerator(), ::ExtendedContentBuilder).apply(build).build()
-
-/**
- * Bygg en gjenbrukbar outline (liste av [Block]) frittstående fra et brev.
- *
- * ```
- * val blocks = outline {
- *     title2("Innledning")
- *     paragraph("Dette er et avsnitt.")
- * }
- * ```
- */
-fun outline(build: OutlineBuilder<ContentBuilder>.() -> Unit): List<Block> =
-    OutlineBuilder(IdGenerator(), ::ContentBuilder).apply(build).build()
-
-/**
- * Som [outline], men med utvidet tekststøtte (`variable(...)`).
- *
- * ```
- * val blocks = outlineExtended { paragraph { text("Beløp: "); variable("1000 kr") } }
- * ```
- */
-fun outlineExtended(build: OutlineBuilder<ExtendedContentBuilder>.() -> Unit): List<Block> =
-    OutlineBuilder(IdGenerator(), ::ExtendedContentBuilder).apply(build).build()
 
 /**
  * Bygg et [Attachment] (brevvedlegg) via DSL. [inkluderSaksinformasjon] styrer om saksinformasjonen
@@ -91,7 +68,7 @@ fun attachment(inkluderSaksinformasjon: Boolean = false, build: AttachmentBuilde
     AttachmentBuilder(IdGenerator(), ::ContentBuilder, inkluderSaksinformasjon).apply(build).build()
 
 /**
- * Som [attachment], men med utvidet tekststøtte (`variable(...)`).
+ * Som [attachment], men med støtte for elementer som ikke brukes til rendring av pdf.
  *
  * ```
  * val vedlegg = attachmentExtended(inkluderSaksinformasjon = false) {
@@ -113,7 +90,7 @@ fun pdfTittel(content: ContentBuilder.() -> Unit): PDFTittel =
     PDFTittel(IdGenerator().content(::ContentBuilder, content))
 
 /**
- * Som [pdfTittel], men med utvidet tekststøtte (`variable(...)`).
+ * Som [pdfTittel], men med støtte for elementer som ikke brukes til rendring av pdf.
  *
  * ```
  * val tittel = pdfTittelExtended { text("Vedtak for "); variable("navn") }
@@ -165,7 +142,7 @@ fun letterMarkupWithDataUsage(
 )
 
 /**
- * Som [letterMarkupWithDataUsage], men med utvidet tekststøtte (`variable(...)`).
+ * Som [letterMarkupWithDataUsage], men med støtte for elementer som ikke brukes til rendring av pdf.
  *
  * Parametere:
  * - `brevtype`: hvilken brevtype markuppen tilhører
