@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.SimpleSelector
 import no.nav.pensjon.brev.template.UnaryOperation
-import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -29,10 +28,6 @@ import java.time.LocalDate
  * — i motsetning til det vanlige mønsteret med en håndskrevet, nøstet `Saksbehandlervalg`-dataklasse.
  * Dekker alle fire typene, både med og uten default-verdi, samt et enkelt fagsystem-Dto (`PesysData`) med to felt.
  *
- * Merk: **ingen** `@TemplateModelHelpers` her. [SaksbehandlervalgIDSL] er et `Map`, og KSP-selector-generatoren
- * klarer ikke å generere selectors for et map-typet felt — legger man `@TemplateModelHelpers` på denne malen feiler
- * *hele* den genererte selector-filen (også selectors for `pesysData`), ikke bare selectoren for saksbehandlerValg.
- * `pesysData`-selectorene under er derfor skrevet for hånd, etter samme mønster som KSP normalt genererer.
  */
 object SaksbehandlervalgIDSLTestbrev : RedigerbarTemplate<SaksbehandlervalgIDSLTestbrevDto> {
 
@@ -51,7 +46,6 @@ object SaksbehandlervalgIDSLTestbrev : RedigerbarTemplate<SaksbehandlervalgIDSLT
         ),
         letterDataType = SaksbehandlervalgIDSLTestbrevDto::class,
     ) {
-        // Bool har alltid en default-verdi (false om ikke annet er oppgitt), og er derfor aldri nullable.
         val bool = saksbehandlervalg("bool", "Boolsk valg").bool()
         val boolMedDefault = saksbehandlervalg("boolMedDefault", "Boolsk valg med default").bool(default = true)
 
