@@ -42,8 +42,8 @@ class ParagraphContentBuilder : TextScope() {
     val content = mutableListOf<Edit.ParagraphContent>()
     override fun add(text: Edit.ParagraphContent.Text) { content += text }
 
-    fun itemList(id: Int? = null, listType: Listetype = Listetype.PUNKTLISTE, deletedItems: Set<Int> = emptySet(), builder: ItemListBuilder.() -> Unit) {
-        content += Edit.ParagraphContent.ItemList(id = id, items = ItemListBuilder().apply(builder).items, listType = listType, deletedItems = deletedItems)
+    fun itemList(id: Int? = null, listType: Listetype = Listetype.PUNKTLISTE, editedListType: Listetype? = null, deletedItems: Set<Int> = emptySet(), builder: ItemListBuilder.() -> Unit) {
+        content += Edit.ParagraphContent.ItemList(id = id, items = ItemListBuilder().apply(builder).items, listType = listType, editedListType = editedListType, deletedItems = deletedItems)
     }
 
     fun table(id: Int? = null, builder: TableBuilder.() -> Unit) {

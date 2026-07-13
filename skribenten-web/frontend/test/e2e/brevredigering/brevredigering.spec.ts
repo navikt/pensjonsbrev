@@ -213,10 +213,10 @@ test.describe("Brevredigering", () => {
     await page.goto("/saksnummer/123456/brev/1");
 
     await page.getByText("Du må melde").click();
-    await page.getByTestId("editor-bullet-list").click();
+    await page.getByTestId("bullet-list-button").click();
     await expect(page.locator("ul li span").last()).toContainText("Du må melde");
 
-    await page.getByTestId("editor-bullet-list").click();
+    await page.getByTestId("bullet-list-button").click();
     await expect(page.locator("ul li span").last()).not.toContainText("Du må melde");
   });
 

@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { nyBrevInfo, nyBrevResponse } from "../../utils/brevredigeringTestUtils";
+import { brevInfo, brevResponse } from "../../utils/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
 test.describe("Kladd", () => {
@@ -117,8 +117,8 @@ test.describe("Kladd", () => {
       if (route.request().method() === "GET") {
         return route.fulfill({
           json: [
-            nyBrevInfo({ id: 1, opprettet: "2024-09-17T08:36:09.785Z" }),
-            nyBrevInfo({ id: 2, opprettet: "2024-10-17T08:36:09.785Z" }),
+            brevInfo({ id: 1, opprettet: "2024-09-17T08:36:09.785Z" }),
+            brevInfo({ id: 2, opprettet: "2024-10-17T08:36:09.785Z" }),
           ],
         });
       }
@@ -162,7 +162,7 @@ test.describe("Kladd", () => {
     await page.route("**/bff/skribenten-backend/sak/123456/brev", async (route) => {
       if (route.request().method() === "GET") {
         return route.fulfill({
-          json: [nyBrevInfo({ id: 1, opprettet: "2024-09-17T08:36:09.785Z" })],
+          json: [brevInfo({ id: 1, opprettet: "2024-09-17T08:36:09.785Z" })],
         });
       }
       if (route.request().method() === "POST") {
@@ -180,8 +180,8 @@ test.describe("Kladd", () => {
           vedtaksId: null,
         });
         return route.fulfill({
-          json: nyBrevResponse({
-            info: nyBrevInfo({
+          json: brevResponse({
+            info: brevInfo({
               id: 2,
               avsenderEnhet: {
                 enhetNr: "4405",
@@ -235,7 +235,7 @@ test.describe("Kladd", () => {
       if (route.request().method() === "GET") {
         return route.fulfill({
           json: [
-            nyBrevInfo({
+            brevInfo({
               id: 1,
               opprettet: "2024-09-17T08:36:09.785Z",
               status: { type: "Arkivert" },

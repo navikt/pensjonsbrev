@@ -1,16 +1,19 @@
-import { type Draft, produce } from "immer";
+import { current, type Draft, produce } from "immer";
 
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
 import {
+  effectiveListType,
   isFritekst,
   isItemList,
   isLiteral,
+  isParagraph,
   isTableCellIndex,
   isTextContent,
 } from "~/Brevredigering/LetterEditor/model/utils";
 import { type BrevResponse } from "~/types/brev";
 import {
+  type AnyBlock,
   type Cell,
   type ColumnSpec,
   type Content,
@@ -20,6 +23,7 @@ import {
   type Identifiable,
   type Item,
   type ItemList,
+  ListType,
   type LiteralValue,
   type NewLine,
   type ParagraphBlock,
@@ -234,8 +238,12 @@ export function fontTypeOf(content: TextContent): FontType {
   }
 }
 
-export function isNew(obj: Identifiable): boolean {
-  return obj.id === null;
+export function isNew(obj: Identifiable): obj is Identifiable & { id: null | undefined } {
+  return typeof obj.id !== "number";
+}
+
+export function isFromTemplate(obj: Identifiable): obj is Identifiable & { id: number } {
+  return typeof obj.id === "number";
 }
 
 export function create(brev: BrevResponse): LetterEditorState {
@@ -301,6 +309,273 @@ export function applyTableSeparatorNormalization(draft: Draft<EditedLetter>) {
   }
 }
 
+/**
+ * Splits a single paragraph block at `blockIndex` if its content mixes
+ * ItemList(s) with other content, or contains multiple ItemLists of
+ * different types.
+ *
+ * Algorithm:
+ *  1. Merge adjacent same-type ItemLists within the block (reduces needless splits).
+ *  2. Partition the resulting content into contiguous "runs" — each run is
+ *     either all non-list content (text, tables, …) or a single ItemList.
+ *  3. The first run stays in the original block (preserving its id and
+ *     deletedContent). Each subsequent run becomes a new PARAGRAPH block
+ *     (id: null) inserted immediately after, in order.
+ *
+ * ID-preservation invariant for re-merge:
+ *  - The original block keeps its id at the lowest index.
+ *  - Content items moved out are removed via removeElements, which records
+ *    their ids in the original block's deletedContent (split-persistence).
+ *  - New blocks get id: null, parentId: null, deletedContent: [].
+ *  - The merge helpers (mergeListWithAdjacentBlocks, mergeAdjacentListBlocks)
+ *    always keep the lower-indexed block as the survivor, so re-merging any
+ *    subset of split blocks always produces a block with the original id.
+ *
+ * Focus update:
+ *  If draft.focus.blockIndex === blockIndex and draft.focus has a contentIndex,
+ *  this function updates draft.focus.blockIndex and contentIndex to point at
+ *  the same content in its new block after the split.
+ *
+ * Returns the number of blocks that replaced the original (1 = no split needed).
+ */
+export function splitMixedListBlock(draft: Draft<LetterEditorState>, blockIndex: number): number {
+  const block = draft.redigertBrev.blocks[blockIndex];
+  if (!isParagraph(block) || block.content.length <= 1) return 1;
+
+  // Step 1: merge adjacent same-type ItemLists within this block.
+  mergeSameTypeListsInBlock(block.content, block.deletedContent, block.id ?? null);
+
+  // Step 2: check whether a split is needed at all.
+  // Only id:null (user-created) lists must be isolated in their own block.
+  // Template lists (id != null) may co-exist with other content — do not split them out.
+  if (block.content.length <= 1) return 1;
+  const contentSnap = current(block.content) as Content[];
+  const isNewList = (c: Content): c is ItemList => isItemList(c) && isNew(c);
+  if (!contentSnap.some(isNewList)) return 1;
+
+  // Step 3: partition into runs (maximal sequences of the same category).
+  // Each run is [startIndex, endIndex] (inclusive) in contentSnap.
+  // Only id:null ItemLists are their own single-element runs; all other content
+  // (text, variables, tables, and id != null ItemLists) forms "text" runs.
+  const runs: Array<{ start: number; end: number }> = [];
+  for (let i = 0; i < contentSnap.length; ) {
+    if (isNewList(contentSnap[i])) {
+      runs.push({ start: i, end: i });
+      i++;
+    } else {
+      const j = i;
+      while (i < contentSnap.length && !isNewList(contentSnap[i])) i++;
+      runs.push({ start: j, end: i - 1 });
+    }
+  }
+
+  if (runs.length <= 1) return 1;
+
+  // Step 4: remove content for runs[1..N] in reverse (avoids index shifting).
+  // Capture plain snapshots now for later block construction.
+  const laterRunContents: Content[][] = [];
+  for (let r = runs.length - 1; r >= 1; r--) {
+    const run = runs[r];
+    const removed = removeElements(run.start, run.end - run.start + 1, {
+      content: block.content,
+      deletedContent: block.deletedContent,
+      id: block.id,
+    }) as unknown as Content[];
+    laterRunContents.unshift(removed);
+  }
+
+  // Step 5: create and insert new blocks after the original.
+  const newBlocks = laterRunContents.map((content) => newParagraph({ content }));
+  draft.redigertBrev.blocks.splice(blockIndex + 1, 0, ...newBlocks);
+
+  // Step 6: update focus if it was inside this block.
+  if ("contentIndex" in draft.focus && draft.focus.blockIndex === blockIndex) {
+    const oldContentIndex = draft.focus.contentIndex;
+    let cumulative = 0;
+    for (let r = 0; r < runs.length; r++) {
+      const runLength = runs[r].end - runs[r].start + 1;
+      if (oldContentIndex < cumulative + runLength) {
+        draft.focus.blockIndex = blockIndex + r;
+        draft.focus.contentIndex = oldContentIndex - cumulative;
+        break;
+      }
+      cumulative += runLength;
+    }
+  }
+
+  return runs.length;
+}
+
+/**
+ * Flattens several ItemLists into a single new ItemList, preserving the backend
+ * tracking identity. The merged list adopts the id of the first source list that
+ * has a non-null id (falling back to the last list), so the backend keeps
+ * tracking it across re-renders.
+ *
+ * INTENTIONAL ID COPY — ID preservation during merge (see letter-editor-actions
+ * SKILL.md). Callers must remove the source lists via removeElements (recording
+ * their ids in deletedContent) and insert the result via addElements (which
+ * un-deletes the preserved id).
+ */
+export function buildMergedItemList(lists: ItemList[], targetListType: ListType): ItemList {
+  const listWithId = lists.find(isFromTemplate) ?? lists[lists.length - 1];
+  const allItems = lists.flatMap((list) => [...list.items]);
+  const allDeletedItems = lists.flatMap((list) => [...list.deletedItems]);
+
+  return newItemList({
+    id: listWithId.id,
+    listType: listWithId.listType,
+    editedListType: targetListType !== listWithId.listType ? targetListType : listWithId.editedListType,
+    items: allItems,
+    deletedItems: allDeletedItems,
+  });
+}
+
+/**
+ * Coalesces the run of same-type ItemLists adjoining `anchorContentIndex` within
+ * a single block into one list (via buildMergedItemList). Returns the content
+ * index of the merged list and the number of items contributed by lists that
+ * preceded the anchor in the run (used by callers to offset itemIndex for focus).
+ *
+ * Does not touch `draft.focus`. If fewer than two same-type lists adjoin the
+ * anchor, this is a no-op and returns the anchor unchanged.
+ */
+export function coalesceAdjacentSameTypeLists(
+  draft: Draft<LetterEditorState>,
+  blockIndex: number,
+  anchorContentIndex: number,
+  listType: ListType,
+): { newContentIndex: number; itemIndexOffset: number } {
+  const block = draft.redigertBrev.blocks[blockIndex];
+  if (!isParagraph(block)) return { newContentIndex: anchorContentIndex, itemIndexOffset: 0 };
+
+  const range = findAdjoiningContent(
+    anchorContentIndex,
+    block.content,
+    (content): content is ItemList => isItemList(content) && effectiveListType(content) === listType,
+  );
+
+  if (range.count <= 1) return { newContentIndex: anchorContentIndex, itemIndexOffset: 0 };
+
+  const itemLists = removeElements(range.startIndex, range.count, {
+    content: block.content,
+    deletedContent: block.deletedContent,
+    id: block.id,
+  }).filter(isItemList);
+
+  // Items contributed by lists preceding the anchor in the run.
+  const anchorPosition = anchorContentIndex - range.startIndex;
+  const itemIndexOffset = itemLists.slice(0, anchorPosition).reduce((sum, list) => sum + list.items.length, 0);
+
+  const mergedList = buildMergedItemList(itemLists, listType);
+  addElements([mergedList], range.startIndex, block.content, block.deletedContent);
+
+  return { newContentIndex: range.startIndex, itemIndexOffset };
+}
+
+/**
+ * Moves all items (and deletedItems) from the ItemList at
+ * `blocks[sourceBlockIndex].content[sourceContentIndex]` into `targetList`, at the
+ * front or back. Removes the source list from its block (recording its id in the
+ * block's deletedContent for split-persistence), and removes the source block
+ * entirely if it becomes empty.
+ *
+ * Shared mechanical core for cross-block list merging. Callers own the guards
+ * (which neighbour to merge, type checks) and focus. This helper does not touch
+ * `draft.focus`. Returns how many items were moved and whether the source block
+ * was removed (so callers can adjust block indices when the source sat at a lower
+ * index than the target).
+ */
+export function absorbListIntoList(
+  draft: Draft<LetterEditorState>,
+  targetList: Draft<ItemList>,
+  sourceBlockIndex: number,
+  sourceContentIndex: number,
+  position: "front" | "back",
+): { movedItemCount: number; sourceBlockRemoved: boolean } {
+  const blocks = draft.redigertBrev.blocks;
+  const sourceBlock = blocks[sourceBlockIndex];
+  const sourceList = sourceBlock?.content[sourceContentIndex];
+  if (!isItemList(sourceList)) return { movedItemCount: 0, sourceBlockRemoved: false };
+
+  // Snapshot before removal so the data survives the source-list splice.
+  const movedItems = current(sourceList.items) as Item[];
+  const movedDeletedItems = current(sourceList.deletedItems) as number[];
+  const movedItemCount = movedItems.length;
+
+  // Remove the list from its block (records id in deletedContent for split-persistence).
+  removeElements(sourceContentIndex, 1, {
+    content: sourceBlock.content,
+    deletedContent: sourceBlock.deletedContent,
+    id: sourceBlock.id,
+  });
+
+  const insertIndex = position === "front" ? 0 : targetList.items.length;
+  addElements(movedItems, insertIndex, targetList.items, targetList.deletedItems);
+  // Items moved from another list have parentId pointing at the source list, so they cannot be in
+  // targetList.deletedItems — but propagate the source's own deletedItems entries (SKILL.md: never
+  // silently drop deletion records; the backend prunes stale ids).
+  targetList.deletedItems.push(...movedDeletedItems);
+
+  let sourceBlockRemoved = false;
+  if (sourceBlock.content.length === 0) {
+    removeElements(sourceBlockIndex, 1, {
+      content: blocks,
+      deletedContent: draft.redigertBrev.deletedBlocks,
+      id: null,
+    });
+    sourceBlockRemoved = true;
+  }
+
+  return { movedItemCount, sourceBlockRemoved };
+}
+
+/**
+ * Merges adjacent same-type ItemLists within a single block's content array
+ * in place. Adjacent lists of the same effective type are combined into the
+ * first list; the second list is removed (its id recorded in deletedContent
+ * via removeElements for split-persistence).
+ *
+ * When one list has a non-null id and the other does not, the non-null id is
+ * preserved on the surviving list (and un-deleted from deletedContent if it
+ * was just added there by removeElements).
+ */
+function mergeSameTypeListsInBlock(
+  content: Draft<Content[]>,
+  deletedContent: Draft<number[]>,
+  blockId: Nullable<number>,
+): void {
+  let i = 0;
+  while (i < content.length - 1) {
+    const first = content[i];
+    const second = content[i + 1];
+    if (isItemList(first) && isItemList(second) && effectiveListType(first) === effectiveListType(second)) {
+      const secondItems = current(second.items) as Item[];
+      const secondDeletedItems = current(second.deletedItems) as number[];
+
+      // Remove second from the block; records second.id in deletedContent if applicable.
+      removeElements(i + 1, 1, { content, deletedContent, id: blockId });
+
+      // If first has no id but second did, promote second's id onto first (and undo the deletion
+      // that removeElements just recorded, since we're reusing the id).
+      if (isNew(first) && isFromTemplate(second)) {
+        (first as Draft<ItemList>).id = second.id;
+        const deletedIndex = deletedContent.indexOf(second.id);
+        if (deletedIndex !== -1) deletedContent.splice(deletedIndex, 1);
+      }
+
+      // Append second's items and deletedItems to first.
+      (first as Draft<ItemList>).items.push(...secondItems);
+      (first as Draft<ItemList>).deletedItems.push(...secondDeletedItems);
+
+      // Re-check position i in case the newly extended first is now adjacent to another same-type
+      // list.
+    } else {
+      i++;
+    }
+  }
+}
+
 export function removeElements<T extends Identifiable>(
   startIndex: number,
   count: number,
@@ -316,7 +591,7 @@ function deleteElement(
   from: { content: Identifiable[]; deletedContent: Draft<number[]>; id?: number | null },
 ) {
   if (
-    typeof toDelete.id === "number" &&
+    isFromTemplate(toDelete) &&
     toDelete.parentId === from.id &&
     !from.deletedContent.includes(toDelete.id) &&
     !from.content.map((c) => c.id).includes(toDelete.id)
@@ -391,9 +666,9 @@ export function mergeLiteralsIfPossible<T extends Identifiable>(first: Draft<T>,
     fontTypeOf(first) === fontTypeOf(second)
   ) {
     const mergedText = text(first) + text(second);
-    if (first.id !== null && second.id !== null) {
+    if (isFromTemplate(first) && isFromTemplate(second)) {
       return [first, second];
-    } else if (first.id === null) {
+    } else if (isNew(first)) {
       updateLiteralText(second, mergedText);
       return [second];
     } else {
@@ -535,14 +810,21 @@ export function newItem({
   };
 }
 
-export function newItemList(args: { id?: Nullable<number>; items: Item[]; deletedItems?: number[] }): ItemList {
+export function newItemList(args: {
+  id?: Nullable<number>;
+  listType?: ListType;
+  editedListType?: ListType | null;
+  items: Item[];
+  deletedItems?: number[];
+}): ItemList {
   return {
     id: args.id ?? null,
     parentId: null,
     type: "ITEM_LIST",
+    listType: args.listType ?? ListType.PUNKTLISTE,
+    editedListType: args.editedListType ?? undefined,
     items: args.items,
     deletedItems: args.deletedItems ?? [],
-    listType: "PUNKTLISTE",
   };
 }
 
@@ -576,6 +858,117 @@ export function insertEmptyParagraphAfterBlock(draft: Draft<LetterEditorState>, 
 
   draft.focus = {
     blockIndex: blockIndex + 1,
+    contentIndex: 0,
+    cursorPosition: 0,
+  };
+}
+
+/**
+ * Breaks out of an empty list item by removing it and reordering the current block into up to
+ * five blocks in order: [content-before-list?] [items-before?] [blank-line] [items-after?] [content-after-list?].
+ * Focus lands on the blank-line block.
+ *
+ * ID semantics (see letter-editor-actions SKILL.md):
+ *  - The original block is reused for the first resulting block, keeping its id and deletedContent.
+ *    Only the subsequent blocks are new (id: null). Template ids that leave the block are recorded
+ *    in block.deletedContent so the backend doesn't re-introduce them.
+ *  - The empty item is removed via removeElements, so a template item-id is recorded in
+ *    itemList.deletedItems rather than being lost.
+ *  - The original list (and its id) is reused for one surviving half; the other half becomes a new
+ *    id: null list.
+ */
+export function breakOutEmptyItem(
+  draft: Draft<LetterEditorState>,
+  literalIndex: ItemContentIndex,
+  itemList: Draft<ItemList>,
+  block: Draft<AnyBlock>,
+) {
+  const blocks = draft.redigertBrev.blocks;
+  const blockIndex = literalIndex.blockIndex;
+  const itemIndex = literalIndex.itemIndex;
+  const contentIndex = literalIndex.contentIndex;
+
+  draft.saveStatus = "DIRTY";
+
+  // Pre-existing deletedItems can't be attributed to a specific half, so we propagate them to
+  // both halves (the backend prunes stale ids; dropping them risks re-introducing deleted items).
+  const preExistingDeletedItems = [...itemList.deletedItems];
+  const listType = itemList.listType;
+  const editedListType = itemList.editedListType;
+
+  // Remove the empty item itself. removeElements records a template item-id in itemList.deletedItems
+  // (instead of losing it by discarding the whole block).
+  removeElements(itemIndex, 1, {
+    content: itemList.items,
+    deletedContent: itemList.deletedItems,
+    id: itemList.id,
+  });
+
+  const hasItemsBefore = itemIndex > 0;
+  const hasItemsAfter = itemIndex < itemList.items.length;
+
+  // The original list (and its id) is reused for one surviving half: the leading items when they
+  // exist, otherwise the trailing items. The other half, when present, becomes a new id: null list.
+  let beforeListContent: Content[] | null = null;
+  let afterListContent: Content[] | null = null;
+
+  if (hasItemsBefore) {
+    if (hasItemsAfter) {
+      // Split trailing items into a new list. removeElements records the moved item-ids in
+      // itemList.deletedItems (split-persistence) so they aren't re-introduced into the retained list.
+      const itemsAfter = removeElements(itemIndex, itemList.items.length - itemIndex, {
+        content: itemList.items,
+        deletedContent: itemList.deletedItems,
+        id: itemList.id,
+      }).map((removed) => current(removed)) as unknown as Item[];
+      afterListContent = [
+        newItemList({ listType, editedListType, items: itemsAfter, deletedItems: [...preExistingDeletedItems] }),
+      ];
+    }
+    // The retained list keeps the leading items (and its id).
+    beforeListContent = [current(itemList) as unknown as ItemList];
+  } else if (hasItemsAfter) {
+    // Empty item was first: the original list now holds only the trailing items; reuse it as-is.
+    afterListContent = [current(itemList) as unknown as ItemList];
+  }
+
+  // Content surrounding the list within the same block becomes its own block on each side.
+  const snapshotContent = current(block.content) as unknown as Content[];
+  const contentBeforeList = snapshotContent.slice(0, contentIndex);
+  const contentAfterList = snapshotContent.slice(contentIndex + 1);
+
+  // Ordered pieces; each becomes a block.
+  const pieces: Content[][] = [];
+  if (contentBeforeList.length > 0) pieces.push(contentBeforeList);
+  if (beforeListContent) pieces.push(beforeListContent);
+  const blankPieceIndex = pieces.length;
+  pieces.push([newLiteral()]);
+  if (afterListContent) pieces.push(afterListContent);
+  if (contentAfterList.length > 0) pieces.push(contentAfterList);
+
+  // Reuse the original block for the first piece (preserving block.id and block.deletedContent).
+  // Record any template-id child that leaves the block so the backend doesn't re-introduce it.
+  const firstPiece = pieces[0];
+  const survivingIds = new Set(firstPiece.map((c) => c.id).filter((id): id is number => id !== null));
+  for (const childContent of block.content) {
+    if (
+      isFromTemplate(childContent) &&
+      childContent.parentId === block.id &&
+      !survivingIds.has(childContent.id) &&
+      !block.deletedContent.includes(childContent.id)
+    ) {
+      block.deletedContent.push(childContent.id);
+    }
+  }
+  block.content = firstPiece as Draft<Content[]>;
+
+  // Insert the remaining pieces as new id: null blocks after the original.
+  const newBlocks = pieces.slice(1).map((content) => newParagraph({ content }));
+  blocks.splice(blockIndex + 1, 0, ...newBlocks);
+
+  // Focus the blank line
+  draft.focus = {
+    blockIndex: blockIndex + blankPieceIndex,
     contentIndex: 0,
     cursorPosition: 0,
   };

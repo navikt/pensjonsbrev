@@ -2,7 +2,7 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/LetterEditor/actions/common";
 
-import { nyBrevResponse, nyRedigertBrev } from "../../utils/brevredigeringTestUtils";
+import { brevResponse, editedLetter } from "../../utils/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
 function tableRow(...texts: string[]) {
@@ -17,12 +17,12 @@ function tableRow(...texts: string[]) {
 async function setupEditor(page: Page, blocks: ReturnType<typeof newParagraph>[]) {
   await setupSakStubs(page);
 
-  const brevResponse = nyBrevResponse({
-    redigertBrev: nyRedigertBrev({ blocks }),
-  });
-
   await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) =>
-    route.fulfill({ json: brevResponse }),
+    route.fulfill({
+      json: brevResponse({
+        redigertBrev: editedLetter({ blocks }),
+      }),
+    }),
   );
   await page.route("**/bff/skribenten-backend/brev/1/reservasjon", (route) =>
     route.fulfill({ path: "test/e2e/fixtures/brevreservasjon.json", contentType: "application/json" }),
@@ -43,12 +43,12 @@ async function setupEditor(page: Page, blocks: ReturnType<typeof newParagraph>[]
   await page.evaluate(() => document.fonts.ready);
 }
 
-function headerCell(page: Page, colIdx: number) {
-  return page.getByTestId(`table-header-${colIdx}`).locator("span[contenteditable=true]").first();
+function headerCell(page: Page, columnIndex: number) {
+  return page.getByTestId(`table-header-${columnIndex}`).locator("span[contenteditable=true]").first();
 }
 
-function bodyCell(page: Page, rowIdx: number, cellIdx: number) {
-  return page.getByTestId(`table-cell-${rowIdx}-${cellIdx}`).locator("span[contenteditable=true]").first();
+function bodyCell(page: Page, rowIndex: number, cellIndex: number) {
+  return page.getByTestId(`table-cell-${rowIndex}-${cellIndex}`).locator("span[contenteditable=true]").first();
 }
 
 async function assertFocused(_page: Page, locator: ReturnType<typeof bodyCell>) {
