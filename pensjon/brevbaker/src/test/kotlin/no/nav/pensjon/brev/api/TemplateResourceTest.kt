@@ -58,7 +58,7 @@ class TemplateResourceTest {
     fun `can renderPDF with valid letterData`(): Unit = runBlocking {
         val result = autobrev.renderPDF(validAutobrevRequest)
         assertEquals(
-            LetterResponse(pdfInnhold.encodeToByteArray(), ContentType.Application.Pdf.toString(), LetterExample.template.letterMetadata),
+            LetterResponse(pdfInnhold.encodeToByteArray(), ContentType.Application.Pdf.toString(), LetterExample.template.letterMetadata, emptyList()),
             result
         )
     }

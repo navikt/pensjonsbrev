@@ -7,7 +7,6 @@ import no.nav.brev.brevbaker.Brevbaker
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFVedleggAppender
-import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.brev.brevbaker.markup.LetterPDFRequest
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
@@ -17,6 +16,7 @@ import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import no.nav.pensjon.etterlatte.maler.ElementType
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.ForhaandsvarselOmregningBP
 import org.junit.jupiter.api.Assertions.assertEquals
