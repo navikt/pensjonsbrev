@@ -199,7 +199,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const isInserted = isTekstValgHighlighted(highlightedIds, content);
 
   const { dismissLiteral, diffHash } = useAttestantDiff();
-  const diffSegments = useDiffSegmentsForLiteral(literalIndex.blockIndex, literalIndex.contentIndex, textOf(content) || "");
+  const diffSegments = useDiffSegmentsForLiteral(literalIndex, textOf(content) || "");
   const hasDiffDecoration = diffSegments != null;
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
@@ -603,7 +603,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     );
 
     if (hasDiffDecoration) {
-      dismissLiteral(diffKey({ blockIndex: literalIndex.blockIndex, contentIndex: literalIndex.contentIndex }));
+      dismissLiteral(diffKey(literalIndex));
     }
   };
 
@@ -825,7 +825,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     >
       {hasDiffDecoration ? (
         <DiffSegments
-          key={`${diffHash ?? "no-diff"}-${literalIndex.blockIndex}-${literalIndex.contentIndex}`}
+          key={`${diffHash ?? "no-diff"}-${diffKey(literalIndex)}`}
           segments={diffSegments}
         />
       ) : undefined}

@@ -8,6 +8,7 @@ import {
   groupDiffByLiteral,
   type LetterDiff,
 } from "./diffModel";
+import { type LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 
 type AttestantDiffContextValue = {
   diffByLiteral: DiffRangesByLiteral;
@@ -52,14 +53,13 @@ export const AttestantDiffProvider = ({
 export const useAttestantDiff = () => useContext(AttestantDiffContext);
 
 export function useDiffSegmentsForLiteral(
-  blockIndex: number,
-  contentIndex: number,
+  literalIndex: LiteralIndex,
   currentText: string,
 ): DiffSegment[] | null {
   const { diffByLiteral, dismissedKeys } = useAttestantDiff();
 
   return useMemo(() => {
-    const key = diffKey({ blockIndex, contentIndex });
+    const key = diffKey(literalIndex);
     if (dismissedKeys.has(key)) return null;
 
     const ranges = diffByLiteral.get(key);
@@ -77,5 +77,5 @@ export function useDiffSegmentsForLiteral(
     }
 
     return result.segments;
-  }, [blockIndex, contentIndex, currentText, diffByLiteral, dismissedKeys]);
+  }, [literalIndex, currentText, diffByLiteral, dismissedKeys]);
 }

@@ -1,16 +1,13 @@
-export type DiffContentIndex = {
-  blockIndex: number;
-  contentIndex: number;
-};
+import { type LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 
 export type DiffInsert = {
-  index: DiffContentIndex;
+  index: LiteralIndex;
   startOffset: number;
   endOffset: number;
 };
 
 export type DiffDelete = {
-  index: DiffContentIndex;
+  index: LiteralIndex;
   startOffset: number;
   endOffset: number;
   text: string;
@@ -34,7 +31,13 @@ export type DiffRangesByLiteral = Map<
   }
 >;
 
-export function diffKey(index: DiffContentIndex): string {
+export function diffKey(index: LiteralIndex): string {
+  if ("itemIndex" in index) {
+    return [index.blockIndex, index.contentIndex, "item", index.itemIndex, index.itemContentIndex].join("-");
+  }
+  if ("rowIndex" in index) {
+    return [index.blockIndex, index.contentIndex, "table", index.rowIndex, index.cellIndex, index.cellContentIndex].join("-");
+  }
   return `${index.blockIndex}-${index.contentIndex}`;
 }
 

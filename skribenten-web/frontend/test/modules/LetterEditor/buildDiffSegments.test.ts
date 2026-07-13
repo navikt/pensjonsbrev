@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { buildDiffSegments, type DiffDelete, type DiffInsert } from "~/Brevredigering/LetterEditor/diff/diffModel";
+import { buildDiffSegments, diffKey, type DiffDelete, type DiffInsert } from "~/Brevredigering/LetterEditor/diff/diffModel";
 import { brevDiffKeys } from "~/api/brev-queries";
 
 function expectOk(result: ReturnType<typeof buildDiffSegments>) {
@@ -298,5 +298,85 @@ describe("brevDiffKeys", () => {
     const key1 = brevDiffKeys.id(1, "same-hash");
     const key2 = brevDiffKeys.id(2, "same-hash");
     expect(key1).not.toEqual(key2);
+  });
+});
+
+describe("diffKey", () => {
+  it("produces correct key for a block content index", () => {
+    expect(diffKey({ blockIndex: 1, contentIndex: 0 })).toBe("1-0");
+  });
+
+  it("produces correct key for an item content index", () => {
+    expect(diffKey({ blockIndex: 12, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 })).toBe("12-0-item-0-0");
+  });
+
+  it("produces correct key for a table cell index", () => {
+    expect(diffKey({ blockIndex: 8, contentIndex: 1, rowIndex: 1, cellIndex: 0, cellContentIndex: 0 })).toBe("8-1-table-1-0-0");
+  });
+
+  describe("collision resistance", () => {
+    it("two different list items in the same block produce different keys", () => {
+      const a = diffKey({ blockIndex: 3, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 });
+      const b = diffKey({ blockIndex: 3, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 });
+      expect(a).not.toBe(b);
+    });
+
+    it("two different item contents in the same item produce different keys", () => {
+      const a = diffKey({ blockIndex: 3, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 });
+      const b = diffKey({ blockIndex: 3, contentIndex: 0, itemIndex: 0, itemContentIndex: 1 });
+      expect(a).not.toBe(b);
+    });
+
+    it("two rows in the same table produce different keys", () => {
+      const a = diffKey({ blockIndex: 5, contentIndex: 1, rowIndex: 0, cellIndex: 0, cellContentIndex: 0 });
+      const b = diffKey({ blockIndex: 5, contentIndex: 1, rowIndex: 1, cellIndex: 0, cellContentIndex: 0 });
+      expect(a).not.toBe(b);
+    });
+
+    it("two cells in the same row produce different keys", () => {
+      const a = diffKey({ blockIndex: 5, contentIndex: 1, rowIndex: 0, cellIndex: 0, cellContentIndex: 0 });
+      const b = diffKey({ blockIndex: 5, contentIndex: 1, rowIndex: 0, cellIndex: 1, cellContentIndex: 0 });
+      expect(a).not.toBe(b);
+    });
+
+    it("two contents in the same cell produce different keys", () => {
+      const a = diffKey({ blockIndex: 5, contentIndex: 1, rowIndex: 0, cellIndex: 0, cellContentIndex: 0 });
+      const b = diffKey({ blockIndex: 5, contentIndex: 1, rowIndex: 0, cellIndex: 0, cellContentIndex: 1 });
+      expect(a).not.toBe(b);
+    });
+
+    it("block index does not collide with item index of same numbers", () => {
+      const block = diffKey({ blockIndex: 0, contentIndex: 0 });
+      const item = diffKey({ blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 });
+      expect(block).not.toBe(item);
+    });
+
+    it("item index does not collide with table index of same numbers", () => {
+      const item = diffKey({ blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 });
+      const table = diffKey({ blockIndex: 0, contentIndex: 0, rowIndex: 0, cellIndex: 0, cellContentIndex: 0 });
+      expect(item).not.toBe(table);
+    });
+  });
+
+  describe("zero-length ranges", () => {
+    it("zero-length insert produces an empty inserted segment", () => {
+      const inserts: DiffInsert[] = [{ index: idx, startOffset: 5, endOffset: 5 }];
+      const segments = expectOk(buildDiffSegments({ currentText: "Vi har mottatt.", inserts, deletes: [] }));
+      expect(segments).toEqual([
+        { type: "unchanged", text: "Vi ha" },
+        { type: "inserted", text: "" },
+        { type: "unchanged", text: "r mottatt." },
+      ]);
+    });
+
+    it("zero-length delete with text still renders the deleted text", () => {
+      const deletes: DiffDelete[] = [{ index: idx, startOffset: 6, endOffset: 6, text: "har " }];
+      const segments = expectOk(buildDiffSegments({ currentText: "Vi har mottatt.", inserts: [], deletes }));
+      expect(segments).toEqual([
+        { type: "unchanged", text: "Vi har" },
+        { type: "deleted", text: "har " },
+        { type: "unchanged", text: " mottatt." },
+      ]);
+    });
   });
 });
