@@ -16,6 +16,7 @@ function tableRow(...texts: string[]) {
   return {
     id: null,
     parentId: null,
+    deletedCells: [],
     cells: texts.map((text) => newCell([newLiteral({ editedText: text })])),
   };
 }

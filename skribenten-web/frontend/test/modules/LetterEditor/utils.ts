@@ -246,6 +246,7 @@ export function table(headerCells: Cell[], rows: Row[]): Table {
           span: 1,
         };
       }),
+      deletedColSpecs: [],
     },
     deletedRows: [],
   };
@@ -255,6 +256,7 @@ export function cell(...content: TextContent[]): Cell {
   return {
     id,
     parentId: null,
+    deletedContent: [],
     text: withParent(content, id),
   };
 }
@@ -263,6 +265,7 @@ export function row(...cells: Cell[]): Row {
   return {
     id,
     parentId: null,
+    deletedCells: [],
     cells: withParent(cells, id),
   };
 }
