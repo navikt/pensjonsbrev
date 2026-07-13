@@ -11,21 +11,10 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_MEDLEMSKAP_UTLAND
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visInnvilgetPensjonEOSLand
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visSupplerendeStonadUforeFlykninger
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visTekstVedArtikkel57Avslag
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visVedtakFraAndreLand
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.TrygdetidSelectors.fomDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.TrygdetidSelectors.land
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.TrygdetidSelectors.tomDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.artikkel
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.avtaletype
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.eosNordisk
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.trygdetidListe
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUtlandDto.saksbehandlervalg.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUtlandDto.trygdetid.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUtlandDto.uforeAvslagPendata.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUtlandDto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants
@@ -100,7 +89,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 text(bokmal { +"Du flyttet til Norge " + fritekst("siste innflyttingsdato til Norge") + ", og ble da medlem av folketrygden. " })
             }
 
-            paragraph {
+            paragraph(uniqueness = "vurdering1") {
                 text(bokmal { + fritekst("Individuell vurdering") })
             }
 
@@ -108,7 +97,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 text(bokmal { +"Vi har fastsatt uføretidspunktet ditt til " + fritekst("dato") + ". Da ble inntektsevnen din varig nedsatt med minst halvparten. " })
             }
 
-            paragraph {
+            paragraph(uniqueness = "vurdering2") {
                 text(bokmal { + fritekst("Individuell vurdering") })
             }
 

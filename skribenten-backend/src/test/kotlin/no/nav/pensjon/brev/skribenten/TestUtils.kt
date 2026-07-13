@@ -1,8 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
-import com.typesafe.config.ConfigFactory
-import com.typesafe.config.ConfigParseOptions.defaults
-import com.typesafe.config.ConfigResolveOptions
+import io.ktor.server.config.ApplicationConfig
+import io.ktor.server.config.getAs
 import io.ktor.util.collections.*
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
@@ -12,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroup
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserAccessToken
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1_BREVKODE
@@ -20,6 +20,8 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ObjectAssert
+import org.jetbrains.exposed.v1.jdbc.Database
+import org.opentest4j.AssertionFailedError
 import org.testcontainers.postgresql.PostgreSQLContainer
 import java.time.LocalDate
 import java.util.concurrent.atomic.AtomicBoolean
@@ -31,12 +33,7 @@ data class MockPrincipal(override val navIdent: NavIdent, override val fullName:
     override fun isInGroup(groupId: ADGroup) = groups.contains(groupId)
 }
 
-fun initADGroups() = ADGroups.init(
-ConfigFactory
-    .load("application-local", defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-    .getConfig("skribenten")
-    .getConfig("groups")
-)
+fun initADGroups() = ADGroups.init(ApplicationConfig("application-test.conf").config("skribenten.groups").getAs())
 
 object Testbrevkoder {
     val TESTBREV = RedigerbarBrevkode("TESTBREV")
@@ -95,6 +92,23 @@ inline fun <reified ExpectedE : E, T, E> ObjectAssert<Outcome<T, E>?>.isFailure(
     return this
 }
 
+private class TestFeatureToggleService : FeatureToggleService {
+    val overrides = mutableMapOf<String, Boolean>()
+    override suspend fun isEnabled(toggle: UnleashToggle): Boolean = overrides[toggle.name] ?: false
+    override fun close() { }
+}
+
+fun Features.override(key: UnleashToggle, value: Boolean) {
+    var currentService = toggleService as? TestFeatureToggleService
+
+    if (currentService == null) {
+        currentService = TestFeatureToggleService()
+        init(currentService)
+    }
+
+    currentService.overrides[key.name] = value
+}
+
 object SharedPostgres {
     private val subscriptions = ConcurrentSet<Any>()
 
@@ -105,11 +119,14 @@ object SharedPostgres {
 
     private val initialized = AtomicBoolean(false)
 
+    lateinit var database: Database
+        private set
+
     fun subscribeAndEnsureDatabaseInitialized(subscriber: Any) {
         synchronized(this) {
             if (initialized.compareAndSet(false, true)) {
                 val c = container
-                initDatabase(jdbcUrl = c.jdbcUrl, username = c.username, password = c.password, maxPoolSize = 20)
+                database = Database.connect(initDatabase(jdbcUrl = c.jdbcUrl, username = c.username, password = c.password, maxPoolSize = 20))
             }
             subscriptions.add(subscriber)
         }

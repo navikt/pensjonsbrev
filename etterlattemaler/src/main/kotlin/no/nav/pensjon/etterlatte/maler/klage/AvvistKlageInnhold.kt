@@ -13,10 +13,8 @@ import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDataSelectors.datoForVedtaketKlagenGjelder
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDataSelectors.klageDato
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDataSelectors.sakType
+import no.nav.pensjon.etterlatte.maler.klage.selectors.avvistKlageInnholdDTO.*
+import no.nav.pensjon.etterlatte.maler.klage.selectors.avvistKlageInnholdData.*
 import java.time.LocalDate
 
 

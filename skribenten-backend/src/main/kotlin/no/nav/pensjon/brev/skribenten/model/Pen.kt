@@ -82,7 +82,7 @@ object Pen {
         val dokumentDato: LocalDate,
         val saksId: SaksId,
         val brevkode: Brevkode.Redigerbart,
-        val enhetId: EnhetId,
+        val enhetsId: EnhetId,
         val pdf: ByteArray,
         val eksternReferanseId: String,
         val mottaker: Mottaker?
@@ -97,7 +97,7 @@ object Pen {
             if (dokumentDato != other.dokumentDato) return false
             if (saksId != other.saksId) return false
             if (brevkode != other.brevkode) return false
-            if (enhetId != other.enhetId) return false
+            if (enhetsId != other.enhetsId) return false
             if (!pdf.contentEquals(other.pdf)) return false
             if (eksternReferanseId != other.eksternReferanseId) return false
             if (mottaker != other.mottaker) return false
@@ -110,7 +110,7 @@ object Pen {
             result = 31 * result + dokumentDato.hashCode()
             result = 31 * result + saksId.hashCode()
             result = 31 * result + brevkode.hashCode()
-            result = 31 * result + enhetId.hashCode()
+            result = 31 * result + enhetsId.hashCode()
             result = 31 * result + pdf.contentHashCode()
             result = 31 * result + eksternReferanseId.hashCode()
             result = 31 * result + mottaker.hashCode()

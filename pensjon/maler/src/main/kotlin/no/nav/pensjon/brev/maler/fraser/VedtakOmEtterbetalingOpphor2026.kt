@@ -83,12 +83,33 @@ class VedtakOmEtterbetalingOpphor2026 {
                 paragraph {
                     text(
                         bokmal {
-                            +"Stortinget har vedtatt en lovendring som gir deg en lavere reduksjonsprosent. Den nye reduksjonsprosenten skal gjelde fra 1. januar 2026. "
+                            +"Stortinget har vedtatt lovendringer som skal gjelde fra 1. januar 2026. "
                         },
                         nynorsk {
-                            +"Stortinget har vedteke ei lovendring som gir deg ein lågare reduksjonsprosent. Den nye reduksjonsprosenten skal gjelde frå 1. januar 2026. "
+                            +"Stortinget har vedteke lovendringer som skal gjelde frå 1. januar 2026. "
                         },
                     )
+                }
+                showIf(endringIfu) {
+                    paragraph {
+                        text(
+                            bokmal { +"Lovendringene har ført til at din inntekt før uførhet (IFU) har økt til " + ifu.format() + ", og du har fått en lavere reduksjonsprosent på " + reduksjonsprosent.format() + " prosent. " },
+                            nynorsk { +"Lovendringane har ført til at inntekta di før uførhet (IFU) har auka til " + ifu.format() + ", og du har fått ein lågare reduksjonsprosent på " + reduksjonsprosent.format() + " prosent. " },
+                        )
+                        showIf(endringUforegrad) {
+                            text(
+                                bokmal { +"Siden din IFU har økt har dette ført til at uføregraden din har økt til " + uforegrad.format() + " prosent. " },
+                                nynorsk { +"Sidan IFU-en din har auka har dette ført til at uføregraden din har auka til " + uforegrad.format() + " prosent. " },
+                            )
+                        }
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            bokmal { +"Lovendringene har ført til at du har fått en lavere reduksjonsprosent på " + reduksjonsprosent.format() + " prosent. " },
+                            nynorsk { +"Lovendringane har ført til at du har fått ein lågare reduksjonsprosent på " + reduksjonsprosent.format() + " prosent. " },
+                        )
+                    }
                 }
                 paragraph {
                     text(
@@ -114,8 +135,8 @@ class VedtakOmEtterbetalingOpphor2026 {
 
             paragraph {
                 text(
-                    bokmal { +"Vedtaket har vi gjort etter " },
-                    nynorsk { +"Vedtaket har vi gjort etter " },
+                    bokmal { +"Vedtaket har vi gjort etter folketrygdloven " },
+                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova " },
                 )
                 showIf(erRedigerbar) {
                     text(

@@ -7,6 +7,7 @@ val javaTarget: String by System.getProperties()
 plugins {
     application
     kotlin("jvm")
+    kotlin("plugin.serialization") version libs.versions.kotlinVersion
     alias(libs.plugins.ktor)
     alias(libs.plugins.gradle.node)
 }
@@ -17,22 +18,46 @@ ktor {
         codeInferenceEnabled = true
     }
 }
+fun Project.nodeVersionFromToolVersions(): String {
+    val toolVersions = rootProject.file(".tool-versions")
+    require(toolVersions.exists()) { "Mangler .tool-versions i ${rootProject.projectDir}" }
+
+    val version = toolVersions
+        .readLines()
+        .firstOrNull { it.startsWith("nodejs ") }
+        ?.substringAfter("nodejs ")
+        ?.trim()
+
+    require(!version.isNullOrBlank()) { "Fant ikke 'nodejs <versjon>' i ${toolVersions.path}" }
+    return version
+}
 
 node {
+    if (System.getenv("CI")?.toBoolean() != true) {
+        download.set(true)
+        version.set(project.nodeVersionFromToolVersions())
+    }
     nodeProjectDir.set(rootProject.file("skribenten-web/frontend"))
     npmInstallCommand.set("ci")
 }
 
-// Declare openapi-spec.json as a test output so Gradle's build cache includes and restores
-// it when the test result is cached. Without this, running clean then generateApiTypes would
-// use the cached test result but leave build/openapi-spec.json absent.
-tasks.test {
+val generateOpenApiSpec by tasks.registering(Test::class) {
+    description = "Generates build/openapi-spec.json by booting the application via OpenApiSpecTest"
+    group = "build"
+    // Avoid running in parallel with the regular test suite when org.gradle.parallel=true
+    mustRunAfter(tasks.test)
+    maxParallelForks = 1
+    useJUnitPlatform {
+        includeTags("openapi-spec")
+    }
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
     outputs.file(layout.buildDirectory.file("openapi-spec.json"))
 }
 
 val generateApiTypes by tasks.registering(NpxTask::class) {
     description = "Generates TypeScript types from the OpenAPI spec into skribenten-web/frontend/src/types/skribenten-api.ts"
-    dependsOn(tasks.test, tasks.npmInstall)
+    dependsOn(generateOpenApiSpec, tasks.npmInstall)
     command.set("openapi-typescript")
     val specFile = layout.buildDirectory.file("openapi-spec.json")
     val outputFile = rootProject.file("skribenten-web/frontend/src/types/skribenten-api.ts")
@@ -77,7 +102,9 @@ tasks {
         targetCompatibility = javaTarget
     }
     test {
-        useJUnitPlatform()
+        useJUnitPlatform {
+            excludeTags("openapi-spec")
+        }
     }
     kotlin {
         compileTestKotlin {
@@ -108,6 +135,7 @@ dependencies {
     implementation(libs.ktor.server.auth.jwt)
     implementation(libs.ktor.server.caching.headers)
     implementation(libs.ktor.server.callId)
+    implementation(libs.ktor.server.di)
     implementation(libs.ktor.server.callLogging)
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.server.core)

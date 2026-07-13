@@ -16,8 +16,11 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Sakstype
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brevbaker.api.model.RedigerbareVedleggTitler
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.slf4j.LoggerFactory
@@ -62,16 +65,42 @@ class BrevmalService(
             pesysData = pesysData,
         )
 
+    suspend fun hentRedigerbareVedleggTitler(brev: Brevredigering, pesysData: BrevdataResponse.Data): RedigerbareVedleggTitler? =
+        brevbakerService.hentRedigerbareVedleggTitler(
+            brevkode = brev.brevkode,
+            spraak = brev.spraak,
+            brevdata = GeneriskRedigerbarBrevdata(
+                pesysData = pesysData.brevdata,
+                saksbehandlerValg = brev.saksbehandlerValg,
+            ),
+            felles = pesysData.felles,
+        )
+
+    suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean =
+        brevbakerService.harRedigerbareVedlegg(brevkode)
+
+    suspend fun renderRedigerbartVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data, vedleggId: VedleggId): LetterMarkup.Attachment? =
+        brevbakerService.renderRedigerbartVedlegg(
+            brevkode = brev.brevkode,
+            spraak = brev.spraak,
+            brevdata = GeneriskRedigerbarBrevdata(
+                pesysData = pesysData.brevdata,
+                saksbehandlerValg = brev.saksbehandlerValg,
+            ),
+            felles = pesysData.felles,
+            vedleggId = vedleggId,
+        )
+
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
         brevbakerService.getRedigerbarTemplate(brevkode)
 
     suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification? =
         brevbakerService.getModelSpecification(brevkode)
 
-    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): List<ValgbartVedlegg> {
+    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): List<ValgbartVedlegg>? {
         val spraakIBrevet = transaction {
-            BrevredigeringEntity.findById(brevId)?.spraak ?: throw IllegalStateException("Finner ikke brev med id $brevId")
-        }
+            BrevredigeringEntity.findById(brevId)?.spraak
+        } ?: return null
         return brevbakerService.getAlltidValgbareVedlegg(brevId).map {
             ValgbartVedlegg(
                 kode = it.kode,
@@ -122,7 +151,7 @@ class BrevmalService(
 
     private suspend fun hentMaler(sakstype: Sakstype, includeEblanketter: Boolean): Sequence<LetterMetadata> =
         withContext(Dispatchers.IO) {
-            val brevbaker = async { hentBrevbakerMaler().asSequence().filter { it.sakstyper.map { it.kode }.contains(sakstype.kode) }.map { LetterMetadata.Brevbaker(it) } }
+            val brevbaker = async { hentBrevbakerMaler().asSequence().filter { it.sakstyper.map { type -> type.kode }.contains(sakstype.kode) }.map { LetterMetadata.Brevbaker(it) } }
             val legacy = async { brevmetadataService.getBrevmalerForSakstype(sakstype).asSequence().map { LetterMetadata.Legacy(it, sakstype) } }
             val eblanketter = async {
                 if (includeEblanketter) brevmetadataService.getEblanketter().asSequence().map { LetterMetadata.Legacy(it, sakstype) } else emptySequence()

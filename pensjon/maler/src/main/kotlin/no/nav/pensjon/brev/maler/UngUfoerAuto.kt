@@ -1,19 +1,9 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.maler.*
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.BarnetilleggSelectors.gjelderFlereBarn
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.BarnetilleggSelectors.inntektstak
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.BarnetilleggSelectors.utbetalt
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.InnvilgetTilleggSelectors.utbetalt
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.ektefelle
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.fellesbarn
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.gjenlevende
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.kravVirkningFraOgMed
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.minsteytelseVedVirkSats
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.orienteringOmRettigheterUfoere
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.saerkullsbarn
-import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDtoSelectors.totaltUfoerePerMnd
+import no.nav.pensjon.brev.api.model.maler.selectors.ungUfoerAutoDto.barnetillegg.*
+import no.nav.pensjon.brev.api.model.maler.selectors.ungUfoerAutoDto.innvilgetTillegg.*
+import no.nav.pensjon.brev.api.model.maler.selectors.ungUfoerAutoDto.*
 import no.nav.pensjon.brev.maler.fraser.UngUfoer
 import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -80,7 +70,7 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
             )
 
 
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
             includePhrase(UngUfoer.EndringMinsteYtelseUngUfoerVed20aar(minsteytelseVedVirkSats))
             includePhrase(Ufoeretrygd.HjemmelSivilstand)
 

@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
-import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDtoSelectors.belopsgrense
+import no.nav.pensjon.brev.ufore.api.model.maler.info.selectors.infoEndretUTPgaInntektDto.*
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG

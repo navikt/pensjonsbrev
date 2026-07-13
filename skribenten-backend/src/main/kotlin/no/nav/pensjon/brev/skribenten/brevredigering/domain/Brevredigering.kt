@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
@@ -50,6 +51,8 @@ interface Brevredigering {
     val attestertAvNavIdent: NavIdent?
     val brevtype: LetterMetadata.Brevtype
     val isVedtaksbrev: Boolean
+    val redigerteVedlegg: List<Dto.RedigertVedlegg>
+    val vedleggHash: Hash<VedleggSnapshot>
 
     fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon?
     fun reserver(
@@ -102,7 +105,6 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var sistReservert by BrevredigeringTable.sistReservert
         private set
     override var journalpostId by BrevredigeringTable.journalpostId
-        // TODO: private set?
 
     private val _documentEntityList by DocumentEntity referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
     override var document: Dto.Document?
@@ -117,6 +119,20 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var valgteVedlegg: List<AlltidValgbartVedleggBrevkode>
         get() = _valgteVedlegg?.valgteVedlegg ?: emptyList()
         set(nyeValgteVedlegg) = settValgteVedlegg(nyeValgteVedlegg)
+
+    private val _redigerteVedlegg by RedigertVedlegg referrersOn RedigertVedleggTable.brevredigering
+    override val redigerteVedlegg: List<Dto.RedigertVedlegg>
+        get() = _redigerteVedlegg.map { Dto.RedigertVedlegg(vedleggId = it.vedleggId.value, redigertVedlegg = it.redigertVedlegg) }
+
+    override val vedleggHash: Hash<VedleggSnapshot>
+        get() = Hash.read(
+            VedleggSnapshot(
+                valgteVedlegg = valgteVedlegg.map { it.kode }.sorted(),
+                redigerteVedlegg = _redigerteVedlegg
+                    .map { VedleggSnapshot.RedigertVedleggHash(it.vedleggId.value.id, it.redigertVedleggHash.toString()) }
+                    .sortedBy { it.vedleggId },
+            )
+        )
 
     override var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent
     override var brevtype by BrevredigeringTable.brevtype
@@ -268,6 +284,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
                 this.dokumentDato = documentDto.dokumentDato
                 this.redigertBrevHash = documentDto.redigertBrevHash
                 this.brevdataHash = documentDto.brevdataHash
+                this.vedleggHash = documentDto.vedleggHash
             }
         } else {
             DocumentEntity.new {
@@ -276,6 +293,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
                 this.dokumentDato = documentDto.dokumentDato
                 this.redigertBrevHash = documentDto.redigertBrevHash
                 this.brevdataHash = documentDto.brevdataHash
+                this.vedleggHash = documentDto.vedleggHash
             }
             refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til document-tabellen
         }
@@ -291,6 +309,34 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             }
             refresh(flush = true) // pga. optionalBackReferencedOn, må vi oppdatere referansen til valgteVedlegg-tabellen
         }
+    }
+
+    fun hentRedigertVedlegg(vedleggId: VedleggId): Edit.Attachment? =
+        _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }?.redigertVedlegg
+
+    fun settRedigertVedlegg(vedleggId: VedleggId, redigertVedlegg: Edit.Attachment): Boolean {
+        val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId }
+        if (eksisterende != null) {
+            if (eksisterende.redigertVedlegg == redigertVedlegg) {
+                return false
+            }
+            eksisterende.redigertVedlegg = redigertVedlegg
+        } else {
+            RedigertVedlegg.new(
+                brevredigering = this@BrevredigeringEntity.id,
+                vedleggId = vedleggId,
+                redigertVedlegg = redigertVedlegg,
+            )
+            refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til redigertVedlegg-tabellen
+        }
+        return true
+    }
+
+    fun slettRedigertVedlegg(vedleggId: VedleggId): Boolean {
+        val eksisterende = _redigerteVedlegg.firstOrNull { it.vedleggId.value == vedleggId } ?: return false
+        eksisterende.delete()
+        refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til redigertVedlegg-tabellen
+        return true
     }
 
     override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering =

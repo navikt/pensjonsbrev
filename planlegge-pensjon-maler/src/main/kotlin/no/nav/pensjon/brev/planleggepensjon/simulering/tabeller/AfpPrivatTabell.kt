@@ -2,9 +2,7 @@ package no.nav.pensjon.brev.planleggepensjon.simulering.tabeller
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfp
-import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfpSelectors.kompensasjonstillegg
-import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfpSelectors.kronetillegg
-import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfpSelectors.livsvarig
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.privatAfp.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression

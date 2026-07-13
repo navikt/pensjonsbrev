@@ -24,7 +24,7 @@ import no.nav.pensjon.brev.template.dsl.text
 object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         includePhrase(DinePlikter)
-        includePhrase(DuHarRettTilAaKlageSeksUker)
+        includePhrase(DuHarRettTilAaKlageSeksUkerMedLenke)
         includePhrase(DuHarRettTilInnsyn)
         includePhrase(HarDuSpoersmaal.afpEtteroppgjoer)
     }
@@ -101,6 +101,27 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
         }
     }
 
+    object DuHarRettTilAaKlageSeksUkerMedLenke : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { +"Du har rett til å klage" },
+                    nynorsk { +"Du har rett til å klage" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Hvis du mener vedtaket er feil, kan du klage innen seks uker fra vedtaket har kommet fram til deg. Du finner skjema og informasjon på ${KLAGE_URL}."
+                    },
+                    nynorsk {
+                        +"Om du meiner at vedtaket er feil, kan du klage innan seks veker frå vedtaket har komme fram til deg. Du finn skjema og informasjon på ${KLAGE_URL}."
+                    },
+                )
+            }
+        }
+    }
+
     object DuHarRettTilAaKlageMedDokumentasjonsfrist : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
@@ -128,19 +149,16 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
             paragraph {
                 text(
                     bokmal {
-                        +"Hvis du mener at det er andre forhold ved vedtaket som ikke er riktig, har du " +
-                            "anledning til å klage på vedtaket. Fristen for å klage er seks uker fra vedtaket har kommet fram til deg."
+                        +"Hvis du mener at det er andre forhold ved vedtaket som ikke er riktig, kan du klage på vedtaket. Fristen for å klage er seks uker fra vedtaket har kommet fram til deg. Du finner skjema og informasjon på ${KLAGE_URL}."
                     },
                     nynorsk {
-                        +"Dersom du meiner at det er andre forhold ved vedtaket som ikkje er rette, har du " +
-                            "høve til å klage på vedtaket. Fristen for å klage er seks veker frå vedtaket har komme fram til deg."
+                        +"Om du meiner at det er andre forhold ved vedtaket som ikkje er rette, kan du klage på vedtaket. Fristen for å klage er seks veker frå vedtaket har komme fram til deg. Du finn skjema og informasjon på ${KLAGE_URL}."
                     },
                 )
             }
         }
     }
 
-    /** Tittel «Du har rett til innsyn» + paragraf. */
     object DuHarRettTilInnsyn : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {

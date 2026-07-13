@@ -4,15 +4,7 @@ import no.nav.pensjon.brev.api.model.Institusjon.*
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.borSammenMedBruker
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.brukerBorINorge
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.brukerUnder18Aar
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.epsOppholdSykehjem
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.epsPaInstitusjon
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.harBarnetillegg
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.institusjonsoppholdGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.sakstype
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.sivilstand
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.orienteringOmRettigheterOgPlikterDto.*
 import no.nav.pensjon.brev.maler.fraser.vedlegg.*
 import no.nav.pensjon.brev.model.ubestemtForm
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -20,9 +12,8 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.NavEnhetSelectors.nettside
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.NavEnhetSelectors.telefonnummer
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.*
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.*
 
 // V00002 i metaforce
 // Hvis sivilstand mangler, map det til UKJENT

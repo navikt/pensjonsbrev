@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.brevbaker
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -12,6 +12,7 @@ import io.ktor.client.statement.*
 import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
 import kotlinx.io.EOFException
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
@@ -19,6 +20,7 @@ import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
@@ -30,6 +32,7 @@ import no.nav.pensjon.brev.skribenten.serialize.registerMixin
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.seconds
 
@@ -37,31 +40,60 @@ class BrevbakerServiceException(msg: String) : ServiceException(msg)
 
 // TODO: Del opp i to interfaces, ett for det som skal håndteres av fagsystem, og ett for brevbaker.
 interface BrevbakerService {
+
     suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification?
+
     suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
     ): LetterMarkupWithDataUsage
+
     suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
-        alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
+        redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(),
     ): LetterResponse
+
+    suspend fun hentRedigerbareVedleggTitler(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: BrevbakerFelles,
+    ): RedigerbareVedleggTitler?
+
+    /**
+     * Lettvekts-sjekk som ikke krever brevdata: forteller om malen i det hele tatt har redigerbare
+     * vedlegg. Lar oss unngå tunge pesysdata-kall i [hentRedigerbareVedleggTitler] når svaret uansett blir tomt.
+     */
+    suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean
+
+    suspend fun renderRedigerbartVedlegg(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: BrevbakerFelles,
+        vedleggId: VedleggId,
+    ): LetterMarkup.Attachment?
+
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
     suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggBrevkode>
 }
 
-class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus {
+class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus, Closeable {
     private val logger = LoggerFactory.getLogger(BrevbakerServiceHttp::class.java)!!
 
-    private val brevbakerUrl = config.getString("url")
-    private val scope = config.getString("scope")
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache): this(config.services.brevbaker, authService, cache)
+
+    private val brevbakerUrl = config.url
+    private val scope = config.scope
     private val client = lagHttpClient {
         defaultRequest {
             url(brevbakerUrl)
@@ -134,6 +166,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
+        redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment>,
     ): LetterResponse {
         val response = client.post("/letter/redigerbar/pdf") {
             contentType(ContentType.Application.Json)
@@ -145,6 +178,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
                     language = spraak,
                     letterMarkup = redigertBrev,
                     alltidValgbareVedlegg = alltidValgbareVedlegg,
+                    redigerteVedlegg = redigerteVedlegg,
                 )
             )
         }
@@ -155,6 +189,77 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             throw BrevbakerServiceException(
                 response.bodyAsText().takeIf { it.isNotBlank() }
                     ?: "Ukjent feil oppstod ved generering av PDF for brevkode: $brevkode"
+            )
+        }
+    }
+
+    override suspend fun hentRedigerbareVedleggTitler(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: BrevbakerFelles,
+    ): RedigerbareVedleggTitler? {
+        val response = client.post("/letter/redigerbar/redigerbare-vedlegg/titler") {
+            contentType(ContentType.Application.Json)
+            setBody(
+                BestillBrevRequest(
+                    kode = brevkode,
+                    letterData = brevdata,
+                    felles = felles,
+                    language = spraak,
+                )
+            )
+        }
+
+        return when {
+            response.status.isSuccess() -> response.body<RedigerbareVedleggTitler>()
+            response.status == HttpStatusCode.NotFound -> null
+            else -> throw BrevbakerServiceException(
+                response.bodyAsText().takeIf { it.isNotBlank() }?.let { "${response.status}: $it" }
+                    ?: "Ukjent feil oppstod ved generering av redigerbare vedlegg for brevkode: $brevkode"
+            )
+        }
+    }
+
+    override suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean =
+        cache.cached(Cacheomraade.HAR_REDIGERBARE_VEDLEGG, brevkode) {
+            val response = client.get("/templates/redigerbar/${brevkode.kode()}/har-redigerbare-vedlegg")
+
+            when {
+                response.status.isSuccess() -> response.body<Boolean>()
+                response.status == HttpStatusCode.NotFound -> false
+                else -> throw BrevbakerServiceException(
+                    response.bodyAsText().takeIf { it.isNotBlank() }?.let { "${response.status}: $it" }
+                        ?: "Ukjent feil oppstod ved sjekk av redigerbare vedlegg for brevkode: $brevkode"
+                )
+            }
+        }
+
+    override suspend fun renderRedigerbartVedlegg(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: BrevbakerFelles,
+        vedleggId: VedleggId,
+    ): LetterMarkup.Attachment? {
+        val response = client.post("/letter/redigerbar/redigerbare-vedlegg/${vedleggId.id}") {
+            contentType(ContentType.Application.Json)
+            setBody(
+                BestillBrevRequest(
+                    kode = brevkode,
+                    letterData = brevdata,
+                    felles = felles,
+                    language = spraak,
+                )
+            )
+        }
+
+        return when {
+            response.status == HttpStatusCode.NotFound -> null
+            response.status.isSuccess() -> response.body()
+            else -> throw BrevbakerServiceException(
+                response.bodyAsText().takeIf { it.isNotBlank() }?.let { "${response.status}: $it" }
+                    ?: "Ukjent feil oppstod ved generering av redigerbart vedlegg for brevkode: $brevkode"
             )
         }
     }
@@ -202,5 +307,6 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         }
 
     override suspend fun ping() = ping("Brevbaker") { client.get("/ping_authorized") }
+    override fun close() { client.close() }
 }
 

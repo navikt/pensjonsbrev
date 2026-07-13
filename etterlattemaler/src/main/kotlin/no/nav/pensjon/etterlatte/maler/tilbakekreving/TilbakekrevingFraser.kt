@@ -15,19 +15,9 @@ import no.nav.pensjon.etterlatte.maler.formatMaanedAar
 import no.nav.pensjon.etterlatte.maler.fraser.common.KronerText
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.bruttoTilbakekreving
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.feilutbetaling
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.fradragSkatt
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.nettoTilbakekreving
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.renteTillegg
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.sumNettoRenter
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.fraOgMed
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.helTilbakekreving
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.summer
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.tilOgMed
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingPeriodeSelectors.beloeper
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingPeriodeSelectors.maaned
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingPeriodeSelectors.resultat
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.selectors.tilbakekrevingBeloeper.*
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.selectors.tilbakekrevingDTO.*
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.selectors.tilbakekrevingPeriode.*
 import java.time.LocalDate
 
 object TilbakekrevingFraser {

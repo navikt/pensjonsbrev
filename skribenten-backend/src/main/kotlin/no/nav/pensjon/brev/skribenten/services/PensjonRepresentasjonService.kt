@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -8,6 +8,8 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
@@ -19,13 +21,17 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 class PensjonRepresentasjonService(
-    config: Config,
+    config: OboClientConfig,
     authService: AuthService,
     private val cache: Cache,
-) {
+): Closeable {
+
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache): this(config.services.pensjonRepresentasjon, authService, cache)
+
     private val logger = LoggerFactory.getLogger(javaClass)
-    private val pensjonPersondataURL = config.getString("url")
-    private val scope = config.getString("scope")
+    private val pensjonPersondataURL = config.url
+    private val scope = config.scope
 
     private val client = lagHttpClient {
         defaultRequest {
@@ -76,4 +82,6 @@ class PensjonRepresentasjonService(
             }
 
         }
+
+    override fun close() { client.close() }
 }

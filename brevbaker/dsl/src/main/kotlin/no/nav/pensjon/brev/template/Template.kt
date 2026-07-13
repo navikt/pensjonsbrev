@@ -7,24 +7,28 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.dsl.LiteralOrExpressionBuilder.LiteralOrExpression
 import no.nav.pensjon.brev.template.dsl.TextContentCreator.createTextContent
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.validation.BrevTemplateValidator
+import no.nav.pensjon.brev.template.validation.EmptyValidator
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 
 @LetterTemplateMarker
 class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
-    val title: MutableList<TextElement<Lang>> = mutableListOf(),
-    val outline: MutableList<OutlineElement<Lang>> = mutableListOf(),
-    val attachments: MutableList<IncludeAttachment<Lang, *>> = mutableListOf(),
-    val pdfAttachments: MutableList<IncludeAttachmentPDF<Lang, *>> = mutableListOf(),
+    private val validator: BrevTemplateValidator = EmptyValidator,
 ) : TemplateGlobalScope<LetterData> {
+    internal val title: List<TextElement<Lang>> field: MutableList<TextElement<Lang>> = mutableListOf()
+    internal val outline: List<OutlineElement<Lang>> field: MutableList<OutlineElement<Lang>> = mutableListOf()
+    internal val attachments: List<IncludeAttachment<Lang, *>> field: MutableList<IncludeAttachment<Lang, *>> = mutableListOf()
+    internal val pdfAttachments: List<IncludeAttachmentPDF<Lang, *>> field: MutableList<IncludeAttachmentPDF<Lang, *>> = mutableListOf()
 
     fun title(init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
         title.addAll(PlainTextOnlyScope<Lang, LetterData>().apply(init).elements)
     }
 
     fun outline(init: OutlineOnlyScope<Lang, LetterData>.() -> Unit) {
-        outline.addAll(OutlineOnlyScope<Lang, LetterData>().apply(init).elements)
+        outline.addAll(OutlineOnlyScope<Lang, LetterData>(validator.subScope()).apply(init).elements)
     }
 
     fun <AttachmentData : VedleggData> includeAttachment(
@@ -47,6 +51,39 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         predicate: Expression<Boolean> = true.expr(),
     ) {
         attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate))
+    }
+
+    @RequiresOptIn(
+        message = "Redigerbare vedlegg skal kun brukes etter avtale. Bruk @OptIn(RedigerbartVedlegg::class) på malen når bruken er avklart.",
+        level = RequiresOptIn.Level.ERROR,
+    )
+    @Retention(AnnotationRetention.BINARY)
+    @Target(AnnotationTarget.FUNCTION)
+    annotation class RedigerbartVedlegg
+
+    /**
+     * Opt-in: gjør et vedlegg redigerbart. Saksbehandler kan overstyre innholdet i Skribenten,
+     * og overstyringen identifiseres med [vedleggId]. Skal kun brukes for vedlegg som bevisst
+     * gjøres redigerbare (de aller fleste vedlegg skal ikke være det). [vedleggId] må være
+     * stabil og unik innenfor brevet.
+     */
+    @RedigerbartVedlegg
+    fun <AttachmentData : VedleggData> includeAttachmentRedigerbar(
+        vedleggId: VedleggId,
+        template: AttachmentTemplate<Lang, AttachmentData>,
+        attachmentData: Expression<AttachmentData>,
+        predicate: Expression<Boolean> = true.expr(),
+    ) {
+        attachments.add(IncludeAttachment(attachmentData, template, predicate, vedleggId))
+    }
+
+    @RedigerbartVedlegg
+    fun includeAttachmentRedigerbar(
+        vedleggId: VedleggId,
+        template: AttachmentTemplate<Lang, EmptyVedleggData>,
+        predicate: Expression<Boolean> = true.expr(),
+    ) {
+        attachments.add(IncludeAttachment(EmptyVedleggData.expr(), template, predicate, vedleggId))
     }
 
     fun <AttachmentData : VedleggData> includeAttachmentIfNotNull(

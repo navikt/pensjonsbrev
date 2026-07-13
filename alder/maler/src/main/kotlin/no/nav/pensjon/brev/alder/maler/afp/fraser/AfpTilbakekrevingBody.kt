@@ -39,17 +39,17 @@ object AfpTilbakekrevingBody {
                     bokmal {
                         +"Den arbeidsinntekten du har hatt i perioden med AFP er " + avvik.format() +
                                 " høyere enn den forventede arbeidsinntekten som ble lagt til grunn ved " +
-                                "utbetalingen av pensjonen din i det aktuelle tidsrommet. Fordi dette er mer " +
-                                "enn toleransebeløpet som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + ", " +
-                                "er pensjonen din beregnet på nytt og avregnet mot den pensjonen du allerede " +
+                                "utbetalingen av pensjonen din i det aktuelle tidsrommet. Dette er mer " +
+                                "enn toleransebeløpet som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + ". " +
+                                "Vi har derfor beregnet pensjonen din på nytt og avregnet mot den pensjonen du allerede " +
                                 "har fått utbetalt i perioden."
                     },
                     nynorsk {
-                        +"Den arbeidsinntekta du har hatt i perioden med AFP, er " + avvik.format() +
+                        +"Den arbeidsinntekta du har hatt i perioden med AFP er " + avvik.format() +
                                 " høgare enn den forventa arbeidsinntekta som blei lagd til grunn ved " +
-                                "utbetalinga av pensjonen din i det aktuelle tidsrommet. Fordi dette er meir " +
-                                "enn toleransebeløpet som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + ", " +
-                                "er pensjonen din berekna på nytt og avrekna mot den pensjonen du allereie " +
+                                "utbetalinga av pensjonen din i det aktuelle tidsrommet. Dette er meir " +
+                                "enn toleransebeløpet som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + ". " +
+                                "Derfor har vi berekna pensjonen din på nytt og avrekna mot den pensjonen du allereie " +
                                 "har fått utbetalt i perioden."
                     },
                 )
@@ -187,12 +187,10 @@ object AfpTilbakekrevingBody {
             paragraph {
                 text(
                     bokmal {
-                        +"Dette beløpet er differansen mellom tidligere utbetalt AFP og AFP etter fradrag " +
-                                "for den nye inntekten."
+                        +"Dette beløpet er forskjellen mellom tidligere utbetalt AFP og AFP etter fradrag for den nye inntekten."
                     },
                     nynorsk {
-                        +"Dette beløpet er differansen mellom tidlegare utbetalt AFP og AFP etter frådrag " +
-                                "for den nye inntekta."
+                        +"Dette beløpet er forskjellen mellom tidlegare utbetalt AFP og AFP etter frådrag for den nye inntekta."
                     },
                 )
             }
@@ -314,12 +312,12 @@ object AfpTilbakekrevingBody {
             paragraph {
                 text(
                     bokmal {
-                        +"Nav rapporterer endringen til Skatteetaten. De vil foreta en korrigering av " +
+                        +"Nav rapporterer endringen til Skatteetaten. De vil korrigere " +
                                 "skatteoppgjøret ditt for " + oppgjoersAar.format() + " basert på denne " +
                                 "endringen av utbetalt AFP."
                     },
                     nynorsk {
-                        +"Nav rapporterer endringa til Skatteetaten. Dei vil gjere ei korrigering av " +
+                        +"Nav rapporterer endringa til Skatteetaten. Dei vil korrigere " +
                                 "skatteoppgjeret ditt for " + oppgjoersAar.format() + " basert på denne " +
                                 "endringa."
                     },

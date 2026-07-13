@@ -14,9 +14,13 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
@@ -44,7 +48,7 @@ object OktMinsteIFUReduksjonsprosent {
         val endringUforegrad: Expression<Boolean>,
         val endringInntektstak: Expression<Boolean>,
         val endringInntektsgrense: Expression<Boolean>,
-        val erInntektsavkortet: Expression<Boolean>,
+        val harBelopsendring: Expression<Boolean>,
         val tillegg: Expression<Collection<UTTillegg>>,
         val hjemler: Expression<Set<String>>,
         val visOktMinsteIFU: Expression<Boolean>,
@@ -53,6 +57,8 @@ object OktMinsteIFUReduksjonsprosent {
 
     data class Outline(val data: Brevdata) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            val endringUtEllerTillegg = data.endringNettoUforetrygdUtenTillegg or data.endringNettoBarnetillegg or data.endringNettoGjenlevendetillegg
+            val reduksjonsprosentOgUforegradTekst = ifElse (data.endringUforegrad, "reduksjonsprosent og uføregrad", "reduksjonsprosent")
 
             title1 {
                 showIf(data.etterbetalingJuli.greaterThan(0) or data.endringNettoUforetrygdUtenTillegg or data.endringNettoBarnetillegg or data.endringNettoGjenlevendetillegg) {
@@ -69,8 +75,8 @@ object OktMinsteIFUReduksjonsprosent {
             }
             paragraph {
                 text(
-                    bokmal { +"Vi endrer uføretrygden din fordi Stortinget har vedtatt lovendringer som trer i kraft 1. juli 2026, men gjelder fra 1. januar 2026. " },
-                    nynorsk { +"Vi endrar uføretrygda di fordi Stortinget har vedteke lovendringar som trer i kraft 1. juli 2026, men gjeld frå 1. januar 2026. " },
+                    bokmal { +"Vi endrer uføretrygden din fordi Stortinget har vedtatt lovendringer som trer i kraft 1. juli 2026, men gjelder fra 1. januar 2026. Endringene påvirker deg bare hvis du har inntekt over inntektsgrensen ved siden av uføretrygden. Endringene kan føre til at det blir mer lønnsomt for deg å kombinere jobb og uføretrygd. " },
+                    nynorsk { +"Vi endrar uføretrygda di fordi Stortinget har vedteke lovendringar som trer i kraft 1. juli 2026, men gjeld frå 1. januar 2026. Endringane påverkar deg berre dersom du har inntekt over inntektsgrensa ved sida av uføretrygda. Endringane kan føre til at det blir meir lønsamt for deg å kombinere jobb og uføretrygd. " },
                 )
                 table(header = {
                     column { text(bokmal { +"Ny beregning fra " + data.beregningFomDato.format() }, nynorsk { +"Ny berekning frå " + data.beregningFomDato.format() }) }
@@ -190,8 +196,8 @@ object OktMinsteIFUReduksjonsprosent {
                         row {
                             cell {
                                 text(
-                                    bokmal { +"Ny inntekt før uførhet (IFU)" },
-                                    nynorsk { +"Ny inntekt før uførhet (IFU)" },
+                                    bokmal { +"Ny oppjustert inntekt før uførhet (IFU)" },
+                                    nynorsk { +"Ny oppjustert inntekt før uførleik (IFU)" },
                                 )
                             }
                             cell {
@@ -211,18 +217,10 @@ object OktMinsteIFUReduksjonsprosent {
                                 )
                             }
                             cell {
-                                showIf(data.redigerbar) {
-                                    text(
-                                        bokmal { +fritekst("Beløp etterbetaling") },
-                                        nynorsk { +fritekst("Beløp etterbetaling") },
-                                    )
-
-                                }.orShow {
-                                    text(
-                                        bokmal { +data.etterbetalingJuli.format() },
-                                        nynorsk { +data.etterbetalingJuli.format() },
-                                    )
-                                }
+                                text(
+                                    bokmal { +data.etterbetalingJuli.format() },
+                                    nynorsk { +data.etterbetalingJuli.format() },
+                                )
                             }
                         }
                     }
@@ -231,10 +229,10 @@ object OktMinsteIFUReduksjonsprosent {
             paragraph {
                 text(
                     bokmal {
-                        +"Du får " + data.totalbelop.format() + " i " + data.tillegg.format(UTOgTilleggMapper) + " per måned før skatt fra 1. juli 2026."
+                        +"Du får " + data.totalbelop.format() + " i " + data.tillegg.format(UTOgTilleggMapper) + " per måned før skatt fra " + data.beregningFomDato.format() + "."
                     },
                     nynorsk {
-                        +"Du får " + data.totalbelop.format() + " i " + data.tillegg.format(UTOgTilleggMapper) + " per månad før skatt frå 1. juli 2026."
+                        +"Du får " + data.totalbelop.format() + " i " + data.tillegg.format(UTOgTilleggMapper) + " per månad før skatt frå " + data.beregningFomDato.format() + "."
                     },
                 )
             }
@@ -256,8 +254,8 @@ object OktMinsteIFUReduksjonsprosent {
             }
             paragraph {
                 text(
-                    bokmal { +"Vedtaket har vi gjort etter " + data.hjemler.format(HjemmelFormatter(true)) + "." },
-                    nynorsk { +"Vedtaket har vi gjort etter " + data.hjemler.format(HjemmelFormatter(true)) + "." },
+                    bokmal { +"Vedtaket har vi gjort etter folketrygdloven " + data.hjemler.format(HjemmelFormatter(true)) + "." },
+                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova " + data.hjemler.format(HjemmelFormatter(true)) + "." },
                 )
             }
             paragraph {
@@ -275,14 +273,14 @@ object OktMinsteIFUReduksjonsprosent {
             title1 {
                 text(
                     bokmal { +"Dette endres for deg" },
-                    nynorsk { +"Dette endres for deg" },
+                    nynorsk { +"Dette endrar seg for deg" },
                 )
             }
             showIf(data.visOktMinsteIFU) {
                 title2 {
                     text(
                         bokmal { +"Økt minste inntekt før uførhet (IFU) " },
-                        nynorsk { +"Auka minste inntekt før uførhet (IFU) " },
+                        nynorsk { +"Auka minste inntekt før uførleik (IFU) " },
                     )
                 }
                 paragraph {
@@ -301,6 +299,22 @@ object OktMinsteIFUReduksjonsprosent {
                     text(
                         bokmal { +"IFU brukes til å fastsette uføregrad, reduksjonsprosent og inntektstak. Minste IFU er tidligere fastsatt for deg fordi du hadde lite eller ingen inntekt før uførhet. " },
                         nynorsk { +"IFU blir brukt til å fastsetje uføregrad, reduksjonsprosent og inntektstak. Minste IFU er fastsett for deg tidlegare fordi du hadde låg eller ingen inntekt før uførleiken. " },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Lovendringene har ført til at din inntekt før uførhet (IFU) har økt til " + data.ifu.format() },
+                        nynorsk { +"Lovendringane har ført til at inntekta di før uførleik (IFU) har auka til " + data.ifu.format() },
+                    )
+                    showIf(data.endringUforegrad) {
+                        text(
+                            bokmal { +", og dette har ført til at uføregraden din har økt til  " + data.uforegrad.format() + " prosent" },
+                            nynorsk { +", og dette har ført til at uføregraden din har auka til  " + data.uforegrad.format() + " prosent" },
+                        )
+                    }
+                    text(
+                        bokmal { +". " },
+                        nynorsk { +". "},
                     )
                 }
             }
@@ -368,60 +382,64 @@ object OktMinsteIFUReduksjonsprosent {
                         nynorsk { +"." },
                     )
                 }
+            }
 
-                showIf(data.erInntektsavkortet) {
-                    title2 {
-                        text(
-                            bokmal { +"Fordi du har hatt inntekt over inntektsgrensen" },
-                            nynorsk { +"Fordi du har hatt inntekt over inntektsgrensa" },
-                        )
-                    }
-                    showIf(data.redigerbar) {
-                        paragraph {
-                            text(
-                                bokmal { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i beregningene av uføretrygden din. Når lovendringen trer i kraft, skal ny reduksjonsprosent ha virkning tilbake i tid fra 1. januar i år. Du vil derfor få en etterbetaling på " + fritekst("Beløp etterbetaling") + " innen kort tid." },
-                                nynorsk { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny reduksjonsprosent ha tilbakeverkande kraft frå 1. januar i år. Du vil derfor få ei etterbetaling på " + fritekst("Beløp etterbetaling") + " innan kort tid." },
-                            )
-                        }
-                    }.orShow {
-                        paragraph {
-                            text(
-                                bokmal { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i beregningene av uføretrygden din. Når lovendringen trer i kraft, skal ny reduksjonsprosent ha virkning tilbake i tid fra 1. januar i år. Du vil derfor få en etterbetaling på " + data.etterbetalingJuli.format() + " innen kort tid." },
-                                nynorsk { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny reduksjonsprosent ha tilbakeverkande kraft frå 1. januar i år. Du vil derfor få ei etterbetaling på " + data.etterbetalingJuli.format() + " innan kort tid." },
-                            )
-                        }
-                    }
-                    title2 {
-                        text(
-                            bokmal { +"Informasjon om etterbetaling" },
-                            nynorsk { +"Informasjon om etterbetaling" },
-                        )
-                    }
-                    paragraph {
-                        text(
-                            bokmal { +"Du får ikke renter på etterbetalingen. Informasjon om skattetrekk på etterbetalingen finner du hos Skatteetaten." },
-                            nynorsk { +"Du får ikkje renter på etterbetalinga. Informasjon om skattetrekk på etterbetalinga finn du hos Skatteetaten." },
-                        )
-                    }
-                    paragraph {
-                        text(
-                            bokmal { +"Har du gjeld som Skatteetaten krever inn, kan pengene fra etterbetalingen gå til å dekke gjelden. Eksempler på gjeld kan være bidrags- eller feilutbetalingsgjeld hos Nav og refusjonskrav hos tjenestepensjonsordning." },
-                            nynorsk { +"Har du gjeld som Skatteetaten krev inn, kan pengane frå etterbetalinga gå til å dekke gjelda. Eksempel på gjeld kan vere bidrags- eller feilutbetalingsgjeld hos Nav og refusjonskrav hos tenestepensjonsordning." },
-                        )
-                    }
-                }.orShow {
-                    title2 {
-                        text(
-                            bokmal { +"Fordi du ikke har hatt inntekt over inntektsgrensen" },
-                            nynorsk { +"Fordi du ikkje har hatt inntekt over inntektsgrensa" },
-                        )
-                    }
-                    paragraph {
-                        text(
-                            bokmal { +"Fordi du ikke har hatt inntekt over inntektsgrensen, vil ikke regelendringene føre til endringer i utbetaling for deg." },
-                            nynorsk { +"Fordi du ikkje har hatt inntekt over inntektsgrensa, vil ikkje regelendringane føre til endringar i utbetaling for deg." },
-                        )
-                    }
+            showIf(data.etterbetalingJuli.greaterThan(0)) {
+                title2 {
+                    text(
+                        bokmal { +"For deg betyr dette" },
+                        nynorsk { +"For deg betyr dette" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i beregningene av uføretrygden din. Når lovendringen trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha virkning tilbake i tid fra 1. januar i år. Du vil derfor få en etterbetaling på " + data.etterbetalingJuli.format() + " innen kort tid." },
+                        nynorsk { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha tilbakeverkande kraft frå 1. januar i år. Du vil derfor få ei etterbetaling på " + data.etterbetalingJuli.format() + " innan kort tid." },
+                    )
+                }
+                title2 {
+                    text(
+                        bokmal { +"Informasjon om etterbetaling" },
+                        nynorsk { +"Informasjon om etterbetaling" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Du får ikke renter på etterbetalingen. Informasjon om skattetrekk på etterbetalingen finner du hos Skatteetaten." },
+                        nynorsk { +"Du får ikkje renter på etterbetalinga. Informasjon om skattetrekk på etterbetalinga finn du hos Skatteetaten." },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Har du gjeld som Skatteetaten krever inn, kan pengene fra etterbetalingen gå til å dekke gjelden. Eksempler på gjeld kan være bidrags- eller feilutbetalingsgjeld hos Nav og refusjonskrav hos tjenestepensjonsordning." },
+                        nynorsk { +"Har du gjeld som Skatteetaten krev inn, kan pengane frå etterbetalinga gå til å dekke gjelda. Eksempel på gjeld kan vere bidrags- eller feilutbetalingsgjeld hos Nav og refusjonskrav hos tenestepensjonsordning." },
+                    )
+                }
+            }.orShowIf(data.etterbetalingJuli.equalTo(0) and not(endringUtEllerTillegg)) {
+                title2 {
+                    text(
+                        bokmal { +"For deg betyr dette" },
+                        nynorsk { +"For deg betyr dette" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"For deg påvirker ikke dette utbetalingen din." },
+                        nynorsk { +"For deg påverkar ikkje dette utbetalinga di." },
+                    )
+                }
+            }.orShow {
+                title2 {
+                    text(
+                        bokmal { +"For deg betyr dette" },
+                        nynorsk { +"For deg betyr dette" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i beregningene av uføretrygden din. Når lovendringen trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha virkning tilbake i tid fra 1. januar i år. " },
+                        nynorsk { +"Fram til 1. juli i år har vi brukt din gamle " + reduksjonsprosentOgUforegradTekst + " i berekningane av uføretrygda di. Når lovendringa trer i kraft, skal ny " + reduksjonsprosentOgUforegradTekst + " ha tilbakeverkande kraft frå 1. januar i år. " },
+                    )
                 }
             }
 

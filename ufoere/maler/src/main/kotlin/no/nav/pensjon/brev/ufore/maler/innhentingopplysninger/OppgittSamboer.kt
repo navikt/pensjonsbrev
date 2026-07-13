@@ -10,8 +10,8 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_OPPGITT_SAMBOER
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerSamboerDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerSamboerDtoSelectors.SaksbehandlervalgSelectors.ukjentSamboer
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerSamboerDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.innhentingOpplysningerSamboerDto.saksbehandlervalg.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.innhentingOpplysningerSamboerDto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants

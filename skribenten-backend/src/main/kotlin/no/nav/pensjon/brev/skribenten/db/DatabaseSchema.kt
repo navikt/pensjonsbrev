@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.db
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -10,11 +11,13 @@ import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.ReferenceOption
 import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.core.dao.id.CompositeIdTable
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
@@ -65,6 +68,7 @@ object DocumentTable : LongIdTable() {
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
     val redigertBrevHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevHash")
     val brevdataHash: Column<Hash<BrevdataResponse.Data>> = hashColumn("brevdataHash")
+    val vedleggHash: Column<Hash<VedleggSnapshot>> = hashColumn("vedleggHash")
 }
 
 object MottakerTable : IdTable<BrevId>() {
@@ -92,6 +96,23 @@ object P1DataTable : IdTable<BrevId>() {
 
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
+}
+
+object RedigertVedleggTable : CompositeIdTable() {
+    val brevredigering: Column<EntityID<BrevId>> =
+        reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE)
+    val vedleggId: Column<EntityID<VedleggId>> =
+        varchar("vedleggId", 50).transform(::VedleggId, VedleggId::id).entityId()
+    val redigertVedleggKryptert: Column<Edit.Attachment> = encryptedBinary("redigertVedleggKryptert")
+        .transform(KrypteringService::dekrypter, KrypteringService::krypter)
+        .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
+    val redigertVedleggKryptertHash: Column<Hash<Edit.Attachment>> = hashColumn("redigertVedleggKryptertHash")
+
+    override val primaryKey = PrimaryKey(brevredigering, vedleggId)
+
+    init {
+        addIdColumn(brevredigering)
+    }
 }
 
 object OneShotJobTable : IdTable<String>() {

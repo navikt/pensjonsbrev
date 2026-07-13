@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.soeknadOversendesTilUtlandet
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.orienteringOmSaksbehandlingstidDto.saksbehandlerValg.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.orienteringOmSaksbehandlingstidDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -57,8 +57,8 @@ object OrienteringOmSaksbehandlingstid : RedigerbarTemplate<OrienteringOmSaksbeh
 
             paragraph {
                 text(
-                    bokmal { + "Søknaden vil bli behandlet så snart som mulig og senest innen 4 måneder. " },
-                    nynorsk { + "Søknaden vil bli behandla så snart som mogleg og seinast innan 4 månader. " },
+                    bokmal { + "Søknaden vil bli behandlet så snart som mulig og senest innen 6 måneder. " },
+                    nynorsk { + "Søknaden vil bli behandla så snart som mogleg og seinast innan 6 månader. " },
                 )
             }
 

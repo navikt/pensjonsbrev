@@ -12,9 +12,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInnhentingAvOpplysningerDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInnhentingAvOpplysningerDataSelectors.borIUtlandet
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInnhentingAvOpplysningerDataSelectors.erOver18aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.selectors.barnepensjonInnhentingAvOpplysningerDTO.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.selectors.barnepensjonInnhentingAvOpplysningerData.*
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 

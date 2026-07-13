@@ -11,9 +11,8 @@ import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDto
 import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDto.Begrunnelse
-import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDtoSelectors.PesysDataSelectors.begrunnelse
-import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDtoSelectors.PesysDataSelectors.kravMottattDato
-import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDtoSelectors.pesysData
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.avslagAfpPrivatDto.pesysData.*
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.avslagAfpPrivatDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.template.Language.Bokmal

@@ -1,46 +1,11 @@
 package no.nav.pensjon.brev.maler
 
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepBrutto
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.beloepNetto
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.brukerBorMed
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.brukersIntektBruktIAvkortning
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.fribeloep
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.gjelderFlereBarn
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.gjelderFlereBarn
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harFradrag
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harFratrukketBeloepFraAnnenForelder
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.harJusteringsbeloep
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektAnnenForelder
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.inntektstak
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggFellesbarnSelectors.samletInntektBruktIAvkortning
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepBrutto
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.beloepNetto
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.brukerBorMed
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.fribeloep
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.gjelderFlereBarn
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.gjelderFlereBarn
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.harFradrag
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.harJusteringsbeloep
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektBruktIAvkortning
-import no.nav.pensjon.brev.api.model.maler.BarnetilleggSaerkullsbarnSelectors.inntektstak
+import no.nav.pensjon.brev.api.model.maler.selectors.barnetilleggFellesbarn.*
+import no.nav.pensjon.brev.api.model.maler.selectors.barnetilleggSaerkullsbarn.*
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.barnetilleggFellesbarn
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.barnetilleggSaerkullsbarn
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.brukerBorInorge
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.foedselsdatoPaaBarnMedOpphoertBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.grunnbeloep
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.oensketVirkningsDato
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.opplysningerBruktIBeregningUT
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.orienteringOmRettigheterUfoere
-import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.ufoeretrygd
+import no.nav.pensjon.brev.api.model.maler.selectors.opphoerBarnetilleggAutoDto.*
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.ektefelletilleggUtbeltalt
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.gjenlevendetilleggUtbetalt
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgrad
-import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
+import no.nav.pensjon.brev.api.model.maler.selectors.ufoeretrygd.*
 import no.nav.pensjon.brev.maler.fraser.OpphoerBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -57,7 +22,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
-import no.nav.pensjon.brevbaker.api.model.BrevbakerTypeSelectors.KronerSelectors.value
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerType.kroner.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
@@ -116,7 +81,7 @@ object OpphoerBarnetilleggAuto : AutobrevTemplate<OpphoerBarnetilleggAutoDto> {
 
             includePhrase(Ufoeretrygd.UtbetalingsdatoUfoeretrygd(ufoeretrygd.utbetaltPerMaaned.greaterThan(0)))
             includePhrase(Ufoeretrygd.ViktigAALeseHeleBrevet)
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
             includePhrase(
                 Barnetillegg.BarnHarFylt18AAR(
                     opphoertBarnetilleggFlereBarn = foedselsdatoPaaBarnMedOpphoertBarnetillegg.size().greaterThan(1)

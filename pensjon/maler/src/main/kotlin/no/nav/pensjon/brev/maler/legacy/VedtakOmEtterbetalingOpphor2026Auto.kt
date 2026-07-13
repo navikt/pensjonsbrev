@@ -2,16 +2,7 @@ package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDto
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.dineRettigheterOgPlikterUfore
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.endringIfu
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.endringUforegrad
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.etterbetaling
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.hjemler
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.ifu
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.reduksjonsprosent
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDtoSelectors.uforegrad
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmEtterbetalingOpphor2026AutoDto.*
 import no.nav.pensjon.brev.maler.fraser.VedtakOmEtterbetalingOpphor2026
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
@@ -21,6 +12,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -54,7 +46,7 @@ object VedtakOmEtterbetalingOpphor2026Auto : AutobrevTemplate<VedtakOmEtterbetal
             }
         }
         outline {
-            includePhrase(VedtakOmEtterbetalingOpphor2026.Outline(etterbetaling = etterbetaling, hjemler = hjemler, reduksjonsprosent = reduksjonsprosent, uforegrad = uforegrad, ifu = ifu, endringUforegrad = endringUforegrad, endringIfu = endringIfu))
+            includePhrase(VedtakOmEtterbetalingOpphor2026.Outline(etterbetaling = etterbetaling, hjemler = hjemler, reduksjonsprosent = reduksjonsprosent, uforegrad = uforegrad, ifu = ifu, endringUforegrad = endringUforegrad, endringIfu = true.expr()))
             includePhrase(VedtakOmEtterbetalingOpphor2026.RettTilAAKlage)
             includePhrase(Ufoeretrygd.RettTilInnsyn)
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)

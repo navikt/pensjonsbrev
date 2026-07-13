@@ -8,28 +8,28 @@ import no.nav.pensjon.brev.template.dsl.TextContentCreator.createTextContent
 
 @LetterTemplateMarker
 class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constructor(): TextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Text<Lang>, TextOnlyScope<Lang, LetterData>> {
-    private val children = mutableListOf<TextElement<Lang>>()
-    override val elements: List<TextElement<Lang>>
-        get() = children
+    @BrevbakerDSLInternal override val elements: List<TextElement<Lang>> field = mutableListOf<TextElement<Lang>>()
+    @BrevbakerDSLInternal override fun scopeFactory(): TextOnlyScope<Lang, LetterData> = TextOnlyScope()
 
-    override fun scopeFactory(): TextOnlyScope<Lang, LetterData> = TextOnlyScope()
-
+    @BrevbakerDSLInternal
     override fun addControlStructure(e: TextElement<Lang>) {
-        children.add(e)
+        elements.add(e)
     }
 
+    @BrevbakerDSLInternal
     override fun addTextContentBaseLanguages(e: TextElement<BaseLanguages>) {
         // Safe because we know that a template that support BaseLanguages will support Lang
         @Suppress("UNCHECKED_CAST")
-        children.add(e as TextElement<Lang>)
+        elements.add(e as TextElement<Lang>)
     }
 
+    @BrevbakerDSLInternal
     override fun addTextContent(e: TextElement<Lang>) {
-        children.add(e)
+        elements.add(e)
     }
 
     override fun newline() {
-        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.NewLine<Lang>(children.size)))
+        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.NewLine<Lang>(elements.size)))
     }
 
     fun includePhrase(phrase: TextOnlyPhrase<out Lang>) {
@@ -43,18 +43,17 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> internal construct
 
 @LetterTemplateMarker
 class PlainTextOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constructor(): PlainTextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Text<Lang>, PlainTextOnlyScope<Lang, LetterData>> {
-    private val children = mutableListOf<TextElement<Lang>>()
-    override val elements: List<TextElement<Lang>>
-        get() = children
+    @BrevbakerDSLInternal override val elements: List<TextElement<Lang>> field = mutableListOf<TextElement<Lang>>()
+    @BrevbakerDSLInternal override fun scopeFactory(): PlainTextOnlyScope<Lang, LetterData> = PlainTextOnlyScope()
 
-    override fun scopeFactory(): PlainTextOnlyScope<Lang, LetterData> = PlainTextOnlyScope()
-
+    @BrevbakerDSLInternal
     override fun addControlStructure(e: TextElement<Lang>) {
-        children.add(e)
+        elements.add(e)
     }
 
+    @BrevbakerDSLInternal
     override fun addTextContent(e: TextElement<Lang>) {
-        children.add(e)
+        elements.add(e)
     }
 
     fun includePhrase(phrase: PlainTextOnlyPhrase<out Lang>) {
@@ -63,7 +62,7 @@ class PlainTextOnlyScope<Lang : LanguageSupport, LetterData : Any> internal cons
 }
 
 sealed interface PlainTextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
-    fun addTextContent(e: TextElement<Lang>)
+    @BrevbakerDSLInternal fun addTextContent(e: TextElement<Lang>)
     fun eval(expression: StringExpression) {
         addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression, FontType.PLAIN)))
     }

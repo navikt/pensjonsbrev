@@ -9,17 +9,8 @@ import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarDto.Scenario
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarDtoSelectors.PesysDataSelectors.avvik
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarDtoSelectors.PesysDataSelectors.forventetPensjonsgivendeInntektBeregnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarDtoSelectors.PesysDataSelectors.inntektEtterOpphoer
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarDtoSelectors.PesysDataSelectors.inntektFoerUttak
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarDtoSelectors.PesysDataSelectors.inntektIAfpPerioden
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarDtoSelectors.PesysDataSelectors.medlemAvApotekerordningen
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarDtoSelectors.PesysDataSelectors.oppgjoersAar
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarDtoSelectors.PesysDataSelectors.pensjonsgivendeInntekt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarDtoSelectors.PesysDataSelectors.scenario
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarDtoSelectors.PesysDataSelectors.toleranseBeloep
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarDtoSelectors.pesysData
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerIngenEndringEtterSvarDto.pesysData.*
+import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerIngenEndringEtterSvarDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -48,7 +39,7 @@ object VedtakAfpEtteroppgjoerIngenEndringEtterSvar : RedigerbarTemplate<VedtakAf
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_INGEN_ENDR_ETTER_SVAR
 
-    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.ETTEROPPGJOER
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.AFP)
 
@@ -81,24 +72,16 @@ object VedtakAfpEtteroppgjoerIngenEndringEtterSvar : RedigerbarTemplate<VedtakAf
 
             showIf(pesysData.scenario.equalTo(Scenario.INGEN_NYE_OPPLYSNINGER)) {
                 includePhrase(AfpEtteroppgjoerForklaringer.IngenNyeOpplysningerOmEndretInntektFoerUttak(inntektFoerUttak = pesysData.inntektFoerUttak, oppgjoersAar = pesysData.oppgjoersAar))
-            }
-
-            showIf(pesysData.scenario.equalTo(Scenario.IFU_UTTAK_I_AARET)) {
+            }.orShowIf(pesysData.scenario.equalTo(Scenario.IFU_UTTAK_I_AARET)) {
                 includePhrase(AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakIAaret(inntektFoerUttak = pesysData.inntektFoerUttak, oppgjoersAar = pesysData.oppgjoersAar))
                 includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIfu(inntektIAfpPerioden = pesysData.inntektIAfpPerioden, oppgjoersAar = pesysData.oppgjoersAar, pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, inntektFoerUttak = pesysData.inntektFoerUttak))
-            }
-
-            showIf(pesysData.scenario.equalTo(Scenario.IFU_UTTAK_FOER_AARET)) {
+            }.orShowIf(pesysData.scenario.equalTo(Scenario.IFU_UTTAK_FOER_AARET)) {
                 includePhrase(AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakFoerAaret(inntektFoerUttak = pesysData.inntektFoerUttak, oppgjoersAar = pesysData.oppgjoersAar))
                 includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIfu(inntektIAfpPerioden = pesysData.inntektIAfpPerioden, oppgjoersAar = pesysData.oppgjoersAar, pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, inntektFoerUttak = pesysData.inntektFoerUttak))
-            }
-
-            showIf(pesysData.scenario.equalTo(Scenario.IFU_OG_IEO_REGISTRERT)) {
+            }.orShowIf(pesysData.scenario.equalTo(Scenario.IFU_OG_IEO_REGISTRERT)) {
                 includePhrase(AfpEtteroppgjoerForklaringer.IfuOgIeoOverstyrt(inntektFoerUttak = pesysData.inntektFoerUttak, inntektEtterOpphoer = pesysData.inntektEtterOpphoer, oppgjoersAar = pesysData.oppgjoersAar))
                 includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenIfuOgIeo(inntektIAfpPerioden = pesysData.inntektIAfpPerioden, oppgjoersAar = pesysData.oppgjoersAar, pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, inntektFoerUttak = pesysData.inntektFoerUttak, inntektEtterOpphoer = pesysData.inntektEtterOpphoer))
-            }
-
-            showIf(pesysData.scenario.equalTo(Scenario.KUN_IEO_REGISTRERT)) {
+            }.orShowIf(pesysData.scenario.equalTo(Scenario.KUN_IEO_REGISTRERT)) {
                 includePhrase(AfpEtteroppgjoerForklaringer.KunIeoOverstyrt(inntektEtterOpphoer = pesysData.inntektEtterOpphoer, oppgjoersAar = pesysData.oppgjoersAar))
                 includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIeo(inntektIAfpPerioden = pesysData.inntektIAfpPerioden, oppgjoersAar = pesysData.oppgjoersAar, pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, inntektEtterOpphoer = pesysData.inntektEtterOpphoer))
             }
@@ -106,17 +89,16 @@ object VedtakAfpEtteroppgjoerIngenEndringEtterSvar : RedigerbarTemplate<VedtakAf
             paragraph {
                 text(
                     bokmal {
-                        +"Ved beregningen av pensjonen din for " + pesysData.oppgjoersAar.format() + " la vi til " + "grunn at du ville ha en forventet arbeidsinntekt på " + pesysData.forventetPensjonsgivendeInntektBeregnet.format() + ". Differansen mellom denne tidligere medregnede arbeidsinntekten og den " + "arbeidsinntekten du etter vår nye beregning har hatt i perioden, utgjør " + pesysData.avvik.format() + ". Denne differansen er ikke større enn toleransebeløpet " + "som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + "."
+                        +"Ved beregningen av pensjonen din for " + pesysData.oppgjoersAar.format() + " la vi til grunn at du ville ha en forventet arbeidsinntekt på " + pesysData.forventetPensjonsgivendeInntektBeregnet.format() + ". Differansen mellom denne tidligere medregnede arbeidsinntekten og den arbeidsinntekten du etter vår nye beregning har hatt i perioden, utgjør " + pesysData.avvik.format() + ". Denne differansen er ikke større enn toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + "."
                     },
                     nynorsk {
-                        +"Ved berekninga av pensjonen din for " + pesysData.oppgjoersAar.format() + " la vi til " + "grunn at du ville ha ei forventa arbeidsinntekt på " + pesysData.forventetPensjonsgivendeInntektBeregnet.format() + ". Differansen mellom denne tidlegare medrekna arbeidsinntekta og den " + "arbeidsinntekta du etter vår nye berekning har hatt i perioden, utgjer " + pesysData.avvik.format() + ". Denne differansen er ikkje større enn toleransebeløpet " + "som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + "."
+                        +"Ved berekninga av pensjonen din for " + pesysData.oppgjoersAar.format() + " la vi til grunn at du ville ha ei forventa arbeidsinntekt på " + pesysData.forventetPensjonsgivendeInntektBeregnet.format() + ". Differansen mellom denne tidlegare medrekna arbeidsinntekta og den arbeidsinntekta du etter vår nye berekning har hatt i perioden, utgjer " + pesysData.avvik.format() + ". Denne differansen er ikkje større enn toleransebeløpet som i " + pesysData.oppgjoersAar.format() + " var " + pesysData.toleranseBeloep.format() + "."
                     },
                 )
             }
 
             includePhrase(AfpEtteroppgjoerInnhold.NyBeregningFoererIkkeTilTilbakekreving(pesysData.oppgjoersAar))
 
-            // Avslutning — rettigheter, plikter og kontaktinformasjon (alltid).
             includePhrase(AfpEtteroppgjoerAvslutning)
         }
     }
