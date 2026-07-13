@@ -111,7 +111,7 @@ export async function tilbakestillBrev(brevId: number) {
 }
 
 export const brevDiffKeys = {
-  id: (brevId: number) => ["BREV_DIFF", brevId] as const,
+  id: (brevId: number, redigertBrevHash: string) => ["BREV_DIFF", brevId, redigertBrevHash] as const,
 };
 
 export const getBrevDiff = {

@@ -56,19 +56,40 @@ export function groupDiffByLiteral(diff: LetterDiff): DiffRangesByLiteral {
   return map;
 }
 
+export type BuildDiffSegmentsResult =
+  | { ok: true; segments: DiffSegment[] }
+  | { ok: false; reason: string };
+
 type BuildDiffSegmentsInput = {
   currentText: string;
   inserts: DiffInsert[];
   deletes: DiffDelete[];
 };
 
-export function buildDiffSegments({ currentText, inserts, deletes }: BuildDiffSegmentsInput): DiffSegment[] {
+export function buildDiffSegments({ currentText, inserts, deletes }: BuildDiffSegmentsInput): BuildDiffSegmentsResult {
   if (inserts.length === 0 && deletes.length === 0) {
-    return [{ type: "unchanged", text: currentText }];
+    return { ok: true, segments: [{ type: "unchanged", text: currentText }] };
   }
 
   const sortedInserts = [...inserts].sort((a, b) => a.startOffset - b.startOffset || a.endOffset - b.endOffset);
   const sortedDeletes = [...deletes].sort((a, b) => a.startOffset - b.startOffset || a.endOffset - b.endOffset);
+
+  for (const ins of sortedInserts) {
+    if (ins.startOffset < 0 || ins.endOffset < ins.startOffset || ins.endOffset > currentText.length) {
+      return { ok: false, reason: `Invalid insert range [${ins.startOffset}, ${ins.endOffset}] for text length ${currentText.length}` };
+    }
+  }
+  for (const del of sortedDeletes) {
+    if (del.startOffset < 0 || del.endOffset < del.startOffset) {
+      return { ok: false, reason: `Invalid delete range [${del.startOffset}, ${del.endOffset}]` };
+    }
+  }
+
+  for (let i = 1; i < sortedInserts.length; i++) {
+    if (sortedInserts[i].startOffset < sortedInserts[i - 1].endOffset) {
+      return { ok: false, reason: `Overlapping insert ranges at index ${i}` };
+    }
+  }
 
   type Event = { offset: number; kind: "insert" | "delete"; entry: DiffInsert | DiffDelete };
   const events: Event[] = [
@@ -88,7 +109,9 @@ export function buildDiffSegments({ currentText, inserts, deletes }: BuildDiffSe
   for (const event of events) {
     if (event.kind === "delete") {
       const del = event.entry as DiffDelete;
-      if (!isValidDeleteRange(del)) continue;
+      if (del.startOffset < cursor) {
+        return { ok: false, reason: `Delete at offset ${del.startOffset} is behind cursor ${cursor}` };
+      }
 
       if (cursor < del.startOffset && cursor < currentText.length) {
         const unchangedEnd = Math.min(del.startOffset, currentText.length);
@@ -98,7 +121,9 @@ export function buildDiffSegments({ currentText, inserts, deletes }: BuildDiffSe
       segments.push({ type: "deleted", text: del.text });
     } else {
       const ins = event.entry as DiffInsert;
-      if (!isValidInsertRange(ins, currentText.length)) continue;
+      if (ins.startOffset < cursor) {
+        return { ok: false, reason: `Insert at offset ${ins.startOffset} is behind cursor ${cursor}` };
+      }
 
       if (cursor < ins.startOffset) {
         segments.push({ type: "unchanged", text: currentText.slice(cursor, ins.startOffset) });
@@ -113,13 +138,5 @@ export function buildDiffSegments({ currentText, inserts, deletes }: BuildDiffSe
     segments.push({ type: "unchanged", text: currentText.slice(cursor) });
   }
 
-  return segments;
-}
-
-function isValidInsertRange(ins: DiffInsert, textLength: number): boolean {
-  return ins.startOffset >= 0 && ins.endOffset >= ins.startOffset && ins.endOffset <= textLength;
-}
-
-function isValidDeleteRange(del: DiffDelete): boolean {
-  return del.startOffset >= 0 && del.endOffset >= del.startOffset;
+  return { ok: true, segments };
 }

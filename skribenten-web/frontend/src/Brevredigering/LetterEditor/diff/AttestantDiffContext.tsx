@@ -11,6 +11,7 @@ import {
 
 type AttestantDiffContextValue = {
   diffByLiteral: DiffRangesByLiteral;
+  diffHash: string | undefined;
   dismissedKeys: ReadonlySet<string>;
   dismissLiteral: (key: string) => void;
 };
@@ -20,17 +21,20 @@ const EMPTY_SET: ReadonlySet<string> = new Set();
 
 const AttestantDiffContext = createContext<AttestantDiffContextValue>({
   diffByLiteral: EMPTY_MAP,
+  diffHash: undefined,
   dismissedKeys: EMPTY_SET,
   dismissLiteral: () => {},
 });
 
 export const AttestantDiffProvider = ({
   diff,
+  diffHash,
   dismissedKeys,
   dismissLiteral,
   children,
 }: {
   diff: LetterDiff | undefined;
+  diffHash: string | undefined;
   dismissedKeys: ReadonlySet<string>;
   dismissLiteral: (key: string) => void;
   children: ReactNode;
@@ -38,8 +42,8 @@ export const AttestantDiffProvider = ({
   const diffByLiteral = useMemo(() => (diff ? groupDiffByLiteral(diff) : EMPTY_MAP), [diff]);
 
   const value = useMemo(
-    () => ({ diffByLiteral, dismissedKeys, dismissLiteral }),
-    [diffByLiteral, dismissedKeys, dismissLiteral],
+    () => ({ diffByLiteral, diffHash, dismissedKeys, dismissLiteral }),
+    [diffByLiteral, diffHash, dismissedKeys, dismissLiteral],
   );
 
   return <AttestantDiffContext.Provider value={value}>{children}</AttestantDiffContext.Provider>;
@@ -61,10 +65,17 @@ export function useDiffSegmentsForLiteral(
     const ranges = diffByLiteral.get(key);
     if (!ranges || (ranges.inserts.length === 0 && ranges.deletes.length === 0)) return null;
 
-    return buildDiffSegments({
+    const result = buildDiffSegments({
       currentText,
       inserts: ranges.inserts,
       deletes: ranges.deletes,
     });
+
+    if (!result.ok) {
+      console.warn(`[AttestantDiff] Rejected diff for literal ${key}: ${result.reason}`);
+      return null;
+    }
+
+    return result.segments;
   }, [blockIndex, contentIndex, currentText, diffByLiteral, dismissedKeys]);
 }

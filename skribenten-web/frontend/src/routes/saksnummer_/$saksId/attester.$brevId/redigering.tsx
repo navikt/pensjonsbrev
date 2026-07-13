@@ -203,9 +203,11 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   });
 
   const diffQuery = useQuery({
-    queryKey: getBrevDiff.queryKey(props.brev.info.id),
+    queryKey: getBrevDiff.queryKey(props.brev.info.id, props.brev.redigertBrevHash),
     queryFn: () => getBrevDiff.queryFn(props.brev.info.id, props.brev.redigertBrev),
   });
+
+  const activeDiff = diffQuery.isSuccess ? diffQuery.data : undefined;
 
   const [dismissedDiffs, setDismissedDiffs] = useState<Set<string>>(() => new Set());
   const dismissLiteral = useCallback((key: string) => {
@@ -215,6 +217,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       return next;
     });
   }, []);
+
+  useEffect(() => {
+    setDismissedDiffs(new Set());
+  }, [props.brev.redigertBrevHash]);
 
   const defaultValuesModelEditor = useMemo(
     () => ({
@@ -436,7 +442,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         }
         right={
           <>
-            <AttestantDiffProvider diff={diffQuery.data} dismissedKeys={dismissedDiffs} dismissLiteral={dismissLiteral}>
+            <AttestantDiffProvider diff={activeDiff} diffHash={activeDiff ? props.brev.redigertBrevHash : undefined} dismissedKeys={dismissedDiffs} dismissLiteral={dismissLiteral}>
               <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
                 <ManagedLetterEditor
                   brev={props.brev}

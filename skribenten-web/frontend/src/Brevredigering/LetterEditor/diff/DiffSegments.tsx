@@ -47,3 +47,21 @@ export function getEditableLiteralText(element: HTMLElement): string {
   clone.querySelectorAll("[data-diff-deletion]").forEach((node) => node.remove());
   return clone.textContent ?? "";
 }
+
+export function getEditableCharacterOffset(element: HTMLElement): number {
+  const selection = globalThis.getSelection();
+  if (!selection || selection.rangeCount === 0) return 0;
+
+  const range = selection.getRangeAt(0);
+  if (!range.startContainer || !element.contains(range.startContainer)) return 0;
+
+  const preCaretRange = range.cloneRange();
+  preCaretRange.selectNodeContents(element);
+  preCaretRange.setEnd(range.startContainer, range.startOffset);
+
+  const tempDiv = document.createElement("div");
+  tempDiv.appendChild(preCaretRange.cloneContents());
+  tempDiv.querySelectorAll("[data-diff-deletion]").forEach((node) => node.remove());
+
+  return tempDiv.textContent?.length ?? 0;
+}
