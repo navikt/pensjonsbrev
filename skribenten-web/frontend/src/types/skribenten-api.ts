@@ -3287,7 +3287,7 @@ export interface components {
         /** EditParagraphContentItemList */
         EditParagraphContentItemList: {
             deletedItems: number[];
-            editedListType?: components["schemas"]["Listetype"];
+            editedListType?: components["schemas"]["Listetype"] | null;
             id?: number | null;
             items: components["schemas"]["EditParagraphContentItemListItem"][];
             listType: components["schemas"]["Listetype"];

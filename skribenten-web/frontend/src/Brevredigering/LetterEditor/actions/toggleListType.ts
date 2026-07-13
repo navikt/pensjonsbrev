@@ -134,7 +134,7 @@ const mergeListWithAdjacentBlocks = (
   let blockIndex = initialBlockIndex;
 
   const currentBlock = blocks[blockIndex];
-  if (!currentBlock || currentBlock.type !== "PARAGRAPH") return;
+  if (currentBlock?.type !== "PARAGRAPH") return;
 
   const currentList = currentBlock.content[contentIndex];
   if (!isItemList(currentList) || effectiveListType(currentList) !== listType) return;
