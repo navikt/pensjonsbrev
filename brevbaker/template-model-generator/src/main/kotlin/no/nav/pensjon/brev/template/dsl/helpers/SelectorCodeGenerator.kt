@@ -3,7 +3,9 @@ package no.nav.pensjon.brev.template.dsl.helpers
 import com.google.devtools.ksp.closestClassDeclaration
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import java.io.PrintWriter
+import kotlin.jvm.java
 
 internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>>) {
     private data class Node(val decl: KSClassDeclaration, var include: Boolean, val children: MutableMap<KSClassDeclaration, Node> = mutableMapOf())
@@ -63,14 +65,13 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
                 property.closestClassDeclaration()
                     ?: throw InvalidVisitorState("Couldn't find class of $propertyName")
 
-            val className =
+            if (declaringClass.javaClass.isAssignableFrom(SaksbehandlervalgIDSL::class.java)) {
+                return
+            }
+
+            val dataClassName =
                 declaringClass.qualifiedName?.asString()
                     ?: throw InvalidModel("Couldn't find qualified name of $declaringClass")
-            val dataClassName = if (className == Map::class.qualifiedName) {
-                "$className<*,*>"
-            } else {
-                className
-            }
 
             val type = property.type.resolveWithTypeParameters()
 
