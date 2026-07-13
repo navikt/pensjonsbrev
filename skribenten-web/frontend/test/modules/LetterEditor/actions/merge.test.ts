@@ -1,12 +1,13 @@
 import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import { newLiteral } from "~/Brevredigering/LetterEditor/actions/common";
+import { newLiteral, text } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import {
   type AnyBlock,
   type Item,
   type ItemList,
+  ListType,
   type LiteralValue,
   type ParagraphBlock,
   type TextContent,
@@ -555,30 +556,21 @@ describe("LetterEditorActions.merge", () => {
         const mergeId = { blockIndex: 0, contentIndex: 0, itemIndex: 1 };
         const result = Actions.merge(state, { ...mergeId, itemContentIndex: 0 }, MergeTarget.PREVIOUS);
 
-        test("then the current is removed", () => {
+        test("then the list is split and the empty item removed", () => {
+          // Break out: [block: list(lit)] [block: newLiteral()]
+          expect(result.redigertBrev.blocks).toHaveLength(2);
           expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(1);
-          expect(select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 })).toBe(
-            select<Item>(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0 }),
-          );
-          expect(select<Item>(result, mergeId)).toBeUndefined();
         });
 
-        test("then the focus is stolen to the end", () => {
-          const previousItem = select<Item>(state, {
-            ...mergeId,
-            itemIndex: mergeId.itemIndex - 1,
-            itemContentIndex: undefined,
-          });
+        test("then the focus is set to the blank line block", () => {
           expect(result.focus).toEqual({
-            blockIndex: mergeId.blockIndex,
-            contentIndex: mergeId.contentIndex,
-            cursorPosition: previousItem.content.at(-1)?.text.length,
-            itemIndex: mergeId.itemIndex - 1,
-            itemContentIndex: previousItem.content.length - 1,
+            blockIndex: 1,
+            contentIndex: 0,
+            cursorPosition: 0,
           });
         });
 
-        test("and it is the only one then the itemlist should be deleted", () => {
+        test("and it is the only one then the list is replaced with a blank line block", () => {
           const state = letter(
             paragraph([literal({ text: "before list" }), itemList({ items: [item(literal({ text: "" }))] })]),
           );
@@ -589,12 +581,11 @@ describe("LetterEditorActions.merge", () => {
             MergeTarget.PREVIOUS,
           );
 
-          expect(select<ParagraphBlock>(result, { blockIndex: 0 }).content).toHaveLength(1);
+          // Break out: [block: literal("before list")] [block: newLiteral()]
+          expect(result.redigertBrev.blocks).toHaveLength(2);
           expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).text).toStrictEqual("before list");
-          expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toContain(
-            select<ItemList>(state, { blockIndex: 0, contentIndex: 1 }).id,
-          );
-          expect(result.focus).toStrictEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: "before list".length });
+          expect(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 })).toStrictEqual(newLiteral());
+          expect(result.focus).toStrictEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 0 });
         });
       });
 
@@ -633,6 +624,419 @@ describe("LetterEditorActions.merge", () => {
       expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).text).toEqual("l1");
       expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 1 }).text).toEqual("l2");
       expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 2 });
+    });
+  });
+
+  describe("break out of empty item and re-merge", () => {
+    test("backspace on blank line between same-type lists merges them", () => {
+      const state = letter(
+        paragraph([itemList({ items: [item(literal({ text: "a" })), item(literal({ text: "b" }))] })]),
+        paragraph([literal({ text: "" })]),
+        paragraph([itemList({ items: [item(literal({ text: "c" })), item(literal({ text: "d" }))] })]),
+      );
+
+      // Backspace on empty block 1
+      const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+
+      // Should merge into one block with one list containing all 4 items
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(4);
+      // Focus lands at end of last item of the first list (item "b", now at index 1)
+      expect(result.focus).toMatchObject({
+        blockIndex: 0,
+        contentIndex: 0,
+        itemIndex: 1,
+        itemContentIndex: 0,
+        cursorPosition: 1,
+      });
+    });
+
+    test("backspace on blank line between different-type lists does not merge them", () => {
+      const state = letter(
+        paragraph([itemList({ items: [item(literal({ text: "a" }))], listType: ListType.PUNKTLISTE })]),
+        paragraph([literal({ text: "" })]),
+        paragraph([itemList({ items: [item(literal({ text: "b" }))], listType: ListType.NUMMERERT_LISTE })]),
+      );
+
+      // Backspace on empty block 1
+      const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+
+      // Empty block removed, lists stay separate
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      // Focus lands at end of last item of the first (bullet) list
+      expect(result.focus).toMatchObject({
+        blockIndex: 0,
+        contentIndex: 0,
+        itemIndex: 0,
+        itemContentIndex: 0,
+        cursorPosition: 1,
+      });
+    });
+
+    test("full round-trip: enter on empty item, then backspace to re-merge", () => {
+      const state = letter(
+        paragraph([
+          itemList({
+            items: [item(literal({ text: "a" })), item(literal({ text: "" })), item(literal({ text: "c" }))],
+          }),
+        ]),
+      );
+
+      // Enter on empty middle item → break out
+      const afterEnter = Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 }, 0);
+      expect(afterEnter.redigertBrev.blocks).toHaveLength(3);
+
+      // Backspace on blank line block → re-merge
+      const afterBackspace = Actions.merge(afterEnter, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+      expect(afterBackspace.redigertBrev.blocks).toHaveLength(1);
+      expect(select<ItemList>(afterBackspace, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(2);
+    });
+
+    test("full round-trip: caret lands after last item of first list, not end of merged list", () => {
+      const state = letter(
+        paragraph([
+          itemList({
+            items: [
+              item(literal({ text: "item1" })),
+              item(literal({ text: "item2" })),
+              item(literal({ text: "" })),
+              item(literal({ text: "item4" })),
+            ],
+          }),
+        ]),
+      );
+
+      // Enter on empty third item → breaks into [item1, item2] + blank + [item4]
+      const afterEnter = Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 2, itemContentIndex: 0 }, 0);
+      expect(afterEnter.redigertBrev.blocks).toHaveLength(3);
+      expect(select<ItemList>(afterEnter, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(2);
+      expect(select<ItemList>(afterEnter, { blockIndex: 2, contentIndex: 0 }).items).toHaveLength(1);
+
+      // Backspace on blank line → re-merge, caret should land after item2 (itemIndex 1)
+      const afterBackspace = Actions.merge(afterEnter, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+      expect(afterBackspace.redigertBrev.blocks).toHaveLength(1);
+      expect(select<ItemList>(afterBackspace, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(3);
+      // Caret should be at end of item2 (index 1), NOT at end of item4 (index 2)
+      expect(afterBackspace.focus).toEqual({
+        blockIndex: 0,
+        contentIndex: 0,
+        cursorPosition: 5, // length of "item2"
+        itemIndex: 1,
+        itemContentIndex: 0,
+      });
+    });
+
+    test("backspace on empty first item breaks out", () => {
+      const state = letter(
+        paragraph([
+          itemList({
+            items: [item(literal({ text: "" })), item(literal({ text: "b" })), item(literal({ text: "c" }))],
+          }),
+        ]),
+      );
+
+      const result = Actions.merge(
+        state,
+        { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 },
+        MergeTarget.PREVIOUS,
+      );
+
+      // [block: newLiteral()] [block: list(b, c)]
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 })).toStrictEqual(newLiteral());
+      expect(select<ItemList>(result, { blockIndex: 1, contentIndex: 0 }).items).toHaveLength(2);
+      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 0 });
+    });
+  });
+
+  describe("cross-block merge into list", () => {
+    test("backspace at start of line merges text into last item of previous list", () => {
+      const state = letter(
+        paragraph([itemList({ items: [item(literal({ text: "a" })), item(literal({ text: "b" }))] })]),
+        paragraph([literal({ text: "text" })]),
+      );
+
+      const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+
+      // Text merged into last item: list(a, [b, text])
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(2);
+      // Both literals keep their IDs, so they stay separate (mergeLiteralsIfPossible won't merge two ID'd literals)
+      const lastItemContent = select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 1 }).content;
+      expect(lastItemContent).toHaveLength(2);
+      expect(text(lastItemContent[0])).toBe("b");
+      expect(text(lastItemContent[1])).toBe("text");
+      // Caret at end of "b" (position 1 in the first literal)
+      expect(result.focus).toEqual({
+        blockIndex: 0,
+        contentIndex: 0,
+        cursorPosition: 1,
+        itemIndex: 1,
+        itemContentIndex: 0,
+      });
+    });
+
+    test("backspace at start of line between same-type lists merges text and lists", () => {
+      const state = letter(
+        paragraph([itemList({ items: [item(literal({ text: "a" })), item(literal({ text: "b" }))] })]),
+        paragraph([literal({ text: "text" })]),
+        paragraph([itemList({ items: [item(literal({ text: "c" })), item(literal({ text: "d" }))] })]),
+      );
+
+      const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+
+      // All merged: list(a, b+"text", c, d)
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(4);
+      // Caret at the merge point in item "b" (end of original "b", before "text")
+      expect(result.focus).toEqual({
+        blockIndex: 0,
+        contentIndex: 0,
+        cursorPosition: 1,
+        itemIndex: 1,
+        itemContentIndex: 0,
+      });
+    });
+
+    test("backspace at start of line between different-type lists merges text but not lists", () => {
+      const state = letter(
+        paragraph([
+          itemList({
+            items: [item(literal({ text: "a" })), item(literal({ text: "b" }))],
+            listType: ListType.PUNKTLISTE,
+          }),
+        ]),
+        paragraph([literal({ text: "text" })]),
+        paragraph([itemList({ items: [item(literal({ text: "c" }))], listType: ListType.NUMMERERT_LISTE })]),
+      );
+
+      const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+
+      // Text merged into punktliste, but nummerliste stays separate
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(2);
+      expect(select<ItemList>(result, { blockIndex: 1, contentIndex: 0 }).items).toHaveLength(1);
+      expect(result.focus).toEqual({
+        blockIndex: 0,
+        contentIndex: 0,
+        cursorPosition: 1,
+        itemIndex: 1,
+        itemContentIndex: 0,
+      });
+    });
+
+    test("backspace at start of line with no list after only merges text into list", () => {
+      const state = letter(
+        paragraph([itemList({ items: [item(literal({ text: "a" }))] })]),
+        paragraph([literal({ text: "hello" })]),
+        paragraph([literal({ text: "more content" })]),
+      );
+
+      const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+
+      // Text merged into last item, third block unchanged
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      const lastItemContent = select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 }).content;
+      expect(lastItemContent).toHaveLength(2);
+      expect(text(lastItemContent[0])).toBe("a");
+      expect(text(lastItemContent[1])).toBe("hello");
+      expect(result.focus).toEqual({
+        blockIndex: 0,
+        contentIndex: 0,
+        cursorPosition: 1,
+        itemIndex: 0,
+        itemContentIndex: 0,
+      });
+    });
+
+    test("caret position with variable at end of last item", () => {
+      const state = letter(
+        paragraph([itemList({ items: [item(variable("var1"))] })]),
+        paragraph([literal({ text: "text" })]),
+      );
+
+      const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+
+      // Variable is not a literal, so cursorPosition = 0 (before the variable there's no text)
+      expect(result.focus).toEqual({
+        blockIndex: 0,
+        contentIndex: 0,
+        cursorPosition: 0,
+        itemIndex: 0,
+        itemContentIndex: 0,
+      });
+    });
+
+    test("previous block with mixed content ending with list", () => {
+      const state = letter(
+        paragraph([literal({ text: "before" }), itemList({ items: [item(literal({ text: "a" }))] })]),
+        paragraph([literal({ text: "merged" })]),
+      );
+
+      const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+
+      // Text merged into last item of the list
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(select<ParagraphBlock>(result, { blockIndex: 0 }).content).toHaveLength(2);
+      const lastItemContent = select<Item>(result, { blockIndex: 0, contentIndex: 1, itemIndex: 0 }).content;
+      expect(lastItemContent).toHaveLength(2);
+      expect(text(lastItemContent[0])).toBe("a");
+      expect(text(lastItemContent[1])).toBe("merged");
+    });
+
+    test("next block starts with same-type list: both lists merge after text merge", () => {
+      const state = letter(
+        paragraph([itemList({ items: [item(literal({ text: "a" }))] })]),
+        paragraph([literal({ text: "" }), itemList({ items: [item(literal({ text: "b" }))] })]),
+      );
+
+      // Backspace at the start of the empty literal merges it into the list in block 0,
+      // which then triggers mergeAdjacentListBlocks to merge the remaining same-type list.
+      const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+
+      expect(result.redigertBrev.blocks).toHaveLength(1);
+      expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(2);
+    });
+
+    test("next block starts with different-type list: lists stay separate after text merge", () => {
+      const state = letter(
+        paragraph([itemList({ items: [item(literal({ text: "a" }))], listType: ListType.PUNKTLISTE })]),
+        paragraph([
+          literal({ text: "" }),
+          itemList({ items: [item(literal({ text: "b" }))], listType: ListType.NUMMERERT_LISTE }),
+        ]),
+      );
+
+      const result = Actions.merge(state, { blockIndex: 1, contentIndex: 0 }, MergeTarget.PREVIOUS);
+
+      // Empty text merged, but different-type lists stay separate
+      expect(result.redigertBrev.blocks).toHaveLength(2);
+      expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).listType).toBe(ListType.PUNKTLISTE);
+      expect(select<ItemList>(result, { blockIndex: 1, contentIndex: 0 }).listType).toBe(ListType.NUMMERERT_LISTE);
+    });
+  });
+
+  describe("break out of empty item in template mixed-content block (backspace)", () => {
+    test("empty middle item with content before and after list: backspace removes empty item and preserves surroundings", () => {
+      const state = letter(
+        paragraph([
+          literal({ text: "before" }),
+          itemList({
+            items: [item(literal({ text: "item1" })), item(literal({ text: "" })), item(literal({ text: "item3" }))],
+          }),
+          literal({ text: "after" }),
+        ]),
+      );
+
+      const result = Actions.merge(
+        state,
+        { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 },
+        MergeTarget.PREVIOUS,
+      );
+
+      // [before] [list(item1)] [blank] [list(item3)] [after]
+      expect(result.redigertBrev.blocks).toHaveLength(5);
+      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).text).toBe("before");
+      expect(select<ItemList>(result, { blockIndex: 1, contentIndex: 0 }).items).toHaveLength(1);
+      expect(select<LiteralValue>(result, { blockIndex: 2, contentIndex: 0 })).toStrictEqual(newLiteral());
+      expect(select<ItemList>(result, { blockIndex: 3, contentIndex: 0 }).items).toHaveLength(1);
+      expect(select<LiteralValue>(result, { blockIndex: 4, contentIndex: 0 }).text).toBe("after");
+      // Focus on the blank line
+      expect(result.focus).toEqual({ blockIndex: 2, contentIndex: 0, cursorPosition: 0 });
+    });
+  });
+
+  describe("backspace over NEW_LINE within an item", () => {
+    test("removes the NEW_LINE and merges the surrounding literals when one has id:null", () => {
+      // Use one id:null literal so mergeLiteralsIfPossible can merge them
+      const it = item({ content: [literal({ text: "abc" }), newLine(), asNew(literal({ text: "def" }))] });
+      const state = letter(paragraph([itemList({ items: [it] })]));
+
+      // Cursor at start of "def" (itemContentIndex: 2), backspace → remove NEW_LINE, merge "abc"+"def"
+      const result = Actions.merge(
+        state,
+        { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 2 },
+        MergeTarget.PREVIOUS,
+      );
+
+      const resultItem = select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
+      expect(resultItem.content).toHaveLength(1);
+      expect(text(resultItem.content[0] as LiteralValue)).toEqual("abcdef");
+      expect(result.focus).toMatchObject({
+        blockIndex: 0,
+        contentIndex: 0,
+        itemIndex: 0,
+        itemContentIndex: 0,
+        cursorPosition: "abc".length,
+      });
+    });
+
+    test("removes the NEW_LINE and keeps two literals when both have non-null ids", () => {
+      const it = item({ content: [literal({ text: "abc" }), newLine(), literal({ text: "def" })] });
+      const state = letter(paragraph([itemList({ items: [it] })]));
+
+      const result = Actions.merge(
+        state,
+        { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 2 },
+        MergeTarget.PREVIOUS,
+      );
+
+      const resultItem = select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
+      expect(resultItem.content).toHaveLength(2);
+      expect(text(resultItem.content[0] as LiteralValue)).toEqual("abc");
+      expect(text(resultItem.content[1] as LiteralValue)).toEqual("def");
+      expect(result.focus).toMatchObject({ itemContentIndex: 0, cursorPosition: "abc".length });
+    });
+
+    test("Delete over NEW_LINE removes it and merges the surrounding literals", () => {
+      const it = item({ content: [literal({ text: "abc" }), newLine(), asNew(literal({ text: "def" }))] });
+      const state = letter(paragraph([itemList({ items: [it] })]));
+
+      // Cursor at end of "abc" (itemContentIndex: 0), delete → remove NEW_LINE, merge "abc"+"def"
+      const result = Actions.merge(
+        state,
+        { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 },
+        MergeTarget.NEXT,
+      );
+
+      const resultItem = select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
+      expect(resultItem.content).toHaveLength(1);
+      expect(text(resultItem.content[0] as LiteralValue)).toEqual("abcdef");
+    });
+
+    test("removes NEW_LINE between a variable and a literal (only removes NEW_LINE, no literal merge)", () => {
+      const it = item({ content: [variable("var"), newLine(), literal({ text: "def" })] });
+      const state = letter(paragraph([itemList({ items: [it] })]));
+
+      const result = Actions.merge(
+        state,
+        { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 2 },
+        MergeTarget.PREVIOUS,
+      );
+
+      const resultItem = select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
+      expect(resultItem.content).toHaveLength(2);
+      expect(resultItem.content[0].type).toBe("VARIABLE");
+      expect(text(resultItem.content[1] as LiteralValue)).toEqual("def");
+    });
+
+    test("NEW_LINE removal takes priority over item-to-item merge", () => {
+      // Two items; the first has an internal NEW_LINE. Backspace at the second item's first literal
+      // should trigger item-to-item merge (not touch the NEW_LINE inside item 0).
+      const it0 = item({ content: [literal({ text: "a" }), newLine(), literal({ text: "b" })] });
+      const it1 = item(literal({ text: "c" }));
+      const state = letter(paragraph([itemList({ items: [it0, it1] })]));
+
+      const result = Actions.merge(
+        state,
+        { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 },
+        MergeTarget.PREVIOUS,
+      );
+
+      // Items are merged: item 1 absorbed into item 0, NEW_LINE inside item 0 untouched
+      expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(1);
+      const merged = select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
+      expect(merged.content).toHaveLength(it0.content.length + it1.content.length);
     });
   });
 });

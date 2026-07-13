@@ -5,7 +5,7 @@ import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/Le
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { type LiteralValue, type TextContent } from "~/types/brevbakerTypes";
 
-import { nyBrevResponse, nyRedigertBrev } from "../../../utils/brevredigeringTestUtils";
+import { brevResponse, editedLetter } from "../../../utils/letterEditorTestUtils";
 
 function asLiteral(content: TextContent): LiteralValue {
   if (content.type !== "LITERAL") throw new Error(`Expected LITERAL, got ${content.type}`);
@@ -22,8 +22,8 @@ function tableRow(...texts: string[]) {
 
 function createEditorState(): LetterEditorState {
   const rows = [tableRow("Rad 1 kolonne 1", "Rad 1 kolonne 2"), tableRow("Rad 2 kolonne 1", "Rad 2 kolonne 2")];
-  const brev = nyBrevResponse({
-    redigertBrev: nyRedigertBrev({
+  const brev = brevResponse({
+    redigertBrev: editedLetter({
       blocks: [
         newParagraph({
           content: [newTable(rows)],

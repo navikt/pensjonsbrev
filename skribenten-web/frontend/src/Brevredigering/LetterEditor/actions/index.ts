@@ -20,7 +20,7 @@ import {
   removeTableColumn,
   removeTableRow,
 } from "./table";
-import { toggleBulletList } from "./toggleBulletList";
+import { toggleBulletList, toggleNumberList } from "./toggleListType";
 import { updateContentText } from "./updateContentText";
 import { updateSignatur } from "./updateSignatur";
 
@@ -48,6 +48,7 @@ const Actions = {
   switchFontType,
   switchTypography,
   toggleBulletList,
+  toggleNumberList,
   updateContentText,
   updateSignatur,
 };
