@@ -218,10 +218,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     });
   }, []);
 
-  useEffect(() => {
-    setDismissedDiffs(new Set());
-  }, [props.brev.redigertBrevHash]);
-
   const defaultValuesModelEditor = useMemo(
     () => ({
       saksbehandlerValg: { ...editorState.saksbehandlerValg },

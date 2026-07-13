@@ -86,6 +86,7 @@ function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
 
 export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   const { editorState } = useEditor();
+  const { diffByLiteral, diffHash } = useAttestantDiff();
   const contents = getContent(editorState.redigertBrev, literalIndex);
 
   return (
@@ -99,13 +100,15 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
               "itemIndex" in literalIndex
                 ? { ...literalIndex, itemContentIndex: contentIndex }
                 : { ...literalIndex, contentIndex: contentIndex };
+            const hasDiffData = diffByLiteral.has(diffKey(updatedLiteralIndex));
+            const editableKey = hasDiffData ? `${contentIndex}-${diffHash ?? ""}` : `${contentIndex}`;
             return needsWordJoiner ? (
-              <React.Fragment key={contentIndex}>
+              <React.Fragment key={editableKey}>
                 {WORD_JOINER}
                 <EditableText content={content} literalIndex={updatedLiteralIndex} />
               </React.Fragment>
             ) : (
-              <EditableText content={content} key={contentIndex} literalIndex={updatedLiteralIndex} />
+              <EditableText content={content} key={editableKey} literalIndex={updatedLiteralIndex} />
             );
           }
           case "NEW_LINE":
@@ -216,11 +219,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     if (!element) return;
 
     if (hasDiffDecoration) {
-      // When diff is active, React renders children — ensure no stale text node
-      // remains from a previous non-decorated render or a different revision.
-      const firstChild = element.childNodes[0];
-      if (element.childNodes.length === 1 && firstChild?.nodeType === Node.TEXT_NODE) {
-        element.textContent = "";
+      // Remove any imperative text nodes so React's DiffSegments children are the sole content.
+      // Cannot check childNodes.length === 1 because React may have already appended DiffSegments spans.
+      for (let i = element.childNodes.length - 1; i >= 0; i--) {
+        if (element.childNodes[i].nodeType === Node.TEXT_NODE) {
+          element.removeChild(element.childNodes[i]);
+        }
       }
       return;
     }
