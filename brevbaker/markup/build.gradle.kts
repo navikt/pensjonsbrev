@@ -32,10 +32,6 @@ dependencies {
 // API (the binary-compatibility validator and the published jar only cover `main`).
 //
 // It gains `internal` access to `main` through Kotlin compilation association (`associateWith`)
-// instead of a raw cross-module `friendPaths` jar. Both grant `internal` access at compile time,
-// but only associateWith is exported into the IntelliJ Gradle model, so the IDE's code analysis
-// recognizes the friend relationship and stops flagging the internal usages as errors (a plain
-// cross-module friendPaths entry is not understood by IntelliJ — see KT-35347).
 sourceSets.create("apiInternal")
 
 kotlin {
@@ -44,7 +40,6 @@ kotlin {
     apiInternalCompilation.associateWith(mainCompilation)
 
     // Tests exercise the apiInternal DSL, so the test compilation needs it (and transitively main)
-    // on its classpath, plus friend access.
     target.compilations.getByName("test").associateWith(apiInternalCompilation)
 }
 
