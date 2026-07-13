@@ -285,7 +285,6 @@ function mergeIntoItemList(
     id: block.id,
   }).filter(isTextContent);
 
-  // TODO: item har ikke deletedContent (enda?), derav `[]` som deleted
   addElements(textContentAfterList, lastItem.content.length, lastItem.content, lastItem.deletedContent);
 }
 
