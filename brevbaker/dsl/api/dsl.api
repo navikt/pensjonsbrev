@@ -1668,23 +1668,11 @@ public abstract class no/nav/pensjon/brev/template/validation/TemplateValidation
 	public fun <init> (Ljava/lang/String;)V
 }
 
-public final class no/nav/pensjon/brev/template/vedlegg/Felt {
-	public fun <init> ()V
-	public final fun add (Ljava/util/Map;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getFelt ()Ljava/util/Map;
-	public fun hashCode ()I
-	public final fun to (Ljava/lang/String;Ljava/lang/Object;)V
-	public final fun to (Ljava/lang/String;Ljava/lang/String;)V
-	public final fun to (Ljava/lang/String;Ljava/util/Map;)V
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class no/nav/pensjon/brev/template/vedlegg/IncludeAttachmentPDF {
 	public fun <init> (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;Lno/nav/pensjon/brev/template/Expression;)V
 	public synthetic fun <init> (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;Lno/nav/pensjon/brev/template/Expression;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
+	public final fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Lno/nav/pensjon/brevbaker/api/model/PDFVedlegg;
 	public final fun getData ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun getPredicate ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun getTemplate ()Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;
@@ -1693,35 +1681,16 @@ public final class no/nav/pensjon/brev/template/vedlegg/IncludeAttachmentPDF {
 }
 
 public abstract interface class no/nav/pensjon/brev/template/vedlegg/PDFTemplate {
-	public fun createVedlegg (Lno/nav/pensjon/brev/template/ExpressionScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
+	public fun createVedlegg (Lno/nav/pensjon/brev/template/ExpressionScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brevbaker/api/model/PDFVedlegg;
 	public abstract fun getTitle ()Ljava/util/List;
-	public abstract fun template (Lno/nav/pensjon/brevbaker/api/model/PDFVedleggData;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
+	public abstract fun template (Lno/nav/pensjon/brevbaker/api/model/PDFVedleggData;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;)Lno/nav/pensjon/brevbaker/api/model/PDFVedlegg;
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplate$DefaultImpls {
-	public static fun createVedlegg (Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;Lno/nav/pensjon/brev/template/ExpressionScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
+	public static fun createVedlegg (Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;Lno/nav/pensjon/brev/template/ExpressionScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brevbaker/api/model/PDFVedlegg;
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplateKt {
 	public static final fun createAttachmentPDF (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;
-}
-
-public final class no/nav/pensjon/brev/template/vedlegg/PDFVedlegg {
-	public fun <init> ()V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getSider ()Ljava/util/List;
-	public fun hashCode ()I
-	public final fun side (Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/template/vedlegg/Side {
-	public fun <init> (Ljava/lang/String;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun felt (Lkotlin/jvm/functions/Function1;)V
-	public final fun getFelt ()Ljava/util/List;
-	public final fun getFilnavn ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
