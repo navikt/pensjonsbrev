@@ -5,7 +5,6 @@ import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import java.io.PrintWriter
-import kotlin.jvm.java
 
 internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>>) {
     private data class Node(val decl: KSClassDeclaration, var include: Boolean, val children: MutableMap<KSClassDeclaration, Node> = mutableMapOf())
@@ -42,11 +41,15 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
     }
 
     companion object {
+        private val saksbehandlervalgIDSLQualifiedName = SaksbehandlervalgIDSL::class.qualifiedName
+
         private fun generateNodeCode(codeGenerator: CodeGenerator, node: Node, pkg: String, dependencies: Set<KSFile>) {
             if (node.include) {
                 val className = node.decl.simpleName.asString()
-                createFile(codeGenerator, pkg, className, dependencies) { writer ->
-                    node.decl.getAllProperties().forEach { generatePropertySelectors(it, writer) }
+                if (className != SaksbehandlervalgIDSL::class.simpleName) {
+                    createFile(codeGenerator, pkg, className, dependencies) { writer ->
+                        node.decl.getAllProperties().forEach { generatePropertySelectors(it, writer) }
+                    }
                 }
             }
             node.children.values.forEach { child ->
@@ -64,10 +67,6 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
             val declaringClass =
                 property.closestClassDeclaration()
                     ?: throw InvalidVisitorState("Couldn't find class of $propertyName")
-
-            if (declaringClass.javaClass.isAssignableFrom(SaksbehandlervalgIDSL::class.java)) {
-                return
-            }
 
             val dataClassName =
                 declaringClass.qualifiedName?.asString()
