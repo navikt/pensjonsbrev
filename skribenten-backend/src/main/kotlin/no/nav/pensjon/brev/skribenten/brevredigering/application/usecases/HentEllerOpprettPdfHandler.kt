@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
 import org.jetbrains.exposed.v1.jdbc.Database
 
 class HentEllerOpprettPdfHandler(
@@ -26,6 +27,7 @@ class HentEllerOpprettPdfHandler(
     private val brevmalService: BrevmalService,
     private val hentP1DataHandler: HentP1DataHandler,
     private val genererFoerstesideHandler: GenererFoerstesideHandler,
+    private val pdfVedleggAppender: PDFVedleggAppender,
     database: Database,
 ) : TransactionHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult, IngenFoersteside>(database) {
 

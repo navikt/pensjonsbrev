@@ -5,6 +5,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import no.nav.brev.InternKonstruktoer
+import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
@@ -19,6 +20,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.NavEnhet
@@ -260,6 +262,9 @@ abstract class BrevredigeringHandlerTestBase {
                 )
             ),
             database = SharedPostgres.database,
+            pdfVedleggAppender = object : PDFVedleggAppender {
+                override fun leggPaaVedlegg(pdfCompilationOutput: PDFCompilationOutput, attachments: List<PDFVedlegg>, spraak: LanguageCode) = pdfCompilationOutput
+            }
         )
     }
     protected val sendBrevHandler by lazy {
@@ -573,7 +578,8 @@ abstract class BrevredigeringHandlerTestBase {
                 displayTitle = "En fin tittel",
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
-            )
+            ),
+            pdfvedlegg = emptyList()
         )
     }
 
