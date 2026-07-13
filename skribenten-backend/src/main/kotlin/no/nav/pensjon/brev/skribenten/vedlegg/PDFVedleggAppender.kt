@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.vedlegg
 
-import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import org.apache.pdfbox.Loader
@@ -11,19 +10,19 @@ import java.io.ByteArrayOutputStream
 
 interface PDFVedleggAppender {
     fun leggPaaVedlegg(
-        pdfCompilationOutput: PDFCompilationOutput,
+        pdfCompilationOutput: ByteArray,
         attachments: List<PDFVedlegg>,
         spraak: LanguageCode,
-    ): PDFCompilationOutput
+    ): ByteArray
 }
 
 class PDFVedleggAppenderImpl : PDFVedleggAppender {
 
     override fun leggPaaVedlegg(
-        pdfCompilationOutput: PDFCompilationOutput,
+        pdfCompilationOutput: ByteArray,
         attachments: List<PDFVedlegg>,
         spraak: LanguageCode,
-    ): PDFCompilationOutput {
+    ): ByteArray {
         /* Ikke strengt nødvendig å returnere her, det vil fungere uten, men optimalisering.
         De aller, aller fleste brevene har ikke PDF-vedlegg, så de trenger ikke gå gjennom denne løypa
          */
@@ -34,7 +33,7 @@ class PDFVedleggAppenderImpl : PDFVedleggAppender {
         PDDocument().use { target ->
             val merger = PDFMergerUtility()
 
-            Loader.loadPDF(pdfCompilationOutput.bytes).use {
+            Loader.loadPDF(pdfCompilationOutput).use {
                 merger.leggTilSide(target, it)
             }
 
@@ -47,10 +46,10 @@ class PDFVedleggAppenderImpl : PDFVedleggAppender {
         }
     }
 
-    private fun tilByteArray(target: PDDocument): PDFCompilationOutput {
+    private fun tilByteArray(target: PDDocument): ByteArray {
         val outputStream = ByteArrayOutputStream()
         target.save(outputStream)
-        return PDFCompilationOutput(outputStream.toByteArray())
+        return outputStream.toByteArray()
     }
 }
 

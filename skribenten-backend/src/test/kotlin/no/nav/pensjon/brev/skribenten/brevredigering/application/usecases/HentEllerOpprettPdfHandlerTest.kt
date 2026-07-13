@@ -276,7 +276,7 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
             ),
             database = SharedPostgres.database,
             pdfVedleggAppender = object : PDFVedleggAppender {
-                override fun leggPaaVedlegg(pdfCompilationOutput: PDFCompilationOutput, attachments: List<PDFVedlegg>, spraak: LanguageCode) = pdfCompilationOutput
+                override fun leggPaaVedlegg(pdfCompilationOutput: ByteArray, attachments: List<PDFVedlegg>, spraak: LanguageCode) = pdfCompilationOutput
             }
         )
         assertThat(hentEllerOpprettPdf(brev, handler = handler)).isSuccess {
