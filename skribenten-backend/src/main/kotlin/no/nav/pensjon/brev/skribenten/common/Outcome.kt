@@ -43,6 +43,9 @@ sealed class Outcome<out T, out E> {
     }
 }
 
+// For en outcome definert med error som nothing er det trygt å anta suksess
+fun <T> Outcome<T, Nothing>.asSuccess(): T = (this as Outcome.Success<T>).value
+
 inline fun <T, E> Outcome<T, E>.getOrElse(onFailure: (E) -> T): T =
     when (this) {
         is Outcome.Success -> this.value
