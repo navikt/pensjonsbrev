@@ -150,7 +150,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
     }
 
     @Test
-    fun `does not generate selectors for a SaksbehandlervalgIDSL field`() {
+    fun `does not generate selectors for a SaksbehandlervalgIDSL field with empty fagsystemdata`() {
         val result = KotlinSourceFile(
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
@@ -167,7 +167,31 @@ class TemplateModelHelpersAnnotationProcessorTest {
         assertThat(result.exitCode).isEqualTo(KotlinSymbolProcessing.ExitCode.OK)
 
         val generatedSources = result.generatedSources.map { it.name }
+        assertThat(generatedSources).isEmpty()
+    }
+
+    @Test
+    fun `does not generate selectors for a SaksbehandlervalgIDSL field`() {
+        val result = KotlinSourceFile(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+                    
+                    data class MyModel(val i: Int)
+
+                    data class MyLetterData(val saksbehandlerValg: SaksbehandlervalgIDSL, val myModel: MyModel)
+
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<MyLetterData>
+                    """.trimIndent()
+        ).generateSelectors()
+
+        assertThat(result.exitCode).isEqualTo(KotlinSymbolProcessing.ExitCode.OK)
+
+        val generatedSources = result.generatedSources.map { it.name }
         assertThat(generatedSources).contains("MyLetterDataSelectors.kt")
+        assertThat(generatedSources).contains("MyModelSelectors.kt")
         assertThat(generatedSources).doesNotContain("SaksbehandlervalgIDSLSelectors.kt")
     }
 }

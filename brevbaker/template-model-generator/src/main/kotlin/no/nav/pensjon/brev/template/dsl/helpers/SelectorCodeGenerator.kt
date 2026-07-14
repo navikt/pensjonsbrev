@@ -45,8 +45,13 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
             if (node.include) {
                 val className = node.decl.simpleName.asString()
                 if (className != SaksbehandlervalgIDSL::class.simpleName) {
-                    createFile(codeGenerator, pkg, className, dependencies) { writer ->
-                        node.decl.getAllProperties().forEach { generatePropertySelectors(it, writer) }
+                    val propertySelectors = node.decl.getAllProperties()
+                        .map { generatePropertySelectors(it) }
+                        .filter { it.isNotEmpty() }
+                    if (propertySelectors.any()) {
+                        createFile(codeGenerator, pkg, className, dependencies) { writer ->
+                            propertySelectors.forEach { writer.println(it) }
+                        }
                     }
                 }
             }
@@ -58,7 +63,7 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
             }
         }
 
-        private fun generatePropertySelectors(property: KSPropertyDeclaration, writer: PrintWriter) {
+        private fun generatePropertySelectors(property: KSPropertyDeclaration): String {
             val propertyName = property.simpleName.asString()
             val selectorName = "${propertyName}Selector"
 
@@ -72,7 +77,11 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
 
             val type = property.type.resolveWithTypeParameters()
 
-            writer.println(
+            if (type == SaksbehandlervalgIDSL::class.qualifiedName) {
+                return ""
+            }
+
+            return (
                 """
                 |@JvmField
                 |val $selectorName =
