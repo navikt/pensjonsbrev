@@ -118,10 +118,14 @@ class NoNonDeterministicExpressionLiteralRule :
         val fileNode = generateSequence(this) { it.treeParent }.last()
         val importList = fileNode.findChildByType(IMPORT_LIST) ?: return
         val importText = "import $importPath"
+        val wildcardImportText = "import ${importPath.substringBeforeLast('.')}.*"
         val alreadyImported =
             importList
                 .getChildren(null)
-                .any { it.elementType == IMPORT_DIRECTIVE && it.text.trim() == importText }
+                .any {
+                    it.elementType == IMPORT_DIRECTIVE &&
+                        (it.text.trim() == importText || it.text.trim() == wildcardImportText)
+                }
         if (alreadyImported) return
 
         val newImportDirective =
