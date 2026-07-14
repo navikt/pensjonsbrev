@@ -18,7 +18,8 @@ import kotlinx.io.IOException
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFTimeoutException
-import no.nav.pensjon.brev.PDFRequestV2
+import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.markup.toJson
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration
@@ -105,13 +106,13 @@ class PensjonPdfByggerService(
         throw PDFTimeoutException("Spent more than $timeout trying to compile pdf", e)
     } ?: throw PDFTimeoutException("Spent more than $timeout trying to compile pdf")
 
-    override suspend fun producePDFV2(pdfRequest: PDFRequestV2): PDFCompilationOutput = try {
+    override suspend fun producePDFV2(pdfRequest: LetterPDFRequest): PDFCompilationOutput = try {
         withTimeoutOrNull(timeout) {
             httpClient.post("$pdfByggerUrl/v2/produserBrev") {
                 contentType(ContentType.Application.Json)
                 accept(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
-                setBody(objectmapper.writeValueAsBytes(pdfRequest))
+                setBody(pdfRequest.toJson())
             }.body()
         }
     } catch (e: CancellationException) {

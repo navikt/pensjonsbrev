@@ -43,6 +43,22 @@ kotlin {
     target.compilations.getByName("test").associateWith(apiInternalCompilation)
 }
 
+// Expose the compiled `apiInternal` classes as a consumable configuration so sibling modules (core)
+// can build the renderer against markup's internal-API layer WITHOUT publishing those seams. The
+// `main` classes/deps are consumed through the normal project dependency; this only adds the
+// apiInternal jar on top.
+val apiInternalJar = tasks.register<Jar>("apiInternalJar") {
+    archiveClassifier.set("api-internal")
+    from(sourceSets["apiInternal"].output)
+}
+
+configurations.create("apiInternalElements") {
+    isCanBeConsumed = true
+    isCanBeResolved = false
+}
+
+artifacts.add("apiInternalElements", apiInternalJar)
+
 tasks.test {
     useJUnitPlatform()
 }

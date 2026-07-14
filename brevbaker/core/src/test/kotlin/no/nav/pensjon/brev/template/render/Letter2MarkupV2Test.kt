@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.LetterMarkupV2Asserter.Companion.assertThat
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block
+import no.nav.brev.brevbaker.markup.outline.Block
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

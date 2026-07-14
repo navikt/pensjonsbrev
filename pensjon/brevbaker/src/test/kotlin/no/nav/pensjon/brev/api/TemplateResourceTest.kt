@@ -7,7 +7,7 @@ import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.PDFRequestV2
+import no.nav.brev.brevbaker.markup.LetterPDFRequest
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -32,7 +32,7 @@ class TemplateResourceTest {
         ): PDFCompilationOutput = PDFCompilationOutput(pdf)
 
         override suspend fun producePDFV2(
-            pdfRequest: PDFRequestV2,
+            pdfRequest: LetterPDFRequest,
         ): PDFCompilationOutput = PDFCompilationOutput(pdf)
     }
     private val autobrev = AutobrevTemplateResource("autobrev", Testmaler.hentAutobrevmaler(), fakePDFBygger)

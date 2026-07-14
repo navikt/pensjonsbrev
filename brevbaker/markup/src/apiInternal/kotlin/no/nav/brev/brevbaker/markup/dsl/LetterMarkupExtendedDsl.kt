@@ -53,8 +53,8 @@ fun pdfTittelExtended(content: ExtendedContentBuilder.() -> Unit): PDFTittel =
  * title1 { text(1, "Vedtak for "); variable(2, "navn") }
  * ```
  */
-fun LetterMarkupBuilder<ExtendedContentBuilder>.title1(content: PlainExtendedTextBuilder.() -> Unit) =
-    setTitle { plainExtendedText(content) }
+fun LetterMarkupBuilder<ExtendedContentBuilder>.title1(content: ExtendedContentBuilder.() -> Unit) =
+    setTitle { ExtendedContentBuilder().apply(content).build() }
 
 /**
  * Legg til en nivå-2-overskrift via DSL-blokk med `variable`.
@@ -64,8 +64,8 @@ fun LetterMarkupBuilder<ExtendedContentBuilder>.title1(content: PlainExtendedTex
  * ```
  */
 @JvmName("title2Extended")
-fun OutlineBuilder<ExtendedContentBuilder>.title2(id: Int, content: PlainExtendedTextBuilder.() -> Unit) {
-    blocks.add(Block.Title2(id, plainExtendedText(content)))
+fun OutlineBuilder<ExtendedContentBuilder>.title2(id: Int, content: ExtendedContentBuilder.() -> Unit) {
+    blocks.add(Block.Title2(id, contentFactory.content(content)))
 }
 
 /**
@@ -76,8 +76,8 @@ fun OutlineBuilder<ExtendedContentBuilder>.title2(id: Int, content: PlainExtende
  * ```
  */
 @JvmName("title3Extended")
-fun OutlineBuilder<ExtendedContentBuilder>.title3(id: Int, content: PlainExtendedTextBuilder.() -> Unit) {
-    blocks.add(Block.Title3(id, plainExtendedText(content)))
+fun OutlineBuilder<ExtendedContentBuilder>.title3(id: Int, content: ExtendedContentBuilder.() -> Unit) {
+    blocks.add(Block.Title3(id, contentFactory.content(content)))
 }
 
 /**
@@ -88,8 +88,8 @@ fun OutlineBuilder<ExtendedContentBuilder>.title3(id: Int, content: PlainExtende
  * ```
  */
 @JvmName("title4Extended")
-fun OutlineBuilder<ExtendedContentBuilder>.title4(id: Int, content: PlainExtendedTextBuilder.() -> Unit) {
-    blocks.add(Block.Title4(id, plainExtendedText(content)))
+fun OutlineBuilder<ExtendedContentBuilder>.title4(id: Int, content: ExtendedContentBuilder.() -> Unit) {
+    blocks.add(Block.Title4(id, contentFactory.content(content)))
 }
 
 /**
@@ -192,10 +192,10 @@ fun HeaderBuilder<ExtendedContentBuilder>.column(
     headerContentId: Int,
     alignment: ColumnAlignment = ColumnAlignment.LEFT,
     span: Int = 1,
-    content: PlainExtendedTextBuilder.() -> Unit,
+    content: ExtendedContentBuilder.() -> Unit,
 ) {
     require(span >= 1) { "Table column span must be at least 1, but was $span" }
-    val cell = Block.Table.Cell(headerContentId, plainExtendedText(content))
+    val cell = Block.Table.Cell(headerContentId, ExtendedContentBuilder().apply(content).build())
     colSpec.add(Block.Table.ColumnSpec(id, cell, alignment, span))
 }
 
@@ -234,7 +234,8 @@ fun OutlineBuilder<ExtendedContentBuilder>.formText(id: Int, size: Size, vspace:
 fun OutlineBuilder<ExtendedContentBuilder>.formChoice(id: Int, vspace: Boolean = true, build: FormChoiceBuilder<ExtendedContentBuilder>.() -> Unit) {
     val builder = FormChoiceBuilder(contentFactory)
     builder.vspace = vspace
-    blocks.add(builder.apply(build).build(id))
+    builder.apply(build)
+    blocks.add(Block.FormChoice(id, builder.prompt.toList(), builder.choices.toList(), builder.vspace))
 }
 
 /**
@@ -244,8 +245,8 @@ fun OutlineBuilder<ExtendedContentBuilder>.formChoice(id: Int, vspace: Boolean =
  * formChoice(50) { prompt { text(51, "Svar innen "); variable(52, "frist") }; ... }
  * ```
  */
-fun FormChoiceBuilder<ExtendedContentBuilder>.prompt(content: PlainExtendedTextBuilder.() -> Unit) {
-    prompt.addAll(plainExtendedText(content))
+fun FormChoiceBuilder<ExtendedContentBuilder>.prompt(content: ExtendedContentBuilder.() -> Unit) {
+    prompt.addAll(contentFactory.content(content))
 }
 
 /**
