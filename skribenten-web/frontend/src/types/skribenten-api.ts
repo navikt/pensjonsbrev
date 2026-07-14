@@ -2014,11 +2014,53 @@ export interface paths {
                         };
                     };
                 };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
                 };
             };
         };
@@ -2043,6 +2085,54 @@ export interface paths {
                         "application/json": {
                             [key: string]: unknown;
                         };
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
                     };
                 };
             };
@@ -3216,6 +3306,11 @@ export interface components {
             typeName: string;
         };
         /**
+         * Listetype
+         * @enum {string}
+         */
+        Listetype: "PUNKTLISTE" | "NUMMERERT_LISTE";
+        /**
          * EditParagraphContentTextFontType
          * @enum {string}
          */
@@ -3279,14 +3374,10 @@ export interface components {
             id?: number | null;
             parentId?: number | null;
         };
-        /**
-         * Listetype
-         * @enum {string}
-         */
-        Listetype: "PUNKTLISTE" | "NUMMERERT_LISTE";
         /** EditParagraphContentItemList */
         EditParagraphContentItemList: {
             deletedItems: number[];
+            editedListType?: components["schemas"]["Listetype"] | null;
             id?: number | null;
             items: components["schemas"]["EditParagraphContentItemListItem"][];
             listType: components["schemas"]["Listetype"];
@@ -3711,6 +3802,7 @@ export type ApiBrevInfo = components['schemas']['ApiBrevInfo'];
 export type ApiOpprettBrevRequest = components['schemas']['ApiOpprettBrevRequest'];
 export type BrevExceptionDto = components['schemas']['BrevExceptionDto'];
 export type LetterMarkupWithDataUsageProperty = components['schemas']['LetterMarkupWithDataUsageProperty'];
+export type Listetype = components['schemas']['Listetype'];
 export type EditParagraphContentTextFontType = components['schemas']['EditParagraphContentTextFontType'];
 export type ElementTags = components['schemas']['ElementTags'];
 export type EditParagraphContentType = components['schemas']['EditParagraphContentType'];
@@ -3719,7 +3811,6 @@ export type EditParagraphContentTextNewLine = components['schemas']['EditParagra
 export type EditParagraphContentTextVariable = components['schemas']['EditParagraphContentTextVariable'];
 export type EditParagraphContentText = components['schemas']['EditParagraphContentText'];
 export type EditParagraphContentItemListItem = components['schemas']['EditParagraphContentItemListItem'];
-export type Listetype = components['schemas']['Listetype'];
 export type EditParagraphContentItemList = components['schemas']['EditParagraphContentItemList'];
 export type EditParagraphContentTableColumnAlignment = components['schemas']['EditParagraphContentTableColumnAlignment'];
 export type EditParagraphContentTableCell = components['schemas']['EditParagraphContentTableCell'];

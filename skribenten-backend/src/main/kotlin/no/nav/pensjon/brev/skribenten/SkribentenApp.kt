@@ -88,12 +88,6 @@ fun Application.skribentenApp() {
             logger.info(cause.message, cause)
             call.respond(HttpStatusCode.InternalServerError, cause.message)
         }
-        exception<P1Exception> { call, cause ->
-            logger.info(cause.message, cause)
-            when(cause) {
-                is P1Exception.ManglerDataException -> call.respond(HttpStatusCode.UnprocessableEntity, cause.message)
-            }
-        }
         exception<PenDataException> { call, cause ->
             logger.info("${cause.status} - Feil ved oppdatering av brev: ${cause.message}")
             call.respond(status = cause.status, cause.feil)

@@ -5,20 +5,19 @@ import no.nav.pensjon.brev.template.*
 
 @LetterTemplateMarker
 class ListScope<Lang : LanguageSupport, LetterData : Any> internal constructor(): ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.ItemList.Item<Lang>, ListScope<Lang, LetterData>> {
-    private val _elements = mutableListOf<ListItemElement<Lang>>()
-    @BrevbakerDSLInternal override val elements: List<ListItemElement<Lang>> get() = _elements
+    @BrevbakerDSLInternal override val elements: List<ListItemElement<Lang>> field = mutableListOf<ListItemElement<Lang>>()
     @BrevbakerDSLInternal override fun scopeFactory(): ListScope<Lang, LetterData> = ListScope()
 
     @BrevbakerDSLInternal
     override fun addControlStructure(e: ListItemElement<Lang>) {
-        _elements.add(e)
+        elements.add(e)
     }
 
     fun item(create: TextOnlyScope<Lang, LetterData>.() -> Unit) {
         TextOnlyScope<Lang, LetterData>().apply(create)
             .let { Element.OutlineContent.ParagraphContent.ItemList.Item(it.elements) }
             .let { ContentOrControlStructure.Content(it) }
-            .also { _elements.add(it) }
+            .also { elements.add(it) }
     }
 
 }
