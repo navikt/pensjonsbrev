@@ -218,6 +218,15 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     });
   }, []);
 
+  // Dismissals are transient and only hide the decoration until a fresh diff is computed.
+  // Once autosave produces a new hash, the recomputed diff reflects the attestant's edits,
+  // so stale dismissals are cleared while rendering to let the new decoration render.
+  const [dismissedForHash, setDismissedForHash] = useState(props.brev.redigertBrevHash);
+  if (dismissedForHash !== props.brev.redigertBrevHash) {
+    setDismissedForHash(props.brev.redigertBrevHash);
+    setDismissedDiffs(new Set());
+  }
+
   const defaultValuesModelEditor = useMemo(
     () => ({
       saksbehandlerValg: { ...editorState.saksbehandlerValg },
