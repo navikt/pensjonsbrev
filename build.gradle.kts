@@ -13,6 +13,13 @@ plugins {
 
 allprojects {
 
+    // Sikrer at alle jackson-* avhengigheter i hele prosjektet resolver til samme versjon,
+    // uten at hver modul må deklarere platform(libs.jackson.bom) selv.
+    configurations.matching { it.name in setOf("implementation", "testImplementation", "testFixturesImplementation") }
+        .configureEach {
+                project.dependencies.add(name, project.dependencies.platform(libs.jackson.bom))
+        }
+
     repositories {
         mavenCentral()
         mavenLocal()

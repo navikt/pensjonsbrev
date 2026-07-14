@@ -23,3 +23,11 @@ include("alder:api-model")
 include("etterlattemaler")
 
 include("planlegge-pensjon-maler")
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("libs") {
+            library("jackson-bom", "com.fasterxml.jackson", "jackson-bom").versionRef("jacksonVersion")
+        }
+    }
+}
