@@ -62,6 +62,13 @@ subprojects {
             }
         }
     }
+    // Custom rules (e.g. requiring compile-time constant arguments to `ifNull`), see :ktlint-rules.
+    // Excluded from the module itself to avoid a self-dependency.
+    if (path != ":ktlint-rules") {
+        dependencies {
+            "ktlintRuleset"(project(":ktlint-rules"))
+        }
+    }
 
     tasks {
         register<Test>("integrationTest") {
