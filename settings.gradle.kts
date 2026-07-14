@@ -2,6 +2,7 @@ rootProject.name = "pensjonsbrev"
 
 include("brevbaker:core")
 include("brevbaker:api-model-common")
+include("brevbaker:markup")
 include("brevbaker:dsl")
 include("brevbaker:pdf-bygger")
 include("brevbaker:template-model-generator")

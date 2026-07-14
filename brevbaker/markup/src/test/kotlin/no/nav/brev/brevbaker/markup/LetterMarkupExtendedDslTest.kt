@@ -1,0 +1,332 @@
+package no.nav.brev.brevbaker.markup
+
+import no.nav.brev.brevbaker.markup.outline.ElementTags
+import no.nav.brev.brevbaker.markup.outline.ElementTags.FRITEKST
+import no.nav.brev.brevbaker.markup.dsl.*
+import no.nav.brev.brevbaker.markup.outline.Block
+import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
+import no.nav.brev.brevbaker.markup.outline.Block.Table.ColumnAlignment
+import no.nav.brev.brevbaker.markup.outline.Text
+import no.nav.brev.brevbaker.markup.outline.Text.FontType
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+import java.time.LocalDate
+
+class LetterMarkupExtendedDslTest {
+
+    private fun fullLetter(): LetterMarkup {
+        var next = 0
+        fun id() = next++
+        return letterMarkupExtended {
+            title1 { text(id(), "Vedtak om uføretrygd") }
+            saksinformasjon(
+                gjelderNavn = "Ola Nordmann",
+                gjelderFoedselsnummer = "12345678901",
+                saksnummer = "9876543",
+                dokumentDato = LocalDate.of(2026, 7, 9),
+                annenMottakerNavn = "Kari Nordmann",
+            )
+            outline {
+                title2(id()) { text(id(), "Innledning") }
+                paragraph(id()) {
+                    text(id(), "Du får ")
+                    newLine(id())
+                    variable(id(), "uføretrygd")
+                    text(id(), ".")
+                }
+                itemList(id()) {
+                    item(id()) { text(id(), "Punkt 1") }
+                    item(id()) { text(id(), "Punkt 2") }
+                    item(id()) { text(id(), "") }
+                }
+                numberedList(id()) {
+                    item(id()) {
+                        text(id(), "Steg 1")
+                    }
+                }
+                table(id()) {
+                    header(id()) {
+                        column(id(), id(), ColumnAlignment.LEFT) {
+                            text(id(), "Kolonne ")
+                            variable(id(), "A")
+                        }
+                        column(id(), id(), ColumnAlignment.RIGHT, span = 2) { text(id(), "Kolonne B") }
+                    }
+                    row(id()) {
+                        cell(id()) { text(id(), "A1") }
+                        cell(id()) { text(id(), "B1") }
+                    }
+                }
+                formText(id(), Size.LONG) { text(id(), "Skriv her") }
+                formChoice(id()) {
+                    prompt { text(id(), "Velg") }
+                    choice(id()) { text(id(), "Ja") }
+                    choice(id()) { text(id(), "Nei") }
+                }
+            }
+            signatur(
+                hilsenTekst = "Med vennlig hilsen",
+                navAvsenderEnhet = "NAV Familie- og pensjonsytelser",
+                saksbehandlerNavn = "Sak S.Behandler",
+                attesterendeSaksbehandlerNavn = "Att Esterer",
+            )
+        }
+    }
+
+    @Test
+    fun `dsl builds a valid letter with all block and text types`() {
+        val letter = fullLetter()
+
+        assertEquals(2, letter.version)
+        assertEquals("Ola Nordmann", letter.saksinformasjon.gjelderNavn)
+        assertEquals("12345678901", letter.saksinformasjon.gjelderFoedselsnummer.value)
+        assertEquals("9876543", letter.saksinformasjon.saksnummer.saksnummer)
+
+        val types = letter.blocks.map { it.type }
+        assertTrue(
+            types.containsAll(
+                listOf(
+                    Block.Type.TITLE2,
+                    Block.Type.PARAGRAPH,
+                    Block.Type.ITEM_LIST,
+                    Block.Type.NUMBERED_LIST,
+                    Block.Type.TABLE,
+                    Block.Type.FORM_TEXT,
+                    Block.Type.FORM_CHOICE,
+                )
+            )
+        )
+
+        val paragraph = letter.blocks.filterIsInstance<Block.Paragraph>().single()
+        val textTypes = paragraph.content.map { it.type }
+        assertTrue(textTypes.containsAll(listOf(Text.Type.LITERAL, Text.Type.VARIABLE, Text.Type.NEW_LINE)))
+    }
+
+    @Test
+    fun `dsl carries the ids provided by the caller`() {
+        val letter = fullLetter()
+        val ids = mutableListOf<Int>()
+        letter.title1.forEach { ids.add(it.id) }
+        letter.blocks.forEach { block ->
+            ids.add(block.id)
+            when (block) {
+                is Block.Title2 -> block.content.forEach { ids.add(it.id) }
+                is Block.Paragraph -> block.content.forEach { ids.add(it.id) }
+                else -> {}
+            }
+        }
+        assertEquals(ids.size, ids.toSet().size, "ids should be unique")
+    }
+
+    @Test
+    fun `letter round-trips through json`() {
+        val letter = fullLetter()
+        val json = letter.toJson()
+        val decoded = decodeLetterMarkup(json)
+        assertEquals(letter, decoded)
+    }
+
+    @Test
+    fun `extended DSL supports font type and variables on content`() {
+        var next = 0
+        fun id() = next++
+        val letter = letterMarkupExtended {
+            title1 {
+                text(id(), "Tittel fra builder ")
+                variable(id(), "x")
+            }
+            saksinformasjon(
+                gjelderNavn = "Ola Nordmann",
+                gjelderFoedselsnummer = "12345678901",
+                saksnummer = "9876543",
+                dokumentDato = LocalDate.of(2026, 7, 9),
+            )
+            outline {
+                title2(id()) { text(id(), "Innledning") }
+                title2(id()) {
+                    text(id(), "Innledning ")
+                    variable(id(), "x")
+                }
+                title3(id()) { text(id(), "Mellomtittel") }
+                formText(id(), Size.SHORT) { text(id(), "TEXT") }
+                title3(id()) {
+                    text(id(), "Mellomtittel ")
+                    variable(id(), "x")
+                }
+                title4(id()) { text(id(), "Detaljer") }
+                title4(id()) {
+                    text(id(), "Detaljer ")
+                    variable(id(), "x")
+                }
+                paragraph(id()) { text(id(), "Ingress", fontType = FontType.BOLD) }
+                paragraph(id()) {
+                    text(id(), "Du får ")
+                    variable(id(), "1000 Kr", tags = setOf(ElementTags.REDIGERBAR_DATA))
+                    newLine(id())
+                }
+                itemList(id()) {
+                    item(id()) { text(id(), "Punkt", fontType = FontType.BOLD) }
+                    item(id()) {
+                        text(id(), "Du får ")
+                        variable(id(), "1000 Kr")
+                    }
+                }
+                table(id()) {
+                    header(id()) {
+                        column(id(), id()) { text(id(), "Kolonne") }
+                        column(id(), id()) {
+                            text(id(), "Kolonne ")
+                            variable(id(), "2")
+                        }
+                    }
+                    row(id()) {
+                        cell(id()) { text(id(), "Celle", fontType = FontType.BOLD) }
+                        cell(id()) {
+                            text(id(), "bla")
+                            variable(id(), "2")
+                        }
+                    }
+                }
+                formText(id(), Size.SHORT) { text(id(), "Ledetekst", fontType = FontType.BOLD) }
+                formText(id(), Size.LONG) {
+                    text(id(), "Skriv ")
+                    variable(id(), "her")
+                }
+                formChoice(id()) {
+                    prompt { text(id(), "Velg") }
+                    prompt {
+                        text(id(), "Du får svar innen ")
+                        variable(id(), "x")
+                        text(id(), "uker.")
+                    }
+                    choice(id()) { text(id(), "Ja", fontType = FontType.BOLD) }
+                    choice(id()) { text(id(), "Nei") }
+                    choice(id()) {
+                        text(id(), "kanskje")
+                        variable(id(), "eller?", tags = setOf(FRITEKST))
+                    }
+                }
+            }
+            signatur(
+                hilsenTekst = "Hilsen",
+                navAvsenderEnhet = "NAV",
+            )
+        }
+
+        val titleTexts = letter.title1.filterIsInstance<Text.Literal>().map { it.text }
+        assertTrue(titleTexts.contains("Tittel fra builder "))
+
+        val title2 = letter.blocks.filterIsInstance<Block.Title2>().first()
+        assertEquals(FontType.PLAIN, title2.content.filterIsInstance<Text.Literal>().first().fontType)
+
+        val paragraph = letter.blocks.filterIsInstance<Block.Paragraph>().first()
+        assertEquals(FontType.BOLD, (paragraph.content.single() as Text.Literal).fontType)
+
+        val item = letter.blocks.filterIsInstance<Block.ItemList>().single().items.first()
+        assertEquals(FontType.BOLD, (item.content.single() as Text.Literal).fontType)
+
+        val cell = letter.blocks.filterIsInstance<Block.Table>().single().rows.single().cells.first()
+        assertEquals(FontType.BOLD, (cell.text.single() as Text.Literal).fontType)
+    }
+
+    @Test
+    fun `pdfTittelExtended supports variables and round-trips through json`() {
+        var next = 0
+        fun id() = next++
+        val tittel = pdfTittelExtended {
+            text(id(), "Vedtak for ")
+            variable(id(), "Ola Nordmann")
+        }
+
+        assertEquals(listOf(Text.Type.LITERAL, Text.Type.VARIABLE), tittel.title1.map { it.type })
+
+        val decoded = decodePDFTittel(tittel.toJson())
+        assertEquals(tittel, decoded)
+    }
+
+    @Test
+    fun `letterMarkupWithDataUsage includes brevtype and data usage`() {
+        val property = dataUsageProperty(typeName = "UngUfoerDto", propertyName = "totaltUfoerePerMnd")
+
+        val letter = letterMarkupWithDataUsage(
+            brevtype = Brevtype.VEDTAKSBREV,
+            letterDataUsage = setOf(property),
+        ) {
+            saksinformasjon(
+                gjelderNavn = "Ola Nordmann",
+                gjelderFoedselsnummer = "12345678901",
+                saksnummer = "9876543",
+                dokumentDato = LocalDate.of(2026, 7, 9),
+            )
+            title1("Vedtak")
+            outline {
+                paragraph("Innhold")
+            }
+            signatur(
+                hilsenTekst = "Med vennlig hilsen",
+                navAvsenderEnhet = "NAV",
+            )
+        }
+
+        assertEquals(Brevtype.VEDTAKSBREV, letter.brevtype)
+        assertEquals(setOf(property), letter.letterDataUsage)
+        assertEquals("Vedtak", (letter.markup.title1.single() as Text.Literal).text)
+    }
+
+    @Test
+    fun `letterMarkupWithDataUsageExtended supports variable content and round-trips through json`() {
+        var next = 0
+        fun id() = next++
+        val property = dataUsageProperty(typeName = "UngUfoerDto", propertyName = "belop")
+
+        val letter = letterMarkupWithDataUsageExtended(
+            brevtype = Brevtype.INFORMASJONSBREV,
+            letterDataUsage = setOf(property),
+        ) {
+            saksinformasjon(
+                gjelderNavn = "Ola Nordmann",
+                gjelderFoedselsnummer = "12345678901",
+                saksnummer = "9876543",
+                dokumentDato = LocalDate.of(2026, 7, 9),
+            )
+            title1 { text(id(), "Orientering") }
+            outline {
+                paragraph(id()) {
+                    text(id(), "Beløp: ")
+                    variable(id(), "1000 kr")
+                }
+            }
+            signatur(
+                hilsenTekst = "Med vennlig hilsen",
+                navAvsenderEnhet = "NAV",
+            )
+        }
+
+        val paragraph = letter.markup.blocks.single() as Block.Paragraph
+        assertEquals(listOf(Text.Type.LITERAL, Text.Type.VARIABLE), paragraph.content.map { it.type })
+
+        val decoded = decodeLetterMarkupWithDataUsage(letter.toJson())
+        assertEquals(letter, decoded)
+    }
+
+    @Test
+    fun `attachmentExtended supports variable text`() {
+        var next = 0
+        fun id() = next++
+        val vedlegg = attachmentExtended(inkluderSaksinformasjon = false) {
+            title1 { text(id(), "Vedlegg 2") }
+            outline {
+                paragraph(id()) {
+                    text(id(), "Sats ")
+                    variable(id(), "2G")
+                }
+            }
+        }
+
+        assertEquals(false, vedlegg.inkluderSaksinformasjon)
+        val paragraph = vedlegg.blocks.single() as Block.Paragraph
+        val textTypes = paragraph.content.map { it.type }
+        assertTrue(textTypes.containsAll(listOf(Text.Type.LITERAL, Text.Type.VARIABLE)))
+    }
+}
