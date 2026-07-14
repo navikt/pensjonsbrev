@@ -11,21 +11,22 @@ import org.jetbrains.exposed.v1.jdbc.Database
 class HentAlltidValgbareVedleggHandler(
     private val brevbakerService: BrevbakerService,
     database: Database,
-) : TransactionHandler<HentAlltidValgbareVedleggHandler.Request, List<ValgbartVedlegg>, Nothing>(database) {
+) : PartlyTransactionHandler<HentAlltidValgbareVedleggHandler.Request, LanguageCode?, List<ValgbartVedlegg>, Nothing>(database) {
 
     data class Request(
         override val brevId: BrevId,
     ) : BrevredigeringRequest
 
-    override suspend fun execute(request: Request): Outcome<List<ValgbartVedlegg>, Nothing>? {
-        val spraakIBrevet = BrevredigeringEntity.findById(request.brevId)?.spraak ?: return null
+    override suspend fun execute(request: Request): Outcome<LanguageCode, Nothing>? =
+        BrevredigeringEntity.findById(request.brevId)?.spraak?.let { success(it) }
 
+    override suspend fun executeOutsideTransaction(request: Request, response: LanguageCode?): Outcome<List<ValgbartVedlegg>, Nothing> {
         val vedlegg = brevbakerService.getAlltidValgbareVedlegg(request.brevId).map {
             ValgbartVedlegg(
                 kode = it.kode,
                 visningstekst = it.visningstekst,
                 spraak = it.spraak,
-                tilgjengeligForSpraak = it.spraak.contains(spraakIBrevet),
+                tilgjengeligForSpraak = it.spraak.contains(response),
             )
         }.sortedBy { it.visningstekst }
 
