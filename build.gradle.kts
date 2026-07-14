@@ -13,11 +13,12 @@ plugins {
 
 allprojects {
 
-    // Sikrer at alle jackson-* avhengigheter i hele prosjektet resolver til samme versjon,
-    // uten at hver modul må deklarere platform(libs.jackson.bom) selv.
+    // Sikrer at alle jackson-* og ktor-* avhengigheter i hele prosjektet resolver til
+    // samme versjon, uten at hver modul må deklarere platform(...) selv.
     configurations.matching { it.name in setOf("implementation", "testImplementation", "testFixturesImplementation") }
         .configureEach {
-                project.dependencies.add(name, project.dependencies.platform(libs.jackson.bom))
+            project.dependencies.add(name, project.dependencies.platform(jackson.bom))
+            project.dependencies.add(name, project.dependencies.platform(ktorBom.bom))
         }
 
     repositories {

@@ -26,8 +26,18 @@ include("planlegge-pensjon-maler")
 
 dependencyResolutionManagement {
     versionCatalogs {
-        create("libs") {
-            library("jackson-bom", "com.fasterxml.jackson", "jackson-bom").versionRef("jacksonVersion")
+        create("jackson") {
+            // Egen catalog for jackson-bom. Vi importerer gradle/libs.versions.toml på nytt her
+            // (i tillegg til standard "libs"-catalogen) kun for å kunne gjenbruke jacksonVersion
+            // via versionRef, slik at bom-versjonen holdes i sync med resten av jackson-versjonene.
+            from(files("gradle/libs.versions.toml"))
+            library("bom", "com.fasterxml.jackson", "jackson-bom").versionRef("jacksonVersion")
+        }
+        create("ktorBom") {
+            // Kalles ikke "ktor" siden io.ktor.plugin allerede registrerer en prosjekt-extension
+            // med det navnet, som kolliderer med version catalog-accessoren.
+            from(files("gradle/libs.versions.toml"))
+            library("bom", "io.ktor", "ktor-bom").versionRef("ktorVersion")
         }
     }
 }

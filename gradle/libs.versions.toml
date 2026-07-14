@@ -62,27 +62,27 @@ ktlint-rule-engine-core = { module = "com.pinterest.ktlint:ktlint-rule-engine-co
 ktlint-test = { module = "com.pinterest.ktlint:ktlint-test", version.ref = "ktlintEngineVersion" }
 
 # Ktor
-ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorVersion" }
-ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorVersion" }
-ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorVersion" }
-ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktorVersion" }
-ktor-openapi-schema-reflect = { module = "io.ktor:ktor-openapi-schema-reflect", version.ref = "ktorVersion" }
-ktor-serialization-jackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktorVersion" }
-ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktorVersion" }
-ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktorVersion" }
-ktor-server-caching-headers = { module = "io.ktor:ktor-server-caching-headers", version.ref = "ktorVersion" }
-ktor-server-callId = { module = "io.ktor:ktor-server-call-id", version.ref = "ktorVersion" }
-ktor-server-callLogging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktorVersion" }
-ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktorVersion" }
-ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktorVersion" }
-ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktorVersion" }
-ktor-server-di = { module = "io.ktor:ktor-server-di", version.ref = "ktorVersion" }
-ktor-server-metrics = { module = "io.ktor:ktor-server-metrics", version.ref = "ktorVersion" }
-ktor-server-metrics-micrometer = { module = "io.ktor:ktor-server-metrics-micrometer", version.ref = "ktorVersion" }
-ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktorVersion" }
-ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktorVersion" }
-ktor-server-swagger = { module = "io.ktor:ktor-server-swagger", version.ref = "ktorVersion" }
-ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktorVersion" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock" }
+ktor-openapi-schema-reflect = { module = "io.ktor:ktor-openapi-schema-reflect" }
+ktor-serialization-jackson = { module = "io.ktor:ktor-serialization-jackson" }
+ktor-server-auth = { module = "io.ktor:ktor-server-auth" }
+ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt" }
+ktor-server-caching-headers = { module = "io.ktor:ktor-server-caching-headers" }
+ktor-server-callId = { module = "io.ktor:ktor-server-call-id" }
+ktor-server-callLogging = { module = "io.ktor:ktor-server-call-logging" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation" }
+ktor-server-core = { module = "io.ktor:ktor-server-core" }
+ktor-server-cors = { module = "io.ktor:ktor-server-cors" }
+ktor-server-di = { module = "io.ktor:ktor-server-di" }
+ktor-server-metrics = { module = "io.ktor:ktor-server-metrics" }
+ktor-server-metrics-micrometer = { module = "io.ktor:ktor-server-metrics-micrometer" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty" }
+ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages" }
+ktor-server-swagger = { module = "io.ktor:ktor-server-swagger" }
+ktor-server-test-host = { module = "io.ktor:ktor-server-test-host" }
 
 # Exposed
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposedVersion" }
