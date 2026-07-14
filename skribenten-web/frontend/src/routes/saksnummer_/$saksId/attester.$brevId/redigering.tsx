@@ -227,6 +227,8 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     setDismissedDiffs(new Set());
   }
 
+  const [visDiff, setVisDiff] = useState(false);
+
   const defaultValuesModelEditor = useMemo(
     () => ({
       saksbehandlerValg: { ...editorState.saksbehandlerValg },
@@ -417,6 +419,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 <Hide above="sm" asChild>
                   <Switch size="small">Vis slettet tekst</Switch>
                 </Hide>
+                <Switch checked={visDiff} onChange={(event) => setVisDiff(event.target.checked)} size="small">
+                  Marker tekst som er lagt til og slettet
+                </Switch>
+                <Divider />
                 <UnderskriftTextField
                   controlled
                   error={form.formState.errors.attestantSignatur?.message}
@@ -447,7 +453,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         }
         right={
           <>
-            <AttestantDiffProvider diff={activeDiff} diffHash={activeDiff ? props.brev.redigertBrevHash : undefined} dismissedKeys={dismissedDiffs} dismissLiteral={dismissLiteral}>
+            <AttestantDiffProvider diff={visDiff ? activeDiff : undefined} diffHash={visDiff && activeDiff ? props.brev.redigertBrevHash : undefined} dismissedKeys={dismissedDiffs} dismissLiteral={dismissLiteral}>
               <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
                 <ManagedLetterEditor
                   brev={props.brev}
