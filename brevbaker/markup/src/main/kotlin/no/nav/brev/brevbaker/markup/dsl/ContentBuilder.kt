@@ -6,6 +6,19 @@ import no.nav.brev.brevbaker.markup.outline.Text.FontType
 /**
  * Basis-scope for tekstinnhold i brev-DSL-en.
  *
+ * Denne modulen genererer aldri id-er. I plain-DSL-en ([letterMarkup]) settes alle element-id-er til `0`.
+ * Den utvidede DSL-en (api-internal) krever en eksplisitt id på hvert element.
+ */
+@MarkupDsl
+abstract class AbstractContentBuilder internal constructor() {
+    internal val texts: MutableList<Text> = mutableListOf()
+
+    internal fun build(): List<Text> = texts.toList()
+}
+
+/**
+ * Tekstinnhold uten `variable`. Alle id-er settes til `0`.
+ *
  * Tilgjengelige funksjoner:
  * - [text] for vanlig tekst
  * - [newLine] for linjeskift
@@ -13,11 +26,7 @@ import no.nav.brev.brevbaker.markup.outline.Text.FontType
  * En utvidet variant med `variable` og metadata (tags) finnes i api-internal-modulen.
  */
 @MarkupDsl
-abstract class AbstractContentBuilder internal constructor(private val ids: IdGenerator) {
-    protected val texts: MutableList<Text> = mutableListOf()
-
-    protected fun nextId(): Int = ids.next()
-
+class ContentBuilder internal constructor() : AbstractContentBuilder() {
     /**
      * Legg til fast tekst i innholdet, valgfritt med [fontType].
      *
@@ -27,7 +36,7 @@ abstract class AbstractContentBuilder internal constructor(private val ids: IdGe
      * ```
      */
     fun text(text: String, fontType: FontType = FontType.PLAIN) {
-        texts.add(Text.Literal(nextId(), text, fontType))
+        texts.add(Text.Literal(0, text, fontType))
     }
 
     /**
@@ -42,20 +51,14 @@ abstract class AbstractContentBuilder internal constructor(private val ids: IdGe
      * ```
      */
     fun newLine() {
-        texts.add(Text.NewLine(nextId()))
+        texts.add(Text.NewLine(0))
     }
-
-    internal fun build(): List<Text> = texts.toList()
 }
 
-/** Tekstinnhold uten `variable`. */
+/** Begrenset tekst-scope uten `variable` for plain-only overskrifter i [letterMarkup]. Alle id-er settes til `0`. */
 @MarkupDsl
-class ContentBuilder internal constructor(ids: IdGenerator) : AbstractContentBuilder(ids)
-
-/** Begrenset tekst-scope uten `variable` for plain-only overskrifter i [letterMarkup]. */
-@MarkupDsl
-class PlainTextBuilder internal constructor(private val ids: IdGenerator) {
-    private val texts: MutableList<Text> = mutableListOf()
+class PlainTextBuilder internal constructor() {
+    internal val texts: MutableList<Text> = mutableListOf()
 
     /**
      * Legg til brødtekst.
@@ -65,20 +68,20 @@ class PlainTextBuilder internal constructor(private val ids: IdGenerator) {
      * ```
      */
     fun text(text: String) {
-        texts.add(Text.Literal(ids.next(), text, FontType.PLAIN))
+        texts.add(Text.Literal(0, text, FontType.PLAIN))
     }
 
     internal fun build(): List<Text> = texts.toList()
 }
 
-internal typealias ContentFactory<C> = (IdGenerator) -> C
+internal typealias ContentFactory<C> = () -> C
 
-internal fun <C : AbstractContentBuilder> IdGenerator.content(factory: ContentFactory<C>, build: C.() -> Unit): List<Text> =
-    factory(this).apply(build).build()
+internal fun <C : AbstractContentBuilder> ContentFactory<C>.content(build: C.() -> Unit): List<Text> =
+    invoke().apply(build).build()
 
-/** Ren tekst fra en enkel [String] (kun [Text.Literal], [FontType.PLAIN]). */
-internal fun IdGenerator.plainText(text: String): List<Text> = listOf(Text.Literal(next(), text, FontType.PLAIN))
+/** Ren tekst fra en enkel [String] (kun [Text.Literal], [FontType.PLAIN], id `0`). */
+internal fun plainText(text: String): List<Text> = listOf(Text.Literal(0, text, FontType.PLAIN))
 
-/** Ren tekst fra DSL-blokk (kun [Text.Literal], [FontType.PLAIN], ingen linjeskift). */
-internal fun IdGenerator.plainText(build: PlainTextBuilder.() -> Unit): List<Text> =
-    PlainTextBuilder(this).apply(build).build()
+/** Ren tekst fra DSL-blokk (kun [Text.Literal], [FontType.PLAIN], ingen linjeskift, id `0`). */
+internal fun plainText(build: PlainTextBuilder.() -> Unit): List<Text> =
+    PlainTextBuilder().apply(build).build()

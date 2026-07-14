@@ -52,7 +52,7 @@ class PDFRequestBuilder internal constructor(
 
     /** Bygg og legg til et brevvedlegg via [attachment]-DSL-en. */
     fun attachment(inkluderSaksinformasjon: Boolean = false, build: AttachmentBuilder<ContentBuilder>.() -> Unit) {
-        attachments.add(AttachmentBuilder(IdGenerator(), ::ContentBuilder, inkluderSaksinformasjon).apply(build).build())
+        attachments.add(AttachmentBuilder(::ContentBuilder, inkluderSaksinformasjon).apply(build).build())
     }
 
     /** Legg til en ferdig bygget PDF-vedlegg-tittel. */
@@ -62,7 +62,7 @@ class PDFRequestBuilder internal constructor(
 
     /** Bygg og legg til en PDF-vedlegg-tittel via [pdfTittel]-DSL-en. */
     fun pdfVedlegg(content: ContentBuilder.() -> Unit) {
-        pdfVedlegg.add(PDFTittel(IdGenerator().content(::ContentBuilder, content)))
+        pdfVedlegg.add(PDFTittel(ContentBuilder().apply(content).build()))
     }
 
     internal fun build(): LetterPDFRequest = LetterPDFRequest(

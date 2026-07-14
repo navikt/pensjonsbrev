@@ -15,59 +15,63 @@ import java.time.LocalDate
 
 class LetterMarkupExtendedDslTest {
 
-    private fun fullLetter(): LetterMarkup = letterMarkupExtended {
-        title1 { text("Vedtak om uføretrygd") }
-        saksinformasjon(
-            gjelderNavn = "Ola Nordmann",
-            gjelderFoedselsnummer = "12345678901",
-            saksnummer = "9876543",
-            dokumentDato = LocalDate.of(2026, 7, 9),
-            annenMottakerNavn = "Kari Nordmann",
-        )
-        outline {
-            title2 { text("Innledning") }
-            paragraph {
-                text("Du får ")
-                newLine()
-                variable("uføretrygd")
-                text(".")
-            }
-            itemList {
-                item { text("Punkt 1") }
-                item { text("Punkt 2") }
-                item("")
-            }
-            numberedList {
-                item {
-                    text("Steg 1")
+    private fun fullLetter(): LetterMarkup {
+        var next = 0
+        fun id() = next++
+        return letterMarkupExtended {
+            title1 { text(id(), "Vedtak om uføretrygd") }
+            saksinformasjon(
+                gjelderNavn = "Ola Nordmann",
+                gjelderFoedselsnummer = "12345678901",
+                saksnummer = "9876543",
+                dokumentDato = LocalDate.of(2026, 7, 9),
+                annenMottakerNavn = "Kari Nordmann",
+            )
+            outline {
+                title2(id()) { text(id(), "Innledning") }
+                paragraph(id()) {
+                    text(id(), "Du får ")
+                    newLine(id())
+                    variable(id(), "uføretrygd")
+                    text(id(), ".")
                 }
-            }
-            table {
-                header {
-                    column(ColumnAlignment.LEFT) {
-                        text("Kolonne ")
-                        variable("A")
+                itemList(id()) {
+                    item(id()) { text(id(), "Punkt 1") }
+                    item(id()) { text(id(), "Punkt 2") }
+                    item(id()) { text(id(), "") }
+                }
+                numberedList(id()) {
+                    item(id()) {
+                        text(id(), "Steg 1")
                     }
-                    column(ColumnAlignment.RIGHT, span = 2) { text("Kolonne B") }
                 }
-                row {
-                    cell { text("A1") }
-                    cell { text("B1") }
+                table(id()) {
+                    header(id()) {
+                        column(id(), id(), ColumnAlignment.LEFT) {
+                            text(id(), "Kolonne ")
+                            variable(id(), "A")
+                        }
+                        column(id(), id(), ColumnAlignment.RIGHT, span = 2) { text(id(), "Kolonne B") }
+                    }
+                    row(id()) {
+                        cell(id()) { text(id(), "A1") }
+                        cell(id()) { text(id(), "B1") }
+                    }
+                }
+                formText(id(), Size.LONG) { text(id(), "Skriv her") }
+                formChoice(id()) {
+                    prompt { text(id(), "Velg") }
+                    choice(id()) { text(id(), "Ja") }
+                    choice(id()) { text(id(), "Nei") }
                 }
             }
-            formText(Size.LONG) { text("Skriv her") }
-            formChoice {
-                prompt { text("Velg") }
-                choice { text("Ja") }
-                choice { text("Nei") }
-            }
+            signatur(
+                hilsenTekst = "Med vennlig hilsen",
+                navAvsenderEnhet = "NAV Familie- og pensjonsytelser",
+                saksbehandlerNavn = "Sak S.Behandler",
+                attesterendeSaksbehandlerNavn = "Att Esterer",
+            )
         }
-        signatur(
-            hilsenTekst = "Med vennlig hilsen",
-            navAvsenderEnhet = "NAV Familie- og pensjonsytelser",
-            saksbehandlerNavn = "Sak S.Behandler",
-            attesterendeSaksbehandlerNavn = "Att Esterer",
-        )
     }
 
     @Test
@@ -100,7 +104,7 @@ class LetterMarkupExtendedDslTest {
     }
 
     @Test
-    fun `dsl assigns unique ids`() {
+    fun `dsl carries the ids provided by the caller`() {
         val letter = fullLetter()
         val ids = mutableListOf<Int>()
         letter.title1.forEach { ids.add(it.id) }
@@ -124,12 +128,13 @@ class LetterMarkupExtendedDslTest {
     }
 
     @Test
-    fun `extended DSL supports shorthand string methods with font type on content`() {
+    fun `extended DSL supports font type and variables on content`() {
+        var next = 0
+        fun id() = next++
         val letter = letterMarkupExtended {
-            title1("Vedtak")
             title1 {
-                text("Tittel fra builder ")
-                variable("x")
+                text(id(), "Tittel fra builder ")
+                variable(id(), "x")
             }
             saksinformasjon(
                 gjelderNavn = "Ola Nordmann",
@@ -138,68 +143,68 @@ class LetterMarkupExtendedDslTest {
                 dokumentDato = LocalDate.of(2026, 7, 9),
             )
             outline {
-                title2("Innledning")
-                title2 {
-                    text("Innledning ")
-                    variable("x")
+                title2(id()) { text(id(), "Innledning") }
+                title2(id()) {
+                    text(id(), "Innledning ")
+                    variable(id(), "x")
                 }
-                title3("Mellomtittel")
-                formText("TEXT", Size.SHORT)
-                title3 {
-                    text("Mellomtittel ")
-                    variable("x")
+                title3(id()) { text(id(), "Mellomtittel") }
+                formText(id(), Size.SHORT) { text(id(), "TEXT") }
+                title3(id()) {
+                    text(id(), "Mellomtittel ")
+                    variable(id(), "x")
                 }
-                title4("Detaljer")
-                title4 {
-                    text("Detaljer ")
-                    variable("x")
+                title4(id()) { text(id(), "Detaljer") }
+                title4(id()) {
+                    text(id(), "Detaljer ")
+                    variable(id(), "x")
                 }
-                paragraph("Ingress", fontType = FontType.BOLD)
-                paragraph {
-                    text("Du får ")
-                    variable("1000 Kr", tags = setOf(ElementTags.REDIGERBAR_DATA))
-                    newLine()
+                paragraph(id()) { text(id(), "Ingress", fontType = FontType.BOLD) }
+                paragraph(id()) {
+                    text(id(), "Du får ")
+                    variable(id(), "1000 Kr", tags = setOf(ElementTags.REDIGERBAR_DATA))
+                    newLine(id())
                 }
-                itemList {
-                    item("Punkt", fontType = FontType.BOLD)
-                    item {
-                        text("Du får ")
-                        variable("1000 Kr")
+                itemList(id()) {
+                    item(id()) { text(id(), "Punkt", fontType = FontType.BOLD) }
+                    item(id()) {
+                        text(id(), "Du får ")
+                        variable(id(), "1000 Kr")
                     }
                 }
-                table {
-                    header {
-                        column("Kolonne")
-                        column {
-                            text("Kolonne ")
-                            variable("2")
+                table(id()) {
+                    header(id()) {
+                        column(id(), id()) { text(id(), "Kolonne") }
+                        column(id(), id()) {
+                            text(id(), "Kolonne ")
+                            variable(id(), "2")
                         }
                     }
-                    row {
-                        cell("Celle", fontType = FontType.BOLD)
-                        cell {
-                            text("bla")
-                            variable("2")
+                    row(id()) {
+                        cell(id()) { text(id(), "Celle", fontType = FontType.BOLD) }
+                        cell(id()) {
+                            text(id(), "bla")
+                            variable(id(), "2")
                         }
                     }
                 }
-                formText("Ledetekst", Size.SHORT, fontType = FontType.BOLD)
-                formText(Size.LONG) {
-                    text("Skriv ")
-                    variable("her")
+                formText(id(), Size.SHORT) { text(id(), "Ledetekst", fontType = FontType.BOLD) }
+                formText(id(), Size.LONG) {
+                    text(id(), "Skriv ")
+                    variable(id(), "her")
                 }
-                formChoice {
-                    prompt("Velg")
+                formChoice(id()) {
+                    prompt { text(id(), "Velg") }
                     prompt {
-                        text("Du får svar innen ")
-                        variable("x")
-                        text("uker.")
+                        text(id(), "Du får svar innen ")
+                        variable(id(), "x")
+                        text(id(), "uker.")
                     }
-                    choice("Ja", fontType = FontType.BOLD)
-                    choice("Nei")
-                    choice {
-                        text("kanskje")
-                        variable("eller?", tags = setOf(FRITEKST))
+                    choice(id()) { text(id(), "Ja", fontType = FontType.BOLD) }
+                    choice(id()) { text(id(), "Nei") }
+                    choice(id()) {
+                        text(id(), "kanskje")
+                        variable(id(), "eller?", tags = setOf(FRITEKST))
                     }
                 }
             }
@@ -227,9 +232,11 @@ class LetterMarkupExtendedDslTest {
 
     @Test
     fun `pdfTittelExtended supports variables and round-trips through json`() {
+        var next = 0
+        fun id() = next++
         val tittel = pdfTittelExtended {
-            text("Vedtak for ")
-            variable("Ola Nordmann")
+            text(id(), "Vedtak for ")
+            variable(id(), "Ola Nordmann")
         }
 
         assertEquals(listOf(Text.Type.LITERAL, Text.Type.VARIABLE), tittel.title1.map { it.type })
@@ -269,6 +276,8 @@ class LetterMarkupExtendedDslTest {
 
     @Test
     fun `letterMarkupWithDataUsageExtended supports variable content and round-trips through json`() {
+        var next = 0
+        fun id() = next++
         val property = dataUsageProperty(typeName = "UngUfoerDto", propertyName = "belop")
 
         val letter = letterMarkupWithDataUsageExtended(
@@ -281,11 +290,11 @@ class LetterMarkupExtendedDslTest {
                 saksnummer = "9876543",
                 dokumentDato = LocalDate.of(2026, 7, 9),
             )
-            title1("Orientering")
+            title1 { text(id(), "Orientering") }
             outline {
-                paragraph {
-                    text("Beløp: ")
-                    variable("1000 kr")
+                paragraph(id()) {
+                    text(id(), "Beløp: ")
+                    variable(id(), "1000 kr")
                 }
             }
             signatur(
@@ -303,12 +312,14 @@ class LetterMarkupExtendedDslTest {
 
     @Test
     fun `attachmentExtended supports variable text`() {
+        var next = 0
+        fun id() = next++
         val vedlegg = attachmentExtended(inkluderSaksinformasjon = false) {
-            title1("Vedlegg 2")
+            title1 { text(id(), "Vedlegg 2") }
             outline {
-                paragraph {
-                    text("Sats ")
-                    variable("2G")
+                paragraph(id()) {
+                    text(id(), "Sats ")
+                    variable(id(), "2G")
                 }
             }
         }

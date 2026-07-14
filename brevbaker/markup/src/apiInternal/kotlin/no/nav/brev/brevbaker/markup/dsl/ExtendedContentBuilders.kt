@@ -4,56 +4,80 @@ import no.nav.brev.brevbaker.markup.outline.ElementTags
 import no.nav.brev.brevbaker.markup.outline.Text
 import no.nav.brev.brevbaker.markup.outline.Text.FontType
 
-/** Tekstinnhold som også tillater [variable] og tags. */
+/**
+ * Tekstinnhold som også tillater [variable] og tags. Hvert element krever en eksplisitt [Int]-id –
+ * denne modulen genererer aldri id-er.
+ */
 @MarkupDsl
-class ExtendedContentBuilder internal constructor(ids: IdGenerator) : AbstractContentBuilder(ids) {
+class ExtendedContentBuilder internal constructor() : AbstractContentBuilder() {
+    /**
+     * Legg til fast tekst, valgfritt med [fontType].
+     *
+     * ```
+     * text(1, "Du får ")
+     * ```
+     */
+    fun text(id: Int, text: String, fontType: FontType = FontType.PLAIN) {
+        texts.add(Text.Literal(id, text, fontType))
+    }
+
     /**
      * Legg til en variabel (datafelt som fylles ut ved rendring), valgfritt med [fontType] og [tags].
      *
      * ```
-     * text("Du får ")
-     * variable("1000 kr", tags = setOf(ElementTags.REDIGERBAR_DATA))
+     * variable(2, "1000 kr", tags = setOf(ElementTags.REDIGERBAR_DATA))
      * ```
      */
-    fun variable(text: String, fontType: FontType = FontType.PLAIN, tags: Set<ElementTags> = emptySet()) {
-        texts.add(Text.Variable(nextId(), text, fontType, tags))
+    fun variable(id: Int, text: String, fontType: FontType = FontType.PLAIN, tags: Set<ElementTags> = emptySet()) {
+        texts.add(Text.Variable(id, text, fontType, tags))
+    }
+
+    /**
+     * Legg til et linjeskift.
+     *
+     * ```
+     * newLine(3)
+     * ```
+     */
+    fun newLine(id: Int) {
+        texts.add(Text.NewLine(id))
     }
 }
 
 /**
  * Begrenset tekst-scope for overskrifter/ledetekster (titler, kolonneoverskrifter, form-choice-ledetekst).
- * Tillater kun ren tekst: [text] og [variable] uten [FontType] (alltid [FontType.PLAIN]) og uten linjeskift.
+ * Tillater kun ren tekst: [text] og [variable] (alltid [FontType.PLAIN], ingen linjeskift). Hvert element
+ * krever en eksplisitt [Int]-id.
  */
 @MarkupDsl
-class PlainExtendedTextBuilder internal constructor(private val ids: IdGenerator) {
-    private val texts: MutableList<Text> = mutableListOf()
+class PlainExtendedTextBuilder internal constructor() {
+    internal val texts: MutableList<Text> = mutableListOf()
 
     /**
      * Vanlig tekst.
      *
      * ```
-     * text("Vedtak")
+     * text(1, "Vedtak")
      * ```
      */
-    fun text(text: String) {
-        texts.add(Text.Literal(ids.next(), text, FontType.PLAIN))
+    fun text(id: Int, text: String) {
+        texts.add(Text.Literal(id, text, FontType.PLAIN))
     }
 
     /**
      * Legg til en variabel.
      *
      * ```
-     * text("Vedtak for ")
-     * variable("navn")
+     * variable(2, "navn")
      * ```
      */
-    fun variable(text: String) {
-        texts.add(Text.Variable(ids.next(), text, FontType.PLAIN))
+    fun variable(id: Int, text: String) {
+        texts.add(Text.Variable(id, text, FontType.PLAIN))
     }
 
     internal fun build(): List<Text> = texts.toList()
 }
 
 /** Ren tekst med `variable` (kun [Text.Literal]/[Text.Variable], [FontType.PLAIN], ingen linjeskift). */
-internal fun IdGenerator.plainExtendedText(build: PlainExtendedTextBuilder.() -> Unit): List<Text> =
-    PlainExtendedTextBuilder(this).apply(build).build()
+internal fun plainExtendedText(build: PlainExtendedTextBuilder.() -> Unit): List<Text> =
+    PlainExtendedTextBuilder().apply(build).build()

@@ -14,11 +14,10 @@ import java.time.LocalDate
 import kotlin.jvm.JvmName
 
 /**
- * DSL som bygger opp innholdet til ett brevbaker brev.
+ * DSL som bygger opp innholdet til ett brevbaker brev. Alle element-id-er settes til `0`.
  *
- * Denne varianten støtter alt som påvirker hvordan noe blir til slutt i brevet.
- * En utvidet variant med variabler, tags osv (kun brukt under redigering i skribenten)
- * finnes i api-internal-modulen.
+ * En utvidet variant med variabler, tags og eksplisitte id-er (kun brukt under redigering i skribenten
+ * og av renderern) finnes i api-internal-modulen.
  *
  * ```
  * val brev = letterMarkup {
@@ -31,15 +30,11 @@ import kotlin.jvm.JvmName
  * ```
  */
 fun letterMarkup(build: LetterMarkupBuilder<ContentBuilder>.() -> Unit): LetterMarkup =
-    LetterMarkupBuilder(IdGenerator(), ::ContentBuilder).apply(build).build()
+    LetterMarkupBuilder(::ContentBuilder).apply(build).build()
 
 /**
  * Bygg et [Attachment] (brevvedlegg) via DSL. [inkluderSaksinformasjon] styrer om saksinformasjonen
  * gjentas i vedlegget.
- *
- * Parametere:
- * - `inkluderSaksinformasjon`: `true` for å vise saksinformasjon i vedlegget, `false` for å skjule den
- * - `build`: innholdet i vedlegget (tittel + outline)
  *
  * ```
  * val vedlegg = attachment(inkluderSaksinformasjon = true) {
@@ -49,7 +44,7 @@ fun letterMarkup(build: LetterMarkupBuilder<ContentBuilder>.() -> Unit): LetterM
  * ```
  */
 fun attachment(inkluderSaksinformasjon: Boolean = false, build: AttachmentBuilder<ContentBuilder>.() -> Unit): Attachment =
-    AttachmentBuilder(IdGenerator(), ::ContentBuilder, inkluderSaksinformasjon).apply(build).build()
+    AttachmentBuilder(::ContentBuilder, inkluderSaksinformasjon).apply(build).build()
 
 /**
  * Bygg en frittstående [PDFTittel] via DSL.
@@ -59,11 +54,10 @@ fun attachment(inkluderSaksinformasjon: Boolean = false, build: AttachmentBuilde
  * ```
  */
 fun pdfTittel(content: ContentBuilder.() -> Unit): PDFTittel =
-    PDFTittel(IdGenerator().content(::ContentBuilder, content))
+    PDFTittel(ContentBuilder().apply(content).build())
 
 @MarkupDsl
 class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
-    private val ids: IdGenerator,
     private val contentFactory: ContentFactory<C>,
 ) {
     private var title1: List<Text> = emptyList()
@@ -71,19 +65,12 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
     private var blocks: List<Block> = emptyList()
     private var signatur: Signatur? = null
 
-    internal fun setTitle(content: IdGenerator.() -> List<Text>) {
-        title1 = ids.content()
+    internal fun setTitle(content: () -> List<Text>) {
+        title1 = content()
     }
 
     /**
      * Sett saksinformasjon og mottaker for brevet.
-     *
-     * Parametere:
-     * - `gjelderNavn`: navn på personen brevet gjelder
-     * - `gjelderFoedselsnummer`: fødselsnummeret til personen brevet gjelder
-     * - `saksnummer`: saksnummer for brevet
-     * - `dokumentDato`: dokumentdato som vises i brevet
-     * - `annenMottakerNavn`: valgfritt navn på annen mottaker (f.eks verge/fullmektig)
      *
      * ```
      * saksinformasjon(gjelderNavn = "Ola Nordmann", gjelderFoedselsnummer = "12345678901",
@@ -109,30 +96,20 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
     /**
      * Bygg innholdet i brevet.
      *
-     * Parametere:
-     * - `build`: blokker som `title2`, `paragraph`, `itemList`, `table`, `formText` og `formChoice`
-     *
      * ```
      * outline {
      *     title2("Innledning")
      *     paragraph("Første avsnitt.")
-     *     ...
      * }
      * ```
      */
     fun outline(build: OutlineBuilder<C>.() -> Unit) {
-        blocks = OutlineBuilder(ids, contentFactory).apply(build).build()
+        blocks = OutlineBuilder(contentFactory).apply(build).build()
     }
 
     /**
      * Sett hilsen og avsender. Angi [saksbehandlerNavn]/[attesterendeSaksbehandlerNavn] når brevet er
      * signert av saksbehandler(e).
-     *
-     * Parametere:
-     * - `hilsenTekst`: teksten i hilsenen
-     * - `navAvsenderEnhet`: avsenderenhet som vises i signaturen
-     * - `saksbehandlerNavn`: valgfritt navn på saksbehandler
-     * - `attesterendeSaksbehandlerNavn`: valgfritt navn på attesterende saksbehandler
      *
      * ```
      * signatur(hilsenTekst = "Med vennlig hilsen", navAvsenderEnhet = "Nav Familie- og pensjonsytelser",
@@ -164,7 +141,6 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
 
 @MarkupDsl
 class AttachmentBuilder<C : AbstractContentBuilder> internal constructor(
-    private val ids: IdGenerator,
     private val contentFactory: ContentFactory<C>,
     private val inkluderSaksinformasjon: Boolean,
 ) {
@@ -173,33 +149,24 @@ class AttachmentBuilder<C : AbstractContentBuilder> internal constructor(
 
     /**
      * Sett vedleggets tittel via DSL-blokk.
-     * Se også shorthand-varianten `title1("...")`.
-     *
-     * Parametere:
-     * - `content`: tittelinnhold (tekst, og i utvidet DSL også `variable(...)`)
      *
      * ```
-     * title1 { text("Vedlegg "); variable("nr") }
+     * title1 { text("Vedlegg ") }
      * ```
      */
     fun title1(content: C.() -> Unit) {
-        title1 = ids.content(contentFactory, content)
+        title1 = contentFactory.content(content)
     }
 
     /**
-     * Bygg vedleggets brødtekst.
-     *
-     * Syntax for innhold er likt som i brevet.
-     *
-     * Parametere:
-     * - blokker som `title2/3/4`, `paragraph`, `itemList/numberedList`, `table`, `formText` og `formChoice`
+     * Bygg vedleggets brødtekst. Syntax for innhold er likt som i brevet.
      *
      * ```
      * outline { paragraph("Du får....") }
      * ```
      */
     fun outline(build: OutlineBuilder<C>.() -> Unit) {
-        blocks = OutlineBuilder(ids, contentFactory).apply(build).build()
+        blocks = OutlineBuilder(contentFactory).apply(build).build()
     }
 
     internal fun build(): Attachment = Attachment(title1, blocks, inkluderSaksinformasjon)
@@ -207,17 +174,15 @@ class AttachmentBuilder<C : AbstractContentBuilder> internal constructor(
 
 /**
  * Sett brevets hoved-tittel som en string.
- * Har også en DSL-variant `title1 { text("...") }`.
  *
  * ```
  * title1("Vedtak om uføretrygd")
  * ```
  */
-fun <C : AbstractContentBuilder> LetterMarkupBuilder<C>.title1(text: String) = setTitle { plainText(text) }
+fun LetterMarkupBuilder<ContentBuilder>.title1(text: String) = setTitle { plainText(text) }
 
 /**
- *  Setter brevets hoved-tittel som plaintext
- * Se også kort-varianten `title1("...")`.
+ * Setter brevets hoved-tittel som plaintext via DSL-blokk.
  *
  * ```
  * title1 { text("Vedtak om "); text("uføretrygd") }
@@ -229,12 +194,11 @@ fun LetterMarkupBuilder<ContentBuilder>.title1(content: PlainTextBuilder.() -> U
 
 /**
  * Sett vedleggets tittel som ren tekst.
- * Se også DSL-varianten `title1 { text("...") }`.
  *
  * ```
  * title1("Vedlegg 1")
  * ```
  */
-fun <C : AbstractContentBuilder> AttachmentBuilder<C>.title1(text: String) {
+fun AttachmentBuilder<ContentBuilder>.title1(text: String) {
     title1 { this.text(text) }
 }

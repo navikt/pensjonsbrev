@@ -7,261 +7,195 @@ import no.nav.brev.brevbaker.markup.outline.Text
 import no.nav.brev.brevbaker.markup.outline.Text.FontType
 import kotlin.jvm.JvmName
 
+/**
+ * Beholder for blokk-innholdet i et brev/vedlegg. Selve blokk-funksjonene ([paragraph], [itemList],
+ * [table] osv.) tilbys som extension-funksjoner splittet på innholdstypen [C], slik at plain- og
+ * utvidet-varianten kan velges via overload-resolution. Plain-varianten (`OutlineBuilder<ContentBuilder>`)
+ * bygger hvert element med id `0`; utvidet-varianten (`OutlineBuilder<ExtendedContentBuilder>`, api-internal)
+ * krever en eksplisitt id.
+ */
 @MarkupDsl
 class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
-    internal val ids: IdGenerator,
-    private val contentFactory: ContentFactory<C>,
+    internal val contentFactory: ContentFactory<C>,
 ) {
-    private val blocks = mutableListOf<Block>()
-
-    /**
-     * Legg til et avsnitt via DSL-blokk.
-     *
-     * ```
-     * paragraph { text("Du får "); variable("uføretrygd"); text(".") }
-     * ```
-     */
-    fun paragraph(content: C.() -> Unit) {
-        blocks.add(Block.Paragraph(ids.next(), ids.content(contentFactory, content)))
-    }
-
-    /**
-     * Legg til et avsnitt med ren tekst, valgfritt med [fontType].
-     *
-     * ```
-     * paragraph("Dette er et avsnitt.")
-     * ```
-     *
-     * Se også dsl-variant:
-     * ```
-     *  paragraph { ... }
-     * ```
-     */
-    fun paragraph(text: String, fontType: FontType = FontType.PLAIN) {
-        blocks.add(Block.Paragraph(ids.next(), listOf(Text.Literal(ids.next(), text, fontType))))
-    }
-
-    /**
-     * Legg til en punktliste (kulepunkter).
-     *
-     * ```
-     * itemList { item("Punkt 1"); item("Punkt 2") }
-     * ```
-     */
-    fun itemList(build: ItemsBuilder<C>.() -> Unit) {
-        blocks.add(Block.ItemList(ids.next(), ItemsBuilder(ids, contentFactory).apply(build).build()))
-    }
-
-    /**
-     * Legg til en nummerert liste.
-     *
-     * ```
-     * numberedList { item("Steg 1"); item("Steg 2") }
-     * ```
-     */
-    fun numberedList(build: ItemsBuilder<C>.() -> Unit) {
-        blocks.add(Block.NumberedList(ids.next(), ItemsBuilder(ids, contentFactory).apply(build).build()))
-    }
-
-    /**
-     * Legg til en tabell med kolonneoverskrift og rader.
-     *
-     * En tabell må alltid ha:
-     * - én `header { ... }` med minst én `column(...)`
-     * - minst én `row { ... }`
-     *
-     * Hver rad må ha like mange celler som antall kolonner i header.
-     *
-     * Vanlige valg i tabeller:
-     * - [ColumnAlignment.LEFT] eller [ColumnAlignment.RIGHT] per kolonne
-     * - `span` for kolonner som skal dekke flere kolonner
-     * - celleinnhold som ren tekst eller sammensatt tekst med `text(...)` og `variable(...)`
-     *
-     *   I de visuelle retningslinjene i Nav står det at:
-     *  * Tekst er alltid venstrestilt for leseretning.
-     *  * Tall høyrestilles.
-     *  * I tabeller hvor kolonner blander tall og bokstaver bør det vurderes pr. tabell om innholdet skal venstrestilles eller høyrestilles.
-     * ```
-     * table {
-     *     header {
-     *         column("Ytelse")
-     *         column("Beløp", alignment = ColumnAlignment.RIGHT)
-     *     }
-     *     row { cell("Uføretrygd"); cell("20 000 kr") }
-     *     row { cell { text("Sum "); variable("maaned") }; cell("20 000 kr") }
-     * }
-     * ```
-     */
-    fun table(build: TableBuilder<C>.() -> Unit) {
-        blocks.add(TableBuilder(ids, contentFactory).apply(build).build())
-    }
-
-    /**
-     * Legg til et skjemafelt for fritekst med angitt [size] og valgfri [vspace] (luft rundt feltet).
-     * Ledeteksten settes i DSL-blokken.
-     * Se også kort-varianten `formText("...", Size.SHORT)`.
-     *
-     * ```
-     * formText(Size.LONG) { text("Skriv her") }
-     * ```
-     */
-    fun formText(size: Size, vspace: Boolean = true, prompt: C.() -> Unit) {
-        blocks.add(Block.FormText(ids.next(), ids.content(contentFactory, prompt), size, vspace))
-    }
-
-    /**
-     * Legg til et skjemafelt for fritekst med ren ledetekst og angitt [size].
-     * Se også DSL-varianten `formText(Size.SHORT) { ... }`.
-     *
-     * ```
-     * formText("Fyll inn dato", Size.SHORT)
-     * ```
-     */
-    fun formText(text: String, size: Size, fontType: FontType = FontType.PLAIN, vspace: Boolean = true) {
-        blocks.add(Block.FormText(ids.next(), listOf(Text.Literal(ids.next(), text, fontType)), size, vspace))
-    }
-
-    /**
-     * Legg til et avkrysningsfelt med en ledetekst (`prompt`) og minst to valg (`choice`).
-     *
-     * ```
-     * formChoice {
-     *     prompt("Velg")
-     *     choice("Ja")
-     *     choice("Nei")
-     * }
-     * ```
-     */
-    fun formChoice(vspace: Boolean = true, build: FormChoiceBuilder<C>.() -> Unit) {
-        val formChoiceBuilder = FormChoiceBuilder(ids, contentFactory)
-        FormChoiceBuilder.setVspace(formChoiceBuilder, vspace)
-        blocks.add(formChoiceBuilder.apply(build).build())
-    }
+    internal val blocks = mutableListOf<Block>()
 
     internal fun build(): List<Block> = blocks.toList()
-
-    // Tittel/kolonne/prompt tilbys som extension-funksjoner (ikke medlemmer) slik at plain- og
-    // variabel-varianten kan velges via overload-resolution på C. Disse companion-hjelperne gir
-    // extensionene tilgang til privat tilstand uten å eksponere den på DSL-scopet.
-    internal companion object {
-        internal fun addTitle2(builder: OutlineBuilder<*>, content: List<Text>) {
-            builder.blocks.add(Block.Title2(builder.ids.next(), content))
-        }
-
-        internal fun addTitle3(builder: OutlineBuilder<*>, content: List<Text>) {
-            builder.blocks.add(Block.Title3(builder.ids.next(), content))
-        }
-
-        internal fun addTitle4(builder: OutlineBuilder<*>, content: List<Text>) {
-            builder.blocks.add(Block.Title4(builder.ids.next(), content))
-        }
-
-        internal fun plainText(builder: OutlineBuilder<*>, text: String): List<Text> = builder.ids.plainText(text)
-
-        internal fun plainText(builder: OutlineBuilder<*>, content: PlainTextBuilder.() -> Unit): List<Text> =
-            builder.ids.plainText(content)
-    }
 }
 
 /**
- * Legg til en nivå-2-overskrift som ren tekst. Gjelder både med og uten `variable`.
- * Se også DSL-variantene `title2 { text("...") }` og `title2 { text("..."); variable("...") }`.
+ * Legg til et avsnitt via DSL-blokk.
+ *
+ * ```
+ * paragraph { text("Dette er et avsnitt.") }
+ * ```
+ */
+fun OutlineBuilder<ContentBuilder>.paragraph(content: ContentBuilder.() -> Unit) {
+    blocks.add(Block.Paragraph(0, contentFactory.content(content)))
+}
+
+/**
+ * Legg til et avsnitt med ren tekst, valgfritt med [fontType].
+ *
+ * ```
+ * paragraph("Dette er et avsnitt.")
+ * ```
+ */
+fun OutlineBuilder<ContentBuilder>.paragraph(text: String, fontType: FontType = FontType.PLAIN) {
+    blocks.add(Block.Paragraph(0, listOf(Text.Literal(0, text, fontType))))
+}
+
+/**
+ * Legg til en punktliste (kulepunkter).
+ *
+ * ```
+ * itemList { item("Punkt 1"); item("Punkt 2") }
+ * ```
+ */
+fun OutlineBuilder<ContentBuilder>.itemList(build: ItemsBuilder<ContentBuilder>.() -> Unit) {
+    blocks.add(Block.ItemList(0, ItemsBuilder(contentFactory).apply(build).build()))
+}
+
+/**
+ * Legg til en nummerert liste.
+ *
+ * ```
+ * numberedList { item("Steg 1"); item("Steg 2") }
+ * ```
+ */
+fun OutlineBuilder<ContentBuilder>.numberedList(build: ItemsBuilder<ContentBuilder>.() -> Unit) {
+    blocks.add(Block.NumberedList(0, ItemsBuilder(contentFactory).apply(build).build()))
+}
+
+/**
+ * Legg til en tabell med kolonneoverskrift og rader.
+ *
+ * En tabell må alltid ha én `header { ... }` med minst én `column(...)` og minst én `row { ... }`.
+ * Hver rad må ha like mange celler som antall kolonner i header.
+ *
+ * ```
+ * table {
+ *     header { column("Ytelse"); column("Beløp", alignment = ColumnAlignment.RIGHT) }
+ *     row { cell("Uføretrygd"); cell("20 000 kr") }
+ * }
+ * ```
+ */
+fun OutlineBuilder<ContentBuilder>.table(build: TableBuilder<ContentBuilder>.() -> Unit) {
+    blocks.add(TableBuilder(contentFactory).apply(build).build(0))
+}
+
+/**
+ * Legg til et skjemafelt for fritekst med angitt [size] og valgfri [vspace] (luft rundt feltet).
+ *
+ * ```
+ * formText(Size.LONG) { text("Skriv her") }
+ * ```
+ */
+fun OutlineBuilder<ContentBuilder>.formText(size: Size, vspace: Boolean = true, prompt: ContentBuilder.() -> Unit) {
+    blocks.add(Block.FormText(0, contentFactory.content(prompt), size, vspace))
+}
+
+/**
+ * Legg til et skjemafelt for fritekst med ren ledetekst og angitt [size].
+ *
+ * ```
+ * formText("Fyll inn dato", Size.SHORT)
+ * ```
+ */
+fun OutlineBuilder<ContentBuilder>.formText(text: String, size: Size, fontType: FontType = FontType.PLAIN, vspace: Boolean = true) {
+    blocks.add(Block.FormText(0, listOf(Text.Literal(0, text, fontType)), size, vspace))
+}
+
+/**
+ * Legg til et avkrysningsfelt med en ledetekst (`prompt`) og minst to valg (`choice`).
+ *
+ * ```
+ * formChoice { prompt("Velg"); choice("Ja"); choice("Nei") }
+ * ```
+ */
+fun OutlineBuilder<ContentBuilder>.formChoice(vspace: Boolean = true, build: FormChoiceBuilder<ContentBuilder>.() -> Unit) {
+    val builder = FormChoiceBuilder(contentFactory)
+    builder.vspace = vspace
+    blocks.add(builder.apply(build).build(0))
+}
+
+/**
+ * Legg til en nivå-2-overskrift som ren tekst.
  *
  * ```
  * title2("Innledning")
  * ```
  */
-fun <C : AbstractContentBuilder> OutlineBuilder<C>.title2(text: String) =
-    OutlineBuilder.addTitle2(this, OutlineBuilder.plainText(this, text))
+fun OutlineBuilder<ContentBuilder>.title2(text: String) {
+    blocks.add(Block.Title2(0, plainText(text)))
+}
 
 /**
  * Legg til en nivå-2-overskrift via DSL-blokk (uten `variable`).
- * Se også kort-varianten `title2("...")`.
  *
  * ```
  * title2 { text("Innledning "); text("del 1") }
  * ```
  */
 @JvmName("title2WithPlainTextBuilder")
-fun OutlineBuilder<ContentBuilder>.title2(content: PlainTextBuilder.() -> Unit) =
-    OutlineBuilder.addTitle2(this, OutlineBuilder.plainText(this, content))
+fun OutlineBuilder<ContentBuilder>.title2(content: PlainTextBuilder.() -> Unit) {
+    blocks.add(Block.Title2(0, plainText(content)))
+}
 
 /**
- * Legg til en nivå-3-overskrift som ren tekst. Gjelder både med og uten `variable`.
- * Se også DSL-variantene `title3 { text("...") }` og `title3 { text("..."); variable("...") }`.
+ * Legg til en nivå-3-overskrift som ren tekst.
  *
  * ```
  * title3("Mellomtittel")
  * ```
  */
-fun <C : AbstractContentBuilder> OutlineBuilder<C>.title3(text: String) =
-    OutlineBuilder.addTitle3(this, OutlineBuilder.plainText(this, text))
+fun OutlineBuilder<ContentBuilder>.title3(text: String) {
+    blocks.add(Block.Title3(0, plainText(text)))
+}
 
 /**
  * Legg til en nivå-3-overskrift via DSL-blokk (uten `variable`).
- * Se også kort-varianten `title3("...")`.
  *
  * ```
  * title3 { text("Mellomtittel") }
  * ```
  */
 @JvmName("title3WithPlainTextBuilder")
-fun OutlineBuilder<ContentBuilder>.title3(content: PlainTextBuilder.() -> Unit) =
-    OutlineBuilder.addTitle3(this, OutlineBuilder.plainText(this, content))
+fun OutlineBuilder<ContentBuilder>.title3(content: PlainTextBuilder.() -> Unit) {
+    blocks.add(Block.Title3(0, plainText(content)))
+}
 
 /**
- * Legg til en nivå-4-overskrift som ren tekst. Gjelder både med og uten `variable`.
- * Se også DSL-variantene `title4 { text("...") }` og `title4 { text("..."); variable("...") }`.
+ * Legg til en nivå-4-overskrift som ren tekst.
  *
  * ```
  * title4("Detaljer")
  * ```
  */
-fun <C : AbstractContentBuilder> OutlineBuilder<C>.title4(text: String) =
-    OutlineBuilder.addTitle4(this, OutlineBuilder.plainText(this, text))
+fun OutlineBuilder<ContentBuilder>.title4(text: String) {
+    blocks.add(Block.Title4(0, plainText(text)))
+}
 
 /**
  * Legg til en nivå-4-overskrift via DSL-blokk (uten `variable`).
- * Se også kort-varianten `title4("...")`.
  *
  * ```
  * title4 { text("Detaljer") }
  * ```
  */
 @JvmName("title4WithPlainTextBuilder")
-fun OutlineBuilder<ContentBuilder>.title4(content: PlainTextBuilder.() -> Unit) =
-    OutlineBuilder.addTitle4(this, OutlineBuilder.plainText(this, content))
+fun OutlineBuilder<ContentBuilder>.title4(content: PlainTextBuilder.() -> Unit) {
+    blocks.add(Block.Title4(0, plainText(content)))
+}
 
+/**
+ * Beholder for listepunkter. [item] tilbys som extension-funksjon per innholdstype [C].
+ */
 @MarkupDsl
 class ItemsBuilder<C : AbstractContentBuilder> internal constructor(
-    private val ids: IdGenerator,
-    private val contentFactory: ContentFactory<C>,
+    internal val contentFactory: ContentFactory<C>,
 ) {
-    private val items = mutableListOf<Block.Item>()
-
-    /**
-     * Legg til et listepunkt via DSL-blokk.
-     * Se også kort-varianten `item("...")`.
-     *
-     * ```
-     * itemList/numberedList { item { text("Du får "); variable("uføretrygd") } }
-     * ```
-     */
-    fun item(content: C.() -> Unit) {
-        items.add(Block.Item(ids.next(), ids.content(contentFactory, content)))
-    }
-
-    /**
-     * Legg til et listepunkt med ren tekst, valgfritt med [fontType].
-     * Se også DSL-varianten `item { ... }`.
-     *
-     * ```
-     * itemList/numberedList { item("Punkt 1") }
-     * ```
-     */
-    fun item(text: String, fontType: FontType = FontType.PLAIN) {
-        items.add(Block.Item(ids.next(), listOf(Text.Literal(ids.next(), text, fontType))))
-    }
+    internal val items = mutableListOf<Block.Item>()
 
     internal fun build(): List<Block.Item> {
         require(items.isNotEmpty()) { "List has no items" }
@@ -269,43 +203,39 @@ class ItemsBuilder<C : AbstractContentBuilder> internal constructor(
     }
 }
 
+/**
+ * Legg til et listepunkt via DSL-blokk.
+ *
+ * ```
+ * itemList { item { text("Punkt 1") } }
+ * ```
+ */
+fun ItemsBuilder<ContentBuilder>.item(content: ContentBuilder.() -> Unit) {
+    items.add(Block.Item(0, contentFactory.content(content)))
+}
+
+/**
+ * Legg til et listepunkt med ren tekst, valgfritt med [fontType].
+ *
+ * ```
+ * itemList { item("Punkt 1") }
+ * ```
+ */
+fun ItemsBuilder<ContentBuilder>.item(text: String, fontType: FontType = FontType.PLAIN) {
+    items.add(Block.Item(0, listOf(Text.Literal(0, text, fontType))))
+}
+
+/**
+ * Beholder for en tabell. [header] og [row] tilbys som extension-funksjoner per innholdstype [C].
+ */
 @MarkupDsl
 class TableBuilder<C : AbstractContentBuilder> internal constructor(
-    private val ids: IdGenerator,
-    private val contentFactory: ContentFactory<C>,
+    internal val contentFactory: ContentFactory<C>,
 ) {
-    private var header: Block.Table.Header? = null
-    private val rows = mutableListOf<Block.Table.Row>()
+    internal var header: Block.Table.Header? = null
+    internal val rows = mutableListOf<Block.Table.Row>()
 
-    /**
-     * Definer kolonnene i tabellen.
-     *
-     * Denne må brukes én gang per tabell, og må inneholde minst én `column(...)`.
-     *
-     * ```
-     * header { column("Kolonne A"); column("Kolonne B", ColumnAlignment.RIGHT) }
-     * ```
-     */
-    fun header(build: HeaderBuilder<C>.() -> Unit) {
-        header = HeaderBuilder<C>(ids).apply(build).build()
-    }
-
-    /**
-     * Legg til én rad i tabellen.
-     *
-     * En rad består av én eller flere `cell(...)`. Antall celler må være lik antall kolonner i
-     * `header`.
-     *
-     * ```
-     * row { cell("A1"); cell("B1") }
-     * ```
-     */
-    fun row(build: RowBuilder<C>.() -> Unit) {
-        rows.add(RowBuilder(ids, contentFactory).apply(build).build())
-    }
-
-    internal fun build(): Block.Table {
-        val id = ids.next()
+    internal fun build(id: Int): Block.Table {
         val header = requireNotNull(header) { "Table must have a header" }
         require(header.colSpec.isNotEmpty()) { "Table column specification needs at least one column" }
         require(rows.isNotEmpty()) { "A table must have at least one row" }
@@ -316,62 +246,61 @@ class TableBuilder<C : AbstractContentBuilder> internal constructor(
                 "Table row $index has ${row.cells.size} cell(s), but the header defines $columnCount column(s)"
             }
         }
-        return Block.Table(
-            id = id,
-            rows = rows.toList(),
-            header = header,
-        )
-    }
-}
-
-@MarkupDsl
-class HeaderBuilder<C : AbstractContentBuilder> internal constructor(
-    internal val ids: IdGenerator,
-) {
-    private val colSpec = mutableListOf<Block.Table.ColumnSpec>()
-
-    internal fun build(): Block.Table.Header = Block.Table.Header(ids.next(), colSpec.toList())
-
-    internal companion object {
-        internal fun addColumn(builder: HeaderBuilder<*>, alignment: ColumnAlignment, span: Int, content: List<Text>) {
-            require(span >= 1) { "Table column span must be at least 1, but was $span" }
-            val cell = Block.Table.Cell(builder.ids.next(), content)
-            builder.colSpec.add(Block.Table.ColumnSpec(builder.ids.next(), cell, alignment, span))
-        }
-
-        internal fun plainText(builder: HeaderBuilder<*>, text: String): List<Text> = builder.ids.plainText(text)
-
-        internal fun plainText(builder: HeaderBuilder<*>, content: PlainTextBuilder.() -> Unit): List<Text> =
-            builder.ids.plainText(content)
+        return Block.Table(id = id, rows = rows.toList(), header = header)
     }
 }
 
 /**
- * Legg til en kolonne med ren tekst i header.
- * Se også DSL-variantene `column { text("...") }` og `column { text("..."); variable("...") }`.
+ * Definer kolonnene i tabellen. Må brukes én gang per tabell, med minst én `column(...)`.
  *
- * Parametere:
- * - `text`: overskriftstekst for kolonnen
- * - `alignment`: justering av kolonneinnhold ([ColumnAlignment.LEFT] som standard)
- * - `span`: hvor mange kolonner overskriften skal dekke (`1` som standard)
+ * ```
+ * header { column("Kolonne A"); column("Kolonne B", ColumnAlignment.RIGHT) }
+ * ```
+ */
+fun TableBuilder<ContentBuilder>.header(build: HeaderBuilder<ContentBuilder>.() -> Unit) {
+    header = HeaderBuilder<ContentBuilder>().apply(build).build(0)
+}
+
+/**
+ * Legg til én rad i tabellen. Antall celler må være lik antall kolonner i `header`.
+ *
+ * ```
+ * row { cell("A1"); cell("B1") }
+ * ```
+ */
+fun TableBuilder<ContentBuilder>.row(build: RowBuilder<ContentBuilder>.() -> Unit) {
+    rows.add(RowBuilder(contentFactory).apply(build).build(0))
+}
+
+/**
+ * Beholder for kolonner i en tabelloverskrift. [column] tilbys som extension-funksjon per innholdstype [C].
+ */
+@MarkupDsl
+class HeaderBuilder<C : AbstractContentBuilder> internal constructor() {
+    internal val colSpec = mutableListOf<Block.Table.ColumnSpec>()
+
+    internal fun build(id: Int): Block.Table.Header = Block.Table.Header(id, colSpec.toList())
+}
+
+/**
+ * Legg til en kolonne med ren tekst i header.
  *
  * ```
  * header { column("Beløp", ColumnAlignment.RIGHT) }
  * ```
  */
-fun <C : AbstractContentBuilder> HeaderBuilder<C>.column(
+fun HeaderBuilder<ContentBuilder>.column(
     text: String,
     alignment: ColumnAlignment = ColumnAlignment.LEFT,
     span: Int = 1,
-) = HeaderBuilder.addColumn(this, alignment, span, HeaderBuilder.plainText(this, text))
+) {
+    require(span >= 1) { "Table column span must be at least 1, but was $span" }
+    val cell = Block.Table.Cell(0, plainText(text))
+    colSpec.add(Block.Table.ColumnSpec(0, cell, alignment, span))
+}
 
 /**
  * Legg til en kolonne i header med sammensatt tekst.
- * Se også kort-varianten `column("...")`.
- *
- * Parametere:
- * - `alignment`: justering av kolonneinnhold ([ColumnAlignment.LEFT] som standard)
- * - `span`: hvor mange kolonner overskriften skal dekke (`1` som standard). Brukes som forholdstall for hvor stor andel av bredden en kolonne skal bruke.
  *
  * ```
  * header { column(alignment = ColumnAlignment.RIGHT) { text("Beløp") } }
@@ -382,108 +311,96 @@ fun HeaderBuilder<ContentBuilder>.column(
     alignment: ColumnAlignment = ColumnAlignment.LEFT,
     span: Int = 1,
     content: PlainTextBuilder.() -> Unit,
-) = HeaderBuilder.addColumn(this, alignment, span, HeaderBuilder.plainText(this, content))
-
-@MarkupDsl
-class RowBuilder<C : AbstractContentBuilder> internal constructor(
-    private val ids: IdGenerator,
-    private val contentFactory: ContentFactory<C>,
 ) {
-    private val cells = mutableListOf<Block.Table.Cell>()
-
-    /**
-     * Legg til en celle med sammensatt tekst.
-     * Se også kort-varianten `cell("...")`.
-     *
-     * ```
-     * row { cell { text("Sum: "); variable("beløp") } }
-     * ```
-     */
-    fun cell(content: C.() -> Unit) {
-        cells.add(Block.Table.Cell(ids.next(), ids.content(contentFactory, content)))
-    }
-
-    /**
-     * Legg til en celle med ren tekst.
-     * Se også DSL-varianten `cell { ... }`.
-     *
-     * Parametere:
-     * - `text`: tekst i cellen
-     * - `fontType`: skriftstil ([FontType.PLAIN] som standard)
-     *
-     * ```
-     * row { cell("A1"); cell("B1") }
-     * ```
-     */
-    fun cell(text: String, fontType: FontType = FontType.PLAIN) {
-        cells.add(Block.Table.Cell(ids.next(), listOf(Text.Literal(ids.next(), text, fontType))))
-    }
-
-    internal fun build(): Block.Table.Row = Block.Table.Row(ids.next(), cells.toList())
+    require(span >= 1) { "Table column span must be at least 1, but was $span" }
+    val cell = Block.Table.Cell(0, plainText(content))
+    colSpec.add(Block.Table.ColumnSpec(0, cell, alignment, span))
 }
 
+/**
+ * Beholder for en tabellrad. [cell] tilbys som extension-funksjon per innholdstype [C].
+ */
+@MarkupDsl
+class RowBuilder<C : AbstractContentBuilder> internal constructor(
+    internal val contentFactory: ContentFactory<C>,
+) {
+    internal val cells = mutableListOf<Block.Table.Cell>()
+
+    internal fun build(id: Int): Block.Table.Row = Block.Table.Row(id, cells.toList())
+}
+
+/**
+ * Legg til en celle med sammensatt tekst.
+ *
+ * ```
+ * row { cell { text("Sum: ") } }
+ * ```
+ */
+fun RowBuilder<ContentBuilder>.cell(content: ContentBuilder.() -> Unit) {
+    cells.add(Block.Table.Cell(0, contentFactory.content(content)))
+}
+
+/**
+ * Legg til en celle med ren tekst, valgfritt med [fontType].
+ *
+ * ```
+ * row { cell("A1"); cell("B1") }
+ * ```
+ */
+fun RowBuilder<ContentBuilder>.cell(text: String, fontType: FontType = FontType.PLAIN) {
+    cells.add(Block.Table.Cell(0, listOf(Text.Literal(0, text, fontType))))
+}
+
+/**
+ * Beholder for et avkrysningsfelt. [prompt] og [choice] tilbys som extension-funksjoner per innholdstype [C].
+ */
 @MarkupDsl
 class FormChoiceBuilder<C : AbstractContentBuilder> internal constructor(
-    internal val ids: IdGenerator,
-    private val contentFactory: ContentFactory<C>,
+    internal val contentFactory: ContentFactory<C>,
 ) {
-    private var vspace: Boolean = true
-    private val prompt = mutableListOf<Text>()
-    private val choices = mutableListOf<Block.FormChoice.Choice>()
+    internal var vspace: Boolean = true
+    internal val prompt = mutableListOf<Text>()
+    internal val choices = mutableListOf<Block.FormChoice.Choice>()
 
-    /**
-     * Legg til et svaralternativ via DSL-blokk. Teksten må være ikke-tom.
-     * Se også kort-varianten `choice("...")`.
-     *
-     * ```
-     * formChoice { prompt("Velg"); choice { text("Ja, jeg samtykker") }; choice("Nei") }
-     * ```
-     */
-    fun choice(content: C.() -> Unit) {
-        val choiceContent = ids.content(contentFactory, content)
-        require(choiceContent.any { it.text.isNotBlank() }) { "Form choice option text must be non-empty" }
-        choices.add(Block.FormChoice.Choice(ids.next(), choiceContent))
-    }
-
-    /**
-     * Legg til et svaralternativ med ren tekst, valgfritt med [fontType]. Teksten må være ikke-tom.
-     * Se også DSL-varianten `choice { ... }`.
-     *
-     * ```
-     * formChoice { prompt("Velg"); choice("Ja"); choice("Nei") }
-     * ```
-     */
-    fun choice(text: String, fontType: FontType = FontType.PLAIN) {
-        require(text.isNotBlank()) { "Form choice option text must be non-empty" }
-        choices.add(Block.FormChoice.Choice(ids.next(), listOf(Text.Literal(ids.next(), text, fontType))))
-    }
-
-    internal fun build(): Block.FormChoice {
+    internal fun build(id: Int): Block.FormChoice {
         require(prompt.any { it.text.isNotBlank() }) { "Form choice must have a non-empty prompt" }
         require(choices.size >= 2) { "Form choice must have at least two choices" }
-        return Block.FormChoice(ids.next(), prompt.toList(), choices.toList(), vspace)
-    }
-
-    internal companion object {
-        internal fun addPrompt(builder: FormChoiceBuilder<*>, content: List<Text>) {
-            builder.prompt.addAll(content)
-        }
-
-        internal fun plainText(builder: FormChoiceBuilder<*>, text: String): List<Text> = builder.ids.plainText(text)
-
-        internal fun setVspace(builder: FormChoiceBuilder<*>, value: Boolean) {
-            builder.vspace = value
-        }
+        return Block.FormChoice(id, prompt.toList(), choices.toList(), vspace)
     }
 }
 
 /**
- * Sett avkrysningsfeltets ledetekst som ren tekst. Gjelder både med og uten `variable`.
- * Se også DSL-varianten `prompt { text("..."); variable("...") }`.
+ * Legg til et svaralternativ via DSL-blokk. Teksten må være ikke-tom.
+ *
+ * ```
+ * formChoice { prompt("Velg"); choice { text("Ja, jeg samtykker") }; choice("Nei") }
+ * ```
+ */
+fun FormChoiceBuilder<ContentBuilder>.choice(content: ContentBuilder.() -> Unit) {
+    val choiceContent = contentFactory.content(content)
+    require(choiceContent.any { it.text.isNotBlank() }) { "Form choice option text must be non-empty" }
+    choices.add(Block.FormChoice.Choice(0, choiceContent))
+}
+
+/**
+ * Legg til et svaralternativ med ren tekst, valgfritt med [fontType]. Teksten må være ikke-tom.
+ *
+ * ```
+ * formChoice { prompt("Velg"); choice("Ja"); choice("Nei") }
+ * ```
+ */
+fun FormChoiceBuilder<ContentBuilder>.choice(text: String, fontType: FontType = FontType.PLAIN) {
+    require(text.isNotBlank()) { "Form choice option text must be non-empty" }
+    choices.add(Block.FormChoice.Choice(0, listOf(Text.Literal(0, text, fontType))))
+}
+
+/**
+ * Sett avkrysningsfeltets ledetekst som ren tekst.
  *
  * ```
  * formChoice { prompt("Ønsker du å klage?"); choice("Ja"); choice("Nei") }
  * ```
  */
-fun <C : AbstractContentBuilder> FormChoiceBuilder<C>.prompt(text: String) =
-    FormChoiceBuilder.addPrompt(this, FormChoiceBuilder.plainText(this, text))
+fun FormChoiceBuilder<ContentBuilder>.prompt(text: String) {
+    prompt.addAll(plainText(text))
+}
