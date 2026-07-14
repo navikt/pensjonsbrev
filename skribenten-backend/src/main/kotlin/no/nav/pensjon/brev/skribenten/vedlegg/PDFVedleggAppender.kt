@@ -67,6 +67,6 @@ private fun leggPaaBlankPartallsside(
     } 
 }
 
-internal fun PDFMergerUtility.leggTilSide(destionation: PDDocument, source: PDDocument) =
-    appendDocument(destionation, source).also { source.close() }
+internal fun PDFMergerUtility.leggTilSide(destination: PDDocument, source: PDDocument) =
+    appendDocument(destination, source)
 

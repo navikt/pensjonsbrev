@@ -42,7 +42,7 @@ internal object VedleggAppender {
                     .map { pagePrefix + it.key to it.value?.get(spraak) }
             }.associate { it.first to it.second }
 
-            target.documentCatalog.acroForm.needAppearances = false
+            target.documentCatalog.acroForm?.needAppearances = false
 
             fillFields(target, feltVerdier)
         }
@@ -52,7 +52,7 @@ internal object VedleggAppender {
     private fun lesInnPDF(filnavn: String, spraak: LanguageCode) =
         javaClass.getResource("/vedlegg/${filnavn}-${spraak.name}.pdf")
             ?.let { Loader.loadPDF(it.readBytes()) }
-            ?: throw IllegalArgumentException("Fant ikke vedlegg $filnavn")
+            ?: throw IllegalArgumentException("Fant ikke vedlegg ${filnavn}-${spraak.name}.pdf under /vedlegg/")
 
     private fun addPageFieldPrefix(document: PDDocument, pageNumber: Int) {
         document.documentCatalog?.acroForm

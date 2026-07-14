@@ -71,6 +71,7 @@ import no.nav.pensjon.brev.skribenten.services.PensjonRepresentasjonService
 import no.nav.pensjon.brev.skribenten.services.SafServiceHttp
 import no.nav.pensjon.brev.skribenten.services.SamhandlerServiceHttp
 import no.nav.pensjon.brev.skribenten.services.SkjermingServiceHttp
+import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppenderImpl
 import org.jetbrains.exposed.v1.jdbc.Database
 
@@ -156,7 +157,7 @@ fun Application.configureDependencies() {
         provide(TilbakestillBrevHandler::class)
         provide(VeksleKlarStatusHandler::class)
 
-        provide(PDFVedleggAppenderImpl::class)
+        provide<PDFVedleggAppender>(PDFVedleggAppenderImpl::class)
     }
 
     launch { Features.init(dependencies.resolve()) }

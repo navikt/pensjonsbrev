@@ -180,7 +180,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
                     letterMarkup = redigertBrev,
                     alltidValgbareVedlegg = alltidValgbareVedlegg,
                     redigerteVedlegg = redigerteVedlegg,
-                    medPDFVedlegg = Features.pdfvedleggISkribenten.isEnabled()
+                    medPDFVedlegg = !Features.pdfvedleggISkribenten.isEnabled()
                 )
             )
         }

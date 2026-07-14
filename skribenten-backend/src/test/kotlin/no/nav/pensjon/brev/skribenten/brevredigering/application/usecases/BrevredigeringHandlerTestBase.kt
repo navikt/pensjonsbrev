@@ -5,7 +5,6 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import no.nav.brev.InternKonstruktoer
-import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
