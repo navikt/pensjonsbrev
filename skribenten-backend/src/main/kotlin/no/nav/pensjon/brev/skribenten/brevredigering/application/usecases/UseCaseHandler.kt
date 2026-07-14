@@ -21,25 +21,6 @@ abstract class TransactionHandler<Request, Response, Error>(private val database
         }
 }
 
-abstract class PartlyTransactionHandler<Request, ResponseTransaction, Response, Error>(private val database: Database): UseCaseHandler<Request, Response, Error> {
-    abstract suspend fun execute(request: Request): Outcome<ResponseTransaction, Error>?
-    abstract suspend fun executeOutsideTransaction(request: Request, response: ResponseTransaction?): Outcome<Response, Error>?
-
-    suspend fun executeOutsideTransaction(request: Request, response: Outcome<ResponseTransaction, Error>?): Outcome<Response, Error>? = when (response) {
-        is Outcome.Success -> executeOutsideTransaction(request, response.value)
-        is Outcome.Failure -> response
-        null -> null
-    }
-
-    open fun transactionIsolation(): Int? = null
-    final override suspend fun invoke(request: Request): Outcome<Response, Error>? {
-        val transaction = isolatedTransaction(database = database, isolation = transactionIsolation()) {
-            execute(request)?.onError { rollback() }
-        }
-        return executeOutsideTransaction(request, transaction)
-    }
-}
-
 abstract class ReservertBrevHandler<Request : BrevredigeringRequest, Response>(
     private val database: Database,
     private val reserverBrev: ReserverBrevHandler,
