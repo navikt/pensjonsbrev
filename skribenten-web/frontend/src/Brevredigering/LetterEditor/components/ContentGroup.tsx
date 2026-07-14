@@ -270,7 +270,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         focusAtOffset(element.childNodes[0], resolvedCursorPosition);
       }
     }
-  }, [text, shouldBeFocused, editorState.focus.cursorPosition, freeze, setEditorState, erFritekst]);
+  }, [text, shouldBeFocused, editorState.focus.cursorPosition, freeze, setEditorState, erFritekst, hasDiffDecoration]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
