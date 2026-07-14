@@ -233,7 +233,10 @@ abstract class BrevredigeringHandlerTestBase {
             brevdataService = brevdataService,
             renderService = RenderService(brevbakerService),
             brevmalService = brevmalService,
-            p1Service = FakeP1Service(),
+            hentP1DataHandler = HentP1DataHandler(
+                penClient = PenClientStub(),
+                database = SharedPostgres.database,
+            ),
             database = SharedPostgres.database,
         )
     }
