@@ -41,8 +41,6 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
     }
 
     companion object {
-        private val saksbehandlervalgIDSLQualifiedName = SaksbehandlervalgIDSL::class.qualifiedName
-
         private fun generateNodeCode(codeGenerator: CodeGenerator, node: Node, pkg: String, dependencies: Set<KSFile>) {
             if (node.include) {
                 val className = node.decl.simpleName.asString()
