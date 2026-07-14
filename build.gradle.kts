@@ -13,13 +13,14 @@ plugins {
 
 allprojects {
 
-    // Sikrer at alle jackson-*, ktor-* og log4j-* avhengigheter i hele prosjektet resolver til
-    // samme versjon, uten at hver modul må deklarere platform(...) selv.
+    // Sikrer at alle jackson-*, ktor-*, log4j-* og exposed-* avhengigheter i hele prosjektet
+    // resolver til samme versjon, uten at hver modul må deklarere platform(...) selv.
     configurations.matching { it.name in setOf("implementation", "testImplementation", "testFixturesImplementation") }
         .configureEach {
             project.dependencies.add(name, project.dependencies.platform(jackson.bom))
             project.dependencies.add(name, project.dependencies.platform(ktorBom.bom))
             project.dependencies.add(name, project.dependencies.platform(log4jBom.bom))
+            project.dependencies.add(name, project.dependencies.platform(exposedBom.bom))
         }
 
     repositories {

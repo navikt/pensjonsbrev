@@ -85,11 +85,11 @@ ktor-server-swagger = { module = "io.ktor:ktor-server-swagger" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host" }
 
 # Exposed
-exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposedVersion" }
-exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposedVersion" }
-exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposedVersion" }
-exposed-json = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposedVersion" }
-exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposedVersion" }
+exposed-core = { module = "org.jetbrains.exposed:exposed-core" }
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc" }
+exposed-json = { module = "org.jetbrains.exposed:exposed-json" }
+exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time" }
 
 # Flyway
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flywayVersion" }

@@ -40,9 +40,12 @@ dependencyResolutionManagement {
             library("bom", "io.ktor", "ktor-bom").versionRef("ktorVersion")
         }
         create("log4jBom") {
-            // Egen catalog for log4j-bom, samme mønster som jackson/ktor over.
             from(files("gradle/libs.versions.toml"))
             library("bom", "org.apache.logging.log4j", "log4j-bom").versionRef("log4j2Version")
+        }
+        create("exposedBom") {
+            from(files("gradle/libs.versions.toml"))
+            library("bom", "org.jetbrains.exposed", "exposed-bom").versionRef("exposedVersion")
         }
     }
 }
