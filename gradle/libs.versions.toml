@@ -18,10 +18,12 @@ jupiterVersion = "6.1.1"
 kotlinxHtmlVersion = "0.12.0"
 kotlinxCoroutinesVersion = "1.11.0"
 ktlintVersion = "14.2.0"
+ktlintEngineVersion = "1.8.0"
 log4j2Version = "2.26.1"
 micrometerVersion = "1.17.0"
 pdfboxVersion = "3.0.7"
 postgresqlVersion = "42.7.12"
+slf4jVersion = "2.0.18"
 testcontainersCoreVersion = "2.0.5"
 testcontainersPostgresqlVersion = "2.0.5"
 unleashVersion = "12.2.2"
@@ -56,6 +58,12 @@ pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfboxVersion" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
 unleash = { module = "io.getunleash:unleash-client-java", version.ref = "unleashVersion" }
 valkey = { module = "io.valkey:valkey-java", version.ref = "valkeyVersion" }
+
+# Ktlint (custom rules, see :ktlint-rules)
+ktlint-cli-ruleset-core = { module = "com.pinterest.ktlint:ktlint-cli-ruleset-core", version.ref = "ktlintEngineVersion" }
+ktlint-rule-engine-core = { module = "com.pinterest.ktlint:ktlint-rule-engine-core", version.ref = "ktlintEngineVersion" }
+ktlint-test = { module = "com.pinterest.ktlint:ktlint-test", version.ref = "ktlintEngineVersion" }
+slf4j-simple = { module = "org.slf4j:slf4j-simple", version.ref = "slf4jVersion" }
 
 # Ktor
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorVersion" }

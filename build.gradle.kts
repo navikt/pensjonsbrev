@@ -1,3 +1,4 @@
+import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
@@ -49,8 +50,19 @@ allprojects {
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
+
+    // Version of the ktlint engine itself; declared once in gradle/libs.versions.toml so that both this
+    // KtlintExtension config and the :ktlint-rules module's dependencies stay in sync.
+    val ktlintEngineVersion =
+        rootProject.extensions
+            .getByType<VersionCatalogsExtension>()
+            .named("libs")
+            .findVersion("ktlintEngineVersion")
+            .get()
+            .requiredVersion
+
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-        version.set("1.8.0")
+        version.set(ktlintEngineVersion)
         outputToConsole.set(true)
         reporters {
             reporter(ReporterType.JSON)
