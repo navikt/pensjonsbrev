@@ -3,17 +3,18 @@ import { css } from "@emotion/react";
 import { type DiffSegment } from "./diffModel";
 
 const insertedStyle = css({
-  backgroundColor: "var(--ax-bg-success-moderate, rgb(0 160 64 / 12%))",
-  textDecorationLine: "underline",
-  textDecorationColor: "var(--ax-text-success, #007c32)",
-  textUnderlineOffset: "2px",
+  color: "var(--ax-text-meta-lime)",
+  fontWeight: 600,
+  borderRadius: "2px",
+  background: "var(--ax-bg-meta-lime-moderateA)",
 });
 
 const deletedStyle = css({
-  backgroundColor: "var(--ax-bg-danger-moderate, rgb(195 0 0 / 10%))",
+  color: "var(--ax-text-danger)",
+  fontWeight: 600,
+  borderRadius: "2px",
+  background: "var(--ax-bg-danger-moderate-pressedA)",
   textDecorationLine: "line-through",
-  textDecorationColor: "var(--ax-text-danger, #c30000)",
-  color: "var(--ax-text-danger, #c30000)",
   userSelect: "none",
 });
 
