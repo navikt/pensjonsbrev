@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.ktlint
 
 import com.pinterest.ktlint.test.KtLintAssertThat.Companion.assertThatRule
+import com.pinterest.ktlint.test.LintViolation
 import org.junit.jupiter.api.Test
 
 class NoNonDeterministicExpressionLiteralRuleTest {
@@ -227,4 +228,112 @@ class NoNonDeterministicExpressionLiteralRuleTest {
                     "the expression tree.",
             ).isFormattedAs(formattedCode)
     }
+
+    @Test
+    fun `flags non-deterministic call nested in a showIf predicate`() {
+        val code =
+            """
+            val a = showIf(virkFom.greaterThan(LocalDate.now())) {
+                paragraph { }
+            }
+            """.trimIndent()
+        ruleAssertThat(code)
+            .hasLintViolationWithoutAutoCorrect(
+                1,
+                16,
+                "showIf(...) argument must be a compile-time constant, but calls non-deterministic 'now()'. " +
+                    "This makes stableHashCode change over time even though the template didn't change. " +
+                    "Use a fixed literal/constant value instead.",
+            )
+    }
+
+    @Test
+    fun `flags non-deterministic call nested in an orShowIf predicate`() {
+        val code =
+            """
+            val a = showIf(somePredicate) {
+                paragraph { }
+            }.orShowIf(virkFom.lessThan(LocalDate.of(LocalDate.now().year, Month.JANUARY, 1))) {
+                paragraph { }
+            }
+            """.trimIndent()
+        ruleAssertThat(code)
+            .hasLintViolationWithoutAutoCorrect(
+                3,
+                12,
+                "orShowIf(...) argument must be a compile-time constant, but calls non-deterministic 'now()'. " +
+                    "This makes stableHashCode change over time even though the template didn't change. " +
+                    "Use a fixed literal/constant value instead.",
+            )
+    }
+
+    @Test
+    fun `flags LocalDate now used directly as a showIf predicate expression with a specific message and auto-corrects it`() {
+        val code =
+            """
+            val a = showIf(LocalDate.now().expr().notNull()) {
+                paragraph { }
+            }
+            """.trimIndent()
+        ruleAssertThat(code).hasLintViolationWithoutAutoCorrect(
+            1,
+            16,
+            "showIf(...) argument must be a compile-time constant, but calls non-deterministic 'now()'. " +
+                "This makes stableHashCode change over time even though the template didn't change. " +
+                "Use a fixed literal/constant value instead.",
+        )
+    }
+
+    @Test
+    fun `flags non-deterministic value used as ifNotNull expr1 argument`() {
+        // The nested `.ifNull(LocalDate.now())` is reported twice: once via the outer `ifNotNull(...)` check (generic
+        // message, since the whole `expr1` argument isn't exactly `LocalDate.now()`), and once via the inner
+        // `ifNull(...)` check itself (specific message, auto-correctable).
+        val code =
+            """
+            val a = ifNotNull(someDate.ifNull(LocalDate.now())) { date ->
+                paragraph { }
+            }
+            """.trimIndent()
+        ruleAssertThat(code)
+            .hasLintViolations(
+                LintViolation(
+                    1,
+                    19,
+                    "ifNotNull(...) argument must be a compile-time constant, but calls non-deterministic 'now()'. " +
+                        "This makes stableHashCode change over time even though the template didn't change. " +
+                        "Use a fixed literal/constant value instead.",
+                    canBeAutoCorrected = false,
+                ),
+                LintViolation(
+                    1,
+                    35,
+                    "ifNull(...) argument calls 'LocalDate.now()', which changes stableHashCode every day even though " +
+                        "the template didn't change. Use 'no.nav.pensjon.brev.template.dsl.expression.localDateNow' " +
+                        "instead: it resolves the date when the expression is evaluated, instead of baking it into " +
+                        "the expression tree.",
+                ),
+            ).isFormattedAs(
+                """
+                import no.nav.pensjon.brev.template.dsl.expression.localDateNow
+                val a = ifNotNull(someDate.ifNull(localDateNow)) { date ->
+                    paragraph { }
+                }
+                """.trimIndent(),
+            )
+    }
+
+    @Test
+    fun `does not flag showIf or orShowIf with literal or constant-built predicates`() {
+        val code =
+            """
+            val a = showIf(sakType.equalTo(SakType.BARNEPENSJON)) {
+                paragraph { }
+            }.orShowIf(antallBarn.greaterThan(0)) {
+                paragraph { }
+            }
+            """.trimIndent()
+        ruleAssertThat(code).hasNoLintViolations()
+    }
+
 }
