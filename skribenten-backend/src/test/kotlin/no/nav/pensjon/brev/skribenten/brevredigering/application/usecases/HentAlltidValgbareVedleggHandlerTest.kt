@@ -13,7 +13,7 @@ class HentAlltidValgbareVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `henter alltid valgbare vedlegg sortert med spraaktilgjengelighet`() {
         val brev = opprettBrev().resultOrFail()
-        brevbakerService.alltidValgbareVedleggResultat = listOf(
+        brevbakerService.alltidValgbareVedleggResultat = setOf(
             AlltidValgbartVedleggBrevkode("kode-2", "B vedlegg", setOf(LanguageCode.ENGLISH)),
             AlltidValgbartVedleggBrevkode("kode-1", "A vedlegg", setOf(LanguageCode.BOKMAL)),
             AlltidValgbartVedleggBrevkode("kode-3", "C vedlegg", setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH)),
