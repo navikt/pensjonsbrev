@@ -61,8 +61,8 @@ describe("buildDiffSegments", () => {
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes }), currentText);
     expect(segments).toEqual([
       { type: "unchanged", text: "Vi har mottatt " },
-      { type: "deleted", text: "søknaden " },
       { type: "inserted", text: "kravet" },
+      { type: "deleted", text: "søknaden " },
       { type: "unchanged", text: " ditt om uføretrygd." },
     ]);
   });
@@ -74,8 +74,8 @@ describe("buildDiffSegments", () => {
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes }), currentText);
     expect(segments).toEqual([
       { type: "unchanged", text: "Vi har " },
-      { type: "deleted", text: "mottatt " },
       { type: "inserted", text: "videresendt " },
+      { type: "deleted", text: "mottatt " },
       { type: "unchanged", text: "søknaden din til behandling." },
     ]);
   });
@@ -130,8 +130,8 @@ describe("buildDiffSegments", () => {
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes }), currentText);
     expect(segments).toEqual([
       { type: "unchanged", text: "Vi har " },
-      { type: "deleted", text: "mottatt " },
       { type: "inserted", text: "videresendt " },
+      { type: "deleted", text: "mottatt " },
       { type: "unchanged", text: "søknaden din." },
       { type: "inserted", text: " Med vennlig hilsen" },
     ]);
@@ -144,8 +144,8 @@ describe("buildDiffSegments", () => {
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes }), currentText);
     expect(segments).toEqual([
       { type: "unchanged", text: "Pensjon" },
-      { type: "deleted", text: ", " },
       { type: "inserted", text: "; " },
+      { type: "deleted", text: ", " },
       { type: "unchanged", text: "uføretrygd og barnetillegg." },
     ]);
   });
@@ -172,8 +172,8 @@ describe("buildDiffSegments", () => {
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes }), currentText);
     expect(segments).toEqual([
       { type: "unchanged", text: "Søknaden om " },
-      { type: "deleted", text: "alderspensjon" },
       { type: "inserted", text: "uføretrygd " },
+      { type: "deleted", text: "alderspensjon" },
       { type: "unchanged", text: "er ferdigbehandlet." },
     ]);
   });
@@ -288,8 +288,8 @@ describe("buildDiffSegments", () => {
       const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes }), currentText);
       expect(segments).toEqual([
         { type: "unchanged", text: "Vi har mottatt " },
-        { type: "deleted", text: "søknaden " },
         { type: "inserted", text: "kravet" },
+        { type: "deleted", text: "søknaden " },
         { type: "unchanged", text: " ditt." },
       ]);
     });

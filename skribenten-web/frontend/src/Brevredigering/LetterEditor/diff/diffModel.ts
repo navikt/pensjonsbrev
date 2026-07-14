@@ -117,7 +117,7 @@ export function buildDiffSegments({ currentText, inserts, deletes }: BuildDiffSe
 
   const merged = [...deleteEvents, ...insertEvents].sort((a, b) => {
     if (a.commonPos !== b.commonPos) return a.commonPos - b.commonPos;
-    if (a.kind !== b.kind) return a.kind === "delete" ? -1 : 1;
+    if (a.kind !== b.kind) return a.kind === "insert" ? -1 : 1;
     return a.order - b.order;
   });
 
