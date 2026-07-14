@@ -9,12 +9,15 @@ import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
+import no.nav.pensjon.brev.ufore.api.model.maler.simulering.SimuleringUforetrygdDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingDodsboSaksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 import java.time.Month
 import kotlin.reflect.KClass
@@ -29,6 +32,7 @@ object Fixtures : LetterDataFactory {
     override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
             InfoEndretUTPgaInntektDto::class -> lagInfoEndretUTPgaInntektDto() as T
+            SimuleringUforetrygdDto::class -> lagSimuleringUforetrygdDto() as T
             UforeAvslagUtenVurderingDto::class -> lagUforeAvslagUtenVurderingDto() as T
             UforeAvslagTestmalDto::class -> lagUforeAvslagTestmalDto() as T
             UforeAvslagEnkelDto::class -> lagUforeAvslagEnkelDto() as T
@@ -308,6 +312,59 @@ object Fixtures : LetterDataFactory {
 
     private fun lagInfoEndretUTPgaInntektDto() = InfoEndretUTPgaInntektDto(
         belopsgrense = Kroner(60000)
+    )
+
+    fun lagSimuleringUforetrygdMedYrkesskade() = lagSimuleringUforetrygdDto(
+        yrkesskade = SimuleringUforetrygdDto.Yrkesskade(
+            yrkesskadegrad = Percent(40),
+            inntektPaaSkadetidspunkt = Kroner(450000),
+        ),
+    )
+
+    private fun lagSimuleringUforetrygdDto(
+        yrkesskade: SimuleringUforetrygdDto.Yrkesskade? = null,
+    ) = SimuleringUforetrygdDto(
+        virkningstidspunkt = LocalDate.of(2026, Month.AUGUST, 1),
+        aarligBeloep = Kroner(345332),
+        maanedligBeloep = Kroner(28778),
+        grunnbeloep = Kroner(136549),
+        trygdetidAar = 40,
+        uforetidspunkt = LocalDate.of(2020, Month.JULY, 1),
+        uforegrad = Percent(100),
+        snittInntektTreBesteAvFem = Kroner(0),
+        yrkesskade = yrkesskade,
+        inntektsgrunnlag = listOf(
+            SimuleringUforetrygdDto.Inntektsaar(
+                aar = Year(2019),
+                pensjonsgivendeInntekt = Kroner(0),
+                inntektJustertMedGrunnbeloep = Kroner(0),
+                benyttetIBeregningen = true,
+            ),
+            SimuleringUforetrygdDto.Inntektsaar(
+                aar = Year(2018),
+                pensjonsgivendeInntekt = Kroner(0),
+                inntektJustertMedGrunnbeloep = Kroner(0),
+                benyttetIBeregningen = true,
+            ),
+            SimuleringUforetrygdDto.Inntektsaar(
+                aar = Year(2017),
+                pensjonsgivendeInntekt = Kroner(0),
+                inntektJustertMedGrunnbeloep = Kroner(0),
+                benyttetIBeregningen = true,
+            ),
+            SimuleringUforetrygdDto.Inntektsaar(
+                aar = Year(2016),
+                pensjonsgivendeInntekt = Kroner(0),
+                inntektJustertMedGrunnbeloep = Kroner(0),
+                benyttetIBeregningen = false,
+            ),
+            SimuleringUforetrygdDto.Inntektsaar(
+                aar = Year(2015),
+                pensjonsgivendeInntekt = Kroner(0),
+                inntektJustertMedGrunnbeloep = Kroner(0),
+                benyttetIBeregningen = false,
+            ),
+        ),
     )
 
 
