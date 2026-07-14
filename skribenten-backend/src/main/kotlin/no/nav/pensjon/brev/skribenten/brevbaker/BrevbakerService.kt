@@ -20,7 +20,6 @@ import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
@@ -59,6 +58,7 @@ interface BrevbakerService {
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
         redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(),
+        medPDFVedlegg: Boolean,
     ): LetterResponse
 
     suspend fun hentRedigerbareVedleggTitler(
@@ -168,6 +168,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
         redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment>,
+        medPDFVedlegg: Boolean,
     ): LetterResponse {
         val response = client.post("/letter/redigerbar/pdf") {
             contentType(ContentType.Application.Json)
@@ -180,7 +181,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
                     letterMarkup = redigertBrev,
                     alltidValgbareVedlegg = alltidValgbareVedlegg,
                     redigerteVedlegg = redigerteVedlegg,
-                    medPDFVedlegg = !Features.pdfvedleggISkribenten.isEnabled()
+                    medPDFVedlegg = medPDFVedlegg
                 )
             )
         }

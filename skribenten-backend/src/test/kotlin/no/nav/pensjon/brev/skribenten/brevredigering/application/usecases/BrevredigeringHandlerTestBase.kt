@@ -612,6 +612,7 @@ abstract class BrevredigeringHandlerTestBase {
             redigertBrev: LetterMarkup,
             alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
             redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment>,
+            medPDFVedlegg: Boolean,
         ) = renderPdfResultat.also {
             renderPdfKall.add(redigertBrev)
             renderPdfRedigerteVedleggKall.add(redigerteVedlegg)

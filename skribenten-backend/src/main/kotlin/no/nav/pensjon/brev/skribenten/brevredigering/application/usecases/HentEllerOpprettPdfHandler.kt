@@ -63,8 +63,9 @@ class HentEllerOpprettPdfHandler(
                 brev.redigertBrev.updateEditedLetter(rendretBrev.markup).blocks != brev.redigertBrev.blocks
             }
 
-            val pdfBytes = renderService.renderPdf(brev, pesysBrevdata).let {
-                if (Features.pdfvedleggISkribenten.isEnabled()) {
+            val medPDFVedlegg = !Features.pdfvedleggISkribenten.isEnabled()
+            val pdfBytes = renderService.renderPdf(brev, pesysBrevdata, medPDFVedlegg).let {
+                if (!medPDFVedlegg) {
                     pdfVedleggAppender.leggPaaVedlegg(
                         it.file,
                         it.pdfvedlegg,
