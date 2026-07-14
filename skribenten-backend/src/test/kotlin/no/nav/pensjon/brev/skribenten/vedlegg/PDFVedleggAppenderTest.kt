@@ -71,13 +71,13 @@ class PDFVedleggAppenderTest {
     @Test
     fun `legger til flere vedlegg i rekkefoelge`() {
         val original = pdfWithPages(1)
-        val vedlegg1Sideantall = antallSiderIVedlegg("InformasjonOmP1", LanguageCode.BOKMAL)
-        val vedlegg2Sideantall = antallSiderIVedlegg("InformasjonOmP1", LanguageCode.ENGLISH)
+        val vedlegg1Sideantall = antallSiderIVedlegg("InformasjonOmP1", LanguageCode.NYNORSK)
+        val vedlegg2Sideantall = antallSiderIVedlegg("InformasjonOmP1", LanguageCode.NYNORSK)
 
         val resultat = appender.leggPaaVedlegg(
             original,
             listOf(vedleggMedFilnavn("InformasjonOmP1"), vedleggMedFilnavn("InformasjonOmP1")),
-            LanguageCode.ENGLISH,
+            LanguageCode.NYNORSK,
         )
 
         val forventetBlankSider = (if (vedlegg1Sideantall % 2 == 1) 1 else 0) + (if (vedlegg2Sideantall % 2 == 1) 1 else 0)
