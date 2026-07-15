@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
 import no.nav.pensjon.brev.skribenten.copy
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
@@ -204,11 +203,14 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan hente pdf for p1`() {
-        val p1Service = P1ServiceImpl(penClient = object : PenClientStub() {
-            override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode) = Api.GeneriskBrevdata().apply {
-                put("noeData", true)
-            }
-        })
+        val hentP1DataHandler = HentP1DataHandler(
+            penClient = object : PenClientStub() {
+                override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode) = Api.GeneriskBrevdata().apply {
+                    put("noeData", true)
+                }
+            },
+            database = SharedPostgres.database,
+        )
         brevbakerService.redigerbareMaler[Testbrevkoder.P1] = informasjonsbrev
 
         val brev = opprettBrev(brevkode = Testbrevkoder.P1).resultOrFail()
@@ -217,7 +219,7 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
             brevdataService = brevdataService,
             renderService = RenderService(brevbakerService),
             brevmalService = brevmalService,
-            p1Service = p1Service,
+            hentP1DataHandler = hentP1DataHandler,
             database = SharedPostgres.database,
         )
         assertThat(hentEllerOpprettPdf(brev, handler = handler)).isSuccess {

@@ -192,7 +192,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
                 if (rendered is Edit.ParagraphContent.Table) {
                     edited.copy(
                         header = mergeTableHeader(edited.header, rendered.header),
-                        rows = mergeList(edited, edited.rows, rendered.rows, edited.deletedRows, ::mergeRows, ::updateVariableValues, ::setMissing),
+                        rows = mergeList(edited, edited.rows, rendered.rows, rendered.deletedRows, ::mergeRows, ::updateVariableValues, ::setMissing),
                     )
                 } else {
                     throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
@@ -201,8 +201,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
 
     private fun mergeTableHeader(edited: Edit.ParagraphContent.Table.Header, rendered: Edit.ParagraphContent.Table.Header): Edit.ParagraphContent.Table.Header =
         edited.copy(
-            colSpec = mergeList(edited, edited.colSpec, rendered.colSpec, edited.deletedColSpecs, ::mergeColumnSpec, ::updateVariableValues, ::setMissing),
-            deletedColSpecs = edited.deletedColSpecs.filter { id -> rendered.colSpec.any { it.id == id } }.toSet(),
+            colSpec = mergeList(edited, edited.colSpec, rendered.colSpec, emptySet(), ::mergeColumnSpec, ::updateVariableValues, ::setMissing),
         )
 
     private fun mergeColumnSpec(
@@ -213,14 +212,12 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
 
     private fun mergeCell(edited: Edit.ParagraphContent.Table.Cell, rendered: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell =
         edited.copy(
-            text = mergeList(edited, edited.text, rendered.text, edited.deletedContent, ::mergeTextContent, ::updateVariableValues, ::setMissing),
-            deletedContent = edited.deletedContent.filter { id -> rendered.text.any { it.id == id } }.toSet(),
+            text = mergeList(edited, edited.text, rendered.text, emptySet(), ::mergeTextContent, ::updateVariableValues, ::setMissing),
         )
 
     private fun mergeRows(edited: Edit.ParagraphContent.Table.Row, rendered: Edit.ParagraphContent.Table.Row): Edit.ParagraphContent.Table.Row =
         edited.copy(
-            cells = mergeList(edited, edited.cells, rendered.cells, edited.deletedCells, ::mergeCell, ::updateVariableValues, ::setMissing),
-            deletedCells = edited.deletedCells.filter { id -> rendered.cells.any { it.id == id } }.toSet(),
+            cells = mergeList(edited, edited.cells, rendered.cells, emptySet(), ::mergeCell, ::updateVariableValues, ::setMissing),
         )
 
     private fun mergeItems(edited: Edit.ParagraphContent.ItemList.Item, rendered: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item =

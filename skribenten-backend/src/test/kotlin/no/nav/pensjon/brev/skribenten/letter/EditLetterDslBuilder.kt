@@ -69,23 +69,23 @@ class TableBuilder {
     var header: Edit.ParagraphContent.Table.Header? = null
     val rows = mutableListOf<Edit.ParagraphContent.Table.Row>()
 
-    fun header(id: Int? = null, deletedColSpecs: Set<Int> = emptySet(), builder: HeaderBuilder.() -> Unit) {
+    fun header(id: Int? = null, builder: HeaderBuilder.() -> Unit) {
         check(header == null) { "header already set" }
-        header = Edit.ParagraphContent.Table.Header(id = id, colSpec = HeaderBuilder().apply(builder).colSpecs, deletedColSpecs = deletedColSpecs)
+        header = Edit.ParagraphContent.Table.Header(id = id, colSpec = HeaderBuilder().apply(builder).colSpecs)
     }
 
-    fun row(id: Int? = null, deletedCells: Set<Int> = emptySet(), builder: RowBuilder.() -> Unit) {
-        rows += Edit.ParagraphContent.Table.Row(id = id, cells = RowBuilder().apply(builder).cells, deletedCells = deletedCells)
+    fun row(id: Int? = null, builder: RowBuilder.() -> Unit) {
+        rows += Edit.ParagraphContent.Table.Row(id = id, cells = RowBuilder().apply(builder).cells)
     }
 }
 
 @EditDsl
 class HeaderBuilder {
     val colSpecs = mutableListOf<Edit.ParagraphContent.Table.ColumnSpec>()
-    fun colSpec(id: Int? = null, cellId: Int? = null, alignment: Edit.ParagraphContent.Table.ColumnAlignment = LEFT, span: Int = 1, deletedContent: Set<Int> = emptySet(), builder: TextContentBuilder.() -> Unit = {}) {
+    fun colSpec(id: Int? = null, cellId: Int? = null, alignment: Edit.ParagraphContent.Table.ColumnAlignment = LEFT, span: Int = 1, builder: TextContentBuilder.() -> Unit = {}) {
         colSpecs += Edit.ParagraphContent.Table.ColumnSpec(
             id = id,
-            headerContent = Edit.ParagraphContent.Table.Cell(id = cellId, text = TextContentBuilder().apply(builder).texts, deletedContent = deletedContent),
+            headerContent = Edit.ParagraphContent.Table.Cell(id = cellId, text = TextContentBuilder().apply(builder).texts),
             alignment = alignment,
             span = span,
         )
@@ -95,8 +95,8 @@ class HeaderBuilder {
 @EditDsl
 class RowBuilder {
     val cells = mutableListOf<Edit.ParagraphContent.Table.Cell>()
-    fun cell(id: Int? = null, deletedContent: Set<Int> = emptySet(), builder: TextContentBuilder.() -> Unit = {}) {
-        cells += Edit.ParagraphContent.Table.Cell(id = id, text = TextContentBuilder().apply(builder).texts, deletedContent = deletedContent)
+    fun cell(id: Int? = null, builder: TextContentBuilder.() -> Unit = {}) {
+        cells += Edit.ParagraphContent.Table.Cell(id = id, text = TextContentBuilder().apply(builder).texts)
     }
 }
 

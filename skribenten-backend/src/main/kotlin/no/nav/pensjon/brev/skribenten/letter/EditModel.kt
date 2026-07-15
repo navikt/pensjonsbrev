@@ -190,16 +190,16 @@ object Edit {
             val deletedRows: Set<Int> = emptySet(),
             override val parentId: Int? = null,
         ) : ParagraphContent(Type.TABLE) {
-            data class Row(override val id: Int?, val cells: List<Cell>, val deletedCells: Set<Int> = emptySet(), override val parentId: Int? = null) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || cells.any { it.isEdited() || it.parentId != id } || deletedCells.isNotEmpty()
+            data class Row(override val id: Int?, val cells: List<Cell>, override val parentId: Int? = null) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || cells.any { it.isEdited() || it.parentId != id }
             }
 
-            data class Cell(override val id: Int?, val text: List<Text>, val deletedContent: Set<Int> = emptySet(), override val parentId: Int? = null) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || text.any { it.isEdited() || it.parentId != id } || deletedContent.isNotEmpty()
+            data class Cell(override val id: Int?, val text: List<Text>, override val parentId: Int? = null) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || text.any { it.isEdited() || it.parentId != id }
             }
 
-            data class Header(override val id: Int?, val colSpec: List<ColumnSpec>, val deletedColSpecs: Set<Int> = emptySet(), override val parentId: Int? = null) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || colSpec.any { it.isEdited() || it.parentId != id } || deletedColSpecs.isNotEmpty()
+            data class Header(override val id: Int?, val colSpec: List<ColumnSpec>, override val parentId: Int? = null) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || colSpec.any { it.isEdited() || it.parentId != id }
             }
 
             data class ColumnSpec(
