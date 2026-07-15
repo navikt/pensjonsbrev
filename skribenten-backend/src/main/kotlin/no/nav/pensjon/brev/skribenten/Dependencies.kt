@@ -128,6 +128,7 @@ fun Application.configureDependencies() {
         provide(HentBrevAttesteringHandler::class)
         provide(HentBrevHandler::class)
         provide(HentEllerOpprettPdfHandler::class)
+        provide(HentFavoritterHandler::class)
         provide(HentP1DataHandler::class)
         provide(HentRedigerbareVedleggHandler::class)
         provide(HentRedigertVedleggHandler::class)
