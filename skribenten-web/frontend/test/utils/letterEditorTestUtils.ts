@@ -224,6 +224,10 @@ export function withDeleted<T extends AnyBlock>(block: T, deletedContent: number
   return { ...block, deletedContent };
 }
 
+export function withMissingFromTemplate<T extends AnyBlock>(block: T, missingFromTemplate = true): T {
+  return { ...block, missingFromTemplate };
+}
+
 type TitleArgs = { id?: Nullable<number>; content: TextContent[] };
 
 function makeTitle<T extends "TITLE1" | "TITLE2" | "TITLE3">(
