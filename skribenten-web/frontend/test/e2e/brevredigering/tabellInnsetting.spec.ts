@@ -2,6 +2,7 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/LetterEditor/actions/common";
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
+import { type Row } from "~/types/brevbakerTypes";
 
 import { brevResponse, editedLetter } from "../../utils/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
@@ -43,7 +44,7 @@ const waitAfterAutosave = async (page: Page) => {
   await autosavePromise;
 };
 
-function tableRow(...texts: string[]) {
+function tableRow(...texts: string[]): Row {
   return {
     id: null,
     parentId: null,

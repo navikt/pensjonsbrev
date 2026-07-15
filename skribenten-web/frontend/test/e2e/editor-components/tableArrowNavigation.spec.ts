@@ -1,11 +1,12 @@
 import { expect, type Page, test } from "@playwright/test";
 
 import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/LetterEditor/actions/common";
+import { type Row } from "~/types/brevbakerTypes";
 
 import { brevResponse, editedLetter } from "../../utils/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
-function tableRow(...texts: string[]) {
+function tableRow(...texts: string[]): Row {
   return {
     id: null,
     parentId: null,

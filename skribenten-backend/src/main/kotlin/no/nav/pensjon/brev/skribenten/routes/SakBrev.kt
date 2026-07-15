@@ -10,7 +10,6 @@ import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevInfoService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.*
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -21,7 +20,6 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 context(app: Application)
 fun Route.sakBrev() =
     route("/brev") {
-        val brevmalService: BrevmalService by app.dependencies
         val dto2ApiService: Dto2ApiService by app.dependencies
         val hentBrevInfoService: HentBrevInfoService by app.dependencies
 
@@ -316,14 +314,15 @@ fun Route.sakBrev() =
                 }
             }
 
+            val hentAlltidValgbareVedlegg: HentAlltidValgbareVedleggHandler by app.dependencies
             get("/alltidValgbareVedlegg") {
                 val brevId = call.parameters.brevId()
-                val valgbareVedlegg = brevmalService.getAlltidValgbareVedlegg(brevId)
-                if (valgbareVedlegg != null) {
-                    call.respond(valgbareVedlegg)
-                } else {
-                    call.respond(HttpStatusCode.NotFound)
-                }
+
+                val result = hentAlltidValgbareVedlegg(
+                    HentAlltidValgbareVedleggHandler.Request(brevId = brevId)
+                )
+
+                respondOutcome(dto2ApiService, result) { respond(it) }
             }
         }
     }
