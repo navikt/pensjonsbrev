@@ -2014,11 +2014,53 @@ export interface paths {
                         };
                     };
                 };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
                 };
             };
         };
@@ -2043,6 +2085,54 @@ export interface paths {
                         "application/json": {
                             [key: string]: unknown;
                         };
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
                     };
                 };
             };
@@ -3305,7 +3395,6 @@ export interface components {
         EditParagraphContentTableColumnAlignment: "LEFT" | "RIGHT";
         /** EditParagraphContentTableCell */
         EditParagraphContentTableCell: {
-            deletedContent: number[];
             id?: number | null;
             parentId?: number | null;
             text: components["schemas"]["EditParagraphContentText"][];
@@ -3321,14 +3410,12 @@ export interface components {
         /** EditParagraphContentTableHeader */
         EditParagraphContentTableHeader: {
             colSpec: components["schemas"]["EditParagraphContentTableColumnSpec"][];
-            deletedColSpecs: number[];
             id?: number | null;
             parentId?: number | null;
         };
         /** EditParagraphContentTableRow */
         EditParagraphContentTableRow: {
             cells: components["schemas"]["EditParagraphContentTableCell"][];
-            deletedCells: number[];
             id?: number | null;
             parentId?: number | null;
         };

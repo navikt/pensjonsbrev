@@ -12,7 +12,6 @@ export const newTable = (rows = 2, cols = 2): Table => ({
   header: {
     id: null,
     parentId: null,
-    deletedColSpecs: [],
     colSpec: newColSpec(cols),
   },
   rows: Array.from({ length: rows }, () => newRow(cols)),
