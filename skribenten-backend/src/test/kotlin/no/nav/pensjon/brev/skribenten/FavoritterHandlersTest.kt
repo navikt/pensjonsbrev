@@ -77,14 +77,20 @@ class FavoritterHandlersTest {
 
     @Test
     suspend fun `fjerner favoritt`() {
-        val navIdent = nyNavIdent()
+        val navIdent1 = nyNavIdent()
+        val navIdent2 = nyNavIdent()
         val brevkode = RedigerbarBrevkode("TESTBREV")
 
-        leggTilFavorittHandler(LeggTilFavorittHandler.Request(navIdent, brevkode))
-        assertThat(fjernFavorittHandler(FjernFavorittHandler.Request(navIdent, brevkode))).isSuccess()
+        leggTilFavorittHandler(LeggTilFavorittHandler.Request(navIdent1, brevkode))
+        leggTilFavorittHandler(LeggTilFavorittHandler.Request(navIdent2, brevkode))
 
-        assertThat(hentFavoritterHandler(HentFavoritterHandler.Request(navIdent))).isSuccess {
+        assertThat(fjernFavorittHandler(FjernFavorittHandler.Request(navIdent1, brevkode))).isSuccess()
+
+        assertThat(hentFavoritterHandler(HentFavoritterHandler.Request(navIdent1))).isSuccess {
             assertThat(it).isEmpty()
+        }
+        assertThat(hentFavoritterHandler(HentFavoritterHandler.Request(navIdent2))).isSuccess {
+            assertThat(it).containsExactly(brevkode)
         }
     }
 
