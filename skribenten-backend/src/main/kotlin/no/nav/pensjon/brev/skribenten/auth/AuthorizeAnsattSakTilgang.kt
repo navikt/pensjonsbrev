@@ -7,7 +7,6 @@ import io.ktor.server.response.*
 import io.ktor.server.util.*
 import io.ktor.util.*
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevInfoHandler
-import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.model.Pdl
@@ -47,10 +46,8 @@ val AuthorizeAnsattSakTilgangForBrev =
 
         on(PrincipalInContext.Hook) { call ->
             val brevId = call.parameters.brevId()
-            val brev = hentBrevInfo(HentBrevInfoHandler.Request(brevId))?.asSuccess()
-
-            if (brev != null) {
-                validerTilgangTilSak(fagsakService, pdlService, call, brev.saksId)
+            hentBrevInfo(HentBrevInfoHandler.Request(brevId))?.onSuccess {
+                validerTilgangTilSak(fagsakService, pdlService, call, it.saksId)
             }
         }
     }
