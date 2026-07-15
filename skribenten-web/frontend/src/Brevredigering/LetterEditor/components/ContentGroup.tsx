@@ -11,7 +11,12 @@ import {
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { logPastedClipboard } from "~/Brevredigering/LetterEditor/actions/paste";
 import { useAttestantDiff, useDiffSegmentsForLiteral } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
-import { DiffSegments, getEditableLiteralText, getEditableCharacterOffset } from "~/Brevredigering/LetterEditor/diff/DiffSegments";
+import {
+  getEditableCharacterOffset,
+  getEditableLiteralText,
+  renderDiffSegments,
+  renderPlainText,
+} from "~/Brevredigering/LetterEditor/diff/DiffSegments";
 import { diffKey } from "~/Brevredigering/LetterEditor/diff/diffModel";
 import TableView from "~/Brevredigering/LetterEditor/components/TableView";
 import { Text } from "~/Brevredigering/LetterEditor/components/Text";
@@ -86,7 +91,6 @@ function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
 
 export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   const { editorState } = useEditor();
-  const { diffByLiteral, diffHash } = useAttestantDiff();
   const contents = getContent(editorState.redigertBrev, literalIndex);
 
   return (
@@ -100,15 +104,13 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
               "itemIndex" in literalIndex
                 ? { ...literalIndex, itemContentIndex: contentIndex }
                 : { ...literalIndex, contentIndex: contentIndex };
-            const hasDiffData = diffByLiteral.has(diffKey(updatedLiteralIndex));
-            const editableKey = hasDiffData ? `${contentIndex}-${diffHash ?? ""}` : `${contentIndex}`;
             return needsWordJoiner ? (
-              <React.Fragment key={editableKey}>
+              <React.Fragment key={contentIndex}>
                 {WORD_JOINER}
                 <EditableText content={content} literalIndex={updatedLiteralIndex} />
               </React.Fragment>
             ) : (
-              <EditableText content={content} key={editableKey} literalIndex={updatedLiteralIndex} />
+              <EditableText content={content} key={contentIndex} literalIndex={updatedLiteralIndex} />
             );
           }
           case "NEW_LINE":
@@ -204,6 +206,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const { dismissLiteral, diffHash } = useAttestantDiff();
   const diffSegments = useDiffSegmentsForLiteral(literalIndex, textOf(content) || "");
   const hasDiffDecoration = diffSegments != null;
+  const literalDiffKey = diffKey(literalIndex);
+  const diffVersion = diffHash ? `${diffHash}:${literalDiffKey}` : undefined;
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
@@ -218,20 +222,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const element = contentEditableReference.current;
     if (!element) return;
 
-    if (hasDiffDecoration) {
-      // Remove any imperative text nodes so React's DiffSegments children are the sole content.
-      // Cannot check childNodes.length === 1 because React may have already appended DiffSegments spans.
-      for (let i = element.childNodes.length - 1; i >= 0; i--) {
-        if (element.childNodes[i].nodeType === Node.TEXT_NODE) {
-          element.removeChild(element.childNodes[i]);
-        }
-      }
+    if (hasDiffDecoration && diffVersion) {
+      renderDiffSegments(element, diffSegments, diffVersion);
       return;
     }
 
-    if (element.textContent !== text) {
-      element.textContent = text;
-    }
+    renderPlainText(element, text);
 
     if (!freeze && shouldBeFocused) {
       // Preserve full selection for untouched fritekst placeholders (first key should replace it).
@@ -270,7 +266,32 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         focusAtOffset(element.childNodes[0], resolvedCursorPosition);
       }
     }
-  }, [text, shouldBeFocused, editorState.focus.cursorPosition, freeze, setEditorState, erFritekst, hasDiffDecoration]);
+  }, [
+    text,
+    shouldBeFocused,
+    editorState.focus.cursorPosition,
+    freeze,
+    setEditorState,
+    erFritekst,
+    hasDiffDecoration,
+    diffSegments,
+    diffVersion,
+  ]);
+
+  const normalizeDiffDecoration = () => {
+    const element = contentEditableReference.current;
+    if (!element || !hasDiffDecoration || !diffHash) return;
+
+    const editableText = getEditableLiteralText(element);
+    const cursorPosition = getEditableCharacterOffset(element);
+    dismissLiteral(literalDiffKey, diffHash);
+    renderPlainText(element, editableText || ZERO_WIDTH_SPACE);
+
+    const textNode = element.childNodes[0];
+    if (textNode) {
+      focusAtOffset(textNode, Math.min(cursorPosition, editableText.length));
+    }
+  };
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
@@ -546,6 +567,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleOnPaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
+    normalizeDiffDecoration();
     // TODO: for debugging frem til vi er ferdig å teste liming
     logPastedClipboard(event.clipboardData);
 
@@ -593,10 +615,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleOnInput = ({ currentTarget }: React.FormEvent<HTMLSpanElement>) => {
-    const extractedText = hasDiffDecoration ? getEditableLiteralText(currentTarget) : (currentTarget.textContent ?? "");
-    const postEditCursorPosition = hasDiffDecoration
-      ? getEditableCharacterOffset(currentTarget)
-      : getCharacterOffset(currentTarget);
+    const extractedText = getEditableLiteralText(currentTarget);
+    const postEditCursorPosition = getEditableCharacterOffset(currentTarget);
 
     applyAction(
       Actions.updateContentText,
@@ -605,10 +625,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       extractedText,
       postEditCursorPosition,
     );
+  };
 
-    if (hasDiffDecoration) {
-      dismissLiteral(diffKey(literalIndex));
-    }
+  const handleBeforeInput = () => {
+    normalizeDiffDecoration();
   };
 
   const handleOnContextMenu = () => {
@@ -654,6 +674,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       !e.altKey &&
       !e.metaKey &&
       (e.key.length === 1 || e.key === "Backspace" || e.key === "Delete" || e.key === "Enter");
+
+    if (isEditingKey) {
+      normalizeDiffDecoration();
+    }
 
     if (isEditingKey && contentEditableReference.current) {
       const selection = globalThis.getSelection();
@@ -818,21 +842,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       onContextMenu={handleOnContextMenu}
       onDoubleClick={handleOnDoubleClick}
       onFocus={handleOnFocus}
+      onBeforeInput={handleBeforeInput}
       onInput={handleOnInput}
       onKeyDown={handleOnKeyDown}
       onKeyUp={handleOnKeyUp}
       onMouseDown={handleOnMouseDown}
       onPaste={handleOnPaste}
       ref={contentEditableReference}
-      suppressContentEditableWarning={hasDiffDecoration}
       tabIndex={erFritekst ? 0 : -1}
-    >
-      {hasDiffDecoration ? (
-        <DiffSegments
-          key={`${diffHash ?? "no-diff"}-${diffKey(literalIndex)}`}
-          segments={diffSegments}
-        />
-      ) : undefined}
-    </span>
+    />
   );
 }

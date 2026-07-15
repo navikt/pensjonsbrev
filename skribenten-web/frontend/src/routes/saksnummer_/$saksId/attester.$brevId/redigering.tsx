@@ -202,32 +202,28 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     reservationOwnerNavIdent: reservasjonQuery.data?.reservertAv.id,
   });
 
+  const [visDiff, setVisDiff] = useState(false);
+  const currentSavedHash = editorState.redigertBrevHash;
   const diffQuery = useQuery({
-    queryKey: getBrevDiff.queryKey(props.brev.info.id, props.brev.redigertBrevHash),
-    queryFn: () => getBrevDiff.queryFn(props.brev.info.id, props.brev.redigertBrev),
+    queryKey: getBrevDiff.queryKey(props.brev.info.id, currentSavedHash),
+    queryFn: async () => ({
+      diff: await getBrevDiff.queryFn(props.brev.info.id, editorState.redigertBrev),
+      redigertBrevHash: currentSavedHash,
+    }),
+    enabled: visDiff,
   });
 
-  const activeDiff = diffQuery.isSuccess ? diffQuery.data : undefined;
+  const activeDiff =
+    diffQuery.isSuccess && diffQuery.data.redigertBrevHash === currentSavedHash ? diffQuery.data.diff : undefined;
 
-  const [dismissedDiffs, setDismissedDiffs] = useState<Set<string>>(() => new Set());
-  const dismissLiteral = useCallback((key: string) => {
+  const [dismissedDiffs, setDismissedDiffs] = useState<Map<string, string>>(() => new Map());
+  const dismissLiteral = useCallback((key: string, diffHash: string) => {
     setDismissedDiffs((current) => {
-      const next = new Set(current);
-      next.add(key);
+      const next = new Map(current);
+      next.set(key, diffHash);
       return next;
     });
   }, []);
-
-  // Dismissals are transient and only hide the decoration until a fresh diff is computed.
-  // Once autosave produces a new hash, the recomputed diff reflects the attestant's edits,
-  // so stale dismissals are cleared while rendering to let the new decoration render.
-  const [dismissedForHash, setDismissedForHash] = useState(props.brev.redigertBrevHash);
-  if (dismissedForHash !== props.brev.redigertBrevHash) {
-    setDismissedForHash(props.brev.redigertBrevHash);
-    setDismissedDiffs(new Set());
-  }
-
-  const [visDiff, setVisDiff] = useState(false);
 
   const defaultValuesModelEditor = useMemo(
     () => ({
@@ -453,7 +449,12 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         }
         right={
           <>
-            <AttestantDiffProvider diff={visDiff ? activeDiff : undefined} diffHash={visDiff && activeDiff ? props.brev.redigertBrevHash : undefined} dismissedKeys={dismissedDiffs} dismissLiteral={dismissLiteral}>
+            <AttestantDiffProvider
+              diff={visDiff ? activeDiff : undefined}
+              diffHash={visDiff && activeDiff ? currentSavedHash : undefined}
+              dismissedDiffs={dismissedDiffs}
+              dismissLiteral={dismissLiteral}
+            >
               <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
                 <ManagedLetterEditor
                   brev={props.brev}
