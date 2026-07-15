@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template.dsl.helpers
 
-import com.google.devtools.ksp.closestClassDeclaration
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.symbol.ClassKind.CLASS
@@ -14,7 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 
 private val SKIPPED_NO_WARN_PACKAGES: Set<String> = setOf("kotlin", "java.util", "java.time", "kotlin.collections", "kotlin.ranges")
-private val SKIPPED_NO_WARN_CLASSES: Set<String> = setOf(
+internal val SKIPPED_NO_WARN_CLASSES: Set<String> = setOf(
     EmptyAutobrevdata::class,
     EmptyFagsystemdata::class,
     EmptyRedigerbarBrevdata::class,
