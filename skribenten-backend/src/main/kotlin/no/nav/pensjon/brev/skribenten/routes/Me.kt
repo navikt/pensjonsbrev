@@ -7,6 +7,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.HentFavoritterHandler
+import no.nav.pensjon.brev.skribenten.LeggTilFavorittHandler
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.db.FavouritesRepository
@@ -28,9 +29,13 @@ fun Route.meRoute() {
                 erAttestant = p.isAttestant(),
             ))
         }
+
+        val leggTilFavorittHandler: LeggTilFavorittHandler by app.dependencies
         post("/favourites") {
-            call.respond(favouritesRepository.addFavourite(principal().navIdent, RedigerbarBrevkode(call.receive<String>())))
+            val leggTil = leggTilFavorittHandler(LeggTilFavorittHandler.Request(principal().navIdent, RedigerbarBrevkode(call.receive<String>())))
+            respondOutcome(dto2ApiService, leggTil) { respond(it) }
         }
+
         delete("/favourites") {
             call.respond(favouritesRepository.removeFavourite(principal().navIdent, RedigerbarBrevkode(call.receive<String>())))
         }

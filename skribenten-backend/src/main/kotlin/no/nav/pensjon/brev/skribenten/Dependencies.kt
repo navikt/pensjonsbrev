@@ -133,6 +133,7 @@ fun Application.configureDependencies() {
         provide(HentRedigerbareVedleggHandler::class)
         provide(HentRedigertVedleggHandler::class)
         provide(LagreP1DataHandler::class)
+        provide(LeggTilFavorittHandler::class)
         provide(OppdaterBrevHandler::class)
         provide(OpprettBrevHandler::class)
         provide(ReserverBrevHandler::class)
