@@ -8,7 +8,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class HentAlltidValgbareVedleggHandlerTest : BrevredigeringHandlerTestBase() {
-    private val handler by lazy { HentAlltidValgbareVedleggHandler(brevbakerService, SharedPostgres.database) }
+    private val handler by lazy { HentAlltidValgbareVedleggHandler(brevmalService, SharedPostgres.database) }
 
     @Test
     suspend fun `henter alltid valgbare vedlegg sortert med spraaktilgjengelighet`() {

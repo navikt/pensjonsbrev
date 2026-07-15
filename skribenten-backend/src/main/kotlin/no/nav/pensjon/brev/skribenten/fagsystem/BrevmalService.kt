@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Sakstype
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -87,6 +88,9 @@ class BrevmalService(
 
     suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification? =
         brevbakerService.getModelSpecification(brevkode)
+
+    suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode> =
+        brevbakerService.getAlltidValgbareVedlegg()
 
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>? =
         brevbakerService.getTemplates()

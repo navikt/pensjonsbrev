@@ -1,15 +1,15 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
-import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.jetbrains.exposed.v1.jdbc.Database
 
 class HentAlltidValgbareVedleggHandler(
-    private val brevbakerService: BrevbakerService,
+    private val brevmalService: BrevmalService,
     database: Database,
 ) : TransactionHandler<HentAlltidValgbareVedleggHandler.Request, List<ValgbartVedlegg>, Nothing>(database) {
 
@@ -20,7 +20,7 @@ class HentAlltidValgbareVedleggHandler(
     override suspend fun execute(request: Request): Outcome<List<ValgbartVedlegg>, Nothing>? {
         val spraakIBrevet = BrevredigeringEntity.findById(request.brevId)?.spraak ?: return null
 
-        val vedlegg = brevbakerService.getAlltidValgbareVedlegg().map {
+        val vedlegg = brevmalService.getAlltidValgbareVedlegg().map {
             ValgbartVedlegg(
                 kode = it.kode,
                 visningstekst = it.visningstekst,
