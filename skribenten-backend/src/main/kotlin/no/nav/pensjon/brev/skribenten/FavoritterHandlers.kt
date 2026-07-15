@@ -12,18 +12,15 @@ import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.insert
 import org.jetbrains.exposed.v1.jdbc.selectAll
 
-class HentFavoritterHandler(
-    database: Database,
-) : TransactionHandler<HentFavoritterHandler.Request, List<RedigerbarBrevkode>, Nothing>(database) {
+class HentFavoritterHandler(database: Database) : TransactionHandler<HentFavoritterHandler.Request, List<RedigerbarBrevkode>, Nothing>(database) {
 
     data class Request(val userId: NavIdent)
 
-    override suspend fun execute(request: Request): Outcome<List<RedigerbarBrevkode>, Nothing> = success(Favourites.selectAll().where { Favourites.userId eq request.userId }.map { row -> row[Favourites.letterCode] })
+    override suspend fun execute(request: Request): Outcome<List<RedigerbarBrevkode>, Nothing> =
+        success(Favourites.selectAll().where { Favourites.userId eq request.userId }.map { row -> row[Favourites.letterCode] })
 }
 
-class LeggTilFavorittHandler(
-    database: Database,
-) : TransactionHandler<LeggTilFavorittHandler.Request, Unit, Nothing>(database) {
+class LeggTilFavorittHandler(database: Database) : TransactionHandler<LeggTilFavorittHandler.Request, Unit, Nothing>(database) {
 
     data class Request(val userId: NavIdent, val brevkode: RedigerbarBrevkode)
 
