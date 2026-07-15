@@ -8,8 +8,8 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.SakKey
-import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevInfoService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.*
+import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -21,14 +21,14 @@ context(app: Application)
 fun Route.sakBrev() =
     route("/brev") {
         val dto2ApiService: Dto2ApiService by app.dependencies
-        val hentBrevInfoService: HentBrevInfoService by app.dependencies
+        val hentBrevForSak: HentBrevForSakHandler by app.dependencies
 
         get {
             val sak: Fagsak = call.attributes[SakKey]
 
             call.respond(
                 HttpStatusCode.OK,
-                hentBrevInfoService.hentBrevForSak(sak.saksId).map { dto2ApiService.toApi(it) }
+                hentBrevForSak(HentBrevForSakHandler.Request(sak.saksId)).asSuccess().map { dto2ApiService.toApi(it) }
             )
         }
 

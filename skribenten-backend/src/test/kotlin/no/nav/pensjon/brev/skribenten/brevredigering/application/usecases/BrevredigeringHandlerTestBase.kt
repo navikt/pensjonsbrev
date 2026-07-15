@@ -137,6 +137,10 @@ abstract class BrevredigeringHandlerTestBase {
             database = SharedPostgres.database,
         )
     }
+    protected val hentBrevInfoHandler by lazy { HentBrevInfoHandler(brevreservasjonPolicy, SharedPostgres.database) }
+    protected val hentBrevForSakHandler by lazy { HentBrevForSakHandler(brevreservasjonPolicy, SharedPostgres.database) }
+    protected val hentBrevForAlleSakerHandler by lazy { HentBrevForAlleSakerHandler(brevreservasjonPolicy, SharedPostgres.database) }
+
     protected val hentBrev by lazy {
         HentBrevHandler(
             redigerBrevPolicy = redigerBrevPolicy,
@@ -430,6 +434,15 @@ abstract class BrevredigeringHandlerTestBase {
             )
         )
     }
+
+    protected suspend fun hentBrevInfo(brevId: BrevId): Outcome<Dto.BrevInfo, Nothing>? =
+        hentBrevInfoHandler(HentBrevInfoHandler.Request(brevId))
+
+    protected suspend fun hentBrevForSak(saksId: SaksId): Outcome<List<Dto.BrevInfo>, Nothing> =
+        hentBrevForSakHandler(HentBrevForSakHandler.Request(saksId))
+
+    protected suspend fun hentBrevForAlleSaker(saksIder: Set<SaksId>): Outcome<List<Dto.BrevInfo>, Nothing> =
+        hentBrevForAlleSakerHandler(HentBrevForAlleSakerHandler.Request(saksIder))
 
     protected suspend fun slettBrev(
         brev: Dto.Brevredigering,
