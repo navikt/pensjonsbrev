@@ -746,6 +746,7 @@ export function newTable(rows: Row[]): Table {
     header: {
       id: null,
       parentId: null,
+      deletedColSpecs: [],
       colSpec: newColSpec(colCount),
     },
     rows,
@@ -977,6 +978,7 @@ export function newCell(text?: TextContent[]): Cell {
   return {
     id: null,
     parentId: null,
+    deletedContent: [],
     text: text ?? [newLiteral({ editedText: "" })],
   };
 }
@@ -985,6 +987,7 @@ export function newRow(colCount: number): Row {
   return {
     id: null,
     parentId: null,
+    deletedCells: [],
     cells: Array.from({ length: colCount }, () => newCell()),
   };
 }
@@ -998,6 +1001,7 @@ export function newColSpec(colCount: number, headers?: { text: string; font?: Fo
     headerContent: {
       id: null,
       parentId: null,
+      deletedContent: [],
       text: [
         newLiteral({
           editedText: headers?.[i]?.text ?? `Kolonne ${i + 1}`,
