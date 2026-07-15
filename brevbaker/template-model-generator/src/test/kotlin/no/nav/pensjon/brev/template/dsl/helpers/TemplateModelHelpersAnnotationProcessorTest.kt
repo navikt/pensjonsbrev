@@ -167,7 +167,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
         assertThat(result.exitCode).isEqualTo(KotlinSymbolProcessing.ExitCode.OK)
 
         val generatedSources = result.generatedSources.map { it.name }
-        assertThat(generatedSources).contains("MyLetterDataSelectors.kt")
+        assertThat(generatedSources).isEmpty()
     }
 
     @Test
