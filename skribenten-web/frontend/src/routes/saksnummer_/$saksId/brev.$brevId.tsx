@@ -231,6 +231,7 @@ function RedigerBrev({
     kind: WarnModalKind;
     count?: number;
   } | null>(null);
+  const pendingSubmitValuesRef = useRef<RedigerBrevSidemenyFormData | null>(null);
 
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
@@ -397,10 +398,12 @@ function RedigerBrev({
   const guardedSubmit = form.handleSubmit((values) => {
     const warning = getWarning();
     if (warning) {
+      pendingSubmitValuesRef.current = values;
       setWarn(warning);
       setWarnOpen(true);
       return;
     }
+    pendingSubmitValuesRef.current = null;
     onSubmit(values, navigateToBrevbehandler);
   });
 
@@ -451,13 +454,18 @@ function RedigerBrev({
               count={warn?.count ?? 0}
               kind={warn?.kind ?? "fritekst"}
               onClose={() => {
+                pendingSubmitValuesRef.current = null;
                 setWarnOpen(false);
                 setWarn(null);
               }}
               onFortsett={() => {
+                const values = pendingSubmitValuesRef.current;
+
+                pendingSubmitValuesRef.current = null;
                 setWarnOpen(false);
                 setWarn(null);
-                onSubmit(form.getValues(), navigateToBrevbehandler);
+                if (!values) return;
+                onSubmit(values, navigateToBrevbehandler);
               }}
               open={warnOpen}
             />
