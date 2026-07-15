@@ -63,6 +63,7 @@ abstract class BrevredigeringHandlerTestBase {
         brevbakerService.redigerbareMaler[Testbrevkoder.INFORMASJONSBREV] = informasjonsbrev
         brevbakerService.redigerbareMaler[Testbrevkoder.VEDTAKSBREV] = vedtaksbrev
         brevbakerService.redigerbareMaler[Testbrevkoder.VARSELBREV] = varselbrevIVedtakskontekst
+        brevbakerService.alltidValgbareVedleggResultat = emptySet()
         stagePdf(stagetPDF)
 
         penService.pesysBrevdata = brevdataResponseData
@@ -532,6 +533,7 @@ abstract class BrevredigeringHandlerTestBase {
         lateinit var renderMarkupResultat: suspend ((f: BrevbakerFelles) -> LetterMarkup)
         lateinit var renderPdfResultat: LetterResponse
         var modelSpecificationResultat: TemplateModelSpecification? = null
+        var alltidValgbareVedleggResultat: Set<AlltidValgbartVedleggBrevkode> = emptySet()
         override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
         val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
         val renderPdfKall = mutableListOf<LetterMarkup>()
@@ -563,7 +565,7 @@ abstract class BrevredigeringHandlerTestBase {
         }
 
         override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
-        override suspend fun getAlltidValgbareVedlegg(brevId: BrevId) = notYetStubbed()
+        override suspend fun getAlltidValgbareVedlegg() = alltidValgbareVedleggResultat
 
         override suspend fun hentRedigerbareVedleggTitler(
             brevkode: Brevkode.Redigerbart,
