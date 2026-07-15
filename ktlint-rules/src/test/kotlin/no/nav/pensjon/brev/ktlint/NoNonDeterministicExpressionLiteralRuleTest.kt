@@ -268,7 +268,7 @@ class NoNonDeterministicExpressionLiteralRuleTest {
     }
 
     @Test
-    fun `flags LocalDate now used directly as a showIf predicate expression with a specific message and auto-corrects it`() {
+    fun `flags non-deterministic call in a showIf predicate expression`() {
         val code =
             """
             val a = showIf(LocalDate.now().expr().notNull()) {
