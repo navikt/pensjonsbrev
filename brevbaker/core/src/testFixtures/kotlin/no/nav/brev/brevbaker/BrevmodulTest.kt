@@ -41,6 +41,7 @@ import java.nio.file.Path
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 import kotlin.reflect.KProperty
+import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.jvm.jvmErasure
 
 
@@ -70,10 +71,10 @@ abstract class BrevmodulTest(
     @Test
     fun `alle redigerbare brev har displaytext for alle saksbehandlervalg`() {
         templates.hentRedigerbareMaler().map { it.template.letterDataType.java }.forEach { clazz ->
-            val saksbehandlervalg = clazz.declaredFields.asSequence().map { it.type }
-                .filter { field -> SaksbehandlerValgBrevdata::class.java.isAssignableFrom(field) }
-                .map { it.kotlin }
-                .filterNot { SaksbehandlervalgIDSL::class.java.isAssignableFrom(it.java) }
+            val saksbehandlervalg = clazz.declaredFields.asSequence()
+                .map { it.type.kotlin }
+                .filter { it.isSubclassOf(SaksbehandlerValgBrevdata::class) }
+                .filterNot { it.isSubclassOf(SaksbehandlervalgIDSL::class) }
                 .singleOrNull()
 
             saksbehandlervalg?.members?.filterIsInstance<KProperty<*>>()?.forEach { field ->
