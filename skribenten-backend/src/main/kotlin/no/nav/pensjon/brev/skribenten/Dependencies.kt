@@ -123,6 +123,7 @@ fun Application.configureDependencies() {
         provide(EndreMottakerHandler::class)
         provide(EndreRedigertVedleggHandler::class)
         provide(EndreValgteVedleggHandler::class)
+        provide(FjernFavorittHandler::class)
         provide(FrigiReservasjonHandler::class)
         provide(HentAlltidValgbareVedleggHandler::class)
         provide(HentBrevAttesteringHandler::class)

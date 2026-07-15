@@ -6,11 +6,11 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brev.skribenten.FjernFavorittHandler
 import no.nav.pensjon.brev.skribenten.HentFavoritterHandler
 import no.nav.pensjon.brev.skribenten.LeggTilFavorittHandler
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.principal
-import no.nav.pensjon.brev.skribenten.db.FavouritesRepository
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 
@@ -18,7 +18,6 @@ context(app: Application)
 fun Route.meRoute() {
     val navansattService: NavansattService by app.dependencies
     val dto2ApiService: Dto2ApiService by app.dependencies
-    val favouritesRepository = FavouritesRepository()
 
     route("/me") {
         get("/userinfo") {
@@ -36,8 +35,10 @@ fun Route.meRoute() {
             respondOutcome(dto2ApiService, leggTil) { respond(it) }
         }
 
+        val fjernFavorittHandler: FjernFavorittHandler by app.dependencies
         delete("/favourites") {
-            call.respond(favouritesRepository.removeFavourite(principal().navIdent, RedigerbarBrevkode(call.receive<String>())))
+            val fjern = fjernFavorittHandler(FjernFavorittHandler.Request(principal().navIdent, RedigerbarBrevkode(call.receive<String>())))
+            respondOutcome(dto2ApiService, fjern) { respond(it) }
         }
 
         val hentFavoritterHandler: HentFavoritterHandler by app.dependencies
