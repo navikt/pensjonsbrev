@@ -65,8 +65,6 @@ internal class TemplateModelVisitor(
             classDeclaration.getAllProperties().toList().foldAccept(data.withNeeded(classDeclaration, dependency), this)
         } else {
             logger.logSkipped(classDeclaration)
-            classDeclaration.getAllProperties().map { it.closestClassDeclaration() }.filterNotNull()
-                .forEach { data.withVisited(it) }
             data.withVisited(classDeclaration)
         }
 
