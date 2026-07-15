@@ -13,22 +13,13 @@ type WarnModalCommonProps = {
   fortsettLabel?: string;
 };
 
-type WarnModalProps =
-  | ({
-      kind: "tekstValg";
-    } & WarnModalCommonProps)
-  | ({
-      kind: "fritekst";
-      count: number;
-    } & WarnModalCommonProps)
-  | ({
-      kind: "fritekstOgTekstValg";
-      count: number;
-    } & WarnModalCommonProps)
-  | ({
-      kind: "avsnittIkkeIMal";
-      count: number;
-    } & WarnModalCommonProps);
+type WarnModalProps = WarnModalCommonProps &
+  (
+    | { kind: "tekstValg" }
+    | { kind: "fritekst"; count: number }
+    | { kind: "fritekstOgTekstValg"; count: number }
+    | { kind: "avsnittIkkeIMal"; count: number }
+  );
 
 export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFortsett, fortsettLabel, ...rest }) => {
   // Early return so the modal unmounts when open is false
