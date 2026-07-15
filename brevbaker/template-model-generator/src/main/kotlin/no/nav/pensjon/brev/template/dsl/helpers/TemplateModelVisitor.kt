@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.dsl.helpers
 
+import com.google.devtools.ksp.closestClassDeclaration
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.symbol.ClassKind.CLASS
@@ -52,13 +53,20 @@ internal class TemplateModelVisitor(
         return pkg != name && !pkg.startsWith(nameWithSeparator)
     }
 
+    private fun KSClassDeclaration.shouldGenerateSelectors(): Boolean =
+        notInPackage("java") &&
+                notInPackage("kotlin") &&
+                qualifiedName?.asString() !in SKIPPED_NO_WARN_CLASSES
+
     override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: SelectorModels): SelectorModels =
         if (data.isVisited(classDeclaration)) {
             data.withDependency(classDeclaration, dependency)
-        } else if (classDeclaration.classKind in setOf(CLASS, INTERFACE) && classDeclaration.notInPackage("java") && classDeclaration.notInPackage("kotlin")) {
+        } else if (classDeclaration.classKind in setOf(CLASS, INTERFACE) && classDeclaration.shouldGenerateSelectors()) {
             classDeclaration.getAllProperties().toList().foldAccept(data.withNeeded(classDeclaration, dependency), this)
         } else {
             logger.logSkipped(classDeclaration)
+            classDeclaration.getAllProperties().map { it.closestClassDeclaration() }.filterNotNull()
+                .forEach { data.withVisited(it) }
             data.withVisited(classDeclaration)
         }
 

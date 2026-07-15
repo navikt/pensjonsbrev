@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.template.dsl.helpers
 import com.google.devtools.ksp.closestClassDeclaration
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import java.io.PrintWriter
 
 internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>>) {
@@ -44,15 +43,8 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
         private fun generateNodeCode(codeGenerator: CodeGenerator, node: Node, pkg: String, dependencies: Set<KSFile>) {
             if (node.include) {
                 val className = node.decl.simpleName.asString()
-                if (className != SaksbehandlervalgIDSL::class.simpleName) {
-                    val propertySelectors = node.decl.getAllProperties()
-                        .map { generatePropertySelectors(it) }
-                        .filter { it.isNotEmpty() }
-                    if (propertySelectors.any()) {
                         createFile(codeGenerator, pkg, className, dependencies) { writer ->
-                            propertySelectors.forEach { writer.println(it) }
-                        }
-                    }
+                            node.decl.getAllProperties().forEach { generatePropertySelectors(it, writer) }
                 }
             }
             node.children.values.forEach { child ->
@@ -63,7 +55,7 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
             }
         }
 
-        private fun generatePropertySelectors(property: KSPropertyDeclaration): String {
+        private fun generatePropertySelectors(property: KSPropertyDeclaration, writer: PrintWriter) {
             val propertyName = property.simpleName.asString()
             val selectorName = "${propertyName}Selector"
 
@@ -77,11 +69,7 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
 
             val type = property.type.resolveWithTypeParameters()
 
-            if (type == SaksbehandlervalgIDSL::class.qualifiedName) {
-                return ""
-            }
-
-            return (
+            writer.println(
                 """
                 |@JvmField
                 |val $selectorName =
