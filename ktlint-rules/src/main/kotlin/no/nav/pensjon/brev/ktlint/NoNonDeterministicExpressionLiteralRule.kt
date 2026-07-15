@@ -22,13 +22,17 @@ import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.PsiWhiteSpaceImpl
  *
  * - `Expression<T?>.ifNull(then)` - the `then` fallback.
  * - `ifElse(condition, ifTrue, ifFalse)` - all three arguments, including `condition`.
+ * - `showIf(predicate) { ... }` / `orShowIf(predicate) { ... }` - the `predicate`.
+ * - `ifNotNull(expr1, ..)` / `orIfNotNull(expr1, ..)` - the `expr1`/`expr2`/... arguments.
  *
  * Background: `stableHashCode` is computed over the whole `Expression` tree (including its `condition`/branch
  * sub-expressions), which brevbaker relies on to detect whether a rendered letter's content changed. A fallback,
- * branch, or condition such as `.ifNull(LocalDate.now())` or `ifElse(date.equalTo(LocalDate.now()), a, b)` makes that
- * hash change every day even though nothing about the letter template itself changed. These arguments must evaluate
- * to the same value on every evaluation - i.e. effectively a compile-time constant (literal, enum constant, or a
- * constructor/function call built purely from such constants).
+ * branch, or condition such as `.ifNull(LocalDate.now())`, `ifElse(date.equalTo(LocalDate.now()), a, b)`, or
+ * `showIf(virkFom.greaterThan(LocalDate.now()))` makes that hash change every day even though nothing about the
+ * letter template itself changed - `showIf`/`orShowIf`'s `predicate` becomes the `predicate` of a
+ * `ContentOrControlStructure.Conditional`, which is included in its `stableHashCode` exactly like `ifElse`'s
+ * `condition` is. These arguments must evaluate to the same value on every evaluation - i.e. effectively a
+ * compile-time constant (literal, enum constant, or a constructor/function call built purely from such constants).
  *
  * If you actually need "today's date" inside a template, use `no.nav.pensjon.brev.template.dsl.expression.localDateNow`
  * instead of `LocalDate.now()`: it is a dedicated `Expression<LocalDate>` (`UnaryOperation.LocalDateNow`) whose
@@ -71,6 +75,12 @@ class NoNonDeterministicExpressionLiteralRule :
                 // `ifElse(condition, ifTrue, ifFalse)`: check every argument, `condition` included, since it is
                 // also part of the `Expression` tree that `stableHashCode` is computed over.
                 "ifElse" -> valueArguments
+                // `showIf(predicate) { .. }` / `orShowIf(predicate) { .. }`: `predicate` becomes part of a
+                // `ContentOrControlStructure.Conditional`, whose `stableHashCode` includes it.
+                "showIf", "orShowIf" -> valueArguments
+                // `ifNotNull(expr1, .., scope)` / `orIfNotNull(expr1, .., scope)`: `expr1`/`expr2`/... become part of
+                // that same `Conditional`'s predicate (via `.notNull()`).
+                "ifNotNull", "orIfNotNull" -> valueArguments
                 else -> return
             }
 
