@@ -3395,6 +3395,7 @@ export interface components {
         EditParagraphContentTableColumnAlignment: "LEFT" | "RIGHT";
         /** EditParagraphContentTableCell */
         EditParagraphContentTableCell: {
+            deletedContent: number[];
             id?: number | null;
             parentId?: number | null;
             text: components["schemas"]["EditParagraphContentText"][];
@@ -3410,12 +3411,14 @@ export interface components {
         /** EditParagraphContentTableHeader */
         EditParagraphContentTableHeader: {
             colSpec: components["schemas"]["EditParagraphContentTableColumnSpec"][];
+            deletedColSpecs: number[];
             id?: number | null;
             parentId?: number | null;
         };
         /** EditParagraphContentTableRow */
         EditParagraphContentTableRow: {
             cells: components["schemas"]["EditParagraphContentTableCell"][];
+            deletedCells: number[];
             id?: number | null;
             parentId?: number | null;
         };
