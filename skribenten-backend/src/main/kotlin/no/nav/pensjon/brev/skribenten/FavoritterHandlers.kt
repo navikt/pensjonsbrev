@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.db.Favourites
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.jdbc.deleteWhere
@@ -39,8 +40,7 @@ class FjernFavorittHandler(database: Database) : TransactionHandler<FjernFavorit
 
     override suspend fun execute(request: Request): Outcome<Unit, Nothing> {
         Favourites.deleteWhere {
-            userId eq request.userId
-            letterCode eq request.brevkode
+            (userId eq request.userId) and (letterCode eq request.brevkode)
         }
         return success(Unit)
     }
