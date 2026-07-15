@@ -126,15 +126,15 @@
 
 .missing-from-template-block {
   position: relative;
-  border-radius: 0.5rem;
-  border: 0.125rem solid var(--ax-border-accent-strong);
+  border-radius: var(--ax-radius-8);
+  border: 2px solid var(--ax-border-accent-strong);
   background: var(--ax-bg-accent-soft);
-  padding: 1rem 0.5rem 0.5rem;
+  padding: var(--ax-space-16) var(--ax-space-8) var(--ax-space-8);
 }
 
 .missing-from-template-actions {
   position: absolute;
-  right: 0.5rem;
+  right: var(--ax-space-8);
   top: 0;
   transform: translateY(-50%);
   z-index: 1;
