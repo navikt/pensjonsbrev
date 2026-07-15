@@ -89,14 +89,28 @@
   }
 }
 
-/* Det skal ikke være luft mellom avsnitt og etterfølgende liste */
-.PARAGRAPH:has(+ .PARAGRAPH > ul:first-child) {
-  margin-bottom: 0;
+/* Synkroniser stil på lister med pdf */
+.PARAGRAPH > :is(ul, ol) {
+  margin-top: var(--ax-space-6);
+  margin-bottom: var(--ax-space-16);
+  padding-left: var(--ax-space-28);
 }
 
-/* Det skal ikke være luft mellom avsnitt og etterfølgende liste */
-.PARAGRAPH > ul {
-  margin-top: 0;
+/*
+Avsnitt som slutter med liste får mindre margin-bottom, untatt før neste overskrift
+Selectoren ´>´ betyr "direkte etterkommer"
+Selectoren ´+´ betyr "neste direkte søsken"
+*/
+.PARAGRAPH:has(> :last-child:is(ul, ol)):has(+ .PARAGRAPH) {
+  margin-bottom: var(--ax-space-16);
+}
+
+/*
+Det skal bare være litt luft mellom avsnitt og etterfølgende liste 
+Selectoren ´+´ betyr "neste direkte søsken"
+*/
+.PARAGRAPH:has(+ .PARAGRAPH :first-child:is(ul, ol)) {
+  margin-bottom: var(--ax-space-6);
 }
 
 /* Kort visuell markering av tekst som ble satt inn ved valg av tekstvalg */
@@ -151,8 +165,8 @@
 }
 
 /* Brukere som har aktivert "prefers-reduced-motion" (f.eks. i virtuelle miljøer eller av
-   tilgjengelighetsgrunner) ser ikke keyframe-animasjonen over. Vi erstatter den med en statisk
-   bakgrunnsfarge som vises til JS-timeren fjerner klassen etter ~2,2 sekunder. */
+tilgjengelighetsgrunner) ser ikke keyframe-animasjonen over. Vi erstatter den med en statisk
+bakgrunnsfarge som vises til JS-timeren fjerner klassen etter ~2,2 sekunder. */
 @media (prefers-reduced-motion: reduce) {
   .inserted-flash-block,
   .inserted-flash-text {

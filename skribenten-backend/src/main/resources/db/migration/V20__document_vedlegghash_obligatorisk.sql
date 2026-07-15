@@ -1,0 +1,2 @@
+ALTER TABLE "Document" ALTER COLUMN "vedleggHash" SET NOT NULL;
+ALTER TABLE "Document" ALTER COLUMN "vedleggHash" DROP DEFAULT;

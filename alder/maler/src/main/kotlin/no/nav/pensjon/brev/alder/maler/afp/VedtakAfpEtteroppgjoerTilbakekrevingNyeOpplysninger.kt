@@ -58,7 +58,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - AFP etteroppgjør med tilbakekreving (nye opplysninger)",
+            displayTitle = "Vedtak - tilbakekreving av for mye utbetalt pensjon - AFP etteroppgjør",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),

@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.brevbaker
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -12,6 +12,7 @@ import io.ktor.client.statement.*
 import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
 import kotlinx.io.EOFException
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
@@ -19,6 +20,7 @@ import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
@@ -81,14 +83,17 @@ interface BrevbakerService {
 
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
-    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggBrevkode>
+    suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode>
 }
 
-class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus {
+class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus, Closeable {
     private val logger = LoggerFactory.getLogger(BrevbakerServiceHttp::class.java)!!
 
-    private val brevbakerUrl = config.getString("url")
-    private val scope = config.getString("scope")
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache): this(config.services.brevbaker, authService, cache)
+
+    private val brevbakerUrl = config.url
+    private val scope = config.scope
     private val client = lagHttpClient {
         defaultRequest {
             url(brevbakerUrl)
@@ -287,8 +292,8 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             }
         }
 
-    override suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggBrevkode> =
-        cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, brevId) {
+    override suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode> =
+        cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, "alltidValgbareVedlegg") {
             val response = client.get("/letter/redigerbar/alltidValgbareVedlegg")
 
             if (response.status.isSuccess()) {
@@ -296,11 +301,12 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             } else {
                 throw BrevbakerServiceException(
                     response.bodyAsText().takeIf { it.isNotBlank() }
-                        ?: "Ukjent feil oppstod ved henting av alltid valgbare vedlegg for brev $brevId"
+                        ?: "Ukjent feil oppstod ved henting av alltid valgbare vedlegg for brev"
                 )
             }
         }
 
     override suspend fun ping() = ping("Brevbaker") { client.get("/ping_authorized") }
+    override fun close() { client.close() }
 }
 

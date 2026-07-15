@@ -1,36 +1,44 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
+import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Service
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import org.jetbrains.exposed.v1.jdbc.Database
 
 class HentEllerOpprettPdfHandler(
     private val brevdataService: BrevdataService,
     private val renderService: RenderService,
     private val brevmalService: BrevmalService,
-    private val p1Service: P1Service,
-) : BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult> {
+    private val hentP1DataHandler: HentP1DataHandler,
+    database: Database,
+) : TransactionHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult, Nothing>(database) {
 
     data class Request(
         override val brevId: BrevId,
     ) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Dto.HentDocumentResult, BrevredigeringError>? {
+    override suspend fun execute(request: Request): Outcome<Dto.HentDocumentResult, Nothing>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
         val document = brev.document
 
-        val pesysBrevdata = brevdataService.hentBrevdata(brev).withP1DataIfP1(brev)
+        val pesysBrevdata = brevdataService.hentBrevdata(brev).let { brevdata ->
+            if (brev.brevkode.kode() == P1_BREVKODE) {
+                hentP1DataHandler(HentP1DataHandler.Request(brevId = brev.id.value, saksId = brev.saksId))
+                    ?.asSuccess()
+                    ?.let { p1 -> brevdata.copy(brevdata = brevdata.brevdata.apply { put(P1_VEDLEGG_KEY, p1) }) }
+                    ?: throw IllegalStateException("Fant ikke P1-data for brev ${brev.id.value}")
+            } else {
+                brevdata
+            }
+        }
         val nyBrevdataHash = Hash.read(pesysBrevdata)
         val nyVedleggHash = brev.vedleggHash
 
@@ -56,16 +64,8 @@ class HentEllerOpprettPdfHandler(
             success(Dto.HentDocumentResult(document = newDocument, rendretBrevErEndret = rendretBrevErEndret))
         }
     }
-
-    override fun requiresReservasjon(request: Request): Boolean = false
-
-    private suspend fun BrevdataResponse.Data.withP1DataIfP1(brev: Brevredigering): BrevdataResponse.Data =
-        p1Service.patchMedP1DataOmP1(
-            brevdataResponse = this,
-            brevkode = brev.brevkode,
-            brevId = brev.id.value,
-            saksId = brev.saksId
-        )
 }
 
-
+// Disse må være i sync med api-modellen
+const val P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2"
+const val P1_VEDLEGG_KEY = "p1Vedlegg"

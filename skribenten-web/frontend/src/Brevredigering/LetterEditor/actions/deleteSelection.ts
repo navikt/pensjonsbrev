@@ -293,7 +293,7 @@ function deleteInTable(
         : table.rows[start.rowIndex].cells[start.cellIndex];
 
     removeInTextContentParent(
-      { content: startCell.text, deletedContent: [], id: startCell.id },
+      { content: startCell.text, deletedContent: startCell.deletedContent, id: startCell.id },
       { contentIndex: start.cellContentIndex, cursorPosition: start.cursorPosition },
       { contentIndex: end.cellContentIndex, cursorPosition: end.cursorPosition },
     );
@@ -320,20 +320,20 @@ function clearTableRange(
       if (r === start.rowIndex && c === start.cellIndex) {
         // first cell in selection, remove from start position
         removeInTextContentParent(
-          { content: cell.text, deletedContent: [], id: cell.id },
+          { content: cell.text, deletedContent: cell.deletedContent, id: cell.id },
           { contentIndex: start.cellContentIndex, cursorPosition: start.cursorPosition },
         );
       } else if (end && r === end.rowIndex && c === end.cellIndex) {
         // last cell in selection, remove up to end position
         removeInTextContentParent(
-          { content: cell.text, deletedContent: [], id: cell.id },
+          { content: cell.text, deletedContent: cell.deletedContent, id: cell.id },
           { contentIndex: 0, cursorPosition: 0 },
           { contentIndex: end.cellContentIndex, cursorPosition: end.cursorPosition },
         );
       } else {
         // middle cells, remove everything
         removeInTextContentParent(
-          { content: cell.text, deletedContent: [], id: cell.id },
+          { content: cell.text, deletedContent: cell.deletedContent, id: cell.id },
           { contentIndex: 0, cursorPosition: 0 },
         );
       }

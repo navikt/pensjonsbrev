@@ -55,7 +55,7 @@ export const LetterEditor = ({
 
   const undo = useCallback(() => {
     setEditorState((current) => {
-      if (freeze || current.saveStatus === "SAVE_PENDING" || current.history.entryPointer < 0) return current;
+      if (freeze || current.history.entryPointer < 0) return current;
       const entry = current.history.entries[current.history.entryPointer];
       const previous =
         entry.type === "SAKSBEHANDLERVALG_ENDRET"
@@ -79,12 +79,7 @@ export const LetterEditor = ({
 
   const redo = useCallback(() => {
     setEditorState((current) => {
-      if (
-        freeze ||
-        current.saveStatus === "SAVE_PENDING" ||
-        current.history.entryPointer >= current.history.entries.length - 1
-      )
-        return current;
+      if (freeze || current.history.entryPointer >= current.history.entries.length - 1) return current;
       const nextPointer = current.history.entryPointer + 1;
       const entry = current.history.entries[nextPointer];
       const next =
