@@ -1,5 +1,7 @@
 rootProject.name = "pensjonsbrev"
 
+include("ktlint-rules")
+
 include("brevbaker:core")
 include("brevbaker:api-model-common")
 include("brevbaker:markup")

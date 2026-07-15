@@ -138,6 +138,32 @@ Selectoren ´+´ betyr "neste direkte søsken"
   animation: none;
 }
 
+.missing-from-template-block {
+  position: relative;
+  border-radius: var(--ax-radius-8);
+  border: 2px solid var(--ax-border-accent-strong);
+  background: var(--ax-bg-accent-soft);
+  padding: var(--ax-space-16) var(--ax-space-8) var(--ax-space-8);
+}
+
+.missing-from-template-actions {
+  position: absolute;
+  right: var(--ax-space-8);
+  top: 0;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.missing-from-template-actions button {
+  background: var(--ax-bg-default);
+}
+
+.missing-from-template-actions button:hover,
+.missing-from-template-actions button:focus-visible,
+.missing-from-template-actions button:active {
+  background: var(--ax-bg-accent-moderate-hover);
+}
+
 /* Brukere som har aktivert "prefers-reduced-motion" (f.eks. i virtuelle miljøer eller av
 tilgjengelighetsgrunner) ser ikke keyframe-animasjonen over. Vi erstatter den med en statisk
 bakgrunnsfarge som vises til JS-timeren fjerner klassen etter ~2,2 sekunder. */
