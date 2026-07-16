@@ -57,7 +57,15 @@ type EditorMenuProps = {
 
 export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMal }: EditorMenuProps) => {
   return (
-    <Box asChild background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0" minHeight="48px" width="100%">
+    <Box
+      asChild
+      background="default"
+      borderColor="neutral-subtle"
+      borderWidth="0 0 1 0"
+      flexShrink="0"
+      minHeight="48px"
+      width="100%"
+    >
       <HStack align="center" gap="space-4" justify="space-between" paddingInline="space-8">
         <HStack align="center" gap="space-8" margin-block="2">
           <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
