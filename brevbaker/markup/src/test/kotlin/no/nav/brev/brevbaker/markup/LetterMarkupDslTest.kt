@@ -80,28 +80,6 @@ class LetterMarkupDslTest {
     }
 
     @Test
-    fun `base letter round-trips through json`() {
-        val letter = letterMarkup {
-            saksinformasjon(
-                gjelderNavn = "Ola Nordmann",
-                gjelderFoedselsnummer = "12345678901",
-                saksnummer = "9876543",
-                dokumentDato = LocalDate.of(2026, 7, 9),
-            )
-            title1("Tittel")
-            outline {
-                paragraph("Innhold")
-            }
-            signatur(
-                hilsenTekst = "Med vennlig hilsen",
-                navAvsenderEnhet = "NAV",
-            )
-        }
-        val decoded = decodeLetterMarkup(letter.toJson())
-        assertEquals(letter, decoded)
-    }
-
-    @Test
     fun `pdfTittel builds standalone title`() {
         val tittel = pdfTittel { text("Vedtak om uføretrygd") }
 

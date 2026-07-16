@@ -1,7 +1,5 @@
 package no.nav.brev.brevbaker.markup.elements
 
-import no.nav.brev.brevbaker.markup.decodeBlock
-import no.nav.brev.brevbaker.markup.toJson
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
 import no.nav.brev.brevbaker.markup.outline.Block.Table.ColumnAlignment
@@ -70,13 +68,5 @@ class MarkupElementsTest {
             formChoice(prompt = listOf(literal("Velg")), choice(literal("Ja")), choice(literal("Nei")))
         }
         assertEquals(2, formChoice.choices.size)
-    }
-
-    @Test
-    fun `standalone element round-trips through json`() {
-        val block: Block = markupElement { paragraph(literal("Hei", id = 1), id = 5) }
-        val json = block.toJson()
-        val decoded = decodeBlock(json)
-        assertEquals(block, decoded)
     }
 }

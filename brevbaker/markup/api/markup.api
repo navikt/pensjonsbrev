@@ -142,19 +142,6 @@ public final class no/nav/brev/brevbaker/markup/LetterPDFRequestKt {
 	public static final fun toJson (Lno/nav/brev/brevbaker/markup/LetterPDFRequest;)Ljava/lang/String;
 }
 
-public final class no/nav/brev/brevbaker/markup/MarkupSerializationKt {
-	public static final fun decodeAttachment (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Attachment;
-	public static final fun decodeBlock (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/outline/Block;
-	public static final fun decodeLetterMarkup (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
-	public static final fun decodePDFTittel (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/PDFTittel;
-	public static final fun decodeText (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/outline/Text;
-	public static final fun toJson (Lno/nav/brev/brevbaker/markup/Attachment;)Ljava/lang/String;
-	public static final fun toJson (Lno/nav/brev/brevbaker/markup/LetterMarkup;)Ljava/lang/String;
-	public static final fun toJson (Lno/nav/brev/brevbaker/markup/PDFTittel;)Ljava/lang/String;
-	public static final fun toJson (Lno/nav/brev/brevbaker/markup/outline/Block;)Ljava/lang/String;
-	public static final fun toJson (Lno/nav/brev/brevbaker/markup/outline/Text;)Ljava/lang/String;
-}
-
 public final class no/nav/brev/brevbaker/markup/PDFTittel {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/PDFTittel$Companion;
 	public final fun component1 ()Ljava/util/List;
