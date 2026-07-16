@@ -29,16 +29,15 @@ import no.nav.brev.brevbaker.markup.dsl.title2
 import no.nav.brev.brevbaker.markup.dsl.title3
 import no.nav.brev.brevbaker.markup.dsl.title4
 import no.nav.brev.brevbaker.markup.outline.Block
-import no.nav.brev.brevbaker.markup.outline.ElementTags
 import no.nav.brev.brevbaker.markup.outline.Text
-import no.nav.brev.brevbaker.markup.outline.Text.FontType
+import no.nav.brev.brevbaker.template.render.text.appendText
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent
 import no.nav.pensjon.brev.template.StableHash.Companion.with
 import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.documentLanguageSettings
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
-import java.util.*
 
 data class LetterWithAttachmentsMarkupV2(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
 
@@ -50,22 +49,6 @@ data class LetterWithAttachmentsMarkupV2(val letterMarkup: LetterMarkup, val att
 @OptIn(InterneDataklasser::class)
 internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>() {
     private val languageSettings = documentLanguageSettings
-
-    /**
-     * Lokal mellomrepresentasjon for ett enkelt tekst-uttrykk i core. Trengs fordi produksjonskoden
-     * verken kan konstruere modulens [Text]-typer direkte (interne konstruktører) eller lese tilbake
-     * tekst som allerede er lagt inn i en append-only DSL-bygger. [RenderedText] brukes derfor kun
-     * internt i [textContentToRenderedText]/[mergeLiterals] for å slå sammen nabo-literaler *innenfor
-     * ett uttrykk*, før [emitText] skriver resultatet rett inn i DSL-en. Den tres ikke lenger gjennom
-     * outline/paragraf/tabell osv.
-     */
-    private sealed interface RenderedText {
-        val id: Int
-
-        data class Literal(override val id: Int, val text: String, val fontType: FontType, val tags: Set<ElementTags>) : RenderedText
-        data class Variable(override val id: Int, val text: String, val fontType: FontType) : RenderedText
-        data class NewLine(override val id: Int) : RenderedText
-    }
 
     override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterWithAttachmentsMarkupV2 =
         LetterWithAttachmentsMarkupV2(
@@ -86,7 +69,7 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
     ): LetterMarkupBuilder<ExtendedContentBuilder>.() -> Unit {
         val context = RenderContext(scope)
         return {
-            title1 { emitTexts(context, template.title) }
+            title1 { appendTexts(context, template.title) }
             saksinformasjon(
                 gjelderNavn = context.scope.felles.bruker.fulltNavn(),
                 gjelderFoedselsnummer = context.scope.felles.bruker.foedselsnummer.value,
@@ -149,17 +132,17 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
 
     private fun renderAttachment(attachmentContext: RenderContext, attachment: AttachmentTemplate<*, *>): Attachment =
         attachmentExtended(inkluderSaksinformasjon = attachment.includeSakspart) {
-            title1 { emitTexts(attachmentContext, attachment.title) }
+            title1 { appendTexts(attachmentContext, attachment.title) }
             outline { renderOutline(attachmentContext, attachment.outline) }
         }
 
     fun renderPDFTitlesOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<PDFTittel> {
         val context = RenderContext(scope)
-        return template.pdfAttachments.map { pdfTittelExtended { emitTexts(context, it.template.title) } }
+        return template.pdfAttachments.map { pdfTittelExtended { appendTexts(context, it.template.title) } }
     }
 
     private fun renderTitleTexts(context: RenderContext, elements: List<TextElement<*>>): List<Text> =
-        pdfTittelExtended { emitTexts(context, elements) }.title1
+        pdfTittelExtended { appendTexts(context, elements) }.title1
 
     private fun OutlineBuilder<ExtendedContentBuilder>.renderOutline(context: RenderContext, outline: List<OutlineElement<*>>) {
         render(context, outline) { outlineContext, element -> renderOutlineContent(outlineContext, element) }
@@ -168,21 +151,21 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
     private fun OutlineBuilder<ExtendedContentBuilder>.renderOutlineContent(context: RenderContext, element: Element.OutlineContent<*>) {
         when (element) {
             is Element.OutlineContent.Paragraph -> renderParagraph(context, element)
-            is Element.OutlineContent.Title1 -> title2(context.stableHash(element)) { emitTexts(context, element.text) }
-            is Element.OutlineContent.Title2 -> title3(context.stableHash(element)) { emitTexts(context, element.text) }
-            is Element.OutlineContent.Title3 -> title4(context.stableHash(element)) { emitTexts(context, element.text) }
+            is Element.OutlineContent.Title1 -> title2(context.stableHash(element)) { appendTexts(context, element.text) }
+            is Element.OutlineContent.Title2 -> title3(context.stableHash(element)) { appendTexts(context, element.text) }
+            is Element.OutlineContent.Title3 -> title4(context.stableHash(element)) { appendTexts(context, element.text) }
         }
     }
 
     private fun OutlineBuilder<ExtendedContentBuilder>.renderParagraph(context: RenderContext, paragraph: Element.OutlineContent.Paragraph<*>) {
-        val currentTexts = mutableListOf<Pair<RenderContext, Element.OutlineContent.ParagraphContent.Text<*>>>()
+        val currentTexts = mutableListOf<Pair<RenderContext, ParagraphContent.Text<*>>>()
         val currentSources = mutableListOf<StableHash>()
 
         fun flushParagraph() {
             if (currentTexts.isNotEmpty()) {
                 val fragmentHash = StableHash.of(currentSources.toList()).with(paragraph.stableHashModifier)
                 val texts = currentTexts.toList()
-                paragraph(context.stableHash(fragmentHash)) { texts.forEach { (textContext, text) -> emitText(textContext, text) } }
+                paragraph(context.stableHash(fragmentHash)) { texts.forEach { (textContext, text) -> appendText(textContext, text) } }
                 currentTexts.clear()
                 currentSources.clear()
             }
@@ -190,23 +173,23 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
 
         render(context, paragraph.paragraph) { paragraphContext, element ->
             when (element) {
-                is Element.OutlineContent.ParagraphContent.Text -> {
+                is ParagraphContent.Text -> {
                     currentTexts.add(paragraphContext to element)
                     currentSources.add(element)
                 }
-                is Element.OutlineContent.ParagraphContent.ItemList -> {
+                is ParagraphContent.ItemList -> {
                     flushParagraph()
                     renderItemList(paragraphContext, element)
                 }
-                is Element.OutlineContent.ParagraphContent.Table -> {
+                is ParagraphContent.Table -> {
                     flushParagraph()
                     renderTable(paragraphContext, element)
                 }
-                is Element.OutlineContent.ParagraphContent.Form.Text -> {
+                is ParagraphContent.Form.Text -> {
                     flushParagraph()
                     renderFormText(paragraphContext, element)
                 }
-                is Element.OutlineContent.ParagraphContent.Form.MultipleChoice -> {
+                is ParagraphContent.Form.MultipleChoice -> {
                     flushParagraph()
                     renderFormChoice(paragraphContext, element)
                 }
@@ -215,22 +198,22 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
         flushParagraph()
     }
 
-    private fun OutlineBuilder<ExtendedContentBuilder>.renderItemList(context: RenderContext, element: Element.OutlineContent.ParagraphContent.ItemList<*>) {
+    private fun OutlineBuilder<ExtendedContentBuilder>.renderItemList(context: RenderContext, element: ParagraphContent.ItemList<*>) {
         val items = buildList {
             render(context, element.items) { itemContext, item -> add(itemContext to item) }
         }
         if (items.isEmpty()) return
         when (element.type) {
             Listetype.PUNKTLISTE -> itemList(context.stableHash(element)) {
-                items.forEach { (itemContext, listItem) -> item(itemContext.stableHash(listItem)) { emitTexts(itemContext, listItem.text) } }
+                items.forEach { (itemContext, listItem) -> item(itemContext.stableHash(listItem)) { appendTexts(itemContext, listItem.text) } }
             }
             Listetype.NUMMERERT_LISTE -> numberedList(context.stableHash(element)) {
-                items.forEach { (itemContext, listItem) -> item(itemContext.stableHash(listItem)) { emitTexts(itemContext, listItem.text) } }
+                items.forEach { (itemContext, listItem) -> item(itemContext.stableHash(listItem)) { appendTexts(itemContext, listItem.text) } }
             }
         }
     }
 
-    private fun OutlineBuilder<ExtendedContentBuilder>.renderTable(context: RenderContext, element: Element.OutlineContent.ParagraphContent.Table<*>) {
+    private fun OutlineBuilder<ExtendedContentBuilder>.renderTable(context: RenderContext, element: ParagraphContent.Table<*>) {
         val rows = buildList {
             render(context, element.rows) { rowContext, row -> add(rowContext to row) }
         }
@@ -243,114 +226,47 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
                         headerContentId = context.stableHash(columnSpec.headerContent),
                         alignment = mapAlignment(columnSpec.alignment),
                         span = columnSpec.columnSpan,
-                    ) { emitTexts(context, columnSpec.headerContent.text) }
+                    ) { appendTexts(context, columnSpec.headerContent.text) }
                 }
             }
             rows.forEach { (rowContext, row) ->
                 row(rowContext.stableHash(row)) {
-                    row.cells.forEach { tableCell -> cell(rowContext.stableHash(tableCell)) { emitTexts(rowContext, tableCell.text) } }
+                    row.cells.forEach { tableCell -> cell(rowContext.stableHash(tableCell)) { appendTexts(rowContext, tableCell.text) } }
                 }
             }
         }
     }
 
-    private fun OutlineBuilder<ExtendedContentBuilder>.renderFormText(context: RenderContext, element: Element.OutlineContent.ParagraphContent.Form.Text<*>) {
+    private fun OutlineBuilder<ExtendedContentBuilder>.renderFormText(context: RenderContext, element: ParagraphContent.Form.Text<*>) {
         formText(context.stableHash(element), mapFormSize(element.size), element.vspace) {
-            emitTexts(context, listOf(element.prompt))
+            appendTexts(context, listOf(element.prompt))
         }
     }
 
-    private fun OutlineBuilder<ExtendedContentBuilder>.renderFormChoice(context: RenderContext, element: Element.OutlineContent.ParagraphContent.Form.MultipleChoice<*>) {
+    private fun OutlineBuilder<ExtendedContentBuilder>.renderFormChoice(context: RenderContext, element: ParagraphContent.Form.MultipleChoice<*>) {
         formChoice(context.stableHash(element), element.vspace) {
-            prompt { emitTexts(context, listOf(element.prompt)) }
+            prompt { appendTexts(context, listOf(element.prompt)) }
             element.choices.forEach { choiceElement ->
-                choice(context.stableHash(choiceElement)) { emitText(context, choiceElement) }
+                choice(context.stableHash(choiceElement)) { appendText(context, choiceElement) }
             }
         }
     }
 
-    private fun ExtendedContentBuilder.emitTexts(context: RenderContext, elements: List<TextElement<*>>) {
-        render(context, elements) { inner, text -> emitText(inner, text) }
+    private fun ExtendedContentBuilder.appendTexts(context: RenderContext, elements: List<TextElement<*>>) {
+        render(context, elements) { inner, text -> appendText(inner, text) }
     }
 
-    private fun ExtendedContentBuilder.emitText(context: RenderContext, element: Element.OutlineContent.ParagraphContent.Text<*>) {
-        textContentToRenderedText(context, element).forEach { rendered ->
-            when (rendered) {
-                is RenderedText.Literal -> text(rendered.id, rendered.text, rendered.fontType, rendered.tags)
-                is RenderedText.Variable -> variable(rendered.id, rendered.text, rendered.fontType)
-                is RenderedText.NewLine -> newLine(rendered.id)
-            }
-        }
-    }
-
-    private fun textContentToRenderedText(context: RenderContext, element: Element.OutlineContent.ParagraphContent.Text<*>): List<RenderedText> {
-        val fontType = renderFontType(element.fontType)
-        return when (element) {
-            is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage -> element.expr(context.scope.language).toRenderedText(context, fontType)
-            is Element.OutlineContent.ParagraphContent.Text.Expression -> element.expression.toRenderedText(context, fontType)
-            is Element.OutlineContent.ParagraphContent.Text.Literal -> listOf(RenderedText.Literal(context.stableHash(element), element.text(context.scope.language), fontType, emptySet()))
-            is Element.OutlineContent.ParagraphContent.Text.NewLine -> listOf(RenderedText.NewLine(context.stableHash(element)))
-        }
-    }
-
-    private fun renderFontType(fontType: Element.OutlineContent.ParagraphContent.Text.FontType): FontType =
-        when (fontType) {
-            Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN -> FontType.PLAIN
-            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD -> FontType.BOLD
-            Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC -> FontType.ITALIC
-        }
-
-    @OptIn(BrevbakerDSLInternal::class)
-    private fun StringExpression.toRenderedText(context: RenderContext, fontType: FontType): List<RenderedText> =
-        when (this) {
-            is Expression.Literal -> lagLiteral(context, fontType)
-            is Expression.BinaryInvoke<*, *, *> if operation is BinaryOperation.Concat -> {
-                // Since we know that operation is Concat, we also know that `first` and `second` are StringExpression.
-                @Suppress("UNCHECKED_CAST")
-                (first as StringExpression).toRenderedText(context, fontType) + (second as StringExpression).toRenderedText(context, fontType)
-            }
-            is Expression.BinaryInvoke<*, *, *> if operation is BinaryOperation.BrevdataEllerFritekst -> {
-                val (erFritekst, text) = (operation as BinaryOperation.BrevdataEllerFritekst).getResultat(first, second, context.scope)
-                if (erFritekst) {
-                    lagLiteral(context, fontType, text, ElementTags.FRITEKST)
-                } else {
-                    lagVariabel(context, fontType, text)
-                }
-            }
-            is Expression.UnaryInvoke<*, *> if operation is UnaryOperation.Fritekst -> lagLiteral(context, fontType, eval(context.scope), ElementTags.FRITEKST)
-            is Expression.UnaryInvoke<*, *> if operation is UnaryOperation.RedigerbarData -> lagLiteral(context, fontType, eval(context.scope), ElementTags.REDIGERBAR_DATA)
-            else -> lagVariabel(context, fontType)
-        }.mergeLiterals(fontType)
-
-    private fun Expression<String>.lagLiteral(context: RenderContext, fontType: FontType, text: String = eval(context.scope), tag: ElementTags? = null): List<RenderedText> =
-        listOf(RenderedText.Literal(context.stableHash(this), text, fontType, tag?.let { setOf(it) } ?: emptySet()))
-
-    private fun Expression<String>.lagVariabel(context: RenderContext, fontType: FontType, text: String = eval(context.scope)): List<RenderedText> =
-        listOf(RenderedText.Variable(context.stableHash(this), text, fontType))
-
-    private fun List<RenderedText>.mergeLiterals(fontType: FontType): List<RenderedText> =
-        fold(emptyList()) { acc, current ->
-            val previous = acc.lastOrNull()
-            if (acc.isEmpty()) {
-                listOf(current)
-            } else if (previous is RenderedText.Literal && current is RenderedText.Literal && previous.tags.isEmpty() && current.tags.isEmpty()) {
-                acc.subList(0, acc.size - 1) + RenderedText.Literal(Objects.hash(previous.id, current.id), previous.text + current.text, fontType, emptySet())
-            } else {
-                acc + current
-            }
-        }
-
-    private fun mapFormSize(size: Element.OutlineContent.ParagraphContent.Form.Text.Size): Block.FormText.Size =
+    private fun mapFormSize(size: ParagraphContent.Form.Text.Size): Block.FormText.Size =
         when (size) {
-            Element.OutlineContent.ParagraphContent.Form.Text.Size.NONE -> Block.FormText.Size.NONE
-            Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT -> Block.FormText.Size.SHORT
-            Element.OutlineContent.ParagraphContent.Form.Text.Size.LONG -> Block.FormText.Size.LONG
-            Element.OutlineContent.ParagraphContent.Form.Text.Size.FILL -> Block.FormText.Size.FILL
+            ParagraphContent.Form.Text.Size.NONE -> Block.FormText.Size.NONE
+            ParagraphContent.Form.Text.Size.SHORT -> Block.FormText.Size.SHORT
+            ParagraphContent.Form.Text.Size.LONG -> Block.FormText.Size.LONG
+            ParagraphContent.Form.Text.Size.FILL -> Block.FormText.Size.FILL
         }
 
-    private fun mapAlignment(alignment: Element.OutlineContent.ParagraphContent.Table.ColumnAlignment): Block.Table.ColumnAlignment =
+    private fun mapAlignment(alignment: ParagraphContent.Table.ColumnAlignment): Block.Table.ColumnAlignment =
         when (alignment) {
-            Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT -> Block.Table.ColumnAlignment.LEFT
-            Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT -> Block.Table.ColumnAlignment.RIGHT
+            ParagraphContent.Table.ColumnAlignment.LEFT -> Block.Table.ColumnAlignment.LEFT
+            ParagraphContent.Table.ColumnAlignment.RIGHT -> Block.Table.ColumnAlignment.RIGHT
         }
 }

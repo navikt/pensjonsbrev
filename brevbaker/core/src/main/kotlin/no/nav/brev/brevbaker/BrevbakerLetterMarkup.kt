@@ -17,41 +17,48 @@ import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage as MarkupLetterMar
 import no.nav.brev.brevbaker.markup.outline.Text as MarkupText
 import no.nav.brev.brevbaker.markup.dsl.dataUsageProperty
 import no.nav.brev.brevbaker.markup.dsl.letterMarkupExtended
-import no.nav.brev.brevbaker.markup.dsl.letterMarkupWithDataUsageExtended
+import no.nav.brev.brevbaker.markup.dsl.letterMarkupWithDataUsage
 
 internal object BrevbakerLetterMarkup {
-    fun <T: BrevbakerBrevdata> renderLetterMarkup(letter: Letter<T>): LetterMarkup = Letter2Markup.renderLetterOnly(letter.toScope(), letter.template)
+    fun <T : BrevbakerBrevdata> renderLetterMarkup(letter: Letter<T>): LetterMarkup = Letter2Markup.renderLetterOnly(letter.toScope(), letter.template)
 
-    fun <T: BrevbakerBrevdata> renderRedigerbartVedleggTitler(letter: Letter<T>): Map<VedleggId, List<LetterMarkup.ParagraphContent.Text>> =
+    fun <T : BrevbakerBrevdata> renderRedigerbartVedleggTitler(letter: Letter<T>): Map<VedleggId, List<LetterMarkup.ParagraphContent.Text>> =
         Letter2Markup.renderEditableAttachmentTitles(letter.toScope(), letter.template)
 
-    fun <T: BrevbakerBrevdata> renderRedigerbartVedlegg(letter: Letter<T>, vedleggId: VedleggId): LetterMarkup.Attachment? =
+    fun <T : BrevbakerBrevdata> renderRedigerbartVedlegg(letter: Letter<T>, vedleggId: VedleggId): LetterMarkup.Attachment? =
         Letter2Markup.renderEditableAttachment(letter.toScope(), letter.template, vedleggId)
 
     @OptIn(InterneDataklasser::class)
-    fun <T: BrevbakerBrevdata> renderLetterMarkupWithDataUsage(letter: Letter<T>): LetterMarkupWithDataUsage =
+    fun <T : BrevbakerBrevdata> renderLetterMarkupWithDataUsage(letter: Letter<T>): LetterMarkupWithDataUsage =
         SelectorUsage().let { usage ->
             LetterMarkupWithDataUsageImpl(
-            Letter2Markup.renderLetterOnly(letter.toScope(usage), letter.template),
+                Letter2Markup.renderLetterOnly(letter.toScope(usage), letter.template),
                 usage.propertyUsage,
                 letter.template.letterMetadata.brevtype
             )
         }
 
-    fun <T: BrevbakerBrevdata> renderLetterMarkupV2(letter: Letter<T>): MarkupLetterMarkup = Letter2MarkupV2.renderLetterOnly(letter.toScope(), letter.template)
+    fun <T : BrevbakerBrevdata> renderLetterMarkupV2(letter: Letter<T>): MarkupLetterMarkup = Letter2MarkupV2.renderLetterOnly(letter.toScope(), letter.template)
 
-    fun <T: BrevbakerBrevdata> renderRedigerbartVedleggV2Titler(letter: Letter<T>): Map<VedleggId, List<MarkupText>> =
+    fun <T : BrevbakerBrevdata> renderRedigerbartVedleggV2Titler(letter: Letter<T>): Map<VedleggId, List<MarkupText>> =
         Letter2MarkupV2.renderEditableAttachmentTitles(letter.toScope(), letter.template)
 
-    fun <T: BrevbakerBrevdata> renderRedigerbartVedleggV2(letter: Letter<T>, vedleggId: VedleggId): MarkupAttachment? =
+    fun <T : BrevbakerBrevdata> renderRedigerbartVedleggV2(letter: Letter<T>, vedleggId: VedleggId): MarkupAttachment? =
         Letter2MarkupV2.renderEditableAttachment(letter.toScope(), letter.template, vedleggId)
 
-    fun <T: BrevbakerBrevdata> renderLetterMarkupWithDataUsageV2(letter: Letter<T>): MarkupLetterMarkupWithDataUsage =
+    fun <T : BrevbakerBrevdata> renderLetterMarkupWithDataUsageV2(letter: Letter<T>): MarkupLetterMarkupWithDataUsage =
         SelectorUsage().let { usage ->
-            val scope = letter.toScope(usage)
-            val build = Letter2MarkupV2.buildLetter(scope, letter.template)
-            letterMarkupExtended(build)
-            val dataUsage = usage.propertyUsage.map { dataUsageProperty(it.typeName, it.propertyName) }.toSet()
-            letterMarkupWithDataUsageExtended(letter.template.letterMetadata.brevtype.toMarkup(), dataUsage, build)
+            letterMarkupWithDataUsage(
+                markup = letterMarkupExtended(
+                    Letter2MarkupV2.buildLetter(
+                        scope = letter.toScope(usage),
+                        template = letter.template
+                    )
+                ),
+                brevtype = letter.template.letterMetadata.brevtype.toMarkup(),
+                letterDataUsage = usage.propertyUsage.map {
+                    dataUsageProperty(it.typeName, it.propertyName)
+                }.toSet()
+            )
         }
 }
