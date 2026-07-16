@@ -250,24 +250,25 @@ class LetterMarkupExtendedDslTest {
         val property = dataUsageProperty(typeName = "UngUfoerDto", propertyName = "totaltUfoerePerMnd")
 
         val letter = letterMarkupWithDataUsage(
+            markup = letterMarkup {
+                saksinformasjon(
+                    gjelderNavn = "Ola Nordmann",
+                    gjelderFoedselsnummer = "12345678901",
+                    saksnummer = "9876543",
+                    dokumentDato = LocalDate.of(2026, 7, 9),
+                )
+                title1("Vedtak")
+                outline {
+                    paragraph("Innhold")
+                }
+                signatur(
+                    hilsenTekst = "Med vennlig hilsen",
+                    navAvsenderEnhet = "NAV",
+                )
+            },
             brevtype = Brevtype.VEDTAKSBREV,
             letterDataUsage = setOf(property),
-        ) {
-            saksinformasjon(
-                gjelderNavn = "Ola Nordmann",
-                gjelderFoedselsnummer = "12345678901",
-                saksnummer = "9876543",
-                dokumentDato = LocalDate.of(2026, 7, 9),
-            )
-            title1("Vedtak")
-            outline {
-                paragraph("Innhold")
-            }
-            signatur(
-                hilsenTekst = "Med vennlig hilsen",
-                navAvsenderEnhet = "NAV",
-            )
-        }
+        )
 
         assertEquals(Brevtype.VEDTAKSBREV, letter.brevtype)
         assertEquals(setOf(property), letter.letterDataUsage)
@@ -280,28 +281,29 @@ class LetterMarkupExtendedDslTest {
         fun id() = next++
         val property = dataUsageProperty(typeName = "UngUfoerDto", propertyName = "belop")
 
-        val letter = letterMarkupWithDataUsageExtended(
+        val letter = letterMarkupWithDataUsage(
+            markup = letterMarkupExtended {
+                saksinformasjon(
+                    gjelderNavn = "Ola Nordmann",
+                    gjelderFoedselsnummer = "12345678901",
+                    saksnummer = "9876543",
+                    dokumentDato = LocalDate.of(2026, 7, 9),
+                )
+                title1 { text(id(), "Orientering") }
+                outline {
+                    paragraph(id()) {
+                        text(id(), "Beløp: ")
+                        variable(id(), "1000 kr")
+                    }
+                }
+                signatur(
+                    hilsenTekst = "Med vennlig hilsen",
+                    navAvsenderEnhet = "NAV",
+                )
+            },
             brevtype = Brevtype.INFORMASJONSBREV,
             letterDataUsage = setOf(property),
-        ) {
-            saksinformasjon(
-                gjelderNavn = "Ola Nordmann",
-                gjelderFoedselsnummer = "12345678901",
-                saksnummer = "9876543",
-                dokumentDato = LocalDate.of(2026, 7, 9),
-            )
-            title1 { text(id(), "Orientering") }
-            outline {
-                paragraph(id()) {
-                    text(id(), "Beløp: ")
-                    variable(id(), "1000 kr")
-                }
-            }
-            signatur(
-                hilsenTekst = "Med vennlig hilsen",
-                navAvsenderEnhet = "NAV",
-            )
-        }
+        )
 
         val paragraph = letter.markup.blocks.single() as Block.Paragraph
         assertEquals(listOf(Text.Type.LITERAL, Text.Type.VARIABLE), paragraph.content.map { it.type })
