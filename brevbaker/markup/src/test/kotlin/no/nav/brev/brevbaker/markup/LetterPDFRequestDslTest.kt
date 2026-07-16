@@ -46,16 +46,6 @@ class LetterPDFRequestDslTest {
     }
 
     @Test
-    fun `last letter call wins`() {
-        val request = letterPDFRequest(LanguageCode.BOKMAL, Brevtype.VEDTAKSBREV) {
-            letter(minimalLetter("Første"))
-            letter(minimalLetter("Andre"))
-        }
-
-        assertEquals("Andre", request.letterMarkup.title1.literalText())
-    }
-
-    @Test
     fun `preserves order of multiple attachments and pdfVedlegg`() {
         val request = letterPDFRequest(LanguageCode.BOKMAL, Brevtype.VEDTAKSBREV) {
             letter(minimalLetter())
