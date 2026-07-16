@@ -1,6 +1,7 @@
 import "./editor.css";
 
-import { Box, Heading, VStack } from "@navikt/ds-react";
+import { CheckmarkIcon, XMarkIcon } from "@navikt/aksel-icons";
+import { Box, Button, Heading, HStack, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
 import React, { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useState } from "react";
 
@@ -11,6 +12,7 @@ import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
+import { getBlockClassName } from "./actions/common";
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
@@ -144,11 +146,31 @@ export const LetterEditor = ({
             >
               {blocks.map((block, blockIndex) => (
                 <div
-                  className={
-                    isTekstValgHighlighted(highlightedIds, block) ? `${block.type} inserted-flash-block` : block.type
-                  }
+                  className={getBlockClassName(block, isTekstValgHighlighted(highlightedIds, block))}
                   key={blockIndex}
                 >
+                  {block.missingFromTemplate && (
+                    <HStack className="missing-from-template-actions" gap="space-4" justify="end">
+                      <Button
+                        icon={<CheckmarkIcon aria-hidden />}
+                        onClick={() => applyAction(Actions.keepMissingFromTemplateBlock, setEditorState, blockIndex)}
+                        size="xsmall"
+                        type="button"
+                        variant="secondary"
+                      >
+                        Behold
+                      </Button>
+                      <Button
+                        icon={<XMarkIcon aria-hidden />}
+                        onClick={() => applyAction(Actions.removeMissingFromTemplateBlock, setEditorState, blockIndex)}
+                        size="xsmall"
+                        type="button"
+                        variant="secondary"
+                      >
+                        Slett
+                      </Button>
+                    </HStack>
+                  )}
                   <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
                 </div>
               ))}

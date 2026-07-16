@@ -251,5 +251,4 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun toString(): String = "SafeCall(operation=$operation,doc=$doc)"
 
     }
-
 }

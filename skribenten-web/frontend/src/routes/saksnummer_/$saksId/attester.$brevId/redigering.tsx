@@ -10,6 +10,7 @@ import { z } from "zod";
 
 import { getBrevAttestering, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
+import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
   createLetterSnapshot,
   createSaksbehandlerValgEndretHistoryEntry,
@@ -37,6 +38,7 @@ import { UnderskriftTextField } from "~/components/ManagedLetterEditor/Underskri
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
+import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
 import {
@@ -157,6 +159,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   const [forbidReason, setForbidReason] = useState<AttestForbiddenReason | null>(null);
   const [unexpectedError, setUnexpectedError] = useState<AxiosError | null>(null);
+  const [warnOpen, setWarnOpen] = useState(false);
+  const [warn, setWarn] = useState<{ kind: WarnModalKind; count?: number } | null>(null);
+  const pendingSubmitValuesRef = useRef<VedtakSidemenyFormData | null>(null);
 
   const lastSeenLetterIdsRef = useRef<ReadonlySet<number>>(collectAllIds(props.brev.redigertBrev));
   const previousTekstvalgRef = useRef(props.brev.saksbehandlerValg);
@@ -212,6 +217,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const form = useForm<VedtakSidemenyFormData>({
     resolver: zodResolver(vedtakSidemenySchema),
     defaultValues: defaultValuesModelEditor,
+  });
+
+  const { getWarning } = useBrevEditorWarnings({
+    brevkode: props.brev.info.brevkode,
+    form,
+    redigertBrev: editorState.redigertBrev,
+    propertyUsage: props.brev.propertyUsage ?? [],
   });
 
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevMutationVariables>({
@@ -331,38 +343,69 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     });
   }, [editorState.redigertBrev.signatur.attesterendeSaksbehandlerNavn, form]);
 
+  const proceedToForhandsvisning = () => {
+    const varighetSekunder = Math.round((Date.now() - attesteringStartTime.current) / 1000);
+    trackEvent("tid brukt i attestering", {
+      brevId: props.brev.info.id,
+      brevkode: props.brev.info.brevkode,
+      varighetSekunder,
+      varighetMinutter: Math.round(varighetSekunder / 60),
+      enhetsId: props.brev.info.avsenderEnhet.enhetNr,
+    });
+    trackEvent("brev attestert", {
+      brevId: props.brev.info.id,
+      brevkode: props.brev.info.brevkode,
+      enhetsId: props.brev.info.avsenderEnhet.enhetNr,
+    });
+    navigate({
+      to: "/saksnummer/$saksId/attester/$brevId/forhandsvisning",
+      params: {
+        saksId: props.saksId,
+        brevId: props.brev.info.id.toString(),
+      },
+      search: {
+        vedtaksId: props.brev.info?.vedtaksId?.toString(),
+        enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
+      },
+    });
+  };
+
+  const submitAttest = (values: VedtakSidemenyFormData) => onSubmit(values, proceedToForhandsvisning);
+
+  const guardedSubmit = form.handleSubmit((values) => {
+    const warning = getWarning();
+    if (warning) {
+      pendingSubmitValuesRef.current = values;
+      setWarn(warning);
+      setWarnOpen(true);
+      return;
+    }
+    pendingSubmitValuesRef.current = null;
+    submitAttest(values);
+  });
+
   return (
     <VStack asChild height="100%">
-      <form
-        onSubmit={form.handleSubmit((v) => {
-          onSubmit(v, () => {
-            const varighetSekunder = Math.round((Date.now() - attesteringStartTime.current) / 1000);
-            trackEvent("tid brukt i attestering", {
-              brevId: props.brev.info.id,
-              brevkode: props.brev.info.brevkode,
-              varighetSekunder,
-              varighetMinutter: Math.round(varighetSekunder / 60),
-              enhetsId: props.brev.info.avsenderEnhet.enhetNr,
-            });
-            trackEvent("brev attestert", {
-              brevId: props.brev.info.id,
-              brevkode: props.brev.info.brevkode,
-              enhetsId: props.brev.info.avsenderEnhet.enhetNr,
-            });
-            navigate({
-              to: "/saksnummer/$saksId/attester/$brevId/forhandsvisning",
-              params: {
-                saksId: props.saksId,
-                brevId: props.brev.info.id.toString(),
-              },
-              search: {
-                vedtaksId: props.brev.info?.vedtaksId?.toString(),
-                enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
-              },
-            });
-          });
-        })}
-      >
+      <form onSubmit={guardedSubmit}>
+        <WarnModal
+          count={warn?.count ?? 0}
+          fortsettLabel="Fortsett til forhåndsvisning"
+          kind={warn?.kind ?? "fritekst"}
+          onClose={() => {
+            pendingSubmitValuesRef.current = null;
+            setWarnOpen(false);
+            setWarn(null);
+          }}
+          onFortsett={() => {
+            const values = pendingSubmitValuesRef.current;
+            pendingSubmitValuesRef.current = null;
+            setWarnOpen(false);
+            setWarn(null);
+            if (!values) return;
+            submitAttest(values);
+          }}
+          open={warnOpen}
+        />
         {forbidReason && <AttestForbiddenModal onClose={() => setForbidReason(null)} reason={forbidReason} />}
 
         {unexpectedError && <ApiError error={unexpectedError} title="Uventet feil ved attestering" />}

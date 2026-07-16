@@ -1,7 +1,10 @@
 import { useCallback, useMemo } from "react";
 import { type UseFormReturn } from "react-hook-form";
 
-import { countUnfilledFritekstPlaceholders } from "~/Brevredigering/LetterEditor/actions/common";
+import {
+  countMissingFromTemplateBlocks,
+  countUnfilledFritekstPlaceholders,
+} from "~/Brevredigering/LetterEditor/actions/common";
 import { type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
   extractRelevantSaksbehandlerValgFields,
@@ -60,9 +63,15 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
     [redigertBrev],
   );
 
+  const numberOfMissingFromTemplateBlocks = useCallback(
+    () => countMissingFromTemplateBlocks(redigertBrev),
+    [redigertBrev],
+  );
+
   const getWarning = useCallback((): WarningResult => {
     const unfilled = numberOfUnfilledFritekstPlaceholders();
     const missingRequired = hasMissingRequiredSaksbehandlerValg();
+    const missingFromTemplate = numberOfMissingFromTemplateBlocks();
 
     if (unfilled > 0 && missingRequired) {
       return { kind: "fritekstOgTekstValg", count: unfilled };
@@ -73,8 +82,11 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
     if (missingRequired) {
       return { kind: "tekstValg" };
     }
+    if (missingFromTemplate > 0) {
+      return { kind: "avsnittIkkeIMal", count: missingFromTemplate };
+    }
     return null;
-  }, [hasMissingRequiredSaksbehandlerValg, numberOfUnfilledFritekstPlaceholders]);
+  }, [hasMissingRequiredSaksbehandlerValg, numberOfUnfilledFritekstPlaceholders, numberOfMissingFromTemplateBlocks]);
 
   return { getWarning, hasMissingRequiredSaksbehandlerValg, numberOfUnfilledFritekstPlaceholders };
 }

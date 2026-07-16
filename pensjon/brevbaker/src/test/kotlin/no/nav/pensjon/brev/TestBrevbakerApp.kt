@@ -5,6 +5,7 @@ import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.EnkeltRedigerbartTestbrev
 import no.nav.pensjon.brev.maler.example.LetterExample
+import no.nav.pensjon.brev.maler.example.SaksbehandlervalgIDSLTestbrev
 
 val alleAutobrevmaler = try {
     pensjonOgUfoereProductionTemplates.hentAutobrevmaler() + LetterExample
@@ -13,7 +14,7 @@ val alleAutobrevmaler = try {
 }
 
 val alleRedigerbareMaler = try {
-    pensjonOgUfoereProductionTemplates.hentRedigerbareMaler() + EksempelbrevRedigerbart + EnkeltRedigerbartTestbrev
+    pensjonOgUfoereProductionTemplates.hentRedigerbareMaler() + EksempelbrevRedigerbart + EnkeltRedigerbartTestbrev + SaksbehandlervalgIDSLTestbrev
 } catch(e: ExceptionInInitializerError) {
     formaterOgSkrivUtFeil(e, "Feila under initialisering av redigerbare maler: ")
 }

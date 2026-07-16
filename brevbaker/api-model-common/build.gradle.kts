@@ -53,4 +53,5 @@ tasks {
 
 apiValidation {
     nonPublicMarkers.add("no.nav.brev.InterneDataklasser")
+    nonPublicMarkers.add("no.nav.brev.InternKonstruktoer")
 }
