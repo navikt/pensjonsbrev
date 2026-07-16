@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import {
@@ -45,13 +45,14 @@ import {
   type EditedLetter,
   ElementTags,
   FontType,
+  ListType,
   type LiteralValue,
   TITLE_INDEX,
 } from "~/types/brevbakerTypes";
 import { trackEvent } from "~/utils/umami";
 
 import { updateFocus } from "../actions/cursorPosition";
-import { isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
+import { effectiveListType, isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
 import {
   addRow,
   adjacentTableEntryFocus,
@@ -127,8 +128,9 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
             );
           }
           case "ITEM_LIST": {
+            const ListTag = effectiveListType(content) === ListType.PUNKTLISTE ? "ul" : "ol";
             return (
-              <ul key={contentIndex}>
+              <ListTag key={contentIndex}>
                 {content.items.map((_item, itemIndex) => (
                   <li key={itemIndex}>
                     <ContentGroup
@@ -140,7 +142,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
                     />
                   </li>
                 ))}
-              </ul>
+              </ListTag>
             );
           }
           case "TABLE": {
@@ -218,7 +220,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const text = textOf(content) || ZERO_WIDTH_SPACE;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const element = contentEditableReference.current;
     if (!element) return;
 
@@ -236,7 +238,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       }
 
       // If we do NOT yet have a stored cursorPosition, respect any existing DOM caret/selection.
-      if (editorState.focus.cursorPosition === undefined) {
+      if (editorState.focus.cursorPosition === undefined || editorState.focus.cursorPosition < 0) {
         const selection = globalThis.getSelection();
         if (
           selection &&
@@ -774,7 +776,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const offset = getCursorOffset();
     setEditorState((oldState) => ({
       ...oldState,
-      focus: { ...literalIndex, ...(offset && { cursorPosition: offset }) },
+      // offset > 0: store known positive position. Skip 0 (ambiguous from programmatic focus) and -1 (no selection).
+      focus: { ...literalIndex, ...(offset > 0 && { cursorPosition: offset }) },
     }));
     if (!erFritekst) return;
     e.preventDefault();

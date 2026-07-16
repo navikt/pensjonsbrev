@@ -23,7 +23,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import java.time.LocalDate
-import java.time.Month
 
 data class AvsnittBeskrivelse(
     val opptjeningType: Expression<OpptjeningType>,
@@ -473,7 +472,7 @@ data class AvsnittEtterbetaling(
             opptjeningType.equalTo(OpptjeningType.KORRIGERING) and
                     beloepEndring.equalTo(BeloepEndring.ENDR_OKT) and
                     antallAarEndretOpptjening.greaterThan(0) and
-                    virkFom.greaterThan(LocalDate.now())
+                    virkFom.greaterThan(localDateNow)
         ) {
             title2 {
                 text(
@@ -490,7 +489,7 @@ data class AvsnittEtterbetaling(
                 )
             }
 
-            showIf(virkFom.lessThan(LocalDate.of(LocalDate.now().year, Month.JANUARY, 1))) {
+            showIf(virkFom.lessThan(localDateNow.firstDayOfYear)) {
                 paragraph {
                     text(
                         bokmal { +"Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser." },

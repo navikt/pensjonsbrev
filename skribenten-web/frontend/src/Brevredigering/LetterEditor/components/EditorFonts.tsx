@@ -1,4 +1,4 @@
-import { BodyShort, Button } from "@navikt/ds-react";
+import { BodyShort, Button, Tooltip } from "@navikt/ds-react";
 import { type ReactNode } from "react";
 
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -7,6 +7,7 @@ import { FontType } from "~/types/brevbakerTypes";
 import Actions from "../actions";
 import { getCurrentActiveFontTypeAtCursor } from "../actions/switchFontType";
 import { applyAction } from "../lib/actions";
+import { tooltipText } from "../utils";
 
 const EditorFonts = () => {
   const { editorState, freeze, setEditorState } = useEditor();
@@ -16,16 +17,17 @@ const EditorFonts = () => {
     <>
       <FontButton
         active={activeFontType === FontType.BOLD}
-        data-testid="fonttype-bold"
+        data-testid="fonttype-bold-button"
         disabled={freeze || editorState.focus.blockIndex < 0}
         onClick={() => {
           applyAction(Actions.switchFontType, setEditorState, FontType.BOLD);
         }}
         text={<BodyShort weight="semibold">F</BodyShort>}
+        tooltip={tooltipText.bold}
       />
       <FontButton
         active={activeFontType === FontType.ITALIC}
-        data-testid="fonttype-italic"
+        data-testid="fonttype-italic-button"
         disabled={freeze || editorState.focus.blockIndex < 0}
         onClick={() => {
           applyAction(Actions.switchFontType, setEditorState, FontType.ITALIC);
@@ -35,6 +37,7 @@ const EditorFonts = () => {
             K
           </BodyShort>
         }
+        tooltip={tooltipText.italic}
       />
     </>
   );
@@ -48,18 +51,21 @@ const FontButton = (props: {
   text: ReactNode;
   disabled?: boolean;
   "data-testid": string;
+  tooltip: string;
 }) => {
   return (
-    <Button
-      color="text-neutral"
-      data-testid={props["data-testid"]}
-      disabled={props.disabled}
-      onClick={props.onClick}
-      size="small"
-      type="button"
-      variant={props.active ? "primary-neutral" : "tertiary-neutral"}
-    >
-      {props.text}
-    </Button>
+    <Tooltip content={props.tooltip}>
+      <Button
+        color="text-neutral"
+        data-testid={props["data-testid"]}
+        disabled={props.disabled}
+        onClick={props.onClick}
+        size="small"
+        type="button"
+        variant={props.active ? "primary-neutral" : "tertiary-neutral"}
+      >
+        {props.text}
+      </Button>
+    </Tooltip>
   );
 };
