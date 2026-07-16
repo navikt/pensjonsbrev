@@ -53,6 +53,7 @@ Step-by-step recipes for common authoring tasks live under [`.github/skills/`](.
 | Add a new letter template (autobrev or redigerbar) — module selection, brevkode rules, Dto, DSL body, fixture, registration, verification | [`.github/skills/write-template/SKILL.md`](.github/skills/write-template/SKILL.md) |
 | Deltas specific to a `RedigerbarTemplate` — `Saksbehandlervalg` / fagsystem split, `kategori` / `brevkontekst` / `sakstyper`, `fritekst(...)` | [`.github/skills/write-template/write-redigerbar-template.md`](.github/skills/write-template/write-redigerbar-template.md) |
 | Write or refactor LetterEditor actions in `skribenten-web/frontend/src/Brevredigering/LetterEditor/actions` — focus/index safety, `deleted*` bookkeeping, table/list invariants, utility-first edits | [`.github/skills/letter-editor-actions/SKILL.md`](.github/skills/letter-editor-actions/SKILL.md) |
+| Size a route component or layout correctly against `.page-margins`' bounded, non-scrolling height — `height`/`flexGrow`/`minHeight`/`overflowY` choices | [`.github/skills/page-layout-height/SKILL.md`](.github/skills/page-layout-height/SKILL.md) |
 
 ## Do NOT Edit By Hand
 
@@ -154,6 +155,8 @@ docker cp ./brevbaker/pdf-bygger/containerFiles/typst/. pensjonsbrev-pdf-bygger-
 - `routes/` - File-based routing (e.g., `saksnummer_/$saksId/brevvelger/route.tsx`)
 - `*-queries.ts` - TanStack Query definitions with queryKey factories
 - `*.cy.tsx` or `*.cy.ts` - Cypress tests
+
+Route content sizing against `.page-margins`' bounded, non-scrolling height (`height`/`flexGrow`/`minHeight`/`overflowY` conventions) is covered by the [`page-layout-height` skill](.github/skills/page-layout-height/SKILL.md) — see the skills table above.
 
 ## Skribenten Letter Editing Model
 
