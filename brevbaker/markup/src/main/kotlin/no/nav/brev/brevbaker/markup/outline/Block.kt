@@ -3,10 +3,6 @@ package no.nav.brev.brevbaker.markup.outline
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/**
- * Et innholdselement på blokk-nivå i brødteksten: overskrifter, avsnitt, lister, tabeller og
- * skjemafelter. Hver blokk har en unik [id] og en [type] for enkel oppslag uten `is`-sjekk.
- */
 @Serializable
 sealed class Block {
     abstract val id: Int

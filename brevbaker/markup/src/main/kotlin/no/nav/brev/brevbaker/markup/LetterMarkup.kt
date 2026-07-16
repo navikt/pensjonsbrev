@@ -11,11 +11,6 @@ import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Text
 import java.time.LocalDate
 
-/**
- * Et ferdig bygget brev i markup-format: tittel, saksinformasjon, brødtekst ([blocks]) og signatur.
- * Bygg via DSL-en ([no.nav.brev.brevbaker.markup.dsl.letterMarkup]) og serialiser med [toJson].
- * [version] angir markup-formatets versjon på wire.
- */
 @ConsistentCopyVisibility
 @Serializable
 data class LetterMarkup internal constructor(
@@ -30,7 +25,6 @@ data class LetterMarkup internal constructor(
     }
 }
 
-/** Et vedlegg til et brev: egen tittel og brødtekst, med valgfri gjentakelse av saksinformasjon. */
 @ConsistentCopyVisibility
 @Serializable
 data class Attachment internal constructor(
@@ -39,7 +33,6 @@ data class Attachment internal constructor(
     val inkluderSaksinformasjon: Boolean,
 )
 
-/** Informasjon om saken og mottakeren brevet gjelder. */
 @ConsistentCopyVisibility
 @Serializable
 data class Saksinformasjon internal constructor(
@@ -51,14 +44,12 @@ data class Saksinformasjon internal constructor(
     val dokumentDato: LocalDate,
 )
 
-/** Fødselsnummeret til den brevet gjelder. */
 @Serializable
 @JvmInline
 value class Foedselsnummer internal constructor(val value: String) {
     override fun toString() = value
 }
 
-/** Saksnummeret brevet er knyttet til. */
 @Serializable
 @JvmInline
 value class Saksnummer internal constructor(val saksnummer: String) {
@@ -77,7 +68,6 @@ internal object LocalDateSerializer : KSerializer<LocalDate> {
         LocalDate.parse(decoder.decodeString())
 }
 
-/** Avsluttende hilsen og avsenderinformasjon for brevet. */
 @ConsistentCopyVisibility
 @Serializable
 data class Signatur internal constructor(
@@ -86,7 +76,6 @@ data class Signatur internal constructor(
     val navAvsenderEnhet: String,
 )
 
-/** Navn på saksbehandler(e) som står bak brevet. */
 @ConsistentCopyVisibility
 @Serializable
 data class SaksbehandlerSignatur internal constructor(
@@ -94,7 +83,6 @@ data class SaksbehandlerSignatur internal constructor(
     val attesterendeSaksbehandlerNavn: String?,
 )
 
-/** En frittstående PDF-tittel. */
 @ConsistentCopyVisibility
 @Serializable
 data class PDFTittel internal constructor(

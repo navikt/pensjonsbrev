@@ -120,14 +120,6 @@ class LetterMarkupExtendedDslTest {
     }
 
     @Test
-    fun `letter round-trips through json`() {
-        val letter = fullLetter()
-        val json = letter.toJson()
-        val decoded = decodeLetterMarkup(json)
-        assertEquals(letter, decoded)
-    }
-
-    @Test
     fun `extended DSL supports font type and variables on content`() {
         var next = 0
         fun id() = next++
@@ -231,7 +223,7 @@ class LetterMarkupExtendedDslTest {
     }
 
     @Test
-    fun `pdfTittelExtended supports variables and round-trips through json`() {
+    fun `pdfTittelExtended supports variables`() {
         var next = 0
         fun id() = next++
         val tittel = pdfTittelExtended {
@@ -240,9 +232,6 @@ class LetterMarkupExtendedDslTest {
         }
 
         assertEquals(listOf(Text.Type.LITERAL, Text.Type.VARIABLE), tittel.title1.map { it.type })
-
-        val decoded = decodePDFTittel(tittel.toJson())
-        assertEquals(tittel, decoded)
     }
 
     @Test

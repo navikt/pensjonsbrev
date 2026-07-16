@@ -14,10 +14,7 @@ import java.time.LocalDate
 import kotlin.jvm.JvmName
 
 /**
- * DSL som bygger opp innholdet til ett brevbaker brev. Alle element-id-er settes til `0`.
- *
- * En utvidet variant med variabler, tags og eksplisitte id-er (kun brukt under redigering i skribenten
- * og av renderern) finnes i api-internal-modulen.
+ * DSL som bygger opp innholdet til ett brevbaker brev.
  *
  * ```
  * val brev = letterMarkup {

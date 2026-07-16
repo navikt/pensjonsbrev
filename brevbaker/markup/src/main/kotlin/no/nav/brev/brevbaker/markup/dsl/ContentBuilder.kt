@@ -5,9 +5,6 @@ import no.nav.brev.brevbaker.markup.outline.Text.FontType
 
 /**
  * Basis-scope for tekstinnhold i brev-DSL-en.
- *
- * Denne modulen genererer aldri id-er. I plain-DSL-en ([letterMarkup]) settes alle element-id-er til `0`.
- * Den utvidede DSL-en (api-internal) krever en eksplisitt id på hvert element.
  */
 @MarkupDsl
 abstract class AbstractContentBuilder internal constructor() {
@@ -17,13 +14,11 @@ abstract class AbstractContentBuilder internal constructor() {
 }
 
 /**
- * Tekstinnhold uten `variable`. Alle id-er settes til `0`.
+ * Scope for tekstinnhold i et brev.
  *
  * Tilgjengelige funksjoner:
  * - [text] for vanlig tekst
  * - [newLine] for linjeskift
- *
- * En utvidet variant med `variable` og metadata (tags) finnes i api-internal-modulen.
  */
 @MarkupDsl
 class ContentBuilder internal constructor() : AbstractContentBuilder() {
@@ -55,7 +50,7 @@ class ContentBuilder internal constructor() : AbstractContentBuilder() {
     }
 }
 
-/** Begrenset tekst-scope uten `variable` for plain-only overskrifter i [letterMarkup]. Alle id-er settes til `0`. */
+/** Begrenset tekst-scope for overskrifter med ren tekst uten formattering (fet/kursiv). */
 @MarkupDsl
 class PlainTextBuilder internal constructor() {
     internal val texts: MutableList<Text> = mutableListOf()

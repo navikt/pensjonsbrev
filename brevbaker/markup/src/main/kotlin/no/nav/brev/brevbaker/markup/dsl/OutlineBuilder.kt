@@ -8,11 +8,8 @@ import no.nav.brev.brevbaker.markup.outline.Text.FontType
 import kotlin.jvm.JvmName
 
 /**
- * Beholder for blokk-innholdet i et brev/vedlegg. Selve blokk-funksjonene ([paragraph], [itemList],
- * [table] osv.) tilbys som extension-funksjoner splittet på innholdstypen [C], slik at plain- og
- * utvidet-varianten kan velges via overload-resolution. Plain-varianten (`OutlineBuilder<ContentBuilder>`)
- * bygger hvert element med id `0`; utvidet-varianten (`OutlineBuilder<ExtendedContentBuilder>`, api-internal)
- * krever en eksplisitt id.
+ * Builder for blokk-innholdet i et brev/vedlegg. Blokk-funksjonene (paragraph, itemList, table osv.)
+ * tilbys som extension-funksjoner.
  */
 @MarkupDsl
 class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
@@ -131,7 +128,7 @@ fun OutlineBuilder<ContentBuilder>.title2(text: String) {
 }
 
 /**
- * Legg til en nivå-2-overskrift via DSL-blokk (uten `variable`).
+ * Legg til en nivå-2-overskrift via DSL-blokk.
  *
  * ```
  * title2 { text("Innledning "); text("del 1") }
@@ -154,7 +151,7 @@ fun OutlineBuilder<ContentBuilder>.title3(text: String) {
 }
 
 /**
- * Legg til en nivå-3-overskrift via DSL-blokk (uten `variable`).
+ * Legg til en nivå-3-overskrift via DSL-blokk.
  *
  * ```
  * title3 { text("Mellomtittel") }
@@ -177,7 +174,7 @@ fun OutlineBuilder<ContentBuilder>.title4(text: String) {
 }
 
 /**
- * Legg til en nivå-4-overskrift via DSL-blokk (uten `variable`).
+ * Legg til en nivå-4-overskrift via DSL-blokk.
  *
  * ```
  * title4 { text("Detaljer") }
@@ -189,7 +186,7 @@ fun OutlineBuilder<ContentBuilder>.title4(content: PlainTextBuilder.() -> Unit) 
 }
 
 /**
- * Beholder for listepunkter. [item] tilbys som extension-funksjon per innholdstype [C].
+ * Builder for listepunkter. [item] tilbys som extension-funksjon.
  */
 @MarkupDsl
 class ItemsBuilder<C : AbstractContentBuilder> internal constructor(
@@ -226,7 +223,7 @@ fun ItemsBuilder<ContentBuilder>.item(text: String, fontType: FontType = FontTyp
 }
 
 /**
- * Beholder for en tabell. [header] og [row] tilbys som extension-funksjoner per innholdstype [C].
+ * Builder for en tabell. [header] og [row] tilbys som extension-funksjoner.
  */
 @MarkupDsl
 class TableBuilder<C : AbstractContentBuilder> internal constructor(
@@ -273,7 +270,7 @@ fun TableBuilder<ContentBuilder>.row(build: RowBuilder<ContentBuilder>.() -> Uni
 }
 
 /**
- * Beholder for kolonner i en tabelloverskrift. [column] tilbys som extension-funksjon per innholdstype [C].
+ * Builder for kolonner i en tabelloverskrift. [column] tilbys som extension-funksjon.
  */
 @MarkupDsl
 class HeaderBuilder<C : AbstractContentBuilder> internal constructor() {
@@ -318,7 +315,7 @@ fun HeaderBuilder<ContentBuilder>.column(
 }
 
 /**
- * Beholder for en tabellrad. [cell] tilbys som extension-funksjon per innholdstype [C].
+ * Builder for en tabellrad. [cell] tilbys som extension-funksjon.
  */
 @MarkupDsl
 class RowBuilder<C : AbstractContentBuilder> internal constructor(
@@ -352,7 +349,7 @@ fun RowBuilder<ContentBuilder>.cell(text: String, fontType: FontType = FontType.
 }
 
 /**
- * Beholder for et avkrysningsfelt. [prompt] og [choice] tilbys som extension-funksjoner per innholdstype [C].
+ * Builder for et avkrysningsfelt. [prompt] og [choice] tilbys som extension-funksjoner.
  */
 @MarkupDsl
 class FormChoiceBuilder<C : AbstractContentBuilder> internal constructor(

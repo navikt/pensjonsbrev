@@ -16,11 +16,10 @@ enum class Brevtype {
 }
 
 /**
- * En ferdig bestilling som pdf-bygger kan rendre til PDF: hovedbrevet ([letterMarkup]), eventuelle
- * brevvedlegg ([attachments]) og frittstående PDF-vedlegg-titler ([pdfVedlegg]), sammen med [language]
- * og [brevtype].
+ * En ferdig bestilling som pdf-bygger kan rendre til PDF: hovedbrevet, eventuelle brevvedlegg og
+ * frittstående PDF-vedlegg-titler, sammen med språk og brevtype.
  *
- * Bygg via DSL-en ([no.nav.brev.brevbaker.markup.dsl.letterPDFRequest]) og serialiser med [toJson].
+ * Bygges via markup-DSL-en og serialiseres med [toJson].
  */
 @ConsistentCopyVisibility
 @Serializable
