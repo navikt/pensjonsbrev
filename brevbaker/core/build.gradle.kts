@@ -36,6 +36,7 @@ dependencies {
     testImplementation(project(path = ":brevbaker:markup", configuration = "apiInternalElements"))
 
     testImplementation(testFixtures(project(":brevbaker:dsl")))
+    testImplementation(testFixtures(project(":brevbaker:core")))
 
     testFixturesImplementation(project(":brevbaker:markup"))
     testFixturesImplementation(project(path = ":brevbaker:markup", configuration = "apiInternalElements"))
