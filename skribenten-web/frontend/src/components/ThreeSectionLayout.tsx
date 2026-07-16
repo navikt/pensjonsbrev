@@ -16,7 +16,7 @@ const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNo
             {props.left}
           </Box>
           <VerticalDivider />
-          {props.right}
+          <Box minHeight="0">{props.right}</Box>
         </HGrid>
         <Box
           asChild
