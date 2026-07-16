@@ -1,6 +1,7 @@
 package no.nav.brev.brevbaker.markup.dsl
 
 import no.nav.brev.brevbaker.markup.Brevtype
+import no.nav.brev.brevbaker.markup.LetterMarkup
 import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage
 
 /**
@@ -18,53 +19,28 @@ fun dataUsageProperty(typeName: String, propertyName: String): LetterMarkupWithD
     LetterMarkupWithDataUsage.Property(typeName, propertyName)
 
 /**
- * Bygg et [LetterMarkupWithDataUsage] – et [LetterMarkup] beriket med [brevtype] og hvilke datafelter
- * brevet bruker ([letterDataUsage]).
+ * Bygg et [LetterMarkupWithDataUsage] – en ferdig [LetterMarkup] beriket med [brevtype] og hvilke
+ * datafelter brevet bruker ([letterDataUsage]).
  *
  * Parametere:
+ * - `markup`: den ferdige brevmarkuppen
  * - `brevtype`: hvilken brevtype markuppen tilhører
  * - `letterDataUsage`: sett av datafelter brevet bruker (kan stå tomt)
- * - `build`: selve brevinnholdet
  *
  * ```
  * val brev = letterMarkupWithDataUsage(
+ *     markup = letterMarkup { outline { paragraph("...") } },
  *     brevtype = Brevtype.VEDTAKSBREV,
  *     letterDataUsage = setOf(dataUsageProperty("UngUfoerDto", "belop")),
- * ) {
- *     saksinformasjon(/* ... */); outline { paragraph("...") }; signatur(/* ... */)
- * }
+ * )
  * ```
  */
 fun letterMarkupWithDataUsage(
+    markup: LetterMarkup,
     brevtype: Brevtype,
     letterDataUsage: Set<LetterMarkupWithDataUsage.Property> = emptySet(),
-    build: LetterMarkupBuilder<ContentBuilder>.() -> Unit,
 ): LetterMarkupWithDataUsage = LetterMarkupWithDataUsage(
-    markup = letterMarkup(build),
-    letterDataUsage = letterDataUsage,
-    brevtype = brevtype,
-)
-
-/**
- * Som [letterMarkupWithDataUsage], men med støtte for elementer som ikke brukes til rendring av pdf.
- *
- * Parametere:
- * - `brevtype`: hvilken brevtype markuppen tilhører
- * - `letterDataUsage`: sett av datafelter brevet bruker (kan stå tomt)
- * - `build`: selve brevinnholdet
- *
- * ```
- * val brev = letterMarkupWithDataUsageExtended(brevtype = Brevtype.INFORMASJONSBREV) {
- *     outline { paragraph { text("Beløp: "); variable("1000 kr") } }
- * }
- * ```
- */
-fun letterMarkupWithDataUsageExtended(
-    brevtype: Brevtype,
-    letterDataUsage: Set<LetterMarkupWithDataUsage.Property> = emptySet(),
-    build: LetterMarkupBuilder<ExtendedContentBuilder>.() -> Unit,
-): LetterMarkupWithDataUsage = LetterMarkupWithDataUsage(
-    markup = letterMarkupExtended(build),
+    markup = markup,
     letterDataUsage = letterDataUsage,
     brevtype = brevtype,
 )
