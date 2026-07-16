@@ -448,7 +448,7 @@ function RedigerBrev({
   return (
     <FormProvider {...form}>
       <Box asChild background="default" maxWidth="1106px" minWidth="945px">
-        <VStack asChild flexGrow="1" marginInline="auto">
+        <VStack asChild height="100%" marginInline="auto">
           <form onSubmit={guardedSubmit}>
             <WarnModal
               count={warn?.count ?? 0}
