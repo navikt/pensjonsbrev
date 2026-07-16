@@ -41,6 +41,37 @@ accounted for. Since `.page-margins` doesn't scroll, the excess pushes fixed bot
 bars off-screen with no way to reach them. `flexGrow="1"` shrinks and grows correctly
 instead, since `flex-shrink` defaults to `1`.
 
+## Common mistake #2: wrapping a grid/flex item breaks its free stretch height
+
+A direct child of a `display:grid` or `display:flex` container gets its height "for free" via
+the container's default stretch behavior (CSS Grid's `align-items: stretch`, or a flex column
+parent sizing its item to available space) — **without** needing an explicit `height` prop of
+its own.
+
+If you introduce a new wrapper `<Box>` around that child (e.g. to fix an unrelated issue, such
+as forcing a fragment with multiple top-level elements into a single grid item), the original
+child is now a **plain block descendant of the wrapper**, one level removed from the
+grid/flex container. It no longer gets stretch sizing automatically, and — unless it declares
+its own `height="100%"` — it silently falls back to sizing to its own content instead of being
+bounded by its parent. Nothing errors; the component just grows past its intended box and
+either overflows visibly or gets clipped by an ancestor's `overflow: hidden`, with any internal
+`overflowY="auto"` scroll region never actually needing to scroll (there's no bound to exceed).
+
+**Rule of thumb:** whenever you wrap a component that used to be a direct grid/flex item,
+check whether that component (or something inside it) relied on stretch-derived height. If so,
+give the *wrapped* component's own root an explicit `height="100%"` — don't assume the wrapper
+alone is enough.
+
+**Case study**: `ThreeSectionLayout`'s `right` slot used to spread `props.right` directly as an
+`HGrid` child. A PR review correctly flagged that a fragment there (e.g. `ManagedLetterEditor`
++ a modal, both top-level siblings) could produce extra grid items and break the 3-column
+layout, so it was wrapped in `<Box minHeight="0">{props.right}</Box>`. This broke PDF
+scrolling in `attester.$brevId/forhandsvisning.tsx`: `PDFViewer`'s root `Box` had no explicit
+`height`, so it had been relying entirely on being a direct `HGrid` item for its height. Once
+nested inside the new wrapper, it grew to fit every PDF page instead of clipping+scrolling.
+Fix: add `height="100%"` to `PDFViewer`'s own root `Box` (mirroring what `LetterEditor`'s root
+already had, which is why `redigering.tsx`'s `right` slot didn't regress the same way).
+
 ## Reference implementation
 
 See `components/ThreeSectionLayout.tsx` — used by both
@@ -55,3 +86,8 @@ above it) sibling layout.
 - Manually resize the browser viewport short enough that content would overflow, and trigger
   any error state above the layout (e.g. a failed form submit rendering `<ApiError />`) to
   confirm the bottom action bar stays visible.
+- If you added a wrapper around an existing grid/flex item (see "Common mistake #2" above),
+  manually verify any internal scroll region inside the wrapped component still scrolls (e.g.
+  scroll a long PDF/list to the bottom) — a missing `height="100%"` on the wrapped component's
+  root won't produce a type error or a visual break at rest, only a silently non-scrolling,
+  overgrown box.
