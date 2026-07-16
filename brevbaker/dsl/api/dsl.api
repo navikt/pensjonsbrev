@@ -738,6 +738,7 @@ public final class no/nav/pensjon/brev/template/LetterTemplate {
 	public final fun getLetterMetadata ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
 	public final fun getOutline ()Ljava/util/List;
 	public final fun getPdfAttachments ()Ljava/util/List;
+	public final fun getSaksbehandlervalg ()Ljava/util/Map;
 	public final fun getTitle ()Ljava/util/List;
 	public fun hashCode ()I
 	public final fun medEkstraVedlegg (Ljava/util/List;)Lno/nav/pensjon/brev/template/LetterTemplate;
@@ -921,6 +922,16 @@ public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls 
 	public static fun includePhrase (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarOutlinePhrase;)V
 	public static fun includePhrase (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarParagraphPhrase;)V
 	public static fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+}
+
+public final class no/nav/pensjon/brev/template/SaksbehandlerValgBuilder {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/reflect/KClass;Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;)V
+	public final fun bool (Z)Lno/nav/pensjon/brev/template/Expression;
+	public static synthetic fun bool$default (Lno/nav/pensjon/brev/template/SaksbehandlerValgBuilder;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun int ()Lno/nav/pensjon/brev/template/Expression;
+	public final fun int (I)Lno/nav/pensjon/brev/template/Expression;
+	public final fun text ()Lno/nav/pensjon/brev/template/Expression;
+	public final fun text (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/SimpleSelector : no/nav/pensjon/brev/template/TemplateModelSelector {

@@ -109,5 +109,6 @@ dependencies {
 
     testImplementation(testFixtures(project(":brevbaker:core")))
     testImplementation(testFixtures(project(":brevbaker:dsl")))
+    testImplementation(libs.jsoup)
 }
 

@@ -2,6 +2,10 @@
 
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.InternKonstruktoer
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType.Scalar.Kind
@@ -9,6 +13,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import java.time.LocalDate
 
+@OptIn(BrevbakerDSLInternal::class)
 class TemplateModelSpecificationFactoryTest {
     data class AModel(
         val tekst: String,
@@ -25,7 +30,7 @@ class TemplateModelSpecificationFactoryTest {
         data class SubModel(val navn: String, val alder: Int)
     }
 
-    private val spec = TemplateModelSpecificationFactory(AModel::class).build()
+    private val spec = TemplateModelSpecificationFactory(AModel::class).build(emptyMap())
     private val aModelSpec = spec.types[AModel::class.qualifiedName!!]!!
 
     @Test
@@ -98,14 +103,14 @@ class TemplateModelSpecificationFactoryTest {
 
     @Test
     fun `fails for Model classes without primary constructor`() {
-        assertThrows<TemplateModelSpecificationError> { TemplateModelSpecificationFactory(NoPrimaryConstructor::class).build() }
+        assertThrows<TemplateModelSpecificationError> { TemplateModelSpecificationFactory(NoPrimaryConstructor::class).build(emptyMap()) }
     }
 
     class NotADataClass(val navn: String, @Suppress("unused") val alder: Int)
 
     @Test
     fun `fails for non data class`() {
-        assertThrows<TemplateModelSpecificationError> { TemplateModelSpecificationFactory(NotADataClass::class).build() }
+        assertThrows<TemplateModelSpecificationError> { TemplateModelSpecificationFactory(NotADataClass::class).build(emptyMap()) }
     }
 
     data class WithEnumeration(val navn: String, val anEnum: AnEnum) {
@@ -117,7 +122,7 @@ class TemplateModelSpecificationFactoryTest {
 
     @Test
     fun `enum fields have Enum type with all enum-values`() {
-        val spec = TemplateModelSpecificationFactory(WithEnumeration::class).build().types[WithEnumeration::class.qualifiedName!!]!!
+        val spec = TemplateModelSpecificationFactory(WithEnumeration::class).build(emptyMap()).types[WithEnumeration::class.qualifiedName!!]!!
         assertThat(spec["anEnum"]).isEqualTo(FieldType.Enum(false, setOf(FieldType.EnumEntry("FLAG1", "Flag 1"), FieldType.EnumEntry("FLAG2", "Flag 2"))))
     }
 
@@ -128,7 +133,7 @@ class TemplateModelSpecificationFactoryTest {
 
     @Test
     fun `value class fields have Scalar type`() {
-        val spec = TemplateModelSpecificationFactory(WithValueClass::class).build()
+        val spec = TemplateModelSpecificationFactory(WithValueClass::class).build(emptyMap())
         val withValueClassSpec = spec.types[WithValueClass::class.qualifiedName!!]!!
         assertThat(withValueClassSpec["aValueClass"]).isEqualTo(FieldType.Scalar(false, Kind.NUMBER))
         assertThat(spec.types[WithValueClass::class.qualifiedName!!]!!).isEqualTo(mapOf("navn" to FieldType.Scalar(false, Kind.STRING), "aValueClass" to FieldType.Scalar(false, Kind.NUMBER)))
@@ -138,7 +143,7 @@ class TemplateModelSpecificationFactoryTest {
 
     @Test
     fun `nullable fields are mapped correctly`() {
-        val spec = TemplateModelSpecificationFactory(WithNullable::class).build()
+        val spec = TemplateModelSpecificationFactory(WithNullable::class).build(emptyMap())
 
         assertThat(
             spec.types[WithNullable::class.qualifiedName!!]!!)
@@ -166,11 +171,70 @@ class TemplateModelSpecificationFactoryTest {
     @Test
     fun `recursive model structures causes failure`() {
         assertThrows<TemplateModelSpecificationError>("Should not support self-recursive types") {
-            TemplateModelSpecificationFactory(Recursive::class).build()
+            TemplateModelSpecificationFactory(Recursive::class).build(emptyMap())
         }
         assertThrows<TemplateModelSpecificationError>("Should not support circular-recursive types") {
-            TemplateModelSpecificationFactory(SubRecursive::class).build()
+            TemplateModelSpecificationFactory(SubRecursive::class).build(emptyMap())
         }
+    }
+
+    data class WithSaksbehandlervalg(val navn: String, val valg: SaksbehandlervalgIDSL)
+
+    enum class TestEnum(override val displayText: String) : SaksbehandlerValgEnum {
+        ALTERNATIV_EN("Alternativ en"),
+        ALTERNATIV_TO("Alternativ to"),
+    }
+
+    @OptIn(InternKonstruktoer::class)
+    private val saksbehandlervalg: Map<String, SaksbehandlervalgVerdi<*>> = mapOf(
+        "boolValg" to SaksbehandlervalgVerdi.Bool("boolValg", "Bool display"),
+        "intValg" to SaksbehandlervalgVerdi.Integer("intValg", "Int display"),
+        "textValg" to SaksbehandlervalgVerdi.Text("textValg", "Text display"),
+        "enumValg" to SaksbehandlervalgVerdi.Enum("enumValg", "Enum display", TestEnum::class),
+    )
+
+    @Test
+    fun `SaksbehandlervalgIDSL field gets Object type pointing to its own type spec`() {
+        val spec = TemplateModelSpecificationFactory(WithSaksbehandlervalg::class).build(saksbehandlervalg)
+        val withValgSpec = spec.types[WithSaksbehandlervalg::class.qualifiedName!!]!!
+
+        assertThat(withValgSpec["valg"]).isEqualTo(FieldType.Object(false, SaksbehandlervalgIDSL::class.qualifiedName!!))
+    }
+
+    @Test
+    fun `SaksbehandlervalgIDSL type spec has one field per registered saksbehandlervalg`() {
+        val spec = TemplateModelSpecificationFactory(WithSaksbehandlervalg::class).build(saksbehandlervalg)
+        val valgSpec = spec.types[SaksbehandlervalgIDSL::class.qualifiedName!!]!!
+
+        assertThat(valgSpec.keys).containsExactlyInAnyOrder("boolValg", "intValg", "textValg", "enumValg")
+    }
+
+    @Test
+    fun `SaksbehandlervalgVerdi types are mapped to correct FieldType`() {
+        val spec = TemplateModelSpecificationFactory(WithSaksbehandlervalg::class).build(saksbehandlervalg)
+        val valgSpec = spec.types[SaksbehandlervalgIDSL::class.qualifiedName!!]!!
+
+        assertThat(valgSpec["boolValg"]).isEqualTo(FieldType.Scalar(true, Kind.BOOLEAN, "Bool display"))
+        assertThat(valgSpec["intValg"]).isEqualTo(FieldType.Scalar(true, Kind.NUMBER, "Int display"))
+        assertThat(valgSpec["textValg"]).isEqualTo(FieldType.Scalar(true, Kind.STRING, "Text display"))
+        assertThat(valgSpec["enumValg"]).isEqualTo(
+            FieldType.Enum(
+                true,
+                setOf(FieldType.EnumEntry("ALTERNATIV_EN", "Alternativ en"), FieldType.EnumEntry("ALTERNATIV_TO", "Alternativ to")),
+            )
+        )
+    }
+
+    @Test
+    fun `fails when SaksbehandlervalgIDSL is present but no saksbehandlervalg map is provided`() {
+        assertThrows<IllegalArgumentException> {
+            TemplateModelSpecificationFactory(WithSaksbehandlervalg::class).build(null)
+        }
+    }
+
+    @Test
+    fun `model without SaksbehandlervalgIDSL fields does not require a saksbehandlervalg map`() {
+        assertThat(TemplateModelSpecificationFactory(AModel::class).build(null)).isEqualTo(spec)
     }
 
 }
