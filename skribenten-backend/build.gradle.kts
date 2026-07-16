@@ -41,7 +41,7 @@ node {
     npmInstallCommand.set("ci")
 }
 
-val generateOpenApiSpec by tasks.registering(Test::class) {
+val generateOpenApiSpec = tasks.register<Test>("generateOpenApiSpec") {
     description = "Generates build/openapi-spec.json by booting the application via OpenApiSpecTest"
     group = "build"
     // Avoid running in parallel with the regular test suite when org.gradle.parallel=true
@@ -55,7 +55,7 @@ val generateOpenApiSpec by tasks.registering(Test::class) {
     outputs.file(layout.buildDirectory.file("openapi-spec.json"))
 }
 
-val generateApiTypes by tasks.registering(NpxTask::class) {
+val generateApiTypes = tasks.register<NpxTask>("generateApiTypes") {
     description = "Generates TypeScript types from the OpenAPI spec into skribenten-web/frontend/src/types/skribenten-api.ts"
     dependsOn(generateOpenApiSpec, tasks.npmInstall)
     command.set("openapi-typescript")
@@ -73,14 +73,13 @@ val generateApiTypes by tasks.registering(NpxTask::class) {
     outputs.file(outputFile)
 }
 
-val typeCheckFrontend by tasks.registering(NpmTask::class) {
+val typeCheckFrontend = tasks.register<NpmTask>("typeCheckFrontend") {
     description = "Runs TypeScript type checking on the frontend after API type generation"
     dependsOn(generateApiTypes)
     npmCommand.set(listOf("run", "check-types"))
     inputs.files(rootProject.fileTree("skribenten-web/frontend/src"))
     outputs.upToDateWhen { true }
 }
-
 
 group = "no.nav.pensjon.brev.skribenten"
 version = "0.0.1"

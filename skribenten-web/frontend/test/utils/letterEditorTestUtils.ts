@@ -224,6 +224,10 @@ export function withDeleted<T extends AnyBlock>(block: T, deletedContent: number
   return { ...block, deletedContent };
 }
 
+export function withMissingFromTemplate<T extends AnyBlock>(block: T, missingFromTemplate = true): T {
+  return { ...block, missingFromTemplate };
+}
+
 type TitleArgs = { id?: Nullable<number>; content: TextContent[] };
 
 function makeTitle<T extends "TITLE1" | "TITLE2" | "TITLE3">(
@@ -364,6 +368,7 @@ export function table(headerCells: Cell[], rows: Row[]): Table {
     header: {
       id: headerId,
       parentId: tableId,
+      deletedColSpecs: [],
       colSpec: headerCells.map((c) => {
         const colSpecId = randomId();
         return {
@@ -381,12 +386,12 @@ export function table(headerCells: Cell[], rows: Row[]): Table {
 
 export function cell(...content: TextContent[]): Cell {
   const id = randomId();
-  return { id, parentId: null, text: withParent(content, id) };
+  return { id, parentId: null, text: withParent(content, id), deletedContent: [] };
 }
 
 export function row(...cells: Cell[]): Row {
   const id = randomId();
-  return { id, parentId: null, cells: withParent(cells, id) };
+  return { id, parentId: null, cells: withParent(cells, id), deletedCells: [] };
 }
 
 // ─── Utilities ────────────────────────────────────────────────────────────────

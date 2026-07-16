@@ -280,6 +280,7 @@ function createCell(cell: TableCell): Cell {
   return {
     id: null,
     parentId: null,
+    deletedContent: [],
     text:
       cell.content.length > 0
         ? cell.content.map((content) => newLiteral({ editedText: content.text, fontType: content.font }))
@@ -291,6 +292,7 @@ function createRow(source: TableRow, colCount: number): Row {
   return {
     id: null,
     parentId: null,
+    deletedCells: [],
     cells: normalizeCells(source.cells, colCount).map(createCell),
   };
 }
@@ -300,7 +302,7 @@ function createTable(colSpec: ColumnSpec[], rows: Row[]): BrevbakerTable {
     type: "TABLE",
     id: null,
     parentId: null,
-    header: { id: null, parentId: null, colSpec },
+    header: { id: null, parentId: null, deletedColSpecs: [], colSpec },
     deletedRows: [],
     rows,
   };
