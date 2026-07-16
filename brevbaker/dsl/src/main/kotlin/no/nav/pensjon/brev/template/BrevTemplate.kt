@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brev.template.validation.validator
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import kotlin.reflect.KClass
 
 sealed interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>> : HasModel<LetterData> {
@@ -22,6 +23,12 @@ sealed interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkod
     fun description(): TemplateDescription
     val featureToggle: FeatureToggle?
         get() = null
+
+    /**
+     * Overstyr denne om du ikke ønsker synlige saksbehandlervalg i Skribenten, eller ønsker å begrense hva som er synlig.
+     * F.eks `override val modelSpecification = TemplateModelSpecification(emptyMap(), null)` for ingen synlige saksbehandlervalg.
+     */
+    val modelSpecification: TemplateModelSpecification? get() = null
 
     fun <Lang : LanguageSupport, LetterData : BrevbakerBrevdata> createTemplate(
         letterDataType: KClass<LetterData>,

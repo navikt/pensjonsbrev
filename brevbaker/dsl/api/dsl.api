@@ -106,6 +106,7 @@ public final class no/nav/pensjon/brev/template/AutobrevTemplate$DefaultImpls {
 	public static fun createTemplate (Lno/nav/pensjon/brev/template/AutobrevTemplate;Lkotlin/reflect/KClass;Lno/nav/pensjon/brev/template/LanguageSupport;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/LetterTemplate;
 	public static fun description (Lno/nav/pensjon/brev/template/AutobrevTemplate;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Autobrev;
 	public static fun getFeatureToggle (Lno/nav/pensjon/brev/template/AutobrevTemplate;)Lno/nav/pensjon/brev/api/model/FeatureToggle;
+	public static fun getModelSpecification (Lno/nav/pensjon/brev/template/AutobrevTemplate;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification;
 }
 
 public abstract class no/nav/pensjon/brev/template/BinaryOperation : no/nav/pensjon/brev/template/Operation {
@@ -269,12 +270,14 @@ public abstract interface class no/nav/pensjon/brev/template/BrevTemplate : no/n
 	public abstract fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription;
 	public fun getFeatureToggle ()Lno/nav/pensjon/brev/api/model/FeatureToggle;
 	public abstract fun getKode ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
+	public fun getModelSpecification ()Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification;
 	public abstract fun getTemplate ()Lno/nav/pensjon/brev/template/LetterTemplate;
 }
 
 public final class no/nav/pensjon/brev/template/BrevTemplate$DefaultImpls {
 	public static fun createTemplate (Lno/nav/pensjon/brev/template/BrevTemplate;Lkotlin/reflect/KClass;Lno/nav/pensjon/brev/template/LanguageSupport;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/LetterTemplate;
 	public static fun getFeatureToggle (Lno/nav/pensjon/brev/template/BrevTemplate;)Lno/nav/pensjon/brev/api/model/FeatureToggle;
+	public static fun getModelSpecification (Lno/nav/pensjon/brev/template/BrevTemplate;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification;
 }
 
 public final class no/nav/pensjon/brev/template/BrevTemplateKt {
@@ -919,6 +922,7 @@ public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls 
 	public static fun description (Lno/nav/pensjon/brev/template/RedigerbarTemplate;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar;
 	public static fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
 	public static fun getFeatureToggle (Lno/nav/pensjon/brev/template/RedigerbarTemplate;)Lno/nav/pensjon/brev/api/model/FeatureToggle;
+	public static fun getModelSpecification (Lno/nav/pensjon/brev/template/RedigerbarTemplate;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification;
 	public static fun includePhrase (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarOutlinePhrase;)V
 	public static fun includePhrase (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarParagraphPhrase;)V
 	public static fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;

@@ -57,11 +57,11 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
             }
 
             get("/modelSpecification") {
-                val template = call.kode(resource)
-                    .let { resource.getTemplate(it)?.template }
+                val brevTemplate = call.kode(resource)
+                    .let { resource.getTemplate(it) }
 
-                if (template != null) {
-                    call.respond(template.modelSpecification())
+                if (brevTemplate != null) {
+                    call.respond(brevTemplate.modelSpecification ?: brevTemplate.template.modelSpecification())
                 } else {
                     call.respond(HttpStatusCode.NotFound)
                 }
