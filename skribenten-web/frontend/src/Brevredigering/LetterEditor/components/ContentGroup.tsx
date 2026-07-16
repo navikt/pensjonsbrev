@@ -229,7 +229,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       return;
     }
 
-    renderPlainText(element, text);
+    if (diffHash !== undefined || element.dataset.diffVersion !== undefined) {
+      // Diff feature is active, or this literal still carries decorations that must be cleaned up.
+      renderPlainText(element, text);
+    } else if (element.textContent !== text) {
+      // Pristine normal path: never decorated and diff toggle off — original behaviour, no diff-related DOM reads.
+      element.textContent = text;
+    }
 
     if (!freeze && shouldBeFocused) {
       // Preserve full selection for untouched fritekst placeholders (first key should replace it).
@@ -278,6 +284,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     hasDiffDecoration,
     diffSegments,
     diffVersion,
+    diffHash,
   ]);
 
   const normalizeDiffDecoration = () => {
@@ -617,16 +624,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleOnInput = ({ currentTarget }: React.FormEvent<HTMLSpanElement>) => {
-    const extractedText = getEditableLiteralText(currentTarget);
-    const postEditCursorPosition = getEditableCharacterOffset(currentTarget);
+    const extractedText = hasDiffDecoration ? getEditableLiteralText(currentTarget) : (currentTarget.textContent ?? "");
+    const postEditCursorPosition = hasDiffDecoration
+      ? getEditableCharacterOffset(currentTarget)
+      : getCharacterOffset(currentTarget);
 
-    applyAction(
-      Actions.updateContentText,
-      setEditorState,
-      literalIndex,
-      extractedText,
-      postEditCursorPosition,
-    );
+    applyAction(Actions.updateContentText, setEditorState, literalIndex, extractedText, postEditCursorPosition);
   };
 
   const handleBeforeInput = () => {
