@@ -46,7 +46,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
   const [vilSendeBrev, setVilSendeBrev] = useState(false);
 
   return (
-    <>
+    <VStack height="100%">
       {vilSendeBrev && (
         <SendBrevModal
           brevId={props.brev.info.id.toString()}
@@ -109,7 +109,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
         }
         right={<BrevForhåndsvisning brevId={props.brev.info.id} saksId={props.saksId} />}
       />
-    </>
+    </VStack>
   );
 };
 
