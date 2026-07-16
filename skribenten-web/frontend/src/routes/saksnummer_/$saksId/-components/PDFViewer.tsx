@@ -71,7 +71,7 @@ const PDFViewer = (properties: {
   }, [totalNumberOfPages, handleScroll]);
 
   return (
-    <Box asChild background="neutral-soft" minHeight="0" ref={pdfContainerReference}>
+    <Box asChild background="neutral-soft" height="100%" minHeight="0" ref={pdfContainerReference}>
       <VStack>
         <PDFViewerTopBar
           brevId={properties.brevId}
