@@ -88,11 +88,7 @@ export function BrevvelgerPage() {
 
   return (
     <Box asChild background="default">
-      <VStack
-        height="calc(var(--main-page-content-height) + var(--nav-bar-height))"
-        marginInline={{ sm: "space-0", lg: "auto" }}
-        width="fit-content"
-      >
+      <VStack height="100%" marginInline={{ sm: "space-0", lg: "auto" }} width="fit-content">
         <BrevvelgerMainContent
           alleSaksbrevQuery={alleSaksbrevQuery}
           brevmalKoder={brevmalKoder}
