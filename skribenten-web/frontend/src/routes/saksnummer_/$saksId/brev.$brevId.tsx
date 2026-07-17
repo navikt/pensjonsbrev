@@ -7,6 +7,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { getBrev, getBrevmetadata, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
+import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import { createLetterSnapshot, createSaksbehandlerValgEndretHistoryEntry } from "~/Brevredigering/LetterEditor/history";
 import {
@@ -456,6 +457,12 @@ function RedigerBrev({
               onClose={() => {
                 pendingSubmitValuesRef.current = null;
                 setWarnOpen(false);
+                if (warn?.kind === "fritekst" || warn?.kind === "fritekstOgTekstValg") {
+                  const focus = findFirstUneditedFritekstFocus(editorState.redigertBrev);
+                  if (focus) {
+                    setEditorState((s) => ({ ...s, focus }));
+                  }
+                }
                 setWarn(null);
               }}
               onFortsett={() => {

@@ -10,6 +10,7 @@ import { z } from "zod";
 
 import { getBrevAttestering, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
+import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
   createLetterSnapshot,
@@ -394,6 +395,12 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           onClose={() => {
             pendingSubmitValuesRef.current = null;
             setWarnOpen(false);
+            if (warn?.kind === "fritekst" || warn?.kind === "fritekstOgTekstValg") {
+              const focus = findFirstUneditedFritekstFocus(editorState.redigertBrev);
+              if (focus) {
+                setEditorState((s) => ({ ...s, focus }));
+              }
+            }
             setWarn(null);
           }}
           onFortsett={() => {
