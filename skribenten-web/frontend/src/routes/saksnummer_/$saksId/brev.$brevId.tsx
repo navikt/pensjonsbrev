@@ -9,6 +9,7 @@ import { z } from "zod";
 import { getBrev, getBrevmetadata, getBrevReservasjon } from "~/api/brev-queries";
 import { useGuardedFormSubmit } from "~/Brevredigering/hooks/useGuardedFormSubmit";
 import { useOppdaterBrevAutosave } from "~/Brevredigering/hooks/useOppdaterBrevAutosave";
+import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
 import { createLetterSnapshot } from "~/Brevredigering/LetterEditor/history";
 import { useTekstvalgInsertHighlight } from "~/Brevredigering/LetterEditor/hooks/useTekstvalgInsertHighlight";
@@ -302,6 +303,14 @@ function RedigerBrev({
     form,
     getWarning,
     onConfirmedSubmit: (values) => onSubmit(values, navigateToBrevbehandler),
+    onWarnModalClosed: (warn) => {
+      if (warn?.kind === "fritekst" || warn?.kind === "fritekstOgTekstValg") {
+        const focus = findFirstUneditedFritekstFocus(editorState.redigertBrev);
+        if (focus) {
+          setEditorState((s) => ({ ...s, focus }));
+        }
+      }
+    },
   });
 
   const reservasjonQuery = useQuery({

@@ -16,10 +16,13 @@ export function useGuardedFormSubmit<TFormData extends FieldValues>({
   form,
   getWarning,
   onConfirmedSubmit,
+  onWarnModalClosed,
 }: {
   form: UseFormReturn<TFormData>;
   getWarning: () => Warning;
   onConfirmedSubmit: (values: TFormData) => void;
+  /** Called when the warn modal is dismissed without confirming (e.g. to restore focus to the first unedited fritekst). Receives the warning that was showing. */
+  onWarnModalClosed?: (warn: Warning) => void;
 }) {
   const [warnOpen, setWarnOpen] = useState(false);
   const [warn, setWarn] = useState<Warning>(null);
@@ -44,6 +47,7 @@ export function useGuardedFormSubmit<TFormData extends FieldValues>({
     onClose: () => {
       pendingSubmitValuesRef.current = null;
       setWarnOpen(false);
+      onWarnModalClosed?.(warn);
       setWarn(null);
     },
     onFortsett: () => {

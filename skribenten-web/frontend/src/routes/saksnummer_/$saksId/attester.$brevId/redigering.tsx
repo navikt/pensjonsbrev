@@ -12,6 +12,7 @@ import { getBrevAttestering, getBrevReservasjon } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
 import { useGuardedFormSubmit } from "~/Brevredigering/hooks/useGuardedFormSubmit";
 import { useOppdaterBrevAutosave } from "~/Brevredigering/hooks/useOppdaterBrevAutosave";
+import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
 import { createLetterSnapshot } from "~/Brevredigering/LetterEditor/history";
 import { useTekstvalgInsertHighlight } from "~/Brevredigering/LetterEditor/hooks/useTekstvalgInsertHighlight";
@@ -297,6 +298,14 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     form,
     getWarning,
     onConfirmedSubmit: submitAttest,
+    onWarnModalClosed: (warn) => {
+      if (warn?.kind === "fritekst" || warn?.kind === "fritekstOgTekstValg") {
+        const focus = findFirstUneditedFritekstFocus(editorState.redigertBrev);
+        if (focus) {
+          setEditorState((s) => ({ ...s, focus }));
+        }
+      }
+    },
   });
 
   return (
