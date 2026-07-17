@@ -210,6 +210,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const hasDiffDecoration = diffSegments != null;
   const literalDiffKey = diffKey(literalIndex);
   const diffVersion = diffHash ? `${diffHash}:${literalDiffKey}` : undefined;
+  const diffModeActive = diffHash !== undefined;
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
@@ -304,6 +305,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
+    // Enter splits the literal / adds a line, changing the literal index map. Blocked in diff mode (v1).
+    if (diffModeActive) return;
     const offset = getCursorOffset();
     if (event.shiftKey) {
       applyAction(Actions.addNewLine, setEditorState, {
@@ -322,6 +325,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       (contentEditableReference.current?.textContent?.startsWith(ZERO_WIDTH_SPACE) && cursorPosition === 1)
     ) {
       event.preventDefault();
+      if (diffModeActive) return; // cross-literal merge blocked in diff mode (v1)
       applyAction(Actions.merge, setEditorState, literalIndex, MergeTarget.PREVIOUS);
     }
   };
@@ -330,6 +334,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const cursorIsAtEnd = getCursorOffset() >= (text === ZERO_WIDTH_SPACE ? 0 : text.length);
     if (cursorIsAtEnd) {
       event.preventDefault();
+      if (diffModeActive) return; // cross-literal merge blocked in diff mode (v1)
       applyAction(Actions.merge, setEditorState, literalIndex, MergeTarget.NEXT);
     }
   };
@@ -549,6 +554,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     event.preventDefault();
     // If we're at the last cell and tabbing forward, append a row and stop here.
     if (direction === "forward" && isAtLastTableCell(editorState)) {
+      if (diffModeActive) return true; // adding a table row is structural, blocked in diff mode (v1)
       addRow(editorState, setEditorState, event);
       return true;
     }
@@ -576,6 +582,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleOnPaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
+    if (diffModeActive) return; // paste can span multiple literals, blocked in diff mode (v1)
     normalizeDiffDecoration();
     // TODO: for debugging frem til vi er ferdig å teste liming
     logPastedClipboard(event.clipboardData);
@@ -650,6 +657,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const hasRange = !!selection && selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed;
 
     if (hasRange && (e.key === "Backspace" || e.key === "Delete")) {
+      if (diffModeActive) {
+        // range / cross-literal deletion blocked in diff mode (v1)
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
       return; // bubble to wrapper div and handle there
     }
     const isUndo = (isMac ? e.metaKey : e.ctrlKey) && e.key === "z" && !e.shiftKey;
@@ -699,6 +712,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
     if (e.key === "Backspace" || e.key === "Delete") {
       const tableDeleteAction = determineTableCellDeleteAction(e, editorState);
+      if (diffModeActive && (tableDeleteAction === "DELETE_TABLE" || tableDeleteAction === "DELETE_ROW")) {
+        // removing a table / table row is structural, blocked in diff mode (v1)
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
       if (tableDeleteAction === "DELETE_TABLE") {
         e.preventDefault();
         applyAction(Actions.removeTable, setEditorState);
@@ -752,6 +771,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       if (isTableCellIndex(editorState.focus)) {
         e.preventDefault();
         e.stopPropagation();
+        if (diffModeActive) return; // moving table rows is structural, blocked in diff mode (v1)
         applyAction(Actions.moveTableRow, setEditorState, e.key === "ArrowUp" ? "up" : "down");
         return;
       }

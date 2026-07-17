@@ -17,6 +17,7 @@ import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
+import { useAttestantDiff } from "./diff/AttestantDiffContext";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { type LetterEditorState } from "./model/state";
 import { useEditorKeyboardShortcuts } from "./utils";
@@ -40,13 +41,25 @@ export const LetterEditor = ({
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
   const highlightedIds = useInsertedTekstValgHighlight();
+  const { diffHash } = useAttestantDiff();
+  const diffModeActive = diffHash !== undefined;
 
   const [editorRoot, setEditorRoot] = useState<HTMLDivElement | null>(null);
   const editorRootRef = useCallback((el: HTMLDivElement | null) => setEditorRoot(el), []);
 
   useDragSelectUnifier(editorRoot, !freeze);
 
-  useSelectionDeleteHotkey(editorRoot, (focus) => applyAction(Actions.deleteSelection, setEditorState, focus), !freeze);
+  useSelectionDeleteHotkey(
+    editorRoot,
+    (focus) => {
+      // Multi-literal selection deletion is structural (changes the literal index map),
+      // so it is blocked while diff is visible (v1). The hook still preventDefaults the native
+      // browser deletion, so the DOM is not corrupted.
+      if (diffModeActive) return;
+      applyAction(Actions.deleteSelection, setEditorState, focus);
+    },
+    !freeze,
+  );
 
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
 
