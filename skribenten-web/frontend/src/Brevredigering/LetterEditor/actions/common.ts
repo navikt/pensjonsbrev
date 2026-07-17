@@ -1200,15 +1200,16 @@ export const countUneditedFritekstPlaceholders = (letter: EditedLetter): number 
  * is still `null`.
  *
  * Used to move the editor's focus to the first fritekst felt the user still needs to fill in, e.g.
- * when the user chooses to stay on the page after a "du må fylle ut fritekstfelt" warning. Setting
- * `editorState.focus` to the returned value is enough to both scroll it into view and select its full
- * text — see ContentGroup.tsx's `focusAtOffset` (calls `.focus()`) and `handleOnFocus` (selects the
- * whole fritekst on native focus).
+ * when the user chooses to stay on the page after a "du må fylle ut fritekstfelt" warning. The
+ * returned Focus has `selectAll: true`, which tells ContentGroup.tsx to select the literal's full text
+ * (rather than just placing a caret) once it scrolls into view and receives focus — replicating what
+ * happens when the user clicks the fritekst directly.
  */
 export function findFirstUneditedFritekstFocus(letter: EditedLetter): Focus | null {
   return (
-    findLiteral(letter, (literal, focus) => (isFritekst(literal) && literal.editedText === null ? focus : undefined)) ??
-    null
+    findLiteral(letter, (literal, focus) =>
+      isFritekst(literal) && literal.editedText === null ? { ...focus, selectAll: true } : undefined,
+    ) ?? null
   );
 }
 

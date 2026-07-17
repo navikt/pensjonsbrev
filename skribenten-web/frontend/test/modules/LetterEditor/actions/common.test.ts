@@ -468,6 +468,7 @@ describe("findFirstUneditedFritekstFocus", () => {
       blockIndex: 0,
       contentIndex: 1,
       cursorPosition: 0,
+      selectAll: true,
     });
   });
 
@@ -482,6 +483,7 @@ describe("findFirstUneditedFritekstFocus", () => {
       blockIndex: 1,
       contentIndex: 0,
       cursorPosition: 0,
+      selectAll: true,
     });
   });
 
@@ -493,6 +495,7 @@ describe("findFirstUneditedFritekstFocus", () => {
       blockIndex: 0,
       contentIndex: 1,
       cursorPosition: 0,
+      selectAll: true,
     });
   });
 
@@ -512,6 +515,7 @@ describe("findFirstUneditedFritekstFocus", () => {
       itemIndex: 1,
       itemContentIndex: 0,
       cursorPosition: 0,
+      selectAll: true,
     });
   });
 
@@ -526,6 +530,7 @@ describe("findFirstUneditedFritekstFocus", () => {
       cellIndex: 0,
       cellContentIndex: 0,
       cursorPosition: 0,
+      selectAll: true,
     });
   });
 
@@ -540,6 +545,7 @@ describe("findFirstUneditedFritekstFocus", () => {
       cellIndex: 0,
       cellContentIndex: 0,
       cursorPosition: 0,
+      selectAll: true,
     });
   });
 
@@ -552,6 +558,7 @@ describe("findFirstUneditedFritekstFocus", () => {
       blockIndex: TITLE_INDEX,
       contentIndex: 0,
       cursorPosition: 0,
+      selectAll: true,
     });
   });
 
@@ -563,6 +570,7 @@ describe("findFirstUneditedFritekstFocus", () => {
       blockIndex: 0,
       contentIndex: 0,
       cursorPosition: 0,
+      selectAll: true,
     });
   });
 });
