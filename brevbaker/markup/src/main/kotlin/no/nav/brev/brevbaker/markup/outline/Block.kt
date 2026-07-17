@@ -6,11 +6,6 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed class Block {
     abstract val id: Int
-    abstract val type: Type
-
-    enum class Type {
-        TITLE2, TITLE3, TITLE4, PARAGRAPH, ITEM_LIST, NUMBERED_LIST, TABLE, FORM_TEXT, FORM_CHOICE,
-    }
 
     @ConsistentCopyVisibility
     @Serializable
@@ -18,9 +13,7 @@ sealed class Block {
     data class Title2 internal constructor(
         override val id: Int,
         val content: List<Text>,
-    ) : Block() {
-        override val type: Type get() = Type.TITLE2
-    }
+    ) : Block()
 
     @ConsistentCopyVisibility
     @Serializable
@@ -28,9 +21,7 @@ sealed class Block {
     data class Title3 internal constructor(
         override val id: Int,
         val content: List<Text>,
-    ) : Block() {
-        override val type: Type get() = Type.TITLE3
-    }
+    ) : Block()
 
     @ConsistentCopyVisibility
     @Serializable
@@ -38,9 +29,7 @@ sealed class Block {
     data class Title4 internal constructor(
         override val id: Int,
         val content: List<Text>,
-    ) : Block() {
-        override val type: Type get() = Type.TITLE4
-    }
+    ) : Block()
 
     @ConsistentCopyVisibility
     @Serializable
@@ -48,9 +37,7 @@ sealed class Block {
     data class Paragraph internal constructor(
         override val id: Int,
         val content: List<Text>,
-    ) : Block() {
-        override val type: Type get() = Type.PARAGRAPH
-    }
+    ) : Block()
 
     @ConsistentCopyVisibility
     @Serializable
@@ -58,9 +45,7 @@ sealed class Block {
     data class ItemList internal constructor(
         override val id: Int,
         val items: List<Item>,
-    ) : Block() {
-        override val type: Type get() = Type.ITEM_LIST
-    }
+    ) : Block()
 
     @ConsistentCopyVisibility
     @Serializable
@@ -68,9 +53,7 @@ sealed class Block {
     data class NumberedList internal constructor(
         override val id: Int,
         val items: List<Item>,
-    ) : Block() {
-        override val type: Type get() = Type.NUMBERED_LIST
-    }
+    ) : Block()
 
     @ConsistentCopyVisibility
     @Serializable
@@ -87,7 +70,6 @@ sealed class Block {
         val rows: List<Row>,
         val header: Header,
     ) : Block() {
-        override val type: Type get() = Type.TABLE
 
         @ConsistentCopyVisibility
         @Serializable
@@ -131,7 +113,6 @@ sealed class Block {
         val size: Size,
         val vspace: Boolean,
     ) : Block() {
-        override val type: Type get() = Type.FORM_TEXT
 
         enum class Size { NONE, SHORT, LONG, FILL }
     }
@@ -145,7 +126,6 @@ sealed class Block {
         val choices: List<Choice>,
         val vspace: Boolean,
     ) : Block() {
-        override val type: Type get() = Type.FORM_CHOICE
 
         @ConsistentCopyVisibility
         @Serializable

@@ -75,8 +75,22 @@ class LetterMarkupDslTest {
             )
         }
 
-        val types = letter.blocks.map { it.type }
-        assertTrue(types.containsAll(Block.Type.entries))
+        val blockClasses = letter.blocks.map { it::class }
+        assertTrue(
+            blockClasses.containsAll(
+                listOf(
+                    Block.Title2::class,
+                    Block.Title3::class,
+                    Block.Title4::class,
+                    Block.Paragraph::class,
+                    Block.ItemList::class,
+                    Block.NumberedList::class,
+                    Block.Table::class,
+                    Block.FormText::class,
+                    Block.FormChoice::class,
+                )
+            )
+        )
     }
 
     @Test

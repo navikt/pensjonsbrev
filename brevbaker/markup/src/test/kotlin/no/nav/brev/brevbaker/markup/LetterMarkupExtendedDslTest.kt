@@ -83,24 +83,24 @@ class LetterMarkupExtendedDslTest {
         assertEquals("12345678901", letter.saksinformasjon.gjelderFoedselsnummer.value)
         assertEquals("9876543", letter.saksinformasjon.saksnummer.saksnummer)
 
-        val types = letter.blocks.map { it.type }
+        val blockClasses = letter.blocks.map { it::class }
         assertTrue(
-            types.containsAll(
+            blockClasses.containsAll(
                 listOf(
-                    Block.Type.TITLE2,
-                    Block.Type.PARAGRAPH,
-                    Block.Type.ITEM_LIST,
-                    Block.Type.NUMBERED_LIST,
-                    Block.Type.TABLE,
-                    Block.Type.FORM_TEXT,
-                    Block.Type.FORM_CHOICE,
+                    Block.Title2::class,
+                    Block.Paragraph::class,
+                    Block.ItemList::class,
+                    Block.NumberedList::class,
+                    Block.Table::class,
+                    Block.FormText::class,
+                    Block.FormChoice::class,
                 )
             )
         )
 
         val paragraph = letter.blocks.filterIsInstance<Block.Paragraph>().single()
-        val textTypes = paragraph.content.map { it.type }
-        assertTrue(textTypes.containsAll(listOf(Text.Type.LITERAL, Text.Type.VARIABLE, Text.Type.NEW_LINE)))
+        val textClasses = paragraph.content.map { it::class }
+        assertTrue(textClasses.containsAll(listOf(Text.Literal::class, Text.Variable::class, Text.NewLine::class)))
     }
 
     @Test
@@ -231,7 +231,7 @@ class LetterMarkupExtendedDslTest {
             variable(id(), "Ola Nordmann")
         }
 
-        assertEquals(listOf(Text.Type.LITERAL, Text.Type.VARIABLE), tittel.title1.map { it.type })
+        assertEquals(listOf(Text.Literal::class, Text.Variable::class), tittel.title1.map { it::class })
     }
 
     @Test
@@ -295,7 +295,7 @@ class LetterMarkupExtendedDslTest {
         )
 
         val paragraph = letter.markup.blocks.single() as Block.Paragraph
-        assertEquals(listOf(Text.Type.LITERAL, Text.Type.VARIABLE), paragraph.content.map { it.type })
+        assertEquals(listOf(Text.Literal::class, Text.Variable::class), paragraph.content.map { it::class })
 
         val decoded = decodeLetterMarkupWithDataUsage(letter.toJson())
         assertEquals(letter, decoded)
@@ -317,7 +317,7 @@ class LetterMarkupExtendedDslTest {
 
         assertEquals(false, vedlegg.inkluderSaksinformasjon)
         val paragraph = vedlegg.blocks.single() as Block.Paragraph
-        val textTypes = paragraph.content.map { it.type }
-        assertTrue(textTypes.containsAll(listOf(Text.Type.LITERAL, Text.Type.VARIABLE)))
+        val textClasses = paragraph.content.map { it::class }
+        assertTrue(textClasses.containsAll(listOf(Text.Literal::class, Text.Variable::class)))
     }
 }
