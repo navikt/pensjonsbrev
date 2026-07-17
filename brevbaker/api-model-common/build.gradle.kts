@@ -5,7 +5,6 @@ val apiModelJavaTarget: String by System.getProperties()
 plugins {
     kotlin("jvm")
     `maven-publish`
-    alias(libs.plugins.binary.compatibility.validator) apply true
 }
 
 group = "no.nav.brev.brevbaker"
@@ -51,7 +50,14 @@ tasks {
     }
 }
 
-apiValidation {
-    nonPublicMarkers.add("no.nav.brev.InterneDataklasser")
-    nonPublicMarkers.add("no.nav.brev.InternKonstruktoer")
+@OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+kotlin {
+    abiValidation {
+        filters {
+            exclude {
+                annotatedWith.add("no.nav.brev.InterneDataklasser")
+                annotatedWith.add("no.nav.brev.InternKonstruktoer")
+            }
+        }
+    }
 }
