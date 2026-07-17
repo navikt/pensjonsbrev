@@ -7,13 +7,11 @@ import { type FieldType, type LetterModelSpecification, type ObjectTypeSpecifica
 
 export function DataClasses({ templateModelSpecification }: { templateModelSpecification: LetterModelSpecification }) {
   return (
-    <Box asChild background="neutral-soft" borderColor="neutral-subtle" borderWidth="1">
-      <VStack css={{ whiteSpace: "nowrap" }} gap="space-16" height="100%" overflow="auto" padding="space-16">
-        {Object.entries(templateModelSpecification.types).map(([name, value]) => (
-          <DataPresentation key={name} name={name} objectTypeSpecification={value} />
-        ))}
-      </VStack>
-    </Box>
+    <VStack css={{ whiteSpace: "nowrap" }} gap="space-16" height="100%" overflow="auto" padding="space-16">
+      {Object.entries(templateModelSpecification.types).map(([name, value]) => (
+        <DataPresentation key={name} name={name} objectTypeSpecification={value} />
+      ))}
+    </VStack>
   );
 }
 

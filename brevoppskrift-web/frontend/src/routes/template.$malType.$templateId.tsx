@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
-import { BodyLong, Box, Heading, HGrid, Select, VStack } from "@navikt/ds-react";
+import { ArrowLeftIcon } from "@navikt/aksel-icons";
+import { BodyLong, Box, Button, Heading, HGrid, Select, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
@@ -107,7 +108,16 @@ function TemplateExplorer() {
 
   return (
     <HGrid columns="minmax(360px, 35%) 1fr" height="100%" overflow="hidden">
-      <DataClasses templateModelSpecification={documentation.templateModelSpecification} />
+      <Box background="neutral-soft" borderColor="neutral-subtle" borderWidth="0 1 0 0" minHeight="0">
+        <Link to="/templates">
+          <Box asChild marginBlock="space-16 space-0" marginInline="space-16">
+            <Button as="a" icon={<ArrowLeftIcon />} size="small" variant="secondary">
+              Tilbake til mal-oversikten
+            </Button>
+          </Box>
+        </Link>
+        <DataClasses templateModelSpecification={documentation.templateModelSpecification} />
+      </Box>
       <VStack
         align="center"
         gap="space-16"
