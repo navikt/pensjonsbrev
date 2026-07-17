@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyShort, Box, Button, Heading, Hide, Label, Switch, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, Box, Button, Heading, Hide, Label, Switch, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
@@ -461,6 +461,11 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 <Switch checked={visDiff} onChange={(event) => setVisDiff(event.target.checked)} size="small">
                   Marker tekst som er lagt til og slettet
                 </Switch>
+                {visDiff && (
+                  <Alert variant="info" size="small">
+                    Redigering i markert modus er begrenset. Slå av markering modus for full redigering.
+                  </Alert>
+                )}
                 <Divider />
                 <UnderskriftTextField
                   controlled
