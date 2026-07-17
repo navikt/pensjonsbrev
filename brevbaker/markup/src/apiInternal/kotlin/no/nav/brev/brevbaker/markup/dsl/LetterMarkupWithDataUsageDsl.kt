@@ -29,7 +29,9 @@ fun dataUsageProperty(typeName: String, propertyName: String): LetterMarkupWithD
  *
  * ```
  * val brev = letterMarkupWithDataUsage(
- *     markup = letterMarkup { outline { paragraph("...") } },
+ *     markup = letterMarkup(saksinformasjon = saksinformasjon(...), signatur = signatur(...)) {
+ *         outline { paragraph("...") }
+ *     },
  *     brevtype = Brevtype.VEDTAKSBREV,
  *     letterDataUsage = setOf(dataUsageProperty("UngUfoerDto", "belop")),
  * )

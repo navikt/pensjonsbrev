@@ -306,24 +306,25 @@ public final class no/nav/brev/brevbaker/markup/dsl/ItemsBuilder {
 
 public final class no/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder {
 	public final fun outline (Lkotlin/jvm/functions/Function1;)V
-	public final fun saksinformasjon (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/time/LocalDate;Ljava/lang/String;)V
-	public static synthetic fun saksinformasjon$default (Lno/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/time/LocalDate;Ljava/lang/String;ILjava/lang/Object;)V
-	public final fun signatur (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
-	public static synthetic fun signatur$default (Lno/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)V
 }
 
 public final class no/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilderKt {
 	public static final fun attachment (ZLkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/Attachment;
 	public static synthetic fun attachment$default (ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/Attachment;
-	public static final fun letterMarkup (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
+	public static final fun letterMarkup (Lno/nav/brev/brevbaker/markup/Saksinformasjon;Lno/nav/brev/brevbaker/markup/Signatur;Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
 	public static final fun pdfTittel (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/PDFTittel;
+	public static final fun saksinformasjon (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/time/LocalDate;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Saksinformasjon;
+	public static synthetic fun saksinformasjon$default (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/time/LocalDate;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/Saksinformasjon;
+	public static final fun signatur (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Signatur;
+	public static synthetic fun signatur$default (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/Signatur;
 	public static final fun title1 (Lno/nav/brev/brevbaker/markup/dsl/AttachmentBuilder;Ljava/lang/String;)V
 	public static final fun title1 (Lno/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder;Ljava/lang/String;)V
 	public static final fun title1WithPlainTextBuilder (Lno/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder;Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class no/nav/brev/brevbaker/markup/dsl/LetterPDFRequestDslKt {
-	public static final fun letterPDFRequest (Lno/nav/brev/brevbaker/markup/LanguageCode;Lno/nav/brev/brevbaker/markup/Brevtype;Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterPDFRequest;
+	public static final fun letterPDFRequest (Lno/nav/brev/brevbaker/markup/LanguageCode;Lno/nav/brev/brevbaker/markup/Brevtype;Lno/nav/brev/brevbaker/markup/LetterMarkup;Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterPDFRequest;
+	public static synthetic fun letterPDFRequest$default (Lno/nav/brev/brevbaker/markup/LanguageCode;Lno/nav/brev/brevbaker/markup/Brevtype;Lno/nav/brev/brevbaker/markup/LetterMarkup;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterPDFRequest;
 }
 
 public abstract interface annotation class no/nav/brev/brevbaker/markup/dsl/MarkupDsl : java/lang/annotation/Annotation {
@@ -373,8 +374,6 @@ public final class no/nav/brev/brevbaker/markup/dsl/PDFRequestBuilder {
 	public final fun attachment (Lno/nav/brev/brevbaker/markup/Attachment;)V
 	public final fun attachment (ZLkotlin/jvm/functions/Function1;)V
 	public static synthetic fun attachment$default (Lno/nav/brev/brevbaker/markup/dsl/PDFRequestBuilder;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public final fun letter (Lkotlin/jvm/functions/Function1;)V
-	public final fun letter (Lno/nav/brev/brevbaker/markup/LetterMarkup;)V
 	public final fun pdfVedlegg (Lkotlin/jvm/functions/Function1;)V
 	public final fun pdfVedlegg (Lno/nav/brev/brevbaker/markup/PDFTittel;)V
 }
@@ -393,7 +392,6 @@ public abstract class no/nav/brev/brevbaker/markup/outline/Block {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/outline/Block$Companion;
 	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public abstract fun getId ()I
-	public abstract fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
 	public static final synthetic fun write$Self (Lno/nav/brev/brevbaker/markup/outline/Block;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -411,7 +409,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$FormChoice : no/na
 	public final fun getChoices ()Ljava/util/List;
 	public fun getId ()I
 	public final fun getPrompt ()Ljava/util/List;
-	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
 	public final fun getVspace ()Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -468,7 +465,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$FormText : no/nav/
 	public fun getId ()I
 	public final fun getPrompt ()Ljava/util/List;
 	public final fun getSize ()Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;
-	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
 	public final fun getVspace ()Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -532,7 +528,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$ItemList : no/nav/
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getId ()I
 	public final fun getItems ()Ljava/util/List;
-	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -559,7 +554,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$NumberedList : no/
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getId ()I
 	public final fun getItems ()Ljava/util/List;
-	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -586,7 +580,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Paragraph : no/nav
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getContent ()Ljava/util/List;
 	public fun getId ()I
-	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -615,7 +608,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Table : no/nav/bre
 	public final fun getHeader ()Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;
 	public fun getId ()I
 	public final fun getRows ()Ljava/util/List;
-	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -758,7 +750,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Title2 : no/nav/br
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getContent ()Ljava/util/List;
 	public fun getId ()I
-	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -785,7 +776,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Title3 : no/nav/br
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getContent ()Ljava/util/List;
 	public fun getId ()I
-	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -812,7 +802,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Title4 : no/nav/br
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getContent ()Ljava/util/List;
 	public fun getId ()I
-	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -832,21 +821,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Title4$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/outline/Block$Type : java/lang/Enum {
-	public static final field FORM_CHOICE Lno/nav/brev/brevbaker/markup/outline/Block$Type;
-	public static final field FORM_TEXT Lno/nav/brev/brevbaker/markup/outline/Block$Type;
-	public static final field ITEM_LIST Lno/nav/brev/brevbaker/markup/outline/Block$Type;
-	public static final field NUMBERED_LIST Lno/nav/brev/brevbaker/markup/outline/Block$Type;
-	public static final field PARAGRAPH Lno/nav/brev/brevbaker/markup/outline/Block$Type;
-	public static final field TABLE Lno/nav/brev/brevbaker/markup/outline/Block$Type;
-	public static final field TITLE2 Lno/nav/brev/brevbaker/markup/outline/Block$Type;
-	public static final field TITLE3 Lno/nav/brev/brevbaker/markup/outline/Block$Type;
-	public static final field TITLE4 Lno/nav/brev/brevbaker/markup/outline/Block$Type;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/outline/Block$Type;
-	public static fun values ()[Lno/nav/brev/brevbaker/markup/outline/Block$Type;
-}
-
 public final class no/nav/brev/brevbaker/markup/outline/ElementTags : java/lang/Enum {
 	public static final field FRITEKST Lno/nav/brev/brevbaker/markup/outline/ElementTags;
 	public static final field REDIGERBAR_DATA Lno/nav/brev/brevbaker/markup/outline/ElementTags;
@@ -861,7 +835,6 @@ public abstract class no/nav/brev/brevbaker/markup/outline/Text {
 	public abstract fun getFontType ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
 	public abstract fun getId ()I
 	public abstract fun getText ()Ljava/lang/String;
-	public abstract fun getType ()Lno/nav/brev/brevbaker/markup/outline/Text$Type;
 	public static final synthetic fun write$Self (Lno/nav/brev/brevbaker/markup/outline/Text;Lkotlinx/serialization/encoding/CompositeEncoder;Lkotlinx/serialization/descriptors/SerialDescriptor;)V
 }
 
@@ -889,7 +862,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Text$Literal : no/nav/br
 	public fun getId ()I
 	public final fun getTags ()Ljava/util/Set;
 	public fun getText ()Ljava/lang/String;
-	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Text$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -916,7 +888,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Text$NewLine : no/nav/br
 	public fun getFontType ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
 	public fun getId ()I
 	public fun getText ()Ljava/lang/String;
-	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Text$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -936,15 +907,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Text$NewLine$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/outline/Text$Type : java/lang/Enum {
-	public static final field LITERAL Lno/nav/brev/brevbaker/markup/outline/Text$Type;
-	public static final field NEW_LINE Lno/nav/brev/brevbaker/markup/outline/Text$Type;
-	public static final field VARIABLE Lno/nav/brev/brevbaker/markup/outline/Text$Type;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/outline/Text$Type;
-	public static fun values ()[Lno/nav/brev/brevbaker/markup/outline/Text$Type;
-}
-
 public final class no/nav/brev/brevbaker/markup/outline/Text$Variable : no/nav/brev/brevbaker/markup/outline/Text {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/outline/Text$Variable$Companion;
 	public final fun component1 ()I
@@ -956,7 +918,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Text$Variable : no/nav/b
 	public fun getId ()I
 	public final fun getTags ()Ljava/util/Set;
 	public fun getText ()Ljava/lang/String;
-	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Text$Type;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }

@@ -18,15 +18,22 @@ class LetterMarkupExtendedDslTest {
     private fun fullLetter(): LetterMarkup {
         var next = 0
         fun id() = next++
-        return letterMarkupExtended {
-            title1 { text(id(), "Vedtak om uføretrygd") }
-            saksinformasjon(
+        return letterMarkupExtended(
+            saksinformasjon = saksinformasjon(
                 gjelderNavn = "Ola Nordmann",
                 gjelderFoedselsnummer = "12345678901",
                 saksnummer = "9876543",
                 dokumentDato = LocalDate.of(2026, 7, 9),
                 annenMottakerNavn = "Kari Nordmann",
-            )
+            ),
+            signatur = signatur(
+                hilsenTekst = "Med vennlig hilsen",
+                navAvsenderEnhet = "NAV Familie- og pensjonsytelser",
+                saksbehandlerNavn = "Sak S.Behandler",
+                attesterendeSaksbehandlerNavn = "Att Esterer",
+            ),
+        ) {
+            title1 { text(id(), "Vedtak om uføretrygd") }
             outline {
                 title2(id()) { text(id(), "Innledning") }
                 paragraph(id()) {
@@ -65,12 +72,6 @@ class LetterMarkupExtendedDslTest {
                     choice(id()) { text(id(), "Nei") }
                 }
             }
-            signatur(
-                hilsenTekst = "Med vennlig hilsen",
-                navAvsenderEnhet = "NAV Familie- og pensjonsytelser",
-                saksbehandlerNavn = "Sak S.Behandler",
-                attesterendeSaksbehandlerNavn = "Att Esterer",
-            )
         }
     }
 
@@ -123,17 +124,22 @@ class LetterMarkupExtendedDslTest {
     fun `extended DSL supports font type and variables on content`() {
         var next = 0
         fun id() = next++
-        val letter = letterMarkupExtended {
-            title1 {
-                text(id(), "Tittel fra builder ")
-                variable(id(), "x")
-            }
-            saksinformasjon(
+        val letter = letterMarkupExtended(
+            saksinformasjon = saksinformasjon(
                 gjelderNavn = "Ola Nordmann",
                 gjelderFoedselsnummer = "12345678901",
                 saksnummer = "9876543",
                 dokumentDato = LocalDate.of(2026, 7, 9),
-            )
+            ),
+            signatur = signatur(
+                hilsenTekst = "Hilsen",
+                navAvsenderEnhet = "NAV",
+            ),
+        ) {
+            title1 {
+                text(id(), "Tittel fra builder ")
+                variable(id(), "x")
+            }
             outline {
                 title2(id()) { text(id(), "Innledning") }
                 title2(id()) {
@@ -200,10 +206,6 @@ class LetterMarkupExtendedDslTest {
                     }
                 }
             }
-            signatur(
-                hilsenTekst = "Hilsen",
-                navAvsenderEnhet = "NAV",
-            )
         }
 
         val titleTexts = letter.title1.filterIsInstance<Text.Literal>().map { it.text }
@@ -239,21 +241,22 @@ class LetterMarkupExtendedDslTest {
         val property = dataUsageProperty(typeName = "UngUfoerDto", propertyName = "totaltUfoerePerMnd")
 
         val letter = letterMarkupWithDataUsage(
-            markup = letterMarkup {
-                saksinformasjon(
+            markup = letterMarkup(
+                saksinformasjon = saksinformasjon(
                     gjelderNavn = "Ola Nordmann",
                     gjelderFoedselsnummer = "12345678901",
                     saksnummer = "9876543",
                     dokumentDato = LocalDate.of(2026, 7, 9),
-                )
+                ),
+                signatur = signatur(
+                    hilsenTekst = "Med vennlig hilsen",
+                    navAvsenderEnhet = "NAV",
+                ),
+            ) {
                 title1("Vedtak")
                 outline {
                     paragraph("Innhold")
                 }
-                signatur(
-                    hilsenTekst = "Med vennlig hilsen",
-                    navAvsenderEnhet = "NAV",
-                )
             },
             brevtype = Brevtype.VEDTAKSBREV,
             letterDataUsage = setOf(property),
@@ -271,13 +274,18 @@ class LetterMarkupExtendedDslTest {
         val property = dataUsageProperty(typeName = "UngUfoerDto", propertyName = "belop")
 
         val letter = letterMarkupWithDataUsage(
-            markup = letterMarkupExtended {
-                saksinformasjon(
+            markup = letterMarkupExtended(
+                saksinformasjon = saksinformasjon(
                     gjelderNavn = "Ola Nordmann",
                     gjelderFoedselsnummer = "12345678901",
                     saksnummer = "9876543",
                     dokumentDato = LocalDate.of(2026, 7, 9),
-                )
+                ),
+                signatur = signatur(
+                    hilsenTekst = "Med vennlig hilsen",
+                    navAvsenderEnhet = "NAV",
+                ),
+            ) {
                 title1 { text(id(), "Orientering") }
                 outline {
                     paragraph(id()) {
@@ -285,10 +293,6 @@ class LetterMarkupExtendedDslTest {
                         variable(id(), "1000 kr")
                     }
                 }
-                signatur(
-                    hilsenTekst = "Med vennlig hilsen",
-                    navAvsenderEnhet = "NAV",
-                )
             },
             brevtype = Brevtype.INFORMASJONSBREV,
             letterDataUsage = setOf(property),

@@ -3,6 +3,8 @@ package no.nav.brev.brevbaker.markup.dsl
 import no.nav.brev.brevbaker.markup.Attachment
 import no.nav.brev.brevbaker.markup.LetterMarkup
 import no.nav.brev.brevbaker.markup.PDFTittel
+import no.nav.brev.brevbaker.markup.Saksinformasjon
+import no.nav.brev.brevbaker.markup.Signatur
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
 import no.nav.brev.brevbaker.markup.outline.Block.Table.ColumnAlignment
@@ -15,14 +17,20 @@ import kotlin.jvm.JvmName
  * Modulen genererer aldri id-er; kalleren (typisk `Letter2Markup` i core) må oppgi id-ene selv.
  *
  * ```
- * val brev = letterMarkupExtended {
+ * val brev = letterMarkupExtended(
+ *     saksinformasjon = saksinformasjon(...),
+ *     signatur = signatur(...),
+ * ) {
  *     outline { paragraph(10) { text(11, "Du får "); variable(12, "uføretrygd") } }
- *     // ... saksinformasjon, signatur
  * }
  * ```
  */
-fun letterMarkupExtended(build: LetterMarkupBuilder<ExtendedContentBuilder>.() -> Unit): LetterMarkup =
-    LetterMarkupBuilder(::ExtendedContentBuilder).apply(build).build()
+fun letterMarkupExtended(
+    saksinformasjon: Saksinformasjon,
+    signatur: Signatur,
+    build: LetterMarkupBuilder<ExtendedContentBuilder>.() -> Unit,
+): LetterMarkup =
+    LetterMarkupBuilder(::ExtendedContentBuilder, saksinformasjon, signatur).apply(build).build()
 
 /**
  * Som [attachment], men med støtte for `variable(...)`/tags og krav om eksplisitt id på hvert element.
