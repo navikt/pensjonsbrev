@@ -674,6 +674,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       pasteViaKeyboardRef.current = true;
     }
 
+    if (diffModeActive && (isUndo || isRedo)) {
+      // undo/redo can replay structural changes (split/merge/table), blocked while diff is visible (v1)
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+
     if (isUndo) {
       e.preventDefault();
       e.stopPropagation();
