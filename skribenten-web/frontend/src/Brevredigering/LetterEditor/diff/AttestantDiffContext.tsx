@@ -13,38 +13,47 @@ import { type LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 type AttestantDiffContextValue = {
   diffByLiteral: DiffRangesByLiteral;
   diffHash: string | undefined;
+  invalidatedDiffHashes: ReadonlySet<string>;
   dismissedDiffs: ReadonlyMap<string, string>;
   dismissLiteral: (key: string, diffHash: string) => void;
+  invalidateDiff: (diffHash: string) => void;
 };
 
 const EMPTY_MAP: DiffRangesByLiteral = new Map();
 const EMPTY_DISMISSED_DIFFS: ReadonlyMap<string, string> = new Map();
+const EMPTY_INVALIDATED_DIFF_HASHES: ReadonlySet<string> = new Set();
 
 const AttestantDiffContext = createContext<AttestantDiffContextValue>({
   diffByLiteral: EMPTY_MAP,
   diffHash: undefined,
+  invalidatedDiffHashes: EMPTY_INVALIDATED_DIFF_HASHES,
   dismissedDiffs: EMPTY_DISMISSED_DIFFS,
   dismissLiteral: () => {},
+  invalidateDiff: () => {},
 });
 
 export const AttestantDiffProvider = ({
   diff,
   diffHash,
+  invalidatedDiffHashes,
   dismissedDiffs,
   dismissLiteral,
+  invalidateDiff,
   children,
 }: {
   diff: LetterDiff | undefined;
   diffHash: string | undefined;
+  invalidatedDiffHashes: ReadonlySet<string>;
   dismissedDiffs: ReadonlyMap<string, string>;
   dismissLiteral: (key: string, diffHash: string) => void;
+  invalidateDiff: (diffHash: string) => void;
   children: ReactNode;
 }) => {
   const diffByLiteral = useMemo(() => (diff ? groupDiffByLiteral(diff) : EMPTY_MAP), [diff]);
 
   const value = useMemo(
-    () => ({ diffByLiteral, diffHash, dismissedDiffs, dismissLiteral }),
-    [diffByLiteral, diffHash, dismissedDiffs, dismissLiteral],
+    () => ({ diffByLiteral, diffHash, invalidatedDiffHashes, dismissedDiffs, dismissLiteral, invalidateDiff }),
+    [diffByLiteral, diffHash, invalidatedDiffHashes, dismissedDiffs, dismissLiteral, invalidateDiff],
   );
 
   return <AttestantDiffContext.Provider value={value}>{children}</AttestantDiffContext.Provider>;
@@ -56,10 +65,11 @@ export function useDiffSegmentsForLiteral(
   literalIndex: LiteralIndex,
   currentText: string,
 ): DiffSegment[] | null {
-  const { diffByLiteral, diffHash, dismissedDiffs } = useAttestantDiff();
+  const { diffByLiteral, diffHash, invalidatedDiffHashes, dismissedDiffs } = useAttestantDiff();
 
   return useMemo(() => {
     if (!diffHash) return null;
+    if (invalidatedDiffHashes.has(diffHash)) return null;
 
     const key = diffKey(literalIndex);
     if (dismissedDiffs.get(key) === diffHash) return null;
@@ -79,5 +89,5 @@ export function useDiffSegmentsForLiteral(
     }
 
     return result.segments;
-  }, [literalIndex, currentText, diffByLiteral, diffHash, dismissedDiffs]);
+  }, [literalIndex, currentText, diffByLiteral, diffHash, invalidatedDiffHashes, dismissedDiffs]);
 }
