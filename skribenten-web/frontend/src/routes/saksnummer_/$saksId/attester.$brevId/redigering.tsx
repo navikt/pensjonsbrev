@@ -11,6 +11,11 @@ import { z } from "zod";
 import { getBrevAttestering, getBrevDiff, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
 import { AttestantDiffProvider } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
+import {
+  getSnapshotForHash,
+  pickValueForCurrentHash,
+  shouldRenderDiffMarkers,
+} from "~/Brevredigering/LetterEditor/diff/diffQueryState";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
   createLetterSnapshot,
@@ -60,6 +65,8 @@ const vedtakSidemenySchema = z.object({
   attestantSignatur: z.string().min(1, "Underskrift må oppgis"),
   saksbehandlerValg: z.custom<SaksbehandlerValg>(),
 });
+
+const MAX_HASH_CACHE_SIZE = 20;
 
 type VedtakSidemenyFormData = z.infer<typeof vedtakSidemenySchema>;
 type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
@@ -209,17 +216,89 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   const [visDiff, setVisDiff] = useState(false);
   const currentSavedHash = editorState.redigertBrevHash;
+  const savedLettersByHashRef = useRef<Map<string, typeof props.brev.redigertBrev>>(
+    new Map([[props.brev.redigertBrevHash, props.brev.redigertBrev]]),
+  );
+
+  useEffect(() => {
+    savedLettersByHashRef.current.set(props.brev.redigertBrevHash, props.brev.redigertBrev);
+  }, [props.brev.redigertBrevHash, props.brev.redigertBrev]);
+
+  const [invalidatedDiffHashes, setInvalidatedDiffHashes] = useState<Set<string>>(() => new Set());
+  const invalidateDiff = useCallback((diffHash: string) => {
+    setInvalidatedDiffHashes((current) => {
+      if (current.has(diffHash)) return current;
+      const next = new Set(current);
+      next.add(diffHash);
+      while (next.size > MAX_HASH_CACHE_SIZE) {
+        const oldest = next.values().next().value;
+        if (oldest === undefined) break;
+        next.delete(oldest);
+      }
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    setInvalidatedDiffHashes((current) => {
+      if (current.size === 0) return current;
+      if (current.has(currentSavedHash) && current.size === 1) return current;
+      return current.has(currentSavedHash) ? new Set([currentSavedHash]) : new Set();
+    });
+
+    setDismissedDiffs((current) => {
+      if (current.size === 0) return current;
+      const next = new Map([...current].filter(([, hash]) => hash === currentSavedHash));
+      return next.size === current.size ? current : next;
+    });
+  }, [currentSavedHash]);
+
+  const savedLetterForCurrentHash = getSnapshotForHash(savedLettersByHashRef.current, currentSavedHash);
+
   const diffQuery = useQuery({
     queryKey: getBrevDiff.queryKey(props.brev.info.id, currentSavedHash),
-    queryFn: async () => ({
-      diff: await getBrevDiff.queryFn(props.brev.info.id, editorState.redigertBrev),
-      redigertBrevHash: currentSavedHash,
-    }),
-    enabled: visDiff,
+    queryFn: async () => {
+      const snapshotForHash = getSnapshotForHash(savedLettersByHashRef.current, currentSavedHash);
+      if (!snapshotForHash) {
+        throw new Error(`Mangler lagret brevsnapshot for hash ${currentSavedHash}`);
+      }
+
+      return {
+        value: await getBrevDiff.queryFn(props.brev.info.id, snapshotForHash),
+        redigertBrevHash: currentSavedHash,
+      };
+    },
+    enabled: visDiff && savedLetterForCurrentHash !== undefined,
   });
 
-  const activeDiff =
-    diffQuery.isSuccess && diffQuery.data.redigertBrevHash === currentSavedHash ? diffQuery.data.diff : undefined;
+  const activeDiff = pickValueForCurrentHash(diffQuery.isSuccess ? diffQuery.data : undefined, currentSavedHash);
+  const currentHashInvalidated = invalidatedDiffHashes.has(currentSavedHash);
+  const renderDiffMarkers = shouldRenderDiffMarkers({
+    visDiff,
+    currentSavedHash,
+    invalidatedDiffHashes,
+    diff: activeDiff,
+  });
+
+  console.log({
+    currentSavedHash,
+    invalidated: invalidatedDiffHashes.has(currentSavedHash),
+    diffHash: diffQuery.data?.redigertBrevHash,
+    hasActiveDiff: activeDiff !== undefined,
+    renderDiffMarkers,
+  });
+
+  useEffect(() => {
+    if (!visDiff || !diffQuery.isSuccess) return;
+    if (diffQuery.data.redigertBrevHash !== currentSavedHash) return;
+
+    setInvalidatedDiffHashes((current) => {
+      if (!current.has(currentSavedHash)) return current;
+      const next = new Set(current);
+      next.delete(currentSavedHash);
+      return next;
+    });
+  }, [visDiff, diffQuery.isSuccess, diffQuery.data, currentSavedHash]);
 
   const [dismissedDiffs, setDismissedDiffs] = useState<Map<string, string>>(() => new Map());
   const dismissLiteral = useCallback((key: string, diffHash: string) => {
@@ -264,6 +343,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       });
     },
     onSuccess: (response, variables) => {
+      const snapshots = savedLettersByHashRef.current;
+      snapshots.set(response.redigertBrevHash, response.redigertBrev);
+      while (snapshots.size > MAX_HASH_CACHE_SIZE) {
+        const oldest = snapshots.keys().next().value;
+        if (!oldest || oldest === response.redigertBrevHash) break;
+        snapshots.delete(oldest);
+      }
       const idsBeforeTekstvalgToggle = idsBeforeTekstvalgToggleRef.current;
       const historySnapshot = variables.historySnapshot;
       idsBeforeTekstvalgToggleRef.current = null;
@@ -461,9 +547,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 <Switch checked={visDiff} onChange={(event) => setVisDiff(event.target.checked)} size="small">
                   Marker tekst som er lagt til og slettet
                 </Switch>
-                {visDiff && (
+                {visDiff && currentHashInvalidated && (
                   <Alert variant="info" size="small">
-                    Redigering i markert modus er begrenset. Slå av markering modus for full redigering.
+                    Ved strukturelle endringer skjules markeringene midlertidig. De vises automatisk igjen etter lagring,
+                    når ny markering er hentet for siste lagrede versjon.
                   </Alert>
                 )}
                 <Divider />
@@ -498,10 +585,12 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         right={
           <>
             <AttestantDiffProvider
-              diff={visDiff ? activeDiff : undefined}
-              diffHash={visDiff && activeDiff ? currentSavedHash : undefined}
+              diff={renderDiffMarkers ? activeDiff : undefined}
+              diffHash={renderDiffMarkers ? currentSavedHash : undefined}
+              invalidatedDiffHashes={invalidatedDiffHashes}
               dismissedDiffs={dismissedDiffs}
               dismissLiteral={dismissLiteral}
+              invalidateDiff={invalidateDiff}
             >
               <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
                 <ManagedLetterEditor
