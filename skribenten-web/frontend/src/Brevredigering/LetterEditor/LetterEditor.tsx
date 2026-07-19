@@ -41,8 +41,7 @@ export const LetterEditor = ({
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
   const highlightedIds = useInsertedTekstValgHighlight();
-  const { diffHash } = useAttestantDiff();
-  const diffModeActive = diffHash !== undefined;
+  const { diffHash, invalidateDiff } = useAttestantDiff();
 
   const [editorRoot, setEditorRoot] = useState<HTMLDivElement | null>(null);
   const editorRootRef = useCallback((el: HTMLDivElement | null) => setEditorRoot(el), []);
@@ -52,10 +51,9 @@ export const LetterEditor = ({
   useSelectionDeleteHotkey(
     editorRoot,
     (focus) => {
-      // Multi-literal selection deletion is structural (changes the literal index map),
-      // so it is blocked while diff is visible (v1). The hook still preventDefaults the native
-      // browser deletion, so the DOM is not corrupted.
-      if (diffModeActive) return;
+      if (diffHash) {
+        invalidateDiff(diffHash);
+      }
       applyAction(Actions.deleteSelection, setEditorState, focus);
     },
     !freeze,
@@ -63,10 +61,13 @@ export const LetterEditor = ({
 
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
 
-  const canUndo = !freeze && !diffModeActive && editorState.history.entryPointer >= 0;
-  const canRedo = !freeze && !diffModeActive && editorState.history.entryPointer < editorState.history.entries.length - 1;
+  const canUndo = !freeze && editorState.history.entryPointer >= 0;
+  const canRedo = !freeze && editorState.history.entryPointer < editorState.history.entries.length - 1;
 
   const undo = useCallback(() => {
+    if (diffHash) {
+      invalidateDiff(diffHash);
+    }
     setEditorState((current) => {
       if (freeze || current.history.entryPointer < 0) return current;
       const entry = current.history.entries[current.history.entryPointer];
@@ -88,9 +89,12 @@ export const LetterEditor = ({
         },
       };
     });
-  }, [freeze, setEditorState]);
+  }, [diffHash, freeze, invalidateDiff, setEditorState]);
 
   const redo = useCallback(() => {
+    if (diffHash) {
+      invalidateDiff(diffHash);
+    }
     setEditorState((current) => {
       if (freeze || current.history.entryPointer >= current.history.entries.length - 1) return current;
       const nextPointer = current.history.entryPointer + 1;
@@ -113,7 +117,7 @@ export const LetterEditor = ({
         },
       };
     });
-  }, [freeze, setEditorState]);
+  }, [diffHash, freeze, invalidateDiff, setEditorState]);
 
   return (
     <VStack overflowY="hidden">
