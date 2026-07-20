@@ -1,13 +1,10 @@
 import { css } from "@emotion/react";
-import { BodyLong, Heading, Select, VStack } from "@navikt/ds-react";
+import { ArrowLeftIcon } from "@navikt/aksel-icons";
+import { BodyLong, Box, Button, Heading, HGrid, Select, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
+import { useEffect, useRef } from "react";
 
-import {
-  getBrevkoder,
-  getTemplateDescription,
-  getTemplateDocumentation,
-  type MalType,
-} from "~/api/brevbaker-api-endpoints";
+import { getTemplateDescription, getTemplateDocumentation, type MalType } from "~/api/brevbaker-api-endpoints";
 import {
   type Attachment,
   type Conditional,
@@ -31,11 +28,6 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     }),
   },
   loader: async ({ context, deps, params, preload }) => {
-    await context.queryClient.ensureQueryData({
-      queryKey: getBrevkoder.queryKey(params.malType),
-      queryFn: () => getBrevkoder.queryFn(params.malType),
-    });
-
     const description = await context.queryClient.ensureQueryData({
       queryKey: getTemplateDescription.queryKey(params.malType, params.templateId),
       queryFn: () => getTemplateDescription.queryFn(params.malType, params.templateId),
@@ -47,7 +39,7 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     }
 
     if (!deps.language && !preload) {
-      redirect({
+      throw redirect({
         to: "/template/$malType/$templateId",
         search: { language: defaultLanguage },
         params,
@@ -65,32 +57,98 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
   },
   validateSearch: (
     search: Record<string, unknown>,
-  ): { language?: string; highlightedDataClass?: string; highlightedDataField?: string } => ({
-    language: search.language?.toString(),
-    highlightedDataClass: search.highlightedDataClass?.toString(),
-    highlightedDataField: search.highlightedDataField?.toString(),
-  }),
+  ): {
+    language?: string;
+    highlightedDataClass?: string;
+    highlightedDataField?: string;
+    index?: number;
+  } => {
+    const indexRaw = search.index?.toString();
+    const index = indexRaw !== undefined && /^\d+$/.test(indexRaw) ? Number(indexRaw) : undefined;
+    return {
+      language: search.language?.toString(),
+      highlightedDataClass: search.highlightedDataClass?.toString(),
+      highlightedDataField: search.highlightedDataField?.toString(),
+      index,
+    };
+  },
   component: TemplateExplorer,
 });
 
 function TemplateExplorer() {
   const { documentation } = Route.useLoaderData();
   const { templateId } = Route.useParams();
+  const { index } = Route.useSearch();
+  const previewRef = useRef<HTMLDivElement>(null);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: documentation is an intentional trigger so we re-highlight when navigating between templates with the same index.
+  useEffect(() => {
+    const container = previewRef.current;
+    if (!container) {
+      return;
+    }
+
+    for (const prev of container.querySelectorAll(".search-target")) {
+      prev.classList.remove("search-target");
+    }
+
+    if (index === undefined) {
+      return;
+    }
+
+    const raf = requestAnimationFrame(() => {
+      const el = container.querySelector(`[data-block-index="${CSS.escape(String(index))}"]`);
+      if (el) {
+        el.classList.add("search-target");
+        el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [index, documentation]);
 
   return (
-    <>
-      <DataClasses templateModelSpecification={documentation.templateModelSpecification} />
-      <VStack align="center" gap="space-16">
+    <HGrid columns="minmax(360px, 35%) 1fr" height="100%" overflow="hidden">
+      <Box background="neutral-soft" borderColor="neutral-subtle" borderWidth="0 1 0 0" minHeight="0">
+        <Link to="/templates">
+          <Box asChild marginBlock="space-16 space-0" marginInline="space-16">
+            <Button as="a" icon={<ArrowLeftIcon />} size="small" variant="secondary">
+              Tilbake til mal-oversikten
+            </Button>
+          </Box>
+        </Link>
+        <DataClasses templateModelSpecification={documentation.templateModelSpecification} />
+      </Box>
+      <VStack
+        align="center"
+        gap="space-16"
+        overflow="auto"
+        paddingBlock="space-16"
+        paddingInline="space-16"
+        width="100%"
+      >
         <Heading size="medium" spacing>
           Oppskrift for {templateId}
         </Heading>
         <SelectLanguage />
-        <Document templateDocumentation={documentation} />
-        {documentation.attachments.map((attachment, index) => (
-          <Document key={index} templateDocumentation={attachment} />
-        ))}
+        <div
+          css={css`
+            width: 100%;
+
+            .search-target {
+              outline: 3px solid var(--ax-warning-400);
+              border-radius: var(--ax-radius-4);
+              scroll-margin-top: var(--ax-space-64);
+            }
+          `}
+          ref={previewRef}
+        >
+          <Document templateDocumentation={documentation} />
+          {documentation.attachments.map((attachment, index) => (
+            <Document key={index} templateDocumentation={attachment} />
+          ))}
+        </div>
       </VStack>
-    </>
+    </HGrid>
   );
 }
 
@@ -121,7 +179,7 @@ function SelectLanguage() {
 
 function Document({ templateDocumentation }: { templateDocumentation: TemplateDocumentation | Attachment }) {
   return (
-    <div className="preview">
+    <Box background="default" padding="space-48">
       <div>
         {templateDocumentation.title.map((cocs, index) => {
           return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
@@ -132,7 +190,7 @@ function Document({ templateDocumentation }: { templateDocumentation: TemplateDo
           return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
         })}
       </div>
-    </div>
+    </Box>
   );
 }
 
@@ -167,7 +225,7 @@ function ContentComponent({ content }: { content: Element }) {
   switch (content.elementType) {
     case ElementType.TITLE1: {
       return (
-        <Heading size="medium" spacing>
+        <Heading data-block-index={content.index} size="medium" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
@@ -176,7 +234,7 @@ function ContentComponent({ content }: { content: Element }) {
     }
     case ElementType.TITLE2: {
       return (
-        <Heading size="small" spacing>
+        <Heading data-block-index={content.index} size="small" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
@@ -185,7 +243,7 @@ function ContentComponent({ content }: { content: Element }) {
     }
     case ElementType.TITLE3: {
       return (
-        <Heading size="xsmall" spacing>
+        <Heading data-block-index={content.index} size="xsmall" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
@@ -204,7 +262,7 @@ function ContentComponent({ content }: { content: Element }) {
     }
     case ElementType.PARAGRAPH: {
       return (
-        <BodyLong as="div" spacing>
+        <BodyLong as="div" data-block-index={content.index} spacing>
           {content.paragraph.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}

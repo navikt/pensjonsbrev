@@ -7,18 +7,16 @@ import { createRouter, RouterProvider } from "@tanstack/react-router";
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-import { ApiError } from "./components/ApiError";
+import { DefaultErrorComponent, NotFoundComponent } from "./components/RouterDefaults";
 import { routeTree } from "./routeTree.gen";
 
 const queryClient = new QueryClient();
-
-const NotFoundComponent = () => <div>"Finner ikke siden"</div>;
 
 // Set up a Router instance
 const router = createRouter({
   routeTree,
   defaultNotFoundComponent: NotFoundComponent,
-  defaultErrorComponent: ({ error }) => <ApiError error={error} text="Noe gikk galt." />,
+  defaultErrorComponent: DefaultErrorComponent,
   context: {
     queryClient,
   },

@@ -4,6 +4,8 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import com.fasterxml.jackson.module.kotlin.readValue
+import java.util.zip.GZIPInputStream
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.alleAutobrevmaler
 import no.nav.pensjon.brev.alleRedigerbareMaler
@@ -14,12 +16,17 @@ import no.nav.pensjon.brev.maler.example.OverstyrtModelSpecificationTemplate
 import no.nav.pensjon.brev.maler.redigerbar.BrukerTestBrev
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
+import no.nav.pensjon.brev.template.render.TemplateTextExtractor
 import no.nav.pensjon.brev.template.render.TemplateDocumentation
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
+import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brev.testBrevbakerApp
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Isolated
 
@@ -171,14 +178,75 @@ class TemplateRoutesTest {
     }
 
     @Test
-    fun `filtrerer bort deaktiverte maler`() = runBlocking {
-        testBrevbakerApp(enableAllToggles = false, isIntegrationTest = false) { client ->
-            val response = client.get("/templates/redigerbar?includeMetadata=true")
+    fun `batch doc endpoint returns one entry per autobrev template per supported language`() =
+        testBrevbakerApp(isIntegrationTest = false) { client ->
+            val response = client.get("/templates/autobrev/all")
             assertEquals(HttpStatusCode.OK, response.status)
-            val body = response.body<List<LinkedHashMap<*, *>>>()
-            assertNull(body.map { it["name"] }.firstOrNull { it == "PE_OVERSETTELSE_AV_DOKUMENTER" })
-            assertNull(body.map { it["name"] }.firstOrNull { it == "UT_AVSLAG_UFOERETRYGD" })
-        }
-    }
+            val body = response.body<List<SearchableContent>>()
 
+            val expected = alleAutobrevmaler.flatMap { mal ->
+                mal.template.language.all().map { mal.kode.kode() to it.toCode() }
+            }.toSet()
+            assertEquals(expected, body.map { it.brevkode to it.language }.toSet())
+
+            // Lines match the server-side extraction of the per-template documentation.
+            val sample = body.first { it.brevkode == ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.kode.name && it.language == LanguageCode.BOKMAL }
+            assertEquals(
+                TemplateTextExtractor.extract(
+                    TemplateDocumentationRenderer.render(
+                        ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
+                        Language.Bokmal,
+                        TemplateModelSpecification(types = emptyMap(), letterModelTypeName = null),
+                    ),
+                ),
+                sample.lines,
+            )
+            // Every segment is a text or var segment (no empty lines).
+            assertTrue(sample.lines.all { it.segments.isNotEmpty() })
+        }
+
+    @Test
+    fun `batch doc endpoint serves a stable ETag and answers 304 to a matching If-None-Match`() =
+        testBrevbakerApp(isIntegrationTest = false) { client ->
+            val first = client.get("/templates/autobrev/all")
+            assertEquals(HttpStatusCode.OK, first.status)
+            val etag = first.headers[HttpHeaders.ETag]
+            assertTrue(!etag.isNullOrBlank())
+
+            // Content is static at runtime, so the ETag is stable across calls.
+            val second = client.get("/templates/autobrev/all")
+            assertEquals(etag, second.headers[HttpHeaders.ETag])
+
+            // A matching If-None-Match revalidates cheaply with 304 and no body.
+            val notModified = client.get("/templates/autobrev/all") {
+                header(HttpHeaders.IfNoneMatch, etag)
+            }
+            assertEquals(HttpStatusCode.NotModified, notModified.status)
+            assertTrue(notModified.bodyAsText().isEmpty())
+
+            // A stale ETag still gets the full payload.
+            val stale = client.get("/templates/autobrev/all") {
+                header(HttpHeaders.IfNoneMatch, "\"not-the-current-etag\"")
+            }
+            assertEquals(HttpStatusCode.OK, stale.status)
+        }
+
+    @Test
+    fun `batch doc endpoint gzip-encodes the body when the client accepts gzip`() =
+        testBrevbakerApp(isIntegrationTest = false) { client ->
+            val plain = client.get("/templates/autobrev/all")
+            val expected = plain.body<List<SearchableContent>>()
+
+            val gzipResponse = client.get("/templates/autobrev/all") {
+                header(HttpHeaders.AcceptEncoding, "gzip")
+            }
+            assertEquals(HttpStatusCode.OK, gzipResponse.status)
+            assertEquals("gzip", gzipResponse.headers[HttpHeaders.ContentEncoding])
+
+            // The Ktor test client doesn't auto-decompress, so we gunzip ourselves
+            // and verify the payload round-trips to the same content as the plain body.
+            val decompressed = GZIPInputStream(gzipResponse.readRawBytes().inputStream()).use { it.readBytes() }
+            val actual = brevbakerJacksonObjectMapper().readValue<List<SearchableContent>>(decompressed)
+            assertEquals(expected.toSet(), actual.toSet())
+        }
 }

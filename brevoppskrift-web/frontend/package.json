@@ -13,7 +13,8 @@
     "lint-and-check-types": "${npm_execpath} run format && ${npm_execpath} run lint && ${npm_execpath} run stylelint && ${npm_execpath} run check-types",
     "preview": "vite preview",
     "stylelint:fix": "stylelint --fix '**/*.{tsx,css}'",
-    "stylelint": "stylelint '**/*.{tsx,css}'"
+    "stylelint": "stylelint '**/*.{tsx,css}'",
+    "test": "vitest run"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -23,6 +24,7 @@
     "@tanstack/react-query": "5.101.2",
     "@tanstack/react-router": "1.170.16",
     "axios": "1.18.1",
+    "fuse.js": "^7.4.2",
     "lodash": "4.18.1",
     "react": "19.2.7",
     "react-dom": "19.2.7"
@@ -39,6 +41,7 @@
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.3",
     "globals": "17.7.0",
+    "jsdom": "^29.1.1",
     "lint-staged": "17.0.8",
     "postcss-styled-syntax": "0.7.2",
     "stylelint": "17.14.0",

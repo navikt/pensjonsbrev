@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.routing
 
 import io.ktor.http.*
 import io.ktor.server.application.ApplicationCall
+import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
@@ -21,11 +22,25 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>> Route.templateRoutes(resource: TemplateResource<Kode, T, *>) =
     route("/${resource.name}") {
 
+        val docCache = TemplateDocCache(resource)
+
         get {
             if (call.request.queryParameters["includeMetadata"] == "true") {
                 call.respond(resource.listTemplatesWithMetadata())
             } else {
                 call.respond(resource.listTemplatekeys())
+            }
+        }
+
+        get("/all") {
+            call.attributes.put(DocumentationETag, docCache.etag())
+
+            call.response.header(HttpHeaders.Vary, HttpHeaders.AcceptEncoding)
+            if (call.request.acceptEncoding()?.contains("gzip", ignoreCase = true) == true) {
+                call.response.header(HttpHeaders.ContentEncoding, "gzip")
+                call.respondBytes(docCache.gzippedJson(), ContentType.Application.Json)
+            } else {
+                call.respondBytes(docCache.json(), ContentType.Application.Json)
             }
         }
 
@@ -88,10 +103,12 @@ fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactor
 fun LetterTemplate<*, *>.harRedigerbareVedlegg(): Boolean = attachments.any { it.editableId != null }
 
 // TODO: Med riktig typing burde heile denne metoden vera unødvendig
-fun <Kode: Brevkode<Kode>> ApplicationCall.kode(resource: TemplateResource<Kode,*,*>): Kode = parameters.getOrFail<String>("kode").let {
-    if (resource.name == "autobrev") {
-        AutomatiskBrevkode(it)
+fun <Kode : Brevkode<Kode>> ApplicationCall.kode(resource: TemplateResource<Kode, *, *>): Kode = parameters.getOrFail<String>("kode")
+    .let { resource.kodeOf(it) }
+
+fun <Kode: Brevkode<Kode>> TemplateResource<Kode,*,*>.kodeOf(kode: String): Kode =
+    if (name == "autobrev") {
+        AutomatiskBrevkode(kode)
     } else {
-        RedigerbarBrevkode(it)
+        RedigerbarBrevkode(kode)
     } as Kode
-}
