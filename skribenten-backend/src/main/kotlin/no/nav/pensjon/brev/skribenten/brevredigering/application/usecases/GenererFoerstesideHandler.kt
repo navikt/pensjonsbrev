@@ -22,7 +22,16 @@ class GenererFoerstesideHandler(
     private val klient: FoerstesidegeneratorClient
 ) : UseCaseHandler<GenererFoerstesideHandler.Request, GenererFoerstesideResponse, Nothing> {
 
-    data class Request(override val brevId: BrevId, val pid: BrevbakerType.Pid, val sakstype: Sakstype, val tema: Tema) : BrevredigeringRequest
+    data class Request(
+        override val brevId: BrevId,
+        val pid: BrevbakerType.Pid,
+        val sakstype: Sakstype,
+        val tema: Tema,
+        val vedlegg: List<Tittel>,
+    ) : BrevredigeringRequest
+
+    @JvmInline
+    value class Tittel(val tittel: String)
 
     override suspend fun invoke(request: Request): Outcome<GenererFoerstesideResponse, Nothing>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
@@ -40,9 +49,9 @@ class GenererFoerstesideHandler(
             avsender = null, // TODO: finn ut om vi skal sende med noko her
             behandlingstema = null, // TODO: korleis finn vi denne?
             arkivtittel = tittel,
-            vedleggsliste = listOf(), // TODO: må finne ut av kva vi sender her
+            vedleggsliste = request.vedlegg.map { it.tittel },
             overskriftstittel = tittel,
-            dokumentlisteFoersteside = listOf(), // TODO: må finne ut av kva vi sender her
+            dokumentlisteFoersteside = listOf(tittel) + request.vedlegg.map { it.tittel },
             foerstesidetype = Foerstesidetype.LOESPOST, // TODO: må vi kunne styre denne?
             enhetsnummer = brev.avsenderEnhetId,
             arkivsak = Arkivsak(
