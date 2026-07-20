@@ -54,7 +54,7 @@ class GenererFoerstesideHandler(
             arkivtittel = tittel,
             vedleggsliste = request.vedlegg.map { it.tittel },
             overskriftstittel = tittel,
-            dokumentlisteFoersteside = listOf(tittel) + request.vedlegg.map { it.tittel },
+            dokumentlisteFoersteside = listOf(tittel) + request.vedlegg.map { it.tittel }, // TODO: Dette er det mottaker får beskjed om å sende inn igjen
             foerstesidetype = Foerstesidetype.LOESPOST, // TODO: må vi kunne styre denne?
             enhetsnummer = brev.avsenderEnhetId,
             arkivsak = Arkivsak(
