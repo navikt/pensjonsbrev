@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Arkivsak
-import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Arkivsaksystem
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Bruker
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Foerstesidetype
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.GenererFoerstesideRequest
@@ -59,7 +58,7 @@ class GenererFoerstesideHandler(
             foerstesidetype = Foerstesidetype.LOESPOST, // TODO: må vi kunne styre denne?
             enhetsnummer = brev.avsenderEnhetId,
             arkivsak = Arkivsak(
-                arkivsaksystem = Arkivsaksystem.PSAK,
+                arkivsaksystem = Arkivsak.Arkivsaksystem.PSAK,
                 arkivsaksnummer = brev.saksId,
             )
         ))

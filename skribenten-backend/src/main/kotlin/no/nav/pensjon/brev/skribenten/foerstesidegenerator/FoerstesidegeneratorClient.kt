@@ -19,7 +19,6 @@ import io.ktor.serialization.jackson.jackson
 import io.ktor.utils.io.core.Closeable
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
@@ -128,10 +127,10 @@ class FoerstesidegeneratorClient(config: Config, authService: AuthService, clien
     data class Arkivsak(
         val arkivsaksystem: Arkivsaksystem,
         val arkivsaksnummer: SaksId,
-    )
-
-    enum class Arkivsaksystem {
-        PSAK,
+    ) {
+        enum class Arkivsaksystem {
+            PSAK,
+        }
     }
 
     enum class Spraakkode {
