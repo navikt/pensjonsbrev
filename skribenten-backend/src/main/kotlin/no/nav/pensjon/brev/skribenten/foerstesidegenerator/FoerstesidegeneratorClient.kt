@@ -78,7 +78,7 @@ class FoerstesidegeneratorClient(config: Config, authService: AuthService, clien
         val bruker: Bruker,
         val ukjentBrukerPersoninfo: String? = null,
         val tema: Tema,
-        val behandlingstema: String?, // TODO: korleis finn vi denne?
+        val behandlingstema: String?,
         val arkivtittel: String,
         val vedleggsliste: List<String>,
         val navSkjemaId: String? = null,
