@@ -44,7 +44,7 @@ class GenererFoerstesideHandler(
                 LanguageCode.NYNORSK -> FoerstesidegeneratorClient.Spraakkode.NN
                 LanguageCode.ENGLISH -> FoerstesidegeneratorClient.Spraakkode.EN
             },
-            netsPostboks = Postboks("1400"), // familie-integrasjoner bruker dette, vi må dobbeltsjekke om det er sant
+            netsPostboks = Postboks("1400"),
             bruker = Bruker(
                 brukerId = request.pid,
                 brukerType = Bruker.BrukerType.PERSON
