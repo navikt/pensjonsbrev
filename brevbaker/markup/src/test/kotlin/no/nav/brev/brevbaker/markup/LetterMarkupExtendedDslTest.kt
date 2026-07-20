@@ -18,15 +18,22 @@ class LetterMarkupExtendedDslTest {
     private fun fullLetter(): LetterMarkup {
         var next = 0
         fun id() = next++
-        return letterMarkupExtended {
-            title1 { text(id(), "Vedtak om uføretrygd") }
-            saksinformasjon(
+        return letterMarkupExtended(
+            saksinformasjon = saksinformasjon(
                 gjelderNavn = "Ola Nordmann",
                 gjelderFoedselsnummer = "12345678901",
                 saksnummer = "9876543",
                 dokumentDato = LocalDate.of(2026, 7, 9),
                 annenMottakerNavn = "Kari Nordmann",
-            )
+            ),
+            signatur = signatur(
+                hilsenTekst = "Med vennlig hilsen",
+                navAvsenderEnhet = "NAV Familie- og pensjonsytelser",
+                saksbehandlerNavn = "Sak S.Behandler",
+                attesterendeSaksbehandlerNavn = "Att Esterer",
+            ),
+        ) {
+            title1 { text(id(), "Vedtak om uføretrygd") }
             outline {
                 title2(id()) { text(id(), "Innledning") }
                 paragraph(id()) {
@@ -65,12 +72,6 @@ class LetterMarkupExtendedDslTest {
                     choice(id()) { text(id(), "Nei") }
                 }
             }
-            signatur(
-                hilsenTekst = "Med vennlig hilsen",
-                navAvsenderEnhet = "NAV Familie- og pensjonsytelser",
-                saksbehandlerNavn = "Sak S.Behandler",
-                attesterendeSaksbehandlerNavn = "Att Esterer",
-            )
         }
     }
 
@@ -83,24 +84,24 @@ class LetterMarkupExtendedDslTest {
         assertEquals("12345678901", letter.saksinformasjon.gjelderFoedselsnummer.value)
         assertEquals("9876543", letter.saksinformasjon.saksnummer.saksnummer)
 
-        val types = letter.blocks.map { it.type }
+        val blockClasses = letter.blocks.map { it::class }
         assertTrue(
-            types.containsAll(
+            blockClasses.containsAll(
                 listOf(
-                    Block.Type.TITLE2,
-                    Block.Type.PARAGRAPH,
-                    Block.Type.ITEM_LIST,
-                    Block.Type.NUMBERED_LIST,
-                    Block.Type.TABLE,
-                    Block.Type.FORM_TEXT,
-                    Block.Type.FORM_CHOICE,
+                    Block.Title2::class,
+                    Block.Paragraph::class,
+                    Block.ItemList::class,
+                    Block.NumberedList::class,
+                    Block.Table::class,
+                    Block.FormText::class,
+                    Block.FormChoice::class,
                 )
             )
         )
 
         val paragraph = letter.blocks.filterIsInstance<Block.Paragraph>().single()
-        val textTypes = paragraph.content.map { it.type }
-        assertTrue(textTypes.containsAll(listOf(Text.Type.LITERAL, Text.Type.VARIABLE, Text.Type.NEW_LINE)))
+        val textClasses = paragraph.content.map { it::class }
+        assertTrue(textClasses.containsAll(listOf(Text.Literal::class, Text.Variable::class, Text.NewLine::class)))
     }
 
     @Test
@@ -123,17 +124,22 @@ class LetterMarkupExtendedDslTest {
     fun `extended DSL supports font type and variables on content`() {
         var next = 0
         fun id() = next++
-        val letter = letterMarkupExtended {
-            title1 {
-                text(id(), "Tittel fra builder ")
-                variable(id(), "x")
-            }
-            saksinformasjon(
+        val letter = letterMarkupExtended(
+            saksinformasjon = saksinformasjon(
                 gjelderNavn = "Ola Nordmann",
                 gjelderFoedselsnummer = "12345678901",
                 saksnummer = "9876543",
                 dokumentDato = LocalDate.of(2026, 7, 9),
-            )
+            ),
+            signatur = signatur(
+                hilsenTekst = "Hilsen",
+                navAvsenderEnhet = "NAV",
+            ),
+        ) {
+            title1 {
+                text(id(), "Tittel fra builder ")
+                variable(id(), "x")
+            }
             outline {
                 title2(id()) { text(id(), "Innledning") }
                 title2(id()) {
@@ -200,10 +206,6 @@ class LetterMarkupExtendedDslTest {
                     }
                 }
             }
-            signatur(
-                hilsenTekst = "Hilsen",
-                navAvsenderEnhet = "NAV",
-            )
         }
 
         val titleTexts = letter.title1.filterIsInstance<Text.Literal>().map { it.text }
@@ -231,7 +233,7 @@ class LetterMarkupExtendedDslTest {
             variable(id(), "Ola Nordmann")
         }
 
-        assertEquals(listOf(Text.Type.LITERAL, Text.Type.VARIABLE), tittel.title1.map { it.type })
+        assertEquals(listOf(Text.Literal::class, Text.Variable::class), tittel.title1.map { it::class })
     }
 
     @Test
@@ -239,21 +241,22 @@ class LetterMarkupExtendedDslTest {
         val property = dataUsageProperty(typeName = "UngUfoerDto", propertyName = "totaltUfoerePerMnd")
 
         val letter = letterMarkupWithDataUsage(
-            markup = letterMarkup {
-                saksinformasjon(
+            markup = letterMarkup(
+                saksinformasjon = saksinformasjon(
                     gjelderNavn = "Ola Nordmann",
                     gjelderFoedselsnummer = "12345678901",
                     saksnummer = "9876543",
                     dokumentDato = LocalDate.of(2026, 7, 9),
-                )
+                ),
+                signatur = signatur(
+                    hilsenTekst = "Med vennlig hilsen",
+                    navAvsenderEnhet = "NAV",
+                ),
+            ) {
                 title1("Vedtak")
                 outline {
                     paragraph("Innhold")
                 }
-                signatur(
-                    hilsenTekst = "Med vennlig hilsen",
-                    navAvsenderEnhet = "NAV",
-                )
             },
             brevtype = Brevtype.VEDTAKSBREV,
             letterDataUsage = setOf(property),
@@ -271,13 +274,18 @@ class LetterMarkupExtendedDslTest {
         val property = dataUsageProperty(typeName = "UngUfoerDto", propertyName = "belop")
 
         val letter = letterMarkupWithDataUsage(
-            markup = letterMarkupExtended {
-                saksinformasjon(
+            markup = letterMarkupExtended(
+                saksinformasjon = saksinformasjon(
                     gjelderNavn = "Ola Nordmann",
                     gjelderFoedselsnummer = "12345678901",
                     saksnummer = "9876543",
                     dokumentDato = LocalDate.of(2026, 7, 9),
-                )
+                ),
+                signatur = signatur(
+                    hilsenTekst = "Med vennlig hilsen",
+                    navAvsenderEnhet = "NAV",
+                ),
+            ) {
                 title1 { text(id(), "Orientering") }
                 outline {
                     paragraph(id()) {
@@ -285,17 +293,13 @@ class LetterMarkupExtendedDslTest {
                         variable(id(), "1000 kr")
                     }
                 }
-                signatur(
-                    hilsenTekst = "Med vennlig hilsen",
-                    navAvsenderEnhet = "NAV",
-                )
             },
             brevtype = Brevtype.INFORMASJONSBREV,
             letterDataUsage = setOf(property),
         )
 
         val paragraph = letter.markup.blocks.single() as Block.Paragraph
-        assertEquals(listOf(Text.Type.LITERAL, Text.Type.VARIABLE), paragraph.content.map { it.type })
+        assertEquals(listOf(Text.Literal::class, Text.Variable::class), paragraph.content.map { it::class })
 
         val decoded = decodeLetterMarkupWithDataUsage(letter.toJson())
         assertEquals(letter, decoded)
@@ -317,7 +321,7 @@ class LetterMarkupExtendedDslTest {
 
         assertEquals(false, vedlegg.inkluderSaksinformasjon)
         val paragraph = vedlegg.blocks.single() as Block.Paragraph
-        val textTypes = paragraph.content.map { it.type }
-        assertTrue(textTypes.containsAll(listOf(Text.Type.LITERAL, Text.Type.VARIABLE)))
+        val textClasses = paragraph.content.map { it::class }
+        assertTrue(textClasses.containsAll(listOf(Text.Literal::class, Text.Variable::class)))
     }
 }

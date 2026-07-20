@@ -40,8 +40,8 @@ class MarkupElementsTest {
             paragraph(literal("Hei"), variable("navn"), newLine())
         }
         assertEquals(
-            listOf(Text.Type.LITERAL, Text.Type.VARIABLE, Text.Type.NEW_LINE),
-            paragraph.content.map { it.type },
+            listOf(Text.Literal::class, Text.Variable::class, Text.NewLine::class),
+            paragraph.content.map { it::class },
         )
 
         val list = markupElement {

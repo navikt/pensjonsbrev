@@ -15,13 +15,19 @@ class LetterMarkupDslTest {
 
     @Test
     fun `base letterMarkup builds without variables`() {
-        val letter = letterMarkup {
-            saksinformasjon(
+        val letter = letterMarkup(
+            saksinformasjon = saksinformasjon(
                 gjelderNavn = "Ola Nordmann",
                 gjelderFoedselsnummer = "12345678901",
                 saksnummer = "9876543",
                 dokumentDato = LocalDate.of(2026, 7, 9),
-            )
+            ),
+            signatur = signatur(
+                hilsenTekst = "Med vennlig hilsen",
+                navAvsenderEnhet = "NAV",
+                saksbehandlerNavn = "Sak S.Behandler",
+            ),
+        ) {
             title1("Tittel")
             title1 { text("Tittel fra builder") }
             outline {
@@ -68,15 +74,24 @@ class LetterMarkupDslTest {
                     choice { text("Nei fra builder") }
                 }
             }
-            signatur(
-                hilsenTekst = "Med vennlig hilsen",
-                navAvsenderEnhet = "NAV",
-                saksbehandlerNavn = "Sak S.Behandler",
-            )
         }
 
-        val types = letter.blocks.map { it.type }
-        assertTrue(types.containsAll(Block.Type.entries))
+        val blockClasses = letter.blocks.map { it::class }
+        assertTrue(
+            blockClasses.containsAll(
+                listOf(
+                    Block.Title2::class,
+                    Block.Title3::class,
+                    Block.Title4::class,
+                    Block.Paragraph::class,
+                    Block.ItemList::class,
+                    Block.NumberedList::class,
+                    Block.Table::class,
+                    Block.FormText::class,
+                    Block.FormChoice::class,
+                )
+            )
+        )
     }
 
     @Test
@@ -92,23 +107,24 @@ class LetterMarkupDslTest {
         val request = letterPDFRequest(
             language = LanguageCode.BOKMAL,
             brevtype = Brevtype.VEDTAKSBREV,
-        ) {
-            letter {
-                saksinformasjon(
+            letter = letterMarkup(
+                saksinformasjon = saksinformasjon(
                     gjelderNavn = "Ola Nordmann",
                     gjelderFoedselsnummer = "12345678901",
                     saksnummer = "9876543",
                     dokumentDato = LocalDate.of(2026, 7, 9),
-                )
+                ),
+                signatur = signatur(
+                    hilsenTekst = "Med vennlig hilsen",
+                    navAvsenderEnhet = "NAV",
+                ),
+            ) {
                 title1("Vedtak")
                 outline {
                     paragraph("Innhold")
                 }
-                signatur(
-                    hilsenTekst = "Med vennlig hilsen",
-                    navAvsenderEnhet = "NAV",
-                )
-            }
+            },
+        ) {
             attachment(inkluderSaksinformasjon = true) {
                 title1("Vedlegg 1")
                 outline {
@@ -130,22 +146,26 @@ class LetterMarkupDslTest {
 
     @Test
     fun `letterPDFRequest accepts pre-built components`() {
-        val letter = letterMarkup {
-            saksinformasjon(
+        val letter = letterMarkup(
+            saksinformasjon = saksinformasjon(
                 gjelderNavn = "Ola Nordmann",
                 gjelderFoedselsnummer = "12345678901",
                 saksnummer = "9876543",
                 dokumentDato = LocalDate.of(2026, 7, 9),
-            )
+            ),
+            signatur = signatur(hilsenTekst = "Med vennlig hilsen", navAvsenderEnhet = "NAV"),
+        ) {
             title1("Orientering")
             outline { paragraph("Innhold") }
-            signatur(hilsenTekst = "Med vennlig hilsen", navAvsenderEnhet = "NAV")
         }
         val vedlegg = attachment { title1("Vedlegg"); outline { paragraph("X") } }
         val tittel = pdfTittel { text("Tittel") }
 
-        val request = letterPDFRequest(language = LanguageCode.NYNORSK, brevtype = Brevtype.INFORMASJONSBREV) {
-            letter(letter)
+        val request = letterPDFRequest(
+            language = LanguageCode.NYNORSK,
+            brevtype = Brevtype.INFORMASJONSBREV,
+            letter = letter,
+        ) {
             attachment(vedlegg)
             pdfVedlegg(tittel)
         }

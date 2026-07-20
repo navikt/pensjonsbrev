@@ -6,7 +6,6 @@ plugins {
     kotlin("jvm")
     alias(libs.plugins.kotlin.serialization)
     `maven-publish`
-    alias(libs.plugins.binary.compatibility.validator) apply true
 }
 
 group = "no.nav.brev.brevbaker"
@@ -106,3 +105,6 @@ tasks {
         targetCompatibility = markupJavaTarget
     }
 }
+
+@OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+kotlin { abiValidation() }

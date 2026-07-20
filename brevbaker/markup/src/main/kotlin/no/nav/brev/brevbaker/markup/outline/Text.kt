@@ -14,9 +14,6 @@ sealed class Text {
     abstract val id: Int
     abstract val text: String
     abstract val fontType: FontType
-    abstract val type: Type
-
-    enum class Type { LITERAL, VARIABLE, NEW_LINE }
 
     enum class FontType { PLAIN, BOLD, ITALIC }
 
@@ -28,9 +25,7 @@ sealed class Text {
         override val text: String,
         override val fontType: FontType = FontType.PLAIN,
         val tags: Set<ElementTags> = emptySet(),
-    ) : Text() {
-        override val type: Type get() = Type.LITERAL
-    }
+    ) : Text()
 
     @ConsistentCopyVisibility
     @Serializable
@@ -40,9 +35,7 @@ sealed class Text {
         override val text: String,
         override val fontType: FontType = FontType.PLAIN,
         val tags: Set<ElementTags> = emptySet(),
-    ) : Text() {
-        override val type: Type get() = Type.VARIABLE
-    }
+    ) : Text()
 
     @ConsistentCopyVisibility
     @Serializable
@@ -52,6 +45,5 @@ sealed class Text {
     ) : Text() {
         override val text: String get() = ""
         override val fontType: FontType get() = FontType.PLAIN
-        override val type: Type get() = Type.NEW_LINE
     }
 }

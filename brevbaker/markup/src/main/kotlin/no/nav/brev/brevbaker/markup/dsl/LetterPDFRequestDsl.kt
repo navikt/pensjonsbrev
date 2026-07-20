@@ -8,13 +8,16 @@ import no.nav.brev.brevbaker.markup.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.PDFTittel
 
 /**
- * Bygg en [LetterPDFRequest] via DSL. Angi hovedbrevet med [PDFRequestBuilder.letter], og legg
- * eventuelt til brevvedlegg ([PDFRequestBuilder.attachment]) og PDF-vedlegg-titler
- * ([PDFRequestBuilder.pdfVedlegg]).
+ * Bygg en [LetterPDFRequest] via DSL. Hovedbrevet [letter] er obligatorisk og angis som argument.
+ * Legg eventuelt til brevvedlegg ([PDFRequestBuilder.attachment]) og PDF-vedlegg-titler
+ * ([PDFRequestBuilder.pdfVedlegg]) i DSL-blokken.
  *
  * ```
- * val request = letterPDFRequest(language = LanguageCode.BOKMAL, brevtype = Brevtype.VEDTAKSBREV) {
- *     letter(letterMarkup { ... })
+ * val request = letterPDFRequest(
+ *     language = LanguageCode.BOKMAL,
+ *     brevtype = Brevtype.VEDTAKSBREV,
+ *     letter = letterMarkup(...) { ... },
+ * ) {
  *     attachment(attachment { ... })
  *     pdfVedlegg(pdfTittel { ... })
  * }
@@ -23,27 +26,18 @@ import no.nav.brev.brevbaker.markup.PDFTittel
 fun letterPDFRequest(
     language: LanguageCode,
     brevtype: Brevtype,
-    build: PDFRequestBuilder.() -> Unit,
-): LetterPDFRequest = PDFRequestBuilder(language, brevtype).apply(build).build()
+    letter: LetterMarkup,
+    build: PDFRequestBuilder.() -> Unit = {},
+): LetterPDFRequest = PDFRequestBuilder(language, brevtype, letter).apply(build).build()
 
 @MarkupDsl
 class PDFRequestBuilder internal constructor(
     private val language: LanguageCode,
     private val brevtype: Brevtype,
+    private val letter: LetterMarkup,
 ) {
-    private var letter: LetterMarkup? = null
     private val attachments = mutableListOf<Attachment>()
     private val pdfVedlegg = mutableListOf<PDFTittel>()
-
-    /** Sett hovedbrevet fra en ferdig bygget [LetterMarkup]. */
-    fun letter(letter: LetterMarkup) {
-        this.letter = letter
-    }
-
-    /** Bygg og sett hovedbrevet via [letterMarkup]-DSL-en. */
-    fun letter(build: LetterMarkupBuilder<ContentBuilder>.() -> Unit) {
-        this.letter = letterMarkup(build)
-    }
 
     /** Legg til et ferdig bygget brevvedlegg. */
     fun attachment(attachment: Attachment) {
@@ -66,7 +60,7 @@ class PDFRequestBuilder internal constructor(
     }
 
     internal fun build(): LetterPDFRequest = LetterPDFRequest(
-        letterMarkup = requireNotNull(letter) { "LetterPDFRequest must have a letter" },
+        letterMarkup = letter,
         attachments = attachments.toList(),
         pdfVedlegg = pdfVedlegg.toList(),
         language = language,
