@@ -3,7 +3,6 @@ kotlinVersion = "2.4.0"
 kotlinKspVersion = "2.3.9"
 ktorVersion = "3.5.1"
 assertJVersion = "3.27.7"
-binaryCompatibilityValidatorVersion = "0.18.1"
 classGraphVersion = "4.8.184"
 commonsCodecVersion = "1.22.0"
 commonVersion = "2.41.0"
@@ -33,7 +32,6 @@ valkeyVersion = "5.5.0"
 [plugins]
 gradle-node = { id = "com.github.node-gradle.node", version.ref = "gradleNodePluginVersion" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKspVersion" }
-binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref="binaryCompatibilityValidatorVersion" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintVersion" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinVersion" }
