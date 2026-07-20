@@ -105,12 +105,12 @@ class FoerstesidegeneratorClient(config: Config, authService: AuthService, clien
     }
 
     data class Avsender(
-        val avsenderId: BrevbakerType.Pid, // TODO, kan også vera orgid
-        val avsenderNavn: String
+        val avsenderId: BrevbakerType.Pid, // TODO, kan denne også vera orgid?
+        val avsenderNavn: String,
     )
 
     data class Bruker(
-        val brukerId: BrevbakerType.Pid, // TODO, kan også vera orgid
+        val brukerId: BrevbakerType.Pid,
         val brukerType: BrukerType,
     ) {
         enum class BrukerType {
