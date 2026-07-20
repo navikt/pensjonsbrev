@@ -8,7 +8,6 @@ import kotlin.time.toJavaDuration
 
 plugins {
     kotlin("jvm") version libs.versions.kotlinVersion apply false
-    alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.ktlint)
 }
 
