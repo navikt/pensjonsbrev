@@ -14,8 +14,8 @@ import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorC
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Postboks
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Sakstype
-import no.nav.pensjon.brev.skribenten.services.toApi
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import kotlin.collections.listOf
 
 class GenererFoerstesideHandler(
@@ -39,7 +39,11 @@ class GenererFoerstesideHandler(
         val tittel = brev.redigertBrev.title.text.joinToString(" ") { it.text }.trim()
 
         val response = klient.genererFoersteside(GenererFoerstesideRequest(
-            spraakkode = brev.spraak.toApi(),
+            spraakkode = when (brev.spraak) {
+                LanguageCode.BOKMAL -> FoerstesidegeneratorClient.Spraakkode.NB
+                LanguageCode.NYNORSK -> FoerstesidegeneratorClient.Spraakkode.NN
+                LanguageCode.ENGLISH -> FoerstesidegeneratorClient.Spraakkode.EN
+            },
             netsPostboks = Postboks("1400"), // familie-integrasjoner bruker dette, vi må dobbeltsjekke om det er sant
             bruker = Bruker(
                 brukerId = request.pid,

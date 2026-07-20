@@ -71,7 +71,7 @@ class FoerstesidegeneratorClient(config: Config, authService: AuthService, clien
 
     class FoerstesidegeneratorException(message: String) : ServiceException(message)
     data class GenererFoerstesideRequest(
-        val spraakkode: SpraakKode,
+        val spraakkode: Spraakkode,
         val adresse: Any? = null,
         val netsPostboks: Postboks,
         val avsender: Avsender? = null,
@@ -132,5 +132,9 @@ class FoerstesidegeneratorClient(config: Config, authService: AuthService, clien
 
     enum class Arkivsaksystem {
         PSAK,
+    }
+
+    enum class Spraakkode {
+        NB, NN, EN
     }
 }
