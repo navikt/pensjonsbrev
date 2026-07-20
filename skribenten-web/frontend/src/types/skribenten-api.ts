@@ -2850,47 +2850,7 @@ export interface paths {
                         "application/json": string[];
                     };
                 };
-              400: {
-                headers: {
-                  [name: string]: unknown;
-                };
-                content: {
-                  "application/json": string;
-                };
-              };
-              403: {
-                headers: {
-                  [name: string]: unknown;
-                };
-                content: {
-                  "application/json": string;
-                };
-              };
               404: {
-                headers: {
-                  [name: string]: unknown;
-                };
-                content: {
-                  "application/json": string;
-                };
-              };
-              409: {
-                headers: {
-                  [name: string]: unknown;
-                };
-                content: {
-                  "application/json": components["schemas"]["BrevExceptionDto"];
-                };
-              };
-              422: {
-                headers: {
-                  [name: string]: unknown;
-                };
-                content: {
-                  "application/json": components["schemas"]["BrevExceptionDto"];
-                };
-              };
-              423: {
                 headers: {
                   [name: string]: unknown;
                 };
@@ -2922,47 +2882,7 @@ export interface paths {
                         "application/json": components["schemas"]["Unit"];
                     };
                 };
-              400: {
-                headers: {
-                  [name: string]: unknown;
-                };
-                content: {
-                  "application/json": string;
-                };
-              };
-              403: {
-                headers: {
-                  [name: string]: unknown;
-                };
-                content: {
-                  "application/json": string;
-                };
-              };
               404: {
-                headers: {
-                  [name: string]: unknown;
-                };
-                content: {
-                  "application/json": string;
-                };
-              };
-              409: {
-                headers: {
-                  [name: string]: unknown;
-                };
-                content: {
-                  "application/json": components["schemas"]["BrevExceptionDto"];
-                };
-              };
-              422: {
-                headers: {
-                  [name: string]: unknown;
-                };
-                content: {
-                  "application/json": components["schemas"]["BrevExceptionDto"];
-                };
-              };
-              423: {
                 headers: {
                   [name: string]: unknown;
                 };
@@ -2993,47 +2913,7 @@ export interface paths {
                         "application/json": components["schemas"]["Unit"];
                     };
                 };
-              400: {
-                headers: {
-                  [name: string]: unknown;
-                };
-                content: {
-                  "application/json": string;
-                };
-              };
-              403: {
-                headers: {
-                  [name: string]: unknown;
-                };
-                content: {
-                  "application/json": string;
-                };
-              };
               404: {
-                headers: {
-                  [name: string]: unknown;
-                };
-                content: {
-                  "application/json": string;
-                };
-              };
-              409: {
-                headers: {
-                  [name: string]: unknown;
-                };
-                content: {
-                  "application/json": components["schemas"]["BrevExceptionDto"];
-                };
-              };
-              422: {
-                headers: {
-                  [name: string]: unknown;
-                };
-                content: {
-                  "application/json": components["schemas"]["BrevExceptionDto"];
-                };
-              };
-              423: {
                 headers: {
                   [name: string]: unknown;
                 };
