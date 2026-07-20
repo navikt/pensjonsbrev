@@ -38,6 +38,7 @@ commons-codec = { module = "commons-codec:commons-codec", version.ref = "commons
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikariVersion" }
 io-github-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classGraphVersion" }
 jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations" }
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jacksonVersion" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoupVersion" }
 jackson-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml" }
 jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
@@ -47,6 +48,7 @@ ksp-symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processin
 ksp-symbol-processing-aa = { module = "com.google.devtools.ksp:symbol-processing-aa", version.ref = "kotlinKspVersion"}
 ksp-symbol-processing-common = { module = "com.google.devtools.ksp:symbol-processing-common-deps", version.ref = "kotlinKspVersion"}
 log4j-api = { module = "org.apache.logging.log4j:log4j-api" }
+log4j-bom = { module = "org.apache.logging.log4j:log4j-bom", version.ref = "log4j2Version" }
 log4j-core = { module = "org.apache.logging.log4j:log4j-core" }
 log4j-layout-template-json = { module = "org.apache.logging.log4j:log4j-layout-template-json" }
 log4j-slf4j2-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl" }
@@ -62,6 +64,7 @@ ktlint-rule-engine-core = { module = "com.pinterest.ktlint:ktlint-rule-engine-co
 ktlint-test = { module = "com.pinterest.ktlint:ktlint-test", version.ref = "ktlintEngineVersion" }
 
 # Ktor
+ktor-bom = { module = "io.ktor:ktor-bom", version.ref = "ktorVersion" }
 ktor-client-auth = { module = "io.ktor:ktor-client-auth" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation" }
@@ -85,6 +88,7 @@ ktor-server-swagger = { module = "io.ktor:ktor-server-swagger" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host" }
 
 # Exposed
+exposed-bom = { module = "org.jetbrains.exposed:exposed-bom", version.ref = "exposedVersion" }
 exposed-core = { module = "org.jetbrains.exposed:exposed-core" }
 exposed-dao = { module = "org.jetbrains.exposed:exposed-dao" }
 exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc" }

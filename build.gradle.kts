@@ -17,10 +17,10 @@ allprojects {
     // resolver til samme versjon, uten at hver modul må deklarere platform(...) selv.
     configurations.matching { it.name in setOf("implementation", "testImplementation", "testFixturesImplementation") }
         .configureEach {
-            project.dependencies.add(name, project.dependencies.platform(jackson.bom))
-            project.dependencies.add(name, project.dependencies.platform(ktorBom.bom))
-            project.dependencies.add(name, project.dependencies.platform(log4jBom.bom))
-            project.dependencies.add(name, project.dependencies.platform(exposedBom.bom))
+            project.dependencies.add(name, project.dependencies.platform(libs.jackson.bom))
+            project.dependencies.add(name, project.dependencies.platform(libs.ktor.bom))
+            project.dependencies.add(name, project.dependencies.platform(libs.log4j.bom))
+            project.dependencies.add(name, project.dependencies.platform(libs.exposed.bom))
         }
 
     repositories {

@@ -23,24 +23,3 @@ include("alder:api-model")
 include("etterlattemaler")
 
 include("planlegge-pensjon-maler")
-
-dependencyResolutionManagement {
-    versionCatalogs {
-        create("jackson") {
-            from(files("gradle/libs.versions.toml"))
-            library("bom", "com.fasterxml.jackson", "jackson-bom").versionRef("jacksonVersion")
-        }
-        create("ktorBom") {
-            from(files("gradle/libs.versions.toml"))
-            library("bom", "io.ktor", "ktor-bom").versionRef("ktorVersion")
-        }
-        create("log4jBom") {
-            from(files("gradle/libs.versions.toml"))
-            library("bom", "org.apache.logging.log4j", "log4j-bom").versionRef("log4j2Version")
-        }
-        create("exposedBom") {
-            from(files("gradle/libs.versions.toml"))
-            library("bom", "org.jetbrains.exposed", "exposed-bom").versionRef("exposedVersion")
-        }
-    }
-}
