@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.LetterMarkupV2Asserter.Companion.assertThat
-import no.nav.brev.brevbaker.markup.outline.Block
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -31,7 +30,6 @@ class Letter2MarkupV2Test {
     fun `outline title1 becomes block Title2`() {
         val result = renderTemplate(EmptyAutobrevdata) { title1 { text(bokmal { +"heading" }) } }
 
-        assertEquals(Block.Type.TITLE2, result.blocks.firstOrNull()?.type)
         assertThat(result).hasBlocks { title2 { literal("heading") } }
     }
 
@@ -39,7 +37,6 @@ class Letter2MarkupV2Test {
     fun `outline title2 becomes block Title3`() {
         val result = renderTemplate(EmptyAutobrevdata) { title2 { text(bokmal { +"heading" }) } }
 
-        assertEquals(Block.Type.TITLE3, result.blocks.firstOrNull()?.type)
         assertThat(result).hasBlocks { title3 { literal("heading") } }
     }
 
@@ -47,7 +44,6 @@ class Letter2MarkupV2Test {
     fun `outline title3 becomes block Title4`() {
         val result = renderTemplate(EmptyAutobrevdata) { title3 { text(bokmal { +"heading" }) } }
 
-        assertEquals(Block.Type.TITLE4, result.blocks.firstOrNull()?.type)
         assertThat(result).hasBlocks { title4 { literal("heading") } }
     }
 

@@ -52,7 +52,10 @@ class TextRenderingTest {
             paragraph { text(bokmal { +("a".expr() + Year(2024).expr().format() + "b".expr()) }) }
         }
 
-        assertThat(texts.map { it.type }).containsExactly(Text.Type.LITERAL, Text.Type.VARIABLE, Text.Type.LITERAL)
+        assertThat(texts).hasSize(3)
+        assertThat(texts[0]).isInstanceOf(Text.Literal::class.java)
+        assertThat(texts[1]).isInstanceOf(Text.Variable::class.java)
+        assertThat(texts[2]).isInstanceOf(Text.Literal::class.java)
         assertThat(texts.map { it.text }).containsExactly("a", "2024", "b")
     }
 
@@ -78,7 +81,10 @@ class TextRenderingTest {
             }
         }
 
-        assertThat(texts.map { it.type }).containsExactly(Text.Type.LITERAL, Text.Type.NEW_LINE, Text.Type.LITERAL)
+        assertThat(texts).hasSize(3)
+        assertThat(texts[0]).isInstanceOf(Text.Literal::class.java)
+        assertThat(texts[1]).isInstanceOf(Text.NewLine::class.java)
+        assertThat(texts[2]).isInstanceOf(Text.Literal::class.java)
     }
 
     @Test

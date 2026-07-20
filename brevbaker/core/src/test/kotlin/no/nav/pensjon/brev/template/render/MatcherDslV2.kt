@@ -172,7 +172,7 @@ class TextContentAssertV2 {
 
     fun newLine() {
         contentMatchers.add({
-            assertThat(it.type).isEqualTo(Text.Type.NEW_LINE)
+            assertThat(it).isInstanceOf(Text.NewLine::class.java)
         })
     }
 

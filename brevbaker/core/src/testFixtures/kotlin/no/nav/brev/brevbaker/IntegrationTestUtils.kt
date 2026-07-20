@@ -112,15 +112,15 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDFV2(
     val pdfBygger = pdfByggerService ?: PdfByggerTestService()
 
     Letter2MarkupV2.render(this)
-        .let {
+        .let { rendered ->
             runBlocking {
                 pdfBygger.producePDFV2(
                     letterPDFRequest(
                         language = language.toCode().toMarkup(),
                         brevtype = template.letterMetadata.brevtype.toMarkup(),
+                        letter = rendered.letterMarkup,
                     ) {
-                        letter(it.letterMarkup)
-                        it.attachments.forEach { a -> attachment(a) }
+                        rendered.attachments.forEach { a -> attachment(a) }
                         Letter2MarkupV2.renderPDFTitlesOnly(this@renderTestPDFV2.toScope(), this@renderTestPDFV2.template)
                             .forEach { t -> pdfVedlegg(t) }
                     },
