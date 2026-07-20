@@ -1,10 +1,9 @@
 package no.nav.brev.brevbaker.markup.dsl
 
 import no.nav.brev.brevbaker.markup.Attachment
-import no.nav.brev.brevbaker.markup.Brevtype
-import no.nav.brev.brevbaker.markup.LanguageCode
 import no.nav.brev.brevbaker.markup.LetterMarkup
 import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.PDFTittel
 
 /**
@@ -14,8 +13,8 @@ import no.nav.brev.brevbaker.markup.PDFTittel
  *
  * ```
  * val request = letterPDFRequest(
- *     language = LanguageCode.BOKMAL,
- *     brevtype = Brevtype.VEDTAKSBREV,
+ *     spraak = Markup.Spraak.BOKMAL,
+ *     brevtype = Markup.Brevtype.VEDTAKSBREV,
  *     letter = letterMarkup(...) { ... },
  * ) {
  *     attachment(attachment { ... })
@@ -24,16 +23,16 @@ import no.nav.brev.brevbaker.markup.PDFTittel
  * ```
  */
 fun letterPDFRequest(
-    language: LanguageCode,
-    brevtype: Brevtype,
+    spraak: Markup.Spraak,
+    brevtype: Markup.Brevtype,
     letter: LetterMarkup,
     build: PDFRequestBuilder.() -> Unit = {},
-): LetterPDFRequest = PDFRequestBuilder(language, brevtype, letter).apply(build).build()
+): LetterPDFRequest = PDFRequestBuilder(spraak, brevtype, letter).apply(build).build()
 
 @MarkupDsl
 class PDFRequestBuilder internal constructor(
-    private val language: LanguageCode,
-    private val brevtype: Brevtype,
+    private val spraak: Markup.Spraak,
+    private val brevtype: Markup.Brevtype,
     private val letter: LetterMarkup,
 ) {
     private val attachments = mutableListOf<Attachment>()
@@ -63,7 +62,7 @@ class PDFRequestBuilder internal constructor(
         letterMarkup = letter,
         attachments = attachments.toList(),
         pdfVedlegg = pdfVedlegg.toList(),
-        language = language,
+        spraak = spraak,
         brevtype = brevtype,
     )
 }

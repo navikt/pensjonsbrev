@@ -1,8 +1,8 @@
 package no.nav.brev.brevbaker.markup.dsl
 
-import no.nav.brev.brevbaker.markup.Brevtype
 import no.nav.brev.brevbaker.markup.LetterMarkup
 import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage
+import no.nav.brev.brevbaker.markup.Markup
 
 /**
  * Lag en [LetterMarkupWithDataUsage.Property] – ett datafelt (type + property) brevet leser fra.
@@ -32,14 +32,14 @@ fun dataUsageProperty(typeName: String, propertyName: String): LetterMarkupWithD
  *     markup = letterMarkup(saksinformasjon = saksinformasjon(...), signatur = signatur(...)) {
  *         outline { paragraph("...") }
  *     },
- *     brevtype = Brevtype.VEDTAKSBREV,
+ *     brevtype = Markup.Brevtype.VEDTAKSBREV,
  *     letterDataUsage = setOf(dataUsageProperty("UngUfoerDto", "belop")),
  * )
  * ```
  */
 fun letterMarkupWithDataUsage(
     markup: LetterMarkup,
-    brevtype: Brevtype,
+    brevtype: Markup.Brevtype,
     letterDataUsage: Set<LetterMarkupWithDataUsage.Property> = emptySet(),
 ): LetterMarkupWithDataUsage = LetterMarkupWithDataUsage(
     markup = markup,

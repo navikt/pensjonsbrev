@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker.markup
 
+import kotlinx.serialization.json.Json
 import no.nav.brev.brevbaker.markup.dsl.*
 import no.nav.brev.brevbaker.markup.outline.Text
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -12,7 +13,7 @@ class LetterPDFRequestDslTest {
     private fun minimalLetter(title: String = "Vedtak"): LetterMarkup = letterMarkup(
         saksinformasjon = saksinformasjon(
             gjelderNavn = "Ola Nordmann",
-            gjelderFoedselsnummer = "12345678901",
+            gjelderPersonidentifikator = "12345678901",
             saksnummer = "9876543",
             dokumentDato = LocalDate.of(2026, 7, 9),
         ),
@@ -26,17 +27,25 @@ class LetterPDFRequestDslTest {
 
     @Test
     fun `builds request with only a letter and empty vedlegg lists`() {
-        val request = letterPDFRequest(LanguageCode.BOKMAL, Brevtype.VEDTAKSBREV, minimalLetter())
+        val request = letterPDFRequest(
+            Markup.Spraak.BOKMAL,
+            Markup.Brevtype.VEDTAKSBREV,
+            minimalLetter(),
+        )
 
-        assertEquals(LanguageCode.BOKMAL, request.language)
-        assertEquals(Brevtype.VEDTAKSBREV, request.brevtype)
+        assertEquals(Markup.Spraak.BOKMAL, request.spraak)
+        assertEquals(Markup.Brevtype.VEDTAKSBREV, request.brevtype)
         assertTrue(request.attachments.isEmpty())
         assertTrue(request.pdfVedlegg.isEmpty())
     }
 
     @Test
     fun `preserves order of multiple attachments and pdfVedlegg`() {
-        val request = letterPDFRequest(LanguageCode.BOKMAL, Brevtype.VEDTAKSBREV, minimalLetter()) {
+        val request = letterPDFRequest(
+            Markup.Spraak.BOKMAL,
+            Markup.Brevtype.VEDTAKSBREV,
+            minimalLetter(),
+        ) {
             attachment { title1("A1"); outline { paragraph("x") } }
             attachment { title1("A2"); outline { paragraph("y") } }
             pdfVedlegg { text("P1") }
@@ -52,7 +61,11 @@ class LetterPDFRequestDslTest {
         val prebuiltAttachment = attachment { title1("Ferdig vedlegg"); outline { paragraph("z") } }
         val prebuiltTittel = pdfTittel { text("Ferdig tittel") }
 
-        val request = letterPDFRequest(LanguageCode.ENGLISH, Brevtype.INFORMASJONSBREV, minimalLetter()) {
+        val request = letterPDFRequest(
+            Markup.Spraak.ENGLISH,
+            Markup.Brevtype.INFORMASJONSBREV,
+            minimalLetter(),
+        ) {
             attachment(prebuiltAttachment)
             attachment { title1("DSL vedlegg"); outline { paragraph("q") } }
             pdfVedlegg(prebuiltTittel)
@@ -68,18 +81,18 @@ class LetterPDFRequestDslTest {
     }
 
     @Test
-    fun `round-trips through json for every language and brevtype`() {
-        for (language in LanguageCode.entries) {
-            for (brevtype in Brevtype.entries) {
-                val request = letterPDFRequest(language, brevtype, minimalLetter()) {
+    fun `round-trips through json for every spraak and brevtype`() {
+        for (spraak in Markup.Spraak.entries) {
+            for (brevtype in Markup.Brevtype.entries) {
+                val request = letterPDFRequest(spraak, brevtype, minimalLetter()) {
                     attachment { title1("Vedlegg"); outline { paragraph("x") } }
                     pdfVedlegg { text("Tittel") }
                 }
 
-                val decoded = decodeLetterPDFRequest(request.toJson())
+                val decoded = Json.decodeFromString(LetterPDFRequest.serializer(), Json.encodeToString(LetterPDFRequest.serializer(), request))
 
                 assertEquals(request, decoded)
-                assertEquals(language, decoded.language)
+                assertEquals(spraak, decoded.spraak)
                 assertEquals(brevtype, decoded.brevtype)
             }
         }

@@ -37,24 +37,12 @@ data class Attachment internal constructor(
 @Serializable
 data class Saksinformasjon internal constructor(
     val gjelderNavn: String,
-    val gjelderFoedselsnummer: Foedselsnummer,
+    val gjelderPersonidentifikator: Markup.Personidentifikator,
     val annenMottakerNavn: String?,
-    val saksnummer: Saksnummer,
+    val saksnummer: Markup.Saksnummer,
     @Serializable(with = LocalDateSerializer::class)
     val dokumentDato: LocalDate,
 )
-
-@Serializable
-@JvmInline
-value class Foedselsnummer internal constructor(val value: String) {
-    override fun toString() = value
-}
-
-@Serializable
-@JvmInline
-value class Saksnummer internal constructor(val saksnummer: String) {
-    override fun toString() = saksnummer
-}
 
 internal object LocalDateSerializer : KSerializer<LocalDate> {
     override val descriptor: SerialDescriptor =
