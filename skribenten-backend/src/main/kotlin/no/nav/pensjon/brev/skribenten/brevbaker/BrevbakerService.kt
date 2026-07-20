@@ -83,7 +83,7 @@ interface BrevbakerService {
 
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
-    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggBrevkode>
+    suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode>
 }
 
 class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus, Closeable {
@@ -292,8 +292,8 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             }
         }
 
-    override suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggBrevkode> =
-        cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, brevId) {
+    override suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode> =
+        cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, "alltidValgbareVedlegg") {
             val response = client.get("/letter/redigerbar/alltidValgbareVedlegg")
 
             if (response.status.isSuccess()) {
@@ -301,7 +301,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             } else {
                 throw BrevbakerServiceException(
                     response.bodyAsText().takeIf { it.isNotBlank() }
-                        ?: "Ukjent feil oppstod ved henting av alltid valgbare vedlegg for brev $brevId"
+                        ?: "Ukjent feil oppstod ved henting av alltid valgbare vedlegg for brev"
                 )
             }
         }

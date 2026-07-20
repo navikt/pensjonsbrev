@@ -30,6 +30,7 @@ import {
   type Row,
   type Table,
   type TextContent,
+  TITLE_INDEX,
   type Title1Block,
   type Title2Block,
   type Title3Block,
@@ -746,6 +747,7 @@ export function newTable(rows: Row[]): Table {
     header: {
       id: null,
       parentId: null,
+      deletedColSpecs: [],
       colSpec: newColSpec(colCount),
     },
     rows,
@@ -977,6 +979,7 @@ export function newCell(text?: TextContent[]): Cell {
   return {
     id: null,
     parentId: null,
+    deletedContent: [],
     text: text ?? [newLiteral({ editedText: "" })],
   };
 }
@@ -985,6 +988,7 @@ export function newRow(colCount: number): Row {
   return {
     id: null,
     parentId: null,
+    deletedCells: [],
     cells: Array.from({ length: colCount }, () => newCell()),
   };
 }
@@ -998,6 +1002,7 @@ export function newColSpec(colCount: number, headers?: { text: string; font?: Fo
     headerContent: {
       id: null,
       parentId: null,
+      deletedContent: [],
       text: [
         newLiteral({
           editedText: headers?.[i]?.text ?? `Kolonne ${i + 1}`,
@@ -1061,45 +1066,167 @@ export function normalizeDeletedArrays(obj: unknown): unknown {
   return obj;
 }
 
-export function collectAllLiteralValues(letter: EditedLetter): LiteralValue[] {
-  const blockLiterals = letter.blocks.flatMap((block) => {
-    switch (block.type) {
-      case "TITLE1":
-      case "TITLE2":
-      case "TITLE3":
-        return (block.content ?? []).filter((content) => isLiteral(content));
-      case "PARAGRAPH":
-        return (block.content ?? []).flatMap((content) => {
-          if (isLiteral(content)) return [content];
-          if (isItemList(content))
-            return content?.items.flatMap((item) => (item?.content ?? []).filter((literal) => isLiteral(literal)));
-          if (isTable(content)) {
-            const header = content.header?.colSpec?.flatMap((spec) =>
-              (spec.headerContent?.text ?? []).filter(isLiteral),
-            );
-            const body = content.rows?.flatMap((row) =>
-              row.cells?.flatMap((cell) => (cell.text ?? []).filter(isLiteral)),
-            );
-            return [...header, ...body];
-          }
-          return [];
-        });
-      default:
-        return [];
+/**
+ * Walks every text literal in the letter in document order — title first, then blocks in order
+ * (paragraph content, item-list items, table header/rows) — invoking `visit` with the literal and the
+ * Focus pointing at its position. Traversal stops as soon as `visit` returns a value other than
+ * `undefined`, and that value becomes the result; if `visit` never does, `findLiteral` returns
+ * `undefined` once every literal has been visited.
+ *
+ * This is the single traversal used by both {@link collectAllLiteralValues} (visits every literal to
+ * build a flat list) and {@link findFirstUneditedFritekstFocus} (stops at the first literal matching a
+ * predicate), so the two can't drift apart if the letter's content model changes.
+ */
+function findLiteral<T>(
+  letter: EditedLetter,
+  visit: (literal: LiteralValue, focus: Focus) => T | undefined,
+): T | undefined {
+  for (let contentIndex = 0; contentIndex < (letter.title?.text.length ?? 0); contentIndex++) {
+    const content = letter.title.text[contentIndex];
+    if (isLiteral(content)) {
+      const result = visit(content, { blockIndex: TITLE_INDEX, contentIndex, cursorPosition: 0 });
+      if (result !== undefined) return result;
     }
-  });
-  const topTitleLiterals = (letter.title?.text ?? []).filter(isLiteral);
+  }
 
-  return [...topTitleLiterals, ...blockLiterals];
+  for (let blockIndex = 0; blockIndex < letter.blocks.length; blockIndex++) {
+    const block = letter.blocks[blockIndex];
+
+    if (block.type !== "PARAGRAPH") {
+      for (let contentIndex = 0; contentIndex < (block.content?.length ?? 0); contentIndex++) {
+        const content = block.content[contentIndex];
+        if (isLiteral(content)) {
+          const result = visit(content, { blockIndex, contentIndex, cursorPosition: 0 });
+          if (result !== undefined) return result;
+        }
+      }
+      continue;
+    }
+
+    for (let contentIndex = 0; contentIndex < block.content.length; contentIndex++) {
+      const content = block.content[contentIndex];
+
+      if (isLiteral(content)) {
+        const result = visit(content, { blockIndex, contentIndex, cursorPosition: 0 });
+        if (result !== undefined) return result;
+        continue;
+      }
+
+      if (isItemList(content)) {
+        for (let itemIndex = 0; itemIndex < content.items.length; itemIndex++) {
+          const item = content.items[itemIndex];
+          for (let itemContentIndex = 0; itemContentIndex < item.content.length; itemContentIndex++) {
+            const literal = item.content[itemContentIndex];
+            if (isLiteral(literal)) {
+              const result = visit(literal, {
+                blockIndex,
+                contentIndex,
+                itemIndex,
+                itemContentIndex,
+                cursorPosition: 0,
+              });
+              if (result !== undefined) return result;
+            }
+          }
+        }
+        continue;
+      }
+
+      if (isTable(content)) {
+        for (let cellIndex = 0; cellIndex < content.header.colSpec.length; cellIndex++) {
+          const headerText = content.header.colSpec[cellIndex].headerContent?.text ?? [];
+          for (let cellContentIndex = 0; cellContentIndex < headerText.length; cellContentIndex++) {
+            const literal = headerText[cellContentIndex];
+            if (isLiteral(literal)) {
+              const result = visit(literal, {
+                blockIndex,
+                contentIndex,
+                rowIndex: -1,
+                cellIndex,
+                cellContentIndex,
+                cursorPosition: 0,
+              });
+              if (result !== undefined) return result;
+            }
+          }
+        }
+        for (let rowIndex = 0; rowIndex < content.rows.length; rowIndex++) {
+          const row = content.rows[rowIndex];
+          for (let cellIndex = 0; cellIndex < row.cells.length; cellIndex++) {
+            const cellText = row.cells[cellIndex].text ?? [];
+            for (let cellContentIndex = 0; cellContentIndex < cellText.length; cellContentIndex++) {
+              const literal = cellText[cellContentIndex];
+              if (isLiteral(literal)) {
+                const result = visit(literal, {
+                  blockIndex,
+                  contentIndex,
+                  rowIndex,
+                  cellIndex,
+                  cellContentIndex,
+                  cursorPosition: 0,
+                });
+                if (result !== undefined) return result;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return undefined;
+}
+
+export function collectAllLiteralValues(letter: EditedLetter): LiteralValue[] {
+  const result: LiteralValue[] = [];
+  findLiteral(letter, (literal) => {
+    result.push(literal);
+    return undefined;
+  });
+  return result;
 }
 
 export function collectFritekstLiterals(letter: EditedLetter): LiteralValue[] {
   return collectAllLiteralValues(letter).filter((literal) => isFritekst(literal));
 }
 
-export const countUnfilledFritekstPlaceholders = (letter: EditedLetter): number => {
+export const countUneditedFritekstPlaceholders = (letter: EditedLetter): number => {
   return collectFritekstLiterals(letter).filter((literal) => literal.editedText === null).length;
 };
+
+/**
+ * Finds the Focus of the first unedited fritekst felt in document order. "Unedited" mirrors the
+ * predicate used by {@link countUneditedFritekstPlaceholders}: a fritekst literal whose `editedText`
+ * is still `null`.
+ *
+ * Used to move the editor's focus to the first fritekst felt the user still needs to fill in, e.g.
+ * when the user chooses to stay on the page after a "du må fylle ut fritekstfelt" warning. The
+ * returned Focus has `selectAll: true`, which tells ContentGroup.tsx to select the literal's full text
+ * (rather than just placing a caret) once it scrolls into view and receives focus — replicating what
+ * happens when the user clicks the fritekst directly.
+ */
+export function findFirstUneditedFritekstFocus(letter: EditedLetter): Focus | null {
+  return (
+    findLiteral(letter, (literal, focus) =>
+      isFritekst(literal) && literal.editedText === null ? { ...focus, selectAll: true } : undefined,
+    ) ?? null
+  );
+}
+
+export const countMissingFromTemplateBlocks = (letter: EditedLetter): number => {
+  return letter.blocks.filter((block) => block.missingFromTemplate).length;
+};
+
+export function getBlockClassName(block: AnyBlock, isFlashHighlighted: boolean): string {
+  const classNames: string[] = [block.type];
+  if (isFlashHighlighted) {
+    classNames.push("inserted-flash-block");
+  }
+  if (block.missingFromTemplate) {
+    classNames.push("missing-from-template-block");
+  }
+  return classNames.join(" ");
+}
 
 export const base64ToPdfBlob = (b64: string) =>
   new Blob([Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))], { type: "application/pdf" });

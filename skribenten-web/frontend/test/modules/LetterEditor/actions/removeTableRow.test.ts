@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/LetterEditor/actions/common";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import { type LiteralValue, type TextContent } from "~/types/brevbakerTypes";
+import { type LiteralValue, type Row, type TextContent } from "~/types/brevbakerTypes";
 
 import { brevResponse, editedLetter } from "../../../utils/letterEditorTestUtils";
 
@@ -12,10 +12,11 @@ function asLiteral(content: TextContent): LiteralValue {
   return content;
 }
 
-function tableRow(...texts: string[]) {
+function tableRow(...texts: string[]): Row {
   return {
     id: null,
     parentId: null,
+    deletedCells: [],
     cells: texts.map((text) => newCell([newLiteral({ editedText: text })])),
   };
 }
