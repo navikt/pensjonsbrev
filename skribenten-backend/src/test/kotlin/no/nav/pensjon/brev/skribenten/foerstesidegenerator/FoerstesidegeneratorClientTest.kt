@@ -3,9 +3,8 @@ package no.nav.pensjon.brev.skribenten.foerstesidegenerator
 import com.typesafe.config.ConfigFactory
 import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Arkivsak
-import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Arkivsaksystem
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Arkivsak.Arkivsaksystem
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Bruker
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Foerstesidetype
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.GenererFoerstesideRequest
@@ -51,7 +50,7 @@ class FoerstesidegeneratorClientTest {
 
         val response = client.genererFoersteside(
             GenererFoerstesideRequest(
-                spraakkode = SpraakKode.NB,
+                spraakkode = FoerstesidegeneratorClient.Spraakkode.NB,
                 netsPostboks = Postboks("1400"),
                 bruker = Bruker(
                     brukerId = BrevbakerType.Pid("12345678910"),
