@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -22,6 +23,12 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     internal val outline: List<OutlineElement<Lang>> field: MutableList<OutlineElement<Lang>> = mutableListOf()
     internal val attachments: List<IncludeAttachment<Lang, *>> field: MutableList<IncludeAttachment<Lang, *>> = mutableListOf()
     internal val pdfAttachments: List<IncludeAttachmentPDF<Lang, *>> field: MutableList<IncludeAttachmentPDF<Lang, *>> = mutableListOf()
+    internal val saksbehandlervalg: Map<String, SaksbehandlervalgVerdi<*>> field: MutableMap<String, SaksbehandlervalgVerdi<*>> = mutableMapOf()
+
+    internal fun lagreSaksbehandlervalg(key: String, verdi: SaksbehandlervalgVerdi<*>) {
+        require(saksbehandlervalg.containsKey(key).not()) { "Saksbehandlervalg med id $key allerede definert" }
+        saksbehandlervalg[key] = verdi
+    }
 
     fun title(init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
         title.addAll(PlainTextOnlyScope<Lang, LetterData>().apply(init).elements)

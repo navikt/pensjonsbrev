@@ -20,12 +20,15 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.DiffBr
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SendBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SlettBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentEllerOpprettPdfHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentP1DataHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.LagreP1DataHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigerbareVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SlettRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreValgteVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.FrigiReservasjonHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.TilbakestillBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentAlltidValgbareVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevAttesteringHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OppdaterBrevHandler
@@ -50,7 +53,6 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataServiceHttp
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.LegacyBrevServiceImpl
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PentHttpClient
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.KrrService
@@ -97,7 +99,6 @@ fun Application.configureDependencies() {
         provide(NavansattServiceHttp::class)
         provide(LegacyBrevServiceImpl::class)
         provide(Norg2ServiceHttp::class)
-        provide(P1ServiceImpl::class)
 
         provide(BrevService::class)
         provide(BrevdataService::class)
@@ -123,11 +124,14 @@ fun Application.configureDependencies() {
         provide(EndreRedigertVedleggHandler::class)
         provide(EndreValgteVedleggHandler::class)
         provide(FrigiReservasjonHandler::class)
+        provide(HentAlltidValgbareVedleggHandler::class)
         provide(HentBrevAttesteringHandler::class)
         provide(HentBrevHandler::class)
         provide(HentEllerOpprettPdfHandler::class)
+        provide(HentP1DataHandler::class)
         provide(HentRedigerbareVedleggHandler::class)
         provide(HentRedigertVedleggHandler::class)
+        provide(LagreP1DataHandler::class)
         provide(OppdaterBrevHandler::class)
         provide(OpprettBrevHandler::class)
         provide(ReserverBrevHandler::class)

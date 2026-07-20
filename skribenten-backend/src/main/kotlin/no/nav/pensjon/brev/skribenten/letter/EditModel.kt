@@ -167,6 +167,7 @@ object Edit {
             override val id: Int?,
             val items: List<Item>,
             val listType: Listetype = Listetype.PUNKTLISTE,
+            val editedListType: Listetype? = null,
             val deletedItems: Set<Int> = emptySet(),
             override val parentId: Int? = null,
         ) : ParagraphContent(Type.ITEM_LIST) {
@@ -179,7 +180,7 @@ object Edit {
                 override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() || it.parentId != id } || deletedContent.isNotEmpty()
             }
 
-            override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() || it.parentId != id } || deletedItems.isNotEmpty()
+            override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() || it.parentId != id } || deletedItems.isNotEmpty() || editedListType != null
         }
 
         data class Table(
@@ -189,16 +190,16 @@ object Edit {
             val deletedRows: Set<Int> = emptySet(),
             override val parentId: Int? = null,
         ) : ParagraphContent(Type.TABLE) {
-            data class Row(override val id: Int?, val cells: List<Cell>, override val parentId: Int? = null) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || cells.any { it.isEdited() || it.parentId != id }
+            data class Row(override val id: Int?, val cells: List<Cell>, val deletedCells: Set<Int> = emptySet(), override val parentId: Int? = null) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || cells.any { it.isEdited() || it.parentId != id } || deletedCells.isNotEmpty()
             }
 
-            data class Cell(override val id: Int?, val text: List<Text>, override val parentId: Int? = null) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || text.any { it.isEdited() || it.parentId != id }
+            data class Cell(override val id: Int?, val text: List<Text>, val deletedContent: Set<Int> = emptySet(), override val parentId: Int? = null) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || text.any { it.isEdited() || it.parentId != id } || deletedContent.isNotEmpty()
             }
 
-            data class Header(override val id: Int?, val colSpec: List<ColumnSpec>, override val parentId: Int? = null) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || colSpec.any { it.isEdited() || it.parentId != id }
+            data class Header(override val id: Int?, val colSpec: List<ColumnSpec>, val deletedColSpecs: Set<Int> = emptySet(), override val parentId: Int? = null) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || colSpec.any { it.isEdited() || it.parentId != id } || deletedColSpecs.isNotEmpty()
             }
 
             data class ColumnSpec(
@@ -348,7 +349,7 @@ fun List<Edit.ParagraphContent.Text>.toMarkup() =
 
 fun Edit.ParagraphContent.toMarkup(): ParagraphContent =
     when (this) {
-        is Edit.ParagraphContent.ItemList -> ParagraphContentImpl.ItemListImpl(id = id ?: 0, items = items.map { it.toMarkup() }, listType = listType)
+        is Edit.ParagraphContent.ItemList -> ParagraphContentImpl.ItemListImpl(id = id ?: 0, items = items.map { it.toMarkup() }, listType = editedListType ?: listType)
         is Edit.ParagraphContent.Table -> ParagraphContentImpl.TableImpl(id = id ?: 0, rows = rows.map { it.toMarkup() }, header = header.toMarkup())
         is Edit.ParagraphContent.Text -> toMarkup()
     }

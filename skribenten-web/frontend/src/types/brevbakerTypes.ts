@@ -53,6 +53,12 @@ export const FontType: Record<FontType, FontType> = {
   ITALIC: "ITALIC",
 };
 
+export type ListType = generated.Listetype;
+export const ListType: Record<ListType, ListType> = {
+  PUNKTLISTE: "PUNKTLISTE",
+  NUMMERERT_LISTE: "NUMMERERT_LISTE",
+};
+
 export type Item = generated.EditParagraphContentItemListItem;
 
 export type Row = generated.EditParagraphContentTableRow;

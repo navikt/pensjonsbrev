@@ -35,11 +35,17 @@ const updateDefaultHeaderLabels = (table: Draft<Table>) => {
   const isDefault = (s: string) => /^Kolonne\s+\d+$/i.test(s);
   const stripZWSP = (s: string) => s.replaceAll(ZERO_WIDTH_SPACE, "");
 
-  table.header.colSpec.forEach((col, idx) => {
-    const headerCellText = stripZWSP(cleanseText(col.headerContent.text.map((txt) => text(txt) ?? "").join(""))).trim();
+  table.header.colSpec.forEach((col, index) => {
+    const headerCellText = stripZWSP(
+      cleanseText(col.headerContent.text.map((fragment) => text(fragment) ?? "").join("")),
+    ).trim();
 
     if (headerCellText === "" || isDefault(headerCellText)) {
-      col.headerContent.text.splice(0, col.headerContent.text.length, newLiteral({ editedText: `Kolonne ${idx + 1}` }));
+      col.headerContent.text.splice(
+        0,
+        col.headerContent.text.length,
+        newLiteral({ editedText: `Kolonne ${index + 1}` }),
+      );
     }
   });
 };
@@ -131,9 +137,13 @@ export const removeTableColumn: Action<LetterEditorState, []> = withPatches((dra
   const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
   if (!isTable(table)) return;
 
-  table.header.colSpec.splice(col, 1);
+  removeElements(col, 1, {
+    content: table.header.colSpec,
+    deletedContent: table.header.deletedColSpecs,
+    id: table.header.id,
+  });
   for (const row of table.rows) {
-    row.cells.splice(col, 1);
+    removeElements(col, 1, { content: row.cells, deletedContent: row.deletedCells, id: row.id });
   }
   updateDefaultHeaderLabels(table);
   draft.saveStatus = "DIRTY";
@@ -179,20 +189,21 @@ export const moveTableRow: Action<LetterEditorState, [direction: MoveDirection]>
   draft.saveStatus = "DIRTY";
 });
 
+function insertTableColumnAt(table: Draft<Table>, at: number) {
+  addElements(newColSpec(1), at, table.header.colSpec, table.header.deletedColSpecs);
+  for (const row of table.rows) {
+    addElements([newCell()], at, row.cells, row.deletedCells);
+  }
+  updateDefaultHeaderLabels(table);
+}
+
 export const insertTableColumnLeft: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
-  const { blockIndex, contentIndex, cellIndex: at } = draft.focus;
+  const { blockIndex, contentIndex, cellIndex } = draft.focus;
 
   const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
   if (!isTable(table)) return;
-  //TODO: Once Header and Row have their own deleted* arrays
-  // (e.g. header.deletedColSpecs, row.deletedCells),
-  // replace these direct splices with addElements(...)
-  table.header.colSpec.splice(at, 0, ...newColSpec(1));
-  for (const row of table.rows) {
-    row.cells.splice(at, 0, newRow(1).cells[0]);
-  }
-  updateDefaultHeaderLabels(table);
+  insertTableColumnAt(table, cellIndex);
   draft.saveStatus = "DIRTY";
 });
 
@@ -202,15 +213,7 @@ export const insertTableColumnRight: Action<LetterEditorState, []> = withPatches
 
   const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
   if (!isTable(table)) return;
-  const at = cellIndex + 1;
-  //TODO: Once Header and Row have their own deleted* arrays
-  // (e.g. header.deletedColSpecs, row.deletedCells),
-  // replace these direct splices with addElements(...)
-  table.header.colSpec.splice(at, 0, ...newColSpec(1));
-  for (const row of table.rows) {
-    row.cells.splice(at, 0, newRow(1).cells[0]);
-  }
-  updateDefaultHeaderLabels(table);
+  insertTableColumnAt(table, cellIndex + 1);
   draft.saveStatus = "DIRTY";
 });
 

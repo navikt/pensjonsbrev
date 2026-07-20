@@ -3,10 +3,10 @@ import { expect, type Page, test } from "@playwright/test";
 import { SpraakKode } from "~/types/apiTypes";
 import { type AlltidValgbartVedlegg } from "~/types/brev";
 
-import { nyBrevInfo, nyBrevResponse } from "../../utils/brevredigeringTestUtils";
+import { brevInfo, brevResponse } from "../../utils/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
-const bokmaalBrev = nyBrevInfo({
+const bokmaalBrev = brevInfo({
   spraak: SpraakKode.Bokmaal,
   status: { type: "Kladd" },
 });
@@ -63,13 +63,13 @@ async function setupBrevbehandler(page: Page, vedlegg: AlltidValgbartVedlegg[]) 
   });
   await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) => {
     if (route.request().method() === "GET") {
-      return route.fulfill({ json: nyBrevResponse({ info: bokmaalBrev }) });
+      return route.fulfill({ json: brevResponse({ info: bokmaalBrev }) });
     }
     return route.fallback();
   });
   await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=false", (route) => {
     if (route.request().method() === "GET") {
-      return route.fulfill({ json: nyBrevResponse({ info: bokmaalBrev }) });
+      return route.fulfill({ json: brevResponse({ info: bokmaalBrev }) });
     }
     return route.fallback();
   });

@@ -4,7 +4,6 @@ val apiModelJavaTarget: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
-    alias(libs.plugins.binary.compatibility.validator) apply true
     id("java-library")
     id("java-test-fixtures")
 }
@@ -24,9 +23,11 @@ repositories {
 
 dependencies {
     implementation(libs.brevbaker.common)
+    implementation(libs.bundles.logging)
 
     testImplementation(libs.bundles.junit)
     testImplementation(kotlin("reflect"))
+    testImplementation(testFixtures(project(":brevbaker:dsl")))
 
     testFixturesImplementation(libs.brevbaker.common)
 }
@@ -59,6 +60,13 @@ tasks {
     }
 }
 
-apiValidation {
-    nonPublicMarkers.addAll(brevbakerInternAnnoteringer)
+@OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+kotlin {
+    abiValidation {
+        filters {
+            exclude {
+                brevbakerInternAnnoteringer.forEach { annotatedWith.add(it) }
+            }
+        }
+    }
 }
