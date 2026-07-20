@@ -16,24 +16,26 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
+import io.ktor.utils.io.core.Closeable
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.Tema
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.EnhetId
+import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brev.skribenten.services.ServiceException
 import no.nav.pensjon.brev.skribenten.services.callIdAndOnBehalfOfClient
 import no.nav.pensjon.brev.skribenten.services.installRetry
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import org.slf4j.LoggerFactory
 
-class FoerstesidegeneratorClient(config: Config, authService: AuthService) {
+class FoerstesidegeneratorClient(config: Config, authService: AuthService) : Closeable {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val foerstesidegeneratorUrl = config.getString("url")
     private val foerstesidegeneratorScope = config.getString("scope")
 
-    private val client = HttpClient(CIO) {
+    private val client = lagHttpClient {
         defaultRequest {
             url(foerstesidegeneratorUrl)
         }
@@ -46,6 +48,10 @@ class FoerstesidegeneratorClient(config: Config, authService: AuthService) {
         installRetry(logger)
         callIdAndOnBehalfOfClient(foerstesidegeneratorScope, authService)
 
+    }
+
+    override fun close() {
+        client.close()
     }
 
     suspend fun genererFoersteside(request: GenererFoerstesideRequest): GenererFoerstesideResponse {
