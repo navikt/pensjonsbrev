@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
 import io.ktor.client.call.body
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.accept
@@ -27,13 +29,13 @@ import no.nav.pensjon.brev.skribenten.services.installRetry
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import org.slf4j.LoggerFactory
 
-class FoerstesidegeneratorClient(config: Config, authService: AuthService) : Closeable {
+class FoerstesidegeneratorClient(config: Config, authService: AuthService, clientEngine: HttpClientEngine = CIO.create()) : Closeable {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val foerstesidegeneratorUrl = config.getString("url")
     private val foerstesidegeneratorScope = config.getString("scope")
 
-    private val client = lagHttpClient {
+    private val client = lagHttpClient(clientEngine) {
         defaultRequest {
             url(foerstesidegeneratorUrl)
         }
