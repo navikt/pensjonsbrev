@@ -441,7 +441,7 @@ abstract class BrevredigeringHandlerTestBase {
     protected suspend fun hentBrevForSak(saksId: SaksId): Outcome<List<Dto.BrevInfo>, Nothing> =
         hentBrevForSakHandler(HentBrevForSakHandler.Request(saksId))
 
-    protected suspend fun hentBrevForAlleSaker(saksIder: Set<SaksId>): Outcome<List<Dto.BrevInfo>, Nothing> =
+    protected suspend fun hentBrevForAlleSaker(saksIder: Set<SaksId>): Outcome<List<Dto.BrevInfo>, Nothing>? =
         hentBrevForAlleSakerHandler(HentBrevForAlleSakerHandler.Request(saksIder))
 
     protected suspend fun slettBrev(

@@ -37,7 +37,7 @@ class ExternalAPIService(
     }
 
     suspend fun hentAlleBrevForSaker(saksIder: Set<SaksId>): List<ExternalAPI.BrevInfo> {
-        val alleBrev = hentBrevForAlleSaker(HentBrevForAlleSakerHandler.Request(saksIder)).asSuccess()
+        val alleBrev = hentBrevForAlleSaker.execute(HentBrevForAlleSakerHandler.Request(saksIder)).asSuccess()
         val maler = alleBrev.map { it.brevkode }.toSet().associateWith { brevmalService.getRedigerbarTemplate(it) }
 
         return alleBrev.mapNotNull { it.toExternal(maler[it.brevkode]) }

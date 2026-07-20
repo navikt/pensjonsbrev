@@ -5,5 +5,5 @@ import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.model.Dto
 
 fun interface HentBrevForAlleSakerService {
-    suspend operator fun invoke(request: HentBrevForAlleSakerHandler.Request): Outcome<List<Dto.BrevInfo>, Nothing>
+    suspend fun execute(request: HentBrevForAlleSakerHandler.Request): Outcome<List<Dto.BrevInfo>, Nothing>
 }
