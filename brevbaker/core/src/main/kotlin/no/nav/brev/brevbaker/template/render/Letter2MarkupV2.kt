@@ -23,6 +23,8 @@ import no.nav.brev.brevbaker.markup.dsl.paragraph
 import no.nav.brev.brevbaker.markup.dsl.pdfTittelExtended
 import no.nav.brev.brevbaker.markup.dsl.prompt
 import no.nav.brev.brevbaker.markup.dsl.row
+import no.nav.brev.brevbaker.markup.dsl.saksinformasjon
+import no.nav.brev.brevbaker.markup.dsl.signatur
 import no.nav.brev.brevbaker.markup.dsl.table
 import no.nav.brev.brevbaker.markup.dsl.title1
 import no.nav.brev.brevbaker.markup.dsl.title2
@@ -57,7 +59,11 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
         )
 
     fun renderLetterOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterMarkup =
-        letterMarkupExtended(buildLetter(scope, template))
+        letterMarkupExtended(
+            saksinformasjon = buildSaksinformasjon(scope),
+            signatur = buildSignatur(scope),
+            build = buildLetter(scope, template),
+        )
 
     /**
      * Byggeblokken for hovedbrevet, delt slik at både [renderLetterOnly] (via [letterMarkupExtended])
@@ -70,23 +76,26 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
         val context = RenderContext(scope)
         return {
             title1 { appendTexts(context, template.title) }
-            saksinformasjon(
-                gjelderNavn = context.scope.felles.bruker.fulltNavn(),
-                gjelderFoedselsnummer = context.scope.felles.bruker.foedselsnummer.value,
-                saksnummer = context.scope.felles.saksnummer,
-                dokumentDato = context.scope.felles.dokumentDato,
-                annenMottakerNavn = context.scope.felles.annenMottakerNavn,
-            )
             outline { renderOutline(context, template.outline) }
-            val sign = context.scope.felles.signerendeSaksbehandlere
-            signatur(
-                hilsenTekst = languageSettings.getSetting(context.scope.language, LanguageSetting.Closing.greeting),
-                navAvsenderEnhet = context.scope.felles.avsenderEnhet.navn,
-                saksbehandlerNavn = sign?.saksbehandler,
-                attesterendeSaksbehandlerNavn = sign?.attesterendeSaksbehandler,
-            )
         }
     }
+
+    internal fun buildSaksinformasjon(scope: ExpressionScope<*>) =
+        saksinformasjon(
+            gjelderNavn = scope.felles.bruker.fulltNavn(),
+            gjelderFoedselsnummer = scope.felles.bruker.foedselsnummer.value,
+            saksnummer = scope.felles.saksnummer,
+            dokumentDato = scope.felles.dokumentDato,
+            annenMottakerNavn = scope.felles.annenMottakerNavn,
+        )
+
+    internal fun buildSignatur(scope: ExpressionScope<*>) =
+        signatur(
+            hilsenTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.greeting),
+            navAvsenderEnhet = scope.felles.avsenderEnhet.navn,
+            saksbehandlerNavn = scope.felles.signerendeSaksbehandlere?.saksbehandler,
+            attesterendeSaksbehandlerNavn = scope.felles.signerendeSaksbehandlere?.attesterendeSaksbehandler,
+        )
 
     fun renderAttachmentsOnly(
         scope: ExpressionScope<*>,

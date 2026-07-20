@@ -48,10 +48,13 @@ internal object BrevbakerLetterMarkup {
 
     fun <T : BrevbakerBrevdata> renderLetterMarkupWithDataUsageV2(letter: Letter<T>): MarkupLetterMarkupWithDataUsage =
         SelectorUsage().let { usage ->
+            val scope = letter.toScope(usage)
             letterMarkupWithDataUsage(
                 markup = letterMarkupExtended(
-                    Letter2MarkupV2.buildLetter(
-                        scope = letter.toScope(usage),
+                    saksinformasjon = Letter2MarkupV2.buildSaksinformasjon(scope),
+                    signatur = Letter2MarkupV2.buildSignatur(scope),
+                    build = Letter2MarkupV2.buildLetter(
+                        scope = scope,
                         template = letter.template
                     )
                 ),

@@ -68,10 +68,11 @@ internal class BrevbakerPDF(
                 letterPDFRequest(
                     language = letter.language.toCode().toMarkup(),
                     brevtype = letter.template.letterMetadata.brevtype.toMarkup(),
+                    letter = markup.letterMarkup
                 ) {
-                    letter(markup.letterMarkup)
                     markup.attachments.forEach { attachment(it) }
-                    Letter2MarkupV2.renderPDFTitlesOnly(letter.toScope(), letter.template).forEach { pdfVedlegg(it) }
+                    Letter2MarkupV2.renderPDFTitlesOnly(letter.toScope(), letter.template)
+                        .forEach { pdfVedlegg(it) }
                 },
             )
         }.let { pdf ->
