@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.fagsystem
 
+import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -40,6 +41,3 @@ data class Fagsak(
 ) {
     data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
 }
-
-@JvmInline
-value class Tema(val value: String)
