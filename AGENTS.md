@@ -87,7 +87,7 @@ If the agent finds itself about to write to one of these, stop and change the up
 
 **Binary compatibility validation** (Kotlin Gradle plugin's built-in `abiValidation`): Public API changes in `brevbaker:api-model-common`, `brevbaker:dsl`, `brevbaker:core` require running `./gradlew updateKotlinAbi` to update `.api` files or build fails (`checkKotlinAbi` runs as part of `check`).
 
-**Published-artifact version bumps**: `brevbaker:api-model-common` (`brevbaker/api-model-common/gradle.properties`) and `brevbaker:markup` (`brevbaker/markup/gradle.properties`) are published artifacts. Bump their `version` whenever their public API/model changes so consumers resolve the new release.
+**Published-artifact version bumps**: `brevbaker:api-model-common` (`brevbaker/api-model-common/gradle.properties`) and `brevbaker:markup` (`brevbaker/markup/gradle.properties`) are published artifacts. Bump their `version` whenever their public API/model changes so consumers resolve the new release. When bumping `api-model-common`, also update `commonVersion` in `gradle/libs.versions.toml` (the `brevbaker-common` catalog entry) so in-repo consumers pick up the new version.
 
 ## Code Generation (KSP)
 
