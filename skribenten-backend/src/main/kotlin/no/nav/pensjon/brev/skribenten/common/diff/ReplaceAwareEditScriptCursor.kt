@@ -65,6 +65,30 @@ class ReplaceAwareEditScriptCursor<T : Any>(editScript: EditScript<T>) {
         }
     }
 
+    /**
+     * Like [forEachIndexed], but stabilizes the insert/delete index passed to [action] so that it always refers to
+     * an index that has actually been produced/matched on that side.
+     *
+     * [forEachIndexed] advances insertIndex/deleteIndex only when an entry actually consumes that side, meaning a
+     * pure [Delete] entry is invoked with the (unconsumed) insertIndex that would apply to a *future* insert-side
+     * entry - even when no such entry exists (e.g. because the insert-side sequence is already exhausted). Any
+     * insert-side content nested inside such an entry's processing (e.g. leftover words belonging to an already
+     * matched/Unchanged marker) would then incorrectly be attributed to this non-existent "next" index, rather than
+     * the last real one. This function instead reuses the last real index for the side that isn't consumed by the
+     * current entry, so nested processing always sees a valid, already-established index.
+     */
+    inline fun <reified E : T> forEachIndexedStable(action: (insertIndex: Int, deleteIndex: Int, DiffEntry<E>) -> Unit) {
+        var lastInsertIndex = 0
+        var lastDeleteIndex = 0
+        forEachIndexed<E> { insertIndex, deleteIndex, entry ->
+            val stableInsertIndex = if (entry is Delete) lastInsertIndex else insertIndex
+            val stableDeleteIndex = if (entry is Insert) lastDeleteIndex else deleteIndex
+            action(stableInsertIndex, stableDeleteIndex, entry)
+            if (entry !is Delete) lastInsertIndex = insertIndex
+            if (entry !is Insert) lastDeleteIndex = deleteIndex
+        }
+    }
+
     inline fun <reified E : T, R> fold(initial: R, action: (R, DiffEntry<E>) -> R): R {
         var accumulator = initial
         while (true) {

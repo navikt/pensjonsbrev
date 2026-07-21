@@ -431,9 +431,9 @@ class EditLetterWordTokenizerTest {
                 // "world" deleted from the first (unchanged) Text container in both old and new, offset 6-11
                 Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 0), Change.Delete(DiffProducer.TextSegment(6, 11, "world"))),
                 // "goodbye" inserted at content index 2 (third BlockContent: the second Text) in new, offset 0-7.
-                // deleteIndex is content index 1, since the inserted NewLine shifts the new-document position
-                // without shifting the corresponding position in the old document.
-                Triple(BlockContentIndex(0, 2), BlockContentIndex(0, 1), Change.Insert(DiffProducer.TextSegment(0, 7, "goodbye"))),
+                // deleteIndex reuses content index 0, since old has no second Text bucket to advance into - it
+                // stays pinned at the last real old-document bucket rather than an out-of-bounds "next" index.
+                Triple(BlockContentIndex(0, 2), BlockContentIndex(0, 0), Change.Insert(DiffProducer.TextSegment(0, 7, "goodbye"))),
             ),
             calls,
         )
@@ -464,9 +464,9 @@ class EditLetterWordTokenizerTest {
                 // "goodbye" inserted into the first (unchanged) Text container in both old and new, offset 6-13
                 Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 0), Change.Insert(DiffProducer.TextSegment(6, 13, "goodbye"))),
                 // "world" deleted at content index 2 (third BlockContent in old: the second Text), offset 0-5.
-                // insertIndex is content index 1, since the deleted NewLine shifts old-document positions
-                // without shifting the corresponding position in the merged (new-document) view.
-                Triple(BlockContentIndex(0, 1), BlockContentIndex(0, 2), Change.Delete(DiffProducer.TextSegment(0, 5, "world"))),
+                // insertIndex reuses content index 0, since new has no second Text bucket to advance into - it
+                // stays pinned at the last real new-document bucket rather than an out-of-bounds "next" index.
+                Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 2), Change.Delete(DiffProducer.TextSegment(0, 5, "world"))),
             ),
             calls,
         )

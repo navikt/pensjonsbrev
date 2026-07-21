@@ -137,14 +137,16 @@ class EditLetterWordUnifiedDiffTest {
             }
         }
         val (inserts, deletes) = wordDiff.unifiedDiff(old, new)
-        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 1), 5, 12)), inserts)
+        // "beta epsilon" is the only content in the new block, so it - and everything sharing its unified
+        // position - must use contentIndex 0, since there is no contentIndex 1 in the new document.
+        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 5, 12)), inserts)
         assertEquals(
             listOf(
                 // "alpha" is entirely deleted content, retaining its unified position (contentIndex 0)
                 UnifiedDeleteSegment(BlockContentIndex(0, 0), 0, 5, "alpha"),
                 // "gamma" is deleted from the same literal as the "epsilon" insert, so shares its unified
-                // contentIndex (1) rather than its old-document contentIndex (2)
-                UnifiedDeleteSegment(BlockContentIndex(0, 1), 5, 10, "gamma"),
+                // contentIndex (0) rather than its old-document contentIndex (2)
+                UnifiedDeleteSegment(BlockContentIndex(0, 0), 5, 10, "gamma"),
             ),
             deletes,
         )
@@ -173,11 +175,11 @@ class EditLetterWordUnifiedDiffTest {
             }
         }
         val (inserts, deletes) = wordDiff.unifiedDiff(old, new)
-        assertEquals(listOf(DiffSegment(ItemContentIndex(0, 0, 0, 1), 5, 12)), inserts)
+        assertEquals(listOf(DiffSegment(ItemContentIndex(0, 0, 0, 0), 5, 12)), inserts)
         assertEquals(
             listOf(
                 UnifiedDeleteSegment(ItemContentIndex(0, 0, 0, 0), 0, 5, "alpha"),
-                UnifiedDeleteSegment(ItemContentIndex(0, 0, 0, 1), 5, 10, "gamma"),
+                UnifiedDeleteSegment(ItemContentIndex(0, 0, 0, 0), 5, 10, "gamma"),
             ),
             deletes,
         )
@@ -212,11 +214,11 @@ class EditLetterWordUnifiedDiffTest {
             }
         }
         val (inserts, deletes) = wordDiff.unifiedDiff(old, new)
-        assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, 0, 0, 1), 5, 12)), inserts)
+        assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, 0, 0, 0), 5, 12)), inserts)
         assertEquals(
             listOf(
                 UnifiedDeleteSegment(TableCellContentIndex(0, 0, 0, 0, 0), 0, 5, "alpha"),
-                UnifiedDeleteSegment(TableCellContentIndex(0, 0, 0, 0, 1), 5, 10, "gamma"),
+                UnifiedDeleteSegment(TableCellContentIndex(0, 0, 0, 0, 0), 5, 10, "gamma"),
             ),
             deletes,
         )

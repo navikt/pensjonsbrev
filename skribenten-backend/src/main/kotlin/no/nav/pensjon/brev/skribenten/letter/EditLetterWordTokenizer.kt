@@ -65,7 +65,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
         private val producer: DiffProducer<*>,
     ) {
         fun parse() =
-            cursor.forEachIndexed<Token.BlockContent> { insertPos, deletePos, entry ->
+            cursor.forEachIndexedStable<Token.BlockContent> { insertPos, deletePos, entry ->
                 val insertContentIndex = insertIndex.withContentIndex(insertPos)
                 val deleteContentIndex = deleteIndex.withContentIndex(deletePos)
 
@@ -151,7 +151,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
             )
 
         private fun consumeTextOnlyContent(makeInsertIndex: (Int) -> ContentIndex, makeDeleteIndex: (Int) -> ContentIndex) =
-            cursor.forEachIndexed<Token.TextContent> { insertContentIndex, deleteContentIndex, entry ->
+            cursor.forEachIndexedStable<Token.TextContent> { insertContentIndex, deleteContentIndex, entry ->
                 when (entry.token) {
                     is Token.Text -> consumeText(makeInsertIndex(insertContentIndex), makeDeleteIndex(deleteContentIndex))
                     is Token.NewLine -> {}
