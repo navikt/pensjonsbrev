@@ -13,7 +13,7 @@ class HentBrevInfoHandlerTest : BrevredigeringHandlerTestBase() {
 
         val hentet = hentBrevInfo(opprettet.info.id)
 
-        assertThat(hentet?.asSuccess()).isEqualTo(opprettet.info)
+        assertThat(hentet?.asSuccess()?.value).isEqualTo(opprettet.info)
     }
 
     @Test

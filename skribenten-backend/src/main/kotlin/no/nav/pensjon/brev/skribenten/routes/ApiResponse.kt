@@ -85,7 +85,17 @@ suspend inline fun <T> RoutingContext.respondOutcome(
     when (outcome) {
         is Outcome.Success -> call.successResponse(outcome.value)
         is Outcome.Failure -> throw IllegalArgumentException("Outcome.Failure should not be used with BrevredigeringError = Nothing")
-        null -> call.respond(HttpStatusCode.NotFound, "Fant ikke respons")
+        null -> call.respond(HttpStatusCode.NotFound)
+    }
+}
+
+suspend inline fun <T> RoutingContext.respondSuccess(
+    outcome: Outcome.Success<T>?,
+    successResponse: suspend RoutingCall.(T) -> Unit,
+) {
+    when (outcome) {
+        is Outcome.Success -> call.successResponse(outcome.value)
+        null -> call.respond(HttpStatusCode.NotFound)
     }
 }
 

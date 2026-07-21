@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBr
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.ReserverBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.TilbakestillBrevHandler
+import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
@@ -29,7 +30,7 @@ fun Route.brev() {
         get("/info") {
             val brevId = call.parameters.brevId()
             val hentBrevInfo = hentBrevInfo(HentBrevInfoHandler.Request(brevId))
-            respondOutcome(hentBrevInfo) { respond(HttpStatusCode.OK, dto2ApiService.toApi(it)) }
+            respondSuccess(hentBrevInfo?.asSuccess()) { respond(HttpStatusCode.OK, dto2ApiService.toApi(it)) }
         }
 
         val oppdaterBrev: OppdaterBrevHandler by app.dependencies
