@@ -148,7 +148,7 @@ fun Route.sakBrev() =
                         HentRedigerbareVedleggHandler.Request(brevId = brevId)
                     )
 
-                    respondOutcome(dto2ApiService, result) { respond(it) }
+                    respondOutcome(result) { respond(it) }
                 }
                 route("{vedleggId}") {
                     val hentRedigertVedlegg: HentRedigertVedleggHandler by app.dependencies
@@ -301,7 +301,7 @@ fun Route.sakBrev() =
                     val sak: Fagsak = call.attributes[SakKey]
 
                     val result = hentP1Data(HentP1DataHandler.Request(brevId = brevId, saksId = sak.saksId))
-                    respondOutcome(dto2ApiService, result) { respond(it) }
+                    respondOutcome(result) { respond(it) }
                 }
 
                 val lagreP1Data: LagreP1DataHandler by app.dependencies
@@ -310,7 +310,7 @@ fun Route.sakBrev() =
                     val sak: Fagsak = call.attributes[SakKey]
 
                     val result = lagreP1Data(LagreP1DataHandler.Request(brevId = brevId, saksId = sak.saksId, p1Data = p1Data))
-                    respondOutcome(dto2ApiService, result) { respond(it) }
+                    respondOutcome(result) { respond(it) }
                 }
             }
 
@@ -322,7 +322,7 @@ fun Route.sakBrev() =
                     HentAlltidValgbareVedleggHandler.Request(brevId = brevId)
                 )
 
-                respondOutcome(dto2ApiService, result) { respond(it) }
+                respondOutcome(result) { respond(it) }
             }
         }
     }
