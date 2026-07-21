@@ -15,7 +15,6 @@ import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.IOException
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput

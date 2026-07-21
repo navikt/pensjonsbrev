@@ -7,6 +7,7 @@ import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.render.Letter2MarkupV2
+import no.nav.brev.brevbaker.template.render.toMarkup
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.brev.brevbaker.markup.dsl.letterPDFRequest

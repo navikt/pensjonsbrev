@@ -233,7 +233,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         }
 
     private fun renderTextContent(context: RenderContext, element: Element.OutlineContent.ParagraphContent.Text<*>): List<Text> {
-        val fontType = renderFontType(element.fontType)
+        val fontType = element.fontType.toMarkup()
         return when (element) {
             is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage -> element.expr(context.scope.language).toContent(context, fontType)
             is Element.OutlineContent.ParagraphContent.Text.Expression -> element.expression.toContent(context, fontType)
@@ -247,13 +247,6 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             render(context, elements) { inner, text ->
                 addAll(renderTextContent(inner, text))
             }
-        }
-
-    private fun renderFontType(fontType: Element.OutlineContent.ParagraphContent.Text.FontType): FontType =
-        when (fontType) {
-            Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN -> FontType.PLAIN
-            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD -> FontType.BOLD
-            Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC -> FontType.ITALIC
         }
 
     @OptIn(BrevbakerDSLInternal::class)

@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.render.Letter2MarkupV2
+import no.nav.brev.brevbaker.template.render.toMarkup
 import no.nav.pensjon.brev.template.expression.SelectorUsage
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup

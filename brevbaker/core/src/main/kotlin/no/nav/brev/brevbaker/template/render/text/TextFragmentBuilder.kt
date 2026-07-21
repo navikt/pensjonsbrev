@@ -12,9 +12,8 @@ import no.nav.pensjon.brev.template.UnaryOperation
 import java.util.Objects
 
 /**
- * Regner ut tekstbitene ([TextFragment]) for ett enkelt [ParagraphContent.Text]-element, inkludert
- * sammenslåing av nabo-literaler. Dette er ren logikk uten avhengighet til DSL-byggeren –
- * skrivingen til DSL-en skjer i `appendText` (se TextEmitter).
+ * Rendrer til text fragmenter ([TextFragment]) for ett enkelt [ParagraphContent.Text]-element, inkludert
+ * sammenslåing av nabo-literaler.
  */
 internal fun textFragmentsOf(context: RenderContext, element: ParagraphContent.Text<*>): List<TextFragment> {
     val fontType = element.fontType.toMarkupFontType()
@@ -55,10 +54,6 @@ private fun Expression<String>.literalFragment(context: RenderContext, fontType:
 private fun Expression<String>.variableFragment(context: RenderContext, fontType: FontType, text: String = eval(context.scope)): List<TextFragment> =
     listOf(TextFragment.Variable(context.stableHash(this), text, fontType))
 
-/**
- * Slår sammen påfølgende literaler til én. Tagget tekst (fritekst/redigerbar data) slås aldri
- * sammen, siden taggene skal bevares som egne biter.
- */
 private fun List<TextFragment>.mergeAdjacentLiterals(fontType: FontType): List<TextFragment> =
     fold(emptyList()) { acc, current ->
         val previous = acc.lastOrNull()

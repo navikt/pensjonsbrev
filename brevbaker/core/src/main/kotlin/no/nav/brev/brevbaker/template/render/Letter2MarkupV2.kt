@@ -31,7 +31,6 @@ import no.nav.brev.brevbaker.markup.dsl.title1
 import no.nav.brev.brevbaker.markup.dsl.title2
 import no.nav.brev.brevbaker.markup.dsl.title3
 import no.nav.brev.brevbaker.markup.dsl.title4
-import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Text
 import no.nav.brev.brevbaker.template.render.text.appendText
 import no.nav.pensjon.brev.template.*
@@ -44,11 +43,6 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 
 data class LetterWithAttachmentsMarkupV2(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
 
-/**
- * Renderer som bygger [LetterMarkup] (fra `brevbaker/markup`) via modulens utvidede DSL i funksjonell
- * stil. Modulen genererer aldri id-er; renderen regner ut hver id (via [RenderContext]/[StableHash])
- * og sender den eksplisitt inn i hvert DSL-kall.
- */
 @OptIn(InterneDataklasser::class)
 internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>() {
     private val languageSettings = documentLanguageSettings
@@ -66,10 +60,6 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
             build = buildLetter(scope, template),
         )
 
-    /**
-     * Byggeblokken for hovedbrevet, delt slik at både [renderLetterOnly] (via [letterMarkupExtended])
-     * og data-usage-varianten (via [letterMarkupWithDataUsageExtended]) bruker samme innhold.
-     */
     internal fun buildLetter(
         scope: ExpressionScope<*>,
         template: LetterTemplate<*, *>,
@@ -234,7 +224,7 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
                     column(
                         id = context.stableHash(columnSpec),
                         headerContentId = context.stableHash(columnSpec.headerContent),
-                        alignment = mapAlignment(columnSpec.alignment),
+                        alignment = columnSpec.alignment.toMarkup(),
                         span = columnSpec.columnSpan,
                     ) { appendTexts(context, columnSpec.headerContent.text) }
                 }
@@ -248,7 +238,7 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
     }
 
     private fun OutlineBuilder<ExtendedContentBuilder>.renderFormText(context: RenderContext, element: ParagraphContent.Form.Text<*>) {
-        formText(context.stableHash(element), mapFormSize(element.size), element.vspace) {
+        formText(context.stableHash(element), element.size.toMarkup(), element.vspace) {
             appendTexts(context, listOf(element.prompt))
         }
     }
@@ -270,17 +260,4 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
         render(context, elements) { inner, text -> appendText(inner, text) }
     }
 
-    private fun mapFormSize(size: ParagraphContent.Form.Text.Size): Block.FormText.Size =
-        when (size) {
-            ParagraphContent.Form.Text.Size.NONE -> Block.FormText.Size.NONE
-            ParagraphContent.Form.Text.Size.SHORT -> Block.FormText.Size.SHORT
-            ParagraphContent.Form.Text.Size.LONG -> Block.FormText.Size.LONG
-            ParagraphContent.Form.Text.Size.FILL -> Block.FormText.Size.FILL
-        }
-
-    private fun mapAlignment(alignment: ParagraphContent.Table.ColumnAlignment): Block.Table.ColumnAlignment =
-        when (alignment) {
-            ParagraphContent.Table.ColumnAlignment.LEFT -> Block.Table.ColumnAlignment.LEFT
-            ParagraphContent.Table.ColumnAlignment.RIGHT -> Block.Table.ColumnAlignment.RIGHT
-        }
 }
