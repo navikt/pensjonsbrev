@@ -533,6 +533,14 @@ export interface paths {
                         "application/json": components["schemas"]["ApiBrevInfo"][];
                     };
                 };
+              404: {
+                headers: {
+                  [name: string]: unknown;
+                };
+                content: {
+                  "application/json": string;
+                };
+              };
             };
         };
         put?: never;
