@@ -47,6 +47,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
   const hentPdfQuery = useQuery({
     queryKey: hentPdfForBrev.queryKey(props.brev.info.id),
     queryFn: () => hentPdfForBrev.queryFn(props.saksId, props.brev.info.id),
+    refetchOnWindowFocus: false,
   });
   const sendDisabled = !hentPdfQuery.isSuccess || hentPdfQuery.data === null;
 
@@ -88,7 +89,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
               disabled={sendDisabled}
               icon={<ArrowRightIcon />}
               iconPosition="right"
-              loading={hentPdfQuery.isFetching}
+              loading={hentPdfQuery.isPending}
               onClick={() => setVilSendeBrev(true)}
               size="small"
               type="button"
