@@ -42,10 +42,12 @@ kotlin {
     target.compilations.getByName("test").associateWith(apiInternalCompilation)
 }
 
-// Expose the compiled `apiInternal` classes as a consumable configuration so sibling modules (core)
-// can build the renderer against markup's internal-API layer WITHOUT publishing those seams. The
-// `main` classes/deps are consumed through the normal project dependency; this only adds the
-// apiInternal jar on top.
+// Hand off `apiInternal`'s compiled classes to `core` across the project boundary.
+//
+// `apiInternal` sees `main`'s internals via friend compilation (`associateWith`), which is
+// project-local; `core` just needs the resulting classes. A normal project dependency only delivers
+// `main`, so we expose `apiInternal`'s output as a separate jar/consumable configuration that is
+// never published, keeping these internal seams out of the published artifact entirely.
 val apiInternalJar = tasks.register<Jar>("apiInternalJar") {
     archiveClassifier.set("api-internal")
     from(sourceSets["apiInternal"].output)

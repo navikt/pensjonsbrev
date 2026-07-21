@@ -75,6 +75,7 @@ If the agent finds itself about to write to one of these, stop and change the up
 - `brevbaker/dsl` - Template DSL library
 - `brevbaker/core` - Rendering engine
 - `brevbaker/api-model-common` - Shared API models (published artifact)
+- `brevbaker/markup` - Markup model & DSL (published artifact)
 
 ### Critical Build Commands
 ```bash
@@ -85,6 +86,8 @@ If the agent finds itself about to write to one of these, stop and change the up
 ```
 
 **Binary compatibility validation** (Kotlin Gradle plugin's built-in `abiValidation`): Public API changes in `brevbaker:api-model-common`, `brevbaker:dsl`, `brevbaker:core` require running `./gradlew updateKotlinAbi` to update `.api` files or build fails (`checkKotlinAbi` runs as part of `check`).
+
+**Published-artifact version bumps**: `brevbaker:api-model-common` (`brevbaker/api-model-common/gradle.properties`) and `brevbaker:markup` (`brevbaker/markup/gradle.properties`) are published artifacts. Bump their `version` whenever their public API/model changes so consumers resolve the new release.
 
 ## Code Generation (KSP)
 
