@@ -49,8 +49,8 @@ class GenererFoerstesideHandler(
                 brukerType = Bruker.BrukerType.PERSON
             ),
             tema = request.tema,
-            avsender = null, // TODO: finn ut om vi skal sende med noko her
-            behandlingstema = null, // TODO: finn ut om vi treng å setje denne
+            avsender = null,
+            behandlingstema = null,
             arkivtittel = tittel,
             vedleggsliste = request.vedlegg.map { it.tittel },
             overskriftstittel = tittel,
