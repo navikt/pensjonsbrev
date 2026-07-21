@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceHttp
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevForAlleSakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.AttesterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreDistribusjonstypeHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreMottakerHandler
@@ -128,7 +129,7 @@ fun Application.configureDependencies() {
         provide(FrigiReservasjonHandler::class)
         provide(HentAlltidValgbareVedleggHandler::class)
         provide(HentBrevAttesteringHandler::class)
-        provide(HentBrevForAlleSakerHandler::class)
+        provide<HentBrevForAlleSakerService>(HentBrevForAlleSakerHandler::class)
         provide(HentBrevForSakHandler::class)
         provide(HentBrevHandler::class)
         provide(HentBrevInfoHandler::class)
