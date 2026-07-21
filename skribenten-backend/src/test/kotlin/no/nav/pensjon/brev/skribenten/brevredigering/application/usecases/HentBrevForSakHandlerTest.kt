@@ -17,7 +17,7 @@ class HentBrevForSakHandlerTest : BrevredigeringHandlerTestBase() {
 
         val ikkeForventetBrev = opprettBrev(sak = annenSak).resultOrFail().info
 
-        val resultat = hentBrevForSak(sak1.saksId).asSuccess().toSet()
+        val resultat = hentBrevForSak(sak1.saksId)?.asSuccess()?.toSet() ?: emptySet()
 
         assertThat(resultat).containsAll(forventedeBrev)
         assertThat(resultat).doesNotContain(ikkeForventetBrev)

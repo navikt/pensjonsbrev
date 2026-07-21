@@ -27,7 +27,7 @@ class ExternalAPIService(
 ) {
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, hentBrevForAlleSaker: HentBrevForAlleSakerHandler, brevmalService: BrevmalService, opprettBrevHandler: OpprettBrevHandler) :
+    constructor(config: SkribentenConfig, hentBrevForAlleSaker: HentBrevForAlleSakerService, brevmalService: BrevmalService, opprettBrevHandler: OpprettBrevHandler) :
             this(config.services.externalApi, hentBrevForAlleSaker, brevmalService, opprettBrevHandler)
 
     private val skribentenWebUrl = config.skribentenWebUrl
