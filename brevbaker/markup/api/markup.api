@@ -26,52 +26,6 @@ public final class no/nav/brev/brevbaker/markup/Attachment$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/Brevtype : java/lang/Enum {
-	public static final field INFORMASJONSBREV Lno/nav/brev/brevbaker/markup/Brevtype;
-	public static final field VEDTAKSBREV Lno/nav/brev/brevbaker/markup/Brevtype;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Brevtype;
-	public static fun values ()[Lno/nav/brev/brevbaker/markup/Brevtype;
-}
-
-public final class no/nav/brev/brevbaker/markup/Foedselsnummer {
-	public static final field Companion Lno/nav/brev/brevbaker/markup/Foedselsnummer$Companion;
-	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Foedselsnummer;
-	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
-	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
-	public final fun getValue ()Ljava/lang/String;
-	public fun hashCode ()I
-	public static fun hashCode-impl (Ljava/lang/String;)I
-	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()Ljava/lang/String;
-}
-
-public final synthetic class no/nav/brev/brevbaker/markup/Foedselsnummer$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/Foedselsnummer$$serializer;
-	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public final fun deserialize-m9mUgTo (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/String;
-	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public final fun serialize-99ou5kc (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
-}
-
-public final class no/nav/brev/brevbaker/markup/Foedselsnummer$Companion {
-	public final fun serializer ()Lkotlinx/serialization/KSerializer;
-}
-
-public final class no/nav/brev/brevbaker/markup/LanguageCode : java/lang/Enum {
-	public static final field BOKMAL Lno/nav/brev/brevbaker/markup/LanguageCode;
-	public static final field ENGLISH Lno/nav/brev/brevbaker/markup/LanguageCode;
-	public static final field NYNORSK Lno/nav/brev/brevbaker/markup/LanguageCode;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/LanguageCode;
-	public static fun values ()[Lno/nav/brev/brevbaker/markup/LanguageCode;
-}
-
 public final class no/nav/brev/brevbaker/markup/LetterMarkup {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/LetterMarkup$Companion;
 	public static final field VERSION I
@@ -110,14 +64,14 @@ public final class no/nav/brev/brevbaker/markup/LetterPDFRequest {
 	public final fun component1 ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Ljava/util/List;
-	public final fun component4 ()Lno/nav/brev/brevbaker/markup/LanguageCode;
-	public final fun component5 ()Lno/nav/brev/brevbaker/markup/Brevtype;
+	public final fun component4 ()Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+	public final fun component5 ()Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttachments ()Ljava/util/List;
-	public final fun getBrevtype ()Lno/nav/brev/brevbaker/markup/Brevtype;
-	public final fun getLanguage ()Lno/nav/brev/brevbaker/markup/LanguageCode;
+	public final fun getBrevtype ()Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
 	public final fun getLetterMarkup ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
 	public final fun getPdfVedlegg ()Ljava/util/List;
+	public final fun getSpraak ()Lno/nav/brev/brevbaker/markup/Markup$Spraak;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -140,6 +94,85 @@ public final class no/nav/brev/brevbaker/markup/LetterPDFRequest$Companion {
 public final class no/nav/brev/brevbaker/markup/LetterPDFRequestKt {
 	public static final fun decodeLetterPDFRequest (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/LetterPDFRequest;
 	public static final fun toJson (Lno/nav/brev/brevbaker/markup/LetterPDFRequest;)Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/Markup {
+	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/Markup;
+}
+
+public final class no/nav/brev/brevbaker/markup/Markup$Brevtype : java/lang/Enum {
+	public static final field INFORMASJONSBREV Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
+	public static final field VEDTAKSBREV Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
+	public static fun values ()[Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
+}
+
+public final class no/nav/brev/brevbaker/markup/Markup$Personidentifikator {
+	public static final field Companion Lno/nav/brev/brevbaker/markup/Markup$Personidentifikator$Companion;
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Markup$Personidentifikator;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final synthetic class no/nav/brev/brevbaker/markup/Markup$Personidentifikator$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/Markup$Personidentifikator$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize-yEpnewg (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/String;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize-eEnRS8c (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class no/nav/brev/brevbaker/markup/Markup$Personidentifikator$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class no/nav/brev/brevbaker/markup/Markup$Saksnummer {
+	public static final field Companion Lno/nav/brev/brevbaker/markup/Markup$Saksnummer$Companion;
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Markup$Saksnummer;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final synthetic class no/nav/brev/brevbaker/markup/Markup$Saksnummer$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/Markup$Saksnummer$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun deserialize-0-xLLX8 (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/String;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public final fun serialize-4O_7BYw (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class no/nav/brev/brevbaker/markup/Markup$Saksnummer$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class no/nav/brev/brevbaker/markup/Markup$Spraak : java/lang/Enum {
+	public static final field BOKMAL Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+	public static final field ENGLISH Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+	public static final field NYNORSK Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+	public static fun values ()[Lno/nav/brev/brevbaker/markup/Markup$Spraak;
 }
 
 public final class no/nav/brev/brevbaker/markup/PDFTittel {
@@ -195,16 +228,16 @@ public final class no/nav/brev/brevbaker/markup/SaksbehandlerSignatur$Companion 
 public final class no/nav/brev/brevbaker/markup/Saksinformasjon {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/Saksinformasjon$Companion;
 	public final fun component1 ()Ljava/lang/String;
-	public final fun component2-_YqcrU0 ()Ljava/lang/String;
+	public final fun component2-YJ9aDXQ ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
-	public final fun component4--Ypr1GQ ()Ljava/lang/String;
+	public final fun component4-Bu5HaUw ()Ljava/lang/String;
 	public final fun component5 ()Ljava/time/LocalDate;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAnnenMottakerNavn ()Ljava/lang/String;
 	public final fun getDokumentDato ()Ljava/time/LocalDate;
-	public final fun getGjelderFoedselsnummer-_YqcrU0 ()Ljava/lang/String;
 	public final fun getGjelderNavn ()Ljava/lang/String;
-	public final fun getSaksnummer--Ypr1GQ ()Ljava/lang/String;
+	public final fun getGjelderPersonidentifikator-YJ9aDXQ ()Ljava/lang/String;
+	public final fun getSaksnummer-Bu5HaUw ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -221,35 +254,6 @@ public final synthetic class no/nav/brev/brevbaker/markup/Saksinformasjon$$seria
 }
 
 public final class no/nav/brev/brevbaker/markup/Saksinformasjon$Companion {
-	public final fun serializer ()Lkotlinx/serialization/KSerializer;
-}
-
-public final class no/nav/brev/brevbaker/markup/Saksnummer {
-	public static final field Companion Lno/nav/brev/brevbaker/markup/Saksnummer$Companion;
-	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Saksnummer;
-	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
-	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
-	public final fun getSaksnummer ()Ljava/lang/String;
-	public fun hashCode ()I
-	public static fun hashCode-impl (Ljava/lang/String;)I
-	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()Ljava/lang/String;
-}
-
-public final synthetic class no/nav/brev/brevbaker/markup/Saksnummer$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
-	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/Saksnummer$$serializer;
-	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
-	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
-	public final fun deserialize-Mkgg28E (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/String;
-	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
-	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
-	public final fun serialize-c_N3Fbs (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/String;)V
-	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
-}
-
-public final class no/nav/brev/brevbaker/markup/Saksnummer$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
@@ -323,8 +327,8 @@ public final class no/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilderKt {
 }
 
 public final class no/nav/brev/brevbaker/markup/dsl/LetterPDFRequestDslKt {
-	public static final fun letterPDFRequest (Lno/nav/brev/brevbaker/markup/LanguageCode;Lno/nav/brev/brevbaker/markup/Brevtype;Lno/nav/brev/brevbaker/markup/LetterMarkup;Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterPDFRequest;
-	public static synthetic fun letterPDFRequest$default (Lno/nav/brev/brevbaker/markup/LanguageCode;Lno/nav/brev/brevbaker/markup/Brevtype;Lno/nav/brev/brevbaker/markup/LetterMarkup;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterPDFRequest;
+	public static final fun letterPDFRequest (Lno/nav/brev/brevbaker/markup/Markup$Spraak;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;Lno/nav/brev/brevbaker/markup/LetterMarkup;Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/LetterPDFRequest;
+	public static synthetic fun letterPDFRequest$default (Lno/nav/brev/brevbaker/markup/Markup$Spraak;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;Lno/nav/brev/brevbaker/markup/LetterMarkup;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterPDFRequest;
 }
 
 public abstract interface annotation class no/nav/brev/brevbaker/markup/dsl/MarkupDsl : java/lang/annotation/Annotation {

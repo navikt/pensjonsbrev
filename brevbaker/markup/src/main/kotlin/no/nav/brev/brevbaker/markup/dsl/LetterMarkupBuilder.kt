@@ -1,12 +1,11 @@
 package no.nav.brev.brevbaker.markup.dsl
 
 import no.nav.brev.brevbaker.markup.Attachment
-import no.nav.brev.brevbaker.markup.Foedselsnummer
 import no.nav.brev.brevbaker.markup.LetterMarkup
+import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.PDFTittel
 import no.nav.brev.brevbaker.markup.SaksbehandlerSignatur
 import no.nav.brev.brevbaker.markup.Saksinformasjon
-import no.nav.brev.brevbaker.markup.Saksnummer
 import no.nav.brev.brevbaker.markup.Signatur
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Text
@@ -21,7 +20,7 @@ import kotlin.jvm.JvmName
  *
  * ```
  * val brev = letterMarkup(
- *     saksinformasjon = saksinformasjon(gjelderNavn = "Ola", gjelderFoedselsnummer = "12345678901",
+ *     saksinformasjon = saksinformasjon(gjelderNavn = "Ola", gjelderPersonidentifikator = "12345678901",
  *         saksnummer = "9876543", dokumentDato = LocalDate.now()),
  *     signatur = signatur(hilsenTekst = "Med vennlig hilsen", navAvsenderEnhet = "Nav"),
  * ) {
@@ -41,21 +40,21 @@ fun letterMarkup(
  * Bygg [Saksinformasjon] (saksinformasjon og mottaker) for et brev.
  *
  * ```
- * saksinformasjon(gjelderNavn = "Ola Nordmann", gjelderFoedselsnummer = "12345678901",
+ * saksinformasjon(gjelderNavn = "Ola Nordmann", gjelderPersonidentifikator = "12345678901",
  *     saksnummer = "9876543", dokumentDato = LocalDate.now())
  * ```
  */
 fun saksinformasjon(
     gjelderNavn: String,
-    gjelderFoedselsnummer: String,
+    gjelderPersonidentifikator: String,
     saksnummer: String,
     dokumentDato: LocalDate,
     annenMottakerNavn: String? = null,
 ): Saksinformasjon = Saksinformasjon(
     gjelderNavn = gjelderNavn,
-    gjelderFoedselsnummer = Foedselsnummer(gjelderFoedselsnummer),
+    gjelderPersonidentifikator = Markup.Personidentifikator(gjelderPersonidentifikator),
     annenMottakerNavn = annenMottakerNavn,
-    saksnummer = Saksnummer(saksnummer),
+    saksnummer = Markup.Saksnummer(saksnummer),
     dokumentDato = dokumentDato,
 )
 

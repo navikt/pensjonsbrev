@@ -66,7 +66,7 @@ internal class BrevbakerPDF(
         renderCompleteMarkupV2(letter, redigertBrev, redigerteVedlegg).let { markup ->
             pdfByggerService.producePDFV2(
                 letterPDFRequest(
-                    language = letter.language.toCode().toMarkup(),
+                    spraak = letter.language.toCode().toMarkup(),
                     brevtype = letter.template.letterMetadata.brevtype.toMarkup(),
                     letter = markup.letterMarkup
                 ) {

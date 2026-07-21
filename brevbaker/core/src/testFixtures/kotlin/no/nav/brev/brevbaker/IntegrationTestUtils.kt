@@ -116,7 +116,7 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDFV2(
             runBlocking {
                 pdfBygger.producePDFV2(
                     letterPDFRequest(
-                        language = language.toCode().toMarkup(),
+                        spraak = language.toCode().toMarkup(),
                         brevtype = template.letterMetadata.brevtype.toMarkup(),
                         letter = rendered.letterMarkup,
                     ) {

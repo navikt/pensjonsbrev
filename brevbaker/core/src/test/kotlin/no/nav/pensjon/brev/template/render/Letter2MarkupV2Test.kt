@@ -236,6 +236,7 @@ class Letter2MarkupV2Test {
             paragraph {
                 formChoice({ text(bokmal { +"velg" }) }) {
                     choice(bokmal { +"a" })
+                    choice(bokmal { +"b" })
                 }
                 text(bokmal { +"after" })
             }
@@ -245,6 +246,7 @@ class Letter2MarkupV2Test {
             formChoice {
                 prompt { literal("velg") }
                 choice { literal("a") }
+                choice { literal("b") }
             }
             paragraph { literal("after") }
         }

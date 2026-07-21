@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker.markup
 
+import kotlinx.serialization.json.Json
 import no.nav.brev.brevbaker.markup.dsl.*
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
@@ -18,7 +19,7 @@ class LetterMarkupDslTest {
         val letter = letterMarkup(
             saksinformasjon = saksinformasjon(
                 gjelderNavn = "Ola Nordmann",
-                gjelderFoedselsnummer = "12345678901",
+                gjelderPersonidentifikator = "12345678901",
                 saksnummer = "9876543",
                 dokumentDato = LocalDate.of(2026, 7, 9),
             ),
@@ -105,12 +106,12 @@ class LetterMarkupDslTest {
     @Test
     fun `letterPDFRequest builds and round-trips through json`() {
         val request = letterPDFRequest(
-            language = LanguageCode.BOKMAL,
-            brevtype = Brevtype.VEDTAKSBREV,
+            spraak = Markup.Spraak.BOKMAL,
+            brevtype = Markup.Brevtype.VEDTAKSBREV,
             letter = letterMarkup(
                 saksinformasjon = saksinformasjon(
                     gjelderNavn = "Ola Nordmann",
-                    gjelderFoedselsnummer = "12345678901",
+                    gjelderPersonidentifikator = "12345678901",
                     saksnummer = "9876543",
                     dokumentDato = LocalDate.of(2026, 7, 9),
                 ),
@@ -134,13 +135,13 @@ class LetterMarkupDslTest {
             pdfVedlegg { text("Ekstra PDF-vedlegg") }
         }
 
-        assertEquals(LanguageCode.BOKMAL, request.language)
-        assertEquals(Brevtype.VEDTAKSBREV, request.brevtype)
+        assertEquals(Markup.Spraak.BOKMAL, request.spraak)
+        assertEquals(Markup.Brevtype.VEDTAKSBREV, request.brevtype)
         assertEquals("Vedtak", (request.letterMarkup.title1.single() as Text.Literal).text)
         assertEquals(1, request.attachments.size)
         assertEquals("Ekstra PDF-vedlegg", (request.pdfVedlegg.single().title1.single() as Text.Literal).text)
 
-        val decoded = decodeLetterPDFRequest(request.toJson())
+        val decoded = Json.decodeFromString(LetterPDFRequest.serializer(), Json.encodeToString(LetterPDFRequest.serializer(), request))
         assertEquals(request, decoded)
     }
 
@@ -149,7 +150,7 @@ class LetterMarkupDslTest {
         val letter = letterMarkup(
             saksinformasjon = saksinformasjon(
                 gjelderNavn = "Ola Nordmann",
-                gjelderFoedselsnummer = "12345678901",
+                gjelderPersonidentifikator = "12345678901",
                 saksnummer = "9876543",
                 dokumentDato = LocalDate.of(2026, 7, 9),
             ),
@@ -162,8 +163,8 @@ class LetterMarkupDslTest {
         val tittel = pdfTittel { text("Tittel") }
 
         val request = letterPDFRequest(
-            language = LanguageCode.NYNORSK,
-            brevtype = Brevtype.INFORMASJONSBREV,
+            spraak = Markup.Spraak.NYNORSK,
+            brevtype = Markup.Brevtype.INFORMASJONSBREV,
             letter = letter,
         ) {
             attachment(vedlegg)

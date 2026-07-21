@@ -7,6 +7,7 @@ import no.nav.brev.brevbaker.markup.LetterMarkup
 import no.nav.brev.brevbaker.markup.PDFTittel
 import no.nav.brev.brevbaker.markup.dsl.ExtendedContentBuilder
 import no.nav.brev.brevbaker.markup.dsl.OutlineBuilder
+import no.nav.brev.brevbaker.markup.dsl.PlainExtendedTextBuilder
 import no.nav.brev.brevbaker.markup.dsl.attachmentExtended
 import no.nav.brev.brevbaker.markup.dsl.cell
 import no.nav.brev.brevbaker.markup.dsl.choice
@@ -83,7 +84,7 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
     internal fun buildSaksinformasjon(scope: ExpressionScope<*>) =
         saksinformasjon(
             gjelderNavn = scope.felles.bruker.fulltNavn(),
-            gjelderFoedselsnummer = scope.felles.bruker.foedselsnummer.value,
+            gjelderPersonidentifikator = scope.felles.bruker.foedselsnummer.value,
             saksnummer = scope.felles.saksnummer,
             dokumentDato = scope.felles.dokumentDato,
             annenMottakerNavn = scope.felles.annenMottakerNavn,
@@ -262,6 +263,10 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
     }
 
     private fun ExtendedContentBuilder.appendTexts(context: RenderContext, elements: List<TextElement<*>>) {
+        render(context, elements) { inner, text -> appendText(inner, text) }
+    }
+
+    private fun PlainExtendedTextBuilder.appendTexts(context: RenderContext, elements: List<TextElement<*>>) {
         render(context, elements) { inner, text -> appendText(inner, text) }
     }
 

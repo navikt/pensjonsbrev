@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker.markup
 
+import kotlinx.serialization.json.Json
 import no.nav.brev.brevbaker.markup.outline.ElementTags
 import no.nav.brev.brevbaker.markup.outline.ElementTags.FRITEKST
 import no.nav.brev.brevbaker.markup.dsl.*
@@ -21,7 +22,7 @@ class LetterMarkupExtendedDslTest {
         return letterMarkupExtended(
             saksinformasjon = saksinformasjon(
                 gjelderNavn = "Ola Nordmann",
-                gjelderFoedselsnummer = "12345678901",
+                gjelderPersonidentifikator = "12345678901",
                 saksnummer = "9876543",
                 dokumentDato = LocalDate.of(2026, 7, 9),
                 annenMottakerNavn = "Kari Nordmann",
@@ -81,8 +82,8 @@ class LetterMarkupExtendedDslTest {
 
         assertEquals(2, letter.version)
         assertEquals("Ola Nordmann", letter.saksinformasjon.gjelderNavn)
-        assertEquals("12345678901", letter.saksinformasjon.gjelderFoedselsnummer.value)
-        assertEquals("9876543", letter.saksinformasjon.saksnummer.saksnummer)
+        assertEquals("12345678901", letter.saksinformasjon.gjelderPersonidentifikator.value)
+        assertEquals("9876543", letter.saksinformasjon.saksnummer.value)
 
         val blockClasses = letter.blocks.map { it::class }
         assertTrue(
@@ -127,7 +128,7 @@ class LetterMarkupExtendedDslTest {
         val letter = letterMarkupExtended(
             saksinformasjon = saksinformasjon(
                 gjelderNavn = "Ola Nordmann",
-                gjelderFoedselsnummer = "12345678901",
+                gjelderPersonidentifikator = "12345678901",
                 saksnummer = "9876543",
                 dokumentDato = LocalDate.of(2026, 7, 9),
             ),
@@ -244,7 +245,7 @@ class LetterMarkupExtendedDslTest {
             markup = letterMarkup(
                 saksinformasjon = saksinformasjon(
                     gjelderNavn = "Ola Nordmann",
-                    gjelderFoedselsnummer = "12345678901",
+                    gjelderPersonidentifikator = "12345678901",
                     saksnummer = "9876543",
                     dokumentDato = LocalDate.of(2026, 7, 9),
                 ),
@@ -258,11 +259,11 @@ class LetterMarkupExtendedDslTest {
                     paragraph("Innhold")
                 }
             },
-            brevtype = Brevtype.VEDTAKSBREV,
+            brevtype = Markup.Brevtype.VEDTAKSBREV,
             letterDataUsage = setOf(property),
         )
 
-        assertEquals(Brevtype.VEDTAKSBREV, letter.brevtype)
+        assertEquals(Markup.Brevtype.VEDTAKSBREV, letter.brevtype)
         assertEquals(setOf(property), letter.letterDataUsage)
         assertEquals("Vedtak", (letter.markup.title1.single() as Text.Literal).text)
     }
@@ -277,7 +278,7 @@ class LetterMarkupExtendedDslTest {
             markup = letterMarkupExtended(
                 saksinformasjon = saksinformasjon(
                     gjelderNavn = "Ola Nordmann",
-                    gjelderFoedselsnummer = "12345678901",
+                    gjelderPersonidentifikator = "12345678901",
                     saksnummer = "9876543",
                     dokumentDato = LocalDate.of(2026, 7, 9),
                 ),
@@ -294,14 +295,17 @@ class LetterMarkupExtendedDslTest {
                     }
                 }
             },
-            brevtype = Brevtype.INFORMASJONSBREV,
+            brevtype = Markup.Brevtype.INFORMASJONSBREV,
             letterDataUsage = setOf(property),
         )
 
         val paragraph = letter.markup.blocks.single() as Block.Paragraph
         assertEquals(listOf(Text.Literal::class, Text.Variable::class), paragraph.content.map { it::class })
 
-        val decoded = decodeLetterMarkupWithDataUsage(letter.toJson())
+        val decoded = Json.decodeFromString(
+            LetterMarkupWithDataUsage.serializer(),
+            Json.encodeToString(LetterMarkupWithDataUsage.serializer(), letter),
+        )
         assertEquals(letter, decoded)
     }
 
