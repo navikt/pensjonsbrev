@@ -64,7 +64,7 @@ class ExternalAPIServiceTest {
     )
     private val externalAPIService = ExternalAPIService(
         config = ExternalApiConfig(skribentenWebUrl = skribentenWebUrl),
-        hentBrevForAlleSaker = HentBrevForAlleSakerService { Outcome.success(listOf(brevDto)) },
+        hentBrevForAlleSaker = { Outcome.success(listOf(brevDto)) },
         brevmalService = BrevmalService(
             brevbakerService = FakeBrevbakerService(redigerbareMaler = mutableMapOf(Testbrevkoder.INFORMASJONSBREV to brevmal)),
             penClient = PenClientStub(),

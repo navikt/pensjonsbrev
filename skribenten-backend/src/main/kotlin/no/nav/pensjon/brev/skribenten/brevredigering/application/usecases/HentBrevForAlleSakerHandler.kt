@@ -20,5 +20,7 @@ class HentBrevForAlleSakerHandler(
             .map { it.toBrevInfo(brevreservasjonPolicy) }
     )
 
+    override suspend fun run(request: Request): Outcome<List<Dto.BrevInfo>, Nothing>? = invoke(request)
+
     data class Request(val saksIder: Set<SaksId>)
 }
