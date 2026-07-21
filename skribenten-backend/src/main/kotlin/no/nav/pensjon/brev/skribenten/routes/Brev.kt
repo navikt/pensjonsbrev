@@ -76,7 +76,7 @@ fun Route.brev() {
             val split = call.request.queryParameters["split"]?.toBoolean() ?: false
 
             val result = diffBrev(DiffBrevHandler.Request(brevId, request, split))
-            respondOutcome(dto2ApiService, result) {
+            respondOutcome(result) {
                 respond(HttpStatusCode.OK, it)
             }
         }
