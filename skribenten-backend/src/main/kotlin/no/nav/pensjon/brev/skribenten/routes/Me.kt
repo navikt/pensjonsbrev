@@ -6,15 +6,16 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brev.skribenten.FjernFavorittHandler
+import no.nav.pensjon.brev.skribenten.HentFavoritterHandler
+import no.nav.pensjon.brev.skribenten.LeggTilFavorittHandler
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.principal
-import no.nav.pensjon.brev.skribenten.db.FavouritesRepository
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 
 context(app: Application)
 fun Route.meRoute() {
     val navansattService: NavansattService by app.dependencies
-    val favouritesRepository = FavouritesRepository()
 
     route("/me") {
         get("/userinfo") {
@@ -25,15 +26,25 @@ fun Route.meRoute() {
                 erAttestant = p.isAttestant(),
             ))
         }
+
+        val leggTilFavorittHandler: LeggTilFavorittHandler by app.dependencies
         post("/favourites") {
-            call.respond(favouritesRepository.addFavourite(principal().navIdent, RedigerbarBrevkode(call.receive<String>())))
+            val leggTil = leggTilFavorittHandler(LeggTilFavorittHandler.Request(principal().navIdent, RedigerbarBrevkode(call.receive<String>())))
+            respondOutcome(leggTil) { respond(it) }
         }
+
+        val fjernFavorittHandler: FjernFavorittHandler by app.dependencies
         delete("/favourites") {
-            call.respond(favouritesRepository.removeFavourite(principal().navIdent, RedigerbarBrevkode(call.receive<String>())))
+            val fjern = fjernFavorittHandler(FjernFavorittHandler.Request(principal().navIdent, RedigerbarBrevkode(call.receive<String>())))
+            respondOutcome(fjern) { respond(it) }
         }
+
+        val hentFavoritterHandler: HentFavoritterHandler by app.dependencies
         get("/favourites") {
-            call.respond(favouritesRepository.getFavourites(principal().navIdent))
+            val favoritter = hentFavoritterHandler(HentFavoritterHandler.Request(principal().navIdent))
+            respondOutcome(favoritter) { respond(it) }
         }
+
         get("/enheter") {
             call.respond(navansattService.hentNavAnsattEnhetListe(principal().navIdent))
         }

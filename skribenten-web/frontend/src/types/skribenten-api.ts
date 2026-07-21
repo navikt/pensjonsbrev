@@ -2850,6 +2850,14 @@ export interface paths {
                         "application/json": string[];
                     };
                 };
+              404: {
+                headers: {
+                  [name: string]: unknown;
+                };
+                content: {
+                  "application/json": string;
+                };
+              };
             };
         };
         put?: never;
@@ -2874,6 +2882,14 @@ export interface paths {
                         "application/json": components["schemas"]["Unit"];
                     };
                 };
+              404: {
+                headers: {
+                  [name: string]: unknown;
+                };
+                content: {
+                  "application/json": string;
+                };
+              };
             };
         };
         delete: {
@@ -2897,6 +2913,14 @@ export interface paths {
                         "application/json": components["schemas"]["Unit"];
                     };
                 };
+              404: {
+                headers: {
+                  [name: string]: unknown;
+                };
+                content: {
+                  "application/json": string;
+                };
+              };
             };
         };
         options?: never;
