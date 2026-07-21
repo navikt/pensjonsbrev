@@ -29,7 +29,7 @@ fun Route.brev() {
         get("/info") {
             val brevId = call.parameters.brevId()
             val hentBrevInfo = hentBrevInfo(HentBrevInfoHandler.Request(brevId))
-            respondOutcome(hentBrevInfo) { call.respond(HttpStatusCode.OK, dto2ApiService.toApi(it)) }
+            respondOutcome(hentBrevInfo) { respond(HttpStatusCode.OK, dto2ApiService.toApi(it)) }
         }
 
         val oppdaterBrev: OppdaterBrevHandler by app.dependencies
