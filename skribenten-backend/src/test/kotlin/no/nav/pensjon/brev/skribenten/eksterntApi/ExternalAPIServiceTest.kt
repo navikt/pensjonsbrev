@@ -8,7 +8,6 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.*
-import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevForAlleSakerService
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode

@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
-import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevForAlleSakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -23,4 +22,8 @@ class HentBrevForAlleSakerHandler(
     override suspend fun run(request: Request): Outcome<List<Dto.BrevInfo>, Nothing>? = invoke(request)
 
     data class Request(val saksIder: Set<SaksId>)
+}
+
+fun interface HentBrevForAlleSakerService {
+    suspend fun run(request: HentBrevForAlleSakerHandler.Request): Outcome<List<Dto.BrevInfo>, Nothing>?
 }

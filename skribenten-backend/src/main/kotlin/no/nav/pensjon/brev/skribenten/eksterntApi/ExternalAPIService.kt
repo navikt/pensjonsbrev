@@ -3,9 +3,9 @@ package no.nav.pensjon.brev.skribenten.eksterntApi
 import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
-import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevForAlleSakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.OpprettBrevService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevForAlleSakerHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevForAlleSakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType

@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceHttp
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
-import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevForAlleSakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.AttesterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreDistribusjonstypeHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreMottakerHandler
@@ -33,6 +32,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.FrigiR
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.TilbakestillBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentAlltidValgbareVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevAttesteringHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevForAlleSakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OpprettBrevHandler
