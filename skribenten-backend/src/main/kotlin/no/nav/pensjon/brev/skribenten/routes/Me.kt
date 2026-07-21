@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.FjernFavorittHandler
 import no.nav.pensjon.brev.skribenten.HentFavoritterHandler
 import no.nav.pensjon.brev.skribenten.LeggTilFavorittHandler
+import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.NavansattService
@@ -30,19 +31,19 @@ fun Route.meRoute() {
         val leggTilFavorittHandler: LeggTilFavorittHandler by app.dependencies
         post("/favourites") {
             val leggTil = leggTilFavorittHandler(LeggTilFavorittHandler.Request(principal().navIdent, RedigerbarBrevkode(call.receive<String>())))
-            respondOutcome(leggTil) { respond(it) }
+            respondSuccess(leggTil?.asSuccess()) { respond(it) }
         }
 
         val fjernFavorittHandler: FjernFavorittHandler by app.dependencies
         delete("/favourites") {
             val fjern = fjernFavorittHandler(FjernFavorittHandler.Request(principal().navIdent, RedigerbarBrevkode(call.receive<String>())))
-            respondOutcome(fjern) { respond(it) }
+            respondSuccess(fjern?.asSuccess()) { respond(it) }
         }
 
         val hentFavoritterHandler: HentFavoritterHandler by app.dependencies
         get("/favourites") {
             val favoritter = hentFavoritterHandler(HentFavoritterHandler.Request(principal().navIdent))
-            respondOutcome(favoritter) { respond(it) }
+            respondSuccess(favoritter?.asSuccess()) { respond(it) }
         }
 
         get("/enheter") {

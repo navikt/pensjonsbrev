@@ -146,7 +146,7 @@ fun Route.sakBrev() =
                         HentRedigerbareVedleggHandler.Request(brevId = brevId)
                     )
 
-                    respondOutcome(result) { respond(it) }
+                    respondSuccess(result?.asSuccess()) { respond(it) }
                 }
                 route("{vedleggId}") {
                     val hentRedigertVedlegg: HentRedigertVedleggHandler by app.dependencies
@@ -299,7 +299,7 @@ fun Route.sakBrev() =
                     val sak: Fagsak = call.attributes[SakKey]
 
                     val result = hentP1Data(HentP1DataHandler.Request(brevId = brevId, saksId = sak.saksId))
-                    respondOutcome(result) { respond(it) }
+                    respondSuccess(result?.asSuccess()) { respond(it) }
                 }
 
                 val lagreP1Data: LagreP1DataHandler by app.dependencies
@@ -308,7 +308,7 @@ fun Route.sakBrev() =
                     val sak: Fagsak = call.attributes[SakKey]
 
                     val result = lagreP1Data(LagreP1DataHandler.Request(brevId = brevId, saksId = sak.saksId, p1Data = p1Data))
-                    respondOutcome(result) { respond(it) }
+                    respondSuccess(result?.asSuccess()) { respond(it) }
                 }
             }
 
@@ -320,7 +320,7 @@ fun Route.sakBrev() =
                     HentAlltidValgbareVedleggHandler.Request(brevId = brevId)
                 )
 
-                respondOutcome(result) { respond(it) }
+                respondSuccess(result?.asSuccess()) { respond(it) }
             }
         }
     }

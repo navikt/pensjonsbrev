@@ -537,9 +537,7 @@ export interface paths {
                 headers: {
                   [name: string]: unknown;
                 };
-                content: {
-                  "application/json": string;
-                };
+                content?: never;
               };
             };
         };
@@ -1134,9 +1132,7 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
+                  content?: never;
                 };
             };
         };
@@ -1986,9 +1982,7 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
+                  content?: never;
                 };
             };
         };
@@ -2019,9 +2013,7 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
+                  content?: never;
                 };
             };
         };
@@ -2062,9 +2054,7 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
+                  content?: never;
                 };
             };
         };
@@ -2106,9 +2096,7 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
+                  content?: never;
                 };
             };
         };
@@ -2474,9 +2462,7 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
+                  content?: never;
                 };
             };
         };
@@ -2662,9 +2648,7 @@ export interface paths {
                 headers: {
                   [name: string]: unknown;
                 };
-                content: {
-                  "application/json": string;
-                };
+                content?: never;
               };
             };
         };
@@ -2694,9 +2678,7 @@ export interface paths {
                 headers: {
                   [name: string]: unknown;
                 };
-                content: {
-                  "application/json": string;
-                };
+                content?: never;
               };
             };
         };
@@ -2725,9 +2707,7 @@ export interface paths {
                 headers: {
                   [name: string]: unknown;
                 };
-                content: {
-                  "application/json": string;
-                };
+                content?: never;
               };
             };
         };
