@@ -15,11 +15,12 @@ import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.IOException
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFTimeoutException
 import no.nav.brev.brevbaker.markup.LetterPDFRequest
-import no.nav.brev.brevbaker.markup.toJson
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration
@@ -112,7 +113,7 @@ class PensjonPdfByggerService(
                 contentType(ContentType.Application.Json)
                 accept(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
-                setBody(pdfRequest.toJson())
+                setBody(Json.encodeToString(pdfRequest))
             }.body()
         }
     } catch (e: CancellationException) {

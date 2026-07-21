@@ -12,9 +12,10 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.brev.brevbaker.markup.LetterPDFRequest
-import no.nav.brev.brevbaker.markup.toJson
 
 class PdfByggerTestService(private val pdfByggerUrl: String = PDFByggerTestContainer.mappedUrl(), private val logWarning: (String) -> Unit = ::println) : PDFByggerService {
     private val objectmapper = jacksonObjectMapper()
@@ -42,7 +43,7 @@ class PdfByggerTestService(private val pdfByggerUrl: String = PDFByggerTestConta
     override suspend fun producePDFV2(pdfRequest: LetterPDFRequest): PDFCompilationOutput =
         httpClient.post("$pdfByggerUrl/v2/produserBrev") {
             contentType(ContentType.Application.Json)
-            setBody(pdfRequest.toJson())
+            setBody(Json.encodeToString(pdfRequest))
         }.body()
 
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()

@@ -91,11 +91,6 @@ public final class no/nav/brev/brevbaker/markup/LetterPDFRequest$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/LetterPDFRequestKt {
-	public static final fun decodeLetterPDFRequest (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/LetterPDFRequest;
-	public static final fun toJson (Lno/nav/brev/brevbaker/markup/LetterPDFRequest;)Ljava/lang/String;
-}
-
 public final class no/nav/brev/brevbaker/markup/Markup {
 	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/Markup;
 }

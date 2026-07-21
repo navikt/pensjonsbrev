@@ -21,11 +21,3 @@ data class LetterMarkupWithDataUsage internal constructor(
         val propertyName: String,
     )
 }
-
-/** Serialiser et [LetterMarkupWithDataUsage] til JSON. */
-fun LetterMarkupWithDataUsage.toJson(): String =
-    markupJson.encodeToString(LetterMarkupWithDataUsage.serializer(), this)
-
-/** Deserialiser et [LetterMarkupWithDataUsage] fra JSON. */
-fun decodeLetterMarkupWithDataUsage(json: String): LetterMarkupWithDataUsage =
-    markupJson.decodeFromString(LetterMarkupWithDataUsage.serializer(), json)
