@@ -30,13 +30,12 @@ class PDFVedleggAppenderImpl : PDFVedleggAppender {
             return pdfCompilationOutput
         }
 
-        return mergePDFs(pdfCompilationOutput, attachments, spraak)
+        return mergePDFs(pdfCompilationOutput) { attachments.map { VedleggAppender.lesInnVedlegg(it, spraak) } }
     }
 
     private fun mergePDFs(
         first: ByteArray,
-        attachments: List<PDFVedlegg>,
-        spraak: LanguageCode,
+        seconds: () -> List<PDDocument>,
     ): ByteArray = PDDocument().use { target ->
         val merger = PDFMergerUtility()
 
@@ -47,8 +46,8 @@ class PDFVedleggAppenderImpl : PDFVedleggAppender {
             merger.appendDocument(target, it)
         }
 
-        attachments.forEach {
-            VedleggAppender.lesInnVedlegg(it, spraak).use { vedlegg ->
+        seconds().forEach {
+            it.use { vedlegg ->
                 if (vedlegg.pages.count % 2 == 1) {
                     target.addPage(PDPage())
                 }
