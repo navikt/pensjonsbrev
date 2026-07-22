@@ -7,32 +7,34 @@ import org.apache.pdfbox.pdmodel.PDPage
 import java.io.ByteArrayOutputStream
 
 object PDFMerger {
-    fun merge(first: ByteArray, second: ByteArray): ByteArray = mergePDFs(first, { listOf(Loader.loadPDF(second)) })
+    fun merge(first: ByteArray, second: ByteArray): ByteArray = mergePDFs(first, listOf(Loader.loadPDF(second)))
 
     fun mergePDFs(
         first: ByteArray,
-        seconds: () -> List<PDDocument>,
-    ): ByteArray = PDDocument().use { target ->
-        val merger = PDFMergerUtility()
+        seconds: List<PDDocument>,
+    ): ByteArray {
+        PDDocument().use { target ->
+            val merger = PDFMergerUtility()
 
-        Loader.loadPDF(first).use {
-            if (it.numberOfPages % 2 == 1) {
-                it.addPage(PDPage())
-            }
-            merger.appendDocument(target, it)
-        }
-
-        seconds().forEach {
-            it.use { vedlegg ->
-                if (vedlegg.pages.count % 2 == 1) {
-                    target.addPage(PDPage())
+            Loader.loadPDF(first).use {
+                if (it.numberOfPages % 2 == 1) {
+                    it.addPage(PDPage())
                 }
-                merger.appendDocument(target, vedlegg)
+                merger.appendDocument(target, it)
             }
-        }
 
-        val outputStream = ByteArrayOutputStream()
-        target.save(outputStream)
-        return outputStream.toByteArray()
+            seconds.forEach {
+                it.use { vedlegg ->
+                    if (vedlegg.pages.count % 2 == 1) {
+                        target.addPage(PDPage())
+                    }
+                    merger.appendDocument(target, vedlegg)
+                }
+            }
+
+            val outputStream = ByteArrayOutputStream()
+            target.save(outputStream)
+            return outputStream.toByteArray()
+        }
     }
 }

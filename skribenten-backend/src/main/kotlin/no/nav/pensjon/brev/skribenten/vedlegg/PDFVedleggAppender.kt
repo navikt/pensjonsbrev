@@ -26,6 +26,6 @@ class PDFVedleggAppenderImpl : PDFVedleggAppender {
             return pdfCompilationOutput
         }
 
-        return PDFMerger.mergePDFs(pdfCompilationOutput) { attachments.map { VedleggAppender.lesInnVedlegg(it, spraak) } }
+        return PDFMerger.mergePDFs(pdfCompilationOutput, attachments.map { VedleggAppender.lesInnVedlegg(it, spraak) })
     }
 }
