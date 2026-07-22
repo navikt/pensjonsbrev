@@ -24,7 +24,7 @@ internal object VedleggAppender {
                 if (inneholderFelter) {
                     addPageFieldPrefix(pdfSide, index)
                 }
-                merger.leggTilSide(target, pdfSide)
+                merger.appendDocument(target, pdfSide)
             }
         }
 

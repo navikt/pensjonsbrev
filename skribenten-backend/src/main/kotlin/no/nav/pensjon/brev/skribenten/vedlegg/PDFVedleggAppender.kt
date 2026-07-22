@@ -30,43 +30,31 @@ class PDFVedleggAppenderImpl : PDFVedleggAppender {
             return pdfCompilationOutput
         }
 
-        PDDocument().use { target ->
-            val merger = PDFMergerUtility()
-
-            Loader.loadPDF(pdfCompilationOutput).use {
-                merger.leggTilSide(target, it)
-            }
-
-            attachments.forEach {
-                VedleggAppender.lesInnVedlegg(it, spraak).use { vedlegg ->
-                    leggTilBlankPartallsideOgSaaLeggTilSide(vedlegg, target, merger)
-                }
-            }
-            return tilByteArray(target)
-        }
+        return mergePDFs(pdfCompilationOutput, attachments, spraak)
     }
 
-    private fun tilByteArray(target: PDDocument): ByteArray {
+    private fun mergePDFs(
+        first: ByteArray,
+        attachments: List<PDFVedlegg>,
+        spraak: LanguageCode,
+    ): ByteArray = PDDocument().use { target ->
+        val merger = PDFMergerUtility()
+
+        Loader.loadPDF(first).use {
+            merger.appendDocument(target, it)
+        }
+
+        attachments.forEach {
+            VedleggAppender.lesInnVedlegg(it, spraak).use { vedlegg ->
+                if (vedlegg.pages.count % 2 == 1) {
+                    target.addPage(PDPage())
+                }
+                merger.appendDocument(target, vedlegg)
+            }
+        }
+
         val outputStream = ByteArrayOutputStream()
         target.save(outputStream)
         return outputStream.toByteArray()
     }
 }
-
-private fun leggTilBlankPartallsideOgSaaLeggTilSide(source: PDDocument, target: PDDocument, merger: PDFMergerUtility) {
-    leggPaaBlankPartallsside(source, target)
-    merger.leggTilSide(target, source)
-}
-
-private fun leggPaaBlankPartallsside(
-    originaltDokument: PDDocument,
-    target: PDDocument,
-) {
-    if (originaltDokument.pages.count % 2 == 1) {
-        target.addPage(PDPage())
-    } 
-}
-
-internal fun PDFMergerUtility.leggTilSide(destination: PDDocument, source: PDDocument) =
-    appendDocument(destination, source)
-
