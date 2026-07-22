@@ -73,15 +73,17 @@ class FoerstesidegeneratorClient(config: FoerstesideConfig, authService: AuthSer
     }
 
     class FoerstesidegeneratorException(message: String) : ServiceException(message)
+
+    // Feltene som settes til null her er de vi tror vi ikke trenger å kunne sette
     data class GenererFoerstesideRequest(
         val spraakkode: Spraakkode,
-        val adresse: Any? = null,
+        val adresse: Any? = null, // Vi bruker ikke adresse her, så dropper for nå å modellere det
         val netsPostboks: Postboks,
         val avsender: Avsender? = null,
         val bruker: Bruker,
         val ukjentBrukerPersoninfo: String? = null,
         val tema: Tema,
-        val behandlingstema: String?,
+        val behandlingstema: String? = null,
         val arkivtittel: String,
         val vedleggsliste: List<String>,
         val navSkjemaId: String? = null,

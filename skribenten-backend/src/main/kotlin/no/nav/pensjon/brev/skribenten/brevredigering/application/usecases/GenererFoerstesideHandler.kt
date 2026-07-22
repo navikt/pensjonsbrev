@@ -17,6 +17,8 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import kotlin.collections.listOf
 
+private const val STANDARD_NETS_POSTBOKS = "1400"
+
 class GenererFoerstesideHandler(
     private val klient: FoerstesidegeneratorClient
 ) : UseCaseHandler<GenererFoerstesideHandler.Request, GenererFoerstesideResponse, Nothing> {
@@ -43,14 +45,12 @@ class GenererFoerstesideHandler(
                 LanguageCode.NYNORSK -> FoerstesidegeneratorClient.Spraakkode.NN
                 LanguageCode.ENGLISH -> FoerstesidegeneratorClient.Spraakkode.EN
             },
-            netsPostboks = Postboks("1400"),
+            netsPostboks = Postboks(STANDARD_NETS_POSTBOKS),
             bruker = Bruker(
                 brukerId = request.pid,
                 brukerType = Bruker.BrukerType.PERSON
             ),
             tema = request.tema,
-            avsender = null,
-            behandlingstema = null,
             arkivtittel = tittel,
             vedleggsliste = request.vedlegg.map { it.tittel },
             overskriftstittel = tittel,
