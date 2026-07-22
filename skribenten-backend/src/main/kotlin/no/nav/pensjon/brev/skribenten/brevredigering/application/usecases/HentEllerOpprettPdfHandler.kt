@@ -33,7 +33,7 @@ class HentEllerOpprettPdfHandler(
             if (brev.brevkode.kode() == P1_BREVKODE) {
                 hentP1DataHandler(HentP1DataHandler.Request(brevId = brev.id.value, saksId = brev.saksId))
                     ?.asSuccess()
-                    ?.let { p1 -> brevdata.copy(brevdata = brevdata.brevdata.apply { put(P1_VEDLEGG_KEY, p1) }) }
+                    ?.let { p1 -> brevdata.copy(brevdata = brevdata.brevdata.apply { put(P1_VEDLEGG_KEY, p1.value) }) }
                     ?: throw IllegalStateException("Fant ikke P1-data for brev ${brev.id.value}")
             } else {
                 brevdata

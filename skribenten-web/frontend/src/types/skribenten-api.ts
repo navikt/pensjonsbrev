@@ -533,6 +533,12 @@ export interface paths {
                         "application/json": components["schemas"]["ApiBrevInfo"][];
                     };
                 };
+              404: {
+                headers: {
+                  [name: string]: unknown;
+                };
+                content?: never;
+              };
             };
         };
         put?: never;
@@ -1122,53 +1128,11 @@ export interface paths {
                         "application/json": components["schemas"]["RedigerbartVedleggInfo"][];
                     };
                 };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
+                  content?: never;
                 };
             };
         };
@@ -2014,53 +1978,11 @@ export interface paths {
                         };
                     };
                 };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
+                  content?: never;
                 };
             };
         };
@@ -2087,53 +2009,11 @@ export interface paths {
                         };
                     };
                 };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
+                  content?: never;
                 };
             };
         };
@@ -2170,53 +2050,11 @@ export interface paths {
                         "application/json": components["schemas"]["ValgbartVedlegg"][];
                     };
                 };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
+                  content?: never;
                 };
             };
         };
@@ -2258,9 +2096,7 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
+                  content?: never;
                 };
             };
         };
@@ -2622,53 +2458,11 @@ export interface paths {
                         "application/json": components["schemas"]["DiffBrevHandlerResponse"];
                     };
                 };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
+                  content?: never;
                 };
             };
         };
@@ -2850,6 +2644,12 @@ export interface paths {
                         "application/json": string[];
                     };
                 };
+              404: {
+                headers: {
+                  [name: string]: unknown;
+                };
+                content?: never;
+              };
             };
         };
         put?: never;
@@ -2874,6 +2674,12 @@ export interface paths {
                         "application/json": components["schemas"]["Unit"];
                     };
                 };
+              404: {
+                headers: {
+                  [name: string]: unknown;
+                };
+                content?: never;
+              };
             };
         };
         delete: {
@@ -2897,6 +2703,12 @@ export interface paths {
                         "application/json": components["schemas"]["Unit"];
                     };
                 };
+              404: {
+                headers: {
+                  [name: string]: unknown;
+                };
+                content?: never;
+              };
             };
         };
         options?: never;

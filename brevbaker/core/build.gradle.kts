@@ -27,6 +27,7 @@ dependencies {
     api(project(":brevbaker:dsl"))
     api(libs.brevbaker.common)
     ksp(project(":brevbaker:template-model-generator"))
+    kspTest(project(":brevbaker:template-model-generator"))
     implementation(libs.kotlinx.html)
 
     testImplementation(libs.bundles.junit)

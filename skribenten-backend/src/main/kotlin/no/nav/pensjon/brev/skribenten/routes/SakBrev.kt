@@ -8,8 +8,8 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.SakKey
-import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevInfoService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.*
+import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -21,15 +21,13 @@ context(app: Application)
 fun Route.sakBrev() =
     route("/brev") {
         val dto2ApiService: Dto2ApiService by app.dependencies
-        val hentBrevInfoService: HentBrevInfoService by app.dependencies
+        val hentBrevForSak: HentBrevForSakHandler by app.dependencies
 
         get {
             val sak: Fagsak = call.attributes[SakKey]
-
-            call.respond(
-                HttpStatusCode.OK,
-                hentBrevInfoService.hentBrevForSak(sak.saksId).map { dto2ApiService.toApi(it) }
-            )
+            respondSuccess(hentBrevForSak(HentBrevForSakHandler.Request(sak.saksId))?.asSuccess()) {
+                respond(HttpStatusCode.OK, it.map { brev -> dto2ApiService.toApi(brev) })
+            }
         }
 
         val opprettBrev: OpprettBrevHandler by app.dependencies
@@ -148,7 +146,7 @@ fun Route.sakBrev() =
                         HentRedigerbareVedleggHandler.Request(brevId = brevId)
                     )
 
-                    respondOutcome(dto2ApiService, result) { respond(it) }
+                    respondSuccess(result?.asSuccess()) { respond(it) }
                 }
                 route("{vedleggId}") {
                     val hentRedigertVedlegg: HentRedigertVedleggHandler by app.dependencies
@@ -301,7 +299,7 @@ fun Route.sakBrev() =
                     val sak: Fagsak = call.attributes[SakKey]
 
                     val result = hentP1Data(HentP1DataHandler.Request(brevId = brevId, saksId = sak.saksId))
-                    respondOutcome(dto2ApiService, result) { respond(it) }
+                    respondSuccess(result?.asSuccess()) { respond(it) }
                 }
 
                 val lagreP1Data: LagreP1DataHandler by app.dependencies
@@ -310,7 +308,7 @@ fun Route.sakBrev() =
                     val sak: Fagsak = call.attributes[SakKey]
 
                     val result = lagreP1Data(LagreP1DataHandler.Request(brevId = brevId, saksId = sak.saksId, p1Data = p1Data))
-                    respondOutcome(dto2ApiService, result) { respond(it) }
+                    respondSuccess(result?.asSuccess()) { respond(it) }
                 }
             }
 
@@ -322,7 +320,7 @@ fun Route.sakBrev() =
                     HentAlltidValgbareVedleggHandler.Request(brevId = brevId)
                 )
 
-                respondOutcome(dto2ApiService, result) { respond(it) }
+                respondSuccess(result?.asSuccess()) { respond(it) }
             }
         }
     }

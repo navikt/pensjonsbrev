@@ -1,28 +1,27 @@
 [versions]
 kotlinVersion = "2.4.0"
-kotlinKspVersion = "2.3.9"
+kotlinKspVersion = "2.3.10"
 ktorVersion = "3.5.1"
 assertJVersion = "3.27.7"
 classGraphVersion = "4.8.184"
 commonsCodecVersion = "1.22.0"
-commonVersion = "2.41.0"
-exposedVersion = "1.3.0"
-flywayVersion = "12.10.0"
+commonVersion = "2.42.0"
+exposedVersion = "1.3.1"
+flywayVersion = "12.11.0"
 gradleNodePluginVersion = "7.1.0"
 hikariVersion = "7.1.0"
-# TODO: Vi burde egentlig bruke samme versjon av Jackson, men jsr310 er publisert med 2.21.0, og resten med 2.21
-jacksonJsr310Version = "2.22.0"
-jacksonVersion = "2.22"
-jsoupVersion = "1.21.2"
-jupiterVersion = "6.1.1"
+jacksonVersion = "2.22.1"
+jsoupVersion = "1.22.2"
+jupiterVersion = "6.1.2"
 kotlinxHtmlVersion = "0.12.0"
 kotlinxCoroutinesVersion = "1.11.0"
+kotlinxSerializationVersion = "1.11.0"
 ktlintVersion = "14.2.0"
 ktlintEngineVersion = "1.8.0"
 log4j2Version = "2.26.1"
 micrometerVersion = "1.17.0"
 pdfboxVersion = "3.0.7"
-postgresqlVersion = "42.7.12"
+postgresqlVersion = "42.7.13"
 testcontainersCoreVersion = "2.0.5"
 testcontainersPostgresqlVersion = "2.0.5"
 unleashVersion = "12.2.2"
@@ -33,25 +32,29 @@ gradle-node = { id = "com.github.node-gradle.node", version.ref = "gradleNodePlu
 ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKspVersion" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintVersion" }
 ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinVersion" }
 
 [libraries]
 brevbaker-common = { module = "no.nav.brev.brevbaker:api-model-common", version.ref = "commonVersion" }
 commons-codec = { module = "commons-codec:commons-codec", version.ref = "commonsCodecVersion" }
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikariVersion" }
 io-github-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classGraphVersion" }
-jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jacksonVersion" }
+jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations" }
+jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jacksonVersion" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoupVersion" }
-jackson-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jacksonJsr310Version" }
-jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jacksonJsr310Version" }
+jackson-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml" }
+jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
 kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version.ref = "kotlinxHtmlVersion" }
 kotlinx-coroutines-slf4j = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j", version.ref = "kotlinxCoroutinesVersion" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationVersion" }
 ksp-symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "kotlinKspVersion"}
 ksp-symbol-processing-aa = { module = "com.google.devtools.ksp:symbol-processing-aa", version.ref = "kotlinKspVersion"}
 ksp-symbol-processing-common = { module = "com.google.devtools.ksp:symbol-processing-common-deps", version.ref = "kotlinKspVersion"}
-log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j2Version" }
-log4j-core = { module = "org.apache.logging.log4j:log4j-core", version.ref = "log4j2Version" }
-log4j-layout-template-json = { module = "org.apache.logging.log4j:log4j-layout-template-json", version.ref = "log4j2Version" }
-log4j-slf4j2-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl", version.ref = "log4j2Version" }
+log4j-api = { module = "org.apache.logging.log4j:log4j-api" }
+log4j-bom = { module = "org.apache.logging.log4j:log4j-bom", version.ref = "log4j2Version" }
+log4j-core = { module = "org.apache.logging.log4j:log4j-core" }
+log4j-layout-template-json = { module = "org.apache.logging.log4j:log4j-layout-template-json" }
+log4j-slf4j2-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl" }
 micrometer-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometerVersion" }
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfboxVersion" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
@@ -64,34 +67,36 @@ ktlint-rule-engine-core = { module = "com.pinterest.ktlint:ktlint-rule-engine-co
 ktlint-test = { module = "com.pinterest.ktlint:ktlint-test", version.ref = "ktlintEngineVersion" }
 
 # Ktor
-ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorVersion" }
-ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorVersion" }
-ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorVersion" }
-ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktorVersion" }
-ktor-openapi-schema-reflect = { module = "io.ktor:ktor-openapi-schema-reflect", version.ref = "ktorVersion" }
-ktor-serialization-jackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktorVersion" }
-ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktorVersion" }
-ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktorVersion" }
-ktor-server-caching-headers = { module = "io.ktor:ktor-server-caching-headers", version.ref = "ktorVersion" }
-ktor-server-callId = { module = "io.ktor:ktor-server-call-id", version.ref = "ktorVersion" }
-ktor-server-callLogging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktorVersion" }
-ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktorVersion" }
-ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktorVersion" }
-ktor-server-cors = { module = "io.ktor:ktor-server-cors", version.ref = "ktorVersion" }
-ktor-server-di = { module = "io.ktor:ktor-server-di", version.ref = "ktorVersion" }
-ktor-server-metrics = { module = "io.ktor:ktor-server-metrics", version.ref = "ktorVersion" }
-ktor-server-metrics-micrometer = { module = "io.ktor:ktor-server-metrics-micrometer", version.ref = "ktorVersion" }
-ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktorVersion" }
-ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktorVersion" }
-ktor-server-swagger = { module = "io.ktor:ktor-server-swagger", version.ref = "ktorVersion" }
-ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktorVersion" }
+ktor-bom = { module = "io.ktor:ktor-bom", version.ref = "ktorVersion" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock" }
+ktor-openapi-schema-reflect = { module = "io.ktor:ktor-openapi-schema-reflect" }
+ktor-serialization-jackson = { module = "io.ktor:ktor-serialization-jackson" }
+ktor-server-auth = { module = "io.ktor:ktor-server-auth" }
+ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt" }
+ktor-server-caching-headers = { module = "io.ktor:ktor-server-caching-headers" }
+ktor-server-callId = { module = "io.ktor:ktor-server-call-id" }
+ktor-server-callLogging = { module = "io.ktor:ktor-server-call-logging" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation" }
+ktor-server-core = { module = "io.ktor:ktor-server-core" }
+ktor-server-cors = { module = "io.ktor:ktor-server-cors" }
+ktor-server-di = { module = "io.ktor:ktor-server-di" }
+ktor-server-metrics = { module = "io.ktor:ktor-server-metrics" }
+ktor-server-metrics-micrometer = { module = "io.ktor:ktor-server-metrics-micrometer" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty" }
+ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages" }
+ktor-server-swagger = { module = "io.ktor:ktor-server-swagger" }
+ktor-server-test-host = { module = "io.ktor:ktor-server-test-host" }
 
 # Exposed
-exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposedVersion" }
-exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposedVersion" }
-exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposedVersion" }
-exposed-json = { module = "org.jetbrains.exposed:exposed-json", version.ref = "exposedVersion" }
-exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", version.ref = "exposedVersion" }
+exposed-bom = { module = "org.jetbrains.exposed:exposed-bom", version.ref = "exposedVersion" }
+exposed-core = { module = "org.jetbrains.exposed:exposed-core" }
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc" }
+exposed-json = { module = "org.jetbrains.exposed:exposed-json" }
+exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time" }
 
 # Flyway
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flywayVersion" }

@@ -8,7 +8,6 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.*
-import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevInfoService
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
@@ -64,11 +63,7 @@ class ExternalAPIServiceTest {
     )
     private val externalAPIService = ExternalAPIService(
         config = ExternalApiConfig(skribentenWebUrl = skribentenWebUrl),
-        hentBrevInfoService = object : HentBrevInfoService {
-            override fun hentBrevForAlleSaker(saksIder: Set<SaksId>) = listOf(brevDto)
-            override fun hentBrevInfo(brevId: BrevId): Dto.BrevInfo = brevDto
-            override fun hentBrevForSak(saksId: SaksId): List<Dto.BrevInfo> = hentBrevForAlleSaker(setOf(saksId))
-        },
+        hentBrevForAlleSaker = { Outcome.success(listOf(brevDto)) },
         brevmalService = BrevmalService(
             brevbakerService = FakeBrevbakerService(redigerbareMaler = mutableMapOf(Testbrevkoder.INFORMASJONSBREV to brevmal)),
             penClient = PenClientStub(),
