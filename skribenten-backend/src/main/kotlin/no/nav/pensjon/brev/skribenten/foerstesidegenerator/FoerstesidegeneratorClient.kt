@@ -75,6 +75,7 @@ class FoerstesidegeneratorClient(config: FoerstesideConfig, authService: AuthSer
     class FoerstesidegeneratorException(message: String) : ServiceException(message)
 
     // Feltene som settes til null her er de vi tror vi ikke trenger å kunne sette
+    // Forklaringa på feltene: https://confluence.adeo.no/spaces/BOA/pages/315211732/Tjeneste+for+%C3%A5+generere+f%C3%B8rsteside+til+skanning
     data class GenererFoerstesideRequest(
         val spraakkode: Spraakkode,
         val adresse: Any? = null, // Vi bruker ikke adresse her, så dropper for nå å modellere det
