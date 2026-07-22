@@ -2949,6 +2949,7 @@ export interface components {
             pid: string;
             sakType: string;
             saksId: number;
+          tema: string;
         };
         /** ApiSakContext */
         ApiSakContext: {

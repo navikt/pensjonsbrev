@@ -29,6 +29,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRe
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SlettRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreValgteVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.FrigiReservasjonHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.GenererFoerstesideHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.TilbakestillBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentAlltidValgbareVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevAttesteringHandler
@@ -57,6 +58,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataServiceHttp
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.LegacyBrevServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PentHttpClient
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.KrrService
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
@@ -98,6 +100,7 @@ fun Application.configureDependencies() {
         provide(KrrService::class)
         provide(BrevbakerServiceHttp::class)
         provide(BrevmetadataServiceHttp::class)
+        provide(FoerstesidegeneratorClient::class)
         provide(SamhandlerServiceHttp::class)
         provide(NavansattServiceHttp::class)
         provide(LegacyBrevServiceImpl::class)
@@ -127,6 +130,7 @@ fun Application.configureDependencies() {
         provide(EndreValgteVedleggHandler::class)
         provide(FjernFavorittHandler::class)
         provide(FrigiReservasjonHandler::class)
+        provide(GenererFoerstesideHandler::class)
         provide(HentAlltidValgbareVedleggHandler::class)
         provide(HentBrevAttesteringHandler::class)
         provide<HentBrevForAlleSakerService>(HentBrevForAlleSakerHandler::class)
