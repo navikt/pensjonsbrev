@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
 import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -38,7 +39,7 @@ interface PenClient {
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean?
     suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult?
     suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data
-    suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): Api.GeneriskBrevdata
+    suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1RedigerbarDto
     suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse
 
     data class KravStoettetAvDatabyggerResult(
@@ -150,7 +151,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenCli
                 }
         }.brevdataOrThrow(saksId = saksId, vedtaksId = vedtaksId)
 
-    override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1VedleggDataResponse =
+    override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1RedigerbarDto =
         client.get("brev/skribenten/sak/${saksId.id}/p1data") {
             url {
                 parameters.append("spraak", spraak.name)
@@ -191,7 +192,6 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenCli
 data class BrevdataFeilResponse(val feil: BrevExceptionDto)
 data class BrevdataResponseWrapper<T : Any>(val data: T)
 
-typealias P1VedleggDataResponse = Api.GeneriskBrevdata
 object BrevdataResponse {
     data class Data(val felles: BrevbakerFelles, val brevdata: Api.GeneriskBrevdata)
 }
