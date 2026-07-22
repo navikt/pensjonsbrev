@@ -13,6 +13,9 @@ object PDFMerger {
         first: ByteArray,
         seconds: List<PDDocument>,
     ): ByteArray {
+        if (seconds.isEmpty()) {
+            return first
+        }
         PDDocument().use { target ->
             val merger = PDFMergerUtility()
 
