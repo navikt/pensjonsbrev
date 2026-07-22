@@ -180,8 +180,6 @@ dependencies {
     // Caching
     implementation(libs.valkey)
 
-    implementation(libs.pdfbox)
-
     // Test
     testImplementation(libs.bundles.junit)
     testImplementation(libs.ktor.server.test.host) {
