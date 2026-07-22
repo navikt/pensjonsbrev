@@ -51,7 +51,7 @@ class PDFVedleggAppenderTest {
         val resultat = appender.leggPaaVedlegg(original, listOf(vedleggMedFilnavn("InformasjonOmP1")), LanguageCode.BOKMAL)
 
         val forventetBlankSide = if (vedleggSideantall % 2 == 1) 1 else 0
-        assertThat(antallSider(resultat)).isEqualTo(1 + vedleggSideantall + forventetBlankSide)
+        assertThat(antallSider(resultat)).isEqualTo(2 + vedleggSideantall + forventetBlankSide)
     }
 
     @Test
@@ -62,9 +62,9 @@ class PDFVedleggAppenderTest {
         val resultat = appender.leggPaaVedlegg(original, listOf(vedleggMedFilnavn("InformasjonOmP1")), LanguageCode.BOKMAL)
 
         if (vedleggSideantall % 2 == 1) {
-            assertThat(antallSider(resultat)).isEqualTo(1 + 1 + vedleggSideantall)
+            assertThat(antallSider(resultat)).isEqualTo(2 + 1 + vedleggSideantall)
         } else {
-            assertThat(antallSider(resultat)).isEqualTo(1 + vedleggSideantall)
+            assertThat(antallSider(resultat)).isEqualTo(2 + vedleggSideantall)
         }
     }
 
@@ -81,7 +81,7 @@ class PDFVedleggAppenderTest {
         )
 
         val forventetBlankSider = (if (vedlegg1Sideantall % 2 == 1) 1 else 0) + (if (vedlegg2Sideantall % 2 == 1) 1 else 0)
-        assertThat(antallSider(resultat)).isEqualTo(1 + vedlegg1Sideantall + vedlegg2Sideantall + forventetBlankSider)
+        assertThat(antallSider(resultat)).isEqualTo(2 + vedlegg1Sideantall + vedlegg2Sideantall + forventetBlankSider)
     }
 
     @Test
