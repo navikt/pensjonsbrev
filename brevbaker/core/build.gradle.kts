@@ -29,6 +29,7 @@ dependencies {
     api(project(":brevbaker:markup"))
     implementation(project(path = ":brevbaker:markup", configuration = "apiInternalElements"))
     ksp(project(":brevbaker:template-model-generator"))
+    kspTest(project(":brevbaker:template-model-generator"))
     implementation(libs.kotlinx.html)
 
     testImplementation(libs.bundles.junit)
