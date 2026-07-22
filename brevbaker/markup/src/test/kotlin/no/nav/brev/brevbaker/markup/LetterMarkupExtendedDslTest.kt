@@ -1,8 +1,8 @@
 package no.nav.brev.brevbaker.markup
 
 import kotlinx.serialization.json.Json
-import no.nav.brev.brevbaker.markup.outline.ElementTags
-import no.nav.brev.brevbaker.markup.outline.ElementTags.FRITEKST
+import no.nav.brev.brevbaker.markup.outline.EditBehaviour
+import no.nav.brev.brevbaker.markup.outline.EditBehaviour.FRITEKST
 import no.nav.brev.brevbaker.markup.dsl.*
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
@@ -161,7 +161,7 @@ class LetterMarkupExtendedDslTest {
                 paragraph(id()) { text(id(), "Ingress", fontType = FontType.BOLD) }
                 paragraph(id()) {
                     text(id(), "Du får ")
-                    variable(id(), "1000 Kr", tags = setOf(ElementTags.REDIGERBAR_DATA))
+                    variable(id(), "1000 Kr", editBehaviour = EditBehaviour.REDIGERBAR_DATA)
                     newLine(id())
                 }
                 itemList(id()) {
@@ -203,7 +203,7 @@ class LetterMarkupExtendedDslTest {
                     choice(id()) { text(id(), "Nei") }
                     choice(id()) {
                         text(id(), "kanskje")
-                        variable(id(), "eller?", tags = setOf(FRITEKST))
+                        variable(id(), "eller?", editBehaviour = FRITEKST)
                     }
                 }
             }

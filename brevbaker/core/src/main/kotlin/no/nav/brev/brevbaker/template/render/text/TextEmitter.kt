@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent
 internal fun ExtendedContentBuilder.appendText(context: RenderContext, element: ParagraphContent.Text<*>) {
     textFragmentsOf(context, element).forEach { fragment ->
         when (fragment) {
-            is TextFragment.Literal -> text(fragment.id, fragment.text, fragment.fontType, fragment.tags)
+            is TextFragment.Literal -> text(fragment.id, fragment.text, fragment.fontType, fragment.editBehaviour)
             is TextFragment.Variable -> variable(fragment.id, fragment.text, fragment.fontType)
             is TextFragment.NewLine -> newLine(fragment.id)
         }

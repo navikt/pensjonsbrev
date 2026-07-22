@@ -1,6 +1,6 @@
 package no.nav.brev.brevbaker.template.render.text
 
-import no.nav.brev.brevbaker.markup.outline.ElementTags
+import no.nav.brev.brevbaker.markup.outline.EditBehaviour
 import no.nav.brev.brevbaker.markup.outline.Text.FontType
 
 /**
@@ -12,7 +12,7 @@ import no.nav.brev.brevbaker.markup.outline.Text.FontType
 internal sealed interface TextFragment {
     val id: Int
 
-    data class Literal(override val id: Int, val text: String, val fontType: FontType, val tags: Set<ElementTags>) : TextFragment
+    data class Literal(override val id: Int, val text: String, val fontType: FontType, val editBehaviour: EditBehaviour?) : TextFragment
 
     data class Variable(override val id: Int, val text: String, val fontType: FontType) : TextFragment
 

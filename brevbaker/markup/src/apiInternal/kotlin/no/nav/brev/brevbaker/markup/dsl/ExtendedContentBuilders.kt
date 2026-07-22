@@ -1,6 +1,6 @@
 package no.nav.brev.brevbaker.markup.dsl
 
-import no.nav.brev.brevbaker.markup.outline.ElementTags
+import no.nav.brev.brevbaker.markup.outline.EditBehaviour
 import no.nav.brev.brevbaker.markup.outline.Text
 import no.nav.brev.brevbaker.markup.outline.Text.FontType
 
@@ -11,27 +11,27 @@ import no.nav.brev.brevbaker.markup.outline.Text.FontType
 @MarkupDsl
 class ExtendedContentBuilder internal constructor() : AbstractContentBuilder() {
     /**
-     * Legg til fast tekst, valgfritt med [fontType] og [tags].
+     * Legg til fast tekst, valgfritt med [fontType] og [editBehaviour].
      *
      * ```
      * text(1, "Du får ")
      *
-     * text(2, "fritekst", tags = setOf(ElementTags.FRITEKST))
+     * text(2, "fritekst", editBehaviour = EditBehaviour.FRITEKST)
      * ```
      */
-    fun text(id: Int, text: String, fontType: FontType = FontType.PLAIN, tags: Set<ElementTags> = emptySet()) {
-        texts.add(Text.Literal(id, text, fontType, tags))
+    fun text(id: Int, text: String, fontType: FontType = FontType.PLAIN, editBehaviour: EditBehaviour? = null) {
+        texts.add(Text.Literal(id, text, fontType, editBehaviour))
     }
 
     /**
-     * Legg til en variabel (datafelt som fylles ut ved rendring), valgfritt med [fontType] og [tags].
+     * Legg til en variabel (datafelt som fylles ut ved rendring), valgfritt med [fontType] og [editBehaviour].
      *
      * ```
-     * variable(2, "1000 kr", tags = setOf(ElementTags.REDIGERBAR_DATA))
+     * variable(2, "1000 kr", editBehaviour = EditBehaviour.REDIGERBAR_DATA)
      * ```
      */
-    fun variable(id: Int, text: String, fontType: FontType = FontType.PLAIN, tags: Set<ElementTags> = emptySet()) {
-        texts.add(Text.Variable(id, text, fontType, tags))
+    fun variable(id: Int, text: String, fontType: FontType = FontType.PLAIN, editBehaviour: EditBehaviour? = null) {
+        texts.add(Text.Variable(id, text, fontType, editBehaviour))
     }
 
     /**

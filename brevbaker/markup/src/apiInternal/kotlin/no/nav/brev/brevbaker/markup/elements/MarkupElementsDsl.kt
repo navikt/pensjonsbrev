@@ -1,6 +1,6 @@
 package no.nav.brev.brevbaker.markup.elements
 
-import no.nav.brev.brevbaker.markup.outline.ElementTags
+import no.nav.brev.brevbaker.markup.outline.EditBehaviour
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
 import no.nav.brev.brevbaker.markup.outline.Block.Table.ColumnAlignment
@@ -34,12 +34,12 @@ class MarkupElementScope internal constructor() {
     // --- Text ---
 
     /** Fast tekst. Eks: `markupElement { literal("Hei") }` */
-    fun literal(text: String, id: Int = 0, fontType: FontType = FontType.PLAIN, tags: Set<ElementTags> = emptySet()): Text.Literal =
-        Text.Literal(id, text, fontType, tags)
+    fun literal(text: String, id: Int = 0, fontType: FontType = FontType.PLAIN, editBehaviour: EditBehaviour? = null): Text.Literal =
+        Text.Literal(id, text, fontType, editBehaviour)
 
     /** En variabel (datafelt). Eks: `markupElement { variable("navn") }` */
-    fun variable(text: String, id: Int = 0, fontType: FontType = FontType.PLAIN, tags: Set<ElementTags> = emptySet()): Text.Variable =
-        Text.Variable(id, text, fontType, tags)
+    fun variable(text: String, id: Int = 0, fontType: FontType = FontType.PLAIN, editBehaviour: EditBehaviour? = null): Text.Variable =
+        Text.Variable(id, text, fontType, editBehaviour)
 
     /** Et linjeskift. Eks: `markupElement { newLine() }` */
     fun newLine(id: Int = 0): Text.NewLine = Text.NewLine(id)

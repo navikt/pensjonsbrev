@@ -4,8 +4,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import no.nav.brev.brevbaker.markup.Markup.Identifiable
 
-/** Semantiske merkelapper på et tekst-element, brukt av redigeringsverktøy. */
-enum class ElementTags {
+/** Semantisk merkelapp på et tekst-element som styrer redigeringsatferden i skribenten. */
+enum class EditBehaviour {
     FRITEKST,
     REDIGERBAR_DATA,
 }
@@ -25,7 +25,7 @@ sealed class Text : Identifiable {
         override val id: Int,
         override val text: String,
         override val fontType: FontType = FontType.PLAIN,
-        val tags: Set<ElementTags> = emptySet(),
+        val editBehaviour: EditBehaviour? = null,
     ) : Text()
 
     @ConsistentCopyVisibility
@@ -35,7 +35,7 @@ sealed class Text : Identifiable {
         override val id: Int,
         override val text: String,
         override val fontType: FontType = FontType.PLAIN,
-        val tags: Set<ElementTags> = emptySet(),
+        val editBehaviour: EditBehaviour? = null,
     ) : Text()
 
     @ConsistentCopyVisibility

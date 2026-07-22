@@ -828,12 +828,12 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Title4$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/outline/ElementTags : java/lang/Enum {
-	public static final field FRITEKST Lno/nav/brev/brevbaker/markup/outline/ElementTags;
-	public static final field REDIGERBAR_DATA Lno/nav/brev/brevbaker/markup/outline/ElementTags;
+public final class no/nav/brev/brevbaker/markup/outline/EditBehaviour : java/lang/Enum {
+	public static final field FRITEKST Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
+	public static final field REDIGERBAR_DATA Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/outline/ElementTags;
-	public static fun values ()[Lno/nav/brev/brevbaker/markup/outline/ElementTags;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
+	public static fun values ()[Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
 }
 
 public abstract class no/nav/brev/brevbaker/markup/outline/Text : no/nav/brev/brevbaker/markup/Markup$Identifiable {
@@ -863,11 +863,11 @@ public final class no/nav/brev/brevbaker/markup/outline/Text$Literal : no/nav/br
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
-	public final fun component4 ()Ljava/util/Set;
+	public final fun component4 ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEditBehaviour ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
 	public fun getFontType ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
 	public fun getId ()I
-	public final fun getTags ()Ljava/util/Set;
 	public fun getText ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -919,11 +919,11 @@ public final class no/nav/brev/brevbaker/markup/outline/Text$Variable : no/nav/b
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
-	public final fun component4 ()Ljava/util/Set;
+	public final fun component4 ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEditBehaviour ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
 	public fun getFontType ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
 	public fun getId ()I
-	public final fun getTags ()Ljava/util/Set;
 	public fun getText ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;

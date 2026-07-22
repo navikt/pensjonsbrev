@@ -13,7 +13,7 @@ import kotlin.jvm.JvmName
 /**
  * Bygg en [LetterMarkup] med utvidet DSL.
  *
- * Denne varianten støtter `variable(...)`, metadata (tags) og krever en eksplisitt id på hvert element.
+ * Denne varianten støtter `variable(...)`, redigeringsatferd (editBehaviour) og krever en eksplisitt id på hvert element.
  * Modulen genererer aldri id-er; kalleren (typisk `Letter2Markup` i core) må oppgi id-ene selv.
  *
  * ```

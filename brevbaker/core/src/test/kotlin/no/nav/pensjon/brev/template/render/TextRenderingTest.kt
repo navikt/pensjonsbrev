@@ -42,7 +42,7 @@ class TextRenderingTest {
 
         assertThat(texts).singleElement().isInstanceOfSatisfying(Text.Literal::class.java) {
             assertThat(it.text).isEqualTo("ab")
-            assertThat(it.tags).isEmpty()
+            assertThat(it.editBehaviour).isNull()
         }
     }
 
