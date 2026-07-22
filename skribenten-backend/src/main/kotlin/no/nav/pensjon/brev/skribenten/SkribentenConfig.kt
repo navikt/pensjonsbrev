@@ -113,9 +113,8 @@ data class SafConfig(
 )
 
 @Serializable
-data class FoerstesideConfig(
+data class FoerstesidegeneratorConfig(
     val url: String,
-    val restUrl: String,
     val scope: String,
 )
 
@@ -141,5 +140,5 @@ data class ServicesConfig(
     val externalApi: ExternalApiConfig,
     val leader: NoAuthClientConfig? = null,
     val skjerming: OboClientConfig,
-    val foerstesideConfig: FoerstesideConfig,
+    val foerstesidegenerator: FoerstesidegeneratorConfig,
 )

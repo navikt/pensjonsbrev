@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.foerstesidegenerator
 
-import com.typesafe.config.ConfigFactory
+import no.nav.pensjon.brev.skribenten.FoerstesidegeneratorConfig
 import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Arkivsak
@@ -28,11 +28,9 @@ import java.nio.file.Path
 
 class FoerstesidegeneratorClientTest {
 
-    private val config = ConfigFactory.parseMap(
-        mapOf(
-            "url" to "http://foerstesidegenerator.test",
-            "scope" to "test-scope",
-        )
+    private val config = FoerstesidegeneratorConfig(
+        url = "http://foerstesidegenerator.test",
+        scope = "test-scope"
     )
 
     @Test
