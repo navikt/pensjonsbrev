@@ -113,6 +113,13 @@ data class SafConfig(
 )
 
 @Serializable
+data class FoerstesideConfig(
+    val url: String,
+    val restUrl: String,
+    val scope: String,
+)
+
+@Serializable
 data class NoAuthClientConfig(val url: String)
 
 @Serializable
@@ -134,4 +141,5 @@ data class ServicesConfig(
     val externalApi: ExternalApiConfig,
     val leader: NoAuthClientConfig? = null,
     val skjerming: OboClientConfig,
+    val foerstesideConfig: FoerstesideConfig,
 )

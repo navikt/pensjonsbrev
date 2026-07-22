@@ -97,6 +97,7 @@ fun Application.configureDependencies() {
         provide(KrrService::class)
         provide(BrevbakerServiceHttp::class)
         provide(BrevmetadataServiceHttp::class)
+        provide(FoerstesidegeneratorClient::class)
         provide(SamhandlerServiceHttp::class)
         provide(NavansattServiceHttp::class)
         provide(LegacyBrevServiceImpl::class)
@@ -126,6 +127,7 @@ fun Application.configureDependencies() {
         provide(EndreRedigertVedleggHandler::class)
         provide(EndreValgteVedleggHandler::class)
         provide(FrigiReservasjonHandler::class)
+        provide(GenererFoerstesideHandler::class)
         provide(HentAlltidValgbareVedleggHandler::class)
         provide(HentBrevAttesteringHandler::class)
         provide(HentBrevHandler::class)
@@ -142,9 +144,6 @@ fun Application.configureDependencies() {
         provide(SlettRedigertVedleggHandler::class)
         provide(TilbakestillBrevHandler::class)
         provide(VeksleKlarStatusHandler::class)
-
-        provide(FoerstesidegeneratorClient::class)
-        provide(GenererFoerstesideHandler::class)
     }
 
     launch { Features.init(dependencies.resolve()) }
