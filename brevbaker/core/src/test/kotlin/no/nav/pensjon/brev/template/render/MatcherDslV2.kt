@@ -227,7 +227,7 @@ class TableAssertV2 {
         private val cellMatchers = mutableListOf<MatcherV2<Block.Table.Cell>>()
         fun cell(that: TextContentAssertV2.() -> Unit) {
             cellMatchers.add({
-                assertThat(it.text).satisfies(TextContentAssertV2().apply(that).build())
+                assertThat(it.content).satisfies(TextContentAssertV2().apply(that).build())
             })
         }
         fun build(): MatcherV2<Block.Table.Row> = { actual ->
@@ -242,7 +242,7 @@ class TableAssertV2 {
         private val columnMatchers = mutableListOf<MatcherV2<Block.Table.ColumnSpec>>()
         fun column(that: TextContentAssertV2.() -> Unit) {
             columnMatchers.add({
-                assertThat(it.headerContent.text).satisfies(TextContentAssertV2().apply(that).build())
+                assertThat(it.content).satisfies(TextContentAssertV2().apply(that).build())
             })
         }
         fun build(): MatcherV2<Block.Table.Header> = { actual ->
@@ -277,7 +277,7 @@ class FormChoiceAssertV2 {
 
     fun choice(that: TextContentAssertV2.() -> Unit) {
         choiceMatchers.add({
-            assertThat(it.text).satisfies(TextContentAssertV2().apply(that).build())
+            assertThat(it.content).satisfies(TextContentAssertV2().apply(that).build())
         })
     }
 
@@ -298,6 +298,6 @@ class FormTextAssertV2 {
     }
 
     fun build(): MatcherV2<Block.FormText> = { actual ->
-        promptMatcher?.let { assertThat(actual.prompt).satisfies(it) }
+        promptMatcher?.let { assertThat(actual.content).satisfies(it) }
     }
 }

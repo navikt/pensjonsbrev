@@ -74,22 +74,22 @@ class MarkupElementScope internal constructor() {
     /** En tabellcelle. Eks: `markupElement { cell(literal("A1")) }` */
     fun cell(vararg content: Text, id: Int = 0): Block.Table.Cell = Block.Table.Cell(id, content.toList())
 
-    /** En kolonnespesifikasjon (overskriftscelle + [alignment]/[span]). Eks: `columnSpec(cell(literal("Beløp")), ColumnAlignment.RIGHT)` */
+    /** En kolonnespesifikasjon (overskriftstekst + [alignment]/[span]). Eks: `columnSpec(literal("Beløp"), ColumnAlignment.RIGHT)` */
     fun columnSpec(
-        headerContent: Block.Table.Cell,
+        vararg content: Text,
         alignment: ColumnAlignment = ColumnAlignment.LEFT,
         span: Int = 1,
         id: Int = 0,
-    ): Block.Table.ColumnSpec = Block.Table.ColumnSpec(id, headerContent, alignment, span)
+    ): Block.Table.ColumnSpec = Block.Table.ColumnSpec(id, content.toList(), alignment, span)
 
-    /** En tabelloverskrift. Eks: `header(columnSpec(cell(literal("A"))), columnSpec(cell(literal("B"))))` */
+    /** En tabelloverskrift. Eks: `header(columnSpec(literal("A")), columnSpec(literal("B")))` */
     fun header(vararg colSpec: Block.Table.ColumnSpec, id: Int = 0): Block.Table.Header =
         Block.Table.Header(id, colSpec.toList())
 
     /** En tabellrad. Eks: `row(cell(literal("a1")), cell(literal("b1")))` */
     fun row(vararg cells: Block.Table.Cell, id: Int = 0): Block.Table.Row = Block.Table.Row(id, cells.toList())
 
-    /** En tabell (overskrift + rader). Eks: `table(header(columnSpec(cell(literal("A")))), row(cell(literal("a1"))))` */
+    /** En tabell (overskrift + rader). Eks: `table(header(columnSpec(literal("A"))), row(cell(literal("a1"))))` */
     fun table(header: Block.Table.Header, vararg rows: Block.Table.Row, id: Int = 0): Block.Table =
         Block.Table(id, rows.toList(), header)
 

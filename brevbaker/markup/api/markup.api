@@ -103,6 +103,10 @@ public final class no/nav/brev/brevbaker/markup/Markup$Brevtype : java/lang/Enum
 	public static fun values ()[Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
 }
 
+public abstract interface class no/nav/brev/brevbaker/markup/Markup$Identifiable {
+	public abstract fun getId ()I
+}
+
 public final class no/nav/brev/brevbaker/markup/Markup$Personidentifikator {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/Markup$Personidentifikator$Companion;
 	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Markup$Personidentifikator;
@@ -168,6 +172,10 @@ public final class no/nav/brev/brevbaker/markup/Markup$Spraak : java/lang/Enum {
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Markup$Spraak;
 	public static fun values ()[Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+}
+
+public abstract interface class no/nav/brev/brevbaker/markup/Markup$TextContainer {
+	public abstract fun getContent ()Ljava/util/List;
 }
 
 public final class no/nav/brev/brevbaker/markup/PDFTittel {
@@ -387,7 +395,7 @@ public final class no/nav/brev/brevbaker/markup/dsl/RowBuilder {
 public final class no/nav/brev/brevbaker/markup/dsl/TableBuilder {
 }
 
-public abstract class no/nav/brev/brevbaker/markup/outline/Block {
+public abstract class no/nav/brev/brevbaker/markup/outline/Block : no/nav/brev/brevbaker/markup/Markup$Identifiable {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/outline/Block$Companion;
 	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public abstract fun getId ()I
@@ -424,13 +432,13 @@ public final synthetic class no/nav/brev/brevbaker/markup/outline/Block$FormChoi
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice {
+public final class no/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice : no/nav/brev/brevbaker/markup/Markup$Identifiable, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice$Companion;
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getId ()I
-	public final fun getText ()Ljava/util/List;
+	public fun getContent ()Ljava/util/List;
+	public fun getId ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -454,15 +462,15 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$FormChoice$Compani
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/outline/Block$FormText : no/nav/brev/brevbaker/markup/outline/Block {
+public final class no/nav/brev/brevbaker/markup/outline/Block$FormText : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Companion;
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;
 	public final fun component4 ()Z
 	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
-	public final fun getPrompt ()Ljava/util/List;
 	public final fun getSize ()Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;
 	public final fun getVspace ()Z
 	public fun hashCode ()I
@@ -494,13 +502,13 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$FormText$Size : ja
 	public static fun values ()[Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;
 }
 
-public final class no/nav/brev/brevbaker/markup/outline/Block$Item {
+public final class no/nav/brev/brevbaker/markup/outline/Block$Item : no/nav/brev/brevbaker/markup/Markup$Identifiable, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/outline/Block$Item$Companion;
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getContent ()Ljava/util/List;
-	public final fun getId ()I
+	public fun getContent ()Ljava/util/List;
+	public fun getId ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -572,12 +580,12 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$NumberedList$Compa
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/outline/Block$Paragraph : no/nav/brev/brevbaker/markup/outline/Block {
+public final class no/nav/brev/brevbaker/markup/outline/Block$Paragraph : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/outline/Block$Paragraph$Companion;
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getContent ()Ljava/util/List;
+	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -622,13 +630,13 @@ public final synthetic class no/nav/brev/brevbaker/markup/outline/Block$Table$$s
 	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Cell {
+public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Cell : no/nav/brev/brevbaker/markup/Markup$Identifiable, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell$Companion;
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getId ()I
-	public final fun getText ()Ljava/util/List;
+	public fun getContent ()Ljava/util/List;
+	public fun getId ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -656,16 +664,16 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignm
 	public static fun values ()[Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;
 }
 
-public final class no/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec {
+public final class no/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec : no/nav/brev/brevbaker/markup/Markup$Identifiable, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec$Companion;
 	public final fun component1 ()I
-	public final fun component2 ()Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell;
+	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;
 	public final fun component4 ()I
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAlignment ()Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;
-	public final fun getHeaderContent ()Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell;
-	public final fun getId ()I
+	public fun getContent ()Ljava/util/List;
+	public fun getId ()I
 	public final fun getSpan ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -690,13 +698,13 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Header {
+public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Header : no/nav/brev/brevbaker/markup/Markup$Identifiable {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header$Companion;
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getColSpec ()Ljava/util/List;
-	public final fun getId ()I
+	public fun getId ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -716,13 +724,13 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Header$Compa
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Row {
+public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Row : no/nav/brev/brevbaker/markup/Markup$Identifiable {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/outline/Block$Table$Row$Companion;
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCells ()Ljava/util/List;
-	public final fun getId ()I
+	public fun getId ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -742,12 +750,12 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Row$Companio
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/outline/Block$Title2 : no/nav/brev/brevbaker/markup/outline/Block {
+public final class no/nav/brev/brevbaker/markup/outline/Block$Title2 : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/outline/Block$Title2$Companion;
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getContent ()Ljava/util/List;
+	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -768,12 +776,12 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Title2$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/outline/Block$Title3 : no/nav/brev/brevbaker/markup/outline/Block {
+public final class no/nav/brev/brevbaker/markup/outline/Block$Title3 : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/outline/Block$Title3$Companion;
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getContent ()Ljava/util/List;
+	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -794,12 +802,12 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Title3$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class no/nav/brev/brevbaker/markup/outline/Block$Title4 : no/nav/brev/brevbaker/markup/outline/Block {
+public final class no/nav/brev/brevbaker/markup/outline/Block$Title4 : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/outline/Block$Title4$Companion;
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getContent ()Ljava/util/List;
+	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -828,7 +836,7 @@ public final class no/nav/brev/brevbaker/markup/outline/ElementTags : java/lang/
 	public static fun values ()[Lno/nav/brev/brevbaker/markup/outline/ElementTags;
 }
 
-public abstract class no/nav/brev/brevbaker/markup/outline/Text {
+public abstract class no/nav/brev/brevbaker/markup/outline/Text : no/nav/brev/brevbaker/markup/Markup$Identifiable {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/outline/Text$Companion;
 	public synthetic fun <init> (ILkotlinx/serialization/internal/SerializationConstructorMarker;)V
 	public abstract fun getFontType ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;

@@ -55,11 +55,11 @@ class LetterMarkupExtendedDslTest {
                 }
                 table(id()) {
                     header(id()) {
-                        column(id(), id(), ColumnAlignment.LEFT) {
+                        column(id(), ColumnAlignment.LEFT) {
                             text(id(), "Kolonne ")
                             variable(id(), "A")
                         }
-                        column(id(), id(), ColumnAlignment.RIGHT, span = 2) { text(id(), "Kolonne B") }
+                        column(id(), ColumnAlignment.RIGHT, span = 2) { text(id(), "Kolonne B") }
                     }
                     row(id()) {
                         cell(id()) { text(id(), "A1") }
@@ -173,8 +173,8 @@ class LetterMarkupExtendedDslTest {
                 }
                 table(id()) {
                     header(id()) {
-                        column(id(), id()) { text(id(), "Kolonne") }
-                        column(id(), id()) {
+                        column(id()) { text(id(), "Kolonne") }
+                        column(id()) {
                             text(id(), "Kolonne ")
                             variable(id(), "2")
                         }
@@ -222,7 +222,7 @@ class LetterMarkupExtendedDslTest {
         assertEquals(FontType.BOLD, (item.content.single() as Text.Literal).fontType)
 
         val cell = letter.blocks.filterIsInstance<Block.Table>().single().rows.single().cells.first()
-        assertEquals(FontType.BOLD, (cell.text.single() as Text.Literal).fontType)
+        assertEquals(FontType.BOLD, (cell.content.single() as Text.Literal).fontType)
     }
 
     @Test

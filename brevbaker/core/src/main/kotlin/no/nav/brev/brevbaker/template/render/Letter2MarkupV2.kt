@@ -223,7 +223,6 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
                 element.header.colSpec.forEach { columnSpec ->
                     column(
                         id = context.stableHash(columnSpec),
-                        headerContentId = context.stableHash(columnSpec.headerContent),
                         alignment = columnSpec.alignment.toMarkup(),
                         span = columnSpec.columnSpan,
                     ) { appendTexts(context, columnSpec.headerContent.text) }

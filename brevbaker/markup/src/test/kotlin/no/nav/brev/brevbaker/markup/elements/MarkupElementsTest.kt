@@ -21,7 +21,7 @@ class MarkupElementsTest {
         assertEquals(1, paragraph.content.size)
 
         val table: Block.Table = markupElement {
-            table(header(columnSpec(cell(literal("A")))), row(cell(literal("a1"))))
+            table(header(columnSpec(literal("A"))), row(cell(literal("a1"))))
         }
         assertEquals(1, table.rows.size)
     }
@@ -52,8 +52,8 @@ class MarkupElementsTest {
         val table = markupElement {
             table(
                 header(
-                    columnSpec(cell(literal("A")), alignment = ColumnAlignment.LEFT),
-                    columnSpec(cell(literal("B")), alignment = ColumnAlignment.RIGHT, span = 2),
+                    columnSpec(literal("A"), alignment = ColumnAlignment.LEFT),
+                    columnSpec(literal("B"), alignment = ColumnAlignment.RIGHT, span = 2),
                 ),
                 row(cell(literal("a1")), cell(literal("b1"))),
             )

@@ -2,6 +2,7 @@ package no.nav.brev.brevbaker.markup.outline
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import no.nav.brev.brevbaker.markup.Markup.Identifiable
 
 /** Semantiske merkelapper på et tekst-element, brukt av redigeringsverktøy. */
 enum class ElementTags {
@@ -10,8 +11,8 @@ enum class ElementTags {
 }
 
 @Serializable
-sealed class Text {
-    abstract val id: Int
+sealed class Text : Identifiable {
+    abstract override val id: Int
     abstract val text: String
     abstract val fontType: FontType
 
