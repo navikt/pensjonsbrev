@@ -7,12 +7,9 @@ import org.apache.pdfbox.pdmodel.PDPage
 import java.io.ByteArrayOutputStream
 
 object PDFMerger {
-    fun merge(first: ByteArray, second: ByteArray): ByteArray = mergePDFs(first, listOf(Loader.loadPDF(second)))
+    fun merge(first: ByteArray, second: ByteArray): ByteArray = merge(first, listOf(Loader.loadPDF(second)))
 
-    fun mergePDFs(
-        first: ByteArray,
-        seconds: List<PDDocument>,
-    ): ByteArray {
+    fun merge(first: ByteArray, seconds: List<PDDocument>): ByteArray {
         if (seconds.isEmpty()) {
             return first
         }
