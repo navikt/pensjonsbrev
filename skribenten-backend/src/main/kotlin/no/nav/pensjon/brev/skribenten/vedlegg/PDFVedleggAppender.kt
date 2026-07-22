@@ -41,6 +41,9 @@ class PDFVedleggAppenderImpl : PDFVedleggAppender {
         val merger = PDFMergerUtility()
 
         Loader.loadPDF(first).use {
+            if (it.numberOfPages % 2 == 1) {
+                it.addPage(PDPage())
+            }
             merger.appendDocument(target, it)
         }
 
