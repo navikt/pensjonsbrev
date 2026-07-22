@@ -124,12 +124,14 @@ data class P1RedigerbarDto(
     @JvmInline
     value class Epost(val value: String) {
         init {
-            require(value.contains("@")) { "Epost må inneholde @" }
-            require(value.contains(".")) { "Epost må inneholde ." }
-            require(value.substringBefore("@").isNotEmpty()) { "Epost må ha verdi før @" }
-            require(value.substringAfter("@").isNotEmpty()) { "Epost må ha verdi etter @" }
-            require(value.substringBefore(".").isNotEmpty()) { "Epost må ha verdi før ." }
-            require(value.substringAfter("@").isNotEmpty()) { "Epost må ha verdi etter ." }
+            val parts = value.split("@", limit = 2)
+            require(parts.size == 2) { "Epost må inneholde @" }
+            val localPart = parts[0]
+            val domain = parts[1]
+            require(localPart.isNotBlank()) { "Epost må ha verdi før æ" }
+            require(domain.isNotBlank() && domain.contains(".")) { "Epost må ha verdi etter @ og ha ." }
+            require(domain.substringBefore(".").isNotBlank()) { "Epost må ha verdi før ." }
+            require(domain.substringAfterLast(".").isNotBlank()) { "Epost må ha verdi etter ." }
         }
     }
 }
