@@ -110,14 +110,14 @@ data class P1RedigerbarDto(
     @JvmInline
     value class Postnummer(val value: String) {
         init {
-            require(value.length < 30) { "Postnumre er jo ikke kjempelange. $value er ${value.length} lang." }
+            require(value.length < 30) { "Postnumre er jo ikke kjempelange. Denne er ${value.length} lang." }
         }
     }
 
     @JvmInline
     value class Poststed(val value: String) {
         init {
-            require(value.length < 300) { "Poststed er ikke kjempelange. $value er ${value.length} lang." }
+            require(value.length < 300) { "Poststed er ikke kjempelange. Denne er ${value.length} lang." }
         }
     }
 
