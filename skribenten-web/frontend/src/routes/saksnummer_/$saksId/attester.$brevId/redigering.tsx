@@ -452,6 +452,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 <VStack>
                   <BrevmalAlternativer
                     brevkode={props.brev.info.brevkode}
+                    propertyUsage={props.brev.propertyUsage ?? undefined}
                     submitOnChange={() => {
                       const updatedValg = form.getValues("saksbehandlerValg");
                       if (hasAnyTekstvalgBeenToggledOn(previousTekstvalgRef.current, updatedValg)) {

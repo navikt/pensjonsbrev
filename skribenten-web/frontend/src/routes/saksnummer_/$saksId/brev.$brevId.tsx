@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Heading, HGrid, HStack, Label, Tabs, VStack } from "@navikt/ds-react";
+import { Alert, Box, Button, Heading, HGrid, HStack, Label, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
@@ -17,11 +17,8 @@ import {
   hasAnyTekstvalgBeenToggledOn,
   InsertedTekstValgHighlightProvider,
 } from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
-import {
-  SaksbehandlerValgModelEditor,
-  usePartitionedModelSpecification,
-} from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
+import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
@@ -494,7 +491,11 @@ function RedigerBrev({
                   <Heading size="small" spacing>
                     {brevmal.data?.name}
                   </Heading>
-                  <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
+                  <BrevmalAlternativer
+                    brevkode={brev.info.brevkode}
+                    propertyUsage={brev.propertyUsage ?? undefined}
+                    submitOnChange={onTekstValgAndOverstyringChange}
+                  />
                   <UnderskriftTextField of="Saksbehandler" />
                 </VStack>
               </Box>
@@ -543,90 +544,3 @@ function RedigerBrev({
     </FormProvider>
   );
 }
-
-enum BrevSidemenyTabs {
-  TEKSTVALG = "TEKSTVALG",
-  OVERSTYRING = "OVERSTYRING",
-}
-
-// TODO: Funksjonelt er denne komponenten ganske lik BrevmalAlternativer.tsx. Se på om vi kan bruke samme komponent.
-const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevResponse; submitOnChange?: () => void }) => {
-  const specificationFormElements = usePartitionedModelSpecification(
-    brev.info.brevkode,
-    brev.propertyUsage ?? undefined,
-  );
-
-  const optionalFields = specificationFormElements.status === "success" ? specificationFormElements.optionalFields : [];
-  const requiredFields = specificationFormElements.status === "success" ? specificationFormElements.requiredFields : [];
-  const hasOptional = optionalFields.length > 0;
-  const hasRequired = requiredFields.length > 0;
-
-  if (!hasOptional && !hasRequired) {
-    return (
-      <SaksbehandlerValgModelEditor
-        brevkode={brev.info.brevkode}
-        fieldsToRender="optional"
-        specificationFormElements={specificationFormElements}
-        submitOnChange={submitOnChange}
-      />
-    );
-  }
-
-  if (hasOptional && !hasRequired) {
-    return (
-      <>
-        <Heading size="xsmall">Tekstvalg</Heading>
-        <SaksbehandlerValgModelEditor
-          brevkode={brev.info.brevkode}
-          fieldsToRender="optional"
-          specificationFormElements={specificationFormElements}
-          submitOnChange={submitOnChange}
-        />
-      </>
-    );
-  }
-
-  if (hasRequired && !hasOptional)
-    return (
-      <>
-        <Heading size="xsmall">Overstyring</Heading>
-        <SaksbehandlerValgModelEditor
-          brevkode={brev.info.brevkode}
-          fieldsToRender="required"
-          specificationFormElements={specificationFormElements}
-          submitOnChange={submitOnChange}
-        />
-      </>
-    );
-
-  const defaultTab = BrevSidemenyTabs.TEKSTVALG;
-
-  return (
-    <Tabs defaultValue={defaultTab} fill size="small">
-      <Tabs.List>
-        <Tabs.Tab label="Tekstvalg" value={BrevSidemenyTabs.TEKSTVALG} />
-        <Tabs.Tab label="Overstyring" value={BrevSidemenyTabs.OVERSTYRING} />
-      </Tabs.List>
-      <Tabs.Panel value={BrevSidemenyTabs.TEKSTVALG}>
-        <Box marginBlock="space-20 space-0">
-          <SaksbehandlerValgModelEditor
-            brevkode={brev.info.brevkode}
-            fieldsToRender="optional"
-            specificationFormElements={specificationFormElements}
-            submitOnChange={submitOnChange}
-          />
-        </Box>
-      </Tabs.Panel>
-      <Tabs.Panel value={BrevSidemenyTabs.OVERSTYRING}>
-        <Box marginBlock="space-20 space-0">
-          <SaksbehandlerValgModelEditor
-            brevkode={brev.info.brevkode}
-            fieldsToRender="required"
-            specificationFormElements={specificationFormElements}
-            submitOnChange={submitOnChange}
-          />
-        </Box>
-      </Tabs.Panel>
-    </Tabs>
-  );
-};

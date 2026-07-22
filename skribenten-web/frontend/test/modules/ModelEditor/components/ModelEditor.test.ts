@@ -1,7 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { extractRelevantSaksbehandlerValgFields } from "~/Brevredigering/ModelEditor/ModelEditor";
-import { type PropertyUsage } from "~/types/brevbakerTypes";
+import {
+  extractRelevantSaksbehandlerValgFields,
+  filterModelSpecificationByPropertyUsage,
+} from "~/Brevredigering/ModelEditor/ModelEditor";
+import { type FieldType, type PropertyUsage } from "~/types/brevbakerTypes";
 
 describe("extractRelevantSaksbehandlerValgFields", () => {
   it("returns only properties matching the SaksbehandlerValg type", () => {
@@ -61,5 +64,33 @@ describe("extractRelevantSaksbehandlerValgFields", () => {
     );
 
     expect(result.size).toBe(0);
+  });
+});
+
+describe("filterModelSpecificationByPropertyUsage", () => {
+  const specification = {
+    used: {} as FieldType,
+    unused: {} as FieldType,
+  };
+
+  it("returns the complete specification when property usage is unavailable", () => {
+    expect(filterModelSpecificationByPropertyUsage(specification, undefined, "SaksbehandlerValg")).toBe(
+      specification,
+    );
+  });
+
+  it("returns no fields when property usage contains no matching fields", () => {
+    expect(filterModelSpecificationByPropertyUsage(specification, [], "SaksbehandlerValg")).toEqual({});
+  });
+
+  it("returns only fields used by SaksbehandlerValg", () => {
+    const propertyUsage: PropertyUsage[] = [
+      { typeName: "SaksbehandlerValg", propertyName: "used" },
+      { typeName: "PesysData", propertyName: "unused" },
+    ];
+
+    expect(filterModelSpecificationByPropertyUsage(specification, propertyUsage, "SaksbehandlerValg")).toEqual({
+      used: specification.used,
+    });
   });
 });

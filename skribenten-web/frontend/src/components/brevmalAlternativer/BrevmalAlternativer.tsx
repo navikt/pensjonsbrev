@@ -5,12 +5,14 @@ import {
   SaksbehandlerValgModelEditor,
   usePartitionedModelSpecification,
 } from "~/Brevredigering/ModelEditor/ModelEditor";
+import { type PropertyUsage } from "~/types/brevbakerTypes";
 
 import { ApiError } from "../ApiError";
 import { BrevAlternativTab } from "./BrevmalAlternativerUtils";
 
 const BrevmalAlternativer = (props: {
   brevkode: string;
+  propertyUsage?: PropertyUsage[];
   submitOnChange?: () => void;
 
   /**
@@ -19,7 +21,7 @@ const BrevmalAlternativer = (props: {
   onlyShowRequired?: boolean;
   withTitle?: boolean;
 }) => {
-  const specificationFormElements = usePartitionedModelSpecification(props.brevkode);
+  const specificationFormElements = usePartitionedModelSpecification(props.brevkode, props.propertyUsage);
 
   switch (specificationFormElements.status) {
     case "error": {
@@ -60,7 +62,7 @@ const BrevmalAlternativer = (props: {
         if (!hasOptional) {
           return (
             <VStack gap="space-12">
-              {props.withTitle && <Heading size="xsmall">Tekstalternativer</Heading>}
+              <Heading size="xsmall">Overstyring</Heading>
               <SaksbehandlerValgModelEditor
                 brevkode={props.brevkode}
                 fieldsToRender="required"
@@ -74,7 +76,7 @@ const BrevmalAlternativer = (props: {
         if (!hasRequired) {
           return (
             <VStack gap="space-12">
-              {props.withTitle && <Heading size="xsmall">Tekstalternativer</Heading>}
+              <Heading size="xsmall">Tekstvalg</Heading>
               <SaksbehandlerValgModelEditor
                 brevkode={props.brevkode}
                 fieldsToRender="optional"
@@ -100,7 +102,7 @@ const BrevmalAlternativer = (props: {
               size="small"
             >
               <Tabs.List>
-                <Tabs.Tab label="Tekster" value={BrevAlternativTab.TEKSTER} />
+                <Tabs.Tab label="Tekstvalg" value={BrevAlternativTab.TEKSTER} />
                 <Tabs.Tab label="Overstyring" value={BrevAlternativTab.OVERSTYRING} />
               </Tabs.List>
               <Tabs.Panel
@@ -137,6 +139,9 @@ const BrevmalAlternativer = (props: {
           </VStack>
         );
       }
+    }
+    default: {
+      return null;
     }
   }
 };
