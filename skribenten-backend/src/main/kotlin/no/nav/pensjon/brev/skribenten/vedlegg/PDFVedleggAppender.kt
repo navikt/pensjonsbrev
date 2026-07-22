@@ -17,5 +17,5 @@ class PDFVedleggAppenderImpl : PDFVedleggAppender {
         pdfCompilationOutput: ByteArray,
         attachments: List<PDFVedlegg>,
         spraak: LanguageCode,
-    ): ByteArray = PDFMerger.merge(pdfCompilationOutput, attachments.map { VedleggAppender.lesInnVedlegg(it, spraak) })
+    ): ByteArray = PDFMerger.merge(pdfCompilationOutput, attachments.map { { VedleggAppender.lesInnVedlegg(it, spraak) } })
 }

@@ -7,9 +7,9 @@ import org.apache.pdfbox.pdmodel.PDPage
 import java.io.ByteArrayOutputStream
 
 object PDFMerger {
-    fun merge(first: ByteArray, second: ByteArray): ByteArray = merge(first, listOf(Loader.loadPDF(second)))
+    fun merge(first: ByteArray, second: ByteArray): ByteArray = merge(first, listOf { Loader.loadPDF(second) })
 
-    fun merge(first: ByteArray, seconds: List<PDDocument>): ByteArray {
+    fun merge(first: ByteArray, seconds: List<() -> PDDocument>): ByteArray {
         if (seconds.isEmpty()) {
             return first
         }
@@ -24,7 +24,7 @@ object PDFMerger {
             }
 
             seconds.forEach {
-                it.use { vedlegg ->
+                it().use { vedlegg ->
                     if (vedlegg.pages.count % 2 == 1) {
                         target.addPage(PDPage())
                     }
