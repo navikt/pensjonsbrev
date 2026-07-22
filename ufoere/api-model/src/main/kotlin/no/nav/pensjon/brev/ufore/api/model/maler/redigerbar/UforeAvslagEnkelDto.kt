@@ -18,6 +18,7 @@ data class UforeAvslagEnkelDto(
 
     data class UforeAvslagPendata(
         val kravMottattDato: LocalDate,
+        val kravFremsattDato: LocalDate?,
         val vurdering: String
     ) : FagsystemBrevdata
 }

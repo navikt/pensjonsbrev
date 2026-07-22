@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import java.time.LocalDate
 
 data class EndringUfoeretrygdDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
@@ -15,6 +16,7 @@ data class EndringUfoeretrygdDto(
     ) : RedigerbarBrevdata<EmptySaksbehandlerValg, EndringUfoeretrygdDto.PesysData> {
     data class PesysData(
         val pe: PEgruppe10,
+        val kravFremsattDato: LocalDate?,
 
         val oifuVedVirkningstidspunkt: Kroner?,
 
