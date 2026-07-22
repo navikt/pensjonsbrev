@@ -1,12 +1,8 @@
 package no.nav.pensjon.brev.skribenten.vedlegg
 
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.PDFMerger
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
-import org.apache.pdfbox.Loader
-import org.apache.pdfbox.multipdf.PDFMergerUtility
-import org.apache.pdfbox.pdmodel.PDDocument
-import org.apache.pdfbox.pdmodel.PDPage
-import java.io.ByteArrayOutputStream
 
 interface PDFVedleggAppender {
     fun leggPaaVedlegg(
@@ -30,33 +26,6 @@ class PDFVedleggAppenderImpl : PDFVedleggAppender {
             return pdfCompilationOutput
         }
 
-        return mergePDFs(pdfCompilationOutput) { attachments.map { VedleggAppender.lesInnVedlegg(it, spraak) } }
-    }
-
-    private fun mergePDFs(
-        first: ByteArray,
-        seconds: () -> List<PDDocument>,
-    ): ByteArray = PDDocument().use { target ->
-        val merger = PDFMergerUtility()
-
-        Loader.loadPDF(first).use {
-            if (it.numberOfPages % 2 == 1) {
-                it.addPage(PDPage())
-            }
-            merger.appendDocument(target, it)
-        }
-
-        seconds().forEach {
-            it.use { vedlegg ->
-                if (vedlegg.pages.count % 2 == 1) {
-                    target.addPage(PDPage())
-                }
-                merger.appendDocument(target, vedlegg)
-            }
-        }
-
-        val outputStream = ByteArrayOutputStream()
-        target.save(outputStream)
-        return outputStream.toByteArray()
+        return PDFMerger.mergePDFs(pdfCompilationOutput) { attachments.map { VedleggAppender.lesInnVedlegg(it, spraak) } }
     }
 }
