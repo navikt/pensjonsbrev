@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
-import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.jetbrains.exposed.v1.jdbc.Database
