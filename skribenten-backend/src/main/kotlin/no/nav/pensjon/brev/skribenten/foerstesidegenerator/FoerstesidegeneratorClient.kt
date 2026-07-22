@@ -16,7 +16,7 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import io.ktor.utils.io.core.Closeable
-import no.nav.pensjon.brev.skribenten.FoerstesidegeneratorConfig
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
@@ -29,7 +29,7 @@ import no.nav.pensjon.brev.skribenten.services.installRetry
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import org.slf4j.LoggerFactory
 
-class FoerstesidegeneratorClient(config: FoerstesidegeneratorConfig, authService: AuthService, clientEngine: HttpClientEngine = CIO.create()) : Closeable {
+class FoerstesidegeneratorClient(config: OboClientConfig, authService: AuthService, clientEngine: HttpClientEngine = CIO.create()) : Closeable {
 
     @Suppress("unused") // Brukes av ktor-di
     constructor(config: SkribentenConfig, authService: AuthService) : this(config.services.foerstesidegenerator, authService)

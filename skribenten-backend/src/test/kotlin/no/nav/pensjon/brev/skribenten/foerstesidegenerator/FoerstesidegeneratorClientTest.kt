@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.foerstesidegenerator
 
-import no.nav.pensjon.brev.skribenten.FoerstesidegeneratorConfig
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Arkivsak
@@ -28,7 +28,7 @@ import java.nio.file.Path
 
 class FoerstesidegeneratorClientTest {
 
-    private val config = FoerstesidegeneratorConfig(
+    private val config = OboClientConfig(
         url = "http://foerstesidegenerator.test",
         scope = "test-scope"
     )
