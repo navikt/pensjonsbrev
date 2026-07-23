@@ -18,27 +18,28 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
     sealed interface Token {
         class Block(val id: Int?, val type: Edit.Block.Type) : Token, EqualityBy<Block>(Block::type)
 
-        sealed interface BlockContent : Token
+        sealed interface BlockContent : Token {
+            val id: Int?
+        }
         sealed interface TextContent : BlockContent
 
-        class ItemList(val id: Int?, val listType: Listetype) : BlockContent, EqualityBy<ItemList>(ItemList::listType)
+        class ItemList(override val id: Int?, val listType: Listetype) : BlockContent, EqualityBy<ItemList>(ItemList::listType)
         class Item(val id: Int?) : Token, EqualityBy<Item>()
 
-        class Table(val id: Int?) : BlockContent, EqualityBy<Table>()
+        class Table(override val id: Int?) : BlockContent, EqualityBy<Table>()
         class TableHeader(val id: Int?) : Token, EqualityBy<TableHeader>()
         class ColumnSpec(val id: Int?, val alignment: Edit.ParagraphContent.Table.ColumnAlignment, val span: Int) : Token, EqualityBy<ColumnSpec>(ColumnSpec::alignment, ColumnSpec::span)
         class Row(val id: Int?) : Token, EqualityBy<Row>()
         class Cell(val id: Int?) : Token, EqualityBy<Cell>()
 
         sealed class Text : TextContent, EqualityBy<Text>(Text::fontType) {
-            abstract val id: Int?
             abstract val fontType: FontType
 
             class Literal(override val id: Int?, override val fontType: FontType) : Text()
             class Variable(override val id: Int?, override val fontType: FontType) : Text()
         }
 
-        class NewLine(val id: Int?) : TextContent, EqualityBy<NewLine>()
+        class NewLine(override val id: Int?) : TextContent, EqualityBy<NewLine>()
         data class Word(val word: String) : Token
     }
 
@@ -70,23 +71,57 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                 val deleteContentIndex = deleteIndex.withContentIndex(deletePos)
 
                 when (entry.token) {
-                    is Token.Text -> consumeText(insertContentIndex, deleteContentIndex)
-                    is Token.NewLine -> {}
+                    is Token.TextContent -> {
+                        consumeTextContent(insertContentIndex, deleteContentIndex, entry.narrow())
+                    }
                     is Token.ItemList -> {
-                        @Suppress("UNCHECKED_CAST")
-                        consumeItemList(insertContentIndex, deleteContentIndex, entry as DiffEntry<Token.ItemList>)
+                        consumeItemList(insertContentIndex, deleteContentIndex, entry.narrow())
                     }
                     is Token.Table -> {
-                        @Suppress("UNCHECKED_CAST")
-                        consumeTable(insertContentIndex, deleteContentIndex, entry as DiffEntry<Token.Table>)
+                        consumeTable(insertContentIndex, deleteContentIndex, entry.narrow())
                     }
                 }
             }
 
-        private fun consumeText(insertIndex: ContentIndex, deleteIndex: ContentIndex) =
-            cursor.fold(WordDiffCollector(), WordDiffCollector::addEntry)
-                .changes()
-                .forEach { producer.textSegment(insertIndex, deleteIndex, it) }
+        // Fires textContent for the whole node (Text or NewLine); for Text nodes, also diffs the words within it.
+        //
+        // A Text node's word-level diff must always be folded from the cursor (it can't be skipped, or its
+        // "genuinely fully deleted" status decided, based on the content-level Change alone): Token.Text equality
+        // only compares fontType (see Token.Text's EqualityBy), so the shortest edit script may pair this node
+        // with an unrelated node elsewhere purely because their fontType matches, then classify it as content-level
+        // Unchanged/Replace even though none of its actual words survive - or, conversely, classify it as a
+        // content-level Delete while one of its words is, word-for-word, reused by an unrelated new node elsewhere
+        // (e.g. old "beta gamma" being classified as a content-level Delete while its "beta" word is reused by new
+        // "beta epsilon"). Only the resulting word-level changes reveal whether this node's text is genuinely,
+        // entirely gone (in which case reporting its words individually would only duplicate the full node already
+        // conveyed via the textContent Delete, so we suppress them) or whether some of its words survived elsewhere
+        // (in which case the word-level segments are the only place that information is captured, so we emit them
+        // instead of a textContent Delete). Similarly, a node that keeps some of its own words as-is (e.g. "hello
+        // world" -> "hello", where "hello" survives Unchanged within this very node's fold) is not genuinely gone
+        // either, even though the resulting changes are delete-only - hence the additional collector.hasUnchanged
+        // check.
+        private fun consumeTextContent(insertIndex: ContentIndex, deleteIndex: ContentIndex, entry: DiffEntry<Token.TextContent>) {
+            when (entry.token) {
+                is Token.NewLine -> {
+                    entry.toChange { DiffProducer.TextContentInfo(it.id) }?.let { producer.textContent(insertIndex, deleteIndex, it) }
+                }
+                is Token.Text -> {
+                    val collector = cursor.fold(WordDiffCollector(), WordDiffCollector::addEntry)
+                    val changes = collector.changes()
+                    val isWholeNodeGone = when {
+                        entry is DiffEntry.Insert || collector.hasUnchanged -> false
+                        changes.isEmpty() -> entry is DiffEntry.Delete
+                        else -> changes.all { it is Change.Delete }
+                    }
+                    if (isWholeNodeGone) {
+                        producer.textContent(insertIndex, deleteIndex, Change.Delete(DiffProducer.TextContentInfo(entry.token.id)))
+                    } else {
+                        changes.forEach { producer.textSegment(insertIndex, deleteIndex, it) }
+                    }
+                }
+            }
+        }
+
 
         private fun consumeItemList(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex, entry: DiffEntry<Token.ItemList>) {
             entry.toChange { DiffProducer.ItemListInfo(it.id, it.listType) }?.let {
@@ -152,10 +187,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
 
         private fun consumeTextOnlyContent(makeInsertIndex: (Int) -> ContentIndex, makeDeleteIndex: (Int) -> ContentIndex) =
             cursor.forEachIndexedStable<Token.TextContent> { insertContentIndex, deleteContentIndex, entry ->
-                when (entry.token) {
-                    is Token.Text -> consumeText(makeInsertIndex(insertContentIndex), makeDeleteIndex(deleteContentIndex))
-                    is Token.NewLine -> {}
-                }
+                consumeTextContent(makeInsertIndex(insertContentIndex), makeDeleteIndex(deleteContentIndex), entry)
             }
     }
 
@@ -226,14 +258,17 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
     private data class WordDiffCollector private constructor(
         private val inserts: RangeState,
         private val deletes: RangeState,
+        // Tracks whether any of this node's own words were seen as Unchanged (i.e. genuinely still present,
+        // as-is, in both old and new) - see consumeTextContent's doc for why this matters.
+        val hasUnchanged: Boolean,
     ) {
-        constructor() : this(RangeState(), RangeState())
+        constructor() : this(RangeState(), RangeState(), false)
 
         fun addEntry(entry: DiffEntry<Token.Word>): WordDiffCollector = when (entry) {
             is DiffEntry.Insert -> copy(inserts = inserts.extend(entry.new.word))
             is DiffEntry.Delete -> copy(deletes = deletes.extend(entry.old.word))
             is DiffEntry.Replace -> copy(inserts = inserts.extend(entry.new.word), deletes = deletes.extend(entry.old.word))
-            is DiffEntry.Unchanged -> copy(inserts = inserts.skip(entry.value.word), deletes = deletes.skip(entry.value.word))
+            is DiffEntry.Unchanged -> copy(inserts = inserts.skip(entry.value.word), deletes = deletes.skip(entry.value.word), hasUnchanged = true)
         }
 
         fun changes(): List<Change<DiffProducer.TextSegment>> =

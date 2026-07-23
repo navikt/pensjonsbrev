@@ -19,4 +19,13 @@ sealed class DiffEntry<T> {
         is Replace -> Change.Replace(transform(old), transform(new))
         is Unchanged -> null
     }
+
+    inline fun <reified R : T> narrow(): DiffEntry<R> = map { it as R }
+
+    fun <R> map(transform: (T) -> R): DiffEntry<R> = when (this) {
+        is Insert -> Insert(transform(new))
+        is Delete -> Delete(transform(old))
+        is Replace -> Replace(transform(old), transform(new))
+        is Unchanged -> Unchanged(transform(value))
+    }
 }

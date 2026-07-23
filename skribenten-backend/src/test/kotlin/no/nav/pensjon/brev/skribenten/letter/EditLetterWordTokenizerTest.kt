@@ -210,9 +210,10 @@ class EditLetterWordTokenizerTest {
         )
         val new = listOf<Token>()
         assertEquals(
+            // "hello" is genuinely, entirely gone (the whole block is deleted), so it's reported via textContent
+            // (which recordCalls doesn't capture here) rather than as a word-level textSegment delete.
             listOf(
                 Triple(BlockIndex(0), BlockIndex(0), Change.Delete(DiffProducer.BlockInfo(null, PARAGRAPH))),
-                Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 0), Change.Delete(DiffProducer.TextSegment(0, 5, "hello"))),
             ),
             recordCalls(old, new),
         )
@@ -443,7 +444,8 @@ class EditLetterWordTokenizerTest {
     fun `parseTokens deleted NewLine merging two literals with word change produces correct diff`() {
         // Old: "hello" + NewLine + "world" (two literals)
         // New: "hello goodbye" (single literal, word changed)
-        // The word "hello" is unchanged, NewLine is deleted, "world"->"goodbye" is a change
+        // The word "hello" is unchanged, NewLine is deleted, "world" is genuinely gone (none of its words
+        // survive - "goodbye" is a brand new word, not a reuse of "world")
         val old = listOf(
             Token.Block(null, PARAGRAPH),
             Token.Text.Literal(null, FontType.PLAIN),
@@ -460,13 +462,11 @@ class EditLetterWordTokenizerTest {
         )
         val calls = recordCalls(old, new)
         assertEquals(
+            // "goodbye" inserted into the first (unchanged) Text container in both old and new, offset 6-13.
+            // "world" is entirely gone, reported via textContent (which recordCalls doesn't capture here)
+            // rather than as a word-level textSegment delete.
             listOf(
-                // "goodbye" inserted into the first (unchanged) Text container in both old and new, offset 6-13
                 Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 0), Change.Insert(DiffProducer.TextSegment(6, 13, "goodbye"))),
-                // "world" deleted at content index 2 (third BlockContent in old: the second Text), offset 0-5.
-                // insertIndex reuses content index 0, since new has no second Text bucket to advance into - it
-                // stays pinned at the last real new-document bucket rather than an out-of-bounds "next" index.
-                Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 2), Change.Delete(DiffProducer.TextSegment(0, 5, "world"))),
             ),
             calls,
         )
