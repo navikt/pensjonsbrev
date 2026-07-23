@@ -26,11 +26,28 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
         class ItemList(override val id: Int?, val listType: Listetype) : BlockContent, EqualityBy<ItemList>(ItemList::listType)
         class Item(val id: Int?) : Token, EqualityBy<Item>()
 
+        // Marks the end of an ItemList's items. Since an Item can only ever contain TextContent, and TextContent is
+        // also used both at the top BlockContent level and inside a Table's Cell, the last item's own TextContent
+        // run would otherwise have no way to distinguish "no more content in this item" from "this item happens to
+        // be followed, in the flattened token stream, by a TextContent-shaped token belonging to an unrelated,
+        // sibling or outer scope" (e.g. a NewLine that is actually the ItemList's own sibling in the block's
+        // content). Without this marker, that sibling token could be silently swallowed as if it were this item's
+        // own content - and, since forEachIndexedStable's insert/delete cursors can independently reach this point
+        // out of lockstep (see ReplaceAwareEditScriptCursor.forEachIndexedStable's decoy handling), potentially walk
+        // arbitrarily far past the ItemList's real boundary. ItemListEnd is a bare Token (not BlockContent or
+        // TextContent), so it can never itself be mistaken for content by any of the type-filtered consume loops -
+        // it is only ever explicitly consumed by consumeItemList once its items are done.
+        data object ItemListEnd : Token, EqualityBy<ItemListEnd>()
+
         class Table(override val id: Int?) : BlockContent, EqualityBy<Table>()
         class TableHeader(val id: Int?) : Token, EqualityBy<TableHeader>()
         class ColumnSpec(val id: Int?, val alignment: Edit.ParagraphContent.Table.ColumnAlignment, val span: Int) : Token, EqualityBy<ColumnSpec>(ColumnSpec::alignment, ColumnSpec::span)
         class Row(val id: Int?) : Token, EqualityBy<Row>()
         class Cell(val id: Int?) : Token, EqualityBy<Cell>()
+
+        // Marks the end of a Table's header and rows, for the same reason as ItemListEnd: a Cell's own TextContent
+        // is otherwise unbounded on its trailing side once it is the very last cell in the table.
+        data object TableEnd : Token, EqualityBy<TableEnd>()
 
         sealed class Text : TextContent, EqualityBy<Text>(Text::fontType) {
             abstract val fontType: FontType
@@ -144,6 +161,8 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
         }
 
 
+        // Explicitly consumes the ItemListEnd marker emitted by the tokenizer right after this ItemList's items -
+        // see Token.ItemListEnd's doc for why this is required (bounds the last item's own TextContent run).
         private fun consumeItemList(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex, entry: DiffEntry<Token.ItemList>) {
             entry.toChange { DiffProducer.ItemListInfo(it.id, it.listType) }?.let {
                 producer.itemList(insertIndex, deleteIndex, it)
@@ -159,8 +178,11 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                     makeDeleteIndex = deleteItemIndex::withTextContentIndex,
                 )
             }
+            cursor.requireAndConsume<Token.ItemListEnd>()
         }
 
+        // Explicitly consumes the TableEnd marker emitted by the tokenizer right after this Table's header and rows
+        // - see Token.TableEnd's doc for why this is required (bounds the last cell's own TextContent run).
         private fun consumeTable(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex, entry: DiffEntry<Token.Table>) {
             entry.toChange { DiffProducer.TableInfo(it.id) }?.let {
                 producer.table(insertIndex, deleteIndex, it)
@@ -174,6 +196,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                 }
                 consumeRow(insertRowIndex, deleteRowIndex)
             }
+            cursor.requireAndConsume<Token.TableEnd>()
         }
 
         private fun consumeTableHeader(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex) {
@@ -244,6 +267,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
         override fun visit(itemList: Edit.ParagraphContent.ItemList) {
             emit(Token.ItemList(itemList.id, itemList.editedListType ?: itemList.listType))
             super.visit(itemList)
+            emit(Token.ItemListEnd)
         }
 
         override fun visit(item: Edit.ParagraphContent.ItemList.Item) {
@@ -254,6 +278,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
         override fun visit(table: Edit.ParagraphContent.Table) {
             emit(Token.Table(table.id))
             super.visit(table)
+            emit(Token.TableEnd)
         }
 
         override fun visit(header: Edit.ParagraphContent.Table.Header) {

@@ -116,6 +116,7 @@ class EditLetterWordTokenizerTest {
                 Token.Text.Literal(null, FontType.PLAIN),
                 Token.Word("item"),
                 Token.Word("two"),
+                Token.ItemListEnd,
             ),
             tokens
         )
@@ -148,6 +149,7 @@ class EditLetterWordTokenizerTest {
                 Token.Text.Literal(null, FontType.PLAIN),
                 Token.Word("cell"),
                 Token.Word("body"),
+                Token.TableEnd,
             ),
             tokens
         )
@@ -253,6 +255,7 @@ class EditLetterWordTokenizerTest {
             Token.Item(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("hello"),
+            Token.ItemListEnd,
         )
         assertEquals(
             listOf(
@@ -272,6 +275,7 @@ class EditLetterWordTokenizerTest {
             Token.Item(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("hello"),
+            Token.ItemListEnd,
         )
         val new = listOf(
             Token.Block(null, PARAGRAPH),
@@ -282,6 +286,7 @@ class EditLetterWordTokenizerTest {
             Token.Item(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("world"),
+            Token.ItemListEnd,
         )
         assertEquals(
             listOf(
@@ -309,6 +314,7 @@ class EditLetterWordTokenizerTest {
             Token.Cell(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("body"),
+            Token.TableEnd,
         )
         assertEquals(
             listOf(
@@ -336,13 +342,13 @@ class EditLetterWordTokenizerTest {
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("body"),
         )
-        val old = listOf(Token.Block(null, PARAGRAPH), Token.Table(null)) + tableHeaderAndFirstRow
-        val new = old + listOf(
+        val old = listOf(Token.Block(null, PARAGRAPH), Token.Table(null)) + tableHeaderAndFirstRow + Token.TableEnd
+        val new = listOf(Token.Block(null, PARAGRAPH), Token.Table(null)) + tableHeaderAndFirstRow + listOf(
             Token.Row(null),
             Token.Cell(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("extra"),
-        )
+        ) + Token.TableEnd
         assertEquals(
             listOf(
                 Triple(TableRowIndex(0, 0, 1), TableRowIndex(0, 0, 1), Change.Insert(DiffProducer.RowInfo(null))),
@@ -367,11 +373,24 @@ class EditLetterWordTokenizerTest {
             Token.Cell(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("body"),
+            Token.TableEnd,
         )
-        val new = old + listOf(
+        val new = listOf(
+            Token.Block(null, PARAGRAPH),
+            Token.Table(null),
+            Token.TableHeader(null),
+            Token.ColumnSpec(null, LEFT, 1),
+            Token.Cell(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("col"),
+            Token.Row(null),
+            Token.Cell(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("body"),
             Token.Cell(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("extra"),
+            Token.TableEnd,
         )
         assertEquals(
             listOf(
