@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block
+import no.nav.brev.brevbaker.markup.outline.Block
 
 internal fun TypstCodeScope.renderFormChoiceV2(element: Block.FormChoice) {
     if (element.vspace) {

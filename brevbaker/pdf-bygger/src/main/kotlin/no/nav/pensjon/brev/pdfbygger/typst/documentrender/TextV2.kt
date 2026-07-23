@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
 import no.nav.pensjon.brev.pdfbygger.typst.EscapedTypstContent
 import no.nav.pensjon.brev.pdfbygger.typst.TypstMarkupScope
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Text
+import no.nav.brev.brevbaker.markup.outline.Text
 
 internal fun TypstMarkupScope.renderTextAsPlainV2(elements: List<Text>) {
     elements.forEach { renderPlainTextContentV2(it) }

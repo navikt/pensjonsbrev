@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block
+import no.nav.brev.brevbaker.markup.outline.Block
 
 /**
  * Render a v2 paragraph block. Unlike v1, v2's Paragraph.content is Text-only

@@ -1,37 +1,36 @@
 package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
-import no.nav.pensjon.brev.PDFRequestV2
-import no.nav.pensjon.brev.api.toLanguage
-import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.pdfbygger.clean
+import no.nav.brev.brevbaker.markup.Attachment
+import no.nav.brev.brevbaker.markup.LetterMarkup
+import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.markup.Markup
+import no.nav.brev.brevbaker.markup.PDFTittel
+import no.nav.brev.brevbaker.markup.clean
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
 import no.nav.pensjon.brev.pdfbygger.typst.typstStringEscape
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brev.template.render.documentLanguageSettings
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.PDFTittelV2
 import java.time.format.FormatStyle
 
 object TypstDocumentRendererV2 {
 
-    internal fun render(pdfRequest: PDFRequestV2, typstWriter: TypstFileWriter): Unit = render(
+    internal fun render(pdfRequest: LetterPDFRequest, typstWriter: TypstFileWriter): Unit = render(
         letter = pdfRequest.letterMarkup.clean(),
         attachments = pdfRequest.attachments.clean(),
-        language = pdfRequest.language.toLanguage(),
+        language = pdfRequest.spraak.toLanguage(),
         brevtype = pdfRequest.brevtype,
         pdfVedlegg = pdfRequest.pdfVedlegg,
         typstWriter = typstWriter,
     )
 
     private fun render(
-        letter: LetterMarkupV2,
-        attachments: List<LetterMarkupV2.Attachment>,
+        letter: LetterMarkup,
+        attachments: List<Attachment>,
         language: Language,
-        brevtype: LetterMetadata.Brevtype,
-        pdfVedlegg: List<PDFTittelV2>,
+        brevtype: Markup.Brevtype,
+        pdfVedlegg: List<PDFTittel>,
         typstWriter: TypstFileWriter,
     ): Unit = typstWriter.codeScope {
         appendInputData(letter, attachments, language, brevtype, pdfVedlegg)
@@ -39,11 +38,11 @@ object TypstDocumentRendererV2 {
     }
 
     private fun TypstCodeScope.appendInputData(
-        letter: LetterMarkupV2,
-        attachments: List<LetterMarkupV2.Attachment>,
+        letter: LetterMarkup,
+        attachments: List<Attachment>,
         language: Language,
-        brevtype: LetterMetadata.Brevtype,
-        pdfVedlegg: List<PDFTittelV2>,
+        brevtype: Markup.Brevtype,
+        pdfVedlegg: List<PDFTittel>,
     ) {
         // Language settings dictionary
         appendDictionary("languageSettings", documentLanguageSettings.languageSettings(language))
@@ -53,14 +52,14 @@ object TypstDocumentRendererV2 {
             "input",
             mapOf(
                 "gjelderNavn" to letter.saksinformasjon.gjelderNavn,
-                "gjelderFoedselsnummer" to letter.saksinformasjon.gjelderFoedselsnummer.format(),
+                "gjelderFoedselsnummer" to letter.saksinformasjon.gjelderPersonidentifikator.format(),
                 "annenMottakerNavn" to letter.saksinformasjon.annenMottakerNavn,
-                "saksnummer" to letter.saksinformasjon.saksnummer.saksnummer,
+                "saksnummer" to letter.saksinformasjon.saksnummer.value,
                 "dokumentDato" to letter.saksinformasjon.dokumentDato.format(dateFormatter(language, FormatStyle.LONG)),
                 "avsenderEnhet" to letter.signatur.navAvsenderEnhet,
                 "signerendeSaksbehandler" to letter.signatur.saksbehandlerSignatur?.saksbehandlerNavn,
-                "signerendeAttestant" to letter.signatur.saksbehandlerSignatur?.attesterendeSaksbehandlerNavn?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV },
-                "erVedtaksbrev" to (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV),
+                "signerendeAttestant" to letter.signatur.saksbehandlerSignatur?.attesterendeSaksbehandlerNavn?.takeIf { brevtype == Markup.Brevtype.VEDTAKSBREV },
+                "erVedtaksbrev" to (brevtype == Markup.Brevtype.VEDTAKSBREV),
                 "attachments" to buildAttachmentTitleList(attachments, pdfVedlegg),
             )
         )
@@ -70,8 +69,8 @@ object TypstDocumentRendererV2 {
      * Build a list of attachment titles for the closing section.
      */
     private fun buildAttachmentTitleList(
-        attachments: List<LetterMarkupV2.Attachment>,
-        pdfVedlegg: List<PDFTittelV2>
+        attachments: List<Attachment>,
+        pdfVedlegg: List<PDFTittel>
     ): List<String> {
         val attachmentTitles = attachments.map { attachment ->
             attachment.title1.renderToPlainStringV2()
@@ -91,8 +90,8 @@ object TypstDocumentRendererV2 {
      * flat sibling list.
      */
     private fun TypstCodeScope.renderLetterTemplate(
-        letter: LetterMarkupV2,
-        attachments: List<LetterMarkupV2.Attachment>
+        letter: LetterMarkup,
+        attachments: List<Attachment>
     ) {
         // Imports
         appendCodeln("""#import "template.typ": template""")
@@ -133,3 +132,13 @@ object TypstDocumentRendererV2 {
         appendCodeln("}")
     }
 }
+
+private fun Markup.Spraak.toLanguage(): Language =
+    when (this) {
+        Markup.Spraak.BOKMAL -> Language.Bokmal
+        Markup.Spraak.NYNORSK -> Language.Nynorsk
+        Markup.Spraak.ENGLISH -> Language.English
+    }
+
+private fun Markup.Personidentifikator.format(): String =
+    "([0-9]{6})([0-9]{5})".toRegex().replace(value, "$1 $2")

@@ -7,9 +7,17 @@ import io.ktor.http.*
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.*
+import kotlinx.serialization.json.Json
 import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.markup.Markup
+import no.nav.brev.brevbaker.markup.dsl.letterMarkup
+import no.nav.brev.brevbaker.markup.dsl.letterPDFRequest
+import no.nav.brev.brevbaker.markup.dsl.paragraph
+import no.nav.brev.brevbaker.markup.dsl.saksinformasjon
+import no.nav.brev.brevbaker.markup.dsl.signatur
+import no.nav.brev.brevbaker.markup.dsl.title1
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.PDFRequestV2
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -96,9 +104,9 @@ class PdfByggerAppTest {
     }
 
     /**
-     * Happy-path-test for `/v2/produserBrev` som verifiserer at routing, JSON-deserialisering av [PDFRequestV2]
-     * og kall til [no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2] er korrekt
-     * koblet sammen, uten å kreve at faktisk `typst`-binær er tilgjengelig.
+     * Happy-path-test for `/v2/produserBrev` som verifiserer at routing, kotlinx-JSON-deserialisering av
+     * [LetterPDFRequest] og kall til [no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2]
+     * er korrekt koblet sammen, uten å kreve at faktisk `typst`-binær er tilgjengelig.
      */
     @Test
     fun `v2 produserBrev happy path returnerer PDFCompilationOutput`() {
@@ -116,16 +124,23 @@ class PdfByggerAppTest {
             }
         }
 
-        val request = PDFRequestV2(
-            letterMarkup = letterMarkupV2 {
-                title1 { text("En fin tittel") }
+        val request = letterPDFRequest(
+            spraak = Markup.Spraak.BOKMAL,
+            brevtype = Markup.Brevtype.VEDTAKSBREV,
+            letter = letterMarkup(
+                saksinformasjon = saksinformasjon(
+                    gjelderNavn = "Navn Navnesen",
+                    gjelderPersonidentifikator = "12345678901",
+                    saksnummer = "123",
+                    dokumentDato = java.time.LocalDate.of(2025, 1, 1),
+                ),
+                signatur = signatur(hilsenTekst = "hilsen", navAvsenderEnhet = "Nav sentralt"),
+            ) {
+                title1("En fin tittel")
                 outline {
-                    paragraph { text("Hei, dette er et brev.") }
+                    paragraph("Hei, dette er et brev.")
                 }
             },
-            attachments = emptyList(),
-            language = LanguageCode.BOKMAL,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
 
         testApplication {
@@ -138,7 +153,7 @@ class PdfByggerAppTest {
 
             val response = client.post("/v2/produserBrev") {
                 contentType(ContentType.Application.Json)
-                setBody(mapper.writeValueAsBytes(request))
+                setBody(Json.encodeToString(LetterPDFRequest.serializer(), request))
             }
 
             assertEquals(HttpStatusCode.OK, response.status)

@@ -16,19 +16,23 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.path
 import io.ktor.server.request.receive
+import io.ktor.server.request.receiveText
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.logging.Logger
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import kotlinx.serialization.json.Json
+import no.nav.brev.brevbaker.markup.LetterPDFRequest
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.PDFRequestV2
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2
 import org.slf4j.LoggerFactory
 
 fun main(args: Array<String>) = EngineMain.main(args)
+
+private val markupJson = Json { ignoreUnknownKeys = true }
 
 fun ApplicationConfig.getProperty(name: String): String =
     property(name).getString()
@@ -101,7 +105,12 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         }
 
         post("/v2/produserBrev") {
-            val request = call.receive<PDFRequestV2>()
+            val request = try {
+                markupJson.decodeFromString(LetterPDFRequest.serializer(), call.receiveText())
+            } catch (cause: Exception) {
+                call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown reason")
+                return@post
+            }
             val result = typstCompileService.createLetter {
                 TypstDocumentRendererV2.render(request, it)
             }
