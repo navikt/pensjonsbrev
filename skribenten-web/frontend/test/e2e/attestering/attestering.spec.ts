@@ -3,13 +3,13 @@ import { expect, type Page, test } from "@playwright/test";
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { type BrevResponse } from "~/types/brev";
 
-import { nyBrevInfo, nyBrevResponse } from "../../utils/brevredigeringTestUtils";
+import { brevInfo, brevResponse } from "../../utils/letterEditorTestUtils";
 import brev from "../fixtures/bekreftelsePåFlyktningstatus/brev.json" with { type: "json" };
 import { setupSakStubs } from "../utils/helpers";
 
-const defaultBrev = nyBrevResponse({});
+const defaultBrev = brevResponse({});
 const bekreftelsePaaFlyktningstatusBrev = brev as unknown as BrevResponse;
-const vedtaksBrev = nyBrevResponse({
+const vedtaksBrev = brevResponse({
   ...bekreftelsePaaFlyktningstatusBrev,
   info: { ...bekreftelsePaaFlyktningstatusBrev.info, brevtype: "VEDTAKSBREV" },
 });
@@ -54,7 +54,7 @@ test.describe("attestering", () => {
             ...vedtaksBrev,
             saksbehandlerValg: body.saksbehandlerValg,
             redigertBrev: body.redigertBrev,
-            info: nyBrevInfo({ ...body.info, status: { type: "Kladd" } }),
+            info: brevInfo({ ...body.info, status: { type: "Kladd" } }),
           },
         });
       }
@@ -89,7 +89,7 @@ test.describe("attestering", () => {
     expect(lagreBrevCount).toBe(0);
 
     // brevbehandler
-    const brevEtterLaas = nyBrevInfo({
+    const brevEtterLaas = brevInfo({
       ...vedtaksBrev.info,
       status: { type: "Attestering" },
     });

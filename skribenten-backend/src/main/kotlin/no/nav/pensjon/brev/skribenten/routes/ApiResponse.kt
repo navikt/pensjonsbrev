@@ -78,6 +78,16 @@ suspend inline fun RoutingContext.apiRespond(
 
 val apiRespondLogger: Logger = LoggerFactory.getLogger("ApiResponse")
 
+suspend inline fun <T> RoutingContext.respondSuccess(
+    outcome: Outcome.Success<T>?,
+    successResponse: suspend RoutingCall.(T) -> Unit,
+) {
+    when (outcome) {
+        is Outcome.Success -> call.successResponse(outcome.value)
+        null -> call.respond(HttpStatusCode.NotFound)
+    }
+}
+
 suspend inline fun <T> RoutingContext.respondOutcome(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<T, BrevredigeringError>?,

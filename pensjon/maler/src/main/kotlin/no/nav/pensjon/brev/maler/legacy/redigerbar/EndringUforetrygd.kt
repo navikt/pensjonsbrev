@@ -30,7 +30,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import java.time.LocalDate
+import no.nav.pensjon.brev.template.dsl.expression.localDateNow
 
 @TemplateModelHelpers
 object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
@@ -53,10 +53,10 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
         val pe = pesysData.pe
 
         val kravarsak = pe.vedtaksdata_kravhode_kravarsaktype()
-        val onsketvirkningsdato = pe.vedtaksdata_kravhode_onsketvirkningsdato().ifNull(LocalDate.now())
+        val onsketvirkningsdato = pe.vedtaksdata_kravhode_onsketvirkningsdato().ifNull(localDateNow)
 
-        val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(LocalDate.now())
-        val skadetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_skadetidspunkt().ifNull(LocalDate.now())
+        val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(localDateNow)
+        val skadetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_skadetidspunkt().ifNull(localDateNow)
         val virkningstidspunktBegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()
         val virkningbegrunnelseStdbegr_22_12_1_5 = virkningstidspunktBegrunnelse.equalTo("stdbegr_22_12_1_5")
         val uforegradFraBeregning = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()

@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.template.BrevTemplate
+import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.TemplateModelSpecificationFactory
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
@@ -56,11 +57,11 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
             }
 
             get("/modelSpecification") {
-                val template = call.kode(resource)
-                    .let { resource.getTemplate(it)?.template }
+                val brevTemplate = call.kode(resource)
+                    .let { resource.getTemplate(it) }
 
-                if (template != null) {
-                    call.respond(template.modelSpecification())
+                if (brevTemplate != null) {
+                    call.respond(brevTemplate.modelSpecification ?: brevTemplate.template.modelSpecification())
                 } else {
                     call.respond(HttpStatusCode.NotFound)
                 }
@@ -81,7 +82,8 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
         }
     }
 
-fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactory(this.letterDataType).build()
+@OptIn(BrevbakerDSLInternal::class)
+fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactory(this.letterDataType).build(saksbehandlervalg)
 
 fun LetterTemplate<*, *>.harRedigerbareVedlegg(): Boolean = attachments.any { it.editableId != null }
 

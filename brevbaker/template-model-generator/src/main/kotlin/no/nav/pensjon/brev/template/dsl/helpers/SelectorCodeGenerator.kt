@@ -43,8 +43,13 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
         private fun generateNodeCode(codeGenerator: CodeGenerator, node: Node, pkg: String, dependencies: Set<KSFile>) {
             if (node.include) {
                 val className = node.decl.simpleName.asString()
-                createFile(codeGenerator, pkg, className, dependencies) { writer ->
-                    node.decl.getAllProperties().forEach { generatePropertySelectors(it, writer) }
+                val properties = node.decl.getAllProperties()
+                    .filterNot { it.type.resolve().declaration.qualifiedName?.asString() in SKIPPED_NO_WARN_CLASSES }
+                if (properties.any()) {
+                    createFile(codeGenerator, pkg, className, dependencies) { writer ->
+                        properties
+                            .forEach { generatePropertySelectors(it, writer) }
+                    }
                 }
             }
             node.children.values.forEach { child ->

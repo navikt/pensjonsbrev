@@ -1,8 +1,11 @@
 rootProject.name = "pensjonsbrev"
 
+include("ktlint-rules")
+
 include("brevbaker:core")
 include("brevbaker:markup")
 include("brevbaker:api-model-common")
+include("brevbaker:markup")
 include("brevbaker:dsl")
 include("brevbaker:pdf-bygger")
 include("brevbaker:template-model-generator")

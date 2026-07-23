@@ -91,6 +91,7 @@ dependencies {
     implementation(project(":etterlattemaler"))
     implementation(project(":brevbaker:core"))
     ksp(project(":brevbaker:template-model-generator"))
+    kspTest(project(":brevbaker:template-model-generator"))
 
     implementation(libs.pdfbox)
 
@@ -109,5 +110,6 @@ dependencies {
 
     testImplementation(testFixtures(project(":brevbaker:core")))
     testImplementation(testFixtures(project(":brevbaker:dsl")))
+    testImplementation(libs.jsoup)
 }
 

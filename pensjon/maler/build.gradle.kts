@@ -21,10 +21,12 @@ repositories {
 dependencies {
     implementation(project(":brevbaker:core"))
     ksp(project(":brevbaker:template-model-generator"))
+    kspTest(project(":brevbaker:template-model-generator"))
     api("no.nav.pensjon.brev:api-model:$apiModelVersion")
 
     testImplementation(libs.bundles.junit)
     testImplementation(testFixtures(project(":brevbaker:core")))
+    testImplementation(testFixtures(project(":brevbaker:dsl")))
 }
 
 tasks.test {

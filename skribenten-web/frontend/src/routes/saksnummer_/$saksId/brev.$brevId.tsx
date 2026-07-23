@@ -7,6 +7,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { getBrev, getBrevmetadata, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
+import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import { createLetterSnapshot, createSaksbehandlerValgEndretHistoryEntry } from "~/Brevredigering/LetterEditor/history";
 import {
@@ -51,7 +52,8 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
 });
 
 const queryRetries = 3;
-const isSpecialCaseErrorStatus = (status: number | undefined) => status === 404 || status === 409 || status === 423;
+const isSpecialCaseErrorStatus = (status: number | undefined) =>
+  status === 404 || status === 409 || status === 422 || status === 423;
 
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
@@ -231,6 +233,7 @@ function RedigerBrev({
     kind: WarnModalKind;
     count?: number;
   } | null>(null);
+  const pendingSubmitValuesRef = useRef<RedigerBrevSidemenyFormData | null>(null);
 
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
@@ -397,10 +400,12 @@ function RedigerBrev({
   const guardedSubmit = form.handleSubmit((values) => {
     const warning = getWarning();
     if (warning) {
+      pendingSubmitValuesRef.current = values;
       setWarn(warning);
       setWarnOpen(true);
       return;
     }
+    pendingSubmitValuesRef.current = null;
     onSubmit(values, navigateToBrevbehandler);
   });
 
@@ -445,19 +450,30 @@ function RedigerBrev({
   return (
     <FormProvider {...form}>
       <Box asChild background="default" maxWidth="1106px" minWidth="945px">
-        <VStack asChild flexGrow="1" marginInline="auto">
+        <VStack asChild height="100%" marginInline="auto">
           <form onSubmit={guardedSubmit}>
             <WarnModal
               count={warn?.count ?? 0}
               kind={warn?.kind ?? "fritekst"}
               onClose={() => {
+                pendingSubmitValuesRef.current = null;
                 setWarnOpen(false);
+                if (warn?.kind === "fritekst" || warn?.kind === "fritekstOgTekstValg") {
+                  const focus = findFirstUneditedFritekstFocus(editorState.redigertBrev);
+                  if (focus) {
+                    setEditorState((s) => ({ ...s, focus }));
+                  }
+                }
                 setWarn(null);
               }}
               onFortsett={() => {
+                const values = pendingSubmitValuesRef.current;
+
+                pendingSubmitValuesRef.current = null;
                 setWarnOpen(false);
                 setWarn(null);
-                onSubmit(form.getValues(), navigateToBrevbehandler);
+                if (!values) return;
+                onSubmit(values, navigateToBrevbehandler);
               }}
               open={warnOpen}
             />
@@ -466,7 +482,7 @@ function RedigerBrev({
               onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
               reservasjon={reservasjonQuery.data}
             />
-            <HGrid columns="minmax(304px, 384px) minmax(640px, 694px)" height="var(--main-page-content-height)">
+            <HGrid columns="minmax(304px, 384px) minmax(640px, 694px)" flexGrow="1" overflowY="hidden">
               <Box
                 asChild
                 borderColor="neutral-subtle"

@@ -64,7 +64,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
                 <div>
                   <span>{mapErrorMessage(error.message)}</span>
                   <span>
-                    Hvis det skjer igjen, trykk på knappen <i>Kopier ID</i> nedenfor og meld feil til oss i Teams.
+                    Hvis det skjer igjen, trykk på knappen <i>Kopier ID</i> nedenfor og meld feil til oss i Porten.
                   </span>
                 </div>
                 <Box asChild background="default" borderColor="neutral" borderRadius="4" borderWidth="1">

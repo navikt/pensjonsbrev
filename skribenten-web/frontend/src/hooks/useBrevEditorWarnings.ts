@@ -1,7 +1,10 @@
 import { useCallback, useMemo } from "react";
 import { type UseFormReturn } from "react-hook-form";
 
-import { countUnfilledFritekstPlaceholders } from "~/Brevredigering/LetterEditor/actions/common";
+import {
+  countMissingFromTemplateBlocks,
+  countUneditedFritekstPlaceholders,
+} from "~/Brevredigering/LetterEditor/actions/common";
 import { type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
   extractRelevantSaksbehandlerValgFields,
@@ -55,26 +58,35 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
     });
   }, [form, filteredSpecification, status]);
 
-  const numberOfUnfilledFritekstPlaceholders = useCallback(
-    () => countUnfilledFritekstPlaceholders(redigertBrev),
+  const numberOfUneditedFritekstPlaceholders = useCallback(
+    () => countUneditedFritekstPlaceholders(redigertBrev),
+    [redigertBrev],
+  );
+
+  const numberOfMissingFromTemplateBlocks = useCallback(
+    () => countMissingFromTemplateBlocks(redigertBrev),
     [redigertBrev],
   );
 
   const getWarning = useCallback((): WarningResult => {
-    const unfilled = numberOfUnfilledFritekstPlaceholders();
+    const unedited = numberOfUneditedFritekstPlaceholders();
     const missingRequired = hasMissingRequiredSaksbehandlerValg();
+    const missingFromTemplate = numberOfMissingFromTemplateBlocks();
 
-    if (unfilled > 0 && missingRequired) {
-      return { kind: "fritekstOgTekstValg", count: unfilled };
+    if (unedited > 0 && missingRequired) {
+      return { kind: "fritekstOgTekstValg", count: unedited };
     }
-    if (unfilled > 0) {
-      return { kind: "fritekst", count: unfilled };
+    if (unedited > 0) {
+      return { kind: "fritekst", count: unedited };
     }
     if (missingRequired) {
       return { kind: "tekstValg" };
     }
+    if (missingFromTemplate > 0) {
+      return { kind: "avsnittIkkeIMal", count: missingFromTemplate };
+    }
     return null;
-  }, [hasMissingRequiredSaksbehandlerValg, numberOfUnfilledFritekstPlaceholders]);
+  }, [hasMissingRequiredSaksbehandlerValg, numberOfUneditedFritekstPlaceholders, numberOfMissingFromTemplateBlocks]);
 
-  return { getWarning, hasMissingRequiredSaksbehandlerValg, numberOfUnfilledFritekstPlaceholders };
+  return { getWarning, hasMissingRequiredSaksbehandlerValg, numberOfUneditedFritekstPlaceholders };
 }
