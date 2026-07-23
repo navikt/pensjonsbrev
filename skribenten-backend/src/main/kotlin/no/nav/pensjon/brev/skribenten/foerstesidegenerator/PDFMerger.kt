@@ -16,25 +16,19 @@ object PDFMerger {
         PDDocument().use { target ->
             val merger = PDFMergerUtility()
 
-            Loader.loadPDF(first).use {
-                if (it.numberOfPages % 2 == 1) {
-                    it.addPage(PDPage())
-                }
-                merger.appendDocument(target, it)
-            }
-
-            seconds.forEach {
-                it().use { vedlegg ->
-                    if (vedlegg.pages.count % 2 == 1) {
-                        target.addPage(PDPage())
-                    }
-                    merger.appendDocument(target, vedlegg)
-                }
-            }
+            Loader.loadPDF(first).use { addPage(it, merger, target) }
+            seconds.forEach { it().use { page -> addPage(page, merger, target) } }
 
             val outputStream = ByteArrayOutputStream()
             target.save(outputStream)
             return outputStream.toByteArray()
         }
+    }
+
+    private fun addPage(document: PDDocument, merger: PDFMergerUtility, target: PDDocument) {
+        if (document.numberOfPages % 2 == 1) {
+            document.addPage(PDPage())
+        }
+        merger.appendDocument(target, document)
     }
 }
