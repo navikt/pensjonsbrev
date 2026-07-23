@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.vedlegg
 
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.Side
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.cos.COSName
@@ -14,9 +13,7 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDField
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField
 
 internal object VedleggAppender {
-    internal fun lesInnVedlegg(vedlegg: PDFVedlegg, spraak: LanguageCode, filsti: String = "/vedlegg"): PDDocument = lesInnVedlegg(vedlegg.sider, spraak) { spraak, side -> "$filsti/${side.filnavn}-${spraak.name}" }
-
-    private fun lesInnVedlegg(sider: List<Side>, spraak: LanguageCode, filnavn: (LanguageCode, Side) -> String): PDDocument {
+    fun lesInnVedlegg(sider: List<Side>, spraak: LanguageCode, filnavn: (LanguageCode, Side) -> String): PDDocument {
         val target = PDDocument()
         val merger = PDFMergerUtility()
         val inneholderFelter = sider.any { it.felt.isNotEmpty() }
