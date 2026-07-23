@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
+import no.nav.brev.brevbaker.markup.outline.Block.Table
 
 
-internal fun TypstCodeScope.renderTable(table: Table) {
+internal fun TypstCodeScope.renderTableV2(table: Table) {
     if (table.rows.isEmpty() && table.header.colSpec.isEmpty()) return
 
     val columnSpec = table.header.colSpec
@@ -12,30 +12,31 @@ internal fun TypstCodeScope.renderTable(table: Table) {
     appendCodeFunction("letter-table") {
         args {
             rawArg("languageSettings")
-            namedArgRaw("columns", columnSpecToTypst(columnSpec))
-            namedArgRaw("column-align", columnAlignmentToTypst(columnSpec))
+
+            namedArgRaw("columns", columnSpecToTypstV2(columnSpec))
+            namedArgRaw("column-align", columnAlignmentToTypstV2(columnSpec))
 
             columnSpec.forEach { spec ->
-                contentArg { renderTextContent(spec.headerContent.text) }
+                contentArg { renderTextContentV2(spec.content) }
             }
 
             table.rows.forEach { row ->
                 row.cells.forEach { cell ->
-                    contentArg { renderTextContent(cell.text) }
+                    contentArg { renderTextContentV2(cell.content) }
                 }
             }
         }
     }
 }
 
-private fun columnSpecToTypst(columnSpec: List<Table.ColumnSpec>): String {
+private fun columnSpecToTypstV2(columnSpec: List<Table.ColumnSpec>): String {
     val columns = columnSpec.map { spec ->
         "${spec.span}fr"
     }
     return "(${columns.joinToString(", ")},)"
 }
 
-private fun columnAlignmentToTypst(columnSpec: List<Table.ColumnSpec>): String {
+private fun columnAlignmentToTypstV2(columnSpec: List<Table.ColumnSpec>): String {
     val alignments = columnSpec.map { spec ->
         when (spec.alignment) {
             Table.ColumnAlignment.LEFT -> "left"

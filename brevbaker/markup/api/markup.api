@@ -26,6 +26,12 @@ public final class no/nav/brev/brevbaker/markup/Attachment$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
+public final class no/nav/brev/brevbaker/markup/CleanMarkupKt {
+	public static final fun clean (Ljava/util/List;)Ljava/util/List;
+	public static final fun clean (Lno/nav/brev/brevbaker/markup/Attachment;)Lno/nav/brev/brevbaker/markup/Attachment;
+	public static final fun clean (Lno/nav/brev/brevbaker/markup/LetterMarkup;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
+}
+
 public final class no/nav/brev/brevbaker/markup/LetterMarkup {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/LetterMarkup$Companion;
 	public static final field VERSION I

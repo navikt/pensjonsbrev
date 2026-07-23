@@ -2,17 +2,17 @@ package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
 import no.nav.pensjon.brev.pdfbygger.typst.EscapedTypstContent
 import no.nav.pensjon.brev.pdfbygger.typst.TypstMarkupScope
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text
+import no.nav.brev.brevbaker.markup.outline.Text
 
-internal fun TypstMarkupScope.renderTextAsPlain(elements: List<Text>) {
-    elements.forEach { renderPlainTextContent(it) }
+internal fun TypstMarkupScope.renderTextAsPlainV2(elements: List<Text>) {
+    elements.forEach { renderPlainTextContentV2(it) }
 }
 
-internal fun TypstMarkupScope.renderTextContent(elements: List<Text>) {
-    elements.forEach { renderTextContent(it) }
+internal fun TypstMarkupScope.renderTextContentV2(elements: List<Text>) {
+    elements.forEach { renderTextContentV2(it) }
 }
 
-private fun TypstMarkupScope.renderPlainTextContent(element: Text) {
+private fun TypstMarkupScope.renderPlainTextContentV2(element: Text) {
     when (element) {
         is Text.Literal, is Text.Variable -> appendContent(element.text)
         is Text.NewLine -> appendCode("#linebreak()")
@@ -20,7 +20,7 @@ private fun TypstMarkupScope.renderPlainTextContent(element: Text) {
 }
 
 
-internal fun TypstMarkupScope.renderTextContent(element: Text) {
+internal fun TypstMarkupScope.renderTextContentV2(element: Text) {
     when (element) {
         is Text.Literal, is Text.Variable -> {
             when (element.fontType) {
@@ -41,11 +41,11 @@ internal fun TypstMarkupScope.renderTextContent(element: Text) {
     }
 }
 
-internal fun List<Text>.renderToEscapedContent(): EscapedTypstContent {
+internal fun List<Text>.renderToEscapedContentV2(): EscapedTypstContent {
     val output = StringBuilder()
-    TypstMarkupScope(output).renderTextAsPlain(this)
+    TypstMarkupScope(output).renderTextAsPlainV2(this)
     return EscapedTypstContent(output.toString())
 }
 
-internal fun List<Text>.renderToPlainString(): String =
+internal fun List<Text>.renderToPlainStringV2(): String =
     this.joinToString("") { it.text }
