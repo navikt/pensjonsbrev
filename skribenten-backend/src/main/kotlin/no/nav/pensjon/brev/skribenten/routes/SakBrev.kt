@@ -9,6 +9,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.*
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
@@ -303,7 +304,7 @@ fun Route.sakBrev() =
                 }
 
                 val lagreP1Data: LagreP1DataHandler by app.dependencies
-                post<Api.GeneriskBrevdata> { p1Data ->
+                post<P1RedigerbarDto> { p1Data ->
                     val brevId = call.parameters.brevId()
                     val sak: Fagsak = call.attributes[SakKey]
 
