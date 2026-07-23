@@ -47,7 +47,7 @@ export const filterModelSpecificationByPropertyUsage = (
   propertyUsage: PropertyUsage[] | undefined,
   saksbehandlerValgType: string | undefined | null,
 ) => {
-  if (!specification || propertyUsage === undefined) {
+  if (!specification || propertyUsage === undefined || !saksbehandlerValgType) {
     return specification;
   }
 
