@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.vedlegg
 
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
+import no.nav.pensjon.brevbaker.api.model.Side
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.cos.COSName
 import org.apache.pdfbox.multipdf.PDFMergerUtility
@@ -13,14 +14,16 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDField
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField
 
 internal object VedleggAppender {
-    internal fun lesInnVedlegg(vedlegg: PDFVedlegg, spraak: LanguageCode): PDDocument {
+    internal fun lesInnVedlegg(vedlegg: PDFVedlegg, spraak: LanguageCode, filsti: String = "/vedlegg"): PDDocument = lesInnVedlegg(vedlegg.sider, spraak, filsti)
+
+
+    private fun lesInnVedlegg(sider: List<Side>, spraak: LanguageCode, filsti: String): PDDocument {
         val target = PDDocument()
         val merger = PDFMergerUtility()
-        val sider = vedlegg.sider
         val inneholderFelter = sider.any { it.felt.isNotEmpty() }
 
         sider.forEachIndexed { index, side ->
-            lesInnPDF(side.filnavn, spraak).use { pdfSide ->
+            lesInnPDF("$filsti/${side.filnavn}-${spraak.name}.pdf").use { pdfSide ->
                 if (inneholderFelter) {
                     addPageFieldPrefix(pdfSide, index)
                 }
@@ -49,10 +52,10 @@ internal object VedleggAppender {
         return target
     }
 
-    private fun lesInnPDF(filnavn: String, spraak: LanguageCode) =
-        javaClass.getResource("/vedlegg/${filnavn}-${spraak.name}.pdf")
+    private fun lesInnPDF(filsti: String) =
+        javaClass.getResource(filsti)
             ?.let { Loader.loadPDF(it.readBytes()) }
-            ?: throw IllegalArgumentException("Fant ikke vedlegg ${filnavn}-${spraak.name}.pdf under /vedlegg/")
+            ?: throw IllegalArgumentException("Fant ikke pdf $filsti")
 
     private fun addPageFieldPrefix(document: PDDocument, pageNumber: Int) {
         document.documentCatalog?.acroForm
