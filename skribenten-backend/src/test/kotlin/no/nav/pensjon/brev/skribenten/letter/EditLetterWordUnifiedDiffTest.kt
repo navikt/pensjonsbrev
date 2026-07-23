@@ -1,8 +1,5 @@
-@file:OptIn(InterneDataklasser::class)
-
 package no.nav.pensjon.brev.skribenten.letter
 
-import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.skribenten.letter.UnifiedDiff.BlockEdit
 import no.nav.pensjon.brev.skribenten.letter.UnifiedDiff.ContentEdit
 import no.nav.pensjon.brev.skribenten.letter.UnifiedDiff.DeletedTextSegment
