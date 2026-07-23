@@ -125,7 +125,15 @@ suspend inline fun <T> RoutingContext.respondOutcome(
                 is FerdigRedigertPolicy.IkkeFerdigRedigert.FritekstFelterUredigert ->
                     call.respond(
                         status = HttpStatusCode.UnprocessableEntity,
-                        message = BrevExceptionDto(tittel = "Brev ikke klart", melding = "Brevet inneholder fritekst-felter som ikke er endret. Det gjelder følgende felt: ${outcome.error.ikkeredigerteFritekstfelter.joinToString(", ") { it.text.take(20) }}")
+                        message = BrevExceptionDto(
+                            tittel = "Brev ikke klart",
+                            melding = "Brevet inneholder fritekst-felter som ikke er endret. Det gjelder følgende felt: " +
+                                outcome.error.ikkeredigerteFritekstfelter.joinToString(", ") { field ->
+                                    val makslengde = 20
+                                    val tekst = field.text.let { if (it.length > makslengde) it.take(makslengde) + "..." else it }
+                                    "\"$tekst\""
+                                }
+                        )
                     )
 
                 is FerdigRedigertPolicy.IkkeFerdigRedigert.DuplikatAvsnittUhaandtert ->
