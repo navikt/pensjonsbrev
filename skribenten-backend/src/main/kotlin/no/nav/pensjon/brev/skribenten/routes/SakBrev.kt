@@ -324,11 +324,11 @@ fun Route.sakBrev() =
                 respondSuccess(result?.asSuccess()) { respond(it) }
             }
 
-            val setHarFoersteside: LeggVedFoerstesideHandler by app.dependencies
+            val leggVedFoersteside: LeggVedFoerstesideHandler by app.dependencies
             put("/foersteside") {
                 val brevId = call.parameters.brevId()
                 val request = call.receive<Api.OppdaterFoerstesideRequest>()
-                val resultat = setHarFoersteside(LeggVedFoerstesideHandler.Request(brevId, request.leggVedFoersteside))
+                val resultat = leggVedFoersteside(LeggVedFoerstesideHandler.Request(brevId, request.leggVedFoersteside))
 
                 apiRespond(dto2ApiService, resultat)
             }

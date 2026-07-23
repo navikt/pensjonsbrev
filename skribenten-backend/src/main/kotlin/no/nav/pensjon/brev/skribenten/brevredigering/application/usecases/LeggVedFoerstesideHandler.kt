@@ -18,12 +18,12 @@ class LeggVedFoerstesideHandler(
     reserverBrevHandler: ReserverBrevHandler,
     database: Database,
 ) : ReservertBrevHandler<LeggVedFoerstesideHandler.Request, Dto.BrevInfo>(database, reserverBrevHandler) {
-    data class Request(override val brevId: BrevId, val harFoersteside: Boolean) : BrevredigeringRequest
+    data class Request(override val brevId: BrevId, val leggVedFoersteside: Boolean) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
         redigerBrevPolicy.kanRedigere(brev, PrincipalInContext.require()).onError { return failure(it) }
-        brev.harFoersteside = request.harFoersteside
+        brev.leggVedFoersteside = request.leggVedFoersteside
         brev.frigiReservasjon()
         return success(brev.toBrevInfo(brevreservasjonPolicy))
     }

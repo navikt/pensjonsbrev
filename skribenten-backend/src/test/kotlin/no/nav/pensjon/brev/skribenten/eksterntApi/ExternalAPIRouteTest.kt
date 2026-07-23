@@ -81,7 +81,7 @@ class ExternalAPIRouteTest {
         journalpostId = null,
         attestertAv = null,
         status = Dto.BrevStatus.KLADD,
-        harFoersteside = false,
+        leggVedFoersteside = false,
     )
 
     private val successBrevredigering = Dto.Brevredigering(

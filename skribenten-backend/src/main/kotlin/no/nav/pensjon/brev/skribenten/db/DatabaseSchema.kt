@@ -60,7 +60,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
     val journalpostId: Column<JournalpostId?> = long("journalpostId").transform(::JournalpostId, JournalpostId::id).nullable()
     val attestertAvNavIdent: Column<NavIdent?> = varchar("attestertAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).nullable()
     val brevtype: Column<LetterMetadata.Brevtype> = varchar("brevtype", length = 50).transform(LetterMetadata.Brevtype::valueOf, LetterMetadata.Brevtype::name)
-    val harFoersteside: Column<Boolean?> = bool("harfoersteside").nullable()
+    val leggVedFoersteside: Column<Boolean?> = bool("leggvedfoersteside").nullable()
 }
 
 object DocumentTable : LongIdTable() {

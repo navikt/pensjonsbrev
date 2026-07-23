@@ -53,7 +53,7 @@ interface Brevredigering {
     val isVedtaksbrev: Boolean
     val redigerteVedlegg: List<Dto.RedigertVedlegg>
     val vedleggHash: Hash<VedleggSnapshot>
-    val harFoersteside: Boolean?
+    val leggVedFoersteside: Boolean?
 
     fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon?
     fun reserver(
@@ -107,7 +107,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         private set
     override var journalpostId by BrevredigeringTable.journalpostId
 
-    override var harFoersteside by BrevredigeringTable.harFoersteside
+    override var leggVedFoersteside by BrevredigeringTable.leggVedFoersteside
 
     private val _documentEntityList by DocumentEntity referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
     override var document: Dto.Document?
@@ -384,6 +384,6 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
 
                 else -> Dto.BrevStatus.KLADD
             },
-            harFoersteside = harFoersteside
+            leggVedFoersteside = leggVedFoersteside
         )
 }

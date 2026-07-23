@@ -535,10 +535,10 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected suspend fun leggVedFoersteside(
         brevId: BrevId,
-        harFoersteside: Boolean,
+        leggVedFoersteside: Boolean,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
-        leggVedFoersteside(LeggVedFoerstesideHandler.Request(brevId = brevId, harFoersteside = harFoersteside))
+        leggVedFoersteside(LeggVedFoerstesideHandler.Request(brevId = brevId, leggVedFoersteside = leggVedFoersteside))
     }
 
     protected suspend fun sendBrev(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.SendBrevResult, BrevredigeringError>? =

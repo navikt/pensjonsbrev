@@ -124,6 +124,6 @@ class Dto2ApiServiceTest {
         journalpostId = null,
         attestertAv = attestertAv,
         status = Dto.BrevStatus.KLADD,
-        harFoersteside = false,
+        leggVedFoersteside = false,
     )
 }

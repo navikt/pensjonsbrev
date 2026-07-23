@@ -47,7 +47,7 @@ class ExternalAPIServiceTest {
         journalpostId = null,
         attestertAv = null,
         status = Dto.BrevStatus.KLADD,
-        harFoersteside = false,
+        leggVedFoersteside = false,
     )
     val brevmal = TemplateDescription.Redigerbar(
         name = Testbrevkoder.INFORMASJONSBREV.kode(),
