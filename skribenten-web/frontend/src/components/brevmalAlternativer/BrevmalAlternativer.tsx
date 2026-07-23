@@ -19,7 +19,6 @@ const BrevmalAlternativer = (props: {
    * Kan velge hvilke felter som skal vises. Default er at begge vises (dersom dem finnes, ellers bare den som finnes)
    */
   onlyShowRequired?: boolean;
-  withTitle?: boolean;
 }) => {
   const specificationFormElements = usePartitionedModelSpecification(props.brevkode, props.propertyUsage);
 
@@ -49,7 +48,6 @@ const BrevmalAlternativer = (props: {
         // Dermed må SaksbehandlerValgModelEditor også rendres om det finnes optional felter (ingenting blir synlig).
         return (
           <VStack gap="space-12">
-            {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
             <SaksbehandlerValgModelEditor
               brevkode={props.brevkode}
               fieldsToRender="required"
@@ -89,7 +87,6 @@ const BrevmalAlternativer = (props: {
 
         return (
           <VStack gap="space-12">
-            {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
             <Tabs
               css={css`
                 width: 100%;
