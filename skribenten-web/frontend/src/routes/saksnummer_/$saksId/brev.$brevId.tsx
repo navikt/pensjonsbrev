@@ -443,7 +443,6 @@ function RedigerBrev({
 
   // TODO: disable SaksbehandlerValgModelEditor during SAVE_PENDING
 
-  // TODO: Trenger form å være helt ytterst her? Kunne vi hatt det lenger inn i hierarkiet, f.eks i OpprettetBrevSidemenyForm.
   return (
     <FormProvider {...form}>
       <Box asChild background="default" maxWidth="1106px" minWidth="945px">
