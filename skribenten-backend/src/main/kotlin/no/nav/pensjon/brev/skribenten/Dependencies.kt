@@ -38,6 +38,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBr
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.ReserverBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SetFoerstesideHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.VeksleKlarStatusHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.AttesterBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
@@ -148,6 +149,7 @@ fun Application.configureDependencies() {
         provide(OpprettBrevHandler::class)
         provide(ReserverBrevHandler::class)
         provide(SendBrevHandler::class)
+        provide(SetFoerstesideHandler::class)
         provide(SlettBrevHandler::class)
         provide(SlettRedigertVedleggHandler::class)
         provide(TilbakestillBrevHandler::class)

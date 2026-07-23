@@ -116,6 +116,14 @@ abstract class BrevredigeringHandlerTestBase {
             database = SharedPostgres.database,
         )
     }
+    protected val setFoersteside by lazy {
+        SetFoerstesideHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
     protected val veksleKlarStatus by lazy {
         VeksleKlarStatusHandler(
             ferdigRedigertPolicy = ferdigRedigertPolicy,
@@ -523,6 +531,14 @@ abstract class BrevredigeringHandlerTestBase {
                 type = nyDistribusjonstype,
             )
         )
+    }
+
+    protected suspend fun setFoersteside(
+        brevId: BrevId,
+        harFoersteside: Boolean,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
+        setFoersteside(SetFoerstesideHandler.Request(brevId = brevId, harFoersteside = harFoersteside))
     }
 
     protected suspend fun sendBrev(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.SendBrevResult, BrevredigeringError>? =

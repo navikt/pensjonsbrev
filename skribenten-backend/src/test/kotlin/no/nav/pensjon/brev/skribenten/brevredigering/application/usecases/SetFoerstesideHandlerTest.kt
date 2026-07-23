@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
-import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
-import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.isFailure
@@ -12,61 +10,53 @@ import org.junit.jupiter.api.Test
 
 class SetFoerstesideHandlerTest : BrevredigeringHandlerTestBase() {
 
-    private suspend fun setHarFoersteside(brevId: BrevId, harFoersteside: Boolean, principal: UserPrincipal = saksbehandler1Principal) =
-        withPrincipal(principal) {
-            brevredigeringFacade.setHarFoersteside(SetFoerstesideHandler.Request(brevId, harFoersteside))
-        }
-
     @Test
     suspend fun `kan sette harFoersteside til true`() {
         val brev = opprettBrev().resultOrFail()
 
-        assertThat(setHarFoersteside(brev.info.id, true))
-            .isSuccess {
-                assertThat(it.harFoersteside).isTrue()
-            }
+        assertThat(setFoersteside(brev.info.id, harFoersteside = true)).isSuccess {
+            assertThat(it.harFoersteside).isTrue()
+        }
     }
 
     @Test
     suspend fun `kan sette harFoersteside til false`() {
         val brev = opprettBrev().resultOrFail()
-        setHarFoersteside(brev.info.id, true).resultOrFail()
+        setFoersteside(brev.info.id, harFoersteside = true).resultOrFail()
 
-        assertThat(setHarFoersteside(brev.info.id, false))
-            .isSuccess {
-                assertThat(it.harFoersteside).isFalse()
-            }
+        assertThat(setFoersteside(brev.info.id, harFoersteside = false)).isSuccess {
+            assertThat(it.harFoersteside).isFalse()
+        }
     }
 
     @Test
-    suspend fun `kan ikke sette harFoersteside på brev reservert av annen saksbehandler`() {
+    suspend fun `returnerer null for brev som ikke finnes`() {
+        assertThat(setFoersteside(BrevId(-1), harFoersteside = true)).isNull()
+    }
+
+    @Test
+    suspend fun `beholder ikke reservasjon etter endring`() {
+        val brev = opprettBrev().resultOrFail()
+
+        assertThat(setFoersteside(brev.info.id, harFoersteside = true)).isSuccess {
+            assertThat(it.redigeresAv).isNotEqualTo(saksbehandler1Principal.navIdent)
+        }
+    }
+
+    @Test
+    suspend fun `kan ikke sette foersteside for brev reservert av annen saksbehandler`() {
         val brev = opprettBrev(principal = saksbehandler1Principal, reserverForRedigering = true).resultOrFail()
 
-        val resultat = setHarFoersteside(
-            brevId = brev.info.id,
-            harFoersteside = true,
-            principal = saksbehandler2Principal,
-        )
-
-        assertThat(resultat).isFailure<BrevreservasjonPolicy.ReservertAvAnnen, _, _>()
+        assertThat(setFoersteside(brev.info.id, harFoersteside = true, principal = saksbehandler2Principal))
+            .isFailure<BrevreservasjonPolicy.ReservertAvAnnen, _, _>()
     }
 
     @Test
-    suspend fun `kan ikke sette harFoersteside på arkivert brev`() {
+    suspend fun `kan ikke sette foersteside for arkivert brev`() {
         val brev = opprettBrev().resultOrFail()
         arkiverBrev(brev).resultOrFail()
 
-        assertThat(setHarFoersteside(brev.info.id, true))
+        assertThat(setFoersteside(brev.info.id, harFoersteside = true))
             .isFailure<RedigerBrevPolicy.KanIkkeRedigere.ArkivertBrev, _, _>()
-    }
-
-    @Test
-    suspend fun `beholder ikke reservasjon`() {
-        val brev = opprettBrev().resultOrFail()
-
-        assertThat(setHarFoersteside(brev.info.id, true))
-            .isSuccess {
-                assertThat(it.redigeresAv).isNotEqualTo(saksbehandler1Principal.navIdent)
-            }
     }
 }
