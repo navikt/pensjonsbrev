@@ -40,9 +40,8 @@ internal object SideAppender {
     ) {
         // For å støtte alle felt-verdier, så må hele fonten bygges inn, og ikke bare de tegnene som er i bruk fra før
         val font = PDType0Font.load(target, javaClass.getResource("/fonts/SourceSans3-Regular.ttf")!!.openStream(), false)
-        val acroForm = target.documentCatalog.acroForm
 
-        acroForm?.defaultResources = PDResources().apply { put(COSName.getPDFName("SourceSans3Embedded"), font) }
+        target.documentCatalog.acroForm?.defaultResources = PDResources().apply { put(COSName.getPDFName("SourceSans3Embedded"), font) }
         val feltVerdier: Map<String, String?> = sider.flatMapIndexed { index, side ->
             val pagePrefix = pagePrefix(index)
             side.felt { "Sidetall" to "${index + 1}/${sider.size}" }
