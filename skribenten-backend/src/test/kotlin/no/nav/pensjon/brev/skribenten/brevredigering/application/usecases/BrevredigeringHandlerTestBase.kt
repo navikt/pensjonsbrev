@@ -116,8 +116,8 @@ abstract class BrevredigeringHandlerTestBase {
             database = SharedPostgres.database,
         )
     }
-    protected val setFoersteside by lazy {
-        SetFoerstesideHandler(
+    protected val leggVedFoersteside by lazy {
+        LeggVedFoerstesideHandler(
             redigerBrevPolicy = redigerBrevPolicy,
             brevreservasjonPolicy = brevreservasjonPolicy,
             reserverBrevHandler = reserverBrevHandler,
@@ -533,12 +533,12 @@ abstract class BrevredigeringHandlerTestBase {
         )
     }
 
-    protected suspend fun setFoersteside(
+    protected suspend fun leggVedFoersteside(
         brevId: BrevId,
         harFoersteside: Boolean,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
-        setFoersteside(SetFoerstesideHandler.Request(brevId = brevId, harFoersteside = harFoersteside))
+        leggVedFoersteside(LeggVedFoerstesideHandler.Request(brevId = brevId, harFoersteside = harFoersteside))
     }
 
     protected suspend fun sendBrev(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.SendBrevResult, BrevredigeringError>? =

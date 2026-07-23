@@ -12,12 +12,12 @@ import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import org.jetbrains.exposed.v1.jdbc.Database
 
-class SetFoerstesideHandler(
+class LeggVedFoerstesideHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
     reserverBrevHandler: ReserverBrevHandler,
     database: Database,
-) : ReservertBrevHandler<SetFoerstesideHandler.Request, Dto.BrevInfo>(database, reserverBrevHandler) {
+) : ReservertBrevHandler<LeggVedFoerstesideHandler.Request, Dto.BrevInfo>(database, reserverBrevHandler) {
     data class Request(override val brevId: BrevId, val harFoersteside: Boolean) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
