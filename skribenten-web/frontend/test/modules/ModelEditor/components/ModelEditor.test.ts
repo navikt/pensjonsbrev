@@ -74,9 +74,7 @@ describe("filterModelSpecificationByPropertyUsage", () => {
   };
 
   it("returns the complete specification when property usage is unavailable", () => {
-    expect(filterModelSpecificationByPropertyUsage(specification, undefined, "SaksbehandlerValg")).toBe(
-      specification,
-    );
+    expect(filterModelSpecificationByPropertyUsage(specification, undefined, "SaksbehandlerValg")).toBe(specification);
   });
 
   it("returns no fields when property usage contains no matching fields", () => {
