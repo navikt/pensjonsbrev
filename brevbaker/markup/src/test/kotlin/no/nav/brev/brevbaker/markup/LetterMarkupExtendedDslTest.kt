@@ -1,8 +1,8 @@
 package no.nav.brev.brevbaker.markup
 
 import kotlinx.serialization.json.Json
-import no.nav.brev.brevbaker.markup.outline.ElementTags
-import no.nav.brev.brevbaker.markup.outline.ElementTags.FRITEKST
+import no.nav.brev.brevbaker.markup.outline.EditBehaviour
+import no.nav.brev.brevbaker.markup.outline.EditBehaviour.FRITEKST
 import no.nav.brev.brevbaker.markup.dsl.*
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
@@ -55,11 +55,11 @@ class LetterMarkupExtendedDslTest {
                 }
                 table(id()) {
                     header(id()) {
-                        column(id(), id(), ColumnAlignment.LEFT) {
+                        column(id(), ColumnAlignment.LEFT) {
                             text(id(), "Kolonne ")
                             variable(id(), "A")
                         }
-                        column(id(), id(), ColumnAlignment.RIGHT, span = 2) { text(id(), "Kolonne B") }
+                        column(id(), ColumnAlignment.RIGHT, span = 2) { text(id(), "Kolonne B") }
                     }
                     row(id()) {
                         cell(id()) { text(id(), "A1") }
@@ -161,7 +161,7 @@ class LetterMarkupExtendedDslTest {
                 paragraph(id()) { text(id(), "Ingress", fontType = FontType.BOLD) }
                 paragraph(id()) {
                     text(id(), "Du får ")
-                    variable(id(), "1000 Kr", tags = setOf(ElementTags.REDIGERBAR_DATA))
+                    variable(id(), "1000 Kr", editBehaviour = EditBehaviour.REDIGERBAR_DATA)
                     newLine(id())
                 }
                 itemList(id()) {
@@ -173,8 +173,8 @@ class LetterMarkupExtendedDslTest {
                 }
                 table(id()) {
                     header(id()) {
-                        column(id(), id()) { text(id(), "Kolonne") }
-                        column(id(), id()) {
+                        column(id()) { text(id(), "Kolonne") }
+                        column(id()) {
                             text(id(), "Kolonne ")
                             variable(id(), "2")
                         }
@@ -203,7 +203,7 @@ class LetterMarkupExtendedDslTest {
                     choice(id()) { text(id(), "Nei") }
                     choice(id()) {
                         text(id(), "kanskje")
-                        variable(id(), "eller?", tags = setOf(FRITEKST))
+                        variable(id(), "eller?", editBehaviour = FRITEKST)
                     }
                 }
             }
@@ -222,7 +222,7 @@ class LetterMarkupExtendedDslTest {
         assertEquals(FontType.BOLD, (item.content.single() as Text.Literal).fontType)
 
         val cell = letter.blocks.filterIsInstance<Block.Table>().single().rows.single().cells.first()
-        assertEquals(FontType.BOLD, (cell.text.single() as Text.Literal).fontType)
+        assertEquals(FontType.BOLD, (cell.content.single() as Text.Literal).fontType)
     }
 
     @Test

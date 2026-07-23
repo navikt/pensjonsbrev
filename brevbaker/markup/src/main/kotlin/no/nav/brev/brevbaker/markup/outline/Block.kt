@@ -2,42 +2,45 @@ package no.nav.brev.brevbaker.markup.outline
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import no.nav.brev.brevbaker.markup.Markup
+import no.nav.brev.brevbaker.markup.Markup.Identifiable
+import no.nav.brev.brevbaker.markup.Markup.TextContainer
 
 @Serializable
-sealed class Block {
-    abstract val id: Int
+sealed class Block : Identifiable {
+    abstract override val id: Int
 
     @ConsistentCopyVisibility
     @Serializable
     @SerialName("TITLE2")
     data class Title2 internal constructor(
         override val id: Int,
-        val content: List<Text>,
-    ) : Block()
+        override val content: List<Text>,
+    ) : Block(), TextContainer
 
     @ConsistentCopyVisibility
     @Serializable
     @SerialName("TITLE3")
     data class Title3 internal constructor(
         override val id: Int,
-        val content: List<Text>,
-    ) : Block()
+        override val content: List<Text>,
+    ) : Block(), TextContainer
 
     @ConsistentCopyVisibility
     @Serializable
     @SerialName("TITLE4")
     data class Title4 internal constructor(
         override val id: Int,
-        val content: List<Text>,
-    ) : Block()
+        override val content: List<Text>,
+    ) : Block(), TextContainer
 
     @ConsistentCopyVisibility
     @Serializable
     @SerialName("PARAGRAPH")
     data class Paragraph internal constructor(
         override val id: Int,
-        val content: List<Text>,
-    ) : Block()
+        override val content: List<Text>,
+    ) : Block(), TextContainer
 
     @ConsistentCopyVisibility
     @Serializable
@@ -58,9 +61,9 @@ sealed class Block {
     @ConsistentCopyVisibility
     @Serializable
     data class Item internal constructor(
-        val id: Int,
-        val content: List<Text>,
-    )
+        override val id: Int,
+        override val content: List<Text>,
+    ) : Identifiable, TextContainer
 
     @ConsistentCopyVisibility
     @Serializable
@@ -74,32 +77,32 @@ sealed class Block {
         @ConsistentCopyVisibility
         @Serializable
         data class Row internal constructor(
-            val id: Int,
+            override val id: Int,
             val cells: List<Cell>,
-        )
+        ) : Identifiable
 
         @ConsistentCopyVisibility
         @Serializable
         data class Cell internal constructor(
-            val id: Int,
-            val text: List<Text>,
-        )
+            override val id: Int,
+            override val content: List<Text>,
+        ) : Identifiable, TextContainer
 
         @ConsistentCopyVisibility
         @Serializable
         data class Header internal constructor(
-            val id: Int,
+            override val id: Int,
             val colSpec: List<ColumnSpec>,
-        )
+        ) : Identifiable
 
         @ConsistentCopyVisibility
         @Serializable
         data class ColumnSpec internal constructor(
-            val id: Int,
-            val headerContent: Cell,
+            override val id: Int,
+            override val content: List<Text>,
             val alignment: ColumnAlignment,
             val span: Int,
-        )
+        ) : Identifiable, TextContainer
 
         enum class ColumnAlignment { LEFT, RIGHT }
     }
@@ -109,10 +112,10 @@ sealed class Block {
     @SerialName("FORM_TEXT")
     data class FormText internal constructor(
         override val id: Int,
-        val prompt: List<Text>,
+        override val content: List<Text>,
         val size: Size,
         val vspace: Boolean,
-    ) : Block() {
+    ) : Block(), TextContainer {
 
         enum class Size { NONE, SHORT, LONG, FILL }
     }
@@ -130,8 +133,8 @@ sealed class Block {
         @ConsistentCopyVisibility
         @Serializable
         data class Choice internal constructor(
-            val id: Int,
-            val text: List<Text>,
-        )
+            override val id: Int,
+            override val content: List<Text>,
+        ) : Identifiable, TextContainer
     }
 }
