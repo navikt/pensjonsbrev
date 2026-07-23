@@ -3,7 +3,6 @@ rootProject.name = "pensjonsbrev"
 include("ktlint-rules")
 
 include("brevbaker:core")
-include("brevbaker:markup")
 include("brevbaker:api-model-common")
 include("brevbaker:markup")
 include("brevbaker:dsl")
