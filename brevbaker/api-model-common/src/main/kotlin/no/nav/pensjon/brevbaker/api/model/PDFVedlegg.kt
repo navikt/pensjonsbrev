@@ -8,20 +8,20 @@ object EmptyPDFVedleggData : PDFVedleggData
 
 @PDFVedleggMarker
 class PDFVedlegg {
-    private val muterbarSider: MutableList<Side> = mutableListOf()
     val sider: List<Side>
-        get() = muterbarSider
+        field: MutableList<Side> = mutableListOf()
 
     fun side(filnavn: String, init: Side.() -> Unit) {
-        muterbarSider.add(Side(filnavn).apply(init))
+        sider.add(Side(filnavn).apply(init))
     }
 
     override fun equals(other: Any?): Boolean {
         if (other !is PDFVedlegg) return false
-        return muterbarSider == other.muterbarSider
+        return sider == other.sider
     }
-    override fun hashCode() = muterbarSider.hashCode()
-    override fun toString() = "PDFVedlegg(muterbarSider=$muterbarSider)"
+
+    override fun hashCode() = sider.hashCode()
+    override fun toString() = "PDFVedlegg(muterbarSider=${sider})"
 }
 
 @PDFVedleggMarker
