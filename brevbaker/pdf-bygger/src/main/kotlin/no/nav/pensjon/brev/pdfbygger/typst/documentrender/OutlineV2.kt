@@ -1,4 +1,4 @@
- package no.nav.pensjon.brev.pdfbygger.typst.documentrender
+package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.brev.brevbaker.markup.outline.Block
