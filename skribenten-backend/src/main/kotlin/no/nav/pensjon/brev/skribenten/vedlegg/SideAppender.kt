@@ -12,7 +12,7 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDComboBox
 import org.apache.pdfbox.pdmodel.interactive.form.PDField
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField
 
-internal object VedleggAppender {
+internal object SideAppender {
     fun lesInnPDF(sider: List<Side>, spraak: LanguageCode, filnavn: (LanguageCode, Side) -> String): PDDocument {
         val target = PDDocument()
         val merger = PDFMergerUtility()
