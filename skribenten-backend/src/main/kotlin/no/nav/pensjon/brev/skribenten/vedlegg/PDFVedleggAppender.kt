@@ -17,5 +17,5 @@ class PDFVedleggAppenderImpl : PDFVedleggAppender {
         pdfCompilationOutput: ByteArray,
         attachments: List<PDFVedlegg>,
         spraak: LanguageCode,
-    ): ByteArray = PDFMerger.merge(pdfCompilationOutput, attachments.map { { VedleggAppender.lesInnVedlegg(it.sider, spraak) { spraak, side -> "$/vedlegg/${side.filnavn}-${spraak.name}" } } })
+    ): ByteArray = PDFMerger.merge(pdfCompilationOutput, attachments.map { { VedleggAppender.lesInnPDF(it.sider, spraak) { spraak, side -> "$/vedlegg/${side.filnavn}-${spraak.name}" } } })
 }
