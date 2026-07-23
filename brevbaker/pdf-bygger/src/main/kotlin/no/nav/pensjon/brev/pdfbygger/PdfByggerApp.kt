@@ -105,10 +105,11 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         }
 
         post("/v2/produserBrev") {
-            val request = try {
+            val request = runCatching {
                 markupJson.decodeFromString(LetterPDFRequest.serializer(), call.receiveText())
-            } catch (cause: Exception) {
-                call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown reason")
+            }.getOrElse { cause ->
+                call.application.environment.log.warn("Failed to deserialize /v2/produserBrev request", cause)
+                call.respond(HttpStatusCode.BadRequest, "Failed to deserialize json body")
                 return@post
             }
             val result = typstCompileService.createLetter {
