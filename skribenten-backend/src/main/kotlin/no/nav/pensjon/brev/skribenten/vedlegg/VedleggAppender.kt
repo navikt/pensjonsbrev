@@ -16,7 +16,6 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDTextField
 internal object VedleggAppender {
     internal fun lesInnVedlegg(vedlegg: PDFVedlegg, spraak: LanguageCode, filsti: String = "/vedlegg"): PDDocument = lesInnVedlegg(vedlegg.sider, spraak, filsti)
 
-
     private fun lesInnVedlegg(sider: List<Side>, spraak: LanguageCode, filsti: String): PDDocument {
         val target = PDDocument()
         val merger = PDFMergerUtility()
