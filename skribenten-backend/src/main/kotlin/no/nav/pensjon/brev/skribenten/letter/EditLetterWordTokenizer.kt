@@ -50,7 +50,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
             val insertBlockIndex = BlockIndex(insertBlockIdx)
             val deleteBlockIndex = BlockIndex(deleteBlockIdx)
             entry.toChange { DiffProducer.BlockInfo(it.id, it.type) }?.let {
-                producer.block(insertBlockIndex, it)
+                producer.block(insertBlockIndex, deleteBlockIndex, it)
             }
             BlockParser(insertBlockIndex, deleteBlockIndex, cursor, producer).parse()
         }
@@ -65,7 +65,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
         private val producer: DiffProducer<*>,
     ) {
         fun parse() =
-            cursor.forEachIndexed<Token.BlockContent> { insertPos, deletePos, entry ->
+            cursor.forEachIndexedStable<Token.BlockContent> { insertPos, deletePos, entry ->
                 val insertContentIndex = insertIndex.withContentIndex(insertPos)
                 val deleteContentIndex = deleteIndex.withContentIndex(deletePos)
 
@@ -84,19 +84,19 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
             }
 
         private fun consumeText(insertIndex: ContentIndex, deleteIndex: ContentIndex) =
-            cursor.fold(WordDiffCollector(insertIndex, deleteIndex), WordDiffCollector::addEntry)
+            cursor.fold(WordDiffCollector(), WordDiffCollector::addEntry)
                 .changes()
-                .forEach { producer.textSegment(it) }
+                .forEach { producer.textSegment(insertIndex, deleteIndex, it) }
 
         private fun consumeItemList(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex, entry: DiffEntry<Token.ItemList>) {
             entry.toChange { DiffProducer.ItemListInfo(it.id, it.listType) }?.let {
-                producer.itemList(insertIndex, it)
+                producer.itemList(insertIndex, deleteIndex, it)
             }
             cursor.forEachIndexed<Token.Item> { insertItemIdx, deleteItemIdx, itemEntry ->
                 val insertItemIndex = insertIndex.withItemIndex(insertItemIdx)
                 val deleteItemIndex = deleteIndex.withItemIndex(deleteItemIdx)
                 itemEntry.toChange { DiffProducer.ItemInfo(it.id) }?.let {
-                    producer.item(insertItemIndex, it)
+                    producer.item(insertItemIndex, deleteItemIndex, it)
                 }
                 consumeTextOnlyContent(
                     makeInsertIndex = insertItemIndex::withTextContentIndex,
@@ -107,14 +107,14 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
 
         private fun consumeTable(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex, entry: DiffEntry<Token.Table>) {
             entry.toChange { DiffProducer.TableInfo(it.id) }?.let {
-                producer.table(insertIndex, it)
+                producer.table(insertIndex, deleteIndex, it)
             }
             consumeTableHeader(insertIndex, deleteIndex)
             cursor.forEachIndexed<Token.Row> { insertRowIdx, deleteRowIdx, rowEntry ->
                 val insertRowIndex = insertIndex.withRowIndex(insertRowIdx)
                 val deleteRowIndex = deleteIndex.withRowIndex(deleteRowIdx)
                 rowEntry.toChange { DiffProducer.RowInfo(it.id) }?.let {
-                    producer.row(insertRowIndex, it)
+                    producer.row(insertRowIndex, deleteRowIndex, it)
                 }
                 consumeRow(insertRowIndex, deleteRowIndex)
             }
@@ -128,7 +128,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                 val cellEntry = cursor.consumeIf<Token.Cell>()
                     ?: error("Expected Token.Cell after Token.ColumnSpec in table header, got: ${cursor.peek()}")
                 cellEntry.toChange { DiffProducer.CellInfo(it.id) }?.let {
-                    producer.cell(insertCellIndex, it)
+                    producer.cell(insertCellIndex, deleteCellIndex, it)
                 }
                 consumeCell(insertCellIndex, deleteCellIndex)
             }
@@ -139,7 +139,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                 val insertCellIndex = insertIndex.withCellIndex(insertCellIdx)
                 val deleteCellIndex = deleteIndex.withCellIndex(deleteCellIdx)
                 cellEntry.toChange { DiffProducer.CellInfo(it.id) }?.let {
-                    producer.cell(insertCellIndex, it)
+                    producer.cell(insertCellIndex, deleteCellIndex, it)
                 }
                 consumeCell(insertCellIndex, deleteCellIndex)
             }
@@ -151,7 +151,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
             )
 
         private fun consumeTextOnlyContent(makeInsertIndex: (Int) -> ContentIndex, makeDeleteIndex: (Int) -> ContentIndex) =
-            cursor.forEachIndexed<Token.TextContent> { insertContentIndex, deleteContentIndex, entry ->
+            cursor.forEachIndexedStable<Token.TextContent> { insertContentIndex, deleteContentIndex, entry ->
                 when (entry.token) {
                     is Token.Text -> consumeText(makeInsertIndex(insertContentIndex), makeDeleteIndex(deleteContentIndex))
                     is Token.NewLine -> {}
@@ -227,8 +227,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
         private val inserts: RangeState,
         private val deletes: RangeState,
     ) {
-        constructor(insertIndex: ContentIndex, deleteIndex: ContentIndex) :
-                this(RangeState(insertIndex), RangeState(deleteIndex))
+        constructor() : this(RangeState(), RangeState())
 
         fun addEntry(entry: DiffEntry<Token.Word>): WordDiffCollector = when (entry) {
             is DiffEntry.Insert -> copy(inserts = inserts.extend(entry.new.word))
@@ -242,7 +241,6 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                     deletes.segments().map { Change.Delete(it) }
 
         private data class RangeState(
-            private val contentIndex: ContentIndex,
             private val textLength: Int = 0,
             private val current: DiffProducer.TextSegment? = null,
             private val completed: List<DiffProducer.TextSegment> = emptyList(),
@@ -257,7 +255,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                 else
                     copy(
                         textLength = newLength,
-                        current = DiffProducer.TextSegment(contentIndex, wordStart, newLength, word),
+                        current = DiffProducer.TextSegment(wordStart, newLength, word),
                         completed = completed + listOfNotNull(current),
                     )
             }
