@@ -14,15 +14,15 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDField
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField
 
 internal object VedleggAppender {
-    internal fun lesInnVedlegg(vedlegg: PDFVedlegg, spraak: LanguageCode, filsti: String = "/vedlegg"): PDDocument = lesInnVedlegg(vedlegg.sider, spraak, filsti)
+    internal fun lesInnVedlegg(vedlegg: PDFVedlegg, spraak: LanguageCode, filsti: String = "/vedlegg"): PDDocument = lesInnVedlegg(vedlegg.sider, spraak) { spraak, side -> "$filsti/${side.filnavn}-${spraak.name}" }
 
-    private fun lesInnVedlegg(sider: List<Side>, spraak: LanguageCode, filsti: String): PDDocument {
+    private fun lesInnVedlegg(sider: List<Side>, spraak: LanguageCode, filnavn: (LanguageCode, Side) -> String): PDDocument {
         val target = PDDocument()
         val merger = PDFMergerUtility()
         val inneholderFelter = sider.any { it.felt.isNotEmpty() }
 
         sider.forEachIndexed { index, side ->
-            lesInnPDF("$filsti/${side.filnavn}-${spraak.name}.pdf").use { pdfSide ->
+            lesInnPDF("${filnavn(spraak, side)}.pdf").use { pdfSide ->
                 if (inneholderFelter) {
                     addPageFieldPrefix(pdfSide, index)
                 }
