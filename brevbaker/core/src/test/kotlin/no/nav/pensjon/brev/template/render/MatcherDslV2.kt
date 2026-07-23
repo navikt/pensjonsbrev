@@ -1,14 +1,10 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkupV2
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.ListContent
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.ListContent.ItemList
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.ListContent.NumberedList
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.Table
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Block.Title
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2.Text
+import no.nav.brev.brevbaker.markup.Attachment
+import no.nav.brev.brevbaker.markup.LetterMarkup
+import no.nav.brev.brevbaker.markup.outline.Block
+import no.nav.brev.brevbaker.markup.outline.Text
 import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.Assertions.assertThat
 
@@ -25,13 +21,13 @@ class LetterWithAttachmentsMarkupV2Asserter(actual: LetterWithAttachmentsMarkupV
 
 @LetterMarkupMatcherDsl
 class AttachmentsAssertV2(private val matchSize: Boolean) {
-    private val attachmentMatchers = mutableListOf<(LetterMarkupV2.Attachment) -> Unit>()
+    private val attachmentMatchers = mutableListOf<(Attachment) -> Unit>()
 
     fun attachment(builder: AttachmentAssertV2.() -> Unit) {
         attachmentMatchers.add(AttachmentAssertV2().apply(builder).build())
     }
 
-    fun build(): (List<LetterMarkupV2.Attachment>) -> Unit = { actual ->
+    fun build(): (List<Attachment>) -> Unit = { actual ->
         if (matchSize) {
             assertThat(actual).hasSameSizeAs(attachmentMatchers)
         }
@@ -42,7 +38,7 @@ class AttachmentsAssertV2(private val matchSize: Boolean) {
 }
 
 class AttachmentAssertV2 {
-    private val matchers = mutableListOf<(LetterMarkupV2.Attachment) -> Unit>()
+    private val matchers = mutableListOf<(Attachment) -> Unit>()
 
     fun title(that: TextContentAssertV2.() -> Unit) {
         matchers.add({ assertThat(it.title1).satisfies(TextContentAssertV2().apply(that).build()) })
@@ -52,12 +48,12 @@ class AttachmentAssertV2 {
         matchers.add({ assertThat(it.blocks).satisfies(BlocksAssertV2(matchSize).apply(that).build()) })
     }
 
-    fun build(): (LetterMarkupV2.Attachment) -> Unit = { actual ->
+    fun build(): (Attachment) -> Unit = { actual ->
         matchers.forEach { it(actual) }
     }
 }
 
-class LetterMarkupV2Asserter(actual: LetterMarkupV2) : AbstractAssert<LetterMarkupV2Asserter, LetterMarkupV2>(actual, LetterMarkupV2Asserter::class.java) {
+class LetterMarkupV2Asserter(actual: LetterMarkup) : AbstractAssert<LetterMarkupV2Asserter, LetterMarkup>(actual, LetterMarkupV2Asserter::class.java) {
     fun hasBlocks(matchSize: Boolean = true, builder: BlocksAssertV2.() -> Unit) =
         assertThat(actual.blocks).satisfies(BlocksAssertV2(matchSize).apply(builder).build())
 
@@ -65,7 +61,7 @@ class LetterMarkupV2Asserter(actual: LetterMarkupV2) : AbstractAssert<LetterMark
         assertThat(actual.title1).satisfies(TextContentAssertV2().apply(builder).build())
 
     companion object {
-        fun assertThat(actual: LetterMarkupV2) = LetterMarkupV2Asserter(actual)
+        fun assertThat(actual: LetterMarkup) = LetterMarkupV2Asserter(actual)
     }
 }
 
@@ -84,43 +80,43 @@ class BlocksAssertV2(private val matchSize: Boolean) {
 
     fun title2(that: TextContentAssertV2.() -> Unit) {
         blockMatchers.add({
-            assertThat(it).isInstanceOf(Title.Title2::class.java)
-            assertThat((it as Title.Title2).content).satisfies(TextContentAssertV2().apply(that).build())
+            assertThat(it).isInstanceOf(Block.Title2::class.java)
+            assertThat((it as Block.Title2).content).satisfies(TextContentAssertV2().apply(that).build())
         })
     }
 
     fun title3(that: TextContentAssertV2.() -> Unit) {
         blockMatchers.add({
-            assertThat(it).isInstanceOf(Title.Title3::class.java)
-            assertThat((it as Title.Title3).content).satisfies(TextContentAssertV2().apply(that).build())
+            assertThat(it).isInstanceOf(Block.Title3::class.java)
+            assertThat((it as Block.Title3).content).satisfies(TextContentAssertV2().apply(that).build())
         })
     }
 
     fun title4(that: TextContentAssertV2.() -> Unit) {
         blockMatchers.add({
-            assertThat(it).isInstanceOf(Title.Title4::class.java)
-            assertThat((it as Title.Title4).content).satisfies(TextContentAssertV2().apply(that).build())
+            assertThat(it).isInstanceOf(Block.Title4::class.java)
+            assertThat((it as Block.Title4).content).satisfies(TextContentAssertV2().apply(that).build())
         })
     }
 
     fun list(that: ListAssertV2.() -> Unit) {
         blockMatchers.add({
-            assertThat(it).isInstanceOf(ItemList::class.java)
-            ListAssertV2().apply(that).build()(it as ListContent)
+            assertThat(it).isInstanceOf(Block.ItemList::class.java)
+            ListAssertV2().apply(that).build()((it as Block.ItemList).items)
         })
     }
 
     fun numberedList(that: ListAssertV2.() -> Unit) {
         blockMatchers.add({
-            assertThat(it).isInstanceOf(NumberedList::class.java)
-            ListAssertV2().apply(that).build()(it as ListContent)
+            assertThat(it).isInstanceOf(Block.NumberedList::class.java)
+            ListAssertV2().apply(that).build()((it as Block.NumberedList).items)
         })
     }
 
     fun table(that: TableAssertV2.() -> Unit) {
         blockMatchers.add({
-            assertThat(it).isInstanceOf(Table::class.java)
-            TableAssertV2().apply(that).build()(it as Table)
+            assertThat(it).isInstanceOf(Block.Table::class.java)
+            TableAssertV2().apply(that).build()(it as Block.Table)
         })
     }
 
@@ -176,7 +172,7 @@ class TextContentAssertV2 {
 
     fun newLine() {
         contentMatchers.add({
-            assertThat(it.type).isEqualTo(Text.Type.NEW_LINE)
+            assertThat(it).isInstanceOf(Text.NewLine::class.java)
         })
     }
 
@@ -189,7 +185,7 @@ class TextContentAssertV2 {
 }
 
 class ListAssertV2 {
-    private val itemMatchers = mutableListOf<MatcherV2<ListContent.Item>>()
+    private val itemMatchers = mutableListOf<MatcherV2<Block.Item>>()
 
     fun item(that: TextContentAssertV2.() -> Unit) {
         itemMatchers.add({
@@ -197,17 +193,17 @@ class ListAssertV2 {
         })
     }
 
-    fun build(): MatcherV2<ListContent> = { actual ->
-        assertThat(actual.items).hasSameSizeAs(itemMatchers)
+    fun build(): MatcherV2<List<Block.Item>> = { actual ->
+        assertThat(actual).hasSameSizeAs(itemMatchers)
         itemMatchers.forEachIndexed { index, assertion ->
-            assertThat(actual.items[index]).satisfies(assertion)
+            assertThat(actual[index]).satisfies(assertion)
         }
     }
 }
 
 class TableAssertV2 {
-    private val rowMatchers = mutableListOf<MatcherV2<Table.Row>>()
-    private val tableMatchers = mutableListOf<MatcherV2<Table>>()
+    private val rowMatchers = mutableListOf<MatcherV2<Block.Table.Row>>()
+    private val tableMatchers = mutableListOf<MatcherV2<Block.Table>>()
 
     fun header(that: HeaderAssertV2.() -> Unit) {
         tableMatchers.add({
@@ -219,7 +215,7 @@ class TableAssertV2 {
         rowMatchers.add(RowAssertV2().apply(that).build())
     }
 
-    fun build(): MatcherV2<Table> = { actual ->
+    fun build(): MatcherV2<Block.Table> = { actual ->
         tableMatchers.forEach { it(actual) }
         assertThat(actual.rows).hasSameSizeAs(rowMatchers)
         rowMatchers.forEachIndexed { index, assertion ->
@@ -228,13 +224,13 @@ class TableAssertV2 {
     }
 
     class RowAssertV2 {
-        private val cellMatchers = mutableListOf<MatcherV2<Table.Cell>>()
+        private val cellMatchers = mutableListOf<MatcherV2<Block.Table.Cell>>()
         fun cell(that: TextContentAssertV2.() -> Unit) {
             cellMatchers.add({
-                assertThat(it.text).satisfies(TextContentAssertV2().apply(that).build())
+                assertThat(it.content).satisfies(TextContentAssertV2().apply(that).build())
             })
         }
-        fun build(): MatcherV2<Table.Row> = { actual ->
+        fun build(): MatcherV2<Block.Table.Row> = { actual ->
             assertThat(actual.cells).hasSameSizeAs(cellMatchers)
             cellMatchers.forEachIndexed { index, assertion ->
                 assertThat(actual.cells[index]).satisfies(assertion)
@@ -243,13 +239,13 @@ class TableAssertV2 {
     }
 
     class HeaderAssertV2 {
-        private val columnMatchers = mutableListOf<MatcherV2<Table.ColumnSpec>>()
+        private val columnMatchers = mutableListOf<MatcherV2<Block.Table.ColumnSpec>>()
         fun column(that: TextContentAssertV2.() -> Unit) {
             columnMatchers.add({
-                assertThat(it.headerContent.text).satisfies(TextContentAssertV2().apply(that).build())
+                assertThat(it.content).satisfies(TextContentAssertV2().apply(that).build())
             })
         }
-        fun build(): MatcherV2<Table.Header> = { actual ->
+        fun build(): MatcherV2<Block.Table.Header> = { actual ->
             assertThat(actual.colSpec).hasSameSizeAs(columnMatchers)
             columnMatchers.forEachIndexed { index, assertion ->
                 assertThat(actual.colSpec[index]).satisfies(assertion)
@@ -281,7 +277,7 @@ class FormChoiceAssertV2 {
 
     fun choice(that: TextContentAssertV2.() -> Unit) {
         choiceMatchers.add({
-            assertThat(it.text).satisfies(TextContentAssertV2().apply(that).build())
+            assertThat(it.content).satisfies(TextContentAssertV2().apply(that).build())
         })
     }
 
@@ -302,6 +298,6 @@ class FormTextAssertV2 {
     }
 
     fun build(): MatcherV2<Block.FormText> = { actual ->
-        promptMatcher?.let { assertThat(actual.prompt).satisfies(it) }
+        promptMatcher?.let { assertThat(actual.content).satisfies(it) }
     }
 }

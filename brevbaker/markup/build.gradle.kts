@@ -42,6 +42,24 @@ kotlin {
     target.compilations.getByName("test").associateWith(apiInternalCompilation)
 }
 
+// Hand off `apiInternal`'s compiled classes to `core` across the project boundary.
+//
+// `apiInternal` sees `main`'s internals via friend compilation (`associateWith`), which is
+// project-local; `core` just needs the resulting classes. A normal project dependency only delivers
+// `main`, so we expose `apiInternal`'s output as a separate jar/consumable configuration that is
+// never published, keeping these internal seams out of the published artifact entirely.
+val apiInternalJar = tasks.register<Jar>("apiInternalJar") {
+    archiveClassifier.set("api-internal")
+    from(sourceSets["apiInternal"].output)
+}
+
+configurations.create("apiInternalElements") {
+    isCanBeConsumed = true
+    isCanBeResolved = false
+}
+
+artifacts.add("apiInternalElements", apiInternalJar)
+
 tasks.test {
     useJUnitPlatform()
 }

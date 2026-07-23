@@ -292,8 +292,7 @@ fun HeaderBuilder<ContentBuilder>.column(
     span: Int = 1,
 ) {
     require(span >= 1) { "Table column span must be at least 1, but was $span" }
-    val cell = Block.Table.Cell(0, plainText(text))
-    colSpec.add(Block.Table.ColumnSpec(0, cell, alignment, span))
+    colSpec.add(Block.Table.ColumnSpec(0, plainText(text), alignment, span))
 }
 
 /**
@@ -310,8 +309,7 @@ fun HeaderBuilder<ContentBuilder>.column(
     content: PlainTextBuilder.() -> Unit,
 ) {
     require(span >= 1) { "Table column span must be at least 1, but was $span" }
-    val cell = Block.Table.Cell(0, plainText(content))
-    colSpec.add(Block.Table.ColumnSpec(0, cell, alignment, span))
+    colSpec.add(Block.Table.ColumnSpec(0, plainText(content), alignment, span))
 }
 
 /**

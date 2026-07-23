@@ -52,6 +52,7 @@ object Features {
 //    val exampleToggle = UnleashToggle("exampleToggle")
     val hindreDuplikateAvsnitt = UnleashToggle("hindreDuplikateAvsnitt")
     val vergeForExstream = UnleashToggle("vergeForExstream")
+    val foersteside = UnleashToggle("foersteside")
 
     var toggleService: FeatureToggleService? = null
         private set

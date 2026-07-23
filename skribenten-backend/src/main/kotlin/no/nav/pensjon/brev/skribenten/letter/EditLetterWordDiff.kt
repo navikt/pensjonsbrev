@@ -20,13 +20,13 @@ class EditLetterWordDiff {
         private val inserts = mutableListOf<DiffSegment>()
         private val deletes = mutableListOf<DiffSegment>()
 
-        override fun textSegment(change: Change<DiffProducer.TextSegment>) {
+        override fun textSegment(insertIndex: ContentIndex, deleteIndex: ContentIndex, change: Change<DiffProducer.TextSegment>) {
             when (change) {
-                is Change.Delete -> deletes.add(DiffSegment(change.old.index, change.old.startOffset, change.old.endOffset))
-                is Change.Insert -> inserts.add(DiffSegment(change.new.index, change.new.startOffset, change.new.endOffset))
+                is Change.Delete -> deletes.add(DiffSegment(deleteIndex, change.old.startOffset, change.old.endOffset))
+                is Change.Insert -> inserts.add(DiffSegment(insertIndex, change.new.startOffset, change.new.endOffset))
                 is Change.Replace -> {
-                    inserts.add(DiffSegment(change.new.index, change.new.startOffset, change.new.endOffset))
-                    deletes.add(DiffSegment(change.old.index, change.old.startOffset, change.old.endOffset))
+                    inserts.add(DiffSegment(insertIndex, change.new.startOffset, change.new.endOffset))
+                    deletes.add(DiffSegment(deleteIndex, change.old.startOffset, change.old.endOffset))
                 }
             }
         }
@@ -38,13 +38,16 @@ class EditLetterWordDiff {
         private val inserts = mutableListOf<DiffSegment>()
         private val deletes = mutableListOf<UnifiedDeleteSegment>()
 
-        override fun textSegment(change: Change<DiffProducer.TextSegment>) {
+        // Deletes use insertIndex (not deleteIndex) since it reflects the position in the merged (unified) view,
+        // unlike deleteIndex which is the position in the old document and drifts whenever entirely deleted
+        // content precedes it.
+        override fun textSegment(insertIndex: ContentIndex, deleteIndex: ContentIndex, change: Change<DiffProducer.TextSegment>) {
             when (change) {
-                is Change.Delete -> deletes.add(UnifiedDeleteSegment(change.old.index, change.old.startOffset, change.old.endOffset, change.old.text))
-                is Change.Insert -> inserts.add(DiffSegment(change.new.index, change.new.startOffset, change.new.endOffset))
+                is Change.Delete -> deletes.add(UnifiedDeleteSegment(insertIndex, change.old.startOffset, change.old.endOffset, change.old.text))
+                is Change.Insert -> inserts.add(DiffSegment(insertIndex, change.new.startOffset, change.new.endOffset))
                 is Change.Replace -> {
-                    inserts.add(DiffSegment(change.new.index, change.new.startOffset, change.new.endOffset))
-                    deletes.add(UnifiedDeleteSegment(change.old.index, change.old.startOffset, change.old.endOffset, change.old.text))
+                    inserts.add(DiffSegment(insertIndex, change.new.startOffset, change.new.endOffset))
+                    deletes.add(UnifiedDeleteSegment(insertIndex, change.old.startOffset, change.old.endOffset, change.old.text))
                 }
             }
         }

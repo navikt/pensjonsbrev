@@ -7,9 +7,10 @@ import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.render.Letter2MarkupV2
+import no.nav.brev.brevbaker.template.render.toMarkup
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.PDFRequestV2
+import no.nav.brev.brevbaker.markup.dsl.letterPDFRequest
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
@@ -112,16 +113,18 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDFV2(
     val pdfBygger = pdfByggerService ?: PdfByggerTestService()
 
     Letter2MarkupV2.render(this)
-        .let {
+        .let { rendered ->
             runBlocking {
                 pdfBygger.producePDFV2(
-                    PDFRequestV2(
-                        it.letterMarkup,
-                        it.attachments,
-                        language.toCode(),
-                        template.letterMetadata.brevtype,
+                    letterPDFRequest(
+                        spraak = language.toCode().toMarkup(),
+                        brevtype = template.letterMetadata.brevtype.toMarkup(),
+                        letter = rendered.letterMarkup,
+                    ) {
+                        rendered.attachments.forEach { a -> attachment(a) }
                         Letter2MarkupV2.renderPDFTitlesOnly(this@renderTestPDFV2.toScope(), this@renderTestPDFV2.template)
-                    ),
+                            .forEach { t -> pdfVedlegg(t) }
+                    },
                 )
             }
         }

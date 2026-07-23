@@ -16,7 +16,8 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupV2
+import no.nav.brev.brevbaker.markup.outline.Block as MarkupBlock
+import no.nav.brev.brevbaker.markup.outline.Text as MarkupText
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
@@ -51,7 +52,7 @@ class Letter2MarkupCommonBehaviorTest {
                 .map { paragraph -> paragraph.content.mapNotNull(::toTokenV1) }
 
             RenderPath.V2 -> Letter2MarkupV2.render(letter).letterMarkup.blocks
-                .filterIsInstance<LetterMarkupV2.Block.Paragraph>()
+                .filterIsInstance<MarkupBlock.Paragraph>()
                 .map { paragraph -> paragraph.content.map(::toTokenV2) }
         }
     }
@@ -63,9 +64,9 @@ class Letter2MarkupCommonBehaviorTest {
         else -> null
     }
 
-    private fun toTokenV2(text: LetterMarkupV2.Text): Token = when (text) {
-        is LetterMarkupV2.Text.Literal -> Token.Literal(text.text)
-        is LetterMarkupV2.Text.Variable -> Token.Variable(text.text)
+    private fun toTokenV2(text: MarkupText): Token = when (text) {
+        is MarkupText.Literal -> Token.Literal(text.text)
+        is MarkupText.Variable -> Token.Variable(text.text)
         else -> Token.NewLine
     }
 

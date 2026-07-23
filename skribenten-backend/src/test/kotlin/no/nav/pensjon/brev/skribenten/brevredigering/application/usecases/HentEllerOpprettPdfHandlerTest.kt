@@ -9,6 +9,12 @@ import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
+import no.nav.brev.BrevLandmodell.Landkode
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto.Postnummer
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto.Poststed
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto.UtfyllendeInstitusjon
+import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.copy
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.isSuccess
@@ -205,9 +211,42 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `kan hente pdf for p1`() {
         val hentP1DataHandler = HentP1DataHandler(
             penClient = object : PenClientStub() {
-                override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode) = Api.GeneriskBrevdata().apply {
-                    put("noeData", true)
-                }
+                override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode) = P1RedigerbarDto(
+                    innehaver = P1RedigerbarDto.P1Person(
+                        fornavn = "Peder",
+                        etternavn = "Ås",
+                        etternavnVedFoedsel = null,
+                        foedselsdato = null,
+                        adresselinje = "Testgata 1",
+                        poststed = Poststed("Testvik"),
+                        postnummer = Postnummer("0001"),
+                        landkode = Landkode("NO"),
+                    ),
+                    forsikrede = P1RedigerbarDto.P1Person(
+                        fornavn = "Lars",
+                        etternavn = "Holm",
+                        etternavnVedFoedsel = null,
+                        foedselsdato = LocalDate.of(1990, 3, 1),
+                        adresselinje = "Storgata 1",
+                        poststed = Poststed("Testvik"),
+                        postnummer = Postnummer("0002"),
+                        landkode = Landkode("NO"),
+                    ),
+                    sakstype = Sakstype("ALDER"),
+                    innvilgedePensjoner = emptyList(),
+                    avslaattePensjoner = emptyList(),
+                    utfyllendeInstitusjon = UtfyllendeInstitusjon(
+                        navn = "NAV",
+                        adresselinje = "Arbeids- og velferdsetaten",
+                        poststed = Poststed("Oslo"),
+                        postnummer = Postnummer("0001"),
+                        landkode = Landkode("NO"),
+                        institusjonsID = null,
+                        faksnummer = null,
+                        telefonnummer = null,
+                        epost = null,
+                    ),
+                )
             },
             database = SharedPostgres.database,
         )

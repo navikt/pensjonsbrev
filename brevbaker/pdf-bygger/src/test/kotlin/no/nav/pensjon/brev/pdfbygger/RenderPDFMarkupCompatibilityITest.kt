@@ -9,8 +9,8 @@ import no.nav.brev.brevbaker.PdfByggerTestService
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.brev.brevbaker.renderTestPDFV2
+import no.nav.brev.brevbaker.markup.LetterPDFRequest
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.PDFRequestV2
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.TestInstance
@@ -71,7 +71,7 @@ class RenderPDFMarkupCompatibilityITest {
         override suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput =
             delegate.producePDF(pdfRequest).also { lastPdf = it.bytes }
 
-        override suspend fun producePDFV2(pdfRequest: PDFRequestV2): PDFCompilationOutput =
+        override suspend fun producePDFV2(pdfRequest: LetterPDFRequest): PDFCompilationOutput =
             delegate.producePDFV2(pdfRequest).also { lastPdf = it.bytes }
 
         fun lastPdfBytes(): ByteArray =

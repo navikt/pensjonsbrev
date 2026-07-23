@@ -2,13 +2,16 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import org.jetbrains.exposed.v1.jdbc.Database
@@ -33,7 +36,7 @@ class HentEllerOpprettPdfHandler(
             if (brev.brevkode.kode() == P1_BREVKODE) {
                 hentP1DataHandler(HentP1DataHandler.Request(brevId = brev.id.value, saksId = brev.saksId))
                     ?.asSuccess()
-                    ?.let { p1 -> brevdata.copy(brevdata = brevdata.brevdata.apply { put(P1_VEDLEGG_KEY, p1.value) }) }
+                    ?.let { p1 -> brevdata.copy(brevdata = brevdata.medP1Data(p1.value)) }
                     ?: throw IllegalStateException("Fant ikke P1-data for brev ${brev.id.value}")
             } else {
                 brevdata
@@ -64,6 +67,8 @@ class HentEllerOpprettPdfHandler(
             success(Dto.HentDocumentResult(document = newDocument, rendretBrevErEndret = rendretBrevErEndret))
         }
     }
+
+    private fun BrevdataResponse.Data.medP1Data(p1: P1RedigerbarDto): Api.GeneriskBrevdata = brevdata.apply { put(P1_VEDLEGG_KEY, p1) }
 }
 
 // Disse må være i sync med api-modellen

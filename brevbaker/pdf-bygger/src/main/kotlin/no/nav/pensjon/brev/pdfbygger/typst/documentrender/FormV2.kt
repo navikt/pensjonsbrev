@@ -11,7 +11,7 @@ internal fun TypstCodeScope.renderFormChoiceV2(element: Block.FormChoice) {
     appendCodeFunction("formChoice") {
         content { renderTextContentV2(element.prompt) }
         element.choices.forEach { choice ->
-            content { renderTextContentV2(choice.text) }
+            content { renderTextContentV2(choice.content) }
         }
     }
 }
@@ -22,7 +22,7 @@ internal fun TypstCodeScope.renderFormTextV2(element: Block.FormText) {
     }
 
     appendCodeFunction("formText") {
-        content { renderTextContentV2(element.prompt) }
+        content { renderTextContentV2(element.content) }
         content {
             when (element.size) {
                 Block.FormText.Size.NONE -> {}

@@ -180,7 +180,7 @@ class CleanMarkupTest {
     fun `tom formText fjernes ikke`() {
         val cleansed = letter(
             paragraph(literal("Før form")),
-            Block.FormText(nextId(), prompt = emptyList(), size = Size.LONG, vspace = true),
+            Block.FormText(nextId(), content = emptyList(), size = Size.LONG, vspace = true),
             paragraph(literal("Etter form")),
         ).clean()
         assertThat(cleansed.blocks).hasSize(3)
@@ -190,12 +190,12 @@ class CleanMarkupTest {
     @Test
     fun `formText med prompt beholdes uendret`() {
         val cleansed = letter(
-            Block.FormText(nextId(), prompt = listOf(literal("Skriv inn navn")), size = Size.LONG, vspace = true),
+            Block.FormText(nextId(), content = listOf(literal("Skriv inn navn")), size = Size.LONG, vspace = true),
         ).clean()
         assertThat(cleansed.blocks).hasSize(1)
         assertThat(cleansed.blocks[0])
             .isInstanceOfSatisfying(Block.FormText::class.java) { formText ->
-                assertThat(formText.prompt).hasSize(1)
+                assertThat(formText.content).hasSize(1)
                 assertThat(formText.size).isEqualTo(Size.LONG)
             }
     }

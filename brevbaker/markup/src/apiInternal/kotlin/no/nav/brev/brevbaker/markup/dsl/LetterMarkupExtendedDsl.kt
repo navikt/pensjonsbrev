@@ -13,7 +13,7 @@ import kotlin.jvm.JvmName
 /**
  * Bygg en [LetterMarkup] med utvidet DSL.
  *
- * Denne varianten støtter `variable(...)`, metadata (tags) og krever en eksplisitt id på hvert element.
+ * Denne varianten støtter `variable(...)`, redigeringsatferd (editBehaviour) og krever en eksplisitt id på hvert element.
  * Modulen genererer aldri id-er; kalleren (typisk `Letter2Markup` i core) må oppgi id-ene selv.
  *
  * ```
@@ -189,22 +189,20 @@ fun TableBuilder<ExtendedContentBuilder>.row(id: Int, build: RowBuilder<Extended
 
 /**
  * Legg til en kolonne i header med tekst som kan kombineres med `variable(...)`.
- * [id] er id-en til kolonnespesifikasjonen, [headerContentId] er id-en til overskriftscellen.
+ * [id] er id-en til kolonnespesifikasjonen.
  *
  * ```
- * header(31) { column(32, 33) { text(34, "Beløp "); variable(35, "år") } }
+ * header(31) { column(32) { text(34, "Beløp "); variable(35, "år") } }
  * ```
  */
 fun HeaderBuilder<ExtendedContentBuilder>.column(
     id: Int,
-    headerContentId: Int,
     alignment: ColumnAlignment = ColumnAlignment.LEFT,
     span: Int = 1,
     content: PlainExtendedTextBuilder.() -> Unit,
 ) {
     require(span >= 1) { "Table column span must be at least 1, but was $span" }
-    val cell = Block.Table.Cell(headerContentId, plainExtendedText(content))
-    colSpec.add(Block.Table.ColumnSpec(id, cell, alignment, span))
+    colSpec.add(Block.Table.ColumnSpec(id, plainExtendedText(content), alignment, span))
 }
 
 /**

@@ -17,12 +17,12 @@ internal fun TypstCodeScope.renderTableV2(table: Table) {
             namedArgRaw("column-align", columnAlignmentToTypstV2(columnSpec))
 
             columnSpec.forEach { spec ->
-                contentArg { renderTextContentV2(spec.headerContent.text) }
+                contentArg { renderTextContentV2(spec.content) }
             }
 
             table.rows.forEach { row ->
                 row.cells.forEach { cell ->
-                    contentArg { renderTextContentV2(cell.text) }
+                    contentArg { renderTextContentV2(cell.content) }
                 }
             }
         }

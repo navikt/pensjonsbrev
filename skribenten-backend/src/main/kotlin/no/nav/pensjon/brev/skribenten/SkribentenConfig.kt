@@ -134,4 +134,5 @@ data class ServicesConfig(
     val externalApi: ExternalApiConfig,
     val leader: NoAuthClientConfig? = null,
     val skjerming: OboClientConfig,
+    val foerstesidegenerator: OboClientConfig,
 )

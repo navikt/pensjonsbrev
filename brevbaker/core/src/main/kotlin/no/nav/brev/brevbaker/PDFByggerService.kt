@@ -2,7 +2,7 @@ package no.nav.brev.brevbaker
 
 import no.nav.brev.brevbaker.HttpStatusCodes.*
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.PDFRequestV2
+import no.nav.brev.brevbaker.markup.LetterPDFRequest
 
 class PDFCompileException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 class PDFTimeoutException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
@@ -11,7 +11,7 @@ class PDFInvalidException(msg: String, cause: Throwable? = null) : Exception(msg
 interface PDFByggerService {
     suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput
 
-    suspend fun producePDFV2(pdfRequest: PDFRequestV2): PDFCompilationOutput
+    suspend fun producePDFV2(pdfRequest: LetterPDFRequest): PDFCompilationOutput
 
     suspend fun validateResponse(statusCode: Int, logWarning: (msg: String) -> Unit, getBody: suspend () -> String) {
         when (statusCode) {
