@@ -17,6 +17,7 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.dao.Entity
 import org.jetbrains.exposed.v1.dao.EntityClass
 import java.time.Instant
+import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 interface Brevredigering {
@@ -134,6 +135,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
                 redigerteVedlegg = _redigerteVedlegg
                     .map { VedleggSnapshot.RedigertVedleggHash(it.vedleggId.value.id, it.redigertVedleggHash.toString()) }
                     .sortedBy { it.vedleggId },
+                leggVedFoersteside = leggVedFoersteside?.let { VedleggSnapshot.LeggVedFoerstesideHash(it, LocalDate.now()) }
             )
         )
 
