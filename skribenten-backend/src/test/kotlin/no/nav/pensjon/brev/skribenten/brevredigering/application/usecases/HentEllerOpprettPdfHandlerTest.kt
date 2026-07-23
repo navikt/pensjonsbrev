@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
+import io.ktor.client.engine.mock.*
+import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -21,6 +23,9 @@ import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.OboClientConfig
+import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.PenClientStub
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -259,6 +264,13 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
             renderService = RenderService(brevbakerService),
             brevmalService = brevmalService,
             hentP1DataHandler = hentP1DataHandler,
+            genererFoerstesideHandler = GenererFoerstesideHandler(
+                FoerstesidegeneratorClient(
+                    config = OboClientConfig(url = "http://localhost", scope = "test"),
+                    authService = FakeAuthService,
+                    clientEngine = MockEngine { respond("", HttpStatusCode.OK) },
+                )
+            ),
             database = SharedPostgres.database,
         )
         assertThat(hentEllerOpprettPdf(brev, handler = handler)).isSuccess {

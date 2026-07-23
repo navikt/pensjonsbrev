@@ -533,12 +533,12 @@ export interface paths {
                         "application/json": components["schemas"]["ApiBrevInfo"][];
                     };
                 };
-              404: {
-                headers: {
-                  [name: string]: unknown;
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
                 };
-                content?: never;
-              };
             };
         };
         put?: never;
@@ -1132,7 +1132,7 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                  content?: never;
+                    content?: never;
                 };
             };
         };
@@ -1973,14 +1973,14 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                      "application/json": components["schemas"]["P1RedigerbarDto"];
+                        "application/json": components["schemas"]["P1RedigerbarDto"];
                     };
                 };
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
-                  content?: never;
+                    content?: never;
                 };
             };
         };
@@ -2002,14 +2002,14 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                      "application/json": components["schemas"]["P1RedigerbarDto"];
+                        "application/json": components["schemas"]["P1RedigerbarDto"];
                     };
                 };
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
-                  content?: never;
+                    content?: never;
                 };
             };
         };
@@ -2050,7 +2050,7 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                  content?: never;
+                    content?: never;
                 };
             };
         };
@@ -2181,7 +2181,7 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                  content?: never;
+                    content?: never;
                 };
             };
         };
@@ -2547,7 +2547,7 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                  content?: never;
+                    content?: never;
                 };
             };
         };
@@ -2729,12 +2729,12 @@ export interface paths {
                         "application/json": string[];
                     };
                 };
-              404: {
-                headers: {
-                  [name: string]: unknown;
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
                 };
-                content?: never;
-              };
             };
         };
         put?: never;
@@ -2759,12 +2759,12 @@ export interface paths {
                         "application/json": components["schemas"]["Unit"];
                     };
                 };
-              404: {
-                headers: {
-                  [name: string]: unknown;
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
                 };
-                content?: never;
-              };
             };
         };
         delete: {
@@ -2788,12 +2788,12 @@ export interface paths {
                         "application/json": components["schemas"]["Unit"];
                     };
                 };
-              404: {
-                headers: {
-                  [name: string]: unknown;
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
                 };
-                content?: never;
-              };
             };
         };
         options?: never;
@@ -3034,7 +3034,7 @@ export interface components {
             pid: string;
             sakType: string;
             saksId: number;
-          tema: string;
+            tema: string;
         };
         /** ApiSakContext */
         ApiSakContext: {
@@ -3552,91 +3552,91 @@ export interface components {
                 [key: string]: unknown;
             };
         };
-      /**
-       * P1RedigerbarDtoAvslagsbegrunnelse
-       * @enum {string}
-       */
-      P1RedigerbarDtoAvslagsbegrunnelse: "IngenOpptjeningsperioder" | "OpptjeningsperiodePaaMindreEnnEttAar" | "KravTilKvalifiseringsperiodeEllerAndreKvalifiseringskravErIkkeOppfylt" | "VilkaarOmUfoerhetErIkkeOppfylt" | "InntektstakErOverskredet" | "PensjonsalderErIkkeNaadd" | "AndreAarsaker";
-      /** P1RedigerbarDtoInstitusjon */
-      P1RedigerbarDtoInstitusjon: {
-        /** Format: date */
-        datoForVedtak?: string | null;
-        institusjonsnavn?: string | null;
-        land?: string | null;
-        pin?: string | null;
-        saksnummer?: string | null;
-        vedtaksdato?: string | null;
-      };
-      /**
-       * P1RedigerbarDtoPensjonstype
-       * @enum {string}
-       */
-      P1RedigerbarDtoPensjonstype: "Alder" | "Ufoere" | "Etterlatte";
-      /** P1RedigerbarDtoAvslaattPensjon */
-      P1RedigerbarDtoAvslaattPensjon: {
-        adresseNyVurdering?: string | null;
-        avslagsbegrunnelse?: components["schemas"]["P1RedigerbarDtoAvslagsbegrunnelse"] | null;
-        institusjon?: components["schemas"]["P1RedigerbarDtoInstitusjon"] | null;
-        pensjonstype?: components["schemas"]["P1RedigerbarDtoPensjonstype"] | null;
-        vurderingsperiode?: string | null;
-      };
-      /** P1RedigerbarDtoP1Person */
-      P1RedigerbarDtoP1Person: {
-        adresselinje?: string | null;
-        etternavn?: string | null;
-        etternavnVedFoedsel?: string | null;
-        /** Format: date */
-        foedselsdato?: string | null;
-        fornavn?: string | null;
-        landkode?: string | null;
-        postnummer?: string | null;
-        poststed?: string | null;
-      };
-      /**
-       * P1RedigerbarDtoGrunnlagInnvilget
-       * @enum {string}
-       */
-      P1RedigerbarDtoGrunnlagInnvilget: "IHenholdTilNasjonalLovgivning" | "ProRata" | "MindreEnnEttAar";
-      /**
-       * P1RedigerbarDtoReduksjonsgrunnlag
-       * @enum {string}
-       */
-      P1RedigerbarDtoReduksjonsgrunnlag: "PaaGrunnAvAndreYtelserEllerAnnenInntekt" | "PaaGrunnAvOverlappendeGodskrevnePerioder";
-      /** P1RedigerbarDtoInnvilgetPensjon */
-      P1RedigerbarDtoInnvilgetPensjon: {
-        adresseNyVurdering?: string | null;
-        /** Format: date */
-        datoFoersteUtbetaling?: string | null;
-        grunnlagInnvilget?: components["schemas"]["P1RedigerbarDtoGrunnlagInnvilget"] | null;
-        institusjon?: components["schemas"]["P1RedigerbarDtoInstitusjon"] | null;
-        pensjonstype?: components["schemas"]["P1RedigerbarDtoPensjonstype"] | null;
-        reduksjonsgrunnlag?: components["schemas"]["P1RedigerbarDtoReduksjonsgrunnlag"] | null;
-        utbetalt?: string | null;
-        vurderingsperiode?: string | null;
-      };
-      /** P1RedigerbarDtoUtfyllendeInstitusjon */
-      P1RedigerbarDtoUtfyllendeInstitusjon: {
-        adresselinje: string;
-        /** Format: date */
-        dato?: string | null;
-        epost?: string | null;
-        faksnummer?: string | null;
-        institusjonsID?: string | null;
-        landkode: string;
-        navn: string;
-        postnummer: string;
-        poststed: string;
-        telefonnummer?: string | null;
-      };
-      /** P1RedigerbarDto */
-      P1RedigerbarDto: {
-        avslaattePensjoner: components["schemas"]["P1RedigerbarDtoAvslaattPensjon"][];
-        forsikrede: components["schemas"]["P1RedigerbarDtoP1Person"];
-        innehaver: components["schemas"]["P1RedigerbarDtoP1Person"];
-        innvilgedePensjoner: components["schemas"]["P1RedigerbarDtoInnvilgetPensjon"][];
-        sakstype: string;
-        utfyllendeInstitusjon: components["schemas"]["P1RedigerbarDtoUtfyllendeInstitusjon"];
-      };
+        /**
+         * P1RedigerbarDtoAvslagsbegrunnelse
+         * @enum {string}
+         */
+        P1RedigerbarDtoAvslagsbegrunnelse: "IngenOpptjeningsperioder" | "OpptjeningsperiodePaaMindreEnnEttAar" | "KravTilKvalifiseringsperiodeEllerAndreKvalifiseringskravErIkkeOppfylt" | "VilkaarOmUfoerhetErIkkeOppfylt" | "InntektstakErOverskredet" | "PensjonsalderErIkkeNaadd" | "AndreAarsaker";
+        /** P1RedigerbarDtoInstitusjon */
+        P1RedigerbarDtoInstitusjon: {
+            /** Format: date */
+            datoForVedtak?: string | null;
+            institusjonsnavn?: string | null;
+            land?: string | null;
+            pin?: string | null;
+            saksnummer?: string | null;
+            vedtaksdato?: string | null;
+        };
+        /**
+         * P1RedigerbarDtoPensjonstype
+         * @enum {string}
+         */
+        P1RedigerbarDtoPensjonstype: "Alder" | "Ufoere" | "Etterlatte";
+        /** P1RedigerbarDtoAvslaattPensjon */
+        P1RedigerbarDtoAvslaattPensjon: {
+            adresseNyVurdering?: string | null;
+            avslagsbegrunnelse?: components["schemas"]["P1RedigerbarDtoAvslagsbegrunnelse"] | null;
+            institusjon?: components["schemas"]["P1RedigerbarDtoInstitusjon"] | null;
+            pensjonstype?: components["schemas"]["P1RedigerbarDtoPensjonstype"] | null;
+            vurderingsperiode?: string | null;
+        };
+        /** P1RedigerbarDtoP1Person */
+        P1RedigerbarDtoP1Person: {
+            adresselinje?: string | null;
+            etternavn?: string | null;
+            etternavnVedFoedsel?: string | null;
+            /** Format: date */
+            foedselsdato?: string | null;
+            fornavn?: string | null;
+            landkode?: string | null;
+            postnummer?: string | null;
+            poststed?: string | null;
+        };
+        /**
+         * P1RedigerbarDtoGrunnlagInnvilget
+         * @enum {string}
+         */
+        P1RedigerbarDtoGrunnlagInnvilget: "IHenholdTilNasjonalLovgivning" | "ProRata" | "MindreEnnEttAar";
+        /**
+         * P1RedigerbarDtoReduksjonsgrunnlag
+         * @enum {string}
+         */
+        P1RedigerbarDtoReduksjonsgrunnlag: "PaaGrunnAvAndreYtelserEllerAnnenInntekt" | "PaaGrunnAvOverlappendeGodskrevnePerioder";
+        /** P1RedigerbarDtoInnvilgetPensjon */
+        P1RedigerbarDtoInnvilgetPensjon: {
+            adresseNyVurdering?: string | null;
+            /** Format: date */
+            datoFoersteUtbetaling?: string | null;
+            grunnlagInnvilget?: components["schemas"]["P1RedigerbarDtoGrunnlagInnvilget"] | null;
+            institusjon?: components["schemas"]["P1RedigerbarDtoInstitusjon"] | null;
+            pensjonstype?: components["schemas"]["P1RedigerbarDtoPensjonstype"] | null;
+            reduksjonsgrunnlag?: components["schemas"]["P1RedigerbarDtoReduksjonsgrunnlag"] | null;
+            utbetalt?: string | null;
+            vurderingsperiode?: string | null;
+        };
+        /** P1RedigerbarDtoUtfyllendeInstitusjon */
+        P1RedigerbarDtoUtfyllendeInstitusjon: {
+            adresselinje: string;
+            /** Format: date */
+            dato?: string | null;
+            epost?: string | null;
+            faksnummer?: string | null;
+            institusjonsID?: string | null;
+            landkode: string;
+            navn: string;
+            postnummer: string;
+            poststed: string;
+            telefonnummer?: string | null;
+        };
+        /** P1RedigerbarDto */
+        P1RedigerbarDto: {
+            avslaattePensjoner: components["schemas"]["P1RedigerbarDtoAvslaattPensjon"][];
+            forsikrede: components["schemas"]["P1RedigerbarDtoP1Person"];
+            innehaver: components["schemas"]["P1RedigerbarDtoP1Person"];
+            innvilgedePensjoner: components["schemas"]["P1RedigerbarDtoInnvilgetPensjon"][];
+            sakstype: string;
+            utfyllendeInstitusjon: components["schemas"]["P1RedigerbarDtoUtfyllendeInstitusjon"];
+        };
         /** ValgbartVedlegg */
         ValgbartVedlegg: {
             kode: string;
@@ -3876,16 +3876,16 @@ export type ApiPdfResponse = components['schemas']['ApiPdfResponse'];
 export type ApiBestillBrevResponseError = components['schemas']['ApiBestillBrevResponseError'];
 export type ApiBestillBrevResponse = components['schemas']['ApiBestillBrevResponse'];
 export type ApiOppdaterAttesteringRequest = components['schemas']['ApiOppdaterAttesteringRequest'];
-export type P1RedigerbarDtoAvslagsbegrunnelse = components["schemas"]["P1RedigerbarDtoAvslagsbegrunnelse"];
-export type P1RedigerbarDtoInstitusjon = components["schemas"]["P1RedigerbarDtoInstitusjon"];
-export type P1RedigerbarDtoPensjonstype = components["schemas"]["P1RedigerbarDtoPensjonstype"];
-export type P1RedigerbarDtoAvslaattPensjon = components["schemas"]["P1RedigerbarDtoAvslaattPensjon"];
-export type P1RedigerbarDtoP1Person = components["schemas"]["P1RedigerbarDtoP1Person"];
-export type P1RedigerbarDtoGrunnlagInnvilget = components["schemas"]["P1RedigerbarDtoGrunnlagInnvilget"];
-export type P1RedigerbarDtoReduksjonsgrunnlag = components["schemas"]["P1RedigerbarDtoReduksjonsgrunnlag"];
-export type P1RedigerbarDtoInnvilgetPensjon = components["schemas"]["P1RedigerbarDtoInnvilgetPensjon"];
-export type P1RedigerbarDtoUtfyllendeInstitusjon = components["schemas"]["P1RedigerbarDtoUtfyllendeInstitusjon"];
-export type P1RedigerbarDto = components["schemas"]["P1RedigerbarDto"];
+export type P1RedigerbarDtoAvslagsbegrunnelse = components['schemas']['P1RedigerbarDtoAvslagsbegrunnelse'];
+export type P1RedigerbarDtoInstitusjon = components['schemas']['P1RedigerbarDtoInstitusjon'];
+export type P1RedigerbarDtoPensjonstype = components['schemas']['P1RedigerbarDtoPensjonstype'];
+export type P1RedigerbarDtoAvslaattPensjon = components['schemas']['P1RedigerbarDtoAvslaattPensjon'];
+export type P1RedigerbarDtoP1Person = components['schemas']['P1RedigerbarDtoP1Person'];
+export type P1RedigerbarDtoGrunnlagInnvilget = components['schemas']['P1RedigerbarDtoGrunnlagInnvilget'];
+export type P1RedigerbarDtoReduksjonsgrunnlag = components['schemas']['P1RedigerbarDtoReduksjonsgrunnlag'];
+export type P1RedigerbarDtoInnvilgetPensjon = components['schemas']['P1RedigerbarDtoInnvilgetPensjon'];
+export type P1RedigerbarDtoUtfyllendeInstitusjon = components['schemas']['P1RedigerbarDtoUtfyllendeInstitusjon'];
+export type P1RedigerbarDto = components['schemas']['P1RedigerbarDto'];
 export type ValgbartVedlegg = components['schemas']['ValgbartVedlegg'];
 export type ApiOppdaterFoerstesideRequest = components['schemas']['ApiOppdaterFoerstesideRequest'];
 export type Duration = components['schemas']['Duration'];

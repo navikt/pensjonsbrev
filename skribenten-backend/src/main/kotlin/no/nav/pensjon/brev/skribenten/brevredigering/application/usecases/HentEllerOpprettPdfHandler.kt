@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto
@@ -9,7 +10,9 @@ import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.PDFMerger
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
@@ -21,11 +24,13 @@ class HentEllerOpprettPdfHandler(
     private val renderService: RenderService,
     private val brevmalService: BrevmalService,
     private val hentP1DataHandler: HentP1DataHandler,
+    private val genererFoerstesideHandler: GenererFoerstesideHandler,
     database: Database,
 ) : TransactionHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult, Nothing>(database) {
 
     data class Request(
         override val brevId: BrevId,
+        val fagsak: Fagsak,
     ) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Dto.HentDocumentResult, Nothing>? {
@@ -55,7 +60,22 @@ class HentEllerOpprettPdfHandler(
                 brev.redigertBrev.updateEditedLetter(rendretBrev.markup).blocks != brev.redigertBrev.blocks
             }
 
-            val pdfBytes = renderService.renderPdf(brev, pesysBrevdata)
+            val pdfBytes = renderService.renderPdf(brev, pesysBrevdata).let { rendretBrev ->
+                if (Features.foersteside.isEnabled() && brev.leggVedFoersteside == true) {
+                    genererFoerstesideHandler(
+                        request = GenererFoerstesideHandler.Request(
+                            brevId = request.brevId,
+                            pid = request.fagsak.pid,
+                            sakstype = request.fagsak.sakType,
+                            tema = request.fagsak.tema,
+                            vedlegg = brev.valgteVedlegg.map { GenererFoerstesideHandler.Tittel(it.visningstekst) }
+                        )
+                    )?.asSuccess()?.value?.let { foersteside ->
+                        PDFMerger.merge(rendretBrev, foersteside.foersteside)
+                    } ?: throw IllegalArgumentException("Fant ikke PDF for ${request.brevId}")
+                } else { rendretBrev }
+            }
+
             val newDocument = Dto.Document(
                 pdf = pdfBytes,
                 dokumentDato = pesysBrevdata.felles.dokumentDato,
