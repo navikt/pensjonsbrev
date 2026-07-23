@@ -66,19 +66,22 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
         private val producer: DiffProducer<*>,
     ) {
         fun parse() =
-            cursor.forEachIndexedStable<Token.BlockContent> { insertPos, deletePos, entry ->
-                val insertContentIndex = insertIndex.withContentIndex(insertPos)
-                val deleteContentIndex = deleteIndex.withContentIndex(deletePos)
+            cursor.forEachIndexedStable<Token.BlockContent> { indices, entry ->
+                val insertContentIndex = insertIndex.withContentIndex(indices.insertIndex)
+                val deleteContentIndex = deleteIndex.withContentIndex(indices.rawDeleteIndex)
+                val stableDeleteContentIndex = deleteIndex.withContentIndex(indices.stableDeleteIndex)
 
                 when (entry.token) {
                     is Token.TextContent -> {
-                        consumeTextContent(insertContentIndex, deleteContentIndex, entry.narrow())
+                        consumeTextContent(insertContentIndex, deleteContentIndex, stableDeleteContentIndex, entry.narrow())
                     }
                     is Token.ItemList -> {
                         consumeItemList(insertContentIndex, deleteContentIndex, entry.narrow())
+                        false
                     }
                     is Token.Table -> {
                         consumeTable(insertContentIndex, deleteContentIndex, entry.narrow())
+                        false
                     }
                 }
             }
@@ -100,10 +103,27 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
         // world" -> "hello", where "hello" survives Unchanged within this very node's fold) is not genuinely gone
         // either, even though the resulting changes are delete-only - hence the additional collector.hasUnchanged
         // check.
-        private fun consumeTextContent(insertIndex: ContentIndex, deleteIndex: ContentIndex, entry: DiffEntry<Token.TextContent>) {
+        //
+        // insertIndex is decoy-corrected (see ReplaceAwareEditScriptCursor.StableIndices), so it's safe to use both
+        // for the node's own textContent report (distinguishing leading/trailing siblings) and for nested
+        // textSegment reporting (anchoring to an already-established position). deleteIndex/stableDeleteIndex keep
+        // their original distinction: deleteIndex (this entry's own position) for the node's own report,
+        // stableDeleteIndex (the last real position) for nested reporting - relevant when entry is a genuine Insert,
+        // which doesn't itself consume any delete-side position.
+        //
+        // Returns whether this entry's insert-side pairing turned out to be a decoy (isWholeNodeGone despite the
+        // entry's own classification suggesting otherwise, e.g. an ambiguous Unchanged/Replace match) - see
+        // ReplaceAwareEditScriptCursor.forEachIndexedStable's doc for why the caller needs to know this.
+        private fun consumeTextContent(
+            insertIndex: ContentIndex,
+            deleteIndex: ContentIndex,
+            stableDeleteIndex: ContentIndex,
+            entry: DiffEntry<Token.TextContent>,
+        ): Boolean {
             when (entry.token) {
                 is Token.NewLine -> {
                     entry.toChange { DiffProducer.TextContentInfo(it.id) }?.let { producer.textContent(insertIndex, deleteIndex, it) }
+                    return false
                 }
                 is Token.Text -> {
                     val collector = cursor.fold(WordDiffCollector(), WordDiffCollector::addEntry)
@@ -116,8 +136,9 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                     if (isWholeNodeGone) {
                         producer.textContent(insertIndex, deleteIndex, Change.Delete(DiffProducer.TextContentInfo(entry.token.id)))
                     } else {
-                        changes.forEach { producer.textSegment(insertIndex, deleteIndex, it) }
+                        changes.forEach { producer.textSegment(insertIndex, stableDeleteIndex, it) }
                     }
+                    return isWholeNodeGone && entry !is DiffEntry.Delete
                 }
             }
         }
@@ -186,8 +207,13 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
             )
 
         private fun consumeTextOnlyContent(makeInsertIndex: (Int) -> ContentIndex, makeDeleteIndex: (Int) -> ContentIndex) =
-            cursor.forEachIndexedStable<Token.TextContent> { insertContentIndex, deleteContentIndex, entry ->
-                consumeTextContent(makeInsertIndex(insertContentIndex), makeDeleteIndex(deleteContentIndex), entry)
+            cursor.forEachIndexedStable<Token.TextContent> { indices, entry ->
+                consumeTextContent(
+                    makeInsertIndex(indices.insertIndex),
+                    makeDeleteIndex(indices.rawDeleteIndex),
+                    makeDeleteIndex(indices.stableDeleteIndex),
+                    entry,
+                )
             }
     }
 

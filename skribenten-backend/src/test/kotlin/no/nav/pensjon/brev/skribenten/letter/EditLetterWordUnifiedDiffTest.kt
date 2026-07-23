@@ -325,11 +325,48 @@ class EditLetterWordUnifiedDiffTest {
         }
         val diff = wordDiff.unifiedDiff(old, new)
         assertThat(diff.deletedBlocks[0]).contains(old.blocks[0])
-        // TODO: this is currently 0 (not 1) because forEachIndexedStable attributes a trailing delete to the last
-        // established insert index ("beta" at 0), rather than distinguishing "before"/"after" that position. This
-        // may need to change once the trailing-delete-ordering issue (deletedContent losing before/after ordering
-        // relative to a surviving sibling) is resolved - see plan discussion.
-        assertThat(diff.editedBlocks[0]!!.deletedContent[0]).contains(old.blocks[1].content[1])
+        // "epsilon" is a trailing delete relative to the surviving "beta" (unified index 0), so it is correctly
+        // attributed to unified index 1 - one past "beta" - rather than colliding with a leading delete at index 0.
+        assertThat(diff.editedBlocks[0]!!.deletedContent[1]).contains(old.blocks[1].content[1])
+    }
+
+    @Test
+    fun `deletedContent distinguishes a leading delete from a trailing delete relative to the same survivor`() {
+        // NewLine sits before the surviving "def" - a leading delete, sharing unified position 0 with "abc".
+        val oldLeading = editedLetter {
+            paragraph {
+                literal(text = "abc")
+                newLine()
+                variable(text = "def")
+            }
+        }
+        // NewLine sits after the surviving "def" - a trailing delete, at unified position 1 (one past "def").
+        val oldTrailing = editedLetter {
+            paragraph {
+                literal(text = "abc")
+                variable(text = "def")
+                newLine()
+            }
+        }
+        val new = editedLetter {
+            paragraph {
+                variable(text = "def")
+            }
+        }
+
+        val leadingDiff = wordDiff.unifiedDiff(oldLeading, new)
+        val leadingContent = (oldLeading.blocks[0] as Edit.Block.Paragraph).content
+        assertEquals(
+            mapOf(0 to listOf(leadingContent[0], leadingContent[1])),
+            leadingDiff.editedBlocks[0]!!.deletedContent,
+        )
+
+        val trailingDiff = wordDiff.unifiedDiff(oldTrailing, new)
+        val trailingContent = (oldTrailing.blocks[0] as Edit.Block.Paragraph).content
+        assertEquals(
+            mapOf(0 to listOf(trailingContent[0]), 1 to listOf(trailingContent[2])),
+            trailingDiff.editedBlocks[0]!!.deletedContent,
+        )
     }
 
     private fun textContentEdit(inserts: List<TextSegment> = emptyList(), deletes: List<DeletedTextSegment> = emptyList()): ContentEdit.TextContentEdit =
