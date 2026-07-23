@@ -126,12 +126,13 @@ suspend inline fun <T> RoutingContext.respondOutcome(
                     call.respond(
                         status = HttpStatusCode.UnprocessableEntity,
                         message = BrevExceptionDto(
-                            tittel = "Brev ikke klart", melding = "Brevet inneholder fritekst-felter som ikke er endret. Det gjelder følgende felt: ${
+                            tittel = "Brev ikke klart",
+                            melding = "Brevet inneholder fritekst-felter som ikke er endret. Det gjelder følgende felt: " +
                                 outcome.error.ikkeredigerteFritekstfelter.joinToString(", ") { field ->
                                     val makslengde = 20
-                                    "\"${field.text.run { if (length > makslengde) { take(makslengde) + "..." } else { this } }}\""
+                                    val tekst = field.text.let { if (it.length > makslengde) it.take(makslengde) + "..." else it }
+                                    "\"$tekst\""
                                 }
-                            }"
                         )
                     )
 
