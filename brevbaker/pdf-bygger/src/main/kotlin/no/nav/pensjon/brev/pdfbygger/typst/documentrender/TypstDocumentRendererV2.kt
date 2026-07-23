@@ -140,5 +140,7 @@ private fun Markup.Spraak.toLanguage(): Language =
         Markup.Spraak.ENGLISH -> Language.English
     }
 
+private val personidentRegex = Regex("([0-9]{6})([0-9]{5})")
+
 private fun Markup.Personidentifikator.format(): String =
-    "([0-9]{6})([0-9]{5})".toRegex().replace(value, "$1 $2")
+    personidentRegex.replace(value, "${'$'}1 ${'$'}2")
