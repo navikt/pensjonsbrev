@@ -2,7 +2,6 @@
 
 package no.nav.pensjon.brev.skribenten.letter
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.skribenten.letter.UnifiedDiff.BlockEdit
 import no.nav.pensjon.brev.skribenten.letter.UnifiedDiff.ContentEdit
