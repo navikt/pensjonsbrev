@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Heading, HStack, Label, Tabs, VStack } from "@navikt/ds-react";
+import { Alert, Box, Button, Heading, HStack, Label, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
@@ -14,12 +14,9 @@ import { WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
 import { createLetterSnapshot } from "~/Brevredigering/LetterEditor/history";
 import { useTekstvalgInsertHighlight } from "~/Brevredigering/LetterEditor/hooks/useTekstvalgInsertHighlight";
 import { InsertedTekstValgHighlightProvider } from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
-import {
-  SaksbehandlerValgModelEditor,
-  usePartitionedModelSpecification,
-} from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
+import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
@@ -37,7 +34,6 @@ import { type BrevResponse, type ReservasjonResponse, type SaksbehandlerValg } f
 import { genericErrorMessage, getErrorMessage } from "~/utils/errorUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
-import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
   params: {
