@@ -2,11 +2,17 @@ import { Box, HGrid, HStack, VStack } from "@navikt/ds-react";
 
 import { VerticalDivider } from "./Divider";
 
-const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNode; bottom: React.ReactNode }) => {
+const ThreeSectionLayout = (props: {
+  left: React.ReactNode;
+  right: React.ReactNode;
+  bottom: React.ReactNode;
+  bottomJustify?: "end" | "space-between";
+  rightColumnWidth?: string;
+}) => {
   return (
     <Box asChild background="default" flexGrow="1" overflowY="hidden">
       <VStack justify="space-between">
-        <HGrid columns="minmax(304px, 384px) 1px auto" flexGrow="1" overflowY="hidden">
+        <HGrid columns={`minmax(304px, 384px) 1px ${props.rightColumnWidth ?? "auto"}`} flexGrow="1" overflowY="hidden">
           <Box
             overflowY="auto"
             padding={{ xs: "space-12" }}
@@ -25,7 +31,7 @@ const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNo
           borderWidth="1 0 0 0"
           height="var(--nav-bar-height)"
         >
-          <HStack justify="end" paddingBlock="space-8" paddingInline="space-16">
+          <HStack justify={props.bottomJustify ?? "end"} paddingBlock="space-8" paddingInline="space-16" width="100%">
             {props.bottom}
           </HStack>
         </Box>

@@ -1,23 +1,21 @@
-import { Alert, Box, Button, Heading, HGrid, HStack, Label, VStack } from "@navikt/ds-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { Alert, Box, Button, Heading, HStack, Label, VStack } from "@navikt/ds-react";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { getBrev, getBrevmetadata, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
+import { getBrev, getBrevmetadata, getBrevReservasjon } from "~/api/brev-queries";
+import { useGuardedFormSubmit } from "~/Brevredigering/hooks/useGuardedFormSubmit";
+import { useOppdaterBrevAutosave } from "~/Brevredigering/hooks/useOppdaterBrevAutosave";
 import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
-import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
-import { createLetterSnapshot, createSaksbehandlerValgEndretHistoryEntry } from "~/Brevredigering/LetterEditor/history";
-import {
-  collectAllIds,
-  collectNewIds,
-  findLastInsertedFocus,
-  hasAnyTekstvalgBeenToggledOn,
-  InsertedTekstValgHighlightProvider,
-} from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
+import { WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
+import { createLetterSnapshot } from "~/Brevredigering/LetterEditor/history";
+import { useTekstvalgInsertHighlight } from "~/Brevredigering/LetterEditor/hooks/useTekstvalgInsertHighlight";
+import { InsertedTekstValgHighlightProvider } from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
 import { ApiError } from "~/components/ApiError";
+import ArkivertBrev from "~/components/ArkivertBrev";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
@@ -27,16 +25,12 @@ import {
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
 import ReservertBrevError from "~/components/ReservertBrevError";
+import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
-import {
-  type BrevResponse,
-  type OppdaterBrevRequest,
-  type ReservasjonResponse,
-  type SaksbehandlerValg,
-} from "~/types/brev";
+import { type BrevResponse, type ReservasjonResponse, type SaksbehandlerValg } from "~/types/brev";
 import { genericErrorMessage, getErrorMessage } from "~/utils/errorUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
@@ -133,26 +127,15 @@ function RedigerBrevPage() {
       }
       if (errorStatus === 409) {
         return (
-          <Box asChild background="default">
-            <VStack align="start" flexGrow="1" gap="space-8" padding="space-24">
-              <Label size="small">Brevet er arkivert, og kan derfor ikke redigeres.</Label>
-              <Box asChild paddingInline="space-0">
-                <Button
-                  onClick={() =>
-                    navigate({
-                      to: "/saksnummer/$saksId/brevbehandler",
-                      params: { saksId },
-                      search: { enhetsId, vedtaksId },
-                    })
-                  }
-                  size="small"
-                  variant="tertiary"
-                >
-                  Gå til brevbehandler
-                </Button>
-              </Box>
-            </VStack>
-          </Box>
+          <ArkivertBrev
+            onGaTilBrevbehandler={() =>
+              navigate({
+                to: "/saksnummer/$saksId/brevbehandler",
+                params: { saksId },
+                search: { enhetsId, vedtaksId },
+              })
+            }
+          />
         );
       }
       if (errorStatus === 404) {
@@ -205,10 +188,6 @@ interface RedigerBrevSidemenyFormData {
   saksbehandlerValg: SaksbehandlerValg;
 }
 
-type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
-  historySnapshot?: ReturnType<typeof createLetterSnapshot>;
-};
-
 function RedigerBrev({
   brev,
   doReload,
@@ -225,40 +204,13 @@ function RedigerBrev({
   const editorStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
 
-  const [warnOpen, setWarnOpen] = useState(false);
-  const [warn, setWarn] = useState<{
-    kind: WarnModalKind;
-    count?: number;
-  } | null>(null);
-  const pendingSubmitValuesRef = useRef<RedigerBrevSidemenyFormData | null>(null);
-
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
-  // Tracks the latest server-known letter and saksbehandlerValg for event handlers
-  // and mutation callbacks. These refs do not affect rendering.
-  const lastSeenIdsRef = useRef<ReadonlySet<number>>(collectAllIds(brev.redigertBrev));
-  const previousValgRef = useRef(brev.saksbehandlerValg);
-
-  const previousIdsRef = useRef<ReadonlySet<number> | null>(null);
-  const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [highlightedIds, setHighlightedIds] = useState<ReadonlySet<number>>(() => new Set<number>());
-
-  useEffect(() => {
-    lastSeenIdsRef.current = collectAllIds(brev.redigertBrev);
-  }, [brev.redigertBrev]);
-
-  useEffect(() => {
-    previousValgRef.current = editorState.saksbehandlerValg;
-  }, [editorState.saksbehandlerValg]);
-
-  useEffect(
-    () => () => {
-      if (highlightTimerRef.current) {
-        clearTimeout(highlightTimerRef.current);
-      }
-    },
-    [],
-  );
+  const { highlightedIds, beforeTekstvalgChange, onAfterSave } = useTekstvalgInsertHighlight({
+    redigertBrev: brev.redigertBrev,
+    saksbehandlerValg: editorState.saksbehandlerValg,
+    setEditorState,
+  });
 
   const navigateToBrevbehandler = () =>
     navigate({
@@ -277,62 +229,14 @@ function RedigerBrev({
     select: (search: Record<string, unknown>) => search?.debug === "true" || search?.debug === true,
   });
 
-  const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevMutationVariables>({
-    mutationFn: (values) => {
-      // Mark the editor as saving so onSaveSuccess will apply the response
-      // (it ignores responses while the editor is DIRTY).
-      setEditorState((previousState) => ({ ...previousState, saveStatus: "SAVE_PENDING" }));
-      return oppdaterBrev({
-        saksId: Number.parseInt(saksId, 10),
-        brevId: brev.info.id,
-        request: {
-          redigertBrev: values.redigertBrev,
-          saksbehandlerValg: values.saksbehandlerValg,
-        },
-      });
-    },
-    onSuccess: (response, variables) => {
-      const previousIds = previousIdsRef.current;
-      const historySnapshot = variables.historySnapshot;
-      previousIdsRef.current = null;
-
-      onSaveSuccess(
-        response,
-        historySnapshot
-          ? {
-              createHistoryEntry: () =>
-                createSaksbehandlerValgEndretHistoryEntry(historySnapshot, createLetterSnapshot(response)),
-            }
-          : undefined,
-      );
-
-      // The editor went DIRTY while the request was in flight (user typed);
-      // onSaveSuccess discarded the response, so do not flash or move the cursor based on a letter the user is not seeing.
-      let responseWasApplied = true;
-      setEditorState((current) => {
-        responseWasApplied = current.saveStatus !== "DIRTY";
-        return current;
-      });
-      if (!previousIds || !responseWasApplied) return;
-
-      const lastSeenIds = lastSeenIdsRef.current;
-      const newIds = new Set<number>();
-      for (const id of collectNewIds(previousIds, response.redigertBrev)) {
-        // Ignore ids that already existed in the letter before this save.
-        if (!lastSeenIds.has(id)) newIds.add(id);
-      }
-      if (newIds.size === 0) return;
-
-      setHighlightedIds(newIds);
-      const focus = findLastInsertedFocus(response.redigertBrev, newIds);
-      if (focus) {
-        setEditorState((s) => ({ ...s, focus }));
-      }
-      if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
-      highlightTimerRef.current = setTimeout(() => setHighlightedIds(new Set<number>()), 2200);
-    },
-    onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
+  const oppdaterBrevAutosave = useOppdaterBrevAutosave({
+    saksId,
+    brevId: brev.info.id,
+    setEditorState,
+    onSaveSuccess,
+    onAfterSave,
   });
+  const { oppdaterBrevMutation, saveDirtyLetter } = oppdaterBrevAutosave;
 
   const defaultValuesModelEditor = useMemo(
     () => ({
@@ -358,11 +262,7 @@ function RedigerBrev({
     form.trigger().then((isValid) => {
       if (isValid) {
         const updatedValg = form.getValues().saksbehandlerValg;
-        // Only highlight if a tekstvalg was toggled ON — not on toggle-off or overstyring edits.
-        if (hasAnyTekstvalgBeenToggledOn(previousValgRef.current, updatedValg)) {
-          previousIdsRef.current = collectAllIds(editorState.redigertBrev);
-        }
-        previousValgRef.current = updatedValg;
+        beforeTekstvalgChange(updatedValg, editorState.redigertBrev);
         oppdaterBrevMutation.mutate({
           redigertBrev: editorState.redigertBrev,
           saksbehandlerValg: updatedValg,
@@ -377,6 +277,9 @@ function RedigerBrev({
       {
         redigertBrev: editorState.redigertBrev,
         saksbehandlerValg: values.saksbehandlerValg,
+        // This is the final "done editing" submit (navigates to brevbehandler), so release the
+        // reservation lock — unlike the tekstvalg/overstyring autosave, which must keep it held.
+        frigiReservasjon: true,
       },
       {
         onSuccess: () => {
@@ -394,16 +297,18 @@ function RedigerBrev({
     );
   };
 
-  const guardedSubmit = form.handleSubmit((values) => {
-    const warning = getWarning();
-    if (warning) {
-      pendingSubmitValuesRef.current = values;
-      setWarn(warning);
-      setWarnOpen(true);
-      return;
-    }
-    pendingSubmitValuesRef.current = null;
-    onSubmit(values, navigateToBrevbehandler);
+  const { guardedSubmit, warnModalProps } = useGuardedFormSubmit({
+    form,
+    getWarning,
+    onConfirmedSubmit: (values) => onSubmit(values, navigateToBrevbehandler),
+    onWarnModalClosed: (warn) => {
+      if (warn?.kind === "fritekst" || warn?.kind === "fritekstOgTekstValg") {
+        const focus = findFirstUneditedFritekstFocus(editorState.redigertBrev);
+        if (focus) {
+          setEditorState((s) => ({ ...s, focus }));
+        }
+      }
+    },
   });
 
   const reservasjonQuery = useQuery({
@@ -424,22 +329,7 @@ function RedigerBrev({
   }, [defaultValuesModelEditor, form]);
 
   const freeze = oppdaterBrevMutation.isPending;
-
   const error = oppdaterBrevMutation.isError;
-
-  const saveDirtyLetter = (state: {
-    redigertBrev: typeof editorState.redigertBrev;
-    saksbehandlerValg: typeof editorState.saksbehandlerValg;
-  }) =>
-    oppdaterBrev({
-      saksId: Number.parseInt(saksId, 10),
-      brevId: brev.info.id,
-      frigiReservasjon: false,
-      request: {
-        redigertBrev: state.redigertBrev,
-        saksbehandlerValg: state.saksbehandlerValg,
-      },
-    });
 
   // TODO: disable SaksbehandlerValgModelEditor during SAVE_PENDING
 
@@ -448,44 +338,38 @@ function RedigerBrev({
       <Box asChild background="default" maxWidth="1106px" minWidth="945px">
         <VStack asChild height="100%" marginInline="auto">
           <form onSubmit={guardedSubmit}>
-            <WarnModal
-              count={warn?.count ?? 0}
-              kind={warn?.kind ?? "fritekst"}
-              onClose={() => {
-                pendingSubmitValuesRef.current = null;
-                setWarnOpen(false);
-                if (warn?.kind === "fritekst" || warn?.kind === "fritekstOgTekstValg") {
-                  const focus = findFirstUneditedFritekstFocus(editorState.redigertBrev);
-                  if (focus) {
-                    setEditorState((s) => ({ ...s, focus }));
-                  }
-                }
-                setWarn(null);
-              }}
-              onFortsett={() => {
-                const values = pendingSubmitValuesRef.current;
-
-                pendingSubmitValuesRef.current = null;
-                setWarnOpen(false);
-                setWarn(null);
-                if (!values) return;
-                onSubmit(values, navigateToBrevbehandler);
-              }}
-              open={warnOpen}
-            />
+            <WarnModal {...warnModalProps} />
             <ReservertBrevError
               doRetry={doReload}
               onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
               reservasjon={reservasjonQuery.data}
             />
-            <HGrid columns="minmax(304px, 384px) minmax(640px, 694px)" flexGrow="1" overflowY="hidden">
-              <Box
-                asChild
-                borderColor="neutral-subtle"
-                borderWidth="0 1 0 0"
-                overflowY="auto"
-                padding={{ sm: "space-12", lg: "space-24" }}
-              >
+            <ThreeSectionLayout
+              bottom={
+                <HStack justify="space-between" width="100%">
+                  <Button
+                    onClick={() =>
+                      navigate({
+                        to: "/saksnummer/$saksId/brevvelger",
+                        params: { saksId: saksId },
+                        search: (s) => ({ ...s, brevId: brev.info.id }),
+                      })
+                    }
+                    size="small"
+                    type="button"
+                    variant="tertiary"
+                  >
+                    Tilbake til brevvelger
+                  </Button>
+                  <Button loading={oppdaterBrevMutation.isPending} size="small" type="submit">
+                    <HStack align="center" gap="space-8">
+                      <Label size="small">Fortsett</Label>
+                    </HStack>
+                  </Button>
+                </HStack>
+              }
+              bottomJustify="space-between"
+              left={
                 <VStack gap="space-12">
                   <Heading size="small" spacing>
                     {brevmal.data?.name}
@@ -497,46 +381,20 @@ function RedigerBrev({
                   />
                   <UnderskriftTextField of="Saksbehandler" />
                 </VStack>
-              </Box>
-              <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                <ManagedLetterEditor
-                  brev={brev}
-                  error={error}
-                  freeze={freeze}
-                  saveDirtyLetter={saveDirtyLetter}
-                  showDebug={showDebug}
-                />
-              </InsertedTekstValgHighlightProvider>
-            </HGrid>
-            <Box
-              asChild
-              background="default"
-              borderColor="neutral-subtle"
-              borderWidth="1 0 0 0"
-              height="var(--nav-bar-height)"
-            >
-              <HStack justify="space-between" paddingBlock="space-8" paddingInline="space-16">
-                <Button
-                  onClick={() =>
-                    navigate({
-                      to: "/saksnummer/$saksId/brevvelger",
-                      params: { saksId: saksId },
-                      search: (s) => ({ ...s, brevId: brev.info.id }),
-                    })
-                  }
-                  size="small"
-                  type="button"
-                  variant="tertiary"
-                >
-                  Tilbake til brevvelger
-                </Button>
-                <Button loading={oppdaterBrevMutation.isPending} size="small" type="submit">
-                  <HStack align="center" gap="space-8">
-                    <Label size="small">Fortsett</Label>
-                  </HStack>
-                </Button>
-              </HStack>
-            </Box>
+              }
+              right={
+                <InsertedTekstValgHighlightProvider ids={highlightedIds}>
+                  <ManagedLetterEditor
+                    brev={brev}
+                    error={error}
+                    freeze={freeze}
+                    saveDirtyLetter={saveDirtyLetter}
+                    showDebug={showDebug}
+                  />
+                </InsertedTekstValgHighlightProvider>
+              }
+              rightColumnWidth="minmax(640px, 694px)"
+            />
           </form>
         </VStack>
       </Box>
