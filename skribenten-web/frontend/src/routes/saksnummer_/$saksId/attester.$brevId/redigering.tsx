@@ -224,7 +224,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     brevkode: props.brev.info.brevkode,
     form,
     redigertBrev: editorState.redigertBrev,
-    propertyUsage: props.brev.propertyUsage ?? [],
+    propertyUsage: props.brev.propertyUsage ?? undefined,
   });
 
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevMutationVariables>({
@@ -452,6 +452,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 <VStack>
                   <BrevmalAlternativer
                     brevkode={props.brev.info.brevkode}
+                    propertyUsage={props.brev.propertyUsage ?? undefined}
                     submitOnChange={() => {
                       const updatedValg = form.getValues("saksbehandlerValg");
                       if (hasAnyTekstvalgBeenToggledOn(previousTekstvalgRef.current, updatedValg)) {
@@ -464,7 +465,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                         historySnapshot: createLetterSnapshot(editorState),
                       });
                     }}
-                    withTitle
                   />
                 </VStack>
               </VStack>
