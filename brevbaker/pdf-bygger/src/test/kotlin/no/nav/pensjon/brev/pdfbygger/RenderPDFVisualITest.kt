@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger
 
-import no.nav.brev.brevbaker.PdfByggerTestService
-import no.nav.brev.brevbaker.TestTags
-import no.nav.brev.brevbaker.renderTestPDF
+import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.parallel.Execution
@@ -21,10 +19,11 @@ class RenderPDFVisualITest {
     @ParameterizedTest(name = "{0}")
     @MethodSource("visualTestCases")
     fun `render visual PDF`(testCase: RenderPDFVisualTestCase) {
-        testCase.letter().renderTestPDF(
+        val pdf = runBlocking { pdfCompileService.producePDFV2(testCase.v2()) }
+        writeTestPDF(
             pdfFileName = testCase.testName,
+            pdf = pdf.bytes,
             path = Path.of("build/test_visual/pdf"),
-            pdfByggerService = pdfCompileService,
         )
     }
 

@@ -17,7 +17,7 @@ import no.nav.brev.brevbaker.markup.dsl.paragraph
 import no.nav.brev.brevbaker.markup.dsl.saksinformasjon
 import no.nav.brev.brevbaker.markup.dsl.signatur
 import no.nav.brev.brevbaker.markup.dsl.title1
-import no.nav.pensjon.brev.PDFRequest
+import no.nav.brev.brevbaker.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -134,7 +134,7 @@ class PdfByggerAppTest {
                     saksnummer = "123",
                     dokumentDato = java.time.LocalDate.of(2025, 1, 1),
                 ),
-                signatur = signatur(hilsenTekst = "hilsen", navAvsenderEnhet = "Nav sentralt"),
+                signatur = signatur(navAvsenderEnhet = "Nav sentralt"),
             ) {
                 title1("En fin tittel")
                 outline {

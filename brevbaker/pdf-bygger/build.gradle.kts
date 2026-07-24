@@ -58,8 +58,7 @@ dependencies {
     implementation(libs.ktor.server.status.pages)
     implementation(libs.bundles.metrics)
 
-    implementation(project(":brevbaker:dsl"))
-    implementation(project(":brevbaker:markup"))
+    implementation(libs.brevbaker.markup)
     implementation(libs.brevbaker.common)
     implementation(libs.kotlinx.serialization.json)
 
@@ -71,8 +70,10 @@ dependencies {
     testImplementation(libs.ktor.server.test.host) {
         exclude("org.jetbrains.kotlin", "kotlin-test")
     }
-    testImplementation(testFixtures(project(":brevbaker:core")))
-    testImplementation(testFixtures(project(":brevbaker:dsl")))
+    testImplementation(libs.ktor.client.cio)
+    testImplementation(libs.ktor.client.content.negotiation)
+    testImplementation(libs.testcontainers.core)
+    testImplementation(libs.assertJ)
 }
 
 application {

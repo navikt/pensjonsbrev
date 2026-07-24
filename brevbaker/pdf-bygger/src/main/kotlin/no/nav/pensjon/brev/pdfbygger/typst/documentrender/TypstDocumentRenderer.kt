@@ -1,15 +1,11 @@
 package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
-import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.api.toLanguage
-import no.nav.pensjon.brev.model.format
+import no.nav.brev.brevbaker.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.clean
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
 import no.nav.pensjon.brev.pdfbygger.typst.typstStringEscape
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dateFormatter
-import no.nav.pensjon.brev.template.render.documentLanguageSettings
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.PDFTittel
@@ -20,7 +16,7 @@ object TypstDocumentRenderer {
     internal fun render(pdfRequest: PDFRequest, typstWriter: TypstFileWriter): Unit = render(
         letter = pdfRequest.letterMarkup.clean(),
         attachments = pdfRequest.attachments.clean(),
-        language = pdfRequest.language.toLanguage(),
+        language = pdfRequest.language,
         brevtype = pdfRequest.brevtype,
         pdfVedlegg = pdfRequest.pdfVedlegg,
         typstWriter = typstWriter,
@@ -29,7 +25,7 @@ object TypstDocumentRenderer {
     private fun render(
         letter: LetterMarkup,
         attachments: List<LetterMarkup.Attachment>,
-        language: Language,
+        language: LanguageCode,
         brevtype: LetterMetadata.Brevtype,
         pdfVedlegg: List<PDFTittel>,
         typstWriter: TypstFileWriter,
@@ -41,22 +37,22 @@ object TypstDocumentRenderer {
     private fun TypstCodeScope.appendInputData(
         letter: LetterMarkup,
         attachments: List<LetterMarkup.Attachment>,
-        language: Language,
+        language: LanguageCode,
         brevtype: LetterMetadata.Brevtype,
         pdfVedlegg: List<PDFTittel>,
     ) {
         // Language settings dictionary
-        appendDictionary("languageSettings", documentLanguageSettings.languageSettings(language))
+        appendDictionary("languageSettings", DocumentLanguageSettings(language).asMap())
 
         // Input data dictionary with all letter metadata
         appendDictionary(
             "input",
             mapOf(
                 "gjelderNavn" to letter.sakspart.gjelderNavn,
-                "gjelderFoedselsnummer" to letter.sakspart.gjelderFoedselsnummer.format(),
+                "gjelderFoedselsnummer" to letter.sakspart.gjelderFoedselsnummer.formatPdf(),
                 "annenMottakerNavn" to letter.sakspart.annenMottakerNavn,
                 "saksnummer" to letter.sakspart.saksnummer,
-                "dokumentDato" to letter.sakspart.dokumentDato.format(dateFormatter(language, FormatStyle.LONG)),
+                "dokumentDato" to letter.sakspart.dokumentDato.format(pdfDateFormatter(language, FormatStyle.LONG)),
                 "avsenderEnhet" to letter.signatur.navAvsenderEnhet,
                 "signerendeSaksbehandler" to letter.signatur.saksbehandlerNavn,
                 "signerendeAttestant" to letter.signatur.attesterendeSaksbehandlerNavn?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV },

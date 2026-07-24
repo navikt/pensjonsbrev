@@ -24,7 +24,6 @@ class LetterMarkupDslTest {
                 dokumentDato = LocalDate.of(2026, 7, 9),
             ),
             signatur = signatur(
-                hilsenTekst = "Med vennlig hilsen",
                 navAvsenderEnhet = "NAV",
                 saksbehandlerNavn = "Sak S.Behandler",
             ),
@@ -116,7 +115,6 @@ class LetterMarkupDslTest {
                     dokumentDato = LocalDate.of(2026, 7, 9),
                 ),
                 signatur = signatur(
-                    hilsenTekst = "Med vennlig hilsen",
                     navAvsenderEnhet = "NAV",
                 ),
             ) {
@@ -154,7 +152,7 @@ class LetterMarkupDslTest {
                 saksnummer = "9876543",
                 dokumentDato = LocalDate.of(2026, 7, 9),
             ),
-            signatur = signatur(hilsenTekst = "Med vennlig hilsen", navAvsenderEnhet = "NAV"),
+            signatur = signatur(navAvsenderEnhet = "NAV"),
         ) {
             title1("Orientering")
             outline { paragraph("Innhold") }

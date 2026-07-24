@@ -77,7 +77,7 @@ class SakspartBuilder {
 @LetterMarkupBuilderDsl
 class SignaturBuilder {
     var hilsenTekst: String = "hilsen"
-    var saksbehandlerNavn: String = "Saksbehandler Saksbehandlersen"
+    var saksbehandlerNavn: String? = null
     var attesterendeSaksbehandlerNavn: String? = null
     var navAvsenderEnhet: String = "Nav sentralt"
 

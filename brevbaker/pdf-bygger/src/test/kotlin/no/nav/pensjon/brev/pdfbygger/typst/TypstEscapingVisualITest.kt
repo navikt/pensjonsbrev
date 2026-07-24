@@ -4,14 +4,13 @@ package no.nav.pensjon.brev.pdfbygger.typst
 
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InterneDataklasser
-import no.nav.brev.brevbaker.TestTags
-import no.nav.brev.brevbaker.PdfByggerTestService
-import no.nav.brev.brevbaker.writeTestPDF
-import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.pdfbygger.TestTags
+import no.nav.pensjon.brev.pdfbygger.PdfByggerTestService
+import no.nav.pensjon.brev.pdfbygger.writeTestPDF
+import no.nav.brev.brevbaker.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.attachment
 import no.nav.pensjon.brev.pdfbygger.letterMarkup
-import no.nav.pensjon.brev.template.toCode
-import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
@@ -246,7 +245,7 @@ class TypstEscapingVisualITest {
         val pdfRequest = PDFRequest(
             letterMarkup = letter,
             attachments = listOf(attachment),
-            language = Language.Bokmal.toCode(),
+            language = LanguageCode.BOKMAL,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             pdfVedlegg = pdfVedleggTitles
         )

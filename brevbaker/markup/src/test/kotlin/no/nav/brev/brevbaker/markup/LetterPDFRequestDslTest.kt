@@ -17,7 +17,7 @@ class LetterPDFRequestDslTest {
             saksnummer = "9876543",
             dokumentDato = LocalDate.of(2026, 7, 9),
         ),
-        signatur = signatur(hilsenTekst = "Med vennlig hilsen", navAvsenderEnhet = "NAV"),
+        signatur = signatur(navAvsenderEnhet = "NAV"),
     ) {
         title1(title)
         outline { paragraph("Innhold") }

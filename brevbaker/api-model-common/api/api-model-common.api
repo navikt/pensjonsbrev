@@ -62,6 +62,19 @@ public final class no/nav/brev/brevbaker/PDFCompilationOutput {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class no/nav/brev/brevbaker/PDFRequest {
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;Ljava/util/List;)V
+	public synthetic fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttachments ()Ljava/util/List;
+	public final fun getBrevtype ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
+	public final fun getLanguage ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
+	public final fun getLetterMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
+	public final fun getPdfVedlegg ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class no/nav/pensjon/brev/api/model/BestillBrevRequest : no/nav/pensjon/brev/api/model/BrevRequest {
 	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)V
 	public fun equals (Ljava/lang/Object;)Z

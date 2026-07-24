@@ -59,7 +59,6 @@ internal object LocalDateSerializer : KSerializer<LocalDate> {
 @ConsistentCopyVisibility
 @Serializable
 data class Signatur internal constructor(
-    val hilsenTekst: String,
     val saksbehandlerSignatur: SaksbehandlerSignatur?,
     val navAvsenderEnhet: String,
 )

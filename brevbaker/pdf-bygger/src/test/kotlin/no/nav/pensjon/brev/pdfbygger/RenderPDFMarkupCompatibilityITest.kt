@@ -3,14 +3,6 @@ package no.nav.pensjon.brev.pdfbygger
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
-import no.nav.brev.brevbaker.PDFByggerService
-import no.nav.brev.brevbaker.PDFCompilationOutput
-import no.nav.brev.brevbaker.PdfByggerTestService
-import no.nav.brev.brevbaker.TestTags
-import no.nav.brev.brevbaker.renderTestPDF
-import no.nav.brev.brevbaker.renderTestPDFV2
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
-import no.nav.pensjon.brev.PDFRequest
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.TestInstance
@@ -18,7 +10,6 @@ import org.junit.jupiter.api.parallel.Execution
 import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
-import java.nio.file.Path
 
 @Tag(TestTags.INTEGRATION_TEST)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -32,8 +23,8 @@ class RenderPDFMarkupCompatibilityITest {
     fun `markup v1 and v2 render identical PDFs`(testCase: RenderPDFVisualTestCase) {
         val (v1, v2) = runBlocking {
             coroutineScope {
-                val v1 = async { renderV1(testCase) }
-                val v2 = async { renderV2(testCase) }
+                val v1 = async { pdfCompileService.producePDF(testCase.v1()).bytes }
+                val v2 = async { pdfCompileService.producePDFV2(testCase.v2()).bytes }
                 v1.await() to v2.await()
             }
         }
@@ -43,39 +34,6 @@ class RenderPDFMarkupCompatibilityITest {
             v2.withStablePdfMetadata(),
             "PDF from markup v1 and v2 differ for '${testCase.testName}'",
         )
-    }
-
-    private fun renderV1(testCase: RenderPDFVisualTestCase): ByteArray =
-        CapturingPdfByggerService(pdfCompileService)
-            .also {
-                testCase.letter().renderTestPDF(
-                    pdfFileName = testCase.testName,
-                    path = Path.of("build/test_visual/pdf-markup-compatibility/v1"),
-                    pdfByggerService = it,
-                )
-            }.lastPdfBytes()
-
-    private fun renderV2(testCase: RenderPDFVisualTestCase): ByteArray =
-        CapturingPdfByggerService(pdfCompileService)
-            .also {
-                testCase.letter().renderTestPDFV2(
-                    pdfFileName = testCase.testName,
-                    path = Path.of("build/test_visual/pdf-markup-compatibility/v2"),
-                    pdfByggerService = it,
-                )
-            }.lastPdfBytes()
-
-    private class CapturingPdfByggerService(private val delegate: PdfByggerTestService) : PDFByggerService {
-        private var lastPdf: ByteArray? = null
-
-        override suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput =
-            delegate.producePDF(pdfRequest).also { lastPdf = it.bytes }
-
-        override suspend fun producePDFV2(pdfRequest: LetterPDFRequest): PDFCompilationOutput =
-            delegate.producePDFV2(pdfRequest).also { lastPdf = it.bytes }
-
-        fun lastPdfBytes(): ByteArray =
-            requireNotNull(lastPdf) { "PDF was not produced" }
     }
 
     companion object {

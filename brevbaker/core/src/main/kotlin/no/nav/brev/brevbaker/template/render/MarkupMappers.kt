@@ -3,6 +3,7 @@ package no.nav.brev.brevbaker.template.render
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata

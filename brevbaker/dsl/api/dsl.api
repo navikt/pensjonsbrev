@@ -1,16 +1,3 @@
-public final class no/nav/pensjon/brev/PDFRequest {
-	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;Ljava/util/List;)V
-	public synthetic fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getAttachments ()Ljava/util/List;
-	public final fun getBrevtype ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
-	public final fun getLanguage ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
-	public final fun getLetterMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
-	public final fun getPdfVedlegg ()Ljava/util/List;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public abstract interface class no/nav/pensjon/brev/api/FeatureToggleService {
 	public abstract fun isEnabled (Lno/nav/pensjon/brev/api/model/FeatureToggle;)Z
 	public abstract fun verifiserAtAlleBrytereErDefinert (Ljava/util/List;)V
@@ -701,19 +688,6 @@ public final class no/nav/pensjon/brev/template/LanguageCombinationKt {
 
 public final class no/nav/pensjon/brev/template/LanguageKt {
 	public static final fun includePhrase (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;Lno/nav/pensjon/brev/template/OutlinePhrase;)V
-}
-
-public final class no/nav/pensjon/brev/template/LanguageSettings {
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getSetting (Lno/nav/pensjon/brev/template/Language;Ljava/lang/String;)Ljava/lang/String;
-	public final fun getSettings ()Ljava/util/Map;
-	public fun hashCode ()I
-	public final fun languageSettings (Lno/nav/pensjon/brev/template/Language;)Ljava/util/Map;
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/template/LanguageSettings$MissingLanguageSettingException : java/lang/Exception {
-	public fun <init> (Ljava/lang/String;)V
 }
 
 public abstract interface class no/nav/pensjon/brev/template/LanguageSupport : no/nav/pensjon/brev/template/StableHash {
@@ -1603,37 +1577,6 @@ public final class no/nav/pensjon/brev/template/render/DocumentFile {
 	public final fun getContent ()Ljava/lang/String;
 	public final fun getFileName ()Ljava/lang/String;
 	public final fun writeTo (Ljava/nio/file/Path;)V
-}
-
-public final class no/nav/pensjon/brev/template/render/LanguageSetting {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/render/LanguageSetting;
-}
-
-public final class no/nav/pensjon/brev/template/render/LanguageSetting$Closing {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/render/LanguageSetting$Closing;
-	public static final field automatiskInformasjonsbrev Ljava/lang/String;
-	public static final field automatiskVedtaksbrev Ljava/lang/String;
-	public static final field greeting Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/template/render/LanguageSetting$HTML {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/render/LanguageSetting$HTML;
-	public static final field altTextLogo Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/template/render/LanguageSetting$Sakspart {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/render/LanguageSetting$Sakspart;
-	public static final field annenMottaker Ljava/lang/String;
-	public static final field foedselsnummer Ljava/lang/String;
-	public static final field gjelderNavn Ljava/lang/String;
-	public static final field navn Ljava/lang/String;
-	public static final field saksnummer Ljava/lang/String;
-	public static final field vedleggGjelderNavn Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/template/render/LanguageSettingsKt {
-	public static final fun getDocumentLanguageSettings ()Lno/nav/pensjon/brev/template/LanguageSettings;
-	public static final fun getPensjonHTMLSettings ()Lno/nav/pensjon/brev/template/LanguageSettings;
 }
 
 public final class no/nav/pensjon/brev/template/render/UtilsKt {

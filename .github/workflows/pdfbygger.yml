@@ -51,6 +51,7 @@ jobs:
       gradleTarget: brevbaker:pdf-bygger
       buildImage: true
       uploadJar: true
+      publishMarkup: true
 
   pushPdfByggerToGithubRegistry:
     name: "Push pdf-bygger to github registry"
@@ -138,6 +139,7 @@ jobs:
       - name: "run integration tests"
         run: |
           ./gradlew :brevbaker:api-model-common:publishToMavenLocal
+          ./gradlew :brevbaker:markup:publishToMavenLocal
           ./gradlew :brevbaker:pdf-bygger:integrationTest
         env:
           "PDF_BYGGER_IMAGE": "ghcr.io/navikt/pensjonsbrev/pdf-bygger:${{ github.sha }}"

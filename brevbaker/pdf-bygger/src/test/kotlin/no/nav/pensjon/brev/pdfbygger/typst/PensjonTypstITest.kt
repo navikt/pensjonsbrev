@@ -2,14 +2,11 @@ package no.nav.pensjon.brev.pdfbygger.typst
 
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InterneDataklasser
-import no.nav.brev.brevbaker.*
-import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
+import no.nav.brev.brevbaker.PDFRequest
+import no.nav.pensjon.brev.pdfbygger.PdfByggerTestService
+import no.nav.pensjon.brev.pdfbygger.TestTags
 import no.nav.pensjon.brev.pdfbygger.letterMarkup
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.LetterImpl
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.pdfbygger.writeTestPDF
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Tag
@@ -27,28 +24,6 @@ import org.junit.jupiter.params.provider.MethodSource
 @Execution(ExecutionMode.CONCURRENT)
 class PensjonTypstITest {
     private val pdfCompileService = PdfByggerTestService()
-
-    @Test
-    fun canRender() {
-        val template = createTemplate(
-            letterDataType = EmptyAutobrevdata::class,
-            languages = languages(Bokmal),
-            letterMetadata = LetterMetadata(
-                displayTitle = "En fin display tittel",
-                distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
-                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-            )
-        ) {
-            title { text(bokmal { +"En fin tittel" }) }
-            outline {
-                paragraph {
-                    text(bokmal { +"Argumentet etNavn er: " })
-                }
-            }
-        }
-        LetterImpl(template, EmptyAutobrevdata, Bokmal, FellesFactory.felles)
-            .renderTestPDF("pensjonTypstITest_canRender", pdfByggerService = pdfCompileService)
-    }
 
     @Test
     fun `Ping pdf builder`() {
@@ -214,4 +189,3 @@ class PensjonTypstITest {
     }
 
 }
-
