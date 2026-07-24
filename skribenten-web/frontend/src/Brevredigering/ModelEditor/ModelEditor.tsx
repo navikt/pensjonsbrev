@@ -42,28 +42,26 @@ export const extractRelevantSaksbehandlerValgFields = (
   );
 };
 
-export const usePartitionedModelSpecification = (brevkode: string, propertyUsage: PropertyUsage[] = []) => {
+export const filterModelSpecificationByPropertyUsage = (
+  specification: Record<string, FieldType> | undefined,
+  propertyUsage: PropertyUsage[] | undefined,
+  saksbehandlerValgType: string | undefined | null,
+) => {
+  if (!specification || propertyUsage === undefined || !saksbehandlerValgType) {
+    return specification;
+  }
+
+  const relevantFields = extractRelevantSaksbehandlerValgFields(propertyUsage, saksbehandlerValgType);
+  return Object.fromEntries(Object.entries(specification).filter(([field]) => relevantFields.has(field)));
+};
+
+export const usePartitionedModelSpecification = (brevkode: string, propertyUsage?: PropertyUsage[]) => {
   const { status, specification, error, saksbehandlerValgType } = useModelSpecificationForm(brevkode);
 
-  const relevantFields = useMemo(
-    () => extractRelevantSaksbehandlerValgFields(propertyUsage, saksbehandlerValgType),
-    [propertyUsage, saksbehandlerValgType],
+  const filteredSpecification = useMemo(
+    () => filterModelSpecificationByPropertyUsage(specification, propertyUsage, saksbehandlerValgType),
+    [specification, propertyUsage, saksbehandlerValgType],
   );
-
-  const filteredSpecification = useMemo(() => {
-    if (!specification) {
-      return undefined;
-    }
-    if (relevantFields.size === 0) {
-      return specification;
-    }
-    return Object.entries(specification).reduce<Record<string, FieldType>>((acc, [field, type]) => {
-      if (relevantFields.has(field)) {
-        acc[field] = type;
-      }
-      return acc;
-    }, {});
-  }, [specification, relevantFields]);
 
   const [optionalFields, requiredFields] = filteredSpecification
     ? partition(Object.entries(filteredSpecification), (spec) => isFieldNullableOrBoolean(spec[1]))

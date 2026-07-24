@@ -37,6 +37,7 @@ import { type BrevResponse, type ReservasjonResponse, type SaksbehandlerValg } f
 import { genericErrorMessage, getErrorMessage } from "~/utils/errorUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
+import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
   params: {
@@ -46,7 +47,8 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
 });
 
 const queryRetries = 3;
-const isSpecialCaseErrorStatus = (status: number | undefined) => status === 404 || status === 409 || status === 423;
+const isSpecialCaseErrorStatus = (status: number | undefined) =>
+  status === 404 || status === 409 || status === 422 || status === 423;
 
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
@@ -257,7 +259,7 @@ function RedigerBrev({
     brevkode: brev.info.brevkode,
     form,
     redigertBrev: editorState.redigertBrev,
-    propertyUsage: brev.propertyUsage ?? [],
+    propertyUsage: brev.propertyUsage ?? undefined,
   });
 
   const onTekstValgAndOverstyringChange = () => {
@@ -335,7 +337,6 @@ function RedigerBrev({
 
   // TODO: disable SaksbehandlerValgModelEditor during SAVE_PENDING
 
-  // TODO: Trenger form å være helt ytterst her? Kunne vi hatt det lenger inn i hierarkiet, f.eks i OpprettetBrevSidemenyForm.
   return (
     <FormProvider {...form}>
       <Box asChild background="default" maxWidth="1106px" minWidth="945px">
@@ -377,7 +378,11 @@ function RedigerBrev({
                   <Heading size="small" spacing>
                     {brevmal.data?.name}
                   </Heading>
-                  <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
+                  <BrevmalAlternativer
+                    brevkode={brev.info.brevkode}
+                    propertyUsage={brev.propertyUsage ?? undefined}
+                    submitOnChange={onTekstValgAndOverstyringChange}
+                  />
                   <UnderskriftTextField of="Saksbehandler" />
                 </VStack>
               }
@@ -400,90 +405,3 @@ function RedigerBrev({
     </FormProvider>
   );
 }
-
-enum BrevSidemenyTabs {
-  TEKSTVALG = "TEKSTVALG",
-  OVERSTYRING = "OVERSTYRING",
-}
-
-// TODO: Funksjonelt er denne komponenten ganske lik BrevmalAlternativer.tsx. Se på om vi kan bruke samme komponent.
-const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevResponse; submitOnChange?: () => void }) => {
-  const specificationFormElements = usePartitionedModelSpecification(
-    brev.info.brevkode,
-    brev.propertyUsage ?? undefined,
-  );
-
-  const optionalFields = specificationFormElements.status === "success" ? specificationFormElements.optionalFields : [];
-  const requiredFields = specificationFormElements.status === "success" ? specificationFormElements.requiredFields : [];
-  const hasOptional = optionalFields.length > 0;
-  const hasRequired = requiredFields.length > 0;
-
-  if (!hasOptional && !hasRequired) {
-    return (
-      <SaksbehandlerValgModelEditor
-        brevkode={brev.info.brevkode}
-        fieldsToRender="optional"
-        specificationFormElements={specificationFormElements}
-        submitOnChange={submitOnChange}
-      />
-    );
-  }
-
-  if (hasOptional && !hasRequired) {
-    return (
-      <>
-        <Heading size="xsmall">Tekstvalg</Heading>
-        <SaksbehandlerValgModelEditor
-          brevkode={brev.info.brevkode}
-          fieldsToRender="optional"
-          specificationFormElements={specificationFormElements}
-          submitOnChange={submitOnChange}
-        />
-      </>
-    );
-  }
-
-  if (hasRequired && !hasOptional)
-    return (
-      <>
-        <Heading size="xsmall">Overstyring</Heading>
-        <SaksbehandlerValgModelEditor
-          brevkode={brev.info.brevkode}
-          fieldsToRender="required"
-          specificationFormElements={specificationFormElements}
-          submitOnChange={submitOnChange}
-        />
-      </>
-    );
-
-  const defaultTab = BrevSidemenyTabs.TEKSTVALG;
-
-  return (
-    <Tabs defaultValue={defaultTab} fill size="small">
-      <Tabs.List>
-        <Tabs.Tab label="Tekstvalg" value={BrevSidemenyTabs.TEKSTVALG} />
-        <Tabs.Tab label="Overstyring" value={BrevSidemenyTabs.OVERSTYRING} />
-      </Tabs.List>
-      <Tabs.Panel value={BrevSidemenyTabs.TEKSTVALG}>
-        <Box marginBlock="space-20 space-0">
-          <SaksbehandlerValgModelEditor
-            brevkode={brev.info.brevkode}
-            fieldsToRender="optional"
-            specificationFormElements={specificationFormElements}
-            submitOnChange={submitOnChange}
-          />
-        </Box>
-      </Tabs.Panel>
-      <Tabs.Panel value={BrevSidemenyTabs.OVERSTYRING}>
-        <Box marginBlock="space-20 space-0">
-          <SaksbehandlerValgModelEditor
-            brevkode={brev.info.brevkode}
-            fieldsToRender="required"
-            specificationFormElements={specificationFormElements}
-            submitOnChange={submitOnChange}
-          />
-        </Box>
-      </Tabs.Panel>
-    </Tabs>
-  );
-};

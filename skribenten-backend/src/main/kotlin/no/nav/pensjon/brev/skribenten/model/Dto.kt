@@ -47,6 +47,7 @@ object Dto {
         val journalpostId: JournalpostId?,
         val attestertAv: NavIdent?,
         val status: BrevStatus,
+        val leggVedFoersteside: Boolean?,
     )
 
     enum class BrevStatus {

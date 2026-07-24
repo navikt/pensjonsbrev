@@ -59,7 +59,9 @@ dependencies {
     implementation(libs.bundles.metrics)
 
     implementation(project(":brevbaker:dsl"))
+    implementation(project(":brevbaker:markup"))
     implementation(libs.brevbaker.common)
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")

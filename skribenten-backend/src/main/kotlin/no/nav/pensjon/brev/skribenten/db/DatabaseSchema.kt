@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.db
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
@@ -59,6 +60,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
     val journalpostId: Column<JournalpostId?> = long("journalpostId").transform(::JournalpostId, JournalpostId::id).nullable()
     val attestertAvNavIdent: Column<NavIdent?> = varchar("attestertAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).nullable()
     val brevtype: Column<LetterMetadata.Brevtype> = varchar("brevtype", length = 50).transform(LetterMetadata.Brevtype::valueOf, LetterMetadata.Brevtype::name)
+    val leggVedFoersteside: Column<Boolean?> = bool("leggvedfoersteside").nullable()
 }
 
 object DocumentTable : LongIdTable() {
@@ -90,7 +92,7 @@ object MottakerTable : IdTable<BrevId>() {
 
 object P1DataTable : IdTable<BrevId>() {
     override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
-    val p1data: Column<Api.GeneriskBrevdata> = encryptedBinary("p1data")
+    val p1data: Column<P1RedigerbarDto> = encryptedBinary("p1data")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
         .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
 

@@ -16,17 +16,23 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.path
 import io.ktor.server.request.receive
+import io.ktor.server.request.receiveText
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.logging.Logger
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import kotlinx.serialization.json.Json
+import no.nav.brev.brevbaker.markup.LetterPDFRequest
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
+import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2
 import org.slf4j.LoggerFactory
 
 fun main(args: Array<String>) = EngineMain.main(args)
+
+private val markupJson = Json { ignoreUnknownKeys = true }
 
 fun ApplicationConfig.getProperty(name: String): String =
     property(name).getString()
@@ -94,6 +100,20 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
             val request = call.receive<PDFRequest>()
             val result = typstCompileService.createLetter {
                 TypstDocumentRenderer.render(request, it)
+            }
+            handleResult(result, call.application.environment.log)
+        }
+
+        post("/v2/produserBrev") {
+            val request = runCatching {
+                markupJson.decodeFromString(LetterPDFRequest.serializer(), call.receiveText())
+            }.getOrElse { cause ->
+                call.application.environment.log.warn("Failed to deserialize /v2/produserBrev request", cause)
+                call.respond(HttpStatusCode.BadRequest, "Failed to deserialize json body")
+                return@post
+            }
+            val result = typstCompileService.createLetter {
+                TypstDocumentRendererV2.render(request, it)
             }
             handleResult(result, call.application.environment.log)
         }

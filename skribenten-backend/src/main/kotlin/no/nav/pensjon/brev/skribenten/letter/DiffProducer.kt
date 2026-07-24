@@ -15,15 +15,15 @@ interface DiffProducer<R> {
     data class TableInfo(val id: Int?)
     data class RowInfo(val id: Int?)
     data class CellInfo(val id: Int?)
-    data class TextSegment(val index: ContentIndex, val startOffset: Int, val endOffset: Int, val text: String)
+    data class TextSegment(val startOffset: Int, val endOffset: Int, val text: String)
 
-    fun block(index: BlockIndex, change: Change<BlockInfo>) {}
-    fun itemList(index: BlockContentIndex, change: Change<ItemListInfo>) {}
-    fun item(index: ItemIndex, change: Change<ItemInfo>) {}
-    fun table(index: BlockContentIndex, change: Change<TableInfo>) {}
-    fun row(index: TableRowIndex, change: Change<RowInfo>) {}
-    fun cell(index: TableCellIndex, change: Change<CellInfo>) {}
-    fun textSegment(change: Change<TextSegment>) {}
+    fun block(insertIndex: BlockIndex, deleteIndex: BlockIndex, change: Change<BlockInfo>) {}
+    fun itemList(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex, change: Change<ItemListInfo>) {}
+    fun item(insertIndex: ItemIndex, deleteIndex: ItemIndex, change: Change<ItemInfo>) {}
+    fun table(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex, change: Change<TableInfo>) {}
+    fun row(insertIndex: TableRowIndex, deleteIndex: TableRowIndex, change: Change<RowInfo>) {}
+    fun cell(insertIndex: TableCellIndex, deleteIndex: TableCellIndex, change: Change<CellInfo>) {}
+    fun textSegment(insertIndex: ContentIndex, deleteIndex: ContentIndex, change: Change<TextSegment>) {}
 
     fun build(): R
 }

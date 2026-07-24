@@ -67,7 +67,4 @@ export type Header = generated.EditParagraphContentTableHeader;
 export type ColumnSpec = generated.EditParagraphContentTableColumnSpec;
 export type ColumnAlignment = generated.EditParagraphContentTableColumnAlignment;
 
-export interface PropertyUsage {
-  readonly typeName: string;
-  readonly propertyName: string;
-}
+export type PropertyUsage = generated.LetterMarkupWithDataUsageProperty;

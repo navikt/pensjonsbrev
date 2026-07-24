@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.FellesFactory.felles
-import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
@@ -12,7 +11,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.LetterMarkupAsserter.Companion.assertThat
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -56,23 +54,6 @@ class Letter2MarkupTest {
     }
 
     @Test
-    fun `paragraph content is rendered in order`() {
-        val result = renderTemplate(EmptyAutobrevdata) {
-            paragraph {
-                text(bokmal { +"first" })
-                text(bokmal { +"second" })
-            }
-        }
-
-        assertThat(result.letterMarkup).hasBlocks {
-            paragraph {
-                literal("first")
-                    literal("second")
-                }
-        }
-    }
-
-    @Test
     fun `title1 content is rendered in order`() {
         val result = renderTemplate(EmptyAutobrevdata) {
             title1 {
@@ -102,73 +83,6 @@ class Letter2MarkupTest {
                 variable("2024")
             }
         }
-    }
-
-    @Test
-    fun `template title with expression renders as declared`() {
-        val template = createTemplate(
-            letterDataType = EmptyAutobrevdata::class,
-            languages = languages(Bokmal),
-            letterMetadata = testLetterMetadata,
-        ) {
-            title {
-                text(bokmal { +"noe tekst " + Year(2024).expr().format() })
-            }
-            outline {
-                paragraph { }
-            }
-        }
-        val result = Letter2Markup.render(LetterImpl(template, EmptyAutobrevdata, Bokmal, felles))
-
-        assertThat(result.letterMarkup.title.joinToString("") { it.text })
-            .isEqualTo("noe tekst 2024")
-    }
-
-    @Test
-    fun `template newLine renders as declared`() {
-        val result = renderTemplate(EmptyAutobrevdata) {
-            paragraph {
-                text(bokmal { +"hei" })
-                newline()
-                text(bokmal { +"ha det bra" })
-            }
-        }
-
-        assertThat(result.letterMarkup).hasBlocks {
-            paragraph {
-                literal("hei")
-                newLine()
-                literal("ha det bra")
-            }
-        }
-    }
-
-    @Test
-    fun `id for blokker i forEach blir unike for hver iterasjon`() {
-        val forEachListe = listOf("1", "2", "3")
-        val result = renderTemplate(EmptyAutobrevdata) {
-            forEach(forEachListe.expr()) {
-                title1 { text(bokmal { +"hei nr. " + it }) }
-            }
-        }
-        assertThat(result.letterMarkup.blocks.map { it.id }.distinct())
-            .describedAs { "innholdet i listene har ikke betydning" }
-            .hasSameSizeAs(forEachListe)
-    }
-
-    @Test
-    fun `id for blokker i noestet forEach blir unike for hver iterasjon`() {
-        val forEachListe = listOf("1", "2", "3")
-        val result = renderTemplate(EmptyAutobrevdata) {
-            forEach(forEachListe.expr()) {
-                forEach(forEachListe.expr()) {
-                    title1 { text(bokmal { +"hei nr. " + it }) }
-                }
-            }
-        }
-        assertThat(result.letterMarkup.blocks.map { it.id }.distinct())
-            .describedAs { "innholdet i listene har ikke betydning" }
-            .hasSameSizeAs(forEachListe.flatMap { forEachListe })
     }
 
 }

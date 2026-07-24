@@ -69,6 +69,7 @@ externalHosts:
   - saf.prod-fss-pub.nais.io
   - pensjon-persondata.prod-fss-pub.nais.io
   - pensjon-samhandler-proxy.prod-fss-pub.nais.io
+  - foerstesidegenerator.prod-fss-pub.nais.io
   - teampensjon-unleash-api.nav.cloud.nais.io
   - norg2.intern.nav.no
   - pensjon-representasjon.intern.nav.no
@@ -126,6 +127,11 @@ env:
     value: "https://pensjon-samhandler-proxy.prod-fss-pub.nais.io"
   - name: SAMHANDLER_PROXY_SCOPE
     value: "api://prod-fss.pensjondeployer.pensjon-samhandler-proxy/.default"
+
+  - name: FOERSTESIDEGENERATOR_URL
+    value: "https://foerstesidegenerator.prod-fss-pub.nais.io/"
+  - name: FOERSTESIDEGENERATOR_SCOPE
+    value: "api://prod-fss.teamdokumenthandtering.foerstesidegenerator/.default"
 
   - name: NORG2_URL
     value: "https://norg2.intern.nav.no/norg2/"

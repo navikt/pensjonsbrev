@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceHttp
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
-import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevInfoServiceImpl
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.AttesterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreDistribusjonstypeHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreMottakerHandler
@@ -22,18 +21,24 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SlettB
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentEllerOpprettPdfHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentP1DataHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.LagreP1DataHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevForAlleSakerHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevForSakHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevInfoHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigerbareVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SlettRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreValgteVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.FrigiReservasjonHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.GenererFoerstesideHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.TilbakestillBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentAlltidValgbareVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevAttesteringHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevForAlleSakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.ReserverBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.LeggVedFoerstesideHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.VeksleKlarStatusHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.AttesterBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
@@ -54,6 +59,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataServiceHttp
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.LegacyBrevServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PentHttpClient
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.KrrService
 import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
@@ -95,6 +101,7 @@ fun Application.configureDependencies() {
         provide(KrrService::class)
         provide(BrevbakerServiceHttp::class)
         provide(BrevmetadataServiceHttp::class)
+        provide(FoerstesidegeneratorClient::class)
         provide(SamhandlerServiceHttp::class)
         provide(NavansattServiceHttp::class)
         provide(LegacyBrevServiceImpl::class)
@@ -108,7 +115,6 @@ fun Application.configureDependencies() {
 
         provide(Dto2ApiService::class)
         provide(ExternalAPIService::class)
-        provide(HentBrevInfoServiceImpl::class)
 
         provide(AttesterBrevPolicy::class)
         provide(BrevreservasjonPolicy::class)
@@ -123,19 +129,27 @@ fun Application.configureDependencies() {
         provide(EndreMottakerHandler::class)
         provide(EndreRedigertVedleggHandler::class)
         provide(EndreValgteVedleggHandler::class)
+        provide(FjernFavorittHandler::class)
         provide(FrigiReservasjonHandler::class)
+        provide(GenererFoerstesideHandler::class)
         provide(HentAlltidValgbareVedleggHandler::class)
         provide(HentBrevAttesteringHandler::class)
+        provide<HentBrevForAlleSakerService>(HentBrevForAlleSakerHandler::class)
+        provide(HentBrevForSakHandler::class)
         provide(HentBrevHandler::class)
+        provide(HentBrevInfoHandler::class)
         provide(HentEllerOpprettPdfHandler::class)
+        provide(HentFavoritterHandler::class)
         provide(HentP1DataHandler::class)
         provide(HentRedigerbareVedleggHandler::class)
         provide(HentRedigertVedleggHandler::class)
         provide(LagreP1DataHandler::class)
+        provide(LeggTilFavorittHandler::class)
         provide(OppdaterBrevHandler::class)
         provide(OpprettBrevHandler::class)
         provide(ReserverBrevHandler::class)
         provide(SendBrevHandler::class)
+        provide(LeggVedFoerstesideHandler::class)
         provide(SlettBrevHandler::class)
         provide(SlettRedigertVedleggHandler::class)
         provide(TilbakestillBrevHandler::class)

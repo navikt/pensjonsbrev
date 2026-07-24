@@ -6,6 +6,10 @@ import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupLetterMarkup
+import no.nav.brev.brevbaker.markup.Attachment as MarkupAttachment
+import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage as MarkupLetterMarkupWithDataUsage
+import no.nav.brev.brevbaker.markup.outline.Text as MarkupText
 
 class Brevbaker(
     pdfByggerService: PDFByggerService,
@@ -16,8 +20,14 @@ class Brevbaker(
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>): LetterResponse =
         brevbakerPDF.renderPDF(letter, null)
 
+    suspend fun renderPDFV2(letter: Letter<BrevbakerBrevdata>): LetterResponse =
+        brevbakerPDF.renderPDFV2(letter, null)
+
     suspend fun renderRedigertBrevPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup, redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()) =
         brevbakerPDF.renderPDF(letter, redigertBrev, redigerteVedlegg)
+
+    suspend fun renderRedigertBrevV2PDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: MarkupLetterMarkup, redigerteVedlegg: Map<VedleggId, MarkupAttachment> = emptyMap()) =
+        brevbakerPDF.renderPDFV2(letter, redigertBrev, redigerteVedlegg)
 
     fun renderHTML(letter: Letter<BrevbakerBrevdata>): LetterResponse =
         BrevbakerHTML.renderHTML(letter, null)
@@ -36,4 +46,16 @@ class Brevbaker(
 
     fun <T: BrevbakerBrevdata> renderLetterMarkupWithDataUsage(letter: Letter<T>): LetterMarkupWithDataUsage =
         BrevbakerLetterMarkup.renderLetterMarkupWithDataUsage(letter)
+
+    fun <T: BrevbakerBrevdata> renderLetterMarkupV2(letter: Letter<T>): MarkupLetterMarkup =
+        BrevbakerLetterMarkup.renderLetterMarkupV2(letter)
+
+    fun <T: BrevbakerBrevdata> renderRedigerbartVedleggV2Titler(letter: Letter<T>): Map<VedleggId, List<MarkupText>> =
+        BrevbakerLetterMarkup.renderRedigerbartVedleggV2Titler(letter)
+
+    fun <T: BrevbakerBrevdata> renderRedigerbartVedleggV2Markup(letter: Letter<T>, vedleggId: VedleggId): MarkupAttachment? =
+        BrevbakerLetterMarkup.renderRedigerbartVedleggV2(letter, vedleggId)
+
+    fun <T: BrevbakerBrevdata> renderLetterMarkupWithDataUsageV2(letter: Letter<T>): MarkupLetterMarkupWithDataUsage =
+        BrevbakerLetterMarkup.renderLetterMarkupWithDataUsageV2(letter)
 }

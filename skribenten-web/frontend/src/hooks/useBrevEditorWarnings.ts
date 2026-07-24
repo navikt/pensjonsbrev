@@ -7,7 +7,7 @@ import {
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
-  extractRelevantSaksbehandlerValgFields,
+  filterModelSpecificationByPropertyUsage,
   useModelSpecificationForm,
 } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { type SaksbehandlerValg } from "~/types/brev";
@@ -30,18 +30,10 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
 }: UseBrevEditorWarningsParams<FormSchema>) {
   const { status, specification, saksbehandlerValgType } = useModelSpecificationForm(brevkode);
 
-  const relevantFields = useMemo(
-    () => extractRelevantSaksbehandlerValgFields(propertyUsage ?? [], saksbehandlerValgType),
-    [propertyUsage, saksbehandlerValgType],
+  const filteredSpecification = useMemo(
+    () => filterModelSpecificationByPropertyUsage(specification, propertyUsage, saksbehandlerValgType),
+    [specification, propertyUsage, saksbehandlerValgType],
   );
-
-  const filteredSpecification = useMemo(() => {
-    if (!specification) return undefined;
-
-    if (relevantFields.size === 0) return specification;
-
-    return Object.fromEntries(Object.entries(specification).filter(([key]) => relevantFields.has(key)));
-  }, [specification, relevantFields]);
 
   const hasMissingRequiredSaksbehandlerValg = useCallback((): boolean => {
     if (status !== "success" || !filteredSpecification) return false;
