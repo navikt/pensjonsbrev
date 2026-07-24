@@ -63,17 +63,7 @@ class HentEllerOpprettPdfHandler(
 
             val pdfBytes = renderService.renderPdf(brev, pesysBrevdata).let { rendretBrev ->
                 if (Features.foersteside.isEnabled() && brev.leggVedFoersteside == true) {
-                    genererFoerstesideHandler(
-                        request = GenererFoerstesideHandler.Request(
-                            brevId = request.brevId,
-                            pid = request.fagsak.pid,
-                            sakstype = request.fagsak.sakType,
-                            tema = request.fagsak.tema,
-                            vedlegg = brev.valgteVedlegg.map { GenererFoerstesideHandler.Tittel(it.visningstekst) }
-                        )
-                    )?.asSuccess()?.value?.let { foersteside ->
-                        PDFMerger.merge(rendretBrev, foersteside.foersteside)
-                    } ?: return Outcome.failure(IngenFoersteside(request.brevId))
+                    genererFoersteside(request, brev, rendretBrev) ?: return Outcome.failure(IngenFoersteside(request.brevId))
                 } else { rendretBrev }
             }
 
@@ -87,6 +77,22 @@ class HentEllerOpprettPdfHandler(
             brev.document = newDocument
             success(Dto.HentDocumentResult(document = newDocument, rendretBrevErEndret = rendretBrevErEndret))
         }
+    }
+
+    private suspend fun genererFoersteside(
+        request: Request,
+        brev: BrevredigeringEntity,
+        rendretBrev: ByteArray,
+    ): ByteArray? = genererFoerstesideHandler(
+        request = GenererFoerstesideHandler.Request(
+            brevId = request.brevId,
+            pid = request.fagsak.pid,
+            sakstype = request.fagsak.sakType,
+            tema = request.fagsak.tema,
+            vedlegg = brev.valgteVedlegg.map { GenererFoerstesideHandler.Tittel(it.visningstekst) }
+        )
+    )?.asSuccess()?.value?.let { foersteside ->
+        PDFMerger.merge(rendretBrev, foersteside.foersteside)
     }
 
     private fun BrevdataResponse.Data.medP1Data(p1: P1RedigerbarDto): Api.GeneriskBrevdata = brevdata.apply { put(P1_VEDLEGG_KEY, p1) }
