@@ -36,10 +36,10 @@ export type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
  *
  * Passes `frigiReservasjon: false` to `oppdaterBrev` by default — autosaving a tekstvalg/overstyring
  * change or a dirty letter must never release the caseworker's reservation lock on the letter.
- * (This fixes a prior drift where `brev.$brevId.tsx`'s autosave omitted `frigiReservasjon`, which
- * defaults to `true` server-side and released the lock on every autosave.) Callers that reuse this
- * mutation for a final submit (releasing the lock intentionally) must pass `frigiReservasjon: true`
- * explicitly via the mutate variables.
+ * (This fixes a prior drift where `brev.$brevId.tsx`'s autosave omitted `frigiReservasjon`; the
+ * `oppdaterBrev` API wrapper defaults it to `true` client-side, which released the lock on every
+ * autosave.) Callers that reuse this mutation for a final submit (releasing the lock intentionally)
+ * must pass `frigiReservasjon: true` explicitly via the mutate variables.
  */
 export function useOppdaterBrevAutosave({
   saksId,
