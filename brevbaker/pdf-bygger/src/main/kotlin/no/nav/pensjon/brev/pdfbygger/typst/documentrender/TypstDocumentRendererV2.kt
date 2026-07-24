@@ -1,13 +1,11 @@
 package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
-import no.nav.brev.brevbaker.PdfLanguageSettings
 import no.nav.brev.brevbaker.markup.Attachment
 import no.nav.brev.brevbaker.markup.LetterMarkup
 import no.nav.brev.brevbaker.markup.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.PDFTittel
 import no.nav.brev.brevbaker.markup.clean
-import no.nav.brev.brevbaker.pdfDateFormatter
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
 import no.nav.pensjon.brev.pdfbygger.typst.typstStringEscape
@@ -45,7 +43,7 @@ object TypstDocumentRendererV2 {
         pdfVedlegg: List<PDFTittel>,
     ) {
         // Language settings dictionary
-        appendDictionary("languageSettings", PdfLanguageSettings.forLanguage(language))
+        appendDictionary("languageSettings", DocumentLanguageSettings(language).asMap())
 
         // Input data dictionary with all letter metadata
         appendDictionary(

@@ -16,7 +16,7 @@ class CleanMarkupTest {
         saksnummer = Markup.Saksnummer("9876543"),
         dokumentDato = LocalDate.of(2026, 7, 9),
     )
-    private val signatur = Signatur(hilsenTekst = "Med vennlig hilsen", saksbehandlerSignatur = null, navAvsenderEnhet = "NAV")
+    private val signatur = Signatur(saksbehandlerSignatur = null, navAvsenderEnhet = "NAV")
 
     private var idCounter = 0
     private fun nextId() = idCounter++

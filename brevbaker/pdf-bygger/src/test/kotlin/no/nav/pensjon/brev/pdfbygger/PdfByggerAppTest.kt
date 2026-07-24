@@ -134,7 +134,7 @@ class PdfByggerAppTest {
                     saksnummer = "123",
                     dokumentDato = java.time.LocalDate.of(2025, 1, 1),
                 ),
-                signatur = signatur(hilsenTekst = "hilsen", navAvsenderEnhet = "Nav sentralt"),
+                signatur = signatur(navAvsenderEnhet = "Nav sentralt"),
             ) {
                 title1("En fin tittel")
                 outline {

@@ -58,7 +58,7 @@ class TypstDocumentRendererV2Test {
     )
 
     private fun brev(
-        signatur: Signatur = signatur("hilsen", "Nav sentralt", saksbehandlerNavn = "Saksbehandler Saksbehandlersen"),
+        signatur: Signatur = signatur(navAvsenderEnhet = "Nav sentralt", saksbehandlerNavn = "Saksbehandler Saksbehandlersen"),
         build: LetterMarkupBuilder<ContentBuilder>.() -> Unit,
     ): LetterMarkup = letterMarkup(saksinformasjon = saksinformasjon, signatur = signatur, build = build)
 
@@ -169,8 +169,7 @@ class TypstDocumentRendererV2Test {
             request(
                 brev(
                     signatur = signatur(
-                        "hilsen",
-                        "Nav sentralt",
+                        navAvsenderEnhet = "Nav sentralt",
                         saksbehandlerNavn = "Kari Saksbehandler",
                         attesterendeSaksbehandlerNavn = "Ola Attestant",
                     )
@@ -189,7 +188,7 @@ class TypstDocumentRendererV2Test {
     fun `manglende saksbehandlersignatur gir none i stedet for feil`() {
         val typst = render(
             request(
-                brev(signatur = signatur("hilsen", "Nav sentralt")) {
+                brev(signatur = signatur(navAvsenderEnhet = "Nav sentralt")) {
                     title1("Tittel")
                     outline { paragraph("Innhold") }
                 }

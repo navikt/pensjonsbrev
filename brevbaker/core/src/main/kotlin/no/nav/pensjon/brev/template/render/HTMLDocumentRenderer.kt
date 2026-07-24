@@ -2,10 +2,9 @@ package no.nav.pensjon.brev.template.render
 
 import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
+import no.nav.brev.brevbaker.template.render.DocumentLanguageSettings
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
-import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskInformasjonsbrev
-import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskVedtaksbrev
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
@@ -17,7 +16,6 @@ import java.util.*
 
 internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
 
-    private val languageSettings = pensjonHTMLSettings
     private val css = getResource("html/style.css").toString(Charsets.UTF_8)
     private val navLogoImg =
         "data:image/png;base64,${Base64.getEncoder().encodeToString(getResource("html/nav-logo.png"))}"
@@ -44,6 +42,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         brevtype: LetterMetadata.Brevtype
     ): HTMLDocument =
         HTMLDocument {
+            val languageSettings = DocumentLanguageSettings(language)
             appendLine("<!DOCTYPE html>").appendHTML().html {
                 lang = language.locale().toLanguageTag()
                 head {
@@ -59,21 +58,21 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
                             img(
                                 classes = classes("logo"),
                                 src = navLogoImg,
-                                alt = languageSettings.getSetting(language, LanguageSetting.HTML.altTextLogo)
+                                alt = languageSettings.altTextLogo
                             )
                             div(classes("brevhode")) {
-                                renderSakspart(language, felles)
+                                renderSakspart(languageSettings, felles)
                                 brevdato(language, felles)
                             }
                             h1(classes("tittel")) { renderTextWithoutStyle(letter.title) }
                             div(classes("brevkropp")) {
                                 letter.blocks.forEach { renderBlock(it) }
-                                renderClosing(language, felles, brevtype)
+                                renderClosing(languageSettings, felles, brevtype)
                             }
                         }
                         attachments.forEach {
                             hr(classes("vedlegg"))
-                            renderAttachment(it, language, felles)
+                            renderAttachment(it, languageSettings, felles)
                         }
                     }
                 }
@@ -85,11 +84,11 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             text(felles.dokumentDato.format(dateFormatter(language, FormatStyle.SHORT)))
         }
 
-    private fun FlowContent.renderClosing(language: Language, felles: BrevbakerFelles, brevtype: LetterMetadata.Brevtype) {
+    private fun FlowContent.renderClosing(languageSettings: DocumentLanguageSettings, felles: BrevbakerFelles, brevtype: LetterMetadata.Brevtype) {
         div("closing") {
             // Med vennlig hilsen
             div(classes("closing-greeting")) {
-                text(languageSettings.getSetting(language, LanguageSetting.Closing.greeting))
+                text(languageSettings.closingGreeting)
             }
             div(classes("closing-enhet")) { text(felles.avsenderEnhet.navn) }
 
@@ -108,21 +107,21 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             } else {
                 div(classes("closing-automatisk")) {
                     if (brevtype == VEDTAKSBREV) {
-                        text(languageSettings.getSetting(language, automatiskVedtaksbrev))
+                        text(languageSettings.automatiskVedtaksbrev)
                     } else {
-                        text(languageSettings.getSetting(language, automatiskInformasjonsbrev))
+                        text(languageSettings.automatiskInformasjonsbrev)
                     }
                 }
             }
         }
     }
 
-    private fun FlowContent.renderAttachment(attachment: Attachment, language: Language, felles: BrevbakerFelles): Unit =
+    private fun FlowContent.renderAttachment(attachment: Attachment, languageSettings: DocumentLanguageSettings, felles: BrevbakerFelles): Unit =
         div(classes("vedlegg")) {
-            img(classes = classes("logo"), src = navLogoImg, alt = languageSettings.getSetting(language, LanguageSetting.HTML.altTextLogo))
+            img(classes = classes("logo"), src = navLogoImg, alt = languageSettings.altTextLogo)
             h1(classes("tittel")) { renderText(attachment.title) }
             if (attachment.includeSakspart) {
-                renderSakspart(language, felles)
+                renderSakspart(languageSettings, felles)
             }
             div(classes("brevkropp")) {
                 attachment.blocks.forEach { renderBlock(it) }
@@ -281,21 +280,19 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             ParagraphContent.Table.ColumnAlignment.RIGHT -> "text-right"
         }
 
-    private fun FlowContent.renderSakspart(language: Language, felles: BrevbakerFelles) =
+    private fun FlowContent.renderSakspart(languageSettings: DocumentLanguageSettings, felles: BrevbakerFelles) =
         div(classes("sakspart")) {
             with(felles.bruker) {
                 val annenMottakerNavn = felles.annenMottakerNavn
-                val navnPrefix =
-                    if (annenMottakerNavn != null) LanguageSetting.Sakspart.gjelderNavn else LanguageSetting.Sakspart.navn
-
+                val navnPrefix = if (annenMottakerNavn != null) languageSettings.gjelderNavnPrefix else languageSettings.navnPrefix
                 listOfNotNull(
-                    annenMottakerNavn?.let { LanguageSetting.Sakspart.annenMottaker to it },
+                    annenMottakerNavn?.let { languageSettings.annenMottakerPrefix to it },
                     navnPrefix to fulltNavn(),
-                    LanguageSetting.Sakspart.foedselsnummer to foedselsnummer.value,
-                    LanguageSetting.Sakspart.saksnummer to felles.saksnummer,
+                    languageSettings.foedselsnummerPrefix to foedselsnummer.value,
+                    languageSettings.saksnummerPrefix to felles.saksnummer,
                 )
             }.forEach {
-                div(classes("sakspart-tittel")) { text(languageSettings.getSetting(language, it.first)) }
+                div(classes("sakspart-tittel")) { text(it.first) }
                 div(classes("sakspart-verdi")) { text(it.second) }
             }
         }

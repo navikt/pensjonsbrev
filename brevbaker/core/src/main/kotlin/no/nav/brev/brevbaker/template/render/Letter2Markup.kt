@@ -2,9 +2,7 @@ package no.nav.brev.brevbaker.template.render
 
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.fulltNavn
-import no.nav.pensjon.brev.template.render.documentLanguageSettings
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -44,8 +42,6 @@ class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachment
 
 @OptIn(InterneDataklasser::class)
 internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
-    private val languageSettings = documentLanguageSettings
-
     override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterWithAttachmentsMarkup =
         LetterWithAttachmentsMarkup(
             letterMarkup = renderLetterOnly(RenderContext(scope), template),
@@ -68,7 +64,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             blocks = renderOutline(context, template.outline),
             signatur = context.scope.felles.signerendeSaksbehandlere.let { sign ->
                 SignaturImpl(
-                    hilsenTekst = languageSettings.getSetting(context.scope.language, LanguageSetting.Closing.greeting),
+                    hilsenTekst = DocumentLanguageSettings(context.scope.language).closingGreeting,
                     saksbehandlerNavn = sign?.saksbehandler,
                     attesterendeSaksbehandlerNavn = sign?.attesterendeSaksbehandler,
                     navAvsenderEnhet = context.scope.felles.avsenderEnhet.navn,

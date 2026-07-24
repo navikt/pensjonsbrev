@@ -86,7 +86,6 @@ data class RenderPDFVisualTestCase(
                 annenMottakerNavn = annenMottakerNavn,
             ),
             signatur = signatur(
-                hilsenTekst = "hilsen",
                 navAvsenderEnhet = "Nav sentralt",
                 saksbehandlerNavn = saksbehandlerNavn,
                 attesterendeSaksbehandlerNavn = attesterendeSaksbehandlerNavn,

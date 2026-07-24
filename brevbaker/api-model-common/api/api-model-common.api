@@ -75,16 +75,6 @@ public final class no/nav/brev/brevbaker/PDFRequest {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/brev/brevbaker/PdfLanguageSettings {
-	public static final field INSTANCE Lno/nav/brev/brevbaker/PdfLanguageSettings;
-	public final fun forLanguage (Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)Ljava/util/Map;
-}
-
-public final class no/nav/brev/brevbaker/PdfLanguageSettingsKt {
-	public static final fun formatPdf-MWLH-Gw (Ljava/lang/String;)Ljava/lang/String;
-	public static final fun pdfDateFormatter (Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Ljava/time/format/FormatStyle;)Ljava/time/format/DateTimeFormatter;
-}
-
 public final class no/nav/pensjon/brev/api/model/BestillBrevRequest : no/nav/pensjon/brev/api/model/BrevRequest {
 	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)V
 	public fun equals (Ljava/lang/Object;)Z
