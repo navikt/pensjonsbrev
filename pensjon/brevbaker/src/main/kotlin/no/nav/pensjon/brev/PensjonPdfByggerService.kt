@@ -18,6 +18,7 @@ import kotlinx.io.IOException
 import kotlinx.serialization.json.Json
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.brev.brevbaker.PDFRequest
 import no.nav.brev.brevbaker.PDFTimeoutException
 import no.nav.brev.brevbaker.markup.LetterPDFRequest
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper

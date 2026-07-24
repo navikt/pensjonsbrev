@@ -17,7 +17,7 @@ import no.nav.brev.brevbaker.markup.dsl.paragraph
 import no.nav.brev.brevbaker.markup.dsl.saksinformasjon
 import no.nav.brev.brevbaker.markup.dsl.signatur
 import no.nav.brev.brevbaker.markup.dsl.title1
-import no.nav.pensjon.brev.PDFRequest
+import no.nav.brev.brevbaker.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
 import no.nav.pensjon.brevbaker.api.model.LanguageCode

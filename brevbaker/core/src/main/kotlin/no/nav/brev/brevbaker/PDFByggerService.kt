@@ -1,7 +1,7 @@
 package no.nav.brev.brevbaker
 
 import no.nav.brev.brevbaker.HttpStatusCodes.*
-import no.nav.pensjon.brev.PDFRequest
+import no.nav.brev.brevbaker.PDFRequest
 import no.nav.brev.brevbaker.markup.LetterPDFRequest
 
 class PDFCompileException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
