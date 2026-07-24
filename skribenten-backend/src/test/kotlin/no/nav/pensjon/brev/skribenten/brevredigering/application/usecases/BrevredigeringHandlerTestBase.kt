@@ -2,6 +2,7 @@
 
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
+import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.*
@@ -9,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
@@ -250,6 +252,13 @@ abstract class BrevredigeringHandlerTestBase {
                 penClient = PenClientStub(),
                 database = SharedPostgres.database,
             ),
+            genererFoerstesideHandler = GenererFoerstesideHandler(
+                FoerstesidegeneratorClient(
+                    config = OboClientConfig(url = "http://localhost", scope = "test"),
+                    authService = FakeAuthService,
+                    clientEngine = MockEngine { respond("", HttpStatusCode.OK) },
+                )
+            ),
             database = SharedPostgres.database,
         )
     }
@@ -289,6 +298,16 @@ abstract class BrevredigeringHandlerTestBase {
             sakType = Sakstype("ALDER"),
             pid = Pid("12345678910"),
             behandlingsnumre = listOf(),
+        )
+
+        val fagsak1 = Fagsak(
+            saksId = sak1.saksId,
+            foedselsdato = sak1.foedselsdato,
+            navn = Fagsak.Navn(sak1.navn.fornavn, sak1.navn.mellomnavn, sak1.navn.etternavn),
+            sakType = sak1.sakType,
+            pid = sak1.pid,
+            behandlingsnumre = sak1.behandlingsnumre,
+            tema = sak1.tema,
         )
 
         val letter = letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"))))
@@ -517,7 +536,7 @@ abstract class BrevredigeringHandlerTestBase {
         handler: HentEllerOpprettPdfHandler = hentEllerOpprettPdf,
     ): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
         withPrincipal(principal) {
-            handler(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
+            handler(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id, fagsak = fagsak1))
         }
 
     protected suspend fun endreDistribusjonstype(

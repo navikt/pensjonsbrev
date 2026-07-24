@@ -55,7 +55,7 @@ class GenererFoerstesideHandler(
             vedleggsliste = request.vedlegg.map { it.tittel },
             overskriftstittel = tittel,
             dokumentlisteFoersteside = listOf(tittel) + request.vedlegg.map { it.tittel },
-            foerstesidetype = Foerstesidetype.LOESPOST,
+            foerstesidetype = Foerstesidetype.SKJEMA,
             enhetsnummer = brev.avsenderEnhetId,
             arkivsak = Arkivsak(
                 arkivsaksystem = Arkivsak.Arkivsaksystem.PSAK,

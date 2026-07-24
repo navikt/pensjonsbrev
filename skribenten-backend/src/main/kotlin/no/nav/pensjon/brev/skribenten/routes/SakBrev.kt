@@ -242,8 +242,9 @@ fun Route.sakBrev() =
                 val hentEllerOpprettPdf: HentEllerOpprettPdfHandler by app.dependencies
                 get {
                     val brevId = call.parameters.brevId()
+                    val sak: Fagsak = call.attributes[SakKey]
 
-                    val result = hentEllerOpprettPdf(HentEllerOpprettPdfHandler.Request(brevId = brevId))
+                    val result = hentEllerOpprettPdf(HentEllerOpprettPdfHandler.Request(brevId = brevId, fagsak = sak))
                     apiRespond(dto2ApiService, result)
                 }
 
