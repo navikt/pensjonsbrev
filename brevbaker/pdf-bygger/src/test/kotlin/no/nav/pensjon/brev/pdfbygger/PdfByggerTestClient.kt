@@ -128,7 +128,7 @@ object PDFByggerTestContainer {
                 "JAVA_TOOL_OPTIONS",
                 "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Djdk.lang.Process.launchMechanism=vfork"
             )
-            // bakover-ompatibilitet med pdf-bygger (brukt i integrasjonstester i brevbaker på github actions).
+            // bakover-kompatibilitet med pdf-bygger (brukt i integrasjonstester i brevbaker på github actions).
             .withEnv("PDF_BYGGER_COMPILE_TMP_DIR", "/tmp")
             .withEnv("PDF_COMPILE_TIMEOUT_SECONDS", "200")
             .waitingFor(
