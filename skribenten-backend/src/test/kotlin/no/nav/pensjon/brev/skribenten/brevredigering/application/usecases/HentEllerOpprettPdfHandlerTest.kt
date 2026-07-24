@@ -28,9 +28,11 @@ import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.PenClientStub
+import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -272,6 +274,9 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
                 )
             ),
             database = SharedPostgres.database,
+            pdfVedleggAppender = object : PDFVedleggAppender {
+                override fun leggPaaVedlegg(pdfCompilationOutput: ByteArray, attachments: List<PDFVedlegg>, spraak: LanguageCode) = pdfCompilationOutput
+            }
         )
         assertThat(hentEllerOpprettPdf(brev, handler = handler)).isSuccess {
             assertThat(it.document.pdf).isEqualTo(stagetPDF)

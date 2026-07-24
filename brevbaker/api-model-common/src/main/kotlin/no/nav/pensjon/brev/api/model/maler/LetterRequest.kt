@@ -39,6 +39,7 @@ class BestillRedigertBrevRequest<T : Brevkode<T>>(
     val letterMarkup: LetterMarkup,
     val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
     val redigerteVedlegg: Map<BrevbakerType.VedleggId, LetterMarkup.Attachment>,
+    val medPDFVedlegg: Boolean = true
 ) : BrevRequest<T> {
     override fun equals(other: Any?): Boolean {
         if (other !is BestillRedigertBrevRequest<*>) return false

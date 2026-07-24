@@ -21,7 +21,7 @@ internal class BrevbakerPDF(
     private val pdfByggerService: PDFByggerService,
     private val pdfVedleggAppender: PDFVedleggAppender,
 ) {
-    suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null, redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()): LetterResponse =
+    suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null, redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(), medPDFVedlegg: Boolean = true): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev, redigerteVedlegg).let { markup ->
             pdfByggerService.producePDF(
                 PDFRequest(
@@ -33,18 +33,21 @@ internal class BrevbakerPDF(
                 ),
             )
         }.let { pdf ->
-            pdfVedleggAppender.leggPaaVedlegg(
+            val pdfvedlegg = letter.template.pdfAttachments
+                .filter { a -> a.predicate.eval(letter.toScope()) }
+                .map { a -> a.eval(letter.toScope()) }
+            if (!medPDFVedlegg) return@let Pair(pdf, pdfvedlegg)
+            Pair(pdfVedleggAppender.leggPaaVedlegg(
                 pdf,
-                letter.template.pdfAttachments
-                    .filter { a -> a.predicate.eval(letter.toScope()) }
-                    .map { a -> a.eval(letter.toScope()) },
+                pdfvedlegg,
                 letter.language.toCode()
-            )
+            ), pdfvedlegg)
         }.let { pdf ->
             LetterResponse(
-                file = pdf.bytes,
+                file = pdf.first.bytes,
                 contentType = ContentTypes.PDF,
-                letterMetadata = letter.template.letterMetadata
+                letterMetadata = letter.template.letterMetadata,
+                pdfvedlegg = pdf.second
             )
         }
 

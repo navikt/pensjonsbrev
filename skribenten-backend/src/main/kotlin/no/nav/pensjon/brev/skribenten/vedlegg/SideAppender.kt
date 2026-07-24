@@ -1,7 +1,7 @@
-package no.nav.pensjon.brev.pdfvedlegg
+package no.nav.pensjon.brev.skribenten.vedlegg
 
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
+import no.nav.pensjon.brevbaker.api.model.Side
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.cos.COSName
 import org.apache.pdfbox.multipdf.PDFMergerUtility
@@ -12,47 +12,53 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDComboBox
 import org.apache.pdfbox.pdmodel.interactive.form.PDField
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField
 
-internal object VedleggAppender {
-    internal fun lesInnVedlegg(vedlegg: PDFVedlegg, spraak: LanguageCode): PDDocument {
+internal object SideAppender {
+    fun lesInnPDF(sider: List<Side>, spraak: LanguageCode, filnavn: (LanguageCode, Side) -> String): PDDocument {
         val target = PDDocument()
         val merger = PDFMergerUtility()
-        val sider = vedlegg.sider
         val inneholderFelter = sider.any { it.felt.isNotEmpty() }
 
         sider.forEachIndexed { index, side ->
-            lesInnPDF(side.filnavn, spraak).use { pdfSide ->
+            lesInnPDF("${filnavn(spraak, side)}.pdf").use { pdfSide ->
                 if (inneholderFelter) {
                     addPageFieldPrefix(pdfSide, index)
                 }
-                merger.leggTilSide(target, pdfSide)
+                merger.appendDocument(target, pdfSide)
             }
         }
 
         if (inneholderFelter) {
-            // For å støtte alle felt-verdier, så må hele fonten bygges inn, og ikke bare de tegnene som er i bruk fra før
-            val font = PDType0Font.load(target, javaClass.getResource("/fonts/SourceSans3-Regular.ttf")!!.openStream(), false)
-            val acroForm = target.documentCatalog.acroForm
-
-            acroForm?.defaultResources = PDResources().apply { put(COSName.getPDFName("SourceSans3Embedded"), font) }
-            val feltVerdier: Map<String, String?> = sider.flatMapIndexed { index, side ->
-                val pagePrefix = pagePrefix(index)
-                side.felt { "Sidetall" to "${index + 1}/${sider.size}" }
-                side.felt
-                    .flatMap { it.felt.entries }
-                    .map { pagePrefix + it.key to it.value?.get(spraak) }
-            }.associate { it.first to it.second }
-
-            target.documentCatalog.acroForm.needAppearances = false
-
-            fillFields(target, feltVerdier)
+            oppdaterFelter(target, sider, spraak)
         }
         return target
     }
 
-    private fun lesInnPDF(filnavn: String, spraak: LanguageCode) =
-        javaClass.getResource("/vedlegg/${filnavn}-${spraak.name}.pdf")
+    private fun oppdaterFelter(
+        target: PDDocument,
+        sider: List<Side>,
+        spraak: LanguageCode,
+    ) {
+        // For å støtte alle felt-verdier, så må hele fonten bygges inn, og ikke bare de tegnene som er i bruk fra før
+        val font = PDType0Font.load(target, javaClass.getResource("/fonts/SourceSans3-Regular.ttf")!!.openStream(), false)
+
+        target.documentCatalog.acroForm?.defaultResources = PDResources().apply { put(COSName.getPDFName("SourceSans3Embedded"), font) }
+        val feltVerdier: Map<String, String?> = sider.flatMapIndexed { index, side ->
+            val pagePrefix = pagePrefix(index)
+            side.felt { "Sidetall" to "${index + 1}/${sider.size}" }
+            side.felt
+                .flatMap { it.felt.entries }
+                .map { pagePrefix + it.key to it.value?.get(spraak) }
+        }.associate { it.first to it.second }
+
+        target.documentCatalog.acroForm?.needAppearances = false
+
+        fillFields(target, feltVerdier)
+    }
+
+    private fun lesInnPDF(filsti: String) =
+        javaClass.getResource(filsti)
             ?.let { Loader.loadPDF(it.readBytes()) }
-            ?: throw IllegalArgumentException("Fant ikke vedlegg $filnavn")
+            ?: throw IllegalArgumentException("Fant ikke pdf $filsti")
 
     private fun addPageFieldPrefix(document: PDDocument, pageNumber: Int) {
         document.documentCatalog?.acroForm
