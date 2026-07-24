@@ -38,6 +38,11 @@ on:
         required: false
         type: boolean
         default: false
+      publishMarkup:
+        description: "Publish markup to Maven local before building"
+        required: false
+        type: boolean
+        default: false
     outputs:
       image:
         description: "Image name"
@@ -78,6 +83,10 @@ jobs:
       - name: "publish common to Maven local"
         run: |
           ./gradlew :brevbaker:api-model-common:publishToMavenLocal
+      - name: "publish markup to Maven local"
+        if: ${{ inputs.publishMarkup }}
+        run: |
+          ./gradlew :brevbaker:markup:publishToMavenLocal
       - name: "publish extra modules to Maven local"
         if: ${{ inputs.extraModulesToBuild != '' }}
         run: |

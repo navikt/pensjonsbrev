@@ -54,6 +54,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           ./gradlew :brevbaker:api-model-common:publishToMavenLocal
+          ./gradlew :brevbaker:markup:publishToMavenLocal
 
       - name: "publish extra modules to Maven local"
         if: ${{ github.event_name == 'pull_request' }}
