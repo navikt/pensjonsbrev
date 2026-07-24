@@ -15,12 +15,12 @@ internal class DocumentLanguageSettings(private val language: LanguageCode) {
     val closingGreeting = localized("Med vennlig hilsen", "Med vennleg helsing", "Sincerely")
     val closingAutomatiskInformasjonsbrev = localized(
         "Brevet er produsert automatisk og derfor ikke underskrevet av saksbehandler.",
-        "Brevet er produsert automatisk og er difor ikkje underskrive av saksbehandler.",
+        "Brevet er produsert automatisk og er derfor ikkje underskrive av saksbehandlar.",
         "This letter has been processed automatically and is therefore not signed by an assessor.",
     )
     val closingAutomatiskVedtaksbrev = localized(
         "Saken har blitt automatisk saksbehandlet. Vedtaksbrevet er derfor ikke underskrevet av saksbehandler.",
-        "Saken har blitt automatisk saksbehandla. Vedtaksbrevet er derfor ikkje underskriven av saksbehandlar.",
+        "Saken har blitt automatisk saksbehandla. Vedtaksbrevet er derfor ikkje underskrive av saksbehandlar.",
         "Your case has been processed automatically. The decision letter has therefore not been signed by an assessor.",
     )
     val closingVedleggPrefix = localized("Vedlegg:", "Vedlegg:", "Attachments:")
