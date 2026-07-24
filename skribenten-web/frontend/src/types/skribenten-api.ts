@@ -613,6 +613,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         delete?: never;
@@ -698,6 +706,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         put: {
@@ -774,6 +790,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         post?: never;
@@ -836,6 +860,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -912,6 +944,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1003,6 +1043,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         post?: never;
@@ -1085,6 +1133,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1220,6 +1276,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         put: {
@@ -1284,6 +1348,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1356,6 +1428,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1443,6 +1523,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1539,6 +1627,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         post?: never;
@@ -1603,6 +1699,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1685,6 +1789,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1779,6 +1891,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         delete?: never;
@@ -1864,6 +1984,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         put: {
@@ -1933,6 +2061,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -2142,6 +2278,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         post?: never;
@@ -2270,6 +2414,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         post?: never;
@@ -2353,6 +2505,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         put?: never;
@@ -2415,6 +2575,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -2498,6 +2666,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };

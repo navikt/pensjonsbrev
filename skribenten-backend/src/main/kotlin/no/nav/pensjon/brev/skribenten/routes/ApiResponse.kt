@@ -163,6 +163,11 @@ suspend inline fun <T> RoutingContext.respondOutcome(
                         status = HttpStatusCode.UnprocessableEntity,
                         message = BrevExceptionDto(tittel = "Brev ikke klart til sending", melding = "Vedtaksbrev ${outcome.error.brevId} er ikke attestert")
                     )
+
+                is IngenFoersteside -> call.respond(
+                    status = HttpStatusCode.InternalServerError,
+                    message = "Klarte ikke generere førsteside for ${outcome.error.brevId}"
+                )
             }
         }
 

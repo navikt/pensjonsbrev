@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.IngenFoersteside
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
@@ -26,14 +27,14 @@ class HentEllerOpprettPdfHandler(
     private val hentP1DataHandler: HentP1DataHandler,
     private val genererFoerstesideHandler: GenererFoerstesideHandler,
     database: Database,
-) : TransactionHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult, Nothing>(database) {
+) : TransactionHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult, IngenFoersteside>(database) {
 
     data class Request(
         override val brevId: BrevId,
         val fagsak: Fagsak,
     ) : BrevredigeringRequest
 
-    override suspend fun execute(request: Request): Outcome<Dto.HentDocumentResult, Nothing>? {
+    override suspend fun execute(request: Request): Outcome<Dto.HentDocumentResult, IngenFoersteside>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
         val document = brev.document
 
@@ -72,7 +73,7 @@ class HentEllerOpprettPdfHandler(
                         )
                     )?.asSuccess()?.value?.let { foersteside ->
                         PDFMerger.merge(rendretBrev, foersteside.foersteside)
-                    } ?: throw IllegalArgumentException("Fant ikke PDF for ${request.brevId}")
+                    } ?: return Outcome.failure(IngenFoersteside(request.brevId))
                 } else { rendretBrev }
             }
 
