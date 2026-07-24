@@ -116,6 +116,7 @@ class EditLetterWordTokenizerTest {
                 Token.Text.Literal(null, FontType.PLAIN),
                 Token.Word("item"),
                 Token.Word("two"),
+                Token.ItemListEnd,
             ),
             tokens
         )
@@ -148,6 +149,7 @@ class EditLetterWordTokenizerTest {
                 Token.Text.Literal(null, FontType.PLAIN),
                 Token.Word("cell"),
                 Token.Word("body"),
+                Token.TableEnd,
             ),
             tokens
         )
@@ -210,9 +212,10 @@ class EditLetterWordTokenizerTest {
         )
         val new = listOf<Token>()
         assertEquals(
+            // "hello" is genuinely, entirely gone (the whole block is deleted), so it's reported via textContent
+            // (which recordCalls doesn't capture here) rather than as a word-level textSegment delete.
             listOf(
                 Triple(BlockIndex(0), BlockIndex(0), Change.Delete(DiffProducer.BlockInfo(null, PARAGRAPH))),
-                Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 0), Change.Delete(DiffProducer.TextSegment(0, 5, "hello"))),
             ),
             recordCalls(old, new),
         )
@@ -252,6 +255,7 @@ class EditLetterWordTokenizerTest {
             Token.Item(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("hello"),
+            Token.ItemListEnd,
         )
         assertEquals(
             listOf(
@@ -271,6 +275,7 @@ class EditLetterWordTokenizerTest {
             Token.Item(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("hello"),
+            Token.ItemListEnd,
         )
         val new = listOf(
             Token.Block(null, PARAGRAPH),
@@ -281,6 +286,7 @@ class EditLetterWordTokenizerTest {
             Token.Item(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("world"),
+            Token.ItemListEnd,
         )
         assertEquals(
             listOf(
@@ -308,6 +314,7 @@ class EditLetterWordTokenizerTest {
             Token.Cell(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("body"),
+            Token.TableEnd,
         )
         assertEquals(
             listOf(
@@ -335,13 +342,13 @@ class EditLetterWordTokenizerTest {
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("body"),
         )
-        val old = listOf(Token.Block(null, PARAGRAPH), Token.Table(null)) + tableHeaderAndFirstRow
-        val new = old + listOf(
+        val old = listOf(Token.Block(null, PARAGRAPH), Token.Table(null)) + tableHeaderAndFirstRow + Token.TableEnd
+        val new = listOf(Token.Block(null, PARAGRAPH), Token.Table(null)) + tableHeaderAndFirstRow + listOf(
             Token.Row(null),
             Token.Cell(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("extra"),
-        )
+        ) + Token.TableEnd
         assertEquals(
             listOf(
                 Triple(TableRowIndex(0, 0, 1), TableRowIndex(0, 0, 1), Change.Insert(DiffProducer.RowInfo(null))),
@@ -366,11 +373,24 @@ class EditLetterWordTokenizerTest {
             Token.Cell(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("body"),
+            Token.TableEnd,
         )
-        val new = old + listOf(
+        val new = listOf(
+            Token.Block(null, PARAGRAPH),
+            Token.Table(null),
+            Token.TableHeader(null),
+            Token.ColumnSpec(null, LEFT, 1),
+            Token.Cell(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("col"),
+            Token.Row(null),
+            Token.Cell(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("body"),
             Token.Cell(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("extra"),
+            Token.TableEnd,
         )
         assertEquals(
             listOf(
@@ -443,7 +463,8 @@ class EditLetterWordTokenizerTest {
     fun `parseTokens deleted NewLine merging two literals with word change produces correct diff`() {
         // Old: "hello" + NewLine + "world" (two literals)
         // New: "hello goodbye" (single literal, word changed)
-        // The word "hello" is unchanged, NewLine is deleted, "world"->"goodbye" is a change
+        // The word "hello" is unchanged, NewLine is deleted, "world" is genuinely gone (none of its words
+        // survive - "goodbye" is a brand new word, not a reuse of "world")
         val old = listOf(
             Token.Block(null, PARAGRAPH),
             Token.Text.Literal(null, FontType.PLAIN),
@@ -460,13 +481,11 @@ class EditLetterWordTokenizerTest {
         )
         val calls = recordCalls(old, new)
         assertEquals(
+            // "goodbye" inserted into the first (unchanged) Text container in both old and new, offset 6-13.
+            // "world" is entirely gone, reported via textContent (which recordCalls doesn't capture here)
+            // rather than as a word-level textSegment delete.
             listOf(
-                // "goodbye" inserted into the first (unchanged) Text container in both old and new, offset 6-13
                 Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 0), Change.Insert(DiffProducer.TextSegment(6, 13, "goodbye"))),
-                // "world" deleted at content index 2 (third BlockContent in old: the second Text), offset 0-5.
-                // insertIndex reuses content index 0, since new has no second Text bucket to advance into - it
-                // stays pinned at the last real new-document bucket rather than an out-of-bounds "next" index.
-                Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 2), Change.Delete(DiffProducer.TextSegment(0, 5, "world"))),
             ),
             calls,
         )
