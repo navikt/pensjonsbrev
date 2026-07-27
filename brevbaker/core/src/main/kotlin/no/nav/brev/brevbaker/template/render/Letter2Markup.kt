@@ -5,8 +5,10 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brev.template.render.documentLanguageSettings
+import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.ElementTags
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
@@ -18,6 +20,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.NewLineImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
 import no.nav.pensjon.brevbaker.api.model.PDFTittel
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -138,6 +141,13 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         }.map { PDFTittel(it) }
     }
 
+    fun renderPDFTitle(scope: ExpressionScope<*>, titles: List<PDFVedleggTittel>): List<PDFTittel> {
+        val context = RenderContext(scope)
+        val languageCode = context.scope.language.toCode()
+
+        return titles.map { it.titler[languageCode] ?: throw IllegalArgumentException("Missing PDF title for language $languageCode") }
+            .map { text -> PDFTittel(listOf(LiteralImpl(context.stableHash(StableHash.of(text)), text))) }
+    }
 
     private fun renderOutline(context: RenderContext, outline: List<OutlineElement<*>>): List<Block> =
         buildList {

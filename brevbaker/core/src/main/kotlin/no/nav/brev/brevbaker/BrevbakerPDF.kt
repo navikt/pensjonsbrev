@@ -16,12 +16,13 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupLetterMarkup
 import no.nav.brev.brevbaker.markup.Attachment as MarkupAttachment
 import no.nav.brev.brevbaker.markup.dsl.letterPDFRequest
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 
 internal class BrevbakerPDF(
     private val pdfByggerService: PDFByggerService,
     private val pdfVedleggAppender: PDFVedleggAppender,
 ) {
-    suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null, redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(), medPDFVedlegg: Boolean = true): LetterResponse =
+    suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null, redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(), pdfVedlegg: List<PDFVedleggTittel> = listOf()): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev, redigerteVedlegg).let { markup ->
             pdfByggerService.producePDF(
                 PDFRequest(
@@ -29,14 +30,14 @@ internal class BrevbakerPDF(
                     attachments = markup.attachments,
                     language = letter.language.toCode(),
                     brevtype = letter.template.letterMetadata.brevtype,
-                    pdfVedlegg = Letter2Markup.renderPDFTitlesOnly(letter.toScope(), letter.template)
+                    pdfVedlegg = if (pdfVedlegg.isEmpty()) Letter2Markup.renderPDFTitlesOnly(letter.toScope(), letter.template) else Letter2Markup.renderPDFTitle(letter.toScope(), pdfVedlegg)
                 ),
             )
         }.let { pdf ->
             val pdfvedlegg = letter.template.pdfAttachments
                 .filter { a -> a.predicate.eval(letter.toScope()) }
                 .map { a -> a.eval(letter.toScope()) }
-            if (!medPDFVedlegg) return@let Pair(pdf, pdfvedlegg)
+            if (pdfVedlegg.isEmpty()) return@let Pair(pdf, pdfvedlegg)
             Pair(pdfVedleggAppender.leggPaaVedlegg(
                 pdf,
                 pdfvedlegg,

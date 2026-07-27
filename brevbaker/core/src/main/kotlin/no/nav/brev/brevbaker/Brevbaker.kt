@@ -24,7 +24,7 @@ class Brevbaker(
         brevbakerPDF.renderPDFV2(letter, null)
 
     suspend fun renderRedigertBrevPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup, redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(), medPDFVedlegg: Boolean) =
-        brevbakerPDF.renderPDF(letter, redigertBrev, redigerteVedlegg, medPDFVedlegg)
+        brevbakerPDF.renderPDF(letter, redigertBrev, redigerteVedlegg)
 
     suspend fun renderRedigertBrevV2PDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: MarkupLetterMarkup, redigerteVedlegg: Map<VedleggId, MarkupAttachment> = emptyMap()) =
         brevbakerPDF.renderPDFV2(letter, redigertBrev, redigerteVedlegg)
