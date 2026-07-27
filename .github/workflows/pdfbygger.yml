@@ -112,8 +112,7 @@ jobs:
         with:
           filters: |
             brevmal-design:
-              - 'brevbaker/pdf-bygger/containerFiles/typst/**'
-              - 'brevbaker/pdf-bygger/Dockerfile'
+              - 'brevbaker/pdf-bygger/**'
               - '.github/regsuitconfig.json'
 
   runIntegrationTests:
