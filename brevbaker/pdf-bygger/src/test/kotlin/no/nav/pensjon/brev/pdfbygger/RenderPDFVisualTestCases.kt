@@ -79,14 +79,14 @@ data class RenderPDFVisualTestCase(
     fun v2(): LetterPDFRequest {
         val letter = letterMarkupV2(
             saksinformasjon = saksinformasjon(
-                gjelderNavn = "Navn Navnesen",
-                gjelderPersonidentifikator = "12345678901",
-                saksnummer = "123",
-                dokumentDato = LocalDate.of(2025, 1, 1),
+                gjelderNavn = "Test \"bruker\" Testerson",
+                gjelderPersonidentifikator = "01019878910",
+                saksnummer = "1337123",
+                dokumentDato = LocalDate.of(2020, 1, 1),
                 annenMottakerNavn = annenMottakerNavn,
             ),
             signatur = signatur(
-                navAvsenderEnhet = "Nav sentralt",
+                navAvsenderEnhet = "Nav Familie- og pensjonsytelser Porsgrunn",
                 saksbehandlerNavn = saksbehandlerNavn,
                 attesterendeSaksbehandlerNavn = attesterendeSaksbehandlerNavn,
             ),
@@ -154,7 +154,8 @@ internal object RenderPDFVisualTestCases {
                 case(
                     testName = "verge foersteside",
                     annenMottakerNavn = "Verge vergeson",
-                    saksbehandlerNavn = "Saksbehandler Saksbehandlersen",
+                    saksbehandlerNavn = "Ole Saksbehandler",
+                    attesterendeSaksbehandlerNavn = "Per Attesterende",
                 ) {
                     title1("First title")
                     paragraph(loremIpsum)
@@ -209,7 +210,8 @@ internal object RenderPDFVisualTestCases {
                     testName = "verge vedlegg med saksinfo",
                     includeSakspart = true,
                     annenMottakerNavn = "Verge vergeson",
-                    saksbehandlerNavn = "Saksbehandler Saksbehandlersen",
+                    saksbehandlerNavn = "Ole Saksbehandler",
+                    attesterendeSaksbehandlerNavn = "Per Attesterende",
                 ) {
                     title1("First title")
                     paragraph(loremIpsum)
@@ -348,12 +350,14 @@ internal object RenderPDFVisualTestCases {
         title: String = testName,
         annenMottakerNavn: String? = null,
         saksbehandlerNavn: String? = null,
+        attesterendeSaksbehandlerNavn: String? = null,
         build: CaseBuilder.() -> Unit,
     ): RenderPDFVisualTestCase = RenderPDFVisualTestCase(
         testName = testName,
         title = title,
         annenMottakerNavn = annenMottakerNavn,
         saksbehandlerNavn = saksbehandlerNavn,
+        attesterendeSaksbehandlerNavn = attesterendeSaksbehandlerNavn,
         attachments = listOf(
             CaseAttachment(
                 title = title,

@@ -58,11 +58,11 @@ class LetterMarkupBuilder {
 
 @LetterMarkupBuilderDsl
 class SakspartBuilder {
-    var gjelderNavn: String = "Navn Navnesen"
-    var gjelderFoedselsnummer: Foedselsnummer = Foedselsnummer("12345678901")
+    var gjelderNavn: String = "Test \"bruker\" Testerson"
+    var gjelderFoedselsnummer: Foedselsnummer = Foedselsnummer("01019878910")
     var annenMottakerNavn: String? = null
-    var saksnummer: String = "123"
-    var dokumentDato: LocalDate = LocalDate.of(2025, 1, 1)
+    var saksnummer: String = "1337123"
+    var dokumentDato: LocalDate = LocalDate.of(2020, 1, 1)
 
     fun build(): LetterMarkup.Sakspart =
         LetterMarkupImpl.SakspartImpl(
@@ -76,10 +76,10 @@ class SakspartBuilder {
 
 @LetterMarkupBuilderDsl
 class SignaturBuilder {
-    var hilsenTekst: String = "hilsen"
+    var hilsenTekst: String = "Med vennlig hilsen"
     var saksbehandlerNavn: String? = null
     var attesterendeSaksbehandlerNavn: String? = null
-    var navAvsenderEnhet: String = "Nav sentralt"
+    var navAvsenderEnhet: String = "Nav Familie- og pensjonsytelser Porsgrunn"
 
     fun build(): LetterMarkup.Signatur =
         LetterMarkupImpl.SignaturImpl(
