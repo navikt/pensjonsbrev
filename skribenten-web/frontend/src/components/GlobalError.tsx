@@ -34,12 +34,11 @@ export function GlobalError({ error, title }: { error: unknown; title: string })
       <HStack align="center" justify="center">
         <VStack gap="space-20" maxWidth="512px" width="100%">
           <VStack gap="space-4">
-            <Heading level="1" size="xlarge" css={{ color: "var(--ax-text-danger-subtle)" }}>
+            <Heading css={{ color: "var(--ax-text-danger-subtle)" }} level="1" size="xlarge">
               {title}
             </Heading>
             <BodyLong size="large">
-              Noe gikk galt. Prøv igjen litt senere. Hvis problemet vedvarer, kan du melde fra
-              til oss.
+              Noe gikk galt. Prøv igjen litt senere. Hvis problemet vedvarer, kan du melde fra til oss.
             </BodyLong>
           </VStack>
 
