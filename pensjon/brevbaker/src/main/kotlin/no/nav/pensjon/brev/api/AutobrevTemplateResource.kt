@@ -19,7 +19,7 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Autob
     private val letterFactory: LetterFactory<Kode> = LetterFactory(emptySet())
 
     override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
-        brevbaker.renderPDF(createLetter(brevbestilling))
+        brevbaker.renderPDF(createLetter(brevbestilling), brevbestilling.pdfVedlegg)
 
     override fun renderHTML(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         brevbaker.renderHTML(createLetter(brevbestilling))
