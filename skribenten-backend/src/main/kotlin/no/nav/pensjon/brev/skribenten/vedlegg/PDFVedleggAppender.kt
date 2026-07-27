@@ -27,14 +27,6 @@ val vedleggsliste = mapOf(
         PDFVedleggSkribenten(
             PDFVedleggTittel(
                 mapOf(
-                    LanguageCode.BOKMAL to "Informasjon om skjemaet P1 og hvordan det brukes",
-                    LanguageCode.ENGLISH to "Information about the P1 form and its use"
-                )
-            )
-        ) { PDFVedlegg().apply { side("InformasjonOmP1") {} } },
-        PDFVedleggSkribenten(
-            PDFVedleggTittel(
-                mapOf(
                     LanguageCode.BOKMAL to "P1 – Samlet melding om pensjonsvedtak",
                     LanguageCode.ENGLISH to "P1 – Summary of Pension Decisions"
                 )
@@ -43,7 +35,15 @@ val vedleggsliste = mapOf(
             (data.brevdata["p1Vedlegg"] as? P1RedigerbarDto)?.let { dto ->
                 P1pdfV2Dto.create(dto, data.felles)
             }
-        }
+        },
+        PDFVedleggSkribenten(
+            PDFVedleggTittel(
+                mapOf(
+                    LanguageCode.BOKMAL to "Informasjon om skjemaet P1 og hvordan det brukes",
+                    LanguageCode.ENGLISH to "Information about the P1 form and its use"
+                )
+            )
+        ) { PDFVedlegg().apply { side("InformasjonOmP1") {} } },
     )
 )
 data class PDFVedleggSkribenten(val tittel: PDFVedleggTittel, val vedlegg: (data: BrevdataResponse.Data) -> PDFVedlegg?)
