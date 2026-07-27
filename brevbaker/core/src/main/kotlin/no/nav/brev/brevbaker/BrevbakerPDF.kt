@@ -22,7 +22,12 @@ internal class BrevbakerPDF(
     private val pdfByggerService: PDFByggerService,
     private val pdfVedleggAppender: PDFVedleggAppender,
 ) {
-    suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null, redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(), pdfVedlegg: List<PDFVedleggTittel> = listOf()): LetterResponse =
+    suspend fun renderPDF(
+        letter: Letter<BrevbakerBrevdata>,
+        redigertBrev: LetterMarkup? = null,
+        redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(),
+        pdfVedlegg: List<PDFVedleggTittel> = listOf(),
+    ): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev, redigerteVedlegg).let { markup ->
             pdfByggerService.producePDF(
                 PDFRequest(
@@ -67,25 +72,30 @@ internal class BrevbakerPDF(
         letter: Letter<BrevbakerBrevdata>,
         redigertBrev: MarkupLetterMarkup? = null,
         redigerteVedlegg: Map<VedleggId, MarkupAttachment> = emptyMap(),
+        pdfVedlegg: List<PDFVedleggTittel> = listOf(),
     ): LetterResponse =
         renderCompleteMarkupV2(letter, redigertBrev, redigerteVedlegg).let { markup ->
             pdfByggerService.producePDFV2(
                 letterPDFRequest(
                     spraak = letter.language.toCode().toMarkup(),
                     brevtype = letter.template.letterMetadata.brevtype.toMarkup(),
-                    letter = markup.letterMarkup
+                    letter = markup.letterMarkup,
                 ) {
                     markup.attachments.forEach { attachment(it) }
-                    Letter2MarkupV2.renderPDFTitlesOnly(letter.toScope(), letter.template)
-                        .forEach { pdfVedlegg(it) }
+                    (if (pdfVedlegg.isEmpty()) Letter2MarkupV2.renderPDFTitlesOnly(letter.toScope(), letter.template) else Letter2MarkupV2.renderPDFTitle(letter.toScope(), pdfVedlegg)).forEach {
+                        pdfVedlegg(it)
+                    }
                 },
             )
         }.let { pdf ->
+            // Workaround for overgangsperioden
+            val pdfvedlegg = letter.template.pdfAttachments
+                .filter { a -> a.predicate.eval(letter.toScope()) }
+                .map { a -> a.eval(letter.toScope()) }
+            if (pdfVedlegg.size == pdfvedlegg.size) { return@let pdf }
             pdfVedleggAppender.leggPaaVedlegg(
                 pdf,
-                letter.template.pdfAttachments
-                    .filter { a -> a.predicate.eval(letter.toScope()) }
-                    .map { a -> a.eval(letter.toScope()) },
+                pdfvedlegg,
                 letter.language.toCode()
             )
         }.let { pdf ->
