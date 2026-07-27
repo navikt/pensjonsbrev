@@ -46,36 +46,42 @@ export function GlobalError({ error, title }: { error: unknown; title: string })
             <BodyShort weight="semibold">Vil du melde fra om dette?</BodyShort>
             <BodyLong>
               Kopier ID-en nedenfor og{" "}
-              <Link href="https://jira.adeo.no/plugins/servlet/desk/portal/541" target="_blank">
+              <Link href="https://jira.adeo.no/plugins/servlet/desk/portal/541" rel="noopener noreferrer" target="_blank">
                 meld fra i Porten
               </Link>
               .
             </BodyLong>
-            <Box
-              asChild
-              background="default"
-              css={{
-                borderRadius: "var(--ax-radius-4)",
-                border: "1px solid var(--ax-border-neutral-subtle)",
-                padding: "var(--ax-space-12)",
-              }}
-            >
-              <HGrid align="center" columns="auto max-content" paddingInline="space-6 space-0">
-                <BodyShort truncate>{correlationId}</BodyShort>
-                <CopyButton
-                  copyText={correlationId}
-                  data-color="accent"
-                  icon={<FilesIcon />}
-                  size="small"
-                  text="Kopier"
-                />
-              </HGrid>
-            </Box>
+            {correlationId ? (
+              <Box
+                asChild
+                background="default"
+                css={{
+                  borderRadius: "var(--ax-radius-4)",
+                  border: "1px solid var(--ax-border-neutral-subtle)",
+                  padding: "var(--ax-space-12)",
+                }}
+              >
+                <HGrid align="center" columns="auto max-content" paddingInline="space-6 space-0">
+                  <BodyShort truncate>{correlationId}</BodyShort>
+                  <CopyButton
+                    copyText={correlationId}
+                    data-color="accent"
+                    icon={<FilesIcon />}
+                    size="small"
+                    text="Kopier"
+                  />
+                </HGrid>
+              </Box>
+            ) : (
+              <BodyShort>Ingen sporings-ID tilgjengelig for denne feilen.</BodyShort>
+            )}
           </VStack>
 
-          <ReadMore header="Tekniske detaljer" size="small">
-            <BodyShort truncate>{correlationId}</BodyShort>
-          </ReadMore>
+          {correlationId && (
+            <ReadMore header="Tekniske detaljer" size="small">
+              <BodyShort truncate>{correlationId}</BodyShort>
+            </ReadMore>
+          )}
 
           <Detail css={{ color: "var(--ax-text-neutral-subtle)" }}>
             {formatStringDateWithTime(new Date().toISOString())}
