@@ -34,6 +34,13 @@ class PDFVedleggAppenderTest {
     private fun vedleggMedFilnavn(filnavn: String): PDFVedlegg =
         PDFVedlegg().apply { side(filnavn) {} }
 
+    private fun vedleggProdusent(filnavn: String, spraak: LanguageCode): () -> PDDocument = {
+        SideAppender.lesInnPDF(
+            vedleggMedFilnavn(filnavn).sider,
+            spraak
+        ) { spraak, side -> "/vedlegg/${side.filnavn}-${spraak.name}" }
+    }
+
     @Test
     fun `returnerer originalt dokument uendret naar det ikke er noen vedlegg`() {
         val original = pdfWithPages(2)
@@ -43,19 +50,12 @@ class PDFVedleggAppenderTest {
         assertThat(resultat).isSameAs(original)
     }
 
-    /*@Test
+    @Test
     fun `legger til vedlegg etter det originale dokumentet`() {
         val original = pdfWithPages(1)
         val vedleggSideantall = antallSiderIVedlegg("InformasjonOmP1", LanguageCode.BOKMAL)
 
-        val resultat = appender.leggPaaVedlegg(original, attachments.map {
-            {
-                SideAppender.lesInnPDF(
-                    it.sider,
-                    spraak
-                ) { spraak, side -> "/vedlegg/${side.filnavn}-${spraak.name}" }
-            }
-        })
+        val resultat = appender.leggPaaVedlegg(original, listOf(vedleggProdusent("InformasjonOmP1", LanguageCode.BOKMAL)))
 
         val forventetBlankSide = if (vedleggSideantall % 2 == 1) 1 else 0
         assertThat(antallSider(resultat)).isEqualTo(2 + vedleggSideantall + forventetBlankSide)
@@ -66,14 +66,7 @@ class PDFVedleggAppenderTest {
         val original = pdfWithPages(1)
         val vedleggSideantall = antallSiderIVedlegg("InformasjonOmP1", LanguageCode.BOKMAL)
 
-        val resultat = appender.leggPaaVedlegg(original, attachments.map {
-            {
-                SideAppender.lesInnPDF(
-                    it.sider,
-                    spraak
-                ) { spraak, side -> "/vedlegg/${side.filnavn}-${spraak.name}" }
-            }
-        })
+        val resultat = appender.leggPaaVedlegg(original, listOf(vedleggProdusent("InformasjonOmP1", LanguageCode.BOKMAL)))
 
         if (vedleggSideantall % 2 == 1) {
             assertThat(antallSider(resultat)).isEqualTo(2 + 1 + vedleggSideantall)
@@ -86,18 +79,14 @@ class PDFVedleggAppenderTest {
     fun `legger til flere vedlegg i rekkefoelge`() {
         val original = pdfWithPages(1)
         val vedlegg1Sideantall = antallSiderIVedlegg("InformasjonOmP1", LanguageCode.BOKMAL)
-        val vedlegg2Sideantall = antallSiderIVedlegg("InformasjonOmP1", LanguageCode.BOKMAL)
+        val vedlegg2Sideantall = antallSiderIVedlegg("InformasjonOmP1", LanguageCode.ENGLISH)
 
         val resultat = appender.leggPaaVedlegg(
             original,
-            attachments.map {
-                {
-                    SideAppender.lesInnPDF(
-                        it.sider,
-                        spraak
-                    ) { spraak, side -> "/vedlegg/${side.filnavn}-${spraak.name}" }
-                }
-            },
+            listOf(
+                vedleggProdusent("InformasjonOmP1", LanguageCode.BOKMAL),
+                vedleggProdusent("InformasjonOmP1", LanguageCode.ENGLISH),
+            ),
         )
 
         val forventetBlankSider = (if (vedlegg1Sideantall % 2 == 1) 1 else 0) + (if (vedlegg2Sideantall % 2 == 1) 1 else 0)
@@ -109,15 +98,8 @@ class PDFVedleggAppenderTest {
         val original = pdfWithPages(1)
 
         assertThatThrownBy {
-            appender.leggPaaVedlegg(original, attachments.map {
-                {
-                    SideAppender.lesInnPDF(
-                        it.sider,
-                        spraak
-                    ) { spraak, side -> "/vedlegg/${side.filnavn}-${spraak.name}" }
-                }
-            })
+            appender.leggPaaVedlegg(original, listOf(vedleggProdusent("InformasjonOmP1", LanguageCode.NYNORSK)))
         }.isInstanceOf(IllegalArgumentException::class.java)
             .hasMessageContaining("InformasjonOmP1")
-    }*/
+    }
 }
