@@ -58,8 +58,8 @@ export function GlobalError({ error, title }: { error: unknown; title: string })
               css={{
                 borderRadius: "var(--ax-radius-4)",
                 border: "1px solid var(--ax-border-neutral-subtle)",
+                padding: "var(--ax-space-12)",
               }}
-              padding="space-4"
             >
               <HGrid align="center" columns="auto max-content" paddingInline="space-6 space-0">
                 <BodyShort truncate>{correlationId}</BodyShort>
