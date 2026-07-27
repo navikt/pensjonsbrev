@@ -4,6 +4,7 @@ import {
   BodyShort,
   Box,
   CopyButton,
+  Detail,
   Heading,
   HGrid,
   HStack,
@@ -31,7 +32,7 @@ export function GlobalError({ error, title }: { error: unknown; title: string })
   return (
     <Box background="default" minHeight="100vh" paddingBlock="space-24">
       <HStack align="center" justify="center">
-        <VStack gap="space-6" maxWidth="512px" width="100%">
+        <VStack gap="space-20" maxWidth="512px" width="100%">
           <VStack gap="space-4">
             <Heading level="1" size="xlarge" css={{ color: "var(--ax-text-danger-subtle)" }}>
               {title}
@@ -42,7 +43,7 @@ export function GlobalError({ error, title }: { error: unknown; title: string })
             </BodyLong>
           </VStack>
 
-          <VStack gap="space-4" css={{ marginTop: "var(--ax-space-40)" }}>
+          <VStack gap="space-4" paddingBlock="space-20 space-0">
             <BodyShort weight="semibold">Vil du melde fra om dette?</BodyShort>
             <BodyLong>
               Kopier ID-en nedenfor og{" "}
@@ -51,7 +52,15 @@ export function GlobalError({ error, title }: { error: unknown; title: string })
               </Link>
               .
             </BodyLong>
-            <Box asChild background="default" borderColor="neutral" borderRadius="4" borderWidth="1" padding="space-4">
+            <Box
+              asChild
+              background="default"
+              css={{
+                borderRadius: "var(--ax-radius-4)",
+                border: "1px solid var(--ax-border-neutral-subtle)",
+              }}
+              padding="space-4"
+            >
               <HGrid align="center" columns="auto max-content" paddingInline="space-6 space-0">
                 <BodyShort truncate>{correlationId}</BodyShort>
                 <CopyButton
@@ -65,12 +74,13 @@ export function GlobalError({ error, title }: { error: unknown; title: string })
             </Box>
           </VStack>
 
-          <VStack gap="space-2">
-            <BodyShort textColor="subtle">{formatStringDateWithTime(new Date().toISOString())}</BodyShort>
-            <ReadMore header="Tekniske detaljer" size="small">
-              <BodyShort truncate>{correlationId}</BodyShort>
-            </ReadMore>
-          </VStack>
+          <ReadMore header="Tekniske detaljer" size="small">
+            <BodyShort truncate>{correlationId}</BodyShort>
+          </ReadMore>
+
+          <Detail css={{ color: "var(--ax-text-neutral-subtle)" }}>
+            {formatStringDateWithTime(new Date().toISOString())}
+          </Detail>
         </VStack>
       </HStack>
     </Box>
