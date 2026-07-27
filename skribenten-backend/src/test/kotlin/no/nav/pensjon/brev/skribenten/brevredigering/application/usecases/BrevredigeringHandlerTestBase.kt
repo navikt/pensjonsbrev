@@ -578,8 +578,7 @@ abstract class BrevredigeringHandlerTestBase {
                 displayTitle = "En fin tittel",
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
-            ),
-            pdfvedlegg = emptyList()
+            )
         )
     }
 

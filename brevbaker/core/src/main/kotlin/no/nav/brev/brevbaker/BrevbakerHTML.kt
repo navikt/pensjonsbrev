@@ -19,7 +19,6 @@ internal object BrevbakerHTML {
                     file = html.indexHTML.content.encodeToByteArray(),
                     contentType = ContentTypes.TEXT_HTML_UTF8,
                     letterMetadata = letter.template.letterMetadata,
-                    pdfvedlegg = emptyList(),
                 )
             }
 

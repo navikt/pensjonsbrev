@@ -49,7 +49,6 @@ internal class BrevbakerPDF(
                 file = pdf.first.bytes,
                 contentType = ContentTypes.PDF,
                 letterMetadata = letter.template.letterMetadata,
-                pdfvedlegg = pdf.second
             )
         }
 
