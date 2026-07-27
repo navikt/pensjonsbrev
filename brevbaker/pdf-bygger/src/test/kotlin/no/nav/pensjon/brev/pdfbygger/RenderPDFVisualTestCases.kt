@@ -37,7 +37,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text.Size as V1FormSize
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnAlignment as V1Align
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType as V1FontType
-import java.time.LocalDate
 
 /**
  * A visual/compatibility test case defined once and rendered two ways: as a legacy [PDFRequest]
@@ -79,14 +78,14 @@ data class RenderPDFVisualTestCase(
     fun v2(): LetterPDFRequest {
         val letter = letterMarkupV2(
             saksinformasjon = saksinformasjon(
-                gjelderNavn = "Test \"bruker\" Testerson",
-                gjelderPersonidentifikator = "01019878910",
-                saksnummer = "1337123",
-                dokumentDato = LocalDate.of(2020, 1, 1),
+                gjelderNavn = PdfByggerTestData.gjelderNavn,
+                gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
+                saksnummer = PdfByggerTestData.saksnummer,
+                dokumentDato = PdfByggerTestData.dokumentDato,
                 annenMottakerNavn = annenMottakerNavn,
             ),
             signatur = signatur(
-                navAvsenderEnhet = "Nav Familie- og pensjonsytelser Porsgrunn",
+                navAvsenderEnhet = PdfByggerTestData.navAvsenderEnhet,
                 saksbehandlerNavn = saksbehandlerNavn,
                 attesterendeSaksbehandlerNavn = attesterendeSaksbehandlerNavn,
             ),
@@ -153,9 +152,9 @@ internal object RenderPDFVisualTestCases {
             add(
                 case(
                     testName = "verge foersteside",
-                    annenMottakerNavn = "Verge vergeson",
-                    saksbehandlerNavn = "Ole Saksbehandler",
-                    attesterendeSaksbehandlerNavn = "Per Attesterende",
+                    annenMottakerNavn = PdfByggerTestData.vergeNavn,
+                    saksbehandlerNavn = PdfByggerTestData.saksbehandlerNavn,
+                    attesterendeSaksbehandlerNavn = PdfByggerTestData.attesterendeSaksbehandlerNavn,
                 ) {
                     title1("First title")
                     paragraph(loremIpsum)
@@ -209,9 +208,9 @@ internal object RenderPDFVisualTestCases {
                 vedleggCase(
                     testName = "verge vedlegg med saksinfo",
                     includeSakspart = true,
-                    annenMottakerNavn = "Verge vergeson",
-                    saksbehandlerNavn = "Ole Saksbehandler",
-                    attesterendeSaksbehandlerNavn = "Per Attesterende",
+                    annenMottakerNavn = PdfByggerTestData.vergeNavn,
+                    saksbehandlerNavn = PdfByggerTestData.saksbehandlerNavn,
+                    attesterendeSaksbehandlerNavn = PdfByggerTestData.attesterendeSaksbehandlerNavn,
                 ) {
                     title1("First title")
                     paragraph(loremIpsum)
@@ -238,7 +237,7 @@ internal object RenderPDFVisualTestCases {
             add(
                 case(
                     testName = "brev med saksbehandler underskrift",
-                    saksbehandlerNavn = "Ole Saksbehandler",
+                    saksbehandlerNavn = PdfByggerTestData.saksbehandlerNavn,
                 ) {
                     paragraph(loremIpsum)
                 }
@@ -246,7 +245,7 @@ internal object RenderPDFVisualTestCases {
             add(
                 case(
                     testName = "brev med saksbehandler og attestant underskrift",
-                    saksbehandlerNavn = "Ole Saksbehandler",
+                    saksbehandlerNavn = PdfByggerTestData.saksbehandlerNavn,
                     attesterendeSaksbehandlerNavn = "Per Saksbehandler",
                 ) {
                     paragraph(loremIpsum)
@@ -255,7 +254,7 @@ internal object RenderPDFVisualTestCases {
             add(
                 case(
                     testName = "test av ulike ",
-                    saksbehandlerNavn = "Ole Saksbehandler",
+                    saksbehandlerNavn = PdfByggerTestData.saksbehandlerNavn,
                     attesterendeSaksbehandlerNavn = "Per Saksbehandler",
                 ) {
                     paragraph(loremIpsum)
@@ -264,8 +263,8 @@ internal object RenderPDFVisualTestCases {
             add(
                 case(
                     testName = "vedtaksbrev med saksbehandler underskrift",
-                    saksbehandlerNavn = "Ole Saksbehandler",
-                    attesterendeSaksbehandlerNavn = "Per Attesterende",
+                    saksbehandlerNavn = PdfByggerTestData.saksbehandlerNavn,
+                    attesterendeSaksbehandlerNavn = PdfByggerTestData.attesterendeSaksbehandlerNavn,
                 ) {
                     paragraph(loremIpsum)
                 }

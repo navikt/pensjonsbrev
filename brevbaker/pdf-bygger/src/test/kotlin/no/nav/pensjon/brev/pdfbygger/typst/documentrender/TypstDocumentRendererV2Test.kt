@@ -28,12 +28,12 @@ import no.nav.brev.brevbaker.markup.dsl.title2
 import no.nav.brev.brevbaker.markup.dsl.title3
 import no.nav.brev.brevbaker.markup.dsl.title4
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
+import no.nav.pensjon.brev.pdfbygger.PdfByggerTestData
 import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.io.OutputStreamWriter
-import java.time.LocalDate
 
 /**
  * Unit tests for [TypstDocumentRendererV2] that inspect the generated Typst source
@@ -51,14 +51,17 @@ class TypstDocumentRendererV2Test {
     }
 
     private val saksinformasjon = saksinformasjon(
-        gjelderNavn = "Navn Navnesen",
-        gjelderPersonidentifikator = "12345678901",
-        saksnummer = "123",
-        dokumentDato = LocalDate.of(2025, 1, 1),
+        gjelderNavn = PdfByggerTestData.gjelderNavn,
+        gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
+        saksnummer = PdfByggerTestData.saksnummer,
+        dokumentDato = PdfByggerTestData.dokumentDato,
     )
 
     private fun brev(
-        signatur: Signatur = signatur(navAvsenderEnhet = "Nav sentralt", saksbehandlerNavn = "Saksbehandler Saksbehandlersen"),
+        signatur: Signatur = signatur(
+            navAvsenderEnhet = PdfByggerTestData.navAvsenderEnhet,
+            saksbehandlerNavn = PdfByggerTestData.saksbehandlerNavn,
+        ),
         build: LetterMarkupBuilder<ContentBuilder>.() -> Unit,
     ): LetterMarkup = letterMarkup(saksinformasjon = saksinformasjon, signatur = signatur, build = build)
 
@@ -169,7 +172,7 @@ class TypstDocumentRendererV2Test {
             request(
                 brev(
                     signatur = signatur(
-                        navAvsenderEnhet = "Nav sentralt",
+                        navAvsenderEnhet = PdfByggerTestData.navAvsenderEnhet,
                         saksbehandlerNavn = "Kari Saksbehandler",
                         attesterendeSaksbehandlerNavn = "Ola Attestant",
                     )
@@ -188,7 +191,7 @@ class TypstDocumentRendererV2Test {
     fun `manglende saksbehandlersignatur gir none i stedet for feil`() {
         val typst = render(
             request(
-                brev(signatur = signatur(navAvsenderEnhet = "Nav sentralt")) {
+                brev(signatur = signatur(navAvsenderEnhet = PdfByggerTestData.navAvsenderEnhet)) {
                     title1("Tittel")
                     outline { paragraph("Innhold") }
                 }

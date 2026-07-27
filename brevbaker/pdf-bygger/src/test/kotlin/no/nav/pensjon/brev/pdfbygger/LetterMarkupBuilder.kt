@@ -10,7 +10,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
-import java.time.LocalDate
 
 fun letterMarkup(block: LetterMarkupBuilder.() -> Unit): LetterMarkup =
     LetterMarkupBuilder().apply(block).build()
@@ -58,11 +57,11 @@ class LetterMarkupBuilder {
 
 @LetterMarkupBuilderDsl
 class SakspartBuilder {
-    var gjelderNavn: String = "Test \"bruker\" Testerson"
-    var gjelderFoedselsnummer: Foedselsnummer = Foedselsnummer("01019878910")
+    var gjelderNavn: String = PdfByggerTestData.gjelderNavn
+    var gjelderFoedselsnummer: Foedselsnummer = Foedselsnummer(PdfByggerTestData.gjelderPersonidentifikator)
     var annenMottakerNavn: String? = null
-    var saksnummer: String = "1337123"
-    var dokumentDato: LocalDate = LocalDate.of(2020, 1, 1)
+    var saksnummer: String = PdfByggerTestData.saksnummer
+    var dokumentDato = PdfByggerTestData.dokumentDato
 
     fun build(): LetterMarkup.Sakspart =
         LetterMarkupImpl.SakspartImpl(
@@ -76,10 +75,10 @@ class SakspartBuilder {
 
 @LetterMarkupBuilderDsl
 class SignaturBuilder {
-    var hilsenTekst: String = "Med vennlig hilsen"
+    var hilsenTekst: String = PdfByggerTestData.hilsenTekst
     var saksbehandlerNavn: String? = null
     var attesterendeSaksbehandlerNavn: String? = null
-    var navAvsenderEnhet: String = "Nav Familie- og pensjonsytelser Porsgrunn"
+    var navAvsenderEnhet: String = PdfByggerTestData.navAvsenderEnhet
 
     fun build(): LetterMarkup.Signatur =
         LetterMarkupImpl.SignaturImpl(

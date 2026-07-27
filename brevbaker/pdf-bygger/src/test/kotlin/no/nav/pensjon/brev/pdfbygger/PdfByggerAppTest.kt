@@ -129,12 +129,12 @@ class PdfByggerAppTest {
             brevtype = Markup.Brevtype.VEDTAKSBREV,
             letter = letterMarkup(
                 saksinformasjon = saksinformasjon(
-                    gjelderNavn = "Navn Navnesen",
-                    gjelderPersonidentifikator = "12345678901",
-                    saksnummer = "123",
-                    dokumentDato = java.time.LocalDate.of(2025, 1, 1),
+                    gjelderNavn = PdfByggerTestData.gjelderNavn,
+                    gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
+                    saksnummer = PdfByggerTestData.saksnummer,
+                    dokumentDato = PdfByggerTestData.dokumentDato,
                 ),
-                signatur = signatur(navAvsenderEnhet = "Nav sentralt"),
+                signatur = signatur(navAvsenderEnhet = PdfByggerTestData.navAvsenderEnhet),
             ) {
                 title1("En fin tittel")
                 outline {
