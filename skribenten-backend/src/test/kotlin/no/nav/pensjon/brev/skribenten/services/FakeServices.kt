@@ -104,7 +104,7 @@ open class FakeBrevbakerService(
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
         redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment>,
-        medPDFVedlegg: Boolean,
+        pdfVedlegg: List<PDFVedleggTittel>,
     ): LetterResponse = notYetStubbed()
     override suspend fun hentRedigerbareVedleggTitler(
         brevkode: Brevkode.Redigerbart,

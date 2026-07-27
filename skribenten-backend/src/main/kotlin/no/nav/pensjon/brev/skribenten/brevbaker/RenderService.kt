@@ -5,11 +5,12 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.common.GeneriskRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 
 class RenderService(private val brevbakerService: BrevbakerService) {
 
     // TODO: For å kunne støtte forskjellige fagsystem, som selv skal ha eierskap til maler, så må renderPdf ta inn LetterMarkup for brev og vedlegg.
-    suspend fun renderPdf(brev: Brevredigering, pesysData: BrevdataResponse.Data, medPDFVedlegg: Boolean): LetterResponse =
+    suspend fun renderPdf(brev: Brevredigering, pesysData: BrevdataResponse.Data, pdfVedlegg: List<PDFVedleggTittel>): LetterResponse =
         brevbakerService.renderPdf(
             brevkode = brev.brevkode,
             spraak = brev.spraak,
@@ -22,6 +23,6 @@ class RenderService(private val brevbakerService: BrevbakerService) {
                 .toMarkup(),
             alltidValgbareVedlegg = brev.valgteVedlegg,
             redigerteVedlegg = brev.redigerteVedlegg.associate { it.vedleggId to it.redigertVedlegg.toMarkup() },
-            medPDFVedlegg = medPDFVedlegg,
+            pdfVedlegg = pdfVedlegg
         )
 }

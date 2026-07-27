@@ -19,6 +19,8 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
+import no.nav.pensjon.brev.skribenten.vedlegg.vedleggsliste
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 import org.jetbrains.exposed.v1.jdbc.Database
 
 class HentEllerOpprettPdfHandler(
@@ -63,9 +65,12 @@ class HentEllerOpprettPdfHandler(
                 brev.redigertBrev.updateEditedLetter(rendretBrev.markup).blocks != brev.redigertBrev.blocks
             }
 
-            val medPDFVedlegg = !Features.pdfvedleggISkribenten.isEnabled()
-            val pdfBytes = renderService.renderPdf(brev, pesysBrevdata, medPDFVedlegg).let {
-                if (!medPDFVedlegg) {
+            val medPDFVedlegg = Features.pdfvedleggISkribenten.isEnabled()
+
+            val pdfVedlegg = if (medPDFVedlegg) vedleggsliste[brev.brevkode.kode()]?.map { PDFVedleggTittel(it) } ?: emptyList() else emptyList()
+
+            val pdfBytes = renderService.renderPdf(brev, pesysBrevdata, pdfVedlegg = pdfVedlegg).let {
+                if (medPDFVedlegg) {
                     pdfVedleggAppender.leggPaaVedlegg(
                         it.file,
                         it.pdfvedlegg,
