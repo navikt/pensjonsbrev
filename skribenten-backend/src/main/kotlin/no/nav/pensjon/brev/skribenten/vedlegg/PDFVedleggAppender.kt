@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.P1_BRE
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.PDFMerger
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import org.apache.pdfbox.pdmodel.PDDocument
 
 interface PDFVedleggAppender {

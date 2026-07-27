@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle

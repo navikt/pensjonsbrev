@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.vedlegg
 
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage

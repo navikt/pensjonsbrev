@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.vedlegg
 
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.Side
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.cos.COSName
 import org.apache.pdfbox.multipdf.PDFMergerUtility
