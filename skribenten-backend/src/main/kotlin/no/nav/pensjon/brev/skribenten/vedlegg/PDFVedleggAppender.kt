@@ -1,36 +1,49 @@
 package no.nav.pensjon.brev.skribenten.vedlegg
 
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.P1_BREVKODE
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.PDFMerger
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
-import org.apache.commons.codec.language.bm.Lang
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
+import org.apache.pdfbox.pdmodel.PDDocument
 
 interface PDFVedleggAppender {
     fun leggPaaVedlegg(
         pdfCompilationOutput: ByteArray,
-        attachments: List<PDFVedlegg>,
-        spraak: LanguageCode,
+        vedlegg: List<() -> PDDocument>,
     ): ByteArray
 }
 
 class PDFVedleggAppenderImpl : PDFVedleggAppender {
     override fun leggPaaVedlegg(
         pdfCompilationOutput: ByteArray,
-        attachments: List<PDFVedlegg>,
-        spraak: LanguageCode,
-    ): ByteArray = PDFMerger.merge(pdfCompilationOutput, attachments.map { { SideAppender.lesInnPDF(it.sider, spraak) { spraak, side -> "/vedlegg/${side.filnavn}-${spraak.name}" } } })
+        vedlegg: List<() -> PDDocument>,
+    ): ByteArray = PDFMerger.merge(pdfCompilationOutput, vedlegg)
 }
 
 val vedleggsliste = mapOf(
     P1_BREVKODE to listOf(
-        mapOf(
-            LanguageCode.BOKMAL to "Informasjon om skjemaet P1 og hvordan det brukes",
-            LanguageCode.ENGLISH to "Information about the P1 form and its use",
-        ),
-        mapOf(
-            LanguageCode.BOKMAL to "P1 – Samlet melding om pensjonsvedtak",
-            LanguageCode.ENGLISH to "P1 – Summary of Pension Decisions",
-        )
+        PDFVedleggSkribenten(
+            PDFVedleggTittel(
+                mapOf(
+                    LanguageCode.BOKMAL to "Informasjon om skjemaet P1 og hvordan det brukes",
+                    LanguageCode.ENGLISH to "Information about the P1 form and its use"
+                )
+            )
+        ) { PDFVedlegg().apply { side("InformasjonOmP1") {} } },
+        PDFVedleggSkribenten(
+            PDFVedleggTittel(
+                mapOf(
+                    LanguageCode.BOKMAL to "P1 – Samlet melding om pensjonsvedtak",
+                    LanguageCode.ENGLISH to "P1 – Summary of Pension Decisions"
+                )
+            )
+        ) { data ->
+            (data.brevdata["p1Vedlegg"] as? P1RedigerbarDto)?.let { dto ->
+                P1pdfV2Dto.create(dto, data.felles)
+            }
+        }
     )
 )
+data class PDFVedleggSkribenten(val tittel: PDFVedleggTittel, val vedlegg: (data: BrevdataResponse.Data) -> PDFVedlegg?)

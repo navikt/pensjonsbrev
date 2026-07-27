@@ -12,10 +12,10 @@ import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
 import no.nav.brev.BrevLandmodell.Landkode
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto.Postnummer
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto.Poststed
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto.UtfyllendeInstitusjon
+import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
+import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto.Postnummer
+import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto.Poststed
+import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto.UtfyllendeInstitusjon
 import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.copy
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
@@ -32,7 +32,7 @@ import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
+import org.apache.pdfbox.pdmodel.PDDocument
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -275,7 +275,7 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
             ),
             database = SharedPostgres.database,
             pdfVedleggAppender = object : PDFVedleggAppender {
-                override fun leggPaaVedlegg(pdfCompilationOutput: ByteArray, attachments: List<PDFVedlegg>, spraak: LanguageCode) = pdfCompilationOutput
+                override fun leggPaaVedlegg(pdfCompilationOutput: ByteArray, vedlegg: List<() -> PDDocument>) = pdfCompilationOutput
             }
         )
         assertThat(hentEllerOpprettPdf(brev, handler = handler)).isSuccess {

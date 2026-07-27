@@ -31,6 +31,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphIm
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import org.apache.pdfbox.pdmodel.PDDocument
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.opentest4j.AssertionFailedError
@@ -262,7 +263,7 @@ abstract class BrevredigeringHandlerTestBase {
             ),
             database = SharedPostgres.database,
             pdfVedleggAppender = object : PDFVedleggAppender {
-                override fun leggPaaVedlegg(pdfCompilationOutput: ByteArray, attachments: List<PDFVedlegg>, spraak: LanguageCode) = pdfCompilationOutput
+                override fun leggPaaVedlegg(pdfCompilationOutput: ByteArray, vedlegg: List<() -> PDDocument>) = pdfCompilationOutput
             }
         )
     }

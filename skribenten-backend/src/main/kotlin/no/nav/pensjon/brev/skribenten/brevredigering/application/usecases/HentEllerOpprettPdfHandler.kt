@@ -1,10 +1,11 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
+import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.IngenFoersteside
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto
+import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.common.asSuccess
@@ -19,8 +20,9 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
+import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggSkribenten
+import no.nav.pensjon.brev.skribenten.vedlegg.SideAppender
 import no.nav.pensjon.brev.skribenten.vedlegg.vedleggsliste
-import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 import org.jetbrains.exposed.v1.jdbc.Database
 
 class HentEllerOpprettPdfHandler(
@@ -67,15 +69,11 @@ class HentEllerOpprettPdfHandler(
 
             val medPDFVedlegg = Features.pdfvedleggISkribenten.isEnabled()
 
-            val pdfVedlegg = if (medPDFVedlegg) vedleggsliste[brev.brevkode.kode()]?.map { PDFVedleggTittel(it) } ?: emptyList() else emptyList()
+            val pdfVedlegg = if (medPDFVedlegg) vedleggsliste[brev.brevkode.kode()] ?: emptyList() else emptyList()
 
-            val pdfBytes = renderService.renderPdf(brev, pesysBrevdata, pdfVedlegg = pdfVedlegg).let {
+            val pdfBytes = renderService.renderPdf(brev, pesysBrevdata, pdfVedlegg = pdfVedlegg.map { it.tittel }).let {
                 if (medPDFVedlegg) {
-                    pdfVedleggAppender.leggPaaVedlegg(
-                        it.file,
-                        it.pdfvedlegg,
-                        brev.spraak
-                    )
+                    leggVedPDFVedlegg(pdfVedlegg, pesysBrevdata, it, brev)
                 } else {
                     it.file
                 }
@@ -96,6 +94,25 @@ class HentEllerOpprettPdfHandler(
             success(Dto.HentDocumentResult(document = newDocument, rendretBrevErEndret = rendretBrevErEndret))
         }
     }
+
+    private fun leggVedPDFVedlegg(
+        pdfVedlegg: List<PDFVedleggSkribenten>,
+        pesysBrevdata: BrevdataResponse.Data,
+        response: LetterResponse,
+        brev: BrevredigeringEntity,
+    ): ByteArray = pdfVedleggAppender.leggPaaVedlegg(
+        response.file,
+        pdfVedlegg
+            .mapNotNull { it.vedlegg(pesysBrevdata) }
+            .map {
+            {
+                SideAppender.lesInnPDF(
+                    it.sider,
+                    brev.spraak
+                ) { spraak, side -> "/vedlegg/${side.filnavn}-${spraak.name}" }
+            }
+        }
+    )
 
     private suspend fun genererFoersteside(
         request: Request,
