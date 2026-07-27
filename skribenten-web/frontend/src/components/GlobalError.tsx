@@ -46,7 +46,11 @@ export function GlobalError({ error, title }: { error: unknown; title: string })
             <BodyShort weight="semibold">Vil du melde fra om dette?</BodyShort>
             <BodyLong>
               Kopier ID-en nedenfor og{" "}
-              <Link href="https://jira.adeo.no/plugins/servlet/desk/portal/541" rel="noopener noreferrer" target="_blank">
+              <Link
+                href="https://jira.adeo.no/plugins/servlet/desk/portal/541"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
                 meld fra i Porten
               </Link>
               .
