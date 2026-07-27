@@ -142,11 +142,9 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
         return template.pdfAttachments.map { pdfTittelExtended { appendTexts(context, it.template.title) } }
     }
 
-    fun renderPDFTitle(scope: ExpressionScope<*>, titles: List<PDFVedleggTittel>): List<PDFTittel> {
-        val context = RenderContext(scope)
-        val languageCode = context.scope.language.toCode()
-        return titles.map { it.titler[languageCode] ?: throw IllegalArgumentException("Missing PDF title for language $languageCode") }
-            .map { text -> pdfTittelExtended { text(context.stableHash(StableHash.of(text)), text) } }
+    fun renderPDFTitle(scope: ExpressionScope<*>, titles: List<PDFVedleggTittel>): List<PDFTittel> = titles.map {
+        it.tittel
+            .let { text -> pdfTittelExtended { text(RenderContext(scope).stableHash(StableHash.of(text)), text) } }
     }
 
     private fun renderTitleTexts(context: RenderContext, elements: List<TextElement<*>>): List<Text> =
