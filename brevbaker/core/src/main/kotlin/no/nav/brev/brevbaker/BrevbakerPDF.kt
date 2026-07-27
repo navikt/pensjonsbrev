@@ -37,7 +37,8 @@ internal class BrevbakerPDF(
             val pdfvedlegg = letter.template.pdfAttachments
                 .filter { a -> a.predicate.eval(letter.toScope()) }
                 .map { a -> a.eval(letter.toScope()) }
-            if (pdfVedlegg.isEmpty()) return@let Pair(pdf, pdfvedlegg)
+            // Workaround for overgangsperioden
+            if (pdfVedlegg.size == pdfvedlegg.size) return@let Pair(pdf, emptyList())
             Pair(pdfVedleggAppender.leggPaaVedlegg(
                 pdf,
                 pdfvedlegg,
