@@ -38,15 +38,15 @@ internal class BrevbakerPDF(
                 .filter { a -> a.predicate.eval(letter.toScope()) }
                 .map { a -> a.eval(letter.toScope()) }
             // Workaround for overgangsperioden
-            if (pdfVedlegg.size == pdfvedlegg.size) return@let Pair(pdf, emptyList())
-            Pair(pdfVedleggAppender.leggPaaVedlegg(
+            if (pdfVedlegg.size == pdfvedlegg.size) { return@let pdf }
+            pdfVedleggAppender.leggPaaVedlegg(
                 pdf,
                 pdfvedlegg,
                 letter.language.toCode()
-            ), pdfvedlegg)
+            )
         }.let { pdf ->
             LetterResponse(
-                file = pdf.first.bytes,
+                file = pdf.bytes,
                 contentType = ContentTypes.PDF,
                 letterMetadata = letter.template.letterMetadata,
             )
