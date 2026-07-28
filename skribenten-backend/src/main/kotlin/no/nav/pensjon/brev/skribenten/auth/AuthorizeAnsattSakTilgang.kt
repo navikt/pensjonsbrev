@@ -7,6 +7,9 @@ import io.ktor.server.response.*
 import io.ktor.server.util.*
 import io.ktor.util.*
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevInfoHandler
+import no.nav.pensjon.brev.skribenten.common.Cache
+import no.nav.pensjon.brev.skribenten.common.Cacheomraade
+import no.nav.pensjon.brev.skribenten.common.cached
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.model.Pdl
@@ -29,12 +32,13 @@ val AuthorizeAnsattSakTilgang =
     createRouteScopedPlugin("AuthorizeAnsattSakTilgang", ::AuthorizeAnsattSakTilgangConfiguration) {
         val pdlService: PdlService by application.dependencies
         val fagsakService: FagsakService by application.dependencies
+        val cache: Cache by application.dependencies
 
         on(PrincipalInContext.Hook) { call ->
             if (call.isHandled) return@on
 
             val saksId = SaksId(call.parameters.getOrFail<Long>(SAKSID_PARAM))
-            validerTilgangTilSak(fagsakService, pdlService, call, saksId)
+            validerTilgangTilSak(fagsakService, pdlService, cache, call, saksId)
         }
     }
 
@@ -43,11 +47,12 @@ val AuthorizeAnsattSakTilgangForBrev =
         val pdlService: PdlService by application.dependencies
         val fagsakService: FagsakService by application.dependencies
         val hentBrevInfo: HentBrevInfoHandler by application.dependencies
+        val cache: Cache by application.dependencies
 
         on(PrincipalInContext.Hook) { call ->
             val brevId = call.parameters.brevId()
             hentBrevInfo(HentBrevInfoHandler.Request(brevId))?.onSuccess {
-                validerTilgangTilSak(fagsakService, pdlService, call, it.saksId)
+                validerTilgangTilSak(fagsakService, pdlService, cache, call, it.saksId)
             }
         }
     }
@@ -55,24 +60,27 @@ val AuthorizeAnsattSakTilgangForBrev =
 private suspend fun validerTilgangTilSak(
     fagsakService: FagsakService,
     pdlService: PdlService,
+    cache: Cache,
     call: ApplicationCall,
     saksId: SaksId
-) = validerTilgangTilSak(fagsakService, saksId, pdlService)
+) = validerTilgangTilSak(fagsakService, saksId, pdlService, cache)
         ?.also { call.attributes.put(SakKey, it) }
         ?: call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
 
-suspend fun validerTilgangTilSak(fagsakService: FagsakService, saksId: SaksId, pdlService: PdlService): Fagsak? {
+suspend fun validerTilgangTilSak(fagsakService: FagsakService, saksId: SaksId, pdlService: PdlService, cache: Cache): Fagsak? {
     val sak = fagsakService.hentSak(saksId)
     if (sak != null) {
-        val harTilgang = pdlService.hentAdressebeskyttelse(sak.pid, sak.behandlingsnumre)
-            ?.saksbehandlerHarTilgangTilGradering()
-            ?: true
+        return cache.cached(Cacheomraade.FAGSAK, Pair(saksId, PrincipalInContext.require().navIdent)) {
+            val harTilgang = pdlService.hentAdressebeskyttelse(sak.pid, sak.behandlingsnumre)
+                ?.saksbehandlerHarTilgangTilGradering()
+                ?: true
 
-        if (!harTilgang) {
-            logger.warn("Tilgang til sak avvist: sak med id $saksId har adressebeskyttelse")
-            return null
+            if (!harTilgang) {
+                logger.warn("Tilgang til sak avvist: sak med id $saksId har adressebeskyttelse")
+                return@cached null
+            }
+            return@cached sak
         }
-        return sak
     } else {
         logger.info("Tilgang til sak avvist: sak med id $saksId ikke funnet")
         return null
