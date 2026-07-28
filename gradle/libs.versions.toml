@@ -86,7 +86,6 @@ ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negoti
 ktor-server-core = { module = "io.ktor:ktor-server-core" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors" }
 ktor-server-di = { module = "io.ktor:ktor-server-di" }
-ktor-server-metrics = { module = "io.ktor:ktor-server-metrics" }
 ktor-server-metrics-micrometer = { module = "io.ktor:ktor-server-metrics-micrometer" }
 ktor-server-netty = { module = "io.ktor:ktor-server-netty" }
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages" }
@@ -115,4 +114,4 @@ testcontainers-core = { module = "org.testcontainers:testcontainers", version.re
 [bundles]
 junit = ["junit-jupiter", "junit-platform-launcher", "assertJ"]
 logging = ["log4j-api", "log4j-core", "log4j-layout-template-json", "log4j-slf4j2-impl"]
-metrics = ["micrometer-prometheus", "ktor-server-metrics", "ktor-server-metrics-micrometer"]
+metrics = ["micrometer-prometheus", "ktor-server-metrics-micrometer"]
