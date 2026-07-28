@@ -9,6 +9,7 @@ import kotlin.time.toJavaDuration
 plugins {
     kotlin("jvm") version libs.versions.kotlinVersion apply false
     alias(libs.plugins.ktlint)
+    alias(libs.plugins.dependency.analysis)
 }
 
 allprojects {
@@ -59,6 +60,7 @@ allprojects {
 }
 
 subprojects {
+    apply(plugin = "com.autonomousapps.dependency-analysis")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     // Version of the ktlint engine itself; declared once in gradle/libs.versions.toml so that both this

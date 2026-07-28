@@ -22,6 +22,7 @@ log4j2Version = "2.26.1"
 micrometerVersion = "1.17.0"
 pdfboxVersion = "3.0.7"
 postgresqlVersion = "42.7.13"
+slf4jVersion = "2.0.18"
 testcontainersCoreVersion = "2.0.5"
 testcontainersPostgresqlVersion = "2.0.5"
 unleashVersion = "12.2.2"
@@ -58,6 +59,7 @@ log4j-slf4j2-impl = { module = "org.apache.logging.log4j:log4j-slf4j2-impl" }
 micrometer-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometerVersion" }
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfboxVersion" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
+slf4j = { module = "org.slf4j:slf4j-api", version.ref = "slf4jVersion" }
 unleash = { module = "io.getunleash:unleash-client-java", version.ref = "unleashVersion" }
 valkey = { module = "io.valkey:valkey-java", version.ref = "valkeyVersion" }
 

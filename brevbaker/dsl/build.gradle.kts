@@ -23,7 +23,8 @@ repositories {
 
 dependencies {
     implementation(libs.brevbaker.common)
-    implementation(libs.bundles.logging)
+    runtimeOnly(libs.bundles.logging)
+    implementation(libs.slf4j)
 
     testImplementation(libs.bundles.junit)
     testImplementation(kotlin("reflect"))

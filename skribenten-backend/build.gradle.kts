@@ -166,7 +166,7 @@ dependencies {
     // For å merge førsteside med resten av pdf-en
     implementation(libs.pdfbox)
 
-    implementation(libs.bundles.logging)
+    runtimeOnly(libs.bundles.logging)
 
     // Necessary for java.time.LocalDate
     implementation(libs.jackson.datatype.jsr310)
