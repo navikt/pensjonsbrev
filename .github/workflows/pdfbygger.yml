@@ -7,6 +7,7 @@ on:
       - "gradle.properties"
       - "gradle/libs.versions.toml"
       - "brevbaker/pdf-bygger/**"
+      - "resources/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger.yml"
       - ".github/workflows/cleanup.yml"
@@ -21,6 +22,7 @@ on:
       - "gradle.properties"
       - "gradle/libs.versions.toml"
       - "brevbaker/pdf-bygger/**"
+      - "resources/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger.yml"
       - ".github/workflows/cleanup.yml"
@@ -113,6 +115,7 @@ jobs:
           filters: |
             brevmal-design:
               - 'brevbaker/pdf-bygger/**'
+              - 'resources/**'
               - '.github/regsuitconfig.json'
 
   runIntegrationTests:
