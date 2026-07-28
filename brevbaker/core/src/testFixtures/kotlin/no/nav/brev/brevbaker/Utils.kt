@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import java.nio.file.Files
+import java.nio.file.Path
 import java.time.LocalDate
 import java.time.Month
 import java.time.YearMonth
@@ -20,3 +22,7 @@ fun jacksonObjectMapper() = com.fasterxml.jackson.module.kotlin.jacksonObjectMap
 val vilkaarligDato = LocalDate.of(2025, Month.NOVEMBER, 20)
 
 val vilkaarligMaaned = YearMonth.of(2025, Month.OCTOBER)
+
+fun writeJsonToFile(path: Path, content: Any) {
+    Files.writeString(path, jacksonObjectMapper().writeValueAsString(content))
+}
