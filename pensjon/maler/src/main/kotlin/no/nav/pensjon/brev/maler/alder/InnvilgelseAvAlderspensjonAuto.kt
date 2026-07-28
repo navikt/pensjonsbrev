@@ -28,6 +28,7 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.SoktAFPPrivatInfo
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenadAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
+import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
@@ -125,7 +126,7 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
 
                 showIf(afpPrivatResultatFellesKontoret.ifNull(then = false)) { includePhrase(SoktAFPPrivatInfo) }
 
-                includePhrase(Utbetalingsinformasjon)
+                includePhrase(Utbetalingsinformasjon) //todo: flytt lengre ned
 
                 showIf(harFlereBeregningsperioder and alderspensjonVedVirk.totalPensjon.greaterThan(0)) {
                     includePhrase(Felles.FlereBeregningsperioder)
@@ -211,7 +212,7 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
                     )
                 }
                 paragraph {
-                    text(
+                    text( //Todo: Includephrase utbetalingsinfo her
                         bokmal { +"Du finner informasjon om utbetalingene dine på $DITT_NAV. Her kan du også endre kontonummeret ditt." },
                         nynorsk { +"Du finn informasjon om utbetalingane dine på $DITT_NAV. Her kan du også endre kontonummeret ditt." },
                         english { +"See the more detailed information on what you will receive at $DITT_NAV. Here you can also change your bank account number." }

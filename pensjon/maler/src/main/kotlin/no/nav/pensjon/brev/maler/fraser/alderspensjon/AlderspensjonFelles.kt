@@ -54,8 +54,9 @@ object Utbetalingsinformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
         paragraph {
             text(
                 bokmal { +
-                    "Hvis du har andre pensjonsytelser som for eksempel AFP eller tjenestepensjon, blir de utbetalt i tillegg til alderspensjonen. " +
-                    "Alderspensjonen din utbetales innen den 20. hver måned. Du finner oversikt over utbetalingene dine på $UTBETALINGER_URL." },
+                    "Alderspensjonen din utbetales innen den 20. hver måned. Du finner oversikt over utbetalingene dine på $UTBETALINGER_URL."+
+                       "Her kan du også endre kontonummeret ditt. " +
+                       "Hvis du har andre pensjonsutbetalinger gjennom Nav, blir de utbetalt i tillegg til alderspensjonen. "}, //TODO må fikses for andre språklag også
                 nynorsk { +
                     "Dersom du har andre pensjonsytingar som for eksempel AFP eller tenestepensjon, kjem slik utbetaling i tillegg til alderspensjonen. " +
                     "Alderspensjonen din blir betalt ut innan den 20. i kvar månad. Du finn meir informasjon om utbetalingane dine på $UTBETALINGER_URL." },
