@@ -51,7 +51,7 @@ jobs:
       gradleTarget: brevbaker:pdf-bygger
       buildImage: true
       uploadJar: true
-      publishMarkup: true
+      extraModulesToBuild: ':brevbaker:markup:publishToMavenLocal'
 
   pushPdfByggerToGithubRegistry:
     name: "Push pdf-bygger to github registry"

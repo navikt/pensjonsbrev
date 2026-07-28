@@ -50,7 +50,7 @@ jobs:
         with:
           cache-encryption-key: ${{ secrets.GRADLEKEY }}
 
-      - name: "publish common to Maven local"
+      - name: "publish artifact dependencies to Maven local"
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           ./gradlew :brevbaker:api-model-common:publishToMavenLocal
