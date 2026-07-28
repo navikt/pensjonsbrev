@@ -48,7 +48,6 @@ jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoupVersion" }
 jackson-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml" }
 jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
 kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version.ref = "kotlinxHtmlVersion" }
-kotlinx-coroutines-slf4j = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j", version.ref = "kotlinxCoroutinesVersion" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationVersion" }
 ksp-symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "kotlinKspVersion"}
 ksp-symbol-processing-aa = { module = "com.google.devtools.ksp:symbol-processing-aa", version.ref = "kotlinKspVersion"}
