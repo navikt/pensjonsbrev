@@ -487,9 +487,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)
                     ) {
                         text(
-                            bokmal { + "3-2, 3-3, 19-8, 19-16 og 22-12" },
-                            nynorsk { + "3-2, 3-3, 19-8, 19-16 og 22-12" },
-                            english { + "3-2, 3-3, 19-8, 19-16 and 22-12 of the National Insurance Act" }
+                            bokmal { + "3-2, 3-3, 19-8, 19-16, 22-12 og 22-13" },
+                            nynorsk { + "3-2, 3-3, 19-8, 19-16, 22-12 og 22-13" },
+                            english { + "3-2, 3-3, 19-8, 19-16, 22-12 and 22-13 of the National Insurance Act" }
                         )
                     }
 
@@ -500,9 +500,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)
                     ) {
                         text(
-                            bokmal { + "3-2, 19-8, 19-16 og 22-12" },
-                            nynorsk { + "3-2, 19-8, 19-16 og 22-12" },
-                            english { + "3-2, 19-8, 19-16 and 22-12 of the National Insurance Act" }
+                            bokmal { + "3-2, 19-8, 19-16, 22-12 og 22-13" },
+                            nynorsk { + "3-2, 19-8, 19-16, 22-12 og 22-13" },
+                            english { + "3-2, 19-8, 19-16, 22-12 and 22-13 of the National Insurance Act" }
                         )
                     }
 
@@ -513,9 +513,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 and not(pesysData.alderspensjonVedVirk.saertilleggInnvilget)
                     ) {
                         text(
-                            bokmal { + "3-2, 19-8, 19-14, 19-16 og 22-12" },
-                            nynorsk { + "3-2, 19-8, 19-14, 19-16 og 22-12" },
-                            english { + "3-2, 19-8, 19-14, 19-16 and 22-12 of the National Insurance Act" }
+                            bokmal { + "3-2, 19-8, 19-14, 19-16, 22-12 og 22-13" },
+                            nynorsk { + "3-2, 19-8, 19-14, 19-16, 22-12 og 22-13" },
+                            english { + "3-2, 19-8, 19-14, 19-16, 22-12 and 22-13 of the National Insurance Act" }
                         )
                     }
 
@@ -526,9 +526,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget
                     ) {
                         text(
-                            bokmal { + "3-2, 3-3, 19-8, 19-14, 19-16 og 22-12" },
-                            nynorsk { + "3-2, 3-3, 19-8, 19-14, 19-16 og 22-12" },
-                            english { + "3-2, 3-3, 19-8, 19-14, 19-16 and 22-12 of the National Insurance Act" }
+                            bokmal { + "3-2, 3-3, 19-8, 19-14, 19-16, 22-12 og 22-13" },
+                            nynorsk { + "3-2, 3-3, 19-8, 19-14, 19-16, 22-12 og 22-13" },
+                            english { + "3-2, 3-3, 19-8, 19-14, 19-16, 22-12 and 22-13 of the National Insurance Act" }
                         )
                     }
 
@@ -536,15 +536,15 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2011) and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)) {
                         showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
                             text(
-                                bokmal { + "3-2, 19-8, 19-9, 19-16 og 22-12" },
-                                nynorsk { + "3-2, 19-8, 19-9, 19-16 og 22-12" },
-                                english { + "3-2, 19-8, 19-9, 19-16 and 22-12" }
+                                bokmal { + "3-2, 19-8, 19-9, 19-16, 22-12 og 22-13" },
+                                nynorsk { + "3-2, 19-8, 19-9, 19-16, 22-12 og 22-13" },
+                                english { + "3-2, 19-8, 19-9, 19-16, 22-12 and 22-13" }
                             )
                         }.orShow {
                             text(
-                                bokmal { + "3-2, 19-8, 19-16 og 22-12" },
-                                nynorsk { + "3-2, 19-8, 19-16 og 22-12" },
-                                english { + "3-2, 19-8, 19-16 and 22-12" }
+                                bokmal { + "3-2, 19-8, 19-16, 22-12 og 22-13" },
+                                nynorsk { + "3-2, 19-8, 19-16, 22-12 og 22-13" },
+                                english { + "3-2, 19-8, 19-16, 22-12 and 22-13" }
                             )
                         }
                     }
@@ -553,15 +553,15 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2011) and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget) {
                         showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
                             text(
-                                bokmal { + "3-2, 19-8, 19-9, 19-14, 19-16 og 22-12" },
-                                nynorsk { + "3-2, 19-8, 19-9, 19-14, 19-16 og 22-12" },
-                                english { + "3-2, 19-8, 19-9, 19-14, 19-16 and 22-12" }
+                                bokmal { + "3-2, 19-8, 19-9, 19-14, 19-16, 22-12 og 22-13" },
+                                nynorsk { + "3-2, 19-8, 19-9, 19-14, 19-16, 22-12 og 22-13" },
+                                english { + "3-2, 19-8, 19-9, 19-14, 19-16, 22-12 and 22-13" }
                             )
                         }.orShow {
                             text(
-                                bokmal { + "3-2, 19-8, 19-14, 19-16 og 22-12" },
-                                nynorsk { + "3-2, 19-8, 19-14, 19-16 og 22-12" },
-                                english { + "3-2, 19-8, 19-14, 19-16 and 22-12" }
+                                bokmal { + "3-2, 19-8, 19-14, 19-16, 22-12 og 22-13" },
+                                nynorsk { + "3-2, 19-8, 19-14, 19-16, 22-12 og 22-13" },
+                                english { + "3-2, 19-8, 19-14, 19-16, 22-12 and 22-13" }
                             )
                         }
                     }
@@ -574,15 +574,15 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     ) {
                         showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
                             text(
-                                bokmal { + "3-2, 19-8, 19-9, 19-15, 19-16, 20-18, 20-19 og 22-12" },
-                                nynorsk { + "3-2, 19-8, 19-9, 19-15, 19-16, 20-18, 20-19 og 22-12" },
-                                english { + "3-2, 19-8, 19-9, 19-15, 19-16, 20-18, 20-19 and 22-12" }
+                                bokmal { + "3-2, 19-8, 19-9, 19-15, 19-16, 20-18, 20-19, 22-12 og 22-13" },
+                                nynorsk { + "3-2, 19-8, 19-9, 19-15, 19-16, 20-18, 20-19, 22-12 og 22-13" },
+                                english { + "3-2, 19-8, 19-9, 19-15, 19-16, 20-18, 20-19, 22-12 and 22-13" }
                             )
                         }.orShow {
                             text(
-                                bokmal { + "3-2, 19-15, 19-16, 20-18, 20-19 og 22-12" },
-                                nynorsk { + "3-2, 19-15, 19-16, 20-18, 20-19 og 22-12" },
-                                english { + "3-2, 19-15, 19-16, 20-18, 20-19 and 22-12" }
+                                bokmal { + "3-2, 19-15, 19-16, 20-18, 20-19, 22-12 og 22-13" },
+                                nynorsk { + "3-2, 19-15, 19-16, 20-18, 20-19, 22-12 og 22-13" },
+                                english { + "3-2, 19-15, 19-16, 20-18, 20-19, 22-12 and 22-13" }
                             )
                         }
                     }
@@ -596,15 +596,15 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     {
                         showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
                             text(
-                                bokmal { + "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 og 22-12" },
-                                nynorsk { + "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 og 22-12" },
-                                english { + "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 and 22-12" },
+                                bokmal { + "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19, 22-12 og 22-13" },
+                                nynorsk { + "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19, 22-12 og 22-13" },
+                                english { + "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19, 22-12 and 22-13" },
                             )
                         }.orShow {
                             text(
-                                bokmal { + "3-2, 19-8, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 og 22-12" },
-                                nynorsk { + "3-2, 19-8, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 og 22-12" },
-                                english { + "3-2, 19-8, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 and 22-12" },
+                                bokmal { + "3-2, 19-8, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19, 22-12 og 22-13" },
+                                nynorsk { + "3-2, 19-8, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19, 22-12 og 22-13" },
+                                english { + "3-2, 19-8, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19, 22-12 and 22-13" },
                             )
                         }
                     }
@@ -617,15 +617,15 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     ) {
                         showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
                             text(
-                                bokmal { + "3-2, 19-8, 19-9, 19-15, 19-16, 20-9, 20-19 og 22-12" },
-                                nynorsk { + "3-2, 19-8, 19-9, 19-15, 19-16, 20-9, 20-19 og 22-12" },
-                                english { + "3-2, 19-8, 19-9, 19-15, 19-16, 20-9, 20-19 and 22-12" },
+                                bokmal { + "3-2, 19-8, 19-9, 19-15, 19-16, 20-9, 20-19, 22-12 og 22-13" },
+                                nynorsk { + "3-2, 19-8, 19-9, 19-15, 19-16, 20-9, 20-19, 22-12 og 22-13" },
+                                english { + "3-2, 19-8, 19-9, 19-15, 19-16, 20-9, 20-19, 22-12 and 22-13" },
                             )
                         }.orShow {
                             text(
-                                bokmal { + "3-2, 19-15, 19-16, 20-9, 20-19 og 22-12" },
-                                nynorsk { + "3-2, 19-15, 19-16, 20-9, 20-19 og 22-12" },
-                                english { + "3-2, 19-15, 19-16, 20-9, 20-19 and 22-12" },
+                                bokmal { + "3-2, 19-15, 19-16, 20-9, 20-19, 22-12 og 22-13" },
+                                nynorsk { + "3-2, 19-15, 19-16, 20-9, 20-19, 22-12 og 22-13" },
+                                english { + "3-2, 19-15, 19-16, 20-9, 20-19, 22-12 and 22-13" },
                             )
                         }
                     }
@@ -638,15 +638,15 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     ) {
                         showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
                             text(
-                                bokmal { + "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-18, 20-19 og 22-12" },
-                                nynorsk { + "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-18, 20-19 og 22-12" },
-                                english { + "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-18, 20-19 and 22-12" },
+                                bokmal { + "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-18, 20-19, 22-12 og 22-13" },
+                                nynorsk { + "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-18, 20-19, 22-12 og 22-13" },
+                                english { + "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-18, 20-19, 22-12 and 22-13" },
                             )
                         }.orShow {
                             text(
-                                bokmal { + "3-2, 19-8, 19-14, 19-15, 19-16, 20-18, 20-19 og 22-12" },
-                                nynorsk { + "3-2, 19-8, 19-14, 19-15, 19-16, 20-18, 20-19 og 22-12" },
-                                english { + "3-2, 19-8, 19-14, 19-15, 19-16, 20-18, 20-19 and 22-12" },
+                                bokmal { + "3-2, 19-8, 19-14, 19-15, 19-16, 20-18, 20-19, 22-12 og 22-13" },
+                                nynorsk { + "3-2, 19-8, 19-14, 19-15, 19-16, 20-18, 20-19, 22-12 og 22-13" },
+                                english { + "3-2, 19-8, 19-14, 19-15, 19-16, 20-18, 20-19, 22-12 and 22-13" },
                             )
                         }
                     }

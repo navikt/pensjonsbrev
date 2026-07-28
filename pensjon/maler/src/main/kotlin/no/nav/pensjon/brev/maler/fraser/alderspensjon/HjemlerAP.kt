@@ -118,9 +118,9 @@ data class HjemlerInnvilgelseForAP2011AP2016(
                     )
                 }
                 text(
-                    bokmal { + " og 22-12." },
-                    nynorsk { + " og 22-12." },
-                    english { + " and 22-12 of the National Insurance Act." }
+                    bokmal { + " , 22-12 og 22-13." },
+                    nynorsk { + " , 22-12 og 22-13." },
+                    english { + " , 22-12 and 22-13 of the National Insurance Act." }
                 )
             }
         }
