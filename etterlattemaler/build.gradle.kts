@@ -24,7 +24,6 @@ dependencies {
 
     testImplementation(libs.bundles.junit)
 
-    testImplementation(libs.ktor.serialization.jackson)
     testImplementation(testFixtures(project(":brevbaker:core")))
 }
 
