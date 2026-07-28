@@ -48,11 +48,11 @@ class EtterlatteTemplatesTest : BrevmodulTest(
         fixtures: T,
         spraak: Language,
     ) {
-        val erHovedmal = fixtures::class.java.isAssignableFrom(BrevDTO::class.java) && !listOf(
+        val erHovedmal = BrevDTO::class.java.isAssignableFrom(fixtures::class.java) && !listOf(
             Delmal::class,
             Vedlegg::class,
             ManueltBrevDTO::class
-        ).any { fixtures::class.java.isAssignableFrom(it.java) }
+        ).any { it.java.isAssignableFrom(fixtures::class.java) }
         // Hovedmalar skal ikkje redigerast i Gjenny, så dei treng vi ikkje å lage JSON av.
         // I tillegg er det per no ein mangel i brevbakeren at han ikkje klarer å lage JSON av tabellar, som vi bruker i ein del hovedmalar
         if (erHovedmal) {
