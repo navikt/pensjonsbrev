@@ -46,7 +46,6 @@ dependencies {
     testFixturesImplementation(libs.ktor.server.callId)
 
     testFixturesImplementation(testFixtures(project(":brevbaker:dsl")))
-    testFixturesImplementation(libs.bundles.logging)
     testFixturesImplementation(libs.bundles.junit)
     testFixturesImplementation(libs.testcontainers.core)
 
