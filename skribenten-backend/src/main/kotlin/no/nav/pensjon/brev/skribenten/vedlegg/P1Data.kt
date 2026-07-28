@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.skribenten.brevredigering.domain
+package no.nav.pensjon.brev.skribenten.vedlegg
 
 import no.nav.brev.BrevLandmodell
 import no.nav.pensjon.brev.skribenten.db.P1DataTable

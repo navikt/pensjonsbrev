@@ -12,7 +12,7 @@ export type BrevResponse = {
   redigertBrev: EditedLetter;
   redigertBrevHash: string;
   saksbehandlerValg: SaksbehandlerValg;
-  propertyUsage: Nullable<PropertyUsage[]>;
+  propertyUsage?: Nullable<PropertyUsage[]>;
   valgteVedlegg: Nullable<AlltidValgbartVedlegg[]>;
 };
 

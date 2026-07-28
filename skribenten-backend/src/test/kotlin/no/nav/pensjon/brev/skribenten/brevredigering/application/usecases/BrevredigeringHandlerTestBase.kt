@@ -2,6 +2,7 @@
 
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
+import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.*
@@ -9,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
@@ -17,6 +19,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.NavEnhet
@@ -28,6 +31,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphIm
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import org.apache.pdfbox.pdmodel.PDDocument
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.opentest4j.AssertionFailedError
@@ -110,6 +114,14 @@ abstract class BrevredigeringHandlerTestBase {
     }
     protected val endreDistribusjonstype by lazy {
         EndreDistribusjonstypeHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val leggVedFoersteside by lazy {
+        LeggVedFoerstesideHandler(
             redigerBrevPolicy = redigerBrevPolicy,
             brevreservasjonPolicy = brevreservasjonPolicy,
             reserverBrevHandler = reserverBrevHandler,
@@ -242,7 +254,17 @@ abstract class BrevredigeringHandlerTestBase {
                 penClient = PenClientStub(),
                 database = SharedPostgres.database,
             ),
+            genererFoerstesideHandler = GenererFoerstesideHandler(
+                FoerstesidegeneratorClient(
+                    config = OboClientConfig(url = "http://localhost", scope = "test"),
+                    authService = FakeAuthService,
+                    clientEngine = MockEngine { respond("", HttpStatusCode.OK) },
+                )
+            ),
             database = SharedPostgres.database,
+            pdfVedleggAppender = object : PDFVedleggAppender {
+                override fun leggPaaVedlegg(pdfCompilationOutput: ByteArray, vedlegg: List<() -> PDDocument>) = pdfCompilationOutput
+            }
         )
     }
     protected val sendBrevHandler by lazy {
@@ -281,6 +303,16 @@ abstract class BrevredigeringHandlerTestBase {
             sakType = Sakstype("ALDER"),
             pid = Pid("12345678910"),
             behandlingsnumre = listOf(),
+        )
+
+        val fagsak1 = Fagsak(
+            saksId = sak1.saksId,
+            foedselsdato = sak1.foedselsdato,
+            navn = Fagsak.Navn(sak1.navn.fornavn, sak1.navn.mellomnavn, sak1.navn.etternavn),
+            sakType = sak1.sakType,
+            pid = sak1.pid,
+            behandlingsnumre = sak1.behandlingsnumre,
+            tema = sak1.tema,
         )
 
         val letter = letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"))))
@@ -509,7 +541,7 @@ abstract class BrevredigeringHandlerTestBase {
         handler: HentEllerOpprettPdfHandler = hentEllerOpprettPdf,
     ): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
         withPrincipal(principal) {
-            handler(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
+            handler(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id, fagsak = fagsak1))
         }
 
     protected suspend fun endreDistribusjonstype(
@@ -523,6 +555,14 @@ abstract class BrevredigeringHandlerTestBase {
                 type = nyDistribusjonstype,
             )
         )
+    }
+
+    protected suspend fun leggVedFoersteside(
+        brevId: BrevId,
+        leggVedFoersteside: Boolean,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
+        leggVedFoersteside(LeggVedFoerstesideHandler.Request(brevId = brevId, leggVedFoersteside = leggVedFoersteside))
     }
 
     protected suspend fun sendBrev(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.SendBrevResult, BrevredigeringError>? =
@@ -572,6 +612,7 @@ abstract class BrevredigeringHandlerTestBase {
             redigertBrev: LetterMarkup,
             alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
             redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment>,
+            pdfVedlegg: List<PDFVedleggTittel>,
         ) = renderPdfResultat.also {
             renderPdfKall.add(redigertBrev)
             renderPdfRedigerteVedleggKall.add(redigerteVedlegg)

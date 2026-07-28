@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
+import no.nav.pensjon.brev.skribenten.vedlegg.P1Data
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -17,6 +18,7 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.dao.Entity
 import org.jetbrains.exposed.v1.dao.EntityClass
 import java.time.Instant
+import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 interface Brevredigering {
@@ -53,6 +55,7 @@ interface Brevredigering {
     val isVedtaksbrev: Boolean
     val redigerteVedlegg: List<Dto.RedigertVedlegg>
     val vedleggHash: Hash<VedleggSnapshot>
+    val leggVedFoersteside: Boolean?
 
     fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon?
     fun reserver(
@@ -106,6 +109,8 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         private set
     override var journalpostId by BrevredigeringTable.journalpostId
 
+    override var leggVedFoersteside by BrevredigeringTable.leggVedFoersteside
+
     private val _documentEntityList by DocumentEntity referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
     override var document: Dto.Document?
         get() = _documentEntityList.firstOrNull()?.toDto()
@@ -131,6 +136,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
                 redigerteVedlegg = _redigerteVedlegg
                     .map { VedleggSnapshot.RedigertVedleggHash(it.vedleggId.value.id, it.redigertVedleggHash.toString()) }
                     .sortedBy { it.vedleggId },
+                leggVedFoersteside = leggVedFoersteside?.let { VedleggSnapshot.LeggVedFoerstesideHash(it, LocalDate.now()) }
             )
         )
 
@@ -380,6 +386,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
                 laastForRedigering -> Dto.BrevStatus.KLAR
 
                 else -> Dto.BrevStatus.KLADD
-            }
+            },
+            leggVedFoersteside = leggVedFoersteside
         )
 }

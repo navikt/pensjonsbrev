@@ -125,7 +125,15 @@ suspend inline fun <T> RoutingContext.respondOutcome(
                 is FerdigRedigertPolicy.IkkeFerdigRedigert.FritekstFelterUredigert ->
                     call.respond(
                         status = HttpStatusCode.UnprocessableEntity,
-                        message = BrevExceptionDto(tittel = "Brev ikke klart", melding = "Brevet inneholder fritekst-felter som ikke er endret. Det gjelder følgende felt: ${outcome.error.ikkeredigerteFritekstfelter.joinToString(", ") { it.text.take(20) }}")
+                        message = BrevExceptionDto(
+                            tittel = "Brev ikke klart",
+                            melding = "Brevet inneholder fritekst-felter som ikke er endret. Det gjelder følgende felt: " +
+                                outcome.error.ikkeredigerteFritekstfelter.joinToString(", ") { field ->
+                                    val makslengde = 20
+                                    val tekst = field.text.let { if (it.length > makslengde) it.take(makslengde) + "..." else it }
+                                    "\"$tekst\""
+                                }
+                        )
                     )
 
                 is FerdigRedigertPolicy.IkkeFerdigRedigert.DuplikatAvsnittUhaandtert ->
@@ -163,6 +171,11 @@ suspend inline fun <T> RoutingContext.respondOutcome(
                         status = HttpStatusCode.UnprocessableEntity,
                         message = BrevExceptionDto(tittel = "Brev ikke klart til sending", melding = "Vedtaksbrev ${outcome.error.brevId} er ikke attestert")
                     )
+
+                is IngenFoersteside -> call.respond(
+                    status = HttpStatusCode.InternalServerError,
+                    message = "Klarte ikke generere førsteside for ${outcome.error.brevId}"
+                )
             }
         }
 

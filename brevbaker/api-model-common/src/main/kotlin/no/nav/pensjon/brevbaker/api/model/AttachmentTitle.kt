@@ -14,3 +14,6 @@ class PDFTittel(override val title: List<ParagraphContent.Text>) : AttachmentTit
     override fun hashCode() = title.hashCode()
     override fun toString() = "PDFTittel(title=$title)"
 }
+
+@JvmInline
+value class PDFVedleggTittel(val tittel: String)

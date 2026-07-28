@@ -80,7 +80,8 @@ class ExternalAPIRouteTest {
         spraak = LanguageCode.BOKMAL,
         journalpostId = null,
         attestertAv = null,
-        status = Dto.BrevStatus.KLADD
+        status = Dto.BrevStatus.KLADD,
+        leggVedFoersteside = false,
     )
 
     private val successBrevredigering = Dto.Brevredigering(

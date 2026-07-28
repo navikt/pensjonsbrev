@@ -151,6 +151,16 @@ test.describe("attestering", () => {
       return route.fallback();
     });
 
+    const pdfBase64 = (await import("node:fs")).readFileSync("test/e2e/fixtures/helloWorldPdf.txt", "base64");
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/pdf", (route) => {
+      if (route.request().method() === "GET") {
+        return route.fulfill({
+          json: { pdf: pdfBase64, rendretBrevErEndret: false },
+        });
+      }
+      return route.fallback();
+    });
+
     await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", async (route) => {
       if (route.request().method() === "PUT") {
         const body = route.request().postDataJSON();
@@ -230,7 +240,9 @@ test.describe("attestering", () => {
     await expect(page.getByText("Distribusjonstype")).toBeVisible();
     await expect(page.getByText("Sentral print")).toBeVisible();
 
-    await page.getByText("Send brev").click();
+    const sendBrevButton = page.getByRole("button", { name: "Send brev" });
+    await expect(sendBrevButton).toBeEnabled();
+    await sendBrevButton.click();
     await expect(page.getByText("Vil du sende brevet?")).toBeVisible();
     await expect(page.getByText("Du kan ikke angre denne handlingen.")).toBeVisible();
     const pdfResponsePromise = page.waitForResponse(

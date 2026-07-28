@@ -38,6 +38,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBr
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.ReserverBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.LeggVedFoerstesideHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.VeksleKlarStatusHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.AttesterBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
@@ -70,6 +71,8 @@ import no.nav.pensjon.brev.skribenten.services.PensjonRepresentasjonService
 import no.nav.pensjon.brev.skribenten.services.SafServiceHttp
 import no.nav.pensjon.brev.skribenten.services.SamhandlerServiceHttp
 import no.nav.pensjon.brev.skribenten.services.SkjermingServiceHttp
+import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
+import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppenderImpl
 import org.jetbrains.exposed.v1.jdbc.Database
 
 fun Application.configureDependencies() {
@@ -148,10 +151,13 @@ fun Application.configureDependencies() {
         provide(OpprettBrevHandler::class)
         provide(ReserverBrevHandler::class)
         provide(SendBrevHandler::class)
+        provide(LeggVedFoerstesideHandler::class)
         provide(SlettBrevHandler::class)
         provide(SlettRedigertVedleggHandler::class)
         provide(TilbakestillBrevHandler::class)
         provide(VeksleKlarStatusHandler::class)
+
+        provide<PDFVedleggAppender>(PDFVedleggAppenderImpl::class)
     }
 
     launch { Features.init(dependencies.resolve()) }

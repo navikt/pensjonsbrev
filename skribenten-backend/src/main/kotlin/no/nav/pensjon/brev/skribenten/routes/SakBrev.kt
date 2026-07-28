@@ -9,7 +9,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.*
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto
+import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
@@ -242,8 +242,9 @@ fun Route.sakBrev() =
                 val hentEllerOpprettPdf: HentEllerOpprettPdfHandler by app.dependencies
                 get {
                     val brevId = call.parameters.brevId()
+                    val sak: Fagsak = call.attributes[SakKey]
 
-                    val result = hentEllerOpprettPdf(HentEllerOpprettPdfHandler.Request(brevId = brevId))
+                    val result = hentEllerOpprettPdf(HentEllerOpprettPdfHandler.Request(brevId = brevId, fagsak = sak))
                     apiRespond(dto2ApiService, result)
                 }
 
@@ -322,6 +323,15 @@ fun Route.sakBrev() =
                 )
 
                 respondSuccess(result?.asSuccess()) { respond(it) }
+            }
+
+            val leggVedFoersteside: LeggVedFoerstesideHandler by app.dependencies
+            put("/foersteside") {
+                val brevId = call.parameters.brevId()
+                val request = call.receive<Api.OppdaterFoerstesideRequest>()
+                val resultat = leggVedFoersteside(LeggVedFoerstesideHandler.Request(brevId, request.leggVedFoersteside))
+
+                apiRespond(dto2ApiService, resultat)
             }
         }
     }

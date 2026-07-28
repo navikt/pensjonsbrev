@@ -6,7 +6,7 @@ import { type AxiosError } from "axios";
 import { useState } from "react";
 
 import { attesteringBrevKeys, getBrevAttestering } from "~/api/brev-queries";
-import { sendBrev } from "~/api/sak-api-endpoints";
+import { hentPdfForBrev, sendBrev } from "~/api/sak-api-endpoints";
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
 import { ApiError } from "~/components/ApiError";
 import { CenteredLoader } from "~/components/CenteredLoader";
@@ -44,6 +44,12 @@ const VedtakForhåndsvisningWrapper = () => {
 const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const [vilSendeBrev, setVilSendeBrev] = useState(false);
+  const hentPdfQuery = useQuery({
+    queryKey: hentPdfForBrev.queryKey(props.brev.info.id),
+    queryFn: () => hentPdfForBrev.queryFn(props.saksId, props.brev.info.id),
+    refetchOnWindowFocus: false,
+  });
+  const sendDisabled = !hentPdfQuery.isSuccess || hentPdfQuery.data === null;
 
   return (
     <VStack height="100%">
@@ -80,8 +86,10 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
               Tilbake til redigering
             </Button>
             <Button
+              disabled={sendDisabled}
               icon={<ArrowRightIcon />}
               iconPosition="right"
+              loading={hentPdfQuery.isPending}
               onClick={() => setVilSendeBrev(true)}
               size="small"
               type="button"
