@@ -26,7 +26,7 @@ internal class BrevbakerPDF(
         letter: Letter<BrevbakerBrevdata>,
         redigertBrev: LetterMarkup? = null,
         redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(),
-        pdfVedlegg: List<PDFVedleggTittel> = listOf(),
+        pdfVedleggTitler: List<PDFVedleggTittel> = listOf(),
     ): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev, redigerteVedlegg).let { markup ->
             pdfByggerService.producePDF(
@@ -35,7 +35,11 @@ internal class BrevbakerPDF(
                     attachments = markup.attachments,
                     language = letter.language.toCode(),
                     brevtype = letter.template.letterMetadata.brevtype,
-                    pdfVedlegg = if (pdfVedlegg.isEmpty()) Letter2Markup.renderPDFTitlesOnly(letter.toScope(), letter.template) else Letter2Markup.renderPDFTitle(letter.toScope(), pdfVedlegg)
+                    pdfVedlegg = if (pdfVedleggTitler.isEmpty()) {
+                        Letter2Markup.renderPDFTitlesOnly(letter.toScope(), letter.template)
+                    } else {
+                        Letter2Markup.renderPDFTitle(letter.toScope(), pdfVedleggTitler)
+                    }
                 ),
             )
         }.let { pdf ->
@@ -43,7 +47,7 @@ internal class BrevbakerPDF(
                 .filter { a -> a.predicate.eval(letter.toScope()) }
                 .map { a -> a.eval(letter.toScope()) }
             // Workaround for overgangsperioden
-            if (pdfVedlegg.size == pdfvedlegg.size) { return@let pdf }
+            if (pdfVedleggTitler.size == pdfvedlegg.size) { return@let pdf }
             pdfVedleggAppender.leggPaaVedlegg(
                 pdf,
                 pdfvedlegg,

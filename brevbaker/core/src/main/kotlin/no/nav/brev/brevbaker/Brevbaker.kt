@@ -19,7 +19,7 @@ class Brevbaker(
     private val brevbakerPDF = BrevbakerPDF(pdfByggerService, pdfVedleggAppender)
 
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, pdfVedlegg: List<PDFVedleggTittel>): LetterResponse =
-        brevbakerPDF.renderPDF(letter, null, pdfVedlegg = pdfVedlegg)
+        brevbakerPDF.renderPDF(letter, null, pdfVedleggTitler = pdfVedlegg)
 
     suspend fun renderPDFV2(letter: Letter<BrevbakerBrevdata>, pdfVedlegg: List<PDFVedleggTittel>): LetterResponse =
         brevbakerPDF.renderPDFV2(letter, null, pdfVedlegg = pdfVedlegg)

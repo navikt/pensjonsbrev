@@ -12,6 +12,8 @@ import org.apache.pdfbox.pdmodel.interactive.form.PDField
 import org.apache.pdfbox.pdmodel.interactive.form.PDTextField
 
 internal object SideAppender {
+    private val defaultFont by lazy { javaClass.getResource("/fonts/SourceSans3-Regular.ttf")!! }
+
     fun lesInnPDF(sider: List<Side>, spraak: LanguageCode, filnavn: (LanguageCode, Side) -> String): PDDocument {
         val target = PDDocument()
         val merger = PDFMergerUtility()
@@ -38,7 +40,7 @@ internal object SideAppender {
         spraak: LanguageCode,
     ) {
         // For å støtte alle felt-verdier, så må hele fonten bygges inn, og ikke bare de tegnene som er i bruk fra før
-        val font = PDType0Font.load(target, javaClass.getResource("/fonts/SourceSans3-Regular.ttf")!!.openStream(), false)
+        val font = PDType0Font.load(target, defaultFont.openStream(), false)
 
         target.documentCatalog.acroForm?.defaultResources = PDResources().apply { put(COSName.getPDFName("SourceSans3Embedded"), font) }
         val feltVerdier: Map<String, String?> = sider.flatMapIndexed { index, side ->

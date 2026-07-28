@@ -25,8 +25,8 @@ object PDFMerger {
         }
     }
 
-    private fun addPage(document: PDDocument, merger: PDFMergerUtility, target: PDDocument) {
-        if (document.numberOfPages % 2 == 1) {
+    private fun addPage(document: PDDocument, merger: PDFMergerUtility, target: PDDocument, addEmptyOddPage: Boolean = true) {
+        if (addEmptyOddPage && document.numberOfPages % 2 == 1) {
             document.addPage(PDPage())
         }
         merger.appendDocument(target, document)
