@@ -130,14 +130,14 @@ object MeldeFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                bokmal { + "Hvis du får endringer i familiesituasjon, planlegger opphold i utlandet," +
+                bokmal { + "Hvis du får endringer i familiesituasjon, planlegger opphold i andre land," +
                     " eller ektefellen eller samboeren din får endringer i inntekten, kan det ha betydning for beløpet du får utbetalt fra Nav." +
                     " I slike tilfeller må du derfor straks melde fra til oss." +
                     " I vedlegget ser du hvilke endringer du må si fra om." },
-                nynorsk { + "Dersom du får endringar i familiesituasjonen, planlegg opphald i utlandet," +
+                nynorsk { + "Dersom du får endringar i familiesituasjonen, planlegg opphald i andre land," +
                     " eller ektefellen, partnaren eller sambuaren din får endringar i inntekta, kan det få noko å seie for beløpet du får utbetalt frå Nav." +
                     " I slike tilfelle må du derfor straks melde frå til oss. I vedlegget ser du kva endringar du må seie frå om." },
-                english { + "If there are changes in your family situation or you are planning a long-term stay abroad," +
+                english { + "If there are changes in your family situation or you are planning a long-term stay in other countries," +
                     " or there are changes in the income of your spouse or co-habiting partner, these might affect the payments you receive from Nav." +
                     " In such cases, you must notify Nav immediately. The appendix specifies which changes you are obligated to notify us of." },
             )
