@@ -22,6 +22,7 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
       return <br data-literal-index={JSON.stringify(literalIndex)} />;
     }
     case "VARIABLE": {
+      const isEmpty = content.text.trim().length === 0;
       return (
         /**
          * biome-ignore lint/a11y/useKeyWithClickEvents: Klikk trenger ikke en tilsvarende
@@ -40,6 +41,12 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
             outline: `${isFocused ? "2px solid var(--ax-border-accent)" : "1px solid var(--ax-border-neutral-strong)"}`,
             padding: "0 var(--ax-space-2)",
 
+            ...(isEmpty && {
+              background: "transparent",
+              margin: 0,
+              outline: "none",
+              padding: 0,
+            }),
             ...(content.fontType === FontType.BOLD ? { fontWeight: "var(--ax-font-weight-bold)" } : {}),
             ...(content.fontType === FontType.ITALIC ? { fontStyle: "italic" } : {}),
           }}
