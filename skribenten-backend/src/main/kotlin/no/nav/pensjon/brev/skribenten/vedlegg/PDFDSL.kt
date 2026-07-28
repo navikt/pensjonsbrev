@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.template.vedlegg
+package no.nav.pensjon.brev.skribenten.vedlegg
 
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import java.util.Objects

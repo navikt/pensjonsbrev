@@ -40,6 +40,7 @@ import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.documentLanguageSettings
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 
 data class LetterWithAttachmentsMarkupV2(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
 
@@ -139,6 +140,11 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
     fun renderPDFTitlesOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<PDFTittel> {
         val context = RenderContext(scope)
         return template.pdfAttachments.map { pdfTittelExtended { appendTexts(context, it.template.title) } }
+    }
+
+    fun renderPDFTitle(scope: ExpressionScope<*>, titles: List<PDFVedleggTittel>): List<PDFTittel> = titles.map {
+        it.tittel
+            .let { text -> pdfTittelExtended { text(RenderContext(scope).stableHash(StableHash.of(text)), text) } }
     }
 
     private fun renderTitleTexts(context: RenderContext, elements: List<TextElement<*>>): List<Text> =

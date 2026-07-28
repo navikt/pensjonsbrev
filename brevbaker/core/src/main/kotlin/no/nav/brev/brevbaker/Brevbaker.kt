@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupLetterMarkup
 import no.nav.brev.brevbaker.markup.Attachment as MarkupAttachment
 import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage as MarkupLetterMarkupWithDataUsage
@@ -17,17 +18,17 @@ class Brevbaker(
 ) {
     private val brevbakerPDF = BrevbakerPDF(pdfByggerService, pdfVedleggAppender)
 
-    suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>): LetterResponse =
-        brevbakerPDF.renderPDF(letter, null)
+    suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, pdfVedlegg: List<PDFVedleggTittel>): LetterResponse =
+        brevbakerPDF.renderPDF(letter, null, pdfVedleggTitler = pdfVedlegg)
 
-    suspend fun renderPDFV2(letter: Letter<BrevbakerBrevdata>): LetterResponse =
-        brevbakerPDF.renderPDFV2(letter, null)
+    suspend fun renderPDFV2(letter: Letter<BrevbakerBrevdata>, pdfVedlegg: List<PDFVedleggTittel>): LetterResponse =
+        brevbakerPDF.renderPDFV2(letter, null, pdfVedlegg = pdfVedlegg)
 
-    suspend fun renderRedigertBrevPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup, redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()) =
-        brevbakerPDF.renderPDF(letter, redigertBrev, redigerteVedlegg)
+    suspend fun renderRedigertBrevPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup, redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(), pdfVedlegg: List<PDFVedleggTittel>) =
+        brevbakerPDF.renderPDF(letter, redigertBrev, redigerteVedlegg, pdfVedlegg)
 
-    suspend fun renderRedigertBrevV2PDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: MarkupLetterMarkup, redigerteVedlegg: Map<VedleggId, MarkupAttachment> = emptyMap()) =
-        brevbakerPDF.renderPDFV2(letter, redigertBrev, redigerteVedlegg)
+    suspend fun renderRedigertBrevV2PDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: MarkupLetterMarkup, redigerteVedlegg: Map<VedleggId, MarkupAttachment> = emptyMap(), pdfVedlegg: List<PDFVedleggTittel>) =
+        brevbakerPDF.renderPDFV2(letter, redigertBrev, redigerteVedlegg, pdfVedlegg)
 
     fun renderHTML(letter: Letter<BrevbakerBrevdata>): LetterResponse =
         BrevbakerHTML.renderHTML(letter, null)
