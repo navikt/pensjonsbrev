@@ -23,42 +23,40 @@ class PDFVedlegg {
 
 @PDFVedleggMarker
 class Side(val filnavn: String) {
-    private val muterbarFelt: MutableList<Felt> = mutableListOf()
     val felt: List<Felt>
-        get() = muterbarFelt
+        field: MutableList<Felt> = mutableListOf()
 
     fun felt(init: Felt.() -> Unit) {
-        muterbarFelt.add(Felt().apply(init))
+        felt.add(Felt().apply(init))
     }
 
     override fun equals(other: Any?): Boolean {
         if (other !is Side) return false
-        return filnavn == other.filnavn && muterbarFelt == other.muterbarFelt
+        return filnavn == other.filnavn && felt == other.felt
     }
 
-    override fun hashCode() = Objects.hash(filnavn, muterbarFelt)
+    override fun hashCode() = Objects.hash(filnavn, felt)
     override fun toString() = "Side(filnavn='$filnavn', felt=$felt)"
 }
 
 @PDFVedleggMarker
 class Felt {
-    private val muterbareFelt: MutableMap<String, Map<LanguageCode, String?>?> = mutableMapOf()
     val felt: Map<String, Map<LanguageCode, String?>?>
-        get() = muterbareFelt
+        field: MutableMap<String, Map<LanguageCode, String?>?> = mutableMapOf()
 
     infix fun String.to(str: String) {
-        muterbareFelt[this] = leggTilPaaAlleSpraak(str)
+        felt[this] = leggTilPaaAlleSpraak(str)
     }
 
     infix fun String.to(verdi: Map<LanguageCode, String?>) {
-        muterbareFelt[this] = verdi
+        felt[this] = verdi
     }
 
     infix fun String.to(verdi: Any?) {
         if (verdi is Map<*, *>) {
             throw IllegalArgumentException("Forventa ikke å legge til map her. Bruk infix-versjonen to Map<LanguageCode, String?> for å legge til map av språk til tekst")
         }
-        muterbareFelt[this] = verdi?.let { leggTilPaaAlleSpraak(it.toString()) }
+        felt[this] = verdi?.let { leggTilPaaAlleSpraak(it.toString()) }
     }
 
     private fun leggTilPaaAlleSpraak(str: String?): Map<LanguageCode, String?> = mapOf(
@@ -71,19 +69,19 @@ class Felt {
         map.entries
             .filter { it.value is String }
             .forEach {
-                muterbareFelt[it.key] = leggTilPaaAlleSpraak(it.value as String)
+                felt[it.key] = leggTilPaaAlleSpraak(it.value as String)
             }
         map.entries
             .filter { it.value is Map<*, *> }
-            .forEach { muterbareFelt[it.key] = it.value as Map<LanguageCode, String?> }
+            .forEach { felt[it.key] = it.value as Map<LanguageCode, String?> }
     }
 
     override fun equals(other: Any?): Boolean {
         if (other !is Felt) return false
-        return muterbareFelt == other.muterbareFelt
+        return felt == other.felt
     }
-    override fun hashCode() = muterbareFelt.hashCode()
-    override fun toString() = "Felt(muterbareFelt=$muterbareFelt)"
+    override fun hashCode() = felt.hashCode()
+    override fun toString() = "Felt(muterbareFelt=${felt})"
 }
 
 @DslMarker
