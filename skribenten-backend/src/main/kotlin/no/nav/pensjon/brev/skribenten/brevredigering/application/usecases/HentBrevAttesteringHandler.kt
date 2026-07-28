@@ -23,11 +23,12 @@ class HentBrevAttesteringHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
         val reserverForRedigering: Boolean = false,
     ) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
         if (!request.reserverForRedigering) {
             return success(brev.toDto(brevreservasjonPolicy, null))

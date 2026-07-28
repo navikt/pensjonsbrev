@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorC
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.GenererFoerstesideResponse
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient.Postboks
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -25,6 +26,7 @@ class GenererFoerstesideHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
         val pid: BrevbakerType.Pid,
         val sakstype: Sakstype,
         val tema: Tema,
@@ -35,7 +37,7 @@ class GenererFoerstesideHandler(
     value class Tittel(val tittel: String)
 
     override suspend fun invoke(request: Request): Outcome<GenererFoerstesideResponse, Nothing>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
         val tittel = brev.redigertBrev.title.text.joinToString(" ") { it.text }.trim()
 

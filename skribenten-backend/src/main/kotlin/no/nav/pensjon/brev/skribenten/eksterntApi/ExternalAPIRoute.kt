@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.skribenten.auth.PrincipalHasGroup
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.validerTilgangTilSak
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
+import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.PdlService
@@ -34,6 +35,7 @@ fun Route.externalAPI() =
             val externalAPIService: ExternalAPIService by app.dependencies
             val pdlService: PdlService by app.dependencies
             val fagsakService: FagsakService by app.dependencies
+            val cache: Cache by app.dependencies
 
             route("/brev") {
                 get {
@@ -42,14 +44,14 @@ fun Route.externalAPI() =
                         ?.mapNotNull { it.toLongOrNull() }
                         ?.map { SaksId(it) }
                         ?: return@get call.respond(HttpStatusCode.BadRequest, "Mangler saksId")
-                    if (saksIder.any { validerTilgangTilSak(fagsakService, it, pdlService) == null }) {
+                    if (saksIder.any { validerTilgangTilSak(fagsakService, it, pdlService, cache) == null }) {
                         return@get call.respond(HttpStatusCode.NotFound, "Minst én sak ikke funnet")
                     }
 
                     call.respond(externalAPIService.hentAlleBrevForSaker(saksIder.toSet()))
                 }
                 post<ExternalAPI.OpprettBrevRequest> { request ->
-                    if (validerTilgangTilSak(fagsakService, request.saksId, pdlService) == null) {
+                    if (validerTilgangTilSak(fagsakService, request.saksId, pdlService, cache) == null) {
                         return@post call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
                     }
                     externalAPIService.opprettBrev(request).onSuccess {
