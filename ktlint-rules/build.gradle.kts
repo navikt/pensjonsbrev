@@ -18,7 +18,7 @@ dependencies {
 
     testImplementation(libs.bundles.junit)
     testImplementation(libs.ktlint.test)
-    testImplementation(libs.log4j.slf4j2.impl)
+    testRuntimeOnly(libs.log4j.slf4j2.impl)
 }
 
 tasks {
