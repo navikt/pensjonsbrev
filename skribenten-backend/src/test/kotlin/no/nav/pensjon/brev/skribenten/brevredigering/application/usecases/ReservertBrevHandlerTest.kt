@@ -73,7 +73,7 @@ class ReservertBrevHandlerTest {
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
                 spraak = LanguageCode.BOKMAL,
                 avsenderEnhetsId = principalEnhet,
-                saksbehandlerValg = Api.GeneriskBrevdata(),
+                saksbehandlerValg = SaksbehandlerValg(),
                 reserverForRedigering = reserverBrev,
                 mottaker = null,
             )

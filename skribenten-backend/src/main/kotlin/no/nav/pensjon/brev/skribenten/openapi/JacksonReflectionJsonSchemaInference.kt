@@ -126,7 +126,7 @@ class JacksonReflectionJsonSchemaInference(
         // Map -> object with additionalProperties
         if (kClass.isSubclassOf(Map::class)) {
             // key type ignored
-            val valueType = type.arguments.getOrNull(1)?.type
+            val valueType = type.arguments.getOrNull(1)?.type?.takeUnless { it.classifier == Any::class }
             val valueTypeName = valueType?.let { adapter.getName(it) }
 
             // JSON object keys are strings; if key isn't String, we still produce an object schema.

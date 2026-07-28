@@ -22,10 +22,11 @@ import java.time.Duration
 import java.time.Instant
 import java.time.LocalDate
 
-typealias SaksbehandlerValg = Api.GeneriskBrevdata
+typealias SaksbehandlerValg = Api.GeneriskSaksbehandlervalg<String, Any?>
 
 object Api {
     class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlerValgBrevdata
+    class GeneriskSaksbehandlervalg<K, V> : LinkedHashMap<K, V>(), SaksbehandlerValgBrevdata
 
     data class UserInfo(val name: String, val navident: NavIdent, val erAttestant: Boolean)
 
@@ -127,7 +128,7 @@ object Api {
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
         val redigertBrevHash: Hash<Edit.Letter>,
-        val saksbehandlerValg: SaksbehandlerValgBrevdata,
+        val saksbehandlerValg: SaksbehandlerValg,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
         val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>?,
     )

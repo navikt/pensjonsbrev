@@ -3649,8 +3649,6 @@ export interface components {
             signatur: components["schemas"]["LetterMarkupSignatur"];
             title: components["schemas"]["EditTitle"];
         };
-        /** SaksbehandlerValgBrevdata */
-        SaksbehandlerValgBrevdata: Record<string, never>;
         /** AlltidValgbartVedleggBrevkode */
         AlltidValgbartVedleggBrevkode: {
             kode: string;
@@ -3663,7 +3661,9 @@ export interface components {
             propertyUsage?: components["schemas"]["LetterMarkupWithDataUsageProperty"][] | null;
             redigertBrev: components["schemas"]["EditLetter"];
             redigertBrevHash: string;
-            saksbehandlerValg: components["schemas"]["SaksbehandlerValgBrevdata"];
+            saksbehandlerValg: {
+                [key: string]: unknown;
+            };
             valgteVedlegg?: components["schemas"]["AlltidValgbartVedleggBrevkode"][] | null;
         };
         /** ApiOppdaterBrevRequest */
@@ -4037,7 +4037,6 @@ export type LetterMarkupSakspart = components['schemas']['LetterMarkupSakspart']
 export type LetterMarkupSignatur = components['schemas']['LetterMarkupSignatur'];
 export type EditTitle = components['schemas']['EditTitle'];
 export type EditLetter = components['schemas']['EditLetter'];
-export type SaksbehandlerValgBrevdata = components['schemas']['SaksbehandlerValgBrevdata'];
 export type AlltidValgbartVedleggBrevkode = components['schemas']['AlltidValgbartVedleggBrevkode'];
 export type ApiBrevResponse = components['schemas']['ApiBrevResponse'];
 export type ApiOppdaterBrevRequest = components['schemas']['ApiOppdaterBrevRequest'];
