@@ -1,6 +1,5 @@
 package no.nav.brev.brevbaker.template.render
 
-import no.nav.brev.InterneDataklasser
 import no.nav.brev.Listetype
 import no.nav.brev.brevbaker.markup.Attachment
 import no.nav.brev.brevbaker.markup.LetterMarkup
@@ -44,7 +43,6 @@ import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 
 data class LetterWithAttachmentsMarkupV2(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
 
-@OptIn(InterneDataklasser::class)
 internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>() {
     private val languageSettings = documentLanguageSettings
 
@@ -136,11 +134,6 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
             title1 { appendTexts(attachmentContext, attachment.title) }
             outline { renderOutline(attachmentContext, attachment.outline) }
         }
-
-    fun renderPDFTitlesOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<PDFTittel> {
-        val context = RenderContext(scope)
-        return template.pdfAttachments.map { pdfTittelExtended { appendTexts(context, it.template.title) } }
-    }
 
     fun renderPDFTitle(scope: ExpressionScope<*>, titles: List<PDFVedleggTittel>): List<PDFTittel> = titles.map {
         it.tittel
