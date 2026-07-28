@@ -58,7 +58,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
                             img(
                                 classes = classes("logo"),
                                 src = navLogoImg,
-                                alt = languageSettings.altTextLogo
+                                alt = languageSettings.alttextlogo
                             )
                             div(classes("brevhode")) {
                                 renderSakspart(languageSettings, felles)
@@ -88,7 +88,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         div("closing") {
             // Med vennlig hilsen
             div(classes("closing-greeting")) {
-                text(languageSettings.closingGreeting)
+                text(languageSettings.closinggreeting)
             }
             div(classes("closing-enhet")) { text(felles.avsenderEnhet.navn) }
 
@@ -107,9 +107,9 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             } else {
                 div(classes("closing-automatisk")) {
                     if (brevtype == VEDTAKSBREV) {
-                        text(languageSettings.automatiskVedtaksbrev)
+                        text(languageSettings.closingautomatisktextvedtaksbrev)
                     } else {
-                        text(languageSettings.automatiskInformasjonsbrev)
+                        text(languageSettings.closingautomatisktextinfobrev)
                     }
                 }
             }
@@ -118,7 +118,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
 
     private fun FlowContent.renderAttachment(attachment: Attachment, languageSettings: DocumentLanguageSettings, felles: BrevbakerFelles): Unit =
         div(classes("vedlegg")) {
-            img(classes = classes("logo"), src = navLogoImg, alt = languageSettings.altTextLogo)
+            img(classes = classes("logo"), src = navLogoImg, alt = languageSettings.alttextlogo)
             h1(classes("tittel")) { renderText(attachment.title) }
             if (attachment.includeSakspart) {
                 renderSakspart(languageSettings, felles)
@@ -284,12 +284,12 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         div(classes("sakspart")) {
             with(felles.bruker) {
                 val annenMottakerNavn = felles.annenMottakerNavn
-                val navnPrefix = if (annenMottakerNavn != null) languageSettings.gjelderNavnPrefix else languageSettings.navnPrefix
+                val navnPrefix = if (annenMottakerNavn != null) languageSettings.gjeldernavnprefix else languageSettings.navnprefix
                 listOfNotNull(
-                    annenMottakerNavn?.let { languageSettings.annenMottakerPrefix to it },
+                    annenMottakerNavn?.let { languageSettings.annenmottakerprefix to it },
                     navnPrefix to fulltNavn(),
-                    languageSettings.foedselsnummerPrefix to foedselsnummer.value,
-                    languageSettings.saksnummerPrefix to felles.saksnummer,
+                    languageSettings.foedselsnummerprefix to foedselsnummer.value,
+                    languageSettings.saksnummerprefix to felles.saksnummer,
                 )
             }.forEach {
                 div(classes("sakspart-tittel")) { text(it.first) }

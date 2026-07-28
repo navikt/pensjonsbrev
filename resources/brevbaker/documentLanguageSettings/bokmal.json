@@ -1,0 +1,18 @@
+{
+  "navnprefix": "Navn:",
+  "annenmottakerprefix": "Mottaker:",
+  "vedlegggjeldernavnprefix": "Vedlegget gjelder:",
+  "gjeldernavnprefix": "Saken gjelder:",
+  "saksnummerprefix": "Saksnummer:",
+  "foedselsnummerprefix": "Fødselsnummer:",
+  "sidesaksnummerprefix": "Saksnummer: ",
+  "sideprefix": "side",
+  "sideinfix": "av",
+  "closinggreeting": "Med vennlig hilsen",
+  "closingautomatisktextinfobrev": "Brevet er produsert automatisk og derfor ikke underskrevet av saksbehandler.",
+  "closingautomatisktextvedtaksbrev": "Saken har blitt automatisk saksbehandlet. Vedtaksbrevet er derfor ikke underskrevet av saksbehandler.",
+  "closingvedleggprefix": "Vedlegg:",
+  "tablenextpagecontinuation": "Tabellen fortsetter på neste side",
+  "tablecontinuedfrompreviouspage": "Fortsettelse fra forrige side",
+  "alttextlogo": "Nav logo"
+}

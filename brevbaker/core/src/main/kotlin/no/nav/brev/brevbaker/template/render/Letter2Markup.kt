@@ -64,7 +64,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             blocks = renderOutline(context, template.outline),
             signatur = context.scope.felles.signerendeSaksbehandlere.let { sign ->
                 SignaturImpl(
-                    hilsenTekst = DocumentLanguageSettings(context.scope.language).closingGreeting,
+                    hilsenTekst = DocumentLanguageSettings(context.scope.language).closinggreeting,
                     saksbehandlerNavn = sign?.saksbehandler,
                     attesterendeSaksbehandlerNavn = sign?.attesterendeSaksbehandler,
                     navAvsenderEnhet = context.scope.felles.avsenderEnhet.navn,

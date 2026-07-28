@@ -4,6 +4,7 @@ val javaTarget: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
+    alias(libs.plugins.kotlin.serialization)
     application
 }
 
@@ -13,6 +14,12 @@ version="0.0.1-SNAPSHOT"
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.fromTarget(javaTarget))
+    }
+}
+
+sourceSets {
+    main {
+        resources.srcDir(rootProject.layout.projectDirectory.dir("resources"))
     }
 }
 
