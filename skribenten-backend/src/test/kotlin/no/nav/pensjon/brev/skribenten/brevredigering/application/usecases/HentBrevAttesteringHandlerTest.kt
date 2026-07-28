@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
@@ -39,7 +40,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan hente brev uten reservasjon`() {
-        val saksbehandlerValg = SaksbehandlerValg().apply { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlerValg().apply { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) }
         val opprettet = opprettBrev(
             brevkode = Testbrevkoder.VEDTAKSBREV,
             vedtaksId = VedtaksId(1234),
@@ -61,7 +62,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `attestant kan hente brev for attestering`() {
-        val saksbehandlerValg = SaksbehandlerValg().apply { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlerValg().apply { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) }
         val opprettet = opprettBrev(
             brevkode = Testbrevkoder.VEDTAKSBREV,
             vedtaksId = VedtaksId(1234),

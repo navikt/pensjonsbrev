@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -16,7 +17,7 @@ class HentBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan hente brev uten reservasjon`() {
-        val saksbehandlerValg = SaksbehandlerValg().apply { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlerValg().apply  { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) }
         val opprettet = opprettBrev(reserverForRedigering = false, saksbehandlerValg = saksbehandlerValg).resultOrFail()
 
         brevbakerService.renderMarkupKall.clear()
@@ -33,7 +34,7 @@ class HentBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan hente brev med reservasjon`() {
-        val saksbehandlerValg = SaksbehandlerValg().apply { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlerValg().apply  { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) }
         val opprettet = opprettBrev(reserverForRedigering = false, saksbehandlerValg = saksbehandlerValg).resultOrFail()
 
         brevbakerService.renderMarkupKall.clear()

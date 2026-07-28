@@ -1,28 +1,38 @@
 package no.nav.pensjon.brev.skribenten.model
 
-import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.*
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import no.nav.brev.BrevLandmodell.Landkode
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
-import no.nav.pensjon.brev.skribenten.services.EnhetId
-import no.nav.pensjon.brev.skribenten.services.NavEnhet
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brev.skribenten.serialize.SaksbehandlervalgVerdiDeserializer
+import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import java.time.Duration
-import java.time.Instant
-import java.time.LocalDate
+import java.time.*
 
-typealias SaksbehandlerValg = Api.GeneriskSaksbehandlervalg<String, Any?>
+typealias SaksbehandlerValg = Api.GeneriskSaksbehandlervalg<String, SaksbehandlervalgVerdi?>
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NONE, include = JsonTypeInfo.As.NOTHING)
+@JsonSubTypes(
+    JsonSubTypes.Type(SaksbehandlervalgVerdi.Boolean::class),
+    JsonSubTypes.Type(SaksbehandlervalgVerdi.Int::class),
+    JsonSubTypes.Type(SaksbehandlervalgVerdi.String::class),
+
+)
+@JsonDeserialize(using = SaksbehandlervalgVerdiDeserializer::class)
+sealed interface SaksbehandlervalgVerdi {
+    @JvmInline
+    value class Boolean(val value: kotlin.Boolean): SaksbehandlervalgVerdi
+    @JvmInline
+    value class Int(val value: kotlin.Int): SaksbehandlervalgVerdi
+    @JvmInline
+    value class String(val value: kotlin.String): SaksbehandlervalgVerdi
+}
 
 object Api {
     class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlerValgBrevdata

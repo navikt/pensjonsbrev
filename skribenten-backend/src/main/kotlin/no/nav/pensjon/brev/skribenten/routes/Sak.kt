@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
-import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.VedtaksId

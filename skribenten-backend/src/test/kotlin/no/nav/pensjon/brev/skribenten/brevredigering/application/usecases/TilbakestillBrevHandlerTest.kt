@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal
 import no.nav.pensjon.brev.skribenten.letter.toEdit
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
@@ -22,8 +23,8 @@ class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `kan tilbakestille brev`() {
         val saksbehandlerValg = SaksbehandlerValg().apply {
-            put("ytelse", "uføre")
-            put("inkluderAfpTekst", false)
+            put("ytelse", SaksbehandlervalgVerdi.String("uføre"))
+            put("inkluderAfpTekst", SaksbehandlervalgVerdi.Boolean(false))
         }
         val brev = opprettBrev(saksbehandlerValg = saksbehandlerValg).resultOrFail()
 
@@ -31,9 +32,9 @@ class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
         oppdaterBrev(
             brevId = brev.info.id,
             nyeSaksbehandlerValg = SaksbehandlerValg().apply {
-                put("ytelse", "uføre")
-                put("inkluderAfpTekst", true)
-                put("land", "Spania")
+                put("ytelse", SaksbehandlervalgVerdi.String("uføre"))
+                put("inkluderAfpTekst", SaksbehandlervalgVerdi.Boolean(true))
+                put("land", SaksbehandlervalgVerdi.String("Spania"))
             },
             nyttRedigertbrev = brev.redigertBrev.copy(
                 blocks = brev.redigertBrev.blocks + Paragraph(
@@ -65,8 +66,8 @@ class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
             assertThat(it.redigertBrev).isEqualTo(letter.toEdit())
             assertThat(it.saksbehandlerValg).isEqualTo(SaksbehandlerValg().apply {
                 // Kun booleans og nullables blir tilbakestilt, så dermed forventes ytelse å fortsatt være "uføre" og land å være null
-                put("ytelse", "uføre")
-                put("inkluderAfpTekst", false)
+                put("ytelse", SaksbehandlervalgVerdi.String("uføre"))
+                put("inkluderAfpTekst", SaksbehandlervalgVerdi.Boolean(false))
                 put("land", null)
             })
         }

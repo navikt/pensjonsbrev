@@ -412,7 +412,7 @@ abstract class BrevredigeringHandlerTestBase {
         principal: UserPrincipal = saksbehandler1Principal,
         reserverForRedigering: Boolean = false,
         mottaker: Dto.Mottaker? = null,
-        saksbehandlerValg: SaksbehandlerValg = SaksbehandlerValg().apply { put("valg", true) },
+        saksbehandlerValg: SaksbehandlerValg = SaksbehandlerValg().apply { put("valg", SaksbehandlervalgVerdi.Boolean(true)) },
         brevkode: RedigerbarBrevkode = Testbrevkoder.INFORMASJONSBREV,
         vedtaksId: VedtaksId? = null,
         sak: Pen.SakSelection = sak1,

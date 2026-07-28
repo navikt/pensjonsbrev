@@ -255,7 +255,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
                 if (fieldType.nullable) {
                     put(it.key, null)
                 } else if (fieldType is TemplateModelSpecification.FieldType.Scalar && fieldType.kind == TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN) {
-                    put(it.key, false)
+                    put(it.key, SaksbehandlervalgVerdi.Boolean(false))
                 }
             }
         }

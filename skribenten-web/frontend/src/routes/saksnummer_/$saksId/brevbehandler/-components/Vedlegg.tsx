@@ -23,7 +23,12 @@ import { getBrev } from "~/api/brev-queries";
 import { getBrevVedlegg, hentPdfForBrev, oppdaterVedlegg } from "~/api/sak-api-endpoints";
 import { P1EditModal } from "~/components/P1/P1EditModal";
 import { type SpraakKode } from "~/types/apiTypes";
-import { type AlltidValgbartVedlegg, type BrevInfo, P1_BREVKODE } from "~/types/brev";
+import {
+  type AlltidValgbartVedlegg,
+  type AlltidValgbartVedleggBrevkode,
+  type BrevInfo,
+  P1_BREVKODE,
+} from "~/types/brev";
 import { LANGUAGE_CODE_TO_TEXT, SPRAAK_ENUM_TO_TEXT, SPRAAKKODE_TO_LANGUAGE_CODE } from "~/types/nameMappings";
 import { getErrorMessage } from "~/utils/errorUtils";
 
@@ -43,7 +48,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
     queryFn: () => getBrev.queryFn(props.saksId, props.brev.id, false),
   });
 
-  const savedVedlegg: AlltidValgbartVedlegg[] = brevData?.valgteVedlegg ?? [];
+  const savedVedlegg: AlltidValgbartVedleggBrevkode[] = brevData?.valgteVedlegg ?? [];
 
   const form = useForm<VedleggFormData>({
     defaultValues: { valgteVedlegg: [] },
@@ -60,7 +65,8 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
     enabled: !props.erLaast,
   });
 
-  const getVedleggLabel = (vedlegg: AlltidValgbartVedlegg) => vedlegg.visningstekst ?? vedlegg.kode;
+  const getVedleggLabel = (vedlegg: AlltidValgbartVedlegg | AlltidValgbartVedleggBrevkode) =>
+    vedlegg.visningstekst ?? vedlegg.kode;
 
   const leggTilVedleggMutation = useMutation({
     mutationFn: (vedlegg: AlltidValgbartVedlegg[]) =>
@@ -75,7 +81,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   });
 
   const fjernVedleggMutation = useMutation({
-    mutationFn: (vedleggToRemove: AlltidValgbartVedlegg) =>
+    mutationFn: (vedleggToRemove: AlltidValgbartVedleggBrevkode) =>
       oppdaterVedlegg(props.saksId, props.brev.id, {
         valgteVedlegg: savedVedlegg.filter((lagretVedlegg) => lagretVedlegg.kode !== vedleggToRemove.kode),
       }),

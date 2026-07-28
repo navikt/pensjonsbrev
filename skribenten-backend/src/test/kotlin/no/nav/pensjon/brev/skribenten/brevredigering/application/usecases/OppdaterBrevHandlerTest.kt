@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.letter.editedLetter
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
@@ -58,12 +59,12 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan oppdatere brevredigering`() {
-        val saksbehandlerValg = SaksbehandlerValg().apply { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlerValg().apply  { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) }
         val original = opprettBrev(reserverForRedigering = true, saksbehandlerValg = saksbehandlerValg).resultOrFail()
 
         brevbakerService.renderMarkupKall.clear()
 
-        val nyeValg = SaksbehandlerValg().apply { put("valg2", true) }
+        val nyeValg = SaksbehandlerValg().apply { put("valg2", SaksbehandlervalgVerdi.Boolean(true)) }
         val oppdatert = oppdaterBrev(
             brevId = original.info.id,
             nyeSaksbehandlerValg = nyeValg,
@@ -81,7 +82,7 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan ikke oppdatere brevredigering som ikke eksisterer`() {
-        val saksbehandlerValg = SaksbehandlerValg().apply { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlerValg().apply  { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) }
         val oppdatert = oppdaterBrev(
             brevId = BrevId(1099),
             nyeSaksbehandlerValg = saksbehandlerValg,
@@ -92,10 +93,10 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `oppdaterer redigertBrev med fersk rendering fra brevbaker`() {
-        val saksbehandlerValg = SaksbehandlerValg().apply { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlerValg().apply  { put("valg1", SaksbehandlervalgVerdi.Boolean(true)) }
         val original = opprettBrev(saksbehandlerValg = saksbehandlerValg).resultOrFail()
 
-        val nyeValg = SaksbehandlerValg().apply { put("valg2", true) }
+        val nyeValg = SaksbehandlerValg().apply { put("valg2", SaksbehandlervalgVerdi.Boolean(true)) }
         val freshRender = letter.copy(
             blocks = letter.blocks + ParagraphImpl(2, true, listOf(VariableImpl(21, "ny paragraph")))
         )

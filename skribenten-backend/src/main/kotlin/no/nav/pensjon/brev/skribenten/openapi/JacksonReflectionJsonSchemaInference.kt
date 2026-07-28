@@ -161,7 +161,9 @@ class JacksonReflectionJsonSchemaInference(
                             val schemaName = adapter.getName(subclass.starProjectedTypeOrNull() ?: subclass.starProjectedType)
                                 ?: subclass.qualifiedName
                                 ?: continue
-                            discriminatorMapping[mappingName] = "#/components/schemas/$schemaName"
+                            if (mappingName.isNotBlank()) {
+                                discriminatorMapping[mappingName] = "#/components/schemas/$schemaName"
+                            }
                         } else if (subclass.isSealed) {
                             collectConcreteSubtypes(subclass)
                         }
@@ -185,7 +187,8 @@ class JacksonReflectionJsonSchemaInference(
                     reflectSchema = ::schemaRefForClass,
                     type = JsonType.OBJECT,
                     oneOf = oneOfSchemas,
-                    discriminator = JsonSchemaDiscriminator(adapter.getDiscriminatorProperty(kClass), discriminatorMapping),
+                    discriminator = discriminatorMapping.takeIf { it.isNotEmpty() }
+                        ?.let { JsonSchemaDiscriminator(adapter.getDiscriminatorProperty(kClass), it) },
                 )
             }
 
