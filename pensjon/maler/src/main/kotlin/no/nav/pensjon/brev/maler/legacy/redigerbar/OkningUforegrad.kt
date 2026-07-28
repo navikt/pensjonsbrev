@@ -111,8 +111,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                 )
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().isNotAnyOf("omgj_etter_klage", "omgj_etter_anke")) {
                     text(
-                        bokmal { +"Uføregraden din øker fra " + fritekst("Forrige Uforegrad") + " til " + uforegradFraBeregning.format() + " prosent fra " + virkningstidpunkt.format() + ". " },
-                        nynorsk { +"Uføregraden din aukar frå " + fritekst("Forrige Uforegrad") + " til " + uforegradFraBeregning.format() + " prosent frå " + virkningstidpunkt.format() + ". " },
+                        bokmal { +"Uføregraden din øker fra " + fritekst("Forrige uføregrad") + " til " + uforegradFraBeregning.format() + " prosent fra " + virkningstidpunkt.format() + ". " },
+                        nynorsk { +"Uføregraden din aukar frå " + fritekst("Forrige uføregrad") + " til " + uforegradFraBeregning.format() + " prosent frå " + virkningstidpunkt.format() + ". " },
                     )
                 }.orShow {
                     text(
@@ -622,8 +622,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
 
             paragraph {
                 text(
-                    bokmal { +"Vi har tidligere fastsatt uføretidspunktet ditt til " + fritekst("Første Uforetidspunkt") + ". Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
-                    nynorsk { +"Vi har tidlegare fastsett uføretidspunktet ditt til " + fritekst("Første Uforetidspunkt") + ". Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
+                    bokmal { +"Vi har tidligere fastsatt uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
+                    nynorsk { +"Vi har tidlegare fastsett uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
                 )
             }
 
