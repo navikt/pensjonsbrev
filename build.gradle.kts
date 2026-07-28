@@ -59,25 +59,9 @@ allprojects {
     }
 }
 
-dependencyAnalysis {
-    issues {
-        all {
-            onAny {
-                exclude("org.assertj:assertj-core", "org.junit.jupiter:junit-jupiter", "org.junit.platform:junit-platform-launcher")
-            }
-            onUsedTransitiveDependencies {
-                severity("ignore")
-            }
-            onIncorrectConfiguration {
-                severity("ignore")
-            }
-        }
-    }
-}
-
 subprojects {
-    apply(plugin = "org.jlleitschuh.gradle.ktlint")
     apply(plugin = "com.autonomousapps.dependency-analysis")
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
 
     // Version of the ktlint engine itself; declared once in gradle/libs.versions.toml so that both this
     // KtlintExtension config and the :ktlint-rules module's dependencies stay in sync.
