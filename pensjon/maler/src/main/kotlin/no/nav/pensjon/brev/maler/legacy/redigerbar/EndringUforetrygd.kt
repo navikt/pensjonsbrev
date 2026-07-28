@@ -134,8 +134,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 paragraph {
                     showIf(kravarsak.equalTo("soknad_bt")) {
                         text(
-                            bokmal { +"Du er innvilget barnetillegg i uføretrygden din for" },
-                            nynorsk { +"Du er innvilga barnetillegg i uføretrygda di for" },
+                            bokmal { +"Vi har innvilget søknaden din om barnetillegg som vi mottok " + soknadsdato.format() + ". Du er innvilget barnetillegg i uføretrygden din for" },
+                            nynorsk { +"Vi har innvilga søknaden din om barnetillegg som vi fekk " + soknadsdato.format() + ". Du er innvilga barnetillegg i uføretrygda di for" },
                         )
                     } orShow {
                         text(
