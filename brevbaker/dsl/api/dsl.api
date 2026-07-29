@@ -881,7 +881,7 @@ public abstract class no/nav/pensjon/brev/template/RedigerbarParagraphPhrase : n
 }
 
 public abstract interface class no/nav/pensjon/brev/template/RedigerbarTemplate : no/nav/pensjon/brev/template/BrevTemplate, no/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev {
-	public fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar;
+	public fun description ()Lno/nav/pensjon/brev/api/model/RedigerbarTemplateDescription;
 	public synthetic fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription;
 	public abstract fun getBrevkontekst ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
 	public abstract fun getKategori ()Lno/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori;
@@ -890,7 +890,7 @@ public abstract interface class no/nav/pensjon/brev/template/RedigerbarTemplate 
 
 public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls {
 	public static fun createTemplate (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lkotlin/reflect/KClass;Lno/nav/pensjon/brev/template/LanguageSupport;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/LetterTemplate;
-	public static fun description (Lno/nav/pensjon/brev/template/RedigerbarTemplate;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar;
+	public static fun description (Lno/nav/pensjon/brev/template/RedigerbarTemplate;)Lno/nav/pensjon/brev/api/model/RedigerbarTemplateDescription;
 	public static fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
 	public static fun getFeatureToggle (Lno/nav/pensjon/brev/template/RedigerbarTemplate;)Lno/nav/pensjon/brev/api/model/FeatureToggle;
 	public static fun getModelSpecification (Lno/nav/pensjon/brev/template/RedigerbarTemplate;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification;

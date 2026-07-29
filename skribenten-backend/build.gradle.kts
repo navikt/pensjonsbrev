@@ -161,7 +161,7 @@ dependencies {
     implementation(libs.unleash)
 
     // Domenemodell
-    implementation(libs.brevbaker.common)
+    implementation(project(":brevbaker:internal"))
 
     // For å merge førsteside med resten av pdf-en
     implementation(libs.pdfbox)

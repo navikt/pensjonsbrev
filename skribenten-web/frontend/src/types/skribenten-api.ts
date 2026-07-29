@@ -3106,8 +3106,8 @@ export interface components {
             displayTitle: string;
             distribusjonstype: components["schemas"]["LetterMetadataDistribusjonstype"];
         };
-        /** TemplateDescriptionRedigerbar */
-        TemplateDescriptionRedigerbar: {
+        /** RedigerbarTemplateDescription */
+        RedigerbarTemplateDescription: {
             brevkontekst: components["schemas"]["TemplateDescriptionBrevkontekst"];
             kategori: string;
             languages: components["schemas"]["LanguageCode"][];
@@ -3120,7 +3120,7 @@ export interface components {
         LetterMetadataBrevbaker: {
             brevkode: string;
             brevkontekst: components["schemas"]["TemplateDescriptionBrevkontekst"];
-            data: components["schemas"]["TemplateDescriptionRedigerbar"];
+            data: components["schemas"]["RedigerbarTemplateDescription"];
             isRedigerbart: boolean;
             isForSakskontekst: boolean;
             isForVedtakskontekst: boolean;
@@ -3969,7 +3969,7 @@ export type LanguageCode = components['schemas']['LanguageCode'];
 export type LetterMetadataBrevtype = components['schemas']['LetterMetadataBrevtype'];
 export type LetterMetadataDistribusjonstype = components['schemas']['LetterMetadataDistribusjonstype'];
 export type LetterMetadata = components['schemas']['LetterMetadata'];
-export type TemplateDescriptionRedigerbar = components['schemas']['TemplateDescriptionRedigerbar'];
+export type RedigerbarTemplateDescription = components['schemas']['RedigerbarTemplateDescription'];
 export type LetterMetadataBrevbaker = components['schemas']['LetterMetadataBrevbaker'];
 export type TemplateModelSpecificationFieldTypeArray = components['schemas']['TemplateModelSpecificationFieldTypeArray'];
 export type TemplateModelSpecificationFieldTypeEnumEntry = components['schemas']['TemplateModelSpecificationFieldTypeEnumEntry'];

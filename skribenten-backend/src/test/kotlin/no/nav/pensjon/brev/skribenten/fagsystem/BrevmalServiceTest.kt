@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.fagsystem
 
+import no.nav.pensjon.brev.api.model.RedigerbarTemplateDescription
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -31,7 +32,7 @@ val TEST_VEDTAKS_ID = VedtaksId(1234)
 @OptIn(InternKonstruktoer::class)
 class BrevmalServiceTest {
     private val brevbakerbrev = listOf(
-        TemplateDescription.Redigerbar(
+        RedigerbarTemplateDescription(
             name = "brevbaker mal",
             letterDataClass = EmptyRedigerbarBrevdata::class.java.name,
             languages = listOf(LanguageCode.BOKMAL),
@@ -40,9 +41,9 @@ class BrevmalServiceTest {
                 LetterMetadata.Distribusjonstype.VIKTIG,
                 LetterMetadata.Brevtype.INFORMASJONSBREV
             ),
-            kategori = TemplateDescription.Redigerbar.Brevkategori("INFORMASJONSBREV"),
+            kategori = RedigerbarTemplateDescription.Brevkategori("INFORMASJONSBREV"),
             brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
+            sakstyper = setOf(RedigerbarTemplateDescription.Sakstype("S1"), RedigerbarTemplateDescription.Sakstype("S2")),
         )
     )
 

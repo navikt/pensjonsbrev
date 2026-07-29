@@ -28,9 +28,9 @@ import kotlin.jvm.JvmName
 fun letterMarkupExtended(
     saksinformasjon: Saksinformasjon,
     signatur: Signatur,
-    build: LetterMarkupBuilder<ExtendedContentBuilder>.() -> Unit,
+    init: LetterMarkupBuilder<ExtendedContentBuilder>.() -> Unit,
 ): LetterMarkup =
-    LetterMarkupBuilder(::ExtendedContentBuilder, saksinformasjon, signatur).apply(build).build()
+    LetterMarkupBuilder(::ExtendedContentBuilder, saksinformasjon, signatur).apply(init).build()
 
 /**
  * Som [attachment], men med støtte for `variable(...)`/tags og krav om eksplisitt id på hvert element.
@@ -41,8 +41,8 @@ fun letterMarkupExtended(
  * }
  * ```
  */
-fun attachmentExtended(inkluderSaksinformasjon: Boolean = false, build: AttachmentBuilder<ExtendedContentBuilder>.() -> Unit): Attachment =
-    AttachmentBuilder(::ExtendedContentBuilder, inkluderSaksinformasjon).apply(build).build()
+fun attachmentExtended(inkluderSaksinformasjon: Boolean = false, init: AttachmentBuilder<ExtendedContentBuilder>.() -> Unit): Attachment =
+    AttachmentBuilder(::ExtendedContentBuilder, inkluderSaksinformasjon).apply(init).build()
 
 /**
  * Som [pdfTittel], men med støtte for `variable(...)` og krav om eksplisitt id på hvert element.
@@ -120,8 +120,8 @@ fun OutlineBuilder<ExtendedContentBuilder>.paragraph(id: Int, content: ExtendedC
  * ```
  */
 @JvmName("itemListExtended")
-fun OutlineBuilder<ExtendedContentBuilder>.itemList(id: Int, build: ItemsBuilder<ExtendedContentBuilder>.() -> Unit) {
-    blocks.add(Block.ItemList(id, ItemsBuilder(contentFactory).apply(build).build()))
+fun OutlineBuilder<ExtendedContentBuilder>.itemList(id: Int, init: ItemsBuilder<ExtendedContentBuilder>.() -> Unit) {
+    blocks.add(Block.ItemList(id, ItemsBuilder(contentFactory).apply(init).build()))
 }
 
 /**
@@ -132,8 +132,8 @@ fun OutlineBuilder<ExtendedContentBuilder>.itemList(id: Int, build: ItemsBuilder
  * ```
  */
 @JvmName("numberedListExtended")
-fun OutlineBuilder<ExtendedContentBuilder>.numberedList(id: Int, build: ItemsBuilder<ExtendedContentBuilder>.() -> Unit) {
-    blocks.add(Block.NumberedList(id, ItemsBuilder(contentFactory).apply(build).build()))
+fun OutlineBuilder<ExtendedContentBuilder>.numberedList(id: Int, init: ItemsBuilder<ExtendedContentBuilder>.() -> Unit) {
+    blocks.add(Block.NumberedList(id, ItemsBuilder(contentFactory).apply(init).build()))
 }
 
 /**
@@ -159,8 +159,8 @@ fun ItemsBuilder<ExtendedContentBuilder>.item(id: Int, content: ExtendedContentB
  * ```
  */
 @JvmName("tableExtended")
-fun OutlineBuilder<ExtendedContentBuilder>.table(id: Int, build: TableBuilder<ExtendedContentBuilder>.() -> Unit) {
-    blocks.add(TableBuilder(contentFactory).apply(build).build(id))
+fun OutlineBuilder<ExtendedContentBuilder>.table(id: Int, init: TableBuilder<ExtendedContentBuilder>.() -> Unit) {
+    blocks.add(TableBuilder(contentFactory).apply(init).build(id))
 }
 
 /**
@@ -171,8 +171,8 @@ fun OutlineBuilder<ExtendedContentBuilder>.table(id: Int, build: TableBuilder<Ex
  * ```
  */
 @JvmName("headerExtended")
-fun TableBuilder<ExtendedContentBuilder>.header(id: Int, build: HeaderBuilder<ExtendedContentBuilder>.() -> Unit) {
-    header = HeaderBuilder<ExtendedContentBuilder>().apply(build).build(id)
+fun TableBuilder<ExtendedContentBuilder>.header(id: Int, init: HeaderBuilder<ExtendedContentBuilder>.() -> Unit) {
+    tableHeader = HeaderBuilder<ExtendedContentBuilder>().apply(init).build(id)
 }
 
 /**
@@ -183,8 +183,8 @@ fun TableBuilder<ExtendedContentBuilder>.header(id: Int, build: HeaderBuilder<Ex
  * ```
  */
 @JvmName("rowExtended")
-fun TableBuilder<ExtendedContentBuilder>.row(id: Int, build: RowBuilder<ExtendedContentBuilder>.() -> Unit) {
-    rows.add(RowBuilder(contentFactory).apply(build).build(id))
+fun TableBuilder<ExtendedContentBuilder>.row(id: Int, init: RowBuilder<ExtendedContentBuilder>.() -> Unit) {
+    rows.add(RowBuilder(contentFactory).apply(init).build(id))
 }
 
 /**
@@ -237,10 +237,10 @@ fun OutlineBuilder<ExtendedContentBuilder>.formText(id: Int, size: Size, vspace:
  * ```
  */
 @JvmName("formChoiceExtended")
-fun OutlineBuilder<ExtendedContentBuilder>.formChoice(id: Int, vspace: Boolean = true, build: FormChoiceBuilder<ExtendedContentBuilder>.() -> Unit) {
+fun OutlineBuilder<ExtendedContentBuilder>.formChoice(id: Int, vspace: Boolean = true, init: FormChoiceBuilder<ExtendedContentBuilder>.() -> Unit) {
     val builder = FormChoiceBuilder(contentFactory)
     builder.vspace = vspace
-    blocks.add(builder.apply(build).build(id))
+    blocks.add(builder.apply(init).build(id))
 }
 
 /**
@@ -251,7 +251,7 @@ fun OutlineBuilder<ExtendedContentBuilder>.formChoice(id: Int, vspace: Boolean =
  * ```
  */
 fun FormChoiceBuilder<ExtendedContentBuilder>.prompt(content: PlainExtendedTextBuilder.() -> Unit) {
-    prompt.addAll(plainExtendedText(content))
+    promptTexts.addAll(plainExtendedText(content))
 }
 
 /**

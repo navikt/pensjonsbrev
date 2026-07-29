@@ -34,10 +34,10 @@ tasks {
 dependencies {
     implementation(libs.ksp.symbol.processing.api)
     implementation(project(":brevbaker:dsl"))
-    implementation(libs.brevbaker.common)
+    implementation(project(":brevbaker:internal"))
 
     testImplementation(kotlin("reflect"))
-    testImplementation(libs.brevbaker.common)
+    testImplementation(project(":brevbaker:internal"))
     testImplementation(libs.bundles.junit)
     testImplementation(libs.ksp.symbol.processing.aa)
     testImplementation(libs.ksp.symbol.processing.common)

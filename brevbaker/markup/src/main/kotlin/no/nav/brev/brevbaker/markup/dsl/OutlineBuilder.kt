@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker.markup.dsl
 
+import no.nav.brev.brevbaker.markup.MarkupInternalApi
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
 import no.nav.brev.brevbaker.markup.outline.Block.Table.ColumnAlignment
@@ -12,12 +13,12 @@ import kotlin.jvm.JvmName
  * tilbys som extension-funksjoner.
  */
 @MarkupDsl
-class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
-    internal val contentFactory: ContentFactory<C>,
+class OutlineBuilder<C : AbstractContentBuilder> @MarkupInternalApi constructor(
+    internal val _contentFactory: ContentFactory<C>,
 ) {
-    internal val blocks = mutableListOf<Block>()
+    internal val _blocks = mutableListOf<Block>()
 
-    internal fun build(): List<Block> = blocks.toList()
+    internal fun _build(): List<Block> = _blocks.toList()
 }
 
 /**
@@ -28,7 +29,7 @@ class OutlineBuilder<C : AbstractContentBuilder> internal constructor(
  * ```
  */
 fun OutlineBuilder<ContentBuilder>.paragraph(content: ContentBuilder.() -> Unit) {
-    blocks.add(Block.Paragraph(0, contentFactory.content(content)))
+    _blocks.add(Block.Paragraph(0, _contentFactory.content(content)))
 }
 
 /**
@@ -39,7 +40,7 @@ fun OutlineBuilder<ContentBuilder>.paragraph(content: ContentBuilder.() -> Unit)
  * ```
  */
 fun OutlineBuilder<ContentBuilder>.paragraph(text: String, fontType: FontType = FontType.PLAIN) {
-    blocks.add(Block.Paragraph(0, listOf(Text.Literal(0, text, fontType))))
+    _blocks.add(Block.Paragraph(0, listOf(Text.Literal(0, text, fontType))))
 }
 
 /**
@@ -50,7 +51,7 @@ fun OutlineBuilder<ContentBuilder>.paragraph(text: String, fontType: FontType = 
  * ```
  */
 fun OutlineBuilder<ContentBuilder>.itemList(build: ItemsBuilder<ContentBuilder>.() -> Unit) {
-    blocks.add(Block.ItemList(0, ItemsBuilder(contentFactory).apply(build).build()))
+    _blocks.add(Block.ItemList(0, ItemsBuilder(_contentFactory).apply(build)._build()))
 }
 
 /**
@@ -61,7 +62,7 @@ fun OutlineBuilder<ContentBuilder>.itemList(build: ItemsBuilder<ContentBuilder>.
  * ```
  */
 fun OutlineBuilder<ContentBuilder>.numberedList(build: ItemsBuilder<ContentBuilder>.() -> Unit) {
-    blocks.add(Block.NumberedList(0, ItemsBuilder(contentFactory).apply(build).build()))
+    _blocks.add(Block.NumberedList(0, ItemsBuilder(_contentFactory).apply(build)._build()))
 }
 
 /**
@@ -78,7 +79,7 @@ fun OutlineBuilder<ContentBuilder>.numberedList(build: ItemsBuilder<ContentBuild
  * ```
  */
 fun OutlineBuilder<ContentBuilder>.table(build: TableBuilder<ContentBuilder>.() -> Unit) {
-    blocks.add(TableBuilder(contentFactory).apply(build).build(0))
+    _blocks.add(TableBuilder(_contentFactory).apply(build)._build(0))
 }
 
 /**
@@ -89,7 +90,7 @@ fun OutlineBuilder<ContentBuilder>.table(build: TableBuilder<ContentBuilder>.() 
  * ```
  */
 fun OutlineBuilder<ContentBuilder>.formText(size: Size, vspace: Boolean = true, prompt: ContentBuilder.() -> Unit) {
-    blocks.add(Block.FormText(0, contentFactory.content(prompt), size, vspace))
+    _blocks.add(Block.FormText(0, _contentFactory.content(prompt), size, vspace))
 }
 
 /**
@@ -100,7 +101,7 @@ fun OutlineBuilder<ContentBuilder>.formText(size: Size, vspace: Boolean = true, 
  * ```
  */
 fun OutlineBuilder<ContentBuilder>.formText(text: String, size: Size, fontType: FontType = FontType.PLAIN, vspace: Boolean = true) {
-    blocks.add(Block.FormText(0, listOf(Text.Literal(0, text, fontType)), size, vspace))
+    _blocks.add(Block.FormText(0, listOf(Text.Literal(0, text, fontType)), size, vspace))
 }
 
 /**
@@ -111,9 +112,9 @@ fun OutlineBuilder<ContentBuilder>.formText(text: String, size: Size, fontType: 
  * ```
  */
 fun OutlineBuilder<ContentBuilder>.formChoice(vspace: Boolean = true, build: FormChoiceBuilder<ContentBuilder>.() -> Unit) {
-    val builder = FormChoiceBuilder(contentFactory)
-    builder.vspace = vspace
-    blocks.add(builder.apply(build).build(0))
+    val builder = FormChoiceBuilder(_contentFactory)
+    builder._vspace = vspace
+    _blocks.add(builder.apply(build)._build(0))
 }
 
 /**
@@ -124,7 +125,7 @@ fun OutlineBuilder<ContentBuilder>.formChoice(vspace: Boolean = true, build: For
  * ```
  */
 fun OutlineBuilder<ContentBuilder>.title2(text: String) {
-    blocks.add(Block.Title2(0, plainText(text)))
+    _blocks.add(Block.Title2(0, plainText(text)))
 }
 
 /**
@@ -136,7 +137,7 @@ fun OutlineBuilder<ContentBuilder>.title2(text: String) {
  */
 @JvmName("title2WithPlainTextBuilder")
 fun OutlineBuilder<ContentBuilder>.title2(content: PlainTextBuilder.() -> Unit) {
-    blocks.add(Block.Title2(0, plainText(content)))
+    _blocks.add(Block.Title2(0, plainText(content)))
 }
 
 /**
@@ -147,7 +148,7 @@ fun OutlineBuilder<ContentBuilder>.title2(content: PlainTextBuilder.() -> Unit) 
  * ```
  */
 fun OutlineBuilder<ContentBuilder>.title3(text: String) {
-    blocks.add(Block.Title3(0, plainText(text)))
+    _blocks.add(Block.Title3(0, plainText(text)))
 }
 
 /**
@@ -159,7 +160,7 @@ fun OutlineBuilder<ContentBuilder>.title3(text: String) {
  */
 @JvmName("title3WithPlainTextBuilder")
 fun OutlineBuilder<ContentBuilder>.title3(content: PlainTextBuilder.() -> Unit) {
-    blocks.add(Block.Title3(0, plainText(content)))
+    _blocks.add(Block.Title3(0, plainText(content)))
 }
 
 /**
@@ -170,7 +171,7 @@ fun OutlineBuilder<ContentBuilder>.title3(content: PlainTextBuilder.() -> Unit) 
  * ```
  */
 fun OutlineBuilder<ContentBuilder>.title4(text: String) {
-    blocks.add(Block.Title4(0, plainText(text)))
+    _blocks.add(Block.Title4(0, plainText(text)))
 }
 
 /**
@@ -182,21 +183,21 @@ fun OutlineBuilder<ContentBuilder>.title4(text: String) {
  */
 @JvmName("title4WithPlainTextBuilder")
 fun OutlineBuilder<ContentBuilder>.title4(content: PlainTextBuilder.() -> Unit) {
-    blocks.add(Block.Title4(0, plainText(content)))
+    _blocks.add(Block.Title4(0, plainText(content)))
 }
 
 /**
  * Builder for listepunkter. [item] tilbys som extension-funksjon.
  */
 @MarkupDsl
-class ItemsBuilder<C : AbstractContentBuilder> internal constructor(
-    internal val contentFactory: ContentFactory<C>,
+class ItemsBuilder<C : AbstractContentBuilder> @MarkupInternalApi constructor(
+    internal val _contentFactory: ContentFactory<C>,
 ) {
-    internal val items = mutableListOf<Block.Item>()
+    internal val _items = mutableListOf<Block.Item>()
 
-    internal fun build(): List<Block.Item> {
-        require(items.isNotEmpty()) { "List has no items" }
-        return items.toList()
+    internal fun _build(): List<Block.Item> {
+        require(_items.isNotEmpty()) { "List has no items" }
+        return _items.toList()
     }
 }
 
@@ -208,7 +209,7 @@ class ItemsBuilder<C : AbstractContentBuilder> internal constructor(
  * ```
  */
 fun ItemsBuilder<ContentBuilder>.item(content: ContentBuilder.() -> Unit) {
-    items.add(Block.Item(0, contentFactory.content(content)))
+    _items.add(Block.Item(0, _contentFactory.content(content)))
 }
 
 /**
@@ -219,31 +220,31 @@ fun ItemsBuilder<ContentBuilder>.item(content: ContentBuilder.() -> Unit) {
  * ```
  */
 fun ItemsBuilder<ContentBuilder>.item(text: String, fontType: FontType = FontType.PLAIN) {
-    items.add(Block.Item(0, listOf(Text.Literal(0, text, fontType))))
+    _items.add(Block.Item(0, listOf(Text.Literal(0, text, fontType))))
 }
 
 /**
  * Builder for en tabell. [header] og [row] tilbys som extension-funksjoner.
  */
 @MarkupDsl
-class TableBuilder<C : AbstractContentBuilder> internal constructor(
-    internal val contentFactory: ContentFactory<C>,
+class TableBuilder<C : AbstractContentBuilder> @MarkupInternalApi constructor(
+    internal val _contentFactory: ContentFactory<C>,
 ) {
-    internal var header: Block.Table.Header? = null
-    internal val rows = mutableListOf<Block.Table.Row>()
+    internal var _header: Block.Table.Header? = null
+    internal val _rows = mutableListOf<Block.Table.Row>()
 
-    internal fun build(id: Int): Block.Table {
-        val header = requireNotNull(header) { "Table must have a header" }
+    internal fun _build(id: Int): Block.Table {
+        val header = requireNotNull(_header) { "Table must have a header" }
         require(header.colSpec.isNotEmpty()) { "Table column specification needs at least one column" }
-        require(rows.isNotEmpty()) { "A table must have at least one row" }
+        require(_rows.isNotEmpty()) { "A table must have at least one row" }
         val columnCount = header.colSpec.size
-        rows.forEachIndexed { index, row ->
+        _rows.forEachIndexed { index, row ->
             require(row.cells.isNotEmpty()) { "Table row $index needs at least one cell" }
             require(row.cells.size == columnCount) {
                 "Table row $index has ${row.cells.size} cell(s), but the header defines $columnCount column(s)"
             }
         }
-        return Block.Table(id = id, rows = rows.toList(), header = header)
+        return Block.Table(id = id, rows = _rows.toList(), header = header)
     }
 }
 
@@ -255,7 +256,7 @@ class TableBuilder<C : AbstractContentBuilder> internal constructor(
  * ```
  */
 fun TableBuilder<ContentBuilder>.header(build: HeaderBuilder<ContentBuilder>.() -> Unit) {
-    header = HeaderBuilder<ContentBuilder>().apply(build).build(0)
+    _header = HeaderBuilder<ContentBuilder>().apply(build)._build(0)
 }
 
 /**
@@ -266,17 +267,17 @@ fun TableBuilder<ContentBuilder>.header(build: HeaderBuilder<ContentBuilder>.() 
  * ```
  */
 fun TableBuilder<ContentBuilder>.row(build: RowBuilder<ContentBuilder>.() -> Unit) {
-    rows.add(RowBuilder(contentFactory).apply(build).build(0))
+    _rows.add(RowBuilder(_contentFactory).apply(build)._build(0))
 }
 
 /**
  * Builder for kolonner i en tabelloverskrift. [column] tilbys som extension-funksjon.
  */
 @MarkupDsl
-class HeaderBuilder<C : AbstractContentBuilder> internal constructor() {
-    internal val colSpec = mutableListOf<Block.Table.ColumnSpec>()
+class HeaderBuilder<C : AbstractContentBuilder> @MarkupInternalApi constructor() {
+    internal val _colSpec = mutableListOf<Block.Table.ColumnSpec>()
 
-    internal fun build(id: Int): Block.Table.Header = Block.Table.Header(id, colSpec.toList())
+    internal fun _build(id: Int): Block.Table.Header = Block.Table.Header(id, _colSpec.toList())
 }
 
 /**
@@ -292,7 +293,7 @@ fun HeaderBuilder<ContentBuilder>.column(
     span: Int = 1,
 ) {
     require(span >= 1) { "Table column span must be at least 1, but was $span" }
-    colSpec.add(Block.Table.ColumnSpec(0, plainText(text), alignment, span))
+    _colSpec.add(Block.Table.ColumnSpec(0, plainText(text), alignment, span))
 }
 
 /**
@@ -309,19 +310,19 @@ fun HeaderBuilder<ContentBuilder>.column(
     content: PlainTextBuilder.() -> Unit,
 ) {
     require(span >= 1) { "Table column span must be at least 1, but was $span" }
-    colSpec.add(Block.Table.ColumnSpec(0, plainText(content), alignment, span))
+    _colSpec.add(Block.Table.ColumnSpec(0, plainText(content), alignment, span))
 }
 
 /**
  * Builder for en tabellrad. [cell] tilbys som extension-funksjon.
  */
 @MarkupDsl
-class RowBuilder<C : AbstractContentBuilder> internal constructor(
-    internal val contentFactory: ContentFactory<C>,
+class RowBuilder<C : AbstractContentBuilder> @MarkupInternalApi constructor(
+    internal val _contentFactory: ContentFactory<C>,
 ) {
-    internal val cells = mutableListOf<Block.Table.Cell>()
+    internal val _cells = mutableListOf<Block.Table.Cell>()
 
-    internal fun build(id: Int): Block.Table.Row = Block.Table.Row(id, cells.toList())
+    internal fun _build(id: Int): Block.Table.Row = Block.Table.Row(id, _cells.toList())
 }
 
 /**
@@ -332,7 +333,7 @@ class RowBuilder<C : AbstractContentBuilder> internal constructor(
  * ```
  */
 fun RowBuilder<ContentBuilder>.cell(content: ContentBuilder.() -> Unit) {
-    cells.add(Block.Table.Cell(0, contentFactory.content(content)))
+    _cells.add(Block.Table.Cell(0, _contentFactory.content(content)))
 }
 
 /**
@@ -343,24 +344,24 @@ fun RowBuilder<ContentBuilder>.cell(content: ContentBuilder.() -> Unit) {
  * ```
  */
 fun RowBuilder<ContentBuilder>.cell(text: String, fontType: FontType = FontType.PLAIN) {
-    cells.add(Block.Table.Cell(0, listOf(Text.Literal(0, text, fontType))))
+    _cells.add(Block.Table.Cell(0, listOf(Text.Literal(0, text, fontType))))
 }
 
 /**
  * Builder for et avkrysningsfelt. [prompt] og [choice] tilbys som extension-funksjoner.
  */
 @MarkupDsl
-class FormChoiceBuilder<C : AbstractContentBuilder> internal constructor(
-    internal val contentFactory: ContentFactory<C>,
+class FormChoiceBuilder<C : AbstractContentBuilder> @MarkupInternalApi constructor(
+    internal val _contentFactory: ContentFactory<C>,
 ) {
-    internal var vspace: Boolean = true
-    internal val prompt = mutableListOf<Text>()
-    internal val choices = mutableListOf<Block.FormChoice.Choice>()
+    internal var _vspace: Boolean = true
+    internal val _prompt = mutableListOf<Text>()
+    internal val _choices = mutableListOf<Block.FormChoice.Choice>()
 
-    internal fun build(id: Int): Block.FormChoice {
-        require(prompt.any { it.text.isNotBlank() }) { "Form choice must have a non-empty prompt" }
-        require(choices.size >= 2) { "Form choice must have at least two choices" }
-        return Block.FormChoice(id, prompt.toList(), choices.toList(), vspace)
+    internal fun _build(id: Int): Block.FormChoice {
+        require(_prompt.any { it.text.isNotBlank() }) { "Form choice must have a non-empty prompt" }
+        require(_choices.size >= 2) { "Form choice must have at least two choices" }
+        return Block.FormChoice(id, _prompt.toList(), _choices.toList(), _vspace)
     }
 }
 
@@ -372,9 +373,9 @@ class FormChoiceBuilder<C : AbstractContentBuilder> internal constructor(
  * ```
  */
 fun FormChoiceBuilder<ContentBuilder>.choice(content: ContentBuilder.() -> Unit) {
-    val choiceContent = contentFactory.content(content)
+    val choiceContent = _contentFactory.content(content)
     require(choiceContent.any { it.text.isNotBlank() }) { "Form choice option text must be non-empty" }
-    choices.add(Block.FormChoice.Choice(0, choiceContent))
+    _choices.add(Block.FormChoice.Choice(0, choiceContent))
 }
 
 /**
@@ -386,7 +387,7 @@ fun FormChoiceBuilder<ContentBuilder>.choice(content: ContentBuilder.() -> Unit)
  */
 fun FormChoiceBuilder<ContentBuilder>.choice(text: String, fontType: FontType = FontType.PLAIN) {
     require(text.isNotBlank()) { "Form choice option text must be non-empty" }
-    choices.add(Block.FormChoice.Choice(0, listOf(Text.Literal(0, text, fontType))))
+    _choices.add(Block.FormChoice.Choice(0, listOf(Text.Literal(0, text, fontType))))
 }
 
 /**
@@ -397,5 +398,5 @@ fun FormChoiceBuilder<ContentBuilder>.choice(text: String, fontType: FontType = 
  * ```
  */
 fun FormChoiceBuilder<ContentBuilder>.prompt(text: String) {
-    prompt.addAll(plainText(text))
+    _prompt.addAll(plainText(text))
 }

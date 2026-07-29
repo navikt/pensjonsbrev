@@ -32,13 +32,13 @@ object Markup {
 
     @Serializable
     @JvmInline
-    value class Personidentifikator internal constructor(val value: String) {
+    value class Personidentifikator @MarkupInternalApi constructor(val value: String) {
         override fun toString() = value
     }
 
     @Serializable
     @JvmInline
-    value class Saksnummer internal constructor(val value: String) {
+    value class Saksnummer @MarkupInternalApi constructor(val value: String) {
         override fun toString() = value
     }
 }

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import no.nav.pensjon.brev.api.model.RedigerbarTemplateDescription
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.callid.*
 import io.ktor.client.engine.mock.*
@@ -81,8 +82,8 @@ open class FakeBrevmetadataService(
 }
 
 open class FakeBrevbakerService(
-    open var maler: List<TemplateDescription.Redigerbar> = listOf(),
-    open var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf(),
+    open var maler: List<RedigerbarTemplateDescription> = listOf(),
+    open var redigerbareMaler: MutableMap<RedigerbarBrevkode, RedigerbarTemplateDescription> = mutableMapOf(),
 ) : BrevbakerService {
     override suspend fun getTemplates() = maler
 

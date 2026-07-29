@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.api.model.RedigerbarTemplateDescription
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -52,15 +53,15 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
     val brevkontekst: TemplateDescription.Brevkontekst
     val sakstyper: Set<ISakstype>
 
-    override fun description(): TemplateDescription.Redigerbar =
-        TemplateDescription.Redigerbar(
+    override fun description(): RedigerbarTemplateDescription =
+        RedigerbarTemplateDescription(
             name = kode.kode(),
             letterDataClass = template.letterDataType.java.name,
             languages = template.language.all().map { it.toCode() },
             metadata = template.letterMetadata,
-            kategori = TemplateDescription.Redigerbar.Brevkategori(kategori.kode),
+            kategori = RedigerbarTemplateDescription.Brevkategori(kategori.kode),
             brevkontekst = brevkontekst,
-            sakstyper = sakstyper.map { TemplateDescription.Redigerbar.Sakstype(it.kode) }.toSet(),
+            sakstyper = sakstyper.map { RedigerbarTemplateDescription.Sakstype(it.kode) }.toSet(),
         )
 }
 

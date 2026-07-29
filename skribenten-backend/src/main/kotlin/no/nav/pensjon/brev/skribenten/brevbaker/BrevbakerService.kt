@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevbaker
 
+import no.nav.pensjon.brev.api.model.RedigerbarTemplateDescription
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -82,8 +83,8 @@ interface BrevbakerService {
         vedleggId: VedleggId,
     ): LetterMarkup.Attachment?
 
-    suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
-    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
+    suspend fun getTemplates(): List<RedigerbarTemplateDescription>?
+    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): RedigerbarTemplateDescription?
     suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode>
 }
 
@@ -267,7 +268,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         }
     }
 
-    override suspend fun getTemplates(): List<TemplateDescription.Redigerbar>? {
+    override suspend fun getTemplates(): List<RedigerbarTemplateDescription>? {
         val response = client.get("/templates/redigerbar") {
             url {
                 parameters.append("includeMetadata", "true")
@@ -281,7 +282,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         }
     }
 
-    override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
+    override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): RedigerbarTemplateDescription? =
         cache.cached(Cacheomraade.REDIGERBAR_MAL, brevkode) {
             val response = client.get("/templates/redigerbar/${brevkode.kode()}")
 

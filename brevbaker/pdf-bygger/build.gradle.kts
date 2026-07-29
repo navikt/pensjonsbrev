@@ -65,8 +65,7 @@ dependencies {
     implementation(libs.ktor.server.status.pages)
     implementation(libs.bundles.metrics)
 
-    implementation(libs.brevbaker.markup)
-    implementation(libs.brevbaker.common)
+    implementation(project(":brevbaker:internal"))
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.jackson.datatype.jsr310) {

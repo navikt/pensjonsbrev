@@ -88,7 +88,3 @@ class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecification>
 
     override fun toString() = "TemplateModelSpecification(types=$types, letterModelTypeName=$letterModelTypeName)"
 }
-
-
-@Target(AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
-annotation class DisplayText(val text: String)

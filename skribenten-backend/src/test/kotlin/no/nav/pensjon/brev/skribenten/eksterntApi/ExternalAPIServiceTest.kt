@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.eksterntApi
 
+import no.nav.pensjon.brev.api.model.RedigerbarTemplateDescription
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -49,7 +50,7 @@ class ExternalAPIServiceTest {
         status = Dto.BrevStatus.KLADD,
         leggVedFoersteside = false,
     )
-    val brevmal = TemplateDescription.Redigerbar(
+    val brevmal = RedigerbarTemplateDescription(
         name = Testbrevkoder.INFORMASJONSBREV.kode(),
         letterDataClass = "a.class",
         languages = listOf(),
@@ -58,7 +59,7 @@ class ExternalAPIServiceTest {
             LetterMetadata.Distribusjonstype.ANNET,
             LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
-        kategori = TemplateDescription.Redigerbar.Brevkategori("INFORMASJONSBREV"),
+        kategori = RedigerbarTemplateDescription.Brevkategori("INFORMASJONSBREV"),
         brevkontekst = TemplateDescription.Brevkontekst.SAK,
         sakstyper = emptySet(),
     )

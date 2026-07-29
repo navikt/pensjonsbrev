@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker.markup.dsl
 
+import no.nav.brev.brevbaker.markup.MarkupInternalApi
 import no.nav.brev.brevbaker.markup.Attachment
 import no.nav.brev.brevbaker.markup.LetterMarkup
 import no.nav.brev.brevbaker.markup.Markup
@@ -34,7 +35,7 @@ fun letterMarkup(
     signatur: Signatur,
     build: LetterMarkupBuilder<ContentBuilder>.() -> Unit,
 ): LetterMarkup =
-    LetterMarkupBuilder(::ContentBuilder, saksinformasjon, signatur).apply(build).build()
+    LetterMarkupBuilder(::ContentBuilder, saksinformasjon, signatur).apply(build)._build()
 
 /**
  * Bygg [Saksinformasjon] (saksinformasjon og mottaker) for et brev.
@@ -90,7 +91,7 @@ fun signatur(
  * ```
  */
 fun attachment(inkluderSaksinformasjon: Boolean = false, build: AttachmentBuilder<ContentBuilder>.() -> Unit): Attachment =
-    AttachmentBuilder(::ContentBuilder, inkluderSaksinformasjon).apply(build).build()
+    AttachmentBuilder(::ContentBuilder, inkluderSaksinformasjon).apply(build)._build()
 
 /**
  * Bygg en frittstående [PDFTittel] via DSL.
@@ -100,10 +101,10 @@ fun attachment(inkluderSaksinformasjon: Boolean = false, build: AttachmentBuilde
  * ```
  */
 fun pdfTittel(content: ContentBuilder.() -> Unit): PDFTittel =
-    PDFTittel(ContentBuilder().apply(content).build())
+    PDFTittel(ContentBuilder().apply(content)._build())
 
 @MarkupDsl
-class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
+class LetterMarkupBuilder<C : AbstractContentBuilder> @MarkupInternalApi constructor(
     private val contentFactory: ContentFactory<C>,
     private val saksinformasjon: Saksinformasjon,
     private val signatur: Signatur,
@@ -111,7 +112,7 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
     private var title1: List<Text> = emptyList()
     private var blocks: List<Block> = emptyList()
 
-    internal fun setTitle(content: () -> List<Text>) {
+    internal fun _setTitle(content: () -> List<Text>) {
         title1 = content()
     }
 
@@ -126,10 +127,10 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
      * ```
      */
     fun outline(build: OutlineBuilder<C>.() -> Unit) {
-        blocks = OutlineBuilder(contentFactory).apply(build).build()
+        blocks = OutlineBuilder(contentFactory).apply(build)._build()
     }
 
-    internal fun build(): LetterMarkup = LetterMarkup(
+    internal fun _build(): LetterMarkup = LetterMarkup(
         title1 = title1,
         saksinformasjon = saksinformasjon,
         blocks = blocks,
@@ -138,7 +139,7 @@ class LetterMarkupBuilder<C : AbstractContentBuilder> internal constructor(
 }
 
 @MarkupDsl
-class AttachmentBuilder<C : AbstractContentBuilder> internal constructor(
+class AttachmentBuilder<C : AbstractContentBuilder> @MarkupInternalApi constructor(
     private val contentFactory: ContentFactory<C>,
     private val inkluderSaksinformasjon: Boolean,
 ) {
@@ -164,10 +165,10 @@ class AttachmentBuilder<C : AbstractContentBuilder> internal constructor(
      * ```
      */
     fun outline(build: OutlineBuilder<C>.() -> Unit) {
-        blocks = OutlineBuilder(contentFactory).apply(build).build()
+        blocks = OutlineBuilder(contentFactory).apply(build)._build()
     }
 
-    internal fun build(): Attachment = Attachment(title1, blocks, inkluderSaksinformasjon)
+    internal fun _build(): Attachment = Attachment(title1, blocks, inkluderSaksinformasjon)
 }
 
 /**
@@ -177,7 +178,7 @@ class AttachmentBuilder<C : AbstractContentBuilder> internal constructor(
  * title1("Vedtak om uføretrygd")
  * ```
  */
-fun LetterMarkupBuilder<ContentBuilder>.title1(text: String) = setTitle { plainText(text) }
+fun LetterMarkupBuilder<ContentBuilder>.title1(text: String) = _setTitle { plainText(text) }
 
 /**
  * Setter brevets hoved-tittel som plaintext via DSL-blokk.
@@ -188,7 +189,7 @@ fun LetterMarkupBuilder<ContentBuilder>.title1(text: String) = setTitle { plainT
  */
 @JvmName("title1WithPlainTextBuilder")
 fun LetterMarkupBuilder<ContentBuilder>.title1(content: PlainTextBuilder.() -> Unit) =
-    setTitle { plainText(content) }
+    _setTitle { plainText(content) }
 
 /**
  * Sett vedleggets tittel som ren tekst.

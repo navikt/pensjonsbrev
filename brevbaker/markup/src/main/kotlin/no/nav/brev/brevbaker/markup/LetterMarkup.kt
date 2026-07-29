@@ -13,7 +13,7 @@ import java.time.LocalDate
 
 @ConsistentCopyVisibility
 @Serializable
-data class LetterMarkup internal constructor(
+data class LetterMarkup @MarkupInternalApi constructor(
     val title1: List<Text>,
     val saksinformasjon: Saksinformasjon,
     val blocks: List<Block>,
@@ -27,7 +27,7 @@ data class LetterMarkup internal constructor(
 
 @ConsistentCopyVisibility
 @Serializable
-data class Attachment internal constructor(
+data class Attachment @MarkupInternalApi constructor(
     val title1: List<Text>,
     val blocks: List<Block>,
     val inkluderSaksinformasjon: Boolean,
@@ -35,7 +35,7 @@ data class Attachment internal constructor(
 
 @ConsistentCopyVisibility
 @Serializable
-data class Saksinformasjon internal constructor(
+data class Saksinformasjon @MarkupInternalApi constructor(
     val gjelderNavn: String,
     val gjelderPersonidentifikator: Markup.Personidentifikator,
     val annenMottakerNavn: String?,
@@ -58,20 +58,20 @@ internal object LocalDateSerializer : KSerializer<LocalDate> {
 
 @ConsistentCopyVisibility
 @Serializable
-data class Signatur internal constructor(
+data class Signatur @MarkupInternalApi constructor(
     val saksbehandlerSignatur: SaksbehandlerSignatur?,
     val navAvsenderEnhet: String,
 )
 
 @ConsistentCopyVisibility
 @Serializable
-data class SaksbehandlerSignatur internal constructor(
+data class SaksbehandlerSignatur @MarkupInternalApi constructor(
     val saksbehandlerNavn: String,
     val attesterendeSaksbehandlerNavn: String?,
 )
 
 @ConsistentCopyVisibility
 @Serializable
-data class PDFTittel internal constructor(
+data class PDFTittel @MarkupInternalApi constructor(
     val title1: List<Text>,
 )

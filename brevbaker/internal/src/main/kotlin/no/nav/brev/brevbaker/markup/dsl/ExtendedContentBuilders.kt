@@ -9,7 +9,7 @@ import no.nav.brev.brevbaker.markup.outline.Text.FontType
  * denne modulen genererer aldri id-er.
  */
 @MarkupDsl
-class ExtendedContentBuilder internal constructor() : AbstractContentBuilder() {
+class ExtendedContentBuilder : AbstractContentBuilder() {
     /**
      * Legg til fast tekst, valgfritt med [fontType] og [editBehaviour].
      *
@@ -52,8 +52,8 @@ class ExtendedContentBuilder internal constructor() : AbstractContentBuilder() {
  * krever en eksplisitt [Int]-id.
  */
 @MarkupDsl
-class PlainExtendedTextBuilder internal constructor() {
-    internal val texts: MutableList<Text> = mutableListOf()
+class PlainExtendedTextBuilder {
+    val texts: MutableList<Text> = mutableListOf()
 
     /**
      * Vanlig tekst.

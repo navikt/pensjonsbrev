@@ -4,6 +4,7 @@ include("ktlint-rules")
 
 include("brevbaker:core")
 include("brevbaker:api-model-common")
+include("brevbaker:internal")
 include("brevbaker:markup")
 include("brevbaker:dsl")
 include("brevbaker:pdf-bygger")

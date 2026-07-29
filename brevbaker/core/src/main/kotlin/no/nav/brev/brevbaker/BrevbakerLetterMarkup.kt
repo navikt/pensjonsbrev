@@ -54,7 +54,7 @@ internal object BrevbakerLetterMarkup {
                 markup = letterMarkupExtended(
                     saksinformasjon = Letter2MarkupV2.buildSaksinformasjon(scope),
                     signatur = Letter2MarkupV2.buildSignatur(scope),
-                    build = Letter2MarkupV2.buildLetter(
+                    init = Letter2MarkupV2.buildLetter(
                         scope = scope,
                         template = letter.template
                     )

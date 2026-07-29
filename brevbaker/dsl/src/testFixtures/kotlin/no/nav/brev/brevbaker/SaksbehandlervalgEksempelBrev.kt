@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker
 
+import no.nav.pensjon.brev.api.model.RedigerbarTemplateDescription
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -22,7 +23,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  */
 object SaksbehandlervalgEksempelBrev : RedigerbarTemplate<SaksbehandlervalgTestDto> {
     @OptIn(InternKonstruktoer::class)
-    override val kategori = TemplateDescription.Redigerbar.Brevkategori("Innhente opplysninger")
+    override val kategori = RedigerbarTemplateDescription.Brevkategori("Innhente opplysninger")
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(object : TemplateDescription.ISakstype {
         override val kode = "ALDER"

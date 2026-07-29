@@ -26,22 +26,19 @@ repositories {
 
 dependencies {
     api(project(":brevbaker:dsl"))
-    api(libs.brevbaker.common)
-    api(project(":brevbaker:markup"))
-    implementation(project(path = ":brevbaker:markup", configuration = "apiInternalElements"))
+    api(project(":brevbaker:internal"))
     ksp(project(":brevbaker:template-model-generator"))
     kspTest(project(":brevbaker:template-model-generator"))
     implementation(libs.kotlinx.html)
     implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.bundles.junit)
-    testImplementation(project(path = ":brevbaker:markup", configuration = "apiInternalElements"))
+
 
     testImplementation(testFixtures(project(":brevbaker:dsl")))
     testImplementation(testFixtures(project(":brevbaker:core")))
 
-    testFixturesImplementation(project(":brevbaker:markup"))
-    testFixturesImplementation(project(path = ":brevbaker:markup", configuration = "apiInternalElements"))
+    testFixturesImplementation(project(":brevbaker:internal"))
     testFixturesImplementation(libs.ktor.serialization.jackson)
     testFixturesImplementation(libs.ktor.client.cio)
     testFixturesImplementation(libs.ktor.client.content.negotiation)

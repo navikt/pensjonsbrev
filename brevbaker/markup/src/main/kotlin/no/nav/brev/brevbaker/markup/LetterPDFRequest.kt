@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
  */
 @ConsistentCopyVisibility
 @Serializable
-data class LetterPDFRequest internal constructor(
+data class LetterPDFRequest @MarkupInternalApi constructor(
     val letterMarkup: LetterMarkup,
     val attachments: List<Attachment>,
     val pdfVedlegg: List<PDFTittel>,

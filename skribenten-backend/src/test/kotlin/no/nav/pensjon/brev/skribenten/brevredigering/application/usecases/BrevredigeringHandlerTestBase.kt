@@ -318,7 +318,7 @@ abstract class BrevredigeringHandlerTestBase {
         val letter = letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"))))
             .medSignatur(saksbehandler = saksbehandler1Principal.fullName, attestant = null)
 
-        val informasjonsbrev = TemplateDescription.Redigerbar(
+        val informasjonsbrev = RedigerbarTemplateDescription(
             name = Testbrevkoder.INFORMASJONSBREV.kode(),
             letterDataClass = "template letter data class",
             languages = listOf(LanguageCode.ENGLISH),
@@ -327,12 +327,12 @@ abstract class BrevredigeringHandlerTestBase {
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             ),
-            kategori = TemplateDescription.Redigerbar.Brevkategori("INFORMASJONSBREV"),
+            kategori = RedigerbarTemplateDescription.Brevkategori("INFORMASJONSBREV"),
             brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
+            sakstyper = setOf(RedigerbarTemplateDescription.Sakstype("S1"), RedigerbarTemplateDescription.Sakstype("S2")),
         )
 
-        val vedtaksbrev = TemplateDescription.Redigerbar(
+        val vedtaksbrev = RedigerbarTemplateDescription(
             name = Testbrevkoder.VEDTAKSBREV.kode(),
             letterDataClass = "template letter data class",
             languages = listOf(LanguageCode.ENGLISH),
@@ -341,12 +341,12 @@ abstract class BrevredigeringHandlerTestBase {
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             ),
-            kategori = TemplateDescription.Redigerbar.Brevkategori("UFOEREPENSJON"),
+            kategori = RedigerbarTemplateDescription.Brevkategori("UFOEREPENSJON"),
             brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
-            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2"))
+            sakstyper = setOf(RedigerbarTemplateDescription.Sakstype("S1"), RedigerbarTemplateDescription.Sakstype("S2"))
         )
 
-        private val varselbrevIVedtakskontekst = TemplateDescription.Redigerbar(
+        private val varselbrevIVedtakskontekst = RedigerbarTemplateDescription(
             name = Testbrevkoder.VARSELBREV.kode(),
             letterDataClass = "template letter data class",
             languages = listOf(LanguageCode.ENGLISH),
@@ -355,9 +355,9 @@ abstract class BrevredigeringHandlerTestBase {
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             ),
-            kategori = TemplateDescription.Redigerbar.Brevkategori("VARSEL"),
+            kategori = RedigerbarTemplateDescription.Brevkategori("VARSEL"),
             brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
-            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
+            sakstyper = setOf(RedigerbarTemplateDescription.Sakstype("S1"), RedigerbarTemplateDescription.Sakstype("S2")),
         )
 
         val stagetPDF = "nesten en pdf".encodeToByteArray()
@@ -587,7 +587,7 @@ abstract class BrevredigeringHandlerTestBase {
         lateinit var renderPdfResultat: LetterResponse
         var modelSpecificationResultat: TemplateModelSpecification? = null
         var alltidValgbareVedleggResultat: Set<AlltidValgbartVedleggBrevkode> = emptySet()
-        override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
+        override var redigerbareMaler: MutableMap<RedigerbarBrevkode, RedigerbarTemplateDescription> = mutableMapOf()
         val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
         val renderPdfKall = mutableListOf<LetterMarkup>()
         val renderPdfRedigerteVedleggKall = mutableListOf<Map<VedleggId, LetterMarkup.Attachment>>()

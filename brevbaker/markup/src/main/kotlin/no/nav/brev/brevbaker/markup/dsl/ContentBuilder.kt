@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker.markup.dsl
 
+import no.nav.brev.brevbaker.markup.MarkupInternalApi
 import no.nav.brev.brevbaker.markup.outline.Text
 import no.nav.brev.brevbaker.markup.outline.Text.FontType
 
@@ -7,10 +8,10 @@ import no.nav.brev.brevbaker.markup.outline.Text.FontType
  * Basis-scope for tekstinnhold i brev-DSL-en.
  */
 @MarkupDsl
-abstract class AbstractContentBuilder internal constructor() {
-    internal val texts: MutableList<Text> = mutableListOf()
+abstract class AbstractContentBuilder @MarkupInternalApi constructor() {
+    internal val _texts: MutableList<Text> = mutableListOf()
 
-    internal fun build(): List<Text> = texts.toList()
+    internal fun _build(): List<Text> = _texts.toList()
 }
 
 /**
@@ -21,7 +22,7 @@ abstract class AbstractContentBuilder internal constructor() {
  * - [newLine] for linjeskift
  */
 @MarkupDsl
-class ContentBuilder internal constructor() : AbstractContentBuilder() {
+class ContentBuilder @MarkupInternalApi constructor() : AbstractContentBuilder() {
     /**
      * Legg til fast tekst i innholdet, valgfritt med [fontType].
      *
@@ -31,7 +32,7 @@ class ContentBuilder internal constructor() : AbstractContentBuilder() {
      * ```
      */
     fun text(text: String, fontType: FontType = FontType.PLAIN) {
-        texts.add(Text.Literal(0, text, fontType))
+        _texts.add(Text.Literal(0, text, fontType))
     }
 
     /**
@@ -46,14 +47,14 @@ class ContentBuilder internal constructor() : AbstractContentBuilder() {
      * ```
      */
     fun newLine() {
-        texts.add(Text.NewLine(0))
+        _texts.add(Text.NewLine(0))
     }
 }
 
 /** Begrenset tekst-scope for overskrifter med ren tekst uten formattering (fet/kursiv). */
 @MarkupDsl
-class PlainTextBuilder internal constructor() {
-    internal val texts: MutableList<Text> = mutableListOf()
+class PlainTextBuilder @MarkupInternalApi constructor() {
+    internal val _texts: MutableList<Text> = mutableListOf()
 
     /**
      * Legg til brødtekst.
@@ -63,20 +64,21 @@ class PlainTextBuilder internal constructor() {
      * ```
      */
     fun text(text: String) {
-        texts.add(Text.Literal(0, text, FontType.PLAIN))
+        _texts.add(Text.Literal(0, text, FontType.PLAIN))
     }
 
-    internal fun build(): List<Text> = texts.toList()
+    internal fun _build(): List<Text> = _texts.toList()
 }
 
-internal typealias ContentFactory<C> = () -> C
+typealias ContentFactory<C> = () -> C
 
-internal fun <C : AbstractContentBuilder> ContentFactory<C>.content(build: C.() -> Unit): List<Text> =
-    invoke().apply(build).build()
+@MarkupInternalApi
+fun <C : AbstractContentBuilder> ContentFactory<C>.content(build: C.() -> Unit): List<Text> =
+    invoke().apply(build)._build()
 
 /** Ren tekst fra en enkel [String] (kun [Text.Literal], [FontType.PLAIN], id `0`). */
 internal fun plainText(text: String): List<Text> = listOf(Text.Literal(0, text, FontType.PLAIN))
 
 /** Ren tekst fra DSL-blokk (kun [Text.Literal], [FontType.PLAIN], ingen linjeskift, id `0`). */
 internal fun plainText(build: PlainTextBuilder.() -> Unit): List<Text> =
-    PlainTextBuilder().apply(build).build()
+    PlainTextBuilder().apply(build)._build()
