@@ -28,7 +28,6 @@ class LetterMarkupExtendedDslTest {
                 annenMottakerNavn = "Kari Nordmann",
             ),
             signatur = signatur(
-                hilsenTekst = "Med vennlig hilsen",
                 navAvsenderEnhet = "NAV Familie- og pensjonsytelser",
                 saksbehandlerNavn = "Sak S.Behandler",
                 attesterendeSaksbehandlerNavn = "Att Esterer",
@@ -133,7 +132,6 @@ class LetterMarkupExtendedDslTest {
                 dokumentDato = LocalDate.of(2026, 7, 9),
             ),
             signatur = signatur(
-                hilsenTekst = "Hilsen",
                 navAvsenderEnhet = "NAV",
             ),
         ) {
@@ -250,7 +248,6 @@ class LetterMarkupExtendedDslTest {
                     dokumentDato = LocalDate.of(2026, 7, 9),
                 ),
                 signatur = signatur(
-                    hilsenTekst = "Med vennlig hilsen",
                     navAvsenderEnhet = "NAV",
                 ),
             ) {
@@ -283,7 +280,6 @@ class LetterMarkupExtendedDslTest {
                     dokumentDato = LocalDate.of(2026, 7, 9),
                 ),
                 signatur = signatur(
-                    hilsenTekst = "Med vennlig hilsen",
                     navAvsenderEnhet = "NAV",
                 ),
             ) {

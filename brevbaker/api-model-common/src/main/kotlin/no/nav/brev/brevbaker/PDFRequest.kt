@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev
+package no.nav.brev.brevbaker
 
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup

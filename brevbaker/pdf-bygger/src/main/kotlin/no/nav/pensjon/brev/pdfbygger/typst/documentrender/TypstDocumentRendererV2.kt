@@ -9,9 +9,7 @@ import no.nav.brev.brevbaker.markup.clean
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
 import no.nav.pensjon.brev.pdfbygger.typst.typstStringEscape
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dateFormatter
-import no.nav.pensjon.brev.template.render.documentLanguageSettings
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import java.time.format.FormatStyle
 
 object TypstDocumentRendererV2 {
@@ -19,7 +17,7 @@ object TypstDocumentRendererV2 {
     internal fun render(pdfRequest: LetterPDFRequest, typstWriter: TypstFileWriter): Unit = render(
         letter = pdfRequest.letterMarkup.clean(),
         attachments = pdfRequest.attachments.clean(),
-        language = pdfRequest.spraak.toLanguage(),
+        language = pdfRequest.spraak.toLanguageCode(),
         brevtype = pdfRequest.brevtype,
         pdfVedlegg = pdfRequest.pdfVedlegg,
         typstWriter = typstWriter,
@@ -28,7 +26,7 @@ object TypstDocumentRendererV2 {
     private fun render(
         letter: LetterMarkup,
         attachments: List<Attachment>,
-        language: Language,
+        language: LanguageCode,
         brevtype: Markup.Brevtype,
         pdfVedlegg: List<PDFTittel>,
         typstWriter: TypstFileWriter,
@@ -40,12 +38,12 @@ object TypstDocumentRendererV2 {
     private fun TypstCodeScope.appendInputData(
         letter: LetterMarkup,
         attachments: List<Attachment>,
-        language: Language,
+        language: LanguageCode,
         brevtype: Markup.Brevtype,
         pdfVedlegg: List<PDFTittel>,
     ) {
         // Language settings dictionary
-        appendDictionary("languageSettings", documentLanguageSettings.languageSettings(language))
+        appendDictionary("languageSettings", DocumentLanguageSettings(language).asMap())
 
         // Input data dictionary with all letter metadata
         appendDictionary(
@@ -55,7 +53,7 @@ object TypstDocumentRendererV2 {
                 "gjelderFoedselsnummer" to letter.saksinformasjon.gjelderPersonidentifikator.format(),
                 "annenMottakerNavn" to letter.saksinformasjon.annenMottakerNavn,
                 "saksnummer" to letter.saksinformasjon.saksnummer.value,
-                "dokumentDato" to letter.saksinformasjon.dokumentDato.format(dateFormatter(language, FormatStyle.LONG)),
+                "dokumentDato" to letter.saksinformasjon.dokumentDato.format(pdfDateFormatter(language, FormatStyle.LONG)),
                 "avsenderEnhet" to letter.signatur.navAvsenderEnhet,
                 "signerendeSaksbehandler" to letter.signatur.saksbehandlerSignatur?.saksbehandlerNavn,
                 "signerendeAttestant" to letter.signatur.saksbehandlerSignatur?.attesterendeSaksbehandlerNavn?.takeIf { brevtype == Markup.Brevtype.VEDTAKSBREV },
@@ -133,11 +131,11 @@ object TypstDocumentRendererV2 {
     }
 }
 
-private fun Markup.Spraak.toLanguage(): Language =
+private fun Markup.Spraak.toLanguageCode(): LanguageCode =
     when (this) {
-        Markup.Spraak.BOKMAL -> Language.Bokmal
-        Markup.Spraak.NYNORSK -> Language.Nynorsk
-        Markup.Spraak.ENGLISH -> Language.English
+        Markup.Spraak.BOKMAL -> LanguageCode.BOKMAL
+        Markup.Spraak.NYNORSK -> LanguageCode.NYNORSK
+        Markup.Spraak.ENGLISH -> LanguageCode.ENGLISH
     }
 
 private val personidentRegex = Regex("([0-9]{6})([0-9]{5})")

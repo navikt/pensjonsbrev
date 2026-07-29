@@ -22,7 +22,7 @@ import kotlin.jvm.JvmName
  * val brev = letterMarkup(
  *     saksinformasjon = saksinformasjon(gjelderNavn = "Ola", gjelderPersonidentifikator = "12345678901",
  *         saksnummer = "9876543", dokumentDato = LocalDate.now()),
- *     signatur = signatur(hilsenTekst = "Med vennlig hilsen", navAvsenderEnhet = "Nav"),
+ *     signatur = signatur(navAvsenderEnhet = "Nav"),
  * ) {
  *     title1("Vedtak")
  *     outline { paragraph("Du får innvilget søknaden.") }
@@ -59,21 +59,19 @@ fun saksinformasjon(
 )
 
 /**
- * Bygg [Signatur] (hilsen og avsender) for et brev. Angi
+ * Bygg [Signatur] (avsender) for et brev. Angi
  * [saksbehandlerNavn]/[attesterendeSaksbehandlerNavn] når brevet er signert av saksbehandler(e).
  *
  * ```
- * signatur(hilsenTekst = "Med vennlig hilsen", navAvsenderEnhet = "Nav Familie- og pensjonsytelser",
+ * signatur(navAvsenderEnhet = "Nav Familie- og pensjonsytelser",
  *     saksbehandlerNavn = "Kari Saksbehandler")
  * ```
  */
 fun signatur(
-    hilsenTekst: String,
     navAvsenderEnhet: String,
     saksbehandlerNavn: String? = null,
     attesterendeSaksbehandlerNavn: String? = null,
 ): Signatur = Signatur(
-    hilsenTekst = hilsenTekst,
     saksbehandlerSignatur = saksbehandlerNavn?.let {
         SaksbehandlerSignatur(it, attesterendeSaksbehandlerNavn)
     },

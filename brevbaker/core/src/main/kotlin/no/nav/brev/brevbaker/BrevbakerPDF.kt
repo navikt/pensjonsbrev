@@ -6,7 +6,7 @@ import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
 import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkupV2
 import no.nav.brev.brevbaker.template.render.toMarkup
 import no.nav.brev.brevbaker.template.toScope
-import no.nav.pensjon.brev.PDFRequest
+import no.nav.brev.brevbaker.PDFRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.Letter

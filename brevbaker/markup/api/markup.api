@@ -268,11 +268,9 @@ public final class no/nav/brev/brevbaker/markup/Saksinformasjon$Companion {
 
 public final class no/nav/brev/brevbaker/markup/Signatur {
 	public static final field Companion Lno/nav/brev/brevbaker/markup/Signatur$Companion;
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;
-	public final fun component3 ()Ljava/lang/String;
+	public final fun component1 ()Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;
+	public final fun component2 ()Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getHilsenTekst ()Ljava/lang/String;
 	public final fun getNavAvsenderEnhet ()Ljava/lang/String;
 	public final fun getSaksbehandlerSignatur ()Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;
 	public fun hashCode ()I
@@ -328,8 +326,8 @@ public final class no/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilderKt {
 	public static final fun pdfTittel (Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/markup/PDFTittel;
 	public static final fun saksinformasjon (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/time/LocalDate;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Saksinformasjon;
 	public static synthetic fun saksinformasjon$default (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/time/LocalDate;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/Saksinformasjon;
-	public static final fun signatur (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Signatur;
-	public static synthetic fun signatur$default (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/Signatur;
+	public static final fun signatur (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Signatur;
+	public static synthetic fun signatur$default (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/Signatur;
 	public static final fun title1 (Lno/nav/brev/brevbaker/markup/dsl/AttachmentBuilder;Ljava/lang/String;)V
 	public static final fun title1 (Lno/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder;Ljava/lang/String;)V
 	public static final fun title1WithPlainTextBuilder (Lno/nav/brev/brevbaker/markup/dsl/LetterMarkupBuilder;Lkotlin/jvm/functions/Function1;)V

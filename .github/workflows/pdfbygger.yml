@@ -7,6 +7,7 @@ on:
       - "gradle.properties"
       - "gradle/libs.versions.toml"
       - "brevbaker/pdf-bygger/**"
+      - "resources/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger.yml"
       - ".github/workflows/cleanup.yml"
@@ -21,6 +22,7 @@ on:
       - "gradle.properties"
       - "gradle/libs.versions.toml"
       - "brevbaker/pdf-bygger/**"
+      - "resources/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger.yml"
       - ".github/workflows/cleanup.yml"
@@ -51,6 +53,7 @@ jobs:
       gradleTarget: brevbaker:pdf-bygger
       buildImage: true
       uploadJar: true
+      extraModulesToBuild: ':brevbaker:markup:publishToMavenLocal'
 
   pushPdfByggerToGithubRegistry:
     name: "Push pdf-bygger to github registry"
@@ -111,8 +114,8 @@ jobs:
         with:
           filters: |
             brevmal-design:
-              - 'brevbaker/pdf-bygger/containerFiles/typst/**'
-              - 'brevbaker/pdf-bygger/Dockerfile'
+              - 'brevbaker/pdf-bygger/**'
+              - 'resources/**'
               - '.github/regsuitconfig.json'
 
   runIntegrationTests:
@@ -138,6 +141,7 @@ jobs:
       - name: "run integration tests"
         run: |
           ./gradlew :brevbaker:api-model-common:publishToMavenLocal
+          ./gradlew :brevbaker:markup:publishToMavenLocal
           ./gradlew :brevbaker:pdf-bygger:integrationTest
         env:
           "PDF_BYGGER_IMAGE": "ghcr.io/navikt/pensjonsbrev/pdf-bygger:${{ github.sha }}"
