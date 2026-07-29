@@ -80,7 +80,6 @@ dependencies {
     testImplementation(libs.ktor.client.cio)
     testImplementation(libs.ktor.client.content.negotiation)
     testImplementation(libs.testcontainers.core)
-    testImplementation(libs.assertJ)
 }
 
 application {
