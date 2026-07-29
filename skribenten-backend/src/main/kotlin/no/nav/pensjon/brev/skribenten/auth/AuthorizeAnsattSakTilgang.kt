@@ -67,25 +67,25 @@ private suspend fun validerTilgangTilSak(
         ?.also { call.attributes.put(SakKey, it) }
         ?: call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
 
-suspend fun validerTilgangTilSak(fagsakService: FagsakService, saksId: SaksId, pdlService: PdlService, cache: Cache): Fagsak? {
-    val sak = fagsakService.hentSak(saksId)
-    if (sak != null) {
-        return cache.cached(Cacheomraade.FAGSAK, Pair(saksId, PrincipalInContext.require().navIdent)) {
+suspend fun validerTilgangTilSak(fagsakService: FagsakService, saksId: SaksId, pdlService: PdlService, cache: Cache): Fagsak? =
+    cache.cached(Cacheomraade.FAGSAK, Pair(saksId, PrincipalInContext.require().navIdent)) {
+        val sak = fagsakService.hentSak(saksId)
+        if (sak != null) {
             val harTilgang = pdlService.hentAdressebeskyttelse(sak.pid, sak.behandlingsnumre)
                 ?.saksbehandlerHarTilgangTilGradering()
                 ?: true
 
             if (!harTilgang) {
                 logger.warn("Tilgang til sak avvist: sak med id $saksId har adressebeskyttelse")
-                return@cached null
+                null
+            } else {
+                sak
             }
-            return@cached sak
+        } else {
+            logger.info("Tilgang til sak avvist: sak med id $saksId ikke funnet")
+            null
         }
-    } else {
-        logger.info("Tilgang til sak avvist: sak med id $saksId ikke funnet")
-        return null
     }
-}
 
 private suspend fun List<Pdl.Gradering>.saksbehandlerHarTilgangTilGradering(): Boolean {
     val principal = PrincipalInContext.require()
