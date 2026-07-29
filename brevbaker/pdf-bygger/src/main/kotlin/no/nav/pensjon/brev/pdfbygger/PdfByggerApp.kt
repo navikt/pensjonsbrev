@@ -24,7 +24,7 @@ import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import kotlinx.serialization.json.Json
 import no.nav.brev.brevbaker.markup.LetterPDFRequest
-import no.nav.pensjon.brev.PDFRequest
+import no.nav.brev.brevbaker.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2

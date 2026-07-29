@@ -43,7 +43,7 @@ public final class no/nav/brev/brevbaker/HttpStatusCodes : java/lang/Enum {
 }
 
 public abstract interface class no/nav/brev/brevbaker/PDFByggerService {
-	public abstract fun producePDF (Lno/nav/pensjon/brev/PDFRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun producePDF (Lno/nav/brev/brevbaker/PDFRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun producePDFV2 (Lno/nav/brev/brevbaker/markup/LetterPDFRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun validateResponse (ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
