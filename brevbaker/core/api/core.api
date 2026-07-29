@@ -5,7 +5,7 @@ public abstract interface class no/nav/brev/brevbaker/AllTemplates {
 }
 
 public final class no/nav/brev/brevbaker/Brevbaker {
-	public fun <init> (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/brev/brevbaker/PDFVedleggAppender;)V
+	public fun <init> (Lno/nav/brev/brevbaker/PDFByggerService;)V
 	public final fun renderHTML (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brev/api/model/LetterResponse;
 	public final fun renderLetterMarkup (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
 	public final fun renderLetterMarkupV2 (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
@@ -65,10 +65,6 @@ public final class no/nav/brev/brevbaker/PDFInvalidException : java/lang/Excepti
 public final class no/nav/brev/brevbaker/PDFTimeoutException : java/lang/Exception {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-}
-
-public abstract interface class no/nav/brev/brevbaker/PDFVedleggAppender {
-	public abstract fun leggPaaVedlegg (Lno/nav/brev/brevbaker/PDFCompilationOutput;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)Lno/nav/brev/brevbaker/PDFCompilationOutput;
 }
 
 public final class no/nav/brev/brevbaker/template/render/LetterWithAttachmentsMarkup {

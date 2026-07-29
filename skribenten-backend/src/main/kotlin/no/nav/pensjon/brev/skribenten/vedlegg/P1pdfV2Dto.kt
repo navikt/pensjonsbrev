@@ -10,6 +10,42 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 private const val RADER_PER_SIDE = 5
+
+/**
+ * Fyller ut det utfyllbare PDF-skjemaet P1 ("Samlet melding om pensjonsvedtak") med data fra [P1RedigerbarDto].
+ *
+ * ## Kobling mellom kode og PDF-ressurser
+ * P1 består av flere separate PDF-filer (én per side), som ligger som AcroForm-skjemaer i
+ * `src/main/resources/vedlegg/`:
+ * - `P1-side1-BOKMAL.pdf` / `P1-side1-ENGLISH.pdf`
+ * - `P1-side2-BOKMAL.pdf` / `P1-side2-ENGLISH.pdf`
+ * - `P1-side3-BOKMAL.pdf` / `P1-side3-ENGLISH.pdf`
+ * - `P1-side4-BOKMAL.pdf` / `P1-side4-ENGLISH.pdf`
+ *
+ * `side("P1-sideX") { ... }` under refererer til disse filene: [SideAppender.lesInnPDF] slår opp filnavnet
+ * som `/vedlegg/P1-sideX-<SPRÅK>.pdf` (se `HentEllerOpprettPdfHandler.leggVedPDFVedlegg`), og laster inn riktig
+ * språkvariant av PDF-en basert på brevets språk.
+ *
+ * Nøklene som brukes i `felt { "Feltnavn" to verdi }` (f.eks. `"Forenames[0]"`, `"Surname[1]"`,
+ * `"Post_code[0]"`) er **ikke frie tekststrenger** – de må være identiske med `partialName` til de
+ * utfyllbare AcroForm-feltene som er definert inne i de tilhørende PDF-filene over. [SideAppender] fyller
+ * verdiene inn ved å iterere over `document.documentCatalog.acroForm.fieldIterator` og matche på nøyaktig
+ * dette feltnavnet (se `SideAppender.fillFields`), eventuelt prefikset med `page_<index>_` når flere sider
+ * slås sammen til ett dokument (`SideAppender.addPageFieldPrefix`/`pagePrefix`).
+ *
+ * Feltnavnene stammer fra det opprinnelige EU/EØS-skjemaet P1 (felles nordisk/europeisk pensjonsskjema),
+ * og er derfor på engelsk selv i den norske PDF-filen (f.eks. `Forenames`, `Surname`, `Street_N`,
+ * `Post_code`, `Country_code`, `Date_of_birth`, `Institution_awarding_the_pension`).
+ * Radene i tabellene på side 2 og 3 ([innvilgetPensjon]/[avslaattPensjon]) bruker indekserte feltnavn
+ * (`[radnummer]`) fordi PDF-en har ett sett med felt per rad, gjentatt [RADER_PER_SIDE] ganger per side.
+ *
+ * ### Ved endringer
+ * Hvis feltnavn i denne filen endres, må de tilsvarende AcroForm-feltene i PDF-ressursene endres likt
+ * (og omvendt) – ellers vil verdien stille forbli utfylt med tom streng, siden [SideAppender.fillFields]
+ * kun matcher på eksakt feltnavn og ikke feiler dersom feltet mangler. Bruk et PDF-verktøy som kan vise/
+ * redigere skjemafelt (f.eks. Adobe Acrobat "Prepare Form" eller et PDF-inspeksjonsverktøy som lister ut
+ * `AcroForm`-feltene) for å verifisere feltnavn i PDF-ressursene før du endrer nøklene under.
+ */
 object P1pdfV2Dto {
     fun create(data: P1RedigerbarDto, felles: BrevbakerFelles): PDFVedlegg = PDFVedlegg().apply {
         with(data) {

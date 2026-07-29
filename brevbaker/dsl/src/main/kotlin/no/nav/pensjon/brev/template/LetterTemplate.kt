@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.template.validation.InvalidListDeclarationException
 import no.nav.pensjon.brev.template.validation.InvalidScopeTypeException
 import no.nav.pensjon.brev.template.validation.InvalidTableDeclarationException
 import no.nav.pensjon.brev.template.validation.MissingTitleInTemplateException
-import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.IntValue
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
@@ -23,7 +22,6 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
     val language: Lang,
     val outline: List<OutlineElement<Lang>>,
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
-    val pdfAttachments: List<IncludeAttachmentPDF<Lang,*>> = emptyList(),
     val saksbehandlervalg: Map<String, SaksbehandlervalgVerdi<*>>? = null,
     val letterMetadata: LetterMetadata,
 ) {
@@ -53,7 +51,6 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
                 language = this.language,
                 outline = this.outline,
                 attachments = this.attachments + attachments,
-                pdfAttachments = this.pdfAttachments,
                 saksbehandlervalg = this.saksbehandlervalg,
                 letterMetadata = this.letterMetadata
             )

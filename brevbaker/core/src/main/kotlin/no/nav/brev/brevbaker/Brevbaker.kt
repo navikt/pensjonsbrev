@@ -14,9 +14,8 @@ import no.nav.brev.brevbaker.markup.outline.Text as MarkupText
 
 class Brevbaker(
     pdfByggerService: PDFByggerService,
-    pdfVedleggAppender: PDFVedleggAppender,
 ) {
-    private val brevbakerPDF = BrevbakerPDF(pdfByggerService, pdfVedleggAppender)
+    private val brevbakerPDF = BrevbakerPDF(pdfByggerService)
 
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, pdfVedlegg: List<PDFVedleggTittel>): LetterResponse =
         brevbakerPDF.renderPDF(letter, null, pdfVedleggTitler = pdfVedlegg)

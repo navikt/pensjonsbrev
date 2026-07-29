@@ -128,13 +128,6 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             attachment.includeSakspart,
         )
 
-    fun renderPDFTitlesOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<PDFTittel> {
-        val context = RenderContext(scope)
-        return template.pdfAttachments.map {
-            renderText(context, it.template.title)
-        }.map { PDFTittel(it) }
-    }
-
     fun renderPDFTitle(scope: ExpressionScope<*>, titles: List<PDFVedleggTittel>): List<PDFTittel> {
         val context = RenderContext(scope)
         return titles.map { it.tittel }

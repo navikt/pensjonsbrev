@@ -68,20 +68,14 @@ class HentEllerOpprettPdfHandler(
                 brev.redigertBrev.updateEditedLetter(rendretBrev.markup).blocks != brev.redigertBrev.blocks
             }
 
-            val medPDFVedlegg = Features.pdfvedleggISkribenten.isEnabled()
-
-            val pdfVedlegg = if (medPDFVedlegg) vedleggsliste[brev.brevkode.kode()] ?: emptyList() else emptyList()
+            val pdfVedlegg = vedleggsliste[brev.brevkode.kode()] ?: emptyList()
 
             val pdfBytes = renderService.renderPdf(
                 brev,
                 pesysBrevdata,
                 pdfVedlegg = pdfVedlegg.mapNotNull { v -> v.tittel[brev.spraak]?.let { PDFVedleggTittel(it) }}
             ).let {
-                if (medPDFVedlegg) {
-                    leggVedPDFVedlegg(pdfVedlegg, pesysBrevdata, it, brev)
-                } else {
-                    it.file
-                }
+                leggVedPDFVedlegg(pdfVedlegg, pesysBrevdata, it, brev)
             }.let { rendretBrev ->
                 if (Features.foersteside.isEnabled() && brev.leggVedFoersteside == true) {
                     genererFoersteside(request, brev, rendretBrev) ?: return Outcome.failure(IngenFoersteside(request.brevId))

@@ -523,10 +523,6 @@ public final class no/nav/pensjon/brevbaker/api/model/ElementTags : java/lang/En
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/ElementTags;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/EmptyPDFVedleggData : no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
-	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/EmptyPDFVedleggData;
-}
-
 public final class no/nav/pensjon/brevbaker/api/model/LanguageCode : java/lang/Enum {
 	public static final field BOKMAL Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
 	public static final field ENGLISH Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
@@ -825,9 +821,6 @@ public final class no/nav/pensjon/brevbaker/api/model/PDFTittel : no/nav/pensjon
 	public fun getTitle ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-}
-
-public abstract interface class no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/PDFVedleggTittel {
