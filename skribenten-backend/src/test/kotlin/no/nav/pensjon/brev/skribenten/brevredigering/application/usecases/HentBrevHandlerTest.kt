@@ -16,7 +16,7 @@ class HentBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan hente brev uten reservasjon`() {
-        val saksbehandlerValg = SaksbehandlervalgMap().apply  { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) }
         val opprettet = opprettBrev(reserverForRedigering = false, saksbehandlerValg = saksbehandlerValg).resultOrFail()
 
         brevbakerService.renderMarkupKall.clear()
@@ -33,7 +33,7 @@ class HentBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan hente brev med reservasjon`() {
-        val saksbehandlerValg = SaksbehandlervalgMap().apply  { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) }
         val opprettet = opprettBrev(reserverForRedigering = false, saksbehandlerValg = saksbehandlerValg).resultOrFail()
 
         brevbakerService.renderMarkupKall.clear()

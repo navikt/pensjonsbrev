@@ -61,7 +61,7 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan oppdatere brevredigering`() {
-        val saksbehandlerValg = SaksbehandlervalgMap().apply  { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) }
         val original = opprettBrev(reserverForRedigering = true, saksbehandlerValg = saksbehandlerValg).resultOrFail()
 
         brevbakerService.renderMarkupKall.clear()
@@ -84,7 +84,7 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan ikke oppdatere brevredigering som ikke eksisterer`() {
-        val saksbehandlerValg = SaksbehandlervalgMap().apply  { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) }
         val oppdatert = oppdaterBrev(
             brevId = BrevId(1099),
             nyeSaksbehandlerValg = saksbehandlerValg.toRedigerbarSaksbehandlervalgMap(),
@@ -95,7 +95,7 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `oppdaterer redigertBrev med fersk rendering fra brevbaker`() {
-        val saksbehandlerValg = SaksbehandlervalgMap().apply  { put("valg1", true) }
+        val saksbehandlerValg = SaksbehandlervalgMap().apply { put("valg1", true) }
         val original = opprettBrev(saksbehandlerValg = saksbehandlerValg).resultOrFail()
 
         val nyeValg = RedigerbarSaksbehandlervalgMap().apply { put("valg2", SaksbehandlervalgVerdi.Boolean(true)) }
