@@ -1,10 +1,4 @@
-import { type EditedLetter } from "~/types/brevbakerTypes";
-
 import type * as generated from "./skribenten-api";
-
-export type SaksbehandlerValg = {
-  [key: string]: number | boolean | string | null;
-};
 
 export type BrevResponse = generated.ApiBrevResponse;
 export type OpprettBrevRequest = generated.ApiOpprettBrevRequest;
@@ -19,11 +13,10 @@ export type NavAnsatt = generated.ApiNavAnsatt;
 export type BrevType = generated.LetterMetadataBrevtype;
 export type BrevInfo = generated.ApiBrevInfo;
 export type BrevStatus = generated.ApiBrevStatus;
+export type SaksbehandlerValg = BrevResponse["saksbehandlerValg"];
 
-export type OppdaterBrevRequest = {
-  saksbehandlerValg: SaksbehandlerValg;
-  redigertBrev: EditedLetter;
-};
+export type OppdaterBrevRequest = generated.ApiOppdaterBrevRequest;
+export type OppdaterAttesteringRequest = generated.ApiOppdaterAttesteringRequest;
 
 export type Distribusjonstype = generated.Distribusjon;
 export const Distribusjonstype: Record<Distribusjonstype, Distribusjonstype> = {
