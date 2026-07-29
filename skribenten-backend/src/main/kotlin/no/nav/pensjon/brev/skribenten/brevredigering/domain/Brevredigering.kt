@@ -27,7 +27,7 @@ interface Brevredigering {
     val brevkode: RedigerbarBrevkode
     val spraak: LanguageCode
     val avsenderEnhetId: EnhetId
-    val saksbehandlerValg: SaksbehandlerValg
+    val saksbehandlerValg: SaksbehandlervalgMap
     val redigertBrev: Edit.Letter
     val redigertBrevHash: Hash<Edit.Letter>
 
@@ -160,7 +160,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             brevkode: RedigerbarBrevkode,
             spraak: LanguageCode,
             avsenderEnhetId: EnhetId,
-            saksbehandlerValg: SaksbehandlerValg,
+            saksbehandlerValg: SaksbehandlervalgMap,
             redigertBrev: Edit.Letter,
             brevtype: LetterMetadata.Brevtype,
             timestamp: Instant = Instant.now(),
@@ -248,14 +248,14 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             ?.let { if (it is TemplateModelSpecification.FieldType.Object) it.typeName else null }
             ?.let { modelSpec.types[it] }
 
-        saksbehandlerValg = SaksbehandlerValg().apply {
+        saksbehandlerValg = SaksbehandlervalgMap().apply {
             putAll(saksbehandlerValg)
             saksbehandlerValgSpec?.entries?.forEach {
                 val fieldType = it.value
                 if (fieldType.nullable) {
                     put(it.key, null)
                 } else if (fieldType is TemplateModelSpecification.FieldType.Scalar && fieldType.kind == TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN) {
-                    put(it.key, SaksbehandlervalgVerdi.Boolean(false))
+                    put(it.key, false)
                 }
             }
         }

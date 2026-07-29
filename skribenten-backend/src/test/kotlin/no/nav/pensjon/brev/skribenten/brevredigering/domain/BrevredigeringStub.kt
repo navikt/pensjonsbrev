@@ -19,7 +19,7 @@ open class BrevredigeringStub : Brevredigering {
     override val brevkode: RedigerbarBrevkode get() = notYetStubbed()
     override val spraak: LanguageCode get() = notYetStubbed()
     override val avsenderEnhetId: EnhetId get() = notYetStubbed()
-    override val saksbehandlerValg: SaksbehandlerValg get() = notYetStubbed()
+    override val saksbehandlerValg: SaksbehandlervalgMap get() = notYetStubbed()
     override val redigertBrev: Edit.Letter get() = notYetStubbed()
     override val redigertBrevHash: Hash<Edit.Letter> get() = notYetStubbed()
     override val laastForRedigering: Boolean get() = notYetStubbed()

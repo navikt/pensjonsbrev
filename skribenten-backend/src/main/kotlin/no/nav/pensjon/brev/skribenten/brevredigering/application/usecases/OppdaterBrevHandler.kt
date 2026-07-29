@@ -21,7 +21,7 @@ class OppdaterBrevHandler(
 
     data class Request(
         override val brevId: BrevId,
-        val nyeSaksbehandlerValg: SaksbehandlerValg? = null,
+        val nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
         val nyttRedigertbrev: Edit.Letter? = null,
         val frigiReservasjon: Boolean = false,
     ) : BrevredigeringRequest
@@ -33,7 +33,7 @@ class OppdaterBrevHandler(
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
 
         if (request.nyeSaksbehandlerValg != null) {
-            brev.saksbehandlerValg = request.nyeSaksbehandlerValg
+            brev.saksbehandlerValg = brev.saksbehandlerValg.mergeInn(request.nyeSaksbehandlerValg)
         }
         if (request.nyttRedigertbrev != null) {
             brev.oppdaterRedigertBrev(request.nyttRedigertbrev, principal.navIdent)

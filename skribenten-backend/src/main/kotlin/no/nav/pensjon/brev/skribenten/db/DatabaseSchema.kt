@@ -44,7 +44,7 @@ object BrevredigeringTable : IdTable<BrevId>() {
     val brevkode: Column<RedigerbarBrevkode> = varchar("brevkode", length = 50).transform(::RedigerbarBrevkode, RedigerbarBrevkode::kode)
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<EnhetId> = varchar("avsenderEnhetId", 50).transform(::EnhetId, EnhetId::value)
-    val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonString)
+    val saksbehandlerValg = json<SaksbehandlervalgMap>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonString)
     val redigertBrevKryptert: Column<Edit.Letter> = encryptedBinary("redigertBrevKryptert")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
         .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
