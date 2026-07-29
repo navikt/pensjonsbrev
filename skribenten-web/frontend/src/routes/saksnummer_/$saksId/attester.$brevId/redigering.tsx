@@ -281,14 +281,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     diff: activeDiff,
   });
 
-  console.log({
-    currentSavedHash,
-    invalidated: invalidatedDiffHashes.has(currentSavedHash),
-    diffHash: diffQuery.data?.redigertBrevHash,
-    hasActiveDiff: activeDiff !== undefined,
-    renderDiffMarkers,
-  });
-
   useEffect(() => {
     if (!visDiff || !diffQuery.isSuccess) return;
     if (diffQuery.data.redigertBrevHash !== currentSavedHash) return;

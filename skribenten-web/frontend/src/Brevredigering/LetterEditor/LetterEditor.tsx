@@ -18,6 +18,7 @@ import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
 import { useAttestantDiff } from "./diff/AttestantDiffContext";
+import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { type LetterEditorState } from "./model/state";
 import { useEditorKeyboardShortcuts } from "./utils";
@@ -162,35 +163,38 @@ export const LetterEditor = ({
               ref={editorRootRef}
             >
               {blocks.map((block, blockIndex) => (
-                <div
-                  className={getBlockClassName(block, isTekstValgHighlighted(highlightedIds, block))}
-                  key={blockIndex}
-                >
-                  {block.missingFromTemplate && (
-                    <HStack className="missing-from-template-actions" gap="space-4" justify="end">
-                      <Button
-                        icon={<CheckmarkIcon aria-hidden />}
-                        onClick={() => applyAction(Actions.keepMissingFromTemplateBlock, setEditorState, blockIndex)}
-                        size="xsmall"
-                        type="button"
-                        variant="secondary"
-                      >
-                        Behold
-                      </Button>
-                      <Button
-                        icon={<XMarkIcon aria-hidden />}
-                        onClick={() => applyAction(Actions.removeMissingFromTemplateBlock, setEditorState, blockIndex)}
-                        size="xsmall"
-                        type="button"
-                        variant="secondary"
-                      >
-                        Slett
-                      </Button>
-                    </HStack>
-                  )}
-                  <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
-                </div>
+                <React.Fragment key={blockIndex}>
+                  <DeletedBlocksAt blockIndex={blockIndex} />
+                  <div className={getBlockClassName(block, isTekstValgHighlighted(highlightedIds, block))}>
+                    {block.missingFromTemplate && (
+                      <HStack className="missing-from-template-actions" gap="space-4" justify="end">
+                        <Button
+                          icon={<CheckmarkIcon aria-hidden />}
+                          onClick={() => applyAction(Actions.keepMissingFromTemplateBlock, setEditorState, blockIndex)}
+                          size="xsmall"
+                          type="button"
+                          variant="secondary"
+                        >
+                          Behold
+                        </Button>
+                        <Button
+                          icon={<XMarkIcon aria-hidden />}
+                          onClick={() =>
+                            applyAction(Actions.removeMissingFromTemplateBlock, setEditorState, blockIndex)
+                          }
+                          size="xsmall"
+                          type="button"
+                          variant="secondary"
+                        >
+                          Slett
+                        </Button>
+                      </HStack>
+                    )}
+                    <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
+                  </div>
+                </React.Fragment>
               ))}
+              <DeletedBlocksAt blockIndex={blocks.length} trailing />
             </div>
             <SignaturView signatur={letter.signatur} />
           </Box>

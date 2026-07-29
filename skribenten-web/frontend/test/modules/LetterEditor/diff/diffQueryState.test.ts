@@ -2,9 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   getSnapshotForHash,
+  type HashBoundValue,
   pickValueForCurrentHash,
   shouldRenderDiffMarkers,
-  type HashBoundValue,
 } from "~/Brevredigering/LetterEditor/diff/diffQueryState";
 
 describe("diffQueryState", () => {
@@ -33,7 +33,7 @@ describe("diffQueryState", () => {
       visDiff: true,
       currentSavedHash: "hash-1",
       invalidatedDiffHashes: new Set(["hash-1"]),
-      diff: { inserts: [], deletes: [] },
+      diff: { editedBlocks: {}, deletedBlocks: {} },
     });
 
     expect(visible).toBe(false);
@@ -44,7 +44,7 @@ describe("diffQueryState", () => {
       visDiff: true,
       currentSavedHash: "hash-2",
       invalidatedDiffHashes: new Set(["hash-1"]),
-      diff: { inserts: [], deletes: [] },
+      diff: { editedBlocks: {}, deletedBlocks: {} },
     });
 
     expect(visible).toBe(true);

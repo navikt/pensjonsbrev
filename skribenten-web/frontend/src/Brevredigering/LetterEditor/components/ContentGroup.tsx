@@ -10,7 +10,14 @@ import {
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { logPastedClipboard } from "~/Brevredigering/LetterEditor/actions/paste";
+import TableView from "~/Brevredigering/LetterEditor/components/TableView";
+import { Text } from "~/Brevredigering/LetterEditor/components/Text";
 import { useAttestantDiff, useDiffSegmentsForLiteral } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
+import {
+  DeletedContentAt,
+  DeletedItemContentAt,
+  DeletedItemsAt,
+} from "~/Brevredigering/LetterEditor/diff/DeletedMarkup";
 import {
   getEditableCharacterOffset,
   getEditableLiteralText,
@@ -18,8 +25,6 @@ import {
   renderPlainText,
 } from "~/Brevredigering/LetterEditor/diff/DiffSegments";
 import { diffKey } from "~/Brevredigering/LetterEditor/diff/diffModel";
-import TableView from "~/Brevredigering/LetterEditor/components/TableView";
-import { Text } from "~/Brevredigering/LetterEditor/components/Text";
 import {
   isTekstValgHighlighted,
   useInsertedTekstValgHighlight,
@@ -93,72 +98,101 @@ function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
 export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   const { editorState } = useEditor();
   const contents = getContent(editorState.redigertBrev, literalIndex);
+  const isItemContainer = "itemIndex" in literalIndex;
+
+  // Content that was deleted entirely is rendered just before the surviving sibling it is keyed by,
+  // and everything keyed past the last sibling is rendered at the end.
+  const deletedAt = (contentIndex: number, trailing = false) =>
+    isItemContainer ? (
+      <DeletedItemContentAt
+        blockIndex={literalIndex.blockIndex}
+        contentIndex={literalIndex.contentIndex}
+        itemContentIndex={contentIndex}
+        itemIndex={literalIndex.itemIndex}
+        trailing={trailing}
+      />
+    ) : (
+      <DeletedContentAt blockIndex={literalIndex.blockIndex} contentIndex={contentIndex} trailing={trailing} />
+    );
 
   return (
     <>
       {contents.map((content, contentIndex) => {
         const needsWordJoiner = contentIndex > 0 && startsWithPunctuation(content);
 
-        switch (content.type) {
-          case "LITERAL": {
-            const updatedLiteralIndex =
-              "itemIndex" in literalIndex
-                ? { ...literalIndex, itemContentIndex: contentIndex }
-                : { ...literalIndex, contentIndex: contentIndex };
-            return needsWordJoiner ? (
-              <React.Fragment key={contentIndex}>
-                {WORD_JOINER}
-                <EditableText content={content} literalIndex={updatedLiteralIndex} />
-              </React.Fragment>
-            ) : (
-              <EditableText content={content} key={contentIndex} literalIndex={updatedLiteralIndex} />
-            );
+        const rendered = (() => {
+          switch (content.type) {
+            case "LITERAL": {
+              const updatedLiteralIndex =
+                "itemIndex" in literalIndex
+                  ? { ...literalIndex, itemContentIndex: contentIndex }
+                  : { ...literalIndex, contentIndex: contentIndex };
+              return (
+                <>
+                  {needsWordJoiner && WORD_JOINER}
+                  <EditableText content={content} literalIndex={updatedLiteralIndex} />
+                </>
+              );
+            }
+            case "NEW_LINE":
+            case "VARIABLE": {
+              return (
+                <Text
+                  content={content}
+                  literalIndex={{
+                    blockIndex: literalIndex.blockIndex,
+                    contentIndex: contentIndex,
+                  }}
+                />
+              );
+            }
+            case "ITEM_LIST": {
+              const ListTag = effectiveListType(content) === ListType.PUNKTLISTE ? "ul" : "ol";
+              return (
+                <ListTag>
+                  {content.items.map((_item, itemIndex) => (
+                    <React.Fragment key={itemIndex}>
+                      <DeletedItemsAt
+                        blockIndex={literalIndex.blockIndex}
+                        contentIndex={contentIndex}
+                        itemIndex={itemIndex}
+                      />
+                      <li>
+                        <ContentGroup
+                          literalIndex={{
+                            blockIndex: literalIndex.blockIndex,
+                            contentIndex: contentIndex,
+                            itemIndex: itemIndex,
+                          }}
+                        />
+                      </li>
+                    </React.Fragment>
+                  ))}
+                  <DeletedItemsAt
+                    blockIndex={literalIndex.blockIndex}
+                    contentIndex={contentIndex}
+                    itemIndex={content.items.length}
+                    trailing
+                  />
+                </ListTag>
+              );
+            }
+            case "TABLE": {
+              return <TableView blockIndex={literalIndex.blockIndex} contentIndex={contentIndex} node={content} />;
+            }
+            default:
+              return null;
           }
-          case "NEW_LINE":
-          case "VARIABLE": {
-            return (
-              <Text
-                content={content}
-                key={contentIndex}
-                literalIndex={{
-                  blockIndex: literalIndex.blockIndex,
-                  contentIndex: contentIndex,
-                }}
-              />
-            );
-          }
-          case "ITEM_LIST": {
-            const ListTag = effectiveListType(content) === ListType.PUNKTLISTE ? "ul" : "ol";
-            return (
-              <ListTag key={contentIndex}>
-                {content.items.map((_item, itemIndex) => (
-                  <li key={itemIndex}>
-                    <ContentGroup
-                      literalIndex={{
-                        blockIndex: literalIndex.blockIndex,
-                        contentIndex: contentIndex,
-                        itemIndex: itemIndex,
-                      }}
-                    />
-                  </li>
-                ))}
-              </ListTag>
-            );
-          }
-          case "TABLE": {
-            return (
-              <TableView
-                blockIndex={literalIndex.blockIndex}
-                contentIndex={contentIndex}
-                key={contentIndex}
-                node={content}
-              />
-            );
-          }
-          default:
-            return null;
-        }
+        })();
+
+        return (
+          <React.Fragment key={contentIndex}>
+            {deletedAt(contentIndex)}
+            {rendered}
+          </React.Fragment>
+        );
       })}
+      {deletedAt(contents.length, true)}
     </>
   );
 }
@@ -867,11 +901,11 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         ...(fontTypeOf(content) === FontType.ITALIC && { fontStyle: "italic" }),
       }}
       data-literal-index={JSON.stringify(literalIndex)}
+      onBeforeInput={handleBeforeInput}
       onClick={handleOnClick}
       onContextMenu={handleOnContextMenu}
       onDoubleClick={handleOnDoubleClick}
       onFocus={handleOnFocus}
-      onBeforeInput={handleBeforeInput}
       onInput={handleOnInput}
       onKeyDown={handleOnKeyDown}
       onKeyUp={handleOnKeyUp}

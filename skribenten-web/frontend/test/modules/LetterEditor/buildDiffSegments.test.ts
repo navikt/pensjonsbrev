@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 
-import { buildDiffSegments, diffKey, type DiffDelete, type DiffInsert } from "~/Brevredigering/LetterEditor/diff/diffModel";
 import { brevDiffKeys } from "~/api/brev-queries";
+import {
+  buildDiffSegments,
+  type DiffDeletedTextSegment,
+  type DiffTextSegment,
+  diffKey,
+} from "~/Brevredigering/LetterEditor/diff/diffModel";
 
 function expectOk(result: ReturnType<typeof buildDiffSegments>) {
   if (!result.ok) throw new Error(`Expected ok but got: ${result.reason}`);
@@ -23,18 +28,19 @@ function expectCurrentTextInvariant(result: ReturnType<typeof buildDiffSegments>
   return segments;
 }
 
-const idx = { blockIndex: 0, contentIndex: 0 };
-
 describe("buildDiffSegments", () => {
   it("returns a single unchanged segment when no changes", () => {
     const currentText = "Vi har mottatt søknaden din om alderspensjon.";
-    const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts: [], deletes: [] }), currentText);
+    const segments = expectCurrentTextInvariant(
+      buildDiffSegments({ currentText, inserts: [], deletes: [] }),
+      currentText,
+    );
     expect(segments).toEqual([{ type: "unchanged", text: currentText }]);
   });
 
   it("insertion only", () => {
     const currentText = "Vi har mottatt søknaden din om alderspensjon.";
-    const inserts: DiffInsert[] = [{ index: idx, startOffset: 15, endOffset: 24 }];
+    const inserts: DiffTextSegment[] = [{ startOffset: 15, endOffset: 24 }];
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes: [] }), currentText);
     expect(segments).toEqual([
       { type: "unchanged", text: "Vi har mottatt " },
@@ -45,7 +51,7 @@ describe("buildDiffSegments", () => {
 
   it("deletion only", () => {
     const currentText = "Vi har mottatt din om alderspensjon.";
-    const deletes: DiffDelete[] = [{ index: idx, startOffset: 15, endOffset: 24, text: "søknaden " }];
+    const deletes: DiffDeletedTextSegment[] = [{ startOffset: 15, endOffset: 24, text: "søknaden " }];
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts: [], deletes }), currentText);
     expect(segments).toEqual([
       { type: "unchanged", text: "Vi har mottatt " },
@@ -56,8 +62,8 @@ describe("buildDiffSegments", () => {
 
   it("replacement at the same position", () => {
     const currentText = "Vi har mottatt kravet ditt om uføretrygd.";
-    const inserts: DiffInsert[] = [{ index: idx, startOffset: 15, endOffset: 21 }];
-    const deletes: DiffDelete[] = [{ index: idx, startOffset: 15, endOffset: 24, text: "søknaden " }];
+    const inserts: DiffTextSegment[] = [{ startOffset: 15, endOffset: 21 }];
+    const deletes: DiffDeletedTextSegment[] = [{ startOffset: 15, endOffset: 24, text: "søknaden " }];
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes }), currentText);
     expect(segments).toEqual([
       { type: "unchanged", text: "Vi har mottatt " },
@@ -69,8 +75,8 @@ describe("buildDiffSegments", () => {
 
   it("replacement where inserted and deleted lengths differ", () => {
     const currentText = "Vi har videresendt søknaden din til behandling.";
-    const inserts: DiffInsert[] = [{ index: idx, startOffset: 7, endOffset: 19 }];
-    const deletes: DiffDelete[] = [{ index: idx, startOffset: 7, endOffset: 15, text: "mottatt " }];
+    const inserts: DiffTextSegment[] = [{ startOffset: 7, endOffset: 19 }];
+    const deletes: DiffDeletedTextSegment[] = [{ startOffset: 7, endOffset: 15, text: "mottatt " }];
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes }), currentText);
     expect(segments).toEqual([
       { type: "unchanged", text: "Vi har " },
@@ -82,7 +88,7 @@ describe("buildDiffSegments", () => {
 
   it("insertion at the beginning", () => {
     const currentText = "Vedlegg: Vi har mottatt søknaden din.";
-    const inserts: DiffInsert[] = [{ index: idx, startOffset: 0, endOffset: 9 }];
+    const inserts: DiffTextSegment[] = [{ startOffset: 0, endOffset: 9 }];
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes: [] }), currentText);
     expect(segments).toEqual([
       { type: "inserted", text: "Vedlegg: " },
@@ -92,7 +98,7 @@ describe("buildDiffSegments", () => {
 
   it("insertion at the end", () => {
     const currentText = "Vi har mottatt søknaden din. Med vennlig hilsen";
-    const inserts: DiffInsert[] = [{ index: idx, startOffset: 28, endOffset: 47 }];
+    const inserts: DiffTextSegment[] = [{ startOffset: 28, endOffset: 47 }];
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes: [] }), currentText);
     expect(segments).toEqual([
       { type: "unchanged", text: "Vi har mottatt søknaden din." },
@@ -102,7 +108,7 @@ describe("buildDiffSegments", () => {
 
   it("deletion at the beginning", () => {
     const currentText = "Vi har mottatt søknaden din.";
-    const deletes: DiffDelete[] = [{ index: idx, startOffset: 0, endOffset: 9, text: "Vedlegg: " }];
+    const deletes: DiffDeletedTextSegment[] = [{ startOffset: 0, endOffset: 9, text: "Vedlegg: " }];
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts: [], deletes }), currentText);
     expect(segments).toEqual([
       { type: "deleted", text: "Vedlegg: " },
@@ -112,7 +118,7 @@ describe("buildDiffSegments", () => {
 
   it("deletion at the end", () => {
     const currentText = "Vi har mottatt søknaden din.";
-    const deletes: DiffDelete[] = [{ index: idx, startOffset: 28, endOffset: 48, text: " Med vennlig hilsen" }];
+    const deletes: DiffDeletedTextSegment[] = [{ startOffset: 28, endOffset: 48, text: " Med vennlig hilsen" }];
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts: [], deletes }), currentText);
     expect(segments).toEqual([
       { type: "unchanged", text: "Vi har mottatt søknaden din." },
@@ -122,11 +128,11 @@ describe("buildDiffSegments", () => {
 
   it("multiple changes in one literal", () => {
     const currentText = "Vi har videresendt søknaden din. Med vennlig hilsen";
-    const inserts: DiffInsert[] = [
-      { index: idx, startOffset: 7, endOffset: 19 },
-      { index: idx, startOffset: 32, endOffset: 51 },
+    const inserts: DiffTextSegment[] = [
+      { startOffset: 7, endOffset: 19 },
+      { startOffset: 32, endOffset: 51 },
     ];
-    const deletes: DiffDelete[] = [{ index: idx, startOffset: 7, endOffset: 15, text: "mottatt " }];
+    const deletes: DiffDeletedTextSegment[] = [{ startOffset: 7, endOffset: 15, text: "mottatt " }];
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes }), currentText);
     expect(segments).toEqual([
       { type: "unchanged", text: "Vi har " },
@@ -139,8 +145,8 @@ describe("buildDiffSegments", () => {
 
   it("preserves spaces and punctuation", () => {
     const currentText = "Pensjon; uføretrygd og barnetillegg.";
-    const inserts: DiffInsert[] = [{ index: idx, startOffset: 7, endOffset: 9 }];
-    const deletes: DiffDelete[] = [{ index: idx, startOffset: 7, endOffset: 9, text: ", " }];
+    const inserts: DiffTextSegment[] = [{ startOffset: 7, endOffset: 9 }];
+    const deletes: DiffDeletedTextSegment[] = [{ startOffset: 7, endOffset: 9, text: ", " }];
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes }), currentText);
     expect(segments).toEqual([
       { type: "unchanged", text: "Pensjon" },
@@ -154,8 +160,8 @@ describe("buildDiffSegments", () => {
     // Deletes are expressed in original-text coordinates, inserts in current-text coordinates.
     // A large insert before the delete used to push the cursor past the delete offset and drop it.
     const currentText = "Nye opplysninger i saken viser at du har rett. Vi søknaden mottatt.";
-    const inserts: DiffInsert[] = [{ index: idx, startOffset: 0, endOffset: 47 }];
-    const deletes: DiffDelete[] = [{ index: idx, startOffset: 3, endOffset: 12, text: "gamle " }];
+    const inserts: DiffTextSegment[] = [{ startOffset: 0, endOffset: 47 }];
+    const deletes: DiffDeletedTextSegment[] = [{ startOffset: 3, endOffset: 12, text: "gamle " }];
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes }), currentText);
     expect(segments).toEqual([
       { type: "inserted", text: "Nye opplysninger i saken viser at du har rett. " },
@@ -167,8 +173,8 @@ describe("buildDiffSegments", () => {
 
   it("handles Norwegian characters", () => {
     const currentText = "Søknaden om uføretrygd er ferdigbehandlet.";
-    const inserts: DiffInsert[] = [{ index: idx, startOffset: 12, endOffset: 23 }];
-    const deletes: DiffDelete[] = [{ index: idx, startOffset: 12, endOffset: 25, text: "alderspensjon" }];
+    const inserts: DiffTextSegment[] = [{ startOffset: 12, endOffset: 23 }];
+    const deletes: DiffDeletedTextSegment[] = [{ startOffset: 12, endOffset: 25, text: "alderspensjon" }];
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes }), currentText);
     expect(segments).toEqual([
       { type: "unchanged", text: "Søknaden om " },
@@ -180,7 +186,7 @@ describe("buildDiffSegments", () => {
 
   it("inserted text is not rendered twice", () => {
     const currentText = "Vi har mottatt søknaden din om alderspensjon.";
-    const inserts: DiffInsert[] = [{ index: idx, startOffset: 0, endOffset: 7 }];
+    const inserts: DiffTextSegment[] = [{ startOffset: 0, endOffset: 7 }];
     const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes: [] }), currentText);
     expect(segments).toEqual([
       { type: "inserted", text: "Vi har " },
@@ -189,11 +195,11 @@ describe("buildDiffSegments", () => {
   });
 
   it("does not mutate the original API arrays", () => {
-    const inserts: DiffInsert[] = [
-      { index: idx, startOffset: 15, endOffset: 24 },
-      { index: idx, startOffset: 0, endOffset: 7 },
+    const inserts: DiffTextSegment[] = [
+      { startOffset: 15, endOffset: 24 },
+      { startOffset: 0, endOffset: 7 },
     ];
-    const deletes: DiffDelete[] = [];
+    const deletes: DiffDeletedTextSegment[] = [];
     const insertsCopy = [...inserts];
     buildDiffSegments({ currentText: "Vi har mottatt søknaden din om alderspensjon.", inserts, deletes });
     expect(inserts).toEqual(insertsCopy);
@@ -202,31 +208,31 @@ describe("buildDiffSegments", () => {
   describe("currentText invariant — segments without deleted entries reconstruct currentText", () => {
     it("holds for pure insertions", () => {
       const currentText = "Vi har mottatt søknaden din om alderspensjon.";
-      const inserts: DiffInsert[] = [
-        { index: idx, startOffset: 0, endOffset: 7 },
-        { index: idx, startOffset: 31, endOffset: 45 },
+      const inserts: DiffTextSegment[] = [
+        { startOffset: 0, endOffset: 7 },
+        { startOffset: 31, endOffset: 45 },
       ];
       expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes: [] }), currentText);
     });
 
     it("holds for pure deletions", () => {
       const currentText = "Vedtaket er fattet.";
-      const deletes: DiffDelete[] = [
-        { index: idx, startOffset: 0, endOffset: 8, text: "Tidligere " },
-        { index: idx, startOffset: 12, endOffset: 19, text: " av Nav" },
+      const deletes: DiffDeletedTextSegment[] = [
+        { startOffset: 0, endOffset: 8, text: "Tidligere " },
+        { startOffset: 12, endOffset: 19, text: " av Nav" },
       ];
       expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts: [], deletes }), currentText);
     });
 
     it("holds for mixed replacements", () => {
       const currentText = "Vi har videresendt kravet ditt.";
-      const inserts: DiffInsert[] = [
-        { index: idx, startOffset: 7, endOffset: 19 },
-        { index: idx, startOffset: 19, endOffset: 25 },
+      const inserts: DiffTextSegment[] = [
+        { startOffset: 7, endOffset: 19 },
+        { startOffset: 19, endOffset: 25 },
       ];
-      const deletes: DiffDelete[] = [
-        { index: idx, startOffset: 7, endOffset: 15, text: "mottatt " },
-        { index: idx, startOffset: 19, endOffset: 28, text: "søknaden " }
+      const deletes: DiffDeletedTextSegment[] = [
+        { startOffset: 7, endOffset: 15, text: "mottatt " },
+        { startOffset: 19, endOffset: 28, text: "søknaden " },
       ];
       expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes }), currentText);
     });
@@ -234,57 +240,71 @@ describe("buildDiffSegments", () => {
 
   describe("validation — rejects entire literal on invalid ranges", () => {
     it("rejects when insert endOffset exceeds text length", () => {
-      const inserts: DiffInsert[] = [{ index: idx, startOffset: 40, endOffset: 50 }];
-      const reason = expectRejected(buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts, deletes: [] }));
+      const inserts: DiffTextSegment[] = [{ startOffset: 40, endOffset: 50 }];
+      const reason = expectRejected(
+        buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts, deletes: [] }),
+      );
       expect(reason).toContain("Invalid insert range");
     });
 
     it("rejects when insert startOffset is negative", () => {
-      const inserts: DiffInsert[] = [{ index: idx, startOffset: -1, endOffset: 3 }];
-      const reason = expectRejected(buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts, deletes: [] }));
+      const inserts: DiffTextSegment[] = [{ startOffset: -1, endOffset: 3 }];
+      const reason = expectRejected(
+        buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts, deletes: [] }),
+      );
       expect(reason).toContain("Invalid insert range");
     });
 
     it("rejects when insert endOffset < startOffset", () => {
-      const inserts: DiffInsert[] = [{ index: idx, startOffset: 15, endOffset: 7 }];
-      const reason = expectRejected(buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts, deletes: [] }));
+      const inserts: DiffTextSegment[] = [{ startOffset: 15, endOffset: 7 }];
+      const reason = expectRejected(
+        buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts, deletes: [] }),
+      );
       expect(reason).toContain("Invalid insert range");
     });
 
     it("rejects when delete startOffset is negative", () => {
-      const deletes: DiffDelete[] = [{ index: idx, startOffset: -1, endOffset: 3, text: "Nav" }];
-      const reason = expectRejected(buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts: [], deletes }));
+      const deletes: DiffDeletedTextSegment[] = [{ startOffset: -1, endOffset: 3, text: "Nav" }];
+      const reason = expectRejected(
+        buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts: [], deletes }),
+      );
       expect(reason).toContain("Invalid delete range");
     });
 
     it("rejects when delete endOffset < startOffset", () => {
-      const deletes: DiffDelete[] = [{ index: idx, startOffset: 10, endOffset: 5, text: "mottatt" }];
-      const reason = expectRejected(buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts: [], deletes }));
+      const deletes: DiffDeletedTextSegment[] = [{ startOffset: 10, endOffset: 5, text: "mottatt" }];
+      const reason = expectRejected(
+        buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts: [], deletes }),
+      );
       expect(reason).toContain("Invalid delete range");
     });
 
     it("rejects overlapping insert ranges", () => {
-      const inserts: DiffInsert[] = [
-        { index: idx, startOffset: 0, endOffset: 10 },
-        { index: idx, startOffset: 5, endOffset: 15 },
+      const inserts: DiffTextSegment[] = [
+        { startOffset: 0, endOffset: 10 },
+        { startOffset: 5, endOffset: 15 },
       ];
-      const reason = expectRejected(buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts, deletes: [] }));
+      const reason = expectRejected(
+        buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts, deletes: [] }),
+      );
       expect(reason).toContain("Overlapping insert ranges");
     });
 
     it("rejects insert behind consumed cursor", () => {
-      const inserts: DiffInsert[] = [
-        { index: idx, startOffset: 7, endOffset: 15 },
-        { index: idx, startOffset: 10, endOffset: 12 },
+      const inserts: DiffTextSegment[] = [
+        { startOffset: 7, endOffset: 15 },
+        { startOffset: 10, endOffset: 12 },
       ];
-      const reason = expectRejected(buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts, deletes: [] }));
+      const reason = expectRejected(
+        buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts, deletes: [] }),
+      );
       expect(reason).toContain("Overlapping insert ranges");
     });
 
     it("valid same-position replacement still works", () => {
       const currentText = "Vi har mottatt kravet ditt.";
-      const inserts: DiffInsert[] = [{ index: idx, startOffset: 15, endOffset: 21 }];
-      const deletes: DiffDelete[] = [{ index: idx, startOffset: 15, endOffset: 24, text: "søknaden " }];
+      const inserts: DiffTextSegment[] = [{ startOffset: 15, endOffset: 21 }];
+      const deletes: DiffDeletedTextSegment[] = [{ startOffset: 15, endOffset: 24, text: "søknaden " }];
       const segments = expectCurrentTextInvariant(buildDiffSegments({ currentText, inserts, deletes }), currentText);
       expect(segments).toEqual([
         { type: "unchanged", text: "Vi har mottatt " },
@@ -295,8 +315,10 @@ describe("buildDiffSegments", () => {
     });
 
     it("stale ranges from an older, longer text are rejected", () => {
-      const inserts: DiffInsert[] = [{ index: idx, startOffset: 50, endOffset: 60 }];
-      const reason = expectRejected(buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts, deletes: [] }));
+      const inserts: DiffTextSegment[] = [{ startOffset: 50, endOffset: 60 }];
+      const reason = expectRejected(
+        buildDiffSegments({ currentText: "Vi har mottatt søknaden din.", inserts, deletes: [] }),
+      );
       expect(reason).toContain("Invalid insert range");
     });
   });
@@ -326,7 +348,9 @@ describe("diffKey", () => {
   });
 
   it("produces correct key for a table cell index", () => {
-    expect(diffKey({ blockIndex: 8, contentIndex: 1, rowIndex: 1, cellIndex: 0, cellContentIndex: 0 })).toBe("8-1-table-1-0-0");
+    expect(diffKey({ blockIndex: 8, contentIndex: 1, rowIndex: 1, cellIndex: 0, cellContentIndex: 0 })).toBe(
+      "8-1-table-1-0-0",
+    );
   });
 
   describe("collision resistance", () => {
@@ -375,7 +399,7 @@ describe("diffKey", () => {
 
   describe("zero-length ranges", () => {
     it("zero-length insert produces an empty inserted segment", () => {
-      const inserts: DiffInsert[] = [{ index: idx, startOffset: 5, endOffset: 5 }];
+      const inserts: DiffTextSegment[] = [{ startOffset: 5, endOffset: 5 }];
       const segments = expectOk(buildDiffSegments({ currentText: "Vi har mottatt.", inserts, deletes: [] }));
       expect(segments).toEqual([
         { type: "unchanged", text: "Vi ha" },
@@ -385,7 +409,7 @@ describe("diffKey", () => {
     });
 
     it("zero-length delete with text still renders the deleted text", () => {
-      const deletes: DiffDelete[] = [{ index: idx, startOffset: 6, endOffset: 6, text: "har " }];
+      const deletes: DiffDeletedTextSegment[] = [{ startOffset: 6, endOffset: 6, text: "har " }];
       const segments = expectOk(buildDiffSegments({ currentText: "Vi har mottatt.", inserts: [], deletes }));
       expect(segments).toEqual([
         { type: "unchanged", text: "Vi har" },
