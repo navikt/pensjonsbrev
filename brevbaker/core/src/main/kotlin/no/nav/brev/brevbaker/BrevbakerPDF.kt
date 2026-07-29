@@ -70,7 +70,7 @@ internal class BrevbakerPDF(
                     letter = markup.letterMarkup,
                 ) {
                     markup.attachments.forEach { attachment(it) }
-                    (Letter2MarkupV2.renderPDFTitle(letter.toScope(), pdfVedlegg)).forEach {
+                    Letter2MarkupV2.renderPDFTitle(letter.toScope(), pdfVedlegg).forEach {
                         pdfVedlegg(it)
                     }
                 },
