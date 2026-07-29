@@ -31,6 +31,7 @@ data class UforeAvslagUtlandDto(
 
     data class UforeAvslagPendata(
         val kravMottattDato: LocalDate,
+        val kravFremsattDato: LocalDate?,
         val kravGjelder: KravGjelder,
         val eosNordisk: Boolean = false,
         val avtaletype: String? = null,
