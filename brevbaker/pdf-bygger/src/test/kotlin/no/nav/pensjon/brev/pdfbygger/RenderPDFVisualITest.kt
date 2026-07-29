@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger
 
+import no.nav.brev.brevbaker.PdfByggerTestService
 import kotlinx.coroutines.runBlocking
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.TestInstance

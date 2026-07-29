@@ -4,7 +4,6 @@ val markupJavaTarget: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
-    alias(libs.plugins.kotlin.serialization)
     `maven-publish`
 }
 
@@ -19,9 +18,10 @@ repositories {
     mavenCentral()
 }
 
+// Markup skal være helt uten avhengigheter: den er den offentlige modellen/DSL-en for pdf-bygger, og
+// konsumenter skal ikke arve verken et serialiseringsbibliotek eller genererte serializers gjennom den.
+// All serialisering ligger i brevbaker:internal (se MarkupJacksonModule).
 dependencies {
-    api(libs.kotlinx.serialization.json)
-
     testImplementation(libs.bundles.junit)
 }
 

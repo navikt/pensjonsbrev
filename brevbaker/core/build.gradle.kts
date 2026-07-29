@@ -38,7 +38,8 @@ dependencies {
     testImplementation(testFixtures(project(":brevbaker:dsl")))
     testImplementation(testFixtures(project(":brevbaker:core")))
 
-    testFixturesImplementation(project(":brevbaker:internal"))
+    testFixturesApi(project(":brevbaker:internal"))
+    testFixturesApi(testFixtures(project(":brevbaker:internal")))
     testFixturesImplementation(libs.ktor.serialization.jackson)
     testFixturesImplementation(libs.ktor.client.cio)
     testFixturesImplementation(libs.ktor.client.content.negotiation)

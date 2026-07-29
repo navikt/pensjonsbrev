@@ -4,7 +4,6 @@ val javaTarget: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
-    alias(libs.plugins.kotlin.serialization)
     id("java-library")
     id("java-test-fixtures")
 }
@@ -29,14 +28,14 @@ dependencies {
     api(libs.brevbaker.markup)
 
     // Serialiseringen for all intern kommunikasjon bor her, ikke i markup (som skal være uten
-    // avhengigheter) og ikke spredt utover konsumentene.
-    // TODO: midlertidig – serialiseringen skal over på Jackson (se plan, steg internal-jackson-markup).
-    api(libs.kotlinx.serialization.json)
-
+    // avhengigheter) og ikke spredt utover konsumentene. Se MarkupJacksonModule/internalObjectMapper.
     api(libs.jackson.databind)
     api(libs.jackson.annotations)
-    implementation(libs.jackson.datatype.jsr310) {
+    api(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
+    }
+    api(libs.jackson.module.kotlin) {
+        because("markup bruker value classes og default-verdier i konstruktører, som Jackson kun ser med kotlin-modulen")
     }
 
     testImplementation(libs.bundles.junit)

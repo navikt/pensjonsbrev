@@ -1,8 +1,6 @@
 package no.nav.brev.brevbaker.markup.outline
 
 import no.nav.brev.brevbaker.markup.MarkupInternalApi
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import no.nav.brev.brevbaker.markup.Markup.Identifiable
 
 /** Semantisk merkelapp på et tekst-element som styrer redigeringsatferden i skribenten. */
@@ -10,8 +8,6 @@ enum class EditBehaviour {
     FRITEKST,
     REDIGERBAR_DATA,
 }
-
-@Serializable
 sealed class Text : Identifiable {
     abstract override val id: Int
     abstract val text: String
@@ -32,8 +28,6 @@ sealed class Text : Identifiable {
     enum class FontType { PLAIN, BOLD, ITALIC }
 
     @ConsistentCopyVisibility
-    @Serializable
-    @SerialName("LITERAL")
     data class Literal @MarkupInternalApi constructor(
         override val id: Int,
         override val text: String,
@@ -44,8 +38,6 @@ sealed class Text : Identifiable {
     }
 
     @ConsistentCopyVisibility
-    @Serializable
-    @SerialName("VARIABLE")
     data class Variable @MarkupInternalApi constructor(
         override val id: Int,
         override val text: String,
@@ -56,8 +48,6 @@ sealed class Text : Identifiable {
     }
 
     @ConsistentCopyVisibility
-    @Serializable
-    @SerialName("NEW_LINE")
     data class NewLine @MarkupInternalApi constructor(
         override val id: Int,
     ) : Text() {

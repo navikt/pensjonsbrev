@@ -1,13 +1,9 @@
 package no.nav.brev.brevbaker.markup.outline
 
 import no.nav.brev.brevbaker.markup.MarkupInternalApi
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.Markup.Identifiable
 import no.nav.brev.brevbaker.markup.Markup.TextContainer
-
-@Serializable
 sealed class Block : Identifiable {
     abstract override val id: Int
 
@@ -30,8 +26,6 @@ sealed class Block : Identifiable {
     }
 
     @ConsistentCopyVisibility
-    @Serializable
-    @SerialName("TITLE2")
     data class Title2 @MarkupInternalApi constructor(
         override val id: Int,
         override val content: List<Text>,
@@ -40,8 +34,6 @@ sealed class Block : Identifiable {
     }
 
     @ConsistentCopyVisibility
-    @Serializable
-    @SerialName("TITLE3")
     data class Title3 @MarkupInternalApi constructor(
         override val id: Int,
         override val content: List<Text>,
@@ -50,8 +42,6 @@ sealed class Block : Identifiable {
     }
 
     @ConsistentCopyVisibility
-    @Serializable
-    @SerialName("TITLE4")
     data class Title4 @MarkupInternalApi constructor(
         override val id: Int,
         override val content: List<Text>,
@@ -60,8 +50,6 @@ sealed class Block : Identifiable {
     }
 
     @ConsistentCopyVisibility
-    @Serializable
-    @SerialName("PARAGRAPH")
     data class Paragraph @MarkupInternalApi constructor(
         override val id: Int,
         override val content: List<Text>,
@@ -70,8 +58,6 @@ sealed class Block : Identifiable {
     }
 
     @ConsistentCopyVisibility
-    @Serializable
-    @SerialName("ITEM_LIST")
     data class ItemList @MarkupInternalApi constructor(
         override val id: Int,
         val items: List<Item>,
@@ -80,8 +66,6 @@ sealed class Block : Identifiable {
     }
 
     @ConsistentCopyVisibility
-    @Serializable
-    @SerialName("NUMBERED_LIST")
     data class NumberedList @MarkupInternalApi constructor(
         override val id: Int,
         val items: List<Item>,
@@ -90,15 +74,12 @@ sealed class Block : Identifiable {
     }
 
     @ConsistentCopyVisibility
-    @Serializable
     data class Item @MarkupInternalApi constructor(
         override val id: Int,
         override val content: List<Text>,
     ) : Identifiable, TextContainer
 
     @ConsistentCopyVisibility
-    @Serializable
-    @SerialName("TABLE")
     data class Table @MarkupInternalApi constructor(
         override val id: Int,
         val rows: List<Row>,
@@ -108,28 +89,24 @@ sealed class Block : Identifiable {
 
 
         @ConsistentCopyVisibility
-        @Serializable
         data class Row @MarkupInternalApi constructor(
             override val id: Int,
             val cells: List<Cell>,
         ) : Identifiable
 
         @ConsistentCopyVisibility
-        @Serializable
         data class Cell @MarkupInternalApi constructor(
             override val id: Int,
             override val content: List<Text>,
         ) : Identifiable, TextContainer
 
         @ConsistentCopyVisibility
-        @Serializable
         data class Header @MarkupInternalApi constructor(
             override val id: Int,
             val colSpec: List<ColumnSpec>,
         ) : Identifiable
 
         @ConsistentCopyVisibility
-        @Serializable
         data class ColumnSpec @MarkupInternalApi constructor(
             override val id: Int,
             override val content: List<Text>,
@@ -141,8 +118,6 @@ sealed class Block : Identifiable {
     }
 
     @ConsistentCopyVisibility
-    @Serializable
-    @SerialName("FORM_TEXT")
     data class FormText @MarkupInternalApi constructor(
         override val id: Int,
         override val content: List<Text>,
@@ -155,8 +130,6 @@ sealed class Block : Identifiable {
     }
 
     @ConsistentCopyVisibility
-    @Serializable
-    @SerialName("FORM_CHOICE")
     data class FormChoice @MarkupInternalApi constructor(
         override val id: Int,
         val prompt: List<Text>,
@@ -166,7 +139,6 @@ sealed class Block : Identifiable {
         override val type: Type get() = Type.FORM_CHOICE
 
         @ConsistentCopyVisibility
-        @Serializable
         data class Choice @MarkupInternalApi constructor(
             override val id: Int,
             override val content: List<Text>,

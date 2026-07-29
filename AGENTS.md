@@ -75,7 +75,49 @@ If the agent finds itself about to write to one of these, stop and change the up
 - `brevbaker/dsl` - Template DSL library
 - `brevbaker/core` - Rendering engine
 - `brevbaker/api-model-common` - Shared API models (published artifact)
-- `brevbaker/markup` - Markup model & DSL (published artifact)
+- `brevbaker/markup` - Markup model & DSL (published artifact, **no runtime dependencies**)
+- `brevbaker/internal` - Internal shared layer (**never published**)
+
+### `brevbaker:internal` — the internal shared layer
+
+`brevbaker:internal` is the single door through which `brevbaker:core`, `pensjon:brevbaker`,
+`skribenten-backend` and `brevbaker:pdf-bygger` reach the two published artifacts. It exists because
+types like `BestillRedigertBrevRequest`/`BestillRedigertBrevRequestV2` combine `markup` with
+`api-model-common` and belong in neither.
+
+Rules:
+
+- **Never depend on `libs.brevbaker.common` or `libs.brevbaker.markup` directly** from those modules.
+  Depend on `project(":brevbaker:internal")`; it re-exports both with `api(...)`.
+- `internal` has no `maven-publish` and no `abiValidation` — it is a project dependency only.
+- It consumes markup and api-model-common by *published coordinates*, so after changing either you
+  must run
+  `./gradlew :brevbaker:api-model-common:publishToMavenLocal :brevbaker:markup:publishToMavenLocal`
+  before building dependents. A forgotten version bump silently resolves the **old** jar.
+- **All serialization of internal traffic is Jackson**, via
+  `no.nav.brev.brevbaker.internal.serialize.internalObjectMapper()`. `markup` carries a real
+  `val type: Type` discriminator on every element; polymorphic *deserialization* is configured in
+  `MarkupJacksonModule` (v2) and `LetterMarkupV1JacksonModule` (v1). Adding a sealed subtype without
+  registering it there fails the drift test in `MarkupJacksonModuleTest`.
+- The golden JSON under `brevbaker/internal/src/test/resources/golden/` pins the wire format;
+  regenerate deliberately with `REGENERER_GOLDEN=true ./gradlew :brevbaker:internal:test`.
+- `PDFByggerTestContainer` defaults to the *deployed* `pdf-bygger:main` image, while CI overrides
+  `PDF_BYGGER_IMAGE` with the image built from the same commit. So a local `integrationTest` run tests
+  against the old server and CI against the new one — if only one of them fails, suspect wire
+  compatibility rather than the change itself.
+
+#### `@MarkupInternalApi` seams
+
+`markup`'s builder state is `internal` (with `_`-prefixed names). What `brevbaker:internal` needs is
+exposed as opt-in **extension** properties/functions in `markup/dsl/MarkupInternalSeams.kt` — never
+as members, because members on a DSL receiver shadow the caller's own names inside every DSL lambda.
+Two rules follow, and both have bitten us:
+
+1. A seam name must never equal a public DSL function name (one `import` pulls in both) — hence
+   `tableHeader`/`promptTexts`, not `header`/`prompt`.
+2. A lambda parameter must never be named `build`; a local function-typed variable wins over an
+   extension function. Use `init`.
+
 
 ### Critical Build Commands
 ```bash

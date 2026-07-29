@@ -118,6 +118,25 @@ Ved endringer av public-kode i disse modulene - inkludert sletting av metoder el
 
 Mer om dette på https://kotlinlang.org/docs/api-guidelines-backward-compatibility.html
 
+### Intern modul: `brevbaker:internal`
+
+`brevbaker:internal` er et delt lag mellom `brevbaker`, `skribenten-backend` og `pdf-bygger`, og
+**publiseres aldri**. Den finnes fordi typer som `BestillRedigertBrevRequest` kombinerer
+`brevbaker:markup` med `brevbaker:api-model-common` og hører hjemme i ingen av dem — samtidig som vi
+ikke vil eksponere interne begreper i de publiserte artefaktene.
+
+- De tre tjenestene skal **ikke** deklarere `libs.brevbaker.common` eller `libs.brevbaker.markup`
+  direkte. De bruker `project(":brevbaker:internal")`, som re-eksporterer begge med `api(...)`.
+- `internal` trekker inn de publiserte artefaktene via koordinater. Etter endringer i `markup` eller
+  `api-model-common` må du derfor kjøre
+  `./gradlew :brevbaker:api-model-common:publishToMavenLocal :brevbaker:markup:publishToMavenLocal`
+  før du bygger modulene som avhenger av dem. Husk å bumpe `version` i modulenes `gradle.properties`
+  *og* i `gradle/libs.versions.toml` i samme commit — ellers plukkes den gamle jar-en opp uten feil.
+- All intern serialisering går gjennom Jackson via `internalObjectMapper()` i
+  `no.nav.brev.brevbaker.internal.serialize`. `markup` har ingen serialiseringsavhengighet; hvert
+  element har i stedet en ekte `val type: Type`, og polymorf deserialisering konfigureres i
+  `internal`. Golden-JSON-testene der låser wire-formatet mot pdf-bygger og skribenten.
+
 ### Ytelsestesting med locust
 
 Ytelsestesten er i utgangspunktet satt opp til å teste vedtaksbrevet UNG_UFOER_AUTO.

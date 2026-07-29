@@ -1,13 +1,11 @@
 package no.nav.brev.brevbaker.markup
 
-import kotlinx.serialization.Serializable
 
 /**
  * En ferdig bestilling som pdf-bygger kan rendre til PDF: hovedbrevet, eventuelle brevvedlegg og
  * frittstående PDF-vedlegg-titler, sammen med språk og brevtype.
  */
 @ConsistentCopyVisibility
-@Serializable
 data class LetterPDFRequest @MarkupInternalApi constructor(
     val letterMarkup: LetterMarkup,
     val attachments: List<Attachment>,

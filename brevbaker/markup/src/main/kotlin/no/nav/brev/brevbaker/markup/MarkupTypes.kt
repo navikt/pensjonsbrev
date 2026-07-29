@@ -1,6 +1,5 @@
 package no.nav.brev.brevbaker.markup
 
-import kotlinx.serialization.Serializable
 import no.nav.brev.brevbaker.markup.outline.Text
 
 /**
@@ -29,14 +28,10 @@ object Markup {
         VEDTAKSBREV,
         INFORMASJONSBREV,
     }
-
-    @Serializable
     @JvmInline
     value class Personidentifikator @MarkupInternalApi constructor(val value: String) {
         override fun toString() = value
     }
-
-    @Serializable
     @JvmInline
     value class Saksnummer @MarkupInternalApi constructor(val value: String) {
         override fun toString() = value

@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.pdfbygger.typst
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.PDFRequest
-import no.nav.pensjon.brev.pdfbygger.PdfByggerTestService
+import no.nav.brev.brevbaker.PdfByggerTestService
 import no.nav.pensjon.brev.pdfbygger.TestTags
 import no.nav.pensjon.brev.pdfbygger.letterMarkup
 import no.nav.pensjon.brev.pdfbygger.writeTestPDF

@@ -1,6 +1,5 @@
 package no.nav.brev.brevbaker.markup
 
-import kotlinx.serialization.json.Json
 import no.nav.brev.brevbaker.markup.dsl.*
 import no.nav.brev.brevbaker.markup.outline.Text
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -80,21 +79,4 @@ class LetterPDFRequestDslTest {
         assertEquals("DSL tittel", request.pdfVedlegg[1].title1.literalText())
     }
 
-    @Test
-    fun `round-trips through json for every spraak and brevtype`() {
-        for (spraak in Markup.Spraak.entries) {
-            for (brevtype in Markup.Brevtype.entries) {
-                val request = letterPDFRequest(spraak, brevtype, minimalLetter()) {
-                    attachment { title1("Vedlegg"); outline { paragraph("x") } }
-                    pdfVedlegg { text("Tittel") }
-                }
-
-                val decoded = Json.decodeFromString(LetterPDFRequest.serializer(), Json.encodeToString(LetterPDFRequest.serializer(), request))
-
-                assertEquals(request, decoded)
-                assertEquals(spraak, decoded.spraak)
-                assertEquals(brevtype, decoded.brevtype)
-            }
-        }
-    }
 }

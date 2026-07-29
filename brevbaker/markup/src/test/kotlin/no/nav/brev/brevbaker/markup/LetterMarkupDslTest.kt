@@ -1,6 +1,5 @@
 package no.nav.brev.brevbaker.markup
 
-import kotlinx.serialization.json.Json
 import no.nav.brev.brevbaker.markup.dsl.*
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
@@ -138,9 +137,6 @@ class LetterMarkupDslTest {
         assertEquals("Vedtak", (request.letterMarkup.title1.single() as Text.Literal).text)
         assertEquals(1, request.attachments.size)
         assertEquals("Ekstra PDF-vedlegg", (request.pdfVedlegg.single().title1.single() as Text.Literal).text)
-
-        val decoded = Json.decodeFromString(LetterPDFRequest.serializer(), Json.encodeToString(LetterPDFRequest.serializer(), request))
-        assertEquals(request, decoded)
     }
 
     @Test

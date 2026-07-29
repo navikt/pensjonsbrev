@@ -1,6 +1,6 @@
 package no.nav.brev.brevbaker.markup
 
-import kotlinx.serialization.json.Json
+import no.nav.brev.brevbaker.internal.serialize.internalObjectMapper
 import no.nav.brev.brevbaker.markup.outline.EditBehaviour
 import no.nav.brev.brevbaker.markup.outline.EditBehaviour.FRITEKST
 import no.nav.brev.brevbaker.markup.dsl.*
@@ -298,10 +298,8 @@ class LetterMarkupExtendedDslTest {
         val paragraph = letter.markup.blocks.single() as Block.Paragraph
         assertEquals(listOf(Text.Literal::class, Text.Variable::class), paragraph.content.map { it::class })
 
-        val decoded = Json.decodeFromString(
-            LetterMarkupWithDataUsage.serializer(),
-            Json.encodeToString(LetterMarkupWithDataUsage.serializer(), letter),
-        )
+        val mapper = internalObjectMapper()
+        val decoded = mapper.readValue(mapper.writeValueAsString(letter), LetterMarkupWithDataUsage::class.java)
         assertEquals(letter, decoded)
     }
 

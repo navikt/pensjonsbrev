@@ -19,6 +19,8 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.*
+import no.nav.brev.brevbaker.internal.serialize.LetterMarkupV1JacksonModule
+import no.nav.brev.brevbaker.internal.serialize.TemplateModelSpecificationJacksonModule
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
@@ -186,8 +188,8 @@ fun Application.skribentenContenNegotiation() {
 
 fun ObjectMapper.skribentenServerJackson() = apply {
     registerModule(JavaTimeModule())
-    registerMixin(TemplateModelSpecificationMixins)
-    registerModule(LetterMarkupJacksonModule)
+    registerModule(TemplateModelSpecificationJacksonModule)
+    registerModule(LetterMarkupV1JacksonModule)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 }

@@ -9,7 +9,7 @@ import com.zaxxer.hikari.*
 import io.ktor.server.plugins.di.annotations.*
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
-import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
+import no.nav.brev.brevbaker.internal.serialize.LetterMarkupV1JacksonModule
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
@@ -21,7 +21,7 @@ val databaseReady: AtomicBoolean = AtomicBoolean(false)
 
 internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
-    registerModule(LetterMarkupJacksonModule)
+    registerModule(LetterMarkupV1JacksonModule)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 }

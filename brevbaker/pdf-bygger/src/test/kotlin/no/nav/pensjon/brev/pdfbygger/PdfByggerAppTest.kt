@@ -7,7 +7,7 @@ import io.ktor.http.*
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.*
-import kotlinx.serialization.json.Json
+import no.nav.brev.brevbaker.internal.serialize.InternalObjectMapper
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.markup.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.Markup
@@ -104,7 +104,7 @@ class PdfByggerAppTest {
     }
 
     /**
-     * Happy-path-test for `/v2/produserBrev` som verifiserer at routing, kotlinx-JSON-deserialisering av
+     * Happy-path-test for `/v2/produserBrev` som verifiserer at routing, Jackson-deserialisering av
      * [LetterPDFRequest] og kall til [no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2]
      * er korrekt koblet sammen, uten å kreve at faktisk `typst`-binær er tilgjengelig.
      */
@@ -153,7 +153,7 @@ class PdfByggerAppTest {
 
             val response = client.post("/v2/produserBrev") {
                 contentType(ContentType.Application.Json)
-                setBody(Json.encodeToString(LetterPDFRequest.serializer(), request))
+                setBody(InternalObjectMapper.writeValueAsString(request))
             }
 
             assertEquals(HttpStatusCode.OK, response.status)

@@ -1,18 +1,10 @@
 package no.nav.brev.brevbaker.markup
 
-import kotlinx.serialization.KSerializer
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.descriptors.PrimitiveKind
-import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
-import kotlinx.serialization.descriptors.SerialDescriptor
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Text
 import java.time.LocalDate
 
 @ConsistentCopyVisibility
-@Serializable
 data class LetterMarkup @MarkupInternalApi constructor(
     val title1: List<Text>,
     val saksinformasjon: Saksinformasjon,
@@ -26,7 +18,6 @@ data class LetterMarkup @MarkupInternalApi constructor(
 }
 
 @ConsistentCopyVisibility
-@Serializable
 data class Attachment @MarkupInternalApi constructor(
     val title1: List<Text>,
     val blocks: List<Block>,
@@ -34,44 +25,27 @@ data class Attachment @MarkupInternalApi constructor(
 )
 
 @ConsistentCopyVisibility
-@Serializable
 data class Saksinformasjon @MarkupInternalApi constructor(
     val gjelderNavn: String,
     val gjelderPersonidentifikator: Markup.Personidentifikator,
     val annenMottakerNavn: String?,
     val saksnummer: Markup.Saksnummer,
-    @Serializable(with = LocalDateSerializer::class)
     val dokumentDato: LocalDate,
 )
 
-internal object LocalDateSerializer : KSerializer<LocalDate> {
-    override val descriptor: SerialDescriptor =
-        PrimitiveSerialDescriptor("java.time.LocalDate", PrimitiveKind.STRING)
-
-    override fun serialize(encoder: Encoder, value: LocalDate) {
-        encoder.encodeString(value.toString())
-    }
-
-    override fun deserialize(decoder: Decoder): LocalDate =
-        LocalDate.parse(decoder.decodeString())
-}
-
 @ConsistentCopyVisibility
-@Serializable
 data class Signatur @MarkupInternalApi constructor(
     val saksbehandlerSignatur: SaksbehandlerSignatur?,
     val navAvsenderEnhet: String,
 )
 
 @ConsistentCopyVisibility
-@Serializable
 data class SaksbehandlerSignatur @MarkupInternalApi constructor(
     val saksbehandlerNavn: String,
     val attesterendeSaksbehandlerNavn: String?,
 )
 
 @ConsistentCopyVisibility
-@Serializable
 data class PDFTittel @MarkupInternalApi constructor(
     val title1: List<Text>,
 )
