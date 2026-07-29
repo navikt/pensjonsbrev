@@ -81,7 +81,7 @@ class Felt {
         return felt == other.felt
     }
     override fun hashCode() = felt.hashCode()
-    override fun toString() = "Felt(muterbareFelt=${felt})"
+    override fun toString() = "Felt(felt=$felt)"
 }
 
 @DslMarker
