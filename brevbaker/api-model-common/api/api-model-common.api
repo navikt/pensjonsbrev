@@ -40,28 +40,6 @@ public final class no/nav/brev/BrevLandmodell$Landkoder {
 	public final fun getAlleLandkoder ()Ljava/util/Set;
 }
 
-public abstract interface annotation class no/nav/brev/InternKonstruktoer : java/lang/annotation/Annotation {
-}
-
-public abstract interface annotation class no/nav/brev/InterneDataklasser : java/lang/annotation/Annotation {
-}
-
-public final class no/nav/pensjon/brev/api/model/BestillBrevRequest : no/nav/pensjon/brev/api/model/BrevRequest {
-	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Ljava/util/List;)V
-	public synthetic fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;
-	public final fun getKode ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
-	public final fun getLanguage ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
-	public final fun getLetterData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
-	public final fun getPdfVedlegg ()Ljava/util/List;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public abstract interface class no/nav/pensjon/brev/api/model/BrevRequest {
-}
-
 public final class no/nav/pensjon/brev/api/model/LetterResponse {
 	public fun <init> ([BLjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -123,6 +101,22 @@ public final class no/nav/pensjon/brev/api/model/maler/AutomatiskBrevkode : no/n
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/BestillBrevRequest : no/nav/pensjon/brev/api/model/maler/BrevRequest {
+	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Ljava/util/List;)V
+	public synthetic fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;
+	public final fun getKode ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
+	public final fun getLanguage ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
+	public final fun getLetterData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
+	public final fun getPdfVedlegg ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brev/api/model/maler/BrevRequest {
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {

@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.api.model
 
-import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.util.Objects

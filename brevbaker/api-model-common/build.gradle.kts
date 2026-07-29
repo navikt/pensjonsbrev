@@ -14,6 +14,11 @@ java {
     withJavadocJar()
 }
 
+@OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+kotlin {
+    abiValidation {}
+}
+
 repositories {
     mavenCentral()
 }
@@ -47,17 +52,5 @@ tasks {
     }
     compileTestJava {
         targetCompatibility = apiModelJavaTarget
-    }
-}
-
-@OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
-kotlin {
-    abiValidation {
-        filters {
-            exclude {
-                annotatedWith.add("no.nav.brev.InterneDataklasser")
-                annotatedWith.add("no.nav.brev.InternKonstruktoer")
-            }
-        }
     }
 }
