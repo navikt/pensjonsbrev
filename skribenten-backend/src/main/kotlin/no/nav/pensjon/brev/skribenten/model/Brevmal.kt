@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.model
 
-import no.nav.pensjon.brev.api.model.RedigerbarTemplateDescription
+import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
@@ -72,7 +72,7 @@ interface LetterMetadata {
     /**
      * Brevmetadata om brevmaler fra Brevbaker
      */
-    data class Brevbaker(val data: RedigerbarTemplateDescription) : LetterMetadata {
+    data class Brevbaker(val data: TemplateDescription.Redigerbar) : LetterMetadata {
         override fun toApi(): Api.Brevmal = with(data) {
             Api.Brevmal(
                 name = metadata.displayTitle,

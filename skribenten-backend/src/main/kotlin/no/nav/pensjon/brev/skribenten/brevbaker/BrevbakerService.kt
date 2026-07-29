@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevbaker
 
-import no.nav.pensjon.brev.api.model.RedigerbarTemplateDescription
+import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -15,10 +15,8 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.Closeable
 import kotlinx.io.EOFException
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
@@ -26,9 +24,9 @@ import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
-import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.brev.brevbaker.internal.serialize.LetterMarkupV1JacksonModule
 import no.nav.brev.brevbaker.internal.serialize.TemplateModelSpecificationJacksonModule
+import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.*
@@ -82,8 +80,8 @@ interface BrevbakerService {
         vedleggId: VedleggId,
     ): LetterMarkup.Attachment?
 
-    suspend fun getTemplates(): List<RedigerbarTemplateDescription>?
-    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): RedigerbarTemplateDescription?
+    suspend fun getTemplates(): List<Redigerbar>?
+    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): Redigerbar?
     suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode>
 }
 
@@ -267,7 +265,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         }
     }
 
-    override suspend fun getTemplates(): List<RedigerbarTemplateDescription>? {
+    override suspend fun getTemplates(): List<Redigerbar>? {
         val response = client.get("/templates/redigerbar") {
             url {
                 parameters.append("includeMetadata", "true")
@@ -281,7 +279,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         }
     }
 
-    override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): RedigerbarTemplateDescription? =
+    override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): Redigerbar? =
         cache.cached(Cacheomraade.REDIGERBAR_MAL, brevkode) {
             val response = client.get("/templates/redigerbar/${brevkode.kode()}")
 

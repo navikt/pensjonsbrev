@@ -27,7 +27,6 @@ sealed class Text : Identifiable {
 
     enum class FontType { PLAIN, BOLD, ITALIC }
 
-    @ConsistentCopyVisibility
     data class Literal @MarkupInternalApi constructor(
         override val id: Int,
         override val text: String,
@@ -37,7 +36,6 @@ sealed class Text : Identifiable {
         override val type: Type get() = Type.LITERAL
     }
 
-    @ConsistentCopyVisibility
     data class Variable @MarkupInternalApi constructor(
         override val id: Int,
         override val text: String,
@@ -47,7 +45,6 @@ sealed class Text : Identifiable {
         override val type: Type get() = Type.VARIABLE
     }
 
-    @ConsistentCopyVisibility
     data class NewLine @MarkupInternalApi constructor(
         override val id: Int,
     ) : Text() {

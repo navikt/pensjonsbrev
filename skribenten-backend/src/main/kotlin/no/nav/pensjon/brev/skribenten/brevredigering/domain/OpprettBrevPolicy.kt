@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
-import no.nav.pensjon.brev.api.model.RedigerbarTemplateDescription
+import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
@@ -54,5 +54,5 @@ class OpprettBrevPolicy(
     }
 }
 
-private val RedigerbarTemplateDescription.isVedtakKontekst: Boolean
+private val TemplateDescription.Redigerbar.isVedtakKontekst: Boolean
     get() = brevkontekst == TemplateDescription.Brevkontekst.VEDTAK

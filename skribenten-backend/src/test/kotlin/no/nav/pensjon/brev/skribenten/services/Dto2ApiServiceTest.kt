@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import no.nav.pensjon.brev.api.model.RedigerbarTemplateDescription
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -25,7 +24,7 @@ class Dto2ApiServiceTest {
             brevmalService = BrevmalService(
                 FakeBrevbakerService(
                     redigerbareMaler = mutableMapOf(
-                        Testbrevkoder.TESTBREV to RedigerbarTemplateDescription(
+                        Testbrevkoder.TESTBREV to TemplateDescription.Redigerbar(
                             name = Testbrevkoder.TESTBREV.kode(),
                             letterDataClass = EksempelRedigerbartDto::class.java.name,
                             languages = listOf(LanguageCode.BOKMAL),
@@ -34,9 +33,9 @@ class Dto2ApiServiceTest {
                                 LetterMetadata.Distribusjonstype.VIKTIG,
                                 LetterMetadata.Brevtype.INFORMASJONSBREV
                             ),
-                            kategori = RedigerbarTemplateDescription.Brevkategori("INFORMASJONSBREV"),
+                            kategori = TemplateDescription.Redigerbar.Brevkategori("INFORMASJONSBREV"),
                             brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-                            sakstyper = setOf(RedigerbarTemplateDescription.Sakstype("Sakstype1")),
+                            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("Sakstype1")),
                         )
                     )
                 ),

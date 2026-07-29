@@ -76,6 +76,48 @@ public abstract interface class no/nav/pensjon/brev/api/model/TemplateDescriptio
 	public abstract fun getKode ()Ljava/lang/String;
 }
 
+public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar : no/nav/pensjon/brev/api/model/TemplateDescription {
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Ljava/lang/String;Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;Ljava/util/Set;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBrevkontekst ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
+	public final fun getKategori-Gnp6WTg ()Ljava/lang/String;
+	public fun getLanguages ()Ljava/util/List;
+	public fun getLetterDataClass ()Ljava/lang/String;
+	public fun getMetadata ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
+	public fun getName ()Ljava/lang/String;
+	public final fun getSakstyper ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar$Brevkategori : no/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar$Brevkategori;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public fun getKode ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar$Sakstype {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar$Sakstype;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getKode ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
 public abstract interface class no/nav/pensjon/brev/api/model/maler/AutobrevData : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata, no/nav/pensjon/brev/api/model/maler/FagsystemBrevdata {
 }
 
@@ -199,22 +241,6 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/Saksbehandle
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData {
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggBrevkode : no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getKode ()Ljava/lang/String;
-	public fun getSpraak ()Ljava/util/Set;
-	public fun getVisningstekst ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public abstract interface class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode {
-	public abstract fun getKode ()Ljava/lang/String;
-	public abstract fun getSpraak ()Ljava/util/Set;
-	public abstract fun getVisningstekst ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/BrevbakerFelles {
@@ -461,3 +487,4 @@ public final class no/nav/pensjon/brevbaker/api/model/PDFVedleggTittel {
 	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
+

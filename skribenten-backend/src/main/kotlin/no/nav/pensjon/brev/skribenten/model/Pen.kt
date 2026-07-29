@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.model
 
-import no.nav.pensjon.brev.api.model.RedigerbarTemplateDescription
+import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -79,7 +79,7 @@ object Pen {
     )
 
     data class SendRedigerbartBrevRequest(
-        val templateDescription: RedigerbarTemplateDescription,
+        val templateDescription: TemplateDescription.Redigerbar,
         val dokumentDato: LocalDate,
         val saksId: SaksId,
         val brevkode: Brevkode.Redigerbart,

@@ -28,6 +28,37 @@ interface TemplateDescription {
             "Autobrev(name='$name', letterDataClass='$letterDataClass', languages=$languages, metadata=$metadata)"
     }
 
+    class Redigerbar(
+        override val name: String,
+        override val letterDataClass: String,
+        override val languages: List<LanguageCode>,
+        override val metadata: LetterMetadata,
+        val kategori: Brevkategori,
+        val brevkontekst: Brevkontekst,
+        val sakstyper: Set<Sakstype>,
+    ) : TemplateDescription {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Redigerbar) return false
+            return name == other.name && letterDataClass == other.letterDataClass && languages == other.languages && metadata == other.metadata && kategori == other.kategori && brevkontekst == other.brevkontekst && sakstyper == other.sakstyper
+        }
+
+        override fun hashCode() = Objects.hash(name, letterDataClass, languages, metadata, kategori, brevkontekst, sakstyper)
+
+        override fun toString(): String =
+            "Redigerbar(name='$name', letterDataClass='$letterDataClass', languages=$languages, metadata=$metadata, kategori=$kategori, brevkontekst=$brevkontekst, sakstyper=$sakstyper)"
+
+        @JvmInline
+        value class Brevkategori(override val kode: String) : IBrevkategori {
+            override fun toString() = kode
+        }
+
+        @JvmInline
+        value class Sakstype(val kode: String) {
+            override fun toString() = kode
+        }
+    }
+
     enum class Brevkontekst {
         // Saksbrev som også skal være tilgjengelige hvis du kommer inn fra et vedtak
         ALLE,

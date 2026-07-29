@@ -28,7 +28,6 @@ import no.nav.pensjon.brev.skribenten.common.oneShotJobs
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.serialize.*
 import no.nav.pensjon.brev.skribenten.services.*
 import org.apache.pdfbox.pdmodel.font.PDType1Font
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts

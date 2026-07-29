@@ -133,3 +133,4 @@ public final class no/nav/pensjon/brevbaker/api/model/selectors/brevbakerType/te
 	public static final fun getValue (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun getValue (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
 }
+

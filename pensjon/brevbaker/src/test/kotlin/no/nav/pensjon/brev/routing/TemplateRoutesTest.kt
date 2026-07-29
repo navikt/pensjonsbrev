@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.routing
 
-import no.nav.pensjon.brev.api.model.RedigerbarTemplateDescription
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -72,7 +71,7 @@ class TemplateRoutesTest {
             val response = client.get("/templates/redigerbar?includeMetadata=true")
             assertEquals(HttpStatusCode.OK, response.status)
             assertEquals(
-            alleRedigerbareMaler.map { it.description() }, response.body<List<RedigerbarTemplateDescription>>()
+            alleRedigerbareMaler.map { it.description() }, response.body<List<TemplateDescription.Redigerbar>>()
             )
         }
 
@@ -90,7 +89,7 @@ class TemplateRoutesTest {
         fun `can get description of redigerbar`() = testBrevbakerApp(isIntegrationTest = false) { client ->
             val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}")
             assertEquals(HttpStatusCode.OK, response.status)
-            assertEquals(InformasjonOmSaksbehandlingstid.description(), response.body<RedigerbarTemplateDescription>())
+            assertEquals(InformasjonOmSaksbehandlingstid.description(), response.body<TemplateDescription.Redigerbar>())
         }
 
         @Test

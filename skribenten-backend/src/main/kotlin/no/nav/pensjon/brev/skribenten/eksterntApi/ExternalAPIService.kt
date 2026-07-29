@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.eksterntApi
 
-import no.nav.pensjon.brev.api.model.RedigerbarTemplateDescription
+import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
@@ -46,7 +46,7 @@ class ExternalAPIService(
 
     private fun Dto.BrevInfo.aapneBrevUrl() = "$skribentenWebUrl/aapne/brev/${id.id}"
 
-    private fun Dto.BrevInfo.toExternal(template: RedigerbarTemplateDescription?) =
+    private fun Dto.BrevInfo.toExternal(template: TemplateDescription.Redigerbar?) =
         if (template != null) {
             ExternalAPI.BrevInfo(
                 url = aapneBrevUrl(),

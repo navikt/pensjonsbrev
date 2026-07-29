@@ -1,7 +1,6 @@
 package no.nav.brev.brevbaker.markup.outline
 
 import no.nav.brev.brevbaker.markup.MarkupInternalApi
-import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.Markup.Identifiable
 import no.nav.brev.brevbaker.markup.Markup.TextContainer
 sealed class Block : Identifiable {
@@ -25,7 +24,6 @@ sealed class Block : Identifiable {
         FORM_CHOICE,
     }
 
-    @ConsistentCopyVisibility
     data class Title2 @MarkupInternalApi constructor(
         override val id: Int,
         override val content: List<Text>,
@@ -33,7 +31,6 @@ sealed class Block : Identifiable {
         override val type: Type get() = Type.TITLE2
     }
 
-    @ConsistentCopyVisibility
     data class Title3 @MarkupInternalApi constructor(
         override val id: Int,
         override val content: List<Text>,
@@ -41,7 +38,6 @@ sealed class Block : Identifiable {
         override val type: Type get() = Type.TITLE3
     }
 
-    @ConsistentCopyVisibility
     data class Title4 @MarkupInternalApi constructor(
         override val id: Int,
         override val content: List<Text>,
@@ -49,7 +45,6 @@ sealed class Block : Identifiable {
         override val type: Type get() = Type.TITLE4
     }
 
-    @ConsistentCopyVisibility
     data class Paragraph @MarkupInternalApi constructor(
         override val id: Int,
         override val content: List<Text>,
@@ -57,7 +52,6 @@ sealed class Block : Identifiable {
         override val type: Type get() = Type.PARAGRAPH
     }
 
-    @ConsistentCopyVisibility
     data class ItemList @MarkupInternalApi constructor(
         override val id: Int,
         val items: List<Item>,
@@ -65,7 +59,6 @@ sealed class Block : Identifiable {
         override val type: Type get() = Type.ITEM_LIST
     }
 
-    @ConsistentCopyVisibility
     data class NumberedList @MarkupInternalApi constructor(
         override val id: Int,
         val items: List<Item>,
@@ -73,13 +66,11 @@ sealed class Block : Identifiable {
         override val type: Type get() = Type.NUMBERED_LIST
     }
 
-    @ConsistentCopyVisibility
     data class Item @MarkupInternalApi constructor(
         override val id: Int,
         override val content: List<Text>,
     ) : Identifiable, TextContainer
 
-    @ConsistentCopyVisibility
     data class Table @MarkupInternalApi constructor(
         override val id: Int,
         val rows: List<Row>,
@@ -88,25 +79,21 @@ sealed class Block : Identifiable {
         override val type: Type get() = Type.TABLE
 
 
-        @ConsistentCopyVisibility
         data class Row @MarkupInternalApi constructor(
             override val id: Int,
             val cells: List<Cell>,
         ) : Identifiable
 
-        @ConsistentCopyVisibility
         data class Cell @MarkupInternalApi constructor(
             override val id: Int,
             override val content: List<Text>,
         ) : Identifiable, TextContainer
 
-        @ConsistentCopyVisibility
         data class Header @MarkupInternalApi constructor(
             override val id: Int,
             val colSpec: List<ColumnSpec>,
         ) : Identifiable
 
-        @ConsistentCopyVisibility
         data class ColumnSpec @MarkupInternalApi constructor(
             override val id: Int,
             override val content: List<Text>,
@@ -117,7 +104,6 @@ sealed class Block : Identifiable {
         enum class ColumnAlignment { LEFT, RIGHT }
     }
 
-    @ConsistentCopyVisibility
     data class FormText @MarkupInternalApi constructor(
         override val id: Int,
         override val content: List<Text>,
@@ -129,7 +115,6 @@ sealed class Block : Identifiable {
         enum class Size { NONE, SHORT, LONG, FILL }
     }
 
-    @ConsistentCopyVisibility
     data class FormChoice @MarkupInternalApi constructor(
         override val id: Int,
         val prompt: List<Text>,
@@ -138,7 +123,6 @@ sealed class Block : Identifiable {
     ) : Block() {
         override val type: Type get() = Type.FORM_CHOICE
 
-        @ConsistentCopyVisibility
         data class Choice @MarkupInternalApi constructor(
             override val id: Int,
             override val content: List<Text>,
