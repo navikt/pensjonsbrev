@@ -18,6 +18,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.NewLineImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
 import no.nav.pensjon.brevbaker.api.model.PDFTittel
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -138,6 +139,11 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         }.map { PDFTittel(it) }
     }
 
+    fun renderPDFTitle(scope: ExpressionScope<*>, titles: List<PDFVedleggTittel>): List<PDFTittel> {
+        val context = RenderContext(scope)
+        return titles.map { it.tittel }
+            .map { text -> PDFTittel(listOf(LiteralImpl(context.stableHash(StableHash.of(text)), text))) }
+    }
 
     private fun renderOutline(context: RenderContext, outline: List<OutlineElement<*>>): List<Block> =
         buildList {
@@ -233,7 +239,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         }
 
     private fun renderTextContent(context: RenderContext, element: Element.OutlineContent.ParagraphContent.Text<*>): List<Text> {
-        val fontType = renderFontType(element.fontType)
+        val fontType = element.fontType.toMarkup()
         return when (element) {
             is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage -> element.expr(context.scope.language).toContent(context, fontType)
             is Element.OutlineContent.ParagraphContent.Text.Expression -> element.expression.toContent(context, fontType)
@@ -247,13 +253,6 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             render(context, elements) { inner, text ->
                 addAll(renderTextContent(inner, text))
             }
-        }
-
-    private fun renderFontType(fontType: Element.OutlineContent.ParagraphContent.Text.FontType): FontType =
-        when (fontType) {
-            Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN -> FontType.PLAIN
-            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD -> FontType.BOLD
-            Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC -> FontType.ITALIC
         }
 
     @OptIn(BrevbakerDSLInternal::class)

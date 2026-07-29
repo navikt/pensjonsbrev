@@ -243,6 +243,16 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         return;
       }
 
+      // Focus jumped here programmatically (not via a real click/DOM focus event) and wants the whole
+      // fritekst selected, mirroring click behavior. Just call .focus(): handleOnFocus's native
+      // onFocus listener selects the full text for erFritekst elements. We must NOT also call
+      // focusAtOffset here, since it collapses the selection to a single offset right after focusing,
+      // which would immediately undo the selection handleOnFocus just made.
+      if (editorState.focus.selectAll && erFritekst && element.childNodes[0]) {
+        element.focus();
+        return;
+      }
+
       // If we do NOT yet have a stored cursorPosition, respect any existing DOM caret/selection.
       if (editorState.focus.cursorPosition === undefined || editorState.focus.cursorPosition < 0) {
         const selection = globalThis.getSelection();

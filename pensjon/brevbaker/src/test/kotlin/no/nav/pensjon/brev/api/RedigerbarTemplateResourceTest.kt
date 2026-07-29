@@ -6,6 +6,7 @@ import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.PDFRequest
+import no.nav.brev.brevbaker.markup.LetterPDFRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
@@ -25,6 +26,10 @@ class RedigerbarTemplateResourceTest {
     private val fakePDFBygger = object : PDFByggerService {
         override suspend fun producePDF(
             pdfRequest: PDFRequest,
+        ): PDFCompilationOutput = PDFCompilationOutput(pdf)
+
+        override suspend fun producePDFV2(
+            pdfRequest: LetterPDFRequest,
         ): PDFCompilationOutput = PDFCompilationOutput(pdf)
     }
 

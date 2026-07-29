@@ -9,6 +9,7 @@ import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFVedleggAppender
 import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
 import no.nav.pensjon.brev.PDFRequest
+import no.nav.brev.brevbaker.markup.LetterPDFRequest
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
@@ -31,6 +32,7 @@ class BlockTilSlateKonvertererTest {
         val letter = lesInnBrev(ForhaandsvarselOmregningBP.template, Fixtures.create())
         val letterMarkup = Brevbaker(object : PDFByggerService {
             override suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput = PDFCompilationOutput(ByteArray(0))
+            override suspend fun producePDFV2(pdfRequest: LetterPDFRequest): PDFCompilationOutput = PDFCompilationOutput(ByteArray(0))
         },
             object: PDFVedleggAppender {
                 override fun leggPaaVedlegg(

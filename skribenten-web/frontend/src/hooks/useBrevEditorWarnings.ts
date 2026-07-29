@@ -3,11 +3,11 @@ import { type UseFormReturn } from "react-hook-form";
 
 import {
   countMissingFromTemplateBlocks,
-  countUnfilledFritekstPlaceholders,
+  countUneditedFritekstPlaceholders,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
-  extractRelevantSaksbehandlerValgFields,
+  filterModelSpecificationByPropertyUsage,
   useModelSpecificationForm,
 } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { type SaksbehandlerValg } from "~/types/brev";
@@ -30,18 +30,10 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
 }: UseBrevEditorWarningsParams<FormSchema>) {
   const { status, specification, saksbehandlerValgType } = useModelSpecificationForm(brevkode);
 
-  const relevantFields = useMemo(
-    () => extractRelevantSaksbehandlerValgFields(propertyUsage ?? [], saksbehandlerValgType),
-    [propertyUsage, saksbehandlerValgType],
+  const filteredSpecification = useMemo(
+    () => filterModelSpecificationByPropertyUsage(specification, propertyUsage, saksbehandlerValgType),
+    [specification, propertyUsage, saksbehandlerValgType],
   );
-
-  const filteredSpecification = useMemo(() => {
-    if (!specification) return undefined;
-
-    if (relevantFields.size === 0) return specification;
-
-    return Object.fromEntries(Object.entries(specification).filter(([key]) => relevantFields.has(key)));
-  }, [specification, relevantFields]);
 
   const hasMissingRequiredSaksbehandlerValg = useCallback((): boolean => {
     if (status !== "success" || !filteredSpecification) return false;
@@ -58,8 +50,8 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
     });
   }, [form, filteredSpecification, status]);
 
-  const numberOfUnfilledFritekstPlaceholders = useCallback(
-    () => countUnfilledFritekstPlaceholders(redigertBrev),
+  const numberOfUneditedFritekstPlaceholders = useCallback(
+    () => countUneditedFritekstPlaceholders(redigertBrev),
     [redigertBrev],
   );
 
@@ -69,15 +61,15 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
   );
 
   const getWarning = useCallback((): WarningResult => {
-    const unfilled = numberOfUnfilledFritekstPlaceholders();
+    const unedited = numberOfUneditedFritekstPlaceholders();
     const missingRequired = hasMissingRequiredSaksbehandlerValg();
     const missingFromTemplate = numberOfMissingFromTemplateBlocks();
 
-    if (unfilled > 0 && missingRequired) {
-      return { kind: "fritekstOgTekstValg", count: unfilled };
+    if (unedited > 0 && missingRequired) {
+      return { kind: "fritekstOgTekstValg", count: unedited };
     }
-    if (unfilled > 0) {
-      return { kind: "fritekst", count: unfilled };
+    if (unedited > 0) {
+      return { kind: "fritekst", count: unedited };
     }
     if (missingRequired) {
       return { kind: "tekstValg" };
@@ -86,7 +78,7 @@ export function useBrevEditorWarnings<FormSchema extends { saksbehandlerValg: Sa
       return { kind: "avsnittIkkeIMal", count: missingFromTemplate };
     }
     return null;
-  }, [hasMissingRequiredSaksbehandlerValg, numberOfUnfilledFritekstPlaceholders, numberOfMissingFromTemplateBlocks]);
+  }, [hasMissingRequiredSaksbehandlerValg, numberOfUneditedFritekstPlaceholders, numberOfMissingFromTemplateBlocks]);
 
-  return { getWarning, hasMissingRequiredSaksbehandlerValg, numberOfUnfilledFritekstPlaceholders };
+  return { getWarning, hasMissingRequiredSaksbehandlerValg, numberOfUneditedFritekstPlaceholders };
 }

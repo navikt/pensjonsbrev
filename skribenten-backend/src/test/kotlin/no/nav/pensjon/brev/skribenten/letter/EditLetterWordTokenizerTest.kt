@@ -116,6 +116,7 @@ class EditLetterWordTokenizerTest {
                 Token.Text.Literal(null, FontType.PLAIN),
                 Token.Word("item"),
                 Token.Word("two"),
+                Token.ItemListEnd,
             ),
             tokens
         )
@@ -148,6 +149,7 @@ class EditLetterWordTokenizerTest {
                 Token.Text.Literal(null, FontType.PLAIN),
                 Token.Word("cell"),
                 Token.Word("body"),
+                Token.TableEnd,
             ),
             tokens
         )
@@ -156,34 +158,29 @@ class EditLetterWordTokenizerTest {
 
     // --- parseTokens ---
 
-    private fun recordCalls(old: List<Token>, new: List<Token>): List<Pair<ContentIndex, Change<*>>> {
-        return tokenizer.parseTokens(shortestEditScript(old, new), object : DiffProducer<List<Pair<ContentIndex, Change<*>>>> {
-            private val calls = mutableListOf<Pair<ContentIndex, Change<*>>>()
-            override fun block(index: BlockIndex, change: Change<DiffProducer.BlockInfo>) {
-                calls.add(index to change)
+    private fun recordCalls(old: List<Token>, new: List<Token>): List<Triple<ContentIndex, ContentIndex, Change<*>>> {
+        return tokenizer.parseTokens(shortestEditScript(old, new), object : DiffProducer<List<Triple<ContentIndex, ContentIndex, Change<*>>>> {
+            private val calls = mutableListOf<Triple<ContentIndex, ContentIndex, Change<*>>>()
+            override fun block(insertIndex: BlockIndex, deleteIndex: BlockIndex, change: Change<DiffProducer.BlockInfo>) {
+                calls.add(Triple(insertIndex, deleteIndex, change))
             }
-            override fun itemList(index: BlockContentIndex, change: Change<DiffProducer.ItemListInfo>) {
-                calls.add(index to change)
+            override fun itemList(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex, change: Change<DiffProducer.ItemListInfo>) {
+                calls.add(Triple(insertIndex, deleteIndex, change))
             }
-            override fun item(index: ItemIndex, change: Change<DiffProducer.ItemInfo>) {
-                calls.add(index to change)
+            override fun item(insertIndex: ItemIndex, deleteIndex: ItemIndex, change: Change<DiffProducer.ItemInfo>) {
+                calls.add(Triple(insertIndex, deleteIndex, change))
             }
-            override fun table(index: BlockContentIndex, change: Change<DiffProducer.TableInfo>) {
-                calls.add(index to change)
+            override fun table(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex, change: Change<DiffProducer.TableInfo>) {
+                calls.add(Triple(insertIndex, deleteIndex, change))
             }
-            override fun row(index: TableRowIndex, change: Change<DiffProducer.RowInfo>) {
-                calls.add(index to change)
+            override fun row(insertIndex: TableRowIndex, deleteIndex: TableRowIndex, change: Change<DiffProducer.RowInfo>) {
+                calls.add(Triple(insertIndex, deleteIndex, change))
             }
-            override fun cell(index: TableCellIndex, change: Change<DiffProducer.CellInfo>) {
-                calls.add(index to change)
+            override fun cell(insertIndex: TableCellIndex, deleteIndex: TableCellIndex, change: Change<DiffProducer.CellInfo>) {
+                calls.add(Triple(insertIndex, deleteIndex, change))
             }
-            override fun textSegment(change: Change<DiffProducer.TextSegment>) {
-                val index = when (change) {
-                    is Change.Insert -> change.new.index
-                    is Change.Delete -> change.old.index
-                    is Change.Replace -> change.new.index
-                }
-                calls.add(index to change)
+            override fun textSegment(insertIndex: ContentIndex, deleteIndex: ContentIndex, change: Change<DiffProducer.TextSegment>) {
+                calls.add(Triple(insertIndex, deleteIndex, change))
             }
             override fun build() = calls.toList()
         })
@@ -199,8 +196,8 @@ class EditLetterWordTokenizerTest {
         )
         assertEquals(
             listOf(
-                BlockIndex(0) to Change.Insert(DiffProducer.BlockInfo(null, PARAGRAPH)),
-                BlockContentIndex(0, 0) to Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 0), 0, 5, "hello")),
+                Triple(BlockIndex(0), BlockIndex(0), Change.Insert(DiffProducer.BlockInfo(null, PARAGRAPH))),
+                Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 0), Change.Insert(DiffProducer.TextSegment(0, 5, "hello"))),
             ),
             recordCalls(old, new),
         )
@@ -215,9 +212,10 @@ class EditLetterWordTokenizerTest {
         )
         val new = listOf<Token>()
         assertEquals(
+            // "hello" is genuinely, entirely gone (the whole block is deleted), so it's reported via textContent
+            // (which recordCalls doesn't capture here) rather than as a word-level textSegment delete.
             listOf(
-                BlockIndex(0) to Change.Delete(DiffProducer.BlockInfo(null, PARAGRAPH)),
-                BlockContentIndex(0, 0) to Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 0), 0, 5, "hello")),
+                Triple(BlockIndex(0), BlockIndex(0), Change.Delete(DiffProducer.BlockInfo(null, PARAGRAPH))),
             ),
             recordCalls(old, new),
         )
@@ -239,8 +237,8 @@ class EditLetterWordTokenizerTest {
         )
         assertEquals(
             listOf(
-                BlockContentIndex(0, 0) to Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 13, "goodbye")),
-                BlockContentIndex(0, 0) to Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 11, "world")),
+                Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 0), Change.Insert(DiffProducer.TextSegment(6, 13, "goodbye"))),
+                Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 0), Change.Delete(DiffProducer.TextSegment(6, 11, "world"))),
             ),
             recordCalls(old, new),
         )
@@ -257,12 +255,13 @@ class EditLetterWordTokenizerTest {
             Token.Item(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("hello"),
+            Token.ItemListEnd,
         )
         assertEquals(
             listOf(
-                BlockContentIndex(0, 0) to Change.Insert(DiffProducer.ItemListInfo(null, Listetype.PUNKTLISTE)),
-                ContentIndex.ItemIndex(0, 0, 0) to Change.Insert(DiffProducer.ItemInfo(null)),
-                ItemContentIndex(0, 0, 0, 0) to Change.Insert(DiffProducer.TextSegment(ItemContentIndex(0, 0, 0, 0), 0, 5, "hello")),
+                Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 0), Change.Insert(DiffProducer.ItemListInfo(null, Listetype.PUNKTLISTE))),
+                Triple(ItemIndex(0, 0, 0), ItemIndex(0, 0, 0), Change.Insert(DiffProducer.ItemInfo(null))),
+                Triple(ItemContentIndex(0, 0, 0, 0), ItemContentIndex(0, 0, 0, 0), Change.Insert(DiffProducer.TextSegment(0, 5, "hello"))),
             ),
             recordCalls(old, new),
         )
@@ -276,6 +275,7 @@ class EditLetterWordTokenizerTest {
             Token.Item(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("hello"),
+            Token.ItemListEnd,
         )
         val new = listOf(
             Token.Block(null, PARAGRAPH),
@@ -286,11 +286,12 @@ class EditLetterWordTokenizerTest {
             Token.Item(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("world"),
+            Token.ItemListEnd,
         )
         assertEquals(
             listOf(
-                ContentIndex.ItemIndex(0, 0, 1) to Change.Insert(DiffProducer.ItemInfo(null)),
-                ItemContentIndex(0, 0, 1, 0) to Change.Insert(DiffProducer.TextSegment(ItemContentIndex(0, 0, 1, 0), 0, 5, "world")),
+                Triple(ItemIndex(0, 0, 1), ItemIndex(0, 0, 1), Change.Insert(DiffProducer.ItemInfo(null))),
+                Triple(ItemContentIndex(0, 0, 1, 0), ItemContentIndex(0, 0, 1, 0), Change.Insert(DiffProducer.TextSegment(0, 5, "world"))),
             ),
             recordCalls(old, new),
         )
@@ -313,15 +314,16 @@ class EditLetterWordTokenizerTest {
             Token.Cell(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("body"),
+            Token.TableEnd,
         )
         assertEquals(
             listOf(
-                BlockContentIndex(0, 0) to Change.Insert(DiffProducer.TableInfo(null)),
-                ContentIndex.TableCellIndex(0, 0, -1, 0) to Change.Insert(DiffProducer.CellInfo(null)),
-                TableCellContentIndex(0, 0, -1, 0, 0) to Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, -1, 0, 0), 0, 6, "header")),
-                ContentIndex.TableRowIndex(0, 0, 0) to Change.Insert(DiffProducer.RowInfo(null)),
-                ContentIndex.TableCellIndex(0, 0, 0, 0) to Change.Insert(DiffProducer.CellInfo(null)),
-                TableCellContentIndex(0, 0, 0, 0, 0) to Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 0, 0, 0), 0, 4, "body")),
+                Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 0), Change.Insert(DiffProducer.TableInfo(null))),
+                Triple(TableCellIndex(0, 0, -1, 0), TableCellIndex(0, 0, -1, 0), Change.Insert(DiffProducer.CellInfo(null))),
+                Triple(TableCellContentIndex(0, 0, -1, 0, 0), TableCellContentIndex(0, 0, -1, 0, 0), Change.Insert(DiffProducer.TextSegment(0, 6, "header"))),
+                Triple(TableRowIndex(0, 0, 0), TableRowIndex(0, 0, 0), Change.Insert(DiffProducer.RowInfo(null))),
+                Triple(TableCellIndex(0, 0, 0, 0), TableCellIndex(0, 0, 0, 0), Change.Insert(DiffProducer.CellInfo(null))),
+                Triple(TableCellContentIndex(0, 0, 0, 0, 0), TableCellContentIndex(0, 0, 0, 0, 0), Change.Insert(DiffProducer.TextSegment(0, 4, "body"))),
             ),
             recordCalls(old, new),
         )
@@ -340,18 +342,18 @@ class EditLetterWordTokenizerTest {
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("body"),
         )
-        val old = listOf(Token.Block(null, PARAGRAPH), Token.Table(null)) + tableHeaderAndFirstRow
-        val new = old + listOf(
+        val old = listOf(Token.Block(null, PARAGRAPH), Token.Table(null)) + tableHeaderAndFirstRow + Token.TableEnd
+        val new = listOf(Token.Block(null, PARAGRAPH), Token.Table(null)) + tableHeaderAndFirstRow + listOf(
             Token.Row(null),
             Token.Cell(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("extra"),
-        )
+        ) + Token.TableEnd
         assertEquals(
             listOf(
-                ContentIndex.TableRowIndex(0, 0, 1) to Change.Insert(DiffProducer.RowInfo(null)),
-                ContentIndex.TableCellIndex(0, 0, 1, 0) to Change.Insert(DiffProducer.CellInfo(null)),
-                TableCellContentIndex(0, 0, 1, 0, 0) to Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 1, 0, 0), 0, 5, "extra")),
+                Triple(TableRowIndex(0, 0, 1), TableRowIndex(0, 0, 1), Change.Insert(DiffProducer.RowInfo(null))),
+                Triple(TableCellIndex(0, 0, 1, 0), TableCellIndex(0, 0, 1, 0), Change.Insert(DiffProducer.CellInfo(null))),
+                Triple(TableCellContentIndex(0, 0, 1, 0, 0), TableCellContentIndex(0, 0, 1, 0, 0), Change.Insert(DiffProducer.TextSegment(0, 5, "extra"))),
             ),
             recordCalls(old, new),
         )
@@ -371,16 +373,29 @@ class EditLetterWordTokenizerTest {
             Token.Cell(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("body"),
+            Token.TableEnd,
         )
-        val new = old + listOf(
+        val new = listOf(
+            Token.Block(null, PARAGRAPH),
+            Token.Table(null),
+            Token.TableHeader(null),
+            Token.ColumnSpec(null, LEFT, 1),
+            Token.Cell(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("col"),
+            Token.Row(null),
+            Token.Cell(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("body"),
             Token.Cell(null),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("extra"),
+            Token.TableEnd,
         )
         assertEquals(
             listOf(
-                ContentIndex.TableCellIndex(0, 0, 0, 1) to Change.Insert(DiffProducer.CellInfo(null)),
-                TableCellContentIndex(0, 0, 0, 1, 0) to Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 0, 1, 0), 0, 5, "extra")),
+                Triple(TableCellIndex(0, 0, 0, 1), TableCellIndex(0, 0, 0, 1), Change.Insert(DiffProducer.CellInfo(null))),
+                Triple(TableCellContentIndex(0, 0, 0, 1, 0), TableCellContentIndex(0, 0, 0, 1, 0), Change.Insert(DiffProducer.TextSegment(0, 5, "extra"))),
             ),
             recordCalls(old, new),
         )
@@ -406,7 +421,7 @@ class EditLetterWordTokenizerTest {
             Token.Word("world"),
         )
         assertEquals(
-            emptyList<Pair<ContentIndex, Change<*>>>(),
+            emptyList<Triple<ContentIndex, ContentIndex, Change<*>>>(),
             recordCalls(old, new),
         )
     }
@@ -433,10 +448,12 @@ class EditLetterWordTokenizerTest {
         val calls = recordCalls(old, new)
         assertEquals(
             listOf(
-                // "world" deleted at content index 0 (first Text in old), offset 6-11
-                BlockContentIndex(0, 0) to Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 11, "world")),
-                // "goodbye" inserted at content index 2 (third BlockContent: the second Text), offset 0-7
-                BlockContentIndex(0, 2) to Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 2), 0, 7, "goodbye")),
+                // "world" deleted from the first (unchanged) Text container in both old and new, offset 6-11
+                Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 0), Change.Delete(DiffProducer.TextSegment(6, 11, "world"))),
+                // "goodbye" inserted at content index 2 (third BlockContent: the second Text) in new, offset 0-7.
+                // deleteIndex reuses content index 0, since old has no second Text bucket to advance into - it
+                // stays pinned at the last real old-document bucket rather than an out-of-bounds "next" index.
+                Triple(BlockContentIndex(0, 2), BlockContentIndex(0, 0), Change.Insert(DiffProducer.TextSegment(0, 7, "goodbye"))),
             ),
             calls,
         )
@@ -446,7 +463,8 @@ class EditLetterWordTokenizerTest {
     fun `parseTokens deleted NewLine merging two literals with word change produces correct diff`() {
         // Old: "hello" + NewLine + "world" (two literals)
         // New: "hello goodbye" (single literal, word changed)
-        // The word "hello" is unchanged, NewLine is deleted, "world"->"goodbye" is a change
+        // The word "hello" is unchanged, NewLine is deleted, "world" is genuinely gone (none of its words
+        // survive - "goodbye" is a brand new word, not a reuse of "world")
         val old = listOf(
             Token.Block(null, PARAGRAPH),
             Token.Text.Literal(null, FontType.PLAIN),
@@ -463,11 +481,11 @@ class EditLetterWordTokenizerTest {
         )
         val calls = recordCalls(old, new)
         assertEquals(
+            // "goodbye" inserted into the first (unchanged) Text container in both old and new, offset 6-13.
+            // "world" is entirely gone, reported via textContent (which recordCalls doesn't capture here)
+            // rather than as a word-level textSegment delete.
             listOf(
-                // "goodbye" inserted at content index 0 (first Text in new), offset 6-13
-                BlockContentIndex(0, 0) to Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 13, "goodbye")),
-                // "world" deleted at content index 2 (third BlockContent in old: second Text), offset 0-5
-                BlockContentIndex(0, 2) to Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 2), 0, 5, "world")),
+                Triple(BlockContentIndex(0, 0), BlockContentIndex(0, 0), Change.Insert(DiffProducer.TextSegment(6, 13, "goodbye"))),
             ),
             calls,
         )
@@ -512,8 +530,8 @@ class EditLetterWordTokenizerTest {
         val calls = recordCalls(old, new)
         assertEquals(
             listOf(
-                BlockIndex(1) to Change.Insert(DiffProducer.BlockInfo(null, PARAGRAPH)),
-                BlockContentIndex(1, 0) to Change.Delete(DiffProducer.TextSegment(BlockContentIndex(1, 0), 4, 7, "ccc")),
+                Triple(BlockIndex(1), BlockIndex(1), Change.Insert(DiffProducer.BlockInfo(null, PARAGRAPH))),
+                Triple(BlockContentIndex(1, 0), BlockContentIndex(1, 0), Change.Delete(DiffProducer.TextSegment(4, 7, "ccc"))),
             ),
             calls,
         )

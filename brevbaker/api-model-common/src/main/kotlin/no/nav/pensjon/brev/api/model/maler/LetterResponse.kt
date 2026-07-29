@@ -24,5 +24,5 @@ class LetterResponse(val file: ByteArray, val contentType: String, val letterMet
         return result
     }
 
-    override fun toString() = "LetterResponse(file=${file.contentToString()}, contentType='$contentType', letterMetadata=$letterMetadata)"
+    override fun toString() = "LetterResponse(fileSize=${file.size}, contentType='$contentType', letterMetadata=$letterMetadata)"
 }

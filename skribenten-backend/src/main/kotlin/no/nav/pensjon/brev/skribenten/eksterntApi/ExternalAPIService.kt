@@ -3,12 +3,14 @@ package no.nav.pensjon.brev.skribenten.eksterntApi
 import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
-import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevInfoService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.OpprettBrevService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevForAlleSakerHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevForAlleSakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.common.Outcome
+import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -19,14 +21,14 @@ import org.slf4j.LoggerFactory
 
 class ExternalAPIService(
     config: ExternalApiConfig,
-    private val hentBrevInfoService: HentBrevInfoService,
+    private val hentBrevForAlleSaker: HentBrevForAlleSakerService,
     private val brevmalService: BrevmalService,
     private val opprettBrevHandler: OpprettBrevService,
 ) {
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, hentBrevInfoService: HentBrevInfoService, brevmalService: BrevmalService, opprettBrevHandler: OpprettBrevHandler):
-            this(config.services.externalApi, hentBrevInfoService, brevmalService, opprettBrevHandler)
+    constructor(config: SkribentenConfig, hentBrevForAlleSaker: HentBrevForAlleSakerService, brevmalService: BrevmalService, opprettBrevHandler: OpprettBrevHandler) :
+            this(config.services.externalApi, hentBrevForAlleSaker, brevmalService, opprettBrevHandler)
 
     private val skribentenWebUrl = config.skribentenWebUrl
 
@@ -35,7 +37,7 @@ class ExternalAPIService(
     }
 
     suspend fun hentAlleBrevForSaker(saksIder: Set<SaksId>): List<ExternalAPI.BrevInfo> {
-        val alleBrev = hentBrevInfoService.hentBrevForAlleSaker(saksIder)
+        val alleBrev = hentBrevForAlleSaker(HentBrevForAlleSakerHandler.Request(saksIder))?.asSuccess()?.value ?: return emptyList()
         val maler = alleBrev.map { it.brevkode }.toSet().associateWith { brevmalService.getRedigerbarTemplate(it) }
 
         return alleBrev.mapNotNull { it.toExternal(maler[it.brevkode]) }

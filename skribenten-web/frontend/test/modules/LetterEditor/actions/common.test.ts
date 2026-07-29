@@ -6,6 +6,7 @@ import {
   buildMergedItemList,
   coalesceAdjacentSameTypeLists,
   findAdjoiningContent,
+  findFirstUneditedFritekstFocus,
   isFromTemplate,
   isNew,
   removeElements,
@@ -15,14 +16,16 @@ import {
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import {
   type Content,
+  ElementTags,
   type Identifiable,
   type ItemList,
   ListType,
   type LiteralValue,
   type TextContent,
+  TITLE_INDEX,
 } from "~/types/brevbakerTypes";
 
-import { item, itemList, letter, literal, paragraph } from "../utils";
+import { cell, editedLetter, item, itemList, letter, literal, paragraph, row, table, title1 } from "../utils";
 
 describe("findAdjoiningContent", () => {
   describe("entire array matches", () => {
@@ -438,5 +441,136 @@ describe("isNew / isFromTemplate", () => {
     expect(isNew(obj)).toBe(true);
     expect(isFromTemplate(obj)).toBe(false);
     expect(isNew(obj)).toBe(!isFromTemplate(obj));
+  });
+});
+
+describe("findFirstUneditedFritekstFocus", () => {
+  const fritekst = (text: string, editedText?: string | null) =>
+    literal({ text, tags: [ElementTags.FRITEKST], editedText });
+
+  test("returns null when the letter has no fritekst literals at all", () => {
+    const letterState = editedLetter({ blocks: [paragraph([literal("plain text")])] });
+    expect(findFirstUneditedFritekstFocus(letterState)).toBeNull();
+  });
+
+  test("returns null when every fritekst felt has already been edited", () => {
+    const letterState = editedLetter({
+      blocks: [paragraph([fritekst("skriv her", "utfylt tekst")])],
+    });
+    expect(findFirstUneditedFritekstFocus(letterState)).toBeNull();
+  });
+
+  test("finds a single unedited fritekst felt directly in a paragraph", () => {
+    const letterState = editedLetter({
+      blocks: [paragraph([literal("before "), fritekst("skriv her"), literal(" after")])],
+    });
+    expect(findFirstUneditedFritekstFocus(letterState)).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+      cursorPosition: 0,
+      selectAll: true,
+    });
+  });
+
+  test("returns the first unedited fritekst felt in document order when several exist", () => {
+    const letterState = editedLetter({
+      blocks: [
+        paragraph([literal("first paragraph")]),
+        paragraph([fritekst("first fritekst"), fritekst("second fritekst")]),
+      ],
+    });
+    expect(findFirstUneditedFritekstFocus(letterState)).toEqual({
+      blockIndex: 1,
+      contentIndex: 0,
+      cursorPosition: 0,
+      selectAll: true,
+    });
+  });
+
+  test("skips already-edited fritekst felt and returns the next unedited one", () => {
+    const letterState = editedLetter({
+      blocks: [paragraph([fritekst("first", "already filled in"), fritekst("second")])],
+    });
+    expect(findFirstUneditedFritekstFocus(letterState)).toEqual({
+      blockIndex: 0,
+      contentIndex: 1,
+      cursorPosition: 0,
+      selectAll: true,
+    });
+  });
+
+  test("finds an unedited fritekst felt nested inside an item-list item", () => {
+    const letterState = editedLetter({
+      blocks: [
+        paragraph([
+          itemList({
+            items: [item(literal("regular item")), item(fritekst("fritekst i liste"))],
+          }),
+        ]),
+      ],
+    });
+    expect(findFirstUneditedFritekstFocus(letterState)).toEqual({
+      blockIndex: 0,
+      contentIndex: 0,
+      itemIndex: 1,
+      itemContentIndex: 0,
+      cursorPosition: 0,
+      selectAll: true,
+    });
+  });
+
+  test("finds an unedited fritekst felt nested inside a table header cell", () => {
+    const letterState = editedLetter({
+      blocks: [paragraph([table([cell(fritekst("kolonneoverskrift"))], [row(cell(literal("celleinnhold")))])])],
+    });
+    expect(findFirstUneditedFritekstFocus(letterState)).toEqual({
+      blockIndex: 0,
+      contentIndex: 0,
+      rowIndex: -1,
+      cellIndex: 0,
+      cellContentIndex: 0,
+      cursorPosition: 0,
+      selectAll: true,
+    });
+  });
+
+  test("finds an unedited fritekst felt nested inside a table body cell", () => {
+    const letterState = editedLetter({
+      blocks: [paragraph([table([cell(literal("kolonneoverskrift"))], [row(cell(fritekst("celleinnhold")))])])],
+    });
+    expect(findFirstUneditedFritekstFocus(letterState)).toEqual({
+      blockIndex: 0,
+      contentIndex: 0,
+      rowIndex: 0,
+      cellIndex: 0,
+      cellContentIndex: 0,
+      cursorPosition: 0,
+      selectAll: true,
+    });
+  });
+
+  test("finds an unedited fritekst felt in the letter title, before any block", () => {
+    const letterState = editedLetter({
+      title: { text: [fritekst("tittel")], deletedContent: [] },
+      blocks: [paragraph([fritekst("i brødtekst")])],
+    });
+    expect(findFirstUneditedFritekstFocus(letterState)).toEqual({
+      blockIndex: TITLE_INDEX,
+      contentIndex: 0,
+      cursorPosition: 0,
+      selectAll: true,
+    });
+  });
+
+  test("finds an unedited fritekst felt in a within-body heading block (TITLE1/2/3)", () => {
+    const letterState = editedLetter({
+      blocks: [title1(fritekst("overskrift")), paragraph([literal("brødtekst")])],
+    });
+    expect(findFirstUneditedFritekstFocus(letterState)).toEqual({
+      blockIndex: 0,
+      contentIndex: 0,
+      cursorPosition: 0,
+      selectAll: true,
+    });
   });
 });

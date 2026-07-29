@@ -4,20 +4,10 @@ import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text
 
-/**
- * Render all blocks in the letter/attachment.
- */
 internal fun TypstCodeScope.renderBlocks(blocks: List<LetterMarkup.Block>) {
     blocks.forEach { renderBlock(it) }
 }
 
-/**
- * Render a single block element.
- *
- * Block types:
- * - Title1/2/3: Section headings rendered as title1[...], title2[...], title3[...]
- * - Paragraph: Content paragraphs that may contain text, lists, tables, forms
- */
 private fun TypstCodeScope.renderBlock(block: LetterMarkup.Block) {
     when (block) {
         is LetterMarkup.Block.Paragraph -> renderParagraph(block)

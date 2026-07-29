@@ -7,12 +7,13 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
-import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevInfoService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.DiffBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.FrigiReservasjonHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevInfoHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.ReserverBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.TilbakestillBrevHandler
+import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
@@ -23,18 +24,13 @@ fun Route.brev() {
     val dto2ApiService: Dto2ApiService by app.dependencies
 
     route("/brev/{brevId}") {
-        val hentBrevInfoService: HentBrevInfoService by app.dependencies
+        val hentBrevInfo: HentBrevInfoHandler by app.dependencies
         install(AuthorizeAnsattSakTilgangForBrev)
 
         get("/info") {
             val brevId = call.parameters.brevId()
-            val brev = hentBrevInfoService.hentBrevInfo(brevId)?.let { dto2ApiService.toApi(it) }
-
-            if (brev != null) {
-                call.respond(HttpStatusCode.OK, brev)
-            } else {
-                call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
-            }
+            val hentBrevInfo = hentBrevInfo(HentBrevInfoHandler.Request(brevId))
+            respondSuccess(hentBrevInfo?.asSuccess()) { respond(HttpStatusCode.OK, dto2ApiService.toApi(it)) }
         }
 
         val oppdaterBrev: OppdaterBrevHandler by app.dependencies
@@ -80,9 +76,7 @@ fun Route.brev() {
             val split = call.request.queryParameters["split"]?.toBoolean() ?: false
 
             val result = diffBrev(DiffBrevHandler.Request(brevId, request, split))
-            respondOutcome(dto2ApiService, result) {
-                respond(HttpStatusCode.OK, it)
-            }
+            respondSuccess(result?.asSuccess()) { respond(HttpStatusCode.OK, it) }
         }
     }
 }

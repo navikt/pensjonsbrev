@@ -19,7 +19,17 @@ export type TableCellIndex = BlockContentIndex & {
 
 export type LiteralIndex = BlockContentIndex | ItemContentIndex | TableCellIndex;
 
-export type Focus = LiteralIndex & { cursorPosition?: number };
+export type Focus = LiteralIndex & {
+  cursorPosition?: number;
+  /**
+   * When true, and the focused literal is an untouched fritekst, ContentGroup.tsx selects its full
+   * text instead of placing a caret — replicating the click behavior, for focus changes that don't
+   * originate from a real DOM focus/click event (e.g. jumping to the first unedited fritekst felt).
+   * Cleared automatically once handleOnFocus rebuilds `focus` from `literalIndex` on the resulting
+   * native focus event.
+   */
+  selectAll?: boolean;
+};
 
 export type LetterEditorState = {
   info: BrevInfo;

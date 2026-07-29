@@ -16,6 +16,7 @@ import {
   pickValueForCurrentHash,
   shouldRenderDiffMarkers,
 } from "~/Brevredigering/LetterEditor/diff/diffQueryState";
+import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
   createLetterSnapshot,
@@ -326,7 +327,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     brevkode: props.brev.info.brevkode,
     form,
     redigertBrev: editorState.redigertBrev,
-    propertyUsage: props.brev.propertyUsage ?? [],
+    propertyUsage: props.brev.propertyUsage ?? undefined,
   });
 
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevMutationVariables>({
@@ -495,56 +496,63 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   });
 
   return (
-    <form onSubmit={guardedSubmit}>
-      <WarnModal
-        count={warn?.count ?? 0}
-        fortsettLabel="Fortsett til forhåndsvisning"
-        kind={warn?.kind ?? "fritekst"}
-        onClose={() => {
-          pendingSubmitValuesRef.current = null;
-          setWarnOpen(false);
-          setWarn(null);
-        }}
-        onFortsett={() => {
-          const values = pendingSubmitValuesRef.current;
-          pendingSubmitValuesRef.current = null;
-          setWarnOpen(false);
-          setWarn(null);
-          if (!values) return;
-          submitAttest(values);
-        }}
-        open={warnOpen}
-      />
-      {forbidReason && <AttestForbiddenModal onClose={() => setForbidReason(null)} reason={forbidReason} />}
+    <VStack asChild height="100%">
+      <form onSubmit={guardedSubmit}>
+        <WarnModal
+          count={warn?.count ?? 0}
+          fortsettLabel="Fortsett til forhåndsvisning"
+          kind={warn?.kind ?? "fritekst"}
+          onClose={() => {
+            pendingSubmitValuesRef.current = null;
+            setWarnOpen(false);
+            if (warn?.kind === "fritekst" || warn?.kind === "fritekstOgTekstValg") {
+              const focus = findFirstUneditedFritekstFocus(editorState.redigertBrev);
+              if (focus) {
+                setEditorState((s) => ({ ...s, focus }));
+              }
+            }
+            setWarn(null);
+          }}
+          onFortsett={() => {
+            const values = pendingSubmitValuesRef.current;
+            pendingSubmitValuesRef.current = null;
+            setWarnOpen(false);
+            setWarn(null);
+            if (!values) return;
+            submitAttest(values);
+          }}
+          open={warnOpen}
+        />
+        {forbidReason && <AttestForbiddenModal onClose={() => setForbidReason(null)} reason={forbidReason} />}
 
-      {unexpectedError && <ApiError error={unexpectedError} title="Uventet feil ved attestering" />}
+        {unexpectedError && <ApiError error={unexpectedError} title="Uventet feil ved attestering" />}
 
-      <ThreeSectionLayout
-        bottom={
-          <Button icon={<ArrowRightIcon />} iconPosition="right" loading={freeze} size="small">
-            Fortsett
-          </Button>
-        }
-        left={
-          <FormProvider {...form}>
-            <VStack gap="space-32">
-              <Heading size="small">{props.brev.info.brevtittel}</Heading>
-              <VStack gap="space-16">
-                <OppsummeringAvMottaker mottaker={props.brev.info.mottaker ?? null} saksId={props.saksId} withTitle />
-                <VStack>
-                  <Label size="small">Distribusjonstype</Label>
-                  <BodyShort size="small">{props.brev.info.distribusjonstype}</BodyShort>
+        <ThreeSectionLayout
+          bottom={
+            <Button icon={<ArrowRightIcon />} iconPosition="right" loading={freeze} size="small">
+              Fortsett
+            </Button>
+          }
+          left={
+            <FormProvider {...form}>
+              <VStack gap="space-32">
+                <Heading size="small">{props.brev.info.brevtittel}</Heading>
+                <VStack gap="space-16">
+                  <OppsummeringAvMottaker mottaker={props.brev.info.mottaker ?? null} saksId={props.saksId} withTitle />
+                  <VStack>
+                    <Label size="small">Distribusjonstype</Label>
+                    <BodyShort size="small">{props.brev.info.distribusjonstype}</BodyShort>
+                  </VStack>
                 </VStack>
-              </VStack>
-              <Divider />
-              <VStack gap="space-20">
-                <Hide above="sm" asChild>
-                  <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
-                </Hide>
-                <Hide above="sm" asChild>
-                  <Switch size="small">Vis slettet tekst</Switch>
-                </Hide>
-                <Switch checked={visDiff} onChange={(event) => setVisDiff(event.target.checked)} size="small">
+                <Divider />
+                <VStack gap="space-20">
+                  <Hide above="sm" asChild>
+                    <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
+                  </Hide>
+                  <Hide above="sm" asChild>
+                    <Switch size="small">Vis slettet tekst</Switch>
+                  </Hide>
+                  <Switch checked={visDiff} onChange={(event) => setVisDiff(event.target.checked)} size="small">
                   Marker tekst som er lagt til og slettet
                 </Switch>
                 {visDiff && currentHashInvalidated && (
@@ -555,36 +563,36 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 )}
                 <Divider />
                 <UnderskriftTextField
-                  controlled
-                  error={form.formState.errors.attestantSignatur?.message}
-                  of="Attestant"
-                />
+                    controlled
+                    error={form.formState.errors.attestantSignatur?.message}
+                    of="Attestant"
+                  />
+                </VStack>
+                <Divider />
+                <VStack>
+                  <BrevmalAlternativer
+                    brevkode={props.brev.info.brevkode}
+                    propertyUsage={props.brev.propertyUsage ?? undefined}
+                    submitOnChange={() => {
+                      const updatedValg = form.getValues("saksbehandlerValg");
+                      if (hasAnyTekstvalgBeenToggledOn(previousTekstvalgRef.current, updatedValg)) {
+                        idsBeforeTekstvalgToggleRef.current = collectAllIds(editorState.redigertBrev);
+                      }
+                      previousTekstvalgRef.current = updatedValg;
+                      oppdaterBrevMutation.mutate({
+                        redigertBrev: editorState.redigertBrev,
+                        saksbehandlerValg: updatedValg,
+                        historySnapshot: createLetterSnapshot(editorState),
+                      });
+                    }}
+                  />
+                </VStack>
               </VStack>
-              <Divider />
-              <VStack>
-                <BrevmalAlternativer
-                  brevkode={props.brev.info.brevkode}
-                  submitOnChange={() => {
-                    const updatedValg = form.getValues("saksbehandlerValg");
-                    if (hasAnyTekstvalgBeenToggledOn(previousTekstvalgRef.current, updatedValg)) {
-                      idsBeforeTekstvalgToggleRef.current = collectAllIds(editorState.redigertBrev);
-                    }
-                    previousTekstvalgRef.current = updatedValg;
-                    oppdaterBrevMutation.mutate({
-                      redigertBrev: editorState.redigertBrev,
-                      saksbehandlerValg: updatedValg,
-                      historySnapshot: createLetterSnapshot(editorState),
-                    });
-                  }}
-                  withTitle
-                />
-              </VStack>
-            </VStack>
-          </FormProvider>
-        }
-        right={
-          <>
-            <AttestantDiffProvider
+            </FormProvider>
+          }
+          right={
+            <>
+              <AttestantDiffProvider
               diff={renderDiffMarkers ? activeDiff : undefined}
               diffHash={renderDiffMarkers ? currentSavedHash : undefined}
               invalidatedDiffHashes={invalidatedDiffHashes}
@@ -593,33 +601,34 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               invalidateDiff={invalidateDiff}
             >
               <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
-                <ManagedLetterEditor
-                  brev={props.brev}
-                  error={error}
-                  freeze={freeze}
-                  saveDirtyLetter={saveDirtyLetter}
-                  showDebug={showDebug}
-                />
-              </InsertedTekstValgHighlightProvider>
-            </AttestantDiffProvider>
+                  <ManagedLetterEditor
+                    brev={props.brev}
+                    error={error}
+                    freeze={freeze}
+                    saveDirtyLetter={saveDirtyLetter}
+                    showDebug={showDebug}
+                  />
+                </InsertedTekstValgHighlightProvider>
+              </AttestantDiffProvider>
             {/* Modal som ikke tar opp plass i DOM her */}
-            <ReservertBrevError
-              doRetry={props.doReload}
-              onNeiClick={() =>
-                navigate({
-                  to: "/saksnummer/$saksId/brevbehandler",
-                  params: { saksId: props.saksId },
-                  search: {
-                    vedtaksId: props.brev.info?.vedtaksId?.toString(),
-                    enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
-                  },
-                })
-              }
-              reservasjon={reservasjonQuery.data}
-            />
-          </>
-        }
-      />
-    </form>
+              <ReservertBrevError
+                doRetry={props.doReload}
+                onNeiClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevbehandler",
+                    params: { saksId: props.saksId },
+                    search: {
+                      vedtaksId: props.brev.info?.vedtaksId?.toString(),
+                      enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
+                    },
+                  })
+                }
+                reservasjon={reservasjonQuery.data}
+              />
+            </>
+          }
+        />
+      </form>
+    </VStack>
   );
 };

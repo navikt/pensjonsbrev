@@ -120,7 +120,7 @@ export const LetterEditor = ({
   }, [diffHash, freeze, invalidateDiff, setEditorState]);
 
   return (
-    <VStack overflowY="hidden">
+    <VStack height="100%" overflowY="hidden">
       <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, undo, redo }}>
         <EditorMenu
           canRedo={canRedo}
@@ -129,7 +129,7 @@ export const LetterEditor = ({
           setVilTilbakestilleMal={setVilTilbakestilleMal}
           undo={undo}
         />
-        <VStack align="center" overflowY="auto">
+        <VStack align="center" flexGrow="1" minHeight="0" overflowY="auto">
           <Box className="editor" css={freeze ? { cursor: "wait" } : {}} height="100%">
             <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />
             <Heading

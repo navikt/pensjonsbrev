@@ -18,27 +18,45 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
     sealed interface Token {
         class Block(val id: Int?, val type: Edit.Block.Type) : Token, EqualityBy<Block>(Block::type)
 
-        sealed interface BlockContent : Token
+        sealed interface BlockContent : Token {
+            val id: Int?
+        }
         sealed interface TextContent : BlockContent
 
-        class ItemList(val id: Int?, val listType: Listetype) : BlockContent, EqualityBy<ItemList>(ItemList::listType)
+        class ItemList(override val id: Int?, val listType: Listetype) : BlockContent, EqualityBy<ItemList>(ItemList::listType)
         class Item(val id: Int?) : Token, EqualityBy<Item>()
 
-        class Table(val id: Int?) : BlockContent, EqualityBy<Table>()
+        // Marks the end of an ItemList's items. Since an Item can only ever contain TextContent, and TextContent is
+        // also used both at the top BlockContent level and inside a Table's Cell, the last item's own TextContent
+        // run would otherwise have no way to distinguish "no more content in this item" from "this item happens to
+        // be followed, in the flattened token stream, by a TextContent-shaped token belonging to an unrelated,
+        // sibling or outer scope" (e.g. a NewLine that is actually the ItemList's own sibling in the block's
+        // content). Without this marker, that sibling token could be silently swallowed as if it were this item's
+        // own content - and, since forEachIndexedStable's insert/delete cursors can independently reach this point
+        // out of lockstep (see ReplaceAwareEditScriptCursor.forEachIndexedStable's decoy handling), potentially walk
+        // arbitrarily far past the ItemList's real boundary. ItemListEnd is a bare Token (not BlockContent or
+        // TextContent), so it can never itself be mistaken for content by any of the type-filtered consume loops -
+        // it is only ever explicitly consumed by consumeItemList once its items are done.
+        data object ItemListEnd : Token, EqualityBy<ItemListEnd>()
+
+        class Table(override val id: Int?) : BlockContent, EqualityBy<Table>()
         class TableHeader(val id: Int?) : Token, EqualityBy<TableHeader>()
         class ColumnSpec(val id: Int?, val alignment: Edit.ParagraphContent.Table.ColumnAlignment, val span: Int) : Token, EqualityBy<ColumnSpec>(ColumnSpec::alignment, ColumnSpec::span)
         class Row(val id: Int?) : Token, EqualityBy<Row>()
         class Cell(val id: Int?) : Token, EqualityBy<Cell>()
 
+        // Marks the end of a Table's header and rows, for the same reason as ItemListEnd: a Cell's own TextContent
+        // is otherwise unbounded on its trailing side once it is the very last cell in the table.
+        data object TableEnd : Token, EqualityBy<TableEnd>()
+
         sealed class Text : TextContent, EqualityBy<Text>(Text::fontType) {
-            abstract val id: Int?
             abstract val fontType: FontType
 
             class Literal(override val id: Int?, override val fontType: FontType) : Text()
             class Variable(override val id: Int?, override val fontType: FontType) : Text()
         }
 
-        class NewLine(val id: Int?) : TextContent, EqualityBy<NewLine>()
+        class NewLine(override val id: Int?) : TextContent, EqualityBy<NewLine>()
         data class Word(val word: String) : Token
     }
 
@@ -50,7 +68,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
             val insertBlockIndex = BlockIndex(insertBlockIdx)
             val deleteBlockIndex = BlockIndex(deleteBlockIdx)
             entry.toChange { DiffProducer.BlockInfo(it.id, it.type) }?.let {
-                producer.block(insertBlockIndex, it)
+                producer.block(insertBlockIndex, deleteBlockIndex, it)
             }
             BlockParser(insertBlockIndex, deleteBlockIndex, cursor, producer).parse()
         }
@@ -65,59 +83,120 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
         private val producer: DiffProducer<*>,
     ) {
         fun parse() =
-            cursor.forEachIndexed<Token.BlockContent> { insertPos, deletePos, entry ->
-                val insertContentIndex = insertIndex.withContentIndex(insertPos)
-                val deleteContentIndex = deleteIndex.withContentIndex(deletePos)
+            cursor.forEachIndexedStable<Token.BlockContent> { indices, entry ->
+                val insertContentIndex = insertIndex.withContentIndex(indices.insertIndex)
+                val deleteContentIndex = deleteIndex.withContentIndex(indices.rawDeleteIndex)
+                val stableDeleteContentIndex = deleteIndex.withContentIndex(indices.stableDeleteIndex)
 
                 when (entry.token) {
-                    is Token.Text -> consumeText(insertContentIndex, deleteContentIndex)
-                    is Token.NewLine -> {}
+                    is Token.TextContent -> {
+                        consumeTextContent(insertContentIndex, deleteContentIndex, stableDeleteContentIndex, entry.narrow())
+                    }
                     is Token.ItemList -> {
-                        @Suppress("UNCHECKED_CAST")
-                        consumeItemList(insertContentIndex, deleteContentIndex, entry as DiffEntry<Token.ItemList>)
+                        consumeItemList(insertContentIndex, deleteContentIndex, entry.narrow())
+                        false
                     }
                     is Token.Table -> {
-                        @Suppress("UNCHECKED_CAST")
-                        consumeTable(insertContentIndex, deleteContentIndex, entry as DiffEntry<Token.Table>)
+                        consumeTable(insertContentIndex, deleteContentIndex, entry.narrow())
+                        false
                     }
                 }
             }
 
-        private fun consumeText(insertIndex: ContentIndex, deleteIndex: ContentIndex) =
-            cursor.fold(WordDiffCollector(insertIndex, deleteIndex), WordDiffCollector::addEntry)
-                .changes()
-                .forEach { producer.textSegment(it) }
+        // Fires textContent for the whole node (Text or NewLine); for Text nodes, also diffs the words within it.
+        //
+        // A Text node's word-level diff must always be folded from the cursor (it can't be skipped, or its
+        // "genuinely fully deleted" status decided, based on the content-level Change alone): Token.Text equality
+        // only compares fontType (see Token.Text's EqualityBy), so the shortest edit script may pair this node
+        // with an unrelated node elsewhere purely because their fontType matches, then classify it as content-level
+        // Unchanged/Replace even though none of its actual words survive - or, conversely, classify it as a
+        // content-level Delete while one of its words is, word-for-word, reused by an unrelated new node elsewhere
+        // (e.g. old "beta gamma" being classified as a content-level Delete while its "beta" word is reused by new
+        // "beta epsilon"). Only the resulting word-level changes reveal whether this node's text is genuinely,
+        // entirely gone (in which case reporting its words individually would only duplicate the full node already
+        // conveyed via the textContent Delete, so we suppress them) or whether some of its words survived elsewhere
+        // (in which case the word-level segments are the only place that information is captured, so we emit them
+        // instead of a textContent Delete). Similarly, a node that keeps some of its own words as-is (e.g. "hello
+        // world" -> "hello", where "hello" survives Unchanged within this very node's fold) is not genuinely gone
+        // either, even though the resulting changes are delete-only - hence the additional collector.hasUnchanged
+        // check.
+        //
+        // insertIndex is decoy-corrected (see ReplaceAwareEditScriptCursor.StableIndices), so it's safe to use both
+        // for the node's own textContent report (distinguishing leading/trailing siblings) and for nested
+        // textSegment reporting (anchoring to an already-established position). deleteIndex/stableDeleteIndex keep
+        // their original distinction: deleteIndex (this entry's own position) for the node's own report,
+        // stableDeleteIndex (the last real position) for nested reporting - relevant when entry is a genuine Insert,
+        // which doesn't itself consume any delete-side position.
+        //
+        // Returns whether this entry's insert-side pairing turned out to be a decoy (isWholeNodeGone despite the
+        // entry's own classification suggesting otherwise, e.g. an ambiguous Unchanged/Replace match) - see
+        // ReplaceAwareEditScriptCursor.forEachIndexedStable's doc for why the caller needs to know this.
+        private fun consumeTextContent(
+            insertIndex: ContentIndex,
+            deleteIndex: ContentIndex,
+            stableDeleteIndex: ContentIndex,
+            entry: DiffEntry<Token.TextContent>,
+        ): Boolean {
+            when (entry.token) {
+                is Token.NewLine -> {
+                    entry.toChange { DiffProducer.TextContentInfo(it.id) }?.let { producer.textContent(insertIndex, deleteIndex, it) }
+                    return false
+                }
+                is Token.Text -> {
+                    val collector = cursor.fold(WordDiffCollector(), WordDiffCollector::addEntry)
+                    val changes = collector.changes()
+                    val isWholeNodeGone = when {
+                        entry is DiffEntry.Insert || collector.hasUnchanged -> false
+                        changes.isEmpty() -> entry is DiffEntry.Delete
+                        else -> changes.all { it is Change.Delete }
+                    }
+                    if (isWholeNodeGone) {
+                        producer.textContent(insertIndex, deleteIndex, Change.Delete(DiffProducer.TextContentInfo(entry.token.id)))
+                    } else {
+                        changes.forEach { producer.textSegment(insertIndex, stableDeleteIndex, it) }
+                    }
+                    return isWholeNodeGone && entry !is DiffEntry.Delete
+                }
+            }
+        }
 
+
+        // Explicitly consumes the ItemListEnd marker emitted by the tokenizer right after this ItemList's items -
+        // see Token.ItemListEnd's doc for why this is required (bounds the last item's own TextContent run).
         private fun consumeItemList(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex, entry: DiffEntry<Token.ItemList>) {
             entry.toChange { DiffProducer.ItemListInfo(it.id, it.listType) }?.let {
-                producer.itemList(insertIndex, it)
+                producer.itemList(insertIndex, deleteIndex, it)
             }
             cursor.forEachIndexed<Token.Item> { insertItemIdx, deleteItemIdx, itemEntry ->
                 val insertItemIndex = insertIndex.withItemIndex(insertItemIdx)
                 val deleteItemIndex = deleteIndex.withItemIndex(deleteItemIdx)
                 itemEntry.toChange { DiffProducer.ItemInfo(it.id) }?.let {
-                    producer.item(insertItemIndex, it)
+                    producer.item(insertItemIndex, deleteItemIndex, it)
                 }
                 consumeTextOnlyContent(
                     makeInsertIndex = insertItemIndex::withTextContentIndex,
                     makeDeleteIndex = deleteItemIndex::withTextContentIndex,
                 )
             }
+            cursor.requireAndConsume<Token.ItemListEnd>()
         }
 
+        // Explicitly consumes the TableEnd marker emitted by the tokenizer right after this Table's header and rows
+        // - see Token.TableEnd's doc for why this is required (bounds the last cell's own TextContent run).
         private fun consumeTable(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex, entry: DiffEntry<Token.Table>) {
             entry.toChange { DiffProducer.TableInfo(it.id) }?.let {
-                producer.table(insertIndex, it)
+                producer.table(insertIndex, deleteIndex, it)
             }
             consumeTableHeader(insertIndex, deleteIndex)
             cursor.forEachIndexed<Token.Row> { insertRowIdx, deleteRowIdx, rowEntry ->
                 val insertRowIndex = insertIndex.withRowIndex(insertRowIdx)
                 val deleteRowIndex = deleteIndex.withRowIndex(deleteRowIdx)
                 rowEntry.toChange { DiffProducer.RowInfo(it.id) }?.let {
-                    producer.row(insertRowIndex, it)
+                    producer.row(insertRowIndex, deleteRowIndex, it)
                 }
                 consumeRow(insertRowIndex, deleteRowIndex)
             }
+            cursor.requireAndConsume<Token.TableEnd>()
         }
 
         private fun consumeTableHeader(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex) {
@@ -128,7 +207,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                 val cellEntry = cursor.consumeIf<Token.Cell>()
                     ?: error("Expected Token.Cell after Token.ColumnSpec in table header, got: ${cursor.peek()}")
                 cellEntry.toChange { DiffProducer.CellInfo(it.id) }?.let {
-                    producer.cell(insertCellIndex, it)
+                    producer.cell(insertCellIndex, deleteCellIndex, it)
                 }
                 consumeCell(insertCellIndex, deleteCellIndex)
             }
@@ -139,7 +218,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                 val insertCellIndex = insertIndex.withCellIndex(insertCellIdx)
                 val deleteCellIndex = deleteIndex.withCellIndex(deleteCellIdx)
                 cellEntry.toChange { DiffProducer.CellInfo(it.id) }?.let {
-                    producer.cell(insertCellIndex, it)
+                    producer.cell(insertCellIndex, deleteCellIndex, it)
                 }
                 consumeCell(insertCellIndex, deleteCellIndex)
             }
@@ -151,11 +230,13 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
             )
 
         private fun consumeTextOnlyContent(makeInsertIndex: (Int) -> ContentIndex, makeDeleteIndex: (Int) -> ContentIndex) =
-            cursor.forEachIndexed<Token.TextContent> { insertContentIndex, deleteContentIndex, entry ->
-                when (entry.token) {
-                    is Token.Text -> consumeText(makeInsertIndex(insertContentIndex), makeDeleteIndex(deleteContentIndex))
-                    is Token.NewLine -> {}
-                }
+            cursor.forEachIndexedStable<Token.TextContent> { indices, entry ->
+                consumeTextContent(
+                    makeInsertIndex(indices.insertIndex),
+                    makeDeleteIndex(indices.rawDeleteIndex),
+                    makeDeleteIndex(indices.stableDeleteIndex),
+                    entry,
+                )
             }
     }
 
@@ -186,6 +267,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
         override fun visit(itemList: Edit.ParagraphContent.ItemList) {
             emit(Token.ItemList(itemList.id, itemList.editedListType ?: itemList.listType))
             super.visit(itemList)
+            emit(Token.ItemListEnd)
         }
 
         override fun visit(item: Edit.ParagraphContent.ItemList.Item) {
@@ -196,6 +278,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
         override fun visit(table: Edit.ParagraphContent.Table) {
             emit(Token.Table(table.id))
             super.visit(table)
+            emit(Token.TableEnd)
         }
 
         override fun visit(header: Edit.ParagraphContent.Table.Header) {
@@ -226,15 +309,17 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
     private data class WordDiffCollector private constructor(
         private val inserts: RangeState,
         private val deletes: RangeState,
+        // Tracks whether any of this node's own words were seen as Unchanged (i.e. genuinely still present,
+        // as-is, in both old and new) - see consumeTextContent's doc for why this matters.
+        val hasUnchanged: Boolean,
     ) {
-        constructor(insertIndex: ContentIndex, deleteIndex: ContentIndex) :
-                this(RangeState(insertIndex), RangeState(deleteIndex))
+        constructor() : this(RangeState(), RangeState(), false)
 
         fun addEntry(entry: DiffEntry<Token.Word>): WordDiffCollector = when (entry) {
             is DiffEntry.Insert -> copy(inserts = inserts.extend(entry.new.word))
             is DiffEntry.Delete -> copy(deletes = deletes.extend(entry.old.word))
             is DiffEntry.Replace -> copy(inserts = inserts.extend(entry.new.word), deletes = deletes.extend(entry.old.word))
-            is DiffEntry.Unchanged -> copy(inserts = inserts.skip(entry.value.word), deletes = deletes.skip(entry.value.word))
+            is DiffEntry.Unchanged -> copy(inserts = inserts.skip(entry.value.word), deletes = deletes.skip(entry.value.word), hasUnchanged = true)
         }
 
         fun changes(): List<Change<DiffProducer.TextSegment>> =
@@ -242,7 +327,6 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                     deletes.segments().map { Change.Delete(it) }
 
         private data class RangeState(
-            private val contentIndex: ContentIndex,
             private val textLength: Int = 0,
             private val current: DiffProducer.TextSegment? = null,
             private val completed: List<DiffProducer.TextSegment> = emptyList(),
@@ -257,7 +341,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                 else
                     copy(
                         textLength = newLength,
-                        current = DiffProducer.TextSegment(contentIndex, wordStart, newLength, word),
+                        current = DiffProducer.TextSegment(wordStart, newLength, word),
                         completed = completed + listOfNotNull(current),
                     )
             }
