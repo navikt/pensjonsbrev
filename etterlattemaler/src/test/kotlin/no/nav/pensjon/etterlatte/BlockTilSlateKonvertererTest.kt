@@ -6,8 +6,6 @@ import no.nav.brev.Listetype
 import no.nav.brev.brevbaker.Brevbaker
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
-import no.nav.brev.brevbaker.PDFVedleggAppender
-import no.nav.pensjon.brev.template.vedlegg.PDFVedlegg
 import no.nav.brev.brevbaker.PDFRequest
 import no.nav.brev.brevbaker.markup.LetterPDFRequest
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
@@ -15,7 +13,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.etterlatte.maler.ElementType
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.ForhaandsvarselOmregningBP
@@ -33,15 +30,8 @@ class BlockTilSlateKonvertererTest {
         val letterMarkup = Brevbaker(object : PDFByggerService {
             override suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput = PDFCompilationOutput(ByteArray(0))
             override suspend fun producePDFV2(pdfRequest: LetterPDFRequest): PDFCompilationOutput = PDFCompilationOutput(ByteArray(0))
-        },
-            object: PDFVedleggAppender {
-                override fun leggPaaVedlegg(
-                    pdfCompilationOutput: PDFCompilationOutput,
-                    attachments: List<PDFVedlegg>,
-                    spraak: LanguageCode
-                ) = pdfCompilationOutput
-            }
-            ).renderLetterMarkup(letter)
+        }
+        ).renderLetterMarkup(letter)
         val konvertert = BlockTilSlateKonverterer.konverter(letterMarkup)
         assertEquals(konvertert.elements.size, letterMarkup.blocks.size)
     }
