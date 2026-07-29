@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template.dsl.helpers.testcases
 
-import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -24,7 +23,6 @@ data class CanReuseModelsDto2(val child: ChildModel) {
 object CanReuseModels {
 
     @TemplateModelHelpers
-    @OptIn(InternKonstruktoer::class)
     object MyClass : HasModel<CanReuseModelsDto2> {
         val data: Expression<CanReuseModelsDto2> = Expression.Literal(CanReuseModelsDto2(CanReuseModelsDto2.ChildModel(CanReuseModelsDto1.ChildModel("Scrooge"))))
         val child: Expression<CanReuseModelsDto2.ChildModel> = data.child
@@ -32,7 +30,6 @@ object CanReuseModels {
     }
 
     @TemplateModelHelpers
-    @OptIn(InternKonstruktoer::class)
     object ReUse : HasModel<CanReuseModelsDto1.ChildModel> {
         val uncleName: Expression<String> = Expression.Literal(CanReuseModelsDto1.ChildModel("Scrooge")).childName
     }

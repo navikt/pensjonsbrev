@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model
 
 import no.nav.brev.brevbaker.markup.Attachment
 import no.nav.brev.brevbaker.markup.LetterMarkup
+import no.nav.pensjon.brev.api.model.maler.BrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
