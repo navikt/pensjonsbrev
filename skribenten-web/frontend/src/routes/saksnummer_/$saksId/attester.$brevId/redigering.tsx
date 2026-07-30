@@ -251,7 +251,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       });
     },
     onSuccess: (response, variables) => {
-      attestantDiff.rememberSavedLetter(response.redigertBrevHash, response.redigertBrev);
       const idsBeforeTekstvalgToggle = idsBeforeTekstvalgToggleRef.current;
       const historySnapshot = variables.historySnapshot;
       idsBeforeTekstvalgToggleRef.current = null;
@@ -292,6 +291,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       );
     },
     onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
+    // Diff-bokføring kjører i onSettled slik at onSuccess beholder sin opprinnelige oppførsel uendret.
+    onSettled: (response) => {
+      if (response) attestantDiff.rememberSavedLetter(response.redigertBrevHash, response.redigertBrev);
+    },
   });
 
   const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
