@@ -1,4 +1,4 @@
-import { createContext, type ReactNode, useContext, useMemo } from "react";
+import { createContext, type ReactNode, useContext, useEffect, useMemo } from "react";
 
 import { type LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { type AnyBlock, type Cell, type Content, type Item, type Row, type TextContent } from "~/types/brevbakerTypes";
@@ -25,6 +25,7 @@ type AttestantDiffContextValue = {
   dismissedDiffs: ReadonlyMap<string, string>;
   dismissLiteral: (key: string, diffHash: string) => void;
   invalidateDiff: (diffHash: string) => void;
+  reportRejectedLiteral: (key: string, diffHash: string, reason: string | null) => void;
 };
 
 const EMPTY_DISMISSED_DIFFS: ReadonlyMap<string, string> = new Map();
@@ -38,6 +39,7 @@ const AttestantDiffContext = createContext<AttestantDiffContextValue>({
   dismissedDiffs: EMPTY_DISMISSED_DIFFS,
   dismissLiteral: () => {},
   invalidateDiff: () => {},
+  reportRejectedLiteral: () => {},
 });
 
 export const AttestantDiffProvider = ({
@@ -47,6 +49,7 @@ export const AttestantDiffProvider = ({
   dismissedDiffs,
   dismissLiteral,
   invalidateDiff,
+  reportRejectedLiteral = () => {},
   children,
 }: {
   diff: UnifiedLetterDiff | undefined;
@@ -55,11 +58,20 @@ export const AttestantDiffProvider = ({
   dismissedDiffs: ReadonlyMap<string, string>;
   dismissLiteral: (key: string, diffHash: string) => void;
   invalidateDiff: (diffHash: string) => void;
+  reportRejectedLiteral?: (key: string, diffHash: string, reason: string | null) => void;
   children: ReactNode;
 }) => {
   const value = useMemo(
-    () => ({ diff, diffHash, invalidatedDiffHashes, dismissedDiffs, dismissLiteral, invalidateDiff }),
-    [diff, diffHash, invalidatedDiffHashes, dismissedDiffs, dismissLiteral, invalidateDiff],
+    () => ({
+      diff,
+      diffHash,
+      invalidatedDiffHashes,
+      dismissedDiffs,
+      dismissLiteral,
+      invalidateDiff,
+      reportRejectedLiteral,
+    }),
+    [diff, diffHash, invalidatedDiffHashes, dismissedDiffs, dismissLiteral, invalidateDiff, reportRejectedLiteral],
   );
 
   return <AttestantDiffContext.Provider value={value}>{children}</AttestantDiffContext.Provider>;
@@ -135,17 +147,19 @@ export const useDeletedCellContent = (
   );
 
 export function useDiffSegmentsForLiteral(literalIndex: LiteralIndex, currentText: string): DiffSegment[] | null {
-  const { diff, diffHash, invalidatedDiffHashes, dismissedDiffs } = useAttestantDiff();
+  const { diff, diffHash, invalidatedDiffHashes, dismissedDiffs, reportRejectedLiteral } = useAttestantDiff();
+  const key = diffKey(literalIndex);
 
-  return useMemo(() => {
-    if (!diff || !diffHash) return null;
-    if (invalidatedDiffHashes.has(diffHash)) return null;
+  const result = useMemo<{ segments: DiffSegment[] | null; rejectionReason: string | null }>(() => {
+    if (!diff || !diffHash) return { segments: null, rejectionReason: null };
+    if (invalidatedDiffHashes.has(diffHash)) return { segments: null, rejectionReason: null };
 
-    const key = diffKey(literalIndex);
-    if (dismissedDiffs.get(key) === diffHash) return null;
+    if (dismissedDiffs.get(key) === diffHash) return { segments: null, rejectionReason: null };
 
     const textEdit = textEditForLiteral(diff, literalIndex);
-    if (!textEdit || (textEdit.inserts.length === 0 && textEdit.deletes.length === 0)) return null;
+    if (!textEdit || (textEdit.inserts.length === 0 && textEdit.deletes.length === 0)) {
+      return { segments: null, rejectionReason: null };
+    }
 
     const result = buildDiffSegments({
       currentText,
@@ -155,9 +169,16 @@ export function useDiffSegmentsForLiteral(literalIndex: LiteralIndex, currentTex
 
     if (!result.ok) {
       console.warn(`[AttestantDiff] Rejected diff for literal ${key}: ${result.reason}`);
-      return null;
+      return { segments: null, rejectionReason: result.reason };
     }
 
-    return result.segments;
-  }, [literalIndex, currentText, diff, diffHash, invalidatedDiffHashes, dismissedDiffs]);
+    return { segments: result.segments, rejectionReason: null };
+  }, [currentText, diff, diffHash, dismissedDiffs, invalidatedDiffHashes, key]);
+
+  useEffect(() => {
+    if (!diffHash) return;
+    reportRejectedLiteral(key, diffHash, result.rejectionReason);
+  }, [diffHash, key, reportRejectedLiteral, result.rejectionReason]);
+
+  return result.segments;
 }
