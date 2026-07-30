@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.*
 import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import org.jetbrains.exposed.v1.jdbc.Database
 
@@ -18,11 +19,12 @@ class HentRedigertVedleggHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
         val vedleggId: VedleggId,
     ) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Edit.Attachment, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
         brev.hentRedigertVedlegg(request.vedleggId)?.let { return success(it) }
 

@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.skribenten.foerstesidegenerator.PDFMerger
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggSkribenten
@@ -38,11 +39,12 @@ class HentEllerOpprettPdfHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
         val fagsak: Fagsak,
     ) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Dto.HentDocumentResult, IngenFoersteside>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
         val document = brev.document
 
         val pesysBrevdata = brevdataService.hentBrevdata(brev).let { brevdata ->
@@ -120,6 +122,7 @@ class HentEllerOpprettPdfHandler(
     ): ByteArray? = genererFoerstesideHandler(
         request = GenererFoerstesideHandler.Request(
             brevId = request.brevId,
+            saksId = request.saksId,
             pid = request.fagsak.pid,
             sakstype = request.fagsak.sakType,
             tema = request.fagsak.tema,

@@ -25,13 +25,14 @@ class AttesterBrevHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
         val nyeSaksbehandlerValg: SaksbehandlerValg? = null,
         val nyttRedigertbrev: Edit.Letter? = null,
         val frigiReservasjon: Boolean = false,
     ) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
         val principal = PrincipalInContext.require()
 
         attesterBrevPolicy.kanAttestere(brev, principal).onError { return failure(it) }

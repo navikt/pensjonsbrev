@@ -16,10 +16,10 @@ class EndreDistribusjonstypeHandler(
     database: Database,
 ) : ReservertBrevHandler<EndreDistribusjonstypeHandler.Request, Dto.BrevInfo>(database, reserverBrevHandler) {
 
-    data class Request(override val brevId: BrevId, val type: Distribusjon) : BrevredigeringRequest
+    data class Request(override val brevId: BrevId, override val saksId: SaksId, val type: Distribusjon) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
         val principal = PrincipalInContext.require()
 
         // Utfør kun endring om nødvendig
