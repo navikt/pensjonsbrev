@@ -1,6 +1,19 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Box, Button, Heading, Hide, HStack, Label, Loader, Switch, VStack } from "@navikt/ds-react";
+import {
+  Alert,
+  BodyShort,
+  Box,
+  Button,
+  Heading,
+  Hide,
+  HStack,
+  Label,
+  Loader,
+  LocalAlert,
+  Switch,
+  VStack,
+} from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
@@ -481,19 +494,14 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                     </HStack>
                   )}
                   {attestantDiff.status === "error" && (
-                    <Alert size="small" variant="warning">
-                      <VStack align="start" gap="space-8">
-                        Endringene kunne ikke vises. Brevet kan fortsatt gjennomgås, men markeringene er utilgjengelige.
-                        <Button
-                          onClick={() => void attestantDiff.retry()}
-                          size="xsmall"
-                          type="button"
-                          variant="secondary"
-                        >
-                          Prøv igjen
-                        </Button>
-                      </VStack>
-                    </Alert>
+                    <LocalAlert size="small" status="error">
+                      <LocalAlert.Header>
+                        <LocalAlert.Title>Endringene kunne ikke vises</LocalAlert.Title>
+                      </LocalAlert.Header>
+                      <LocalAlert.Content>
+                        Brevet kan fortsatt gjennomgås, men markeringene er utilgjengelige.
+                      </LocalAlert.Content>
+                    </LocalAlert>
                   )}
                   {attestantDiff.status === "empty" && (
                     <Alert size="small" variant="info">
