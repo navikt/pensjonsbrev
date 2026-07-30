@@ -22,8 +22,7 @@ log4j2Version = "2.26.1"
 micrometerVersion = "1.17.0"
 pdfboxVersion = "3.0.7"
 postgresqlVersion = "42.7.13"
-testcontainersCoreVersion = "2.0.5"
-testcontainersPostgresqlVersion = "2.0.5"
+testcontainersVersion = "2.0.5"
 unleashVersion = "12.2.2"
 valkeyVersion = "5.5.0"
 
@@ -106,8 +105,8 @@ flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql
 assertJ = { module = "org.assertj:assertj-core", version.ref = "assertJVersion" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "jupiterVersion" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version.ref = "jupiterVersion" }
-testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainersPostgresqlVersion"}
-testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainersCoreVersion" }
+testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainersVersion" }
+testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainersVersion" }
 
 [bundles]
 junit = ["junit-jupiter", "junit-platform-launcher", "assertJ"]
