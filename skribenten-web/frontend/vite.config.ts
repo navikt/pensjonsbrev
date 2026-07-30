@@ -32,6 +32,12 @@ export default defineConfig(({ command }) => ({
   },
   build: {
     chunkSizeWarningLimit: 700,
+    // "hidden" writes .map files next to the bundles without adding a
+    // "//# sourceMappingURL" comment, so browsers never auto-fetch them.
+    // The maps are stripped out of the publicly served folder before the
+    // bff docker image is built (see .build-frontend.yaml) and are only
+    // used server-side to resolve stack traces reported by the frontend.
+    sourcemap: "hidden",
     rollupOptions: {
       output: {
         manualChunks: (id) => {

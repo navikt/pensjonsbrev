@@ -42,6 +42,16 @@ jobs:
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm run build
 
+      - name: Move sourcemaps out of the publicly served build output
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: |
+          mkdir -p ../bff/sourcemaps
+          find dist -name '*.map' -print0 | while IFS= read -r -d '' map; do
+            dest="../bff/sourcemaps/${map#dist/}"
+            mkdir -p "$(dirname "$dest")"
+            mv "$map" "$dest"
+          done
+
       - name: Copy frontend dist into public directory of bff
         working-directory: ${{ inputs.workingDir }}/frontend
         run: cp -r dist/ ../bff/public
