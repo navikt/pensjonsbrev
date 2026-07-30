@@ -1,6 +1,5 @@
 package no.nav.brev.brevbaker.markup.outline
 
-import no.nav.brev.brevbaker.markup.MarkupInternalApi
 import no.nav.brev.brevbaker.markup.Markup.Identifiable
 import no.nav.brev.brevbaker.markup.Markup.TextContainer
 sealed class Block : Identifiable {
@@ -24,54 +23,62 @@ sealed class Block : Identifiable {
         FORM_CHOICE,
     }
 
-    data class Title2 @MarkupInternalApi constructor(
+    @ConsistentCopyVisibility
+    data class Title2 internal constructor(
         override val id: Int,
         override val content: List<Text>,
     ) : Block(), TextContainer {
         override val type: Type get() = Type.TITLE2
     }
 
-    data class Title3 @MarkupInternalApi constructor(
+    @ConsistentCopyVisibility
+    data class Title3 internal constructor(
         override val id: Int,
         override val content: List<Text>,
     ) : Block(), TextContainer {
         override val type: Type get() = Type.TITLE3
     }
 
-    data class Title4 @MarkupInternalApi constructor(
+    @ConsistentCopyVisibility
+    data class Title4 internal constructor(
         override val id: Int,
         override val content: List<Text>,
     ) : Block(), TextContainer {
         override val type: Type get() = Type.TITLE4
     }
 
-    data class Paragraph @MarkupInternalApi constructor(
+    @ConsistentCopyVisibility
+    data class Paragraph internal constructor(
         override val id: Int,
         override val content: List<Text>,
     ) : Block(), TextContainer {
         override val type: Type get() = Type.PARAGRAPH
     }
 
-    data class ItemList @MarkupInternalApi constructor(
+    @ConsistentCopyVisibility
+    data class ItemList internal constructor(
         override val id: Int,
         val items: List<Item>,
     ) : Block() {
         override val type: Type get() = Type.ITEM_LIST
     }
 
-    data class NumberedList @MarkupInternalApi constructor(
+    @ConsistentCopyVisibility
+    data class NumberedList internal constructor(
         override val id: Int,
         val items: List<Item>,
     ) : Block() {
         override val type: Type get() = Type.NUMBERED_LIST
     }
 
-    data class Item @MarkupInternalApi constructor(
+    @ConsistentCopyVisibility
+    data class Item internal constructor(
         override val id: Int,
         override val content: List<Text>,
     ) : Identifiable, TextContainer
 
-    data class Table @MarkupInternalApi constructor(
+    @ConsistentCopyVisibility
+    data class Table internal constructor(
         override val id: Int,
         val rows: List<Row>,
         val header: Header,
@@ -79,22 +86,26 @@ sealed class Block : Identifiable {
         override val type: Type get() = Type.TABLE
 
 
-        data class Row @MarkupInternalApi constructor(
+        @ConsistentCopyVisibility
+        data class Row internal constructor(
             override val id: Int,
             val cells: List<Cell>,
         ) : Identifiable
 
-        data class Cell @MarkupInternalApi constructor(
+        @ConsistentCopyVisibility
+        data class Cell internal constructor(
             override val id: Int,
             override val content: List<Text>,
         ) : Identifiable, TextContainer
 
-        data class Header @MarkupInternalApi constructor(
+        @ConsistentCopyVisibility
+        data class Header internal constructor(
             override val id: Int,
             val colSpec: List<ColumnSpec>,
         ) : Identifiable
 
-        data class ColumnSpec @MarkupInternalApi constructor(
+        @ConsistentCopyVisibility
+        data class ColumnSpec internal constructor(
             override val id: Int,
             override val content: List<Text>,
             val alignment: ColumnAlignment,
@@ -104,7 +115,8 @@ sealed class Block : Identifiable {
         enum class ColumnAlignment { LEFT, RIGHT }
     }
 
-    data class FormText @MarkupInternalApi constructor(
+    @ConsistentCopyVisibility
+    data class FormText internal constructor(
         override val id: Int,
         override val content: List<Text>,
         val size: Size,
@@ -115,7 +127,8 @@ sealed class Block : Identifiable {
         enum class Size { NONE, SHORT, LONG, FILL }
     }
 
-    data class FormChoice @MarkupInternalApi constructor(
+    @ConsistentCopyVisibility
+    data class FormChoice internal constructor(
         override val id: Int,
         val prompt: List<Text>,
         val choices: List<Choice>,
@@ -123,7 +136,8 @@ sealed class Block : Identifiable {
     ) : Block() {
         override val type: Type get() = Type.FORM_CHOICE
 
-        data class Choice @MarkupInternalApi constructor(
+        @ConsistentCopyVisibility
+        data class Choice internal constructor(
             override val id: Int,
             override val content: List<Text>,
         ) : Identifiable, TextContainer

@@ -29,7 +29,7 @@ fun <T> markupElement(build: MarkupElementScope.() -> T): T = MarkupElementScope
  * elementet slik at det kan sendes inn som barn til andre elementer.
  */
 @MarkupElementsDsl
-class MarkupElementScope {
+class MarkupElementScope internal constructor() {
 
     // --- Text ---
 

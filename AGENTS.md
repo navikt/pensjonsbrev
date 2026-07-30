@@ -106,17 +106,44 @@ Rules:
   against the old server and CI against the new one — if only one of them fails, suspect wire
   compatibility rather than the change itself.
 
-#### `@MarkupInternalApi` seams
+#### The `apiInternal` source set in `brevbaker:markup`
 
-`markup`'s builder state is `internal` (with `_`-prefixed names). What `brevbaker:internal` needs is
-exposed as opt-in **extension** properties/functions in `markup/dsl/MarkupInternalSeams.kt` — never
-as members, because members on a DSL receiver shadow the caller's own names inside every DSL lambda.
-Two rules follow, and both have bitten us:
+`markup` must be buildable from two places with different ergonomics: its own public authoring DSL in
+`markup/src/main` (ids are always `0`, no `variable`/`editBehaviour`), and the **extended** DSL
+(`letterMarkupExtended`, `attachmentExtended`, `markupElement`) where the caller — typically
+`Letter2Markup` in core — supplies explicit ids and may use `variable(...)`/`editBehaviour`.
 
-1. A seam name must never equal a public DSL function name (one `import` pulls in both) — hence
-   `tableHeader`/`promptTexts`, not `header`/`prompt`.
-2. A lambda parameter must never be named `build`; a local function-typed variable wins over an
-   extension function. Use `init`.
+The extended DSL lives in `markup/src/apiInternal`, a dedicated source set that gets `internal`
+access to `main` through Kotlin compilation association (`associateWith`), i.e. friend compilation.
+It is deliberately *not* folded into `main`, so the builders' seams (`texts`, `blocks`,
+`contentFactory`, `build()`, internal constructors) never become part of markup's published public
+API — the ABI validator and the published jar cover `main` only.
+
+`apiInternal`'s output is exposed as a separate, **never published** jar via the consumable
+configuration `apiInternalElements`, and `brevbaker:internal` picks it up as a local jar:
+
+```kotlin
+api(project(path = ":brevbaker:markup", configuration = "apiInternalElements"))
+```
+
+`brevbaker:internal` still gets markup's `main` by published coordinates (`libs.brevbaker.markup`) and
+re-exports both with `api(...)`, so downstream modules just depend on `project(":brevbaker:internal")`.
+
+Rules:
+
+- **Keep the extended DSL in `apiInternal`, never in `brevbaker:internal` or in markup's `main`.**
+  Putting it in `brevbaker:internal` means it can only reach markup across a published-jar boundary,
+  which forces the builder seams to become public — that is exactly what this source set avoids.
+- Because the jar is built from the local project while `main` is resolved from Maven, a change to
+  `main` needs `./gradlew :brevbaker:markup:publishToMavenLocal` before dependents build, or
+  `apiInternal` and `main` drift apart.
+- Markup's *test* compilation is associated with `apiInternal`, so tests may use the extended DSL.
+  Tests that also need Jackson (`internalObjectMapper()`) belong in `brevbaker:internal` instead —
+  markup has no serialization dependency and cannot depend on `internal`.
+- The model constructors (`Block`, `Text`, `LetterMarkup`, …) are `internal constructor` +
+  `@ConsistentCopyVisibility`, so the DSL is the only way to build markup. Nothing outside markup
+  constructs the model, so no opt-in annotation is needed — if you find yourself wanting one, add a
+  DSL entry point in `apiInternal` instead.
 
 
 ### Critical Build Commands

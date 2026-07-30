@@ -1,6 +1,5 @@
 package no.nav.brev.brevbaker.markup.outline
 
-import no.nav.brev.brevbaker.markup.MarkupInternalApi
 import no.nav.brev.brevbaker.markup.Markup.Identifiable
 
 /** Semantisk merkelapp på et tekst-element som styrer redigeringsatferden i skribenten. */
@@ -27,7 +26,8 @@ sealed class Text : Identifiable {
 
     enum class FontType { PLAIN, BOLD, ITALIC }
 
-    data class Literal @MarkupInternalApi constructor(
+    @ConsistentCopyVisibility
+    data class Literal internal constructor(
         override val id: Int,
         override val text: String,
         override val fontType: FontType = FontType.PLAIN,
@@ -36,7 +36,8 @@ sealed class Text : Identifiable {
         override val type: Type get() = Type.LITERAL
     }
 
-    data class Variable @MarkupInternalApi constructor(
+    @ConsistentCopyVisibility
+    data class Variable internal constructor(
         override val id: Int,
         override val text: String,
         override val fontType: FontType = FontType.PLAIN,
@@ -45,7 +46,8 @@ sealed class Text : Identifiable {
         override val type: Type get() = Type.VARIABLE
     }
 
-    data class NewLine @MarkupInternalApi constructor(
+    @ConsistentCopyVisibility
+    data class NewLine internal constructor(
         override val id: Int,
     ) : Text() {
         override val type: Type get() = Type.NEW_LINE

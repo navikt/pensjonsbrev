@@ -172,7 +172,7 @@ fun OutlineBuilder<ExtendedContentBuilder>.table(id: Int, init: TableBuilder<Ext
  */
 @JvmName("headerExtended")
 fun TableBuilder<ExtendedContentBuilder>.header(id: Int, init: HeaderBuilder<ExtendedContentBuilder>.() -> Unit) {
-    tableHeader = HeaderBuilder<ExtendedContentBuilder>().apply(init).build(id)
+    header = HeaderBuilder<ExtendedContentBuilder>().apply(init).build(id)
 }
 
 /**
@@ -251,7 +251,7 @@ fun OutlineBuilder<ExtendedContentBuilder>.formChoice(id: Int, vspace: Boolean =
  * ```
  */
 fun FormChoiceBuilder<ExtendedContentBuilder>.prompt(content: PlainExtendedTextBuilder.() -> Unit) {
-    promptTexts.addAll(plainExtendedText(content))
+    prompt.addAll(plainExtendedText(content))
 }
 
 /**

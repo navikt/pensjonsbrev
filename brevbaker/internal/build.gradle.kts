@@ -14,6 +14,9 @@ version = "0.0.1-SNAPSHOT"
 dependencies {
     api(libs.brevbaker.common)
     api(libs.brevbaker.markup)
+    // Den utvidede (id-eksplisitte) markup-DSL-en. Ligger i markups `apiInternal`-kildesett, som har
+    // friend-tilgang til markups internals og aldri publiseres, og hentes derfor som lokal jar.
+    api(project(path = ":brevbaker:markup", configuration = "apiInternalElements"))
     api(libs.jackson.databind)
     api(libs.jackson.annotations)
     api(libs.jackson.datatype.jsr310) {
@@ -36,8 +39,6 @@ dependencies {
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.fromTarget(javaTarget))
-        // Modulen er den eneste tiltenkte brukeren av markups interne konstruksjons-seams.
-        optIn.add("no.nav.brev.brevbaker.markup.MarkupInternalApi")
     }
 }
 

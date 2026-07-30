@@ -25,6 +25,42 @@ dependencies {
     testImplementation(libs.bundles.junit)
 }
 
+// Kildesettet `apiInternal` er et internt API-lag som får bruke markups `internal` seams (byggernes
+// tilstand, `build()`, interne konstruktører). Det holdes som et eget kildesett — ikke foldet inn i
+// `main` — nettopp for at de seamsene IKKE skal bli en del av markups publiserte offentlige API:
+// både ABI-validatoren og den publiserte jar-en dekker kun `main`.
+//
+// Tilgangen til `main`s internals kommer fra Kotlin-kompileringsassosiasjon (`associateWith`).
+sourceSets.create("apiInternal")
+
+kotlin {
+    val mainCompilation = target.compilations.getByName("main")
+    val apiInternalCompilation = target.compilations.getByName("apiInternal")
+    apiInternalCompilation.associateWith(mainCompilation)
+
+    // Testene bruker apiInternal-DSL-en, så test-kompileringen trenger den (og transitivt main).
+    target.compilations.getByName("test").associateWith(apiInternalCompilation)
+}
+
+// Overlever `apiInternal`s kompilerte klasser til `brevbaker:internal` over prosjektgrensen.
+//
+// `apiInternal` ser `main`s internals via friend-kompilering (`associateWith`), som kun virker
+// innenfor prosjektet; konsumenten trenger bare de resulterende klassene. En vanlig
+// prosjektavhengighet leverer kun `main`, så vi eksponerer `apiInternal`s output som en egen
+// jar/konsumerbar konfigurasjon som aldri publiseres. Da holdes seamsene helt utenfor det publiserte
+// artefaktet.
+val apiInternalJar = tasks.register<Jar>("apiInternalJar") {
+    archiveClassifier.set("api-internal")
+    from(sourceSets["apiInternal"].output)
+}
+
+configurations.create("apiInternalElements") {
+    isCanBeConsumed = true
+    isCanBeResolved = false
+}
+
+artifacts.add("apiInternalElements", apiInternalJar)
+
 tasks.test {
     useJUnitPlatform()
 }
@@ -59,8 +95,6 @@ publishing {
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.fromTarget(markupJavaTarget))
-        // Markups egen DSL er den tiltenkte brukeren av sine egne konstruksjons-seams.
-        optIn.add("no.nav.brev.brevbaker.markup.MarkupInternalApi")
     }
 }
 tasks {
@@ -70,17 +104,12 @@ tasks {
     compileTestJava {
         targetCompatibility = markupJavaTarget
     }
+    named<JavaCompile>("compileApiInternalJava") {
+        targetCompatibility = markupJavaTarget
+    }
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
 kotlin {
-    abiValidation {
-        filters {
-            // Konstruksjons-seams for brevbaker:internal er public i bytekoden, men ikke en del av
-            // markups støttede kontrakt. Samme mønster som @InternKonstruktoer i api-model-common.
-            exclude {
-                annotatedWith.add("no.nav.brev.brevbaker.markup.MarkupInternalApi")
-            }
-        }
-    }
+    abiValidation {}
 }

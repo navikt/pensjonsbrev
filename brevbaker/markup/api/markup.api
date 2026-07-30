@@ -2,8 +2,6 @@ public final class no/nav/brev/brevbaker/markup/Attachment {
 	public final fun component1 ()Ljava/util/List;
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Z
-	public final fun copy (Ljava/util/List;Ljava/util/List;Z)Lno/nav/brev/brevbaker/markup/Attachment;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/Attachment;Ljava/util/List;Ljava/util/List;ZILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/Attachment;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBlocks ()Ljava/util/List;
 	public final fun getInkluderSaksinformasjon ()Z
@@ -26,8 +24,6 @@ public final class no/nav/brev/brevbaker/markup/LetterMarkup {
 	public final fun component3 ()Ljava/util/List;
 	public final fun component4 ()Lno/nav/brev/brevbaker/markup/Signatur;
 	public final fun component5 ()I
-	public final fun copy (Ljava/util/List;Lno/nav/brev/brevbaker/markup/Saksinformasjon;Ljava/util/List;Lno/nav/brev/brevbaker/markup/Signatur;I)Lno/nav/brev/brevbaker/markup/LetterMarkup;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/List;Lno/nav/brev/brevbaker/markup/Saksinformasjon;Ljava/util/List;Lno/nav/brev/brevbaker/markup/Signatur;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBlocks ()Ljava/util/List;
 	public final fun getSaksinformasjon ()Lno/nav/brev/brevbaker/markup/Saksinformasjon;
@@ -47,8 +43,6 @@ public final class no/nav/brev/brevbaker/markup/LetterPDFRequest {
 	public final fun component3 ()Ljava/util/List;
 	public final fun component4 ()Lno/nav/brev/brevbaker/markup/Markup$Spraak;
 	public final fun component5 ()Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
-	public final fun copy (Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/List;Ljava/util/List;Lno/nav/brev/brevbaker/markup/Markup$Spraak;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;)Lno/nav/brev/brevbaker/markup/LetterPDFRequest;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/LetterPDFRequest;Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/List;Ljava/util/List;Lno/nav/brev/brevbaker/markup/Markup$Spraak;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterPDFRequest;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttachments ()Ljava/util/List;
 	public final fun getBrevtype ()Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
@@ -114,13 +108,8 @@ public abstract interface class no/nav/brev/brevbaker/markup/Markup$TextContaine
 	public abstract fun getContent ()Ljava/util/List;
 }
 
-public abstract interface annotation class no/nav/brev/brevbaker/markup/MarkupInternalApi : java/lang/annotation/Annotation {
-}
-
 public final class no/nav/brev/brevbaker/markup/PDFTittel {
 	public final fun component1 ()Ljava/util/List;
-	public final fun copy (Ljava/util/List;)Lno/nav/brev/brevbaker/markup/PDFTittel;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/PDFTittel;Ljava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/PDFTittel;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getTitle1 ()Ljava/util/List;
 	public fun hashCode ()I
@@ -130,8 +119,6 @@ public final class no/nav/brev/brevbaker/markup/PDFTittel {
 public final class no/nav/brev/brevbaker/markup/SaksbehandlerSignatur {
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttesterendeSaksbehandlerNavn ()Ljava/lang/String;
 	public final fun getSaksbehandlerNavn ()Ljava/lang/String;
@@ -145,8 +132,6 @@ public final class no/nav/brev/brevbaker/markup/Saksinformasjon {
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4-Bu5HaUw ()Ljava/lang/String;
 	public final fun component5 ()Ljava/time/LocalDate;
-	public final fun copy-0x-lVpE (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/time/LocalDate;)Lno/nav/brev/brevbaker/markup/Saksinformasjon;
-	public static synthetic fun copy-0x-lVpE$default (Lno/nav/brev/brevbaker/markup/Saksinformasjon;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/time/LocalDate;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/Saksinformasjon;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAnnenMottakerNavn ()Ljava/lang/String;
 	public final fun getDokumentDato ()Ljava/time/LocalDate;
@@ -160,8 +145,6 @@ public final class no/nav/brev/brevbaker/markup/Saksinformasjon {
 public final class no/nav/brev/brevbaker/markup/Signatur {
 	public final fun component1 ()Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;
 	public final fun component2 ()Ljava/lang/String;
-	public final fun copy (Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Signatur;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/Signatur;Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/Signatur;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getNavAvsenderEnhet ()Ljava/lang/String;
 	public final fun getSaksbehandlerSignatur ()Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;
@@ -286,8 +269,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$FormChoice : no/na
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Ljava/util/List;
 	public final fun component4 ()Z
-	public final fun copy (ILjava/util/List;Ljava/util/List;Z)Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice;ILjava/util/List;Ljava/util/List;ZILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getChoices ()Ljava/util/List;
 	public fun getId ()I
@@ -301,8 +282,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$FormChoice : no/na
 public final class no/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice : no/nav/brev/brevbaker/markup/Markup$Identifiable, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
-	public final fun copy (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice;ILjava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
@@ -315,8 +294,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$FormText : no/nav/
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;
 	public final fun component4 ()Z
-	public final fun copy (ILjava/util/List;Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;Z)Lno/nav/brev/brevbaker/markup/outline/Block$FormText;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Block$FormText;ILjava/util/List;Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;ZILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$FormText;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
@@ -340,8 +317,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$FormText$Size : ja
 public final class no/nav/brev/brevbaker/markup/outline/Block$Item : no/nav/brev/brevbaker/markup/Markup$Identifiable, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
-	public final fun copy (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Item;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Block$Item;ILjava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Item;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
@@ -352,8 +327,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Item : no/nav/brev
 public final class no/nav/brev/brevbaker/markup/outline/Block$ItemList : no/nav/brev/brevbaker/markup/outline/Block {
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
-	public final fun copy (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$ItemList;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Block$ItemList;ILjava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$ItemList;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getId ()I
 	public final fun getItems ()Ljava/util/List;
@@ -365,8 +338,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$ItemList : no/nav/
 public final class no/nav/brev/brevbaker/markup/outline/Block$NumberedList : no/nav/brev/brevbaker/markup/outline/Block {
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
-	public final fun copy (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$NumberedList;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Block$NumberedList;ILjava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$NumberedList;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getId ()I
 	public final fun getItems ()Ljava/util/List;
@@ -378,8 +349,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$NumberedList : no/
 public final class no/nav/brev/brevbaker/markup/outline/Block$Paragraph : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
-	public final fun copy (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Paragraph;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Block$Paragraph;ILjava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Paragraph;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
@@ -392,8 +361,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Table : no/nav/bre
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;
-	public final fun copy (ILjava/util/List;Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;)Lno/nav/brev/brevbaker/markup/outline/Block$Table;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Block$Table;ILjava/util/List;Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Table;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getHeader ()Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;
 	public fun getId ()I
@@ -406,8 +373,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Table : no/nav/bre
 public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Cell : no/nav/brev/brevbaker/markup/Markup$Identifiable, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
-	public final fun copy (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell;ILjava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
@@ -428,8 +393,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec :
 	public final fun component2 ()Ljava/util/List;
 	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;
 	public final fun component4 ()I
-	public final fun copy (ILjava/util/List;Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;I)Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec;ILjava/util/List;Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAlignment ()Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;
 	public fun getContent ()Ljava/util/List;
@@ -442,8 +405,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec :
 public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Header : no/nav/brev/brevbaker/markup/Markup$Identifiable {
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
-	public final fun copy (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;ILjava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getColSpec ()Ljava/util/List;
 	public fun getId ()I
@@ -454,8 +415,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Header : no/
 public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Row : no/nav/brev/brevbaker/markup/Markup$Identifiable {
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
-	public final fun copy (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Row;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Block$Table$Row;ILjava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Row;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCells ()Ljava/util/List;
 	public fun getId ()I
@@ -466,8 +425,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Row : no/nav
 public final class no/nav/brev/brevbaker/markup/outline/Block$Title2 : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
-	public final fun copy (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Title2;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Block$Title2;ILjava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Title2;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
@@ -479,8 +436,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Title2 : no/nav/br
 public final class no/nav/brev/brevbaker/markup/outline/Block$Title3 : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
-	public final fun copy (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Title3;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Block$Title3;ILjava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Title3;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
@@ -492,8 +447,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Block$Title3 : no/nav/br
 public final class no/nav/brev/brevbaker/markup/outline/Block$Title4 : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
 	public final fun component1 ()I
 	public final fun component2 ()Ljava/util/List;
-	public final fun copy (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Title4;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Block$Title4;ILjava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Block$Title4;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getContent ()Ljava/util/List;
 	public fun getId ()I
@@ -546,8 +499,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Text$Literal : no/nav/br
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
 	public final fun component4 ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
-	public final fun copy (ILjava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;)Lno/nav/brev/brevbaker/markup/outline/Text$Literal;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Text$Literal;ILjava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Text$Literal;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getEditBehaviour ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
 	public fun getFontType ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
@@ -560,8 +511,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Text$Literal : no/nav/br
 
 public final class no/nav/brev/brevbaker/markup/outline/Text$NewLine : no/nav/brev/brevbaker/markup/outline/Text {
 	public final fun component1 ()I
-	public final fun copy (I)Lno/nav/brev/brevbaker/markup/outline/Text$NewLine;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Text$NewLine;IILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Text$NewLine;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getFontType ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
 	public fun getId ()I
@@ -585,8 +534,6 @@ public final class no/nav/brev/brevbaker/markup/outline/Text$Variable : no/nav/b
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
 	public final fun component4 ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
-	public final fun copy (ILjava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;)Lno/nav/brev/brevbaker/markup/outline/Text$Variable;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/outline/Text$Variable;ILjava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Text$Variable;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getEditBehaviour ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
 	public fun getFontType ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;

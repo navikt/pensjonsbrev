@@ -4,7 +4,8 @@ import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.Text
 import java.time.LocalDate
 
-data class LetterMarkup @MarkupInternalApi constructor(
+@ConsistentCopyVisibility
+data class LetterMarkup internal constructor(
     val title1: List<Text>,
     val saksinformasjon: Saksinformasjon,
     val blocks: List<Block>,
@@ -16,13 +17,15 @@ data class LetterMarkup @MarkupInternalApi constructor(
     }
 }
 
-data class Attachment @MarkupInternalApi constructor(
+@ConsistentCopyVisibility
+data class Attachment internal constructor(
     val title1: List<Text>,
     val blocks: List<Block>,
     val inkluderSaksinformasjon: Boolean,
 )
 
-data class Saksinformasjon @MarkupInternalApi constructor(
+@ConsistentCopyVisibility
+data class Saksinformasjon internal constructor(
     val gjelderNavn: String,
     val gjelderPersonidentifikator: Markup.Personidentifikator,
     val annenMottakerNavn: String?,
@@ -30,16 +33,19 @@ data class Saksinformasjon @MarkupInternalApi constructor(
     val dokumentDato: LocalDate,
 )
 
-data class Signatur @MarkupInternalApi constructor(
+@ConsistentCopyVisibility
+data class Signatur internal constructor(
     val saksbehandlerSignatur: SaksbehandlerSignatur?,
     val navAvsenderEnhet: String,
 )
 
-data class SaksbehandlerSignatur @MarkupInternalApi constructor(
+@ConsistentCopyVisibility
+data class SaksbehandlerSignatur internal constructor(
     val saksbehandlerNavn: String,
     val attesterendeSaksbehandlerNavn: String?,
 )
 
-data class PDFTittel @MarkupInternalApi constructor(
+@ConsistentCopyVisibility
+data class PDFTittel internal constructor(
     val title1: List<Text>,
 )
