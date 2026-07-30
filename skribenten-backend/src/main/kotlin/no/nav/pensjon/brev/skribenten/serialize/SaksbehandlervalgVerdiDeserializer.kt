@@ -11,7 +11,12 @@ class SaksbehandlervalgVerdiDeserializer : JsonDeserializer<SaksbehandlervalgVer
         val node: JsonNode = p.codec.readTree(p)
         return when {
             node.isTextual -> SaksbehandlervalgVerdi.String(node.asText())
-            node.isNumber -> SaksbehandlervalgVerdi.Int(node.asInt())
+            node.isIntegralNumber && node.canConvertToInt() -> SaksbehandlervalgVerdi.Int(node.intValue())
+            node.isNumber -> ctxt.reportInputMismatch(
+                SaksbehandlervalgVerdi::class.java,
+                "Kan ikke deserialisere '%s' som SaksbehandlervalgVerdi - tall må være heltall (int32)",
+                node,
+            )
             node.isBoolean -> SaksbehandlervalgVerdi.Boolean(node.asBoolean())
             else -> ctxt.reportInputMismatch(
                 SaksbehandlervalgVerdi::class.java,
