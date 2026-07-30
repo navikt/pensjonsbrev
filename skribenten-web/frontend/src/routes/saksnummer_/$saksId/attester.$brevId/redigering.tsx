@@ -584,15 +584,27 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           }
           right={
             <>
-              <AttestantDiffProvider
-              diff={renderDiffMarkers ? activeDiff : undefined}
-              diffHash={renderDiffMarkers ? currentSavedHash : undefined}
-              invalidatedDiffHashes={invalidatedDiffHashes}
-              dismissedDiffs={dismissedDiffs}
-              dismissLiteral={dismissLiteral}
-              invalidateDiff={invalidateDiff}
-            >
-              <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
+              {visDiff ? (
+                <AttestantDiffProvider
+                  diff={renderDiffMarkers ? activeDiff : undefined}
+                  diffHash={renderDiffMarkers ? currentSavedHash : undefined}
+                  dismissedDiffs={dismissedDiffs}
+                  dismissLiteral={dismissLiteral}
+                  invalidateDiff={invalidateDiff}
+                  invalidatedDiffHashes={invalidatedDiffHashes}
+                >
+                  <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
+                    <ManagedLetterEditor
+                      brev={props.brev}
+                      error={error}
+                      freeze={freeze}
+                      saveDirtyLetter={saveDirtyLetter}
+                      showDebug={showDebug}
+                    />
+                  </InsertedTekstValgHighlightProvider>
+                </AttestantDiffProvider>
+              ) : (
+                <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
                   <ManagedLetterEditor
                     brev={props.brev}
                     error={error}
@@ -601,8 +613,8 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                     showDebug={showDebug}
                   />
                 </InsertedTekstValgHighlightProvider>
-              </AttestantDiffProvider>
-            {/* Modal som ikke tar opp plass i DOM her */}
+              )}
+              {/* Modal som ikke tar opp plass i DOM her */}
               <ReservertBrevError
                 doRetry={props.doReload}
                 onNeiClick={() =>
