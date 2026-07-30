@@ -29,7 +29,7 @@ Alt som ikke oppfyller alarmkriteriene under hører hjemme på et dashboard, ikk
 . *Hver alarm skal ha en handling.* Kan vi ikke beskrive hva mottakeren skal gjøre, skal alarmen ikke finnes.
 . *Alarmér på rate og varighet, ikke enkelthendelser.* Én 500-respons er ikke en hendelse. 5 % feilrate i 10 minutter er det. Alle alarmer skal ha en `for`-periode som filtrerer bort forbigående støy.
 . *Terskler skal begrunnes.* Enhver terskel i dette dokumentet skal ha en kort begrunnelse, slik at den kan justeres bevisst i stedet for tilfeldig.
-. *Skille mellom våre feil og andres feil.* Feil som skyldes nedstrøms systemer (Pesys, SAF, KRR) skal være gjenkjennelige som nettopp det, slik at vi ikke kalles ut for noe vi ikke kan fikse. De skal likevel alarmeres når de rammer våre brukere.
+. *Nedstrøms feil skal attribueres, ikke nedprioriteres.* Når et nedstrøms system (Pesys, SAF, KRR) feiler og rammer brukerne våre, alarmerer vi like fullt — brukerne er like blokkert uansett hvem som eier feilen. Poenget er at alarmen umiddelbart skal peke på *hvem* som feiler, slik at vi kan videreformidle til riktig team i stedet for å feilsøke vårt eget system forgjeves. En alarm vi ikke kan attribuere koster oss mest tid.
 . *4xx er som hovedregel ikke vår feil.* Vi alarmerer på 5xx. Unntaket er en brå økning i 4xx, som ofte betyr at vi har brutt en API-kontrakt for en konsument.
 . *Alarmer er kode.* Alle alarmer versjoneres i repoet sammen med applikasjonen de gjelder, og gjennomgås i PR som all annen kode.
 
@@ -152,7 +152,7 @@ Logger brukes primært til *undersøkelse*, ikke til alarmering — logbaserte a
 Vi gjør likevel unntak der metrikker ikke finnes, og der loggmeldingen er stabil og entydig:
 
 * `Won't retry for exception` — brevbaker mot pdf-bygger, og skribenten-backend mot nedstrøms tjenester. Betyr at en ikke-retriable feil har oppstått.
-* `Error executing one-shot job` — engangsjobb i skribenten-backend feilet.
+* `Error executing one-shot job` — engangsjobb i skribenten-backend feilet. Se også `did not complete successfully`, som dekker jobber som avslutter uten å sette `completed` og dermed heller ikke registreres som fullført.
 * `typst command failed` — kompileringsfeil i pdf-bygger.
 
 Alle logbaserte alarmer skal ha en kommentar i regelen som peker på filen og linjen meldingen kommer fra, slik at den som endrer meldingen ser sammenhengen.
@@ -193,7 +193,7 @@ Brevbaker er navet i automatisk brevproduksjon. Feiler den, produseres det ikke 
 
 | Logg: `Alle toggles må være definert i Unleash`
 | `warning`
-| Feiltilstand i feature toggle-oppsettet som gir uforutsigbar malvalg.
+| En brevmal har en feature toggle som ikke finnes i Unleash. Unleash returnerer da `false`, slik at malen blir *stille utilgjengelig* — ingenting feiler, brevet kan bare ikke bestilles. Uten denne alarmen oppdages det først når noen etterlyser brevet.
 |===
 
 === pensjon-pdf-bygger
@@ -253,7 +253,7 @@ Kritiske alarmer gjelder i praksis kontortid.
 
 | Logg: `Error executing one-shot job`
 | `warning`
-| Engangsjobber er idempotente og kjøres under leader election. En feilet jobb er ikke akutt, men blir aldri fanget opp av noe annet.
+| En feilet engangsjobb stopper *ikke* oppstarten — jobbene kjøres i en egen coroutine etter `ServerReady` med forsinkelse, og fullføring registreres kun i `OneShotJobTable` ved suksess. En jobb kan derfor feile ved hver oppstart uten at noe annet indikerer det. Denne alarmen er eneste signal.
 
 | Databasetilkoblinger nær maks
 | `warning`
@@ -345,7 +345,7 @@ Denne meldingen betyr at sensitive data ble *vellykket fjernet* før logging —
 `cleanSensitiveDataAndLog` i `SkribentenApp.kt` fanger dette og erstatter verdien før noe skrives til logg.
 +
 Dette er derfor *ikke* en personvernhendelse, og skal ikke alarmeres — hverken som `critical` eller `warning`.
-Riktig løsning er en oppretting oppstrøms i Exposed, sporet i https://youtrack.jetbrains.com/issue/EXPOSED-1012[EXPOSED-1012].
+Riktig løsning er en retting oppstrøms i Exposed, sporet i https://youtrack.jetbrains.com/issue/EXPOSED-1012[EXPOSED-1012].
 Sanitiseringen kan først fjernes når den feilen er rettet og vi har oppgradert.
 +
 Den underliggende feilen gir uansett en 500-respons, og fanges dermed allerede av feilrate-alarmen for skribenten-backend. En egen alarm ville kun vært duplikat.
