@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.skribenten.vedlegg.P1Data
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.eq
@@ -111,9 +110,14 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
 
     override var leggVedFoersteside by BrevredigeringTable.leggVedFoersteside
 
-    private val _documentEntityList by DocumentEntity referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
+    // orderBy is intentionally NOT used on the referrersOn delegate: the Referrers object is shared across all
+    // entity instances (cached in the companion object's refDefinitions HashMap). Its orderByExpressions
+    // LinkedHashSet is mutated on every entity construction and read concurrently under Dispatchers.IO, which
+    // can produce a null array element that propagates to Query.orderByExpressions and causes NPE in prepareSQL.
+    // Sorting in Kotlin instead avoids that race entirely.
+    private val _documentEntityList by DocumentEntity referrersOn DocumentTable.brevredigering
     override var document: Dto.Document?
-        get() = _documentEntityList.firstOrNull()?.toDto()
+        get() = _documentEntityList.maxByOrNull { it.id.value }?.toDto()
         set(documentDto) = settDocument(documentDto)
 
     private val _mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
@@ -282,7 +286,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             return
         }
 
-        val existingDocument = _documentEntityList.firstOrNull()
+        val existingDocument = _documentEntityList.maxByOrNull { it.id.value }
 
         if (existingDocument != null) {
             existingDocument.apply {
