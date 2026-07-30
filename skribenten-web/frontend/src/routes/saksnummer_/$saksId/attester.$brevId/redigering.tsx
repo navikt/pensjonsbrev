@@ -44,6 +44,7 @@ import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOn
 import { useUserInfo } from "~/hooks/useUserInfo";
 import {
   type BrevResponse,
+  type OppdaterAttesteringRequest,
   type OppdaterBrevRequest,
   type ReservasjonResponse,
   type SaksbehandlerValg,
@@ -283,7 +284,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
 
-  const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
+  const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterAttesteringRequest>({
     mutationFn: (requestData) =>
       attesterBrev({
         saksId: props.saksId,

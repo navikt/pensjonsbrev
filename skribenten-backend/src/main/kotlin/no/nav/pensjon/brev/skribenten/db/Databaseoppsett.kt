@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.*
 import com.typesafe.config.Config
 import com.zaxxer.hikari.*
-import io.ktor.server.plugins.di.annotations.*
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule

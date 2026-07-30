@@ -36,7 +36,7 @@ class BrevmalService(
     suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        saksbehandlerValg: SaksbehandlerValg,
+        saksbehandlerValg: SaksbehandlervalgMap,
         pesysData: BrevdataResponse.Data
     ): LetterMarkupWithDataUsage =
         brevbakerService.renderMarkup(
