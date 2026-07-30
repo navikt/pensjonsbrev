@@ -24,9 +24,17 @@ function loadTraceMap(assetPath: string): TraceMap | undefined {
 
   let traceMap: TraceMap | undefined;
   try {
-    const mapPath = path.join(sourcemapsRoot, `${assetPath}.map`);
-    const rawSourceMap = fs.readFileSync(mapPath, "utf-8");
-    traceMap = new TraceMap(rawSourceMap);
+    // assetPath comes from an untrusted stack trace string - resolve it and
+    // verify it can't escape sourcemapsRoot (e.g. via ".." segments) before
+    // reading anything from disk.
+    const mapPath = path.resolve(sourcemapsRoot, `.${assetPath}.map`);
+    const relativeToRoot = path.relative(sourcemapsRoot, mapPath);
+    if (relativeToRoot.startsWith("..") || path.isAbsolute(relativeToRoot)) {
+      traceMap = undefined;
+    } else {
+      const rawSourceMap = fs.readFileSync(mapPath, "utf-8");
+      traceMap = new TraceMap(rawSourceMap);
+    }
   } catch {
     // No sourcemap available for this asset (e.g. running locally without a
     // build, or an unrecognized/legacy asset) - fall back to the raw frame.
@@ -54,7 +62,7 @@ function resolveStackFrame(line: string): string {
     column: Number.parseInt(columnNumber, 10),
   });
 
-  if (!originalPosition.source) {
+  if (originalPosition.source === null || originalPosition.line === null || originalPosition.column === null) {
     return line;
   }
 
