@@ -122,11 +122,15 @@ export function useAttestantLetterDiff({
   });
 
   const activeDiff = pickValueForCurrentHash(diffQuery.isSuccess ? diffQuery.data : undefined, savedHash);
+  // Signatures are only computed while the feature is on, so the editor pays nothing for it when off.
   const savedStructure = useMemo(
-    () => (savedLetter ? letterStructureSignature(savedLetter) : undefined),
-    [savedLetter],
+    () => (enabled && savedLetter ? letterStructureSignature(savedLetter) : undefined),
+    [enabled, savedLetter],
   );
-  const currentStructure = useMemo(() => letterStructureSignature(currentLetter), [currentLetter]);
+  const currentStructure = useMemo(
+    () => (enabled ? letterStructureSignature(currentLetter) : undefined),
+    [enabled, currentLetter],
+  );
 
   useEffect(() => {
     if (enabled && savedStructure !== undefined && savedStructure !== currentStructure) {

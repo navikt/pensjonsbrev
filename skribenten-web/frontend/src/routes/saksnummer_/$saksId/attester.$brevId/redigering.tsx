@@ -538,27 +538,16 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           }
           right={
             <>
-              {attestantDiff.enabled ? (
-                <AttestantDiffProvider
-                  diff={attestantDiff.activeDiff}
-                  diffHash={attestantDiff.diffHash}
-                  dismissedDiffs={attestantDiff.dismissedDiffs}
-                  dismissLiteral={attestantDiff.dismissLiteral}
-                  invalidateDiff={attestantDiff.invalidateStructuralDiff}
-                  invalidatedDiffHashes={attestantDiff.invalidatedDiffHashes}
-                  reportRejectedLiteral={attestantDiff.reportRejectedLiteral}
-                >
-                  <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
-                    <ManagedLetterEditor
-                      brev={props.brev}
-                      error={error}
-                      freeze={freeze}
-                      saveDirtyLetter={saveDirtyLetter}
-                      showDebug={showDebug}
-                    />
-                  </InsertedTekstValgHighlightProvider>
-                </AttestantDiffProvider>
-              ) : (
+              {/* Alltid montert med samme tre, slik at av/på-bryteren ikke remonterer editoren. */}
+              <AttestantDiffProvider
+                diff={attestantDiff.enabled ? attestantDiff.activeDiff : undefined}
+                diffHash={attestantDiff.enabled ? attestantDiff.diffHash : undefined}
+                dismissedDiffs={attestantDiff.dismissedDiffs}
+                dismissLiteral={attestantDiff.dismissLiteral}
+                invalidateDiff={attestantDiff.invalidateStructuralDiff}
+                invalidatedDiffHashes={attestantDiff.invalidatedDiffHashes}
+                reportRejectedLiteral={attestantDiff.reportRejectedLiteral}
+              >
                 <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
                   <ManagedLetterEditor
                     brev={props.brev}
@@ -568,7 +557,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                     showDebug={showDebug}
                   />
                 </InsertedTekstValgHighlightProvider>
-              )}
+              </AttestantDiffProvider>
               {/* Modal som ikke tar opp plass i DOM her */}
               <ReservertBrevError
                 doRetry={props.doReload}

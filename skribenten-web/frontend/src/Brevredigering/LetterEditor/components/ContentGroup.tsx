@@ -324,6 +324,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     text,
     shouldBeFocused,
     editorState.focus.cursorPosition,
+    editorState.focus.selectAll,
     freeze,
     setEditorState,
     erFritekst,
