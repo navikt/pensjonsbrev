@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggMedSammeBegrunnelsePaSammeTid
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode
 import no.nav.pensjon.brev.template.Language
@@ -25,6 +26,21 @@ object BarnetilleggFormatter : LocalizedFormatter<BarnetilleggUTDto>() {
     }
 
     override fun stableHashCode(): Int = "BarnetilleggFormatter".hashCode()
+}
+
+object BarnetilleggFlereBarnFormatter : LocalizedFormatter<BarnetilleggMedSammeBegrunnelsePaSammeTid>() {
+    override fun apply(first: BarnetilleggMedSammeBegrunnelsePaSammeTid, second: Language): String {
+        val periodetekst = first.tom?.let { " i perioden fra ${first.fom.format(second)} til ${it.format(second)}" } ?: if(first.begrunnelse == BtBegrunnelseCode.INNVILGET) " fra ${first.fom.format(second)}" else ""
+        val periodetekstNn = first.tom?.let { " i perioden frå ${first.fom.format(second)} til ${it.format(second)}" } ?: if(first.begrunnelse == BtBegrunnelseCode.INNVILGET) " frå ${first.fom.format(second)}" else ""
+
+        return when (second) {
+            Bokmal -> "${first.barnetillegg.joinToString { AntallBarnFormatter().apply(it, second) }}${periodetekst}"
+            Nynorsk -> "${first.barnetillegg.joinToString { AntallBarnFormatter().apply(it, second) }}${periodetekstNn}"
+            English -> throw Exception()
+        }
+    }
+
+    override fun stableHashCode(): Int = "BarnetilleggFlereBarnFormatter".hashCode()
 }
 
 object BarnetilleggOpphorFormatter : LocalizedFormatter<BarnetilleggUTDto>() {
