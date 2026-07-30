@@ -55,7 +55,6 @@ tasks {
 
 dependencies {
     implementation(libs.bundles.logging)
-    implementation(libs.kotlinx.coroutines.slf4j)
     implementation(libs.ktor.serialization.jackson)
     implementation(libs.ktor.server.callId)
     implementation(libs.ktor.server.callLogging)
