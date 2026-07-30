@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Box, Button, Heading, Hide, Label, Switch, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, Box, Button, Heading, Hide, HStack, Label, Loader, Switch, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
@@ -463,7 +463,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   >
                     Marker tekst som er lagt til og slettet
                   </Switch>
-                  {attestantDiff.enabled && (
+                  {attestantDiff.status === "ready" && (
                     <VStack gap="space-4">
                       <BodyShort size="small">
                         <span className="attestant-diff-inserted">Lagt til av saksbehandler</span>
@@ -473,10 +473,12 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                       </BodyShort>
                     </VStack>
                   )}
-                  {attestantDiff.status === "loading" && (
-                    <Alert size="small" variant="info">
-                      Henter endringer ...
-                    </Alert>
+                  {/* "invalidated" er transient: autolagring henter ny markering, så det leses som pågående arbeid. */}
+                  {(attestantDiff.status === "loading" || attestantDiff.status === "invalidated") && (
+                    <HStack align="center" gap="space-8">
+                      <Loader size="small" title="Markerer endringer" />
+                      <BodyShort size="small">Markerer endringer ...</BodyShort>
+                    </HStack>
                   )}
                   {attestantDiff.status === "error" && (
                     <Alert size="small" variant="warning">
@@ -502,12 +504,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                     <Alert size="small" variant="warning">
                       Endringene kunne ikke vises fordi noen markeringer hadde ugyldige posisjoner. Markeringene er
                       skjult for å unngå en ufullstendig fremstilling.
-                    </Alert>
-                  )}
-                  {attestantDiff.status === "invalidated" && (
-                    <Alert size="small" variant="info">
-                      Ved strukturelle endringer skjules markeringene midlertidig. De vises automatisk igjen etter
-                      lagring, når ny markering er hentet for siste lagrede versjon.
                     </Alert>
                   )}
                   <Divider />
