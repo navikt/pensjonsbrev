@@ -4,20 +4,15 @@ import { Alert, BodyShort, Box, Button, Heading, Hide, Label, Switch, VStack } f
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { getBrevAttestering, getBrevDiff, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
+import { getBrevAttestering, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
-import { AttestantDiffProvider } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
-import {
-  getSnapshotForHash,
-  pickValueForCurrentHash,
-  shouldRenderDiffMarkers,
-} from "~/Brevredigering/LetterEditor/diff/diffQueryState";
 import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
+import { AttestantDiffProvider } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
 import {
   createLetterSnapshot,
   createSaksbehandlerValgEndretHistoryEntry,
@@ -45,6 +40,7 @@ import { UnderskriftTextField } from "~/components/ManagedLetterEditor/Underskri
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
+import { useAttestantLetterDiff } from "~/hooks/useAttestantLetterDiff";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
@@ -66,8 +62,6 @@ const vedtakSidemenySchema = z.object({
   attestantSignatur: z.string().min(1, "Underskrift må oppgis"),
   saksbehandlerValg: z.custom<SaksbehandlerValg>(),
 });
-
-const MAX_HASH_CACHE_SIZE = 20;
 
 type VedtakSidemenyFormData = z.infer<typeof vedtakSidemenySchema>;
 type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
@@ -215,92 +209,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     reservationOwnerNavIdent: reservasjonQuery.data?.reservertAv.id,
   });
 
-  const [visDiff, setVisDiff] = useState(false);
-  const currentSavedHash = editorState.redigertBrevHash;
-  const savedLettersByHashRef = useRef<Map<string, typeof props.brev.redigertBrev>>(
-    new Map([[props.brev.redigertBrevHash, props.brev.redigertBrev]]),
-  );
-
-  useEffect(() => {
-    savedLettersByHashRef.current.set(props.brev.redigertBrevHash, props.brev.redigertBrev);
-  }, [props.brev.redigertBrevHash, props.brev.redigertBrev]);
-
-  const [invalidatedDiffHashes, setInvalidatedDiffHashes] = useState<Set<string>>(() => new Set());
-  const invalidateDiff = useCallback((diffHash: string) => {
-    setInvalidatedDiffHashes((current) => {
-      if (current.has(diffHash)) return current;
-      const next = new Set(current);
-      next.add(diffHash);
-      while (next.size > MAX_HASH_CACHE_SIZE) {
-        const oldest = next.values().next().value;
-        if (oldest === undefined) break;
-        next.delete(oldest);
-      }
-      return next;
-    });
-  }, []);
-
-  useEffect(() => {
-    setInvalidatedDiffHashes((current) => {
-      if (current.size === 0) return current;
-      if (current.has(currentSavedHash) && current.size === 1) return current;
-      return current.has(currentSavedHash) ? new Set([currentSavedHash]) : new Set();
-    });
-
-    setDismissedDiffs((current) => {
-      if (current.size === 0) return current;
-      const next = new Map([...current].filter(([, hash]) => hash === currentSavedHash));
-      return next.size === current.size ? current : next;
-    });
-  }, [currentSavedHash]);
-
-  const savedLetterForCurrentHash = getSnapshotForHash(savedLettersByHashRef.current, currentSavedHash);
-
-  const diffQuery = useQuery({
-    queryKey: getBrevDiff.queryKey(props.brev.info.id, currentSavedHash),
-    queryFn: async () => {
-      const snapshotForHash = getSnapshotForHash(savedLettersByHashRef.current, currentSavedHash);
-      if (!snapshotForHash) {
-        throw new Error(`Mangler lagret brevsnapshot for hash ${currentSavedHash}`);
-      }
-
-      return {
-        value: await getBrevDiff.queryFn(props.brev.info.id, snapshotForHash),
-        redigertBrevHash: currentSavedHash,
-      };
-    },
-    enabled: visDiff && savedLetterForCurrentHash !== undefined,
+  const attestantDiff = useAttestantLetterDiff({
+    brevId: props.brev.info.id,
+    initialSavedHash: props.brev.redigertBrevHash,
+    initialSavedLetter: props.brev.redigertBrev,
+    savedHash: editorState.redigertBrevHash,
+    currentLetter: editorState.redigertBrev,
   });
-
-  const activeDiff = pickValueForCurrentHash(diffQuery.isSuccess ? diffQuery.data : undefined, currentSavedHash);
-  const currentHashInvalidated = invalidatedDiffHashes.has(currentSavedHash);
-  const renderDiffMarkers = shouldRenderDiffMarkers({
-    visDiff,
-    currentSavedHash,
-    invalidatedDiffHashes,
-    diff: activeDiff,
-  });
-
-  useEffect(() => {
-    if (!visDiff || !diffQuery.isSuccess) return;
-    if (diffQuery.data.redigertBrevHash !== currentSavedHash) return;
-
-    setInvalidatedDiffHashes((current) => {
-      if (!current.has(currentSavedHash)) return current;
-      const next = new Set(current);
-      next.delete(currentSavedHash);
-      return next;
-    });
-  }, [visDiff, diffQuery.isSuccess, diffQuery.data, currentSavedHash]);
-
-  const [dismissedDiffs, setDismissedDiffs] = useState<Map<string, string>>(() => new Map());
-  const dismissLiteral = useCallback((key: string, diffHash: string) => {
-    setDismissedDiffs((current) => {
-      const next = new Map(current);
-      next.set(key, diffHash);
-      return next;
-    });
-  }, []);
 
   const defaultValuesModelEditor = useMemo(
     () => ({
@@ -336,13 +251,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       });
     },
     onSuccess: (response, variables) => {
-      const snapshots = savedLettersByHashRef.current;
-      snapshots.set(response.redigertBrevHash, response.redigertBrev);
-      while (snapshots.size > MAX_HASH_CACHE_SIZE) {
-        const oldest = snapshots.keys().next().value;
-        if (!oldest || oldest === response.redigertBrevHash) break;
-        snapshots.delete(oldest);
-      }
+      attestantDiff.rememberSavedLetter(response.redigertBrevHash, response.redigertBrev);
       const idsBeforeTekstvalgToggle = idsBeforeTekstvalgToggleRef.current;
       const historySnapshot = variables.historySnapshot;
       idsBeforeTekstvalgToggleRef.current = null;
@@ -544,17 +453,62 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   <Hide above="sm" asChild>
                     <Switch size="small">Vis slettet tekst</Switch>
                   </Hide>
-                  <Switch checked={visDiff} onChange={(event) => setVisDiff(event.target.checked)} size="small">
-                  Marker tekst som er lagt til og slettet
-                </Switch>
-                {visDiff && currentHashInvalidated && (
-                  <Alert variant="info" size="small">
-                    Ved strukturelle endringer skjules markeringene midlertidig. De vises automatisk igjen etter lagring,
-                    når ny markering er hentet for siste lagrede versjon.
-                  </Alert>
-                )}
-                <Divider />
-                <UnderskriftTextField
+                  <Switch
+                    checked={attestantDiff.enabled}
+                    onChange={(event) => attestantDiff.setEnabled(event.target.checked)}
+                    size="small"
+                  >
+                    Marker tekst som er lagt til og slettet
+                  </Switch>
+                  {attestantDiff.enabled && (
+                    <VStack gap="space-4">
+                      <BodyShort size="small">
+                        <span className="attestant-diff-inserted">Lagt til av saksbehandler</span>
+                      </BodyShort>
+                      <BodyShort size="small">
+                        <span className="attestant-diff-deleted">Slettet av saksbehandler</span>
+                      </BodyShort>
+                    </VStack>
+                  )}
+                  {attestantDiff.status === "loading" && (
+                    <Alert size="small" variant="info">
+                      Henter endringer ...
+                    </Alert>
+                  )}
+                  {attestantDiff.status === "error" && (
+                    <Alert size="small" variant="warning">
+                      <VStack align="start" gap="space-8">
+                        Endringene kunne ikke vises. Brevet kan fortsatt gjennomgås, men markeringene er utilgjengelige.
+                        <Button
+                          onClick={() => void attestantDiff.retry()}
+                          size="xsmall"
+                          type="button"
+                          variant="secondary"
+                        >
+                          Prøv igjen
+                        </Button>
+                      </VStack>
+                    </Alert>
+                  )}
+                  {attestantDiff.status === "empty" && (
+                    <Alert size="small" variant="info">
+                      Ingen endringer fra malen ble funnet.
+                    </Alert>
+                  )}
+                  {attestantDiff.status === "unsupported" && (
+                    <Alert size="small" variant="warning">
+                      Endringene kunne ikke vises fordi noen markeringer hadde ugyldige posisjoner. Markeringene er
+                      skjult for å unngå en ufullstendig fremstilling.
+                    </Alert>
+                  )}
+                  {attestantDiff.status === "invalidated" && (
+                    <Alert size="small" variant="info">
+                      Ved strukturelle endringer skjules markeringene midlertidig. De vises automatisk igjen etter
+                      lagring, når ny markering er hentet for siste lagrede versjon.
+                    </Alert>
+                  )}
+                  <Divider />
+                  <UnderskriftTextField
                     controlled
                     error={form.formState.errors.attestantSignatur?.message}
                     of="Attestant"
@@ -584,14 +538,15 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           }
           right={
             <>
-              {visDiff ? (
+              {attestantDiff.enabled ? (
                 <AttestantDiffProvider
-                  diff={renderDiffMarkers ? activeDiff : undefined}
-                  diffHash={renderDiffMarkers ? currentSavedHash : undefined}
-                  dismissedDiffs={dismissedDiffs}
-                  dismissLiteral={dismissLiteral}
-                  invalidateDiff={invalidateDiff}
-                  invalidatedDiffHashes={invalidatedDiffHashes}
+                  diff={attestantDiff.activeDiff}
+                  diffHash={attestantDiff.diffHash}
+                  dismissedDiffs={attestantDiff.dismissedDiffs}
+                  dismissLiteral={attestantDiff.dismissLiteral}
+                  invalidateDiff={attestantDiff.invalidateStructuralDiff}
+                  invalidatedDiffHashes={attestantDiff.invalidatedDiffHashes}
+                  reportRejectedLiteral={attestantDiff.reportRejectedLiteral}
                 >
                   <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
                     <ManagedLetterEditor
