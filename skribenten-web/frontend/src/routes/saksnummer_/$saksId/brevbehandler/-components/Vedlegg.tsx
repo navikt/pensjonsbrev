@@ -33,7 +33,7 @@ import { LANGUAGE_CODE_TO_TEXT, SPRAAK_ENUM_TO_TEXT, SPRAAKKODE_TO_LANGUAGE_CODE
 import { getErrorMessage } from "~/utils/errorUtils";
 
 type VedleggFormData = {
-  valgteVedlegg: AlltidValgbartVedlegg[];
+  valgteVedlegg: AlltidValgbartVedleggBrevkode[];
 };
 
 export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolean }) => {
@@ -65,11 +65,10 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
     enabled: !props.erLaast,
   });
 
-  const getVedleggLabel = (vedlegg: AlltidValgbartVedlegg | AlltidValgbartVedleggBrevkode) =>
-    vedlegg.visningstekst ?? vedlegg.kode;
+  const getVedleggLabel = (vedlegg: AlltidValgbartVedleggBrevkode) => vedlegg.visningstekst ?? vedlegg.kode;
 
   const leggTilVedleggMutation = useMutation({
-    mutationFn: (vedlegg: AlltidValgbartVedlegg[]) =>
+    mutationFn: (vedlegg: AlltidValgbartVedleggBrevkode[]) =>
       oppdaterVedlegg(props.saksId, props.brev.id, { valgteVedlegg: vedlegg }),
     onSuccess: (data) => {
       queryClient.setQueryData(getBrev.queryKey(props.brev.id), data);
