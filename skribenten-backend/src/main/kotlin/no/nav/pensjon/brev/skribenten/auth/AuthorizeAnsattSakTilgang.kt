@@ -25,9 +25,6 @@ private val logger = LoggerFactory.getLogger("AuthorizeAnsattSakTilgang")
 
 open class AuthorizeAnsattSakTilgangConfiguration
 
-// TODO: Vurder om disse to pluginene bør erstattes med policy-klasser som kan brukes i usecasene direkte.
-//       Fordelen er at det blir mer eksplisitt, men samtidig så må det huskes på å kalle dem i alle usecasene.
-
 val AuthorizeAnsattSakTilgang =
     createRouteScopedPlugin("AuthorizeAnsattSakTilgang", ::AuthorizeAnsattSakTilgangConfiguration) {
         val pdlService: PdlService by application.dependencies
