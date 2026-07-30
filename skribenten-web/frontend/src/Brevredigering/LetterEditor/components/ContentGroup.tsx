@@ -19,6 +19,7 @@ import {
   DeletedItemsAt,
 } from "~/Brevredigering/LetterEditor/diff/DeletedMarkup";
 import {
+  diffSegmentSignature,
   getEditableCharacterOffset,
   getEditableLiteralText,
   renderDiffSegments,
@@ -243,7 +244,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const diffSegments = useDiffSegmentsForLiteral(literalIndex, textOf(content) || "");
   const hasDiffDecoration = diffSegments != null;
   const literalDiffKey = diffKey(literalIndex);
-  const diffVersion = diffHash ? `${diffHash}:${literalDiffKey}` : undefined;
+  const diffVersion =
+    diffHash && diffSegments ? `${diffHash}:${literalDiffKey}:${diffSegmentSignature(diffSegments)}` : undefined;
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
@@ -734,7 +736,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       !e.metaKey &&
       (e.key.length === 1 || e.key === "Backspace" || e.key === "Delete" || e.key === "Enter");
 
-    if (isEditingKey) {
+    if (hasDiffDecoration && isEditingKey) {
       normalizeDiffDecoration();
     }
 
@@ -901,7 +903,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         ...(fontTypeOf(content) === FontType.ITALIC && { fontStyle: "italic" }),
       }}
       data-literal-index={JSON.stringify(literalIndex)}
-      onBeforeInput={handleBeforeInput}
+      onBeforeInput={hasDiffDecoration ? handleBeforeInput : undefined}
       onClick={handleOnClick}
       onContextMenu={handleOnContextMenu}
       onDoubleClick={handleOnDoubleClick}

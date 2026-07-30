@@ -135,25 +135,41 @@ const TableView: React.FC<{
               const isHeaderHighlighted =
                 !!highlight && highlight.row === -1 && (highlight.col === -1 || highlight.col === colIndex);
               return (
-                <th
-                  css={isHeaderHighlighted && selectedBackgroundStyle}
-                  data-testid={`table-header-${colIndex}`}
-                  key={colIndex}
-                  scope="col"
-                >
-                  <CellText
-                    cell={col.headerContent}
-                    index={{
-                      blockIndex,
-                      contentIndex,
-                      rowIndex: -1,
-                      cellIndex: colIndex,
-                      cellContentIndex: 0,
-                    }}
+                <React.Fragment key={colIndex}>
+                  <DeletedCellsAt
+                    asHeader
+                    blockIndex={blockIndex}
+                    cellIndex={colIndex}
+                    contentIndex={contentIndex}
+                    rowIndex={-1}
                   />
-                </th>
+                  <th
+                    css={isHeaderHighlighted && selectedBackgroundStyle}
+                    data-testid={`table-header-${colIndex}`}
+                    scope="col"
+                  >
+                    <CellText
+                      cell={col.headerContent}
+                      index={{
+                        blockIndex,
+                        contentIndex,
+                        rowIndex: -1,
+                        cellIndex: colIndex,
+                        cellContentIndex: 0,
+                      }}
+                    />
+                  </th>
+                </React.Fragment>
               );
             })}
+            <DeletedCellsAt
+              asHeader
+              blockIndex={blockIndex}
+              cellIndex={node.header.colSpec.length}
+              contentIndex={contentIndex}
+              rowIndex={-1}
+              trailing
+            />
           </tr>
         </thead>
         <tbody>

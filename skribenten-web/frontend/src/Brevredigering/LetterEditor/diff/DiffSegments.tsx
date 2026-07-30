@@ -6,25 +6,19 @@ function createSegmentNode(segment: DiffSegment): HTMLSpanElement {
 
   if (segment.type === "inserted") {
     span.dataset.diffInsertion = "";
-    span.style.color = "var(--ax-text-meta-lime)";
-    span.style.fontWeight = "600";
-    span.style.borderRadius = "2px";
-    span.style.background = "var(--ax-bg-meta-lime-moderateA)";
+    span.className = "attestant-diff-inserted";
   }
 
   if (segment.type === "deleted") {
     span.dataset.diffDeletion = "";
     span.contentEditable = "false";
-    span.style.color = "var(--ax-text-danger)";
-    span.style.fontWeight = "600";
-    span.style.borderRadius = "2px";
-    span.style.background = "var(--ax-bg-danger-moderate-pressedA)";
-    span.style.textDecorationLine = "line-through";
-    span.style.userSelect = "none";
+    span.className = "attestant-diff-deleted";
   }
 
   return span;
 }
+
+export const diffSegmentSignature = (segments: DiffSegment[]) => JSON.stringify(segments);
 
 export function renderDiffSegments(element: HTMLElement, segments: DiffSegment[], diffVersion: string) {
   if (element.dataset.diffVersion === diffVersion) return;
@@ -43,7 +37,9 @@ export function renderPlainText(element: HTMLElement, text: string) {
 
 export function getEditableLiteralText(element: HTMLElement): string {
   const clone = element.cloneNode(true) as HTMLElement;
-  clone.querySelectorAll("[data-diff-deletion]").forEach((node) => node.remove());
+  for (const node of clone.querySelectorAll("[data-diff-deletion]")) {
+    node.remove();
+  }
   return clone.textContent ?? "";
 }
 
@@ -60,7 +56,9 @@ export function getEditableCharacterOffset(element: HTMLElement): number {
 
   const tempDiv = document.createElement("div");
   tempDiv.appendChild(preCaretRange.cloneContents());
-  tempDiv.querySelectorAll("[data-diff-deletion]").forEach((node) => node.remove());
+  for (const node of tempDiv.querySelectorAll("[data-diff-deletion]")) {
+    node.remove();
+  }
 
   return tempDiv.textContent?.length ?? 0;
 }

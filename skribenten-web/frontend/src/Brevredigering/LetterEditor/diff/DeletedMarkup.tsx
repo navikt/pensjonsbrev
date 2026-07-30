@@ -29,11 +29,10 @@ import {
 
 const deletedTextStyle = css`
   color: var(--ax-text-danger);
-  background: var(--ax-bg-danger-moderate-pressedA);
-  border-radius: 2px;
-  font-weight: 600;
+  background: var(--ax-bg-danger-moderate);
+  border-radius: var(--ax-radius-2);
+  font-weight: var(--ax-font-weight-bold);
   text-decoration-line: line-through;
-  user-select: none;
 `;
 
 const deletedBlockStyle = css`
@@ -140,13 +139,16 @@ export const DeletedRows = ({ rows }: { rows: Row[] }) => {
 };
 
 /** Cells that were removed entirely from a still-existing row. */
-export const DeletedCells = ({ cells }: { cells: Cell[] }) => {
+export const DeletedCells = ({ cells, asHeader = false }: { cells: Cell[]; asHeader?: boolean }) => {
   if (cells.length === 0) return null;
-  return cells.map((cell, index) => (
-    <td data-diff-deleted key={index}>
-      <DeletedTextNodes content={cell.text} />
-    </td>
-  ));
+  const CellTag = asHeader ? "th" : "td";
+  return cells.map((cell, index) => {
+    return (
+      <CellTag data-diff-deleted key={index} scope={asHeader ? "col" : undefined}>
+        <DeletedTextNodes content={cell.text} />
+      </CellTag>
+    );
+  });
 };
 
 /** Blocks that were removed entirely from the letter. */
@@ -213,8 +215,15 @@ export const DeletedCellsAt = ({
   rowIndex,
   cellIndex,
   trailing = false,
-}: { blockIndex: number; contentIndex: number; rowIndex: number; cellIndex: number } & TrailingProps) => (
-  <DeletedCells cells={useDeletedCells(blockIndex, contentIndex, rowIndex, cellIndex, trailing)} />
+  asHeader = false,
+}: {
+  blockIndex: number;
+  contentIndex: number;
+  rowIndex: number;
+  cellIndex: number;
+  asHeader?: boolean;
+} & TrailingProps) => (
+  <DeletedCells asHeader={asHeader} cells={useDeletedCells(blockIndex, contentIndex, rowIndex, cellIndex, trailing)} />
 );
 
 export const DeletedCellContentAt = ({
