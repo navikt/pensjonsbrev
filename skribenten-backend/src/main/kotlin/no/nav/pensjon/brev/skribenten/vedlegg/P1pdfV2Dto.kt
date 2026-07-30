@@ -1,12 +1,8 @@
-package no.nav.pensjon.brev.maler.vedlegg.pdf
+package no.nav.pensjon.brev.skribenten.vedlegg
 
 import no.nav.brev.BrevLandmodell
-import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto
-import no.nav.pensjon.brev.model.SakstypeNavn
-import no.nav.pensjon.brev.template.LangBokmalEnglish
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.vedlegg.createAttachmentPDF
+import no.nav.pensjon.brev.skribenten.model.Sakstype
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
 import java.time.LocalDate
@@ -14,18 +10,45 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 private const val RADER_PER_SIDE = 5
+
+/**
+ * Fyller ut det utfyllbare PDF-skjemaet P1 ("Samlet melding om pensjonsvedtak") med data fra [P1RedigerbarDto].
+ *
+ * ## Kobling mellom kode og PDF-ressurser
+ * P1 består av flere separate PDF-filer (én per side), som ligger som AcroForm-skjemaer i
+ * `src/main/resources/vedlegg/`:
+ * - `P1-side1-BOKMAL.pdf` / `P1-side1-ENGLISH.pdf`
+ * - `P1-side2-BOKMAL.pdf` / `P1-side2-ENGLISH.pdf`
+ * - `P1-side3-BOKMAL.pdf` / `P1-side3-ENGLISH.pdf`
+ * - `P1-side4-BOKMAL.pdf` / `P1-side4-ENGLISH.pdf`
+ *
+ * `side("P1-sideX") { ... }` under refererer til disse filene: [SideAppender.lesInnPDF] slår opp filnavnet
+ * som `/vedlegg/P1-sideX-<SPRÅK>.pdf` (se `HentEllerOpprettPdfHandler.leggVedPDFVedlegg`), og laster inn riktig
+ * språkvariant av PDF-en basert på brevets språk.
+ *
+ * Nøklene som brukes i `felt { "Feltnavn" to verdi }` (f.eks. `"Forenames[0]"`, `"Surname[1]"`,
+ * `"Post_code[0]"`) er **ikke frie tekststrenger** – de må være identiske med `partialName` til de
+ * utfyllbare AcroForm-feltene som er definert inne i de tilhørende PDF-filene over. [SideAppender] fyller
+ * verdiene inn ved å iterere over `document.documentCatalog.acroForm.fieldIterator` og matche på nøyaktig
+ * dette feltnavnet (se `SideAppender.fillFields`), eventuelt prefikset med `page_<index>_` når flere sider
+ * slås sammen til ett dokument (`SideAppender.addPageFieldPrefix`/`pagePrefix`).
+ *
+ * Feltnavnene stammer fra det opprinnelige EU/EØS-skjemaet P1 (felles nordisk/europeisk pensjonsskjema),
+ * og er derfor på engelsk selv i den norske PDF-filen (f.eks. `Forenames`, `Surname`, `Street_N`,
+ * `Post_code`, `Country_code`, `Date_of_birth`, `Institution_awarding_the_pension`).
+ * Radene i tabellene på side 2 og 3 ([innvilgetPensjon]/[avslaattPensjon]) bruker indekserte feltnavn
+ * (`[radnummer]`) fordi PDF-en har ett sett med felt per rad, gjentatt [RADER_PER_SIDE] ganger per side.
+ *
+ * ### Ved endringer
+ * Hvis feltnavn i denne filen endres, må de tilsvarende AcroForm-feltene i PDF-ressursene endres likt
+ * (og omvendt) – ellers vil verdien stille forbli utfylt med tom streng, siden [SideAppender.fillFields]
+ * kun matcher på eksakt feltnavn og ikke feiler dersom feltet mangler. Bruk et PDF-verktøy som kan vise/
+ * redigere skjemafelt (f.eks. Adobe Acrobat "Prepare Form" eller et PDF-inspeksjonsverktøy som lister ut
+ * `AcroForm`-feltene) for å verifisere feltnavn i PDF-ressursene før du endrer nøklene under.
+ */
 object P1pdfV2Dto {
-    val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1RedigerbarDto>(
-        title = {
-            text(
-                bokmal { +"P1 – Samlet melding om pensjonsvedtak" },
-                english { +"P1 – Summary of Pension Decisions" },
-            )
-        }
-
-    ) { data, felles ->
+    fun create(data: P1RedigerbarDto, felles: BrevbakerFelles): PDFVedlegg = PDFVedlegg().apply {
         with(data) {
-
             side("P1-side1") {
                 felt {
                     // innehaver
@@ -47,8 +70,8 @@ object P1pdfV2Dto {
                     "Country_code[1]" to forsikrede.landkode?.landkode
                     "Name_of_the_institution[0]" to
                             mapOf(
-                                BOKMAL to SakstypeNavn.apply(sakstype, Language.Bokmal) + " til Nav",
-                                ENGLISH to SakstypeNavn.apply(sakstype, Language.English) + " with Nav",
+                                BOKMAL to mapSakstype(sakstype, P1Spraak.BOKMAL) + " til Nav",
+                                ENGLISH to mapSakstype(sakstype, P1Spraak.ENGLISH) + " with Nav",
                             )
                 }
             }
@@ -99,6 +122,38 @@ object P1pdfV2Dto {
                 }
             }
         }
+    }
+
+    private enum class P1Spraak { BOKMAL, ENGLISH }
+
+    private fun mapSakstype(sakstype: Sakstype, language: P1Spraak): String? = when (sakstype.kode) {
+        "AFP" -> "AFP"
+        "AFP_PRIVAT" -> when(language) {
+            P1Spraak.BOKMAL -> "AFP i privat sektor"
+            P1Spraak.ENGLISH -> "contractual pension (AFP) in the private sector"
+        }
+        "ALDER" -> when(language) {
+            P1Spraak.BOKMAL -> "alderspensjon"
+            P1Spraak.ENGLISH -> "retirement pension"
+        }
+        "BARNEP" -> when(language) {
+            P1Spraak.BOKMAL -> "barnepensjon"
+            P1Spraak.ENGLISH -> "children’s pension"
+        }
+        "FAM_PL" -> when(language) {
+            P1Spraak.BOKMAL -> "ytelse til tidligere familiepleier"
+            P1Spraak.ENGLISH -> "previous family carers benefits"
+        }
+        "GJENLEV" -> when(language) {
+            P1Spraak.BOKMAL -> "gjenlevendepensjon"
+            P1Spraak.ENGLISH -> "survivor's pension"
+        }
+        "UFOREP" -> when(language) {
+            P1Spraak.BOKMAL -> "uføretrygd"
+            P1Spraak.ENGLISH -> "disability benefit"
+        }
+
+        else -> null
     }
 
     fun String.formaterLandkode(languageCode: LanguageCode): String? =

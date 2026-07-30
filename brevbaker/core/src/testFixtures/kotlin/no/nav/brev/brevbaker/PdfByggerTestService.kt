@@ -14,7 +14,7 @@ import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import no.nav.pensjon.brev.PDFRequest
+import no.nav.brev.brevbaker.PDFRequest
 import no.nav.brev.brevbaker.markup.LetterPDFRequest
 
 class PdfByggerTestService(private val pdfByggerUrl: String = PDFByggerTestContainer.mappedUrl(), private val logWarning: (String) -> Unit = ::println) : PDFByggerService {

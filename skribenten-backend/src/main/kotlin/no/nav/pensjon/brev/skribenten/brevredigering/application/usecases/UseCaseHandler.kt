@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.jetbrains.exposed.v1.jdbc.*
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 
@@ -54,4 +55,5 @@ private suspend fun <T> isolatedTransaction(database: Database, isolation: Int?,
 
 interface BrevredigeringRequest {
     val brevId: BrevId
+    val saksId: SaksId
 }

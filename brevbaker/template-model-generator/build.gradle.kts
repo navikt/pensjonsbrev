@@ -37,7 +37,6 @@ dependencies {
     implementation(libs.brevbaker.common)
 
     testImplementation(kotlin("reflect"))
-    testImplementation(libs.brevbaker.common)
     testImplementation(libs.bundles.junit)
     testImplementation(libs.ksp.symbol.processing.aa)
     testImplementation(libs.ksp.symbol.processing.common)

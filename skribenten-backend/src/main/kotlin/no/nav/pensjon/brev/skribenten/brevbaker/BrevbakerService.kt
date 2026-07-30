@@ -57,6 +57,7 @@ interface BrevbakerService {
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
         redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(),
+        pdfVedlegg: List<PDFVedleggTittel>,
     ): LetterResponse
 
     suspend fun hentRedigerbareVedleggTitler(
@@ -166,6 +167,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
         redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment>,
+        pdfVedlegg: List<PDFVedleggTittel>,
     ): LetterResponse {
         val response = client.post("/letter/redigerbar/pdf") {
             contentType(ContentType.Application.Json)
@@ -178,6 +180,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
                     letterMarkup = redigertBrev,
                     alltidValgbareVedlegg = alltidValgbareVedlegg,
                     redigerteVedlegg = redigerteVedlegg,
+                    pdfVedlegg = pdfVedlegg
                 )
             )
         }

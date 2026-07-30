@@ -8,7 +8,7 @@ import { enablePatches } from "immer";
 import React from "react";
 import ReactDOM from "react-dom/client";
 
-import { ApiError } from "~/components/ApiError";
+import { GlobalError } from "~/components/GlobalError";
 
 import { routeTree } from "./routeTree.gen";
 
@@ -34,7 +34,7 @@ const router = createRouter({
    * Ideelt sett skal denne være 'fuzzy', så kan hver route håndtere NotFound selv.
    */
   notFoundMode: "root",
-  defaultErrorComponent: ({ error }) => <ApiError error={error} title="Noe gikk galt" />,
+  defaultErrorComponent: ({ error }) => <GlobalError error={error} title="Teknisk feil" />,
   context: {
     queryClient,
   },

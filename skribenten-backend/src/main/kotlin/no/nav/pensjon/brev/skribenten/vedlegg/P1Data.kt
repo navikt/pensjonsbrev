@@ -1,11 +1,10 @@
-package no.nav.pensjon.brev.skribenten.brevredigering.domain
+package no.nav.pensjon.brev.skribenten.vedlegg
 
 import no.nav.brev.BrevLandmodell
 import no.nav.pensjon.brev.skribenten.db.P1DataTable
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
-import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.dao.Entity
 import org.jetbrains.exposed.v1.dao.EntityClass
@@ -24,7 +23,7 @@ data class P1RedigerbarDto(
     val innvilgedePensjoner: List<InnvilgetPensjon>,
     val avslaattePensjoner: List<AvslaattPensjon>,
     val utfyllendeInstitusjon: UtfyllendeInstitusjon, // I praksis Nav eller Nav-enheten
-) : PDFVedleggData {
+) {
 
     data class P1Person(
         val fornavn: String?,

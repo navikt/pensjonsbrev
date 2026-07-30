@@ -10,10 +10,7 @@ import no.nav.pensjon.brev.template.dsl.TextContentCreator.createTextContent
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.validation.BrevTemplateValidator
 import no.nav.pensjon.brev.template.validation.EmptyValidator
-import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
-import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
-import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 
 @LetterTemplateMarker
 class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
@@ -22,7 +19,6 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     internal val title: List<TextElement<Lang>> field: MutableList<TextElement<Lang>> = mutableListOf()
     internal val outline: List<OutlineElement<Lang>> field: MutableList<OutlineElement<Lang>> = mutableListOf()
     internal val attachments: List<IncludeAttachment<Lang, *>> field: MutableList<IncludeAttachment<Lang, *>> = mutableListOf()
-    internal val pdfAttachments: List<IncludeAttachmentPDF<Lang, *>> field: MutableList<IncludeAttachmentPDF<Lang, *>> = mutableListOf()
     internal val saksbehandlervalg: Map<String, SaksbehandlervalgVerdi<*>> field: MutableMap<String, SaksbehandlervalgVerdi<*>> = mutableMapOf()
 
     internal fun lagreSaksbehandlervalg(key: String, verdi: SaksbehandlervalgVerdi<*>) {
@@ -44,13 +40,6 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         predicate: Expression<Boolean> = true.expr(),
     ) {
         attachments.add(IncludeAttachment(attachmentData, template, predicate))
-    }
-
-    fun <AttachmentData : PDFVedleggData> includeAttachment(
-        template: PDFTemplate<Lang, AttachmentData>,
-        attachmentData: Expression<AttachmentData>,
-    ) {
-        pdfAttachments.add(IncludeAttachmentPDF(attachmentData, template))
     }
 
     fun includeAttachment(
@@ -100,15 +89,6 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         @Suppress("UNCHECKED_CAST")
         attachments.add(IncludeAttachment(attachmentData as Expression<AttachmentData>, template, attachmentData.notNull()))
     }
-
-    fun <AttachmentData : PDFVedleggData> includeAttachmentIfNotNull(
-        template: PDFTemplate<Lang, AttachmentData>,
-        attachmentData: Expression<AttachmentData?>,
-    ) {
-        @Suppress("UNCHECKED_CAST")
-        pdfAttachments.add(IncludeAttachmentPDF(attachmentData as Expression<AttachmentData>, template, attachmentData.notNull()))
-    }
-
 }
 
 

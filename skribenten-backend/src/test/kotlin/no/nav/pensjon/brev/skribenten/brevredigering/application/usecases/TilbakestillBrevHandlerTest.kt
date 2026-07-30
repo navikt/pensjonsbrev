@@ -136,6 +136,6 @@ class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
         brevId: BrevId,
         principal: UserPrincipal = saksbehandler1Principal,
     ) = withPrincipal(principal) {
-        tilbakestillBrev(TilbakestillBrevHandler.Request(brevId = brevId))
+        tilbakestillBrev(TilbakestillBrevHandler.Request(brevId = brevId, saksId = sak1.saksId))
     }
 }

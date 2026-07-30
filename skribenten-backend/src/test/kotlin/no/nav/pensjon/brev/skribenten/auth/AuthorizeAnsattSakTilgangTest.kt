@@ -15,6 +15,8 @@ import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.*
+import no.nav.pensjon.brev.skribenten.common.Cache
+import no.nav.pensjon.brev.skribenten.common.InMemoryCache
 import no.nav.pensjon.brev.skribenten.fagsystem.*
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.model.*
@@ -110,6 +112,7 @@ class AuthorizeAnsattSakTilgangTest {
                 provide<PdlService> { pdlService }
                 provide<PenClient> { penClient }
                 provide(FagsakService::class)
+                provide<Cache> { InMemoryCache() }
             }
 
             routing {

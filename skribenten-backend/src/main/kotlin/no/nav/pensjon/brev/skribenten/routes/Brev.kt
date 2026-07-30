@@ -7,6 +7,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
+import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.DiffBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.FrigiReservasjonHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevInfoHandler
@@ -14,6 +15,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.Oppdat
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.ReserverBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.TilbakestillBrevHandler
 import no.nav.pensjon.brev.skribenten.common.asSuccess
+import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
@@ -36,9 +38,11 @@ fun Route.brev() {
         val oppdaterBrev: OppdaterBrevHandler by app.dependencies
         put<Edit.Letter>("/redigertBrev") { request ->
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
+            val sak: Fagsak = call.attributes[SakKey]
             val resultat = oppdaterBrev(
                 OppdaterBrevHandler.Request(
                     brevId = call.parameters.brevId(),
+                    saksId = sak.saksId,
                     nyeSaksbehandlerValg = null,
                     nyttRedigertbrev = request,
                     frigiReservasjon = frigiReservasjon,
@@ -51,14 +55,16 @@ fun Route.brev() {
             val reserverBrev: ReserverBrevHandler by app.dependencies
             get {
                 val brevId = call.parameters.brevId()
-                val reservasjon = reserverBrev(ReserverBrevHandler.Request(brevId = brevId))
+                val sak: Fagsak = call.attributes[SakKey]
+                val reservasjon = reserverBrev(ReserverBrevHandler.Request(brevId = brevId, saksId = sak.saksId))
                 apiRespond(dto2ApiService, reservasjon)
             }
 
             val frigiReservasjon: FrigiReservasjonHandler by app.dependencies
             delete {
                 val brevId = call.parameters.brevId()
-                val result = frigiReservasjon(FrigiReservasjonHandler.Request(brevId = brevId))
+                val sak: Fagsak = call.attributes[SakKey]
+                val result = frigiReservasjon(FrigiReservasjonHandler.Request(brevId = brevId, saksId = sak.saksId))
                 apiRespond(dto2ApiService, result)
             }
         }
@@ -66,7 +72,8 @@ fun Route.brev() {
         val tilbakestillBrev: TilbakestillBrevHandler by app.dependencies
         post("/tilbakestill") {
             val brevId = call.parameters.brevId()
-            val resultat = tilbakestillBrev(TilbakestillBrevHandler.Request(brevId = brevId))
+            val sak: Fagsak = call.attributes[SakKey]
+            val resultat = tilbakestillBrev(TilbakestillBrevHandler.Request(brevId = brevId, saksId = sak.saksId))
             apiRespond(dto2ApiService, resultat)
         }
 
@@ -74,8 +81,9 @@ fun Route.brev() {
         post<Edit.Letter>("/diff") { request ->
             val brevId = call.parameters.brevId()
             val split = call.request.queryParameters["split"]?.toBoolean() ?: false
+            val sak: Fagsak = call.attributes[SakKey]
 
-            val result = diffBrev(DiffBrevHandler.Request(brevId, request, split))
+            val result = diffBrev(DiffBrevHandler.Request(brevId, sak.saksId, request, split))
             respondSuccess(result?.asSuccess()) { respond(HttpStatusCode.OK, it) }
         }
     }
