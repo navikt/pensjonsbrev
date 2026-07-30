@@ -7,7 +7,6 @@ class BrevExceptionDto(val tittel: String, val melding: String) {
         if (other !is BrevExceptionDto) return false
         return tittel == other.tittel && melding == other.melding
     }
-
     override fun hashCode() = Objects.hash(tittel, melding)
     override fun toString() = "BrevExceptionDto(tittel='$tittel', melding='$melding')"
 }
