@@ -46,6 +46,13 @@ jobs:
         working-directory: ${{ inputs.workingDir }}/frontend
         run: cp -r dist/ ../bff/public
 
+      - name: Copy extracted sourcemaps into bff, if any were produced
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: |
+          if [ -d dist-sourcemaps ]; then
+            cp -r dist-sourcemaps/ ../bff/sourcemaps
+          fi
+
       - name: Install bff dependencies
         working-directory: ${{ inputs.workingDir }}/bff
         run: npm ci
