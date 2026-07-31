@@ -180,7 +180,6 @@ object ProductionTemplates : AllTemplates {
         OrienteringOmForlengetSaksbehandlingstid,
         OrienteringOmSaksbehandlingstid,
         OversettelseAvDokumenter,
-        SamletMeldingOmPensjonsvedtak,
         SamletMeldingOmPensjonsvedtakV2,
         TilbakekrevingAvFeilutbetaltBeloep,
         VarselOmMuligAvslag,
