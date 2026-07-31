@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.skribenten
+package no.nav.pensjon.brev.pdfbygger
 
 import io.ktor.server.application.*
 import io.ktor.server.metrics.micrometer.*
@@ -14,22 +14,18 @@ import kotlin.time.Duration.Companion.seconds
 object Metrics {
     private val prometheusRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
-    // Skribenten er en interaktiv saksbehandlerflate, så vi er interessert i lavere latens enn i
-    // brevbaker. Ytterpunktene styrer hvor micrometer genererer automatiske buckets.
-    // Den øverste matcher requestTimeout mot brevbaker (BrevbakerService), slik at et kall som
-    // går til timeout havner innenfor histogrammet og ikke i +Inf.
-    // Nedre grense er beholdt selv om metadatarutene (/land, /me/userinfo) ligger på 2-8ms: de
-    // alarmerer vi ikke på, og et gulv på 10ms ville kostet 18 ekstra buckets per rute.
-    private val forventetLavest = 50.milliseconds
+    // Kompilering med typst er CPU-tung, og de tyngste brevene bruker flere sekunder.
+    // Ytterpunktene styrer hvor micrometer genererer automatiske buckets.
+    // Høyest observerte svartid i prod er 7,2s (/produserBrev), så taket har god margin.
+    private val forventetLavest = 100.milliseconds
     private val forventetHoyest = 60.seconds
 
     // SLO-grenser vi vil kunne alarmere eksakt på. Må være sortert.
-    // Den øverste ligger bevisst over forventetHoyest: i prod er høyest observerte svartid 91s
-    // (/external/api/v1/brev), altså over timeouten mot brevbaker, så uten denne ville halen
-    // havnet i +Inf. Grenser over ytterpunktet tas med av micrometer uten at det genereres tett
-    // bucket-oppløsning i et område vi sjelden er i.
+    // De to øverste ligger bevisst over forventetHoyest: brevbaker venter i inntil 300s på et
+    // svar herfra, og uten disse ville alt mellom 60s og 300s havnet i +Inf. Grenser over
+    // ytterpunktet tas med av micrometer uten at det genereres tett bucket-oppløsning i et
+    // område vi sjelden er i.
     private val latencyBuckets = listOf(
-        50.milliseconds,
         100.milliseconds,
         250.milliseconds,
         500.milliseconds,
@@ -37,9 +33,11 @@ object Metrics {
         2.seconds,
         5.seconds,
         10.seconds,
+        20.seconds,
         30.seconds,
         60.seconds,
         120.seconds,
+        300.seconds,
     ).map { it.inWholeNanoseconds.toDouble() }
 
     fun Application.configureMetrics() {
@@ -58,7 +56,8 @@ object Metrics {
             // histogram_quantile() blir presis uansett hvor latensen faktisk legger seg.
             // serviceLevelObjectives kommer i tillegg til disse, og gir oss eksakte grenser å
             // alarmere mot ("andel raskere enn 2s"). Uten min/max ville micrometer generert 69
-            // buckets per rute og statuskode, som blir unødvendig mange tidsserier.
+            // buckets per rute og statuskode, som blir spesielt dyrt her siden pdf-bygger skalerer
+            // opp til mange poder.
             distributionStatisticConfig = DistributionStatisticConfig.Builder()
                 .percentilesHistogram(true)
                 .minimumExpectedValue(forventetLavest.inWholeNanoseconds.toDouble())
