@@ -14,6 +14,8 @@ import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.sql.DataSource
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 val databaseReady: AtomicBoolean = AtomicBoolean(false)
 
@@ -63,10 +65,10 @@ fun initDatabase(jdbcUrl: String, username: String, password: String, maxPoolSiz
         // Cloud SQL/proxy kan lukke inaktive forbindelser før Hikari sin default maxLifetime (30 min),
         // som gir "Failed to validate connection ... This connection has been closed".
         // Poolen er bevisst fixed-size (minimumIdle == maximumPoolSize), så idleTimeout settes ikke.
-        maxLifetime = 600_000
-        keepaliveTime = 120_000
-        connectionTimeout = 5_000
-        validationTimeout = 3_000
+        maxLifetime = 10.minutes.inWholeMilliseconds
+        keepaliveTime = 2.minutes.inWholeMilliseconds
+        connectionTimeout = 5.seconds.inWholeMilliseconds
+        validationTimeout = 3.seconds.inWholeMilliseconds
         validate()
     }).also { konfigurerFlyway(it) }
 
