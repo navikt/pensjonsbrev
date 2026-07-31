@@ -4,7 +4,15 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmOktBunnfradragRedigerbarDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmOktBunnfradragRedigerbarDto.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmOktBunnfradragRedigerbarDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.*
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.fraser.OktBunnfradrag
+import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -33,12 +41,19 @@ object VedtakOmOktBunnfradragRedigerbar : RedigerbarTemplate<VedtakOmOktBunnfrad
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
+        val data = pesysData.vedtakData
+
         title {
             text(
-                bokmal { +"TODO" },
-                nynorsk { +"TODO" },
+                bokmal { +"Du får høyere bunnfradrag fordi fribeløpet øker" },
+                nynorsk { +"Du får høgare bunnfradrag fordi fribeløpet aukar" },
             )
         }
-        outline { }
+        outline {
+            includePhrase(OktBunnfradrag.Outline(data))
+        }
+        includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, data.maanedligUfoeretrygdFoerSkatt)
+        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, data.pe, data.pe.inkluderopplysningerbruktiberegningen())
+        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, data.orienteringOmRettigheterUfoere)
     }
 }

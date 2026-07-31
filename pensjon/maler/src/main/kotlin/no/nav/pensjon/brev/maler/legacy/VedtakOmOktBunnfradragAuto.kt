@@ -2,6 +2,12 @@ package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktBunnfradragAutoDto
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragAutoDto.*
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.*
+import no.nav.pensjon.brev.maler.fraser.OktBunnfradrag
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
@@ -23,12 +29,19 @@ object VedtakOmOktBunnfradragAuto : AutobrevTemplate<VedtakOmOktBunnfradragAutoD
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
+        val data = vedtakData
+
         title {
             text(
-                bokmal { +"TODO" },
-                nynorsk { +"TODO" },
+                bokmal { +"Du får høyere bunnfradrag fordi fribeløpet øker" },
+                nynorsk { +"Du får høgare bunnfradrag fordi fribeløpet aukar" },
             )
         }
-        outline { }
+        outline {
+            includePhrase(OktBunnfradrag.Outline(data))
+        }
+        includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, data.maanedligUfoeretrygdFoerSkatt)
+        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, data.pe, data.pe.inkluderopplysningerbruktiberegningen())
+        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, data.orienteringOmRettigheterUfoere)
     }
 }
