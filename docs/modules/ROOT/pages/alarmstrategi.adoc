@@ -50,7 +50,7 @@ Alvorlighetsgraden sier derfor ikke noe om når på døgnet vi rykker ut, men hv
 | Slack-kanal med varsling
 
 | `warning`
-| Noe er på vei galt, eller noe er ødelagt uten at brukerne merker det ennå.
+| Noe er i ferd med å gå galt, eller noe er allerede ødelagt uten at brukerne merker det ennå.
 | Tas i den ordinære arbeidsflyten.
 | Slack-kanal uten varsling
 |===
@@ -414,6 +414,6 @@ Disse er bevisste, prioriterte oppgaver — ikke forglemmelser — og listes her
 
 Eierskap:: Alarmene eies av teamet i fellesskap. Den som mottar en alarm eier den til den er lukket eller eksplisitt overlevert.
 Runbook:: Hver `critical`-alarm skal ha en kort beskrivelse i selve alarmen: hva som er galt, hvem som rammes, og første feilsøkingssteg. En alarm uten dette er ikke ferdig.
-Gjennomgang:: Alarmer vurderes i etterkant av at de har utløst, ikke etter en fast kalender. For hver alarm som har gått: var den reell, og førte den til handling? En alarm som gjentatte ganger utløser uten å føre til handling, skal justeres eller fjernes.
+Gjennomgang:: Alarmer vurderes i etterkant av at de har utløst. For hver alarm som har gått: var den reell, og førte den til handling? En alarm som gjentatte ganger utløser uten å føre til handling, skal justeres eller fjernes.
 Endringer:: Nye og endrede alarmer går gjennom PR som all annen kode. Terskelendringer skal begrunnes i commit-meldingen.
 Ved falske positiver:: Juster terskel eller `for`-periode framfor å slå av alarmen. En avslått alarm blir sjelden slått på igjen.
