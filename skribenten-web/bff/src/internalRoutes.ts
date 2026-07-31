@@ -32,14 +32,18 @@ export const internalRoutes = (server: Express) => {
 
     const body = request.body;
 
+    // Sanitize user-supplied strings to prevent log injection via embedded newlines.
+    const sanitize = (value: unknown): string | undefined =>
+      typeof value === "string" ? value.replace(/[\n\r]/g, " ") : undefined;
+
     console.error(
       JSON.stringify({
-        level: body.level ?? "ERROR",
+        level: sanitize(body.level) ?? "ERROR",
         statusCode: body.status,
-        timestamp: body.jsonContent.timestamp,
-        message: `Feil fra frontend: ${body.message}: ${body.jsonContent.url}`,
-        stack_trace: resolveStackTrace(body.stack),
-        x_correlationId: body.requestId,
+        timestamp: sanitize(body.jsonContent?.timestamp),
+        message: `Feil fra frontend: ${sanitize(body.message)}: ${sanitize(body.jsonContent?.url)}`,
+        stack_trace: resolveStackTrace(sanitize(body.stack)),
+        x_correlationId: sanitize(body.requestId),
       }),
     );
     response.status(200).end();
