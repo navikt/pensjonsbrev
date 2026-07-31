@@ -223,9 +223,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   const attestantDiff = useAttestantLetterDiff({
     brevId: props.brev.info.id,
-    initialSavedHash: props.brev.redigertBrevHash,
-    initialSavedLetter: props.brev.redigertBrev,
+    savedLetter: editorState.redigertBrev,
     savedHash: editorState.redigertBrevHash,
+    isSaved: editorState.saveStatus === "SAVED",
   });
 
   // Markeringene gjelder det lagrede brevet. Så snart attestanten redigerer noe slår vi dem av.
@@ -308,10 +308,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       );
     },
     onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
-    // Diff-bokføring kjører i onSettled slik at onSuccess beholder sin opprinnelige oppførsel uendret.
-    onSettled: (response) => {
-      if (response) attestantDiff.rememberSavedLetter(response.redigertBrevHash, response.redigertBrev);
-    },
   });
 
   const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({

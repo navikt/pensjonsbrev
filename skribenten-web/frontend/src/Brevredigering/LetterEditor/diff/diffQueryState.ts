@@ -3,13 +3,6 @@ export type HashBoundValue<T> = {
   redigertBrevHash: string;
 };
 
-export function getSnapshotForHash<T>(
-  snapshotsByHash: ReadonlyMap<string, T>,
-  redigertBrevHash: string,
-): T | undefined {
-  return snapshotsByHash.get(redigertBrevHash);
-}
-
 export function pickValueForCurrentHash<T>(
   response: HashBoundValue<T> | undefined,
   currentSavedHash: string,

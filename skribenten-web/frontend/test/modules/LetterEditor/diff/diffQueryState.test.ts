@@ -1,10 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import {
-  getSnapshotForHash,
-  type HashBoundValue,
-  pickValueForCurrentHash,
-} from "~/Brevredigering/LetterEditor/diff/diffQueryState";
+import { type HashBoundValue, pickValueForCurrentHash } from "~/Brevredigering/LetterEditor/diff/diffQueryState";
 
 describe("diffQueryState", () => {
   it("ignores stale diff responses from an older hash", () => {
@@ -25,15 +21,5 @@ describe("diffQueryState", () => {
 
     const active = pickValueForCurrentHash(response, "hash-1");
     expect(active).toBe("fresh-diff");
-  });
-
-  it("returns hash-bound snapshot used by diff request", () => {
-    const snapshots = new Map([
-      ["hash-a", { text: "saved-a" }],
-      ["hash-b", { text: "saved-b" }],
-    ]);
-
-    expect(getSnapshotForHash(snapshots, "hash-b")).toEqual({ text: "saved-b" });
-    expect(getSnapshotForHash(snapshots, "missing")).toBeUndefined();
   });
 });

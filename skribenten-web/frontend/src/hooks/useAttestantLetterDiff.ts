@@ -1,54 +1,36 @@
 import { useQuery } from "@tanstack/react-query";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { getBrevDiff } from "~/api/brev-queries";
-import { getSnapshotForHash, pickValueForCurrentHash } from "~/Brevredigering/LetterEditor/diff/diffQueryState";
+import { pickValueForCurrentHash } from "~/Brevredigering/LetterEditor/diff/diffQueryState";
 import { type EditedLetter } from "~/types/brevbakerTypes";
-
-const MAX_HASH_CACHE_SIZE = 20;
 
 type AttestantLetterDiffStatus = "disabled" | "loading" | "ready" | "empty" | "error";
 
 export function useAttestantLetterDiff({
   brevId,
-  initialSavedHash,
-  initialSavedLetter,
+  savedLetter,
   savedHash,
+  isSaved,
 }: {
   brevId: number;
-  initialSavedHash: string;
-  initialSavedLetter: EditedLetter;
+  savedLetter: EditedLetter;
   savedHash: string;
+  isSaved: boolean;
 }) {
   const [enabled, setEnabled] = useState(false);
-  const savedLettersByHashRef = useRef<Map<string, EditedLetter>>(new Map([[initialSavedHash, initialSavedLetter]]));
-
-  const rememberSavedLetter = useCallback((hash: string, letter: EditedLetter) => {
-    const snapshots = savedLettersByHashRef.current;
-    snapshots.set(hash, letter);
-    while (snapshots.size > MAX_HASH_CACHE_SIZE) {
-      const oldest = snapshots.keys().next().value;
-      if (!oldest || oldest === hash) break;
-      snapshots.delete(oldest);
-    }
-  }, []);
-
-  useEffect(() => {
-    rememberSavedLetter(initialSavedHash, initialSavedLetter);
-  }, [initialSavedHash, initialSavedLetter, rememberSavedLetter]);
 
   // Attestanten kan ikke redigere og se markeringer samtidig: første redigering slår av markeringen.
   const disableDiff = useCallback(() => setEnabled(false), []);
 
-  const savedLetter = getSnapshotForHash(savedLettersByHashRef.current, savedHash);
   const diffQuery = useQuery({
     queryKey: getBrevDiff.queryKey(brevId, savedHash),
-    queryFn: async () => {
-      const snapshot = getSnapshotForHash(savedLettersByHashRef.current, savedHash);
-      if (!snapshot) throw new Error(`Mangler lagret brevsnapshot for hash ${savedHash}`);
-      return { value: await getBrevDiff.queryFn(brevId, snapshot), redigertBrevHash: savedHash };
-    },
-    enabled: enabled && savedLetter !== undefined,
+    queryFn: async () => ({
+      value: await getBrevDiff.queryFn(brevId, savedLetter),
+      redigertBrevHash: savedHash,
+    }),
+    // redigertBrev og redigertBrevHash settes sammen fra samme lagringsrespons, så de hører bare sammen når brevet er lagret.
+    enabled: enabled && isSaved,
   });
 
   const activeDiff = pickValueForCurrentHash(diffQuery.isSuccess ? diffQuery.data : undefined, savedHash);
@@ -60,8 +42,7 @@ export function useAttestantLetterDiff({
 
   let status: AttestantLetterDiffStatus = "disabled";
   if (enabled) {
-    if (savedLetter === undefined || diffQuery.isError) status = "error";
-    else if (diffQuery.isPending) status = "loading";
+    if (diffQuery.isError) status = "error";
     else if (diffIsEmpty) status = "empty";
     else if (activeDiff) status = "ready";
     else status = "loading";
@@ -76,7 +57,6 @@ export function useAttestantLetterDiff({
     status,
     activeDiff: renderMarkers ? activeDiff : undefined,
     diffHash: renderMarkers ? savedHash : undefined,
-    error: savedLetter === undefined ? new Error("Mangler lagret brevsnapshot") : diffQuery.error,
-    rememberSavedLetter,
+    error: diffQuery.error,
   };
 }
