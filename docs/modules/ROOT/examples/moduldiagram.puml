@@ -1,76 +1,106 @@
 @startuml
 
-object "pensjon-brevbaker" as brevbaker
-brevbaker : dagens applikasjon
+legend top left
+  |<#pink><color:#pink>WWWWWWWWWW</color> | publisert artefakt (Maven/GitHub Packages) |
+  |<#lightskyblue><color:#lightskyblue>WWWWWWWWWW</color> | våre applikasjoner (kjørende tjenester) |
+  |<#yellow><color:#yellow>WWWWWWWWWW</color> | eksternt system |
+endlegend
 
-object pensjonsmalene #pink
-pensjonsmalene : - her ligger malene og malkodene. \n denne skal bort
+package "brevbaker" {
+  package "brevbaker:markup" {
+    object "markup (main)" as markup #pink
+    markup : - markup-modellen og den publiserte DSLen
+    markup : - ingen runtime-avhengigheter
+    markup : - hentes av andre moduler som\n  publisert artefakt
 
-object ufoeremalene #pink
-ufoeremalene : - her ligger malene og malkodene
+    object "markup (apiInternal)" as markupInternal
+    markupInternal : - utvidet DSL (letterMarkupExtended,\n  attachmentExtended, markupElement)
+    markupInternal : - eget kildesett med friend-tilgang\n  til main (associateWith)
+    markupInternal : - publiseres aldri, eksponeres som\n  konfigurasjonen apiInternalElements
+  }
 
-object aldersmalene #pink
-aldersmalene : - her ligger malene og malkodene
+  object "brevbaker:api-model-common" as modelcommon #pink
+  modelcommon : - felles API-modell mot bestillersystemene
 
-object "etterlattemaler" as etterlatte #pink
+  object "brevbaker:internal" as internal
+  internal : - eneste vei inn til markup +\n  api-model-common for modulene i repoet
+  internal : - re-eksporterer begge med api(...)
+  internal : - Jackson-serialisering av intern trafikk\n  (internalObjectMapper)
+  internal : - publiseres aldri
 
-object "pensjon-brevbaker-api-model" as pensjonapimodel #pink
-pensjonapimodel : denne skal bort
+  object "brevbaker:dsl" as dsl
+  dsl : - det som trengs for å lage en mal
 
-object "alder:api-model" as alderapimodel #pink
-alderapimodel : som i dag
+  object "brevbaker:core" as core
+  core : - rendringsmotor, Letter2Markup
 
-object ":ufoere:api-model" as ufoereapimodel #pink
-ufoereapimodel : som i dag
+  object "brevbaker:template-model-generator" as tmg
+  tmg : - KSP: genererer *Selectors\n  fra @TemplateModelHelpers
 
-object "brevbaker:dsl" as dsl
-dsl : - ny modul
-dsl : - det som trengs for å lage en mal
+  object "brevbaker:pdf-bygger" as pdfbygger #lightskyblue
+  pdfbygger : - egen tjeneste
+  pdfbygger : - kompilerer Typst til PDF
+}
 
-object "brevbaker-bibliotek" as bibliotek
-bibliotek : skal eksponeres
+package "maler" {
+  object "pensjon:maler" as pensjonsmalene
+  object "alder:maler" as aldersmalene
+  object "ufoere:maler" as ufoeremalene
+  object "etterlattemaler" as etterlatte
+  object "planlegge-pensjon-maler" as planlegge
+}
 
+package "api-model" {
+  object "pensjon:api-model" as pensjonapimodel #pink
+  object "alder:api-model" as alderapimodel #pink
+  object "ufoere:api-model" as ufoereapimodel #pink
+}
+
+object "pensjon:brevbaker" as brevbakerApp #lightskyblue
+brevbakerApp : - applikasjonen som samler alle malene\n  og eksponerer dem via API
+
+object "skribenten-backend" as skribenten #lightskyblue
+object PEN #yellow
 object Gjenny #yellow
 
-object "brevbaker-model" as modelcommon
-modelcommon : - som i dag
-modelcommon : - dagens brevbaker-api-model-common
+' brevbaker-modulene
+internal --> markupInternal : prosjektavhengighet\n(apiInternalElements)
+markupInternal ..> markup : friend / associateWith
+internal --> modelcommon
+dsl --> internal
+core --> dsl
+tmg --> dsl
+pdfbygger --> internal
 
-object "brevbaker-selector-generator" as tmg
-tmg : dagens template-model-generator
+' malmoduler
+pensjonsmalene --> core
+aldersmalene --> core
+ufoeremalene --> core
+etterlatte --> core
+planlegge --> core
 
-object PEN #yellow
-
-object Skribenten
-Skribenten : som i dag
-
-bibliotek --> dsl
-brevbaker --> pensjonsmalene
-brevbaker --> aldersmalene
-brevbaker --> ufoeremalene
-brevbaker --> etterlatte
 pensjonsmalene --> pensjonapimodel
-
 aldersmalene --> alderapimodel
 ufoeremalene --> ufoereapimodel
 
-pensjonsmalene -> bibliotek
-etterlatte --> bibliotek
 pensjonapimodel --> modelcommon
 alderapimodel --> modelcommon
 ufoereapimodel --> modelcommon
-dsl --> modelcommon
-tmg --> dsl
-etterlatte ..> tmg
-pensjonsmalene ..> tmg
-ufoeremalene ..> tmg
-bibliotek ..> tmg
 
+' applikasjonen
+brevbakerApp --> pensjonsmalene
+brevbakerApp --> aldersmalene
+brevbakerApp --> ufoeremalene
+brevbakerApp --> etterlatte
+brevbakerApp --> planlegge
+brevbakerApp ..> pdfbygger : HTTP
+
+' konsumenter
+skribenten --> internal
+skribenten ..> brevbakerApp : HTTP
 PEN --> pensjonapimodel
 PEN --> alderapimodel
 PEN --> ufoereapimodel
 Gjenny --> modelcommon
-
-Skribenten --> modelcommon
 
 @enduml
