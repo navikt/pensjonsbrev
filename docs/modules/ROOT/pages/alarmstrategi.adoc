@@ -62,7 +62,7 @@ Skillet avgjør ikke om noen blir vekket, men hvordan vi tolker en alarm i etter
 
 === Applikasjonsmetrikker
 
-Alle tre Kotlin-applikasjonene eksponerer Prometheus-metrikker på `/metrics` via `MicrometerMetrics`, og scrapes av nais (`prometheus.enabled: true`).
+Alle tre Ktor-applikasjonene eksponerer Prometheus-metrikker på `/metrics` via `MicrometerMetrics`, og scrapes av nais (`prometheus.enabled: true`).
 nais legger automatisk på labels som `app`, `namespace` og `pod`, slik at alle spørringer kan filtreres på `app="pensjon-brevbaker"` osv.
 
 Tilgjengelige metrikker:
