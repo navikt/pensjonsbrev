@@ -227,8 +227,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     initialSavedHash: props.brev.redigertBrevHash,
     initialSavedLetter: props.brev.redigertBrev,
     savedHash: editorState.redigertBrevHash,
-    currentLetter: editorState.redigertBrev,
   });
+
+  // Markeringene gjelder det lagrede brevet. Så snart attestanten redigerer noe slår vi dem av.
+  const { disableDiff } = attestantDiff;
+  useEffect(() => {
+    if (editorState.saveStatus === "DIRTY") disableDiff();
+  }, [disableDiff, editorState.saveStatus]);
 
   const defaultValuesModelEditor = useMemo(
     () => ({
@@ -486,8 +491,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                       </BodyShort>
                     </VStack>
                   )}
-                  {/* "invalidated" er transient: autolagring henter ny markering, så det leses som pågående arbeid. */}
-                  {(attestantDiff.status === "loading" || attestantDiff.status === "invalidated") && (
+                  {attestantDiff.status === "loading" && (
                     <HStack align="center" gap="space-8">
                       <Loader size="small" title="Markerer endringer" />
                       <BodyShort size="small">Markerer endringer ...</BodyShort>
@@ -547,12 +551,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
             <>
               {/* Alltid montert med samme tre, slik at av/på-bryteren ikke remonterer editoren. */}
               <AttestantDiffProvider
-                diff={attestantDiff.enabled ? attestantDiff.activeDiff : undefined}
-                diffHash={attestantDiff.enabled ? attestantDiff.diffHash : undefined}
-                dismissedDiffs={attestantDiff.dismissedDiffs}
-                dismissLiteral={attestantDiff.dismissLiteral}
-                invalidateDiff={attestantDiff.invalidateStructuralDiff}
-                invalidatedDiffHashes={attestantDiff.invalidatedDiffHashes}
+                diff={attestantDiff.activeDiff}
+                diffHash={attestantDiff.diffHash}
+                disableDiff={attestantDiff.disableDiff}
                 reportRejectedLiteral={attestantDiff.reportRejectedLiteral}
               >
                 <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>

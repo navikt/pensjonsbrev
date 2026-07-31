@@ -45,37 +45,9 @@ function Probe() {
 }
 
 describe("AttestantDiffContext", () => {
-  it("keeps other literals decorated when one literal is dismissed", () => {
-    const hash = "hash-1";
-    const dismissedDiffs = new Map<string, string>([[diffKey(literalA), hash]]);
-
-    render(
-      <AttestantDiffProvider
-        diff={diff}
-        diffHash={hash}
-        dismissedDiffs={dismissedDiffs}
-        dismissLiteral={() => {}}
-        invalidateDiff={() => {}}
-        invalidatedDiffHashes={new Set()}
-      >
-        <Probe />
-      </AttestantDiffProvider>,
-    );
-
-    expect(screen.getByTestId("a").textContent).toBe("hidden");
-    expect(screen.getByTestId("b").textContent).toBe("visible");
-  });
-
   it("exposes entirely deleted blocks at their unified position", () => {
     render(
-      <AttestantDiffProvider
-        diff={diff}
-        diffHash="hash-1"
-        dismissedDiffs={new Map()}
-        dismissLiteral={() => {}}
-        invalidateDiff={() => {}}
-        invalidatedDiffHashes={new Set()}
-      >
+      <AttestantDiffProvider diff={diff} diffHash="hash-1" disableDiff={() => {}}>
         <Probe />
       </AttestantDiffProvider>,
     );
@@ -84,18 +56,9 @@ describe("AttestantDiffContext", () => {
     expect(screen.getByTestId("deleted-content").textContent).toBe("0");
   });
 
-  it("hides all decorations, literal and structural, after structural invalidation for current hash", () => {
-    const hash = "hash-1";
-
+  it("hides all decorations, literal and structural, when the diff is turned off", () => {
     render(
-      <AttestantDiffProvider
-        diff={diff}
-        diffHash={hash}
-        dismissedDiffs={new Map()}
-        dismissLiteral={() => {}}
-        invalidateDiff={() => {}}
-        invalidatedDiffHashes={new Set([hash])}
-      >
+      <AttestantDiffProvider diff={undefined} diffHash={undefined} disableDiff={() => {}}>
         <Probe />
       </AttestantDiffProvider>,
     );
@@ -124,10 +87,7 @@ describe("AttestantDiffContext", () => {
       <AttestantDiffProvider
         diff={malformedDiff}
         diffHash="hash-1"
-        dismissedDiffs={new Map()}
-        dismissLiteral={() => {}}
-        invalidateDiff={() => {}}
-        invalidatedDiffHashes={new Set()}
+        disableDiff={() => {}}
         reportRejectedLiteral={reportRejectedLiteral}
       >
         <Probe />

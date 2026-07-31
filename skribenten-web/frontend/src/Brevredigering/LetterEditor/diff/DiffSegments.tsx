@@ -35,14 +35,6 @@ export function renderPlainText(element: HTMLElement, text: string) {
   }
 }
 
-export function getEditableLiteralText(element: HTMLElement): string {
-  const clone = element.cloneNode(true) as HTMLElement;
-  for (const node of clone.querySelectorAll("[data-diff-deletion]")) {
-    node.remove();
-  }
-  return clone.textContent ?? "";
-}
-
 export function getEditableCharacterOffset(element: HTMLElement): number {
   const selection = globalThis.getSelection();
   if (!selection || selection.rangeCount === 0) return 0;

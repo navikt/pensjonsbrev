@@ -21,57 +21,36 @@ import {
 type AttestantDiffContextValue = {
   diff: UnifiedLetterDiff | undefined;
   diffHash: string | undefined;
-  invalidatedDiffHashes: ReadonlySet<string>;
-  dismissedDiffs: ReadonlyMap<string, string>;
-  dismissLiteral: (key: string, diffHash: string) => void;
-  invalidateDiff: (diffHash: string) => void;
+  /** Called by every editing path: the attestant editing turns diff mode off entirely. */
+  disableDiff: () => void;
   reportRejectedLiteral: (key: string, diffHash: string, reason: string | null) => void;
 };
 
-const EMPTY_DISMISSED_DIFFS: ReadonlyMap<string, string> = new Map();
-const EMPTY_INVALIDATED_DIFF_HASHES: ReadonlySet<string> = new Set();
 const EMPTY_DELETED: never[] = [];
 
 const AttestantDiffContext = createContext<AttestantDiffContextValue>({
   diff: undefined,
   diffHash: undefined,
-  invalidatedDiffHashes: EMPTY_INVALIDATED_DIFF_HASHES,
-  dismissedDiffs: EMPTY_DISMISSED_DIFFS,
-  dismissLiteral: () => {},
-  invalidateDiff: () => {},
+  disableDiff: () => {},
   reportRejectedLiteral: () => {},
 });
 
 export const AttestantDiffProvider = ({
   diff,
   diffHash,
-  invalidatedDiffHashes,
-  dismissedDiffs,
-  dismissLiteral,
-  invalidateDiff,
+  disableDiff,
   reportRejectedLiteral = () => {},
   children,
 }: {
   diff: UnifiedLetterDiff | undefined;
   diffHash: string | undefined;
-  invalidatedDiffHashes: ReadonlySet<string>;
-  dismissedDiffs: ReadonlyMap<string, string>;
-  dismissLiteral: (key: string, diffHash: string) => void;
-  invalidateDiff: (diffHash: string) => void;
+  disableDiff: () => void;
   reportRejectedLiteral?: (key: string, diffHash: string, reason: string | null) => void;
   children: ReactNode;
 }) => {
   const value = useMemo(
-    () => ({
-      diff,
-      diffHash,
-      invalidatedDiffHashes,
-      dismissedDiffs,
-      dismissLiteral,
-      invalidateDiff,
-      reportRejectedLiteral,
-    }),
-    [diff, diffHash, invalidatedDiffHashes, dismissedDiffs, dismissLiteral, invalidateDiff, reportRejectedLiteral],
+    () => ({ diff, diffHash, disableDiff, reportRejectedLiteral }),
+    [diff, diffHash, disableDiff, reportRejectedLiteral],
   );
 
   return <AttestantDiffContext.Provider value={value}>{children}</AttestantDiffContext.Provider>;
@@ -79,13 +58,10 @@ export const AttestantDiffProvider = ({
 
 export const useAttestantDiff = () => useContext(AttestantDiffContext);
 
-/**
- * The diff that is currently allowed to decorate the letter: only present when it is bound to the
- * latest saved hash and that hash has not been invalidated by a structural edit.
- */
+/** The diff that is currently allowed to decorate the letter: only present when bound to the latest saved hash. */
 export function useActiveDiff(): UnifiedLetterDiff | undefined {
-  const { diff, diffHash, invalidatedDiffHashes } = useAttestantDiff();
-  if (!diff || !diffHash || invalidatedDiffHashes.has(diffHash)) return undefined;
+  const { diff, diffHash } = useAttestantDiff();
+  if (!diff || !diffHash) return undefined;
   return diff;
 }
 
@@ -147,14 +123,11 @@ export const useDeletedCellContent = (
   );
 
 export function useDiffSegmentsForLiteral(literalIndex: LiteralIndex, currentText: string): DiffSegment[] | null {
-  const { diff, diffHash, invalidatedDiffHashes, dismissedDiffs, reportRejectedLiteral } = useAttestantDiff();
+  const { diff, diffHash, reportRejectedLiteral } = useAttestantDiff();
   const key = diffKey(literalIndex);
 
   const result = useMemo<{ segments: DiffSegment[] | null; rejectionReason: string | null }>(() => {
     if (!diff || !diffHash) return { segments: null, rejectionReason: null };
-    if (invalidatedDiffHashes.has(diffHash)) return { segments: null, rejectionReason: null };
-
-    if (dismissedDiffs.get(key) === diffHash) return { segments: null, rejectionReason: null };
 
     const textEdit = textEditForLiteral(diff, literalIndex);
     if (!textEdit || (textEdit.inserts.length === 0 && textEdit.deletes.length === 0)) {
@@ -173,7 +146,7 @@ export function useDiffSegmentsForLiteral(literalIndex: LiteralIndex, currentTex
     }
 
     return { segments: result.segments, rejectionReason: null };
-  }, [currentText, diff, diffHash, dismissedDiffs, invalidatedDiffHashes, key]);
+  }, [currentText, diff, diffHash, key]);
 
   useEffect(() => {
     if (!diffHash) return;

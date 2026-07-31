@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 import {
   diffSegmentSignature,
   getEditableCharacterOffset,
-  getEditableLiteralText,
   renderDiffSegments,
   renderPlainText,
 } from "~/Brevredigering/LetterEditor/diff/DiffSegments";
@@ -26,7 +25,6 @@ describe("DiffSegments DOM behavior", () => {
     expect(element.querySelector("[data-diff-insertion]")?.className).toBe("attestant-diff-inserted");
     expect(element.querySelector("[data-diff-deletion]")?.className).toBe("attestant-diff-deleted");
     expect((element.querySelector("[data-diff-deletion]") as HTMLElement).contentEditable).toBe("false");
-    expect(getEditableLiteralText(element)).toBe("Før ny tekst");
 
     renderPlainText(element, "Før ny tekst");
     expect(element.textContent).toBe("Før ny tekst");

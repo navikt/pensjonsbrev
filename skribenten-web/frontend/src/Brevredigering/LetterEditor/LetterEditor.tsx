@@ -17,7 +17,6 @@ import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
-import { useAttestantDiff } from "./diff/AttestantDiffContext";
 import { DeletedBlocksAt } from "./diff/DeletedMarkup";
 import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { type LetterEditorState } from "./model/state";
@@ -42,23 +41,13 @@ export const LetterEditor = ({
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
   const highlightedIds = useInsertedTekstValgHighlight();
-  const { diffHash, invalidateDiff } = useAttestantDiff();
 
   const [editorRoot, setEditorRoot] = useState<HTMLDivElement | null>(null);
   const editorRootRef = useCallback((el: HTMLDivElement | null) => setEditorRoot(el), []);
 
   useDragSelectUnifier(editorRoot, !freeze);
 
-  useSelectionDeleteHotkey(
-    editorRoot,
-    (focus) => {
-      if (diffHash) {
-        invalidateDiff(diffHash);
-      }
-      applyAction(Actions.deleteSelection, setEditorState, focus);
-    },
-    !freeze,
-  );
+  useSelectionDeleteHotkey(editorRoot, (focus) => applyAction(Actions.deleteSelection, setEditorState, focus), !freeze);
 
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
 
@@ -66,9 +55,6 @@ export const LetterEditor = ({
   const canRedo = !freeze && editorState.history.entryPointer < editorState.history.entries.length - 1;
 
   const undo = useCallback(() => {
-    if (diffHash) {
-      invalidateDiff(diffHash);
-    }
     setEditorState((current) => {
       if (freeze || current.history.entryPointer < 0) return current;
       const entry = current.history.entries[current.history.entryPointer];
@@ -90,12 +76,9 @@ export const LetterEditor = ({
         },
       };
     });
-  }, [diffHash, freeze, invalidateDiff, setEditorState]);
+  }, [freeze, setEditorState]);
 
   const redo = useCallback(() => {
-    if (diffHash) {
-      invalidateDiff(diffHash);
-    }
     setEditorState((current) => {
       if (freeze || current.history.entryPointer >= current.history.entries.length - 1) return current;
       const nextPointer = current.history.entryPointer + 1;
@@ -118,7 +101,7 @@ export const LetterEditor = ({
         },
       };
     });
-  }, [diffHash, freeze, invalidateDiff, setEditorState]);
+  }, [freeze, setEditorState]);
 
   return (
     <VStack height="100%" overflowY="hidden">

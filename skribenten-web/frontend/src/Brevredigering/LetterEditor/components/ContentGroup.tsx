@@ -21,7 +21,6 @@ import {
 import {
   diffSegmentSignature,
   getEditableCharacterOffset,
-  getEditableLiteralText,
   renderDiffSegments,
   renderPlainText,
 } from "~/Brevredigering/LetterEditor/diff/DiffSegments";
@@ -232,6 +231,12 @@ const shouldPreserveFullSelection = (isFritekst: boolean, element: HTMLElement):
   return r.startOffset === 0 && r.endOffset === fullText.length;
 };
 
+const isTextMutatingKey = (event: React.KeyboardEvent<HTMLSpanElement>): boolean =>
+  !event.ctrlKey &&
+  !event.altKey &&
+  !event.metaKey &&
+  (event.key.length === 1 || event.key === "Backspace" || event.key === "Delete" || event.key === "Enter");
+
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
   const pasteViaKeyboardRef = useRef(false);
@@ -240,7 +245,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const highlightedIds = useInsertedTekstValgHighlight();
   const isInserted = isTekstValgHighlighted(highlightedIds, content);
 
-  const { dismissLiteral, diffHash, invalidateDiff } = useAttestantDiff();
+  const { diffHash, disableDiff } = useAttestantDiff();
   const diffSegments = useDiffSegmentsForLiteral(literalIndex, textOf(content) || "");
   const hasDiffDecoration = diffSegments != null;
   const literalDiffKey = diffKey(literalIndex);
@@ -334,30 +339,19 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     diffHash,
   ]);
 
-  const normalizeDiffDecoration = () => {
+  // Markeringer og redigering utelukker hverandre: første redigeringsforsøk slår av markeringen i stedet for
+  // å endre teksten, slik at den dekorerte DOM-en aldri blir skrevet til.
+  const handleEditIntent = () => {
     const element = contentEditableReference.current;
-    if (!element || !hasDiffDecoration || !diffHash) return;
+    if (!element) return;
 
-    const editableText = getEditableLiteralText(element);
     const cursorPosition = getEditableCharacterOffset(element);
-    dismissLiteral(literalDiffKey, diffHash);
-    renderPlainText(element, editableText || ZERO_WIDTH_SPACE);
-
-    const textNode = element.childNodes[0];
-    if (textNode) {
-      focusAtOffset(textNode, Math.min(cursorPosition, editableText.length));
-    }
-  };
-
-  const invalidateVisibleDiff = () => {
-    if (diffHash) {
-      invalidateDiff(diffHash);
-    }
+    disableDiff();
+    applyAction(updateFocus, setEditorState, { ...literalIndex, cursorPosition });
   };
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
-    invalidateVisibleDiff();
     const offset = getCursorOffset();
     if (event.shiftKey) {
       applyAction(Actions.addNewLine, setEditorState, {
@@ -376,7 +370,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       (contentEditableReference.current?.textContent?.startsWith(ZERO_WIDTH_SPACE) && cursorPosition === 1)
     ) {
       event.preventDefault();
-      invalidateVisibleDiff();
       applyAction(Actions.merge, setEditorState, literalIndex, MergeTarget.PREVIOUS);
     }
   };
@@ -385,7 +378,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const cursorIsAtEnd = getCursorOffset() >= (text === ZERO_WIDTH_SPACE ? 0 : text.length);
     if (cursorIsAtEnd) {
       event.preventDefault();
-      invalidateVisibleDiff();
       applyAction(Actions.merge, setEditorState, literalIndex, MergeTarget.NEXT);
     }
   };
@@ -605,7 +597,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     event.preventDefault();
     // If we're at the last cell and tabbing forward, append a row and stop here.
     if (direction === "forward" && isAtLastTableCell(editorState)) {
-      invalidateVisibleDiff();
       addRow(editorState, setEditorState, event);
       return true;
     }
@@ -633,7 +624,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleOnPaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
-    invalidateVisibleDiff();
+    if (hasDiffDecoration) {
+      handleEditIntent();
+      return;
+    }
     // TODO: for debugging frem til vi er ferdig å teste liming
     logPastedClipboard(event.clipboardData);
 
@@ -681,16 +675,25 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleOnInput = ({ currentTarget }: React.FormEvent<HTMLSpanElement>) => {
-    const extractedText = hasDiffDecoration ? getEditableLiteralText(currentTarget) : (currentTarget.textContent ?? "");
-    const postEditCursorPosition = hasDiffDecoration
-      ? getEditableCharacterOffset(currentTarget)
-      : getCharacterOffset(currentTarget);
+    // Teksten i en dekorert literal inneholder slettet tekst som ikke er en del av brevet, og skal aldri lagres.
+    if (hasDiffDecoration) {
+      handleEditIntent();
+      return;
+    }
 
-    applyAction(Actions.updateContentText, setEditorState, literalIndex, extractedText, postEditCursorPosition);
+    const postEditCursorPosition = getCharacterOffset(currentTarget);
+    applyAction(
+      Actions.updateContentText,
+      setEditorState,
+      literalIndex,
+      currentTarget.textContent ?? "",
+      postEditCursorPosition,
+    );
   };
 
-  const handleBeforeInput = () => {
-    normalizeDiffDecoration();
+  const handleBeforeInput = (event: React.FormEvent<HTMLSpanElement>) => {
+    event.preventDefault();
+    handleEditIntent();
   };
 
   const handleOnContextMenu = () => {
@@ -703,6 +706,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleOnKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {
     pasteViaContextMenuRef.current = false;
+
+    if (hasDiffDecoration && isTextMutatingKey(e)) {
+      e.preventDefault();
+      e.stopPropagation();
+      handleEditIntent();
+      return;
+    }
+
     const selection = globalThis.getSelection();
     const hasRange = !!selection && selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed;
 
@@ -731,15 +742,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       return;
     }
 
-    const isEditingKey =
-      !e.ctrlKey &&
-      !e.altKey &&
-      !e.metaKey &&
-      (e.key.length === 1 || e.key === "Backspace" || e.key === "Delete" || e.key === "Enter");
-
-    if (hasDiffDecoration && isEditingKey) {
-      normalizeDiffDecoration();
-    }
+    const isEditingKey = isTextMutatingKey(e);
 
     if (isEditingKey && contentEditableReference.current) {
       const selection = globalThis.getSelection();
@@ -758,14 +761,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const tableDeleteAction = determineTableCellDeleteAction(e, editorState);
       if (tableDeleteAction === "DELETE_TABLE") {
         e.preventDefault();
-        invalidateVisibleDiff();
         applyAction(Actions.removeTable, setEditorState);
         e.stopPropagation();
         return;
       }
       if (tableDeleteAction === "DELETE_ROW") {
         e.preventDefault();
-        invalidateVisibleDiff();
         applyAction(Actions.removeTableRow, setEditorState);
         e.stopPropagation();
         return;
@@ -811,7 +812,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       if (isTableCellIndex(editorState.focus)) {
         e.preventDefault();
         e.stopPropagation();
-        invalidateVisibleDiff();
         applyAction(Actions.moveTableRow, setEditorState, e.key === "ArrowUp" ? "up" : "down");
         return;
       }

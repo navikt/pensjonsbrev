@@ -57,10 +57,7 @@ const withProvider = (
     <AttestantDiffProvider
       diff={undefined}
       diffHash={undefined}
-      dismissedDiffs={new Map()}
-      dismissLiteral={vi.fn()}
-      invalidateDiff={vi.fn()}
-      invalidatedDiffHashes={new Set()}
+      disableDiff={vi.fn()}
       reportRejectedLiteral={vi.fn()}
       {...overrides}
     >
@@ -91,28 +88,26 @@ describe("diff-avslått gir uendret redigeringsflate", () => {
     expect(withProvider().container.querySelectorAll(DIFF_ARTIFACT_SELECTOR)).toHaveLength(0);
   });
 
-  it("renders identical DOM when the diff is present but its hash is invalidated", () => {
+  it("renders identical DOM when the diff is present but the hash is gone", () => {
     const baseline = normalize(withoutProvider().container.innerHTML);
-    const invalidated = withProvider({
+    const withoutHash = withProvider({
       diff: diffTouchingFirstLiteral,
-      diffHash: "hash-1",
-      invalidatedDiffHashes: new Set(["hash-1"]),
+      diffHash: undefined,
     }).container;
 
-    expect(normalize(invalidated.innerHTML)).toBe(baseline);
-    expect(invalidated.querySelectorAll(DIFF_ARTIFACT_SELECTOR)).toHaveLength(0);
+    expect(normalize(withoutHash.innerHTML)).toBe(baseline);
+    expect(withoutHash.querySelectorAll(DIFF_ARTIFACT_SELECTOR)).toHaveLength(0);
   });
 
-  it("renders identical DOM when the literal's diff has been dismissed", () => {
+  it("renders identical DOM when the diff has been turned off after an edit", () => {
     const baseline = normalize(withoutProvider().container.innerHTML);
-    const dismissed = withProvider({
-      diff: diffTouchingFirstLiteral,
+    const disabled = withProvider({
+      diff: undefined,
       diffHash: "hash-1",
-      dismissedDiffs: new Map([["0-0", "hash-1"]]),
     }).container;
 
-    expect(normalize(dismissed.innerHTML)).toBe(baseline);
-    expect(dismissed.querySelectorAll(DIFF_ARTIFACT_SELECTOR)).toHaveLength(0);
+    expect(normalize(disabled.innerHTML)).toBe(baseline);
+    expect(disabled.querySelectorAll(DIFF_ARTIFACT_SELECTOR)).toHaveLength(0);
   });
 
   it("positive control: an active diff does decorate the letter", () => {
