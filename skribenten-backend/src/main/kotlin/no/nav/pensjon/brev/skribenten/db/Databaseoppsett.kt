@@ -60,6 +60,13 @@ fun initDatabase(jdbcUrl: String, username: String, password: String, maxPoolSiz
         this.password = password
         this.initializationFailTimeout = 6000
         maximumPoolSize = maxPoolSize
+        // Cloud SQL/proxy kan lukke inaktive forbindelser før Hikari sin default maxLifetime (30 min),
+        // som gir "Failed to validate connection ... This connection has been closed."
+        maxLifetime = 600_000
+        idleTimeout = 300_000
+        keepaliveTime = 120_000
+        connectionTimeout = 5_000
+        validationTimeout = 3_000
         validate()
     }).also { konfigurerFlyway(it) }
 
