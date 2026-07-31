@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.dsl.helpers.testcases
 
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -20,6 +21,7 @@ data class CanReuseModelsDto2(val child: ChildModel) {
  *
  * If it does not compile then the test has failed.
  */
+@OptIn(InternKonstruktoer::class)
 object CanReuseModels {
 
     @TemplateModelHelpers
