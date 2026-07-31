@@ -507,7 +507,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                     </LocalAlert>
                   )}
                   {attestantDiff.status === "empty" && (
-                    <LocalAlert size="small" status="announcement">
+                    <LocalAlert size="small" status="warning">
                       <LocalAlert.Header>
                         <LocalAlert.Title>Ingen endringer fra malen ble funnet</LocalAlert.Title>
                       </LocalAlert.Header>
