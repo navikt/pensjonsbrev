@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import {
@@ -68,8 +68,7 @@ describe("AttestantDiffContext", () => {
     expect(screen.getByTestId("deleted-blocks").textContent).toBe("0");
   });
 
-  it("reports malformed literal ranges instead of silently hiding them", async () => {
-    const reportRejectedLiteral = vi.fn();
+  it("hides literals with malformed ranges and warns instead of decorating them", () => {
     const malformedDiff: UnifiedLetterDiff = {
       editedBlocks: {
         0: {
@@ -84,19 +83,13 @@ describe("AttestantDiffContext", () => {
     const warning = vi.spyOn(console, "warn").mockImplementation(() => {});
 
     render(
-      <AttestantDiffProvider
-        diff={malformedDiff}
-        diffHash="hash-1"
-        disableDiff={() => {}}
-        reportRejectedLiteral={reportRejectedLiteral}
-      >
+      <AttestantDiffProvider diff={malformedDiff} diffHash="hash-1" disableDiff={() => {}}>
         <Probe />
       </AttestantDiffProvider>,
     );
 
-    await waitFor(() =>
-      expect(reportRejectedLiteral).toHaveBeenCalledWith(diffKey(literalA), "hash-1", expect.any(String)),
-    );
+    expect(screen.getByTestId("a").textContent).toBe("hidden");
+    expect(warning).toHaveBeenCalledWith(expect.stringContaining(diffKey(literalA)));
     warning.mockRestore();
   });
 });

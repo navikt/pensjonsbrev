@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import {
-  Alert,
   BodyShort,
   Box,
   Button,
@@ -508,15 +507,11 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                     </LocalAlert>
                   )}
                   {attestantDiff.status === "empty" && (
-                    <Alert size="small" variant="info">
-                      Ingen endringer fra malen ble funnet.
-                    </Alert>
-                  )}
-                  {attestantDiff.status === "unsupported" && (
-                    <Alert size="small" variant="warning">
-                      Endringene kunne ikke vises fordi noen markeringer hadde ugyldige posisjoner. Markeringene er
-                      skjult for å unngå en ufullstendig fremstilling.
-                    </Alert>
+                    <LocalAlert size="small" status="announcement">
+                      <LocalAlert.Header>
+                        <LocalAlert.Title>Ingen endringer fra malen ble funnet</LocalAlert.Title>
+                      </LocalAlert.Header>
+                    </LocalAlert>
                   )}
                   <Divider />
                   <UnderskriftTextField
@@ -554,7 +549,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 diff={attestantDiff.activeDiff}
                 diffHash={attestantDiff.diffHash}
                 disableDiff={attestantDiff.disableDiff}
-                reportRejectedLiteral={attestantDiff.reportRejectedLiteral}
               >
                 <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
                   <ManagedLetterEditor

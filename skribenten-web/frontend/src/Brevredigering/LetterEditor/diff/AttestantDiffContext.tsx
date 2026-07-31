@@ -1,4 +1,4 @@
-import { createContext, type ReactNode, useContext, useEffect, useMemo } from "react";
+import { createContext, type ReactNode, useContext, useMemo } from "react";
 
 import { type LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { type AnyBlock, type Cell, type Content, type Item, type Row, type TextContent } from "~/types/brevbakerTypes";
@@ -23,7 +23,6 @@ type AttestantDiffContextValue = {
   diffHash: string | undefined;
   /** Called by every editing path: the attestant editing turns diff mode off entirely. */
   disableDiff: () => void;
-  reportRejectedLiteral: (key: string, diffHash: string, reason: string | null) => void;
 };
 
 const EMPTY_DELETED: never[] = [];
@@ -32,26 +31,20 @@ const AttestantDiffContext = createContext<AttestantDiffContextValue>({
   diff: undefined,
   diffHash: undefined,
   disableDiff: () => {},
-  reportRejectedLiteral: () => {},
 });
 
 export const AttestantDiffProvider = ({
   diff,
   diffHash,
   disableDiff,
-  reportRejectedLiteral = () => {},
   children,
 }: {
   diff: UnifiedLetterDiff | undefined;
   diffHash: string | undefined;
   disableDiff: () => void;
-  reportRejectedLiteral?: (key: string, diffHash: string, reason: string | null) => void;
   children: ReactNode;
 }) => {
-  const value = useMemo(
-    () => ({ diff, diffHash, disableDiff, reportRejectedLiteral }),
-    [diff, diffHash, disableDiff, reportRejectedLiteral],
-  );
+  const value = useMemo(() => ({ diff, diffHash, disableDiff }), [diff, diffHash, disableDiff]);
 
   return <AttestantDiffContext.Provider value={value}>{children}</AttestantDiffContext.Provider>;
 };
@@ -123,16 +116,14 @@ export const useDeletedCellContent = (
   );
 
 export function useDiffSegmentsForLiteral(literalIndex: LiteralIndex, currentText: string): DiffSegment[] | null {
-  const { diff, diffHash, reportRejectedLiteral } = useAttestantDiff();
+  const { diff, diffHash } = useAttestantDiff();
   const key = diffKey(literalIndex);
 
-  const result = useMemo<{ segments: DiffSegment[] | null; rejectionReason: string | null }>(() => {
-    if (!diff || !diffHash) return { segments: null, rejectionReason: null };
+  return useMemo<DiffSegment[] | null>(() => {
+    if (!diff || !diffHash) return null;
 
     const textEdit = textEditForLiteral(diff, literalIndex);
-    if (!textEdit || (textEdit.inserts.length === 0 && textEdit.deletes.length === 0)) {
-      return { segments: null, rejectionReason: null };
-    }
+    if (!textEdit || (textEdit.inserts.length === 0 && textEdit.deletes.length === 0)) return null;
 
     const result = buildDiffSegments({
       currentText,
@@ -142,16 +133,9 @@ export function useDiffSegmentsForLiteral(literalIndex: LiteralIndex, currentTex
 
     if (!result.ok) {
       console.warn(`[AttestantDiff] Rejected diff for literal ${key}: ${result.reason}`);
-      return { segments: null, rejectionReason: result.reason };
+      return null;
     }
 
-    return { segments: result.segments, rejectionReason: null };
+    return result.segments;
   }, [currentText, diff, diffHash, key]);
-
-  useEffect(() => {
-    if (!diffHash) return;
-    reportRejectedLiteral(key, diffHash, result.rejectionReason);
-  }, [diffHash, key, reportRejectedLiteral, result.rejectionReason]);
-
-  return result.segments;
 }
