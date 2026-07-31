@@ -37,23 +37,26 @@ Alt som ikke oppfyller alarmkriteriene under hører hjemme på et dashboard, ikk
 
 Vi bruker to nivåer. Flere nivåer i praksis betyr at det midterste ignoreres.
 
+Teamet har *ingen vaktordning*. Ingen alarm forventes håndtert utenfor arbeidstid, uansett nivå.
+Alvorlighetsgraden sier derfor ikke noe om når på døgnet vi rykker ut, men hvor raskt vi tar tak i alarmen når vi er på jobb, og hvor mye den skal få avbryte annet arbeid.
+
 [cols="1,3,2,2", options="header"]
 |===
-| Nivå | Betyr | Når | Kanal
+| Nivå | Betyr | Håndtering | Kanal
 
 | `critical`
-| Brukere er rammet nå, eller brev produseres ikke. Krever umiddelbar handling.
-| Hele døgnet for automatiske brev (batch fra Pesys kjører om natten). Kontortid for saksbehandlerflaten.
+| Brukere er rammet nå, eller brev produseres ikke.
+| Tas foran annet arbeid. Har den utløst utenfor arbeidstid, er den det første vi ser på neste arbeidsdag.
 | Slack-kanal med varsling
 
 | `warning`
-| Noe er på vei galt, eller noe er ødelagt uten at brukerne merker det ennå. Håndteres i arbeidstiden.
-| Kontortid
+| Noe er på vei galt, eller noe er ødelagt uten at brukerne merker det ennå.
+| Tas i den ordinære arbeidsflyten.
 | Slack-kanal uten varsling
 |===
 
-Merk skillet i døgndekning: *pensjon-brevbaker* og *pensjon-pdf-bygger* betjener automatisk brevproduksjon fra Pesys som kjører utenfor kontortid, mens *skribenten-backend* og *skribenten-web* i praksis kun brukes av saksbehandlere i kontortid.
-En nedetid i Skribenten kl. 03 er ikke en kritisk hendelse; det samme i brevbaker er det.
+Merk skillet i *når feil faktisk rammer noen*: *pensjon-brevbaker* og *pensjon-pdf-bygger* betjener automatisk brevproduksjon fra Pesys som kjører utenfor kontortid, mens *skribenten-backend* og *skribenten-web* i praksis kun brukes av saksbehandlere i kontortid.
+Skillet avgjør ikke om noen blir vekket, men hvordan vi tolker en alarm i etterkant: en `critical` fra brevbaker kl. 03 betyr at brev ikke ble produsert i natt og skal prioriteres når vi kommer på jobb, mens det samme i Skribenten som regel ikke har rammet noen.
 
 == Signalkilder
 
@@ -161,7 +164,7 @@ Alle logbaserte alarmer skal ha en kommentar i regelen som peker på filen og li
 
 === pensjon-brevbaker
 
-Brevbaker er navet i automatisk brevproduksjon. Feiler den, produseres det ikke brev — og fordi Pesys kjører batch utenfor kontortid, må kritiske alarmer her gjelde hele døgnet.
+Brevbaker er navet i automatisk brevproduksjon. Feiler den, produseres det ikke brev — og fordi Pesys kjører batch utenfor kontortid, må alarmene her være aktive hele døgnet, selv om de først håndteres i arbeidstiden.
 
 [cols="3,1,3", options="header"]
 |===
@@ -411,6 +414,6 @@ Disse er bevisste, prioriterte oppgaver — ikke forglemmelser — og listes her
 
 Eierskap:: Alarmene eies av teamet i fellesskap. Den som mottar en alarm eier den til den er lukket eller eksplisitt overlevert.
 Runbook:: Hver `critical`-alarm skal ha en kort beskrivelse i selve alarmen: hva som er galt, hvem som rammes, og første feilsøkingssteg. En alarm uten dette er ikke ferdig.
-Gjennomgang:: Alarmene gjennomgås jevnlig. For hver alarm spør vi: har den utløst? Førte den til handling? Hvis den har utløst mange ganger uten å føre til handling, skal terskelen justeres eller alarmen fjernes.
+Gjennomgang:: Alarmer vurderes i etterkant av at de har utløst, ikke etter en fast kalender. For hver alarm som har gått: var den reell, og førte den til handling? En alarm som gjentatte ganger utløser uten å føre til handling, skal justeres eller fjernes.
 Endringer:: Nye og endrede alarmer går gjennom PR som all annen kode. Terskelendringer skal begrunnes i commit-meldingen.
 Ved falske positiver:: Juster terskel eller `for`-periode framfor å slå av alarmen. En avslått alarm blir sjelden slått på igjen.
