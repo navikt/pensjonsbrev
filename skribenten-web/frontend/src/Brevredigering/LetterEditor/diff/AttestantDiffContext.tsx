@@ -59,7 +59,7 @@ export const AttestantDiffProvider = ({
 export const useAttestantDiff = () => useContext(AttestantDiffContext);
 
 /** The diff that is currently allowed to decorate the letter: only present when bound to the latest saved hash. */
-export function useActiveDiff(): UnifiedLetterDiff | undefined {
+function useActiveDiff(): UnifiedLetterDiff | undefined {
   const { diff, diffHash } = useAttestantDiff();
   if (!diff || !diffHash) return undefined;
   return diff;

@@ -66,7 +66,7 @@ const DeletedText = ({ content }: { content: TextContent }) => {
 };
 
 /** Inline text content of a deleted item or table cell. */
-export const DeletedTextNodes = ({ content }: { content: TextContent[] }) => {
+const DeletedTextNodes = ({ content }: { content: TextContent[] }) => {
   if (content.length === 0) return null;
   return content.map((node, index) => <DeletedText content={node} key={index} />);
 };
@@ -113,13 +113,13 @@ const DeletedContentNode = ({ content }: { content: Content }) => {
 };
 
 /** Paragraph content that was removed entirely from a still-existing block. */
-export const DeletedContentNodes = ({ content }: { content: Content[] }) => {
+const DeletedContentNodes = ({ content }: { content: Content[] }) => {
   if (content.length === 0) return null;
   return content.map((node, index) => <DeletedContentNode content={node} key={index} />);
 };
 
 /** Items that were removed entirely from a still-existing item list. */
-export const DeletedItems = ({ items }: { items: Item[] }) => {
+const DeletedItems = ({ items }: { items: Item[] }) => {
   if (items.length === 0) return null;
   return items.map((item, index) => (
     <li data-diff-deleted key={index}>
@@ -129,7 +129,7 @@ export const DeletedItems = ({ items }: { items: Item[] }) => {
 };
 
 /** Rows that were removed entirely from a still-existing table. */
-export const DeletedRows = ({ rows }: { rows: Row[] }) => {
+const DeletedRows = ({ rows }: { rows: Row[] }) => {
   if (rows.length === 0) return null;
   return rows.map((row, index) => (
     <tr data-diff-deleted key={index}>
@@ -152,7 +152,7 @@ export const DeletedCells = ({ cells, asHeader = false }: { cells: Cell[]; asHea
 };
 
 /** Blocks that were removed entirely from the letter. */
-export const DeletedBlocks = ({ blocks }: { blocks: AnyBlock[] }) => {
+const DeletedBlocks = ({ blocks }: { blocks: AnyBlock[] }) => {
   if (blocks.length === 0) return null;
   return blocks.map((block, index) => (
     <div className={block.type} contentEditable={false} css={deletedBlockStyle} data-diff-deleted-block key={index}>

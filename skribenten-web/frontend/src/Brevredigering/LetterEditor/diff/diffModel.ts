@@ -71,9 +71,9 @@ export type UnifiedLetterDiff = {
   deletedBlocks: Record<string, AnyBlock[]>;
 };
 
-export const isTextContentEdit = (edit: ContentEdit): edit is TextContentEdit => "edit" in edit;
-export const isItemListEdit = (edit: ContentEdit): edit is ItemListEdit => "itemEdits" in edit;
-export const isTableEdit = (edit: ContentEdit): edit is TableEdit => "rowEdits" in edit;
+const isTextContentEdit = (edit: ContentEdit): edit is TextContentEdit => "edit" in edit;
+const isItemListEdit = (edit: ContentEdit): edit is ItemListEdit => "itemEdits" in edit;
+const isTableEdit = (edit: ContentEdit): edit is TableEdit => "rowEdits" in edit;
 
 export type DiffSegment =
   | { type: "unchanged"; text: string }
