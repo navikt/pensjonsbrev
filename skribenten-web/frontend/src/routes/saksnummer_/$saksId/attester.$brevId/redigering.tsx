@@ -228,7 +228,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     isSaved: editorState.saveStatus === "SAVED",
   });
 
-  // Markeringene gjelder det lagrede brevet. Så snart attestanten redigerer noe slår vi dem av.
+  // The diff decorations belong to the latest saved letter and are removed as soon as editing begins.
   const { disableDiff } = attestantDiff;
   useEffect(() => {
     if (editorState.saveStatus === "DIRTY") disableDiff();
@@ -540,7 +540,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           }
           right={
             <>
-              {/* Alltid montert med samme tre, slik at av/på-bryteren ikke remonterer editoren. */}
               <AttestantDiffProvider
                 diff={attestantDiff.activeDiff}
                 diffHash={attestantDiff.diffHash}

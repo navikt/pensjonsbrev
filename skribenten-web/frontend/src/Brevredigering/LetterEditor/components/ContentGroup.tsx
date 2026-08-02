@@ -100,8 +100,8 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   const contents = getContent(editorState.redigertBrev, literalIndex);
   const isItemContainer = "itemIndex" in literalIndex;
 
-  // Content that was deleted entirely is rendered just before the surviving sibling it is keyed by,
-  // and everything keyed past the last sibling is rendered at the end.
+  // A deleted node is keyed by its position among the surviving siblings.
+  // Render it before the survivor at that index, or at the end when no such survivor exists.
   const deletedAt = (contentIndex: number, trailing = false) =>
     isItemContainer ? (
       <DeletedItemContentAt
@@ -271,10 +271,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
 
     if (diffHash !== undefined || element.dataset.diffVersion !== undefined) {
-      // Diff feature is active, or this literal still carries decorations that must be cleaned up.
+      // Render plain text when this literal has no active decoration, or remove stale decoration after diff mode is disabled.
       renderPlainText(element, text);
     } else if (element.textContent !== text) {
-      // Pristine normal path: never decorated and diff toggle off — original behaviour, no diff-related DOM reads.
+      // Preserve the normal editing path when diff mode is inactive and no stale decoration remains.
       element.textContent = text;
     }
 
@@ -339,8 +339,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     diffHash,
   ]);
 
-  // Markeringer og redigering utelukker hverandre: første redigeringsforsøk slår av markeringen i stedet for
-  // å endre teksten, slik at den dekorerte DOM-en aldri blir skrevet til.
+  // Editing and diff decoration are mutually exclusive. The first edit attempt disables
+  // diff mode without changing the text, preventing decorated DOM content from being saved.
   const handleEditIntent = () => {
     const element = contentEditableReference.current;
     if (!element) return;
@@ -675,7 +675,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleOnInput = ({ currentTarget }: React.FormEvent<HTMLSpanElement>) => {
-    // Teksten i en dekorert literal inneholder slettet tekst som ikke er en del av brevet, og skal aldri lagres.
+    // A decorated literal contains deleted display-only text that must never be written to the letter state.
     if (hasDiffDecoration) {
       handleEditIntent();
       return;

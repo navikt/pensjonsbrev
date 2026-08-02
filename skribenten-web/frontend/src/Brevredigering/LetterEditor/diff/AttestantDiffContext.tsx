@@ -21,17 +21,13 @@ import {
 type AttestantDiffContextValue = {
   diff: UnifiedLetterDiff | undefined;
   diffHash: string | undefined;
-  /** Called by every editing path: the attestant editing turns diff mode off entirely. */
+  /** Disables diff rendering when the attestant begins editing the letter. */
   disableDiff: () => void;
 };
 
 const EMPTY_DELETED: never[] = [];
 
-const AttestantDiffContext = createContext<AttestantDiffContextValue>({
-  diff: undefined,
-  diffHash: undefined,
-  disableDiff: () => {},
-});
+const AttestantDiffContext = createContext<AttestantDiffContextValue | undefined>(undefined);
 
 export const AttestantDiffProvider = ({
   diff,
@@ -49,9 +45,17 @@ export const AttestantDiffProvider = ({
   return <AttestantDiffContext.Provider value={value}>{children}</AttestantDiffContext.Provider>;
 };
 
-export const useAttestantDiff = () => useContext(AttestantDiffContext);
+export const useAttestantDiff = () => {
+  const context = useContext(AttestantDiffContext);
 
-/** The diff that is currently allowed to decorate the letter: only present when bound to the latest saved hash. */
+  if (!context) {
+    throw new Error("useAttestantDiff must be used within AttestantDiffProvider");
+  }
+
+  return context;
+};
+
+/** Returns the diff currently approved for rendering by the provider. */
 function useActiveDiff(): UnifiedLetterDiff | undefined {
   const { diff, diffHash } = useAttestantDiff();
   if (!diff || !diffHash) return undefined;
@@ -63,15 +67,15 @@ function useDeleted<T>(select: (diff: UnifiedLetterDiff) => T[]): T[] {
   return diff ? select(diff) : (EMPTY_DELETED as unknown as T[]);
 }
 
-/** Entirely deleted blocks that should be rendered just before the surviving block at `blockIndex`. */
+/** Returns blocks deleted before the surviving block at `blockIndex`. */
 export const useDeletedBlocks = (blockIndex: number, trailing = false): AnyBlock[] =>
   useDeleted((diff) => deletedBlocksAt(diff, blockIndex, trailing));
 
-/** Entirely deleted paragraph content within a still-existing block. */
+/** Returns content nodes deleted from a block that still exists. */
 export const useDeletedContent = (blockIndex: number, contentIndex: number, trailing = false): Content[] =>
   useDeleted((diff) => deletedContentAt(diff, blockIndex, contentIndex, trailing));
 
-/** Entirely deleted items within a still-existing item list. */
+/** Returns items deleted from item list that still exists. */
 export const useDeletedItems = (
   blockIndex: number,
   contentIndex: number,

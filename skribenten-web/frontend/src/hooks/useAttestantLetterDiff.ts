@@ -20,7 +20,7 @@ export function useAttestantLetterDiff({
 }) {
   const [enabled, setEnabled] = useState(false);
 
-  // Attestanten kan ikke redigere og se markeringer samtidig: første redigering slår av markeringen.
+  // Diff decorations and editing are mutually exclusive, so editing disables diff mode.
   const disableDiff = useCallback(() => setEnabled(false), []);
 
   const diffQuery = useQuery({
@@ -29,7 +29,8 @@ export function useAttestantLetterDiff({
       value: await getBrevDiff.queryFn(brevId, savedLetter),
       redigertBrevHash: savedHash,
     }),
-    // redigertBrev og redigertBrevHash settes sammen fra samme lagringsrespons, så de hører bare sammen når brevet er lagret.
+    // `redigertBrev` and `redigertBrevHash` are updated together from the same save response,
+    // so they only represent the same letter version while the editor is in a saved state..
     enabled: enabled && isSaved,
   });
 
