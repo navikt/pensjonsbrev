@@ -4,7 +4,7 @@ services:
     image: pensjonsbrev-pdf-bygger:latest
     build: ./brevbaker/pdf-bygger
     environment:
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Djdk.lang.Process.launchMechanism=vfork #used for Apple M1 compatability
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Djdk.lang.Process.launchMechanism=vfork -Dlog4j2.configurationFile=log4j2-local.xml #used for Apple M1 compatability
     ports:
       - "8081:8080"
       - "5016:5016"
@@ -17,7 +17,7 @@ services:
       - AZURE_APP_CLIENT_ID=66a118a6-95db-4a64-be81-3af02048a46e
       - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"skribenten-backend","clientId":"adce3431-deeb-422f-959c-298b644b7611"}]
       # Allows requests without auth-header #opens up debug port
-      - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5015 -Dconfig.resource=application-local.conf
+      - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5015 -Dconfig.resource=application-local.conf -Dlog4j2.configurationFile=log4j2-local.xml
     build: ./pensjon/brevbaker
     ports:
       - "8080:8080"
@@ -45,7 +45,7 @@ services:
       - PORT=8080
       - NAIS_APP_NAME=skribenten-backend
       - DB_HOST=skribenten-backend-db
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5017
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5017 -Dlog4j2.configurationFile=log4j2-local.xml
       - BREVBAKER_URL=http://pensjon-brevbaker:8080
 
   skribenten-backend-db:
