@@ -14,28 +14,34 @@ package "brevbaker" {
   brevdata : - null avhengigheter, endres sjelden
   brevdata : - dette er alt PENs api-modeller kompilerer mot
 
-  object "brevbaker:api-model-common" as modelcommon #pink
-  modelcommon : - brevbakers HTTP-kontrakt
-  modelcommon : - BestillBrevRequest, LetterResponse,\n  TemplateDescription, BrevbakerFelles,\n  TemplateModelSpecification, AlltidValgbartVedlegg
-  modelcommon : - PDF-bygger-DTO-ene (PDFRequest,\n  PDFCompilationOutput, HttpStatusCodes)
-  modelcommon : - brevinnhold v1 i eget pakkenavn (LetterMarkup(+Impl),\n  LetterMarkupWithDataUsage(+Impl), Listetype,\n  ElementTags, AttachmentTitle) — slettes samlet når\n  siste konsument er over på markup v2
+  object "brevbaker:brevbaker-api" as brevbakerapi #pink
+  brevbakerapi : - brevbakers HTTP-kontrakt (tidligere api-model-common)
+  brevbakerapi : - alle DTOer bestillere trenger:\n  BestillBrevRequest, LetterResponse,\n  TemplateDescription, BrevbakerFelles,\n  TemplateModelSpecification, AlltidValgbartVedlegg
+  brevbakerapi : - BestillRedigertBrevRequest V1/V2 —\n  derfor følger markup: model med i artefaktet
+  brevbakerapi : - brevinnhold v1 i eget pakkenavn (LetterMarkup(+Impl),\n  LetterMarkupWithDataUsage(+Impl), Listetype,\n  ElementTags, AttachmentTitle) — slettes samlet når\n  siste konsument er over på markup v2
 
   package "brevbaker:markup" {
-    object "markup (main)" as markup #pink
-    markup : - markup-modellen og den publiserte DSLen
-    markup : - ingen runtime-avhengigheter
+    object "markup: model" as markupModel
+    markupModel : - kildesett src/model
+    markupModel : - ren datamodell for markup, ingen DSL
+    markupModel : - ingen runtime-avhengigheter
+    markupModel : - publiseres aldri som eget artefakt,\n  følger alltid med i brevbaker-api\n  og pdf-bygger-api
 
-    object "markup (apiInternal)" as markupInternal
+    object "markup: dsl" as markup
+    markup : - kildesett src/dsl, associateWith model
+    markup : - kun den offentlige authoring-DSLen\n  (ids alltid 0, ingen variable/editBehaviour)
+    markup : - publiseres ikke som eget artefakt,\n  følger med i pdf-bygger-api
+
+    object "markup: dsl-extended" as markupInternal
+    markupInternal : - kildesett src/dsl-extended, associateWith dsl
     markupInternal : - utvidet DSL (letterMarkupExtended,\n  attachmentExtended, markupElement)
-    markupInternal : - friend-tilgang til main (associateWith)
     markupInternal : - publiseres aldri, eksponeres som\n  konfigurasjonen apiInternalElements
   }
 
-  object "brevbaker:internal" as internal
-  internal : - Jackson-serialisering av intern trafikk\n  (internalObjectMapper, MarkupJacksonModule)
-  internal : - BestillRedigertBrevRequest V1/V2\n  (Skribenten -> brevbaker, aldri PEN)
-  internal : - re-eksporterer ingen modeller; konsumenter\n  deklarerer dem selv med versjonene fra\n  libs.versions.toml
-  internal : - publiseres aldri
+  object "brevbaker:jackson" as jackson
+  jackson : - Jackson-serialisering av intern trafikk\n  (internalObjectMapper, MarkupJacksonModule)
+  jackson : - re-eksporterer ingen modeller; konsumenter\n  deklarerer dem selv med versjonene fra\n  libs.versions.toml
+  jackson : - publiseres aldri
 
   object "brevbaker:dsl" as dsl
   dsl : - det som trengs for å lage en mal
@@ -46,6 +52,11 @@ package "brevbaker" {
 
   object "brevbaker:template-model-generator" as tmg
   tmg : - KSP: genererer *Selectors\n  fra @TemplateModelHelpers
+
+  object "brevbaker:pdf-bygger:api" as pdfbyggerApi #pink
+  pdfbyggerApi : - kontrakten mot pdf-bygger:\n  PDFRequest, PDFCompilationOutput, HttpStatusCodes
+  pdfbyggerApi : - avhengig av markup-DSLen (ikke apiInternal)
+  pdfbyggerApi : - markup: dsl (og model) publiseres som\n  del av dette artefaktet
 
   object "brevbaker:pdf-bygger" as pdfbygger #lightskyblue
   pdfbygger : - egen tjeneste
@@ -74,16 +85,19 @@ object PEN #yellow
 object Gjenny #yellow
 
 ' brevbaker-modulene
-markupInternal ..> markup : friend / associateWith
-modelcommon --> brevdata
-internal --> modelcommon
-internal --> markup
-dsl --> modelcommon
+markup ..> markupModel : associateWith
+markupInternal ..> markup : associateWith
+brevbakerapi --> brevdata
+brevbakerapi --> markupModel : BestillRedigertBrevRequest v1/v2
+pdfbyggerApi --> markup
+jackson --> brevbakerapi
+jackson --> pdfbyggerApi
+dsl --> brevbakerapi
 core --> dsl
-core --> internal
+core --> jackson
 core --> markupInternal : prosjektavhengighet\n(apiInternalElements)
 tmg --> dsl
-pdfbygger --> internal
+pdfbygger --> jackson
 
 ' malmoduler
 pensjonsmalene --> core
@@ -113,11 +127,11 @@ skribenten ..> brevbakerApp : HTTP
 
 
 ' konsumenter
-skribenten --> internal
+skribenten --> jackson
 PEN --> pensjonapimodel
 PEN --> alderapimodel
 PEN --> ufoereapimodel
-PEN --> modelcommon
-Gjenny --> modelcommon
+PEN --> brevbakerapi
+Gjenny --> brevbakerapi
 
 @enduml
