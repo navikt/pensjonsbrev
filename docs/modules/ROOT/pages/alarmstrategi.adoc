@@ -62,7 +62,7 @@ Skillet avgjør ikke om noen blir vekket, men hvordan vi tolker en alarm i etter
 
 === Applikasjonsmetrikker
 
-Alle tre Kotlin-applikasjonene eksponerer Prometheus-metrikker på `/metrics` via `MicrometerMetrics`, og scrapes av nais (`prometheus.enabled: true`).
+Alle tre Ktor-applikasjonene eksponerer Prometheus-metrikker på `/metrics` via `MicrometerMetrics`, og scrapes av nais (`prometheus.enabled: true`).
 nais legger automatisk på labels som `app`, `namespace` og `pod`, slik at alle spørringer kan filtreres på `app="pensjon-brevbaker"` osv.
 
 Tilgjengelige metrikker:
@@ -76,6 +76,9 @@ Tilgjengelige metrikker:
 
 | `ktor_http_server_requests_seconds_sum`
 | Sum av responstid. Sammen med `_count` gir dette gjennomsnittlig responstid.
+
+| `ktor_http_server_requests_seconds_bucket`
+| Kumulativ fordeling per `le`-grense. Grunnlaget for `histogram_quantile()`, se merknaden under.
 
 | `ktor_http_server_requests_seconds_max`
 | Høyeste observerte responstid i vinduet. Nyttig for å fange enkelttreghet.
@@ -95,17 +98,32 @@ Tilgjengelige metrikker:
 
 [IMPORTANT]
 ====
-`ktor_http_server_requests_seconds` er en Micrometer *summary* med klientside-kvantiler (`quantile="0.5"`, `0.9`, `0.95`, `0.99`) — *ikke* et histogram med buckets.
+`ktor_http_server_requests_seconds` er konfigurert som et *histogram* med buckets, ikke som en summary med klientside-kvantiler.
 
-Konsekvensen er at `histogram_quantile()` ikke kan brukes, og at kvantilene *ikke kan aggregeres på tvers av poder*.
-En p99 fra én pod sier ingenting om p99 for tjenesten som helhet.
+Det er et bevisst valg: klientside-kvantiler regnes ut per pod og kan *ikke* aggregeres, slik at en p99 fra én pod ikke sier noe om p99 for tjenesten.
+Med buckets kan `histogram_quantile()` brukes på tvers av alle poder:
 
-Latensalarmer må derfor baseres på ett av:
+[source]
+----
+histogram_quantile(0.95, sum(rate(ktor_http_server_requests_seconds_bucket{app="pensjon-brevbaker", route="/letter/autobrev/pdf"}[5m])) by (le))
+----
 
-* gjennomsnitt: `rate(..._sum[5m]) / rate(..._count[5m])`, som kan aggregeres korrekt
-* `max(ktor_http_server_requests_seconds{quantile="0.99"})` som en grov indikasjon på verste pod
+Merk at `le` *må* være med i `by`-klausulen — uten den har `histogram_quantile()` ingen buckets å regne på.
 
-Se <<hull, Kjente hull>> for tiltaket som fjerner denne begrensningen.
+Spørringen over gir *p95*: den responstiden som 95 % av forespørslene var raskere enn, mens de 5 % tregeste brukte lengre tid.
+Vi bruker p95 i latensalarmene fordi den treffer mellom to ytterpunkter: gjennomsnittet skjuler at en mindre andel har det vondt, mens `max` slår ut på én enkelt treg forespørsel.
+Stiger p95 er det en reell andel brev eller saksbehandlere som merker tregheten.
+
+Bucket-grensene settes i hver app sin `Metrics.kt` og er tilpasset appens forventede latens.
+Den *øverste* grensen er bevisst forankret i timeoutene i koden, ikke i observert latens: et kall som går til timeout skal havne innenfor histogrammet og ikke i `+Inf`, ellers er halen usynlig akkurat når vi trenger den.
+Derfor dekker brevbaker opp til 300s (`withTimeoutOrNull` rundt kallene mot pdf-bygger i `PensjonPdfByggerService`) og skribenten opp til 120s (`requestTimeout` på 60s mot brevbaker, med margin for ruter som gjør flere kall).
+Endres en timeout i koden, må den øverste bucket-grensen følge med.
+
+Grensene er kalibrert mot observert latens i prod.
+Vær oppmerksom på at datagrunnlaget har to begrensninger: ingen store batcher hadde kjørt innenfor retensjonsperioden, og p95 og p99 er identiske for samtlige ruter fordi trafikkvolumet er for lavt til at estimatoren skiller dem.
+Halen er derfor sannsynligvis underestimert, noe som taler for å beholde romslige tak.
+
+Ligger p95 mellom to bucket-grenser, interpolerer `histogram_quantile()` lineært — verdien blir derfor grovere jo grovere grensene er.
 ====
 
 === Plattformmetrikker fra nais
@@ -178,9 +196,9 @@ Brevbaker er navet i automatisk brevproduksjon. Feiler den, produseres det ikke 
 | `critical`
 | Fanger feil som slipper gjennom `StatusPages` uten å bli oversatt til en kontrollert respons.
 
-| Gjennomsnittlig responstid på `/letter/autobrev/pdf` over terskel i 15 min
+| p95 responstid på `/letter/autobrev/pdf` over terskel i 15 min
 | `warning`
-| Treghet her går rett inn i Pesys' batchvindu. Terskelen settes etter observert normalnivå før regelen tas i bruk.
+| Treghet her går rett inn i Pesys' batchvindu. p95 fanger at en betydelig andel brev er trege, uten å utløse på enkelttreghet slik `max` ville gjort. Terskelen settes etter observert normalnivå før regelen tas i bruk.
 
 | `ktor_http_server_requests_active` vokser jevnt i 15 min
 | `warning`
@@ -212,7 +230,7 @@ Alarmene her lener seg derfor tyngre på plattform- og ressursmetrikker.
 | `critical`
 | Serverfeil betyr at typst-kompilering feiler. Brevbaker vil retry-e, men vedvarende feil stopper brevproduksjonen.
 
-| Gjennomsnittlig responstid over terskel i 15 min
+| p95 responstid over terskel i 15 min
 | `warning`
 | Tidlig varsel før brevbaker begynner å time ut. Fordi brevbaker retry-er, ser vi treghet her *før* vi ser feil der.
 
@@ -233,6 +251,15 @@ Alarmene her lener seg derfor tyngre på plattform- og ressursmetrikker.
 
 Saksbehandlerflaten. Har database, og et stort antall nedstrøms integrasjoner (PEN/Pesys, SAF, KRR, TSS/Samhandler, Navansatt, Skjerming, brevbaker, førstesidegenerator).
 Kritiske alarmer gjelder i praksis kontortid.
+
+[NOTE]
+====
+Ved kalibrering av bucket-grensene så vi at ni ruter har en observert maksimal svartid på nøyaktig 60,x sekunder.
+Det er `requestTimeout` på 60s mot brevbaker som slår inn — altså kall som allerede i dag går til timeout i prod.
+`/external/api/v1/brev` og `/sak/{saksId}` ligger enda høyere, på henholdsvis 91s og 76s, som tyder på ruter der flere kall gjøres etter hverandre.
+
+Dette er ikke et hull i alarmdekningen, men verdt å kjenne til: en latensalarm på disse rutene vil se en hale som er avkortet av timeouten, og en økning i feilrate kan like gjerne skyldes treghet nedstrøms som feil hos oss.
+====
 
 [cols="3,1,3", options="header"]
 |===
@@ -375,36 +402,31 @@ Disse er bevisste, prioriterte oppgaver — ikke forglemmelser — og listes her
 | # | Hull | Tiltak | Prioritet
 
 | 1
-| Ktor-timeren er en summary uten histogram-buckets. Latens kan ikke aggregeres på tvers av poder.
-| Konfigurér `MicrometerMetrics` med `distributionStatisticConfig` og `percentilesHistogram`, slik at `histogram_quantile()` kan brukes. Gjelder alle tre Kotlin-appene.
-| Høy
-
-| 2
 | `skribenten-web` BFF eksponerer ingen metrikker.
 | Legg til `prometheus`-blokk i `.nais/nais.yaml` og et `/metrics`-endepunkt med `prom-client`.
 | Høy
 
-| 3
+| 2
 | Ingen metrikker på nedstrøms kall fra skribenten-backend. Vi kan ikke skille «PEN er nede» fra «SAF er nede» uten å lese logger.
 | Instrumentér Ktor-klientene med `MicrometerMetrics`, tagget med tjenestenavn og statuskode.
 | Høy
 
-| 4
+| 3
 | `/isReady` i brevbaker og pdf-bygger returnerer alltid `200` uten å sjekke noe. En pod som ikke kan nå pdf-bygger tas aldri ut av rotasjon.
 | Vurdér reell readiness-sjekk i brevbaker mot pdf-bygger. Må balanseres mot risikoen for at hele deployment tas ut av rotasjon samtidig ved en forbigående nedstrøms feil.
 | Middels
 
-| 5
+| 4
 | pdf-bygger har ingen domenemetrikker. Typst-feil og kompileringstid er kun synlig i logg.
 | Legg til teller for typst-resultat (suksess/kompileringsfeil/eksekveringsfeil) og timer for kompileringstid.
 | Middels
 
-| 6
+| 5
 | Retry-logikken i brevbaker mot pdf-bygger er usynlig i metrikker. Vi ser ikke at systemet sliter før det feiler helt.
 | Legg til teller for antall retries og for oppbrukte retries.
 | Middels
 
-| 7
+| 6
 | Ingen metrikker på database og connection pool i skribenten-backend.
 | Bind HikariCP-metrikker til meter-registeret.
 | Middels
