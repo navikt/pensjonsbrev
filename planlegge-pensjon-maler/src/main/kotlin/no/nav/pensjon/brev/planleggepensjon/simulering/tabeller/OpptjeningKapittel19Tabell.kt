@@ -34,13 +34,13 @@ data class OpptjeningKapittel19Tabell(
                 ifNotNull(alderspensjon.grunnbeloep) {
                     row {
                         cell { text(bokmal { +"Grunnbeløp (G)" }) }
-                        cell { text(bokmal { +it.format() }) }
+                        cell { text(bokmal { +it.format(denominator = false) + " kr" }) }
                     }
                 }
                 ifNotNull(alderspensjon.minstePensjonsnivaaBeloep) {
                     row {
                         cell { text(bokmal { +"Minste pensjonsnivå" }) }
-                        cell { text(bokmal { +it.format() }) }
+                        cell { text(bokmal { +it.format(denominator = false) + " kr" }) }
                     }
                 }
                 ifNotNull(alderspensjon.forholdstall) {

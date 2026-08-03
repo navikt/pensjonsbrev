@@ -31,21 +31,21 @@ data class AfpPrivatTabell(
                 showIf(privatAfp.kompensasjonstillegg.greaterThan(0)) {
                     row {
                         cell { text(bokmal { +"Kompensasjonstillegg" }) }
-                        cell { text(bokmal { +privatAfp.kompensasjonstillegg.format() }) }
+                        cell { text(bokmal { +privatAfp.kompensasjonstillegg.format(denominator = false) }) }
                     }
                 }
                 ifNotNull(privatAfp.kronetillegg) { kronetillegg ->
                     showIf(kronetillegg.greaterThan(0)) {
                         row {
                             cell { text(bokmal { +"Kronetillegg" }) }
-                            cell { text(bokmal { +kronetillegg.format() }) }
+                            cell { text(bokmal { +kronetillegg.format(denominator = false) }) }
                         }
                     }
                 }
                 showIf(privatAfp.livsvarig.greaterThan(0)) {
                     row {
                         cell { text(bokmal { +"Livsvarig del" }) }
-                        cell { text(bokmal { +privatAfp.livsvarig.format() }) }
+                        cell { text(bokmal { +privatAfp.livsvarig.format(denominator = false) }) }
                     }
                 }
                 // Sum privat AFP
@@ -55,7 +55,7 @@ data class AfpPrivatTabell(
                         val sum = privatAfp.kompensasjonstillegg +
                                 privatAfp.kronetillegg.ifNull(BrevbakerType.Kroner(0)) +
                                 privatAfp.livsvarig
-                        text(bokmal { +sum.format() }, fontType = BOLD)
+                        text(bokmal { +sum.format(denominator = false) }, fontType = BOLD)
                     }
                 }
             }

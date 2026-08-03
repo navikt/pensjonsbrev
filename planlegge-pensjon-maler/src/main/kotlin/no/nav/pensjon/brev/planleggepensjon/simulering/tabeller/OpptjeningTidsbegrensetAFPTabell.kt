@@ -12,14 +12,14 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 
-data class AfpOffentligTidsbegrensetOpptjeningTabell(
+data class OpptjeningTidsbegrensetAFPTabell(
     val afp: Expression<TidsbegrensetOffentligAfp>,
 ) : OutlinePhrase<LangBokmal>() {
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         paragraph {
             table(header = {
                 column(columnSpan = 3) {
-                    text(bokmal { +"Opptjening AFP i offentlig sektor" })
+                    text(bokmal { +"Opptjening AFP" })
                 }
                 column(alignment = RIGHT, columnSpan = 1) {
                     text(bokmal { +"" })
@@ -39,7 +39,7 @@ data class AfpOffentligTidsbegrensetOpptjeningTabell(
                 }
                 row {
                     cell { text(bokmal { +"Sluttpoengtall" }) }
-                    cell { text(bokmal { +afp.sluttpoengtall.format() }) }
+                    cell { text(bokmal { +afp.sluttpoengtall.format(2) }) }
                 }
                 row {
                     cell { text(bokmal { +"Poengår" }) }
@@ -51,11 +51,11 @@ data class AfpOffentligTidsbegrensetOpptjeningTabell(
                 }
                 row {
                     cell { text(bokmal { +"Poengår før 1992 (45 %)" }) }
-                    cell { text(bokmal { +afp.poengaarTom1991.format() + " av " + afp.trygdetid.format() + " år" }) }
+                    cell { text(bokmal { +afp.poengaarTom1991.format() + " av " + (afp.poengaarTom1991 + afp.poengaarFom1992).format() + " år" }) }
                 }
                 row {
                     cell { text(bokmal { +"Poengår etter 1991 (42 %)" }) }
-                    cell { text(bokmal { +afp.poengaarFom1992.format() + " av " + afp.trygdetid.format() + " år" }) }
+                    cell { text(bokmal { +afp.poengaarFom1992.format() + " av " + (afp.poengaarTom1991 + afp.poengaarFom1992).format() + " år" }) }
                 }
             }
         }
