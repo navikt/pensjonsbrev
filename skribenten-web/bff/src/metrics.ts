@@ -47,10 +47,14 @@ const maalSvartid = (request: Request, response: Response, next: NextFunction): 
   // "close" fyres både når svaret er ferdig sendt og når klienten kobler fra underveis. "finish"
   // ville mistet avbrutte forespørsler, og det er nettopp de trege vi er mest interessert i.
   response.once("close", () => {
+    // Ved avbrudd står response.statusCode igjen på standardverdien 200, siden vi aldri rakk å
+    // sette den. Uten dette ville trege kall brukeren ga opp sett ut som vellykkede 2xx i
+    // histogrammet. 499 er samme konvensjon som nginx bruker for "client closed request".
+    const avbrutt = !response.writableEnded;
     stopp({
       method: request.method,
       route: klassifiserRute(request.path),
-      status_code: response.statusCode,
+      status_code: avbrutt ? 499 : response.statusCode,
     });
   });
   next();
