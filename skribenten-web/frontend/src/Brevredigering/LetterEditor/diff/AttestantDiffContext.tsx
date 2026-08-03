@@ -27,7 +27,9 @@ type AttestantDiffContextValue = {
 
 const EMPTY_DELETED: never[] = [];
 
-const AttestantDiffContext = createContext<AttestantDiffContextValue | undefined>(undefined);
+const NO_DIFF: AttestantDiffContextValue = { diff: undefined, diffHash: undefined, disableDiff: () => {} };
+
+const AttestantDiffContext = createContext<AttestantDiffContextValue>(NO_DIFF);
 
 export const AttestantDiffProvider = ({
   diff,
@@ -45,15 +47,7 @@ export const AttestantDiffProvider = ({
   return <AttestantDiffContext.Provider value={value}>{children}</AttestantDiffContext.Provider>;
 };
 
-export const useAttestantDiff = () => {
-  const context = useContext(AttestantDiffContext);
-
-  if (!context) {
-    throw new Error("useAttestantDiff must be used within AttestantDiffProvider");
-  }
-
-  return context;
-};
+export const useAttestantDiff = () => useContext(AttestantDiffContext);
 
 /** Returns the diff currently approved for rendering by the provider. */
 function useActiveDiff(): UnifiedLetterDiff | undefined {
