@@ -80,20 +80,16 @@ class KrrServiceTest {
     }
 
     @Test
-    fun `connect timeout mot KRR gir feil ogsaa hos oss`() = runBlocking {
-        withCallId("123") {
-            withPrincipal(MockPrincipal(NavIdent("123"), "TestPrincipal")) {
-                val engine = MockEngine { throw ConnectTimeoutException("Connect timeout has expired [url=http://krr.test]") }
-                val service = KrrService(
-                    config = config,
-                    authService = FakeAuthService,
-                    engine = engine,
-                )
+    fun `connect timeout mot KRR gir feil ogsaa hos oss`() = httpClientTest(Unit) { _ ->
+        val engine = MockEngine { throw ConnectTimeoutException("Connect timeout has expired [url=http://krr.test]") }
+        val service = KrrService(
+            config = config,
+            authService = FakeAuthService,
+            engine = engine,
+        )
 
-                val preferredLocale = service.getPreferredLocale(Pid("12345"))
-                assertNull(preferredLocale.spraakKode)
-                assertEquals(KontaktinfoResponse.FailureType.ERROR, preferredLocale.failure)
-            }
-        }
+        val preferredLocale = service.getPreferredLocale(Pid("12345"))
+        assertNull(preferredLocale.spraakKode)
+        assertEquals(KontaktinfoResponse.FailureType.ERROR, preferredLocale.failure)
     }
 }
