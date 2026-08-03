@@ -275,7 +275,7 @@ Kritiske alarmer gjelder i praksis kontortid.
 ====
 Ved kalibrering av bucket-grensene så vi at ni ruter har en observert maksimal svartid på nøyaktig 60,x sekunder.
 Det er `requestTimeout` på 60s mot brevbaker som slår inn — altså kall som allerede i dag går til timeout i prod.
-`/external/api/v1/brev` og `/sak/{saksId}` ligger enda høyere, på henholdsvis 91s og 76s, som tyder på ruter der flere kall gjøres etter hverandre.
+`/external/api/v1/brev` og `/sak/\{saksId}` ligger enda høyere, på henholdsvis 91s og 76s, som tyder på ruter der flere kall gjøres etter hverandre.
 
 Dette er ikke et hull i alarmdekningen, men verdt å kjenne til: en latensalarm på disse rutene vil se en hale som er avkortet av timeouten, og en økning i feilrate kan like gjerne skyldes treghet nedstrøms som feil hos oss.
 ====
