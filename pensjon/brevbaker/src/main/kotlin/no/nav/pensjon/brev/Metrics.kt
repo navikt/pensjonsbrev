@@ -20,10 +20,10 @@ object Metrics {
     // Nedre grense er beholdt selv om /templates-rutene ligger på 2-7ms: de alarmerer vi ikke på,
     // og et gulv på 10ms ville kostet 18 ekstra buckets per rute.
     private val forventetLavest = 100.milliseconds
-    private val forventetHoyest = 60.seconds
+    private val forventetHoeyest = 60.seconds
 
     // SLO-grenser vi vil kunne alarmere eksakt på. Må være sortert.
-    // De to øverste ligger bevisst over forventetHoyest: kall mot pdf-bygger avbrytes først av
+    // De to øverste ligger bevisst over forventetHoeyest: kall mot pdf-bygger avbrytes først av
     // withTimeoutOrNull(300s) i PensjonPdfByggerService, og uten disse ville alt mellom 60s og
     // 300s havnet i +Inf. Grenser over ytterpunktet tas med av micrometer uten at det genereres
     // tett bucket-oppløsning i et område vi sjelden er i.
@@ -62,7 +62,7 @@ object Metrics {
             distributionStatisticConfig = DistributionStatisticConfig.Builder()
                 .percentilesHistogram(true)
                 .minimumExpectedValue(forventetLavest.inWholeNanoseconds.toDouble())
-                .maximumExpectedValue(forventetHoyest.inWholeNanoseconds.toDouble())
+                .maximumExpectedValue(forventetHoeyest.inWholeNanoseconds.toDouble())
                 .serviceLevelObjectives(*latencyBuckets.toDoubleArray())
                 .build()
         }
