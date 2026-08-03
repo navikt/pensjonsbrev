@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 
 data class OpptjeningKapittel19Tabell(
@@ -67,15 +68,24 @@ data class OpptjeningKapittel19Tabell(
                         cell { text(bokmal { +it.format() + " år" }) }
                     }
                 }
-                ifNotNull(alderspensjon.poengaarFom1992) {
-                    row {
-                        cell { text(bokmal { +"Poengår etter 1991" }) }
-                        cell { text(bokmal { +it.format() }) }
+
+                ifNotNull(alderspensjon.poengaarTom1991) { tom1991 ->
+                    ifNotNull(alderspensjon.poengaarFom1992) { fom1992 ->
+                        row {
+                            cell { text(bokmal { +"Poengår" }) }
+                            cell { text(bokmal { +(tom1991 + fom1992).format() }) }
+                        }
                     }
                 }
                 ifNotNull(alderspensjon.poengaarTom1991) {
                     row {
                         cell { text(bokmal { +"Poengår før 1992" }) }
+                        cell { text(bokmal { +it.format() }) }
+                    }
+                }
+                ifNotNull(alderspensjon.poengaarFom1992) {
+                    row {
+                        cell { text(bokmal { +"Poengår etter 1991" }) }
                         cell { text(bokmal { +it.format() }) }
                     }
                 }
