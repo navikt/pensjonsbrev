@@ -41,7 +41,7 @@ data class SumTabell(
                                 alderspensjon.garantitilleggBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.skjermingstillegg.ifNull(Kroner(0)) +
                                 alderspensjon.gjenlevendetillegg.ifNull(Kroner(0))
-                        text(bokmal { +sumAlderspensjon.format() })
+                        text(bokmal { +sumAlderspensjon.format(denominator = false) })
                     }
                 }
                 row {
@@ -50,7 +50,7 @@ data class SumTabell(
                         val sumAfp = privatAfp.kronetillegg.ifNull(Kroner(0)) +
                                 privatAfp.livsvarig.ifNull(Kroner(0)) +
                                 privatAfp.kompensasjonstillegg.ifNull(Kroner(0))
-                        text(bokmal { +sumAfp.format() })
+                        text(bokmal { +sumAfp.format(denominator = false) })
                     }
                 }
                 row {
@@ -68,7 +68,7 @@ data class SumTabell(
                                 privatAfp.livsvarig.ifNull(Kroner(0)) +
                                 privatAfp.kompensasjonstillegg.ifNull(Kroner(0))
                         val sumPensjon = sumAlderspensjon + sumAfp
-                        text(bokmal { +sumPensjon.format() }, fontType = BOLD)
+                        text(bokmal { +sumPensjon.format(denominator = false) }, fontType = BOLD)
                     }
                 }
             }

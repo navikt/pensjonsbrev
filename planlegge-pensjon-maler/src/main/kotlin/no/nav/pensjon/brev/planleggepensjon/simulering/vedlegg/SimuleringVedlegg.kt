@@ -184,6 +184,21 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         title1 {
             text(bokmal { +"Ditt opptjeningsgrunnlag i folketrygden" })
         }
+        ifNotNull(simulering.afpOffentligTidsbegrenset) { afp ->
+            ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
+                title2 {
+                    text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
+                    showIf(informasjon.alder.maaneder greaterThan 1) {
+                        text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
+                    }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
+                        text(bokmal { +" og 1 måned" })
+                    }
+                    text(bokmal { +" (" + informasjon.uttaksdato + ")" })
+                }
+                includePhrase(OpptjeningTidsbegrensetAFPTabell(afp))
+            }
+        }
+
         ifNotNull(knekkpunkter.vedGradertUttak) { alderspensjon ->
             ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
                 title2 {
