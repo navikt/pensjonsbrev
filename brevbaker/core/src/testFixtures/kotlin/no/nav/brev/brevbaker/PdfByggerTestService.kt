@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker
 
+import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -12,8 +13,8 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
-import no.nav.brev.brevbaker.internal.serialize.InternalObjectMapper
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.jackson.InternalObjectMapper
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 
 /**
  * Delt testklient mot pdf-bygger. Brukes av både brevbaker (core) og pdf-bygger sine egne

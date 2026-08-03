@@ -3,10 +3,10 @@ package no.nav.pensjon.brev.api
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.PDFByggerService
-import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.brev.brevbaker.PDFRequest
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart

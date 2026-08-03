@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.model
 
+import no.nav.pensjon.brev.api.model.IBrevkategori
 import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -161,5 +162,5 @@ object Pen {
         "VEDTAK_FLYTTE_MELLOM_LAND" to "Vedtak - flytte mellom land"
     )
 
-    fun finnVisningstekst(brevkategori: TemplateDescription.IBrevkategori) = brevkategoriTilVisningstekst[brevkategori.kode]
+    fun finnVisningstekst(brevkategori: IBrevkategori) = brevkategoriTilVisningstekst[brevkategori.kode]
 }

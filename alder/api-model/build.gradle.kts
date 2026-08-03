@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    api(libs.brevbaker.common)
+    api(project(":brevbaker:brevdata"))
 }
 
 publishing {

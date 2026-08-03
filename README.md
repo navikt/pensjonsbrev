@@ -112,30 +112,89 @@ npm login --registry=https://npm.pkg.github.com --auth-type=legacy
 
 ### Endringer i biblioteks-koden
 
-Vi bruker Kotlin Gradle-pluginens innebygde ABI-validering (`abiValidation`) for å se etter endringer i koden i modulene som inngår i biblioteket (per nå `brevbaker:api-model-common`, `brevbaker:dsl` og `brevbaker:core`). Denne holder oversikt representert i .api-filer i disse modulene.
+Vi bruker Kotlin Gradle-pluginens innebygde ABI-validering (`abiValidation`) for å se etter endringer i koden i modulene som inngår i biblioteket (per nå `brevbaker:brevbaker-api`, `brevbaker:markup-model`, `brevbaker:markup-dsl`, `brevbaker:pdf-bygger-api`, `brevbaker:pdf-bygger-dsl`, `brevbaker:dsl` og `brevbaker:core`). Denne holder oversikt representert i .api-filer i disse modulene.
 
 Ved endringer av public-kode i disse modulene - inkludert sletting av metoder eller nye metoder - må du huske å kjøre `gradle updateKotlinAbi` og sjekke inn de oppdaterte .api-filene. Glemmer du dette vil bygget feile - det kjører automatisk `gradle checkKotlinAbi`-kommandoen.
 
 Mer om dette på https://kotlinlang.org/docs/api-guidelines-backward-compatibility.html
 
-### Intern modul: `brevbaker:internal`
+### Publiserte artefakter og modulstruktur
 
-`brevbaker:internal` er et delt lag mellom `brevbaker`, `skribenten-backend` og `pdf-bygger`, og
-**publiseres aldri**. Den finnes fordi typer som `BestillRedigertBrevRequest` kombinerer
-`brevbaker:markup` med `brevbaker:api-model-common` og hører hjemme i ingen av dem — samtidig som vi
-ikke vil eksponere interne begreper i de publiserte artefaktene.
+Bibliotekssiden av repoet er delt langs arkitektur, ikke livssyklus, og alle artefaktene slippes i
+**lockstep** fra `brevbakerVersion` i rot-`gradle.properties`:
 
-- De tre tjenestene skal **ikke** deklarere `libs.brevbaker.common` eller `libs.brevbaker.markup`
-  direkte. De bruker `project(":brevbaker:internal")`, som re-eksporterer begge med `api(...)`.
-- `internal` trekker inn de publiserte artefaktene via koordinater. Etter endringer i `markup` eller
-  `api-model-common` må du derfor kjøre
-  `./gradlew :brevbaker:api-model-common:publishToMavenLocal :brevbaker:markup:publishToMavenLocal`
-  før du bygger modulene som avhenger av dem. Husk å bumpe `version` i modulenes `gradle.properties`
-  *og* i `gradle/libs.versions.toml` i samme commit — ellers plukkes den gamle jar-en opp uten feil.
+| Modul | Artefakt | Publisering |
+|---|---|---|
+| `brevbaker:brevdata` (`brevbaker/brevdata`) | `brevdata` | publiseres, men deklareres normalt ikke direkte — kommer transitivt via api-modellene |
+| `brevbaker:markup-model` (`brevbaker/markup/model`) | `markup-model` | publiseres, men deklareres normalt ikke direkte — kommer transitivt |
+| `brevbaker:markup-dsl` (`brevbaker/markup/dsl`) | `markup-dsl` | som over |
+| `brevbaker:pdf-bygger-api` (`brevbaker/pdf-bygger/api`) | `pdf-bygger-api` | som over |
+| `brevbaker:pdf-bygger-dsl` (`brevbaker/pdf-bygger/dsl`) | `pdf-bygger-dsl` | deklareres direkte av konsumenter |
+| `brevbaker:brevbaker-api` (`brevbaker/brevbaker-api`) | `brevbaker-api` | deklareres direkte av konsumenter |
+| `brevbaker:bom` | `brevbaker-bom` | BOM som holder alt på samme versjon |
+| `brevbaker:jackson` | – | **publiseres aldri**, kun `project(...)` |
+
+`markup-model` er den rene datamodellen uten avhengigheter. Typene der inngår i signaturen til både
+`brevbaker-api` (`BestillRedigertBrevRequestV2`) og `pdf-bygger-api` (`LetterPDFRequest`), og må derfor
+være ett versjonert artefakt begge peker på — ikke en klasse som bundles to steder. Konsumenter som
+bruker begge bør importere `brevbaker-bom` slik at de ikke kan havne i versjonssprik.
+
+`brevdata` er gulvet i stabelen og skal aldri få avhengigheter: det er det eneste PENs api-modeller
+kompilerer mot, så alt som legges der arver hver eneste bestiller. Derfor ligger `IBrevkategori` og
+`ISakstype` her i stedet for nøstet i `TemplateDescription` — bestillerne implementerer dem, mens
+`TemplateDescription` er selve HTTP-svaret og hører hjemme i `brevbaker-api`.
+
+In-repo konsumenter av bibliotekmodulene bruker `project(...)`, ikke publiserte koordinater, så en
+glemt versjonsbump kan ikke gi en stille feil jar innad i biblioteket. Api-modellene
+(`pensjon`/`alder`/`ufoere:api-model`) konsumeres derimot av malene ved *publiserte* koordinater, og
+POM-en deres drar inn `brevdata` transitivt. Etter en bump av `brevbakerVersion` må du derfor kjøre
+
+```bash
+./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal \
+  :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:pdf-bygger-api:publishToMavenLocal \
+  :brevbaker:pdf-bygger-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
+```
+
+før du bygger malene — ellers får du `Could not find no.nav.brev.brevbaker:brevdata:<versjon>`. Dette
+er samme mønster som for api-modellene selv, og CI gjør det samme før den bygger noe som konsumerer
+en api-model.
+
+#### Rekkefølge ved release
+
+`pensjon`/`alder`/`ufoere:api-model` publiseres med en POM som peker på `brevdata` ved koordinat. Bumper
+du `brevbakerVersion` **og** en api-model-versjon i samme PR, må biblioteket
+(`brevbaker-bibliotek.yaml`) rekke å publisere før api-modellene, ellers peker POM-en deres på en
+`brevdata` som ikke finnes ennå. Lokalt løser du det med `publishToMavenLocal` som beskrevet over.
+
+#### Opt-in-markører
+
+Modellen har `internal constructor` + `@ConsistentCopyVisibility`, så `copy()` er utilgjengelig utenfor
+`markup-model` og ferdig bygget markup kan ikke muteres forbi valideringen i builderne. Det finnes
+nøyaktig to opt-in-markører:
+
+- `@MarkupModelApi` — konstruksjon av modellen utenom DSL-en, via `object MarkupModel`. Brukes av
+  DSL-en selv og av `letterPDFRequestModel(...)`.
+- `@ExtendedMarkupDsl` — den id-eksplisitte DSL-en i `no.nav.brev.brevbaker.markup.dsl.extended`, som
+  også gir tilgang til `variable(...)` og `editBehaviour`. Den ligger i `markup-dsl` (ikke i en egen
+  modul), nettopp for at builder-sømmene skal kunne forbli `internal`. `brevbaker:core` — som eier
+  id-tildelingen i `Letter2MarkupV2` — opter inn på modulnivå.
+
+Malforfattere skal aldri trenge noen av dem.
+
+### Intern modul: `brevbaker:jackson`
+
+`brevbaker:jackson` eier **kun serialiseringen** av trafikk mellom våre egne applikasjoner, og
+publiseres aldri. Den holder ingen modelltyper og re-eksporterer ingen artefakter; hver modul
+deklarerer selv de modellene den bruker.
+
+- Depend på `project(":brevbaker:jackson")` bare når du faktisk trenger `internalObjectMapper()`.
 - All intern serialisering går gjennom Jackson via `internalObjectMapper()` i
-  `no.nav.brev.brevbaker.internal.serialize`. `markup` har ingen serialiseringsavhengighet; hvert
-  element har i stedet en ekte `val type: Type`, og polymorf deserialisering konfigureres i
-  `internal`. Golden-JSON-testene der låser wire-formatet mot pdf-bygger og skribenten.
+  `no.nav.brev.brevbaker.jackson`. `markup-model` har ingen serialiseringsavhengighet; hvert element
+  har i stedet en ekte `val type: Type`, og polymorf deserialisering konfigureres i
+  `MarkupJacksonModule` (v2) og `LetterMarkupV1JacksonModule` (v1). Legger du til en sealed subtype
+  uten å registrere den der, feiler drift-testen i `MarkupJacksonModuleTest`.
+- Golden-JSON-en under `brevbaker/jackson/src/test/resources/golden/` låser wire-formatet mot
+  pdf-bygger og skribenten. Regenerer bevisst med `REGENERER_GOLDEN=true ./gradlew :brevbaker:jackson:test`.
 
 ### Ytelsestesting med locust
 

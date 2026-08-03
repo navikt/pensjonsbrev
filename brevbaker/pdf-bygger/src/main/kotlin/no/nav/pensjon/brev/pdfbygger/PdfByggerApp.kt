@@ -22,8 +22,8 @@ import io.ktor.server.routing.*
 import io.ktor.util.logging.Logger
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
-import no.nav.brev.brevbaker.internal.serialize.InternalObjectMapper
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.jackson.InternalObjectMapper
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer

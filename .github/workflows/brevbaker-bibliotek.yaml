@@ -1,0 +1,85 @@
+name: "Build and release brevbaker-biblioteket"
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - "brevbaker/markup/**"
+      - "brevbaker/brevdata/**"
+      - "brevbaker/brevbaker-api/**"
+      - "brevbaker/pdf-bygger/api/**"
+      - "brevbaker/pdf-bygger/dsl/**"
+      - "brevbaker/bom/**"
+      - "gradle.properties"
+      - ".github/workflows/.build-backend.yaml"
+      - ".github/workflows/.release.yaml"
+      - ".github/workflows/brevbaker-bibliotek.yaml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
+  push:
+    branches:
+      - "main"
+    paths:
+      - "brevbaker/markup/**"
+      - "brevbaker/brevdata/**"
+      - "brevbaker/brevbaker-api/**"
+      - "brevbaker/pdf-bygger/api/**"
+      - "brevbaker/pdf-bygger/dsl/**"
+      - "brevbaker/bom/**"
+      - "gradle.properties"
+      - ".github/workflows/.build-backend.yaml"
+      - ".github/workflows/.release.yaml"
+      - ".github/workflows/brevbaker-bibliotek.yaml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
+
+permissions:
+  packages: write
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      bibliotek: ${{ steps.changes.outputs.bibliotek }}
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
+        id: changes
+        with:
+          filters: |
+            bibliotek:
+              - 'brevbaker/markup/**'
+              - 'brevbaker/brevdata/**'
+              - 'brevbaker/brevbaker-api/**'
+              - 'brevbaker/pdf-bygger/api/**'
+              - 'brevbaker/pdf-bygger/dsl/**'
+              - 'brevbaker/bom/**'
+              - 'gradle.properties'
+
+  # Alle bibliotek-artefaktene slippes i lockstep fra brevbakerVersion, så de publiseres samlet.
+  release-bibliotek:
+    name: "brevbaker-biblioteket"
+    uses: ./.github/workflows/.release.yaml
+    secrets: inherit
+    needs: [ changes ]
+    with:
+      gradleTarget: 'brevbaker:brevdata brevbaker:markup-model brevbaker:markup-dsl brevbaker:pdf-bygger-api brevbaker:pdf-bygger-dsl brevbaker:brevbaker-api brevbaker:bom'
+      release-common-result: 'success'
+      changes: ${{ needs.changes.outputs.bibliotek }}
+      dependsOnCommon: false
+
+  klarTilMerge:
+    name: "Klar til merge"
+    needs: [ release-bibliotek ]
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr

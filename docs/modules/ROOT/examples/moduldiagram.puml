@@ -11,7 +11,7 @@ package "brevbaker" {
 
   object "brevbaker:brevdata" as brevdata #mistyrose
   brevdata : - vokabularet en *bestiller* trenger for å\n  beskrive brevdata
-  brevdata : - BrevbakerType, DisplayText, LanguageCode,\n  BrevLandmodell, Brevkode, LetterMetadata,\n  BrevbakerBrevdata-familien, SaksbehandlerValg
+  brevdata : - BrevbakerType, DisplayText, LanguageCode,\n  BrevLandmodell, Brevkode, LetterMetadata,\n  BrevbakerBrevdata-familien, SaksbehandlerValg,\n  IBrevkategori/ISakstype
   brevdata : - null avhengigheter, endres sjelden
   brevdata : - dette er alt PENs api-modeller kompilerer mot
   brevdata : - publiseres, men konsumenter får den via\n  api-modellene og brevbaker-api
@@ -26,23 +26,28 @@ package "brevbaker" {
     object "brevbaker:markup:model" as markupModel #mistyrose
     markupModel : - ren datamodell for markup, ingen DSL
     markupModel : - ingen runtime-avhengigheter
-    markupModel : - konstruktørene er public, men merket med\n  @RequiresOptIn — DSLen er fortsatt eneste\n  tiltenkte vei inn i modellen
-    markupModel : - typene inngår i signaturen til flere\n  publiserte artefakter, derfor eget versjonert\n  artefakt: ABI-validert og semantisk versjonert
+    markupModel : - konstruktørene forblir internal\n  (@ConsistentCopyVisibility), så copy() er skjult\n  og valideringen kan ikke omgås
+    markupModel : - eneste vei inn utenfra er en smal fabrikkflate\n  merket @MarkupModelApi (RequiresOptIn)
+    markupModel : - eget versjonert artefakt fordi typene inngår i\n  signaturen til flere publiserte artefakter:\n  ABI-validert
     markupModel : - konsumenter får den transitivt, ikke ved\n  å deklarere den selv
 
     object "brevbaker:markup:dsl" as markupDsl #mistyrose
-    markupDsl : - den offentlige authoring-DSLen\n  (ids alltid 0, ingen variable/editBehaviour)
-    markupDsl : - vanlig modul, ingen associateWith:\n  bygger modellen via opt-in-konstruktørene
+    markupDsl : - både den offentlige authoring-DSLen og den\n  utvidede (eksplisitte ids, variable,\n  editBehaviour) — én modul
+    markupDsl : - den utvidede flaten er gatet med\n  @ExtendedMarkupDsl (RequiresOptIn) og ligger i\n  egne pakker, ikke skilt ut i egen modul
+    markupDsl : - derfor forblir alle builder-sømmer internal:\n  ingen associateWith, ingen lekkasje av\n  texts/blocks/contentFactory/build()
     markupDsl : - publiseres, men konsumenter får den\n  via pdf-bygger:dsl
-
-    object "brevbaker:markup:dsl-extended" as markupDslExtended
-    markupDslExtended : - utvidet DSL (letterMarkupExtended,\n  attachmentExtended, markupElement):\n  eksplisitte ids, variable/editBehaviour
-    markupDslExtended : - publiseres aldri, kun prosjektavhengighet
   }
+
+  object "brevbaker:bom" as bom #pink
+  bom : - brevbaker-bom (java-platform)
+  bom : - alle publiserte artefakter slippes i lockstep\n  fra brevbakerVersion i rot-gradle.properties
+  bom : - dekker brevdata, brevbaker-api, markup:model/dsl\n  og pdf-bygger:api/dsl
+  bom : - inneholder ingen kode, kun versjons-constraints\n  for alle de publiserte artefaktene over
+  bom : - importeres av konsumenter som bruker flere av\n  artefaktene, så delte typer som markup:model\n  ikke kan sprike i versjon
 
   object "brevbaker:jackson" as jackson
   jackson : - Jackson-serialisering av intern trafikk\n  (internalObjectMapper, MarkupJacksonModule)
-  jackson : - re-eksporterer ingen modeller; konsumenter\n  deklarerer dem selv med versjonene fra\n  libs.versions.toml
+  jackson : - re-eksporterer ingen modeller; konsumenter\n  deklarerer dem selv
   jackson : - publiseres aldri
 
   object "brevbaker:dsl" as dsl
@@ -51,6 +56,7 @@ package "brevbaker" {
   object "brevbaker:core" as core
   core : - rendringsmotor, Letter2Markup
   core : - PDFByggerService-grensesnittet
+  core : - bygger LetterPDFRequest via pdf-bygger:api\n  (opt-in @MarkupModelApi), som den får via jackson
 
   object "brevbaker:template-model-generator" as tmg
   tmg : - KSP: genererer *Selectors\n  fra @TemplateModelHelpers
@@ -92,7 +98,6 @@ object Gjenny #yellow
 
 ' brevbaker-modulene
 markupDsl --> markupModel
-markupDslExtended --> markupDsl
 brevbakerapi --> brevdata
 brevbakerapi --> markupModel : BestillRedigertBrevRequest v1/v2
 pdfbyggerApi --> markupModel
@@ -103,7 +108,7 @@ jackson --> pdfbyggerApi
 dsl --> brevbakerapi
 core --> dsl
 core --> jackson
-core --> markupDslExtended
+core --> markupDsl : opt-in @ExtendedMarkupDsl
 tmg --> dsl
 pdfbygger --> jackson
 

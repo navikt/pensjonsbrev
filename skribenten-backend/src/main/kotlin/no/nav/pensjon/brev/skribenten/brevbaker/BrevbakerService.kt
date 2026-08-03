@@ -24,8 +24,8 @@ import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
-import no.nav.brev.brevbaker.internal.serialize.LetterMarkupV1JacksonModule
-import no.nav.brev.brevbaker.internal.serialize.TemplateModelSpecificationJacksonModule
+import no.nav.brev.brevbaker.jackson.LetterMarkupV1JacksonModule
+import no.nav.brev.brevbaker.jackson.TemplateModelSpecificationJacksonModule
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient

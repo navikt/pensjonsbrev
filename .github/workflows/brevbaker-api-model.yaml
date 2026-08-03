@@ -8,7 +8,6 @@ on:
       - "pensjon/api-model/**"
       - "alder/api-model/**"
       - "ufoere/api-model/**"
-      - "brevbaker/api-model-common/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/.release.yaml"
       - ".github/workflows/brevbaker-api-model.yaml"
@@ -21,7 +20,6 @@ on:
       - "pensjon/api-model/**"
       - "alder/api-model/**"
       - "ufoere/api-model/**"
-      - "brevbaker/api-model-common/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/.release.yaml"
       - ".github/workflows/brevbaker-api-model.yaml"
@@ -37,7 +35,6 @@ jobs:
     permissions:
       contents: read
     outputs:
-      common: ${{ steps.changes.outputs.common }}
       pensjonsbrev: ${{ steps.changes.outputs.pensjonsbrev }}
       aldersbrev: ${{ steps.changes.outputs.aldersbrev }}
       ufoerebrev: ${{ steps.changes.outputs.ufoerebrev }}
@@ -49,8 +46,6 @@ jobs:
         id: changes
         with:
           filters: |
-            common:
-              - 'brevbaker/api-model-common/**'
             pensjonsbrev:
               - 'pensjon/api-model/**'
             aldersbrev:
@@ -58,50 +53,39 @@ jobs:
             ufoerebrev:
               - 'ufoere/api-model/**'
 
-  release-common:
-    name: "brevbaker-api-model-common"
-    uses: ./.github/workflows/.release.yaml
-    secrets: inherit
-    needs: [ changes ]
-    with:
-      gradleTarget: 'brevbaker:api-model-common'
-      release-common-result: 'success'
-      changes: ${{ needs.changes.outputs.common }}
-      dependsOnCommon: false
-
   release-pensjon:
     name: "pensjon-brevbaker-api-model"
     uses: ./.github/workflows/.release.yaml
     secrets: inherit
-    needs: [ release-common, changes ]
+    needs: [ changes ]
     with:
       gradleTarget: 'pensjon:api-model'
-      release-common-result: ${{ needs.release-common.result }}
+      release-common-result: 'success'
       changes: ${{ needs.changes.outputs.pensjonsbrev }}
 
   release-alder:
     name: "alder-api-model"
     uses: ./.github/workflows/.release.yaml
     secrets: inherit
-    needs: [ release-common, changes ]
+    needs: [ changes ]
     with:
       gradleTarget: 'alder:api-model'
-      release-common-result: ${{ needs.release-common.result }}
+      release-common-result: 'success'
       changes: ${{ needs.changes.outputs.aldersbrev }}
 
   release-ufoere:
     name: "ufoere-api-model"
     uses: ./.github/workflows/.release.yaml
     secrets: inherit
-    needs: [ release-common, changes ]
+    needs: [ changes ]
     with:
       gradleTarget: 'ufoere:api-model'
-      release-common-result: ${{ needs.release-common.result }}
+      release-common-result: 'success'
       changes: ${{ needs.changes.outputs.ufoerebrev }}
 
   klarTilMerge:
     name: "Klar til merge"
-    needs: [release-common, release-pensjon, release-alder, release-ufoere]
+    needs: [release-pensjon, release-alder, release-ufoere]
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: "ubuntu-latest"
     steps:

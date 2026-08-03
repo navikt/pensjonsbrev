@@ -16,9 +16,9 @@ import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupLetterMarkup
 import no.nav.brev.brevbaker.markup.Attachment as MarkupAttachment
 import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage as MarkupLetterMarkupWithDataUsage
 import no.nav.brev.brevbaker.markup.outline.Text as MarkupText
-import no.nav.brev.brevbaker.markup.dsl.dataUsageProperty
-import no.nav.brev.brevbaker.markup.dsl.letterMarkupExtended
-import no.nav.brev.brevbaker.markup.dsl.letterMarkupWithDataUsage
+import no.nav.brev.brevbaker.markup.dsl.extended.dataUsageProperty
+import no.nav.brev.brevbaker.markup.dsl.extended.letterMarkupExtended
+import no.nav.brev.brevbaker.markup.dsl.extended.letterMarkupWithDataUsage
 
 internal object BrevbakerLetterMarkup {
     fun <T : BrevbakerBrevdata> renderLetterMarkup(letter: Letter<T>): LetterMarkup = Letter2Markup.renderLetterOnly(letter.toScope(), letter.template)

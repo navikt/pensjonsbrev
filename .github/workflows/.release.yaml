@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       gradleTarget:
-        description: "gradle build target path"
+        description: "gradle project path, or space separated list of project paths"
         required: true
         type: string
       release-common-result:
@@ -42,20 +42,34 @@ jobs:
         with:
           "distribution": ${{ env.JavaDistribution }}
           "java-version": ${{ env.JavaVersion }}
-      - name: "publish common og markup to Maven local"
+      # api-modellene konsumeres ved publiserte koordinater og drar inn brevdata transitivt,
+      # så bibliotekets artefakter må ligge i Maven local før de bygges.
+      - name: "publish brevbaker-biblioteket to Maven local"
         if: ${{ inputs.dependsOnCommon }}
         run: |
-          ./gradlew :brevbaker:api-model-common:publishToMavenLocal :brevbaker:markup:publishToMavenLocal
+          ./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:pdf-bygger-api:publishToMavenLocal :brevbaker:pdf-bygger-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
       - name: "compile and run tests"
+        env:
+          GRADLE_TARGETS: ${{ inputs.gradleTarget }}
         run: |
-          ./gradlew :${{ inputs.gradleTarget }}:build
+          tasks=""
+          for target in $GRADLE_TARGETS; do tasks="$tasks :$target:build"; done
+          ./gradlew $tasks
       - name: "Release maven artifact"
         if: ${{ github.ref == 'refs/heads/main' && inputs.changes == 'true' }}
-        run: "./gradlew :${{ inputs.gradleTarget }}:publish -Dorg.gradle.configuration-cache=false"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          GRADLE_TARGETS: ${{ inputs.gradleTarget }}
+        run: |
+          tasks=""
+          for target in $GRADLE_TARGETS; do tasks="$tasks :$target:publish"; done
+          ./gradlew $tasks -Dorg.gradle.configuration-cache=false
       - name: "Release maven manually"
         if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
-        run: ./gradlew -Pversion="0-$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" :${{ inputs.gradleTarget }}:publish -Dorg.gradle.configuration-cache=false
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          GRADLE_TARGETS: ${{ inputs.gradleTarget }}
+        run: |
+          tasks=""
+          for target in $GRADLE_TARGETS; do tasks="$tasks :$target:publish"; done
+          ./gradlew -Pversion="0-$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" $tasks -Dorg.gradle.configuration-cache=false

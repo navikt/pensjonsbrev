@@ -26,17 +26,14 @@ repositories {
 
 dependencies {
     api(project(":brevbaker:dsl"))
-    api(libs.brevbaker.common)
-    // Merk: markup:main deklareres ikke med koordinater her. Den kommer transitivt fra
-    // api-model-common, og å ha både koordinatene og prosjekt-avhengigheten under gir GAV-kollisjon
-    // ("Cannot select a variant by configuration name from no.nav.brev.brevbaker:markup").
-    // Den utvidede (id-eksplisitte) markup-DSL-en, brukt av Letter2Markup. Ligger i markups
-    // `apiInternal`-kildesett, som aldri publiseres, og hentes derfor som lokal jar.
-    // `implementation`, ikke `api`: jar-en deler GAV med det publiserte markup-artefaktet, så hvis
-    // den lekker transitivt kan ingen nedstrøms modul lenger deklarere libs.brevbaker.markup
-    // ("Cannot select a variant by configuration name from no.nav.brev.brevbaker:markup").
-    implementation(project(path = ":brevbaker:markup", configuration = "apiInternalElements"))
-    implementation(project(":brevbaker:internal"))
+    api(project(":brevbaker:brevbaker-api"))
+    // Den utvidede (id-eksplisitte) markup-DSL-en, brukt av Letter2Markup. Den bor i samme modul som
+    // den vanlige DSL-en og er gatet med @ExtendedMarkupDsl, som denne modulen opter inn på under.
+    api(project(":brevbaker:markup-dsl"))
+    // Kontrakten mot pdf-bygger. Core bygger LetterPDFRequest selv, så :brevbaker:pdf-bygger-dsl
+    // trengs ikke her — den DSL-en finnes for eksterne konsumenter.
+    api(project(":brevbaker:pdf-bygger-api"))
+    implementation(project(":brevbaker:jackson"))
     ksp(project(":brevbaker:template-model-generator"))
     kspTest(project(":brevbaker:template-model-generator"))
     implementation(libs.kotlinx.html)
@@ -48,8 +45,10 @@ dependencies {
     testImplementation(testFixtures(project(":brevbaker:dsl")))
     testImplementation(testFixtures(project(":brevbaker:core")))
 
-    testFixturesApi(libs.brevbaker.common)
-    testFixturesImplementation(project(":brevbaker:internal"))
+    testFixturesApi(project(":brevbaker:brevbaker-api"))
+    testFixturesImplementation(project(":brevbaker:jackson"))
+    // Testfixturene bygger PDF-forespørsler slik en ekstern konsument ville gjort det.
+    testFixturesImplementation(project(":brevbaker:pdf-bygger-dsl"))
     testFixturesImplementation(libs.ktor.serialization.jackson)
     testFixturesImplementation(libs.ktor.client.cio)
     testFixturesImplementation(libs.ktor.client.content.negotiation)
@@ -78,6 +77,10 @@ sourceSets {
 
 kotlin {
     compilerOptions {
+        // Letter2Markup eier id-tildelingen og er nettopp den kalleren den utvidede DSL-en finnes for.
+        optIn.add("no.nav.brev.brevbaker.markup.dsl.extended.ExtendedMarkupDsl")
+        // BrevbakerPDF bygger LetterPDFRequest direkte i stedet for å dra inn pdf-bygger-DSL-en.
+        optIn.add("no.nav.brev.brevbaker.markup.MarkupModelApi")
         jvmTarget.set(JvmTarget.fromTarget(apiModelJavaTarget))
     }
     sourceSets {

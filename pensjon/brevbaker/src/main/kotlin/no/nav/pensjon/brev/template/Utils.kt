@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import no.nav.pensjon.brev.converters.BrevbakerBrevdataModule
 import no.nav.pensjon.brev.converters.BrevkodeModule
-import no.nav.brev.brevbaker.internal.serialize.LetterMarkupV1JacksonModule
-import no.nav.brev.brevbaker.internal.serialize.TemplateModelSpecificationJacksonModule
+import no.nav.brev.brevbaker.jackson.LetterMarkupV1JacksonModule
+import no.nav.brev.brevbaker.jackson.TemplateModelSpecificationJacksonModule
 
 fun ObjectMapper.brevbakerConfig() {
     registerModule(JavaTimeModule())

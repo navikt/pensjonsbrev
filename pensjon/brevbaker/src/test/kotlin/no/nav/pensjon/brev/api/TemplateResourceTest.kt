@@ -5,9 +5,9 @@ import io.ktor.http.withCharset
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.PDFByggerService
-import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFRequest
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton

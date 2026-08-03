@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
 import no.nav.brev.brevbaker.markup.LetterMarkup
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.Signatur
 import no.nav.brev.brevbaker.markup.dsl.ContentBuilder
@@ -15,7 +15,7 @@ import no.nav.brev.brevbaker.markup.dsl.header
 import no.nav.brev.brevbaker.markup.dsl.item
 import no.nav.brev.brevbaker.markup.dsl.itemList
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
-import no.nav.brev.brevbaker.markup.dsl.letterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.dsl.letterPDFRequest
 import no.nav.brev.brevbaker.markup.dsl.numberedList
 import no.nav.brev.brevbaker.markup.dsl.paragraph
 import no.nav.brev.brevbaker.markup.dsl.prompt

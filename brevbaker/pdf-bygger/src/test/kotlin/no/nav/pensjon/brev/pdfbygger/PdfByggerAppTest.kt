@@ -7,12 +7,12 @@ import io.ktor.http.*
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.*
-import no.nav.brev.brevbaker.internal.serialize.InternalObjectMapper
-import no.nav.brev.brevbaker.PDFCompilationOutput
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.jackson.InternalObjectMapper
+import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
-import no.nav.brev.brevbaker.markup.dsl.letterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.dsl.letterPDFRequest
 import no.nav.brev.brevbaker.markup.dsl.paragraph
 import no.nav.brev.brevbaker.markup.dsl.saksinformasjon
 import no.nav.brev.brevbaker.markup.dsl.signatur

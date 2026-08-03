@@ -65,9 +65,10 @@ dependencies {
     implementation(libs.ktor.server.status.pages)
     implementation(libs.bundles.metrics)
 
-    implementation(libs.brevbaker.common)
-    implementation(libs.brevbaker.markup)
-    implementation(project(":brevbaker:internal"))
+    implementation(project(":brevbaker:brevbaker-api"))
+    implementation(project(":brevbaker:markup-model"))
+    implementation(project(":brevbaker:pdf-bygger-api"))
+    implementation(project(":brevbaker:jackson"))
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.jackson.datatype.jsr310) {
@@ -81,6 +82,8 @@ dependencies {
     testImplementation(libs.ktor.client.cio)
     testImplementation(libs.ktor.client.content.negotiation)
     testImplementation(testFixtures(project(":brevbaker:core")))
+    testImplementation(project(":brevbaker:markup-dsl"))
+    testImplementation(project(":brevbaker:pdf-bygger-dsl"))
     testImplementation(libs.testcontainers.core)
 }
 

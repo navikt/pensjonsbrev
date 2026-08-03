@@ -6,7 +6,8 @@ on:
       - "build.gradle.kts"
       - "gradle.properties"
       - "gradle/libs.versions.toml"
-      - "brevbaker/api-model-common/**"
+      - "brevbaker/brevdata/**"
+      - "brevbaker/brevbaker-api/**"
       - "brevbaker/core/**"
       - "brevbaker/template-model-generator/**"
       - "brevbaker/dsl/**"
@@ -29,7 +30,8 @@ on:
       - "build.gradle.kts"
       - "gradle.properties"
       - "gradle/libs.versions.toml"
-      - "brevbaker/api-model-common/**"
+      - "brevbaker/brevdata/**"
+      - "brevbaker/brevbaker-api/**"
       - "brevbaker/core/**"
       - "brevbaker/template-model-generator/**"
       - "brevbaker/dsl/**"
@@ -94,7 +96,7 @@ jobs:
           "java-version": ${{ env.JavaVersion }}
       - name: "run integration tests"
         run: |
-          ./gradlew :brevbaker:api-model-common:publishToMavenLocal :brevbaker:markup:publishToMavenLocal
+          ./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:pdf-bygger-api:publishToMavenLocal :brevbaker:pdf-bygger-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
           ./gradlew :pensjon:api-model:publishToMavenLocal
           ./gradlew :alder:api-model:publishToMavenLocal
           ./gradlew :ufoere:api-model:publishToMavenLocal

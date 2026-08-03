@@ -2,12 +2,24 @@ rootProject.name = "pensjonsbrev"
 
 include("ktlint-rules")
 
+include("brevbaker:bom")
 include("brevbaker:core")
-include("brevbaker:api-model-common")
-include("brevbaker:internal")
-include("brevbaker:markup")
+include("brevbaker:brevbaker-api")
+include("brevbaker:brevdata")
+include("brevbaker:jackson")
+// Modulnavnene er unike paa tvers av hele bygget med vilje: Gradle identifiserer et prosjekt som
+// group:name, saa to prosjekter som begge het "dsl" under samme group ville kollidert og blitt
+// substituert mot hverandre.
+include("brevbaker:markup-model")
+project(":brevbaker:markup-model").projectDir = file("brevbaker/markup/model")
+include("brevbaker:markup-dsl")
+project(":brevbaker:markup-dsl").projectDir = file("brevbaker/markup/dsl")
 include("brevbaker:dsl")
 include("brevbaker:pdf-bygger")
+include("brevbaker:pdf-bygger-api")
+project(":brevbaker:pdf-bygger-api").projectDir = file("brevbaker/pdf-bygger/api")
+include("brevbaker:pdf-bygger-dsl")
+project(":brevbaker:pdf-bygger-dsl").projectDir = file("brevbaker/pdf-bygger/dsl")
 include("brevbaker:template-model-generator")
 
 include("skribenten-backend")

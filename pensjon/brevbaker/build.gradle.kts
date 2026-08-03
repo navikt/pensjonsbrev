@@ -90,8 +90,8 @@ dependencies {
     implementation(project(":ufoere:maler"))
     implementation(project(":etterlattemaler"))
     implementation(project(":brevbaker:core"))
-    implementation(libs.brevbaker.common)
-    implementation(project(":brevbaker:internal")) {
+    implementation(project(":brevbaker:brevbaker-api"))
+    implementation(project(":brevbaker:jackson")) {
         because("bruker internalObjectMapper for serialisering av intern trafikk")
     }
     ksp(project(":brevbaker:template-model-generator"))

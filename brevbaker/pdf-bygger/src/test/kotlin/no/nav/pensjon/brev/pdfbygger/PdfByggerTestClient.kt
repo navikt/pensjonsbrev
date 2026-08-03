@@ -7,7 +7,7 @@ import java.nio.file.Path
  * so the module's tests do not depend on `brevbaker:core`/`brevbaker:dsl` test fixtures.
  *
  * `PdfByggerTestService`/`PDFByggerTestContainer` er derimot delt, og bor i
- * `brevbaker:internal` sine testFixtures.
+ * `brevbaker:jackson` sine testFixtures.
  */
 object TestTags {
     const val INTEGRATION_TEST = "integration-test"
