@@ -10,8 +10,10 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal
 import no.nav.pensjon.brev.skribenten.letter.toEdit
-import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
+import no.nav.pensjon.brev.skribenten.model.RedigerbarSaksbehandlervalgMap
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgVerdi
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.assertj.core.api.Assertions.assertThat
@@ -21,7 +23,7 @@ class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan tilbakestille brev`() {
-        val saksbehandlerValg = Api.GeneriskBrevdata().apply {
+        val saksbehandlerValg = SaksbehandlervalgMap().apply {
             put("ytelse", "uføre")
             put("inkluderAfpTekst", false)
         }
@@ -30,10 +32,10 @@ class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
         // Oppdater brevet
         oppdaterBrev(
             brevId = brev.info.id,
-            nyeSaksbehandlerValg = Api.GeneriskBrevdata().apply {
-                put("ytelse", "uføre")
-                put("inkluderAfpTekst", true)
-                put("land", "Spania")
+            nyeSaksbehandlerValg = RedigerbarSaksbehandlervalgMap().apply {
+                put("ytelse", SaksbehandlervalgVerdi.String("uføre"))
+                put("inkluderAfpTekst", SaksbehandlervalgVerdi.Boolean(true))
+                put("land", SaksbehandlervalgVerdi.String("Spania"))
             },
             nyttRedigertbrev = brev.redigertBrev.copy(
                 blocks = brev.redigertBrev.blocks + Paragraph(
@@ -63,7 +65,7 @@ class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(tilbakestilt).isSuccess {
             assertThat(it.redigertBrev).isEqualTo(letter.toEdit())
-            assertThat(it.saksbehandlerValg).isEqualTo(Api.GeneriskBrevdata().apply {
+            assertThat(it.saksbehandlerValg).isEqualTo(SaksbehandlervalgMap().apply {
                 // Kun booleans og nullables blir tilbakestilt, så dermed forventes ytelse å fortsatt være "uføre" og land å være null
                 put("ytelse", "uføre")
                 put("inkluderAfpTekst", false)
@@ -73,13 +75,13 @@ class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
     }
     @Test
     suspend fun `kan tilbakestille brev som ikke har saksbehandlervalg`() {
-        val saksbehandlerValg = Api.GeneriskBrevdata()
+        val saksbehandlerValg = SaksbehandlervalgMap()
         val brev = opprettBrev(saksbehandlerValg = saksbehandlerValg).resultOrFail()
 
         // Oppdater brevet
         oppdaterBrev(
             brevId = brev.info.id,
-            nyeSaksbehandlerValg = Api.GeneriskBrevdata(),
+            nyeSaksbehandlerValg = RedigerbarSaksbehandlervalgMap(),
             nyttRedigertbrev = brev.redigertBrev.copy(
                 blocks = brev.redigertBrev.blocks + Paragraph(
                     2,
@@ -99,7 +101,7 @@ class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
         assertThat(tilbakestilt).isSuccess {
             assertThat(it.redigertBrev).isEqualTo(letter.toEdit())
-            assertThat(it.saksbehandlerValg).isEqualTo(Api.GeneriskBrevdata())
+            assertThat(it.saksbehandlerValg).isEqualTo(SaksbehandlervalgMap())
         }
     }
 

@@ -417,7 +417,7 @@ abstract class BrevredigeringHandlerTestBase {
         principal: UserPrincipal = saksbehandler1Principal,
         reserverForRedigering: Boolean = false,
         mottaker: Dto.Mottaker? = null,
-        saksbehandlerValg: SaksbehandlerValg = SaksbehandlerValg().apply { put("valg", true) },
+        saksbehandlerValg: SaksbehandlervalgMap = SaksbehandlervalgMap().apply { put("valg", true) },
         brevkode: RedigerbarBrevkode = Testbrevkoder.INFORMASJONSBREV,
         vedtaksId: VedtaksId? = null,
         sak: Pen.SakSelection = sak1,
@@ -439,7 +439,7 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected suspend fun oppdaterBrev(
         brevId: BrevId,
-        nyeSaksbehandlerValg: SaksbehandlerValg? = null,
+        nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
         nyttRedigertbrev: Edit.Letter? = null,
         frigiReservasjon: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
@@ -497,7 +497,7 @@ abstract class BrevredigeringHandlerTestBase {
         brev: Dto.Brevredigering,
         attestant: UserPrincipal = attestant1Principal,
         frigiReservasjon: Boolean = false,
-        nyeSaksbehandlerValg: SaksbehandlerValg? = null,
+        nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
         nyttRedigertbrev: Edit.Letter? = null,
         saksId: SaksId = sak1.saksId,
     ) = withPrincipal(attestant) {

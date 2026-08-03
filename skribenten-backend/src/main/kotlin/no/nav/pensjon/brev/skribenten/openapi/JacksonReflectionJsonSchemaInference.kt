@@ -126,7 +126,7 @@ class JacksonReflectionJsonSchemaInference(
         // Map -> object with additionalProperties
         if (kClass.isSubclassOf(Map::class)) {
             // key type ignored
-            val valueType = type.arguments.getOrNull(1)?.type
+            val valueType = type.arguments.getOrNull(1)?.type?.takeUnless { it.classifier == Any::class }
             val valueTypeName = valueType?.let { adapter.getName(it) }
 
             // JSON object keys are strings; if key isn't String, we still produce an object schema.
@@ -161,7 +161,9 @@ class JacksonReflectionJsonSchemaInference(
                             val schemaName = adapter.getName(subclass.starProjectedTypeOrNull() ?: subclass.starProjectedType)
                                 ?: subclass.qualifiedName
                                 ?: continue
-                            discriminatorMapping[mappingName] = "#/components/schemas/$schemaName"
+                            if (mappingName.isNotBlank()) {
+                                discriminatorMapping[mappingName] = "#/components/schemas/$schemaName"
+                            }
                         } else if (subclass.isSealed) {
                             collectConcreteSubtypes(subclass)
                         }
@@ -185,7 +187,8 @@ class JacksonReflectionJsonSchemaInference(
                     reflectSchema = ::schemaRefForClass,
                     type = JsonType.OBJECT,
                     oneOf = oneOfSchemas,
-                    discriminator = JsonSchemaDiscriminator(adapter.getDiscriminatorProperty(kClass), discriminatorMapping),
+                    discriminator = discriminatorMapping.takeIf { it.isNotEmpty() }
+                        ?.let { JsonSchemaDiscriminator(adapter.getDiscriminatorProperty(kClass), it) },
                 )
             }
 

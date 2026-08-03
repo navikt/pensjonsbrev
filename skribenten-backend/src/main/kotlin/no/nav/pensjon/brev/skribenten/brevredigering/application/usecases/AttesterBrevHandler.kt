@@ -26,7 +26,7 @@ class AttesterBrevHandler(
     data class Request(
         override val brevId: BrevId,
         override val saksId: SaksId,
-        val nyeSaksbehandlerValg: SaksbehandlerValg? = null,
+        val nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
         val nyttRedigertbrev: Edit.Letter? = null,
         val frigiReservasjon: Boolean = false,
     ) : BrevredigeringRequest
@@ -40,7 +40,7 @@ class AttesterBrevHandler(
 
         // TODO: Følgende 10 linjer er helt lik som i OppdaterBrevHandler, vurder å trekke ut til noe felles
         if (request.nyeSaksbehandlerValg != null) {
-            brev.saksbehandlerValg = request.nyeSaksbehandlerValg
+            brev.saksbehandlerValg = brev.saksbehandlerValg.mergeInn(request.nyeSaksbehandlerValg)
         }
         if (request.nyttRedigertbrev != null) {
             brev.oppdaterRedigertBrev(request.nyttRedigertbrev, principal.navIdent)
