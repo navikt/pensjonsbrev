@@ -30,7 +30,7 @@ export function useAttestantLetterDiff({
       redigertBrevHash: savedHash,
     }),
     // `redigertBrev` and `redigertBrevHash` are updated together from the same save response,
-    // so they only represent the same letter version while the editor is in a saved state..
+    // so they only represent the same letter version while the editor is in a saved state.
     enabled: enabled && isSaved,
   });
 
