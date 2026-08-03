@@ -16,11 +16,24 @@ java {
 
 @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
 kotlin {
-    abiValidation {}
+    abiValidation {
+        filters {
+            exclude {
+                annotatedWith.add("no.nav.brev.InterneDataklasser")
+                annotatedWith.add("no.nav.brev.InternKonstruktoer")
+            }
+        }
+    }
 }
 
 repositories {
     mavenCentral()
+}
+
+dependencies {
+    api(libs.brevbaker.markup) {
+        because("BestillRedigertBrevRequestV2 er uttrykt i markup-modellen. markup har ingen runtime-avhengigheter, så dette drar ikke inn noe tungt.")
+    }
 }
 
 publishing {

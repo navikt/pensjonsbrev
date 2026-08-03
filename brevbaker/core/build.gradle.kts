@@ -26,7 +26,17 @@ repositories {
 
 dependencies {
     api(project(":brevbaker:dsl"))
-    api(project(":brevbaker:internal"))
+    api(libs.brevbaker.common)
+    // Merk: markup:main deklareres ikke med koordinater her. Den kommer transitivt fra
+    // api-model-common, og å ha både koordinatene og prosjekt-avhengigheten under gir GAV-kollisjon
+    // ("Cannot select a variant by configuration name from no.nav.brev.brevbaker:markup").
+    // Den utvidede (id-eksplisitte) markup-DSL-en, brukt av Letter2Markup. Ligger i markups
+    // `apiInternal`-kildesett, som aldri publiseres, og hentes derfor som lokal jar.
+    // `implementation`, ikke `api`: jar-en deler GAV med det publiserte markup-artefaktet, så hvis
+    // den lekker transitivt kan ingen nedstrøms modul lenger deklarere libs.brevbaker.markup
+    // ("Cannot select a variant by configuration name from no.nav.brev.brevbaker:markup").
+    implementation(project(path = ":brevbaker:markup", configuration = "apiInternalElements"))
+    implementation(project(":brevbaker:internal"))
     ksp(project(":brevbaker:template-model-generator"))
     kspTest(project(":brevbaker:template-model-generator"))
     implementation(libs.kotlinx.html)
@@ -38,8 +48,8 @@ dependencies {
     testImplementation(testFixtures(project(":brevbaker:dsl")))
     testImplementation(testFixtures(project(":brevbaker:core")))
 
-    testFixturesApi(project(":brevbaker:internal"))
-    testFixturesApi(testFixtures(project(":brevbaker:internal")))
+    testFixturesApi(libs.brevbaker.common)
+    testFixturesImplementation(project(":brevbaker:internal"))
     testFixturesImplementation(libs.ktor.serialization.jackson)
     testFixturesImplementation(libs.ktor.client.cio)
     testFixturesImplementation(libs.ktor.client.content.negotiation)
@@ -48,7 +58,7 @@ dependencies {
     testFixturesImplementation(testFixtures(project(":brevbaker:dsl")))
     testFixturesImplementation(libs.bundles.logging)
     testFixturesImplementation(libs.bundles.junit)
-    testFixturesImplementation(libs.testcontainers.core)
+    testFixturesApi(libs.testcontainers.core)
 
     testFixturesImplementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")

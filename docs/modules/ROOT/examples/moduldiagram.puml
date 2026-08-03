@@ -7,25 +7,34 @@ legend top left
 endlegend
 
 package "brevbaker" {
+
+  object "brevbaker:brevdata" as brevdata #pink
+  brevdata : - vokabularet en *bestiller* trenger for å\n  beskrive brevdata
+  brevdata : - BrevbakerType, DisplayText, LanguageCode,\n  BrevLandmodell, Brevkode, LetterMetadata,\n  BrevbakerBrevdata-familien, SaksbehandlerValg
+  brevdata : - null avhengigheter, endres sjelden
+  brevdata : - dette er alt PENs api-modeller kompilerer mot
+
+  object "brevbaker:api-model-common" as modelcommon #pink
+  modelcommon : - brevbakers HTTP-kontrakt
+  modelcommon : - BestillBrevRequest, LetterResponse,\n  TemplateDescription, BrevbakerFelles,\n  TemplateModelSpecification, AlltidValgbartVedlegg
+  modelcommon : - PDF-bygger-DTO-ene (PDFRequest,\n  PDFCompilationOutput, HttpStatusCodes)
+  modelcommon : - brevinnhold v1 i eget pakkenavn (LetterMarkup(+Impl),\n  LetterMarkupWithDataUsage(+Impl), Listetype,\n  ElementTags, AttachmentTitle) — slettes samlet når\n  siste konsument er over på markup v2
+
   package "brevbaker:markup" {
     object "markup (main)" as markup #pink
     markup : - markup-modellen og den publiserte DSLen
     markup : - ingen runtime-avhengigheter
-    markup : - hentes av andre moduler som\n  publisert artefakt
 
     object "markup (apiInternal)" as markupInternal
     markupInternal : - utvidet DSL (letterMarkupExtended,\n  attachmentExtended, markupElement)
-    markupInternal : - eget kildesett med friend-tilgang\n  til main (associateWith)
+    markupInternal : - friend-tilgang til main (associateWith)
     markupInternal : - publiseres aldri, eksponeres som\n  konfigurasjonen apiInternalElements
   }
 
-  object "brevbaker:api-model-common" as modelcommon #pink
-  modelcommon : - felles API-modell mot bestillersystemene
-
   object "brevbaker:internal" as internal
-  internal : - eneste vei inn til markup +\n  api-model-common for modulene i repoet
-  internal : - re-eksporterer begge med api(...)
-  internal : - Jackson-serialisering av intern trafikk\n  (internalObjectMapper)
+  internal : - Jackson-serialisering av intern trafikk\n  (internalObjectMapper, MarkupJacksonModule)
+  internal : - BestillRedigertBrevRequest V1/V2\n  (Skribenten -> brevbaker, aldri PEN)
+  internal : - re-eksporterer ingen modeller; konsumenter\n  deklarerer dem selv med versjonene fra\n  libs.versions.toml
   internal : - publiseres aldri
 
   object "brevbaker:dsl" as dsl
@@ -33,6 +42,7 @@ package "brevbaker" {
 
   object "brevbaker:core" as core
   core : - rendringsmotor, Letter2Markup
+  core : - PDFByggerService-grensesnittet
 
   object "brevbaker:template-model-generator" as tmg
   tmg : - KSP: genererer *Selectors\n  fra @TemplateModelHelpers
@@ -64,11 +74,14 @@ object PEN #yellow
 object Gjenny #yellow
 
 ' brevbaker-modulene
-internal --> markupInternal : prosjektavhengighet\n(apiInternalElements)
 markupInternal ..> markup : friend / associateWith
+modelcommon --> brevdata
 internal --> modelcommon
-dsl --> internal
+internal --> markup
+dsl --> modelcommon
 core --> dsl
+core --> internal
+core --> markupInternal : prosjektavhengighet\n(apiInternalElements)
 tmg --> dsl
 pdfbygger --> internal
 
@@ -83,9 +96,9 @@ pensjonsmalene --> pensjonapimodel
 aldersmalene --> alderapimodel
 ufoeremalene --> ufoereapimodel
 
-pensjonapimodel --> modelcommon
-alderapimodel --> modelcommon
-ufoereapimodel --> modelcommon
+pensjonapimodel --> brevdata
+alderapimodel --> brevdata
+ufoereapimodel --> brevdata
 
 ' applikasjonen
 brevbakerApp --> pensjonsmalene
@@ -94,13 +107,17 @@ brevbakerApp --> ufoeremalene
 brevbakerApp --> etterlatte
 brevbakerApp --> planlegge
 brevbakerApp ..> pdfbygger : HTTP
+PEN ..> brevbakerApp : HTTP
+Gjenny ..> brevbakerApp : HTTP
+skribenten ..> brevbakerApp : HTTP
+
 
 ' konsumenter
 skribenten --> internal
-skribenten ..> brevbakerApp : HTTP
 PEN --> pensjonapimodel
 PEN --> alderapimodel
 PEN --> ufoereapimodel
+PEN --> modelcommon
 Gjenny --> modelcommon
 
 @enduml

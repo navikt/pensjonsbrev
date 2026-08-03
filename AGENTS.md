@@ -76,19 +76,27 @@ If the agent finds itself about to write to one of these, stop and change the up
 - `brevbaker/core` - Rendering engine
 - `brevbaker/api-model-common` - Shared API models (published artifact)
 - `brevbaker/markup` - Markup model & DSL (published artifact, **no runtime dependencies**)
-- `brevbaker/internal` - Internal shared layer (**never published**)
+- `brevbaker/internal` - Jackson serialization of internal traffic (**never published**)
+- `brevbaker/pdf-bygger/client` - Contract against pdf-bygger, `PDFByggerService` (**never published**)
 
-### `brevbaker:internal` — the internal shared layer
+### `brevbaker:internal` — serialization only
 
-`brevbaker:internal` is the single door through which `brevbaker:core`, `pensjon:brevbaker`,
-`skribenten-backend` and `brevbaker:pdf-bygger` reach the two published artifacts. It exists because
-types like `BestillRedigertBrevRequest`/`BestillRedigertBrevRequestV2` combine `markup` with
-`api-model-common` and belong in neither.
+`brevbaker:internal` owns **nothing but the Jackson setup** for traffic between our own applications.
+It holds no model types and re-exports no artifacts: every module declares `libs.brevbaker.common`
+and/or `libs.brevbaker.markup` itself, so the version in `gradle/libs.versions.toml` is the single
+place that keeps them in sync.
 
 Rules:
 
-- **Never depend on `libs.brevbaker.common` or `libs.brevbaker.markup` directly** from those modules.
-  Depend on `project(":brevbaker:internal")`; it re-exports both with `api(...)`.
+- **Declare the models where you use them.** `libs.brevbaker.common` and `libs.brevbaker.markup` are
+  normal dependencies of `dsl`, `core`, `pdf-bygger`, `pdf-bygger:client`, `skribenten-backend` and
+  `pensjon:brevbaker`. Depend on `project(":brevbaker:internal")` only when you actually need
+  `internalObjectMapper()`.
+- **Never declare `libs.brevbaker.markup` in a module that also depends on
+  `project(":brevbaker:markup", configuration = "apiInternalElements")`.** The local project and the
+  published artifact share GAV, and Gradle then fails with *"Cannot select a variant by configuration
+  name from no.nav.brev.brevbaker:markup"*. `core` is that module — it gets markup's `main`
+  transitively through `api-model-common`.
 - `internal` has no `maven-publish` and no `abiValidation` — it is a project dependency only.
 - It consumes markup and api-model-common by *published coordinates*, so after changing either you
   must run
@@ -101,10 +109,20 @@ Rules:
   registering it there fails the drift test in `MarkupJacksonModuleTest`.
 - The golden JSON under `brevbaker/internal/src/test/resources/golden/` pins the wire format;
   regenerate deliberately with `REGENERER_GOLDEN=true ./gradlew :brevbaker:internal:test`.
+
+### `brevbaker:pdf-bygger:client` — the pdf-bygger contract
+
+`PDFRequest`, `PDFCompilationOutput`, `HttpStatusCodes` and the `PDFByggerService` interface (with
+`PDFCompileException`/`PDFTimeoutException`/`PDFInvalidException`) live here, together with the test
+fixtures `PdfByggerTestService` and `PDFByggerTestContainer`. Both `core` (the caller) and
+`pdf-bygger` (the server) depend on it, so the two sides cannot drift apart.
+
 - `PDFByggerTestContainer` defaults to the *deployed* `pdf-bygger:main` image, while CI overrides
   `PDF_BYGGER_IMAGE` with the image built from the same commit. So a local `integrationTest` run tests
   against the old server and CI against the new one — if only one of them fails, suspect wire
   compatibility rather than the change itself.
+- The test fixtures serialize with `internalObjectMapper()`, so the module's `testFixtures` — and only
+  those — depend on `project(":brevbaker:internal")`.
 
 #### The `apiInternal` source set in `brevbaker:markup`
 
@@ -120,19 +138,20 @@ It is deliberately *not* folded into `main`, so the builders' seams (`texts`, `b
 API — the ABI validator and the published jar cover `main` only.
 
 `apiInternal`'s output is exposed as a separate, **never published** jar via the consumable
-configuration `apiInternalElements`, and `brevbaker:internal` picks it up as a local jar:
+configuration `apiInternalElements`, and `brevbaker:core` picks it up as a local jar:
 
 ```kotlin
 api(project(path = ":brevbaker:markup", configuration = "apiInternalElements"))
 ```
 
-`brevbaker:internal` still gets markup's `main` by published coordinates (`libs.brevbaker.markup`) and
-re-exports both with `api(...)`, so downstream modules just depend on `project(":brevbaker:internal")`.
+`core` gets markup's `main` by published coordinates, but *transitively* through `api-model-common` —
+declaring `libs.brevbaker.markup` in the same module as the line above collides on GAV and breaks
+resolution.
 
 Rules:
 
-- **Keep the extended DSL in `apiInternal`, never in `brevbaker:internal` or in markup's `main`.**
-  Putting it in `brevbaker:internal` means it can only reach markup across a published-jar boundary,
+- **Keep the extended DSL in `apiInternal`, never in another module or in markup's `main`.**
+  Putting it in a separate module means it can only reach markup across a published-jar boundary,
   which forces the builder seams to become public — that is exactly what this source set avoids.
 - Because the jar is built from the local project while `main` is resolved from Maven, a change to
   `main` needs `./gradlew :brevbaker:markup:publishToMavenLocal` before dependents build, or
