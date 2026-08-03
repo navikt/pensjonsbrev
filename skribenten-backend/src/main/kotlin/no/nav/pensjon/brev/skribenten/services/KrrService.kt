@@ -13,6 +13,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.Closeable
+import kotlinx.io.IOException
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
@@ -77,10 +78,15 @@ class KrrService(config: OboClientConfig, authService: AuthService, engine: Http
     }
 
     suspend fun getPreferredLocale(pid: Pid): KontaktinfoResponse {
-        val response = client.post("/rest/v1/personer") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            setBody(KontaktinfoRequest(listOf(pid.value)))
+        val response = try {
+            client.post("/rest/v1/personer") {
+                contentType(ContentType.Application.Json)
+                accept(ContentType.Application.Json)
+                setBody(KontaktinfoRequest(listOf(pid.value)))
+            }
+        } catch (e: IOException) {
+            logger.warn("IO-feil ved kall mot KRR: ${e.message}", e)
+            return KontaktinfoResponse(KontaktinfoResponse.FailureType.ERROR)
         }
         return if (response.status.isSuccess()) {
             val body = response.body<KontaktinfoKRRResponse>()
