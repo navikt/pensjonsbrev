@@ -1,18 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg
 
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDto
-import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.bruttobeloepTilbakekrevd
-import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.feilutbetaltBeloep
-import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.maanedOgAar
-import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.nettobeloepUtenRenterTilbakekrevd
-import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.resultatAvVurderingen
-import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.skattefradragSomInnkreves
-import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.ytelsenMedFeilutbetaling
-import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.bruttoTilbakekrevdTotalbeloep
-import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.nettoUtenRenterTilbakekrevdTotalbeloep
-import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.rentetilleggSomInnkrevesTotalbeloep
-import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.skattefradragSomInnkrevesTotalbeloep
-import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.tilbakekrevingPerMaaned
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.oversiktOverFeilutbetalingPEDto.tilbakekreving.*
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.oversiktOverFeilutbetalingPEDto.*
 import no.nav.pensjon.brev.maler.fraser.common.KonteringTypeYtelseTextMappingStorBokstav
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.maler.fraser.common.ResultatAvVurderingenTextMappingStorBokstav

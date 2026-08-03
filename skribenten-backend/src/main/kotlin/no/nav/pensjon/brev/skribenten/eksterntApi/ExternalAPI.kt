@@ -3,13 +3,14 @@ package no.nav.pensjon.brev.skribenten.eksterntApi
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.brev.BrevLandmodell
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -22,7 +23,7 @@ object ExternalAPI {
         val saksId: SaksId,
         val vedtaksId: VedtaksId?,
         val journalpostId: JournalpostId?,
-        val brevkode: Brevkode.Redigerbart,
+        val brevkode: RedigerbarBrevkode,
         val tittel: String,
         val brevtype: LetterMetadata.Brevtype,
         val avsenderEnhetsId: EnhetId,
@@ -38,10 +39,10 @@ object ExternalAPI {
 
     data class OpprettBrevRequest(
         val saksId: SaksId,
-        val brevkode: Brevkode.Redigerbart,
+        val brevkode: RedigerbarBrevkode,
         val spraak: SpraakKode,
         val avsenderEnhetsId: EnhetId,
-        val saksbehandlerValg: Map<String, Any?>?,
+        val saksbehandlerValg: SaksbehandlervalgMap?,
         val reserverForRedigering: Boolean?,
         val vedtaksId: VedtaksId?
     )

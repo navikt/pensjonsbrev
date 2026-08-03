@@ -8,7 +8,7 @@ import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.ElementType
 import no.nav.pensjon.etterlatte.maler.InnerElement
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
-import no.nav.pensjon.etterlatte.maler.ManueltBrevDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.selectors.manueltBrevDTO.*
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import org.junit.jupiter.api.Test
 

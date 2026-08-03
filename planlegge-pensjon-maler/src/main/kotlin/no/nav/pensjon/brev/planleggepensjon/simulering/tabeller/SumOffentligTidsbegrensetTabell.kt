@@ -2,16 +2,9 @@ package no.nav.pensjon.brev.planleggepensjon.simulering.tabeller
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.planleggepensjon.simulering.TidsbegrensetOffentligAfp
-import no.nav.pensjon.brev.planleggepensjon.simulering.TidsbegrensetOffentligAfpSelectors.totaltAfpBeloep
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.tidsbegrensetOffentligAfp.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjon
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.garantipensjonBeloep
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.garantitilleggBeloep
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.gjenlevendetillegg
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.grunnpensjonBeloep
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.inntektspensjonBeloep
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.pensjonstillegg
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.skjermingstillegg
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.tilleggspensjonBeloep
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringV1MaanedligAlderspensjon.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression

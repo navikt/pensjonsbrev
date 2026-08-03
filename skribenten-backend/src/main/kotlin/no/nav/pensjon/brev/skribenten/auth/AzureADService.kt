@@ -12,6 +12,9 @@ import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
+import no.nav.pensjon.brev.skribenten.AzureADConfig
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
@@ -47,7 +50,9 @@ interface AuthService {
     suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse.OnBehalfOfToken
 }
 
-class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create(), private val cache: Cache) : AuthService {
+class AzureADService(private val jwtConfig: AzureADConfig, private val cache: Cache, engine: HttpClientEngine = CIO.create()) : AuthService, Closeable {
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, cache: Cache, engine: HttpClientEngine = CIO.create()): this(config.azureAD, cache, engine)
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val client = lagHttpClient(engine) {
@@ -62,7 +67,7 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
     override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String) =
         cache.cached(Cacheomraade.AD, Pair(principal.navIdent, scope), { it.expiresIn.seconds.minus(5.minutes) }) {
             val response = client.submitForm(
-                url = jwtConfig.tokenUri,
+                url = jwtConfig.tokenEndpoint,
                 formParameters = Parameters.build {
                     append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
                     append("client_id", jwtConfig.clientId)
@@ -79,4 +84,6 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
             }
             response.body<TokenResponse.OnBehalfOfToken>()
         }
+
+    override fun close() { client.close() }
 }

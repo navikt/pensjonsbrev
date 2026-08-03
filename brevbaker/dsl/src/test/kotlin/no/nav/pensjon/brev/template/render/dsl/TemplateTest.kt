@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.name
+import no.nav.pensjon.brev.template.validation.EmptyValidator
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -24,7 +25,7 @@ class TemplateTest {
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
-            title.add(bokmalTittel)
+            bokmalTittel()
             outline {
                 title1 {
                     text(bokmal { +"Heisann. " })
@@ -80,7 +81,7 @@ class TemplateTest {
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
-            title.add(bokmalTittel)
+            bokmalTittel()
             includeAttachment(attachment, Expression.Literal(EmptyVedleggData))
         }
 
@@ -124,7 +125,7 @@ class TemplateTest {
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
-            title.add(bokmalTittel)
+            bokmalTittel()
             outline {
                 title1 { text(bokmal { +"jadda" }) }
             }
@@ -158,7 +159,7 @@ class TemplateTest {
             languages = languages(Language.Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
-            title.add(bokmalTittel)
+            bokmalTittel()
             outline {
                 title1 { text(bokmal { +"Tittel" }) }
                 paragraph {
@@ -209,11 +210,11 @@ class TemplateTest {
     @Test
     fun `TemplateContainerScope_includePhrase adds phrase`() {
         val argument = Expression.Literal("jadda")
-        val actual = OutlineOnlyScope<LangBokmal, SomeDto>().apply {
+        val actual = OutlineOnlyScope<LangBokmal, SomeDto>(EmptyValidator).apply {
             includePhrase(TestFrase(argument))
         }.elements
 
-        val expected = OutlineOnlyScope<LangBokmal, SomeDto>().apply { TestFrase(argument).apply(this) }.elements
+        val expected = OutlineOnlyScope<LangBokmal, SomeDto>(EmptyValidator).apply { TestFrase(argument).apply(this) }.elements
 
         assertEquals(expected, actual)
     }

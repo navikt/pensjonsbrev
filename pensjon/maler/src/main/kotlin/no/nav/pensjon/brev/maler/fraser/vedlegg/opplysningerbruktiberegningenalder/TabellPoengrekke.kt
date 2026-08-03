@@ -3,12 +3,7 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenal
 import no.nav.pensjon.brev.api.model.PoengTallsType
 import no.nav.pensjon.brev.api.model.PoengTallsType.*
 import no.nav.pensjon.brev.api.model.vedlegg.Pensjonspoeng
-import no.nav.pensjon.brev.api.model.vedlegg.PensjonspoengSelectors.arstall
-import no.nav.pensjon.brev.api.model.vedlegg.PensjonspoengSelectors.bruktIBeregningen
-import no.nav.pensjon.brev.api.model.vedlegg.PensjonspoengSelectors.grunnbelopVeiet
-import no.nav.pensjon.brev.api.model.vedlegg.PensjonspoengSelectors.pensjonsgivendeinntekt
-import no.nav.pensjon.brev.api.model.vedlegg.PensjonspoengSelectors.pensjonspoeng
-import no.nav.pensjon.brev.api.model.vedlegg.PensjonspoengSelectors.poengtallstype
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.pensjonspoeng.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT

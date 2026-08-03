@@ -3,12 +3,8 @@ import { type Draft, produce } from "immer";
 import {
   type AnyBlock,
   type Cell,
-  PARAGRAPH,
   type ParagraphBlock,
   type Table,
-  TITLE1,
-  TITLE2,
-  TITLE3,
   type Title1Block,
   type Title2Block,
   type Title3Block,
@@ -52,18 +48,20 @@ export function nextTableFocus(editorState: LetterEditorState, direction: "forwa
   }
 
   // Find our position in that flat list
-  const idx = pointers.findIndex((p) => p.rowIndex === currentFocus.rowIndex && p.cellIndex === currentFocus.cellIndex);
-  if (idx === -1) {
+  const index = pointers.findIndex(
+    (p) => p.rowIndex === currentFocus.rowIndex && p.cellIndex === currentFocus.cellIndex,
+  );
+  if (index === -1) {
     return { ...currentFocus };
   }
 
-  const nextIdx = direction === "forward" ? idx + 1 : idx - 1;
+  const nextIndex = direction === "forward" ? index + 1 : index - 1;
   // Off the ends? return a new copy of the original focus.
-  if (nextIdx < 0 || nextIdx >= pointers.length) {
+  if (nextIndex < 0 || nextIndex >= pointers.length) {
     return { ...currentFocus };
   }
 
-  const { rowIndex, cellIndex } = pointers[nextIdx];
+  const { rowIndex, cellIndex } = pointers[nextIndex];
   return {
     ...currentFocus,
     rowIndex,
@@ -212,7 +210,7 @@ function insertBlankLiteralIfEmptyBlock(
   block: ParagraphBlock | Title1Block | Title2Block | Title3Block,
   contentIndex: number,
 ) {
-  if (block.type === PARAGRAPH || block.type === TITLE1 || block.type === TITLE2 || block.type === TITLE3) {
+  if (block.type === "PARAGRAPH" || block.type === "TITLE1" || block.type === "TITLE2" || block.type === "TITLE3") {
     addElements([newLiteral({ editedText: "" })], contentIndex, block.content, block.deletedContent);
     return true;
   }
@@ -340,7 +338,7 @@ export function addRow(
       if (!isTableCellIndex(f)) return;
 
       const block = draft.redigertBrev.blocks[f.blockIndex];
-      if (block.type !== PARAGRAPH) return;
+      if (block.type !== "PARAGRAPH") return;
       const paragraphDraft = block as Draft<ParagraphBlock>;
 
       const content = paragraphDraft.content[f.contentIndex];

@@ -28,9 +28,11 @@ object UfoereTemplates : AllTemplates {
         VarselOmLavereReduksjonsprosent,
         VarselOmOktMinsteIFU,
         VarselOmOktMinsteIFUOgLavereReduksjonsprosent,
+        InfoOmReverseringAvMinstesats,
     )
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
+        UforeAvslagTestmal,
         UforeAvslagHensiktsmessigBehandling,
         UforeAvslagHensiktsmessigArbTiltakI1,
         UforeAvslagHensiktsmessigArbTiltakI2,

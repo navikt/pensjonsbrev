@@ -7,10 +7,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoTOM
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.grunnbeloep
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.selectors.barnepensjonBeregningsperiode.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.KronerText
 import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
 

@@ -5,11 +5,8 @@ import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.dsl.ListScope
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.etterlatte.maler.ElementSelectors.children
-import no.nav.pensjon.etterlatte.maler.ElementSelectors.type
-import no.nav.pensjon.etterlatte.maler.InnerElementSelectors.children
-import no.nav.pensjon.etterlatte.maler.InnerElementSelectors.text
-import no.nav.pensjon.etterlatte.maler.InnerElementSelectors.type
+import no.nav.pensjon.etterlatte.maler.selectors.element.*
+import no.nav.pensjon.etterlatte.maler.selectors.innerElement.*
 
 fun <L: LanguageSupport, D : BrevDTO> OutlineOnlyScope<L, D>.konverterElementerTilBrevbakerformat(
     innhold: Expression<List<Element>>,

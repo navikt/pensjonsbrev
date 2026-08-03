@@ -4,10 +4,10 @@ import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.brev.InternKonstruktoer
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.NestedModelsSelectors.FirstSelectors.second
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.NestedModelsSelectors.FourthSelectors.value
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.NestedModelsSelectors.SecondSelectors.third
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.NestedModelsSelectors.ThirdSelectors.fourth
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.nestedModels.first.*
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.nestedModels.second.*
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.nestedModels.third.*
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.nestedModels.fourth.*
 
 /**
  * Verify that selectors are generated for nested models.

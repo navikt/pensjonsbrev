@@ -13,10 +13,8 @@ import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.sisteBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.virkningsdato
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.selectors.barnepensjonBeregning.*
+import no.nav.pensjon.etterlatte.maler.selectors.barnepensjonBeregningsperiode.*
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 
 object BarnepensjonRevurderingFraser {

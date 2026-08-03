@@ -1,0 +1,13 @@
+{
+  "collection": "(à la carte)",
+  "version": "2026.07.14-203640-7b8f3d5",
+  "scope": "repo",
+  "source_sha": "ef10a76",
+  "installed_at": "2026-07-15T14:11:15Z",
+  "files": [
+    {
+      "path": ".github/skills/aksel-builder/",
+      "hash": "8093294c605378e1"
+    }
+  ]
+}

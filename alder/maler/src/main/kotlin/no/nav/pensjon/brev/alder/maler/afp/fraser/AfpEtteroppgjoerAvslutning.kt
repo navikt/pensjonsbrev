@@ -24,29 +24,26 @@ import no.nav.pensjon.brev.template.dsl.text
 object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         includePhrase(DinePlikter)
-        includePhrase(DuHarRettTilAaKlageSeksUker)
+        includePhrase(DuHarRettTilAaKlageSeksUkerMedLenke)
         includePhrase(DuHarRettTilInnsyn)
         includePhrase(HarDuSpoersmaal.afpEtteroppgjoer)
     }
 
-    /** Tittel «Dine plikter» + meldeplikt- og tilbakekrevingsparagrafene. */
     object DinePlikter : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
                 text(
-                    bokmal { +"Dine plikter" },
-                    nynorsk { +"Dine plikter" },
+                    bokmal { +"Du må melde fra om endringer" },
+                    nynorsk { +"Du må melde frå om endringar" },
                 )
             }
-            paragraph { // TODO kan denne teksten samstilles med felles variant? Noen ord forskjell.
+            paragraph {
                 text(
                     bokmal {
-                        +"Du har plikt til å melde fra om endringer som har betydning for størrelsen på " +
-                            "pensjonen din."
+                        +"Du må melde fra om endringer som har betydning for størrelsen på pensjonen din. Dette følger av lov om avtalefestet pensjon for medlemmer av Statens pensjonskasse § 5 tredje ledd."
                     },
                     nynorsk {
-                        +"Du pliktar å melde frå om endringar som har noko å seie for storleiken på pensjonen " +
-                            "din."
+                        +"Du må melde frå om endringar som har noko å seie for storleiken på pensjonen din. Dette følgjer av lov om avtalefesta pensjon for medlemmar av Statens pensjonskasse § 5 tredje ledd."
                     },
                 )
             }
@@ -71,12 +68,12 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
             paragraph {
                 text(
                     bokmal {
-                        +"Hvis du får utbetalt for mye pensjon fordi du ikke har meldt fra om endringer, kan " +
-                            "vi kreve tilbake det som er for mye utbetalt."
+                        +"Hvis du får utbetalt for mye pensjon fordi du ikke har meldt fra om endringer, " +
+                            "må du vanligvis betale tilbake pengene."
                     },
                     nynorsk {
                         +"Dersom du får utbetalt for mykje pensjon fordi du ikkje har meldt frå om endringar, " +
-                            "kan vi krevje tilbake det som er for mykje utbetalt."
+                            "må du vanlegvis betale tilbake pengane."
                     },
                 )
             }
@@ -94,12 +91,31 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
             paragraph {
                 text(
                     bokmal {
-                        +"Hvis du mener vedtaket er feil, kan du klage innen seks uker fra vedtaket har kommet fram til deg. Klagen skal være skriftlig. Du finner skjema og informasjon på " +
-                            "$KLAGE_URL."
+                        +"Hvis du mener vedtaket er feil, kan du klage innen seks uker fra vedtaket har kommet fram til deg."
                     },
                     nynorsk {
-                        +"Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå vedtaket har komme fram til deg. Klaga skal vere skriftleg. Du finn skjema og informasjon på " +
-                            "$KLAGE_URL."
+                        +"Om du meiner at vedtaket er feil, kan du klage innan seks veker frå vedtaket har komme fram til deg."
+                    },
+                )
+            }
+        }
+    }
+
+    object DuHarRettTilAaKlageSeksUkerMedLenke : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { +"Du har rett til å klage" },
+                    nynorsk { +"Du har rett til å klage" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Hvis du mener vedtaket er feil, kan du klage innen seks uker fra vedtaket har kommet fram til deg. Du finner skjema og informasjon på ${KLAGE_URL}."
+                    },
+                    nynorsk {
+                        +"Om du meiner at vedtaket er feil, kan du klage innan seks veker frå vedtaket har komme fram til deg. Du finn skjema og informasjon på ${KLAGE_URL}."
                     },
                 )
             }
@@ -133,19 +149,16 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
             paragraph {
                 text(
                     bokmal {
-                        +"Hvis du mener at det er andre forhold ved vedtaket som ikke er riktig, har du " +
-                            "anledning til å klage på vedtaket. Fristen for å klage er seks uker fra vedtaket har kommet fram til deg."
+                        +"Hvis du mener at det er andre forhold ved vedtaket som ikke er riktig, kan du klage på vedtaket. Fristen for å klage er seks uker fra vedtaket har kommet fram til deg. Du finner skjema og informasjon på ${KLAGE_URL}."
                     },
                     nynorsk {
-                        +"Dersom du meiner at det er andre forhold ved vedtaket som ikkje er rette, har du " +
-                            "høve til å klage på vedtaket. Fristen for å klage er seks veker frå vedtaket har komme fram til deg."
+                        +"Om du meiner at det er andre forhold ved vedtaket som ikkje er rette, kan du klage på vedtaket. Fristen for å klage er seks veker frå vedtaket har komme fram til deg. Du finn skjema og informasjon på ${KLAGE_URL}."
                     },
                 )
             }
         }
     }
 
-    /** Tittel «Du har rett til innsyn» + paragraf. */
     object DuHarRettTilInnsyn : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {

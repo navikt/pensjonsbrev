@@ -4,8 +4,7 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.perioder
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.summer
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.selectors.tilbakekrevingDTO.*
 
 @TemplateModelHelpers
 val tilbakekrevingVedlegg = createAttachment<LangBokmalNynorskEnglish, TilbakekrevingDTO>(

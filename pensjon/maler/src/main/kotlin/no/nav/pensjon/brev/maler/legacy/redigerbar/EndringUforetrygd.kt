@@ -4,22 +4,9 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.OpphoersbegrunnelseSelectors.barn_flyttet_ikke_avt_land
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.OpphoersbegrunnelseSelectors.bruker_flyttet_ikke_avt_land
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.OpphoersbegrunnelseSelectors.eps_flyttet_ikke_avt_land
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.OpphoersbegrunnelseSelectors.eps_opph_ikke_avt_land
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.dineRettigheterOgPlikterUfore
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.hjemler
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.nyeAvslagBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.nyeInnvilgedeBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.nyeOpphorteBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.oifuVedVirkningstidspunkt
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphoersbegrunnelseEktefelletillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphortEktefelletillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphortGjenlevendetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.opphoersbegrunnelse.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.endringUfoeretrygdDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -43,7 +30,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import java.time.LocalDate
+import no.nav.pensjon.brev.template.dsl.expression.localDateNow
 
 @TemplateModelHelpers
 object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
@@ -66,10 +53,10 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
         val pe = pesysData.pe
 
         val kravarsak = pe.vedtaksdata_kravhode_kravarsaktype()
-        val onsketvirkningsdato = pe.vedtaksdata_kravhode_onsketvirkningsdato().ifNull(LocalDate.now())
+        val onsketvirkningsdato = pe.vedtaksdata_kravhode_onsketvirkningsdato().ifNull(localDateNow)
 
-        val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(LocalDate.now())
-        val skadetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_skadetidspunkt().ifNull(LocalDate.now())
+        val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(localDateNow)
+        val skadetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_skadetidspunkt().ifNull(localDateNow)
         val virkningstidspunktBegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()
         val virkningbegrunnelseStdbegr_22_12_1_5 = virkningstidspunktBegrunnelse.equalTo("stdbegr_22_12_1_5")
         val uforegradFraBeregning = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
@@ -114,6 +101,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
         val txtOgEllerEktefelle = if (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().equals(true)) " og/eller ektefelle" else ""
 
         val endringIBelopUt = pe.vedtaksdata_beregningsdata_beregningufore_belopokt() or pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()
+        val soknadsdato = pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato())
 
         title {
             showIf(kravarsak.equalTo("soknad_bt") and pesysData.nyeInnvilgedeBarnetillegg.isNotEmpty()) {
@@ -146,8 +134,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 paragraph {
                     showIf(kravarsak.equalTo("soknad_bt")) {
                         text(
-                            bokmal { +"Du er innvilget barnetillegg i uføretrygden din for" },
-                            nynorsk { +"Du er innvilga barnetillegg i uføretrygda di for" },
+                            bokmal { +"Vi har innvilget søknaden din om barnetillegg som vi mottok " + soknadsdato.format() + ". Du er innvilget barnetillegg i uføretrygden din for" },
+                            nynorsk { +"Vi har innvilga søknaden din om barnetillegg som vi fekk " + soknadsdato.format() + ". Du er innvilga barnetillegg i uføretrygda di for" },
                         )
                     } orShow {
                         text(
@@ -223,8 +211,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(pe.vedtaksdata_kravhode_kravgjelder().equalTo("sok_uu")) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om rettighet som ung ufør som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har endret uføretrygden din fra " + onsketvirkningsdato.format() + "." },
-                        nynorsk { +"Vi har innvilga søknaden din om å få rettar som ung ufør som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har endra uføretrygda di frå " + onsketvirkningsdato.format() + "." },
+                        bokmal { +"Vi har innvilget søknaden din om rettighet som ung ufør som vi mottok " + soknadsdato.format() + ". Vi har endret uføretrygden din fra " + onsketvirkningsdato.format() + "." },
+                        nynorsk { +"Vi har innvilga søknaden din om å få rettar som ung ufør som vi fekk " + soknadsdato.format() + ". Vi har endra uføretrygda di frå " + onsketvirkningsdato.format() + "." },
                     )
                 }
             }
@@ -232,8 +220,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((yrkesskadegradFraVilkar.equalTo(uforegradFraVilkar) and pe.vedtaksdata_kravhode_kravgjelder().equalTo("sok_ys"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om uføretrygd etter særbestemmelsene for yrkesskade eller yrkessykdom som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har kommet fram til at hele uførheten din skyldes en godkjent yrkesskade eller yrkessykdom, og uføretrygden din er endret fra " + onsketvirkningsdato.format() + "." },
-                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd etter særreglane for yrkesskade eller yrkessjukdom som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har kome fram til at heile uførleiken din kjem av ein godkjend yrkesskade eller yrkessjukdom, og uføretrygda di er endra frå " + onsketvirkningsdato.format() + "." },
+                        bokmal { +"Vi har innvilget søknaden din om uføretrygd etter særbestemmelsene for yrkesskade eller yrkessykdom som vi mottok " + soknadsdato.format() + ". Vi har kommet fram til at hele uførheten din skyldes en godkjent yrkesskade eller yrkessykdom, og uføretrygden din er endret fra " + onsketvirkningsdato.format() + "." },
+                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd etter særreglane for yrkesskade eller yrkessjukdom som vi fekk " + soknadsdato.format() + ". Vi har kome fram til at heile uførleiken din kjem av ein godkjend yrkesskade eller yrkessjukdom, og uføretrygda di er endra frå " + onsketvirkningsdato.format() + "." },
                     )
                 }
             }
@@ -241,8 +229,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((yrkesskadegradFraVilkar.lessThan(uforegradFraBeregning) and pe.vedtaksdata_kravhode_kravgjelder().equalTo("sok_ys"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om uføretrygd etter særbestemmelsene for yrkesskade eller yrkessykdom som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har kommet fram til at " + yrkesskadegradFraBeregning.format() + " prosent av uførheten din skyldes en godkjent yrkesskade eller yrkessykdom, og uføretrygden din er endret fra " + onsketvirkningsdato.format() + "." },
-                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd etter særreglane for yrkesskade eller yrkessjukdom som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har kome fram til at " + yrkesskadegradFraBeregning.format() + " prosent av uførleiken din kjem av ein godkjend yrkesskade eller yrkessjukdom, og uføretrygda di er endra frå " + onsketvirkningsdato.format() + "." },
+                        bokmal { +"Vi har innvilget søknaden din om uføretrygd etter særbestemmelsene for yrkesskade eller yrkessykdom som vi mottok " + soknadsdato.format() + ". Vi har kommet fram til at " + yrkesskadegradFraBeregning.format() + " prosent av uførheten din skyldes en godkjent yrkesskade eller yrkessykdom, og uføretrygden din er endret fra " + onsketvirkningsdato.format() + "." },
+                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd etter særreglane for yrkesskade eller yrkessjukdom som vi fekk " + soknadsdato.format() + ". Vi har kome fram til at " + yrkesskadegradFraBeregning.format() + " prosent av uførleiken din kjem av ein godkjend yrkesskade eller yrkessjukdom, og uføretrygda di er endra frå " + onsketvirkningsdato.format() + "." },
                     )
                 }
             }
@@ -575,7 +563,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                         )
                     }
                 }
-                paragraph {
+                // TODO: uniqueness her må kanskje justeres når det er fikset betingelse i relasjon til showIf under her.
+                paragraph(uniqueness = "yrkesskadegrad_eq_ufoeregrad_best") {
                     text(
                         bokmal { +"Skadetidspunktet ditt har vi fastsatt til " + skadetidspunkt.format() + ". Din årlige inntekt på dette tidspunktet er fastsatt til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + "." },
                         nynorsk { +"Skadetidspunktet ditt har vi fastsett til " + skadetidspunkt.format() + ". Den årlege inntekta di på dette tidspunktet er fastsett til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + "." },
@@ -583,7 +572,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
 
                 showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat()).equalTo("oppfylt") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ivsbegrunnelse()).equalTo("stdbegr_12_17_3_2"))) {
-                    paragraph {
+                    paragraph(uniqueness = "yrkesskadegrad_eq_ufoeregrad_best_12_17_3_2") {
                         text(
                             bokmal { +"Skadetidspunktet ditt har vi fastsatt til " + skadetidspunkt.format() + ". Din årlige inntekt på dette tidspunktet er fastsatt til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + ". Vi har justert denne inntekten opp fordi den skal tilsvare inntekten du ville hatt som frisk på skadetidspunktet." },
                             nynorsk { +"Skadetidspunktet ditt har vi fastsett til " + skadetidspunkt.format() + ". Den årlege inntekta på dette tidspunktet er fastsett til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + ". Vi har justert denne inntekta opp fordi den skal svare til inntekta du ville hatt som frisk på skadetidspunktet." },
@@ -606,7 +595,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                         )
                     }
                 }
-                paragraph {
+                // TODO: uniqueness her må kanskje justeres når det er fikset betingelse i relasjon til showIf under her.
+                paragraph(uniqueness = "yrkesskadegrad_eq_ufoeregrad") {
                     text(
                         bokmal { +"Skadetidspunktet ditt har vi fastsatt til " + skadetidspunkt.format() + ". Din årlige inntekt på dette tidspunktet er fastsatt til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + "." },
                         nynorsk { +"Skadetidspunktet ditt har vi fastsett til " + skadetidspunkt.format() + ". Den årlege inntekta di på dette tidspunktet er fastsett til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + "." },
@@ -614,7 +604,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
 
                 showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat()).equalTo("oppfylt") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ivsbegrunnelse()).equalTo("stdbegr_12_17_3_2"))) {
-                    paragraph {
+                    paragraph(uniqueness = "yrkesskadegrad_eq_ufoeregrad_12_17_3_2") {
                         text(
                             bokmal { +"Skadetidspunktet ditt har vi fastsatt til " + skadetidspunkt.format() + ". Din årlige inntekt på dette tidspunktet er fastsatt til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + ". Vi har justert denne inntekten opp fordi den skal tilsvare inntekten du ville hatt som frisk på skadetidspunktet." },
                             nynorsk { +"Skadetidspunktet ditt har vi fastsett til " + skadetidspunkt.format() + ". Den årlege inntekta på dette tidspunktet er fastsett til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + ". Vi har justert denne inntekta opp fordi den skal svare til inntekta du ville hatt som frisk på skadetidspunktet." },
@@ -623,7 +613,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
 
                 showIf(not(pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup())) {
-                    paragraph {
+                    paragraph(uniqueness = "yrkesskadegrad_eq_ufoeregrad") {
                         text(
                             bokmal { +"Inntekten din på skadetidspunktet er lavere enn beregningsgrunnlaget ditt, og uføretrygden din vil derfor ikke bli beregnet etter særbestemmelser for yrkesskade eller yrkessykdom." },
                             nynorsk { +"Inntekta di på skadetidspunktet er lågare enn berekningsgrunnlaget ditt, og uføretrygda di blir derfor ikkje berekna etter særreglar for yrkesskade eller yrkessjukdom." },
@@ -668,7 +658,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
 
                 showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskadebegrunnelse()).equalTo("stdbegr_12_17_3_1"))) {
-                    paragraph {
+                    paragraph(uniqueness = "12_17_3_1") {
                         text(
                             bokmal { +"Skadetidspunktet ditt har vi fastsatt til " + skadetidspunkt.format() + ". Din årlige inntekt på dette tidspunktet er fastsatt til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + "." },
                             nynorsk { +"Skadetidspunktet ditt har vi fastsett til " + skadetidspunkt.format() + ". Den årlege inntekta di på dette tidspunktet er fastsett til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + "." },
@@ -677,7 +667,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
 
                 showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat()).equalTo("oppfylt") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ivsbegrunnelse()).equalTo("stdbegr_12_17_3_2"))) {
-                    paragraph {
+                    paragraph(uniqueness = "12_17_3_2") {
                         text(
                             bokmal { +"Skadetidspunktet ditt har vi fastsatt til " + skadetidspunkt.format() + ". Din årlige inntekt på dette tidspunktet er fastsatt til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + ". Vi har justert denne inntekten opp fordi den skal tilsvare inntekten du ville hatt som frisk på skadetidspunktet." },
                             nynorsk { +"Skadetidspunktet ditt har vi fastsett til " + skadetidspunkt.format() + ". Den årlege inntekta på dette tidspunktet er fastsett til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + ". Vi har justert denne inntekta opp fordi den skal svare til inntekta du ville hatt som frisk på skadetidspunktet." },
@@ -686,7 +676,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
 
                 showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadebest()) and not(pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()))) {
-                    paragraph {
+                    paragraph(uniqueness = "yrkesskadegrad_lt_ufoeregrad") {
                         text(
                             bokmal { +"Inntekten din på skadetidspunktet er lavere enn beregningsgrunnlaget ditt, og uføretrygden din vil derfor ikke bli beregnet etter særbestemmelser for yrkesskade eller yrkessykdom." },
                             nynorsk { +"Inntekta di på skadetidspunktet er lågare enn berekningsgrunnlaget ditt, og uføretrygda di blir derfor ikkje berekna etter særreglar for yrkesskade eller yrkessjukdom." },
@@ -1106,8 +1096,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             }.orShowIf(virkningbegrunnelseStdbegr_22_12_1_5) {
                 paragraph {
                     text(
-                        bokmal { +"Du har fått innvilget uføretrygd fra " + onsketvirkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Vi mottok søknaden din " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. <FRITEKST>" },
-                        nynorsk { +"Du har fått innvilga uføretrygd frå " + onsketvirkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Vi fekk søknaden din " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. <FRITEKST>" },
+                        bokmal { +"Du har fått innvilget uføretrygd fra " + onsketvirkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Vi mottok søknaden din " + soknadsdato.format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " + fritekst("Fritekst") },
+                        nynorsk { +"Du har fått innvilga uføretrygd frå " + onsketvirkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Vi fekk søknaden din " + soknadsdato.format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " + fritekst("Fritekst") },
                     )
                 }
             }.orShowIf(((virkningstidspunktBegrunnelse).equalTo("stdbegr_22_12_1_12"))) {
@@ -1323,14 +1313,14 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi bruker en fastsatt prosentandel når vi justerer uføretrygden din ut fra inntekt. Denne prosentandelen kaller vi kompensasjonsgrad. " },
-                        nynorsk { +"Vi bruker ein fastsett prosentdel når vi justerer uføretrygda di ut frå inntekt. Denne prosentdelen kallar vi kompensasjonsgrad. " },
+                        bokmal { +"Vi bruker en fastsatt prosentandel når vi justerer uføretrygden din ut fra inntekt. Denne prosentandelen kaller vi reduksjonsprosent. " },
+                        nynorsk { +"Vi bruker ein fastsett prosentdel når vi justerer uføretrygda di ut frå inntekt. Denne prosentdelen kallar vi reduksjonsprosent. " },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +"For deg utgjør kompensasjonsgraden " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er bare den delen av inntekten din som overstiger " + pe.ut_inntektsgrense_faktisk().format() + ", som vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av den inntekten du har over " + pe.ut_inntektsgrense_faktisk().format() + " trekkes fra uføretrygden din. " },
-                        nynorsk { +"For deg utgjer kompensasjonsgraden " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er berre den delen av inntekta di som overstig " + pe.ut_inntektsgrense_faktisk().format() + ", som vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av inntekta du har over " + pe.ut_inntektsgrense_faktisk().format() + " blir trekt frå uføretrygda di. " },
+                        bokmal { +"For deg utgjør reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er bare den delen av inntekten din som overstiger " + pe.ut_inntektsgrense_faktisk().format() + ", som vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av den inntekten du har over " + pe.ut_inntektsgrense_faktisk().format() + " trekkes fra uføretrygden din. " },
+                        nynorsk { +"For deg utgjer reduksjonsprosenten " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er berre den delen av inntekta di som overstig " + pe.ut_inntektsgrense_faktisk().format() + ", som vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av inntekta du har over " + pe.ut_inntektsgrense_faktisk().format() + " blir trekt frå uføretrygda di. " },
                     )
                 }
                 showIf(gjenlevendetilleggInnvilget) {

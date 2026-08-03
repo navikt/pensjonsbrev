@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import java.time.LocalDate
 import java.util.Objects
 import kotlin.math.absoluteValue
 
@@ -48,12 +48,16 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Collection<*>): Boolean = input.isEmpty()
     }
 
-    @InterneDataklasser
+    @BrevbakerDSLInternal
     object Fritekst : UnaryOperation<String, String>(), StableHash by StableHash.of("UnaryOperation.Fritekst") {
         override fun apply(input: String): String = input
     }
 
-    @InterneDataklasser
+    object LocalDateNow : UnaryOperation<Unit, LocalDate>(), StableHash by StableHash.of("UnaryOperation.LocalDateNow") {
+        override fun apply(input: Unit): LocalDate = LocalDate.now()
+    }
+
+    @BrevbakerDSLInternal
     object RedigerbarData : UnaryOperation<String, String>(), StableHash by StableHash.of("UnaryOperation.RedigerbarData") {
         override fun apply(input: String): String = input
     }
@@ -163,14 +167,14 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: String, second: String): String = first + second
     }
 
-    @InterneDataklasser
+    @BrevbakerDSLInternal
     object BrevdataEllerFritekst : BinaryOperation<String?, String, String>(), StableHash by StableHash.of("BinaryOperation.BrevdataEllerFritekst") {
         override fun apply(first: String?, second: String): String = first ?: second
-        @OptIn(InterneDataklasser::class)
+
         fun getResultat(first: Expression<*>, second: Expression<*>, scope: ExpressionScope<*>): Resultat =
             first.eval(scope)?.let { Resultat(erFritekst = false, text = it as String) } ?: Resultat(erFritekst = true, text = second.eval(scope) as String)
 
-        @InterneDataklasser
+        @BrevbakerDSLInternal
         data class Resultat(val erFritekst: Boolean, val text: String)
     }
 
@@ -247,5 +251,4 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun toString(): String = "SafeCall(operation=$operation,doc=$doc)"
 
     }
-
 }

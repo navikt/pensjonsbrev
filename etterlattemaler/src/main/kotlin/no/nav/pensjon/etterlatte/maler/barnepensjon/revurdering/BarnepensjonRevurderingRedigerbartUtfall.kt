@@ -12,12 +12,8 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDataSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDataSelectors.erEtterbetaling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDataSelectors.feilutbetaling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDataSelectors.frivilligSkattetrekk
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDataSelectors.harUtbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.selectors.barnepensjonRevurderingRedigerbartUtfallDTO.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.selectors.barnepensjonRevurderingRedigerbartUtfallData.*
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak

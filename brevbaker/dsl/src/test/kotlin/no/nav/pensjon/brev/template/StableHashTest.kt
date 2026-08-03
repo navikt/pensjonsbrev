@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.template.StableHash.Companion.with
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
@@ -59,4 +60,19 @@ class StableHashTest {
         assertNotEquals(MyEnum.ONE.name.hashCode(), StableHash.of(MyEnum.TWO).stableHashCode())
     }
 
+    @Test
+    fun `stableHashCode is not affected by null modifier`() {
+        assertEquals(
+            StableHash.of("hei").stableHashCode(),
+            StableHash.of("hei").with(null).stableHashCode(),
+        )
+    }
+
+    @Test
+    fun `stableHashCode is affected by modifier`() {
+        assertNotEquals(
+            StableHash.of("hei").stableHashCode(),
+            StableHash.of("hei").with("1").stableHashCode(),
+        )
+    }
 }

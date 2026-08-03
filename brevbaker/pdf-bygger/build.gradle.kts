@@ -4,6 +4,7 @@ val javaTarget: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
+    alias(libs.plugins.kotlin.serialization)
     application
 }
 
@@ -13,6 +14,12 @@ version="0.0.1-SNAPSHOT"
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.fromTarget(javaTarget))
+    }
+}
+
+sourceSets {
+    main {
+        resources.srcDir(rootProject.layout.projectDirectory.dir("resources"))
     }
 }
 
@@ -48,7 +55,6 @@ tasks {
 
 dependencies {
     implementation(libs.bundles.logging)
-    implementation(libs.kotlinx.coroutines.slf4j)
     implementation(libs.ktor.serialization.jackson)
     implementation(libs.ktor.server.callId)
     implementation(libs.ktor.server.callLogging)
@@ -58,8 +64,9 @@ dependencies {
     implementation(libs.ktor.server.status.pages)
     implementation(libs.bundles.metrics)
 
-    implementation(project(":brevbaker:dsl"))
+    implementation(libs.brevbaker.markup)
     implementation(libs.brevbaker.common)
+    implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
@@ -69,8 +76,9 @@ dependencies {
     testImplementation(libs.ktor.server.test.host) {
         exclude("org.jetbrains.kotlin", "kotlin-test")
     }
-    testImplementation(testFixtures(project(":brevbaker:core")))
-    testImplementation(testFixtures(project(":brevbaker:dsl")))
+    testImplementation(libs.ktor.client.cio)
+    testImplementation(libs.ktor.client.content.negotiation)
+    testImplementation(libs.testcontainers.core)
 }
 
 application {

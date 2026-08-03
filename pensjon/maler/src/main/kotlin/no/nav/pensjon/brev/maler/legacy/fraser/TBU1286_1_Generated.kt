@@ -10,10 +10,11 @@ import no.nav.pensjon.brev.template.dsl.*
 
 data class TBU1286_1_Generated(
     val pe: Expression<PEgruppe10>,
+    val uniqueness: String? = null,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
-        paragraph {
+        paragraph(uniqueness = uniqueness) {
             text(
                 bokmal { + "Barnetillegget " },
                 nynorsk { + "Barnetillegget " },

@@ -6,8 +6,7 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.TemplateModelSelector
 import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.HasModelThroughSecondaryInheritanceSelectors.TheModelSelectors
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.HasModelThroughSecondaryInheritanceSelectors.TheModelSelectors.navn
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.hasModelThroughSecondaryInheritance.theModel.*
 
 interface AnotherInterface<Model2: Any> : HasModel<Model2>
 
@@ -24,6 +23,6 @@ object HasModelThroughSecondaryInheritance : AnotherInterface<HasModelThroughSec
     fun someusage() {
         val scopeExtensionProperty: Expression<String> = SimpleTemplateScope<TheModel>().navn
         val expressionExtensionProperty: Expression<String> = Expression.Literal(TheModel("jadda")).navn
-        val actualSelector: TemplateModelSelector<TheModel, String> = TheModelSelectors.navnSelector
+        val actualSelector: TemplateModelSelector<TheModel, String> = navnSelector
     }
 }

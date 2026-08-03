@@ -7,5 +7,6 @@ fun createAvslagUfoeretrygdDto() = AvslagUfoeretrygdDto(
     saksbehandlerValg = EmptySaksbehandlerValg,
     pesysData = AvslagUfoeretrygdDto.PesysData(
         pe = createPEgruppe10(),
+        kravFremsattDato = null
     )
 )

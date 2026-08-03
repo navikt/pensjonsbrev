@@ -21,24 +21,14 @@ import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.erFakeSanksjon
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
+import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregning.*
+import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregningsperiode.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.beregning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.datoVedtakOmgjoering
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.erEndret
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.erInnvilgelsesaar
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.erOmgjoering
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.feilutbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.informasjonOmOmstillingsstoenadData
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.omsRettUtenTidsbegrensning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.tidligereFamiliepleier
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.selectors.omstillingsstoenadRevurderingDTO.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.selectors.omstillingsstoenadRevurderingData.*
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
@@ -147,26 +137,15 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
             }
 
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = true),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true),
                 data.beregning,
-                data.tidligereFamiliepleier.and(data.erInnvilgelsesaar),
+                data.tidligereFamiliepleier,
             )
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = false),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false),
                 data.beregning,
-                data.tidligereFamiliepleier.not().and(data.erInnvilgelsesaar.not()),
+                data.tidligereFamiliepleier.not(),
             )
-            includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = false),
-                data.beregning,
-                data.tidligereFamiliepleier.and(data.erInnvilgelsesaar.not()),
-            )
-            includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = true),
-                data.beregning,
-                data.tidligereFamiliepleier.not().and(data.erInnvilgelsesaar),
-            )
-
 
             includeAttachment(informasjonOmOmstillingsstoenad(), data.informasjonOmOmstillingsstoenadData)
 

@@ -4,19 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.amerikanskSocialSecurityNumber
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bankopplysninger
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.boOgArbeidsperioder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bosattIEoesLandSedErEoesBlanketter
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.eps60aarOgInntektUnder1g
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.eps62aarOgInntektUnder1gBoddArbeidUtland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.epsInntektUnder2g
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.forsoergerEpsBosattIUtlandet
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.inntektsopplysninger
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.manglendeOpptjening
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.registreringAvSivilstand
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.tidspunktForUttak
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.innhentingInformasjonFraBrukerDto.saksbehandlerValg.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.innhentingInformasjonFraBrukerDto.*
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Alderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
@@ -135,9 +124,9 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
                 paragraph {
                     text(
-                        bokmal { + "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysninger. Gå inn på Din Profil og velg " + quoted("Bankkonto for utbetaling") +". Du kan logge inn med BankID, Buypass, MinID eller Commfides." },
-                        nynorsk { + "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysningar. Gå inn på Din Profil og vel " + quoted("Bankkonto for utbetaling") +". Du kan logge inn med BankID, Buypass, MinID eller Commfides." },
-                        english { + "You can register the necessary bank details in the " + quoted("Din pensjon") +" portal at $DIN_PENSJON_URL. Log in on your personal page " + quoted("Din Profil") + " and select " + quoted("Bank account for payment") +". You can log in using BankID, Buypass, MinID or Commfides." },
+                        bokmal { + "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysninger. Gå inn på Din Profil og velg " + quoted("Bankkonto for utbetaling") +". Du kan logge inn med BankID, Buypass eller Commfides." },
+                        nynorsk { + "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysningar. Gå inn på Din Profil og vel " + quoted("Bankkonto for utbetaling") +". Du kan logge inn med BankID, Buypass eller Commfides." },
+                        english { + "You can register the necessary bank details in the " + quoted("Din pensjon") +" portal at $DIN_PENSJON_URL. Log in on your personal page " + quoted("Din Profil") + " and select " + quoted("Bank account for payment") +". You can log in using BankID, Buypass or Commfides." },
                     )
                 }
             }

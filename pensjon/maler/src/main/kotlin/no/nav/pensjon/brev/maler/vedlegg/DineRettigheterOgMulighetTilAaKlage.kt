@@ -2,8 +2,7 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.brukerUnder18Aar
-import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.sakstype
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.dineRettigheterOgMulighetTilAaKlageDto.*
 import no.nav.pensjon.brev.maler.fraser.vedlegg.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
@@ -13,9 +12,8 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.NavEnhetSelectors.nettside
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.NavEnhetSelectors.telefonnummer
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.*
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.*
 
 // V00001 i metaforce
 @TemplateModelHelpers

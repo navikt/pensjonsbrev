@@ -4,23 +4,18 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.PesysDataSelectors.sakstype
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.PesysDataSelectors.vedlegg
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.pesysData
-import no.nav.pensjon.brev.maler.vedlegg.pdf.P1PDFDto
-import no.nav.pensjon.brev.maler.vedlegg.pdf.informasjonOmP1Vedlegg
+import no.nav.pensjon.brev.api.model.maler.selectors.samletMeldingOmPensjonsvedtakDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.selectors.samletMeldingOmPensjonsvedtakDto.*
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.EmptyPDFVedleggData
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // Mal 000090 i doksys
@@ -92,9 +87,6 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
                 )
             }
         }
-
-        includeAttachment(P1PDFDto.p1Vedlegg, pesysData.vedlegg)
-        includeAttachment(informasjonOmP1Vedlegg, EmptyPDFVedleggData.expr())
     }
 
 }

@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.render.IncludeAttachmentTestSelectors.NullDataSelectors.vedlegg
+import no.nav.pensjon.brev.template.render.selectors.includeAttachmentTest.nullData.*
 import no.nav.pensjon.brev.template.render.MatcherDslAsserter.Companion.assertThat
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested

@@ -1,6 +1,6 @@
 import { type AdresseVisningTag } from "~/components/AdresseVisning";
 
-import { type Adresse, type KontaktAdresseResponse } from "../types/apiTypes";
+import { type Adresse, type KontaktAdresseResponse, type SamhandlerPostadresse } from "../types/apiTypes";
 import { type Mottaker } from "../types/brev";
 
 // Shared tag constants for recipient display
@@ -16,8 +16,9 @@ export const MOTTAKER_TAG_SAMHANDLER = {
   variant: "outline",
 } satisfies AdresseVisningTag;
 
-export const erAdresseKontaktAdresse = (adresse: Adresse | KontaktAdresseResponse): adresse is KontaktAdresseResponse =>
-  "adresseString" in adresse && "adresselinjer" in adresse && "type" in adresse;
+export const erAdresseKontaktAdresse = (
+  adresse: SamhandlerPostadresse | KontaktAdresseResponse,
+): adresse is KontaktAdresseResponse => "adresseString" in adresse && "adresselinjer" in adresse && "type" in adresse;
 
 export const mapEndreMottakerValueTilMottaker = (v: string | Adresse): Mottaker => {
   if (typeof v === "string") {

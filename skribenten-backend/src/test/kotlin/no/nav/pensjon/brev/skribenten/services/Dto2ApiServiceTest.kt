@@ -117,12 +117,13 @@ class Dto2ApiServiceTest {
         sistReservert = Instant.now(),
         brevkode = Testbrevkoder.TESTBREV,
         laastForRedigering = laastForRedigering,
-        distribusjonstype = Distribusjonstype.SENTRALPRINT,
+        distribusjonstype = Distribusjon.SENTRALPRINT,
         mottaker = mottaker,
         avsenderEnhetId = avsenderEnhetId,
         spraak = LanguageCode.BOKMAL,
         journalpostId = null,
         attestertAv = attestertAv,
-        status = Dto.BrevStatus.KLADD
+        status = Dto.BrevStatus.KLADD,
+        leggVedFoersteside = false,
     )
 }

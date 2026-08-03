@@ -4,16 +4,9 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.dineRettigheterOgPlikterUfore
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.hjemler
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.nyeAvslagBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.nyeInnvilgedeBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.oifuVedVirkningstidspunkt
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.SaksbehandlervalgSelectors.barnetilleggInfo
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdDto.saksbehandlervalg.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
@@ -36,7 +29,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import java.time.LocalDate
+import no.nav.pensjon.brev.template.dsl.expression.localDateNow
 
 @TemplateModelHelpers
 object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
@@ -58,8 +51,8 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
     ) {
         val pe = pesysData.pe
 
-        val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(LocalDate.now())
-        val virkningstidpunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt().ifNull(LocalDate.now())
+        val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(localDateNow)
+        val virkningstidpunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt().ifNull(localDateNow)
         val virkningbegrunnelseStdbegr_22_12_1_5 = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse().equalTo("stdbegr_22_12_1_5")
         val uforegrad = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
 
@@ -111,7 +104,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 ungUforResultat = ungUforResultat,
                 kravarsak = kravarsak,
                 kravGjelder = kravGjelder,
-                kravmottatdato = pe.vedtaksdata_kravhode_kravmottatdato(),
+                soknadsdato = pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()),
                 uforegrad = uforegrad,
                 virkningfom = pe.vedtaksdata_virkningfom(),
                 virkningstidpunkt = virkningstidpunkt,
@@ -205,6 +198,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             includePhrase(Innvilgelse.Virkningstidspunkt(
                 pe = pe,
+                kravFremsattDato = pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()),
                 virkningbegrunnelseStdbegr_22_12_1_5 = virkningbegrunnelseStdbegr_22_12_1_5,
             ))
 
@@ -275,6 +269,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 btSerkullInnvilget = btSerkullInnvilget,
                 btSerkullNetto0 = btSerkullNetto0,
                 btFellesNetto0 = btFellesNetto0,
+                periodisertInntekt = saksbehandlerValg.periodisertInntekt
             ))
 
             includePhrase(Innvilgelse.BarnetilleggOgUtland(

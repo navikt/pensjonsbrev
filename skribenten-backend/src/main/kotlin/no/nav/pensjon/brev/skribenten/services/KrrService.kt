@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
 import io.ktor.client.engine.cio.*
@@ -12,17 +12,23 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 
-class KrrService(config: Config, authService: AuthService, engine: HttpClientEngine = CIO.create()) : ServiceStatus {
+class KrrService(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine = CIO.create()) : ServiceStatus, Closeable {
+
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, authService: AuthService): this(config.services.krr, authService)
+
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val client = lagHttpClient(engine) {
         defaultRequest {
-            url(config.getString("url"))
+            url(config.url)
         }
         install(ContentNegotiation) {
             jackson {
@@ -30,7 +36,7 @@ class KrrService(config: Config, authService: AuthService, engine: HttpClientEng
             }
         }
         installRetry(logger)
-        callIdAndOnBehalfOfClient(config.getString("scope"), authService)
+        callIdAndOnBehalfOfClient(config.scope, authService)
     }
 
     @Suppress("EnumEntryName")
@@ -110,4 +116,6 @@ class KrrService(config: Config, authService: AuthService, engine: HttpClientEng
 
     override suspend fun ping() =
         ping("KRR") { client.get("/internal/health/readiness") }
+
+    override fun close() { client.close() }
 }

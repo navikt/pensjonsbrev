@@ -17,9 +17,8 @@ import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDataSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.selectors.omstillingstoenadAvslagDTO.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.selectors.omstillingstoenadAvslagData.*
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 
 data class OmstillingstoenadAvslagData(

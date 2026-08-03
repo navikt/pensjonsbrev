@@ -8,27 +8,12 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.AlderspensjonVedVirkSelectors.fullUttaksgrad
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.BehandlingKontekstSelectors.konteksttypeErKorrigeringopptjening
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.KravSelectors.arsakErEndretOpptjening
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.KravSelectors.erForstegangsbehandling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.KravSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.behandlingKontekst
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.etterbetaling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.krav
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlderAP2025
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikter
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.YtelseskomponentInformasjonSelectors.belopEndring
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.alderspensjonVedVirk.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.behandlingKontekst.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.krav.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.ytelseskomponentInformasjon.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.vedleggOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjonKort
@@ -54,9 +39,11 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.firstDayOfYear
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.localDateNow
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
@@ -65,8 +52,6 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import java.time.LocalDate
-import java.time.Month
 
 // 119 i doksys
 @TemplateModelHelpers
@@ -153,7 +138,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
             }
 
             // endretOpptjeningBegrunn_004
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
             paragraph {
                 text(
                     bokmal { + "Pensjonsopptjeningen din er endret fordi:" },
@@ -285,7 +270,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                         english { +"You will receive retroactive pension payments from " + pesysData.krav.virkDatoFom.format() + ". The retroactive payments will normally be made in the course of seven working days. We can make deductions for tax and benefits you have received, for example, from Nav or occupational pension schemes. Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. You can check if there are any deductions from the payment notice at $DITT_NAV." }
                     )
                 }
-                showIf(pesysData.krav.virkDatoFom.lessThan(LocalDate.of(LocalDate.now().year, Month.JANUARY, 1))) {
+                showIf(pesysData.krav.virkDatoFom.lessThan(localDateNow.firstDayOfYear)) {
                     paragraph {
                         text(
                             bokmal { +"Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser." },

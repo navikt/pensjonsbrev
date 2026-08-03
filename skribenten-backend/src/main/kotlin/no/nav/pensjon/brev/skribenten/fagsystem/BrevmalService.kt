@@ -4,11 +4,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.common.GeneriskRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
@@ -16,21 +14,17 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.model.*
-import no.nav.pensjon.brev.skribenten.serialize.Sakstype
+import no.nav.pensjon.brev.skribenten.model.Sakstype
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brevbaker.api.model.RedigerbareVedleggTitler
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.slf4j.LoggerFactory
 
 private val ekskluderteBrev = hashSetOf("PE_IY_05_301", "PE_BA_01_108", "PE_GP_01_010", "PE_AP_04_922", "PE_IY_03_169")
-
-data class ValgbartVedlegg(
-    val kode: String,
-    val visningstekst: String,
-    val spraak: Set<LanguageCode>,
-    val tilgjengeligForSpraak: Boolean,
-)
 
 class BrevmalService(
     private val brevbakerService: BrevbakerService,
@@ -42,7 +36,7 @@ class BrevmalService(
     suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        saksbehandlerValg: SaksbehandlerValg,
+        saksbehandlerValg: SaksbehandlervalgMap,
         pesysData: BrevdataResponse.Data
     ): LetterMarkupWithDataUsage =
         brevbakerService.renderMarkup(
@@ -63,25 +57,40 @@ class BrevmalService(
             pesysData = pesysData,
         )
 
+    suspend fun hentRedigerbareVedleggTitler(brev: Brevredigering, pesysData: BrevdataResponse.Data): RedigerbareVedleggTitler? =
+        brevbakerService.hentRedigerbareVedleggTitler(
+            brevkode = brev.brevkode,
+            spraak = brev.spraak,
+            brevdata = GeneriskRedigerbarBrevdata(
+                pesysData = pesysData.brevdata,
+                saksbehandlerValg = brev.saksbehandlerValg,
+            ),
+            felles = pesysData.felles,
+        )
+
+    suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean =
+        brevbakerService.harRedigerbareVedlegg(brevkode)
+
+    suspend fun renderRedigerbartVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data, vedleggId: VedleggId): LetterMarkup.Attachment? =
+        brevbakerService.renderRedigerbartVedlegg(
+            brevkode = brev.brevkode,
+            spraak = brev.spraak,
+            brevdata = GeneriskRedigerbarBrevdata(
+                pesysData = pesysData.brevdata,
+                saksbehandlerValg = brev.saksbehandlerValg,
+            ),
+            felles = pesysData.felles,
+            vedleggId = vedleggId,
+        )
+
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
         brevbakerService.getRedigerbarTemplate(brevkode)
 
     suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification? =
         brevbakerService.getModelSpecification(brevkode)
 
-    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): List<ValgbartVedlegg> {
-        val spraakIBrevet = transaction {
-            BrevredigeringEntity.findById(brevId)?.spraak ?: throw IllegalStateException("Finner ikke brev med id $brevId")
-        }
-        return brevbakerService.getAlltidValgbareVedlegg(brevId).map {
-            ValgbartVedlegg(
-                kode = it.kode,
-                visningstekst = it.visningstekst,
-                spraak = it.spraak,
-                tilgjengeligForSpraak = it.spraak.contains(spraakIBrevet),
-            )
-        }.sortedBy { it.visningstekst }
-    }
+    suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode> =
+        brevbakerService.getAlltidValgbareVedlegg()
 
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>? =
         brevbakerService.getTemplates()
@@ -89,13 +98,13 @@ class BrevmalService(
     suspend fun hentBrevmaler(includeEblanketter: Boolean): List<Api.Brevmal> =
         hentAlleMaler(includeEblanketter).toList()
 
-    suspend fun hentBrevmalerForSak(sakType: ISakstype, includeEblanketter: Boolean): List<Api.Brevmal> =
+    suspend fun hentBrevmalerForSak(sakType: Sakstype, includeEblanketter: Boolean): List<Api.Brevmal> =
         hentMaler(sakType, includeEblanketter)
             .filter { it.isForSakskontekst }
             .map { it.toApi() }
             .toList()
 
-    suspend fun hentBrevmalerForVedtak(sakstype: ISakstype, includeEblanketter: Boolean, vedtaksId: VedtaksId): List<Api.Brevmal> {
+    suspend fun hentBrevmalerForVedtak(sakstype: Sakstype, includeEblanketter: Boolean, vedtaksId: VedtaksId): List<Api.Brevmal> {
         // Finner hvilke brev som skal filtreres vekk basert på om vi har en brevdatabygger i PEN som sier at den ikke støttes.
         // Denne logikken skal på sikt reverteres slik at PEN gir en liste med brevmaler som støttes for et et gitt vedtak.
         val ikkeStoettedeBrevkoder = brevdataByggerStoettedeVedtak(vedtaksId).kravStoettet.filterValues { !it }.keys
@@ -112,7 +121,7 @@ class BrevmalService(
     private suspend fun brevdataByggerStoettedeVedtak(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult =
         penClient.hentIsKravStoettetAvDatabygger(vedtaksId) ?: KravStoettetAvDatabyggerResult()
 
-    private suspend fun Sequence<LetterMetadata>.filterIsRelevantRegelverk(sakstype: ISakstype, vedtaksId: VedtaksId): Sequence<LetterMetadata> {
+    private suspend fun Sequence<LetterMetadata>.filterIsRelevantRegelverk(sakstype: Sakstype, vedtaksId: VedtaksId): Sequence<LetterMetadata> {
         val erKravPaaGammeltRegelverk = if (sakstype == Sakstype("ALDER")) {
             penClient.hentIsKravPaaGammeltRegelverk(vedtaksId)
                 ?: false.also { logger.warn("Feltet \"erKravPaaGammeltRegelverk\" fra vedtak er null, antar false") }
@@ -121,9 +130,9 @@ class BrevmalService(
         return filter { it.isRelevantRegelverk(sakstype, erKravPaaGammeltRegelverk) }
     }
 
-    private suspend fun hentMaler(sakstype: ISakstype, includeEblanketter: Boolean): Sequence<LetterMetadata> =
+    private suspend fun hentMaler(sakstype: Sakstype, includeEblanketter: Boolean): Sequence<LetterMetadata> =
         withContext(Dispatchers.IO) {
-            val brevbaker = async { hentBrevbakerMaler().asSequence().filter { it.sakstyper.map { it.kode }.contains(sakstype.kode) }.map { LetterMetadata.Brevbaker(it) } }
+            val brevbaker = async { hentBrevbakerMaler().asSequence().filter { it.sakstyper.map { type -> type.kode }.contains(sakstype.kode) }.map { LetterMetadata.Brevbaker(it) } }
             val legacy = async { brevmetadataService.getBrevmalerForSakstype(sakstype).asSequence().map { LetterMetadata.Legacy(it, sakstype) } }
             val eblanketter = async {
                 if (includeEblanketter) brevmetadataService.getEblanketter().asSequence().map { LetterMetadata.Legacy(it, sakstype) } else emptySequence()

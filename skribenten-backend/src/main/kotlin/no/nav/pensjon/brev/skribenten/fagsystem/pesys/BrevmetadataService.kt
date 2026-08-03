@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.NoAuthClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -9,8 +9,10 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import io.ktor.utils.io.core.Closeable
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
+import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brev.skribenten.services.ServiceStatus
 import no.nav.pensjon.brev.skribenten.services.ping
@@ -18,15 +20,19 @@ import org.slf4j.LoggerFactory
 
 interface BrevmetadataService {
     suspend fun getAllBrev(): List<BrevdataDto>
-    suspend fun getBrevmalerForSakstype(sakstype: ISakstype): List<BrevdataDto>
+    suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto>
     suspend fun getEblanketter(): List<BrevdataDto>
     suspend fun getMal(brevkode: String): BrevdataDto
 }
 
 class BrevmetadataServiceHttp(
-    config: Config,
-) : BrevmetadataService, ServiceStatus {
-    private val brevmetadataUrl = config.getString("url")
+    config: NoAuthClientConfig,
+) : BrevmetadataService, ServiceStatus, Closeable {
+
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig): this(config.services.brevmetadata)
+
+    private val brevmetadataUrl = config.url
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
     private val httpClient = lagHttpClient {
         defaultRequest {
@@ -50,7 +56,7 @@ class BrevmetadataServiceHttp(
         }
     }
 
-    override suspend fun getBrevmalerForSakstype(sakstype: ISakstype): List<BrevdataDto> {
+    override suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto> {
         val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/${sakstype.kode}?includeXsd=false") {
             contentType(ContentType.Application.Json)
         }
@@ -77,6 +83,8 @@ class BrevmetadataServiceHttp(
 
     override suspend fun ping() =
         ping("Brevmetadata") { httpClient.get("/api/internal/isReady") }
+
+    override fun close() { httpClient.close() }
 
 }
 

@@ -13,10 +13,9 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDtoSelectors.SaksbehandlervalgSelectors.rentetillegg
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDtoSelectors.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysDataSelectors.feilutbetaltBrutto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.varselFeilutbetalingUforeDto.saksbehandlervalg.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.varselFeilutbetalingUforeDto.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.varselFeilutbetalingPesysData.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles

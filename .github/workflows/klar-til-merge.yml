@@ -8,17 +8,23 @@ on:
     paths:
       - ".githooks/pre-commit"
       - ".github/dependabot.yml"
+      - ".github/pr/**"
+      - ".github/prompts/**"
       - ".github/regsuitconfig.json"
       - ".github/skills/**/*.md"
       - ".github/workflows/.build-frontend.yaml"
       - ".github/workflows/.deploy.yaml"
       - ".github/workflows/.salsa.yaml"
+      - ".github/workflows/cleanup.yml"
       - ".github/workflows/klar-til-merge.yml"
-      - ".github/workflows/pdfbygger.yml"
+      - ".github/workflows/label-pr.yml"
+      - ".github/labeler.yml"
       - ".vscode/settings.json"
       - "CODEOWNERS"
       - "fetch-secrets.sh"
       - "*.md"
+      - ".gitattributes"
+      - ".gitignore"
       - ".tool-versions"
 
 jobs:
@@ -27,7 +33,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: "ubuntu-slim"
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: ./.github/pr

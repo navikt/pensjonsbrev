@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto.*
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2Dto
 import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtakV2
-import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppenderImpl
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 import org.junit.jupiter.api.Tag
@@ -40,8 +39,7 @@ class PDFVedleggTest {
         )
 
         letter.renderTestPDF(
-            "${brevkode.kode()}_${spraak.javaClass.simpleName}",
-            pdfVedleggAppender = PDFVedleggAppenderImpl
+            "${brevkode.kode()}_${spraak.javaClass.simpleName}"
         )
     }
 }
@@ -101,7 +99,7 @@ private val nay =
         pin = "1234",
         saksnummer = "1234",
         datoForVedtak = LocalDate.of(2020, Month.JANUARY, 1),
-        land = "Norge"
+        land = "NO"
     )
 
 

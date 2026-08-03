@@ -16,9 +16,8 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfallDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfallDataSelectors.automatiskBehandla
-import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfallDataSelectors.erBosattUtlandet
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.selectors.barnepensjonVarselRedigerbartUtfallDTO.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.selectors.barnepensjonVarselRedigerbartUtfallData.*
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.gjenoppstaatt.ForhaandsvarselGjenoppstaattFraser
 
 data class BarnepensjonVarselRedigerbartUtfallData(

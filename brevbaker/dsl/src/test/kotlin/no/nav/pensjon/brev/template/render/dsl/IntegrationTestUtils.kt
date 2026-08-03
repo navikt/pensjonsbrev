@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.OutlineElement
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
 
 inline fun <reified LetterData : Any> outlineTestTemplate(
     noinline function: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit,
@@ -16,7 +17,7 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
         languages = languages(Bokmal),
         letterMetadata = testLetterMetadata,
     ) {
-        title.add(bokmalTittel)
+        title { text(bokmal { +"test brev" }) }
         outline(function)
     }
 

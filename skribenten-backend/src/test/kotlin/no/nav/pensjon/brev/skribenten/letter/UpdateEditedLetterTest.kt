@@ -9,10 +9,16 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.Title2Impl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.Title3Impl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.ItemListImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.ItemListImpl.ItemImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.CellImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.ColumnSpecImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.HeaderImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.RowImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SakspartImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnAlignment
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -974,4 +980,171 @@ class UpdateRenderedLetterTest {
         assertEquals(expected, editedLetter1.updateEditedLetter(brevdataVariabelHarEnVerdi))
     }
 
+    @Test
+    fun `editedListType is preserved when list content is not otherwise edited`() {
+        val next = letter(
+            ParagraphImpl(
+                1, true, listOf(
+                    ItemListImpl(
+                        10, listOf(
+                            ItemImpl(100, listOf(LiteralImpl(101, "punkt 1"))),
+                            ItemImpl(200, listOf(LiteralImpl(201, "punkt 2"))),
+                        ),
+                        Listetype.PUNKTLISTE,
+                    ),
+                )
+            )
+        )
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                itemList(id = 10, listType = Listetype.PUNKTLISTE, editedListType = Listetype.NUMMERERT_LISTE) {
+                    item(id = 100) {
+                        literal(id = 101, text = "punkt 1")
+                    }
+                    item(id = 200) {
+                        literal(id = 201, text = "punkt 2")
+                    }
+                }
+            }
+        }
+
+        val result = edited.updateEditedLetter(next)
+
+        val resultList = (result.blocks[0] as Edit.Block.Paragraph).content[0] as Edit.ParagraphContent.ItemList
+        assertEquals(Listetype.NUMMERERT_LISTE, resultList.editedListType)
+        assertEquals(Listetype.PUNKTLISTE, resultList.listType)
+    }
+
+    @Test
+    fun `editedListType null means list type follows rendered version`() {
+        val next = letter(
+            ParagraphImpl(
+                1, true, listOf(
+                    ItemListImpl(
+                        10, listOf(
+                            ItemImpl(100, listOf(LiteralImpl(101, "punkt 1"))),
+                        ),
+                        Listetype.NUMMERERT_LISTE,
+                    ),
+                )
+            )
+        )
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                itemList(id = 10, listType = Listetype.PUNKTLISTE) {
+                    item(id = 100) {
+                        literal(id = 101, text = "punkt 1")
+                    }
+                }
+            }
+        }
+
+        val result = edited.updateEditedLetter(next)
+
+        val resultList = (result.blocks[0] as Edit.Block.Paragraph).content[0] as Edit.ParagraphContent.ItemList
+        assertEquals(null, resultList.editedListType)
+        assertEquals(Listetype.NUMMERERT_LISTE, resultList.listType)
+    }
+
+    @Test
+    fun `editedListType is preserved when the list content is also edited`() {
+        val next = letter(
+            ParagraphImpl(
+                1, true, listOf(
+                    ItemListImpl(
+                        10, listOf(
+                            ItemImpl(100, listOf(LiteralImpl(101, "punkt 1 fra mal"))),
+                        ),
+                        Listetype.PUNKTLISTE,
+                    ),
+                )
+            )
+        )
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                itemList(id = 10, listType = Listetype.PUNKTLISTE, editedListType = Listetype.NUMMERERT_LISTE) {
+                    item(id = 100) {
+                        literal(id = 101, text = "punkt 1 fra mal", editedText = "punkt 1 redigert")
+                    }
+                }
+            }
+        }
+
+        val result = edited.updateEditedLetter(next)
+
+        val resultList = (result.blocks[0] as Edit.Block.Paragraph).content[0] as Edit.ParagraphContent.ItemList
+        assertEquals(Listetype.NUMMERERT_LISTE, resultList.editedListType)
+        assertEquals(Listetype.PUNKTLISTE, resultList.listType)
+        val resultLiteral = resultList.items[0].content[0] as Edit.ParagraphContent.Text.Literal
+        assertEquals("punkt 1 redigert", resultLiteral.editedText)
+    }
+
+    @Test
+    fun `deleted cell text does not reappear after updateEditedLetter`() {
+        val rendered = letter(
+            ParagraphImpl(
+                1, true,
+                listOf(
+                    TableImpl(
+                        11,
+                        listOf(RowImpl(111, listOf(CellImpl(1111, listOf(LiteralImpl(11111, "tekst1"), LiteralImpl(11112, "tekst2")))))),
+                        HeaderImpl(112, listOf(ColumnSpecImpl(1121, CellImpl(11211, listOf(LiteralImpl(112111, "kolonne 1"))), ColumnAlignment.LEFT, 1))),
+                    ),
+                ),
+            ),
+        )
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                table(id = 11) {
+                    header(id = 112) {
+                        colSpec(id = 1121, cellId = 11211) { literal(id = 112111, text = "kolonne 1") }
+                    }
+                    row(id = 111) {
+                        cell(id = 1111, deletedContent = setOf(11111)) {
+                            literal(id = 11112, text = "tekst2")
+                        }
+                    }
+                }
+            }
+        }
+        assertEquals(edited, edited.updateEditedLetter(rendered))
+    }
+
+    @Test
+    fun `deleted column does not reappear after updateEditedLetter`() {
+        val rendered = letter(
+            ParagraphImpl(
+                1, true,
+                listOf(
+                    TableImpl(
+                        11,
+                        listOf(
+                            RowImpl(111, listOf(
+                                CellImpl(1111, listOf(LiteralImpl(11111, "rad1kol1"))),
+                                CellImpl(1112, listOf(LiteralImpl(11121, "rad1kol2"))),
+                            )),
+                        ),
+                        HeaderImpl(112, listOf(
+                            ColumnSpecImpl(1121, CellImpl(11211, listOf(LiteralImpl(112111, "Kolonne 1"))), ColumnAlignment.LEFT, 1),
+                            ColumnSpecImpl(1122, CellImpl(11221, listOf(LiteralImpl(112221, "Kolonne 2"))), ColumnAlignment.LEFT, 1),
+                        )),
+                    ),
+                ),
+            ),
+        )
+        // Saksbehandler has deleted column 2 (colSpec 1122, cell 1112)
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                table(id = 11) {
+                    header(id = 112, deletedColSpecs = setOf(1122)) {
+                        colSpec(id = 1121, cellId = 11211) { literal(id = 112111, text = "Kolonne 1") }
+                    }
+                    row(id = 111, deletedCells = setOf(1112)) {
+                        cell(id = 1111) { literal(id = 11111, text = "rad1kol1") }
+                    }
+                }
+            }
+        }
+        assertEquals(edited, edited.updateEditedLetter(rendered))
+    }
 }

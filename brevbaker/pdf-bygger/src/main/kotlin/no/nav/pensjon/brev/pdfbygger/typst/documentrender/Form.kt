@@ -3,12 +3,6 @@ package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form
 
-/**
- * Render form elements using form.typ functions.
- *
- * For Form.Text: Uses formText(prompt, dots)
- * For Form.MultipleChoice: Uses formChoice(prompt, ..choices)
- */
 internal fun TypstCodeScope.renderForm(element: Form) {
     when (element) {
         is Form.MultipleChoice -> renderMultipleChoice(element)
@@ -16,10 +10,7 @@ internal fun TypstCodeScope.renderForm(element: Form) {
     }
 }
 
-/**
- * Render a multiple choice form element.
- * Output: formChoice[prompt][choice1][choice2]...
- */
+
 private fun TypstCodeScope.renderMultipleChoice(element: Form.MultipleChoice) {
     if (element.vspace) {
         appendCodeln("v(1em)")
@@ -33,10 +24,6 @@ private fun TypstCodeScope.renderMultipleChoice(element: Form.MultipleChoice) {
     }
 }
 
-/**
- * Render a text input form element.
- * Output: formText[prompt][dots]
- */
 private fun TypstCodeScope.renderFormText(element: Form.Text) {
     if (element.vspace) {
         appendCodeln("v(1em)")

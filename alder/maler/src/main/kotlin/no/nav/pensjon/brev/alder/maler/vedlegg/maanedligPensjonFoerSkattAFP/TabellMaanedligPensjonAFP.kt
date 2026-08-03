@@ -4,14 +4,8 @@ import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.alder.model.BeloepEndring
 import no.nav.pensjon.brev.alder.model.aldersovergang.OpptjeningType
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDto
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningListeSelectors.afpPrivatBeregningListe
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningListeSelectors.antallBeregningsperioder
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningSelectors.afpLivsvarigNetto
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningSelectors.datoFom
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningSelectors.datoTil
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningSelectors.komptilleggNetto
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningSelectors.kronetilleggNetto
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.AFPPrivatBeregningSelectors.totalPensjon
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.maanedligPensjonFoerSkattAFPDto.aFPPrivatBeregningListe.*
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.maanedligPensjonFoerSkattAFPDto.aFPPrivatBeregning.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression

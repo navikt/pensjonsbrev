@@ -4,9 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.SaksbehandlerValgSelectors.aarEgenerklaringOmsorgspoeng
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.SaksbehandlerValgSelectors.aarInnvilgetOmsorgspoeng
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.omsorgEgenManuellDto.saksbehandlerValg.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.omsorgEgenManuellDto.*
 import no.nav.pensjon.brev.maler.fraser.OmsorgEgenerklaeringOutline
 import no.nav.pensjon.brev.maler.fraser.OmsorgEgenerklaeringTittel
 import no.nav.pensjon.brev.maler.vedlegg.egenerklaeringPleieOgOmsorgsarbeidManuell

@@ -7,12 +7,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
-import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoTOM
-import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.land
-import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.landkode
-import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.opptjeningsperiode
-import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.type
+import no.nav.pensjon.etterlatte.maler.selectors.trygdetidsperiode.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
 
 data class Trygdetidstabell(

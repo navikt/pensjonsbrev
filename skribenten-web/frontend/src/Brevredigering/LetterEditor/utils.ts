@@ -29,6 +29,17 @@ export const TypographyToText = isMac
       [Typography.PARAGRAPH]: "Normal (Alt+4)",
     } as const);
 
+export const tooltipText = {
+  bold: isMac ? "Fet (⌘+B)" : "Fet (Ctrl+F)",
+  italic: isMac ? "Kursiv (⌘+I)" : "Kursiv (Ctrl+I)",
+  bulletList: isMac ? "Punktliste (⌥+5)" : "Punktliste (Alt+5)",
+  numberList: isMac ? "Nummerert liste (⌥+6)" : "Nummerert liste (Alt+6)",
+  undo: isMac ? "Angre (⌘+Z)" : "Angre (Ctrl+Z)",
+  redo: isMac ? "Gjør om (⌘+⇧+Z)" : "Gjør om (Ctrl+Y)",
+  table: "Sett inn tabell",
+  tilbakestill: "Tilbakestill mal",
+} as const;
+
 export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateAction<LetterEditorState>>) => {
   return useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -45,6 +56,12 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
       } else if (event.altKey && event.code === "Digit4") {
         event.preventDefault();
         applyAction(Actions.switchTypography, setEditorState, Typography.PARAGRAPH);
+      } else if (event.altKey && event.code === "Digit5") {
+        event.preventDefault();
+        setEditorState((previous) => Actions.toggleBulletList(previous, previous.focus));
+      } else if (event.altKey && event.code === "Digit6") {
+        event.preventDefault();
+        setEditorState((previous) => Actions.toggleNumberList(previous, previous.focus));
       }
 
       // Word-hurtigtaster (norsk)
@@ -56,14 +73,18 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
       // https://support.microsoft.com/nb-no/office/hurtigtaster-i-word-95ef89dd-7142-4b50-afb2-f762f663ceb2
       if (!isMac) {
         if (event.ctrlKey) {
-          if (event.key === "f") {
+          // Omdirigerer både ctrl-f og ctrl-b, for å unngå innebygd fet tekst-snarvei i nettleser
+          if (event.key === "f" || event.key === "b") {
             event.preventDefault();
             applyAction(Actions.switchFontType, setEditorState, FontType.BOLD);
-          } else if (event.key === "i") {
+          }
+          // Omdirigerer ikke ctrl-k, siden det er en generell nettleser-snarvei for å fokusere addresselinjen
+          else if (event.key === "i") {
             event.preventDefault();
             applyAction(Actions.switchFontType, setEditorState, FontType.ITALIC);
-          } else if (event.key === "u") {
-            // block ctrl-u from applying underline
+          }
+          // Blokker innebygget ctrl-u for å hindre understreking, som vi ikke støtter
+          else if (event.key === "u") {
             event.preventDefault();
           }
         }

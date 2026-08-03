@@ -114,8 +114,8 @@ data class TBUxx4v_og_TBU048V_TBU055V(
 
             paragraph {
                 text (
-                    bokmal { + "Inntekten din før du ble ufør skal ikke settes lavere enn:" },
-                    nynorsk { + "Inntekta di før du blei ufør skal ikkje setjas lågare enn:" },
+                    bokmal { + "Før 1. januar 2026 skal inntekten din før du ble ufør ikke settes lavere enn:" },
+                    nynorsk { + "Før 1. januar 2026 skal inntekta di før du blei ufør ikkje fastsetjast lågare enn:" },
                 )
                 list {
                     item {
@@ -128,6 +128,20 @@ data class TBUxx4v_og_TBU048V_TBU055V(
                         text(
                             bokmal { + "3,5 ganger grunnbeløpet dersom du er enslig." },
                             nynorsk { + "3,5 gonger grunnbeløpet dersom du er einsleg." },
+                        )
+                    }
+                }
+            }
+            paragraph {
+                text (
+                    bokmal { + "Fra og med 1. januar 2026 skal inntekten din før du ble ufør ikke settes lavere enn:" },
+                    nynorsk { + "Frå og med 1. januar 2026 skal inntekta di før du blei ufør ikkje fastsetjast lågare enn:" },
+                )
+                list {
+                    item {
+                        text(
+                            bokmal { + "3,5 ganger grunnbeløpet." },
+                            nynorsk { + "3,5 gonger grunnbeløpet." },
                         )
                     }
                     item {

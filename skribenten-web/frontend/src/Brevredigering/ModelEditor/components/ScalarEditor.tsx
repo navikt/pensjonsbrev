@@ -65,19 +65,6 @@ export const ScalarEditor = ({
         <ControlledDatePicker field={field} fieldType={fieldType} onSubmit={submitOnChange} prependName={prependName} />
       );
     }
-    case "YEAR": {
-      return (
-        <AutoSavingTextField
-          field={field}
-          fieldType={fieldType}
-          onSubmit={submitOnChange}
-          prependName={prependName}
-          step={1}
-          timeoutTimer={2000}
-          type="number"
-        />
-      );
-    }
   }
 };
 
@@ -212,11 +199,6 @@ function valideringsmoenster(props: {
     case "BOOLEAN":
     case "DATE":
       return undefined;
-    case "YEAR":
-      return {
-        value: /^\d{4}$/,
-        message: "Må være et årstall, fire siffer",
-      };
   }
 }
 

@@ -19,6 +19,7 @@ export type UmamiEventName =
   | "pesys omdirigering"
   | "samhandler valgt"
   | "tekst limt inn"
+  | "tekst erstattet"
   | "tid brukt i attestering"
   | "tid brukt i brevbehandler"
   | "tid brukt i brevvelger"

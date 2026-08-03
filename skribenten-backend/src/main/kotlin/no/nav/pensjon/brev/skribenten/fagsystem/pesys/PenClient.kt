@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -10,17 +10,19 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
 import no.nav.brev.BrevExceptionDto
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
-import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
+import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
+import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -37,7 +39,7 @@ interface PenClient {
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean?
     suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult?
     suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data
-    suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): Api.GeneriskBrevdata
+    suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1RedigerbarDto
     suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse
 
     data class KravStoettetAvDatabyggerResult(
@@ -49,9 +51,12 @@ class PenServiceException(message: String) : ServiceException(message)
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
 class PenFeilIDatabyggerException(message: String) : ServiceException(message)
 
-class PentHttpClient(config: Config, authService: AuthService) : PenClient, ServiceStatus {
-    private val penUrl = config.getString("url")
-    private val penScope = config.getString("scope")
+class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenClient, ServiceStatus, Closeable {
+    private val penUrl = config.url
+    private val penScope = config.scope
+
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, authService: AuthService): this(config.services.pen, authService)
 
     private val client = lagHttpClient {
         defaultRequest {
@@ -61,7 +66,6 @@ class PentHttpClient(config: Config, authService: AuthService) : PenClient, Serv
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
-                registerModule(SakstypeModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
@@ -147,7 +151,7 @@ class PentHttpClient(config: Config, authService: AuthService) : PenClient, Serv
                 }
         }.brevdataOrThrow(saksId = saksId, vedtaksId = vedtaksId)
 
-    override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1VedleggDataResponse =
+    override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1RedigerbarDto =
         client.get("brev/skribenten/sak/${saksId.id}/p1data") {
             url {
                 parameters.append("spraak", spraak.name)
@@ -169,12 +173,14 @@ class PentHttpClient(config: Config, authService: AuthService) : PenClient, Serv
             url { parameters.append("distribuer", distribuer.toString()) }
         }.bodyOrThrow()!!
 
+    override fun close() { client.close() }
+
 
     private data class SakResponseDto(
         val saksId: SaksId,
         val foedselsdato: LocalDate,
         val navn: Navn,
-        val sakType: ISakstype,
+        val sakType: Sakstype,
         val enhetId: String?,
         val pid: Pid,
         val behandlingsnumre: List<Behandlingsnummer>,
@@ -186,7 +192,6 @@ class PentHttpClient(config: Config, authService: AuthService) : PenClient, Serv
 data class BrevdataFeilResponse(val feil: BrevExceptionDto)
 data class BrevdataResponseWrapper<T : Any>(val data: T)
 
-typealias P1VedleggDataResponse = Api.GeneriskBrevdata
 object BrevdataResponse {
     data class Data(val felles: BrevbakerFelles, val brevdata: Api.GeneriskBrevdata)
 }

@@ -11,10 +11,8 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakRedigerbartUtfallBrevDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakRedigerbartUtfallInnholdDTOSelectors.etteroppgjoersAar
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakRedigerbartUtfallInnholdDTOSelectors.forhaandsvarselSendtDato
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakRedigerbartUtfallInnholdDTOSelectors.mottattSvarDato
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.selectors.etteroppgjoerVedtakRedigerbartUtfallBrevDTO.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.selectors.etteroppgjoerVedtakRedigerbartUtfallInnholdDTO.*
 import java.time.LocalDate
 
 class EtteroppgjoerVedtakRedigerbartUtfallInnholdDTO(

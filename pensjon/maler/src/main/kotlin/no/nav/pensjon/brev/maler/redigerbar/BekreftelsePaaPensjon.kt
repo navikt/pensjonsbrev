@@ -5,9 +5,8 @@ import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDtoSelectors.PesysDataSelectors.foedselsdato
-import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDtoSelectors.PesysDataSelectors.navn
-import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.bekreftelsePaaPensjonDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.bekreftelsePaaPensjonDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal

@@ -9,14 +9,7 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoTOM
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.erFakeSanksjon
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.institusjon
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.ytelseFoerAvkorting
+import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregningsperiode.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.KronerText
 import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
 

@@ -5,15 +5,8 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TilbakekrevingResultat
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.feilutbetaltTotalBeloep
-import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.oversiktOverFeilutbetalingPEDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.resultatAvVurderingenForTotalBeloep
-import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.sakstype
-import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.sluttPeriodeForTilbakekreving
-import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.startPeriodeForTilbakekreving
-import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.sumTilInnkrevingTotalBeloep
-import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.tilbakekrevingAvFeilutbetaltBeloepDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.tilbakekrevingAvFeilutbetaltBeloepDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerPE
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage

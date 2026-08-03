@@ -1,62 +1,57 @@
 package no.nav.pensjon.brev.skribenten.model
 
-import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.*
 import no.nav.brev.BrevLandmodell.Landkode
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
-import no.nav.pensjon.brev.skribenten.services.EnhetId
-import no.nav.pensjon.brev.skribenten.services.NavEnhet
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import java.time.Duration
-import java.time.Instant
-import java.time.LocalDate
-
-typealias SaksbehandlerValg = Api.GeneriskBrevdata
+import java.time.*
 
 object Api {
     class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlerValgBrevdata
+    class GeneriskSaksbehandlervalg<K, V>(entries: Iterable<Pair<K, V>>? = null) : LinkedHashMap<K, V>(), MutableMap<K, V>, SaksbehandlerValgBrevdata {
+        init {
+            if (entries != null) putAll(entries)
+        }
+    }
 
     data class UserInfo(val name: String, val navident: NavIdent, val erAttestant: Boolean)
 
     data class OpprettBrevRequest(
-        val brevkode: Brevkode.Redigerbart,
+        val brevkode: RedigerbarBrevkode,
         val spraak: SpraakKode,
         val avsenderEnhetsId: EnhetId,
-        val saksbehandlerValg: SaksbehandlerValg,
+        val saksbehandlerValg: RedigerbarSaksbehandlervalgMap,
         val reserverForRedigering: Boolean?,
         val mottaker: OverstyrtMottaker?,
         val vedtaksId: VedtaksId?,
     )
 
     data class OppdaterBrevRequest(
-        val saksbehandlerValg: SaksbehandlerValg,
+        val saksbehandlerValg: RedigerbarSaksbehandlervalgMap,
         val redigertBrev: Edit.Letter,
     )
 
     data class DelvisOppdaterBrevRequest(
-        val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
+        val alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>? = null,
     )
 
     data class OppdaterAttesteringRequest(
-        val saksbehandlerValg: SaksbehandlerValg,
+        val saksbehandlerValg: RedigerbarSaksbehandlervalgMap,
         val redigertBrev: Edit.Letter,
     )
 
     data class OppdaterKlarStatusRequest(val klar: Boolean)
-    data class DistribusjonstypeRequest(val distribusjon: Distribusjonstype)
+    data class DistribusjonstypeRequest(val distribusjon: Distribusjon)
     data class OppdaterMottakerRequest(val mottaker: OverstyrtMottaker)
-    data class ValgteVedleggRequest(val valgteVedlegg: List<AlltidValgbartVedleggKode>)
+    data class ValgteVedleggRequest(val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>)
+    data class RedigertVedleggRequest(val redigertVedlegg: Edit.Attachment)
 
     data class BrevInfo(
         val id: BrevId,
@@ -65,11 +60,11 @@ object Api {
         val opprettet: Instant,
         val sistredigertAv: NavAnsatt,
         val sistredigert: Instant,
-        val brevkode: Brevkode.Redigerbart,
+        val brevkode: RedigerbarBrevkode,
         val brevtittel: String,
         val brevtype: LetterMetadata.Brevtype,
         val status: BrevStatus,
-        val distribusjonstype: Distribusjonstype,
+        val distribusjonstype: Distribusjon,
         val mottaker: OverstyrtMottaker?,
         val avsenderEnhet: NavEnhet,
         val spraak: SpraakKode,
@@ -99,8 +94,8 @@ object Api {
         JsonSubTypes.Type(OverstyrtMottaker.NorskAdresse::class, name = "NorskAdresse"),
         JsonSubTypes.Type(OverstyrtMottaker.UtenlandskAdresse::class, name = "UtenlandskAdresse"),
     )
-    sealed class OverstyrtMottaker {
-        data class Samhandler(val tssId: String, val navn: String?) : OverstyrtMottaker()
+    sealed interface OverstyrtMottaker {
+        data class Samhandler(val tssId: String, val navn: String?) : OverstyrtMottaker
         data class NorskAdresse(
             val navn: String,
             val postnummer: NorskPostnummer,
@@ -109,7 +104,7 @@ object Api {
             val adresselinje2: String?,
             val adresselinje3: String?,
             val manueltAdressertTil: ManueltAdressertTil?,
-            ) : OverstyrtMottaker()
+        ) : OverstyrtMottaker
 
         // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
         data class UtenlandskAdresse(
@@ -119,16 +114,16 @@ object Api {
             val adresselinje3: String?,
             val landkode: Landkode,
             val manueltAdressertTil: ManueltAdressertTil?
-            ) : OverstyrtMottaker()
+        ) : OverstyrtMottaker
     }
 
     data class BrevResponse(
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
         val redigertBrevHash: Hash<Edit.Letter>,
-        val saksbehandlerValg: SaksbehandlerValgBrevdata,
+        val saksbehandlerValg: RedigerbarSaksbehandlervalgMap,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
-        val valgteVedlegg: List<AlltidValgbartVedleggKode>?,
+        val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>?,
     )
 
     data class ReservasjonResponse(
@@ -225,4 +220,8 @@ object Api {
             NAVANSATT_MANGLER_NAVN,
         }
     }
+
+    data class OppdaterFoerstesideRequest(
+        val leggVedFoersteside: Boolean,
+    )
 }

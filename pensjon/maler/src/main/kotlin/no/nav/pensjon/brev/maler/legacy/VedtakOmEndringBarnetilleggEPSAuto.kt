@@ -2,18 +2,8 @@ package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSAutoDto
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSAutoDtoSelectors.vedtakData
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.barnetilleggSB
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.dineRettigheterOgPlikterUfore
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.fribelop
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nettoBarnetilleggFB
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nettoBarnetilleggSB
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.nettoUforetrygdUtenTillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.opphortUforetrygdEllerBTFB
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.samletInntektsgrenseBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSDataSelectors.totalbelop
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmEndringBarnetilleggEPSAutoDto.*
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmEndringBarnetilleggEPSData.*
 import no.nav.pensjon.brev.maler.fraser.EndringBTEPSVedMinsteIFUReduksjonsprosent
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
@@ -36,7 +26,7 @@ object VedtakOmEndringBarnetilleggEPSAuto : AutobrevTemplate<VedtakOmEndringBarn
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - endring barnetillegg EPS ved regelendringer 1. juli 2026",
+            displayTitle = "Vedtak - endring barnetillegg berørt sak ved regelendringer 1. juli 2026",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )

@@ -1,8 +1,9 @@
 package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.brev.BrevLandmodell.Landkode
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggSnapshot
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -10,7 +11,8 @@ import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.norskAdresse
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.samhandler
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.utenlandskAdresse
 import no.nav.pensjon.brev.skribenten.services.EnhetId
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import java.time.Instant
@@ -21,9 +23,9 @@ object Dto {
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
         val redigertBrevHash: Hash<Edit.Letter>,
-        val saksbehandlerValg: SaksbehandlerValg,
+        val saksbehandlerValg: SaksbehandlervalgMap,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
-        val valgteVedlegg: List<AlltidValgbartVedleggKode>?
+        val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>?
     )
 
     data class BrevInfo(
@@ -36,26 +38,33 @@ object Dto {
         val sistredigert: Instant,
         val redigeresAv: NavIdent?,
         val sistReservert: Instant?,
-        val brevkode: Brevkode.Redigerbart,
+        val brevkode: RedigerbarBrevkode,
         val laastForRedigering: Boolean,
-        val distribusjonstype: Distribusjonstype,
+        val distribusjonstype: Distribusjon,
         val mottaker: Mottaker?,
         val avsenderEnhetId: EnhetId,
         val spraak: LanguageCode,
         val journalpostId: JournalpostId?,
         val attestertAv: NavIdent?,
         val status: BrevStatus,
+        val leggVedFoersteside: Boolean?,
     )
 
     enum class BrevStatus {
         KLADD, ATTESTERING, KLAR, ARKIVERT
     }
 
+    data class RedigertVedlegg(
+        val vedleggId: BrevbakerType.VedleggId,
+        val redigertVedlegg: Edit.Attachment,
+    )
+
     data class Document(
         val dokumentDato: LocalDate,
         val pdf: ByteArray,
         val redigertBrevHash: Hash<Edit.Letter>,
         val brevdataHash: Hash<BrevdataResponse.Data>,
+        val vedleggHash: Hash<VedleggSnapshot>,
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -67,6 +76,7 @@ object Dto {
             if (!pdf.contentEquals(other.pdf)) return false
             if (redigertBrevHash != other.redigertBrevHash) return false
             if (brevdataHash != other.brevdataHash) return false
+            if (vedleggHash != other.vedleggHash) return false
 
             return true
         }
@@ -76,6 +86,7 @@ object Dto {
             result = 31 * result + pdf.contentHashCode()
             result = 31 * result + redigertBrevHash.hashCode()
             result = 31 * result + brevdataHash.hashCode()
+            result = 31 * result + vedleggHash.hashCode()
             return result
         }
     }

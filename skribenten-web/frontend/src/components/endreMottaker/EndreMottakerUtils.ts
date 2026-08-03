@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { SamhandlerTypeCode } from "~/types/apiTypes";
+import { SamhandlerTypeCodes } from "~/types/apiTypes";
 import { ManueltAdressertTil } from "~/types/brev";
 
 export enum Søketype {
@@ -164,7 +164,7 @@ export const finnSamhandlerFormDataSchema = z
         }
       }),
     samhandlerType: z
-      .enum(SamhandlerTypeCode)
+      .enum(SamhandlerTypeCodes)
       .nullable()
       .superRefine((data, refinementContext) => {
         if (data === null) {
@@ -247,7 +247,7 @@ export const finnSamhandlerFormDataSchema = z
 
 const finnSamhandlerTabNotSelectedSchema = z.object({
   søketype: z.nullable(z.enum(Søketype)),
-  samhandlerType: z.nullable(z.enum(SamhandlerTypeCode)),
+  samhandlerType: z.nullable(z.enum(SamhandlerTypeCodes)),
   direkteOppslag: z.object({
     identtype: z.nullable(z.enum(Identtype)),
     id: z.string(),

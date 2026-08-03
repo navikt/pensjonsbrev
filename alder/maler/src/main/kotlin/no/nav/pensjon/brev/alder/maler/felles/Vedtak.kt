@@ -6,11 +6,12 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.firstDayOfYear
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.localDateNow
 import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
-import java.time.Month
 
 
 object Vedtak {
@@ -57,7 +58,7 @@ object Vedtak {
                 )
             }
 
-            showIf(virkDatoFom.lessThan(LocalDate.of(LocalDate.now().year, Month.JANUARY, 1))) {
+            showIf(virkDatoFom.lessThan(localDateNow.firstDayOfYear)) {
                 paragraph {
                     text(
                         bokmal { +"Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser." },

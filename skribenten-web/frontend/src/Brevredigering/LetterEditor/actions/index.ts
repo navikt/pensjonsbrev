@@ -3,7 +3,8 @@ import { create } from "./common";
 import { cursorPosition, updateFocus } from "./cursorPosition";
 import { deleteSelection } from "./deleteSelection";
 import { merge } from "./merge";
-import { paste } from "./paste";
+import { keepMissingFromTemplateBlock, removeMissingFromTemplateBlock } from "./missingFromTemplate";
+import { paste, pasteReplacingSelection } from "./paste";
 import { split } from "./split";
 import { switchFontType } from "./switchFontType";
 import { switchTypography } from "./switchTypography";
@@ -20,7 +21,7 @@ import {
   removeTableColumn,
   removeTableRow,
 } from "./table";
-import { toggleBulletList } from "./toggleBulletList";
+import { toggleBulletList, toggleNumberList } from "./toggleListType";
 import { updateContentText } from "./updateContentText";
 import { updateSignatur } from "./updateSignatur";
 
@@ -35,11 +36,13 @@ const Actions = {
   insertTableColumnRight,
   insertTableRowAbove,
   insertTableRowBelow,
+  keepMissingFromTemplateBlock,
   merge,
   moveTableRow,
   paste,
+  pasteReplacingSelection,
   promoteRowToHeader,
-  updateFocus,
+  removeMissingFromTemplateBlock,
   removeTable,
   removeTableColumn,
   removeTableRow,
@@ -47,7 +50,9 @@ const Actions = {
   switchFontType,
   switchTypography,
   toggleBulletList,
+  toggleNumberList,
   updateContentText,
+  updateFocus,
   updateSignatur,
 };
 export default Actions;

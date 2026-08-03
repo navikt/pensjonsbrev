@@ -11,30 +11,10 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.antallBarn
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.beregningsperioder
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.bruktTrygdetid
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.erForeldreloes
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.erYrkesskade
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.forskjelligTrygdetid
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.grunnbeloep
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.harForskjelligMetode
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.sisteBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.trygdetid
-import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiodeSelectors.harForeldreloessats
-import no.nav.pensjon.etterlatte.maler.ForskjelligTrygdetidSelectors.erForskjellig
-import no.nav.pensjon.etterlatte.maler.ForskjelligTrygdetidSelectors.foersteTrygdetid
-import no.nav.pensjon.etterlatte.maler.ForskjelligTrygdetidSelectors.foersteVirkningsdato
-import no.nav.pensjon.etterlatte.maler.ForskjelligTrygdetidSelectors.senereVirkningsdato
-import no.nav.pensjon.etterlatte.maler.ForskjelligTrygdetidSelectors.tilOgIkkeMedSenereVirkningsdato
-import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregnetTrygdetidAar
-import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeAnvendt
-import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeFraGrunnlag
-import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.mindreEnnFireFemtedelerAvOpptjeningstiden
-import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.navnAvdoed
-import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.prorataBroek
-import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.trygdetidsperioder
+import no.nav.pensjon.etterlatte.maler.selectors.barnepensjonBeregning.*
+import no.nav.pensjon.etterlatte.maler.selectors.barnepensjonBeregningsperiode.*
+import no.nav.pensjon.etterlatte.maler.selectors.forskjelligTrygdetid.*
+import no.nav.pensjon.etterlatte.maler.selectors.trygdetid.*
 import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
 
 

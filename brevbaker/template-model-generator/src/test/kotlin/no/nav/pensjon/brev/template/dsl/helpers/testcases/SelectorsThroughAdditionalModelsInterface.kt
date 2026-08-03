@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.template.dsl.helpers.testcases
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.SelectorsThroughAdditionalModelsInterfaceSelectors.AdditionalModelSelectors.age
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.selectorsThroughAdditionalModelsInterface.additionalModel.*
 
 /**
  * Verify that selectors also are generated for interface-models declared through the `additionalModels` annotation argument.

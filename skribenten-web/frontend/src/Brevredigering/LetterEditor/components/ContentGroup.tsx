@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import {
@@ -29,6 +29,7 @@ import {
   getCharacterOffset,
   getCursorOffset,
   getCursorOffsetOrRange,
+  getSelectionFocus,
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import {
@@ -36,18 +37,14 @@ import {
   type EditedLetter,
   ElementTags,
   FontType,
-  ITEM_LIST,
-  LITERAL,
+  ListType,
   type LiteralValue,
-  NEW_LINE,
-  TABLE,
   TITLE_INDEX,
-  VARIABLE,
 } from "~/types/brevbakerTypes";
 import { trackEvent } from "~/utils/umami";
 
 import { updateFocus } from "../actions/cursorPosition";
-import { isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
+import { effectiveListType, isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
 import {
   addRow,
   adjacentTableEntryFocus,
@@ -63,7 +60,7 @@ const WORD_JOINER = "\u2060";
 const NO_BREAK_PUNCTUATION = /^[.,;:!?'"()[\]{}°…«»%\u201D\u2019]/;
 
 function startsWithPunctuation(content: Content): boolean {
-  if (content.type !== LITERAL) return false;
+  if (content.type !== "LITERAL") return false;
   return NO_BREAK_PUNCTUATION.test(textOf(content));
 }
 
@@ -79,7 +76,7 @@ function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
   }
   const content = letter.blocks[literalIndex.blockIndex].content;
   const contentValue = content[literalIndex.contentIndex];
-  if ("itemIndex" in literalIndex && contentValue.type === ITEM_LIST) {
+  if ("itemIndex" in literalIndex && contentValue.type === "ITEM_LIST") {
     return contentValue.items[literalIndex.itemIndex].content;
   }
   return content;
@@ -95,7 +92,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
         const needsWordJoiner = contentIndex > 0 && startsWithPunctuation(content);
 
         switch (content.type) {
-          case LITERAL: {
+          case "LITERAL": {
             const updatedLiteralIndex =
               "itemIndex" in literalIndex
                 ? { ...literalIndex, itemContentIndex: contentIndex }
@@ -109,8 +106,8 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
               <EditableText content={content} key={contentIndex} literalIndex={updatedLiteralIndex} />
             );
           }
-          case NEW_LINE:
-          case VARIABLE: {
+          case "NEW_LINE":
+          case "VARIABLE": {
             return (
               <Text
                 content={content}
@@ -122,9 +119,10 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
               />
             );
           }
-          case ITEM_LIST: {
+          case "ITEM_LIST": {
+            const ListTag = effectiveListType(content) === ListType.PUNKTLISTE ? "ul" : "ol";
             return (
-              <ul key={contentIndex}>
+              <ListTag key={contentIndex}>
                 {content.items.map((_item, itemIndex) => (
                   <li key={itemIndex}>
                     <ContentGroup
@@ -136,10 +134,10 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
                     />
                   </li>
                 ))}
-              </ul>
+              </ListTag>
             );
           }
-          case TABLE: {
+          case "TABLE": {
             return (
               <TableView
                 blockIndex={literalIndex.blockIndex}
@@ -208,7 +206,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const text = textOf(content) || ZERO_WIDTH_SPACE;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const element = contentEditableReference.current;
     if (!element) return;
 
@@ -222,8 +220,18 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         return;
       }
 
+      // Focus jumped here programmatically (not via a real click/DOM focus event) and wants the whole
+      // fritekst selected, mirroring click behavior. Just call .focus(): handleOnFocus's native
+      // onFocus listener selects the full text for erFritekst elements. We must NOT also call
+      // focusAtOffset here, since it collapses the selection to a single offset right after focusing,
+      // which would immediately undo the selection handleOnFocus just made.
+      if (editorState.focus.selectAll && erFritekst && element.childNodes[0]) {
+        element.focus();
+        return;
+      }
+
       // If we do NOT yet have a stored cursorPosition, respect any existing DOM caret/selection.
-      if (editorState.focus.cursorPosition === undefined) {
+      if (editorState.focus.cursorPosition === undefined || editorState.focus.cursorPosition < 0) {
         const selection = globalThis.getSelection();
         if (
           selection &&
@@ -253,7 +261,15 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         focusAtOffset(element.childNodes[0], resolvedCursorPosition);
       }
     }
-  }, [text, shouldBeFocused, editorState.focus.cursorPosition, freeze, setEditorState, erFritekst]);
+  }, [
+    text,
+    shouldBeFocused,
+    editorState.focus.cursorPosition,
+    editorState.focus.selectAll,
+    freeze,
+    setEditorState,
+    erFritekst,
+  ]);
 
   const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
@@ -554,6 +570,24 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       }
 
       applyAction(Actions.paste, setEditorState, literalIndex, offset, event.clipboardData);
+    } else {
+      const root = event.currentTarget.closest<HTMLElement>("[data-editor-root]");
+      const selection = getSelectionFocus(root ?? undefined);
+      if (selection) {
+        const pastedText = event.clipboardData.getData("text/plain");
+        const pasteLength = pastedText.length;
+        if (pasteLength > 0) {
+          trackEvent("tekst erstattet", {
+            brevkode: editorState.info.brevkode,
+            antallTegn: pasteLength,
+            merEnn200: pasteLength > 200,
+            limInnMetode,
+          });
+        }
+
+        applyAction(Actions.pasteReplacingSelection, setEditorState, selection, event.clipboardData);
+        globalThis.getSelection()?.removeAllRanges();
+      }
     }
   };
 
@@ -707,7 +741,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const offset = getCursorOffset();
     setEditorState((oldState) => ({
       ...oldState,
-      focus: { ...literalIndex, ...(offset && { cursorPosition: offset }) },
+      // offset > 0: store known positive position. Skip 0 (ambiguous from programmatic focus) and -1 (no selection).
+      focus: { ...literalIndex, ...(offset > 0 && { cursorPosition: offset }) },
     }));
     if (!erFritekst) return;
     e.preventDefault();

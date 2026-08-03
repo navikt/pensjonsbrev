@@ -3,10 +3,10 @@ import { formatISO } from "date-fns";
 
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 
-import { nyBrevResponse } from "../../utils/brevredigeringTestUtils";
+import { brevResponse } from "../../utils/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
-const defaultBrev = nyBrevResponse({});
+const defaultBrev = brevResponse({});
 
 test.describe("attestant redigering", () => {
   test.beforeEach(async ({ page }) => {

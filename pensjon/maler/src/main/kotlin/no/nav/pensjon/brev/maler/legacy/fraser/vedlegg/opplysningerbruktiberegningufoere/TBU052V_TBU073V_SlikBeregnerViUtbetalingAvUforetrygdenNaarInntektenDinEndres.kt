@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.ExstreamFunctionsSelectors.pe_ut_overskytende
-import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.functions
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.exstreamFunctions.*
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.*
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
@@ -75,11 +75,11 @@ data class TBU052V_TBU073V_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDi
                 text (
                     bokmal { + "Uføretrygden reduseres med " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent av inntekten over " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .format() + " fordi du har en kompensasjonsgrad som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                        .format() + " fordi du har en reduksjonsprosent som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent." },
                     nynorsk { + "Uføretrygda blir redusert med " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent av inntekta over " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
-                        .format() + " fordi du har ein kompensasjonsgrad som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                        .format() + " fordi du har ein reduksjonsprosent som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent." },
                 )
             }

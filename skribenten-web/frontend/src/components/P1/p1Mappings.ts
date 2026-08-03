@@ -49,7 +49,7 @@ const mapPersonFormToDto = (p: P1PersonForm): P1Person => ({
 });
 
 // Institusjon
-const mapInstitusjonDtoToForm = (i: P1Institusjon | null): P1InstitusjonForm => ({
+const mapInstitusjonDtoToForm = (i: P1Institusjon | null | undefined): P1InstitusjonForm => ({
   institusjonsnavn: emptyIfNull(i?.institusjonsnavn),
   pin: emptyIfNull(i?.pin),
   saksnummer: emptyIfNull(i?.saksnummer),

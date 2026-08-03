@@ -5,10 +5,9 @@ import no.nav.pensjon.brev.api.model.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.PesysDataSelectors.sakstype
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.SaksbehandlerValgSelectors.tittelValg
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.varselRevurderingAvPensjonDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.varselRevurderingAvPensjonDto.saksbehandlerValg.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.varselRevurderingAvPensjonDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants.BESKJED_TIL_NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ETTERSENDELSE_URL

@@ -4,11 +4,11 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 
-import { nyBrevInfo } from "../../utils/brevredigeringTestUtils";
+import { brevInfo } from "../../utils/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
 test.describe("Brevbehandler", () => {
-  const kladdBrev = nyBrevInfo({
+  const kladdBrev = brevInfo({
     id: 1,
     opprettetAv: { id: "Z990297", navn: "Ola Nordmann" },
     opprettet: "2021-09-01T12:00:00",
@@ -546,11 +546,9 @@ test.describe("Brevbehandler", () => {
   });
 
   test("brev som har uendret fritekstfelter kan ikke gjøres klar for sending", async ({ page }) => {
-    const nyBrevInfo2 = nyBrevInfo({});
-
     await page.route("**/bff/skribenten-backend/sak/123456/brev", (route) => {
       if (route.request().method() === "GET") {
-        return route.fulfill({ json: [nyBrevInfo2] });
+        return route.fulfill({ json: [brevInfo({})] });
       }
       return route.fallback();
     });

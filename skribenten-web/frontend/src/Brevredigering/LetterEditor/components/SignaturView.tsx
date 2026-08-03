@@ -2,7 +2,7 @@ import { Box, HGrid, VStack } from "@navikt/ds-react";
 
 import { type Signatur } from "~/types/brevbakerTypes";
 
-const Saksbehandler = ({ navn }: { navn?: string }) =>
+const Saksbehandler = ({ navn }: { navn?: string | null }) =>
   navn ? (
     <Box as="span" data-testid="brev-editor-saksbehandler">
       {navn}

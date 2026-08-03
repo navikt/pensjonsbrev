@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { ExpansionCard, Tag, VStack } from "@navikt/ds-react";
 
-import { type BrevInfo, Distribusjonstype } from "~/types/brev";
+import { type BrevInfo } from "~/types/brev";
 
 const KvittertBrevHeader = (props: {
   apiStatus: "error" | "success";
@@ -58,7 +58,7 @@ const hentTagOgTittelForHeader = (args: {
         return { tag, tittel: args.brevInfo.brevtittel };
       } else {
         switch (args.brevInfo.distribusjonstype) {
-          case Distribusjonstype.SENTRALPRINT: {
+          case "SENTRALPRINT": {
             const tag = (
               <Tag data-color="success" size="small" variant="moderate">
                 Sendt til mottaker
@@ -66,7 +66,7 @@ const hentTagOgTittelForHeader = (args: {
             );
             return { tag, tittel: args.brevInfo.brevtittel };
           }
-          case Distribusjonstype.LOKALPRINT: {
+          case "LOKALPRINT": {
             const tag = (
               <Tag data-color="info" size="small" variant="moderate">
                 Lokalprint – arkivert

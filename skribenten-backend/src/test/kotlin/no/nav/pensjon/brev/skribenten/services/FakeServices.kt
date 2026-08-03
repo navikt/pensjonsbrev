@@ -7,7 +7,6 @@ import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
@@ -24,9 +23,12 @@ import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerReques
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto
+import no.nav.pensjon.brev.skribenten.model.Sakstype
+import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.services.SafService.HentDokumenterResponse
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 
 class NotYetStubbedException(message: String) : Exception(message)
 
@@ -63,26 +65,6 @@ open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : Samh
     override suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto = notYetStubbed()
 }
 
-open class FakeP1Service: P1Service {
-    override suspend fun lagreP1Data(
-        p1DataInput: Api.GeneriskBrevdata,
-        brevId: BrevId,
-        saksId: SaksId,
-    ): Api.GeneriskBrevdata? = notYetStubbed()
-
-    override suspend fun hentP1Data(
-        brevId: BrevId,
-        saksId: SaksId,
-    ): Api.GeneriskBrevdata? = notYetStubbed()
-
-    override suspend fun patchMedP1DataOmP1(
-        brevdataResponse: BrevdataResponse.Data,
-        brevkode: Brevkode.Redigerbart,
-        brevId: BrevId?,
-        saksId: SaksId,
-    ): BrevdataResponse.Data = brevdataResponse
-}
-
 open class FakeBrevmetadataService(
     val eblanketter: List<BrevdataDto> = listOf(),
     val brevmaler: List<BrevdataDto> = listOf(),
@@ -90,7 +72,7 @@ open class FakeBrevmetadataService(
 ) : BrevmetadataService {
     override suspend fun getAllBrev(): List<BrevdataDto> = brevmaler + eblanketter
 
-    override suspend fun getBrevmalerForSakstype(sakstype: ISakstype) = brevmaler
+    override suspend fun getBrevmalerForSakstype(sakstype: Sakstype) = brevmaler
 
     override suspend fun getEblanketter() = eblanketter
 
@@ -105,7 +87,7 @@ open class FakeBrevbakerService(
     override suspend fun getTemplates() = maler
 
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
-    override suspend fun getAlltidValgbareVedlegg(brevId: BrevId) = notYetStubbed()
+    override suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode> = notYetStubbed()
 
     override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification? = notYetStubbed()
     override suspend fun renderMarkup(
@@ -120,8 +102,24 @@ open class FakeBrevbakerService(
         brevdata: RedigerbarBrevdata<*, *>,
         felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
-        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
+        redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment>,
+        pdfVedlegg: List<PDFVedleggTittel>,
     ): LetterResponse = notYetStubbed()
+    override suspend fun hentRedigerbareVedleggTitler(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: BrevbakerFelles,
+    ): RedigerbareVedleggTitler = notYetStubbed()
+    override suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean = notYetStubbed()
+    override suspend fun renderRedigerbartVedlegg(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: BrevbakerFelles,
+        vedleggId: VedleggId,
+    ): LetterMarkup.Attachment? = notYetStubbed()
 }
 
 private val objectMapper = jacksonObjectMapper()
@@ -154,7 +152,7 @@ open class PenClientStub : PenClient {
     override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult = notYetStubbed()
     override suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data = notYetStubbed()
     override suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse = notYetStubbed()
-    override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): Api.GeneriskBrevdata = notYetStubbed()
+    override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1RedigerbarDto = notYetStubbed()
 }
 
 

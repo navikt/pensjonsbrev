@@ -10,13 +10,13 @@ import {
   type Avtaleland,
   type BestillOgRedigerBrevResponse,
   type BrukerStatusDto,
-  type Enhet,
   type FinnSamhandlerRequestDto,
   type FinnSamhandlerResponseDto,
   type HentSamhandlerAdresseResponseDto,
   type HentSamhandlerRequestDto,
-  type HentsamhandlerResponseDto,
+  type HentSamhandlerResponseDto,
   type KontaktAdresseResponse,
+  type NavAnsattEnhet,
   type OrderEblankettRequest,
   type OrderExstreamLetterRequest,
   type PreferredLanguage,
@@ -133,7 +133,7 @@ export const getAvtaleLand = {
 
 export const getEnheter = {
   queryKey: enheterKeys.all,
-  queryFn: async () => (await axios.get<Enhet[]>(`${SKRIBENTEN_API_BASE_PATH}/me/enheter`)).data,
+  queryFn: async () => (await axios.get<NavAnsattEnhet[]>(`${SKRIBENTEN_API_BASE_PATH}/me/enheter`)).data,
 };
 
 export async function addFavoritt(id: string) {
@@ -185,7 +185,7 @@ export async function finnSamhandler(request: FinnSamhandlerRequestDto): Promise
 export const hentSamhandler = {
   queryKey: samhandlerKeys.idTSSEkstern,
   queryFn: async (request: HentSamhandlerRequestDto) => {
-    const response = await axios.post<HentsamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/hentSamhandler`, request);
+    const response = await axios.post<HentSamhandlerResponseDto>(`${SKRIBENTEN_API_BASE_PATH}/hentSamhandler`, request);
 
     if (response.data.failure) {
       throw convertResponseToAxiosError({ message: response.data.failure, response });
@@ -207,7 +207,8 @@ export const hentSamhandlerAdresse = (idTSSEkstern: string) => ({
       throw convertResponseToAxiosError({ message: response.data.failureType, response });
     }
 
-    return response.data.adresse;
+    // Not null assertion her siden pensjon-samhandler-proxy returnerer `failureType = NOT_FOUND` om adressen ikke finnes
+    return response.data.adresse!;
   },
 });
 

@@ -1,46 +1,22 @@
 package no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg
 
 import no.nav.brev.InternKonstruktoer
-import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimuleringSelectors.vedGradertUttak
-import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimuleringSelectors.vedHeltUttak
-import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimuleringSelectors.vedGradertUttak
-import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimuleringSelectors.vedHeltUttak
-import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimuleringSelectors.vedNormertPensjonsalder
-import no.nav.pensjon.brev.planleggepensjon.simulering.AlderSelectors.aar
-import no.nav.pensjon.brev.planleggepensjon.simulering.AlderSelectors.maaneder
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpOffentligLivsvarigSimulering.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.alder.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDto
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.aarligInntektOgPensjonListe
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.forbehold
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.simulering
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.simuleringsinformasjon
-import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdAvsnittSelectors.punktliste
-import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdAvsnittSelectors.tekst
-import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdInnholdSelectors.seksjoner
-import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdSeksjonSelectors.avsnitt
-import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdSeksjonSelectors.tittel
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringDto.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdAvsnitt.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdInnhold.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdSeksjon.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.Kull
 import no.nav.pensjon.brev.planleggepensjon.simulering.NormertPensjonsalderPlassering
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringSelectors.afpOffentligLivsvarig
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringSelectors.afpOffentligTidsbegrenset
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringSelectors.afpPrivat
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringSelectors.maanedligAlderspensjonForKnekkpunkter
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringUtenlandsperiodeSelectors.arbeidetUtenlands
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringUtenlandsperiodeSelectors.fom
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringUtenlandsperiodeSelectors.landkode
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringUtenlandsperiodeSelectors.tom
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonForKnekkpunkterSelectors.vedGradertUttak
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonForKnekkpunkterSelectors.vedHeltUttak
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonForKnekkpunkterSelectors.vedNormertPensjonsalder
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.gradertUttakInformasjon
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.heltUttakInformasjon
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.kull
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.normertPensjonsalderPlassering
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.normertUttakInformasjon
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.sivilstatus
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringsinformasjonSelectors.utenlandsperioder
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringUtenlandsperiode.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringV1MaanedligAlderspensjonForKnekkpunkter.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringsinformasjon.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.Sivilstatus
-import no.nav.pensjon.brev.planleggepensjon.simulering.UttaksinformasjonSelectors.alder
-import no.nav.pensjon.brev.planleggepensjon.simulering.UttaksinformasjonSelectors.uttaksdato
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.uttaksinformasjon.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
@@ -82,24 +58,11 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
             }
         )
     }
-    ifNotNull(aarligInntektOgPensjonListe) {
-        title1 {
-            text(bokmal { +"Årlig inntekt og pensjon før skatt" })
-        }
-        paragraph {
-            text(bokmal { +"Eventuell tilvekst av alderspensjon er inkludert i beløpene" })
-        }
-        includePhrase(AarligInntektOgPensjonTabell(it))
-    }
-    title1 {text(
-        bokmal {
-            +"Månedlig pensjon før skatt"
-        }
-    )}
+
     ifNotNull(simulering.afpOffentligTidsbegrenset) { afp ->
         ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
             title2 {
-                text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
+                text(bokmal { +"Månedlig pensjon før skatt ved " + informasjon.alder.aar.format() + " år" })
                 showIf(informasjon.alder.maaneder greaterThan 1) {
                     text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
                 }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
@@ -109,7 +72,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
             }
         }.orShow {
             title2 {
-                text(bokmal { +"Ved gradert uttak" })
+                text(bokmal { +"Månedlig pensjon før skatt ved gradert uttak" })
             }
 
         }
@@ -120,7 +83,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         ifNotNull(knekkpunkter.vedGradertUttak) { gradertUttak ->
             ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
                 title2 {
-                    text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
+                    text(bokmal { +"Månedlig pensjon før skatt ved " + informasjon.alder.aar.format() + " år" })
                     showIf(informasjon.alder.maaneder greaterThan 1) {
                         text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
                     }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
@@ -130,7 +93,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
                 }
             }.orShow {
                 title2 {
-                    text(bokmal { +"Ved gradert uttak" })
+                    text(bokmal { +"Månedlig pensjon før skatt ved gradert uttak" })
                 }
             }
             includePhrase(AlderspensjonTabell(gradertUttak))
@@ -154,7 +117,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
                 ifNotNull(simuleringsinformasjon.normertUttakInformasjon) { informasjon ->
                     showIf(plassering.isOneOf(NormertPensjonsalderPlassering.MELLOM_GRADERT_OG_HELT)) {
                         title2 {
-                            text(bokmal { +"Ved 67 år (" + informasjon.uttaksdato + ")" })
+                            text(bokmal { +"Månedlig pensjon før skatt ved 67 år (" + informasjon.uttaksdato + ")" })
                         }
 
                         includePhrase(AlderspensjonTabell(normPensjonsalder))
@@ -173,7 +136,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         }
 
         title2 {
-            text(bokmal { +"Ved " + simuleringsinformasjon.heltUttakInformasjon.alder.aar.format() + " år" })
+            text(bokmal { +"Månedlig pensjon før skatt ved " + simuleringsinformasjon.heltUttakInformasjon.alder.aar.format() + " år" })
             showIf(simuleringsinformasjon.heltUttakInformasjon.alder.maaneder greaterThan 1) {
                 text(bokmal { +" og " + simuleringsinformasjon.heltUttakInformasjon.alder.maaneder.format() + " måneder" })
             }.orShowIf(simuleringsinformasjon.heltUttakInformasjon.alder.maaneder greaterThan 0) {
@@ -196,7 +159,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
             ifNotNull(simuleringsinformasjon.normertUttakInformasjon) { informasjon ->
                 showIf(plassering.isOneOf(NormertPensjonsalderPlassering.ETTER_HELT)) {
                     title2 {
-                        text(bokmal { +"Ved 67 år (" + informasjon.uttaksdato + ")" })
+                        text(bokmal { +"Månedlig pensjon før skatt ved 67 år (" + informasjon.uttaksdato + ")" })
                     }
                     ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
                         includePhrase(AlderspensjonTabell(normPensjonsalder))
@@ -210,6 +173,12 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
                 }
             }
         }
+    }
+    ifNotNull(aarligInntektOgPensjonListe) {
+        title2 {
+            text(bokmal { +"Årlig inntekt og pensjon" })
+        }
+        includePhrase(AarligInntektOgPensjonTabell(it))
     }
     ifNotNull(simulering.maanedligAlderspensjonForKnekkpunkter) { knekkpunkter ->
         title1 {
@@ -336,7 +305,6 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
                     }
                 }
             }
-            newline()
         }
     }
 
@@ -351,7 +319,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         )
     }
 
-    title1 {
+    title2 {
         text(bokmal { +"Forbehold" })
     }
 

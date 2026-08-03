@@ -1,19 +1,16 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.InntektFoerUfoereGjeldendeSelectors.erSannsynligEndret
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.UfoeretrygdGjeldendeSelectors.erKonvertert
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTDto.inntektFoerUfoereGjeldende.*
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.opplysningerBruktIBeregningUTDto.ufoeretrygdGjeldende.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 
 data class OpplysningerOmMinstetillegg(
@@ -66,18 +63,13 @@ data class OpplysningerOmMinstetillegg(
 
             title1 {
                 text(
-                    bokmal { + "Slik har vi fastsatt kompensasjonsgraden din" },
-                    nynorsk { + "Slik har vi fastsett kompensasjonsgraden din" },
+                    bokmal { + "Slik har vi fastsatt reduksjonsprosenten din" },
+                    nynorsk { + "Slik har vi fastsett reduksjonsprosenten din" },
                     english { + "This is your degree of compensation" }
                 )
             }
             includePhrase(VedleggBeregnUTKompGrad)
-
-            showIf(ufoeretrygdGjeldende.erKonvertert) {
-                includePhrase(VedleggBeregnUTKompGradGjsnttKonvUT)
-            }.orShow {
-                includePhrase(VedleggBeregnUTKompGradGjsntt)
-            }
+            includePhrase(VedleggBeregnUTKompGradGjsntt)
         }
     }
 
@@ -156,16 +148,9 @@ data class OpplysningerOmMinstetillegg(
                 list {
                     item {
                         text(
-                            bokmal { + "3,3 ganger grunnbeløpet dersom du lever sammen med ektefelle/partner/samboer. Samboerforholdet ditt må ha vart i minst 12 av de siste 18 månedene." },
-                            nynorsk { + "3,3 gonger grunnbeløpet dersom du lever saman med ektefelle/partnar/sambuar. Sambuarforholdet ditt må ha vart i minst 12 av dei siste 18 månadane." },
-                            english { + "3.3 times the National Insurance basic amount for individuals living with a spouse or partner, or in a cohabitant relationship that has lasted no less than 12 of the last 18 months." }
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { + "3,5 ganger grunnbeløpet dersom du er enslig." },
-                            nynorsk { + "3,5 gonger grunnbeløpet dersom du er einsleg." },
-                            english { + "3.5 times the National Insurance basic amount if you are single." }
+                            bokmal { + "3,5 ganger grunnbeløpet uavhengig av din sivilstand." },
+                            nynorsk { + "3,5 gonger grunnbeløpet uavhengig av din sivilstand." },
+                            english { + "3.5 times the National Insurance basic amount." }
                         )
                     }
                 }
@@ -177,8 +162,8 @@ data class OpplysningerOmMinstetillegg(
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 text(
-                    bokmal { + "Vi fastsetter kompensasjonsgraden ved å sammenligne det du har rett til i 100 prosent uføretrygd med din oppjusterte inntekt før du ble ufør. Kompensasjonsgraden brukes til å beregne hvor mye vi reduserer uføretrygden din, hvis du har inntekt som er høyere enn inntektsgrensen." },
-                    nynorsk { + "Vi fastset kompensasjonsgrad ved å samanlikna det du har rett til i 100 prosent uføretrygd med di oppjusterte inntekt før du blei ufør. Kompensasjonsgraden vert brukt til å rekna ut kor mykje vi reduserer uføretrygda di, dersom du har inntekt som er høgare enn inntektsgrensa." },
+                    bokmal { + "Vi fastsetter reduksjonsprosenten ved å sammenligne det du har rett til i 100 prosent uføretrygd med din oppjusterte inntekt før du ble ufør. Reduksjonsprosenten brukes til å beregne hvor mye vi reduserer uføretrygden din, hvis du har inntekt som er høyere enn inntektsgrensen. Reduksjonsprosenten kan ikke være høyere enn 70 prosent." },
+                    nynorsk { + "Vi fastset reduksjonsprosent ved å samanlikna det du har rett til i 100 prosent uføretrygd med di oppjusterte inntekt før du blei ufør. Reduksjonsprosenten vert brukt til å rekna ut kor mykje vi reduserer uføretrygda di, dersom du har inntekt som er høgare enn inntektsgrensa. Reduksjonsprosenten kan ikkje vere høgare enn 70 prosent." },
                     english { + "Your degree of compensation is established by comparing what you are entitled to with a degree of disability of 100 percent, and your recalculated income prior to your disability. The degree of compensation is used to calculate how much your disability benefit will be reduced if your income exceeds the income limit." }
                 )
             }
@@ -188,20 +173,9 @@ data class OpplysningerOmMinstetillegg(
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
                 text(
-                    bokmal { + "Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig kompensasjonsgrad i beregningen." },
-                    nynorsk { + "Dersom uføretrygda di i løpet av eit kalenderår vert endra, bruker vi ei gjennomsnittleg kompensasjonsgrad i utrekninga." },
+                    bokmal { + "Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig reduksjonsprosent i beregningen." },
+                    nynorsk { + "Dersom uføretrygda di i løpet av eit kalenderår vert endra, bruker vi ei gjennomsnittleg reduksjonsprosent i utrekninga." },
                     english { + "If your degree of compensation has changed over the course of a calendar year, your disability benefit payment will be recalculated based on your average degree of compensation." }
-                )
-            }
-    }
-
-    object VedleggBeregnUTKompGradGjsnttKonvUT : OutlinePhrase<LangBokmalNynorskEnglish>() {
-        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            paragraph {
-                text(
-                    bokmal { + "Kompensasjonsgraden skal ved beregningen ikke settes høyere enn 70 prosent. Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig kompensasjonsgrad i beregningen." },
-                    nynorsk { + "Kompensasjonsgraden skal ved utrekninga ikkje setjast høgare enn 70 prosent. Dersom uføretrygda di i løpet av eit kalenderår vert endra, bruker vi ei gjennomsnittleg kompensasjonsgrad i utrekning." },
-                    english { + "Your degree of compensation will not be set higher than 70 percent. If your degree of compensation has changed over the course of a calendar year, your disability benefit payment will be recalculated based on your average degree of compensation." }
                 )
             }
     }

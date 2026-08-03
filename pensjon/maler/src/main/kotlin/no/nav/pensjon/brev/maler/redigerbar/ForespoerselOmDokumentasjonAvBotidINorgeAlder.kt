@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDtoSelectors.SaksbehandlerValgSelectors.opplystOmBotid
-import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.forespoerselOmDokumentasjonAvBotidINorgeDto.saksbehandlerValg.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.forespoerselOmDokumentasjonAvBotidINorgeDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -15,9 +15,9 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.BrukerSelectors.foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.bruker
-import no.nav.pensjon.brevbaker.api.model.BrevbakerTypeSelectors.FoedselsnummerSelectors.value
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.*
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.*
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerType.foedselsnummer.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers

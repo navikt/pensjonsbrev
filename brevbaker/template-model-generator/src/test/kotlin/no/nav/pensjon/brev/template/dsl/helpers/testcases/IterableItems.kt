@@ -4,9 +4,9 @@ import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.brev.InternKonstruktoer
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.IterableItemsSelectors.CollectionItemSelectors.name
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.IterableItemsSelectors.IterableItemSelectors.name
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.IterableItemsSelectors.ListItemSelectors.name
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.iterableItems.collectionItem.*
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.iterableItems.iterableItem.*
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.iterableItems.listItem.*
 
 /**
  * Verify that selectors are generated for iterable item-types.

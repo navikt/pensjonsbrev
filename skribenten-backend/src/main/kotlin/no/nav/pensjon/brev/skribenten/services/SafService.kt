@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.databind.JsonNode
-import com.typesafe.config.Config
+import no.nav.pensjon.brev.skribenten.SafConfig
 import io.ktor.client.call.body
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -9,8 +9,10 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.Closeable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeoutOrNull
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
@@ -51,13 +53,15 @@ interface SafService {
 
 class SafServiceException(message: String) : ServiceException(message)
 
-class SafServiceHttp(config: Config, authService: AuthService) : SafService, ServiceStatus {
-    private val safUrl = config.getString("url")
-    private val safRestUrl = config.getString("rest_url")
-    private val safScope = config.getString("scope")
+class SafServiceHttp(config: SafConfig, authService: AuthService) : SafService, ServiceStatus, Closeable {
+    private val safUrl = config.url
+    private val safRestUrl = config.restUrl
+    private val safScope = config.scope
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    //TODO vurder å bruke en egen client for graphql: (https://opensource.expediagroup.com/graphql-kotlin/docs/client/client-overview/)
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, authService: AuthService): this(config.services.saf, authService)
+
     private val client = lagHttpClient {
         defaultRequest {
             url(safUrl)
@@ -175,4 +179,6 @@ class SafServiceHttp(config: Config, authService: AuthService) : SafService, Ser
 
     override suspend fun ping() =
         ping("SAF") { client.options("") }
+
+    override fun close() { client.close() }
 }

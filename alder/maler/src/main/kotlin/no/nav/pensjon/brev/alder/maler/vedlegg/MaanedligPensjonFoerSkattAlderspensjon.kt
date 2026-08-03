@@ -4,11 +4,9 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkatt.TabellM
 import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap19og20
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDto
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDtoSelectors.AlderspensjonGjeldendeSelectors.regelverkType
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDtoSelectors.KravSelectors.virkDatoFom
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDtoSelectors.alderspensjonGjeldende
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDtoSelectors.alderspensjonPerManed
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDtoSelectors.krav
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.maanedligPensjonFoerSkattAlderspensjonDto.alderspensjonGjeldende.*
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.maanedligPensjonFoerSkattAlderspensjonDto.krav.*
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.maanedligPensjonFoerSkattAlderspensjonDto.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.equalTo

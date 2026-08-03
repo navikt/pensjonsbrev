@@ -10,12 +10,7 @@ sealed class Language : StableHash {
         return this::class.qualifiedName!!
     }
 
-    fun locale(): Locale =
-        when (this) {
-            Bokmal -> Locale.forLanguageTag("no")
-            Nynorsk -> Locale.forLanguageTag("no")
-            English -> Locale.UK
-        }
+    fun locale(): Locale = this.toCode().locale()
 
     object Bokmal : Language(), StableHash by StableHash.of("Language.Bokmal")
     object

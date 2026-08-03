@@ -8,8 +8,8 @@ import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregning.*
+import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregningsperiode.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjonExpr
 

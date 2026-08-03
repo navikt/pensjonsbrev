@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.TemplateModelSelector
 import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.InterfaceAsModelSelectors.TheModelSelectors.fornavn
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.interfaceAsModel.theModel.*
 
 /**
  * Verify that it is possible to generate selectors when the model is an interface.
@@ -26,6 +26,6 @@ object InterfaceAsModel : HasModel<InterfaceAsModel.TheModel> {
         val expressionExtensionProperty: Expression<String> = Expression.Literal(object : TheModel {
             override val fornavn: String = "Jadda"
         }).fornavn
-        val actualSelector: TemplateModelSelector<TheModel, String> = InterfaceAsModelSelectors.TheModelSelectors.fornavnSelector
+        val actualSelector: TemplateModelSelector<TheModel, String> = fornavnSelector
     }
 }

@@ -65,7 +65,7 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
       const headerLiteral = colSpec.headerContent.text[literalIndex.cellContentIndex];
 
       if (isLiteral(headerLiteral)) {
-        headerLiteral.editedFontType = headerLiteral.editedFontType === fontType ? null : fontType;
+        headerLiteral.editedFontType = headerLiteral.editedFontType === fontType ? undefined : fontType;
       }
       draft.focus = { ...draft.focus, cursorPosition: 0 };
       draft.saveStatus = "DIRTY";
@@ -78,7 +78,7 @@ export const switchFontType: Action<LetterEditorState, [fontType: FontType]> = w
     const textContent = cell.text[literalIndex.cellContentIndex];
 
     if (isLiteral(textContent)) {
-      textContent.editedFontType = textContent.editedFontType === fontType ? null : fontType;
+      textContent.editedFontType = textContent.editedFontType === fontType ? undefined : fontType;
     }
 
     draft.focus = { ...draft.focus, cursorPosition: 0 };
@@ -247,6 +247,10 @@ const switchFontTypeOfMarkedText = (args: {
     editedText: textBeforeTheSelection,
     editedFontType: args.literal.editedFontType,
   });
+  // INTENTIONAL ID COPY when changesTheWholeLiteral: the replacement literal takes the original's
+  // id so the backend continues to track this element — the caller passes deletedContent: null in
+  // this branch, meaning the original is NOT recorded as deleted. addElements will un-delete the
+  // id if it was in deletedContent. Rule 1 exception: ID preservation during merge (see SKILL.md).
   const newThisLiteral = newLiteral({
     id: changesTheWholeLiteral ? args.literal.id : null,
     text: args.literal.text,
@@ -320,6 +324,8 @@ const switchFontTypeOfCurrentWord = (args: {
     editedText: textBeforeTheWord,
     editedFontType: args.literal.editedFontType,
   });
+  // INTENTIONAL ID COPY — same rationale as in switchFontTypeOfMarkedText above.
+  // Rule 1 exception: ID preservation during merge (see letter-editor-actions SKILL.md).
   const newThisLiteral = newLiteral({
     id: changesTheWholeLiteral ? args.literal.id : null,
     text: args.literal.text,

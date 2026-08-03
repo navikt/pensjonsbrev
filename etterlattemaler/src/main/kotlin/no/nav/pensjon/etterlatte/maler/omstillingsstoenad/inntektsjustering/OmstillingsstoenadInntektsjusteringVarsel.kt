@@ -12,10 +12,8 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDataSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDataSelectors.inntektsaar
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDataSelectors.virkningstidspunkt
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.selectors.aarligInntektsjusteringVedtakDTO.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.selectors.aarligInntektsjusteringVedtakData.*
 
 @TemplateModelHelpers
 object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInntektsjusteringVedtakDTO>,

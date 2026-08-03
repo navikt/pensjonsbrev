@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.skribenten.db
 
-import com.typesafe.config.ConfigFactory
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
+import no.nav.pensjon.brev.skribenten.services.NaisLeaderService
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.selectAll
@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test
 import java.util.concurrent.atomic.AtomicInteger
 
 class OneShotJobTest {
-    private val config = ConfigFactory.parseMap(mapOf("services.leader.url" to null))
     private val jobnameCounter = AtomicInteger(0)
 
     @BeforeAll
@@ -38,7 +37,7 @@ class OneShotJobTest {
         val name = jobName("test-job")
 
         runBlocking {
-            oneShotJobs(config) {
+            oneShotJobs(NaisLeaderService(null)) {
                 job(name) {
                     isExecuted = true
                 }
@@ -60,7 +59,7 @@ class OneShotJobTest {
         val name = jobName("no-duplicate-execution")
         fun aJob() {
             runBlocking {
-                oneShotJobs(config) {
+                oneShotJobs(NaisLeaderService(null)) {
                     job(name) {
                         executionCount++
                     }
@@ -80,7 +79,7 @@ class OneShotJobTest {
         val name = jobName("failing-job")
 
         fun failingJob() = runBlocking {
-            oneShotJobs(config) {
+            oneShotJobs(NaisLeaderService(null)) {
                 job(name) {
                     isExecuted = true
                     throw RuntimeException("Simulated failure")

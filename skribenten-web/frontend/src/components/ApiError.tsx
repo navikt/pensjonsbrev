@@ -3,7 +3,7 @@ import { Alert, BodyShort, Box, CopyButton, Heading, HGrid, HStack, VStack } fro
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 
-import { FAILURE_TYPES, type FailureType } from "~/types/apiTypes";
+import { type FailureType } from "~/types/apiTypes";
 import { logError } from "~/utils/logger";
 
 interface FunctionalErrorPayload {
@@ -64,7 +64,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
                 <div>
                   <span>{mapErrorMessage(error.message)}</span>
                   <span>
-                    Hvis det skjer igjen, trykk på knappen <i>Kopier ID</i> nedenfor og meld feil til oss i Teams.
+                    Hvis det skjer igjen, trykk på knappen <i>Kopier ID</i> nedenfor og meld feil til oss i Porten.
                   </span>
                 </div>
                 <Box asChild background="default" borderColor="neutral" borderRadius="4" borderWidth="1">
@@ -105,20 +105,27 @@ function mapErrorMessage(errorMessage: string) {
   return "";
 }
 
-function isOfFailureType(error: string): error is FailureType {
-  return FAILURE_TYPES.includes(error as FailureType);
+const FAILURE_TYPES = [
+  "EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT",
+  "EXSTREAM_REDIGERING_GENERELL",
+  "FERDIGSTILLING_TIMEOUT",
+  "SAF_ERROR",
+  "SKRIBENTEN_INTERNAL_ERROR",
+  "ENHET_UNAUTHORIZED",
+  "NAVANSATT_MANGLER_NAVN",
+] as const satisfies ReadonlyArray<NonNullable<FailureType>>;
+
+function isOfFailureType(error: string): error is NonNullable<FailureType> {
+  return FAILURE_TYPES.some((type) => type === error);
 }
 
 function mapFailureTypes(failureType: FailureType) {
   switch (failureType) {
-    case "EXSTREAM_BESTILLING_ADRESSE_MANGLER": {
-      return "Fant ikke adresse på brukeren.";
-    }
     case "EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT": {
       return "Mangler i data-grunnlaget til brukeren for å kunne bestille brevet.";
     }
     default: {
-      return "Teknisk feil.";
+      return `Teknisk feil: ${failureType}`;
     }
   }
 }

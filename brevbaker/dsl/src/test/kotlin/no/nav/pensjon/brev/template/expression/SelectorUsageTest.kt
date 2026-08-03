@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template.expression
 
-import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
@@ -29,7 +28,6 @@ class SelectorUsageTest {
         override val selector: RotModel.() -> AModel? = RotModel::aModel
     }
 
-    @OptIn(InterneDataklasser::class)
     private fun TemplateModelSelector<*, *>.usageId(): Property =
         LetterMarkupWithDataUsageImpl.PropertyImpl(typeName = this.className, propertyName = this.propertyName)
 

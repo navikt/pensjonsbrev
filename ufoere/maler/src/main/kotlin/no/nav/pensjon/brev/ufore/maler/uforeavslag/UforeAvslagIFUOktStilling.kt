@@ -7,16 +7,15 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_IFU_OKT_STILLING
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.vurdering
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.saksbehandlervalg.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.uforeAvslagPendata.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
@@ -47,8 +46,8 @@ object UforeAvslagIFUOktStilling : RedigerbarTemplate<UforeAvslagEnkelDto> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om å endre inntektsgrensen din, som vi fikk den " + pesysData.kravMottattDato.format() + "." },
-                    nynorsk { +"Vi har avslått søknaden din om å endre inntektsgrensa di, som vi fekk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om å endre inntektsgrensen din, som vi fikk den " + pesysData.kravFremsattDato.ifNull(pesysData.kravMottattDato).format() + "." },
+                    nynorsk { +"Vi har avslått søknaden din om å endre inntektsgrensa di, som vi fekk den " + pesysData.kravFremsattDato.ifNull(pesysData.kravMottattDato).format() + "." })
             }
             title1 {
                 text(bokmal { + "Derfor endrer vi ikke inntektsgrensen din"},
@@ -84,8 +83,8 @@ object UforeAvslagIFUOktStilling : RedigerbarTemplate<UforeAvslagEnkelDto> {
                     nynorsk { + "Du oppfyller ikkje vilkåret for å endre inntektsgrensa, og vi avslår derfor søknaden din."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-9 og forskrift om uføretrygd fra folketrygden § 2-2." },
-                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova § 12-9 og forskrift om uføretrygd frå folketrygda § 2-2." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-9 og forskrift om uføretrygd fra folketrygden § 2-3." },
+                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova § 12-9 og forskrift om uføretrygd frå folketrygda § 2-3." })
             }
 
             includePhrase(Felles.RettTilAKlageLang)

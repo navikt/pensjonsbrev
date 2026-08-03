@@ -12,6 +12,7 @@ class DocumentEntity(id: EntityID<Long>) : LongEntity(id) {
     var pdf by DocumentTable.pdfKryptert
     var redigertBrevHash by DocumentTable.redigertBrevHash
     var brevdataHash by DocumentTable.brevdataHash
+    var vedleggHash by DocumentTable.vedleggHash
 
     companion object : LongEntityClass<DocumentEntity>(DocumentTable)
 
@@ -20,7 +21,8 @@ class DocumentEntity(id: EntityID<Long>) : LongEntity(id) {
             dokumentDato = dokumentDato,
             pdf = pdf,
             redigertBrevHash = redigertBrevHash,
-            brevdataHash = brevdataHash
+            brevdataHash = brevdataHash,
+            vedleggHash = vedleggHash
         )
 }
 

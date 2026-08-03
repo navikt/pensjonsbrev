@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
+import no.nav.pensjon.brev.alder.model.afp.AfpPeriode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
@@ -16,7 +17,7 @@ fun createVedtakAfpEtteroppgjoerIngenEndringAutoDto(): VedtakAfpEtteroppgjoerIng
         avvik = Kroner(12_500),
         uttaksdato = LocalDate.of(2024, 4, 1),
         opphorsdato = LocalDate.of(2024, 11, 30),
-        periode = VedtakAfpEtteroppgjoerIngenEndringAutoDto.Periode.UTTAK_OG_OPPHOER_I_AARET,
+        periode = AfpPeriode.UTTAK_OG_OPPHOER_I_AARET,
         medlemAvApotekerordningen = false,
         toleranseBeloep = Kroner(15001),
     )

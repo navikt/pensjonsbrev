@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.alder.maler.aldersovergang
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAldersovergangEps60AarAutoDto
-import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAldersovergangEps60AarAutoDtoSelectors.ytelse
+import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.infoAldersovergangEps60AarAutoDto.*
 import no.nav.pensjon.brev.alder.model.aldersovergang.Ytelse
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language

@@ -6,13 +6,13 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDataSelectors.innholdForhaandsvarsel as innholdForhaandsvarselOpphoer
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.selectors.barnepensjonOpphoerData.innholdForhaandsvarsel as innholdForhaandsvarselOpphoer
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDataSelectors.innholdForhaandsvarsel as innholdForhaandsvarselRevurdering
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.selectors.barnepensjonRevurderingData.innholdForhaandsvarsel as innholdForhaandsvarselRevurdering
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.data as dataOpphoer
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.data as dataRevurdering
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.selectors.barnepensjonOpphoerDTO.data as dataOpphoer
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.selectors.barnepensjonRevurderingDTO.data as dataRevurdering
 
 
 @TemplateModelHelpers

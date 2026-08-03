@@ -1,10 +1,9 @@
 package no.nav.pensjon.brev.maler.alder.omregning.opptjening
 
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.BeregningKap20VedVirkSelectors.nyOpptjening
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto.beregnetPensjonPerManedVedVirk.*
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto.beregningKap20VedVirk.*
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto.trygdetidsdetaljerKap20VedVirk.*
 import no.nav.pensjon.brev.maler.fraser.common.AntallAarText
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak

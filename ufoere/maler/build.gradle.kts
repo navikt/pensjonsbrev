@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val ufoereApiModelVersion = 80
+val ufoereApiModelVersion = 83
 
 val apiModelJavaTarget: String by System.getProperties()
 
@@ -25,6 +25,7 @@ dependencies {
 
     testImplementation(libs.bundles.junit)
     testImplementation(testFixtures(project(":brevbaker:core")))
+    testImplementation(testFixtures(project(":brevbaker:dsl")))
 }
 
 tasks.test {

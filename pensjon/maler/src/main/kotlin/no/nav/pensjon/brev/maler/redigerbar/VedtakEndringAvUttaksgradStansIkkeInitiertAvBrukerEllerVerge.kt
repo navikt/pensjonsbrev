@@ -6,14 +6,11 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.SaksbehandlerValg.Aarsak
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.KravSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.PesysDataSelectors.krav
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.SaksbehandlerValgSelectors.aarsak
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.alderspensjonVedVirk.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.krav.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.saksbehandlerValg.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
@@ -87,7 +84,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
             }
 
             // stansAPUTgradBegrunn_001_]
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
             paragraph {
                 text(
                     bokmal { + "Du har ikke lenger rett til å ta ut alderspensjon fordi uføregraden din er høyere enn 80 prosent. Vi har derfor stanset alderspensjonen din." },

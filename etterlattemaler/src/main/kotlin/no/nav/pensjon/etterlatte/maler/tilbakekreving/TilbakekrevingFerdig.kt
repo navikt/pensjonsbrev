@@ -17,19 +17,10 @@ import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.fradragSkatt
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.brukerNavn
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.datoTilsvarBruker
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.datoVarselEllerVedtak
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.doedsbo
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.sakType
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.tilbakekreving
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.varsel
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.skalTilbakekreve
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.summer
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.selectors.tilbakekrevingBeloeper.*
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.selectors.tilbakekrevingBrevDTO.*
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.selectors.tilbakekrevingBrevData.*
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.selectors.tilbakekrevingDTO.*
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 import java.time.LocalDate
 

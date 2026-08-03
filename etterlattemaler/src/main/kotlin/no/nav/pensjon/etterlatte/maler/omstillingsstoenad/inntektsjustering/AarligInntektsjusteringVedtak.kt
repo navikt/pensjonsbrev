@@ -20,22 +20,15 @@ import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
+import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregning.*
+import no.nav.pensjon.etterlatte.maler.selectors.omstillingsstoenadBeregningsperiode.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser.Utbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDataSelectors.beregning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDataSelectors.endringIUtbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDataSelectors.harUtbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDataSelectors.informasjonOmOmstillingsstoenadData
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDataSelectors.inntektsaar
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDataSelectors.omsRettUtenTidsbegrensning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDataSelectors.tidligereFamiliepleier
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.selectors.aarligInntektsjusteringVedtakDTO.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.selectors.aarligInntektsjusteringVedtakData.*
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
@@ -152,12 +145,12 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
             }
 
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = false),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true),
                 data.beregning,
                 data.tidligereFamiliepleier,
             )
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = false),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false),
                 data.beregning,
                 data.tidligereFamiliepleier.not(),
             )

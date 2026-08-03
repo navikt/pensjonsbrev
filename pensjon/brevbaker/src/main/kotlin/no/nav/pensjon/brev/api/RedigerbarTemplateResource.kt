@@ -7,11 +7,12 @@ import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppenderImpl
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brevbaker.api.model.RedigerbareVedleggTitler
 
 class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
     override val name: String,
@@ -19,7 +20,7 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     pdfByggerService: PDFByggerService,
     val alltidValgbareVedlegg: Set<AlltidValgbartVedlegg<*>>,
 ) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>, TemplateLibrary<Kode, T> by TemplateLibraryImpl(templates) {
-    private val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl)
+    private val brevbaker = Brevbaker(pdfByggerService)
     private val letterFactory: LetterFactory<Kode> = LetterFactory(alltidValgbareVedlegg)
 
     override fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
@@ -28,11 +29,22 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     fun renderLetterMarkupWithDataUsage(brevbestilling: BestillBrevRequest<Kode>): LetterMarkupWithDataUsage =
         brevbaker.renderLetterMarkupWithDataUsage(createLetter(brevbestilling))
 
+    fun renderRedigerbareVedleggTitler(brevbestilling: BestillBrevRequest<Kode>): RedigerbareVedleggTitler =
+        RedigerbareVedleggTitler(
+            brevbaker.renderRedigerbartVedleggTitler(createLetter(brevbestilling))
+                .map { (vedleggId, tittel) ->
+                    RedigerbareVedleggTitler.Vedlegg(vedleggId, tittel.joinToString("") { it.text })
+                }
+        )
+
+    fun renderRedigerbartVedleggMarkup(brevbestilling: BestillBrevRequest<Kode>, vedleggId: String): LetterMarkup.Attachment? =
+        brevbaker.renderRedigerbartVedleggMarkup(createLetter(brevbestilling), VedleggId(vedleggId))
+
     override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
-        brevbaker.renderRedigertBrevPDF(createLetter(brevbestilling), brevbestilling.letterMarkup)
+        brevbaker.renderRedigertBrevPDF(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg, brevbestilling.pdfVedlegg)
 
     override fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
-        brevbaker.renderRedigertBrevHTML(createLetter(brevbestilling), brevbestilling.letterMarkup)
+        brevbaker.renderRedigertBrevHTML(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg)
 
     private fun createLetter(brevbestilling: BestillBrevRequest<Kode>) =
         letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))

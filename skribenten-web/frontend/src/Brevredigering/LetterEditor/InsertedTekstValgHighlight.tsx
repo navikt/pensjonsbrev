@@ -11,9 +11,7 @@ import {
   type EditedLetter,
   type Identifiable,
   type Item,
-  LITERAL,
   type TextContent,
-  VARIABLE,
 } from "~/types/brevbakerTypes";
 
 const EMPTY_HIGHLIGHTED_IDS: ReadonlySet<number> = new Set();
@@ -31,10 +29,10 @@ export const InsertedTekstValgHighlightProvider = ({
 export const useInsertedTekstValgHighlight = () => useContext(InsertedTekstValgHighlightContext);
 
 export const isTekstValgHighlighted = (highlightedIds: ReadonlySet<number>, element: Identifiable): boolean =>
-  element.id !== null && highlightedIds.has(element.id);
+  typeof element.id === "number" && highlightedIds.has(element.id);
 
 const addId = (ids: Set<number>, element: Identifiable) => {
-  if (element.id !== null) ids.add(element.id);
+  if (typeof element.id === "number") ids.add(element.id);
 };
 
 const collectTextContentIds = (ids: Set<number>, textContents: readonly TextContent[]) => {
@@ -114,8 +112,8 @@ export const hasAnyTekstvalgBeenToggledOn = (
 };
 
 const lengthOfText = (textContent: TextContent): number => {
-  if (textContent.type === LITERAL) return (textContent.editedText ?? textContent.text).length;
-  if (textContent.type === VARIABLE) return textContent.text.length;
+  if (textContent.type === "LITERAL") return (textContent.editedText ?? textContent.text).length;
+  if (textContent.type === "VARIABLE") return textContent.text.length;
   return 0;
 };
 

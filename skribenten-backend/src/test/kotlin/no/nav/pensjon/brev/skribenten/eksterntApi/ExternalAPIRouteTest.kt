@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.eksterntApi
 
-import com.typesafe.config.ConfigValueFactory
+import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
@@ -13,18 +13,20 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.basic
+import io.ktor.server.plugins.di.dependencies
+import io.ktor.server.routing.routing
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
-import no.nav.pensjon.brev.skribenten.auth.JwtConfig
-import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
-import no.nav.pensjon.brev.skribenten.brevredigering.application.OpprettBrevService
-import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OpprettBrevHandlerImpl
+import no.nav.pensjon.brev.skribenten.auth.AUTHENTICATION_REALM_NAME
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevForAlleSakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
+import no.nav.pensjon.brev.skribenten.common.Cache
+import no.nav.pensjon.brev.skribenten.common.InMemoryCache
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
@@ -32,14 +34,14 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
-import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
-import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
+import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
-import no.nav.pensjon.brev.skribenten.serialize.Sakstype
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
+import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.FakeBrevbakerService
 import no.nav.pensjon.brev.skribenten.services.FakeBrevmetadataService
@@ -61,17 +63,6 @@ class ExternalAPIRouteTest {
 
     private val creds = BasicAuthCredentials("test", "123")
     private val navIdent = NavIdent("testSaksbehandler")
-    private val authConfigName = "test-auth"
-    private val jwtConfig = JwtConfig(
-        name = authConfigName,
-        issuer = "issuer",
-        jwksUrl = "https://example.com/jwks",
-        clientId = "clientId",
-        tokenUri = "https://example.com/token",
-        clientSecret = "secret",
-        preAuthorizedApps = emptyList(),
-        requireAzureAdClaims = false
-    )
 
     private val brevInfo = Dto.BrevInfo(
         id = BrevId(42L),
@@ -85,20 +76,21 @@ class ExternalAPIRouteTest {
         sistReservert = null,
         brevkode = Testbrevkoder.INFORMASJONSBREV,
         laastForRedigering = false,
-        distribusjonstype = Distribusjonstype.SENTRALPRINT,
+        distribusjonstype = Distribusjon.SENTRALPRINT,
         mottaker = null,
         avsenderEnhetId = EnhetId("0001"),
         spraak = LanguageCode.BOKMAL,
         journalpostId = null,
         attestertAv = null,
-        status = Dto.BrevStatus.KLADD
+        status = Dto.BrevStatus.KLADD,
+        leggVedFoersteside = false,
     )
 
     private val successBrevredigering = Dto.Brevredigering(
         info = brevInfo,
         redigertBrev = editedLetter(),
         redigertBrevHash = Hash("abc"),
-        saksbehandlerValg = Api.GeneriskBrevdata(),
+        saksbehandlerValg = SaksbehandlervalgMap(),
         propertyUsage = null,
         valgteVedlegg = null
     )
@@ -112,24 +104,19 @@ class ExternalAPIRouteTest {
         }
     """.trimIndent()
 
-    private val hentBrevService = object : HentBrevService {
-        override fun hentBrevForAlleSaker(saksIder: Set<SaksId>) = listOf(brevInfo)
-        override fun hentBrevInfo(brevId: BrevId) = brevInfo
-    }
+    private val hentBrevForAlleSaker = HentBrevForAlleSakerService { Outcome.success(listOf(brevInfo)) }
 
     private fun lagExternalAPIService(
         opprettBrevResult: Outcome<Dto.Brevredigering, BrevredigeringError> = Outcome.success(successBrevredigering)
     ) = ExternalAPIService(
-        config = ConfigValueFactory.fromMap(mapOf("skribentenWebUrl" to "https://example.com")).toConfig(),
-        hentBrevService = hentBrevService,
+        config = ExternalApiConfig(skribentenWebUrl = "https://example.com"),
+        hentBrevForAlleSaker = hentBrevForAlleSaker,
         brevmalService = BrevmalService(
             brevbakerService = FakeBrevbakerService(),
             penClient = PenClientStub(),
             brevmetadataService = FakeBrevmetadataService(),
         ),
-        opprettBrevService = object : OpprettBrevService {
-            override suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request) = opprettBrevResult
-        }
+        opprettBrevHandler = { opprettBrevResult }
     )
 
     private fun routeTestApplication(
@@ -138,7 +125,7 @@ class ExternalAPIRouteTest {
         block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit,
     ): Unit = testApplication {
         install(Authentication) {
-            basic(authConfigName) {
+            basic(AUTHENTICATION_REALM_NAME) {
                 validate {
                     if (it.name == creds.username && it.password == creds.password) principal else null
                 }
@@ -146,13 +133,32 @@ class ExternalAPIRouteTest {
         }
         application {
             skribentenContenNegotiation()
-        }
-        routing {
-            externalAPI(jwtConfig, externalAPIService, object : PdlServiceStub() {
-                override suspend fun hentAdressebeskyttelse(ident: BrevbakerType.Pid, behandlingsnumre: List<Behandlingsnummer>) = null
-            }, FagsakService(object : PenClientStub() {
-                override suspend fun hentSak(saksId: SaksId) = Pen.SakSelection(saksId, LocalDate.now(), Pen.SakSelection.Navn("fornavn1", mellomnavn = null, "etternavn2"), Sakstype("hei"), BrevbakerType.Pid("123"), listOf())
-            }))
+            dependencies {
+                provide { externalAPIService }
+                provide {
+                    object : PdlServiceStub() {
+                        override suspend fun hentAdressebeskyttelse(ident: BrevbakerType.Pid, behandlingsnumre: List<Behandlingsnummer>) = null
+                    }
+                }
+                provide {
+                    FagsakService(
+                        object : PenClientStub() {
+                            override suspend fun hentSak(saksId: SaksId) = Pen.SakSelection(
+                                saksId = saksId,
+                                foedselsdato = LocalDate.now(),
+                                navn = Pen.SakSelection.Navn("fornavn1", mellomnavn = null, "etternavn2"),
+                                sakType = Sakstype("hei"),
+                                pid = BrevbakerType.Pid("123"),
+                                behandlingsnumre = listOf()
+                            )
+                        }
+                    )
+                }
+                provide<Cache> { InMemoryCache() }
+            }
+            routing {
+                externalAPI()
+            }
         }
 
         val client = createClient {

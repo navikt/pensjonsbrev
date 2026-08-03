@@ -8,18 +8,9 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevendere
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto.HvorBorBruker
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto.VilkarForGjenlevendeytelsen.GJENLEVENDE_EPS
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto.VilkarForGjenlevendeytelsen.GJENLEVENDE_SKILT
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.gjenlevendesAlder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.sakstype
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.gjenlevendeHarBarnUnder18MedAvdoed
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.gjenlevenderHarEllerKanHaAFPIOffentligSektor
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.gjenlevevendeHarAfpOgUttaksgradPaaApSattTilNull
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.hvorBorBruker
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.infoHvordanSoekeOmstillingsstoenad
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.infoOmstillingsstoenad
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.infoVilkaarSkiltGjenlevende
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.vilkarForGjenlevendeytelsen
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.informasjonOmGjenlevenderettigheterDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.informasjonOmGjenlevenderettigheterDto.saksbehandlerValg.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.informasjonOmGjenlevenderettigheterDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON_GJENLEVENDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -215,7 +206,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                             english { +"If you were divorced from the deceased, and have not remarried, you may be entitled to a survivor's rights in a retirement pension. You must then have been married for at least 25 years, or at least 15 years if you had children together. The death must have occurred within 5 years after the divorce." },
                         )
                     }
-                    includePhrase(Felles.DuKanLeseMer)
+                    includePhrase(Felles.DuKanLeseMer(uniqueness = "gjenlevende_skilt"))
                 }
             }
             showIf(pesysData.sakstype.isOneOf(UFOREP)) {
@@ -291,7 +282,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     or saksbehandlerValg.infoHvordanSoekeOmstillingsstoenad
                     or saksbehandlerValg.infoVilkaarSkiltGjenlevende
                 )) {
-                includePhrase(Felles.DuKanLeseMer)
+                includePhrase(Felles.DuKanLeseMer(uniqueness = "uforep_omstillingsstoenad"))
             }
             showIf(pesysData.sakstype.isOneOf(UFOREP, ALDER)
                     and saksbehandlerValg.gjenlevendeHarBarnUnder18MedAvdoed) {
@@ -318,7 +309,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                         )
                     }
                 }
-                includePhrase(Felles.DuKanLeseMer)
+                includePhrase(Felles.DuKanLeseMer(uniqueness = "barn_under_18"))
             }
 
             showIf(pesysData.gjenlevendesAlder.lessThan(67).and(pesysData.gjenlevendesAlder.greaterThanOrEqual(61))) {

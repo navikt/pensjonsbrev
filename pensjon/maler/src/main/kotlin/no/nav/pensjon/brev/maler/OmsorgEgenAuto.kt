@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
-import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.aarEgenerklaringOmsorgspoeng
-import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.aarInnvilgetOmsorgspoeng
-import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.egenerklaeringOmsorgsarbeidDto
+import no.nav.pensjon.brev.api.model.maler.selectors.omsorgEgenAutoDto.*
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.OmsorgEgenerklaeringOutline
 import no.nav.pensjon.brev.maler.fraser.OmsorgEgenerklaeringTittel

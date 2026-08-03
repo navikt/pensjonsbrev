@@ -11,11 +11,9 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagForverrelseEtter26Dto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagForverrelseEtter26DtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagForverrelseEtter26DtoSelectors.SaksbehandlervalgSelectors.visForverrelseEtter26
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagForverrelseEtter26DtoSelectors.UforeAvslagPendataSelectors.vurdering
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagForverrelseEtter26DtoSelectors.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagForverrelseEtter26DtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagForverrelseEtter26Dto.saksbehandlervalg.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagForverrelseEtter26Dto.uforeAvslagPendata.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagForverrelseEtter26Dto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk

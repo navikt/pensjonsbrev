@@ -14,9 +14,8 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import java.time.LocalDate
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDataSelectors.borINorgeEllerIkkeAvtaleland
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDataSelectors.mottattDato
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.selectors.omstillingsstoenadMottattSoeknadDTO.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.selectors.omstillingsstoenadMottattSoeknadData.*
 
 data class OmstillingsstoenadMottattSoeknadData(
     val mottattDato: LocalDate,

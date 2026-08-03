@@ -1,0 +1,7 @@
+Alderspensjon:
+  - changed-files:
+      - any-glob-to-any-file: "alder/**"
+
+Uføre:
+  - changed-files:
+      - any-glob-to-any-file: "ufoere/**"

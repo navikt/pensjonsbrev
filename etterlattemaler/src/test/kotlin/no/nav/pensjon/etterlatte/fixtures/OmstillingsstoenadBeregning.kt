@@ -12,16 +12,10 @@ import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import java.time.LocalDate
 
-fun createTomOmstillingsstoenadBeregningRedigerbartVedlegg(): OmstillingsstoenadBeregningRedigerbartVedlegg {
-    return OmstillingsstoenadBeregningRedigerbartVedlegg(
-        data = null
-    )
-}
 
 fun createOmstillingsstoenadBeregningRedigerbartVedlegg(): OmstillingsstoenadBeregningRedigerbartVedlegg {
         return OmstillingsstoenadBeregningRedigerbartVedlegg(
         data = OmstillingsstoenadBeregningRedigerbartVedleggData(
-        innhold = emptyList(),
         omstillingsstoenadBeregning = OmstillingsstoenadBeregning(
             innhold = emptyList(),
             virkningsdato = LocalDate.of(2020,1,1),

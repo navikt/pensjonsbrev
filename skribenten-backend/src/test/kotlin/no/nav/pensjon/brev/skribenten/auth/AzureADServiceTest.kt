@@ -9,6 +9,7 @@ import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.skribenten.AzureADConfig
 import no.nav.pensjon.brev.skribenten.common.InMemoryCache
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
@@ -41,7 +42,7 @@ private val fakeJwtPayload = object : Payload {
 }
 
 class AzureADServiceTest {
-    private val jwtConfig = JwtConfig("navn", "utsteder", "jwks url", "skribenten-client-id", "http://localhost:9991/token", "skribenten-secret", emptyList(), true)
+    private val jwtConfig = AzureADConfig("utsteder", "jwks url", "skribenten-client-id", "http://localhost:9991/token", "skribenten-secret", emptyList())
     private val objectMapper = jacksonObjectMapper()
     private val principal = JwtUserPrincipal(UserAccessToken("access_token 123532"), fakeJwtPayload)
 

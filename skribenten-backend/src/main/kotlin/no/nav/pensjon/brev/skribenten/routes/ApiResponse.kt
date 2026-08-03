@@ -8,10 +8,11 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 @JvmName("apiRespondBrevredigering")
-suspend fun RoutingContext.apiRespond(
+suspend inline fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<Dto.Brevredigering, BrevredigeringError>?,
     successStatus: HttpStatusCode = HttpStatusCode.OK,
@@ -22,7 +23,7 @@ suspend fun RoutingContext.apiRespond(
 }
 
 @JvmName("apiRespondBrevInfo")
-suspend fun RoutingContext.apiRespond(
+suspend inline fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<Dto.BrevInfo, BrevredigeringError>?,
     successStatus: HttpStatusCode = HttpStatusCode.OK,
@@ -33,7 +34,7 @@ suspend fun RoutingContext.apiRespond(
 }
 
 @JvmName("apiRespondHentDocumentResult")
-suspend fun RoutingContext.apiRespond(
+suspend inline fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<Dto.HentDocumentResult, BrevredigeringError>?,
     successStatus: HttpStatusCode = HttpStatusCode.OK,
@@ -44,7 +45,7 @@ suspend fun RoutingContext.apiRespond(
 }
 
 @JvmName("apiRespondReservasjon")
-suspend fun RoutingContext.apiRespond(
+suspend inline fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<Reservasjon, BrevredigeringError>?,
     successStatus: HttpStatusCode = HttpStatusCode.OK,
@@ -55,7 +56,7 @@ suspend fun RoutingContext.apiRespond(
 }
 
 @JvmName("apiRespondSendBrevResult")
-suspend fun RoutingContext.apiRespond(
+suspend inline fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<Dto.SendBrevResult, BrevredigeringError>?,
     successStatus: HttpStatusCode = HttpStatusCode.OK,
@@ -66,7 +67,7 @@ suspend fun RoutingContext.apiRespond(
 }
 
 @JvmName("apiRespondNoContent")
-suspend fun RoutingContext.apiRespond(
+suspend inline fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<Unit, BrevredigeringError>?
 ) {
@@ -75,9 +76,19 @@ suspend fun RoutingContext.apiRespond(
     }
 }
 
-private val logger = LoggerFactory.getLogger("ApiResponse")
+val apiRespondLogger: Logger = LoggerFactory.getLogger("ApiResponse")
 
-suspend fun <T> RoutingContext.respondOutcome(
+suspend inline fun <T> RoutingContext.respondSuccess(
+    outcome: Outcome.Success<T>?,
+    successResponse: suspend RoutingCall.(T) -> Unit,
+) {
+    when (outcome) {
+        is Outcome.Success -> call.successResponse(outcome.value)
+        null -> call.respond(HttpStatusCode.NotFound)
+    }
+}
+
+suspend inline fun <T> RoutingContext.respondOutcome(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<T, BrevredigeringError>?,
     successResponse: suspend RoutingCall.(T) -> Unit
@@ -86,7 +97,7 @@ suspend fun <T> RoutingContext.respondOutcome(
         is Outcome.Success -> call.successResponse(outcome.value)
 
         is Outcome.Failure -> {
-            logger.info("Outcome failure: $outcome")
+            apiRespondLogger.info("Outcome failure: $outcome")
 
             when (outcome.error) {
                 is BrevreservasjonPolicy.ReservertAvAnnen ->
@@ -99,17 +110,14 @@ suspend fun <T> RoutingContext.respondOutcome(
                 is RedigerBrevPolicy.KanIkkeRedigere.IkkeReservert ->
                     call.respond(HttpStatusCode.Conflict, "Brev er ikke reservert for redigering av deg")
 
-                is SlettBrevPolicy.KanIkkeSlette.ArkivertBrev ->
-                    call.respond(HttpStatusCode.Conflict, "Kan ikke slette arkivert brev med journalpostId: ${outcome.error.journalpostId}")
-
                 is RedigerBrevPolicy.KanIkkeRedigere.LaastBrev ->
                     call.respond(HttpStatusCode.Locked, "Brev er låst for redigering")
 
                 is BrevmalFinnesIkke ->
-                    call.respond(HttpStatusCode.BadRequest, "Brevmal finnes ikke: ${outcome.error.brevkode}")
+                    call.respond(HttpStatusCode.BadRequest, "Brevmal finnes ikke: ${outcome.error.brevkode.kode()}")
 
                 is OpprettBrevPolicy.KanIkkeOppretteBrev.BrevmalKreverVedtaksId ->
-                    call.respond(HttpStatusCode.BadRequest, "Brevmal krever vedtaksId: ${outcome.error.brevkode}")
+                    call.respond(HttpStatusCode.BadRequest, "Brevmal krever vedtaksId: ${outcome.error.brevkode.kode()}")
 
                 is OpprettBrevPolicy.KanIkkeOppretteBrev.IkkeTilgangTilEnhet ->
                     call.respond(HttpStatusCode.BadRequest, "Ikke tilgang til enhet: ${outcome.error.enhetsId}")
@@ -117,7 +125,15 @@ suspend fun <T> RoutingContext.respondOutcome(
                 is FerdigRedigertPolicy.IkkeFerdigRedigert.FritekstFelterUredigert ->
                     call.respond(
                         status = HttpStatusCode.UnprocessableEntity,
-                        message = BrevExceptionDto(tittel = "Brev ikke klart", melding = "Brevet inneholder fritekst-felter som ikke er endret. Det gjelder følgende felt: ${outcome.error.ikkeredigerteFritekstfelter.joinToString(", ") { it.text.take(20) }}")
+                        message = BrevExceptionDto(
+                            tittel = "Brev ikke klart",
+                            melding = "Brevet inneholder fritekst-felter som ikke er endret. Det gjelder følgende felt: " +
+                                outcome.error.ikkeredigerteFritekstfelter.joinToString(", ") { field ->
+                                    val makslengde = 20
+                                    val tekst = field.text.let { if (it.length > makslengde) it.take(makslengde) + "..." else it }
+                                    "\"$tekst\""
+                                }
+                        )
                     )
 
                 is FerdigRedigertPolicy.IkkeFerdigRedigert.DuplikatAvsnittUhaandtert ->
@@ -155,6 +171,11 @@ suspend fun <T> RoutingContext.respondOutcome(
                         status = HttpStatusCode.UnprocessableEntity,
                         message = BrevExceptionDto(tittel = "Brev ikke klart til sending", melding = "Vedtaksbrev ${outcome.error.brevId} er ikke attestert")
                     )
+
+                is IngenFoersteside -> call.respond(
+                    status = HttpStatusCode.InternalServerError,
+                    message = "Klarte ikke generere førsteside for ${outcome.error.brevId}"
+                )
             }
         }
 

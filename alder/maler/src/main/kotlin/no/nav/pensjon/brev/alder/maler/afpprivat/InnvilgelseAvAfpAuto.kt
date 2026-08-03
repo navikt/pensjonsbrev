@@ -4,15 +4,8 @@ import no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpInnhold
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDto
-import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.AfpBeregningSelectors.kompensasjonstilleggBrutto
-import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.AfpBeregningSelectors.kronetilleggBrutto
-import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.AfpBeregningSelectors.livsvarigBrutto
-import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.AfpBeregningSelectors.totalPensjon
-import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.afpBeregning
-import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.bosattINorge
-import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.brukerUnder70Aar
-import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.kravMottattDato
-import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDtoSelectors.virkningFom
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpAutoDto.afpBeregning.*
+import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpAutoDto.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk

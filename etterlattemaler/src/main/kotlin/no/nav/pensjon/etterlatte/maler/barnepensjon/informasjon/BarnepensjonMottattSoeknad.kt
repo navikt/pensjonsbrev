@@ -13,11 +13,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDataSelectors.borINorgeEllerIkkeAvtaleland
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDataSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDataSelectors.erOver18aar
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonMottattSoeknadDataSelectors.mottattDato
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.selectors.barnepensjonMottattSoeknadDTO.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.selectors.barnepensjonMottattSoeknadData.*
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import java.time.LocalDate
 

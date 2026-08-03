@@ -4,9 +4,7 @@ import no.nav.pensjon.brev.api.model.Institusjon.*
 import no.nav.pensjon.brev.api.model.Sivilstand.ENKE
 import no.nav.pensjon.brev.api.model.Sivilstand.ENSLIG
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAfpDto
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAfpDtoSelectors.bruker_borINorge
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAfpDtoSelectors.bruker_sivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAfpDtoSelectors.institusjon_gjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.orienteringOmRettigheterAfpDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.vedlegg.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -15,8 +13,8 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.NavEnhetSelectors.telefonnummer
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.*
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.*
 import no.nav.pensjon.brev.template.dsl.text
 
 // Conditional for showing the attachment is: sakstype = AFP && vedtakResultat = INNVL

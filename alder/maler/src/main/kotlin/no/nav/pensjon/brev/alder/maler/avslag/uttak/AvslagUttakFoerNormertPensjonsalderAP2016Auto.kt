@@ -2,18 +2,8 @@ package no.nav.pensjon.brev.alder.maler.avslag.uttak
 
 import no.nav.pensjon.brev.alder.maler.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDto
-import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.afpBruktIBeregning
-import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.avtaleland
-import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.borINorge
-import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.harEOSLand
-import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.minstePensjonssats
-import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.normertPensjonsalder
-import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.opplysningerBruktIBeregningen
-import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.regelverkType
-import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.totalPensjon
-import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.virkFom
-import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
-import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenSelectors.uttaksgrad
+import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagUttakFoerNormertPensjonsalderAP2016AutoDto.*
+import no.nav.pensjon.brev.alder.model.avslag.selectors.opplysningerBruktIBeregningen.*
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.opplysningerBruktIBeregningenAP2016Vedlegg
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate

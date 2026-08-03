@@ -7,6 +7,7 @@ on:
       - "gradle.properties"
       - "gradle/libs.versions.toml"
       - "brevbaker/pdf-bygger/**"
+      - "resources/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger.yml"
       - ".github/workflows/cleanup.yml"
@@ -21,6 +22,7 @@ on:
       - "gradle.properties"
       - "gradle/libs.versions.toml"
       - "brevbaker/pdf-bygger/**"
+      - "resources/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger.yml"
       - ".github/workflows/cleanup.yml"
@@ -51,6 +53,7 @@ jobs:
       gradleTarget: brevbaker:pdf-bygger
       buildImage: true
       uploadJar: true
+      extraModulesToBuild: ':brevbaker:markup:publishToMavenLocal'
 
   pushPdfByggerToGithubRegistry:
     name: "Push pdf-bygger to github registry"
@@ -60,7 +63,7 @@ jobs:
       packages: "write"
       id-token: "write"
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Download jar
@@ -69,7 +72,7 @@ jobs:
           name: pdf-bygger-jar
           path: brevbaker/pdf-bygger/build/install/pdf-bygger/lib
       - name: Docker login
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4.2.0
+        uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
         with:
           registry: "https://ghcr.io"
           username: ${{ github.repository }}
@@ -94,7 +97,6 @@ jobs:
     needs: buildPdfbygger
     secrets: inherit
     with:
-      digest: ${{ needs.buildPdfbygger.outputs.digest }}
       image: ${{ needs.buildPdfbygger.outputs.image }}
 
   changes:
@@ -104,7 +106,7 @@ jobs:
     outputs:
       brevmal-design: ${{ steps.changes.outputs['brevmal-design'] }}
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
@@ -112,8 +114,8 @@ jobs:
         with:
           filters: |
             brevmal-design:
-              - 'brevbaker/pdf-bygger/containerFiles/typst/**'
-              - 'brevbaker/pdf-bygger/Dockerfile'
+              - 'brevbaker/pdf-bygger/**'
+              - 'resources/**'
               - '.github/regsuitconfig.json'
 
   runIntegrationTests:
@@ -126,26 +128,27 @@ jobs:
       pull-requests: write
       packages: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
+      - uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6.2.0
         with:
           cache-encryption-key: ${{ secrets.GRADLEKEY }}
-      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
+      - uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 # v5.4.0
         with:
           "distribution": ${{ env.JavaDistribution }}
           "java-version": ${{ env.JavaVersion }}
       - name: "run integration tests"
         run: |
           ./gradlew :brevbaker:api-model-common:publishToMavenLocal
+          ./gradlew :brevbaker:markup:publishToMavenLocal
           ./gradlew :brevbaker:pdf-bygger:integrationTest
         env:
           "PDF_BYGGER_IMAGE": "ghcr.io/navikt/pensjonsbrev/pdf-bygger:${{ github.sha }}"
           "TESTCONTAINERS_REUSE_ENABLE": "true"
       - name: Publish Test Report
         if: ${{ always() }}
-        uses: ScalableCapital/action-surefire-report@v2.0.3
+        uses: ScalableCapital/action-surefire-report@v2.0.4
         with:
           fail_if_no_tests: true
           fail_on_test_failures: true
@@ -168,7 +171,7 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           ref: ${{ github.head_ref || github.ref_name }}
@@ -194,7 +197,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         run: npm install --no-save reg-suit reg-publish-gcs-plugin reg-notify-github-with-api-plugin reg-simple-keygen-plugin
       - name: Authenticate to Google Cloud
-        uses: nais/login@d0fcfa8591d10b57312f58e7f6269de58bdab1df # v0
+        uses: nais/login@bb6c3e1e14e53d40d69d0d092bd2fce2e39ae3bf # v0
         with:
           team: pensjonsbrev
       - name: Run reg-suit
@@ -242,7 +245,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: ./.github/pr

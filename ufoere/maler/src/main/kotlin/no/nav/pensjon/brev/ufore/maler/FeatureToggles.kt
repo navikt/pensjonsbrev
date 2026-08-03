@@ -10,6 +10,7 @@ enum class FeatureToggles(private val key: String) {
     innhentingOpplysninger("ut.innhentingopplysninger"),
     varsellavereminstesats("ut.varsellavereminstesats"),
     varseloktminsteifuoglaverereduksjonsprosent("ut.varselhoyereminstesatsifuoglaverereduksjonsprosent"),
+    testmal("ut.testmal"),
     ;
 
     val toggle = FeatureToggle(key)

@@ -7,11 +7,9 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.simulering
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringSelectors.afpOffentligLivsvarig
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringSelectors.afpOffentligTidsbegrenset
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringSelectors.afpPrivat
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringBrevDto.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringDto.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg.simuleringVedlegg
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -23,6 +21,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
 data class ApSimuleringBrevDto(override val saksbehandlerValg: ApSimuleringDto, override val pesysData: EmptyFagsystemdata = EmptyFagsystemdata) : RedigerbarBrevdata<ApSimuleringDto, EmptyFagsystemdata>
 
@@ -33,6 +32,7 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
     override val sakstyper: Set<TemplateDescription.ISakstype> = emptySet()
     override val kode: Brevkode.Redigerbart = PlanleggePensjonBrevkoder.Redigerbar.PENSJONSKALKULATOR_AP_SIMULERING
     override val featureToggle = FeatureToggles.apSimulering.toggle
+    override val modelSpecification: TemplateModelSpecification = TemplateModelSpecification(emptyMap(), null)
 
     override val template: LetterTemplate<*, ApSimuleringBrevDto> = createTemplate(
         languages = languages(Language.Bokmal),

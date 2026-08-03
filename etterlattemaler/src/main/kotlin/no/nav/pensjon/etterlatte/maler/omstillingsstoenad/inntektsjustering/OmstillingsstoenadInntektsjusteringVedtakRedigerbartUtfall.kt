@@ -13,9 +13,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDataSelectors.inntektsbeloep
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDataSelectors.inntektsaar
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.selectors.omstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.selectors.omstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallData.*
 
 data class OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallData(
     val inntektsbeloep: Kroner,

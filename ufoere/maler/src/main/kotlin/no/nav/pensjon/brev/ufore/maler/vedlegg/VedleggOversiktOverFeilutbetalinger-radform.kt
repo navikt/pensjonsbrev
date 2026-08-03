@@ -16,20 +16,10 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManedSelectors.feilutbetaltBelop
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManedSelectors.maned
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManedSelectors.nettobelop
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManedSelectors.opprinneligBrutto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManedSelectors.resultat
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManedSelectors.skatt
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingPerArSelectors.ar
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingPerArSelectors.feilutbetalingManed
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.feilutbetalingManed.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.feilutbetalingPerAr.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDtoSelectors.bruttoTilbakekrevdTotalbelop
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDtoSelectors.feilutbetalingPerArListe
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDtoSelectors.nettoUtenRenterTilbakekrevdTotalbelop
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDtoSelectors.rentetilleggSomInnkrevesTotalbelop
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDtoSelectors.skattefradragSomInnkrevesTotalbelop
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.oversiktOverFeilutbetalingPEDto.*
 import no.nav.pensjon.brev.ufore.maler.fraser.ResultatAvVurderingenTextMappingStorBokstav
 
 @TemplateModelHelpers

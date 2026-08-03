@@ -27,6 +27,12 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         val avdoedeHarRedusertTrygdetidEllerPoengaar: Boolean?,
         @DisplayText("Hvis etterbetaling av pensjon")
         val etterbetaling: Boolean?,
+        @DisplayText("Hvis økning av pensjon")
+        val okningBelop: Boolean?,
+        @DisplayText("Hvis ingen endring av pensjon")
+        val ingenEndringBelop: Boolean?,
+        @DisplayText("Hvis økt tilleggspensjon, men ingen endring i total alderspensjon")
+        val oktTilleggMpn: Boolean?,
     ) : SaksbehandlerValgBrevdata
 
     data class PesysData(

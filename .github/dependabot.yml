@@ -43,12 +43,8 @@ updates:
     ignore:
       - dependency-name: "no.nav.brev.brevbaker:api-model-common"
     groups:
-      postgresql:
-        patterns:
-          - "org.postgresql:postgresql"
       backend:
         patterns:
-          - "ch.qos.logback:logback-classic"
           - "com.fasterxml.jackson*"
           - "com.google*"
           - "commons-codec:commons-codec"
@@ -57,13 +53,14 @@ updates:
           - "io.getunleash*"
           - "io.ktor*"
           - "io.micrometer*"
-          - "net.logstash.logback:logstash-logback-encoder"
+          - "org.apache.logging.log4j*"
           - "no.nav*"
           - "org.apache.pdfbox*"
           - "org.assertj:assertj-core"
           - "org.flyway*"
           - "org.jetbrains*"
           - "org.junit*"
+          - "org.postgresql:postgresql"
           - "org.testcontainers*"
           - "io.github.classgraph:classgraph"
 
@@ -105,6 +102,13 @@ updates:
       day: "sunday"
     cooldown:
       default-days: 7
+    groups:
+      codeql:
+        patterns:
+          - "github/codeql-action*"
+      nais:
+        patterns:
+          - "nais/*"
 
   # ==============
   # Docker frontend

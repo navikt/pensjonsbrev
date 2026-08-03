@@ -6,7 +6,7 @@ import { type AxiosError } from "axios";
 import { useState } from "react";
 
 import { attesteringBrevKeys, getBrevAttestering } from "~/api/brev-queries";
-import { sendBrev } from "~/api/sak-api-endpoints";
+import { hentPdfForBrev, sendBrev } from "~/api/sak-api-endpoints";
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
 import { ApiError } from "~/components/ApiError";
 import { CenteredLoader } from "~/components/CenteredLoader";
@@ -44,9 +44,15 @@ const VedtakForhåndsvisningWrapper = () => {
 const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const [vilSendeBrev, setVilSendeBrev] = useState(false);
+  const hentPdfQuery = useQuery({
+    queryKey: hentPdfForBrev.queryKey(props.brev.info.id),
+    queryFn: () => hentPdfForBrev.queryFn(props.saksId, props.brev.info.id),
+    refetchOnWindowFocus: false,
+  });
+  const sendDisabled = !hentPdfQuery.isSuccess || hentPdfQuery.data === null;
 
   return (
-    <>
+    <VStack height="100%">
       {vilSendeBrev && (
         <SendBrevModal
           brevId={props.brev.info.id.toString()}
@@ -80,8 +86,10 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
               Tilbake til redigering
             </Button>
             <Button
+              disabled={sendDisabled}
               icon={<ArrowRightIcon />}
               iconPosition="right"
+              loading={hentPdfQuery.isPending}
               onClick={() => setVilSendeBrev(true)}
               size="small"
               type="button"
@@ -94,7 +102,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
           <VStack gap="space-12">
             <Heading size="small">{props.brev.info.brevtittel}</Heading>
             <VStack gap="space-16">
-              <OppsummeringAvMottaker mottaker={props.brev.info.mottaker} saksId={props.saksId} withTitle />
+              <OppsummeringAvMottaker mottaker={props.brev.info.mottaker ?? null} saksId={props.saksId} withTitle />
               <VStack gap="space-4">
                 <Label size="small">Distribusjonstype</Label>
                 <BodyShort size="small">{distribusjonstypeTilText(props.brev.info.distribusjonstype)}</BodyShort>
@@ -109,7 +117,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
         }
         right={<BrevForhåndsvisning brevId={props.brev.info.id} saksId={props.saksId} />}
       />
-    </>
+    </VStack>
   );
 };
 

@@ -6,8 +6,7 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.TemplateModelSelector
 import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.SelectorsForAnnotatedPropertyThroughInheritanceSelectors.TheModelSelectors
-import no.nav.pensjon.brev.template.dsl.helpers.testcases.SelectorsForAnnotatedPropertyThroughInheritanceSelectors.TheModelSelectors.navn
+import no.nav.pensjon.brev.template.dsl.helpers.testcases.selectors.selectorsForAnnotatedPropertyThroughInheritance.theModel.*
 
 /**
  * Verify that it is possible to generate selectors for annotated properties with nested inheritance.
@@ -25,7 +24,7 @@ object SelectorsForAnnotatedPropertyThroughInheritance {
         fun someusage() {
             val scopeExtensionProperty: Expression<String> = SimpleTemplateScope<TheModel>().navn
             val expressionExtensionProperty: Expression<String> = Expression.Literal(TheModel("jadda")).navn
-            val actualSelector: TemplateModelSelector<TheModel, String> = TheModelSelectors.navnSelector
+            val actualSelector: TemplateModelSelector<TheModel, String> = navnSelector
         }
     }
 }

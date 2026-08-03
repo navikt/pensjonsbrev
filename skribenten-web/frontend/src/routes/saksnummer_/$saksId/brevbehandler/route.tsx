@@ -56,12 +56,12 @@ function Brevbehandler() {
   });
 
   return (
-    <Box asChild background="default">
+    <Box asChild background="default" height="100%">
       <VStack marginInline="auto">
         {modalÅpen && (
           <FerdigstillOgSendBrevModal onClose={() => setModalÅpen(false)} sakId={saksId} åpen={modalÅpen} />
         )}
-        <HGrid columns="minmax(304px, 384px) minmax(640px, 720px)" height="var(--main-page-content-height)">
+        <HGrid columns="minmax(304px, 384px) minmax(640px, 720px)" flexGrow="1" overflowY="hidden">
           {/* Meny */}
           <Box asChild borderColor="neutral-subtle" borderWidth="0 1 0 0" overflowY="auto" padding="space-24">
             <VStack gap="space-12">

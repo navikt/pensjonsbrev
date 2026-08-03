@@ -4,9 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDtoSelectors.PesysDataSelectors.omsorgsopptjeningsaar
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDtoSelectors.PesysDataSelectors.omsorgspersonNavn
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakOmInnvilgelseAvOmsorgspoengDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakOmInnvilgelseAvOmsorgspoengDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL_INNLOGGET
 import no.nav.pensjon.brev.maler.fraser.common.Felles

@@ -15,7 +15,7 @@ class SendBrevPolicy(private val ferdigRedigertPolicy: FerdigRedigertPolicy) {
             return failure(KanIkkeSende.IkkeLaastForRedigering(brev.id.value))
         }
 
-        if (document.redigertBrevHash != brev.redigertBrevHash) {
+        if (document.redigertBrevHash != brev.redigertBrevHash || document.vedleggHash != brev.vedleggHash) {
             return failure(KanIkkeSende.DocumentIkkeForGjeldendeRedigertBrev(brev.id.value))
         }
 

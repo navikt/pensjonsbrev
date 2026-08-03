@@ -23,12 +23,17 @@ import { getBrev } from "~/api/brev-queries";
 import { getBrevVedlegg, hentPdfForBrev, oppdaterVedlegg } from "~/api/sak-api-endpoints";
 import { P1EditModal } from "~/components/P1/P1EditModal";
 import { type SpraakKode } from "~/types/apiTypes";
-import { type AlltidValgbartVedlegg, type BrevInfo, P1_BREVKODE } from "~/types/brev";
+import {
+  type AlltidValgbartVedlegg,
+  type AlltidValgbartVedleggBrevkode,
+  type BrevInfo,
+  P1_BREVKODE,
+} from "~/types/brev";
 import { LANGUAGE_CODE_TO_TEXT, SPRAAK_ENUM_TO_TEXT, SPRAAKKODE_TO_LANGUAGE_CODE } from "~/types/nameMappings";
 import { getErrorMessage } from "~/utils/errorUtils";
 
 type VedleggFormData = {
-  valgteVedlegg: AlltidValgbartVedlegg[];
+  valgteVedlegg: AlltidValgbartVedleggBrevkode[];
 };
 
 export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolean }) => {
@@ -43,7 +48,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
     queryFn: () => getBrev.queryFn(props.saksId, props.brev.id, false),
   });
 
-  const savedVedlegg: AlltidValgbartVedlegg[] = brevData?.valgteVedlegg ?? [];
+  const savedVedlegg: AlltidValgbartVedleggBrevkode[] = brevData?.valgteVedlegg ?? [];
 
   const form = useForm<VedleggFormData>({
     defaultValues: { valgteVedlegg: [] },
@@ -57,12 +62,13 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   } = useQuery({
     queryKey: getBrevVedlegg.queryKey(props.saksId, props.brev.id),
     queryFn: () => getBrevVedlegg.queryFn(props.saksId, props.brev.id),
+    enabled: !props.erLaast,
   });
 
-  const getVedleggLabel = (vedlegg: AlltidValgbartVedlegg) => vedlegg.visningstekst ?? vedlegg.kode;
+  const getVedleggLabel = (vedlegg: AlltidValgbartVedleggBrevkode) => vedlegg.visningstekst ?? vedlegg.kode;
 
   const leggTilVedleggMutation = useMutation({
-    mutationFn: (vedlegg: AlltidValgbartVedlegg[]) =>
+    mutationFn: (vedlegg: AlltidValgbartVedleggBrevkode[]) =>
       oppdaterVedlegg(props.saksId, props.brev.id, { valgteVedlegg: vedlegg }),
     onSuccess: (data) => {
       queryClient.setQueryData(getBrev.queryKey(props.brev.id), data);
@@ -74,7 +80,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   });
 
   const fjernVedleggMutation = useMutation({
-    mutationFn: (vedleggToRemove: AlltidValgbartVedlegg) =>
+    mutationFn: (vedleggToRemove: AlltidValgbartVedleggBrevkode) =>
       oppdaterVedlegg(props.saksId, props.brev.id, {
         valgteVedlegg: savedVedlegg.filter((lagretVedlegg) => lagretVedlegg.kode !== vedleggToRemove.kode),
       }),
@@ -102,6 +108,16 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
 
   const hasVedleggToShow = isP1Brev || savedVedlegg.length > 0;
   const hasVedleggToAdd = vedleggKoder && vedleggKoder.length > 0;
+
+  if (props.erLaast && brevData && !hasVedleggToShow) {
+    return (
+      <VStack gap="space-8">
+        <BodyShort size="small" weight="semibold">
+          Ingen vedlegg
+        </BodyShort>
+      </VStack>
+    );
+  }
 
   if (!hasVedleggToShow && !hasVedleggToAdd && !isLoading && !isError) {
     return null;
@@ -132,16 +148,6 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
           {getErrorMessage(error)}
         </Alert>
       </div>
-    );
-  }
-
-  if (props.erLaast && !hasVedleggToShow) {
-    return (
-      <VStack gap="space-8">
-        <BodyShort size="small" weight="semibold">
-          Ingen vedlegg
-        </BodyShort>
-      </VStack>
     );
   }
 

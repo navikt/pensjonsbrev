@@ -10,9 +10,9 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_VEDTAK_FEILUTBETALING_INGEN_TILBAKEKREVING
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.oversiktOverFeilutbetalingPEDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.pesysData.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeIngenTilbakekrevingDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeIngenTilbakekrevingDtoSelectors.pesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.vedtakFeilutbetalingUforeIngenTilbakekrevingDto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.vedlegg.oversiktOverFeilutbetalingerPaRadform

@@ -2,7 +2,6 @@ import AdresseVisning, { type AdresseVisningTag } from "~/components/AdresseVisn
 import HentOgVisAdresse from "~/components/HentOgVisAdresse";
 import { useLandData } from "~/hooks/useLandData";
 import { type Mottaker } from "~/types/brev";
-import { type Nullable } from "~/types/Nullable";
 import { MOTTAKER_TAG_BRUKER, MOTTAKER_TAG_VERGE } from "~/utils/AdresseUtils";
 import { getCountryNameByKode } from "~/utils/countryUtils";
 
@@ -18,7 +17,7 @@ function mapMottakerTags(mottaker: Mottaker): AdresseVisningTag[] {
   return [];
 }
 
-const OppsummeringAvMottaker = (props: { saksId: string; mottaker: Nullable<Mottaker>; withTitle: boolean }) => {
+const OppsummeringAvMottaker = (props: { saksId: string; mottaker: Mottaker | null; withTitle: boolean }) => {
   const { data: landData } = useLandData();
 
   if (props.mottaker === null || props.mottaker.type === "Samhandler") {

@@ -17,7 +17,7 @@ import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGr
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import { ElementTags, type LiteralValue, PARAGRAPH, type ParagraphBlock } from "~/types/brevbakerTypes";
+import { ElementTags, type LiteralValue, type ParagraphBlock } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, variable } from "../../utils";
 
@@ -27,8 +27,9 @@ const block: ParagraphBlock = {
   id: 1,
   parentId: null,
   editable: true,
-  type: PARAGRAPH,
+  type: "PARAGRAPH",
   deletedContent: [],
+  missingFromTemplate: false,
   content,
 };
 const editorState = letter(block, block, block);

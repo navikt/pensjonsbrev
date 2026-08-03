@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.skribenten.routes.samhandler
 
+import io.ktor.server.application.Application
+import io.ktor.server.plugins.di.dependencies
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -8,7 +10,9 @@ import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdress
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.services.SamhandlerService
 
-fun Route.samhandlerRoute(samhandlerService: SamhandlerService) {
+context(app: Application)
+fun Route.samhandlerRoute() {
+    val samhandlerService: SamhandlerService by app.dependencies
 
     post("/finnSamhandler") {
         val requestDto = call.receive<FinnSamhandlerRequestDto>()

@@ -1,12 +1,16 @@
 package no.nav.pensjon.brev.pdfbygger.typst
 
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import org.slf4j.LoggerFactory
 import java.io.IOException
+import java.io.InterruptedIOException
+import java.nio.channels.ClosedByInterruptException
 import java.nio.file.Path
 
 
@@ -64,13 +68,13 @@ open class TypstCompileService(
                     .directory(templateDir.toFile())
                     .start()
 
-                process.outputStream.writer(Charsets.UTF_8).use { writeLetter(TypstFileWriter(it)) }
+                runInterruptible { process.outputStream.writer(Charsets.UTF_8).use { writeLetter(TypstFileWriter(it)) } }
 
-                val stdoutDeferred = async(Dispatchers.IO) { process.inputStream.readAllBytes() }
-                val stderrContent = String(process.errorStream.readAllBytes(), Charsets.UTF_8)
+                val stdoutDeferred = async(Dispatchers.IO) { runInterruptible { process.inputStream.readAllBytes() } }
+                val stderrContent = runInterruptible { String(process.errorStream.readAllBytes(), Charsets.UTF_8) }
                 val pdfBytes = stdoutDeferred.await()
 
-                val exitCode = process.waitFor()
+                val exitCode = runInterruptible { process.waitFor() }
 
                 if (exitCode == 0) {
                     if (stderrContent.isNotBlank()) {
@@ -81,6 +85,9 @@ open class TypstCompileService(
                     Execution.Failure.Compilation(error = stderrContent)
                 }
             } catch (e: IOException) {
+                if (e is InterruptedIOException || e is ClosedByInterruptException) {
+                    throw CancellationException("Typst compile process was cancelled", e)
+                }
                 Execution.Failure.Execution(e)
             } finally {
                 process?.destroyForcibly()

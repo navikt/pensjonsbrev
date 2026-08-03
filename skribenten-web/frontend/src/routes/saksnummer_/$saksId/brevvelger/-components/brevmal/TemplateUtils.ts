@@ -11,7 +11,7 @@ import { type Nullable } from "~/types/Nullable";
 export const byggExstreamOnSubmitRequest = (argz: {
   template: LetterMetadata;
   idTSSEkstern: Nullable<string>;
-  vedtaksId: Nullable<string>;
+  vedtaksId: Nullable<number>;
   formValues: {
     enhetsId: string;
     spraak: Nullable<SpraakKode>;
@@ -34,7 +34,6 @@ export const byggExstreamOnSubmitRequest = (argz: {
 
 export const byggEBlankettOnSubmitRequest = (argz: {
   template: LetterMetadata;
-  vedtaksId?: string;
   formValues: {
     landkode: string;
     mottakerText: string;
@@ -45,7 +44,6 @@ export const byggEBlankettOnSubmitRequest = (argz: {
     landkode: argz.formValues.landkode,
     mottakerText: argz.formValues.mottakerText,
     enhetsId: argz.formValues.enhetsId,
-    vedtaksId: argz.vedtaksId ?? null,
     brevkode: argz.template.id,
   };
 };

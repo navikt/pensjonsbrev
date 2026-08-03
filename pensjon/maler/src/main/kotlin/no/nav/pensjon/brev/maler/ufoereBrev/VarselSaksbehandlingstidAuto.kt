@@ -2,8 +2,7 @@ package no.nav.pensjon.brev.maler.ufoereBrev
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDtoSelectors.dagensDatoMinus2Dager
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDtoSelectors.utvidetBehandlingstid
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.selectors.varselSaksbehandlingstidAutoDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_ENDRING_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles

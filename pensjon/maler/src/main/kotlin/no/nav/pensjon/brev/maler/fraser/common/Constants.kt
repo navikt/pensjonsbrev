@@ -54,4 +54,5 @@ object Constants {
     const val UFOERE_SOK_URL = "$NAV_URL/uføretrygd#sok"
     const val UTBETALINGER_URL = "$NAV_URL/utbetalinger"
     const val SAKSBEHANDLINGSTID_URL = "$NAV_URL/saksbehandlingstider"
+    const val NAV_KLAGEINSTANS = "Nav klageinstans"
 }

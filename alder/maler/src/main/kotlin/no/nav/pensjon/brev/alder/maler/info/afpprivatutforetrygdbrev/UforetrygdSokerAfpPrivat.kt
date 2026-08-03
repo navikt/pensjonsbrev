@@ -6,8 +6,8 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.forbeholdTilBeregningeneUforeTryg
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.UforeTrygdSokerAfpPrivatDto
-import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.UforeTrygdSokerAfpPrivatDtoSelectors.SaksBehandlerValgSelectors.brukerHarSoktAfpPrivat
-import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.UforeTrygdSokerAfpPrivatDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.selectors.uforeTrygdSokerAfpPrivatDto.saksBehandlerValg.*
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.selectors.uforeTrygdSokerAfpPrivatDto.*
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT

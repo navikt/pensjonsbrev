@@ -38,6 +38,7 @@ object Constants {
     const val OMSTILLINGSSTOENAD_URL = "$NAV_URL/omstillingsstonad"
     const val SKATTEETATEN_URL = "skatteetaten.no"
     const val SKATTEETATEN_PENSJONIST_URL = "$SKATTEETATEN_URL/pensjonist"
+    const val KLAGERETTIGHETER_URL = "$NAV_URL/klagerettigheter"
 
 
     // todo slett ubrukte

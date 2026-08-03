@@ -4,10 +4,10 @@ val apiModelJavaTarget: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
+    alias(libs.plugins.kotlin.serialization)
     id("java-library")
     id("java-test-fixtures")
     alias(libs.plugins.ksp) apply true
-    alias(libs.plugins.binary.compatibility.validator) apply true
 }
 
 group = "no.nav.brev.brevbaker"
@@ -27,17 +27,24 @@ repositories {
 dependencies {
     api(project(":brevbaker:dsl"))
     api(libs.brevbaker.common)
+    api(project(":brevbaker:markup"))
+    implementation(project(path = ":brevbaker:markup", configuration = "apiInternalElements"))
     ksp(project(":brevbaker:template-model-generator"))
+    kspTest(project(":brevbaker:template-model-generator"))
     implementation(libs.kotlinx.html)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.bundles.junit)
+    testImplementation(project(path = ":brevbaker:markup", configuration = "apiInternalElements"))
 
     testImplementation(testFixtures(project(":brevbaker:dsl")))
+    testImplementation(testFixtures(project(":brevbaker:core")))
 
+    testFixturesImplementation(project(":brevbaker:markup"))
+    testFixturesImplementation(project(path = ":brevbaker:markup", configuration = "apiInternalElements"))
     testFixturesImplementation(libs.ktor.serialization.jackson)
     testFixturesImplementation(libs.ktor.client.cio)
     testFixturesImplementation(libs.ktor.client.content.negotiation)
-    testFixturesImplementation(libs.ktor.server.callId)
 
     testFixturesImplementation(testFixtures(project(":brevbaker:dsl")))
     testFixturesImplementation(libs.bundles.logging)
@@ -51,6 +58,12 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+sourceSets {
+    main {
+        resources.srcDir(rootProject.layout.projectDirectory.dir("resources"))
+    }
 }
 
 
@@ -81,6 +94,7 @@ tasks {
         compileTestKotlin {
             compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
             compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
+            compilerOptions.optIn.add("no.nav.pensjon.brev.template.BrevbakerDSLInternal")
         }
         compileTestFixturesKotlin {
             compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
@@ -89,6 +103,14 @@ tasks {
     }
 }
 
-apiValidation {
-    nonPublicMarkers.add("no.nav.brev.InterneDataklasser")
+@OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+kotlin {
+    abiValidation {
+        filters {
+            exclude {
+                annotatedWith.add("no.nav.brev.InterneDataklasser")
+                annotatedWith.add("no.nav.brev.InternKonstruktoer")
+            }
+        }
+    }
 }

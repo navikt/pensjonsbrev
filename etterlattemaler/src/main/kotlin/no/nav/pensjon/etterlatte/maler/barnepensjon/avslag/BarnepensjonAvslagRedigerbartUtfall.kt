@@ -10,9 +10,8 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRedigerbartUtfallDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRedigerbartUtfallDataSelectors.avdoedNavn
-import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRedigerbartUtfallDataSelectors.erSluttbehandling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.selectors.barnepensjonAvslagRedigerbartUtfallDTO.*
+import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.selectors.barnepensjonAvslagRedigerbartUtfallData.*
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonAvslagFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak

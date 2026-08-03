@@ -3,17 +3,15 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.dineRettigheterOgPlikterUfore
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.nyeAvslagBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.nyeInnvilgedeBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUforetrygdMedEndringDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUforetrygdMedEndringDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUforetrygdMedEndringDto.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUforetrygdMedEndringDto.saksbehandlervalg.periodisertInntekt
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.InntektBarnetillegg
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -33,9 +31,10 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
+import no.nav.pensjon.brev.template.dsl.expression.localDateNow
 
 @TemplateModelHelpers
-object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
+object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUforetrygdMedEndringDto> {
 
     override val featureToggle = FeatureToggles.brevmalUtInnvilgelseMedEndring.toggle
 
@@ -61,11 +60,11 @@ object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUfoeretry
         outline {
             val pe = pesysData.pe
 
-            val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(LocalDate.now())
-            val trygdetidfombilateral = pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral().ifNull(LocalDate.now())
-            val trygdetidtombilateral = pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidtombilateral().ifNull(LocalDate.now())
-            val trygdetidfom = pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().ifNull(LocalDate.now())
-            val trygdetidtom = pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidtom().ifNull(LocalDate.now())
+            val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(localDateNow)
+            val trygdetidfombilateral = pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral().ifNull(localDateNow)
+            val trygdetidtombilateral = pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidtombilateral().ifNull(localDateNow)
+            val trygdetidfom = pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().ifNull(localDateNow)
+            val trygdetidtom = pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidtom().ifNull(localDateNow)
             val trygdetideosland = pe.vedtaksbrev_grunnlag_persongrunnlagsliste_trygdetidsgrunnlageos_trygdetidsgrunnlageos_trygdetideosland().notEqualTo("")
 
             val uforegrad = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
@@ -742,24 +741,14 @@ object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUfoeretry
                 }
 
                 showIf(barnetilleggFellesInnvilget or barnetilleggSerkullInnvilget) {
-                    paragraph {
-                        text(
-                            bokmal { +"Inntekten din består av uføretrygd for de " + fritekst("antall mnd") + " gjenstående månedene av året." },
-                            nynorsk { +"Inntekta di består av uføretrygd for dei " + fritekst("antall mnd") + " gjenstående månedene av året." }
-                        )
-                        showIf(barnetilleggFellesInnvilget) {
-                            text(
-                                bokmal { +" Din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "s inntekt består av inntekt de " + fritekst("antall mnd") + " gjenstående månedene av året, fratrukket " + fritekst("antall mnd") + "/12 av folketrygdens grunnbeløp. Folketrygdens grunnbeløp er for tiden " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + "." },
-                                nynorsk { +" Din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + "s inntekt består av inntekt de " + fritekst("antall mnd") + " gjenstående månedene av året, fratrukket " + fritekst("antall mnd") + "/12 av grunnbeløpet i folketrygda. Grunnbeløpet i folketrygda er for tida " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + "." }
-                            )
-                        }
-                        showIf(barnetilleggFellesInnvilget and barnetilleggSerkullInnvilget) {
-                            text(
-                                bokmal { +" Barnetillegget for barn som ikke bor med begge foreldre er kun beregnet utfra din inntekt." },
-                                nynorsk { +" Barnetillegget for barn som ikkje bur med begge foreldre er kun berekna utfra inntekta di." },
-                            )
-                        }
-                    }
+                    includePhrase(
+                        InntektBarnetillegg(
+                            btFellesInnvilget = barnetilleggFellesInnvilget,
+                            btSerkullInnvilget = barnetilleggSerkullInnvilget,
+                            grunnbelop = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop(),
+                            pe = pe,
+                            periodisertInntekt = saksbehandlerValg.periodisertInntekt)
+                    )
                 }
 
                 //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true)  ) THEN      INCLUDE ENDIF

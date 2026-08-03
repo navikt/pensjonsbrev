@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.adhoc.fullmakterbprof
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmektigBprofAutoDto
-import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmektigBprofAutoDtoSelectors.navnFullmaktsgiver
+import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.selectors.fullmektigBprofAutoDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -12,9 +12,9 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.NavEnhetSelectors.telefonnummer
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.*
 
 @TemplateModelHelpers
 object AdHocVarselUgyldiggjoringFullmektig : AutobrevTemplate<FullmektigBprofAutoDto> {

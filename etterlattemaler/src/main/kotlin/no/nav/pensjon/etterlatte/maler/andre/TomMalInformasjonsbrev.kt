@@ -12,9 +12,8 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
-import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDataSelectors.tittel
+import no.nav.pensjon.etterlatte.maler.selectors.manueltBrevMedTittelDTO.*
+import no.nav.pensjon.etterlatte.maler.selectors.manueltBrevMedTittelData.*
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 
 @TemplateModelHelpers

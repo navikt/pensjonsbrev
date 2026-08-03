@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.BrevLandmodell
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -110,5 +111,9 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
             }
         }
 
+    }
+
+    object LandnavnFormat : LocalizedFormatter<BrevLandmodell.Landkode>(), StableHash by StableHash.of("LocalizedFormatter.Landnavn") {
+        override fun apply(first: BrevLandmodell.Landkode, second: Language): String = BrevLandmodell.Landkoder.formaterLandnavn(first, second.toCode())
     }
 }

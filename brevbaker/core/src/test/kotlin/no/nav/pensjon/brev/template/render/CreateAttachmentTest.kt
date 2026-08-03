@@ -14,8 +14,7 @@ import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.render.CreateAttachmentTestSelectors.LittInnholdSelectors.test1
-import no.nav.pensjon.brev.template.render.CreateAttachmentTestSelectors.LittInnholdSelectors.test2
+import no.nav.pensjon.brev.template.render.selectors.createAttachmentTest.littInnhold.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

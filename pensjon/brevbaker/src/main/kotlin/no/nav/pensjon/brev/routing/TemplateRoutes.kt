@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.template.BrevTemplate
+import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.TemplateModelSpecificationFactory
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
@@ -56,11 +57,24 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
             }
 
             get("/modelSpecification") {
+                val brevTemplate = call.kode(resource)
+                    .let { resource.getTemplate(it) }
+
+                if (brevTemplate != null) {
+                    call.respond(brevTemplate.modelSpecification ?: brevTemplate.template.modelSpecification())
+                } else {
+                    call.respond(HttpStatusCode.NotFound)
+                }
+            }
+
+            // Lettvekts-sjekk som ikke krever brevdata: forteller om malen i det hele tatt har
+            // redigerbare vedlegg. Lar konsumenter unngå tunge data-kall når svaret uansett blir tomt.
+            get("/har-redigerbare-vedlegg") {
                 val template = call.kode(resource)
                     .let { resource.getTemplate(it)?.template }
 
                 if (template != null) {
-                    call.respond(template.modelSpecification())
+                    call.respond(template.harRedigerbareVedlegg())
                 } else {
                     call.respond(HttpStatusCode.NotFound)
                 }
@@ -68,7 +82,10 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
         }
     }
 
-fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactory(this.letterDataType).build()
+@OptIn(BrevbakerDSLInternal::class)
+fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactory(this.letterDataType).build(saksbehandlervalg)
+
+fun LetterTemplate<*, *>.harRedigerbareVedlegg(): Boolean = attachments.any { it.editableId != null }
 
 // TODO: Med riktig typing burde heile denne metoden vera unødvendig
 fun <Kode: Brevkode<Kode>> ApplicationCall.kode(resource: TemplateResource<Kode,*,*>): Kode = parameters.getOrFail<String>("kode").let {

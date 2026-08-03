@@ -51,6 +51,13 @@ object BrevbakerType {
         override fun toString() = value.toString()
     }
 
+    @JvmInline
+    value class VedleggId(val id: String) {
+        init {
+            require(id.isNotBlank()) { "VedleggId kan ikke være blank" }
+        }
+    }
+
     class Broek(val teller: Int, val nevner: Int) {
         override fun equals(other: Any?): Boolean {
             if (other !is Broek) return false

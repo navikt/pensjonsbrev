@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.NavEnhetSelectors.telefonnummer
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.*
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.*
 
 val vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk =
     createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(

@@ -10,40 +10,16 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvdoedSelectors.harTrygdetidAvtaleland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvdoedSelectors.harTrygdetidEOS
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvdoedSelectors.harTrygdetidNorge
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvtalelandSelectors.erEOSLand
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvtalelandSelectors.navn
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.BeregnetPensjonPerManedSelectors.antallBeregningsperioderPensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.BrukerSelectors.faktiskBostedsland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.KravSelectors.kravInitiertAv
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.avdoed
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.avtaleland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.beregnetPensjonPerMaaned
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.bruker
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlage
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.krav
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.avdoedNavn
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.ekteskapUnderFemAar
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.harTrygdetid
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.hjemmelAvtaleland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.hjemmelEOES
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.samboerUtenFellesBarn
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.under20AarBotid
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.underEttAarsMedlemstidEOESEllerAvtaleland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.underTreFemAarsMedlemstidEOESSak
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.underTreFemAarsMedlemstidNasjonalSak
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.underTrefemAarsMedlemstidAvtalesak
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.alderspensjonVedVirk.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.avdoed.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.avtaleland.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.beregnetPensjonPerManed.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.bruker.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.krav.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.ytelseskomponentInformasjon.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.saksbehandlerValg.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagPaaGjenlevenderettIAlderspensjonDto.*
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.DerforHar
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.DuFaarHverMaaned
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
@@ -200,7 +176,8 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 }
                 derforHarDuIkkeGjenlevenderett(
                     initiertAvBrukerEllerVerge = initiertAvBrukerEllerVerge,
-                    initiertAvNav = initiertAvNav
+                    initiertAvNav = initiertAvNav,
+                    uniqueness = "NasjonalSak",
                 )
             }
 
@@ -209,7 +186,8 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 Under3Eller5Aar(EOSLand)
                 derforHarDuIkkeGjenlevenderett(
                     initiertAvBrukerEllerVerge = initiertAvBrukerEllerVerge,
-                    initiertAvNav = initiertAvNav
+                    initiertAvNav = initiertAvNav,
+                    uniqueness = "EOSSak",
                 )
             }
 
@@ -218,7 +196,8 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 Under3Eller5Aar(Avtaleland)
                 derforHarDuIkkeGjenlevenderett(
                     initiertAvBrukerEllerVerge = initiertAvBrukerEllerVerge,
-                    initiertAvNav = initiertAvNav
+                    initiertAvNav = initiertAvNav,
+                    uniqueness = "AvtaleSak",
                 )
             }
 
@@ -242,7 +221,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                         english { + ", the deceased must have 20 years of residence in Norway or be entitled to a supplementary pension." }
                     )
                 }
-                derforHarDuIkkeGjenlevenderett(initiertAvBrukerEllerVerge, initiertAvNav)
+                derforHarDuIkkeGjenlevenderett(initiertAvBrukerEllerVerge, initiertAvNav, uniqueness = "botid")
             }
 
             // avslagGJRettAPGiftUnder5aarSøknad_001 / avslagGjRettAPVilkårGift5aarNav_001
@@ -478,8 +457,9 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
     private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, AvslagPaaGjenlevenderettIAlderspensjonDto>.derforHarDuIkkeGjenlevenderett(
         initiertAvBrukerEllerVerge: Expression<Boolean>,
         initiertAvNav: Expression<Boolean>,
+        uniqueness: String? = null,
     ) {
-        paragraph {
+        paragraph(uniqueness = uniqueness) {
             showIf(initiertAvBrukerEllerVerge) {
                 text(
                     bokmal { + "Dette har ikke " + saksbehandlerValg.avdoedNavn + ". Derfor har vi avslått søknaden din." },

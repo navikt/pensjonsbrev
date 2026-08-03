@@ -11,8 +11,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.template.render.LetterMarkupAsserter.Companion.assertThat
-import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test1
-import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test2
+import no.nav.pensjon.brev.template.render.dsl.selectors.nullBrevDto.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested

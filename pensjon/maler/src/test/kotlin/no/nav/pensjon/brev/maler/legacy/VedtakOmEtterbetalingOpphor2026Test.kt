@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.legacy
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
-import no.nav.brev.brevbaker.renderTestPDF
+import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDto
@@ -22,7 +22,7 @@ class VedtakOmEtterbetalingOpphor2026Test {
             Fixtures.create<VedtakOmEtterbetalingOpphor2026AutoDto>(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        ).renderTestPDF("VEDTAK_ETTERBETALING_OPPHOR_2026_AUTO_BM")
+        ).renderTestHtml("VEDTAK_ETTERBETALING_OPPHOR_2026_AUTO_BM")
     }
 
     @Test
@@ -32,7 +32,7 @@ class VedtakOmEtterbetalingOpphor2026Test {
             Fixtures.create<VedtakOmEtterbetalingOpphor2026AutoDto>(),
             Language.Nynorsk,
             Fixtures.fellesAuto
-        ).renderTestPDF("VEDTAK_ETTERBETALING_OPPHOR_2026_AUTO_NN")
+        ).renderTestHtml("VEDTAK_ETTERBETALING_OPPHOR_2026_AUTO_NN")
     }
 
     @Test
@@ -42,7 +42,7 @@ class VedtakOmEtterbetalingOpphor2026Test {
             Fixtures.create<VedtakOmEtterbetalingOpphor2026RedigerbarDto>(),
             Language.Bokmal,
             Fixtures.felles
-        ).renderTestPDF("VEDTAK_ETTERBETALING_OPPHOR_2026_REDIGERBAR_BM")
+        ).renderTestHtml("VEDTAK_ETTERBETALING_OPPHOR_2026_REDIGERBAR_BM")
     }
 
     @Test
@@ -52,7 +52,7 @@ class VedtakOmEtterbetalingOpphor2026Test {
             Fixtures.create<VedtakOmEtterbetalingOpphor2026RedigerbarDto>(),
             Language.Nynorsk,
             Fixtures.felles
-        ).renderTestPDF("VEDTAK_ETTERBETALING_OPPHOR_2026_REDIGERBAR_NN")
+        ).renderTestHtml("VEDTAK_ETTERBETALING_OPPHOR_2026_REDIGERBAR_NN")
     }
 
     @Test

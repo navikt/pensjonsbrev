@@ -2,33 +2,9 @@ package no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkatt
 
 import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.AlderspensjonPerManedSelectors.garantipensjon
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.AlderspensjonPerManedSelectors.inntektspensjon
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.AlderspensjonPerManedSelectors.minstenivaIndividuell
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.AlderspensjonPerManedSelectors.totalPensjon
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.AlderspensjonPerManedSelectors.virkDatoFom
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.AlderspensjonPerManedSelectors.virkDatoTom
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.maanedligPensjonFoerSkattAP2025Dto.alderspensjonPerManed.*
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabell
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.barnetilleggFB
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.barnetilleggSB
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.ektefelletillegg
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.familieTillegg
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fasteUtgifter
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.garantipensjon
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.garantitillegg
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.gjenlevendetillegg
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.gjenlevendetilleggKap19
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.grunnpensjon
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.inntektspensjon
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.minstenivaIndividuell
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.minstenivaPensjonistPar
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.pensjonstillegg
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.saertillegg
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.skjermingstillegg
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.totalPensjon
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.virkDatoFom
-import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.virkDatoTom
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.maanedligPensjonFoerSkattTabell.alderspensjonPerManed.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -597,13 +573,34 @@ data class TabellMaanedligPensjonKap19og20(
                 }
             }
 
-            text(
-                bokmal { + "Sum pensjon før skatt: " },
-                nynorsk { + "Sum pensjon før skatt: " },
-                english { + "Total pension before tax: " },
-                FontType.BOLD
-            )
-            includePhrase(KronerText(beregnetPensjon.totalPensjon, FontType.BOLD))
+            table(header = {
+                column(columnSpan = 1) {
+                    text(
+                        bokmal { +"Sum pensjon" },
+                        nynorsk { +"Sum pensjon" },
+                        english { +"Total pension" },
+                    )
+                }
+                column(alignment = RIGHT, columnSpan = 1) {
+                    text(
+                        bokmal { +"" },
+                        nynorsk { +"" },
+                        english { +"" },
+                    )
+                }
+            }) {
+                row {
+                    cell {
+                        text(
+                            bokmal { +"Sum pensjon før skatt: " },
+                            nynorsk { +"Sum pensjon før skatt: " },
+                            english { +"Total pension before tax: " },
+                            FontType.BOLD
+                        )
+                    }
+                    cell { includePhrase(KronerText(beregnetPensjon.totalPensjon, FontType.BOLD)) }
+                }
+            }
         }
     }
 

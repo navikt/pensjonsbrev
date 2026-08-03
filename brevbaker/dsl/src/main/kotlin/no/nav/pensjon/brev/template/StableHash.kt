@@ -1,3 +1,5 @@
+@file:Suppress("EqualsOrHashCode")
+
 package no.nav.pensjon.brev.template
 
 import java.time.LocalDate
@@ -49,6 +51,8 @@ interface StableHash {
         fun of(boolean: Boolean): StableHash = HashCodeStableHash(boolean)
         fun of(localDate: LocalDate): StableHash = HashCodeStableHash(localDate)
         fun of(string: String): StableHash = HashCodeStableHash(string)
+
+        fun StableHash.with(optionalUnique: String?): StableHash = if (optionalUnique != null) of(this, of(optionalUnique)) else this
     }
 }
 

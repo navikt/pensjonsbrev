@@ -15,9 +15,9 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.includePhrase
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.NavEnhetSelectors.navn
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.*
 
 @TemplateModelHelpers
 object InnhentingOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevdata> {

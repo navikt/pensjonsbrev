@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
@@ -9,20 +8,23 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.DiffSegment
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.EditLetterWordDiff
-import no.nav.pensjon.brev.skribenten.letter.UnifiedDeleteSegment
+import no.nav.pensjon.brev.skribenten.letter.UnifiedDiff.BlockEdit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.SaksId
+import org.jetbrains.exposed.v1.jdbc.Database
 
 
 class DiffBrevHandler(
     private val brevdataService: BrevdataService,
     private val brevmalService: BrevmalService,
-) : BrevredigeringHandler<DiffBrevHandler.Request, DiffBrevHandler.Response> {
+    database: Database,
+) : TransactionHandler<DiffBrevHandler.Request, DiffBrevHandler.Response, Nothing>(database) {
 
     sealed class Response {
         data class Unified(
-            val inserts: List<DiffSegment>,
-            val deletes: List<UnifiedDeleteSegment>,
+            val editedBlocks: Map<Int, BlockEdit>,
+            val deletedBlocks: Map<Int, List<Edit.Block>>,
         ) : Response()
 
         data class Split(
@@ -34,27 +36,26 @@ class DiffBrevHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
         val redigertBrev: Edit.Letter,
         val split: Boolean = false,
     ) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Response, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+    override suspend fun execute(request: Request): Outcome<Response, Nothing>? {
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
         val pesysdata = brevdataService.hentBrevdata(brev)
         val rendretBrev = brevmalService.renderMarkup(brev, pesysdata).markup.toEdit()
 
         val wordDiff = EditLetterWordDiff()
         return if (request.split) {
-            wordDiff.diff(old = rendretBrev, new = request.redigertBrev).let { (inserts, deletes) ->
-                success(Response.Split(inserts = inserts, deletes = deletes, rendretBrev = rendretBrev))
+            wordDiff.diff(old = rendretBrev, new = request.redigertBrev).let { diff ->
+                success(Response.Split(inserts = diff.inserts, deletes = diff.deletes, rendretBrev = rendretBrev))
             }
         } else {
-            wordDiff.unifiedDiff(old = rendretBrev, new = request.redigertBrev).let { (inserts, deletes) ->
-                success(Response.Unified(inserts = inserts, deletes = deletes))
+            wordDiff.unifiedDiff(old = rendretBrev, new = request.redigertBrev).let { diff ->
+                success(Response.Unified(editedBlocks = diff.editedBlocks, deletedBlocks = diff.deletedBlocks))
             }
         }
     }
-
-    override fun requiresReservasjon(request: Request) = false
 }

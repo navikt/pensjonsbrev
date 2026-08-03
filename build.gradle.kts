@@ -1,6 +1,6 @@
+import org.gradle.api.artifacts.VersionCatalogsExtension
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 import org.jlleitschuh.gradle.ktlint.tasks.KtLintCheckTask
 import kotlin.time.Duration.Companion.minutes
@@ -12,6 +12,16 @@ plugins {
 }
 
 allprojects {
+
+    // Sikrer at alle jackson-*, ktor-*, log4j-* og exposed-* avhengigheter i hele prosjektet
+    // resolver til samme versjon, uten at hver modul må deklarere platform(...) selv.
+    configurations.matching { it.name in setOf("implementation", "testImplementation", "testFixturesImplementation") }
+        .configureEach {
+            project.dependencies.add(name, project.dependencies.platform(libs.jackson.bom))
+            project.dependencies.add(name, project.dependencies.platform(libs.ktor.bom))
+            project.dependencies.add(name, project.dependencies.platform(libs.log4j.bom))
+            project.dependencies.add(name, project.dependencies.platform(libs.exposed.bom))
+        }
 
     repositories {
         mavenCentral()
@@ -26,16 +36,6 @@ allprojects {
                 // api-model-common
                 includeGroup("no.nav.brev.brevbaker")
             }
-        }
-    }
-    tasks.withType<KotlinJvmCompile>{
-        /*
-        Denne er for å unngå unødige advarsler om https://youtrack.jetbrains.com/issue/KT-73255
-        Vi bruker egentlig bare konstruktør-varianten, men vil egentlig helst holde oss til kotlin sin standardvariant
-        Så når dette er blitt standarden i kotlin - som det skal bli - så kan vi skru av denne
-         */
-        compilerOptions {
-            freeCompilerArgs = listOf("-Xannotation-default-target=param-property")
         }
     }
     tasks.withType<KtLintCheckTask> {
@@ -60,7 +60,19 @@ allprojects {
 
 subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
+
+    // Version of the ktlint engine itself; declared once in gradle/libs.versions.toml so that both this
+    // KtlintExtension config and the :ktlint-rules module's dependencies stay in sync.
+    val ktlintEngineVersion =
+        rootProject.extensions
+            .getByType<VersionCatalogsExtension>()
+            .named("libs")
+            .findVersion("ktlintEngineVersion")
+            .get()
+            .requiredVersion
+
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+        version.set(ktlintEngineVersion)
         outputToConsole.set(true)
         reporters {
             reporter(ReporterType.JSON)
@@ -70,6 +82,13 @@ subprojects {
                 val path = element.file.path
                 path.contains("generated/") || path.contains("build.gradle.kts")
             }
+        }
+    }
+    // Custom rules (e.g. requiring compile-time constant arguments to `ifNull`), see :ktlint-rules.
+    // Excluded from the module itself to avoid a self-dependency.
+    if (path != ":ktlint-rules") {
+        dependencies {
+            "ktlintRuleset"(project(":ktlint-rules"))
         }
     }
 

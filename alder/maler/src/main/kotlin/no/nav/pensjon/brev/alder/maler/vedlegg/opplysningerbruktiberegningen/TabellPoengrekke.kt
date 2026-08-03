@@ -2,12 +2,7 @@ package no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen
 
 import no.nav.pensjon.brev.alder.model.PoengTallsType
 import no.nav.pensjon.brev.alder.model.vedlegg.Pensjonspoeng
-import no.nav.pensjon.brev.alder.model.vedlegg.PensjonspoengSelectors.arstall
-import no.nav.pensjon.brev.alder.model.vedlegg.PensjonspoengSelectors.bruktIBeregningen
-import no.nav.pensjon.brev.alder.model.vedlegg.PensjonspoengSelectors.grunnbelopVeiet
-import no.nav.pensjon.brev.alder.model.vedlegg.PensjonspoengSelectors.pensjonsgivendeinntekt
-import no.nav.pensjon.brev.alder.model.vedlegg.PensjonspoengSelectors.pensjonspoeng
-import no.nav.pensjon.brev.alder.model.vedlegg.PensjonspoengSelectors.poengtallstype
+import no.nav.pensjon.brev.alder.model.vedlegg.selectors.pensjonspoeng.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT

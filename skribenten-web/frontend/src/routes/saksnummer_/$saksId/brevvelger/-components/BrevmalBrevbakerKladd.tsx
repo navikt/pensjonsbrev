@@ -147,7 +147,7 @@ const Brevmal = (props: {
       <Divider />
       <VStack gap="space-32">
         {erBrevArkivert(props.brev) ? (
-          <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle />
+          <OppsummeringAvMottaker mottaker={props.brev.mottaker ?? null} saksId={props.saksId} withTitle />
         ) : (
           <VStack gap="space-8">
             {modalÅpen && (
@@ -197,7 +197,7 @@ const Brevmal = (props: {
                 Endre
               </Button>
             </HStack>
-            <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle={false} />
+            <OppsummeringAvMottaker mottaker={props.brev.mottaker ?? null} saksId={props.saksId} withTitle={false} />
           </VStack>
         )}
         <Oppsummeringspar boldedTitle size="small" tittel="Avsenderenhet" verdi={props.brev.avsenderEnhet.navn} />

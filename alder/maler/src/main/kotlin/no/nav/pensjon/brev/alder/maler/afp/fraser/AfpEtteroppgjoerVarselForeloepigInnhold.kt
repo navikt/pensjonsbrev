@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.afp.fraser
 
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -42,6 +43,7 @@ data class AfpEtteroppgjoerVarselForeloepigInnhold(
     val korrigertAfp: Expression<Kroner>,
     val tidligereArbeidsInntektBeregnet: Expression<Kroner>,
     val utbetaltAfp: Expression<Kroner>,
+    val toleranseBeloep: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         includePhrase(AfpEtteroppgjoerInnhold.EtteroppgjoerIntro)
@@ -59,10 +61,6 @@ data class AfpEtteroppgjoerVarselForeloepigInnhold(
             ),
         )
 
-        // Innledende setning som i Exstream-kilden (03_100/03_101) sto først i samme
-        // avsnitt som «Vi gjør oppmerksom på …». Den er unik for varselet og finnes
-        // ikke i 04_100/04_107, derfor ligger den her og ikke i den delte frasen
-        // [AfpEtteroppgjoerInnhold.InnrapporterteInntektsopplysningerIkkeSkiller].
         paragraph {
             text(
                 bokmal {
@@ -85,11 +83,6 @@ data class AfpEtteroppgjoerVarselForeloepigInnhold(
         includePhrase(AfpEtteroppgjoerInnhold.AnnenInntektInntektsproevd)
         includePhrase(AfpEtteroppgjoerInnhold.DokumenterInntekterUtenforAvkorting)
         includePhrase(AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon)
-        includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmCovidInntekterInnledning)
-        includePhrase(AfpEtteroppgjoerInnhold.CovidDokumentasjonskravInntekter)
-        includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
-
-        includePhrase(AfpEtteroppgjoerVarselFraser.VedtakOmEndeligResultatSenere)
 
         includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
         includePhrase(
@@ -118,6 +111,7 @@ data class AfpEtteroppgjoerVarselForeloepigInnhold(
             AfpEtteroppgjoerVarselFraser.ToleransebeloepForeloepig(
                 forventetInntekt = forventetInntekt,
                 oppgjoersAar = oppgjoersAar,
+                toleranseBeloep = toleranseBeloep,
             ),
         )
 
@@ -145,11 +139,8 @@ data class AfpEtteroppgjoerVarselForeloepigInnhold(
         )
 
         includePhrase(AfpEtteroppgjoerVarselFraser.NaarFristenHarGaattUt(oppgjoersAar))
-        includePhrase(AfpEtteroppgjoerVarselFraser.EktefelletilleggForbehold)
+        includePhrase(AfpEtteroppgjoerVarselFraser.DuHarRettTil)
 
-        includePhrase(AfpEtteroppgjoerVarselFraser.DineRettigheterOgPlikterInnsyn)
-        // bør antageligvis bruke har du spørsmål frasen her. -HH
-        includePhrase(AfpEtteroppgjoerVarselFraser.TaKontaktForMerInformasjon)
-        includePhrase(AfpEtteroppgjoerVarselFraser.MeldepliktArbeidsinntekt)
+        includePhrase(HarDuSpoersmaal.afpEtteroppgjoer)
     }
 }

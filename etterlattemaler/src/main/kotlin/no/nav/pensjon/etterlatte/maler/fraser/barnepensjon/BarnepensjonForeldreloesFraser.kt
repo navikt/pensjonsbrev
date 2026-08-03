@@ -6,12 +6,9 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
-import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.doedsdato
-import no.nav.pensjon.etterlatte.maler.AvdoedSelectors.navn
+import no.nav.pensjon.etterlatte.maler.selectors.avdoed.*
 import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriode
-import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriodeSelectors.foersteAvdoed
-import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriodeSelectors.senereAvdoed
-import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriodeSelectors.senereVirkningsdato
+import no.nav.pensjon.etterlatte.maler.selectors.forskjelligAvdoedPeriode.*
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak.BegrunnelseForVedtaket
 import java.time.LocalDate
 

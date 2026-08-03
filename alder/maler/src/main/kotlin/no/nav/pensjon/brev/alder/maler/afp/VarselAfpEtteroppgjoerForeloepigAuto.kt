@@ -2,23 +2,9 @@ package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerVarselForeloepigInnhold
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
+import no.nav.pensjon.brev.alder.model.afp.AfpPeriode
 import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDto
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDto.Periode
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDtoSelectors.formyebetalt
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDtoSelectors.forventetInntekt
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDtoSelectors.fradragBeregnetArbeidsInntekt
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDtoSelectors.fullAfp
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDtoSelectors.inntektEtterOpphoer
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDtoSelectors.inntektFoerUttak
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDtoSelectors.inntektIAfpPerioden
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDtoSelectors.korrigertAfp
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDtoSelectors.oppgjoersAar
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDtoSelectors.opphorsdato
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDtoSelectors.pensjonsgivendeInntekt
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDtoSelectors.periode
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDtoSelectors.tidligereArbeidsInntektBeregnet
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDtoSelectors.utbetaltAfp
-import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigAutoDtoSelectors.uttaksdato
+import no.nav.pensjon.brev.alder.model.afp.selectors.varselAfpEtteroppgjoerForeloepigAutoDto.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -72,10 +58,10 @@ object VarselAfpEtteroppgjoerForeloepigAuto : AutobrevTemplate<VarselAfpEtteropp
         outline {
             includePhrase(
                 AfpEtteroppgjoerVarselForeloepigInnhold(
-                    erHelAfpHeleAaret = periode.equalTo(Periode.HEL_AFP_HELE_AARET),
-                    erUttakIAaret = periode.equalTo(Periode.UTTAK_I_AARET),
-                    erOpphoerIAaret = periode.equalTo(Periode.OPPHOER_I_AARET),
-                    erUttakOgOpphoerIAaret = periode.equalTo(Periode.UTTAK_OG_OPPHOER_I_AARET),
+                    erHelAfpHeleAaret = periode.equalTo(AfpPeriode.HEL_AFP_HELE_AARET),
+                    erUttakIAaret = periode.equalTo(AfpPeriode.UTTAK_I_AARET),
+                    erOpphoerIAaret = periode.equalTo(AfpPeriode.OPPHOER_I_AARET),
+                    erUttakOgOpphoerIAaret = periode.equalTo(AfpPeriode.UTTAK_OG_OPPHOER_I_AARET),
                     uttaksdato = uttaksdato,
                     opphorsdato = opphorsdato,
                     oppgjoersAar = oppgjoersAar,
@@ -90,6 +76,7 @@ object VarselAfpEtteroppgjoerForeloepigAuto : AutobrevTemplate<VarselAfpEtteropp
                     korrigertAfp = korrigertAfp,
                     tidligereArbeidsInntektBeregnet = tidligereArbeidsInntektBeregnet,
                     utbetaltAfp = utbetaltAfp,
+                    toleranseBeloep = toleranseBeloep
                 ),
             )
         }

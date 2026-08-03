@@ -43,7 +43,7 @@ class ShowIfTest {
             languages = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
-            title.add(nynorskTittel)
+            nynorskTittel()
 
             outline {
                 paragraph {
@@ -93,7 +93,7 @@ class ShowIfTest {
             languages = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
-            title.add(nynorskTittel)
+            nynorskTittel()
             outline {
                 paragraph {
                     showIf(pensjonInnvilget) {
@@ -142,7 +142,7 @@ class ShowIfTest {
             languages = languages(Language.Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
-            title.add(nynorskTittel)
+            nynorskTittel()
             outline {
                 paragraph {
                     showIf(pensjonInnvilget) {

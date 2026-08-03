@@ -3,18 +3,10 @@ package no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.maler.alderApi.*
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedGjeldendeSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedGjeldendeSelectors.virkFom
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.antallBeregningsperioderPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedVedVirkSelectors.garantipensjonInnvilget
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedVedVirkSelectors.gjenlevenderettAnvendt
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedVedVirkSelectors.minstenivaIndividuellInnvilget
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedVedVirkSelectors.minstenivaPensjonistParInnvilget
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedVedVirkSelectors.pensjonstilleggInnvilget
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedVedVirkSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpptjeningSelectors.antallAarEndretOpptjening
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpptjeningSelectors.endretOpptjeningsAar
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpptjeningSelectors.sisteGyldigeOpptjeningsAar
+import no.nav.pensjon.brev.api.model.maler.alderApi.selectors.beregnetPensjonPerMaanedGjeldende.*
+import no.nav.pensjon.brev.api.model.maler.alderApi.selectors.beregnetPensjonPerMaaned.*
+import no.nav.pensjon.brev.api.model.maler.alderApi.selectors.beregnetPensjonPerMaanedVedVirk.*
+import no.nav.pensjon.brev.api.model.maler.alderApi.selectors.opptjening.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
@@ -31,7 +23,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import java.time.LocalDate
-import java.time.Month
 
 data class AvsnittBeskrivelse(
     val opptjeningType: Expression<OpptjeningType>,
@@ -481,7 +472,7 @@ data class AvsnittEtterbetaling(
             opptjeningType.equalTo(OpptjeningType.KORRIGERING) and
                     beloepEndring.equalTo(BeloepEndring.ENDR_OKT) and
                     antallAarEndretOpptjening.greaterThan(0) and
-                    virkFom.greaterThan(LocalDate.now())
+                    virkFom.greaterThan(localDateNow)
         ) {
             title2 {
                 text(
@@ -498,7 +489,7 @@ data class AvsnittEtterbetaling(
                 )
             }
 
-            showIf(virkFom.lessThan(LocalDate.of(LocalDate.now().year, Month.JANUARY, 1))) {
+            showIf(virkFom.lessThan(localDateNow.firstDayOfYear)) {
                 paragraph {
                     text(
                         bokmal { +"Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser." },

@@ -191,9 +191,9 @@ data class EndretMinsteytelseDoedEPS(
         }
         paragraph {
             text(
-                bokmal { + "Dette kan ha betydning for kompensasjonsgraden din som er satt til "
+                bokmal { + "Dette kan ha betydning for reduksjonsprosenten din som er satt til "
                         + kompensasjonsgradUfoeretrygdVedvirk.format() + " prosent. Du kan lese mer om dette i vedlegget." },
-                nynorsk { + "Dette kan ha noko å seie for kompensasjonsgraden din som er fastsett til "
+                nynorsk { + "Dette kan ha noko å seie for reduksjonsprosenten din som er fastsett til "
                         + kompensasjonsgradUfoeretrygdVedvirk.format() + " prosent. Du kan lese meir om dette i vedlegget." },
                 english { + "This may affect your degree of compensation, which is determined to be "
                         + kompensasjonsgradUfoeretrygdVedvirk.format() + " percent. You can read more about this in the appendix." }
@@ -226,11 +226,11 @@ data class EndringMinsteytelseOgMinstInntektFoerUfoerhetDoedEPS(
             text(
                 bokmal { + "Sivilstandsendring har også betydning for inntekten din før du ble ufør. Denne utgjør "
                         + inntektFoerUfoerhet.format() + " som oppjustert til virkningstidspunktet tilsvarer en inntekt på "
-                        + oppjustertInntektFoerUfoerhet.format() + ". Kompensasjonsgraden din er satt til "
+                        + oppjustertInntektFoerUfoerhet.format() + ". Reduksjonsprosenten din er satt til "
                         + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese mer om dette i vedlegget." },
                 nynorsk { + "Endringar i sivilstanden påverkar også inntekta di før du blei ufør. Denne utgjer "
                         + inntektFoerUfoerhet.format() + " som oppjustert til verknadstidspunktet svarer til ei inntekt på "
-                        + oppjustertInntektFoerUfoerhet.format() + ". Kompensasjonsgraden din er fastsett til "
+                        + oppjustertInntektFoerUfoerhet.format() + ". Reduksjonsprosenten din er fastsett til "
                         + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese meir om dette i vedlegget." },
                 english { + "The change in your marital status also affects your income prior to disability, which is determined to be "
                         + inntektFoerUfoerhet.format() + ". Adjusted to today’s value, this is equivalent to an income of "
@@ -252,11 +252,11 @@ data class EndretMinstInntektFoerUfoerhetDoedEPS(
             text(
                 bokmal { + "Inntekten din før du ble ufør er fastsatt til minstenivå som er avhengig av sivilstand. For deg er inntekten din før du ble ufør satt til "
                         + inntektFoerUfoerhet.format() + " som oppjustert til virkningstidspunktet tilsvarer en inntekt på "
-                        + oppjustertInntektFoerUfoerhet.format() + ". Dette kan ha betydning for kompensasjonsgraden din som er satt til "
+                        + oppjustertInntektFoerUfoerhet.format() + ". Dette kan ha betydning for reduksjonsprosenten din som er satt til "
                         + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese mer om dette i vedlegget." },
                 nynorsk { + "Inntekta di før du blei ufør er fastsett til minstenivå, som er avhengig av sivilstand. For deg er inntekta di før du blei ufør fastsett til "
                         + inntektFoerUfoerhet.format() + " som oppjustert til verknadstidspunktet svarer til ei inntekt på "
-                        + oppjustertInntektFoerUfoerhet.format() + ". Dette kan ha noko å seie for kompensasjonsgraden din, som er fastsett til "
+                        + oppjustertInntektFoerUfoerhet.format() + ". Dette kan ha noko å seie for reduksjonsprosenten din, som er fastsett til "
                         + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese meir om dette i vedlegget." },
                 english { + "Your income prior to disability is set to the minimum level, which depends on marital status. The change in your marital status affects your income prior to disability, which is determined to be "
                         + inntektFoerUfoerhet.format() + ". Adjusted to today’s value, this is equivalent to an income of "

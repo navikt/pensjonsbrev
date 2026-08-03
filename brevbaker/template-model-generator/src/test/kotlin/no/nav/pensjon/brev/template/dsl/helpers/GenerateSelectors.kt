@@ -71,24 +71,23 @@ private fun generateSelectors(sources: List<KotlinSourceFile>, workingDir: File)
 }
 
 private class ListLogger : KSPLogger {
-    private val _messages = mutableListOf<String>()
-    val messages: List<String> = _messages
+    val messages: List<String> field = mutableListOf<String>()
 
     override fun error(message: String, symbol: KSNode?) {
-        _messages.add(message)
+        messages.add(message)
     }
 
     override fun exception(e: Throwable) {}
 
     override fun info(message: String, symbol: KSNode?) {
-        _messages.add(message)
+        messages.add(message)
     }
 
     override fun logging(message: String, symbol: KSNode?) {
-        _messages.add(message)
+        messages.add(message)
     }
 
     override fun warn(message: String, symbol: KSNode?) {
-        _messages.add(message)
+        messages.add(message)
     }
 }

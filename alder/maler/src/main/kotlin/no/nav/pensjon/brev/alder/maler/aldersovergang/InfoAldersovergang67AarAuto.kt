@@ -3,8 +3,7 @@ package no.nav.pensjon.brev.aldersovergang
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDto
-import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.kronebelop2G
-import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.ytelseForAldersovergang
+import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.infoAlderspensjonOvergang67AarAutoDto.*
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoAFPprivatAP
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoArbeidsinntekt
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoBoddArbeidetUtlandet

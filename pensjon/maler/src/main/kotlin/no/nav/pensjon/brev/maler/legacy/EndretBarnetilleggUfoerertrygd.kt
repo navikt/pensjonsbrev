@@ -2,9 +2,7 @@ package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.orienteringOmRettigheterUfoere
-import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.pe
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.endretBarnetilleggUfoeretrygdDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.MeldeFraOmEndringer
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd.SjekkUtbetalingene

@@ -5,7 +5,7 @@ import { getKontaktAdresse, hentSamhandlerAdresse } from "~/api/skribenten-api-e
 import AdresseVisning, { type AdresseVisningTag } from "~/components/AdresseVisning";
 import { ApiError } from "~/components/ApiError";
 import { useSakGjelderNavnFormatert } from "~/hooks/useSakGjelderNavn";
-import { type Adresse, type KontaktAdresseResponse } from "~/types/apiTypes";
+import { type KontaktAdresseResponse, type SamhandlerPostadresse } from "~/types/apiTypes";
 import {
   erAdresseKontaktAdresse,
   MOTTAKER_TAG_BRUKER,
@@ -21,17 +21,7 @@ function mapKontaktAdresseTags(adresse: KontaktAdresseResponse): AdresseVisningT
   return [MOTTAKER_TAG_BRUKER];
 }
 
-function mapSamhandlerAdresseTags(adresse: Adresse): AdresseVisningTag[] {
-  const tags: AdresseVisningTag[] = [MOTTAKER_TAG_SAMHANDLER];
-  if (adresse.manueltAdressertTil === "BRUKER") {
-    tags.push(MOTTAKER_TAG_BRUKER);
-  } else if (adresse.manueltAdressertTil === "ANNEN") {
-    tags.push(MOTTAKER_TAG_VERGE);
-  }
-  return tags;
-}
-
-function mapSamhandlerAdresseLinjer(adresse: Adresse): string[] {
+function mapSamhandlerAdresseLinjer(adresse: SamhandlerPostadresse): string[] {
   const postLinje = [adresse.postnr, adresse.poststed].filter(Boolean).join(" ");
   const landSuffix = adresse.land && adresse.land !== "NOR" ? `, ${adresse.land}` : "";
   return [adresse.linje1, `${postLinje}${landSuffix}`].filter((l): l is string => !!l);
@@ -104,7 +94,7 @@ const ResolvedKontaktAdresse = (properties: {
 
 const ResolvedAdresse = (properties: {
   saksId: string;
-  adresse: Adresse | KontaktAdresseResponse;
+  adresse: SamhandlerPostadresse | KontaktAdresseResponse;
   erSamhandler: boolean;
   withTitle?: boolean;
 }) => {
@@ -122,7 +112,7 @@ const ResolvedAdresse = (properties: {
     <AdresseVisning
       adresselinjer={mapSamhandlerAdresseLinjer(properties.adresse)}
       navn={properties.adresse.navn}
-      tags={properties.erSamhandler ? mapSamhandlerAdresseTags(properties.adresse) : undefined}
+      tags={properties.erSamhandler ? [MOTTAKER_TAG_SAMHANDLER] : undefined}
       withTitle={properties.withTitle}
     />
   );

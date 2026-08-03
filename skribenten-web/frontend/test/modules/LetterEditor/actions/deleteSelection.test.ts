@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { text } from "~/Brevredigering/LetterEditor/actions/common";
-import { type Cell, type ItemList, LITERAL, type LiteralValue, type Row, type Table } from "~/types/brevbakerTypes";
+import { type Cell, type ItemList, type LiteralValue, type Row, type Table } from "~/types/brevbakerTypes";
 
 import { cell, item, itemList, letter, literal, paragraph, row, select, table, title1, variable } from "../utils";
 
@@ -124,7 +124,7 @@ describe("Actions.deleteSelection", () => {
       const block = result.redigertBrev.blocks[0];
       expect(block.type).toBe("PARAGRAPH");
       expect(block.content).toHaveLength(1);
-      expect(block.content[0].type).toBe(LITERAL);
+      expect(block.content[0].type).toBe("LITERAL");
       expect(text(block.content[0] as LiteralValue)).toBe("");
     });
 
@@ -138,7 +138,7 @@ describe("Actions.deleteSelection", () => {
       const block = result.redigertBrev.blocks[0];
       expect(block.type).toBe("PARAGRAPH");
       expect(block.content).toHaveLength(1);
-      expect(block.content[0].type).toBe(LITERAL);
+      expect(block.content[0].type).toBe("LITERAL");
       expect(text(block.content[0] as LiteralValue)).toBe("");
     });
   });
@@ -307,7 +307,7 @@ describe("Actions.deleteSelection", () => {
       expect(list.items).toHaveLength(3);
       const item = list.items[1];
       expect(item.content).toHaveLength(1);
-      expect(item.content[0].type).toEqual(LITERAL);
+      expect(item.content[0].type).toEqual("LITERAL");
       expect(text(item.content[0])).toEqual("");
     });
 
@@ -369,7 +369,7 @@ describe("Actions.deleteSelection", () => {
       };
       const result = Actions.deleteSelection(state, selection);
       expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
-      expect(result.redigertBrev.blocks[0].content[0]).toMatchObject({ text: "", type: LITERAL });
+      expect(result.redigertBrev.blocks[0].content[0]).toMatchObject({ text: "", type: "LITERAL" });
     });
 
     it("includes entire list that is the only content in block and ends in next block, deletes list and merges blocks", () => {
@@ -381,7 +381,7 @@ describe("Actions.deleteSelection", () => {
       const result = Actions.deleteSelection(state, selection);
       expect(result.redigertBrev.blocks).toHaveLength(1);
       expect(result.redigertBrev.blocks[0].content).toHaveLength(1);
-      expect(result.redigertBrev.blocks[0].content[0]).toMatchObject({ editedText: "ei", type: LITERAL });
+      expect(result.redigertBrev.blocks[0].content[0]).toMatchObject({ editedText: "ei", type: "LITERAL" });
     });
 
     it("includes entire content of block that ends with list", () => {
@@ -392,7 +392,7 @@ describe("Actions.deleteSelection", () => {
       const result = Actions.deleteSelection(state, selection);
       const block = result.redigertBrev.blocks[1];
       expect(block.content).toHaveLength(1);
-      expect(block.content[0]).toMatchObject({ type: LITERAL });
+      expect(block.content[0]).toMatchObject({ type: "LITERAL" });
       expect(text(block.content[0] as LiteralValue)).toEqual("");
     });
   });
@@ -552,7 +552,7 @@ describe("Actions.deleteSelection", () => {
 
       const onlyParagraph = letterAfterDelete.redigertBrev.blocks[0];
       const literalAfterTable = onlyParagraph.content.at(-1);
-      expect(literalAfterTable?.type).toEqual(LITERAL);
+      expect(literalAfterTable?.type).toEqual("LITERAL");
       expect(text(literalAfterTable as LiteralValue)).toEqual("");
       expect(onlyParagraph.content.at(-2)?.type).toEqual("TABLE");
     });
@@ -606,6 +606,6 @@ describe("Actions.deleteSelection", () => {
 
 function expectEmptyCell(cell: Cell) {
   expect(cell.text).toHaveLength(1);
-  expect(cell.text[0].type).toEqual(LITERAL);
+  expect(cell.text[0].type).toEqual("LITERAL");
   expect(text(cell.text[0])).toEqual("");
 }

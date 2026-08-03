@@ -226,9 +226,9 @@ object Felles {
         }
     }
 
-    object DuKanLeseMer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class DuKanLeseMer(val uniqueness: String? = null) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
+            paragraph(uniqueness = uniqueness) {
                 text(
                     bokmal { + "Du kan lese mer om dette på $NAV_URL." },
                     nynorsk { + "Du kan lese meir om dette på $NAV_URL." },

@@ -3,6 +3,8 @@
 package no.nav.pensjon.brev.skribenten.letter
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonSubTypes
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.Listetype
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
@@ -61,6 +63,13 @@ object Edit {
         )
     }
 
+    data class Attachment(
+        val title: Title,
+        val blocks: List<Edit.Block>,
+        val deletedBlocks: Set<Int>,
+        val includeSakspart: Boolean,
+    )
+
     interface Identifiable {
         val id: Int?
         val parentId: Int?
@@ -77,6 +86,13 @@ object Edit {
         val deletedContent: Set<Int> = emptySet(),
     )
 
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
+    @JsonSubTypes(
+        JsonSubTypes.Type(value = Edit.Block.Title1::class, name = "TITLE1"),
+        JsonSubTypes.Type(value = Edit.Block.Title2::class, name = "TITLE2"),
+        JsonSubTypes.Type(value = Edit.Block.Title3::class, name = "TITLE3"),
+        JsonSubTypes.Type(value = Edit.Block.Paragraph::class, name = "PARAGRAPH"),
+    )
     sealed class Block(val type: Type) : Identifiable {
         enum class Type {
             TITLE1, TITLE2, TITLE3, PARAGRAPH,
@@ -134,6 +150,14 @@ object Edit {
         ) : Block(Type.PARAGRAPH)
     }
 
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
+    @JsonSubTypes(
+        JsonSubTypes.Type(value = Edit.ParagraphContent.ItemList::class, name = "ITEM_LIST"),
+        JsonSubTypes.Type(value = Edit.ParagraphContent.Text.Literal::class, name = "LITERAL"),
+        JsonSubTypes.Type(value = Edit.ParagraphContent.Text.Variable::class, name = "VARIABLE"),
+        JsonSubTypes.Type(value = Edit.ParagraphContent.Table::class, name = "TABLE"),
+        JsonSubTypes.Type(value = Edit.ParagraphContent.Text.NewLine::class, name = "NEW_LINE"),
+    )
     sealed class ParagraphContent(val type: Type) : Identifiable {
         enum class Type {
             ITEM_LIST, LITERAL, VARIABLE, TABLE, NEW_LINE,
@@ -143,6 +167,7 @@ object Edit {
             override val id: Int?,
             val items: List<Item>,
             val listType: Listetype = Listetype.PUNKTLISTE,
+            val editedListType: Listetype? = null,
             val deletedItems: Set<Int> = emptySet(),
             override val parentId: Int? = null,
         ) : ParagraphContent(Type.ITEM_LIST) {
@@ -155,7 +180,7 @@ object Edit {
                 override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() || it.parentId != id } || deletedContent.isNotEmpty()
             }
 
-            override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() || it.parentId != id } || deletedItems.isNotEmpty()
+            override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() || it.parentId != id } || deletedItems.isNotEmpty() || editedListType != null
         }
 
         data class Table(
@@ -165,16 +190,16 @@ object Edit {
             val deletedRows: Set<Int> = emptySet(),
             override val parentId: Int? = null,
         ) : ParagraphContent(Type.TABLE) {
-            data class Row(override val id: Int?, val cells: List<Cell>, override val parentId: Int? = null) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || cells.any { it.isEdited() || it.parentId != id }
+            data class Row(override val id: Int?, val cells: List<Cell>, val deletedCells: Set<Int> = emptySet(), override val parentId: Int? = null) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || cells.any { it.isEdited() || it.parentId != id } || deletedCells.isNotEmpty()
             }
 
-            data class Cell(override val id: Int?, val text: List<Text>, override val parentId: Int? = null) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || text.any { it.isEdited() || it.parentId != id }
+            data class Cell(override val id: Int?, val text: List<Text>, val deletedContent: Set<Int> = emptySet(), override val parentId: Int? = null) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || text.any { it.isEdited() || it.parentId != id } || deletedContent.isNotEmpty()
             }
 
-            data class Header(override val id: Int?, val colSpec: List<ColumnSpec>, override val parentId: Int? = null) : Identifiable {
-                override fun isEdited(): Boolean = isNew() || colSpec.any { it.isEdited() || it.parentId != id }
+            data class Header(override val id: Int?, val colSpec: List<ColumnSpec>, val deletedColSpecs: Set<Int> = emptySet(), override val parentId: Int? = null) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || colSpec.any { it.isEdited() || it.parentId != id } || deletedColSpecs.isNotEmpty()
             }
 
             data class ColumnSpec(
@@ -232,6 +257,14 @@ object Edit {
 
 fun LetterMarkup.toEdit(): Edit.Letter =
     Edit.Letter(Edit.Title(title.toEdit(null)), sakspart, blocks.toEdit(), signatur, emptySet())
+
+fun LetterMarkup.Attachment.toEdit(): Edit.Attachment =
+    Edit.Attachment(
+        title = Edit.Title(title.toEdit(null)),
+        blocks = blocks.toEdit(),
+        deletedBlocks = emptySet(),
+        includeSakspart = includeSakspart,
+    )
 
 fun List<Block>.toEdit(): List<Edit.Block> =
     map { it.toEdit() }
@@ -296,6 +329,13 @@ fun ParagraphContent.Table.ColumnAlignment.toEdit(): Edit.ParagraphContent.Table
 fun Edit.Letter.toMarkup(): LetterMarkup =
     LetterMarkupImpl(title = title.text.toMarkup(), sakspart = sakspart, blocks = blocks.map { it.toMarkup() }, signatur = signatur)
 
+fun Edit.Attachment.toMarkup(): LetterMarkup.Attachment =
+    LetterMarkupImpl.AttachmentImpl(
+        title = title.text.toMarkup(),
+        blocks = blocks.map { it.toMarkup() },
+        includeSakspart = includeSakspart,
+    )
+
 fun Edit.Block.toMarkup(): Block =
     when (this) {
         is Edit.Block.Paragraph -> BlockImpl.ParagraphImpl(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
@@ -309,7 +349,7 @@ fun List<Edit.ParagraphContent.Text>.toMarkup() =
 
 fun Edit.ParagraphContent.toMarkup(): ParagraphContent =
     when (this) {
-        is Edit.ParagraphContent.ItemList -> ParagraphContentImpl.ItemListImpl(id = id ?: 0, items = items.map { it.toMarkup() }, listType = listType)
+        is Edit.ParagraphContent.ItemList -> ParagraphContentImpl.ItemListImpl(id = id ?: 0, items = items.map { it.toMarkup() }, listType = editedListType ?: listType)
         is Edit.ParagraphContent.Table -> ParagraphContentImpl.TableImpl(id = id ?: 0, rows = rows.map { it.toMarkup() }, header = header.toMarkup())
         is Edit.ParagraphContent.Text -> toMarkup()
     }

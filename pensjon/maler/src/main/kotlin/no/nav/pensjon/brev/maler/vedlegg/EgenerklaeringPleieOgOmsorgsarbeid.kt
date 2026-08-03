@@ -1,17 +1,13 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.PesysDataSelectors.returadresse
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.SaksbehandlerValgSelectors.aarEgenerklaringOmsorgspoeng
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.omsorgEgenManuellDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.omsorgEgenManuellDto.saksbehandlerValg.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.omsorgEgenManuellDto.*
 import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDto
-import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDtoSelectors.aarEgenerklaringOmsorgspoeng
-import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDtoSelectors.returadresse
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.egenerklaeringOmsorgsarbeidDto.*
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresse
-import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.adresseLinje1
-import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.postNr
-import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.postSted
+import no.nav.pensjon.brev.api.model.vedlegg.selectors.returAdresse.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Expression
@@ -23,9 +19,8 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.dokumentDato
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.NavEnhetSelectors.navn
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.*
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.*
 
 
 @TemplateModelHelpers

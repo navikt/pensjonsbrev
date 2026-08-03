@@ -21,16 +21,8 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.data
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDataSelectors.beregning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDataSelectors.datoVedtakOmgjoering
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDataSelectors.etterbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDataSelectors.harUtbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDataSelectors.informasjonOmOmstillingsstoenadData
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDataSelectors.innvilgetMindreEnnFireMndEtterDoedsfall
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDataSelectors.omsRettUtenTidsbegrensning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDataSelectors.tidligereFamiliepleier
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.selectors.omstillingsstoenadInnvilgelseDTO.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.selectors.omstillingsstoenadInnvilgelseData.*
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
@@ -117,12 +109,12 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = true),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = true),
                 data.beregning,
                 data.tidligereFamiliepleier,
             )
             includeAttachment(
-                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = true),
+                beregningAvOmstillingsstoenad(tidligereFamiliepleier = false),
                 data.beregning,
                 data.tidligereFamiliepleier.not(),
             )

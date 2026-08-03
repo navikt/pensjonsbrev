@@ -9,9 +9,10 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.firstDayOfYear
+import no.nav.pensjon.brev.template.dsl.expression.localDateNow
 import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
-import java.time.Month
 
 
 object Vedtak {
@@ -32,10 +33,10 @@ object Vedtak {
     /**
      * TBU1092
      */
-    object BegrunnelseOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class BegrunnelseOverskrift(val uniqueness: String? = null) : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            title1 {
+            title1(uniqueness = uniqueness) {
                 text(
                     bokmal { + "Begrunnelse for vedtaket" },
                     nynorsk { + "Grunngiving for vedtaket" },
@@ -61,7 +62,7 @@ object Vedtak {
                 )
             }
 
-            showIf(virkDatoFom.lessThan(LocalDate.of(LocalDate.now().year, Month.JANUARY, 1))) {
+            showIf(virkDatoFom.lessThan(localDateNow.firstDayOfYear)) {
                 paragraph {
                     text(
                         bokmal { +"Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser." },
