@@ -9,6 +9,7 @@ import io.ktor.util.*
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevInfoHandler
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
+import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.common.cached
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
@@ -47,9 +48,15 @@ val AuthorizeAnsattSakTilgangForBrev =
         val cache: Cache by application.dependencies
 
         on(PrincipalInContext.Hook) { call ->
+            if (call.isHandled) return@on
+
             val brevId = call.parameters.brevId()
-            hentBrevInfo(HentBrevInfoHandler.Request(brevId))?.onSuccess {
-                validerTilgangTilSak(fagsakService, pdlService, cache, call, it.saksId)
+            val brevInfo = hentBrevInfo(HentBrevInfoHandler.Request(brevId))?.asSuccess()?.value
+            if (brevInfo != null) {
+                validerTilgangTilSak(fagsakService, pdlService, cache, call, brevInfo.saksId)
+            } else {
+                logger.info("Tilgang til brev avvist: brev med id $brevId ikke funnet")
+                call.respond(HttpStatusCode.NotFound, "Brev ikke funnet")
             }
         }
     }

@@ -13,7 +13,10 @@ const sourcemapsRoot = path.resolve("./sourcemaps");
 // Matches a stack frame referencing one of our built assets, e.g.
 // "at Component (https://skribenten.intern.dev.nav.no/assets/index-CzilmHAy.js:1:12345)"
 // or "at https://skribenten.intern.dev.nav.no/assets/index-CzilmHAy.js:1:12345".
-const STACK_FRAME_REGEX = /https?:\/\/[^\s)]+(\/assets\/[^\s):]+\.js):(\d+):(\d+)/;
+// The character classes are kept mutually exclusive (the host part cannot
+// contain "/", the asset name cannot contain "/") so the regex has no
+// ambiguity and runs in linear time on untrusted input.
+const STACK_FRAME_REGEX = /https?:\/\/[^\s)/]+(\/assets\/[^\s):/]+\.js):(\d+):(\d+)/;
 
 const traceMapCache = new Map<string, TraceMap | undefined>();
 
