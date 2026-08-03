@@ -12,6 +12,7 @@ export const verifyToken = async (request: Request, response: Response, next: Ne
   if (!validation.ok) {
     console.error("Invalid token validation", validation);
     response.status(403).send();
+    return;
   }
 
   next();
