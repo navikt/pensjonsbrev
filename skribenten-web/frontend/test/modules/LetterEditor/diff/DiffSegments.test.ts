@@ -59,4 +59,11 @@ describe("DiffSegments DOM behavior", () => {
       ),
     );
   });
+
+  it("returns a compact signature without embedding segment text", () => {
+    const signature = diffSegmentSignature(segments);
+
+    expect(signature).toMatch(/^[\da-f]{8}$/);
+    expect(signature).not.toContain("gammel");
+  });
 });

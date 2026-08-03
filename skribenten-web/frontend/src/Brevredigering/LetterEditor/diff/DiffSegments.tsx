@@ -18,7 +18,19 @@ function createSegmentNode(segment: DiffSegment): HTMLSpanElement {
   return span;
 }
 
-export const diffSegmentSignature = (segments: DiffSegment[]) => JSON.stringify(segments);
+export const diffSegmentSignature = (segments: DiffSegment[]) => {
+  let hash = 0x811c9dc5;
+
+  for (const segment of segments) {
+    const value = `${segment.type.length}:${segment.type}${segment.text.length}:${segment.text}`;
+    for (let index = 0; index < value.length; index++) {
+      hash ^= value.charCodeAt(index);
+      hash = Math.imul(hash, 0x01000193);
+    }
+  }
+
+  return (hash >>> 0).toString(16).padStart(8, "0");
+};
 
 export function renderDiffSegments(element: HTMLElement, segments: DiffSegment[], diffVersion: string) {
   if (element.dataset.diffVersion === diffVersion) return;
