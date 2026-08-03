@@ -4,7 +4,7 @@ services:
     image: pensjonsbrev-pdf-bygger:latest
     build: ./brevbaker/pdf-bygger
     environment:
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Djdk.lang.Process.launchMechanism=vfork -Dlog4j2.configurationFile=log4j2-local.xml #used for Apple M1 compatability
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Dlog4j2.configurationFile=log4j2-local.xml
     ports:
       - "8081:8080"
       - "5016:5016"
