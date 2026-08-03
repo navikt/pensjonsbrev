@@ -446,6 +446,10 @@ Utløp er derfor normal drift og ikke en feiltilstand.
 Arbeidet med denne strategien avdekket flere mangler i instrumenteringen.
 Disse er bevisste, prioriterte oppgaver — ikke forglemmelser — og listes her slik at alarmdekningen kan forbedres stegvis.
 
+Ingen av de gjenstående hullene er blokkerende for alarmene i tabellene over.
+De to som var det, er lukket: latensmetrikken eksporteres nå som histogram, og skribenten-web eksponerer metrikker.
+Det som står igjen forbedrer *feilsøkingen* når en alarm har gått — det gjør oss raskere til å finne årsaken, ikke flinkere til å oppdage at noe er galt.
+
 [cols="1,3,3,1", options="header"]
 |===
 | # | Hull | Tiltak | Prioritet
@@ -453,7 +457,7 @@ Disse er bevisste, prioriterte oppgaver — ikke forglemmelser — og listes her
 | 1
 | Ingen metrikker på nedstrøms kall fra skribenten-backend. Vi kan ikke skille «PEN er nede» fra «SAF er nede» uten å lese logger.
 | Instrumentér Ktor-klientene med et eget metrikk-plugin. Ktor 3.5 har ingen klientside-metrikkplugin, men alle klientene går gjennom `HttpClientFactory.lagHttpClient`, så instrumenteringen kan legges ett sted.
-| Høy
+| Middels
 
 | 2
 | `/isReady` i brevbaker og pdf-bygger returnerer alltid `200` uten å sjekke noe. En pod som ikke kan nå pdf-bygger tas aldri ut av rotasjon.
