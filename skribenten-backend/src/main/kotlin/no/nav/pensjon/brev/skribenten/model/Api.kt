@@ -1,31 +1,25 @@
 package no.nav.pensjon.brev.skribenten.model
 
-import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.*
 import no.nav.brev.BrevLandmodell.Landkode
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
-import no.nav.pensjon.brev.skribenten.services.EnhetId
-import no.nav.pensjon.brev.skribenten.services.NavEnhet
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import java.time.Duration
-import java.time.Instant
-import java.time.LocalDate
-
-typealias SaksbehandlerValg = Api.GeneriskBrevdata
+import java.time.*
 
 object Api {
     class GeneriskBrevdata : LinkedHashMap<String, Any?>(), BrevbakerBrevdata, FagsystemBrevdata, SaksbehandlerValgBrevdata
+    class GeneriskSaksbehandlervalg<K, V>(entries: Iterable<Pair<K, V>>? = null) : LinkedHashMap<K, V>(), MutableMap<K, V>, SaksbehandlerValgBrevdata {
+        init {
+            if (entries != null) putAll(entries)
+        }
+    }
 
     data class UserInfo(val name: String, val navident: NavIdent, val erAttestant: Boolean)
 
@@ -33,14 +27,14 @@ object Api {
         val brevkode: RedigerbarBrevkode,
         val spraak: SpraakKode,
         val avsenderEnhetsId: EnhetId,
-        val saksbehandlerValg: SaksbehandlerValg,
+        val saksbehandlerValg: RedigerbarSaksbehandlervalgMap,
         val reserverForRedigering: Boolean?,
         val mottaker: OverstyrtMottaker?,
         val vedtaksId: VedtaksId?,
     )
 
     data class OppdaterBrevRequest(
-        val saksbehandlerValg: SaksbehandlerValg,
+        val saksbehandlerValg: RedigerbarSaksbehandlervalgMap,
         val redigertBrev: Edit.Letter,
     )
 
@@ -49,7 +43,7 @@ object Api {
     )
 
     data class OppdaterAttesteringRequest(
-        val saksbehandlerValg: SaksbehandlerValg,
+        val saksbehandlerValg: RedigerbarSaksbehandlervalgMap,
         val redigertBrev: Edit.Letter,
     )
 
@@ -127,7 +121,7 @@ object Api {
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
         val redigertBrevHash: Hash<Edit.Letter>,
-        val saksbehandlerValg: SaksbehandlerValgBrevdata,
+        val saksbehandlerValg: RedigerbarSaksbehandlervalgMap,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
         val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>?,
     )

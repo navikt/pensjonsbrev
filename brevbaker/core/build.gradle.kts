@@ -50,10 +50,8 @@ dependencies {
     testFixturesImplementation(libs.ktor.serialization.jackson)
     testFixturesImplementation(libs.ktor.client.cio)
     testFixturesImplementation(libs.ktor.client.content.negotiation)
-    testFixturesImplementation(libs.ktor.server.callId)
 
     testFixturesImplementation(testFixtures(project(":brevbaker:dsl")))
-    testFixturesImplementation(libs.bundles.logging)
     testFixturesImplementation(libs.bundles.junit)
     testFixturesApi(libs.testcontainers.core)
 

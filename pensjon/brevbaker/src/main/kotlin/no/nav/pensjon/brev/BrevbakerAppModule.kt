@@ -43,10 +43,7 @@ fun Application.brevbakerModule(
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
-        val ignorePaths = setOf("/isAlive", "/isReady", "/metrics")
-        filter {
-            !ignorePaths.contains(it.request.path())
-        }
+        filter(Metrics::skalObserveres)
         mdc("x_response_code") { it.response.status()?.value?.toString() }
         mdc("x_brevkode") { it.useBrevkodeFromCallContext() }
     }

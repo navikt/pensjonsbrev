@@ -18,11 +18,12 @@ class EndreValgteVedleggHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
         val alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
     ) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
         val principal = PrincipalInContext.require()
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }

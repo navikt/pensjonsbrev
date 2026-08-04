@@ -1,0 +1,480 @@
+= Alarmstrategi
+
+Denne siden beskriver hvordan Team Pensjonsbrev alarmerer på applikasjonene vi har forvaltningsansvar for:
+
+* *pensjon-brevbaker*
+* *pensjon-pdf-bygger*
+* *skribenten-backend*
+* *skribenten-web* (SPA + BFF)
+
+Dokumentet definerer prinsippene, alvorlighetsgradene og hvilke konkrete signaler vi alarmerer på.
+Selve alarmreglene defineres senere som `PrometheusRule`/nais `Alert`-manifester; denne siden er kilden de skal utledes fra.
+
+== Formål
+
+Alarmer skal gi oss beskjed *før brukerne melder fra*, og bare når *et menneske faktisk må gjøre noe*.
+En alarm som ingen handler på er ikke en alarm — det er støy som svekker tilliten til alle de andre alarmene.
+
+Vi skiller derfor tydelig mellom:
+
+Alarm:: Noe er galt nå, noen må undersøke. Krever mottaker og handling.
+Dashboard:: Noe vi vil kunne se på når vi undersøker. Krever ingen mottaker.
+
+Alt som ikke oppfyller alarmkriteriene under hører hjemme på et dashboard, ikke i en alarm.
+
+== Prinsipper
+
+[[prinsipper]]
+. *Alarmér på symptomer, ikke årsaker.* Vi alarmerer på det brukeren merker (feil, treghet, manglende brev), ikke på hver enkelt underliggende årsak. Høy CPU er ikke i seg selv et problem hvis brevene kommer ut i tide.
+. *Hver alarm skal ha en handling.* Kan vi ikke beskrive hva mottakeren skal gjøre, skal alarmen ikke finnes.
+. *Alarmér på rate og varighet, ikke enkelthendelser.* Én 500-respons er ikke en hendelse. 5 % feilrate i 10 minutter er det. Alle alarmer skal ha en `for`-periode som filtrerer bort forbigående støy.
+. *Terskler skal begrunnes.* Enhver terskel i dette dokumentet skal ha en kort begrunnelse, slik at den kan justeres bevisst i stedet for tilfeldig.
+. *Nedstrøms feil skal attribueres, ikke nedprioriteres.* Når et nedstrøms system (Pesys, SAF, KRR) feiler og rammer brukerne våre, alarmerer vi like fullt — brukerne er like blokkert uansett hvem som eier feilen. Poenget er at alarmen umiddelbart skal peke på *hvem* som feiler, slik at vi kan videreformidle til riktig team i stedet for å feilsøke vårt eget system forgjeves. En alarm vi ikke kan attribuere koster oss mest tid.
+. *4xx er som hovedregel ikke vår feil.* Vi alarmerer på 5xx. Unntaket er en brå økning i 4xx, som ofte betyr at vi har brutt en API-kontrakt for en konsument.
+. *Alarmer er kode.* Alle alarmer versjoneres i repoet sammen med applikasjonen de gjelder, og gjennomgås i PR som all annen kode.
+
+== Alvorlighetsgrader
+
+Vi bruker to nivåer. Flere nivåer i praksis betyr at det midterste ignoreres.
+
+Teamet har *ingen vaktordning*. Ingen alarm forventes håndtert utenfor arbeidstid, uansett nivå.
+Alvorlighetsgraden sier derfor ikke noe om når på døgnet vi rykker ut, men hvor raskt vi tar tak i alarmen når vi er på jobb, og hvor mye den skal få avbryte annet arbeid.
+
+[cols="1,3,2,2", options="header"]
+|===
+| Nivå | Betyr | Håndtering | Kanal
+
+| `critical`
+| Brukere er rammet nå, eller brev produseres ikke.
+| Tas foran annet arbeid. Har den utløst utenfor arbeidstid, er den det første vi ser på neste arbeidsdag.
+| Slack-kanal med varsling
+
+| `warning`
+| Noe er i ferd med å gå galt, eller noe er allerede ødelagt uten at brukerne merker det ennå.
+| Tas i den ordinære arbeidsflyten.
+| Slack-kanal uten varsling
+|===
+
+Merk skillet i *når feil faktisk rammer noen*: *pensjon-brevbaker* og *pensjon-pdf-bygger* betjener automatisk brevproduksjon fra Pesys som kjører utenfor kontortid, mens *skribenten-backend* og *skribenten-web* i praksis kun brukes av saksbehandlere i kontortid.
+Skillet avgjør ikke om noen blir vekket, men hvordan vi tolker en alarm i etterkant: en `critical` fra brevbaker kl. 03 betyr at brev ikke ble produsert i natt og skal prioriteres når vi kommer på jobb, mens det samme i Skribenten som regel ikke har rammet noen.
+
+== Signalkilder
+
+=== Applikasjonsmetrikker
+
+Alle tre Ktor-applikasjonene eksponerer Prometheus-metrikker på `/metrics` via `MicrometerMetrics`, og scrapes av nais (`prometheus.enabled: true`).
+nais legger automatisk på labels som `app`, `namespace` og `pod`, slik at alle spørringer kan filtreres på `app="pensjon-brevbaker"` osv.
+
+Tilgjengelige metrikker:
+
+[cols="2,3", options="header"]
+|===
+| Metrikk | Merknad
+
+| `ktor_http_server_requests_seconds_count`
+| Teller per `route`, `method`, `status` og `throwable`. Grunnlaget for alle feilrate-alarmer.
+
+| `ktor_http_server_requests_seconds_sum`
+| Sum av responstid. Sammen med `_count` gir dette gjennomsnittlig responstid.
+
+| `ktor_http_server_requests_seconds_bucket`
+| Kumulativ fordeling per `le`-grense. Grunnlaget for `histogram_quantile()`, se merknaden under.
+
+| `ktor_http_server_requests_seconds_max`
+| Høyeste observerte responstid i vinduet. Nyttig for å fange enkelttreghet.
+
+| `ktor_http_server_requests_active`
+| Antall requests under behandling. Stigende verdi = kø bygger seg opp.
+
+| `pensjon_brevbaker_letter_request_count_total`
+| *Kun brevbaker.* Teller per `brevkode`. Vår eneste domenespesifikke metrikk.
+
+| `jvm_memory_used_bytes`, `jvm_gc_pause_seconds_*`, `jvm_threads_*`
+| Standard JVM-metrikker.
+
+| `process_cpu_usage`, `system_cpu_usage`
+| Standard prosessmetrikker.
+|===
+
+[IMPORTANT]
+====
+`ktor_http_server_requests_seconds` er konfigurert som et *histogram* med buckets, ikke som en summary med klientside-kvantiler.
+
+Det er et bevisst valg: klientside-kvantiler regnes ut per pod og kan *ikke* aggregeres, slik at en p99 fra én pod ikke sier noe om p99 for tjenesten.
+Med buckets kan `histogram_quantile()` brukes på tvers av alle poder:
+
+[source]
+----
+histogram_quantile(0.95, sum(rate(ktor_http_server_requests_seconds_bucket{app="pensjon-brevbaker", route="/letter/autobrev/pdf"}[5m])) by (le))
+----
+
+Merk at `le` *må* være med i `by`-klausulen — uten den har `histogram_quantile()` ingen buckets å regne på.
+
+Spørringen over gir *p95*: den responstiden som 95 % av forespørslene var raskere enn, mens de 5 % tregeste brukte lengre tid.
+Vi bruker p95 i latensalarmene fordi den treffer mellom to ytterpunkter: gjennomsnittet skjuler at en mindre andel har det vondt, mens `max` slår ut på én enkelt treg forespørsel.
+Stiger p95 er det en reell andel brev eller saksbehandlere som merker tregheten.
+
+Bucket-grensene settes i hver app sin `Metrics.kt` og er tilpasset appens forventede latens.
+Den *øverste* grensen er bevisst forankret i timeoutene i koden, ikke i observert latens: et kall som går til timeout skal havne innenfor histogrammet og ikke i `+Inf`, ellers er halen usynlig akkurat når vi trenger den.
+Derfor dekker brevbaker opp til 300s (`withTimeoutOrNull` rundt kallene mot pdf-bygger i `PensjonPdfByggerService`) og skribenten opp til 120s (`requestTimeout` på 60s mot brevbaker, med margin for ruter som gjør flere kall).
+Endres en timeout i koden, må den øverste bucket-grensen følge med.
+
+Grensene er kalibrert mot observert latens i prod.
+Vær oppmerksom på at datagrunnlaget har to begrensninger: ingen store batcher hadde kjørt innenfor retensjonsperioden, og p95 og p99 er identiske for samtlige ruter fordi trafikkvolumet er for lavt til at estimatoren skiller dem.
+Halen er derfor sannsynligvis underestimert, noe som taler for å beholde romslige tak.
+
+Ligger p95 mellom to bucket-grenser, interpolerer `histogram_quantile()` lineært — verdien blir derfor grovere jo grovere grensene er.
+====
+
+`skribenten-web` er ikke en Ktor-app, men BFF-en eksponerer tilsvarende metrikker på `/internal/metrics` via `prom-client`:
+
+[cols="2,3", options="header"]
+|===
+| Metrikk | Merknad
+
+| `http_server_request_duration_seconds_*`
+| Histogram med `method`, `route` og `status_code`. `route` er en grov klassifisering — `proxy`, `bff-api`, `static`, `probe` — ikke faktisk sti.
+
+| `nodejs_eventloop_lag_seconds`
+| Viktigste metningssignal for Node. En blokkert event loop gjør appen uresponsiv uten at CPU ser unormal ut.
+
+| `nodejs_heap_size_used_bytes`, `nodejs_gc_duration_seconds`
+| Minnebruk og GC. Fanger minnelekkasjer før de ender i podrestarter.
+
+| `process_cpu_seconds_total`, `process_resident_memory_bytes`
+| Standard prosessmetrikker.
+|===
+
+=== Plattformmetrikker fra nais
+
+nais leverer i tillegg hele settet av Kubernetes-metrikker, uten at vi trenger å instrumentere noe selv.
+Disse er spesielt verdifulle for oss fordi de dekker feilmoduser applikasjonen *ikke kan rapportere selv* — en pod som er OOM-drept eller ikke starter, rekker aldri å eksponere `/metrics`.
+
+[cols="2,3", options="header"]
+|===
+| Kilde | Brukes til
+
+| `kube_deployment_status_replicas_unavailable`, `kube_deployment_status_replicas_available`
+| Deployment får ikke opp poder — feilet utrulling, manglende ressurser, crashloop.
+
+| `kube_pod_container_status_restarts_total`
+| Crashloop og gjentatte restarter.
+
+| `kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}`
+| Minnelekkasjer og for lave minnegrenser. Direkte relevant for brevbaker og pdf-bygger som begge har `limits.memory: 2Gi`.
+
+| `kube_pod_container_status_waiting_reason`
+| `CrashLoopBackOff`, `ImagePullBackOff` etter en deploy.
+
+| `container_memory_working_set_bytes` / `kube_pod_container_resource_limits`
+| Nærhet til minnegrensen, før OOM-kill inntreffer.
+
+| `container_cpu_cfs_throttled_seconds_total`
+| CPU-struping. Særlig relevant for pdf-bygger, der typst-prosesser er CPU-tunge.
+
+| `kube_horizontalpodautoscaler_status_current_replicas` / `..._spec_max_replicas`
+| Autoskalering står i taket og kan ikke absorbere mer last.
+
+| `up`
+| Prometheus klarer ikke å scrape applikasjonen.
+
+| Ingress-metrikker (`nginx_ingress_controller_requests`)
+| Trafikk og statuskoder sett fra utsiden. Fanger også feil som aldri når applikasjonen, f.eks. i Wonderwall eller ingress-kontrolleren.
+|===
+
+Fordi plattformmetrikkene er like for alle fire applikasjonene, definerer vi dem én gang som <<felles, felles plattformalarmer>> i stedet for å gjenta dem per app.
+
+=== Logger
+
+Logger går til både Elastic og Loki for alle fire applikasjonene.
+Logger brukes primært til *undersøkelse*, ikke til alarmering — logbaserte alarmer er skjøre fordi de knytter seg til fritekst som endres uten at noen tenker på alarmen.
+
+Vi gjør likevel unntak der metrikker ikke finnes, og der loggmeldingen er stabil og entydig:
+
+* `Won't retry for exception` — brevbaker mot pdf-bygger, og skribenten-backend mot nedstrøms tjenester. Betyr at en ikke-retriable feil har oppstått.
+* `Error executing one-shot job` — engangsjobb i skribenten-backend feilet. Se også `did not complete successfully`, som dekker jobber som avslutter uten å sette `completed` og dermed heller ikke registreres som fullført.
+* `typst command failed` — kompileringsfeil i pdf-bygger.
+
+Alle logbaserte alarmer skal ha en kommentar i regelen som peker på filen og linjen meldingen kommer fra, slik at den som endrer meldingen ser sammenhengen.
+
+== Alarmer per applikasjon
+
+=== pensjon-brevbaker
+
+Brevbaker er navet i automatisk brevproduksjon. Feiler den, produseres det ikke brev — og fordi Pesys kjører batch utenfor kontortid, må alarmene her være aktive hele døgnet, selv om de først håndteres i arbeidstiden.
+
+[cols="3,1,3", options="header"]
+|===
+| Alarm | Nivå | Begrunnelse
+
+| Feilrate: andel 5xx på `/letter/*` over 5 % i 10 min
+| `critical`
+| Brev produseres ikke. Dette er den viktigste alarmen vi har. `/letter/autobrev/pdf` er den kritiske ruten.
+
+| Uventede exceptions: `throwable != "n/a"` øker på `/letter/*`
+| `critical`
+| Fanger feil som slipper gjennom `StatusPages` uten å bli oversatt til en kontrollert respons.
+
+| p95 responstid på `/letter/autobrev/pdf` over terskel i 15 min
+| `warning`
+| Treghet her går rett inn i Pesys' batchvindu. p95 fanger at en betydelig andel brev er trege, uten å utløse på enkelttreghet slik `max` ville gjort. Terskelen settes etter observert normalnivå før regelen tas i bruk.
+
+| `ktor_http_server_requests_active` vokser jevnt i 15 min
+| `warning`
+| Requests fullføres ikke. Typisk tegn på at pdf-bygger henger og at retry-logikken holder tråder opptatt.
+
+| Ingen brev produsert (`pensjon_brevbaker_letter_request_count_total` flat) i et forventet batchvindu
+| `critical`
+| Fanger den stille feilen: alt ser friskt ut, men ingen bestiller brev fordi Pesys ikke når fram. Ingen andre alarmer fanger dette.
+
+| Brå fall i `pensjon_brevbaker_letter_request_count_total` for en enkelt `brevkode`
+| `warning`
+| Kan bety at én brevmal er ødelagt selv om totalen ser normal ut. Vurderes først når vi har nok historikk til å definere «normalt» per brevkode.
+
+| Logg: `Alle toggles må være definert i Unleash`
+| `warning`
+| En brevmal har en feature toggle som ikke finnes i Unleash. Unleash returnerer da `false`, slik at malen blir *stille utilgjengelig* — ingenting feiler, brevet kan bare ikke bestilles. Uten denne alarmen oppdages det først når noen etterlyser brevet.
+|===
+
+=== pensjon-pdf-bygger
+
+pdf-bygger har kun brevbaker som konsument. Den har *ingen egne domenemetrikker*, og er samtidig den mest ressursintensive applikasjonen vår (typst-prosesser, autoskalering opp til 150 poder).
+Alarmene her lener seg derfor tyngre på plattform- og ressursmetrikker.
+
+[cols="3,1,3", options="header"]
+|===
+| Alarm | Nivå | Begrunnelse
+
+| Feilrate: andel 5xx over 5 % i 10 min
+| `critical`
+| Serverfeil betyr at typst-kompilering feiler. Brevbaker vil retry-e, men vedvarende feil stopper brevproduksjonen.
+
+| p95 responstid over terskel i 15 min
+| `warning`
+| Tidlig varsel før brevbaker begynner å time ut. Fordi brevbaker retry-er, ser vi treghet her *før* vi ser feil der.
+
+| CPU-strupning (`container_cpu_cfs_throttled_seconds_total`) vedvarende høy
+| `warning`
+| Typst er CPU-bundet. Strupning gir direkte treghet, og readiness-probene er allerede spesialtilpasset for å tåle korte CPU-spikes — vedvarende strupning betyr at tilpasningen ikke lenger holder.
+
+| HPA på maks replicas (150) i over 15 min
+| `warning`
+| Vi har ikke mer kapasitet å skalere ut med. Neste steg er økt latens og timeouts i brevbaker.
+
+| Logg: `typst command failed`, rate over normalnivå
+| `warning`
+| Skiller malfeil (én brevmal kompilerer ikke) fra infrastrukturfeil. Bør på sikt erstattes av en metrikk, se <<hull, Kjente hull>>.
+|===
+
+=== skribenten-backend
+
+Saksbehandlerflaten. Har database, og et stort antall nedstrøms integrasjoner (PEN/Pesys, SAF, KRR, TSS/Samhandler, Navansatt, Skjerming, brevbaker, førstesidegenerator).
+Kritiske alarmer gjelder i praksis kontortid.
+
+[NOTE]
+====
+Ved kalibrering av bucket-grensene så vi at ni ruter har en observert maksimal svartid på nøyaktig 60,x sekunder.
+Det er `requestTimeout` på 60s mot brevbaker som slår inn — altså kall som allerede i dag går til timeout i prod.
+`/external/api/v1/brev` og `/sak/\{saksId}` ligger enda høyere, på henholdsvis 91s og 76s, som tyder på ruter der flere kall gjøres etter hverandre.
+
+Dette er ikke et hull i alarmdekningen, men verdt å kjenne til: en latensalarm på disse rutene vil se en hale som er avkortet av timeouten, og en økning i feilrate kan like gjerne skyldes treghet nedstrøms som feil hos oss.
+====
+
+[cols="3,1,3", options="header"]
+|===
+| Alarm | Nivå | Begrunnelse
+
+| Feilrate: andel 5xx over 5 % i 10 min
+| `critical`
+| Saksbehandlere blir blokkert i arbeidet sitt.
+
+| `/isReady` returnerer 503 på flere poder i over 5 min
+| `critical`
+| Readiness sjekker databasetilgjengelighet. Vedvarende 503 betyr at databasen er utilgjengelig og at applikasjonen er ute av drift.
+
+| Brå økning i 4xx
+| `warning`
+| Tyder på brutt API-kontrakt mot skribenten-web, typisk etter en deploy av én av dem.
+
+| Feil mot en enkelt nedstrøms tjeneste over terskel
+| `warning`
+| Skal identifisere *hvilken* tjeneste som feiler. Krever instrumentering av HTTP-klientene, se <<hull, Kjente hull>>. Nivå `warning` fordi vi sjelden kan fikse andres tjenester selv — men vi må vite det, og kunne informere.
+
+| Logg: `Error executing one-shot job`
+| `warning`
+| En feilet engangsjobb stopper *ikke* oppstarten — jobbene kjøres i en egen coroutine etter `ServerReady` med forsinkelse, og fullføring registreres kun i `OneShotJobTable` ved suksess. En jobb kan derfor feile ved hver oppstart uten at noe annet indikerer det. Denne alarmen er eneste signal.
+
+| Databasetilkoblinger nær maks
+| `warning`
+| Tilkoblingslekkasje ender i total utilgjengelighet. Krever at connection pool-metrikker eksponeres, se <<hull, Kjente hull>>.
+|===
+
+=== skribenten-web
+
+React-SPA servert av en Node/Express-BFF, med Wonderwall-sidecar for autentisering.
+
+[NOTE]
+====
+`observability.autoInstrumentation` er slått på med `runtime: nodejs`, og NAIS utleder RED-metrikker fra spans (`traces_spanmetrics_*` i Mimir).
+De er *ikke* tilstrekkelige til alarmer for denne appen, av tre grunner vi har verifisert mot prod:
+
+* *Ingen `http_route`.* Spans navngis kun med HTTP-metoden (`GET`, `POST`), fordi BFF-en monterer alt med `server.use(...)` og proxy-middleware i stedet for deklarerte Express-ruter. `http.route` blir derfor aldri satt, og proxytrafikk kan ikke skilles fra statiske filer.
+* *`http_response_status_code` er tom* for alle SERVER-spans, så 5xx-rate kan ikke måles derfra.
+* *Bucket-grensene stopper på 5s.* De settes av Tempos metrics-generator og kan ikke konfigureres fra appen. Kall gjennom proxyen når 60s og mer, så hele den interessante halen havner i `+Inf`.
+
+Sampling er ikke et problem — `OTEL_TRACES_SAMPLER` er `parentbased_always_on` — men de tre punktene over gjør at vi eksponerer vårt eget histogram med grenser vi styrer selv.
+Span-metrikkene er fortsatt nyttige til feilsøking og til å se sammenhengen mellom appene, inkludert Wonderwall.
+====
+
+Rutelabelen i `http_server_request_duration_seconds` er bevisst grov — `proxy`, `bff-api`, `static` og `probe` — fordi rå sti ville gitt en ny tidsserie per saks- og brev-id.
+skribenten-backend har allerede latens per rute, så det er der man finner ut *hvilket* endepunkt som er tregt.
+BFF-ens histogram svarer på om proxylaget som helhet er tregt, inkludert OBO-veksling og nettverk.
+
+[cols="3,1,3", options="header"]
+|===
+| Alarm | Nivå | Begrunnelse
+
+| Ingress: andel 5xx over 5 % i 10 min
+| `critical`
+| Måler om saksbehandlerne faktisk får opp applikasjonen, også når feilen ligger i Wonderwall eller ingress og aldri når BFF-en.
+
+| Feilrate: andel 5xx på `route="proxy"` over 5 % i 10 min
+| `critical`
+| Skiller feil i proxylaget fra feil i utlevering av statiske filer. Sammen med ingress-alarmen lokaliserer den feilen til BFF-en eller til laget foran.
+
+| Færre enn 2 tilgjengelige poder i over 5 min
+| `critical`
+| Appen er fastlåst til `min: 2, max: 2` og har ingen autoskalering å falle tilbake på. Én tapt pod halverer kapasiteten umiddelbart.
+
+| p95 responstid på `route="proxy"` over terskel i 15 min
+| `warning`
+| Fanger treghet slik saksbehandleren opplever den, inkludert OBO-veksling og nettverk mot skribenten-backend. Ligger den høyt mens backend ser frisk ut, er det BFF-en eller auth-hoppet som er tregt.
+
+| `nodejs_eventloop_lag_seconds` over terskel i 5 min
+| `warning`
+| En blokkert event loop gjør appen treg eller helt uresponsiv *uten* at container-CPU ser unormal ut. Dette er den klassiske feilmodusen for Node, og signalet finnes ikke i plattformmetrikkene.
+
+| Trafikken faller til null i kontortid
+| `warning`
+| Fanger tilfellet der appen er «oppe» men utilgjengelig for brukerne, f.eks. ved feil i Wonderwall-innlogging.
+
+| Podrestarter
+| `warning`
+| Ofte første synlige tegn på at prosessen dør, f.eks. ved minnelekkasje. Se også `nodejs_heap_size_used_bytes`.
+|===
+
+[[felles]]
+== Felles plattformalarmer
+
+Disse gjelder *alle fire* applikasjonene og defineres én gang, parametrisert på `app`.
+De fanger feilmoduser applikasjonen selv ikke kan rapportere.
+
+[cols="3,1,3", options="header"]
+|===
+| Alarm | Nivå | Begrunnelse
+
+| Ingen tilgjengelige poder i over 5 min
+| `critical`
+| Applikasjonen er nede. Den enkleste og viktigste plattformalarmen.
+
+| Færre tilgjengelige poder enn ønsket i over 15 min
+| `warning`
+| Redusert redundans. Vanligvis en deploy som ikke fullførte.
+
+| Container restarter gjentatte ganger (crashloop)
+| `critical`
+| Applikasjonen klarer ikke å starte. Nesten alltid en nylig deploy eller manglende konfigurasjon/secret.
+
+| `OOMKilled` som siste termineringsårsak
+| `warning`
+| Minnegrensen er nådd. For brevbaker og pdf-bygger, som begge har `limits.memory: 2Gi`, er dette en reell og forventet feilmodus ved store brev.
+
+| Minnebruk over 90 % av grensen i 15 min
+| `warning`
+| Varsler *før* OOM-kill, mens vi fortsatt kan handle.
+
+| Prometheus klarer ikke å scrape (`up == 0`) i 10 min
+| `warning`
+| Vi er blinde på appen. Alarmen som beskytter alle de andre alarmene.
+
+| Pod i `CrashLoopBackOff` eller `ImagePullBackOff`
+| `warning`
+| Feilet deploy. Skiller seg fra crashloop-alarmen ved å fange feil som oppstår før applikasjonen i det hele tatt kjører.
+|===
+
+[[ikke-alarmer]]
+== Bevisste ikke-alarmer
+
+Noen loggmeldinger og feilsituasjoner ser alarmerende ut, men skal *ikke* utløse alarm.
+De dokumenteres her slik at de ikke legges inn på nytt av noen som ser dem for første gang.
+
+`***stripped sensitive Edit.Letter value***`::
+Denne meldingen betyr at sensitive data ble *vellykket fjernet* før logging — altså at kontrollen virket etter hensikten.
++
+Årsaken er en feil i Exposed, der `BasicBinaryColumnType::valueFromDB` kaster en `IllegalStateException` med `toString()` av `Edit.Letter` i feilmeldingen.
+`cleanSensitiveDataAndLog` i `SkribentenApp.kt` fanger dette og erstatter verdien før noe skrives til logg.
++
+Dette er derfor *ikke* en personvernhendelse, og skal ikke alarmeres — hverken som `critical` eller `warning`.
+Riktig løsning er en retting oppstrøms i Exposed, sporet i https://youtrack.jetbrains.com/issue/EXPOSED-1012[EXPOSED-1012].
+Sanitiseringen kan først fjernes når den feilen er rettet og vi har oppgradert.
++
+Den underliggende feilen gir uansett en 500-respons, og fanges dermed allerede av feilrate-alarmen for skribenten-backend. En egen alarm ville kun vært duplikat.
+
+Forventede 4xx-responser::
+`401`/`403` fra Wonderwall og manglende tilgang er normal drift, ikke feil. Kun brå *endringer* i 4xx-nivået er interessante, jf. <<prinsipper, prinsipp 6>>.
+
+Enkeltstående retries mot pdf-bygger::
+Retry-logikken finnes nettopp for å absorbere forbigående feil. Vi alarmerer på *oppbrukte* retries og på resulterende feilrate, ikke på at en retry skjedde.
+
+Utløpte brevreservasjoner::
+En brevreservasjon kan ikke «henge». Gyldighet beregnes ved lesing i `BrevreservasjonPolicy.erGyldig` som `sistReservert + timeout > nå`, med en timeout på 10 minutter.
+Det finnes ingen lås som må frigis og ingen jobb som må rydde opp — en reservasjon opphører av seg selv når tiden har gått, også om poden som holdt den døde midt i redigeringen.
+Utløp er derfor normal drift og ikke en feiltilstand.
+
+[[hull]]
+== Kjente hull og tiltak
+
+Arbeidet med denne strategien avdekket flere mangler i instrumenteringen.
+Disse er bevisste, prioriterte oppgaver — ikke forglemmelser — og listes her slik at alarmdekningen kan forbedres stegvis.
+
+Ingen av de gjenstående hullene er blokkerende for alarmene i tabellene over.
+De to som var det, er lukket: latensmetrikken eksporteres nå som histogram, og skribenten-web eksponerer metrikker.
+Det som står igjen forbedrer *feilsøkingen* når en alarm har gått — det gjør oss raskere til å finne årsaken, ikke flinkere til å oppdage at noe er galt.
+
+[cols="1,3,3,1", options="header"]
+|===
+| # | Hull | Tiltak | Prioritet
+
+| 1
+| Ingen metrikker på nedstrøms kall fra skribenten-backend. Vi kan ikke skille «PEN er nede» fra «SAF er nede» uten å lese logger.
+| Instrumentér Ktor-klientene med et eget metrikk-plugin. Ktor 3.5 har ingen klientside-metrikkplugin, men alle klientene går gjennom `HttpClientFactory.lagHttpClient`, så instrumenteringen kan legges ett sted.
+| Middels
+
+| 2
+| `/isReady` i brevbaker og pdf-bygger returnerer alltid `200` uten å sjekke noe. En pod som ikke kan nå pdf-bygger tas aldri ut av rotasjon.
+| Vurdér reell readiness-sjekk i brevbaker mot pdf-bygger. Må balanseres mot risikoen for at hele deployment tas ut av rotasjon samtidig ved en forbigående nedstrøms feil.
+| Middels
+
+| 3
+| pdf-bygger har ingen domenemetrikker. Typst-feil og kompileringstid er kun synlig i logg.
+| Legg til teller for typst-resultat (suksess/kompileringsfeil/eksekveringsfeil) og timer for kompileringstid.
+| Middels
+
+| 4
+| Retry-logikken i brevbaker mot pdf-bygger er usynlig i metrikker. Vi ser ikke at systemet sliter før det feiler helt.
+| Legg til teller for antall retries og for oppbrukte retries.
+| Middels
+
+| 5
+| Ingen metrikker på database og connection pool i skribenten-backend.
+| Bind HikariCP-metrikker til meter-registeret.
+| Middels
+|===
+
+== Forvaltning av alarmene
+
+Eierskap:: Alarmene eies av teamet i fellesskap. Den som mottar en alarm eier den til den er lukket eller eksplisitt overlevert.
+Runbook:: Hver `critical`-alarm skal ha en kort beskrivelse i selve alarmen: hva som er galt, hvem som rammes, og første feilsøkingssteg. En alarm uten dette er ikke ferdig.
+Gjennomgang:: Alarmer vurderes i etterkant av at de har utløst. For hver alarm som har gått: var den reell, og førte den til handling? En alarm som gjentatte ganger utløser uten å føre til handling, skal justeres eller fjernes.
+Endringer:: Nye og endrede alarmer går gjennom PR som all annen kode. Terskelendringer skal begrunnes i commit-meldingen.
+Ved falske positiver:: Juster terskel eller `for`-periode framfor å slå av alarmen. En avslått alarm blir sjelden slått på igjen.

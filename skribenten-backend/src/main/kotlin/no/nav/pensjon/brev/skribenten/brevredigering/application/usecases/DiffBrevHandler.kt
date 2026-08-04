@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.letter.EditLetterWordDiff
 import no.nav.pensjon.brev.skribenten.letter.UnifiedDiff.BlockEdit
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.jetbrains.exposed.v1.jdbc.Database
 
 
@@ -35,12 +36,13 @@ class DiffBrevHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
         val redigertBrev: Edit.Letter,
         val split: Boolean = false,
     ) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Response, Nothing>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
         val pesysdata = brevdataService.hentBrevdata(brev)
         val rendretBrev = brevmalService.renderMarkup(brev, pesysdata).markup.toEdit()

@@ -41,7 +41,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     ): Outcome<List<RedigerbartVedleggInfo>, BrevredigeringError>? =
         withPrincipal(principal) {
             hentRedigerbareVedlegg(
-                HentRedigerbareVedleggHandler.Request(brevId = brevId)
+                HentRedigerbareVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId)
             )
         }
 
@@ -53,7 +53,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         withPrincipal(principal) {
             endreRedigertVedlegg(
-                EndreRedigertVedleggHandler.Request(brevId = brevId, vedleggId = VedleggId(vedleggId), redigertVedlegg = vedlegg)
+                EndreRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId(vedleggId), redigertVedlegg = vedlegg)
             )
         }
 
@@ -64,7 +64,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     ): Outcome<Edit.Attachment, BrevredigeringError>? =
         withPrincipal(principal) {
             hentRedigertVedlegg(
-                HentRedigertVedleggHandler.Request(brevId = brevId, vedleggId = VedleggId(vedleggId))
+                HentRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId(vedleggId))
             )
         }
 
@@ -75,7 +75,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         withPrincipal(principal) {
             slettRedigertVedlegg(
-                SlettRedigertVedleggHandler.Request(brevId = brevId, vedleggId = VedleggId(vedleggId))
+                SlettRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId(vedleggId))
             )
         }
 

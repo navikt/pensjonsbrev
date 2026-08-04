@@ -53,10 +53,7 @@ fun Application.skribentenApp() {
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
-        val ignorePaths = setOf("/isAlive", "/isReady", "/metrics")
-        filter {
-            !ignorePaths.contains(it.request.path())
-        }
+        filter(Metrics::skalObserveres)
         mdc("x_userId") { call ->
             call.principal<JwtUserPrincipal>()?.navIdent?.id
         }

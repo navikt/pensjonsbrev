@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import { type Express } from "express";
 
 import config from "./config.js";
+import { resolveStackTrace } from "./sourceMapResolver.js";
 
 export const internalRoutes = (server: Express) => {
   server.get("/bff/api/logout", (_request, response) => {
@@ -37,7 +38,7 @@ export const internalRoutes = (server: Express) => {
         statusCode: body.status,
         timestamp: body.jsonContent.timestamp,
         message: `Feil fra frontend: ${body.message}: ${body.jsonContent.url}`,
-        stack_trace: body.stack,
+        stack_trace: resolveStackTrace(body.stack),
         x_correlationId: body.requestId,
       }),
     );

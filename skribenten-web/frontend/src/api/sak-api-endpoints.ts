@@ -10,7 +10,7 @@ import {
   type BrevInfo,
   type BrevResponse,
   type DistribusjonstypeRequest,
-  type OppdaterBrevRequest,
+  type OppdaterAttesteringRequest,
   type OppdaterKlarStatusRequest,
   type OppdaterMottakerRequest,
   type ValgteVedleggRequest,
@@ -101,7 +101,7 @@ export const attesterBrev = async (args: {
   saksId: string;
   brevId: string | number;
   frigiReservasjon?: boolean;
-  request: OppdaterBrevRequest;
+  request: OppdaterAttesteringRequest;
 }) => {
   const frigiReservasjon = args.frigiReservasjon ?? true;
 
