@@ -77,15 +77,6 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
                 title1 {
                     text(bokmal { +"Beregning av alderspensjon" })
                 }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du har fått en foreløpig beregning av alderspensjon. "
-                            +"Se vedlegg for beløp og detaljer om beregningen. "
-                            +"Kontakt Nav hvis du har spørsmål."
-                        },
-                    )
-                }
             }
         }
 

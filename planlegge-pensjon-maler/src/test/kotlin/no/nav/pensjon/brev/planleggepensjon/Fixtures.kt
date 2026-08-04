@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfp
 import no.nav.pensjon.brev.planleggepensjon.simulering.Simulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.Kull
 import no.nav.pensjon.brev.planleggepensjon.simulering.NormertPensjonsalderPlassering
+import no.nav.pensjon.brev.planleggepensjon.simulering.Pensjonsopptjening
 import no.nav.pensjon.brev.planleggepensjon.simulering.Simuleringsinformasjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringUtenlandsperiode
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjon
@@ -29,6 +30,7 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.Uttaksinformasjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.Vilkaarsproevingsresultat
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 import kotlin.reflect.KClass
 
@@ -141,6 +143,15 @@ object Fixtures : LetterDataFactory {
                     alderspensjon = Kroner(29133),
                     avtalefestetPensjon = Kroner(5000),
                     pensjonsgivendeInntekt = Kroner(0),
+                ),
+            ),
+            pensjonsopptjeningListe = listOf(
+                Pensjonsopptjening(
+                    aarstall = Year(2024),
+                    pensjonsgivendeInntekt = Kroner(550000),
+                    pensjonspoeng = 4.73,
+                    pensjonsbeholdning = Kroner(1092923),
+                    merknad = "Eksempel",
                 ),
             ),
             simuleringsinformasjon = createSimuleringsinformasjon(),
