@@ -96,7 +96,7 @@ object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 )
             }
             paragraph {
-                text(bokmal { + felles.avsenderEnhet.navn }, english { +felles.avsenderEnhet.navn })
+                text(bokmal { +felles.avsenderEnhet.navn }, english { +felles.avsenderEnhet.navn })
                 newline()
                 text(bokmal { +"Postboks 6600 Etterstad" }, english { +"Postboks 6600 Etterstad" })
                 newline()
