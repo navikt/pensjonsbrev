@@ -127,6 +127,29 @@ const VedtakWrapper = () => {
         }
       }
 
+      if (err.response?.status === 500) {
+        return (
+          <Box asChild background="default">
+            <VStack align="center" flexGrow="1" gap="space-8" padding="space-24">
+              <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />
+              <Button
+                onClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevbehandler",
+                    params: { saksId },
+                    search: { vedtaksId, enhetsId, brevId: Number(brevId) },
+                  })
+                }
+                size="small"
+                variant="secondary"
+              >
+                Gå til brevbehandler
+              </Button>
+            </VStack>
+          </Box>
+        );
+      }
+
       return (
         <Box background="default" flexGrow="1">
           <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />

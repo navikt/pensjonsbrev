@@ -50,7 +50,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
 
 const queryRetries = 3;
 const isSpecialCaseErrorStatus = (status: number | undefined) =>
-  status === 404 || status === 409 || status === 422 || status === 423;
+  status === 404 || status === 409 || status === 422 || status === 423 || status === 500;
 
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
@@ -179,6 +179,41 @@ function RedigerBrevPage() {
                     to: "/saksnummer/$saksId/brevbehandler",
                     params: { saksId },
                     search: { enhetsId, vedtaksId },
+                  })
+                }
+                size="small"
+                variant="secondary"
+              >
+                Gå til brevbehandler
+              </Button>
+            </HStack>
+          </VStack>
+        );
+      }
+      if (errorStatus === 500) {
+        return (
+          <VStack align="center" flexGrow="1" gap="space-8" padding="space-24">
+            <ApiError error={error} title="En feil skjedde ved henting av brev" />
+            <HStack gap="space-8">
+              <Button
+                onClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevvelger",
+                    params: { saksId },
+                    search: { enhetsId, vedtaksId, brevId },
+                  })
+                }
+                size="small"
+                variant="secondary"
+              >
+                Gå til brevvelger
+              </Button>
+              <Button
+                onClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevbehandler",
+                    params: { saksId },
+                    search: { enhetsId, vedtaksId, brevId },
                   })
                 }
                 size="small"
