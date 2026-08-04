@@ -21,6 +21,8 @@ data class ApSimuleringDto(
     val pensjonsgivendeInntektListe: List<AarligBeloep>?,
     @DisplayText("Årlig inntekt og pensjon")
     val aarligInntektOgPensjonListe: List<AarligInntektOgPensjon>?,
+    @DisplayText("Pensjonsopptjening")
+    val pensjonsopptjeningListe: List<Pensjonsopptjening>?,
     @DisplayText("Forbehold")
     val forbehold: ForbeholdInnhold,
 ) : SaksbehandlerValgBrevdata, VedleggData
@@ -211,6 +213,14 @@ data class AarligInntektOgPensjon(
     val alderspensjon: Kroner,
     val avtalefestetPensjon: Kroner,
     val pensjonsgivendeInntekt: Kroner,
+)
+
+data class Pensjonsopptjening(
+    val aarstall: Year,
+    val pensjonsgivendeInntekt: Kroner?,
+    val pensjonspoeng: Double?,
+    val pensjonsbeholdning: Kroner?,
+    val merknad: String?,
 )
 
 data class SimuleringUtenlandsperiode(
