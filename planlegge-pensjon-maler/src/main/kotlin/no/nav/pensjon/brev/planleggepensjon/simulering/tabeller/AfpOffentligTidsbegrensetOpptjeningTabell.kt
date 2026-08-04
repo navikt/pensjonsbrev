@@ -31,11 +31,11 @@ data class AfpOffentligTidsbegrensetOpptjeningTabell(
                 }
                 row {
                     cell { text(bokmal { +"Grunnbeløp (G)" }) }
-                    cell { text(bokmal { +afp.grunnbeloep.format() }) }
+                    cell { text(bokmal { +afp.grunnbeloep.format(denominator = false) + " kr" }) }
                 }
                 row {
                     cell { text(bokmal { +"Tidligere arbeidsinntekt" }) }
-                    cell { text(bokmal { +afp.tidligereArbeidsinntekt.format() }) }
+                    cell { text(bokmal { +afp.tidligereArbeidsinntekt.format(denominator = false) + " kr" }) }
                 }
                 row {
                     cell { text(bokmal { +"Sluttpoengtall" }) }

@@ -21,7 +21,7 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -45,6 +45,13 @@ jobs:
       - name: Copy frontend dist into public directory of bff
         working-directory: ${{ inputs.workingDir }}/frontend
         run: cp -r dist/ ../bff/public
+
+      - name: Copy extracted sourcemaps into bff, if any were produced
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: |
+          if [ -d dist-sourcemaps ]; then
+            cp -r dist-sourcemaps/ ../bff/sourcemaps
+          fi
 
       - name: Install bff dependencies
         working-directory: ${{ inputs.workingDir }}/bff

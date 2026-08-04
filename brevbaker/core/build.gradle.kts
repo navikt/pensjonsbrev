@@ -4,6 +4,7 @@ val apiModelJavaTarget: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
+    alias(libs.plugins.kotlin.serialization)
     id("java-library")
     id("java-test-fixtures")
     alias(libs.plugins.ksp) apply true
@@ -31,6 +32,7 @@ dependencies {
     ksp(project(":brevbaker:template-model-generator"))
     kspTest(project(":brevbaker:template-model-generator"))
     implementation(libs.kotlinx.html)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.bundles.junit)
     testImplementation(project(path = ":brevbaker:markup", configuration = "apiInternalElements"))
@@ -43,10 +45,8 @@ dependencies {
     testFixturesImplementation(libs.ktor.serialization.jackson)
     testFixturesImplementation(libs.ktor.client.cio)
     testFixturesImplementation(libs.ktor.client.content.negotiation)
-    testFixturesImplementation(libs.ktor.server.callId)
 
     testFixturesImplementation(testFixtures(project(":brevbaker:dsl")))
-    testFixturesImplementation(libs.bundles.logging)
     testFixturesImplementation(libs.bundles.junit)
     testFixturesImplementation(libs.testcontainers.core)
 
@@ -57,6 +57,12 @@ dependencies {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+sourceSets {
+    main {
+        resources.srcDir(rootProject.layout.projectDirectory.dir("resources"))
+    }
 }
 
 

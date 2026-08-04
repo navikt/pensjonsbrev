@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
+import no.nav.pensjon.brev.skribenten.vedlegg.P1Data
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -27,7 +28,7 @@ interface Brevredigering {
     val brevkode: RedigerbarBrevkode
     val spraak: LanguageCode
     val avsenderEnhetId: EnhetId
-    val saksbehandlerValg: SaksbehandlerValg
+    val saksbehandlerValg: SaksbehandlervalgMap
     val redigertBrev: Edit.Letter
     val redigertBrevHash: Hash<Edit.Letter>
 
@@ -160,7 +161,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             brevkode: RedigerbarBrevkode,
             spraak: LanguageCode,
             avsenderEnhetId: EnhetId,
-            saksbehandlerValg: SaksbehandlerValg,
+            saksbehandlerValg: SaksbehandlervalgMap,
             redigertBrev: Edit.Letter,
             brevtype: LetterMetadata.Brevtype,
             timestamp: Instant = Instant.now(),
@@ -248,7 +249,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             ?.let { if (it is TemplateModelSpecification.FieldType.Object) it.typeName else null }
             ?.let { modelSpec.types[it] }
 
-        saksbehandlerValg = SaksbehandlerValg().apply {
+        saksbehandlerValg = SaksbehandlervalgMap().apply {
             putAll(saksbehandlerValg)
             saksbehandlerValgSpec?.entries?.forEach {
                 val fieldType = it.value

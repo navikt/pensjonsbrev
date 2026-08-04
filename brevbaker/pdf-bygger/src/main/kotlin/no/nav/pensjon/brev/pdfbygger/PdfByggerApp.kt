@@ -6,7 +6,6 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.*
 import io.ktor.server.config.*
-import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.callid.CallId
 import io.ktor.server.plugins.callid.callIdMdc
@@ -20,11 +19,10 @@ import io.ktor.server.request.receiveText
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.logging.Logger
-import io.micrometer.prometheusmetrics.PrometheusConfig
-import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import kotlinx.serialization.json.Json
 import no.nav.brev.brevbaker.markup.LetterPDFRequest
-import no.nav.pensjon.brev.PDFRequest
+import no.nav.brev.brevbaker.PDFRequest
+import no.nav.pensjon.brev.pdfbygger.Metrics.configureMetrics
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2
@@ -54,17 +52,7 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         it.log.info("Application preparing to shutdown gracefully")
     }
 
-    val prometheusMeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
-    install(MicrometerMetrics) {
-        registry = prometheusMeterRegistry
-    }
-
-    routing {
-        get("/metrics") {
-            call.respond(prometheusMeterRegistry.scrape())
-        }
-    }
-
+    configureMetrics()
 
     install(ContentNegotiation) {
         jackson {

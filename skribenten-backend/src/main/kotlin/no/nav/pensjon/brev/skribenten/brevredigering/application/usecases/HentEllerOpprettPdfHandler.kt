@@ -1,10 +1,11 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
+import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.IngenFoersteside
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1RedigerbarDto
+import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.common.asSuccess
@@ -17,7 +18,13 @@ import no.nav.pensjon.brev.skribenten.foerstesidegenerator.PDFMerger
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
+import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggSkribenten
+import no.nav.pensjon.brev.skribenten.vedlegg.SideAppender
+import no.nav.pensjon.brev.skribenten.vedlegg.vedleggsliste
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 import org.jetbrains.exposed.v1.jdbc.Database
 
 class HentEllerOpprettPdfHandler(
@@ -26,16 +33,18 @@ class HentEllerOpprettPdfHandler(
     private val brevmalService: BrevmalService,
     private val hentP1DataHandler: HentP1DataHandler,
     private val genererFoerstesideHandler: GenererFoerstesideHandler,
+    private val pdfVedleggAppender: PDFVedleggAppender,
     database: Database,
 ) : TransactionHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult, IngenFoersteside>(database) {
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
         val fagsak: Fagsak,
     ) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Dto.HentDocumentResult, IngenFoersteside>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
         val document = brev.document
 
         val pesysBrevdata = brevdataService.hentBrevdata(brev).let { brevdata ->
@@ -61,7 +70,15 @@ class HentEllerOpprettPdfHandler(
                 brev.redigertBrev.updateEditedLetter(rendretBrev.markup).blocks != brev.redigertBrev.blocks
             }
 
-            val pdfBytes = renderService.renderPdf(brev, pesysBrevdata).let { rendretBrev ->
+            val pdfVedlegg = vedleggsliste[brev.brevkode.kode()] ?: emptyList()
+
+            val pdfBytes = renderService.renderPdf(
+                brev,
+                pesysBrevdata,
+                pdfVedlegg = pdfVedlegg.mapNotNull { v -> v.tittel[brev.spraak]?.let { PDFVedleggTittel(it) }}
+            ).let {
+                leggVedPDFVedlegg(pdfVedlegg, pesysBrevdata, it, brev)
+            }.let { rendretBrev ->
                 if (Features.foersteside.isEnabled() && brev.leggVedFoersteside == true) {
                     genererFoersteside(request, brev, rendretBrev) ?: return Outcome.failure(IngenFoersteside(request.brevId))
                 } else { rendretBrev }
@@ -79,6 +96,25 @@ class HentEllerOpprettPdfHandler(
         }
     }
 
+    private fun leggVedPDFVedlegg(
+        pdfVedlegg: List<PDFVedleggSkribenten>,
+        pesysBrevdata: BrevdataResponse.Data,
+        response: LetterResponse,
+        brev: BrevredigeringEntity,
+    ): ByteArray = pdfVedleggAppender.leggPaaVedlegg(
+        response.file,
+        pdfVedlegg
+            .mapNotNull { it.vedlegg(pesysBrevdata) }
+            .map {
+            {
+                SideAppender.lesInnPDF(
+                    it.sider,
+                    brev.spraak
+                ) { spraak, side -> "/vedlegg/${side.filnavn}-${spraak.name}" }
+            }
+        }
+    )
+
     private suspend fun genererFoersteside(
         request: Request,
         brev: BrevredigeringEntity,
@@ -86,6 +122,7 @@ class HentEllerOpprettPdfHandler(
     ): ByteArray? = genererFoerstesideHandler(
         request = GenererFoerstesideHandler.Request(
             brevId = request.brevId,
+            saksId = request.saksId,
             pid = request.fagsak.pid,
             sakstype = request.fagsak.sakType,
             tema = request.fagsak.tema,

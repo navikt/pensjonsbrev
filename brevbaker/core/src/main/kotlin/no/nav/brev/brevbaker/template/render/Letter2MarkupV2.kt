@@ -1,6 +1,5 @@
 package no.nav.brev.brevbaker.template.render
 
-import no.nav.brev.InterneDataklasser
 import no.nav.brev.Listetype
 import no.nav.brev.brevbaker.markup.Attachment
 import no.nav.brev.brevbaker.markup.LetterMarkup
@@ -36,17 +35,13 @@ import no.nav.brev.brevbaker.template.render.text.appendText
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent
 import no.nav.pensjon.brev.template.StableHash.Companion.with
-import no.nav.pensjon.brev.template.render.LanguageSetting
-import no.nav.pensjon.brev.template.render.documentLanguageSettings
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 
 data class LetterWithAttachmentsMarkupV2(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
 
-@OptIn(InterneDataklasser::class)
 internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>() {
-    private val languageSettings = documentLanguageSettings
-
     override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterWithAttachmentsMarkupV2 =
         LetterWithAttachmentsMarkupV2(
             letterMarkup = renderLetterOnly(scope, template),
@@ -82,7 +77,6 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
 
     internal fun buildSignatur(scope: ExpressionScope<*>) =
         signatur(
-            hilsenTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.greeting),
             navAvsenderEnhet = scope.felles.avsenderEnhet.navn,
             saksbehandlerNavn = scope.felles.signerendeSaksbehandlere?.saksbehandler,
             attesterendeSaksbehandlerNavn = scope.felles.signerendeSaksbehandlere?.attesterendeSaksbehandler,
@@ -136,9 +130,9 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
             outline { renderOutline(attachmentContext, attachment.outline) }
         }
 
-    fun renderPDFTitlesOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<PDFTittel> {
-        val context = RenderContext(scope)
-        return template.pdfAttachments.map { pdfTittelExtended { appendTexts(context, it.template.title) } }
+    fun renderPDFTitle(scope: ExpressionScope<*>, titles: List<PDFVedleggTittel>): List<PDFTittel> = titles.map {
+        it.tittel
+            .let { text -> pdfTittelExtended { text(RenderContext(scope).stableHash(StableHash.of(text)), text) } }
     }
 
     private fun renderTitleTexts(context: RenderContext, elements: List<TextElement<*>>): List<Text> =

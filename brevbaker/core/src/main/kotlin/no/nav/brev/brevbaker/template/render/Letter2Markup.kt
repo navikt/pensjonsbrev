@@ -2,9 +2,7 @@ package no.nav.brev.brevbaker.template.render
 
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.fulltNavn
-import no.nav.pensjon.brev.template.render.documentLanguageSettings
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -18,6 +16,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.NewLineImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
 import no.nav.pensjon.brevbaker.api.model.PDFTittel
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -44,8 +43,6 @@ class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachment
 
 @OptIn(InterneDataklasser::class)
 internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
-    private val languageSettings = documentLanguageSettings
-
     override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterWithAttachmentsMarkup =
         LetterWithAttachmentsMarkup(
             letterMarkup = renderLetterOnly(RenderContext(scope), template),
@@ -68,7 +65,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             blocks = renderOutline(context, template.outline),
             signatur = context.scope.felles.signerendeSaksbehandlere.let { sign ->
                 SignaturImpl(
-                    hilsenTekst = languageSettings.getSetting(context.scope.language, LanguageSetting.Closing.greeting),
+                    hilsenTekst = DocumentLanguageSettings(context.scope.language).closinggreeting,
                     saksbehandlerNavn = sign?.saksbehandler,
                     attesterendeSaksbehandlerNavn = sign?.attesterendeSaksbehandler,
                     navAvsenderEnhet = context.scope.felles.avsenderEnhet.navn,
@@ -131,13 +128,11 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             attachment.includeSakspart,
         )
 
-    fun renderPDFTitlesOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<PDFTittel> {
+    fun renderPDFTitle(scope: ExpressionScope<*>, titles: List<PDFVedleggTittel>): List<PDFTittel> {
         val context = RenderContext(scope)
-        return template.pdfAttachments.map {
-            renderText(context, it.template.title)
-        }.map { PDFTittel(it) }
+        return titles.map { it.tittel }
+            .map { text -> PDFTittel(listOf(LiteralImpl(context.stableHash(StableHash.of(text)), text))) }
     }
-
 
     private fun renderOutline(context: RenderContext, outline: List<OutlineElement<*>>): List<Block> =
         buildList {

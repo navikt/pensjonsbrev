@@ -31,7 +31,7 @@ data class AlderspensjonTabell(
                     showIf(it.greaterThan(0)) {
                         row {
                             cell { text(bokmal { +"Grunnpensjon (kap. 19)" }) }
-                            cell { text(bokmal { +it.format() }) }
+                            cell { text(bokmal { +it.format(denominator = false) }) }
                         }
                     }
                 }
@@ -39,7 +39,7 @@ data class AlderspensjonTabell(
                     showIf(it.greaterThan(0)) {
                         row {
                             cell { text(bokmal { +"Tilleggspensjon (kap. 19)" }) }
-                            cell { text(bokmal { +it.format() }) }
+                            cell { text(bokmal { +it.format(denominator = false) }) }
                         }
                     }
                 }
@@ -47,21 +47,21 @@ data class AlderspensjonTabell(
                     showIf(it.greaterThan(0)) {
                         row {
                             cell { text(bokmal { +"Pensjonstillegg (kap. 19)" }) }
-                            cell { text(bokmal { +it.format() }) }
+                            cell { text(bokmal { +it.format(denominator = false) }) }
                         }
                     }
                 }
                 ifNotNull(alderspensjon.gjenlevendetillegg) {
                     row {
                         cell { text(bokmal { +"Gjenlevendetillegg (kap. 19)" }) }
-                        cell { text(bokmal { +it.format() }) }
+                        cell { text(bokmal { +it.format(denominator = false) }) }
                     }
                 }
                 ifNotNull(alderspensjon.inntektspensjonBeloep) {
                     showIf(it.greaterThan(0)) {
                         row {
                             cell { text(bokmal { +"Inntektspensjon (kap. 20)" }) }
-                            cell { text(bokmal { +it.format() }) }
+                            cell { text(bokmal { +it.format(denominator = false) }) }
                         }
                     }
                 }
@@ -69,7 +69,7 @@ data class AlderspensjonTabell(
                     showIf(it.greaterThan(0)) {
                         row {
                             cell { text(bokmal { +"Garantipensjon (kap. 20)" }) }
-                            cell { text(bokmal { +it.format() }) }
+                            cell { text(bokmal { +it.format(denominator = false) }) }
                         }
                     }
                 }
@@ -77,7 +77,7 @@ data class AlderspensjonTabell(
                     showIf(it.greaterThan(0)) {
                         row {
                             cell { text(bokmal { +"Garantitillegg (kap. 20)" }) }
-                            cell { text(bokmal { +it.format() }) }
+                            cell { text(bokmal { +it.format(denominator = false) }) }
                         }
                     }
                 }
@@ -85,7 +85,7 @@ data class AlderspensjonTabell(
                     showIf(it.greaterThan(0)) {
                         row {
                             cell { text(bokmal { +"Skjermingstillegg" }) }
-                            cell { text(bokmal { +it.format() }) }
+                            cell { text(bokmal { +it.format(denominator = false) }) }
                         }
                     }
                 }
@@ -101,7 +101,7 @@ data class AlderspensjonTabell(
                                 alderspensjon.garantitilleggBeloep.ifNull(BrevbakerType.Kroner(0)) +
                                 alderspensjon.skjermingstillegg.ifNull(BrevbakerType.Kroner(0)) +
                                 alderspensjon.gjenlevendetillegg.ifNull(BrevbakerType.Kroner(0))
-                        text(bokmal { +sum.format() }, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)
+                        text(bokmal { +sum.format(denominator = false) }, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)
                     }
                 }
             }

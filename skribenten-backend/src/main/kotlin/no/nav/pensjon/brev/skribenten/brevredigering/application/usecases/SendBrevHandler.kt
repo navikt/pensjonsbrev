@@ -21,10 +21,11 @@ class SendBrevHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
     ) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Dto.SendBrevResult, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
         val document = brev.document ?: return null
 
         sendBrevPolicy.kanSende(brev, document).onError { return failure(it) }

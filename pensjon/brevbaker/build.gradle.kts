@@ -93,7 +93,7 @@ dependencies {
     ksp(project(":brevbaker:template-model-generator"))
     kspTest(project(":brevbaker:template-model-generator"))
 
-    implementation(libs.pdfbox)
+    testImplementation(libs.pdfbox)
 
     implementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
