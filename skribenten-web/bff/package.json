@@ -25,12 +25,12 @@
     "prom-client": "^15.1.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.1",
+    "@biomejs/biome": "2.5.5",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "5.0.6",
     "@types/lusca": "^1.7.5",
     "@types/morgan": "^1.9.10",
     "lint-staged": "17.0.8",
-    "typescript": "6.0.3"
+    "typescript": "7.0.2"
   }
 }

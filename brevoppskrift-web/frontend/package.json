@@ -28,7 +28,7 @@
     "react-dom": "19.2.7"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.1",
+    "@biomejs/biome": "2.5.5",
     "@navikt/aksel-stylelint": "8.14.0",
     "@tanstack/react-query-devtools": "5.101.2",
     "@tanstack/router-devtools": "1.167.0",
@@ -41,9 +41,9 @@
     "globals": "17.7.0",
     "lint-staged": "17.0.8",
     "postcss-styled-syntax": "0.7.2",
-    "stylelint": "17.14.0",
+    "stylelint": "17.14.1",
     "stylelint-config-standard": "40.0.0",
-    "typescript": "6.0.3",
+    "typescript": "7.0.2",
     "vite": "8.1.2",
     "vitest": "4.1.9"
   }
