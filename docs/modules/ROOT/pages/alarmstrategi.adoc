@@ -8,7 +8,7 @@ Denne siden beskriver hvordan Team Pensjonsbrev alarmerer på applikasjonene vi 
 * *skribenten-web* (SPA + BFF)
 
 Dokumentet definerer prinsippene, alvorlighetsgradene og hvilke konkrete signaler vi alarmerer på, og beskriver alarmene slik de faktisk er implementert.
-Denne siden er fasit: endrer vi en alarm, oppdateres tabellene her i samme PR.
+Selve alarmreglene er deklarert som `PrometheusRule`-manifester.
 
 == Formål
 
@@ -189,25 +189,8 @@ Fordi plattformmetrikkene er like for alle fire applikasjonene, definerer vi dem
 Logger går til både Elastic og Loki for alle fire applikasjonene.
 Logger brukes primært til *undersøkelse*, ikke til alarmering — logbaserte alarmer er skjøre fordi de knytter seg til fritekst som endres uten at noen tenker på alarmen.
 
-Vi ønsket å gjøre unntak der metrikker ikke finnes, og der loggmeldingen er stabil og entydig:
-
-* `Won't retry for exception` — brevbaker mot pdf-bygger, og skribenten-backend mot nedstrøms tjenester. Betyr at en ikke-retriable feil har oppstått.
-* `Error executing one-shot job` — engangsjobb i skribenten-backend feilet. Se også `did not complete successfully`, som dekker jobber som avslutter uten å sette `completed` og dermed heller ikke registreres som fullført.
-* `typst command failed` — kompileringsfeil i pdf-bygger.
-* `Alle toggles må være definert i Unleash` — en brevmal har en feature toggle som ikke finnes i Unleash, slik at malen blir stille utilgjengelig.
-
-[IMPORTANT]
-====
-*Ingen av disse er implementert, og de kan ikke implementeres slik alarmene våre er bygget.*
-
 Alarmene er `PrometheusRule`-manifester, som evalueres av Prometheus mot *Mimir*.
 Loggene ligger i *Loki*, og en `PrometheusRule` kan ikke spørre Loki — det krever en `LokiRule` og en egen alarmpipeline vi ikke har satt opp.
-
-Konsekvensen er reell: `Error executing one-shot job` var den eneste dekningen for en engangsjobb som feiler stille, og `Alle toggles må være definert i Unleash` den eneste for en brevmal som blir utilgjengelig uten at noe feiler.
-Begge er nå udekket. Se <<hull, Kjente hull>>.
-
-Den varige løsningen for de fleste av disse er uansett en metrikk framfor en loggalarm, jf. hull 3 og 6.
-====
 
 [[implementasjon]]
 == Implementasjon
@@ -216,59 +199,37 @@ Alarmene er `PrometheusRule`-manifester som ligger sammen med applikasjonen de g
 
 [cols="2,1,3", options="header"]
 |===
-| Fil | Regler | Innhold
+| Fil | Innhold
 
 | `.nais/plattform-alerts.yaml`
-| 7
 | <<felles, Felles plattformalarmer>> for alle fire appene
 
 | `pensjon/brevbaker/.nais/alerts.yaml`
-| 5
 | <<pensjon-brevbaker, pensjon-brevbaker>>
 
 | `brevbaker/pdf-bygger/.nais/alerts.yaml`
-| 4
 | <<pensjon-pdf-bygger, pensjon-pdf-bygger>>
 
 | `skribenten-backend/.nais/alerts.yaml`
-| 2
 | <<skribenten-backend, skribenten-backend>>
 
 | `skribenten-web/bff/.nais/alerts.yaml`
-| 6
 | <<skribenten-web, skribenten-web>>
 |===
 
 De rulles ut av `.github/workflows/alerts.yml`, og `validate-alerts.sh` kjører `promtool check rules` over dem i PR.
 Merk at promtool kun validerer syntaks — at PromQL-en parser og at Go-templatene i annotasjonene er gyldige.
-Den kan *ikke* se om metrikk- eller labelnavn faktisk finnes; det avdekkes først når regelen kjører mot Mimir.
+Den kan *ikke* se om metrikk- eller labelnavn faktisk finnes.
 
 === Alarmene gjelder kun prod
 
-Alarmene rulles ut til `prod-gcp` alene. Vi ønsker ikke varsler fra dev, der applikasjonene rutinemessig er nede eller halvferdige.
-Konsekvensen er at appnavn står hardkodet i reglene i stedet for å komme fra en variabel.
+Alarmene rulles kun ut til `prod-gcp`, vi ønsker ikke varsler fra dev.
 
 [WARNING]
 ====
 *Alarmfilene må rulles ut fra en workflow uten `VARS`/`VAR`, og det er ikke valgfritt.*
 
-`nais/deploy` kjører Handlebars (`aymerick/raymond`) over alle ressursfiler, og Handlebars bruker samme `{{ }}`-syntaks som Go-templatene Prometheus trenger i annotasjonene.
-Templating hoppes over helt når variabelkonteksten er tom (`templatedFile` i `pkg/deployclient/template.go` returnerer uendret innhold når `len(ctx) == 0`), så en workflow uten variabler lar Go-templatene stå i fred.
-
-Legger noen til `VARS` eller `VAR` senere, brekker alarmene på to ulike måter — og den ene er stille:
-
-Uttrykk med pipe, f.eks. `humanizePercentage` eller `printf`::
-*Parse-feil, og deployet stopper.* Raymond tolker pipe-tegnet som block params. Høylytt og lett å oppdage.
-
-Rene labelreferanser, f.eks. `$labels.pod`::
-*Tom streng, ingen feil.* Alarmen fortsetter å virke, men teksten vi får i Slack mangler nettopp den informasjonen som gjør den handlingsrettet.
-
-Den stille varianten er den farlige, og den rammer verst der det gjør mest vondt: `plattform-alerts.yaml` har ingen pipes i det hele tatt, men 13 labelreferanser.
-Den ville altså blitt rullet ut helt uten feilmelding, med pod-, container- og deployment-navn strøket fra samtlige alarmtekster.
-
-Merk at `nais validate` *ikke* oppfører seg som deploy her: CLI-en advarer om manglende variabler og setter inn en placeholder-verdi.
-Det er en hjelp ved lokal validering, men det betyr at en `nais validate` som ser fin ut ikke er noen garanti for hva deploy faktisk gjør.
-
+Om man angir `VARS` eller `VAR` så vil `nais/deploy` kjøre Handlebars over alle ressursfiler, og Handlebars bruker samme `{{ }}`-syntaks som Go-templatene Prometheus trenger i annotasjonene.
 Trenger vi variabler i alarmfilene senere, må hver krøllparentes-blokk escapes med en foranstilt backslash.
 ====
 
@@ -297,7 +258,7 @@ Det absolutte gulvet er et bedre støyfilter enn en trafikkgrense, og håndterer
 
 Brevbaker er navet i automatisk brevproduksjon. Feiler den, produseres det ikke brev — og fordi Pesys kjører batch utenfor kontortid, må alarmene her være aktive hele døgnet, selv om de først håndteres i arbeidstiden.
 
-Definert i `pensjon/brevbaker/.nais/alerts.yaml`.
+Deklarert i `pensjon/brevbaker/.nais/alerts.yaml`.
 
 [cols="2,3,1,3", options="header"]
 |===
@@ -326,29 +287,18 @@ Definert i `pensjon/brevbaker/.nais/alerts.yaml`.
 | `BrevbakerIngenBrevProdusert`
 | `pensjon_brevbaker_letter_request_count_total` under 1 på 2 timer, i kontortid på ukedager
 | `critical`
-| Fanger den stille feilen: alt ser friskt ut, men ingen bestiller brev fordi Pesys ikke når fram. Ingen andre alarmer fanger dette, siden feilrate og latens begge er tomme når det ikke kommer trafikk.
+| Fanger den stille feilen: alt ser friskt ut, men ingen brevbestillinger når fram. Ingen andre alarmer fanger dette, siden feilrate og latens begge er tomme når det ikke kommer trafikk.
 |===
 
 [NOTE]
 ====
 `BrevbakerIngenBrevProdusert` avviker fra det denne strategien opprinnelig beskrev.
 
-Planen var å alarmere på et *forventet batchvindu*, men de store brevbestillingene har ingen fast frekvens: de kjøres til ulike formål med hver sin frekvens, i tillegg til ad hoc-kjøringer.
-Det finnes derfor ikke noe vindu vi kan si at «her skal det alltid komme brev».
-
-I stedet alarmerer vi på total stillhet i kontortid, der det alltid er baseline-trafikk fra Skribenten i tillegg til autobrev.
-Det gir dårligere dekning — en batch som ikke kjørte om natten fanges ikke — men er den sterkeste regelen datagrunnlaget tillater.
-
 To detaljer i regelen er lette å ødelegge ved en senere endring:
 
 * `hour()` er *UTC*, ikke lokal tid. Vinduet 09–15 UTC er 10–16 lokal tid om vinteren og 11–17 om sommeren. Nedre grense er satt slik at også 2-timers tilbakeblikket ligger innenfor kontortid — startet vi tidligere, ville alarmen vurdert nattetrafikk og utløst hver morgen.
 * `absent(...)` er nødvendig i tillegg til `< 1`, fordi telleren opprettes først når det faktisk bestilles et brev. Etter en restart uten trafikk finnes ingen tidsserie i det hele tatt, og uten dette leddet ville alarmen vært stille nettopp når den skal utløse.
 ====
-
-Ikke implementert:
-
-* *Brå fall i `pensjon_brevbaker_letter_request_count_total` for en enkelt `brevkode`* (`warning`). Kan bety at én brevmal er ødelagt selv om totalen ser normal ut. Krever at vi har nok historikk til å definere «normalt» per brevkode; vurderes på nytt når vi har det.
-* *Logg: `Alle toggles må være definert i Unleash`* (`warning`). En brevmal med en toggle som ikke finnes i Unleash blir *stille utilgjengelig* — ingenting feiler, brevet kan bare ikke bestilles. Kan ikke implementeres som `PrometheusRule`, se <<hull, Kjente hull>>.
 
 [[pensjon-pdf-bygger]]
 === pensjon-pdf-bygger
@@ -391,10 +341,6 @@ CPU-strupning måles som *andel strupede perioder* (`container_cpu_cfs_throttled
 Det finnes derfor ingen meningsfull absolutt terskel for den metrikken. En andel er sammenlignbar mellom poder og over tid.
 ====
 
-Ikke implementert:
-
-* *Logg: `typst command failed`* (`warning`). Skulle skille malfeil (én brevmal kompilerer ikke) fra infrastrukturfeil. Kan ikke implementeres som `PrometheusRule`, og bør uansett erstattes av en metrikk, se hull 3 under <<hull, Kjente hull>>.
-
 [[skribenten-backend]]
 === skribenten-backend
 
@@ -424,13 +370,6 @@ Dette er ikke et hull i alarmdekningen, men verdt å kjenne til: en latensalarm 
 | `warning`
 | Tyder på brutt API-kontrakt mot skribenten-web, typisk etter en deploy av én av dem. `401`/`403` er normal drift fra Wonderwall, og `404` er for støyende til å si noe, jf. <<ikke-alarmer, Bevisste ikke-alarmer>>.
 |===
-
-Ikke implementert:
-
-* *`/isReady` returnerer 503 på flere poder* (`critical`). Ruten instrumenteres ikke lenger, jf. <<implementasjon, helsesjekkfiltreringen>>, så alarmen kan ikke skrives som beskrevet. Den er heller ikke lenger nødvendig: en pod som feiler readiness tas ut av rotasjon og fanges av `IngenTilgjengeligePoder` og `FaerreTilgjengeligePoderEnnOensket`, som dekker det samme utfallet bedre.
-* *Feil mot en enkelt nedstrøms tjeneste* (`warning`). Skal identifisere *hvilken* tjeneste som feiler. Krever instrumentering av HTTP-klientene, se hull 1 under <<hull, Kjente hull>>.
-* *Logg: `Error executing one-shot job`* (`warning`). En feilet engangsjobb stopper *ikke* oppstarten — jobbene kjøres i en egen coroutine etter `ServerReady` med forsinkelse, og fullføring registreres kun i `OneShotJobTable` ved suksess. En jobb kan derfor feile ved hver oppstart uten at noe annet indikerer det. Dette var eneste signal, og er nå udekket, se <<hull, Kjente hull>>.
-* *Databasetilkoblinger nær maks* (`warning`). Tilkoblingslekkasje ender i total utilgjengelighet. Krever at connection pool-metrikker eksponeres, se hull 5 under <<hull, Kjente hull>>.
 
 [[skribenten-web]]
 === skribenten-web
@@ -499,8 +438,6 @@ Alarmene er lagt i to lag med vilje: ingress-metrikkene fanger feil som aldri n�
 Terskelen skal derfor leses som «p99 i det siste halvminuttet», og `for: 5m` krever at det holder seg slik over flere scrapes.
 ====
 
-Podrestarter dekkes av `ContainerCrashlooper` og `PodOOMKilled` blant <<felles, de felles plattformalarmene>>, og er derfor ikke gjentatt her.
-
 [[felles]]
 == Felles plattformalarmer
 
@@ -550,12 +487,6 @@ Fordi filene rulles ut uten variabler (se <<implementasjon, Implementasjon>>), s
 | Feilet deploy. Skiller seg fra crashloop-alarmen ved å fange feil som oppstår før applikasjonen i det hele tatt kjører.
 |===
 
-[NOTE]
-====
-`MinnebrukNaerGrensen` må sammenligne to metrikker som bærer ulike hjelpelabels, og bruker derfor `on(namespace, pod, container)` i divisjonen.
-Uten den eksplisitte listen finner Prometheus ingen matchende par, og regelen blir stille i stedet for å feile.
-====
-
 [[ikke-alarmer]]
 == Bevisste ikke-alarmer
 
@@ -591,10 +522,6 @@ Utløp er derfor normal drift og ikke en feiltilstand.
 Arbeidet med denne strategien avdekket flere mangler i instrumenteringen.
 Disse er bevisste, prioriterte oppgaver — ikke forglemmelser — og listes her slik at alarmdekningen kan forbedres stegvis.
 
-Ingen av de gjenstående hullene blokkerer alarmene som er implementert, men hull 6 blokkerer *fire alarmer vi ønsket oss* og som derfor ikke finnes.
-De to opprinnelige blokkerende hullene er lukket: latensmetrikken eksporteres nå som histogram, og skribenten-web eksponerer metrikker.
-Resten forbedrer i hovedsak *feilsøkingen* når en alarm har gått — det gjør oss raskere til å finne årsaken, ikke flinkere til å oppdage at noe er galt.
-
 [cols="1,3,3,1", options="header"]
 |===
 | # | Hull | Tiltak | Prioritet
@@ -605,34 +532,39 @@ Resten forbedrer i hovedsak *feilsøkingen* når en alarm har gått — det gjø
 | Middels
 
 | 2
-| `/isReady` i brevbaker og pdf-bygger returnerer alltid `200` uten å sjekke noe. En pod som ikke kan nå pdf-bygger tas aldri ut av rotasjon.
-| Vurdér reell readiness-sjekk i brevbaker mot pdf-bygger. Må balanseres mot risikoen for at hele deployment tas ut av rotasjon samtidig ved en forbigående nedstrøms feil.
+| pdf-bygger har ingen domenemetrikker. Typst-feil og kompileringstid er kun synlig i logg.
+| Legg til teller for typst-resultat (suksess/kompileringsfeil/eksekveringsfeil) og timer for kompileringstid.
 | Middels
 
 | 3
-| pdf-bygger har ingen domenemetrikker. Typst-feil og kompileringstid er kun synlig i logg.
-| Legg til teller for typst-resultat (suksess/kompileringsfeil/eksekveringsfeil) og timer for kompileringstid. Lukker også deler av hull 6.
-| Middels
-
-| 4
 | Retry-logikken i brevbaker mot pdf-bygger er usynlig i metrikker. Vi ser ikke at systemet sliter før det feiler helt.
 | Legg til teller for antall retries og for oppbrukte retries.
 | Middels
 
-| 5
+| 4
 | Ingen metrikker på database og connection pool i skribenten-backend.
 | Bind HikariCP-metrikker til meter-registeret.
 | Middels
 
+| 5
+| Ingen måte å varsle på manglende brevbestillinger når Pesys kjører store behandlinger.
+| Ingen god løsning på dette, med mindre man kan avklare når alle disse jobbene kjører
+| Middels
+
 | 6
 | *Ingen loggbaserte alarmer er mulige.* `PrometheusRule` evalueres mot Mimir og kan ikke spørre Loki. Fire ønskede alarmer er derfor udekket, hvorav to var eneste signal for sin feilmodus: `Error executing one-shot job` (jobb feiler stille ved hver oppstart) og `Alle toggles må være definert i Unleash` (brevmal blir stille utilgjengelig).
-| Enten sett opp en `LokiRule`-pipeline, eller — som regel bedre — erstatt hver enkelt med en metrikk. En teller for feilede engangsjobber og en for maler med udefinert toggle lukker de to alvorligste.
-| *Høy*
+| Instrumenter metrikk tellere for feilede engangsjobber og for maler med udefinert toggle.
+| Middels
 
 | 7
 | Alarmene bruker `kube_*`- og `nginx_ingress_controller_requests`-labels som ikke er verifisert mot vår egen Mimir. `promtool` validerer syntaks, ikke at metrikk- og labelnavn finnes. En regel med feil labelnavn blir *stille* — den feiler ikke, den utløser bare aldri.
 | Bekreft i Grafana at hver regel returnerer serier, og at `MinnebrukNaerGrensen` faktisk matcher par. Bør gjøres første gang alarmene er rullet ut.
 | *Høy*
+
+| 8
+| Fall i `pensjon_brevbaker_letter_request_count_total` for en enkelt `brevkode` (`warning`). Kan bety at én brevmal er ødelagt selv om totalen ser normal ut.
+| Hent ut forventede tall for hver brevmal basert på metrikk-historikk.
+| Middels
 |===
 
 == Forvaltning av alarmene

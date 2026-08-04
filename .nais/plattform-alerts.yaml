@@ -3,9 +3,6 @@
 # Begrunnelsen for hver alarm - terskler, avgrensninger og alarmer vi bevisst ikke har laget -
 # er dokumentert i docs/modules/ROOT/pages/alarmstrategi.adoc. Endrer du noe her, oppdater
 # tabellen der i samme PR.
-#
-# Filen rulles ut av .github/workflows/alerts.yml, som ikke setter VARS eller VAR. Det er en
-# forutsetning for at Go-templatene i annotasjonene skal overleve deployet.
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
