@@ -1,0 +1,105 @@
+# Felles plattformalarmer for alle fire applikasjonene.
+#
+# Begrunnelsen for hver alarm - terskler, avgrensninger og alarmer vi bevisst ikke har laget -
+# er dokumentert i docs/modules/ROOT/pages/alarmstrategi.adoc. Endrer du noe her, oppdater
+# tabellen der i samme PR.
+#
+# Filen rulles ut av .github/workflows/alerts.yml, som ikke setter VARS eller VAR. Det er en
+# forutsetning for at Go-templatene i annotasjonene skal overleve deployet.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: pensjonsbrev-plattform
+  namespace: pensjonsbrev
+  labels:
+    team: pensjonsbrev
+spec:
+  groups:
+    - name: plattform
+      rules:
+        - alert: IngenTilgjengeligePoder
+          expr: |
+            kube_deployment_status_replicas_available{namespace="pensjonsbrev", deployment=~"pensjon-brevbaker|pensjon-pdf-bygger|skribenten-backend|skribenten-web"} == 0
+          for: 5m
+          labels:
+            severity: critical
+            namespace: pensjonsbrev
+          annotations:
+            summary: "{{ $labels.deployment }} har ingen tilgjengelige poder"
+            consequence: "Applikasjonen er nede. For brevbaker og pdf-bygger betyr det at det ikke produseres brev."
+            action: "Sjekk `kubectl -n pensjonsbrev get pods -l app={{ $labels.deployment }}` og `kubectl -n pensjonsbrev describe deployment {{ $labels.deployment }}`. Se etter feilet utrulling, manglende secret eller OOM-kill."
+
+        - alert: FaerreTilgjengeligePoderEnnOensket
+          expr: |
+            kube_deployment_status_replicas_unavailable{namespace="pensjonsbrev", deployment=~"pensjon-brevbaker|pensjon-pdf-bygger|skribenten-backend|skribenten-web"} > 0
+          for: 15m
+          labels:
+            severity: warning
+            namespace: pensjonsbrev
+          annotations:
+            summary: "{{ $labels.deployment }} har færre poder enn ønsket"
+            consequence: "Redusert redundans og kapasitet. Vanligvis en deploy som ikke fullførte."
+            action: "Sjekk om siste deploy gikk gjennom, og om poder står i Pending på grunn av manglende ressurser i clusteret."
+
+        - alert: ContainerCrashlooper
+          expr: |
+            increase(kube_pod_container_status_restarts_total{namespace="pensjonsbrev", container=~"pensjon-brevbaker|pensjon-pdf-bygger|skribenten-backend|skribenten-web"}[15m]) >= 3
+          for: 5m
+          labels:
+            severity: critical
+            namespace: pensjonsbrev
+          annotations:
+            summary: "{{ $labels.container }} har restartet minst 3 ganger på 15 minutter"
+            consequence: "Applikasjonen klarer ikke å starte, eller dør gjentatte ganger under drift."
+            action: "Se `kubectl -n pensjonsbrev logs {{ $labels.pod }} --previous`. Nesten alltid en nylig deploy eller manglende konfigurasjon/secret."
+
+        - alert: PodOOMKilled
+          expr: |
+            kube_pod_container_status_last_terminated_reason{namespace="pensjonsbrev", container=~"pensjon-brevbaker|pensjon-pdf-bygger|skribenten-backend|skribenten-web", reason="OOMKilled"} == 1
+          for: 5m
+          labels:
+            severity: warning
+            namespace: pensjonsbrev
+          annotations:
+            summary: "{{ $labels.container }} ble drept fordi minnegrensen var nådd"
+            consequence: "Poden mistet all pågående behandling. For brevbaker og pdf-bygger, som begge har limits.memory 2Gi, er dette en reell feilmodus ved store brev."
+            action: "Sjekk om det sammenfaller med et spesielt stort brev. Vurder å heve limits.memory, eller finn minnelekkasjen."
+
+        - alert: MinnebrukNaerGrensen
+          expr: |
+            container_memory_working_set_bytes{namespace="pensjonsbrev", container=~"pensjon-brevbaker|pensjon-pdf-bygger|skribenten-backend|skribenten-web"}
+            / on(namespace, pod, container)
+            kube_pod_container_resource_limits{namespace="pensjonsbrev", container=~"pensjon-brevbaker|pensjon-pdf-bygger|skribenten-backend|skribenten-web", resource="memory"}
+            > 0.9
+          for: 15m
+          labels:
+            severity: warning
+            namespace: pensjonsbrev
+          annotations:
+            summary: "{{ $labels.container }} bruker over 90 % av minnegrensen"
+            consequence: "Poden er nær ved å bli OOM-drept."
+            action: "Se om bruken vokser jevnt (minnelekkasje) eller følger last. Vurder å heve limits.memory."
+
+        - alert: PrometheusKlarerIkkeAScrape
+          expr: |
+            up{namespace="pensjonsbrev", app=~"pensjon-brevbaker|pensjon-pdf-bygger|skribenten-backend|skribenten-web"} == 0
+          for: 10m
+          labels:
+            severity: warning
+            namespace: pensjonsbrev
+          annotations:
+            summary: "Prometheus får ikke scrapet {{ $labels.app }}"
+            consequence: "Vi er blinde på appen. Ingen av de andre metrikkbaserte alarmene vil kunne utløse."
+            action: "Sjekk at poden svarer på metrikkendepunktet, og at prometheus-konfigurasjonen i nais.yaml er intakt."
+
+        - alert: PodStarterIkke
+          expr: |
+            kube_pod_container_status_waiting_reason{namespace="pensjonsbrev", container=~"pensjon-brevbaker|pensjon-pdf-bygger|skribenten-backend|skribenten-web", reason=~"CrashLoopBackOff|ImagePullBackOff"} == 1
+          for: 10m
+          labels:
+            severity: warning
+            namespace: pensjonsbrev
+          annotations:
+            summary: "{{ $labels.container }} står i {{ $labels.reason }}"
+            consequence: "Feilet deploy. Nye poder kommer ikke opp."
+            action: "Se `kubectl -n pensjonsbrev describe pod {{ $labels.pod }}`. Ved ImagePullBackOff, sjekk at imaget faktisk ble pushet."

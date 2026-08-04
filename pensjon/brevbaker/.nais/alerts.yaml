@@ -1,0 +1,92 @@
+# Alarmer for pensjon-brevbaker.
+#
+# Begrunnelsen for hver alarm - terskler, avgrensninger og alarmer vi bevisst ikke har laget -
+# er dokumentert i docs/modules/ROOT/pages/alarmstrategi.adoc. Endrer du noe her, oppdater
+# tabellen der i samme PR.
+#
+# Filen rulles ut av .github/workflows/alerts.yml, som ikke setter VARS eller VAR. Det er en
+# forutsetning for at Go-templatene i annotasjonene skal overleve deployet.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: pensjon-brevbaker
+  namespace: pensjonsbrev
+  labels:
+    team: pensjonsbrev
+spec:
+  groups:
+    - name: brevbaker
+      rules:
+        - alert: BrevbakerHoeyFeilrate
+          expr: |
+            (
+              sum(rate(ktor_http_server_requests_seconds_count{app="pensjon-brevbaker", route=~"/letter/.*", status=~"5.."}[10m]))
+              /
+              sum(rate(ktor_http_server_requests_seconds_count{app="pensjon-brevbaker", route=~"/letter/.*"}[10m]))
+            ) > 0.05
+            and
+            sum(increase(ktor_http_server_requests_seconds_count{app="pensjon-brevbaker", route=~"/letter/.*", status=~"5.."}[10m])) >= 3
+          for: 10m
+          labels:
+            severity: critical
+            namespace: pensjonsbrev
+          annotations:
+            summary: "Over 5 % av kallene mot /letter/* i brevbaker feiler ({{ $value | humanizePercentage }})"
+            consequence: "Brev produseres ikke. Dette er den viktigste alarmen vi har."
+            action: "Sjekk om pensjon-pdf-bygger er frisk - brevbaker er avhengig av den. Se deretter etter feilende brevkoder i loggen, og om det sammenfaller med en nylig deploy."
+
+        - alert: BrevbakerUventedeExceptions
+          expr: |
+            sum(increase(ktor_http_server_requests_seconds_count{app="pensjon-brevbaker", route=~"/letter/.*", throwable!="n/a"}[10m])) > 3
+          for: 5m
+          labels:
+            severity: critical
+            namespace: pensjonsbrev
+          annotations:
+            summary: "Uventede exceptions på /letter/* i brevbaker ({{ $value | printf \"%.0f\" }} siste 10 min)"
+            consequence: "Feil håndteres ikke kontrollert, og brevbestillingen feiler for konsumenten."
+            action: "Finn exception-typen i throwable-labelen, og se etter stacktrace i loggen. Ofte en brevmal som feiler på uventede data."
+
+        - alert: BrevbakerTregAutobrevProduksjon
+          expr: |
+            histogram_quantile(0.95, sum(rate(ktor_http_server_requests_seconds_bucket{app="pensjon-brevbaker", route="/letter/autobrev/pdf"}[10m])) by (le)) > 10
+          for: 15m
+          labels:
+            severity: warning
+            namespace: pensjonsbrev
+          annotations:
+            summary: "p95 for /letter/autobrev/pdf er over 10s (nå {{ $value | printf \"%.1f\" }}s)"
+            consequence: "Treghet her går rett inn i Pesys sitt batchvindu."
+            action: "Sjekk latens og CPU-strupning i pensjon-pdf-bygger - treghet der er den vanligste årsaken. Se også om HPA står i taket."
+
+        - alert: BrevbakerKoeBunnerSegOpp
+          expr: |
+            min_over_time(ktor_http_server_requests_active{app="pensjon-brevbaker"}[15m]) > 10
+          for: 15m
+          labels:
+            severity: warning
+            namespace: pensjonsbrev
+          annotations:
+            summary: "Poden {{ $labels.pod }} har hatt minst {{ $value | printf \"%.0f\" }} samtidige requests i 15 minutter"
+            consequence: "Requests fullføres ikke. Typisk tegn på at pdf-bygger henger og at retry-logikken holder tråder opptatt."
+            action: "Sjekk om pensjon-pdf-bygger svarer. Se etter 'Won't retry for exception' i loggen."
+
+        - alert: BrevbakerIngenBrevProdusert
+          expr: |
+            (
+              sum(increase(pensjon_brevbaker_letter_request_count_total{app="pensjon-brevbaker"}[2h])) < 1
+              or
+              absent(pensjon_brevbaker_letter_request_count_total{app="pensjon-brevbaker"})
+            )
+            and on() hour() >= 9
+            and on() hour() < 15
+            and on() day_of_week() >= 1
+            and on() day_of_week() <= 5
+          for: 15m
+          labels:
+            severity: critical
+            namespace: pensjonsbrev
+          annotations:
+            summary: "Brevbaker har ikke produsert et eneste brev på 2 timer i kontortid"
+            consequence: "Ingen bestiller brev. Applikasjonen kan se helt frisk ut samtidig."
+            action: "Sjekk om Pesys når fram til oss, og om Skribenten fungerer. Verifiser at brevbaker faktisk svarer med et manuelt kall mot /templates/autobrev."

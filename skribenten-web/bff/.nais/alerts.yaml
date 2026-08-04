@@ -1,0 +1,110 @@
+# Alarmer for skribenten-web.
+#
+# Begrunnelsen for hver alarm - terskler, avgrensninger og alarmer vi bevisst ikke har laget -
+# er dokumentert i docs/modules/ROOT/pages/alarmstrategi.adoc. Endrer du noe her, oppdater
+# tabellen der i samme PR.
+#
+# Filen rulles ut av .github/workflows/alerts.yml, som ikke setter VARS eller VAR. Det er en
+# forutsetning for at Go-templatene i annotasjonene skal overleve deployet.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: skribenten-web
+  namespace: pensjonsbrev
+  labels:
+    team: pensjonsbrev
+spec:
+  groups:
+    - name: skribenten-web
+      rules:
+        - alert: SkribentenWebHoeyFeilrateIngress
+          expr: |
+            (
+              sum(rate(nginx_ingress_controller_requests{namespace="pensjonsbrev", service="skribenten-web", status=~"5.."}[10m]))
+              /
+              sum(rate(nginx_ingress_controller_requests{namespace="pensjonsbrev", service="skribenten-web"}[10m]))
+            ) > 0.05
+            and
+            sum(increase(nginx_ingress_controller_requests{namespace="pensjonsbrev", service="skribenten-web", status=~"5.."}[10m])) >= 3
+          for: 10m
+          labels:
+            severity: critical
+            namespace: pensjonsbrev
+          annotations:
+            summary: "Over 5 % av forespørslene til skribenten-web feiler sett fra ingress ({{ $value | humanizePercentage }})"
+            consequence: "Saksbehandlerne får ikke opp applikasjonen."
+            action: "Sjekk om SkribentenWebHoeyFeilrateProxy også har utløst. Har den ikke det, ligger feilen i Wonderwall eller ingress, ikke i BFF-en."
+
+        - alert: SkribentenWebHoeyFeilrateProxy
+          expr: |
+            (
+              sum(rate(http_server_request_duration_seconds_count{app="skribenten-web", route="proxy", status_code=~"5.."}[10m]))
+              /
+              sum(rate(http_server_request_duration_seconds_count{app="skribenten-web", route="proxy"}[10m]))
+            ) > 0.05
+            and
+            sum(increase(http_server_request_duration_seconds_count{app="skribenten-web", route="proxy", status_code=~"5.."}[10m])) >= 3
+          for: 10m
+          labels:
+            severity: critical
+            namespace: pensjonsbrev
+          annotations:
+            summary: "Over 5 % av proxykallene i skribenten-web BFF feiler ({{ $value | humanizePercentage }})"
+            consequence: "Saksbehandlerne når ikke skribenten-backend, selv om selve nettsiden lastes."
+            action: "Sjekk om skribenten-backend er frisk. Er den det, se etter feil i OBO-vekslingen i BFF-loggen."
+
+        - alert: SkribentenWebRedusertKapasitet
+          expr: |
+            kube_deployment_status_replicas_available{namespace="pensjonsbrev", deployment="skribenten-web"} < 2
+          for: 5m
+          labels:
+            severity: critical
+            namespace: pensjonsbrev
+          annotations:
+            summary: "skribenten-web har færre enn 2 tilgjengelige poder"
+            consequence: "Halvert kapasitet uten mulighet for å skalere opp. Neste pod som faller ut tar ned applikasjonen."
+            action: "Se hvorfor poden forsvant - sjekk restarter, OOM-kill og om siste deploy fullførte."
+
+        - alert: SkribentenWebTregProxy
+          expr: |
+            histogram_quantile(0.95, sum(rate(http_server_request_duration_seconds_bucket{app="skribenten-web", route="proxy"}[10m])) by (le)) > 30
+          for: 15m
+          labels:
+            severity: warning
+            namespace: pensjonsbrev
+          annotations:
+            summary: "p95 for proxykall i skribenten-web er over 30s (nå {{ $value | printf \"%.1f\" }}s)"
+            consequence: "Saksbehandlerne opplever applikasjonen som treg."
+            action: "Sammenlign med latensen i skribenten-backend. Er backend rask, ligger tregheten i BFF-en eller i OBO-vekslingen."
+
+        - alert: SkribentenWebBlokkertEventLoop
+          expr: |
+            nodejs_eventloop_lag_p99_seconds{app="skribenten-web"} > 0.5
+          for: 5m
+          labels:
+            severity: warning
+            namespace: pensjonsbrev
+          annotations:
+            summary: "Event loop i {{ $labels.pod }} er blokkert (p99 {{ $value | printf \"%.2f\" }}s)"
+            consequence: "BFF-en blir treg eller uresponsiv for alle brukere på denne poden, uten at CPU-bruken ser unormal ut."
+            action: "Se etter synkron kode som blokkerer - typisk stor JSON-parsing eller kryptografi. Sjekk også nodejs_heap_size_used_bytes for samtidig minnepress."
+
+        - alert: SkribentenWebIngenTrafikk
+          expr: |
+            (
+              sum(increase(nginx_ingress_controller_requests{namespace="pensjonsbrev", service="skribenten-web"}[1h])) < 1
+              or
+              absent(nginx_ingress_controller_requests{namespace="pensjonsbrev", service="skribenten-web"})
+            )
+            and on() hour() >= 8
+            and on() hour() < 15
+            and on() day_of_week() >= 1
+            and on() day_of_week() <= 5
+          for: 15m
+          labels:
+            severity: warning
+            namespace: pensjonsbrev
+          annotations:
+            summary: "Ingen trafikk til skribenten-web på en time midt i kontortiden"
+            consequence: "Saksbehandlerne kommer sannsynligvis ikke inn i applikasjonen."
+            action: "Prøv å logge inn selv. Sjekk Wonderwall-sidecaren og at Azure AD-innloggingen fungerer."

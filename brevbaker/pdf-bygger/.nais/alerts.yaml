@@ -1,0 +1,78 @@
+# Alarmer for pensjon-pdf-bygger.
+#
+# Begrunnelsen for hver alarm - terskler, avgrensninger og alarmer vi bevisst ikke har laget -
+# er dokumentert i docs/modules/ROOT/pages/alarmstrategi.adoc. Endrer du noe her, oppdater
+# tabellen der i samme PR.
+#
+# Filen rulles ut av .github/workflows/alerts.yml, som ikke setter VARS eller VAR. Det er en
+# forutsetning for at Go-templatene i annotasjonene skal overleve deployet.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: pensjon-pdf-bygger
+  namespace: pensjonsbrev
+  labels:
+    team: pensjonsbrev
+spec:
+  groups:
+    - name: pdf-bygger
+      rules:
+        - alert: PdfByggerHoeyFeilrate
+          expr: |
+            (
+              sum(rate(ktor_http_server_requests_seconds_count{app="pensjon-pdf-bygger", status=~"5.."}[10m]))
+              /
+              sum(rate(ktor_http_server_requests_seconds_count{app="pensjon-pdf-bygger"}[10m]))
+            ) > 0.05
+            and
+            sum(increase(ktor_http_server_requests_seconds_count{app="pensjon-pdf-bygger", status=~"5.."}[10m])) >= 3
+          for: 10m
+          labels:
+            severity: critical
+            namespace: pensjonsbrev
+          annotations:
+            summary: "Over 5 % av kallene mot pdf-bygger feiler ({{ $value | humanizePercentage }})"
+            consequence: "Typst-kompilering feiler. Brevbaker retry-er, men vedvarende feil stopper brevproduksjonen."
+            action: "Se etter 'typst command failed' i loggen. Skiller malfeil (én enkelt brevmal kompilerer ikke) fra infrastrukturfeil."
+
+        - alert: PdfByggerTregProduksjon
+          expr: |
+            histogram_quantile(0.95, sum(rate(ktor_http_server_requests_seconds_bucket{app="pensjon-pdf-bygger", route="/produserBrev"}[10m])) by (le)) > 10
+          for: 15m
+          labels:
+            severity: warning
+            namespace: pensjonsbrev
+          annotations:
+            summary: "p95 for /produserBrev er over 10s (nå {{ $value | printf \"%.1f\" }}s)"
+            consequence: "Brevbaker begynner snart å få timeouts. withTimeoutOrNull i PensjonPdfByggerService kutter etter 300s."
+            action: "Sjekk CPU-strupning og om HPA står i taket. Se om det sammenfaller med spesielt store brev."
+
+        - alert: PdfByggerCpuStrupes
+          expr: |
+            (
+              rate(container_cpu_cfs_throttled_periods_total{namespace="pensjonsbrev", container="pensjon-pdf-bygger"}[10m])
+              /
+              rate(container_cpu_cfs_periods_total{namespace="pensjonsbrev", container="pensjon-pdf-bygger"}[10m])
+            ) > 0.5
+          for: 15m
+          labels:
+            severity: warning
+            namespace: pensjonsbrev
+          annotations:
+            summary: "Poden {{ $labels.pod }} får strupet over halvparten av CPU-periodene sine"
+            consequence: "Typst er CPU-bundet, så strupning gir direkte treghet i brevproduksjonen."
+            action: "Sjekk om lasten er unormalt høy, eller om CPU-requesten er satt for lavt i nais.yaml."
+
+        - alert: PdfByggerHpaITaket
+          expr: |
+            kube_horizontalpodautoscaler_status_current_replicas{namespace="pensjonsbrev", horizontalpodautoscaler="pensjon-pdf-bygger"}
+            >= on(namespace, horizontalpodautoscaler)
+            kube_horizontalpodautoscaler_spec_max_replicas{namespace="pensjonsbrev", horizontalpodautoscaler="pensjon-pdf-bygger"}
+          for: 15m
+          labels:
+            severity: warning
+            namespace: pensjonsbrev
+          annotations:
+            summary: "pdf-bygger står på maks antall replicas"
+            consequence: "Vi har ikke mer kapasitet å skalere ut med. Neste steg er økt latens og timeouts i brevbaker."
+            action: "Vurder å heve max replicas, eller finn ut hvorfor lasten er så høy. Sjekk om en spesielt stor batch kjører."
