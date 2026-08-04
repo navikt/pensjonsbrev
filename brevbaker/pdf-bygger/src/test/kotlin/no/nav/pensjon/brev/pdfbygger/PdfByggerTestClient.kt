@@ -2,13 +2,6 @@ package no.nav.pensjon.brev.pdfbygger
 
 import java.nio.file.Path
 
-/**
- * Test-tags used by pdf-bygger's own integration/manual tests. Intentionally a pdf-bygger-local copy
- * so the module's tests do not depend on `brevbaker:core`/`brevbaker:dsl` test fixtures.
- *
- * `PdfByggerTestService`/`PDFByggerTestContainer` er derimot delt, og bor i
- * `brevbaker:jackson` sine testFixtures.
- */
 object TestTags {
     const val INTEGRATION_TEST = "integration-test"
 

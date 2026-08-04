@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.pdfbygger
 
-import no.nav.brev.brevbaker.PdfByggerTestService
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking

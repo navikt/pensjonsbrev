@@ -79,7 +79,6 @@ dependencies {
     }
     testImplementation(libs.ktor.client.cio)
     testImplementation(libs.ktor.client.content.negotiation)
-    testImplementation(testFixtures(project(":brevbaker:core")))
     testImplementation(libs.markup.dsl)
     testImplementation(libs.testcontainers.core)
 }
