@@ -14,13 +14,34 @@ class MetricsRouteTest {
         Regex("""[,{]le="([^"]+)"""").find(bucket)?.groupValues?.get(1)
 
     private suspend fun io.ktor.client.HttpClient.scrapeAfterRequest(): List<String> {
-        get("/isAlive")
+        // Må være en rute som faktisk instrumenteres. Helsesjekkene filtreres bort, mens en
+        // ukjent sti registreres som route="n/a" og krever ingen innlogging.
+        get("/finnes-ikke")
         val metrikker = get("/metrics").bodyAsText().lines()
             .filter { it.startsWith("ktor_http_server_requests_seconds") }
         // Uten denne ville assertFalse-testene under passert selv om scrapingen ikke ga noe.
         assertTrue(metrikker.isNotEmpty()) { "Fant ingen ktor_http_server_requests_seconds-metrikker" }
         return metrikker
     }
+
+    @Test
+    fun `helsesjekker og metrikkendepunktet instrumenteres ikke`() =
+        testBrevbakerApp(isIntegrationTest = false) { client ->
+            client.get("/isAlive")
+            client.get("/isReady")
+            client.get("/ping_authorized")
+
+            val metrikker = client.scrapeAfterRequest()
+
+            // Ved normal last i prod utgjør disse ~79 % av trafikken. Blir de tatt med, fortynner
+            // de nevneren i feilrate-alarmene så kraftig at ~25 % av de ekte kallene må feile før
+            // en 5 %-alarm utløser.
+            listOf("/isAlive", "/isReady", "/metrics", "/ping_authorized").forEach { sti ->
+                assertFalse(metrikker.any { it.contains("route=\"$sti\"") }) {
+                    "Forventet ingen metrikker for $sti, fant:\n${metrikker.filter { it.contains("route=\"$sti\"") }.joinToString("\n")}"
+                }
+            }
+        }
 
     @Test
     fun `latens rapporteres som histogram-buckets slik at de kan aggregeres paa tvers av poder`() =

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.pdfbygger
 
 import io.ktor.server.application.*
 import io.ktor.server.metrics.micrometer.*
+import io.ktor.server.request.path
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.micrometer.core.instrument.config.MeterFilter
@@ -13,6 +14,20 @@ import kotlin.time.Duration.Companion.seconds
 
 object Metrics {
     private val prometheusRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
+
+    // Helsesjekker og metrikkendepunktet kalles av kubernetes og prometheus uavhengig av last
+    // (~0,23 req/s per pod). De holdes derfor utenfor både access-loggen og metrikkene:
+    //  - De fortynner nevneren i feilrate-alarmer. Med 6 poder i prod utgjør de ~99 % av
+    //    trafikken ved normal last, slik at en alarm på 5 % feilrate aldri kunne utløst - ikke
+    //    engang om samtlige ekte kall feilet. pdf-bygger har lite trafikk mellom batchene, så
+    //    dette er normaltilstanden og ikke et sjeldent hjørnetilfelle.
+    //  - Hver rute koster ~58 tidsserier fordi den får hele bucket-settet, for en latens som er
+    //    konstant og under millisekundet. Det slår ekstra hardt ut her, siden pdf-bygger
+    //    skalerer opp til 150 poder.
+    private val ikkeObserverteStier = setOf("/isAlive", "/isReady", "/metrics")
+
+    // Både CallLogging og MicrometerMetrics tar med kallet når predikatet er true.
+    fun skalObserveres(call: ApplicationCall): Boolean = call.request.path() !in ikkeObserverteStier
 
     // Kompilering med typst er CPU-tung, og de tyngste brevene bruker flere sekunder.
     // Ytterpunktene styrer hvor micrometer genererer automatiske buckets.
@@ -47,6 +62,7 @@ object Metrics {
 
         install(MicrometerMetrics) {
             registry = prometheusRegistry
+            filter(::skalObserveres)
             // Ktor eksporterer som standard latens som en summary med klientside-kvantiler, og de
             // kan ikke aggregeres på tvers av poder - en p99 fra én pod sier ingenting om p99 for
             // tjenesten. Når vi setter bucket-grenser eksporteres metrikken i stedet som et ekte
