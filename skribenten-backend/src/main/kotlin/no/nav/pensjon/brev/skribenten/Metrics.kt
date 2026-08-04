@@ -21,10 +21,10 @@ object Metrics {
     // Nedre grense er beholdt selv om metadatarutene (/land, /me/userinfo) ligger på 2-8ms: de
     // alarmerer vi ikke på, og et gulv på 10ms ville kostet 18 ekstra buckets per rute.
     private val forventetLavest = 50.milliseconds
-    private val forventetHoyest = 60.seconds
+    private val forventetHoeyest = 60.seconds
 
     // SLO-grenser vi vil kunne alarmere eksakt på. Må være sortert.
-    // Den øverste ligger bevisst over forventetHoyest: i prod er høyest observerte svartid 91s
+    // Den øverste ligger bevisst over forventetHoeyest: i prod er høyest observerte svartid 91s
     // (/external/api/v1/brev), altså over timeouten mot brevbaker, så uten denne ville halen
     // havnet i +Inf. Grenser over ytterpunktet tas med av micrometer uten at det genereres tett
     // bucket-oppløsning i et område vi sjelden er i.
@@ -62,7 +62,7 @@ object Metrics {
             distributionStatisticConfig = DistributionStatisticConfig.Builder()
                 .percentilesHistogram(true)
                 .minimumExpectedValue(forventetLavest.inWholeNanoseconds.toDouble())
-                .maximumExpectedValue(forventetHoyest.inWholeNanoseconds.toDouble())
+                .maximumExpectedValue(forventetHoeyest.inWholeNanoseconds.toDouble())
                 .serviceLevelObjectives(*latencyBuckets.toDoubleArray())
                 .build()
         }

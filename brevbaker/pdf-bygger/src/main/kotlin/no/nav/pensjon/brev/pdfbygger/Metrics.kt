@@ -18,10 +18,10 @@ object Metrics {
     // Ytterpunktene styrer hvor micrometer genererer automatiske buckets.
     // Høyest observerte svartid i prod er 7,2s (/produserBrev), så taket har god margin.
     private val forventetLavest = 100.milliseconds
-    private val forventetHoyest = 60.seconds
+    private val forventetHoeyest = 60.seconds
 
     // SLO-grenser vi vil kunne alarmere eksakt på. Må være sortert.
-    // De to øverste ligger bevisst over forventetHoyest: brevbaker venter i inntil 300s på et
+    // De to øverste ligger bevisst over forventetHoeyest: brevbaker venter i inntil 300s på et
     // svar herfra, og uten disse ville alt mellom 60s og 300s havnet i +Inf. Grenser over
     // ytterpunktet tas med av micrometer uten at det genereres tett bucket-oppløsning i et
     // område vi sjelden er i.
@@ -61,7 +61,7 @@ object Metrics {
             distributionStatisticConfig = DistributionStatisticConfig.Builder()
                 .percentilesHistogram(true)
                 .minimumExpectedValue(forventetLavest.inWholeNanoseconds.toDouble())
-                .maximumExpectedValue(forventetHoyest.inWholeNanoseconds.toDouble())
+                .maximumExpectedValue(forventetHoeyest.inWholeNanoseconds.toDouble())
                 .serviceLevelObjectives(*latencyBuckets.toDoubleArray())
                 .build()
         }

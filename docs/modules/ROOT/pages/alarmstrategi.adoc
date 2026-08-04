@@ -126,6 +126,25 @@ Halen er derfor sannsynligvis underestimert, noe som taler for å beholde romsli
 Ligger p95 mellom to bucket-grenser, interpolerer `histogram_quantile()` lineært — verdien blir derfor grovere jo grovere grensene er.
 ====
 
+`skribenten-web` er ikke en Ktor-app, men BFF-en eksponerer tilsvarende metrikker på `/internal/metrics` via `prom-client`:
+
+[cols="2,3", options="header"]
+|===
+| Metrikk | Merknad
+
+| `http_server_request_duration_seconds_*`
+| Histogram med `method`, `route` og `status_code`. `route` er en grov klassifisering — `proxy`, `bff-api`, `static`, `probe` — ikke faktisk sti.
+
+| `nodejs_eventloop_lag_seconds`
+| Viktigste metningssignal for Node. En blokkert event loop gjør appen uresponsiv uten at CPU ser unormal ut.
+
+| `nodejs_heap_size_used_bytes`, `nodejs_gc_duration_seconds`
+| Minnebruk og GC. Fanger minnelekkasjer før de ender i podrestarter.
+
+| `process_cpu_seconds_total`, `process_resident_memory_bytes`
+| Standard prosessmetrikker.
+|===
+
 === Plattformmetrikker fra nais
 
 nais leverer i tillegg hele settet av Kubernetes-metrikker, uten at vi trenger å instrumentere noe selv.
@@ -160,7 +179,7 @@ Disse er spesielt verdifulle for oss fordi de dekker feilmoduser applikasjonen *
 | Prometheus klarer ikke å scrape applikasjonen.
 
 | Ingress-metrikker (`nginx_ingress_controller_requests`)
-| Trafikk og statuskoder sett fra utsiden. *Eneste metrikkilde for skribenten-web*, se <<hull, Kjente hull>>.
+| Trafikk og statuskoder sett fra utsiden. Fanger også feil som aldri når applikasjonen, f.eks. i Wonderwall eller ingress-kontrolleren.
 |===
 
 Fordi plattformmetrikkene er like for alle fire applikasjonene, definerer vi dem én gang som <<felles, felles plattformalarmer>> i stedet for å gjenta dem per app.
@@ -256,7 +275,7 @@ Kritiske alarmer gjelder i praksis kontortid.
 ====
 Ved kalibrering av bucket-grensene så vi at ni ruter har en observert maksimal svartid på nøyaktig 60,x sekunder.
 Det er `requestTimeout` på 60s mot brevbaker som slår inn — altså kall som allerede i dag går til timeout i prod.
-`/external/api/v1/brev` og `/sak/{saksId}` ligger enda høyere, på henholdsvis 91s og 76s, som tyder på ruter der flere kall gjøres etter hverandre.
+`/external/api/v1/brev` og `/sak/\{saksId}` ligger enda høyere, på henholdsvis 91s og 76s, som tyder på ruter der flere kall gjøres etter hverandre.
 
 Dette er ikke et hull i alarmdekningen, men verdt å kjenne til: en latensalarm på disse rutene vil se en hale som er avkortet av timeouten, og en økning i feilrate kan like gjerne skyldes treghet nedstrøms som feil hos oss.
 ====
@@ -294,13 +313,22 @@ Dette er ikke et hull i alarmdekningen, men verdt å kjenne til: en latensalarm 
 
 React-SPA servert av en Node/Express-BFF, med Wonderwall-sidecar for autentisering.
 
-[WARNING]
+[NOTE]
 ====
-BFF-en har *ikke* `prometheus`-blokk i `.nais/nais.yaml` og eksponerer ingen metrikker.
-Health-endepunktene `/internal/health/liveness` og `/internal/health/readiness` returnerer alltid `200` uten å sjekke noe.
+`observability.autoInstrumentation` er slått på med `runtime: nodejs`, og NAIS utleder RED-metrikker fra spans (`traces_spanmetrics_*` i Mimir).
+De er *ikke* tilstrekkelige til alarmer for denne appen, av tre grunner vi har verifisert mot prod:
 
-Vi har derfor i praksis ingen applikasjonssignaler for denne appen, og må inntil videre alarmere via plattform- og ingress-metrikker.
+* *Ingen `http_route`.* Spans navngis kun med HTTP-metoden (`GET`, `POST`), fordi BFF-en monterer alt med `server.use(...)` og proxy-middleware i stedet for deklarerte Express-ruter. `http.route` blir derfor aldri satt, og proxytrafikk kan ikke skilles fra statiske filer.
+* *`http_response_status_code` er tom* for alle SERVER-spans, så 5xx-rate kan ikke måles derfra.
+* *Bucket-grensene stopper på 5s.* De settes av Tempos metrics-generator og kan ikke konfigureres fra appen. Kall gjennom proxyen når 60s og mer, så hele den interessante halen havner i `+Inf`.
+
+Sampling er ikke et problem — `OTEL_TRACES_SAMPLER` er `parentbased_always_on` — men de tre punktene over gjør at vi eksponerer vårt eget histogram med grenser vi styrer selv.
+Span-metrikkene er fortsatt nyttige til feilsøking og til å se sammenhengen mellom appene, inkludert Wonderwall.
 ====
+
+Rutelabelen i `http_server_request_duration_seconds` er bevisst grov — `proxy`, `bff-api`, `static` og `probe` — fordi rå sti ville gitt en ny tidsserie per saks- og brev-id.
+skribenten-backend har allerede latens per rute, så det er der man finner ut *hvilket* endepunkt som er tregt.
+BFF-ens histogram svarer på om proxylaget som helhet er tregt, inkludert OBO-veksling og nettverk.
 
 [cols="3,1,3", options="header"]
 |===
@@ -308,11 +336,23 @@ Vi har derfor i praksis ingen applikasjonssignaler for denne appen, og må innti
 
 | Ingress: andel 5xx over 5 % i 10 min
 | `critical`
-| Eneste tilgjengelige mål på om saksbehandlerne faktisk får opp applikasjonen.
+| Måler om saksbehandlerne faktisk får opp applikasjonen, også når feilen ligger i Wonderwall eller ingress og aldri når BFF-en.
+
+| Feilrate: andel 5xx på `route="proxy"` over 5 % i 10 min
+| `critical`
+| Skiller feil i proxylaget fra feil i utlevering av statiske filer. Sammen med ingress-alarmen lokaliserer den feilen til BFF-en eller til laget foran.
 
 | Færre enn 2 tilgjengelige poder i over 5 min
 | `critical`
 | Appen er fastlåst til `min: 2, max: 2` og har ingen autoskalering å falle tilbake på. Én tapt pod halverer kapasiteten umiddelbart.
+
+| p95 responstid på `route="proxy"` over terskel i 15 min
+| `warning`
+| Fanger treghet slik saksbehandleren opplever den, inkludert OBO-veksling og nettverk mot skribenten-backend. Ligger den høyt mens backend ser frisk ut, er det BFF-en eller auth-hoppet som er tregt.
+
+| `nodejs_eventloop_lag_seconds` over terskel i 5 min
+| `warning`
+| En blokkert event loop gjør appen treg eller helt uresponsiv *uten* at container-CPU ser unormal ut. Dette er den klassiske feilmodusen for Node, og signalet finnes ikke i plattformmetrikkene.
 
 | Trafikken faller til null i kontortid
 | `warning`
@@ -320,7 +360,7 @@ Vi har derfor i praksis ingen applikasjonssignaler for denne appen, og må innti
 
 | Podrestarter
 | `warning`
-| Uten applikasjonsmetrikker er restarter et av få signaler vi har på at noe er galt i BFF-en.
+| Ofte første synlige tegn på at prosessen dør, f.eks. ved minnelekkasje. Se også `nodejs_heap_size_used_bytes`.
 |===
 
 [[felles]]
@@ -397,36 +437,35 @@ Utløp er derfor normal drift og ikke en feiltilstand.
 Arbeidet med denne strategien avdekket flere mangler i instrumenteringen.
 Disse er bevisste, prioriterte oppgaver — ikke forglemmelser — og listes her slik at alarmdekningen kan forbedres stegvis.
 
+Ingen av de gjenstående hullene er blokkerende for alarmene i tabellene over.
+De to som var det, er lukket: latensmetrikken eksporteres nå som histogram, og skribenten-web eksponerer metrikker.
+Det som står igjen forbedrer *feilsøkingen* når en alarm har gått — det gjør oss raskere til å finne årsaken, ikke flinkere til å oppdage at noe er galt.
+
 [cols="1,3,3,1", options="header"]
 |===
 | # | Hull | Tiltak | Prioritet
 
 | 1
-| `skribenten-web` BFF eksponerer ingen metrikker.
-| Legg til `prometheus`-blokk i `.nais/nais.yaml` og et `/metrics`-endepunkt med `prom-client`.
-| Høy
+| Ingen metrikker på nedstrøms kall fra skribenten-backend. Vi kan ikke skille «PEN er nede» fra «SAF er nede» uten å lese logger.
+| Instrumentér Ktor-klientene med et eget metrikk-plugin. Ktor 3.5 har ingen klientside-metrikkplugin, men alle klientene går gjennom `HttpClientFactory.lagHttpClient`, så instrumenteringen kan legges ett sted.
+| Middels
 
 | 2
-| Ingen metrikker på nedstrøms kall fra skribenten-backend. Vi kan ikke skille «PEN er nede» fra «SAF er nede» uten å lese logger.
-| Instrumentér Ktor-klientene med `MicrometerMetrics`, tagget med tjenestenavn og statuskode.
-| Høy
-
-| 3
 | `/isReady` i brevbaker og pdf-bygger returnerer alltid `200` uten å sjekke noe. En pod som ikke kan nå pdf-bygger tas aldri ut av rotasjon.
 | Vurdér reell readiness-sjekk i brevbaker mot pdf-bygger. Må balanseres mot risikoen for at hele deployment tas ut av rotasjon samtidig ved en forbigående nedstrøms feil.
 | Middels
 
-| 4
+| 3
 | pdf-bygger har ingen domenemetrikker. Typst-feil og kompileringstid er kun synlig i logg.
 | Legg til teller for typst-resultat (suksess/kompileringsfeil/eksekveringsfeil) og timer for kompileringstid.
 | Middels
 
-| 5
+| 4
 | Retry-logikken i brevbaker mot pdf-bygger er usynlig i metrikker. Vi ser ikke at systemet sliter før det feiler helt.
 | Legg til teller for antall retries og for oppbrukte retries.
 | Middels
 
-| 6
+| 5
 | Ingen metrikker på database og connection pool i skribenten-backend.
 | Bind HikariCP-metrikker til meter-registeret.
 | Middels
