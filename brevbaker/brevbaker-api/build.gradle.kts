@@ -21,7 +21,6 @@ kotlin {
         filters {
             exclude {
                 annotatedWith.add("no.nav.brev.InterneDataklasser")
-                annotatedWith.add("no.nav.brev.InternKonstruktoer")
             }
         }
     }

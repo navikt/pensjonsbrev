@@ -148,6 +148,12 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/Saksbehandle
 public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData {
 }
 
+public abstract interface class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode {
+	public abstract fun getKode ()Ljava/lang/String;
+	public abstract fun getSpraak ()Ljava/util/Set;
+	public abstract fun getVisningstekst ()Ljava/lang/String;
+}
+
 public final class no/nav/pensjon/brevbaker/api/model/BrevbakerType {
 	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrevbakerType;
 }

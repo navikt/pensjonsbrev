@@ -76,9 +76,13 @@ import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilsta
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSats
 import no.nav.pensjon.brev.alder.maler.sivilstand.VedtakOmregningAFPTilEnsligPensjonistAuto
 import no.nav.pensjon.brev.alder.maler.stans.VedtakStansAlderspensjonFlyttingMellomLand
+import no.nav.pensjon.brev.alder.maler.vedlegg.alltidValgbare.skjemaForBankopplysninger
+import no.nav.pensjon.brev.alder.maler.vedlegg.alltidValgbare.uttaksskjema
+import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.aldersovergang.InfoAldersovergang67AarAuto
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
@@ -168,5 +172,14 @@ object AlderTemplates : AllTemplates {
             VedtakStansAlderspensjonFlyttingMellomLand,
         )
 
-    override fun hentAlltidValgbareVedlegg() = AlderAlltidValgbareVedlegg.vedlegg
+    override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf(
+        AlltidValgbartVedlegg(
+            skjemaForBankopplysninger,
+            Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER,
+        ),
+        AlltidValgbartVedlegg(
+            uttaksskjema,
+            Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA,
+        ),
+    )
 }

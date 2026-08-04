@@ -1,11 +1,5 @@
 package no.nav.pensjon.brevbaker.api.model
 
-interface AlltidValgbartVedleggKode {
-    val kode: String
-    val visningstekst: String
-    val spraak: Set<LanguageCode>
-}
-
 class AlltidValgbartVedleggBrevkode(override val kode: String, override val visningstekst: String, override val spraak: Set<LanguageCode>) : AlltidValgbartVedleggKode {
     init {
         require(kode.length <= 50)
