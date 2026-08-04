@@ -13,8 +13,8 @@ version = "0.0.1-SNAPSHOT"
 dependencies {
     // Modulen eier bare serialiseringen av intern trafikk; modellene selv re-eksporteres ikke.
     // Konsumenter deklarerer dem selv.
-    implementation(project(":brevbaker:brevbaker-api"))
-    implementation(project(":brevbaker:markup-model"))
+    implementation(libs.brevbaker.api)
+    implementation(libs.markup.model)
     api(libs.jackson.databind)
     api(libs.jackson.annotations)
     api(libs.jackson.datatype.jsr310) {
@@ -27,7 +27,7 @@ dependencies {
     testImplementation(libs.bundles.junit)
     // Den utvidede (id-eksplisitte) markup-DSL-en, brukt til å bygge testdata. Gatet med
     // @ExtendedMarkupDsl, som testkompileringen opter inn på nedenfor.
-    testImplementation(project(":brevbaker:markup-dsl"))
+    testImplementation(libs.markup.dsl)
 
 }
 

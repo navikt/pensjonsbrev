@@ -90,7 +90,7 @@ dependencies {
     implementation(project(":ufoere:maler"))
     implementation(project(":etterlattemaler"))
     implementation(project(":brevbaker:core"))
-    implementation(project(":brevbaker:brevbaker-api"))
+    implementation(libs.brevbaker.api)
     implementation(project(":brevbaker:jackson")) {
         because("bruker internalObjectMapper for serialisering av intern trafikk")
     }
@@ -116,4 +116,3 @@ dependencies {
     testImplementation(testFixtures(project(":brevbaker:dsl")))
     testImplementation(libs.jsoup)
 }
-

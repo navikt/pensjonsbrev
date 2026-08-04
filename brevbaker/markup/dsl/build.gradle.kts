@@ -28,7 +28,7 @@ repositories {
 // serialiseringsbibliotek gjennom markup. Her ligger ogsaa DSL-en for aa bygge en komplett bestilling
 // til pdf-bygger — dette er artefaktet en ekstern konsument deklarerer selv.
 dependencies {
-    api(project(":brevbaker:markup-model"))
+    api(libs.markup.model)
     testImplementation(libs.bundles.junit)
 }
 

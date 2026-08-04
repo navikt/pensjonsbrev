@@ -28,7 +28,7 @@ internal object Letter2MarkupV2 : LetterRenderer<LetterWithAttachmentsMarkupV2>(
         letterMarkupExtended(
             saksinformasjon = buildSaksinformasjon(scope),
             signatur = buildSignatur(scope),
-            init = buildLetter(scope, template),
+            build = buildLetter(scope, template),
         )
 
     internal fun buildLetter(

@@ -22,14 +22,14 @@ repositories {
 }
 
 dependencies {
-    api(project(":brevbaker:brevbaker-api"))
+    api(libs.brevbaker.api)
     implementation(libs.bundles.logging)
 
     testImplementation(libs.bundles.junit)
     testImplementation(kotlin("reflect"))
     testImplementation(testFixtures(project(":brevbaker:dsl")))
 
-    testFixturesImplementation(project(":brevbaker:brevbaker-api"))
+    testFixturesImplementation(libs.brevbaker.api)
 }
 
 kotlin {

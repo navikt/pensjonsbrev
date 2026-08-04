@@ -125,10 +125,10 @@ versjonsakser, alle deklarert i `gradle/libs.versions.toml` og lest med `libs.ve
 
 | Modul | Artefakt | Versjon | Publisering |
 |---|---|---|---|
-| `brevbaker:brevdata` (`brevbaker/brevdata`) | `brevdata` | `brevdataVersion` | publiseres, men deklareres normalt ikke direkte — kommer transitivt via api-modellene |
-| `brevbaker:markup-model` (`brevbaker/markup/model`) | `markup-model` | `markupVersion` | publiseres, men deklareres normalt ikke direkte — kommer transitivt |
-| `brevbaker:markup-dsl` (`brevbaker/markup/dsl`) | `markup-dsl` | `markupVersion` | deklareres direkte av konsumenter |
-| `brevbaker:brevbaker-api` (`brevbaker/brevbaker-api`) | `brevbaker-api` | `brevbakerApiVersion` | deklareres direkte av konsumenter |
+| `brevbaker:brevdata` (`brevbaker/brevdata`) | `brevdata` | `brevdataVersion` | deklareres som `libs.brevdata` |
+| `brevbaker:markup-model` (`brevbaker/markup/model`) | `markup-model` | `markupVersion` | deklareres som `libs.markup.model` |
+| `brevbaker:markup-dsl` (`brevbaker/markup/dsl`) | `markup-dsl` | `markupVersion` | deklareres som `libs.markup.dsl` |
+| `brevbaker:brevbaker-api` (`brevbaker/brevbaker-api`) | `brevbaker-api` | `brevbakerApiVersion` | deklareres som `libs.brevbaker.api` |
 | `brevbaker:jackson` | – | – | **publiseres aldri**, kun `project(...)` |
 
 `markup-model` og `markup-dsl` deler versjon med vilje: DSL-en finnes utelukkende for å bygge modellen,
@@ -150,10 +150,8 @@ kompilerer mot, så alt som legges der arver hver eneste bestiller. Derfor ligge
 `ISakstype` her i stedet for nøstet i `TemplateDescription` — bestillerne implementerer dem, mens
 `TemplateDescription` er selve HTTP-svaret og hører hjemme i `brevbaker-api`.
 
-In-repo konsumenter av bibliotekmodulene bruker `project(...)`, ikke publiserte koordinater, så en
-glemt versjonsbump kan ikke gi en stille feil jar innad i biblioteket. Api-modellene
-(`pensjon`/`alder`/`ufoere:api-model`) konsumeres derimot av malene ved *publiserte* koordinater, og
-POM-en deres drar inn `brevdata` transitivt. Etter en versjonsbump i `libs.versions.toml` må du derfor
+Konsumenter av de publiserte bibliotekmodulene bruker katalogaliasene over og resolver artefaktene fra
+Maven. Etter en versjonsbump i `libs.versions.toml` må du derfor
 kjøre
 
 ```bash
@@ -161,9 +159,8 @@ kjøre
   :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
 ```
 
-før du bygger malene — ellers får du `Could not find no.nav.brev.brevbaker:brevdata:<versjon>`. Dette
-er samme mønster som for api-modellene selv, og CI gjør det samme før den bygger noe som konsumerer
-en api-model.
+før du bygger konsumentene — ellers får du `Could not find no.nav.brev.brevbaker:brevdata:<versjon>`.
+CI publiserer de samme artefaktene lokalt før den bygger konsumentene.
 
 #### Rekkefølge ved release
 

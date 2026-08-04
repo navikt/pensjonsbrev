@@ -38,6 +38,10 @@ ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinVersion" }
 
 [libraries]
+brevdata = { module = "no.nav.brev.brevbaker:brevdata", version.ref = "brevdataVersion" }
+brevbaker-api = { module = "no.nav.brev.brevbaker:brevbaker-api", version.ref = "brevbakerApiVersion" }
+markup-model = { module = "no.nav.brev.brevbaker:markup-model", version.ref = "markupVersion" }
+markup-dsl = { module = "no.nav.brev.brevbaker:markup-dsl", version.ref = "markupVersion" }
 commons-codec = { module = "commons-codec:commons-codec", version.ref = "commonsCodecVersion" }
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikariVersion" }
 io-github-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classGraphVersion" }

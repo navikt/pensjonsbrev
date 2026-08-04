@@ -39,9 +39,9 @@ import no.nav.brev.brevbaker.markup.MarkupModel
 fun letterMarkupExtended(
     saksinformasjon: Saksinformasjon,
     signatur: Signatur,
-    init: LetterMarkupBuilder<ExtendedContentBuilder>.() -> Unit,
+    build: LetterMarkupBuilder<ExtendedContentBuilder>.() -> Unit,
 ): LetterMarkup =
-    LetterMarkupBuilder(::ExtendedContentBuilder, saksinformasjon, signatur).apply(init).build()
+    LetterMarkupBuilder(::ExtendedContentBuilder, saksinformasjon, signatur).apply(build).build()
 
 /**
  * Som [attachment], men med støtte for `variable(...)`/tags og krav om eksplisitt id på hvert element.
@@ -53,8 +53,8 @@ fun letterMarkupExtended(
  * ```
  */
 @ExtendedMarkupDsl
-fun attachmentExtended(inkluderSaksinformasjon: Boolean = false, init: AttachmentBuilder<ExtendedContentBuilder>.() -> Unit): Attachment =
-    AttachmentBuilder(::ExtendedContentBuilder, inkluderSaksinformasjon).apply(init).build()
+fun attachmentExtended(inkluderSaksinformasjon: Boolean = false, build: AttachmentBuilder<ExtendedContentBuilder>.() -> Unit): Attachment =
+    AttachmentBuilder(::ExtendedContentBuilder, inkluderSaksinformasjon).apply(build).build()
 
 /**
  * Som [pdfTittel], men med støtte for `variable(...)` og krav om eksplisitt id på hvert element.
@@ -139,8 +139,8 @@ fun OutlineBuilder<ExtendedContentBuilder>.paragraph(id: Int, content: ExtendedC
  */
 @JvmName("itemListExtended")
 @ExtendedMarkupDsl
-fun OutlineBuilder<ExtendedContentBuilder>.itemList(id: Int, init: ItemsBuilder<ExtendedContentBuilder>.() -> Unit) {
-    blocks.add(MarkupModel.itemList(id, ItemsBuilder(contentFactory).apply(init).build()))
+fun OutlineBuilder<ExtendedContentBuilder>.itemList(id: Int, build: ItemsBuilder<ExtendedContentBuilder>.() -> Unit) {
+    blocks.add(MarkupModel.itemList(id, ItemsBuilder(contentFactory).apply(build).build()))
 }
 
 /**
@@ -152,8 +152,8 @@ fun OutlineBuilder<ExtendedContentBuilder>.itemList(id: Int, init: ItemsBuilder<
  */
 @JvmName("numberedListExtended")
 @ExtendedMarkupDsl
-fun OutlineBuilder<ExtendedContentBuilder>.numberedList(id: Int, init: ItemsBuilder<ExtendedContentBuilder>.() -> Unit) {
-    blocks.add(MarkupModel.numberedList(id, ItemsBuilder(contentFactory).apply(init).build()))
+fun OutlineBuilder<ExtendedContentBuilder>.numberedList(id: Int, build: ItemsBuilder<ExtendedContentBuilder>.() -> Unit) {
+    blocks.add(MarkupModel.numberedList(id, ItemsBuilder(contentFactory).apply(build).build()))
 }
 
 /**
@@ -181,8 +181,8 @@ fun ItemsBuilder<ExtendedContentBuilder>.item(id: Int, content: ExtendedContentB
  */
 @JvmName("tableExtended")
 @ExtendedMarkupDsl
-fun OutlineBuilder<ExtendedContentBuilder>.table(id: Int, init: TableBuilder<ExtendedContentBuilder>.() -> Unit) {
-    blocks.add(TableBuilder(contentFactory).apply(init).build(id))
+fun OutlineBuilder<ExtendedContentBuilder>.table(id: Int, build: TableBuilder<ExtendedContentBuilder>.() -> Unit) {
+    blocks.add(TableBuilder(contentFactory).apply(build).build(id))
 }
 
 /**
@@ -194,8 +194,8 @@ fun OutlineBuilder<ExtendedContentBuilder>.table(id: Int, init: TableBuilder<Ext
  */
 @JvmName("headerExtended")
 @ExtendedMarkupDsl
-fun TableBuilder<ExtendedContentBuilder>.header(id: Int, init: HeaderBuilder<ExtendedContentBuilder>.() -> Unit) {
-    header = HeaderBuilder<ExtendedContentBuilder>().apply(init).build(id)
+fun TableBuilder<ExtendedContentBuilder>.header(id: Int, build: HeaderBuilder<ExtendedContentBuilder>.() -> Unit) {
+    header = HeaderBuilder<ExtendedContentBuilder>().apply(build).build(id)
 }
 
 /**
@@ -207,8 +207,8 @@ fun TableBuilder<ExtendedContentBuilder>.header(id: Int, init: HeaderBuilder<Ext
  */
 @JvmName("rowExtended")
 @ExtendedMarkupDsl
-fun TableBuilder<ExtendedContentBuilder>.row(id: Int, init: RowBuilder<ExtendedContentBuilder>.() -> Unit) {
-    rows.add(RowBuilder(contentFactory).apply(init).build(id))
+fun TableBuilder<ExtendedContentBuilder>.row(id: Int, build: RowBuilder<ExtendedContentBuilder>.() -> Unit) {
+    rows.add(RowBuilder(contentFactory).apply(build).build(id))
 }
 
 /**
@@ -265,10 +265,10 @@ fun OutlineBuilder<ExtendedContentBuilder>.formText(id: Int, size: Size, vspace:
  */
 @JvmName("formChoiceExtended")
 @ExtendedMarkupDsl
-fun OutlineBuilder<ExtendedContentBuilder>.formChoice(id: Int, vspace: Boolean = true, init: FormChoiceBuilder<ExtendedContentBuilder>.() -> Unit) {
+fun OutlineBuilder<ExtendedContentBuilder>.formChoice(id: Int, vspace: Boolean = true, build: FormChoiceBuilder<ExtendedContentBuilder>.() -> Unit) {
     val builder = FormChoiceBuilder(contentFactory)
     builder.vspace = vspace
-    blocks.add(builder.apply(init).build(id))
+    blocks.add(builder.apply(build).build(id))
 }
 
 /**

@@ -1,7 +1,6 @@
 package no.nav.brev.brevbaker
 
 import no.nav.pensjon.brev.api.model.ISakstype
-import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode

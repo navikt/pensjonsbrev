@@ -31,10 +31,10 @@ repositories {
 }
 
 dependencies {
-    api(project(":brevbaker:brevdata")) {
+    api(libs.brevdata) {
         because("brevbaker-api uttrykker HTTP-kontrakten i det samme vokabularet som bestillerne beskriver brevdata med.")
     }
-    api(project(":brevbaker:markup-model")) {
+    api(libs.markup.model) {
         because("BestillRedigertBrevRequestV2 er uttrykt i markup-modellen. markup:model har ingen runtime-avhengigheter, så dette drar ikke inn noe tungt.")
     }
 }

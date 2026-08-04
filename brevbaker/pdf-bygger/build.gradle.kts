@@ -64,8 +64,8 @@ dependencies {
     implementation(libs.ktor.server.status.pages)
     implementation(libs.bundles.metrics)
 
-    implementation(project(":brevbaker:brevbaker-api"))
-    implementation(project(":brevbaker:markup-model"))
+    implementation(libs.brevbaker.api)
+    implementation(libs.markup.model)
     implementation(project(":brevbaker:jackson"))
     implementation(libs.kotlinx.serialization.json)
 
@@ -80,7 +80,7 @@ dependencies {
     testImplementation(libs.ktor.client.cio)
     testImplementation(libs.ktor.client.content.negotiation)
     testImplementation(testFixtures(project(":brevbaker:core")))
-    testImplementation(project(":brevbaker:markup-dsl"))
+    testImplementation(libs.markup.dsl)
     testImplementation(libs.testcontainers.core)
 }
 

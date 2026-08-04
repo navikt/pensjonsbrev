@@ -88,8 +88,9 @@ If the agent finds itself about to write to one of these, stop and change the up
 The library side is split along *architecture*, not lifecycle. There are three published version
 axes, all declared in `gradle/libs.versions.toml` (`brevdataVersion`, `markupVersion`,
 `brevbakerApiVersion`) and read with `version = libs.versions.<x>.get()`. There are no per-module
-`gradle.properties` versions and no `libs.brevbaker.*` catalog *libraries* — in-repo consumers use
-`project(...)`.
+`gradle.properties` versions. Consumers declare the published artifacts through the catalog aliases
+`libs.brevdata`, `libs.markup.model`, `libs.markup.dsl`, and `libs.brevbaker.api`. Only unpublished
+modules, such as `brevbaker:jackson`, use `project(...)`.
 
 ```
 brevdata <-- brevbaker-api --> markup:model <-- markup:dsl
@@ -107,13 +108,12 @@ because an HTTP DTO moved is exactly what we want to avoid.
   compile against, so anything added there is something every bestiller inherits. `IBrevkategori` and
   `ISakstype` live here rather than nested in `TemplateDescription`, because bestillere implement them
   while `TemplateDescription` itself is the HTTP response and belongs in `brevbaker-api`.
-- **Bumping a library version requires a `publishToMavenLocal` before the maler build.** The
-  api-models are consumed by *published* coordinates (`no.nav.pensjon.brev:api-model:390`), so their
-  POM drags in `no.nav.brev.brevbaker:brevdata` transitively at whatever version they were built
-  against. That version has to exist in a repository. Follow the established pattern: bump, then
+- **Bumping a library version requires a `publishToMavenLocal` before building consumers.** All
+  consumers resolve the published Brevbaker libraries through their coordinates, so the matching
+  versions have to exist in a repository. Follow the established pattern: bump, then
   `./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal
   :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal`
-  (CI does the same before building anything that consumes an api-model). Forget it and you get
+  (CI does the same before building their consumers). Forget it and you get
   `Could not find no.nav.brev.brevbaker:brevdata:<version>`.
 - **The pdf-bygger contract lives in `markup:model`, not in an artifact of its own.**
   `LetterPDFRequest` and friends are expressed *entirely* in the markup model, and nobody can use one
@@ -198,7 +198,7 @@ the two sides cannot drift apart.
 
 **Binary compatibility validation** (Kotlin Gradle plugin's built-in `abiValidation`): Public API changes in `brevbaker:brevdata`, `brevbaker:brevbaker-api`, `brevbaker:markup-model`, `brevbaker:markup-dsl`, `brevbaker:dsl` and `brevbaker:core` require running `./gradlew updateKotlinAbi` to update `.api` files or build fails (`checkKotlinAbi` runs as part of `check`).
 
-**Published-artifact version bumps**: the three version axes live in `gradle/libs.versions.toml` — `brevdataVersion`, `markupVersion` (shared by `markup-model` and `markup-dsl`) and `brevbakerApiVersion`. Bump the relevant one whenever that artifact's public API/models change. In-repo consumers use `project(...)`, but the PEN api-models pull `brevdata` in by coordinate, so run `publishToMavenLocal` for the library modules after a bump (see the module-layering rules above).
+**Published-artifact version bumps**: the three version axes live in `gradle/libs.versions.toml` — `brevdataVersion`, `markupVersion` (shared by `markup-model` and `markup-dsl`) and `brevbakerApiVersion`. Bump the relevant one whenever that artifact's public API/models change, then run `publishToMavenLocal` for the library modules before building their consumers (see the module-layering rules above).
 
 ## Code Generation (KSP)
 
