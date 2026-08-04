@@ -111,7 +111,8 @@ object Fixtures : LetterDataFactory {
     private fun lagUforeAvslagTestmalDto() = UforeAvslagTestmalDto(
         pesysData = UforeAvslagTestmalDto.UforeAvslagPendata(
             kravMottattDato = vilkaarligDato,
-            vurdering = listOf("Vurdering 1", "Vurdering 2")
+            vurdering = listOf("Vurdering 1", "Vurdering 2"),
+            vurderingsTekst = "Vurdering 3"
         ),
         saksbehandlerValg = UforeAvslagTestmalDto.Saksbehandlervalg(
             VisVurderingFraVilkarvedtak = true
