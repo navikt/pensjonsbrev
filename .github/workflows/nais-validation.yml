@@ -39,6 +39,9 @@ jobs:
           echo "${PROMETHEUS_SHA256}  ${tarball}" | sha256sum --check --strict
           tar -xzf "$tarball" "prometheus-${PROMETHEUS_VERSION}.linux-amd64/promtool"
           echo "PROMTOOL=$PWD/prometheus-${PROMETHEUS_VERSION}.linux-amd64/promtool" >> "$GITHUB_ENV"
+      # validate-alerts.sh pakker ut spec: med PyYAML. Den installeres eksplisitt slik at jobben
+      # ikke avhenger av hva som tilfeldigvis ligger forhåndsinstallert i runner-imaget.
+      - run: sudo apt-get install -y -q python3-yaml
       - run: bash validate-alerts.sh
 
   "klarTilMerge":

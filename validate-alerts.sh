@@ -49,12 +49,20 @@ import sys, yaml
 try:
     with open(sys.argv[1]) as f:
         doc = yaml.safe_load(f)
-    with open(sys.argv[2], 'w') as f:
-        yaml.safe_dump(doc['spec'], f, allow_unicode=True, sort_keys=False)
 except yaml.YAMLError as e:
     sys.exit('ugyldig YAML: ' + str(e).replace('\n', ' '))
-except KeyError:
+
+if doc is None:
+    sys.exit('tom fil, fant ingen YAML')
+if not isinstance(doc, dict):
+    sys.exit('forventet et manifest på toppnivå, fant ' + type(doc).__name__)
+
+spec = doc.get('spec')
+if spec is None:
     sys.exit('mangler spec:')
+
+with open(sys.argv[2], 'w') as f:
+    yaml.safe_dump(spec, f, allow_unicode=True, sort_keys=False)
 " "$file" "$spec" 2>&1)
     status=$?
 
