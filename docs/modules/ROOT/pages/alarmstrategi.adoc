@@ -313,15 +313,6 @@ Dette er ikke et hull i alarmdekningen, men verdt å kjenne til: en latensalarm 
 
 React-SPA servert av en Node/Express-BFF, med Wonderwall-sidecar for autentisering.
 
-[WARNING]
-====
-BFF-en eksponerte tidligere ingen metrikker.
-Den har nå `prometheus`-blokk i `.nais/nais.yaml` og et `/internal/metrics`-endepunkt basert på `prom-client`.
-
-Health-endepunktene `/internal/health/liveness` og `/internal/health/readiness` returnerer fortsatt alltid `200` uten å sjekke noe.
-BFF-en har ingen oppstartsavhengigheter den må ha kontakt med, så det er mindre alvorlig her enn i backend-appene — men readiness sier ikke noe om at proxyen faktisk virker.
-====
-
 [NOTE]
 ====
 `observability.autoInstrumentation` er slått på med `runtime: nodejs`, og NAIS utleder RED-metrikker fra spans (`traces_spanmetrics_*` i Mimir).
