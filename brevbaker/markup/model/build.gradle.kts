@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val markupJavaTarget: String by System.getProperties()
-val brevbakerVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -9,7 +8,7 @@ plugins {
 }
 
 group = "no.nav.brev.brevbaker"
-version = brevbakerVersion
+version = libs.versions.markupVersion.get()
 
 base {
     archivesName.set("markup-model")
@@ -27,6 +26,10 @@ repositories {
 // Modellen skal være helt uten avhengigheter: den er datamodellen flere publiserte artefakter uttrykker
 // signaturen sin i, og konsumenter skal ikke arve verken et serialiseringsbibliotek eller genererte
 // serializers gjennom den. All serialisering ligger i brevbaker:jackson.
+//
+// Kontrakten mot pdf-bygger (LetterPDFRequest, PDFCompilationOutput, HttpStatusCodes) bor her og ikke i
+// et eget artefakt: den er uttrykt utelukkende i markup-modellen, så et eget artefakt ville bare vært
+// en ny versjonsakse å holde i sync uten at noen kan bruke det ene uten det andre.
 dependencies {
     testImplementation(libs.bundles.junit)
 }
@@ -52,7 +55,7 @@ publishing {
             from(components["java"])
             pom {
                 name.set("brevbaker-markup-model")
-                description.set("Datamodellen for Nav-brev. Publiseres fordi typene inngår i signaturen til både brevbaker-api og pdf-bygger-api.")
+                description.set("Datamodellen for Nav-brev, inkludert request/response-kontrakten mot pdf-bygger.")
                 url.set("https://github.com/navikt/pensjonsbrev")
                 scm {
                     url.set("https://github.com/navikt/pensjonsbrev")

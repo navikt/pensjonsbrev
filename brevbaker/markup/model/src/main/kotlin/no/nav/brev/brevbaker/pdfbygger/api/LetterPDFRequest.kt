@@ -20,7 +20,7 @@ data class LetterPDFRequest internal constructor(
 )
 
 /**
- * Konstruerer en [LetterPDFRequest] direkte, uten DSL-en i `brevbaker:pdf-bygger:dsl`.
+ * Konstruerer en [LetterPDFRequest] direkte, uten `letterPDFRequest`-DSL-en i `brevbaker:markup:dsl`.
  *
  * Samme avveining som for markup-modellen: konstruktøren er `internal` slik at `copy()` forblir skjult,
  * og denne fabrikken er den eneste veien inn utenfra. Gjenbruker [MarkupModelApi] som opt-in-markør —

@@ -1,4 +1,10 @@
 [versions]
+# Versjonene til de publiserte brevbaker-artefaktene. markup-model og markup-dsl deler versjon fordi
+# DSL-en er uloeselig knyttet til modellen den bygger; brevdata og brevbaker-api versjoneres for seg.
+brevdataVersion = "1.0.0"
+brevbakerApiVersion = "4.0.0"
+markupVersion = "3.0.0"
+
 kotlinVersion = "2.4.0"
 kotlinKspVersion = "2.3.10"
 ktorVersion = "3.5.1"

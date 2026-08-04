@@ -47,7 +47,7 @@ jobs:
       - name: "publish brevbaker-biblioteket to Maven local"
         if: ${{ inputs.dependsOnCommon }}
         run: |
-          ./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:pdf-bygger-api:publishToMavenLocal :brevbaker:pdf-bygger-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
+          ./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
       - name: "compile and run tests"
         env:
           GRADLE_TARGETS: ${{ inputs.gradleTarget }}

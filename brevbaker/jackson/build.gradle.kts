@@ -15,7 +15,6 @@ dependencies {
     // Konsumenter deklarerer dem selv.
     implementation(project(":brevbaker:brevbaker-api"))
     implementation(project(":brevbaker:markup-model"))
-    implementation(project(":brevbaker:pdf-bygger-api"))
     api(libs.jackson.databind)
     api(libs.jackson.annotations)
     api(libs.jackson.datatype.jsr310) {
@@ -29,7 +28,6 @@ dependencies {
     // Den utvidede (id-eksplisitte) markup-DSL-en, brukt til å bygge testdata. Gatet med
     // @ExtendedMarkupDsl, som testkompileringen opter inn på nedenfor.
     testImplementation(project(":brevbaker:markup-dsl"))
-    testImplementation(project(":brevbaker:pdf-bygger-dsl"))
 
 }
 

@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val markupJavaTarget: String by System.getProperties()
-val brevbakerVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -9,7 +8,7 @@ plugins {
 }
 
 group = "no.nav.brev.brevbaker"
-version = brevbakerVersion
+version = libs.versions.markupVersion.get()
 
 base {
     archivesName.set("markup-dsl")
@@ -26,7 +25,8 @@ repositories {
 
 // DSL-en er den eneste tiltenkte veien inn i markup-modellen, og bygger den via den opt-in-merkede
 // fabrikkflaten i model-modulen. Ingen andre avhengigheter: konsumenter skal ikke arve et
-// serialiseringsbibliotek gjennom markup.
+// serialiseringsbibliotek gjennom markup. Her ligger ogsaa DSL-en for aa bygge en komplett bestilling
+// til pdf-bygger — dette er artefaktet en ekstern konsument deklarerer selv.
 dependencies {
     api(project(":brevbaker:markup-model"))
     testImplementation(libs.bundles.junit)
@@ -65,7 +65,7 @@ publishing {
             from(components["java"])
             pom {
                 name.set("brevbaker-markup-dsl")
-                description.set("DSL for å bygge markup-modellen for Nav-brev.")
+                description.set("DSL for å bygge markup-modellen for Nav-brev, og en komplett bestilling til pdf-bygger.")
                 url.set("https://github.com/navikt/pensjonsbrev")
                 scm {
                     url.set("https://github.com/navikt/pensjonsbrev")

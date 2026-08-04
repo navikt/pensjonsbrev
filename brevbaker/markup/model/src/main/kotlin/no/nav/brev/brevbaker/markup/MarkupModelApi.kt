@@ -5,7 +5,7 @@ package no.nav.brev.brevbaker.markup
  *
  * Modellens konstruktører er `internal` (+ `@ConsistentCopyVisibility`), slik at verken `copy()` eller
  * konstruktørene er tilgjengelige utenfor denne modulen. [MarkupModel] er den eneste veien inn utenfra,
- * og den er ment for `brevbaker:markup:dsl` og `brevbaker:pdf-bygger:api` — ikke for malforfattere.
+ * og den er ment for `brevbaker:markup:dsl` og `brevbaker:core` — ikke for malforfattere.
  * Bygger du et brev, bruk DSL-en: den validerer strukturen (tabellbredder, ikke-tomme valg osv.), og
  * den valideringen kan ikke omgås så lenge du går gjennom den.
  */

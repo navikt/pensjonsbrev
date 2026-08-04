@@ -24,8 +24,6 @@ updates:
       - "/brevbaker/brevbaker-api"
       - "/brevbaker/markup/model"
       - "/brevbaker/markup/dsl"
-      - "/brevbaker/pdf-bygger/api"
-      - "/brevbaker/pdf-bygger/dsl"
       - "/brevbaker/jackson"
       - "/brevbaker"
       - "/brevbaker/dsl"

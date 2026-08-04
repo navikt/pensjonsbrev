@@ -8,10 +8,7 @@ on:
       - "brevbaker/markup/**"
       - "brevbaker/brevdata/**"
       - "brevbaker/brevbaker-api/**"
-      - "brevbaker/pdf-bygger/api/**"
-      - "brevbaker/pdf-bygger/dsl/**"
-      - "brevbaker/bom/**"
-      - "gradle.properties"
+      - "gradle/libs.versions.toml"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/.release.yaml"
       - ".github/workflows/brevbaker-bibliotek.yaml"
@@ -24,10 +21,7 @@ on:
       - "brevbaker/markup/**"
       - "brevbaker/brevdata/**"
       - "brevbaker/brevbaker-api/**"
-      - "brevbaker/pdf-bygger/api/**"
-      - "brevbaker/pdf-bygger/dsl/**"
-      - "brevbaker/bom/**"
-      - "gradle.properties"
+      - "gradle/libs.versions.toml"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/.release.yaml"
       - ".github/workflows/brevbaker-bibliotek.yaml"
@@ -43,7 +37,9 @@ jobs:
     permissions:
       contents: read
     outputs:
-      bibliotek: ${{ steps.changes.outputs.bibliotek }}
+      brevdata: ${{ steps.changes.outputs.brevdata }}
+      markup: ${{ steps.changes.outputs.markup }}
+      brevbakerApi: ${{ steps.changes.outputs.brevbakerApi }}
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -52,30 +48,55 @@ jobs:
         id: changes
         with:
           filters: |
-            bibliotek:
-              - 'brevbaker/markup/**'
+            brevdata:
               - 'brevbaker/brevdata/**'
+              - 'gradle/libs.versions.toml'
+            markup:
+              - 'brevbaker/markup/**'
+              - 'gradle/libs.versions.toml'
+            brevbakerApi:
               - 'brevbaker/brevbaker-api/**'
-              - 'brevbaker/pdf-bygger/api/**'
-              - 'brevbaker/pdf-bygger/dsl/**'
-              - 'brevbaker/bom/**'
-              - 'gradle.properties'
+              - 'gradle/libs.versions.toml'
 
-  # Alle bibliotek-artefaktene slippes i lockstep fra brevbakerVersion, så de publiseres samlet.
-  release-bibliotek:
-    name: "brevbaker-biblioteket"
+  # Artefaktene har hver sin versjon i gradle/libs.versions.toml og slippes derfor hver for seg.
+  # Rekkefølgen er ikke valgfri: POM-en til et artefakt peker på avhengighetene sine ved koordinat,
+  # så brevdata og markup må være publisert før brevbaker-api.
+  release-brevdata:
+    name: "brevdata"
     uses: ./.github/workflows/.release.yaml
     secrets: inherit
     needs: [ changes ]
     with:
-      gradleTarget: 'brevbaker:brevdata brevbaker:markup-model brevbaker:markup-dsl brevbaker:pdf-bygger-api brevbaker:pdf-bygger-dsl brevbaker:brevbaker-api brevbaker:bom'
+      gradleTarget: 'brevbaker:brevdata'
       release-common-result: 'success'
-      changes: ${{ needs.changes.outputs.bibliotek }}
+      changes: ${{ needs.changes.outputs.brevdata }}
+      dependsOnCommon: false
+
+  release-markup:
+    name: "markup"
+    uses: ./.github/workflows/.release.yaml
+    secrets: inherit
+    needs: [ changes ]
+    with:
+      gradleTarget: 'brevbaker:markup-model brevbaker:markup-dsl'
+      release-common-result: 'success'
+      changes: ${{ needs.changes.outputs.markup }}
+      dependsOnCommon: false
+
+  release-brevbaker-api:
+    name: "brevbaker-api"
+    uses: ./.github/workflows/.release.yaml
+    secrets: inherit
+    needs: [ changes, release-brevdata, release-markup ]
+    with:
+      gradleTarget: 'brevbaker:brevbaker-api'
+      release-common-result: 'success'
+      changes: ${{ needs.changes.outputs.brevbakerApi }}
       dependsOnCommon: false
 
   klarTilMerge:
     name: "Klar til merge"
-    needs: [ release-bibliotek ]
+    needs: [ release-brevdata, release-markup, release-brevbaker-api ]
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: "ubuntu-latest"
     steps:

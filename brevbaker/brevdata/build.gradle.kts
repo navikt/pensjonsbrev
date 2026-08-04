@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelJavaTarget: String by System.getProperties()
-val brevbakerVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -9,7 +8,7 @@ plugins {
 }
 
 group = "no.nav.brev.brevbaker"
-version = brevbakerVersion
+version = libs.versions.brevdataVersion.get()
 
 base {
     archivesName.set("brevdata")

@@ -2,7 +2,6 @@ rootProject.name = "pensjonsbrev"
 
 include("ktlint-rules")
 
-include("brevbaker:bom")
 include("brevbaker:core")
 include("brevbaker:brevbaker-api")
 include("brevbaker:brevdata")
@@ -16,10 +15,6 @@ include("brevbaker:markup-dsl")
 project(":brevbaker:markup-dsl").projectDir = file("brevbaker/markup/dsl")
 include("brevbaker:dsl")
 include("brevbaker:pdf-bygger")
-include("brevbaker:pdf-bygger-api")
-project(":brevbaker:pdf-bygger-api").projectDir = file("brevbaker/pdf-bygger/api")
-include("brevbaker:pdf-bygger-dsl")
-project(":brevbaker:pdf-bygger-dsl").projectDir = file("brevbaker/pdf-bygger/dsl")
 include("brevbaker:template-model-generator")
 
 include("skribenten-backend")

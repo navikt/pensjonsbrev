@@ -14,36 +14,33 @@ package "brevbaker" {
   brevdata : - BrevbakerType, DisplayText, LanguageCode,\n  BrevLandmodell, Brevkode, LetterMetadata,\n  BrevbakerBrevdata-familien, SaksbehandlerValg,\n  IBrevkategori/ISakstype
   brevdata : - null avhengigheter, endres sjelden
   brevdata : - dette er alt PENs api-modeller kompilerer mot
-  brevdata : - publiseres, men konsumenter får den via\n  api-modellene og brevbaker-api
+  brevdata : - publiseres med egen versjon (brevdataVersion),\n  men konsumenter får den via api-modellene\n  og brevbaker-api
 
   object "brevbaker:brevbaker-api" as brevbakerapi #pink
   brevbakerapi : - brevbakers HTTP-kontrakt (tidligere api-model-common)
   brevbakerapi : - alle DTOer bestillere trenger:\n  BestillBrevRequest, LetterResponse,\n  TemplateDescription, BrevbakerFelles,\n  TemplateModelSpecification, AlltidValgbartVedlegg
   brevbakerapi : - BestillRedigertBrevRequest V1/V2 —\n  derfor avhengig av markup:model
+  brevbakerapi : - egen versjon (brevbakerApiVersion)
   brevbakerapi : - brevinnhold v1 i eget pakkenavn (LetterMarkup(+Impl),\n  LetterMarkupWithDataUsage(+Impl), Listetype,\n  ElementTags, AttachmentTitle) — slettes samlet når\n  siste konsument er over på markup v2
 
   package "brevbaker:markup" {
     object "brevbaker:markup:model" as markupModel #mistyrose
     markupModel : - ren datamodell for markup, ingen DSL
+    markupModel : - inneholder ogsaa kontrakten mot pdf-bygger\n  (LetterPDFRequest, PDFCompilationOutput,\n  HttpStatusCodes) — den er uttrykt utelukkende\n  i markup-modellen, saa et eget artefakt hadde\n  bare vaert en ekstra versjonsakse
     markupModel : - ingen runtime-avhengigheter
     markupModel : - konstruktørene forblir internal\n  (@ConsistentCopyVisibility), så copy() er skjult\n  og valideringen kan ikke omgås
     markupModel : - eneste vei inn utenfra er en smal fabrikkflate\n  merket @MarkupModelApi (RequiresOptIn)
-    markupModel : - eget versjonert artefakt fordi typene inngår i\n  signaturen til flere publiserte artefakter:\n  ABI-validert
+    markupModel : - eget versjonert artefakt fordi typene inngår i\n  signaturen til brevbaker-api ogsaa: ABI-validert
+    markupModel : - deler versjon med markup:dsl\n  (markupVersion i libs.versions.toml)
     markupModel : - konsumenter får den transitivt, ikke ved\n  å deklarere den selv
 
-    object "brevbaker:markup:dsl" as markupDsl #mistyrose
+    object "brevbaker:markup:dsl" as markupDsl #pink
     markupDsl : - både den offentlige authoring-DSLen og den\n  utvidede (eksplisitte ids, variable,\n  editBehaviour) — én modul
     markupDsl : - den utvidede flaten er gatet med\n  @ExtendedMarkupDsl (RequiresOptIn) og ligger i\n  egne pakker, ikke skilt ut i egen modul
     markupDsl : - derfor forblir alle builder-sømmer internal:\n  ingen associateWith, ingen lekkasje av\n  texts/blocks/contentFactory/build()
-    markupDsl : - publiseres, men konsumenter får den\n  via pdf-bygger:dsl
+    markupDsl : - her ligger ogsaa DSL-en for aa bygge en\n  komplett bestilling til pdf-bygger
+    markupDsl : - dette er artefaktet en ekstern konsument\n  deklarerer selv
   }
-
-  object "brevbaker:bom" as bom #pink
-  bom : - brevbaker-bom (java-platform)
-  bom : - alle publiserte artefakter slippes i lockstep\n  fra brevbakerVersion i rot-gradle.properties
-  bom : - dekker brevdata, brevbaker-api, markup:model/dsl\n  og pdf-bygger:api/dsl
-  bom : - inneholder ingen kode, kun versjons-constraints\n  for alle de publiserte artefaktene over
-  bom : - importeres av konsumenter som bruker flere av\n  artefaktene, så delte typer som markup:model\n  ikke kan sprike i versjon
 
   object "brevbaker:jackson" as jackson
   jackson : - Jackson-serialisering av intern trafikk\n  (internalObjectMapper, MarkupJacksonModule)
@@ -56,19 +53,10 @@ package "brevbaker" {
   object "brevbaker:core" as core
   core : - rendringsmotor, Letter2Markup
   core : - PDFByggerService-grensesnittet
-  core : - bygger LetterPDFRequest via pdf-bygger:api\n  (opt-in @MarkupModelApi), som den får via jackson
+  core : - bygger LetterPDFRequest direkte via fabrikken\n  i markup:model (opt-in @MarkupModelApi)
 
   object "brevbaker:template-model-generator" as tmg
   tmg : - KSP: genererer *Selectors\n  fra @TemplateModelHelpers
-
-  object "brevbaker:pdf-bygger:api" as pdfbyggerApi #mistyrose
-  pdfbyggerApi : - kontrakten mot pdf-bygger:\n  PDFRequest, PDFCompilationOutput, HttpStatusCodes
-  pdfbyggerApi : - avhenger kun av markup:model
-  pdfbyggerApi : - publiseres, men konsumenter får den\n  via pdf-bygger:dsl
-
-  object "brevbaker:pdf-bygger:dsl" as pdfbyggerDsl #pink
-  pdfbyggerDsl : - DSL for å bygge en PDFRequest
-  pdfbyggerDsl : - avhenger av markup:dsl og pdf-bygger:api
 
   object "brevbaker:pdf-bygger" as pdfbygger #lightskyblue
   pdfbygger : - egen tjeneste
@@ -100,11 +88,7 @@ object Gjenny #yellow
 markupDsl --> markupModel
 brevbakerapi --> brevdata
 brevbakerapi --> markupModel : BestillRedigertBrevRequest v1/v2
-pdfbyggerApi --> markupModel
-pdfbyggerDsl --> markupDsl
-pdfbyggerDsl --> pdfbyggerApi
 jackson --> brevbakerapi
-jackson --> pdfbyggerApi
 dsl --> brevbakerapi
 core --> dsl
 core --> jackson

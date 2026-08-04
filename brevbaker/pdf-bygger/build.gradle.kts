@@ -67,7 +67,6 @@ dependencies {
 
     implementation(project(":brevbaker:brevbaker-api"))
     implementation(project(":brevbaker:markup-model"))
-    implementation(project(":brevbaker:pdf-bygger-api"))
     implementation(project(":brevbaker:jackson"))
     implementation(libs.kotlinx.serialization.json)
 
@@ -83,7 +82,6 @@ dependencies {
     testImplementation(libs.ktor.client.content.negotiation)
     testImplementation(testFixtures(project(":brevbaker:core")))
     testImplementation(project(":brevbaker:markup-dsl"))
-    testImplementation(project(":brevbaker:pdf-bygger-dsl"))
     testImplementation(libs.testcontainers.core)
 }
 

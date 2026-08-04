@@ -27,12 +27,11 @@ repositories {
 dependencies {
     api(project(":brevbaker:dsl"))
     api(project(":brevbaker:brevbaker-api"))
-    // Den utvidede (id-eksplisitte) markup-DSL-en, brukt av Letter2Markup. Den bor i samme modul som
-    // den vanlige DSL-en og er gatet med @ExtendedMarkupDsl, som denne modulen opter inn på under.
+    // Den utvidede (id-eksplisitte) markup-DSL-en, brukt av Letter2Markup, og kontrakten mot pdf-bygger
+    // som følger med via markup:model. DSL-en bor i samme modul som den vanlige og er gatet med
+    // @ExtendedMarkupDsl, som denne modulen opter inn på under.
     api(project(":brevbaker:markup-dsl"))
-    // Kontrakten mot pdf-bygger. Core bygger LetterPDFRequest selv, så :brevbaker:pdf-bygger-dsl
-    // trengs ikke her — den DSL-en finnes for eksterne konsumenter.
-    api(project(":brevbaker:pdf-bygger-api"))
+
     implementation(project(":brevbaker:jackson"))
     ksp(project(":brevbaker:template-model-generator"))
     kspTest(project(":brevbaker:template-model-generator"))
@@ -48,7 +47,6 @@ dependencies {
     testFixturesApi(project(":brevbaker:brevbaker-api"))
     testFixturesImplementation(project(":brevbaker:jackson"))
     // Testfixturene bygger PDF-forespørsler slik en ekstern konsument ville gjort det.
-    testFixturesImplementation(project(":brevbaker:pdf-bygger-dsl"))
     testFixturesImplementation(libs.ktor.serialization.jackson)
     testFixturesImplementation(libs.ktor.client.cio)
     testFixturesImplementation(libs.ktor.client.content.negotiation)
@@ -79,7 +77,7 @@ kotlin {
     compilerOptions {
         // Letter2Markup eier id-tildelingen og er nettopp den kalleren den utvidede DSL-en finnes for.
         optIn.add("no.nav.brev.brevbaker.markup.dsl.extended.ExtendedMarkupDsl")
-        // BrevbakerPDF bygger LetterPDFRequest direkte i stedet for å dra inn pdf-bygger-DSL-en.
+        // BrevbakerPDF bygger LetterPDFRequest direkte via fabrikken i markup:model, ikke via DSL-en.
         optIn.add("no.nav.brev.brevbaker.markup.MarkupModelApi")
         jvmTarget.set(JvmTarget.fromTarget(apiModelJavaTarget))
     }

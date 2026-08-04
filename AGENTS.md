@@ -76,58 +76,63 @@ If the agent finds itself about to write to one of these, stop and change the up
 - `brevbaker/core` - Rendering engine
 - `brevbaker/brevdata` - The vocabulary a *bestiller* needs to describe brevdata (published, **no dependencies**)
 - `brevbaker/brevbaker-api` - Shared API models, bestiller-DTOs (published artifact)
-- `brevbaker/markup/model` - Pure markup data model (published, **no dependencies at all**)
-- `brevbaker/markup/dsl` - Markup DSL, including the extended (id-explicit) DSL (published)
-- `brevbaker/pdf-bygger/api` - `LetterPDFRequest`, `PDFCompilationOutput`, `HttpStatusCodes` (published)
-- `brevbaker/pdf-bygger/dsl` - `letterPDFRequest` DSL for external consumers (published)
-- `brevbaker/bom` - `brevbaker-bom`, keeps all published artifacts on the same version
+- `brevbaker/markup/model` - Pure markup data model plus the pdf-bygger wire contract
+  (`LetterPDFRequest`, `PDFCompilationOutput`, `HttpStatusCodes`) (published, **no dependencies at all**)
+- `brevbaker/markup/dsl` - Markup DSL, including the extended (id-explicit) DSL and the
+  `letterPDFRequest` DSL (published)
 - `brevbaker/jackson` - Jackson serialization of internal traffic (**never published**)
 - `brevbaker/pdf-bygger/client` - Contract against pdf-bygger, `PDFByggerService` (**never published**)
 
 ### Module layering — the rules that actually bite
 
-The library side is split along *architecture*, not lifecycle, and every published artifact is
-released in **lockstep** from `brevbakerVersion` in the root `gradle.properties`. There are no
-per-module `gradle.properties` versions any more, and no `libs.brevbaker.*` catalog entries — in-repo
-consumers use `project(...)`.
+The library side is split along *architecture*, not lifecycle. There are three published version
+axes, all declared in `gradle/libs.versions.toml` (`brevdataVersion`, `markupVersion`,
+`brevbakerApiVersion`) and read with `version = libs.versions.<x>.get()`. There are no per-module
+`gradle.properties` versions and no `libs.brevbaker.*` catalog *libraries* — in-repo consumers use
+`project(...)`.
 
 ```
-brevdata <-- brevbaker-api --> markup:model <-- markup:dsl <-- pdf-bygger:dsl
-    ^                              ^                               ^
-    |                              |                               |
-pensjon/alder/ufoere:api-model  pdf-bygger:api ---------------------+
+brevdata <-- brevbaker-api --> markup:model <-- markup:dsl
+    ^
+    |
+pensjon/alder/ufoere:api-model
 ```
+
+`markup:model` and `markup:dsl` deliberately share `markupVersion`: the DSL exists only to build the
+model, so no consumer can sensibly mix versions of them. `brevdata` and `brevbaker-api` move at their
+own pace — `brevdata` barely ever changes, and dragging every bestiller through a version bump just
+because an HTTP DTO moved is exactly what we want to avoid.
 
 - **`brevdata` is the floor and must stay dependency-free.** It is the *only* thing PEN's api-models
   compile against, so anything added there is something every bestiller inherits. `IBrevkategori` and
   `ISakstype` live here rather than nested in `TemplateDescription`, because bestillere implement them
   while `TemplateDescription` itself is the HTTP response and belongs in `brevbaker-api`.
-- **Bumping `brevbakerVersion` requires a `publishToMavenLocal` before the maler build.** The
+- **Bumping a library version requires a `publishToMavenLocal` before the maler build.** The
   api-models are consumed by *published* coordinates (`no.nav.pensjon.brev:api-model:390`), so their
   POM drags in `no.nav.brev.brevbaker:brevdata` transitively at whatever version they were built
   against. That version has to exist in a repository. Follow the established pattern: bump, then
   `./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal
-  :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:pdf-bygger-api:publishToMavenLocal
-  :brevbaker:pdf-bygger-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal`
+  :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal`
   (CI does the same before building anything that consumes an api-model). Forget it and you get
   `Could not find no.nav.brev.brevbaker:brevdata:<version>`.
-
+- **The pdf-bygger contract lives in `markup:model`, not in an artifact of its own.**
+  `LetterPDFRequest` and friends are expressed *entirely* in the markup model, and nobody can use one
+  without the other. A separate `pdf-bygger-api` artifact would only add a version axis to keep in
+  sync — and would reintroduce the duplicate-FQCN problem the moment it bundled the model. Same
+  reasoning for the `letterPDFRequest` DSL living in `markup:dsl`.
 - **`markup:model` is one versioned artifact, not a bundled class set.** Its types appear in the
-  signature of *both* `brevbaker-api` (`BestillRedigertBrevRequestV2`) and `pdf-bygger-api`
-  (`LetterPDFRequest`). If it were bundled into each, an external consumer using both would get the
-  same FQCN from two jars with no way to align versions. Publish it; ship `brevbaker-bom` so they
-  can't drift.
+  signature of `brevbaker-api` (`BestillRedigertBrevRequestV2`) as well as in the pdf-bygger contract.
+  If they were bundled into each consumer, an external user of both would get the same FQCN from two
+  jars with no way to align versions.
 - **Never re-introduce `associateWith`/friend compilation across these modules.** `associateWith` is a
   compiler flag (`-Xfriend-paths`), not a dependency: it leaves no trace in published metadata, so a
-  consumer of `pdf-bygger:api` would not resolve `markup:model` transitively.
-- **Two Gradle projects must never share a `project.name` under the same `group`.** `markup/dsl` and
-  `pdf-bygger/dsl` would both be `:...:dsl` → identical GAV → Gradle substitutes the projects for each
-  other and you get a `CircularReferenceException` (`compileKotlin` depending on its own jar). That is
-  why `settings.gradle.kts` uses explicit names (`:brevbaker:markup-dsl`, `:brevbaker:pdf-bygger-dsl`)
-  with `projectDir` mapping.
-- **`brevbaker:core` depends on `markup:dsl` + `pdf-bygger:api`, never on `pdf-bygger:dsl`.**
-  `pdf-bygger:dsl` exists for external consumers; core builds `LetterPDFRequest` directly via
-  `letterPDFRequestModel(...)`.
+  consumer would not resolve `markup:model` transitively.
+- **Two Gradle projects must never share a `project.name` under the same `group`.** Identical GAV →
+  Gradle substitutes the projects for each other and you get a `CircularReferenceException`
+  (`compileKotlin` depending on its own jar). That is why `settings.gradle.kts` uses explicit names
+  (`:brevbaker:markup-model`, `:brevbaker:markup-dsl`) with `projectDir` mapping.
+- **`brevbaker:core` builds `LetterPDFRequest` directly** via `letterPDFRequestModel(...)`, opting in
+  to `@MarkupModelApi`, rather than going through the DSL.
 - **`markup:model` must stay dependency-free.** No serialization library, no generated serializers.
   All serialization lives in `brevbaker:jackson`.
 
@@ -138,8 +143,8 @@ The model keeps `internal constructor` + `@ConsistentCopyVisibility`, so `copy()
 **two** opt-in markers, and no more should be added:
 
 - `@MarkupModelApi` (in `markup:model`) — the narrow factory surface `object MarkupModel`, the only
-  way to construct the model outside the DSL. Used by the DSL itself and by `letterPDFRequestModel(...)`
-  in `pdf-bygger:api`.
+  way to construct the model outside the DSL. Used by the DSL itself, by `letterPDFRequestModel(...)`
+  and by `brevbaker:core`.
 - `@ExtendedMarkupDsl` (in `markup:dsl`, package `no.nav.brev.brevbaker.markup.dsl.extended`) — the
   id-explicit DSL with `variable(...)`/`editBehaviour`.
 
@@ -150,8 +155,8 @@ module lets all of it stay `internal`, with the boundary enforced by `@RequiresO
 The extended surface barely pollutes completion anyway, because it is expressed as extensions on
 `OutlineBuilder<ExtendedContentBuilder>`, which don't even resolve for the plain builder.
 
-Modules that legitimately need these (`markup:dsl`, `pdf-bygger:dsl`, `core`, and `jackson`'s test
-compilation) opt in at module level in `build.gradle.kts`. Template authors should never need either.
+Modules that legitimately need these (`markup:dsl`, `core`, and `jackson`'s test compilation) opt in
+at module level in `build.gradle.kts`. Template authors should never need either.
 
 ### `brevbaker:jackson` — serialization only
 
@@ -173,7 +178,7 @@ It holds no model types and re-exports no artifacts: every module declares the m
 `PDFByggerService` and `PDFCompileException`/`PDFTimeoutException`/`PDFInvalidException` live here,
 together with the test fixtures `PdfByggerTestService` and `PDFByggerTestContainer`. The wire types
 themselves (`LetterPDFRequest`, `PDFCompilationOutput`, `HttpStatusCodes`) live in
-`brevbaker:pdf-bygger:api`, which both `core` (the caller) and `pdf-bygger` (the server) depend on, so
+`brevbaker:markup:model`, which both `core` (the caller) and `pdf-bygger` (the server) depend on, so
 the two sides cannot drift apart.
 
 - `PDFByggerTestContainer` defaults to the *deployed* `pdf-bygger:main` image, while CI overrides
@@ -191,9 +196,9 @@ the two sides cannot drift apart.
 ./gradlew manualTest               # Visual tests tagged @Tag("manual-test")
 ```
 
-**Binary compatibility validation** (Kotlin Gradle plugin's built-in `abiValidation`): Public API changes in `brevbaker:brevbaker-api`, `brevbaker:markup-model`, `brevbaker:markup-dsl`, `brevbaker:pdf-bygger-api`, `brevbaker:pdf-bygger-dsl`, `brevbaker:dsl` and `brevbaker:core` require running `./gradlew updateKotlinAbi` to update `.api` files or build fails (`checkKotlinAbi` runs as part of `check`).
+**Binary compatibility validation** (Kotlin Gradle plugin's built-in `abiValidation`): Public API changes in `brevbaker:brevdata`, `brevbaker:brevbaker-api`, `brevbaker:markup-model`, `brevbaker:markup-dsl`, `brevbaker:dsl` and `brevbaker:core` require running `./gradlew updateKotlinAbi` to update `.api` files or build fails (`checkKotlinAbi` runs as part of `check`).
 
-**Published-artifact version bumps**: all published brevbaker artifacts share one version, `brevbakerVersion` in the root `gradle.properties`. Bump it whenever any of their public API/models change; there is nothing to bump per module and nothing to update in `gradle/libs.versions.toml`. In-repo consumers use `project(...)`, but the PEN api-models pull `brevdata` in by coordinate, so run `publishToMavenLocal` for the six library modules after a bump (see the module-layering rules above).
+**Published-artifact version bumps**: the three version axes live in `gradle/libs.versions.toml` — `brevdataVersion`, `markupVersion` (shared by `markup-model` and `markup-dsl`) and `brevbakerApiVersion`. Bump the relevant one whenever that artifact's public API/models change. In-repo consumers use `project(...)`, but the PEN api-models pull `brevdata` in by coordinate, so run `publishToMavenLocal` for the library modules after a bump (see the module-layering rules above).
 
 ## Code Generation (KSP)
 

@@ -112,7 +112,7 @@ npm login --registry=https://npm.pkg.github.com --auth-type=legacy
 
 ### Endringer i biblioteks-koden
 
-Vi bruker Kotlin Gradle-pluginens innebygde ABI-validering (`abiValidation`) for å se etter endringer i koden i modulene som inngår i biblioteket (per nå `brevbaker:brevbaker-api`, `brevbaker:markup-model`, `brevbaker:markup-dsl`, `brevbaker:pdf-bygger-api`, `brevbaker:pdf-bygger-dsl`, `brevbaker:dsl` og `brevbaker:core`). Denne holder oversikt representert i .api-filer i disse modulene.
+Vi bruker Kotlin Gradle-pluginens innebygde ABI-validering (`abiValidation`) for å se etter endringer i koden i modulene som inngår i biblioteket (per nå `brevbaker:brevdata`, `brevbaker:brevbaker-api`, `brevbaker:markup-model`, `brevbaker:markup-dsl`, `brevbaker:dsl` og `brevbaker:core`). Denne holder oversikt representert i .api-filer i disse modulene.
 
 Ved endringer av public-kode i disse modulene - inkludert sletting av metoder eller nye metoder - må du huske å kjøre `gradle updateKotlinAbi` og sjekke inn de oppdaterte .api-filene. Glemmer du dette vil bygget feile - det kjører automatisk `gradle checkKotlinAbi`-kommandoen.
 
@@ -120,24 +120,30 @@ Mer om dette på https://kotlinlang.org/docs/api-guidelines-backward-compatibili
 
 ### Publiserte artefakter og modulstruktur
 
-Bibliotekssiden av repoet er delt langs arkitektur, ikke livssyklus, og alle artefaktene slippes i
-**lockstep** fra `brevbakerVersion` i rot-`gradle.properties`:
+Bibliotekssiden av repoet er delt langs arkitektur, ikke livssyklus. Artefaktene har tre
+versjonsakser, alle deklarert i `gradle/libs.versions.toml` og lest med `libs.versions.<x>.get()`:
 
-| Modul | Artefakt | Publisering |
-|---|---|---|
-| `brevbaker:brevdata` (`brevbaker/brevdata`) | `brevdata` | publiseres, men deklareres normalt ikke direkte — kommer transitivt via api-modellene |
-| `brevbaker:markup-model` (`brevbaker/markup/model`) | `markup-model` | publiseres, men deklareres normalt ikke direkte — kommer transitivt |
-| `brevbaker:markup-dsl` (`brevbaker/markup/dsl`) | `markup-dsl` | som over |
-| `brevbaker:pdf-bygger-api` (`brevbaker/pdf-bygger/api`) | `pdf-bygger-api` | som over |
-| `brevbaker:pdf-bygger-dsl` (`brevbaker/pdf-bygger/dsl`) | `pdf-bygger-dsl` | deklareres direkte av konsumenter |
-| `brevbaker:brevbaker-api` (`brevbaker/brevbaker-api`) | `brevbaker-api` | deklareres direkte av konsumenter |
-| `brevbaker:bom` | `brevbaker-bom` | BOM som holder alt på samme versjon |
-| `brevbaker:jackson` | – | **publiseres aldri**, kun `project(...)` |
+| Modul | Artefakt | Versjon | Publisering |
+|---|---|---|---|
+| `brevbaker:brevdata` (`brevbaker/brevdata`) | `brevdata` | `brevdataVersion` | publiseres, men deklareres normalt ikke direkte — kommer transitivt via api-modellene |
+| `brevbaker:markup-model` (`brevbaker/markup/model`) | `markup-model` | `markupVersion` | publiseres, men deklareres normalt ikke direkte — kommer transitivt |
+| `brevbaker:markup-dsl` (`brevbaker/markup/dsl`) | `markup-dsl` | `markupVersion` | deklareres direkte av konsumenter |
+| `brevbaker:brevbaker-api` (`brevbaker/brevbaker-api`) | `brevbaker-api` | `brevbakerApiVersion` | deklareres direkte av konsumenter |
+| `brevbaker:jackson` | – | – | **publiseres aldri**, kun `project(...)` |
 
-`markup-model` er den rene datamodellen uten avhengigheter. Typene der inngår i signaturen til både
-`brevbaker-api` (`BestillRedigertBrevRequestV2`) og `pdf-bygger-api` (`LetterPDFRequest`), og må derfor
-være ett versjonert artefakt begge peker på — ikke en klasse som bundles to steder. Konsumenter som
-bruker begge bør importere `brevbaker-bom` slik at de ikke kan havne i versjonssprik.
+`markup-model` og `markup-dsl` deler versjon med vilje: DSL-en finnes utelukkende for å bygge modellen,
+så ingen konsument kan meningsfullt blande versjoner av dem. `brevdata` og `brevbaker-api` beveger seg
+i eget tempo — `brevdata` endres knapt, og å dra hver eneste bestiller gjennom en versjonsbump fordi en
+HTTP-DTO flyttet er nettopp det vi vil unngå.
+
+`markup-model` er den rene datamodellen uten avhengigheter. Typene der inngår i signaturen til
+`brevbaker-api` (`BestillRedigertBrevRequestV2`), og må derfor være ett versjonert artefakt — ikke en
+klasse som bundles to steder, for da hadde en konsument som bruker begge fått samme FQCN fra to jar-er
+uten mulighet til å samkjøre versjonene.
+
+Kontrakten mot pdf-bygger (`LetterPDFRequest`, `PDFCompilationOutput`, `HttpStatusCodes`) ligger i
+`markup-model`, og `letterPDFRequest`-DSL-en i `markup-dsl`. De er uttrykt utelukkende i markup-modellen
+og kan ikke brukes uten den, så egne artefakter hadde bare vært flere versjonsakser å holde i sync.
 
 `brevdata` er gulvet i stabelen og skal aldri få avhengigheter: det er det eneste PENs api-modeller
 kompilerer mot, så alt som legges der arver hver eneste bestiller. Derfor ligger `IBrevkategori` og
@@ -147,12 +153,12 @@ kompilerer mot, så alt som legges der arver hver eneste bestiller. Derfor ligge
 In-repo konsumenter av bibliotekmodulene bruker `project(...)`, ikke publiserte koordinater, så en
 glemt versjonsbump kan ikke gi en stille feil jar innad i biblioteket. Api-modellene
 (`pensjon`/`alder`/`ufoere:api-model`) konsumeres derimot av malene ved *publiserte* koordinater, og
-POM-en deres drar inn `brevdata` transitivt. Etter en bump av `brevbakerVersion` må du derfor kjøre
+POM-en deres drar inn `brevdata` transitivt. Etter en versjonsbump i `libs.versions.toml` må du derfor
+kjøre
 
 ```bash
 ./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal \
-  :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:pdf-bygger-api:publishToMavenLocal \
-  :brevbaker:pdf-bygger-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
+  :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
 ```
 
 før du bygger malene — ellers får du `Could not find no.nav.brev.brevbaker:brevdata:<versjon>`. Dette
@@ -161,10 +167,12 @@ en api-model.
 
 #### Rekkefølge ved release
 
-`pensjon`/`alder`/`ufoere:api-model` publiseres med en POM som peker på `brevdata` ved koordinat. Bumper
-du `brevbakerVersion` **og** en api-model-versjon i samme PR, må biblioteket
-(`brevbaker-bibliotek.yaml`) rekke å publisere før api-modellene, ellers peker POM-en deres på en
-`brevdata` som ikke finnes ennå. Lokalt løser du det med `publishToMavenLocal` som beskrevet over.
+`pensjon`/`alder`/`ufoere:api-model` publiseres med en POM som peker på `brevdata` ved koordinat, og
+`brevbaker-api` med en POM som peker på både `brevdata` og `markup-model`. `brevbaker-bibliotek.yaml`
+publiserer derfor i rekkefølge: `brevdata` og `markup` først, `brevbaker-api` etterpå. Bumper du en
+bibliotekversjon **og** en api-model-versjon i samme PR, må biblioteket rekke å publisere før
+api-modellene, ellers peker POM-en deres på en `brevdata` som ikke finnes ennå. Lokalt løser du det med
+`publishToMavenLocal` som beskrevet over.
 
 #### Opt-in-markører
 
