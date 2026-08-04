@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Test
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmOversendelseTilKlageinstansDto
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmOversendelseTilKlageinstans
 import org.junit.jupiter.api.Tag
 
@@ -18,7 +18,7 @@ class KlageOrienteringOmOversendelseTilKlageinstansTest {
     fun testPdf() {
         LetterTestImpl(
             KlageOrienteringOmOversendelseTilKlageinstans.template,
-            Fixtures.create<KlageOrienteringOmOversendelseTilKlageinstansDto>(),
+            Fixtures.create<EmptyRedigerbarBrevdata>(),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF(KlageOrienteringOmOversendelseTilKlageinstans.kode.name)
@@ -28,7 +28,7 @@ class KlageOrienteringOmOversendelseTilKlageinstansTest {
     fun testHtml() {
         LetterTestImpl(
             KlageOrienteringOmOversendelseTilKlageinstans.template,
-            Fixtures.create<KlageOrienteringOmOversendelseTilKlageinstansDto>(),
+            Fixtures.create<EmptyRedigerbarBrevdata>(),
             Language.English,
             Fixtures.felles
         ).renderTestHtml(KlageOrienteringOmOversendelseTilKlageinstans.kode.name)
