@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser
 
-import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtak.fritekst
+import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtakV2.fritekst
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
