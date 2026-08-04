@@ -59,6 +59,20 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         )
     }
 
+    ifNotNull(aarligInntektOgPensjonListe) {
+        title2 {
+            text(bokmal { +"Årlig inntekt og pensjon" })
+        }
+        paragraph {
+            text(
+                bokmal {
+                    +"Eventuell tilvekst av alderspensjon er inkludert i beløpene"
+                }
+            )
+        }
+        includePhrase(AarligInntektOgPensjonTabell(it))
+    }
+
     ifNotNull(simulering.afpOffentligTidsbegrenset) { afp ->
         ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
             title2 {
@@ -173,12 +187,6 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
                 }
             }
         }
-    }
-    ifNotNull(aarligInntektOgPensjonListe) {
-        title2 {
-            text(bokmal { +"Årlig inntekt og pensjon" })
-        }
-        includePhrase(AarligInntektOgPensjonTabell(it))
     }
     ifNotNull(simulering.maanedligAlderspensjonForKnekkpunkter) { knekkpunkter ->
         title1 {
