@@ -197,7 +197,7 @@ Loggene ligger i *Loki*, og en `PrometheusRule` kan ikke spørre Loki — det kr
 
 Alarmene er `PrometheusRule`-manifester som ligger sammen med applikasjonen de gjelder:
 
-[cols="2,1,3", options="header"]
+[cols="2,3", options="header"]
 |===
 | Fil | Innhold
 
