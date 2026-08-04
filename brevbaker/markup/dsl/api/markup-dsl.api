@@ -199,4 +199,3 @@ public final class no/nav/brev/brevbaker/pdfbygger/dsl/PDFRequestBuilder {
 	public final fun pdfVedlegg (Lkotlin/jvm/functions/Function1;)V
 	public final fun pdfVedlegg (Lno/nav/brev/brevbaker/markup/PDFTittel;)V
 }
-

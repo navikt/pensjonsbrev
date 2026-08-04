@@ -520,4 +520,3 @@ public final class no/nav/brev/brevbaker/pdfbygger/api/PDFCompilationOutput {
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
-

@@ -23,9 +23,6 @@ repositories {
     mavenCentral()
 }
 
-// Vokabularet en *bestiller* trenger for å beskrive brevdata. Skal aldri få avhengigheter: det er
-// dette laget PENs api-modeller kompilerer mot, og de skal ikke arve hverken markup eller
-// brevbakers HTTP-kontrakt.
 dependencies {
     testImplementation(libs.bundles.junit)
 }
