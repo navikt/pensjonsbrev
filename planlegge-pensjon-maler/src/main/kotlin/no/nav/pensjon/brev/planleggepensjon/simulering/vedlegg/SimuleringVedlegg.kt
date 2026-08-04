@@ -59,6 +59,20 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         )
     }
 
+    ifNotNull(aarligInntektOgPensjonListe) {
+        title2 {
+            text(bokmal { +"Årlig inntekt og pensjon" })
+        }
+        paragraph {
+            text(
+                bokmal {
+                    +"Eventuell tilvekst av alderspensjon er inkludert i beløpene"
+                }
+            )
+        }
+        includePhrase(AarligInntektOgPensjonTabell(it))
+    }
+
     ifNotNull(simulering.afpOffentligTidsbegrenset) { afp ->
         ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
             title2 {
@@ -174,11 +188,58 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
             }
         }
     }
-    ifNotNull(aarligInntektOgPensjonListe) {
+    title1 {
+        text(bokmal { +"Opplysninger brukt i beregningen" })
+    }
+
+    ifNotNull(simuleringsinformasjon.utenlandsperioder) { utenlandsperioder ->
         title2 {
-            text(bokmal { +"Årlig inntekt og pensjon" })
+            text(bokmal { +"Opphold utenfor Norge" })
         }
-        includePhrase(AarligInntektOgPensjonTabell(it))
+        paragraph {
+            table(header = {
+                column {
+                    text(bokmal { +"Land" })
+                }
+                column {
+                    text(bokmal { +"Periode" })
+                }
+                column {
+                    text(bokmal { +"Jobbet" })
+                }
+            }) {
+                forEach(utenlandsperioder) { periode ->
+                    row {
+                        cell {
+                            text(bokmal { +periode.landkode })
+                        }
+                        cell {
+                            ifNotNull(periode.tom) { tomDato ->
+                                text(bokmal { +periode.fom.format(short = true) + "–" + tomDato.format(short = true) })
+                            }.orShow {
+                                text(bokmal { +periode.fom.format(short = true) + " (Varig opphold)" })
+                            }
+                        }
+                        cell {
+                            ifNotNull(periode.arbeidetUtenlands) { arbeidet ->
+                                text(bokmal { +ifElse(arbeidet, "Ja", "Nei") })
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    title2 {
+        text(bokmal { +"Sivilstatus: " + simuleringsinformasjon.sivilstatus.value })
+    }
+    paragraph {
+        text(
+            bokmal {
+                +"Hvis du bor sammen med noen kan inntekten til den du bor med ha betydning for hva du får i alderspensjon. Når du mottar alderspensjon må du derfor melde fra til Nav ved endring i sivilstand."
+            },
+        )
     }
     ifNotNull(simulering.maanedligAlderspensjonForKnekkpunkter) { knekkpunkter ->
         title1 {
@@ -280,58 +341,13 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         }
     }
 
-    title1 {
-        text(bokmal { +"Opplysninger brukt i beregningen" })
-    }
 
-    ifNotNull(simuleringsinformasjon.utenlandsperioder) { utenlandsperioder ->
+
+    ifNotNull(pensjonsopptjeningListe) {
         title2 {
-            text(bokmal { +"Opphold utenfor Norge" })
+            text(bokmal { +"Pensjonsgivende inntekt og pensjonsopptjening" })
         }
-        paragraph {
-            table(header = {
-                column {
-                    text(bokmal { +"Land" })
-                }
-                column {
-                    text(bokmal { +"Periode" })
-                }
-                column {
-                    text(bokmal { +"Jobbet" })
-                }
-            }) {
-                forEach(utenlandsperioder) { periode ->
-                    row {
-                        cell {
-                            text(bokmal { +periode.landkode })
-                        }
-                        cell {
-                            ifNotNull(periode.tom) { tomDato ->
-                                text(bokmal { +periode.fom.format(short = true) + "–" + tomDato.format(short = true) })
-                            }.orShow {
-                                text(bokmal { +periode.fom.format(short = true) + " (Varig opphold)" })
-                            }
-                        }
-                        cell {
-                            ifNotNull(periode.arbeidetUtenlands) { arbeidet ->
-                                text(bokmal { +ifElse(arbeidet, "Ja", "Nei") })
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    title2 {
-        text(bokmal { +"Sivilstatus: " + simuleringsinformasjon.sivilstatus.value })
-    }
-    paragraph {
-        text(
-            bokmal {
-                +"Hvis du bor sammen med noen kan inntekten til den du bor med ha betydning for hva du får i alderspensjon. Når du mottar alderspensjon må du derfor melde fra til Nav ved endring i sivilstand."
-            },
-        )
+        includePhrase(PensjonsopptjeningTabell(it))
     }
 
     title2 {
