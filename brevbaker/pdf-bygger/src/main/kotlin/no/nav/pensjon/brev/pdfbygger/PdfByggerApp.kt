@@ -13,7 +13,6 @@ import io.ktor.server.plugins.callid.generate
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
-import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.ktor.server.request.receiveText
 import io.ktor.server.response.*
@@ -63,10 +62,7 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
-        val ignorePaths = setOf("/isAlive", "/isReady", "/metrics")
-        filter {
-            !ignorePaths.contains(it.request.path())
-        }
+        filter(Metrics::skalObserveres)
         mdc("x_response_code") { it.response.status()?.value?.toString() }
     }
 
