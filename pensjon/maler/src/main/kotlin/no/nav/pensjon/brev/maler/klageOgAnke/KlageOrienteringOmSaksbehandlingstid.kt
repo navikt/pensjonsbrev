@@ -54,9 +54,7 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
         outline {
             paragraph {
                 text(bokmal { +"Klageren: " }, english { +"Appellant: " }, BOLD)
-                text(bokmal { +felles.bruker.fulltNavn() + " " }, english { +felles.bruker.fulltNavn()
-
-                    + " " } )
+                text(bokmal { +felles.bruker.fulltNavn() + " " }, english { +felles.bruker.fulltNavn() + " " } )
                 text(bokmal { +felles.bruker.foedselsnummer.format() }, english { +felles.bruker.foedselsnummer.format() })
             }
             paragraph {
