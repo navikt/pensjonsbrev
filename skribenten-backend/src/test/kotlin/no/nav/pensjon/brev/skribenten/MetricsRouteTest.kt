@@ -22,14 +22,36 @@ class MetricsRouteTest {
         environment { config = MapApplicationConfig() }
         application { configureMetrics() }
 
-        // Første kall gir noe å måle, siden metrikken for et kall først registreres når det er
-        // ferdig og dermed ikke rekker å bli med i sin egen scrape.
-        client.get("/metrics")
+        // Må være en rute som faktisk instrumenteres. /metrics filtreres nå bort, mens en ukjent
+        // sti registreres som route="n/a".
+        client.get("/finnes-ikke")
         val metrikker = client.get("/metrics").bodyAsText().lines()
             .filter { it.startsWith("ktor_http_server_requests_seconds") }
         // Uten denne ville assertFalse-testene under passert selv om scrapingen ikke ga noe.
         assertTrue(metrikker.isNotEmpty()) { "Fant ingen ktor_http_server_requests_seconds-metrikker" }
         block(metrikker)
+    }
+
+    @Test
+    fun `helsesjekker og metrikkendepunktet instrumenteres ikke`() = testApplication {
+        environment { config = MapApplicationConfig() }
+        application { configureMetrics() }
+
+        client.get("/isAlive")
+        client.get("/isReady")
+        client.get("/finnes-ikke")
+
+        val metrikker = client.get("/metrics").bodyAsText().lines()
+            .filter { it.startsWith("ktor_http_server_requests_seconds") }
+        assertTrue(metrikker.isNotEmpty()) { "Fant ingen ktor_http_server_requests_seconds-metrikker" }
+
+        // Ved normal last i prod utgjør disse ~42 % av trafikken, og andelen stiger mot 100 %
+        // utenfor kontortid. Blir de tatt med, fortynner de nevneren i feilrate-alarmene.
+        listOf("/isAlive", "/isReady", "/metrics").forEach { sti ->
+            assertFalse(metrikker.any { it.contains("route=\"$sti\"") }) {
+                "Forventet ingen metrikker for $sti, fant:\n${metrikker.filter { it.contains("route=\"$sti\"") }.joinToString("\n")}"
+            }
+        }
     }
 
     @Test
