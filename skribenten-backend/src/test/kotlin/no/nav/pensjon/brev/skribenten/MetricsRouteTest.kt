@@ -3,8 +3,10 @@ package no.nav.pensjon.brev.skribenten
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.server.config.MapApplicationConfig
+import io.ktor.server.routing.routing
 import io.ktor.server.testing.testApplication
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
+import no.nav.pensjon.brev.skribenten.routes.healthRoute
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -35,7 +37,14 @@ class MetricsRouteTest {
     @Test
     fun `helsesjekker og metrikkendepunktet instrumenteres ikke`() = testApplication {
         environment { config = MapApplicationConfig() }
-        application { configureMetrics() }
+        // healthRoute() leser bare et AtomicBoolean-flagg, så den kan installeres uten database.
+        // Vi bruker de ekte rutene her med vilje: hadde vi latt /isAlive og /isReady være
+        // uregistrerte, ville de blitt 404 og fått route="n/a", og assert-ene under ville passert
+        // uten å bevise noe som helst.
+        application {
+            configureMetrics()
+            routing { healthRoute() }
+        }
 
         client.get("/isAlive")
         client.get("/isReady")
