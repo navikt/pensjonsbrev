@@ -17,12 +17,12 @@ spec:
         - alert: SkribentenWebHoeyFeilrateIngress
           expr: |
             (
-              sum(rate(nginx_ingress_controller_requests{namespace="pensjonsbrev", service="skribenten-web", status=~"5.."}[10m]))
+              sum(rate(haproxy_backend_http_responses_total{proxy="pensjonsbrev_svc_skribenten-web_http", code="5xx"}[10m]))
               /
-              sum(rate(nginx_ingress_controller_requests{namespace="pensjonsbrev", service="skribenten-web"}[10m]))
+              sum(rate(haproxy_backend_http_requests_total{proxy="pensjonsbrev_svc_skribenten-web_http"}[10m]))
             ) > 0.05
             and
-            sum(increase(nginx_ingress_controller_requests{namespace="pensjonsbrev", service="skribenten-web", status=~"5.."}[10m])) >= 3
+            sum(increase(haproxy_backend_http_responses_total{proxy="pensjonsbrev_svc_skribenten-web_http", code="5xx"}[10m])) >= 3
           for: 10m
           labels:
             severity: critical
@@ -89,9 +89,9 @@ spec:
         - alert: SkribentenWebIngenTrafikk
           expr: |
             (
-              sum(increase(nginx_ingress_controller_requests{namespace="pensjonsbrev", service="skribenten-web"}[1h])) < 1
+              sum(increase(haproxy_backend_http_requests_total{proxy="pensjonsbrev_svc_skribenten-web_http"}[1h])) < 1
               or
-              absent(nginx_ingress_controller_requests{namespace="pensjonsbrev", service="skribenten-web"})
+              absent(haproxy_backend_http_requests_total{proxy="pensjonsbrev_svc_skribenten-web_http"})
             )
             and on() hour() >= 8
             and on() hour() < 15

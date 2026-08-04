@@ -178,8 +178,8 @@ Disse er spesielt verdifulle for oss fordi de dekker feilmoduser applikasjonen *
 | `up`
 | Prometheus klarer ikke å scrape applikasjonen.
 
-| Ingress-metrikker (`nginx_ingress_controller_requests`)
-| Trafikk og statuskoder sett fra utsiden. Fanger også feil som aldri når applikasjonen, f.eks. i Wonderwall eller ingress-kontrolleren.
+| Ingress-metrikker (`haproxy_backend_http_requests_total`, `haproxy_backend_http_responses_total`)
+| Trafikk og statuskoder sett fra utsiden. Fanger også feil som aldri når applikasjonskoden, f.eks. i Wonderwall-sidevognen.
 |===
 
 Fordi plattformmetrikkene er like for alle fire applikasjonene, definerer vi dem én gang som <<felles, felles plattformalarmer>> i stedet for å gjenta dem per app.
@@ -557,9 +557,9 @@ Disse er bevisste, prioriterte oppgaver — ikke forglemmelser — og listes her
 | Middels
 
 | 7
-| Alarmene bruker `kube_*`- og `nginx_ingress_controller_requests`-labels som ikke er verifisert mot vår egen Mimir. `promtool` validerer syntaks, ikke at metrikk- og labelnavn finnes. En regel med feil labelnavn blir *stille* — den feiler ikke, den utløser bare aldri.
+| Alarmene er ikke sett utløse i praksis. `promtool` validerer syntaks, ikke at reglene faktisk returnerer serier. En regel som ikke matcher blir *stille* — den feiler ikke, den utløser bare aldri. Metrikk- og labelnavnene er verifisert mot Grafana, men sammenstillingen i hver enkelt regel er det ikke.
 | Bekreft i Grafana at hver regel returnerer serier, og at `MinnebrukNaerGrensen` faktisk matcher par. Bør gjøres første gang alarmene er rullet ut.
-| *Høy*
+| Middels
 
 | 8
 | Fall i `pensjon_brevbaker_letter_request_count_total` for en enkelt `brevkode` (`warning`). Kan bety at én brevmal er ødelagt selv om totalen ser normal ut.
