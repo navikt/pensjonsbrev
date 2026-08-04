@@ -3,11 +3,10 @@ package no.nav.pensjon.brev.maler.klageOgAnke
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.klageOrienteringOmSaksbehandlingstidDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.klageOrienteringOmSaksbehandlingstidDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
@@ -19,11 +18,15 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.navn
 
 // Erstatte PE_IY_03_153 Klage - orientering om saksbehandlingstid ved Nav pensjon
 
 @TemplateModelHelpers
-object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<KlageOrienteringOmSaksbehandlingstidDto> {
+object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val featureToggle = FeatureToggles.brevmalKlageOrienteringOmSaksbehandlingstid.toggle
 
@@ -51,17 +54,19 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<KlageOrienterin
         outline {
             paragraph {
                 text(bokmal { +"Klageren: " }, english { +"Appellant: " }, BOLD)
-                text(bokmal { +pesysData.navn + " " }, english { +pesysData.navn + " " } )
-                text(bokmal { +pesysData.foedselsnummer.format() }, english { +pesysData.foedselsnummer.format() })
+                text(bokmal { +felles.bruker.fulltNavn() + " " }, english { +felles.bruker.fulltNavn()
+
+                    + " " } )
+                text(bokmal { +felles.bruker.foedselsnummer.format() }, english { +felles.bruker.foedselsnummer.format() })
             }
             paragraph {
                 text(bokmal { +"Klagemotpart: " }, english { +"Other party: " }, BOLD)
-                text(bokmal { +pesysData.navnAvsenderEnhet }, english { +pesysData.navnAvsenderEnhet })
+                text(bokmal { +felles.avsenderEnhet.navn }, english { +felles.avsenderEnhet.navn })
             }
             paragraph {
                 text(
-                    bokmal { +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over " + pesysData.navnAvsenderEnhet + " vedtak av " + fritekst("vedtaksdato") + "." },
-                    english { +"On " + fritekst("mottaksdato for klagen") + " we received an appeal about " + pesysData.navnAvsenderEnhet + " decision of " + fritekst("vedtaksdato") + "." }
+                    bokmal { +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over " + felles.avsenderEnhet.navn + " vedtak av " + fritekst("vedtaksdato") + "." },
+                    english { +"On " + fritekst("mottaksdato for klagen") + " we received an appeal about " + felles.avsenderEnhet.navn + " decision of " + fritekst("vedtaksdato") + "." }
                 )
             }
             title1 { text(bokmal { +"Behandlingstid" }, english { +"Processing time" }) }
