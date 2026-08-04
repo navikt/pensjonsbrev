@@ -12,14 +12,14 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SaksnummerIndexRouteImport } from './routes/saksnummer.index'
 import { Route as SaksnummerSaksIdRouteRouteImport } from './routes/saksnummer_/$saksId/route'
-import { Route as SaksnummerSaksIdKvitteringRouteRouteImport } from './routes/saksnummer_/$saksId/kvittering/route'
-import { Route as SaksnummerSaksIdBrevvelgerRouteRouteImport } from './routes/saksnummer_/$saksId/brevvelger/route'
-import { Route as SaksnummerSaksIdBrevbehandlerRouteRouteImport } from './routes/saksnummer_/$saksId/brevbehandler/route'
 import { Route as AapneBrevBrevIdRouteRouteImport } from './routes/aapne/brev.$brevId/route'
+import { Route as SaksnummerSaksIdBrevbehandlerRouteRouteImport } from './routes/saksnummer_/$saksId/brevbehandler/route'
+import { Route as SaksnummerSaksIdBrevvelgerRouteRouteImport } from './routes/saksnummer_/$saksId/brevvelger/route'
+import { Route as SaksnummerSaksIdKvitteringRouteRouteImport } from './routes/saksnummer_/$saksId/kvittering/route'
 import { Route as SaksnummerSaksIdBrevBrevIdRouteImport } from './routes/saksnummer_/$saksId/brev.$brevId'
-import { Route as SaksnummerSaksIdAttesterBrevIdRedigeringRouteImport } from './routes/saksnummer_/$saksId/attester.$brevId/redigering'
-import { Route as SaksnummerSaksIdAttesterBrevIdKvitteringRouteImport } from './routes/saksnummer_/$saksId/attester.$brevId/kvittering'
 import { Route as SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteImport } from './routes/saksnummer_/$saksId/attester.$brevId/forhandsvisning'
+import { Route as SaksnummerSaksIdAttesterBrevIdKvitteringRouteImport } from './routes/saksnummer_/$saksId/attester.$brevId/kvittering'
+import { Route as SaksnummerSaksIdAttesterBrevIdRedigeringRouteImport } from './routes/saksnummer_/$saksId/attester.$brevId/redigering'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -36,10 +36,15 @@ const SaksnummerSaksIdRouteRoute = SaksnummerSaksIdRouteRouteImport.update({
   path: '/saksnummer/$saksId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const SaksnummerSaksIdKvitteringRouteRoute =
-  SaksnummerSaksIdKvitteringRouteRouteImport.update({
-    id: '/kvittering',
-    path: '/kvittering',
+const AapneBrevBrevIdRouteRoute = AapneBrevBrevIdRouteRouteImport.update({
+  id: '/aapne/brev/$brevId',
+  path: '/aapne/brev/$brevId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SaksnummerSaksIdBrevbehandlerRouteRoute =
+  SaksnummerSaksIdBrevbehandlerRouteRouteImport.update({
+    id: '/brevbehandler',
+    path: '/brevbehandler',
     getParentRoute: () => SaksnummerSaksIdRouteRoute,
   } as any)
 const SaksnummerSaksIdBrevvelgerRouteRoute =
@@ -48,27 +53,22 @@ const SaksnummerSaksIdBrevvelgerRouteRoute =
     path: '/brevvelger',
     getParentRoute: () => SaksnummerSaksIdRouteRoute,
   } as any)
-const SaksnummerSaksIdBrevbehandlerRouteRoute =
-  SaksnummerSaksIdBrevbehandlerRouteRouteImport.update({
-    id: '/brevbehandler',
-    path: '/brevbehandler',
+const SaksnummerSaksIdKvitteringRouteRoute =
+  SaksnummerSaksIdKvitteringRouteRouteImport.update({
+    id: '/kvittering',
+    path: '/kvittering',
     getParentRoute: () => SaksnummerSaksIdRouteRoute,
   } as any)
-const AapneBrevBrevIdRouteRoute = AapneBrevBrevIdRouteRouteImport.update({
-  id: '/aapne/brev/$brevId',
-  path: '/aapne/brev/$brevId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SaksnummerSaksIdBrevBrevIdRoute =
   SaksnummerSaksIdBrevBrevIdRouteImport.update({
     id: '/brev/$brevId',
     path: '/brev/$brevId',
     getParentRoute: () => SaksnummerSaksIdRouteRoute,
   } as any)
-const SaksnummerSaksIdAttesterBrevIdRedigeringRoute =
-  SaksnummerSaksIdAttesterBrevIdRedigeringRouteImport.update({
-    id: '/attester/$brevId/redigering',
-    path: '/attester/$brevId/redigering',
+const SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute =
+  SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteImport.update({
+    id: '/attester/$brevId/forhandsvisning',
+    path: '/attester/$brevId/forhandsvisning',
     getParentRoute: () => SaksnummerSaksIdRouteRoute,
   } as any)
 const SaksnummerSaksIdAttesterBrevIdKvitteringRoute =
@@ -77,10 +77,10 @@ const SaksnummerSaksIdAttesterBrevIdKvitteringRoute =
     path: '/attester/$brevId/kvittering',
     getParentRoute: () => SaksnummerSaksIdRouteRoute,
   } as any)
-const SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute =
-  SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteImport.update({
-    id: '/attester/$brevId/forhandsvisning',
-    path: '/attester/$brevId/forhandsvisning',
+const SaksnummerSaksIdAttesterBrevIdRedigeringRoute =
+  SaksnummerSaksIdAttesterBrevIdRedigeringRouteImport.update({
+    id: '/attester/$brevId/redigering',
+    path: '/attester/$brevId/redigering',
     getParentRoute: () => SaksnummerSaksIdRouteRoute,
   } as any)
 
@@ -196,11 +196,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SaksnummerSaksIdRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/saksnummer_/$saksId/kvittering': {
-      id: '/saksnummer_/$saksId/kvittering'
-      path: '/kvittering'
-      fullPath: '/saksnummer/$saksId/kvittering'
-      preLoaderRoute: typeof SaksnummerSaksIdKvitteringRouteRouteImport
+    '/aapne/brev/$brevId': {
+      id: '/aapne/brev/$brevId'
+      path: '/aapne/brev/$brevId'
+      fullPath: '/aapne/brev/$brevId'
+      preLoaderRoute: typeof AapneBrevBrevIdRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/saksnummer_/$saksId/brevbehandler': {
+      id: '/saksnummer_/$saksId/brevbehandler'
+      path: '/brevbehandler'
+      fullPath: '/saksnummer/$saksId/brevbehandler'
+      preLoaderRoute: typeof SaksnummerSaksIdBrevbehandlerRouteRouteImport
       parentRoute: typeof SaksnummerSaksIdRouteRoute
     }
     '/saksnummer_/$saksId/brevvelger': {
@@ -210,19 +217,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SaksnummerSaksIdBrevvelgerRouteRouteImport
       parentRoute: typeof SaksnummerSaksIdRouteRoute
     }
-    '/saksnummer_/$saksId/brevbehandler': {
-      id: '/saksnummer_/$saksId/brevbehandler'
-      path: '/brevbehandler'
-      fullPath: '/saksnummer/$saksId/brevbehandler'
-      preLoaderRoute: typeof SaksnummerSaksIdBrevbehandlerRouteRouteImport
+    '/saksnummer_/$saksId/kvittering': {
+      id: '/saksnummer_/$saksId/kvittering'
+      path: '/kvittering'
+      fullPath: '/saksnummer/$saksId/kvittering'
+      preLoaderRoute: typeof SaksnummerSaksIdKvitteringRouteRouteImport
       parentRoute: typeof SaksnummerSaksIdRouteRoute
-    }
-    '/aapne/brev/$brevId': {
-      id: '/aapne/brev/$brevId'
-      path: '/aapne/brev/$brevId'
-      fullPath: '/aapne/brev/$brevId'
-      preLoaderRoute: typeof AapneBrevBrevIdRouteRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/saksnummer_/$saksId/brev/$brevId': {
       id: '/saksnummer_/$saksId/brev/$brevId'
@@ -231,11 +231,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SaksnummerSaksIdBrevBrevIdRouteImport
       parentRoute: typeof SaksnummerSaksIdRouteRoute
     }
-    '/saksnummer_/$saksId/attester/$brevId/redigering': {
-      id: '/saksnummer_/$saksId/attester/$brevId/redigering'
-      path: '/attester/$brevId/redigering'
-      fullPath: '/saksnummer/$saksId/attester/$brevId/redigering'
-      preLoaderRoute: typeof SaksnummerSaksIdAttesterBrevIdRedigeringRouteImport
+    '/saksnummer_/$saksId/attester/$brevId/forhandsvisning': {
+      id: '/saksnummer_/$saksId/attester/$brevId/forhandsvisning'
+      path: '/attester/$brevId/forhandsvisning'
+      fullPath: '/saksnummer/$saksId/attester/$brevId/forhandsvisning'
+      preLoaderRoute: typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteImport
       parentRoute: typeof SaksnummerSaksIdRouteRoute
     }
     '/saksnummer_/$saksId/attester/$brevId/kvittering': {
@@ -245,11 +245,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SaksnummerSaksIdAttesterBrevIdKvitteringRouteImport
       parentRoute: typeof SaksnummerSaksIdRouteRoute
     }
-    '/saksnummer_/$saksId/attester/$brevId/forhandsvisning': {
-      id: '/saksnummer_/$saksId/attester/$brevId/forhandsvisning'
-      path: '/attester/$brevId/forhandsvisning'
-      fullPath: '/saksnummer/$saksId/attester/$brevId/forhandsvisning'
-      preLoaderRoute: typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteImport
+    '/saksnummer_/$saksId/attester/$brevId/redigering': {
+      id: '/saksnummer_/$saksId/attester/$brevId/redigering'
+      path: '/attester/$brevId/redigering'
+      fullPath: '/saksnummer/$saksId/attester/$brevId/redigering'
+      preLoaderRoute: typeof SaksnummerSaksIdAttesterBrevIdRedigeringRouteImport
       parentRoute: typeof SaksnummerSaksIdRouteRoute
     }
   }
