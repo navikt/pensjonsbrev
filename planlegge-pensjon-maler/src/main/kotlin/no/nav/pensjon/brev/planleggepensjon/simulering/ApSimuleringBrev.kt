@@ -43,7 +43,7 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
         )
     ) {
         title {
-            text(bokmal { +"Beregning av pensjon" })
+            text(bokmal { +"" })
         }
 
         outline {
