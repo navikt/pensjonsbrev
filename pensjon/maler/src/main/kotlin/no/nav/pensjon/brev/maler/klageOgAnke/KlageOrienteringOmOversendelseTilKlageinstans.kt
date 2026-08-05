@@ -2,10 +2,8 @@ package no.nav.pensjon.brev.maler.klageOgAnke
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmOversendelseTilKlageinstansDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.klageOrienteringOmOversendelseTilKlageinstansDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.klageOrienteringOmOversendelseTilKlageinstansDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KLAGEINSTANS
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
@@ -22,13 +20,14 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.navn
 
 @TemplateModelHelpers
 
 // Erstatte PE_IY_03_157
 object KlageOrienteringOmOversendelseTilKlageinstans :
-    RedigerbarTemplate<KlageOrienteringOmOversendelseTilKlageinstansDto> {
+    RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val featureToggle = FeatureToggles.brevmalKlageOrienteringOmOversendelseTilKlageinstans.toggle
 
@@ -51,7 +50,7 @@ object KlageOrienteringOmOversendelseTilKlageinstans :
             paragraph {
                 text(bokmal { +"Klageren: " }, english { +"Appellant: " }, BOLD)
                 text(bokmal { +felles.bruker.fulltNavn() + " " }, english { +felles.bruker.fulltNavn() + " " })
-                text(bokmal { +pesysData.foedselsnummer.format() }, english { +pesysData.foedselsnummer.format() })
+                text(bokmal { +felles.bruker.foedselsnummer.format() }, english { +felles.bruker.foedselsnummer.format() })
             }
             paragraph {
                 text(bokmal { +"Klagemotpart: " }, english { +"Other party: " }, BOLD)
