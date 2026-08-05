@@ -170,7 +170,7 @@ Disse er spesielt verdifulle for oss fordi de dekker feilmoduser applikasjonen *
 | Nærhet til minnegrensen, før OOM-kill inntreffer.
 
 | `container_cpu_cfs_throttled_seconds_total`
-| CPU-struping. Særlig relevant for pdf-bygger, der typst-prosesser er CPU-tunge.
+| Ikke i bruk. CPU-struping kan ikke måles så lenge vi ikke setter `limits.cpu`, jf. <<ikke-alarmer, Bevisste ikke-alarmer>>.
 
 | `kube_horizontalpodautoscaler_status_current_replicas` / `..._spec_max_replicas`
 | Autoskalering står i taket og kan ikke absorbere mer last.
@@ -326,24 +326,11 @@ Definert i `brevbaker/pdf-bygger/.nais/alerts.yaml`.
 | `warning`
 | Tidlig varsel før brevbaker begynner å time ut. Fordi brevbaker retry-er, ser vi treghet her *før* vi ser feil der. Høyest målte p95 i prod var 5,10s.
 
-| `PdfByggerCpuStrupes`
-| Over 50 % av CPU-periodene strupes, i 15 min
-| `warning`
-| Typst er CPU-bundet. Strupning gir direkte treghet, og readiness-probene er allerede spesialtilpasset for å tåle korte CPU-spikes — vedvarende strupning betyr at tilpasningen ikke lenger holder.
-
 | `PdfByggerHpaITaket`
 | `current_replicas` er lik `max_replicas` i 15 min
 | `warning`
 | Vi har ikke mer kapasitet å skalere ut med. Neste steg er økt latens og timeouts i brevbaker.
 |===
-
-[NOTE]
-====
-CPU-strupning måles som *andel strupede perioder* (`container_cpu_cfs_throttled_periods_total / container_cpu_cfs_periods_total`), ikke som strupede sekunder.
-
-`container_cpu_cfs_throttled_seconds_total` summerer på tvers av kjerner, slik at tallet vokser med antall kjerner uten at strupningen er verre.
-Det finnes derfor ingen meningsfull absolutt terskel for den metrikken. En andel er sammenlignbar mellom poder og over tid.
-====
 
 [[skribenten-backend]]
 === skribenten-backend
@@ -524,6 +511,18 @@ Forventede 4xx-responser::
 
 Enkeltstående retries mot pdf-bygger::
 Retry-logikken finnes nettopp for å absorbere forbigående feil. Vi alarmerer på *oppbrukte* retries og på resulterende feilrate, ikke på at en retry skjedde.
+
+CPU-strupning i pdf-bygger::
+Typst er CPU-bundet, så strupning ville vært et reelt problem — men det *kan ikke oppstå* slik appene er satt opp.
+CFS-strupning forutsetter en CPU-kvote på containeren, og kvoten kommer kun av `resources.limits.cpu`.
+Ingen av applikasjonene våre setter den, Nais setter ingen default for CPU (i motsetning til minne), og https://doc.nais.io/workloads/application/reference/application-spec/[Nais fraråder den aktivt].
+Uten kvote finnes `container_cpu_cfs_throttled_periods_total` ikke for containeren, og en alarm på den ville aldri utløst.
++
+Vi hadde en slik alarm, `PdfByggerCpuStrupes`, frem til den ble avdekket som varig stum under gjennomgangen av alarmreglene mot prod.
+Symptomet den var ment å fange — treg brevproduksjon — dekkes allerede av `PdfByggerTregProduksjon`, jf. <<prinsipper, prinsipp 1>>.
++
+Skulle vi senere sette et CPU-limit, må denne vurderingen gjøres på nytt.
+Da må strupning måles som *andel strupede perioder* (`container_cpu_cfs_throttled_periods_total / container_cpu_cfs_periods_total`), ikke som strupede sekunder: `container_cpu_cfs_throttled_seconds_total` summerer på tvers av kjerner, slik at tallet vokser med antall kjerner uten at strupningen er verre.
 
 Utløpte brevreservasjoner::
 En brevreservasjon kan ikke «henge». Gyldighet beregnes ved lesing i `BrevreservasjonPolicy.erGyldig` som `sistReservert + timeout > nå`, med en timeout på 10 minutter.

@@ -42,23 +42,7 @@ spec:
           annotations:
             summary: "p95 for /produserBrev er over 10s (nå {{ $value | printf \"%.1f\" }}s)"
             consequence: "Brevbaker begynner snart å få timeouts. withTimeoutOrNull i PensjonPdfByggerService kutter etter 300s."
-            action: "Sjekk CPU-strupning og om HPA står i taket. Se om det sammenfaller med spesielt store brev."
-
-        - alert: PdfByggerCpuStrupes
-          expr: |
-            (
-              rate(container_cpu_cfs_throttled_periods_total{namespace="pensjonsbrev", container="pensjon-pdf-bygger"}[10m])
-              /
-              rate(container_cpu_cfs_periods_total{namespace="pensjonsbrev", container="pensjon-pdf-bygger"}[10m])
-            ) > 0.5
-          for: 15m
-          labels:
-            severity: warning
-            namespace: pensjonsbrev
-          annotations:
-            summary: "Poden {{ $labels.pod }} får strupet over halvparten av CPU-periodene sine"
-            consequence: "Typst er CPU-bundet, så strupning gir direkte treghet i brevproduksjonen."
-            action: "Sjekk om lasten er unormalt høy, eller om CPU-requesten er satt for lavt i nais.yaml."
+            action: "Sjekk om HPA står i taket, og om CPU-bruken ligger godt over requesten. Se om det sammenfaller med spesielt store brev."
 
         - alert: PdfByggerHpaITaket
           expr: |
