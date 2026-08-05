@@ -479,13 +479,23 @@ Fordi filene rulles ut uten variabler (se <<implementasjon, Implementasjon>>), s
 | `PrometheusKlarerIkkeAScrape`
 | `up == 0` i 10 min
 | `warning`
-| Vi er blinde på appen. Alarmen som beskytter alle de andre alarmene.
+| Vi er blinde på appen. Alarmen som beskytter alle de andre alarmene. Den er likevel `warning` og ikke `critical`, jf. <<scrape-nivaa, begrunnelsen under>>.
 
 | `PodStarterIkke`
 | `waiting_reason` er `CrashLoopBackOff` eller `ImagePullBackOff` i 10 min
 | `warning`
 | Feilet deploy. Skiller seg fra crashloop-alarmen ved å fange feil som oppstår før applikasjonen i det hele tatt kjører.
 |===
+
+[[scrape-nivaa]]
+=== Hvorfor manglende scraping bare er `warning`
+
+`up == 0` sier ingenting om brukeropplevelsen. Det er et signal om overvåkningen vår, ikke om tjenesten, og vi alarmerer på det brukeren merker, jf. <<prinsipper, prinsipp 1>>.
+De brukerrammende årsakene til at scraping feiler, er dessuten dekket raskere av `IngenTilgjengeligePoder` og `ContainerCrashlooper`, som begge er `critical` med `for: 5m` og bygger på `kube_*` — de rammes derfor ikke av at appen selv er uscrapebar.
+
+Igjen står tilfellet der appen betjener brukerne normalt, men metrikkendepunktet er ødelagt. Det passer definisjonen av `warning`: noe er allerede ødelagt uten at brukerne merker det.
+
+Risikoen ved å stå blind over tid håndteres av en dødmannsknapp per app, ikke av alvorlighetsgraden her — se hull 10.
 
 [[ikke-alarmer]]
 == Bevisste ikke-alarmer
@@ -569,6 +579,11 @@ Disse er bevisste, prioriterte oppgaver — ikke forglemmelser — og listes her
 | 9
 | Ingen alarm på brå økning i 4xx for brevbaker og pdf-bygger, slik `SkribentenOektAndelKlientfeil` gir for skribenten-backend. Begge har kun maskinelle konsumenter — Pesys og brevbaker — så en 4xx er ikke en bruker som taster feil, men en konsument som sender noe vi ikke lenger godtar. Typisk et kontraktsbrudd etter deploy av én av partene, jf. <<prinsipper, prinsipp 6>>. I dag er dette usynlig: 4xx teller ikke i 5xx-alarmene, og et avvist kall gir heller ingen `throwable`.
 | Legg til `BrevbakerOektAndelKlientfeil` og `PdfByggerOektAndelKlientfeil` etter mønster av `SkribentenOektAndelKlientfeil`, på `ktor_http_server_requests_seconds_count` med `status=~"4.."`. Unntakslisten må settes per app framfor å arves: `401`/`403` er maskinell autentisering som ikke skal feile jevnt, og bør trolig telle med. Terskelen må leses av faktisk 4xx-nivå i prod først, siden normalnivået for maskinell trafikk er et annet enn for skribenten.
+| Middels
+
+| 10
+| pdf-bygger og skribenten-backend kan være blinde over tid uten at noe sier fra, siden `PrometheusKlarerIkkeAScrape` bevisst er `warning`. Brevbaker er dekket ved at `BrevbakerIngenBrevProdusert` bruker `absent()` og dermed utløser når serien forsvinner.
+| Legg til en dødmannsknapp per app: en `absent()`-basert regel på en metrikk appen alltid produserer. Bedre enn å heve `PrometheusKlarerIkkeAScrape` til `critical`, fordi det alarmerer på at signalet er borte framfor på selve scrape-mekanismen.
 | Middels
 |===
 
