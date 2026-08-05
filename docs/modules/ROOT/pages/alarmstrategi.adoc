@@ -286,7 +286,7 @@ Deklarert i `pensjon/brevbaker/.nais/alerts.yaml`.
 | `BrevbakerKoeBunnerSegOpp`
 | `ktor_http_server_requests_active` har ikke vært under 10 på noe tidspunkt i 15 min
 | `warning`
-| Requests fullføres ikke. Typisk tegn på at pdf-bygger henger og at retry-logikken holder tråder opptatt. `min_over_time` skiller vedvarende oppbygging fra normale topper, som drenerer mellom hver spike. *Terskelen på 10 er ikke kalibrert mot prod* og bør justeres når vi har sett den over en batch.
+| Requests fullføres ikke. Typisk tegn på at pdf-bygger henger og at retry-logikken holder tråder opptatt. `min_over_time` skiller vedvarende oppbygging fra normale topper, som drenerer mellom hver spike.
 
 | `BrevbakerIngenBrevProdusert`
 | `pensjon_brevbaker_letter_request_count_total` under 1 på 2 timer, i kontortid på ukedager
@@ -588,6 +588,11 @@ Disse er bevisste, prioriterte oppgaver — ikke forglemmelser — og listes her
 | 10
 | pdf-bygger og skribenten-backend kan være blinde over tid uten at noe sier fra, siden `PrometheusKlarerIkkeAScrape` bevisst er `warning`. Brevbaker er dekket ved at `BrevbakerIngenBrevProdusert` bruker `absent()` og dermed utløser når serien forsvinner.
 | Legg til en dødmannsknapp per app: en `absent()`-basert regel på en metrikk appen alltid produserer. Bedre enn å heve `PrometheusKlarerIkkeAScrape` til `critical`, fordi det alarmerer på at signalet er borte framfor på selve scrape-mekanismen.
+| Middels
+
+| 11
+| BrevbakerKoeBunnerSegOpp sin terskelen på 10 er ikke kalibrert mot prod.
+| Må justeres når vi har observert den over en stor behandling som produserer mange brev.
 | Middels
 |===
 
