@@ -77,7 +77,10 @@ jobs:
           cache-dependency-path: skribenten-web/frontend/package-lock.json
       - name: "publish common brevbaker artifacts to Maven local"
         run: |
-          ./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
+          ./gradlew :brevbaker:brevdata:publishToMavenLocal
+          ./gradlew :brevbaker:markup-model:publishToMavenLocal
+          ./gradlew :brevbaker:markup-dsl:publishToMavenLocal
+          ./gradlew :brevbaker:brevbaker-api:publishToMavenLocal
       - name: "prepare extra dependencies"
         if: ${{ inputs.extraModulesToBuild != '' }}
         run: |

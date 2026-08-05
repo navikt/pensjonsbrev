@@ -68,7 +68,6 @@ jobs:
       target: brevbaker
       gradleTarget: pensjon:brevbaker
       extraModulesToBuild: >-
-        :brevbaker:markup-dsl:publishToMavenLocal
         :pensjon:api-model:publishToMavenLocal
         :alder:api-model:publishToMavenLocal
         :ufoere:api-model:publishToMavenLocal
@@ -102,7 +101,10 @@ jobs:
           "java-version": ${{ env.JavaVersion }}
       - name: "run integration tests"
         run: |
-          ./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
+          ./gradlew :brevbaker:brevdata:publishToMavenLocal
+          ./gradlew :brevbaker:markup-model:publishToMavenLocal
+          ./gradlew :brevbaker:markup-dsl:publishToMavenLocal
+          ./gradlew :brevbaker:brevbaker-api:publishToMavenLocal
           ./gradlew :pensjon:api-model:publishToMavenLocal
           ./gradlew :alder:api-model:publishToMavenLocal
           ./gradlew :ufoere:api-model:publishToMavenLocal
