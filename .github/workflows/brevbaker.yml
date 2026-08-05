@@ -65,7 +65,11 @@ jobs:
       path: pensjon/brevbaker
       target: brevbaker
       gradleTarget: pensjon:brevbaker
-      extraModulesToBuild: ':pensjon:api-model:publishToMavenLocal :alder:api-model:publishToMavenLocal :ufoere:api-model:publishToMavenLocal'
+      extraModulesToBuild: >-
+        :brevbaker:markup-dsl:publishToMavenLocal
+        :pensjon:api-model:publishToMavenLocal
+        :alder:api-model:publishToMavenLocal
+        :ufoere:api-model:publishToMavenLocal
       buildImage: true
 
   salsa-brevbaker:

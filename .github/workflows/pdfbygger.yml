@@ -51,6 +51,8 @@ jobs:
       path: brevbaker/pdf-bygger
       target: pdf-bygger
       gradleTarget: brevbaker:pdf-bygger
+      extraModulesToBuild: >-
+        :brevbaker:markup-dsl:publishToMavenLocal
       buildImage: true
       uploadJar: true
 

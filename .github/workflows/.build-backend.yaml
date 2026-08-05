@@ -21,7 +21,7 @@ on:
         required: true
         type: string
       extraModulesToBuild:
-        description: "Modules to build"
+        description: "Additional Gradle tasks to prepare dependencies before the build"
         required: false
         type: string
       buildImage:
@@ -75,10 +75,10 @@ jobs:
           scope: "@navikt"
           cache: "npm"
           cache-dependency-path: skribenten-web/frontend/package-lock.json
-      - name: "publish brevbaker-biblioteket to Maven local"
+      - name: "publish common brevbaker artifacts to Maven local"
         run: |
-          ./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
-      - name: "publish extra modules to Maven local"
+          ./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
+      - name: "prepare extra dependencies"
         if: ${{ inputs.extraModulesToBuild != '' }}
         run: |
           ./gradlew ${{ inputs.extraModulesToBuild }}
