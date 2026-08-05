@@ -47,6 +47,7 @@ interface PenClient {
     )
 }
 
+class PenAdresseManglerException : ServiceException("Adresse mangler")
 class PenServiceException(message: String) : ServiceException(message)
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
 class PenFeilIDatabyggerException(message: String) : ServiceException(message)
@@ -76,6 +77,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenCli
         when {
             status.isSuccess() -> body()
             status == HttpStatusCode.NotFound -> null
+            status == HttpStatusCode.UnprocessableEntity -> throw PenAdresseManglerException()
             else -> throw PenServiceException("Feil ved kall til PEN: ${bodyAsText()}")
         }
 
