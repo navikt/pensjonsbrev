@@ -23,19 +23,11 @@ repositories {
     mavenCentral()
 }
 
-// DSL-en er den eneste tiltenkte veien inn i markup-modellen, og bygger den via den opt-in-merkede
-// fabrikkflaten i model-modulen. Ingen andre avhengigheter: konsumenter skal ikke arve et
-// serialiseringsbibliotek gjennom markup. Her ligger ogsaa DSL-en for aa bygge en komplett bestilling
-// til pdf-bygger — dette er artefaktet en ekstern konsument deklarerer selv.
 dependencies {
     api(libs.markup.model)
     testImplementation(libs.bundles.junit)
 }
 
-// Både den offentlige og den utvidede DSL-en bor i denne modulen. Skillet håndheves med
-// @ExtendedMarkupDsl (RequiresOptIn), ikke med en modulgrense — hadde de vært to moduler måtte hver
-// builder-søm (texts, blocks, contentFactory, build()) blitt public for å krysse grensen, og nettopp
-// det maskineriet er det vi vil holde utenfor det publiserte API-et.
 kotlin {
     compilerOptions {
         optIn.add("no.nav.brev.brevbaker.markup.MarkupModelApi")
@@ -65,7 +57,7 @@ publishing {
             from(components["java"])
             pom {
                 name.set("brevbaker-markup-dsl")
-                description.set("DSL for å bygge markup-modellen for Nav-brev, og en komplett bestilling til pdf-bygger.")
+                description.set("DSL for å bygge markup-modellen og en komplett bestilling til pdf-bygger.")
                 url.set("https://github.com/navikt/pensjonsbrev")
                 scm {
                     url.set("https://github.com/navikt/pensjonsbrev")

@@ -13,7 +13,7 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import no.nav.brev.brevbaker.PDFRequest
-import no.nav.brev.brevbaker.jackson.InternalObjectMapper
+import no.nav.brev.brevbaker.jackson.internalObjectMapper
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
 
@@ -21,6 +21,8 @@ class PdfByggerTestService(
     private val pdfByggerUrl: String = PDFByggerTestContainer.mappedUrl(),
     private val logWarning: (String) -> Unit = ::println,
 ) {
+    private val objectMapper = internalObjectMapper()
+
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             jackson()
@@ -42,13 +44,13 @@ class PdfByggerTestService(
     suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput =
         httpClient.post("$pdfByggerUrl/produserBrev") {
             contentType(ContentType.Application.Json)
-            setBody(InternalObjectMapper.writeValueAsBytes(pdfRequest))
+            setBody(objectMapper.writeValueAsBytes(pdfRequest))
         }.body()
 
     suspend fun producePDFV2(pdfRequest: LetterPDFRequest): PDFCompilationOutput =
         httpClient.post("$pdfByggerUrl/v2/produserBrev") {
             contentType(ContentType.Application.Json)
-            setBody(InternalObjectMapper.writeValueAsBytes(pdfRequest))
+            setBody(objectMapper.writeValueAsBytes(pdfRequest))
         }.body()
 
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()

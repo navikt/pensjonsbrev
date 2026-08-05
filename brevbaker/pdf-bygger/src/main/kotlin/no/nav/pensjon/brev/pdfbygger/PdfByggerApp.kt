@@ -18,7 +18,7 @@ import io.ktor.server.request.receiveText
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.logging.Logger
-import no.nav.brev.brevbaker.jackson.InternalObjectMapper
+import no.nav.brev.brevbaker.jackson.internalObjectMapper
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.Metrics.configureMetrics
@@ -26,6 +26,8 @@ import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2
 import org.slf4j.LoggerFactory
+
+private val objectMapper = internalObjectMapper()
 
 fun main(args: Array<String>) = EngineMain.main(args)
 
@@ -89,7 +91,7 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
 
         post("/v2/produserBrev") {
             val request = runCatching {
-                InternalObjectMapper.readValue(call.receiveText(), LetterPDFRequest::class.java)
+                objectMapper.readValue(call.receiveText(), LetterPDFRequest::class.java)
             }.getOrElse { cause ->
                 call.application.environment.log.warn("Failed to deserialize /v2/produserBrev request", cause)
                 call.respond(HttpStatusCode.BadRequest, "Failed to deserialize json body")

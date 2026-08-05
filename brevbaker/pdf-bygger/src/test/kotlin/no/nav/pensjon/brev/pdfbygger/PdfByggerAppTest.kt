@@ -7,7 +7,7 @@ import io.ktor.http.*
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.*
-import no.nav.brev.brevbaker.jackson.InternalObjectMapper
+import no.nav.brev.brevbaker.jackson.internalObjectMapper
 import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.Markup
@@ -31,6 +31,7 @@ import java.io.OutputStreamWriter
 class PdfByggerAppTest {
 
     private val mapper = jacksonObjectMapper().apply { pdfByggerConfig() }
+    private val internalMapper = internalObjectMapper()
 
     @Test
     fun appRuns() {
@@ -153,7 +154,7 @@ class PdfByggerAppTest {
 
             val response = client.post("/v2/produserBrev") {
                 contentType(ContentType.Application.Json)
-                setBody(InternalObjectMapper.writeValueAsString(request))
+                setBody(internalMapper.writeValueAsString(request))
             }
 
             assertEquals(HttpStatusCode.OK, response.status)

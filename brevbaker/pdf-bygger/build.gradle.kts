@@ -38,16 +38,11 @@ tasks {
 tasks {
     test {
         useJUnitPlatform {
-            excludeTags = setOf("integration-test", "manual-test")
+            excludeTags = setOf("integration-test")
         }
     }
     val test by testing.suites.existing(JvmTestSuite::class)
     named<Test>("integrationTest") {
-        testClassesDirs = files(test.map { it.sources.output.classesDirs })
-        classpath = files(test.map { it.sources.runtimeClasspath })
-    }
-
-    named<Test>("manualTest") {
         testClassesDirs = files(test.map { it.sources.output.classesDirs })
         classpath = files(test.map { it.sources.runtimeClasspath })
     }

@@ -17,15 +17,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-/**
- * [BestillRedigertBrevRequestV2] er selve gevinsten ved refaktoreringen: den kombinerer
- * markup-modellen fra `brevbaker:markup-model` med `felles`/`kode`/`letterData` fra `brevbaker-api` i
- * *én* forespørsel, uten en hybrid-serializer som blander Jackson og kotlinx.
- *
- * Testen viser at hele forespørselen går rundt via [internalObjectMapper]. Polymorfien for `kode` og
- * `letterData` løses – som for v1 – av applikasjonen, siden hvilke brevkoder og brevdata som finnes
- * er kjent først der. Her stiller testen med sine egne, minimale implementasjoner.
- */
 class BestillRedigertBrevRequestV2Test {
 
     data class TestSaksbehandlerValg(val begrunnelse: String) : SaksbehandlerValgBrevdata
@@ -68,11 +59,9 @@ class BestillRedigertBrevRequestV2Test {
     fun `markup og api-model-common ligger side om side i samme payload`() {
         val json = mapper.readTree(mapper.writeValueAsString(request()))
 
-        // fra api-model-common
         assertEquals("TEST_BREV", json.get("kode").textValue())
         assertEquals("1337123", json.get("felles").get("saksnummer").textValue())
         assertEquals(1234, json.get("letterData").get("pesysData").get("belop").intValue())
-        // fra markup, med type-diskriminatoren som ble lagt inn i modellen
         assertEquals("TITLE2", json.get("letterMarkup").get("blocks").get(0).get("type").textValue())
     }
 

@@ -23,13 +23,6 @@ repositories {
     mavenCentral()
 }
 
-// Modellen skal være helt uten avhengigheter: den er datamodellen flere publiserte artefakter uttrykker
-// signaturen sin i, og konsumenter skal ikke arve verken et serialiseringsbibliotek eller genererte
-// serializers gjennom den. All serialisering ligger i brevbaker:jackson.
-//
-// Kontrakten mot pdf-bygger (LetterPDFRequest, PDFCompilationOutput, HttpStatusCodes) bor her og ikke i
-// et eget artefakt: den er uttrykt utelukkende i markup-modellen, så et eget artefakt ville bare vært
-// en ny versjonsakse å holde i sync uten at noen kan bruke det ene uten det andre.
 dependencies {
     testImplementation(libs.bundles.junit)
 }

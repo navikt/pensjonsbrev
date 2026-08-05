@@ -13,18 +13,20 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
-import no.nav.brev.brevbaker.jackson.InternalObjectMapper
+import no.nav.brev.brevbaker.jackson.internalObjectMapper
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 
 /**
  * Delt testklient mot pdf-bygger. Brukes av både brevbaker (core) og pdf-bygger sine egne
  * integrasjonstester, slik at begge treffer pdf-bygger med nøyaktig samme serialisering som
- * produksjonskoden ([InternalObjectMapper]).
+ * produksjonskoden ([internalObjectMapper]).
  */
 class PdfByggerTestService(
     private val pdfByggerUrl: String = PDFByggerTestContainer.mappedUrl(),
     private val logWarning: (String) -> Unit = ::println,
 ) : PDFByggerService {
+    private val objectMapper = internalObjectMapper()
+
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             jackson()
@@ -43,13 +45,13 @@ class PdfByggerTestService(
     override suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput =
         httpClient.post("$pdfByggerUrl/produserBrev") {
             contentType(ContentType.Application.Json)
-            setBody(InternalObjectMapper.writeValueAsBytes(pdfRequest))
+            setBody(objectMapper.writeValueAsBytes(pdfRequest))
         }.body()
 
     override suspend fun producePDFV2(pdfRequest: LetterPDFRequest): PDFCompilationOutput =
         httpClient.post("$pdfByggerUrl/v2/produserBrev") {
             contentType(ContentType.Application.Json)
-            setBody(InternalObjectMapper.writeValueAsBytes(pdfRequest))
+            setBody(objectMapper.writeValueAsBytes(pdfRequest))
         }.body()
 
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
