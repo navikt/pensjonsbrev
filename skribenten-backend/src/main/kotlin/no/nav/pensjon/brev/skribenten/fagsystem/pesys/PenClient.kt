@@ -47,7 +47,7 @@ interface PenClient {
     )
 }
 
-class PenAdresseManglerException : ServiceException("Adresse mangler")
+class PenAdresseManglerException : ServiceException("Adresse mangler", status = HttpStatusCode.UnprocessableEntity)
 class PenServiceException(message: String) : ServiceException(message)
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
 class PenFeilIDatabyggerException(message: String) : ServiceException(message)
