@@ -244,7 +244,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         )
     }
     ifNotNull(simulering.maanedligAlderspensjonForKnekkpunkter) { knekkpunkter ->
-        title1 {
+        title2 {
             text(bokmal { +"Ditt opptjeningsgrunnlag i folketrygden" })
         }
         ifNotNull(simulering.afpOffentligTidsbegrenset) { afp ->
