@@ -6,8 +6,23 @@ import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.images.PullPolicy
 import org.testcontainers.utility.DockerImageName
+import java.nio.file.Path
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
+
+object TestTags {
+    const val INTEGRATION_TEST = "integration-test"
+}
+
+/**
+ * Writes a rendered PDF to disk for local/visual inspection.
+ */
+fun writeTestPDF(pdfFileName: String, pdf: ByteArray, path: Path = Path.of("build", "test_pdf")) {
+    val file = path.resolve("${pdfFileName.replace(" ", "_")}.pdf").toFile()
+    file.parentFile.mkdirs()
+    file.writeBytes(pdf)
+    println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
+}
 
 object PDFByggerTestContainer {
     private val useLocalPdfBygger = System.getenv("BRUK_LOKAL_PDF_BYGGER")?.toBoolean() == true

@@ -1,9 +1,8 @@
 package no.nav.pensjon.brev.pdfbygger
 
-import com.fasterxml.jackson.core.JacksonException
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.jackson.jackson
+import io.ktor.serialization.jackson.JacksonConverter
 import io.ktor.server.application.*
 import io.ktor.server.config.*
 import io.ktor.server.netty.*
@@ -14,13 +13,12 @@ import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.receive
-import io.ktor.server.request.receiveText
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.logging.Logger
+import no.nav.brev.brevbaker.PDFRequest
 import no.nav.brev.brevbaker.jackson.internalObjectMapper
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
-import no.nav.brev.brevbaker.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.Metrics.configureMetrics
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
@@ -55,9 +53,7 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
     configureMetrics()
 
     install(ContentNegotiation) {
-        jackson {
-            pdfByggerConfig()
-        }
+        register(ContentType.Application.Json, JacksonConverter(objectMapper))
     }
 
     install(CallLogging) {
@@ -67,11 +63,7 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         mdc("x_response_code") { it.response.status()?.value?.toString() }
     }
 
-    install(StatusPages) {
-        exception<JacksonException> { call, cause ->
-            call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown reason")
-        }
-    }
+    install(StatusPages)
 
     install(CallId) {
         retrieveFromHeader("X-Request-ID")
@@ -90,13 +82,7 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         }
 
         post("/v2/produserBrev") {
-            val request = runCatching {
-                objectMapper.readValue(call.receiveText(), LetterPDFRequest::class.java)
-            }.getOrElse { cause ->
-                call.application.environment.log.warn("Failed to deserialize /v2/produserBrev request", cause)
-                call.respond(HttpStatusCode.BadRequest, "Failed to deserialize json body")
-                return@post
-            }
+            val request = call.receive<LetterPDFRequest>()
             val result = typstCompileService.createLetter {
                 TypstDocumentRendererV2.render(request, it)
             }

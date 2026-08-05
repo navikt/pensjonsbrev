@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.callid.*
 import io.ktor.client.engine.mock.*

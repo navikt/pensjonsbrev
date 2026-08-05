@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.pdfbygger
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.client.request.*
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
@@ -30,8 +29,7 @@ import java.io.OutputStreamWriter
 
 class PdfByggerAppTest {
 
-    private val mapper = jacksonObjectMapper().apply { pdfByggerConfig() }
-    private val internalMapper = internalObjectMapper()
+    private val mapper = internalObjectMapper()
 
     @Test
     fun appRuns() {
@@ -42,6 +40,26 @@ class PdfByggerAppTest {
 
             val response = client.get("/isAlive")
             assertEquals(HttpStatusCode.OK, response.status)
+        }
+    }
+
+    @Test
+    fun `ugyldig json gir 400 paa begge produserBrev-endepunktene`() {
+        testApplication {
+            environment {
+                config = MapApplicationConfig()
+            }
+            application {
+                setUp(TypstCompileService())
+            }
+
+            listOf("/produserBrev", "/v2/produserBrev").forEach { path ->
+                val response = client.post(path) {
+                    contentType(ContentType.Application.Json)
+                    setBody("""{"letterMarkup": "ikke et objekt"}""")
+                }
+                assertEquals(HttpStatusCode.BadRequest, response.status, "$path skal svare 400 paa ugyldig json")
+            }
         }
     }
 
@@ -154,7 +172,7 @@ class PdfByggerAppTest {
 
             val response = client.post("/v2/produserBrev") {
                 contentType(ContentType.Application.Json)
-                setBody(internalMapper.writeValueAsString(request))
+                setBody(mapper.writeValueAsString(request))
             }
 
             assertEquals(HttpStatusCode.OK, response.status)
