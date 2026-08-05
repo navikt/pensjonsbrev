@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
+import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
@@ -88,6 +89,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenCli
                 sakType = it.sakType,
                 pid = it.pid,
                 behandlingsnumre = it.behandlingsnumre,
+                tema = it.tema,
             )
         }
 
@@ -184,6 +186,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenCli
         val enhetId: String?,
         val pid: Pid,
         val behandlingsnumre: List<Behandlingsnummer>,
+        val tema: Tema,
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }

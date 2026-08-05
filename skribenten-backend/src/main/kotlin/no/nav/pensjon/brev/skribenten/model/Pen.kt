@@ -19,11 +19,7 @@ object Pen {
         val sakType: Sakstype,
         val pid: Pid,
         val behandlingsnumre: List<Behandlingsnummer>,
-        val tema: Tema = if (sakType.kode == "UFO") {
-            Tema("UFO")
-        } else {
-            Tema("PEN")
-        }, // TODO: send med frå PEN
+        val tema: Tema,
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }
