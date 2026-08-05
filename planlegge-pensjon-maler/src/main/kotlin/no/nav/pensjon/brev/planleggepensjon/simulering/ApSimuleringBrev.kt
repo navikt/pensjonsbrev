@@ -7,9 +7,11 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringBrevDto.*
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringDto.*
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringBrevDto.saksbehandlerValg
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringDto.simulering
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.afpOffentligLivsvarig
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.afpOffentligTidsbegrenset
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.afpPrivat
 import no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg.simuleringVedlegg
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -43,23 +45,16 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
         )
     ) {
         title {
-            text(bokmal { +"" })
+            showIf(saksbehandlerValg.simulering.afpPrivat.notNull()) {
+                text(bokmal { +"Beregning av alderspensjon og AFP i privat sektor" })
+            }.orShowIf(saksbehandlerValg.simulering.afpOffentligTidsbegrenset.notNull() or saksbehandlerValg.simulering.afpOffentligLivsvarig.notNull()) {
+                text(bokmal { +"Beregning av AFP i offentlig sektor etterfulgt av alderspensjon" })
+            }.orShow {
+                text(bokmal { +"Beregning av alderspensjon" })
+            }
         }
 
         outline {
-            showIf(saksbehandlerValg.simulering.afpPrivat.notNull()) {
-                title1 {
-                    text(bokmal { +"Beregning av alderspensjon og AFP i privat sektor" })
-                }
-            }.orShowIf(saksbehandlerValg.simulering.afpOffentligTidsbegrenset.notNull() or saksbehandlerValg.simulering.afpOffentligLivsvarig.notNull()) {
-                title1 {
-                    text(bokmal { +"Beregning av AFP i offentlig sektor etterfulgt av alderspensjon" })
-                }
-            }.orShow {
-                title1 {
-                    text(bokmal { +"Beregning av alderspensjon" })
-                }
-            }
         }
 
         includeAttachment(
