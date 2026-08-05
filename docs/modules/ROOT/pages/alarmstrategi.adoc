@@ -585,7 +585,7 @@ Disse er bevisste, prioriterte oppgaver — ikke forglemmelser — og listes her
 | Middels
 
 | 10
-| BrevbakerKoeBunnerSegOpp sin terskelen på 10 er ikke kalibrert mot prod.
+| BrevbakerKoeBunnerSegOpp: terskelen på 10 er ikke kalibrert mot prod.
 | Må justeres når vi har observert den over en stor behandling som produserer mange brev.
 | Middels
 |===
