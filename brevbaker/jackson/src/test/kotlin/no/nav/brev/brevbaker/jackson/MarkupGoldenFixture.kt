@@ -6,7 +6,7 @@ import no.nav.brev.brevbaker.markup.LetterMarkup
 import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.Markup
-import no.nav.brev.brevbaker.pdfbygger.dsl.letterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
 import no.nav.brev.brevbaker.markup.outline.Block.Table.ColumnAlignment
 import no.nav.brev.brevbaker.markup.outline.EditBehaviour
@@ -84,18 +84,17 @@ object MarkupGoldenFixture {
         var next = 1000
         fun id() = next++
         return letterPDFRequest(
+            letterMarkup = letter(),
             spraak = Markup.Spraak.NYNORSK,
             brevtype = Markup.Brevtype.VEDTAKSBREV,
-            letter = letter(),
-        ) {
-            attachment(
+            attachments = listOf(
                 attachmentExtended(inkluderSaksinformasjon = true) {
                     title1 { text(id(), "Vedlegg 1") }
                     outline { paragraph(id()) { text(id(), "Sats: "); variable(id(), "2G") } }
                 }
-            )
-            pdfVedlegg(pdfTittelExtended { text(id(), "Klagerettar") })
-        }
+            ),
+            pdfVedlegg = listOf(pdfTittelExtended { text(id(), "Klagerettar") }),
+        )
     }
 
     fun withDataUsage(): LetterMarkupWithDataUsage = letterMarkupWithDataUsage(

@@ -64,7 +64,7 @@ dependencies {
     implementation(libs.ktor.server.status.pages)
     implementation(libs.bundles.metrics)
 
-    implementation(libs.brevbaker.api)
+    implementation(libs.brevbaker.api) // trengs fortsatt fordi gammel letterMarkup ligger her. Kan fjernes når den er borte.
     implementation(libs.markup.model)
     implementation(project(":brevbaker:jackson"))
     implementation(libs.kotlinx.serialization.json)

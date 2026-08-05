@@ -78,8 +78,7 @@ If the agent finds itself about to write to one of these, stop and change the up
 - `brevbaker/brevbaker-api` - Shared API models, bestiller-DTOs (published artifact)
 - `brevbaker/markup/model` - Pure markup data model plus the pdf-bygger wire contract
   (`LetterPDFRequest`, `PDFCompilationOutput`, `HttpStatusCodes`) (published, **no dependencies at all**)
-- `brevbaker/markup/dsl` - Markup DSL, including the extended (id-explicit) DSL and the
-  `letterPDFRequest` DSL (published)
+- `brevbaker/markup/dsl` - Markup DSL, including the extended (id-explicit) DSL (published)
 - `brevbaker/jackson` - Jackson serialization of internal traffic (**never published**)
 - `brevbaker/pdf-bygger/client` - Contract against pdf-bygger, `PDFByggerService` (**never published**)
 
@@ -118,8 +117,7 @@ because an HTTP DTO moved is exactly what we want to avoid.
 - **The pdf-bygger contract lives in `markup:model`, not in an artifact of its own.**
   `LetterPDFRequest` and friends are expressed *entirely* in the markup model, and nobody can use one
   without the other. A separate `pdf-bygger-api` artifact would only add a version axis to keep in
-  sync — and would reintroduce the duplicate-FQCN problem the moment it bundled the model. Same
-  reasoning for the `letterPDFRequest` DSL living in `markup:dsl`.
+  sync — and would reintroduce the duplicate-FQCN problem the moment it bundled the model.
 - **`markup:model` is one versioned artifact, not a bundled class set.** Its types appear in the
   signature of `brevbaker-api` (`BestillRedigertBrevRequestV2`) as well as in the pdf-bygger contract.
   If they were bundled into each consumer, an external user of both would get the same FQCN from two
@@ -131,8 +129,10 @@ because an HTTP DTO moved is exactly what we want to avoid.
   Gradle substitutes the projects for each other and you get a `CircularReferenceException`
   (`compileKotlin` depending on its own jar). That is why `settings.gradle.kts` uses explicit names
   (`:brevbaker:markup-model`, `:brevbaker:markup-dsl`) with `projectDir` mapping.
-- **`brevbaker:core` builds `LetterPDFRequest` directly** via `letterPDFRequestModel(...)`, opting in
-  to `@MarkupModelApi`, rather than going through the DSL.
+- **`LetterPDFRequest` has no builder DSL.** It is a flat request object, so it is built with the
+  plain factory `letterPDFRequest(...)` in `markup:model`, passing `attachments`/`pdfVedlegg` as
+  ordinary lists (`listOf(attachment { ... })`). The factory is *not* behind `@MarkupModelApi` — it is
+  the only way in, and the `internal` constructor still keeps `copy()` hidden.
 - **`markup:model` must stay dependency-free.** No serialization library, no generated serializers.
   All serialization lives in `brevbaker:jackson`.
 
@@ -143,8 +143,7 @@ The model keeps `internal constructor` + `@ConsistentCopyVisibility`, so `copy()
 **two** opt-in markers, and no more should be added:
 
 - `@MarkupModelApi` (in `markup:model`) — the narrow factory surface `object MarkupModel`, the only
-  way to construct the model outside the DSL. Used by the DSL itself, by `letterPDFRequestModel(...)`
-  and by `brevbaker:core`.
+  way to construct the model outside the DSL. Used by the DSL itself and by `brevbaker:core`.
 - `@ExtendedMarkupDsl` (in `markup:dsl`, package `no.nav.brev.brevbaker.markup.dsl.extended`) — the
   id-explicit DSL with `variable(...)`/`editBehaviour`.
 

@@ -510,7 +510,8 @@ public final class no/nav/brev/brevbaker/pdfbygger/api/LetterPDFRequest {
 }
 
 public final class no/nav/brev/brevbaker/pdfbygger/api/LetterPDFRequestKt {
-	public static final fun letterPDFRequestModel (Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/List;Ljava/util/List;Lno/nav/brev/brevbaker/markup/Markup$Spraak;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;)Lno/nav/brev/brevbaker/pdfbygger/api/LetterPDFRequest;
+	public static final fun letterPDFRequest (Lno/nav/brev/brevbaker/markup/LetterMarkup;Lno/nav/brev/brevbaker/markup/Markup$Spraak;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;Ljava/util/List;Ljava/util/List;)Lno/nav/brev/brevbaker/pdfbygger/api/LetterPDFRequest;
+	public static synthetic fun letterPDFRequest$default (Lno/nav/brev/brevbaker/markup/LetterMarkup;Lno/nav/brev/brevbaker/markup/Markup$Spraak;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/pdfbygger/api/LetterPDFRequest;
 }
 
 public final class no/nav/brev/brevbaker/pdfbygger/api/PDFCompilationOutput {

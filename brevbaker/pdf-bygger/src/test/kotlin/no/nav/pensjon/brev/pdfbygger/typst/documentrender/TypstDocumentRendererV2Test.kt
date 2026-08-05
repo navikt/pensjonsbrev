@@ -6,6 +6,7 @@ import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.Signatur
 import no.nav.brev.brevbaker.markup.dsl.ContentBuilder
 import no.nav.brev.brevbaker.markup.dsl.LetterMarkupBuilder
+import no.nav.brev.brevbaker.markup.dsl.attachment
 import no.nav.brev.brevbaker.markup.dsl.cell
 import no.nav.brev.brevbaker.markup.dsl.choice
 import no.nav.brev.brevbaker.markup.dsl.column
@@ -15,9 +16,10 @@ import no.nav.brev.brevbaker.markup.dsl.header
 import no.nav.brev.brevbaker.markup.dsl.item
 import no.nav.brev.brevbaker.markup.dsl.itemList
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
-import no.nav.brev.brevbaker.pdfbygger.dsl.letterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
 import no.nav.brev.brevbaker.markup.dsl.numberedList
 import no.nav.brev.brevbaker.markup.dsl.paragraph
+import no.nav.brev.brevbaker.markup.dsl.pdfTittel
 import no.nav.brev.brevbaker.markup.dsl.prompt
 import no.nav.brev.brevbaker.markup.dsl.row
 import no.nav.brev.brevbaker.markup.dsl.saksinformasjon
@@ -66,7 +68,7 @@ class TypstDocumentRendererV2Test {
     ): LetterMarkup = letterMarkup(saksinformasjon = saksinformasjon, signatur = signatur, build = build)
 
     private fun request(letter: LetterMarkup): LetterPDFRequest =
-        letterPDFRequest(spraak = Markup.Spraak.BOKMAL, brevtype = Markup.Brevtype.VEDTAKSBREV, letter = letter)
+        letterPDFRequest(letterMarkup = letter, spraak = Markup.Spraak.BOKMAL, brevtype = Markup.Brevtype.VEDTAKSBREV)
 
     @Test
     fun `renderer skriver ut brevtittel og importer riktige typst-funksjoner`() {
@@ -145,18 +147,19 @@ class TypstDocumentRendererV2Test {
     @Test
     fun `vedlegg renderes med startAttachment og endAttachment`() {
         val request = letterPDFRequest(
-            spraak = Markup.Spraak.BOKMAL,
-            brevtype = Markup.Brevtype.VEDTAKSBREV,
-            letter = brev {
+            letterMarkup = brev {
                 title1("Tittel")
                 outline { paragraph("Innhold") }
             },
-        ) {
-            attachment {
-                title1("Vedleggstittel")
-                outline { paragraph("Vedleggsinnhold") }
-            }
-        }
+            spraak = Markup.Spraak.BOKMAL,
+            brevtype = Markup.Brevtype.VEDTAKSBREV,
+            attachments = listOf(
+                attachment {
+                    title1("Vedleggstittel")
+                    outline { paragraph("Vedleggsinnhold") }
+                }
+            ),
+        )
 
         val typst = render(request)
 
@@ -250,15 +253,14 @@ class TypstDocumentRendererV2Test {
     @Test
     fun `pdfVedlegg med PDFTittel renderes i attachments-listen`() {
         val request = letterPDFRequest(
-            spraak = Markup.Spraak.BOKMAL,
-            brevtype = Markup.Brevtype.VEDTAKSBREV,
-            letter = brev {
+            letterMarkup = brev {
                 title1("Tittel")
                 outline { paragraph("Innhold") }
             },
-        ) {
-            pdfVedlegg { text("Skannet vedleggstittel") }
-        }
+            spraak = Markup.Spraak.BOKMAL,
+            brevtype = Markup.Brevtype.VEDTAKSBREV,
+            pdfVedlegg = listOf(pdfTittel { text("Skannet vedleggstittel") }),
+        )
 
         val typst = render(request)
 

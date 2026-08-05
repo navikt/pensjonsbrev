@@ -14,7 +14,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupLetterMarkup
 import no.nav.brev.brevbaker.markup.Attachment as MarkupAttachment
-import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequestModel
+import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 
 internal class BrevbakerPDF(
@@ -63,7 +63,7 @@ internal class BrevbakerPDF(
     ): LetterResponse =
         renderCompleteMarkupV2(letter, redigertBrev, redigerteVedlegg).let { markup ->
             pdfByggerService.producePDFV2(
-                letterPDFRequestModel(
+                letterPDFRequest(
                     letterMarkup = markup.letterMarkup,
                     attachments = markup.attachments,
                     pdfVedlegg = Letter2MarkupV2.renderPDFTitle(letter.toScope(), pdfVedlegg),

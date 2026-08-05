@@ -3,7 +3,6 @@ package no.nav.brev.brevbaker.pdfbygger.api
 import no.nav.brev.brevbaker.markup.Attachment
 import no.nav.brev.brevbaker.markup.LetterMarkup
 import no.nav.brev.brevbaker.markup.Markup
-import no.nav.brev.brevbaker.markup.MarkupModelApi
 import no.nav.brev.brevbaker.markup.PDFTittel
 
 /**
@@ -20,20 +19,18 @@ data class LetterPDFRequest internal constructor(
 )
 
 /**
- * Konstruerer en [LetterPDFRequest] direkte, uten `letterPDFRequest`-DSL-en i `brevbaker:markup:dsl`.
+ * Konstruerer en [LetterPDFRequest].
  *
- * Samme avveining som for markup-modellen: konstruktøren er `internal` slik at `copy()` forblir skjult,
- * og denne fabrikken er den eneste veien inn utenfra. Gjenbruker [MarkupModelApi] som opt-in-markør —
- * det er samme beslutning konsumenten tar ("jeg bygger modellen selv i stedet for å bruke DSL-en"), og
- * to markører hadde bare vært mer å slå på.
+ * Konstruktøren er `internal` slik at `copy()` forblir skjult, og denne fabrikken er den eneste veien inn
+ * utenfra. Vedlegg og PDF-vedlegg-titler bygges med `attachment`- og `pdfTittel`-DSL-ene i
+ * `brevbaker:markup:dsl` og sendes inn som lister.
  */
-@MarkupModelApi
-fun letterPDFRequestModel(
+fun letterPDFRequest(
     letterMarkup: LetterMarkup,
-    attachments: List<Attachment>,
-    pdfVedlegg: List<PDFTittel>,
     spraak: Markup.Spraak,
     brevtype: Markup.Brevtype,
+    attachments: List<Attachment> = emptyList(),
+    pdfVedlegg: List<PDFTittel> = emptyList(),
 ): LetterPDFRequest = LetterPDFRequest(
     letterMarkup = letterMarkup,
     attachments = attachments,

@@ -142,8 +142,10 @@ klasse som bundles to steder, for da hadde en konsument som bruker begge fått s
 uten mulighet til å samkjøre versjonene.
 
 Kontrakten mot pdf-bygger (`LetterPDFRequest`, `PDFCompilationOutput`, `HttpStatusCodes`) ligger i
-`markup-model`, og `letterPDFRequest`-DSL-en i `markup-dsl`. De er uttrykt utelukkende i markup-modellen
-og kan ikke brukes uten den, så egne artefakter hadde bare vært flere versjonsakser å holde i sync.
+`markup-model`. Den er uttrykt utelukkende i markup-modellen og kan ikke brukes uten den, så et eget
+artefakt hadde bare vært en ny versjonsakse å holde i sync. `LetterPDFRequest` har ingen egen DSL — den
+er et flatt request-objekt og bygges med fabrikken `letterPDFRequest(...)`, der vedlegg og
+PDF-vedlegg-titler sendes inn som vanlige lister (`listOf(attachment { ... })`).
 
 `brevdata` er gulvet i stabelen og skal aldri få avhengigheter: det er det eneste PENs api-modeller
 kompilerer mot, så alt som legges der arver hver eneste bestiller. Derfor ligger `IBrevkategori` og
@@ -169,7 +171,7 @@ Modellen har `internal constructor` + `@ConsistentCopyVisibility`, så `copy()` 
 nøyaktig to opt-in-markører:
 
 - `@MarkupModelApi` — konstruksjon av modellen utenom DSL-en, via `object MarkupModel`. Brukes av
-  DSL-en selv og av `letterPDFRequestModel(...)`.
+  DSL-en selv og av `brevbaker:core`.
 - `@ExtendedMarkupDsl` — den id-eksplisitte DSL-en i `no.nav.brev.brevbaker.markup.dsl.extended`, som
   også gir tilgang til `variable(...)` og `editBehaviour`. Den ligger i `markup-dsl` (ikke i en egen
   modul), nettopp for at builder-sømmene skal kunne forbli `internal`. `brevbaker:core` — som eier

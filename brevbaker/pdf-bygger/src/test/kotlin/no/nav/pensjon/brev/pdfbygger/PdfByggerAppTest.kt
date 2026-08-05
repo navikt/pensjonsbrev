@@ -12,7 +12,7 @@ import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
-import no.nav.brev.brevbaker.pdfbygger.dsl.letterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
 import no.nav.brev.brevbaker.markup.dsl.paragraph
 import no.nav.brev.brevbaker.markup.dsl.saksinformasjon
 import no.nav.brev.brevbaker.markup.dsl.signatur
@@ -127,7 +127,7 @@ class PdfByggerAppTest {
         val request = letterPDFRequest(
             spraak = Markup.Spraak.BOKMAL,
             brevtype = Markup.Brevtype.VEDTAKSBREV,
-            letter = letterMarkup(
+            letterMarkup = letterMarkup(
                 saksinformasjon = saksinformasjon(
                     gjelderNavn = PdfByggerTestData.gjelderNavn,
                     gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
