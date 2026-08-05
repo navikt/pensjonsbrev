@@ -13,7 +13,10 @@ name: "Deploy alarmer"
 #
 #    Se docs/modules/ROOT/pages/alarmstrategi.adoc for detaljene og hvordan dette ble verifisert.
 #
-# 2. Alarmene kan endres og rulles ut uten å bygge nye images.
+# 2. Alarmene kan endres og rulles ut uten å bygge nye images. Dette forutsetter at app-workflowene
+#    eksplisitt ekskluderer sin egen alarmfil - alarmfilene ligger under appenes .nais-mapper, og
+#    ville ellers truffet path-filtre som "pensjon/brevbaker/**". Legger du til en ny alarmfil, må
+#    den også legges inn som "!<sti>" i den tilhørende app-workflowen.
 #
 # Konsekvensen av å droppe templating er at appnavnene må skrives ut i alarmfilene. Det er greit
 # så lenge vi kun deployer alarmer til prod.

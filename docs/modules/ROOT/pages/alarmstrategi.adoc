@@ -221,6 +221,10 @@ De rulles ut av `.github/workflows/alerts.yml`, og `validate-alerts.sh` kjører 
 Merk at promtool kun validerer syntaks — at PromQL-en parser og at Go-templatene i annotasjonene er gyldige.
 Den kan *ikke* se om metrikk- eller labelnavn faktisk finnes.
 
+Fordi alarmfilene ligger under appenes egne `.nais`-mapper, treffer de path-filtre som `pensjon/brevbaker/**`.
+App-workflowene ekskluderer dem derfor eksplisitt med `!`, slik at en ren alarmendring ikke bygger og deployer applikasjonen.
+Legger du til en ny alarmfil, må den også ekskluderes i den tilhørende app-workflowen.
+
 === Alarmene gjelder kun prod
 
 Alarmene rulles kun ut til `prod-gcp`, vi ønsker ikke varsler fra dev.
