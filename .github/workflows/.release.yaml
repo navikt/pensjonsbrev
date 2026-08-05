@@ -4,22 +4,17 @@ on:
   workflow_call:
     inputs:
       gradleTarget:
-        description: "gradle project path, or space separated list of project paths"
-        required: true
-        type: string
-      release-common-result:
-        description: "Result from release-common"
+        description: "gradle build target path"
         required: true
         type: string
       changes:
         description: "Changes"
         required: true
         type: string
-      dependsOnCommon:
-        description: "Depends on common"
+      localDependenciesToPublish:
+        description: "publishToMavenLocal tasks required before building this artifact"
         required: false
-        type: boolean
-        default: true
+        type: string
 
 env:
   JavaDistribution: "temurin"
@@ -30,7 +25,6 @@ jobs:
     runs-on: "ubuntu-latest"
     permissions:
       packages: write
-    if: ${{ (inputs.release-common-result == 'success' || inputs.release-common-result == 'skipped' || github.event_name == 'workflow_dispatch') }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -42,12 +36,10 @@ jobs:
         with:
           "distribution": ${{ env.JavaDistribution }}
           "java-version": ${{ env.JavaVersion }}
-      # api-modellene konsumeres ved publiserte koordinater og drar inn brevdata transitivt,
-      # så bibliotekets artefakter må ligge i Maven local før de bygges.
-      - name: "publish brevbaker-biblioteket to Maven local"
-        if: ${{ inputs.dependsOnCommon }}
+      - name: "publish local build dependencies"
+        if: ${{ inputs.localDependenciesToPublish != '' }}
         run: |
-          ./gradlew :brevbaker:brevdata:publishToMavenLocal :brevbaker:markup-model:publishToMavenLocal :brevbaker:markup-dsl:publishToMavenLocal :brevbaker:brevbaker-api:publishToMavenLocal
+          ./gradlew ${{ inputs.localDependenciesToPublish }}
       - name: "compile and run tests"
         env:
           GRADLE_TARGETS: ${{ inputs.gradleTarget }}

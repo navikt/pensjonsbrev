@@ -162,15 +162,6 @@ kjøre
 før du bygger konsumentene — ellers får du `Could not find no.nav.brev.brevbaker:brevdata:<versjon>`.
 CI publiserer de samme artefaktene lokalt før den bygger konsumentene.
 
-#### Rekkefølge ved release
-
-`pensjon`/`alder`/`ufoere:api-model` publiseres med en POM som peker på `brevdata` ved koordinat, og
-`brevbaker-api` med en POM som peker på både `brevdata` og `markup-model`. `brevbaker-bibliotek.yaml`
-publiserer derfor i rekkefølge: `brevdata` og `markup` først, `brevbaker-api` etterpå. Bumper du en
-bibliotekversjon **og** en api-model-versjon i samme PR, må biblioteket rekke å publisere før
-api-modellene, ellers peker POM-en deres på en `brevdata` som ikke finnes ennå. Lokalt løser du det med
-`publishToMavenLocal` som beskrevet over.
-
 #### Opt-in-markører
 
 Modellen har `internal constructor` + `@ConsistentCopyVisibility`, så `copy()` er utilgjengelig utenfor
