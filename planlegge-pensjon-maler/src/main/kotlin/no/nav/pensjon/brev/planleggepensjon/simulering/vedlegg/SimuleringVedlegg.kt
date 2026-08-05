@@ -107,12 +107,12 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
                     }
                     text(bokmal { +" (" + informasjon.uttaksdato + ")" })
                 }
+                includePhrase(AlderspensjonTabell(gradertUttak, informasjon.grad))
             }.orShow {
                 title2 {
                     text(bokmal { +"Ved gradert uttak" })
                 }
             }
-            includePhrase(AlderspensjonTabell(gradertUttak))
 
             ifNotNull(simulering.afpPrivat) { afpPrivatSim ->
                 ifNotNull(afpPrivatSim.vedGradertUttak) { afp ->
@@ -136,7 +136,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
                             text(bokmal { +"Ved 67 år (" + informasjon.uttaksdato + ")" })
                         }
 
-                        includePhrase(AlderspensjonTabell(normPensjonsalder))
+                        includePhrase(AlderspensjonTabell(normPensjonsalder, informasjon.grad))
 
                         ifNotNull(simulering.afpPrivat) { afpPrivatSim ->
                             ifNotNull(afpPrivatSim.vedNormertPensjonsalder) { afp ->
@@ -160,7 +160,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
             }
             text(bokmal { +" (" + simuleringsinformasjon.heltUttakInformasjon.uttaksdato + ")" })
         }
-        includePhrase(AlderspensjonTabell(knekkpunkter.vedHeltUttak))
+        includePhrase(AlderspensjonTabell(knekkpunkter.vedHeltUttak, simuleringsinformasjon.heltUttakInformasjon.grad))
 
         ifNotNull(simulering.afpPrivat) { afpPrivatSim ->
             includePhrase(AfpPrivatTabell(afpPrivatSim.vedHeltUttak))
@@ -178,7 +178,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
                         text(bokmal { +"Ved 67 år (" + informasjon.uttaksdato + ")" })
                     }
                     ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
-                        includePhrase(AlderspensjonTabell(normPensjonsalder))
+                        includePhrase(AlderspensjonTabell(normPensjonsalder, informasjon.grad))
                         ifNotNull(simulering.afpPrivat) { afpPrivatSim ->
                             ifNotNull(afpPrivatSim.vedNormertPensjonsalder) { afp ->
                                 includePhrase(AfpPrivatTabell(afp))
