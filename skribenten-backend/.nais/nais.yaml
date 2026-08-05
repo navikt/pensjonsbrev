@@ -44,6 +44,8 @@ spec:
     requests:
       cpu: "200m"
       memory: "256Mi"
+    limits:
+      memory: "768Mi"
   gcp:
     sqlInstances:
       - type: {{database.postgresVersion}}
