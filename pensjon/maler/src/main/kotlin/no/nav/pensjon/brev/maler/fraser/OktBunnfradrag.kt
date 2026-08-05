@@ -21,9 +21,12 @@ import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNull
+import no.nav.pensjon.brev.template.dsl.expression.minus
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
@@ -36,8 +39,8 @@ object OktBunnfradrag {
 
             paragraph {
                 text(
-                    bokmal { +"Stortinget har vedtatt en lovendring fra 1. oktober 2026, som har tilbakevirkende kraft fra 1. januar 2026. Fribeløpet økes til 136 549 kroner (1G) når du har hatt uføretrygd i 2 år eller mer, uten endring i uføregraden. Det betyr at du kan ha en høyere inntekt ved siden av uføretrygden din før den blir redusert." },
-                    nynorsk { +"Stortinget har vedteke ei lovendring frå 1. oktober 2026, som har tilbakeverkande kraft frå 1. januar 2026. Fribeløpet vert auka til 136 549 kroner (1G) når du har hatt uføretrygd i 2 år eller meir, utan endring i uføregraden. Det betyr at du kan ha ei høgare inntekt ved sida av uføretrygda di før ho vert redusert." },
+                    bokmal { +"Stortinget har vedtatt en lovendring fra 1. oktober 2026, som har tilbakevirkende kraft fra 1. januar 2026. Fribeløpet økes til en ganger folketrygdens grunnbeløp (1G), som nå er 136 549 kroner når du har hatt uføretrygd i 2 år eller mer, uten endring i uføregraden. Det betyr at du kan ha en høyere inntekt ved siden av uføretrygden din før den blir redusert." },
+                    nynorsk { +"Stortinget har vedteke ei lovendring frå 1. oktober 2026, som har tilbakeverkande kraft frå 1. januar 2026. Fribeløpet aukar til ein gong folketrygdens grunnbeløp (1G), som no er 136 549 kroner når du har hatt uføretrygd i 2 år eller meir, utan endring i uføregraden. Det tyder at du kan ha ei høgare inntekt ved sida av uføretrygda di før den vert redusert." },
                 )
             }
             paragraph {
@@ -145,14 +148,14 @@ object OktBunnfradrag {
                 list {
                     item {
                         text(
-                            bokmal { +"Resten av året: Vi øker de månedlige utbetalingene dine ut 2026. Du kan likevel ikke få mer enn uføretrygden din før inntektsavkorting." },
-                            nynorsk { +"Resten av året: Vi aukar dei månadlege utbetalingane dine ut 2026. Du kan likevel ikkje få meir enn uføretrygda di før inntektsavkorting." },
+                            bokmal { +"Resten av året: Vi øker de månedlige utbetalingene dine ut 2026. Vi kan ikke utbetale mer per måned enn uføretrygden din før inntektsavkorting." },
+                            nynorsk { +"Resten av året: Vi aukar dei månadlege utbetalingane dine ut 2026. Vi kan ikkje utbetale meir per månad enn uføretrygda di før inntektsavkorting." },
                         )
                     }
                     item {
                         text(
-                            bokmal { +"Neste år: Hvis du fortsatt har penger til gode etter at året er omme, får du resten utbetalt i etteroppgjøret neste år." },
-                            nynorsk { +"Neste år: Viss du framleis har pengar til gode etter at året er omme, får du resten utbetalt i etteroppgjeret neste år." },
+                            bokmal { +"Neste år: Hvis du fortsatt har penger til gode etter at året er ferdig, får du resten utbetalt i etteroppgjøret neste år." },
+                            nynorsk { +"Neste år: Viss du framleis har pengar til gode etter at året er ferdig, får du resten utbetalt i etteroppgjeret neste år." },
                         )
                     }
                 }
@@ -167,25 +170,21 @@ object OktBunnfradrag {
 
             title1 {
                 text(
-                    bokmal { +"To viktige begrep" },
-                    nynorsk { +"To viktige omgrep" },
+                    bokmal { +"Hva er fribeløp og bunnfradrag? " },
+                    nynorsk { +"Hva er fribeløp og botnfrådrag? " },
                 )
             }
             paragraph {
-                list {
-                    item {
-                        text(
-                            bokmal { +"Bunnfradrag (tidligere inntektsgrense) - Bunnfradraget består av inntekt etter uførhet (IEU) og et fribeløp. Bunnfradraget er den årlige inntekten du kan ha, før vi reduserer uføretrygden din." },
-                            nynorsk { +"Botnfrådrag (tidlegare inntektsgrense) - Botnfrådraget består av inntekt etter uførleik (IEU) og eit fribeløp. Botnfrådraget er den årlege inntekta du kan ha, før vi reduserer uføretrygda di." },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"Fribeløp i dag er 0,4 G, dette endres til 1 G med virkning fra 1. januar 2026." },
-                            nynorsk { +"Fribeløp i dag er 0,4 G, dette vert endra til 1 G med verknad frå 1. januar 2026." },
-                        )
-                    }
-                }
+                text(
+                    bokmal {
+                        +"Bunnfradrag er hvor mye inntekt du kan ha før vi begynner å redusere uføretrygden din. Bunnfradraget består av fribeløpet (0,4 G eller 1 G) pluss den inntekten du eventuelt skal ha ved siden av uføretrygden. " +
+                                "Per nå er grunnbeløpet (G) 136 549 kroner. Grunnbeløpet justeres i mai hvert år. "
+                    },
+                    nynorsk {
+                        +"Botnfrådrag er kor mykje inntekt du kan ha før vi byrjar å redusere uføretrygda di. Botnfrådraget består av fribeløpet (0,4 G eller 1 G) pluss den inntekta du eventuelt skal ha ved sida av uføretrygda. " +
+                                "Per no er grunnbeløpet (G) 136 549 kroner. Grunnbeløpet vert justert i mai kvart år. "
+                    },
+                )
             }
 
             title1 {
@@ -196,29 +195,24 @@ object OktBunnfradrag {
             }
             showIf(!data.oktFribelopHeleAret) {
                 // Deler av året
-                ifNotNull(data.datoOkning) { datoOkning ->
-                    ifNotNull(data.antallMnd1g) { antallMnd1g ->
-                        paragraph {
-                            text(
-                                bokmal { +"Fra og med " + datoOkning.format() + " har du hatt uføretrygd i 2 år og fribeløpet ditt skal øke til 1G. Før denne datoen var fribeløpet ditt 0,4 G, og beregningen av bunnfradraget for hele året vil derfor se slik ut:" },
-                                nynorsk { +"Frå og med " + datoOkning.format() + " har du hatt uføretrygd i 2 år og fribeløpet ditt skal auke til 1G. Før denne datoen var fribeløpet ditt 0,4 G, og berekninga av botnfrådraget for heile året vil derfor sjå slik ut:" },
-                            )
-                        }
-                        paragraph {
-                            //TODO: Hva er dette, legge inn alle disse tallene? Jeg gjorde det. Burde det evt presiseres hva tallene er? Og hva g-beløpene er?
-                            text(
-                                //TODO 12- antall mnd
-                                bokmal { +data.ieu.format() + " + " + antallMnd1g.format() + " * 0,4G + " + antallMnd1g.format() + " * 1G" },
-                                nynorsk { +data.ieu.format() + " + " + antallMnd1g.format() + " * 0,4G + " + antallMnd1g.format() + " * 1G" },
-                            )
-                        }
-                        paragraph {
-                            text(
-                                bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 1 G som fribeløp hele året." },
-                                nynorsk { +"Frå 2027 vil du få nytt botnfrådrag med 1 G som fribeløp heile året." },
-                            )
-                        }
-                    }
+                paragraph {
+                    text(
+                        bokmal { +"Fra og med " + data.datoOkning.format() + " har du hatt uføretrygd i 2 år og fribeløpet ditt skal øke til 1G. Før denne datoen var fribeløpet ditt 0,4 G, og beregningen av bunnfradraget for hele året vil derfor se slik ut:" },
+                        nynorsk { +"Frå og med " + data.datoOkning.format() + " har du hatt uføretrygd i 2 år og fribeløpet ditt skal auke til 1G. Før denne datoen var fribeløpet ditt 0,4 G, og berekninga av botnfrådraget for heile året vil derfor sjå slik ut:" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +data.ieu.format() + " (inntekt etter uførhet) + 0,4 G * " + 12.expr().minus(data.antallMnd1g).format() + "/12 (mnd med gammelt fribeløp) + 1 G * " + data.antallMnd1g.format() + "/12 (mnd med nytt fribeløp)" },
+                        nynorsk { +data.ieu.format() + " (inntekt etter uførleik) + 0,4 G * " + 12.expr().minus(data.antallMnd1g).format() + "/12 (mnd med gamalt fribeløp) + 1 G * " + data.antallMnd1g.format() + "/12 (mnd med nytt fribeløp)" },
+                        fontType = ITALIC
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 1 G som fribeløp hele året." },
+                        nynorsk { +"Frå 2027 vil du få nytt botnfrådrag med 1 G som fribeløp heile året." },
+                    )
                 }
             }
             paragraph {
@@ -247,18 +241,10 @@ object OktBunnfradrag {
                         nynorsk { +"Endring i barnetillegg" },
                     )
                 }
-                // TODO: Får man høyere? Hva skal styre om det dukker opp?
                 paragraph {
                     text(
                         bokmal { +"Regelverksendringene fører til at du får en høyere utbetaling av uføretrygd. Uføretrygden regnes med som inntekt når vi beregner barnetillegg. Derfor får du en lavere utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er: " + data.barnetillegg.ifNull(Kroner(0)).format() },
                         nynorsk { +"Regelverksendringane fører til at du får ei høgare utbetaling av uføretrygd. Uføretrygda vert rekna med som inntekt når vi reknar ut barnetillegg. Derfor får du ei lågare utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er: " + data.barnetillegg.ifNull(Kroner(0)).format() },
-                    )
-                }
-                //TODO: Får man lavere?
-                paragraph {
-                    text(
-                        bokmal { +"Regelverksendringene fører til at du får en lavere utbetaling av uføretrygd. Uføretrygden regnes med som inntekt når vi beregner barnetillegg. Derfor får du en høyere utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er: " + data.barnetillegg.ifNull(Kroner(0)).format() },
-                        nynorsk { +"Regelverksendringane fører til at du får ei lågare utbetaling av uføretrygd. Uføretrygda vert rekna med som inntekt når vi reknar ut barnetillegg. Derfor får du ei høgare utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er: " + data.barnetillegg.ifNull(Kroner(0)).format() },
                     )
                 }
             }
