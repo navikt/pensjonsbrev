@@ -43,7 +43,7 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
         )
     ) {
         title {
-            text(bokmal { +"Beregning av pensjon" })
+            text(bokmal { +"" })
         }
 
         outline {
@@ -53,7 +53,7 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
                 }
             }.orShowIf(saksbehandlerValg.simulering.afpOffentligTidsbegrenset.notNull() or saksbehandlerValg.simulering.afpOffentligLivsvarig.notNull()) {
                 title1 {
-                    text(bokmal { +"Beregning av alderspensjon og AFP i offentlig sektor" })
+                    text(bokmal { +"Beregning av AFP i offentlig sektor etterfulgt av alderspensjon" })
                 }
             }.orShow {
                 title1 {

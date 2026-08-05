@@ -88,8 +88,8 @@ object Fixtures : LetterDataFactory {
     fun createBrevDtoMedAfpOffentligTidsbegrenset() = ApSimuleringBrevDto(
         saksbehandlerValg = createLagreSimuleringDto().copy(
             simuleringsinformasjon = createSimuleringsinformasjon().copy(
-                heltUttakInformasjon = Uttaksinformasjon(alder = Alder(67, 0), uttaksdato = "01.02.2030"),
-                gradertUttakInformasjon = Uttaksinformasjon(alder = Alder(63, 2), uttaksdato = "01.04.2026"),
+                heltUttakInformasjon = Uttaksinformasjon(alder = Alder(67, 0), uttaksdato = "01.02.2030", grad = 100),
+                gradertUttakInformasjon = Uttaksinformasjon(alder = Alder(63, 2), uttaksdato = "01.04.2026", grad = 40),
             ),
             simulering = createSimulering().copy(
                 maanedligAlderspensjonForKnekkpunkter = SimuleringV1MaanedligAlderspensjonForKnekkpunkter(
@@ -255,9 +255,9 @@ object Fixtures : LetterDataFactory {
     )
 
     private fun createSimuleringsinformasjon() = Simuleringsinformasjon(
-        gradertUttakInformasjon = Uttaksinformasjon(alder = Alder(aar = 62, maaneder = 0), uttaksdato = "01.02.2025"),
-        heltUttakInformasjon = Uttaksinformasjon(alder = Alder(aar = 70, maaneder = 2), uttaksdato = "01.04.2033"),
-        normertUttakInformasjon = Uttaksinformasjon(alder = Alder(aar = 67, maaneder = 2), uttaksdato = "01.04.2030"),
+        gradertUttakInformasjon = Uttaksinformasjon(alder = Alder(aar = 62, maaneder = 0), uttaksdato = "01.02.2025", grad = 40),
+        heltUttakInformasjon = Uttaksinformasjon(alder = Alder(aar = 70, maaneder = 2), uttaksdato = "01.04.2033", grad = 100),
+        normertUttakInformasjon = Uttaksinformasjon(alder = Alder(aar = 67, maaneder = 2), uttaksdato = "01.04.2030", grad = 100),
         sivilstatus = Sivilstatus.UGIFT,
         utenlandsperioder = listOf(
             SimuleringUtenlandsperiode(

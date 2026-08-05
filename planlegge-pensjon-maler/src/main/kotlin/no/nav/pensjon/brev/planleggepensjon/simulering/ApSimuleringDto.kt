@@ -122,7 +122,8 @@ data class Alder(
 
 data class Uttaksinformasjon (
     val alder: Alder,
-    val uttaksdato: String
+    val uttaksdato: String,
+    val grad: Int
 )
 
 data class Simuleringsinformasjon(
@@ -235,13 +236,13 @@ enum class Sivilstatus(val value: String = "None") {
     UOPPGITT,
     UGIFT("Ugift"),
     GIFT("Gift"),
-    ENKE_ELLER_ENKEMANN,
+    ENKE_ELLER_ENKEMANN("Enke/enkemann"),
     SKILT("Skilt"),
     SEPARERT("Separert"),
-    REGISTRERT_PARTNER,
-    SEPARERT_PARTNER,
-    SKILT_PARTNER,
-    GJENLEVENDE_PARTNER,
+    REGISTRERT_PARTNER("Registrert partner"),
+    SEPARERT_PARTNER("Separert partner"),
+    SKILT_PARTNER("Skilt partner"),
+    GJENLEVENDE_PARTNER("Gjenlevende partner"),
     SAMBOER("Samboer")
 }
 
