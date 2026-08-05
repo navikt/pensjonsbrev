@@ -49,8 +49,9 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
 });
 
 const queryRetries = 3;
-const isSpecialCaseErrorStatus = (status: number | undefined) =>
-  status === 404 || status === 409 || status === 422 || status === 423 || status === 500;
+const shouldSkipRetry = (status: number | undefined) =>
+  status === 404 || status === 409 || status === 422 || status === 423;
+const shouldHandleLocally = (status: number | undefined) => shouldSkipRetry(status) || status === 500;
 
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
@@ -64,9 +65,9 @@ function RedigerBrevPage() {
     queryFn: () => getBrev.queryFn(saksId, brevId),
     staleTime: Number.POSITIVE_INFINITY,
     retry: (failureCount: number, error: AxiosError) => {
-      return failureCount < queryRetries && !isSpecialCaseErrorStatus(error.response?.status);
+      return failureCount < queryRetries && !shouldSkipRetry(error.response?.status);
     },
-    throwOnError: (error: AxiosError) => !isSpecialCaseErrorStatus(error.response?.status),
+    throwOnError: (error: AxiosError) => !shouldHandleLocally(error.response?.status),
   });
 
   useEffect(() => {

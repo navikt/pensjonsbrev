@@ -29,13 +29,16 @@ test.describe("attestant redigering", () => {
   });
 
   test("kan gå til brevbehandler når henting av vedtaksbrev feiler", async ({ page }) => {
-    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true", (route) =>
-      route.fulfill({ status: 500 }),
-    );
+    let requestCount = 0;
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true", (route) => {
+      requestCount++;
+      return route.fulfill({ status: 500 });
+    });
 
     await page.goto("/saksnummer/123456/attester/1/redigering");
 
-    await expect(page.getByText("En feil skjedde ved henting av vedtaksbrev")).toBeVisible();
+    await expect(page.getByText("En feil skjedde ved henting av vedtaksbrev")).toBeVisible({ timeout: 15_000 });
+    expect(requestCount).toBe(4);
     await page.getByRole("button", { name: "Gå til brevbehandler" }).click();
     await expect(page).toHaveURL(/\/saksnummer\/123456\/brevbehandler\?brevId=1/);
   });
