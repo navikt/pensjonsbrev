@@ -101,6 +101,10 @@ fun Application.skribentenApp() {
             logger.info("${cause.status} - Adresse mangler: ${cause.message}")
             call.respond(status = cause.status, BrevExceptionDto("Adresse mangler", "Fant ingen kontaktadresse for personen"))
         }
+        exception<PdlAuthServiceException> { call, cause ->
+            logger.info("Feil mot PDL", cause.cause)
+            call.respond(status = cause.status, message = "Teknisk feil fra PDL")
+        }
         exception<ServiceException> { call, cause ->
             logger.error(cause.message, cause)
             call.respond(status = cause.status, message = cause.message)

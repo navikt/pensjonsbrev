@@ -37,7 +37,11 @@ interface PdlService {
     suspend fun hentBrukerContext(ident: Pid, behandlingsnumre: List<Behandlingsnummer>): Pdl.PersonContext?
 }
 
-class PdlServiceException(message: String, status: HttpStatusCode = HttpStatusCode.InternalServerError) : ServiceException(message, status = status)
+abstract class AbstractPdlServiceException(message: String, status: HttpStatusCode = HttpStatusCode.InternalServerError) : ServiceException(message, status = status)
+
+class PdlServiceException(message: String, status: HttpStatusCode = HttpStatusCode.InternalServerError) : AbstractPdlServiceException(message, status = status)
+
+class PdlAuthServiceException(message: String, status: HttpStatusCode) : AbstractPdlServiceException(message, status = status)
 
 class PdlServiceHttp(config: OboClientConfig, authService: AuthService) : PdlService, ServiceStatus, Closeable {
 
@@ -149,16 +153,21 @@ class PdlServiceHttp(config: OboClientConfig, authService: AuthService) : PdlSer
     private fun <T : Any> PDLResponse<T>.handleGraphQLErrors(): T? =
         if (errors?.isNotEmpty() == true) {
             val error = errors.also { it.logErrors() }.first()
+            val feilkode = error.extensions?.code
+            val status = when (feilkode) {
+                PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthenticated -> HttpStatusCode.InternalServerError
+                PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthorized -> HttpStatusCode.InternalServerError
+                PDLResponse.PDLError.PDLExtensions.ErrorCode.not_found -> HttpStatusCode.NotFound
+                PDLResponse.PDLError.PDLExtensions.ErrorCode.bad_request -> HttpStatusCode.BadRequest
+                PDLResponse.PDLError.PDLExtensions.ErrorCode.server_error -> HttpStatusCode.InternalServerError
+                null -> HttpStatusCode.InternalServerError
+            }
+            if (feilkode == PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthenticated || feilkode == PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthorized) {
+                throw PdlAuthServiceException(error.message, status)
+            }
             throw PdlServiceException(
                 message = error.message,
-                status = when (error.extensions?.code) {
-                    PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthenticated -> HttpStatusCode.InternalServerError
-                    PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthorized -> HttpStatusCode.InternalServerError
-                    PDLResponse.PDLError.PDLExtensions.ErrorCode.not_found -> HttpStatusCode.NotFound
-                    PDLResponse.PDLError.PDLExtensions.ErrorCode.bad_request -> HttpStatusCode.BadRequest
-                    PDLResponse.PDLError.PDLExtensions.ErrorCode.server_error -> HttpStatusCode.InternalServerError
-                    null -> HttpStatusCode.InternalServerError
-                }
+                status = status
             )
         } else {
             data
