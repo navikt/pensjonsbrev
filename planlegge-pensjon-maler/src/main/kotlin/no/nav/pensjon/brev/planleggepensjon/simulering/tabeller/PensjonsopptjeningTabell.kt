@@ -21,16 +21,16 @@ data class PensjonsopptjeningTabell(
                 column {
                     text(bokmal { +"År" })
                 }
-                column(alignment = RIGHT) {
+                column(columnSpan = 3, alignment = RIGHT) {
                     text(bokmal { +"Pensjonsgivende inntekt" })
                 }
-                column(alignment = RIGHT) {
+                column(columnSpan = 2, alignment = RIGHT) {
                     text(bokmal { +"Pensjonspoeng" })
                 }
-                column(alignment = RIGHT) {
+                column(columnSpan = 3, alignment = RIGHT) {
                     text(bokmal { +"Pensjonsbeholdning" })
                 }
-                column {
+                column(columnSpan = 3) {
                     text(bokmal { +"Merknad" })
                 }
             }) {
