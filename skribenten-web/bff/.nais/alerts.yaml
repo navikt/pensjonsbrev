@@ -93,7 +93,7 @@ spec:
               or
               absent(haproxy_backend_http_requests_total{proxy="pensjonsbrev_svc_skribenten-web_http"})
             )
-            and on() hour() >= 8
+            and on() hour() >= 9
             and on() hour() < 15
             and on() day_of_week() >= 1
             and on() day_of_week() <= 5
