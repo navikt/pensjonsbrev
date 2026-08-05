@@ -6,6 +6,7 @@ name: "deploy: skribenten-web"
     paths:
       - .github/workflows/deploy-skribenten-web.yaml
       - skribenten-web/**
+      - "!skribenten-web/bff/.nais/alerts.yaml"
   workflow_dispatch:
 
 permissions:

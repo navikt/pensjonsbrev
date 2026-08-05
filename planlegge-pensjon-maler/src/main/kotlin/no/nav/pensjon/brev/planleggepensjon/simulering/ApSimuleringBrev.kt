@@ -45,7 +45,7 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
         )
     ) {
         title {
-            text(bokmal { +"Beregning av pensjon" })
+            text(bokmal { +"" })
         }
 
         outline {
@@ -53,40 +53,13 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
                 title1 {
                     text(bokmal { +"Beregning av alderspensjon og AFP i privat sektor" })
                 }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du har fått en foreløpig beregning av alderspensjon og AFP i privat sektor. "
-                            +"Se vedlegg for beløp og detaljer om beregningen. "
-                            +"Kontakt Nav hvis du har spørsmål."
-                        },
-                    )
-                }
             }.orShowIf(saksbehandlerValg.simulering.afpOffentligTidsbegrenset.notNull() or saksbehandlerValg.simulering.afpOffentligLivsvarig.notNull()) {
                 title1 {
-                    text(bokmal { +"Beregning av alderspensjon og AFP i offentlig sektor" })
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du har fått en foreløpig beregning av alderspensjon og AFP i offentlig sektor. "
-                            +"Se vedlegg for beløp og detaljer om beregningen. "
-                            +"Kontakt Nav hvis du har spørsmål."
-                        },
-                    )
+                    text(bokmal { +"Beregning av AFP i offentlig sektor etterfulgt av alderspensjon" })
                 }
             }.orShow {
                 title1 {
                     text(bokmal { +"Beregning av alderspensjon" })
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du har fått en foreløpig beregning av alderspensjon. "
-                            +"Se vedlegg for beløp og detaljer om beregningen. "
-                            +"Kontakt Nav hvis du har spørsmål."
-                        },
-                    )
                 }
             }
         }

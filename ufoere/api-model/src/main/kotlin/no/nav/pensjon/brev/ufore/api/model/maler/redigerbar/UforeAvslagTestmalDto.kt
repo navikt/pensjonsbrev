@@ -18,6 +18,7 @@ data class UforeAvslagTestmalDto(
 
     data class UforeAvslagPendata(
         val kravMottattDato: LocalDate,
-        val vurdering: List<String>
+        val vurdering: List<String>,
+        val vurderingsTekst: String,
     ) : FagsystemBrevdata
 }
