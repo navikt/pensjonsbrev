@@ -249,7 +249,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         }
         ifNotNull(simulering.afpOffentligTidsbegrenset) { afp ->
             ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
-                title2 {
+                title3 {
                     text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
                     showIf(informasjon.alder.maaneder greaterThan 1) {
                         text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
@@ -264,7 +264,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
 
         ifNotNull(knekkpunkter.vedGradertUttak) { alderspensjon ->
             ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
-                title2 {
+                title3 {
                     text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
                     showIf(informasjon.alder.maaneder greaterThan 1) {
                         text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
@@ -284,7 +284,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
             showIf(simuleringsinformasjon.normertPensjonsalderPlassering.equalTo(NormertPensjonsalderPlassering.MELLOM_GRADERT_OG_HELT)) {
                 ifNotNull(simuleringsinformasjon.normertUttakInformasjon) { informasjon ->
-                    title2 {
+                    title3 {
                         text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
                         showIf(informasjon.alder.maaneder greaterThan 1) {
                             text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
@@ -304,7 +304,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         }
 
         ifNotNull(simuleringsinformasjon.heltUttakInformasjon) { informasjon ->
-            title2 {
+            title3 {
                 text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
                 showIf(informasjon.alder.maaneder greaterThan 1) {
                     text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
@@ -323,7 +323,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
             showIf(simuleringsinformasjon.normertPensjonsalderPlassering.equalTo(NormertPensjonsalderPlassering.ETTER_HELT)) {
                 ifNotNull(simuleringsinformasjon.normertUttakInformasjon) { informasjon ->
-                    title2 {
+                    title3 {
                         text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
                         showIf(informasjon.alder.maaneder greaterThan 1) {
                             text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
