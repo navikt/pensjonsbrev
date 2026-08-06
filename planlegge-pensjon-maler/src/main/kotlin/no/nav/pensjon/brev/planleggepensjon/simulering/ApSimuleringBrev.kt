@@ -53,7 +53,7 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
                 text(bokmal { +"Beregning av alderspensjon" })
             }
         }
-        val fritekst = "<Legg til tekst>"
+        val fritekst = fritekst("<Legg til tekst>")
 
         outline {
             paragraph {
