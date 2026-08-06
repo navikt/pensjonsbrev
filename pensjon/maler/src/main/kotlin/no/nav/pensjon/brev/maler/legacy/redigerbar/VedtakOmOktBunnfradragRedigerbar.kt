@@ -28,7 +28,7 @@ object VedtakOmOktBunnfradragRedigerbar : RedigerbarTemplate<VedtakOmOktBunnfrad
 
     override val featureToggle = FeatureToggles.vedtakOmOktBunnfradrag.toggle
 
-    override val kode = Pesysbrevkoder.Redigerbar.UT_VEDTAK_OKT_BUNNFRADRAG_2026
+    override val kode = Pesysbrevkoder.Redigerbar.UT_VEDTAK_OKT_BUNNFRADRAG_2026_RED
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
