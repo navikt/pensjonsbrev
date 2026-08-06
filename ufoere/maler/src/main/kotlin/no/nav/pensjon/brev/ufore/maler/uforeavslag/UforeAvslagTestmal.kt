@@ -91,16 +91,16 @@ object UforeAvslagTestmal : RedigerbarTemplate<UforeAvslagTestmalDto> {
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
-                paragraph {
-                    text(bokmal { +redigerbarData(pesysData.vurderingsTekst) },
-                        nynorsk { +redigerbarData(pesysData.vurderingsTekst) })
-                }
-//                forEach(pesysData.vurdering) {
-//                    paragraph {
-//                        text(bokmal { + redigerbarData(it) },
-//                            nynorsk { + redigerbarData(it) })
-//                    }
+//                paragraph {
+//                    text(bokmal { +redigerbarData(pesysData.vurderingsTekst) },
+//                        nynorsk { +redigerbarData(pesysData.vurderingsTekst) })
 //                }
+                forEach(pesysData.vurdering) {
+                    paragraph {
+                        text(bokmal { + redigerbarData(it) },
+                            nynorsk { + redigerbarData(it) })
+                    }
+                }
             }
 
             paragraph {
