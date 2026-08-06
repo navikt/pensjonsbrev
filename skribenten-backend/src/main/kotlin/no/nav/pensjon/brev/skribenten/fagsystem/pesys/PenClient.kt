@@ -77,7 +77,14 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenCli
         when {
             status.isSuccess() -> body()
             status == HttpStatusCode.NotFound -> null
-            status == HttpStatusCode.UnprocessableEntity -> throw PenAdresseManglerException()
+            status == HttpStatusCode.UnprocessableEntity -> {
+                val parsed = body<Pen.BestillBrevResponse>()
+                if (parsed.error?.tekniskgrunn == "AdresseMangler") {
+                    throw PenAdresseManglerException()
+                } else {
+                    throw PenServiceException("Feil ved kall til PEN som ga unprocessable entity: $parsed")
+                }
+            }
             else -> throw PenServiceException("Feil ved kall til PEN: ${bodyAsText()}")
         }
 
