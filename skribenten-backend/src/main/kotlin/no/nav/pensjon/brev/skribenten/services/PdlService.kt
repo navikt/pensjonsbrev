@@ -154,6 +154,9 @@ class PdlServiceHttp(config: OboClientConfig, authService: AuthService) : PdlSer
         if (errors?.isNotEmpty() == true) {
             val error = errors.also { it.logErrors() }.first()
             val feilkode = error.extensions?.code
+            if (feilkode in setOf(PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthenticated, PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthorized) && error.extensions?.details?.policy == "skjermede_navansatte_og_familiemedlemmer") {
+                throw PdlAuthServiceException(error.message, HttpStatusCode.UnprocessableEntity)
+            }
             val status = when (feilkode) {
                 PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthenticated -> HttpStatusCode.InternalServerError
                 PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthorized -> HttpStatusCode.InternalServerError
@@ -161,9 +164,6 @@ class PdlServiceHttp(config: OboClientConfig, authService: AuthService) : PdlSer
                 PDLResponse.PDLError.PDLExtensions.ErrorCode.bad_request -> HttpStatusCode.BadRequest
                 PDLResponse.PDLError.PDLExtensions.ErrorCode.server_error -> HttpStatusCode.InternalServerError
                 null -> HttpStatusCode.InternalServerError
-            }
-            if (feilkode == PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthenticated || feilkode == PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthorized) {
-                throw PdlAuthServiceException(error.message, status)
             }
             throw PdlServiceException(
                 message = error.message,
