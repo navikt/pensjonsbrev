@@ -40,6 +40,7 @@ object PlanleggePensjonBrevkoder {
 }
 
 enum class FeatureToggles(key: String) {
-    apSimulering("apSimulering");
+    apSimulering("apSimulering"),
+    serviceberegning("serviceberegning");
     val toggle = FeatureToggle(key)
 }

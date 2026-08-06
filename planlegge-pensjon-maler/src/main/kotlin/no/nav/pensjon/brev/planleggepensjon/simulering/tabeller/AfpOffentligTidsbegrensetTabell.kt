@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.text
 
 data class AfpOffentligTidsbegrensetTabell(
     val afp: Expression<TidsbegrensetOffentligAfp>,
+    val sumLabel: String = "Sum AFP",
 ) : OutlinePhrase<LangBokmal>() {
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         paragraph {
@@ -50,7 +51,7 @@ data class AfpOffentligTidsbegrensetTabell(
                     }
                 }
                 row {
-                    cell { text(bokmal { +"Sum AFP" }, fontType = BOLD) }
+                    cell { text(bokmal { +sumLabel }, fontType = BOLD) }
                     cell { text(bokmal { +afp.totaltAfpBeloep.format(denominator = false) }, fontType = BOLD) }
                 }
             }

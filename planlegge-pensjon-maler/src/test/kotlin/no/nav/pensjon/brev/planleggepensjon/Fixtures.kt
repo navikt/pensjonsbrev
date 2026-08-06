@@ -5,6 +5,9 @@ import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrevDto
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningPesysData
 import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimulering
@@ -44,6 +47,7 @@ object Fixtures : LetterDataFactory {
     override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
             ApSimuleringBrevDto::class -> createSimuleringBrevDto() as T
+            ServiceberegningBrevDto::class -> createServiceberegningBrevDto() as T
             EmptyRedigerbarBrevdata::class -> EmptyRedigerbarBrevdata as T
             EmptyAutobrevdata::class -> EmptyAutobrevdata as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
@@ -58,6 +62,32 @@ object Fixtures : LetterDataFactory {
     }
 
     private fun createSimuleringBrevDto() = createBrevDtoMedAfpPrivat()
+
+    fun createServiceberegningBrevDto() = ServiceberegningBrevDto(
+        saksbehandlerValg = EmptySaksbehandlerValg,
+        pesysData = ServiceberegningPesysData(
+            fornavn = "Ola",
+            etternavn = "Nordmann",
+            uttaksalder = Alder(62, 10),
+            uttaksdato = LocalDate.of(2027, 2, 1),
+            afp = TidsbegrensetOffentligAfp(
+                alderAar = 62,
+                totaltAfpBeloep = Kroner(31353),
+                tidligereArbeidsinntekt = Kroner(550000),
+                grunnbeloep = Kroner(130160),
+                sluttpoengtall = 4.73,
+                trygdetid = 40,
+                poengaarTom1991 = 4,
+                poengaarFom1992 = 36,
+                grunnpensjon = Kroner(10847),
+                tilleggspensjon = Kroner(17667),
+                afpTillegg = Kroner(1700),
+                saertillegg = Kroner(1139),
+                afpGrad = Percent(100),
+                erAvkortet = true,
+            ),
+        ),
+    )
 
     fun createBrevDtoMedAfpPrivat() = ApSimuleringBrevDto(
         saksbehandlerValg = createLagreSimuleringDto(),
