@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.InMemoryCache
 import no.nav.pensjon.brev.skribenten.fagsystem.*
+import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.*
@@ -33,7 +34,8 @@ private val testSak = Pen.SakSelection(
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("Sakstype123"),
     pid = Pid("12345"),
-    behandlingsnumre = listOf()
+    behandlingsnumre = listOf(),
+    tema = Tema("tema1"),
 )
 private val sakVikafossen = Pen.SakSelection(
     saksId = SaksId(7007),
@@ -41,7 +43,8 @@ private val sakVikafossen = Pen.SakSelection(
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("Sakstype123"),
     pid = Pid("007"),
-    behandlingsnumre = listOf()
+    behandlingsnumre = listOf(),
+    tema = Tema("tema1"),
 )
 
 private val generellSak0001 = Pen.SakSelection(
@@ -50,7 +53,8 @@ private val generellSak0001 = Pen.SakSelection(
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("GENRL"),
     pid = Pid("12345"),
-    behandlingsnumre = listOf()
+    behandlingsnumre = listOf(),
+    tema = Tema("tema1"),
 )
 
 private val generellSak0002 = Pen.SakSelection(
@@ -60,6 +64,7 @@ private val generellSak0002 = Pen.SakSelection(
     sakType = Sakstype("GENRL"),
     pid = Pid("12345"),
     behandlingsnumre = listOf(),
+    tema = Tema("tema1"),
 )
 
 
