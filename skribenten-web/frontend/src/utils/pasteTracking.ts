@@ -5,6 +5,8 @@ export interface PasteMetadata {
   htmlTagger?: string;
 }
 
+const MAX_HTML_LENGTH_FOR_TAG_EXTRACTION = 100_000;
+
 export function getPasteMetadata(clipboard: Pick<DataTransfer, "getData" | "types">): PasteMetadata {
   const types = Array.from(clipboard.types);
   const hasHtml = types.includes("text/html");
@@ -17,13 +19,19 @@ export function getPasteMetadata(clipboard: Pick<DataTransfer, "getData" | "type
 }
 
 function extractHtmlTags(html: string): string | undefined {
-  const template = document.createElement("template");
-  template.innerHTML = html;
-  const tags = [
-    ...new Set(Array.from(template.content.querySelectorAll("*")).map((element) => element.tagName.toLowerCase())),
-  ]
-    .sort()
-    .slice(0, 25);
+  if (html.length > MAX_HTML_LENGTH_FOR_TAG_EXTRACTION) return undefined;
 
-  return tags.length > 0 ? tags.join(",") : undefined;
+  try {
+    const template = document.createElement("template");
+    template.innerHTML = html;
+    const tags = [
+      ...new Set(Array.from(template.content.querySelectorAll("*")).map((element) => element.tagName.toLowerCase())),
+    ]
+      .sort()
+      .slice(0, 25);
+
+    return tags.length > 0 ? tags.join(",") : undefined;
+  } catch {
+    return undefined;
+  }
 }

@@ -1,10 +1,10 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 
 import { getPasteMetadata } from "./pasteTracking";
 
 function clipboard(types: string[], data: Record<string, string> = {}): Pick<DataTransfer, "getData" | "types"> {
   return {
-    getData: (type) => data[type] ?? "",
+    getData: (type: string) => data[type] ?? "",
     types: types as readonly string[],
   };
 }
@@ -18,6 +18,27 @@ describe("getPasteMetadata", () => {
     );
 
     expect(metadata).toEqual({ innholdsformat: "HTML", htmlTagger: "br,p,strong" });
+  });
+
+  test("hopper over tagguttrekk for svært stor HTML", () => {
+    const metadata = getPasteMetadata(
+      clipboard(["text/html"], {
+        "text/html": `<p>${"a".repeat(100_000)}</p>`,
+      }),
+    );
+
+    expect(metadata).toEqual({ innholdsformat: "HTML", htmlTagger: undefined });
+  });
+
+  test("feiler stille dersom DOM-parsingen kaster", () => {
+    vi.spyOn(document, "createElement").mockImplementationOnce(() => {
+      throw new Error("DOM parsing failed");
+    });
+
+    expect(getPasteMetadata(clipboard(["text/html"], { "text/html": "<p>Hei</p>" }))).toEqual({
+      innholdsformat: "HTML",
+      htmlTagger: undefined,
+    });
   });
 
   test("gjenkjenner RTF selv om utklippstavlen også inneholder ren tekst", () => {
