@@ -10,9 +10,6 @@ plugins {
 group = "no.nav.pensjon.brev"
 
 base {
-    // Alle api-model-modulene havner i samme lib/-katalog i distribusjonen til pensjon:brevbaker,
-    // og filnavnet der er artifactId + versjon — gruppen er ikke med. Uten unike navn kolliderer de
-    // saa snart to av dem staar paa samme versjon.
     archivesName.set("pensjon-api-model")
 }
 

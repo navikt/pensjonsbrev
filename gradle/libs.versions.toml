@@ -1,6 +1,4 @@
 [versions]
-# Versjonene til de publiserte brevbaker-artefaktene. markup-model og markup-dsl deler versjon fordi
-# DSL-en er uloeselig knyttet til modellen den bygger; brevdata og brevbaker-api versjoneres for seg.
 brevdataVersion = "1.0.0"
 brevbakerApiVersion = "1.0.0"
 markupVersion = "2.0.0"

@@ -7,6 +7,9 @@ public final class no/nav/brev/BrevExceptionDto {
 	public fun toString ()Ljava/lang/String;
 }
 
+public abstract interface annotation class no/nav/brev/InternKonstruktoer : java/lang/annotation/Annotation {
+}
+
 public abstract interface annotation class no/nav/brev/InterneDataklasser : java/lang/annotation/Annotation {
 }
 

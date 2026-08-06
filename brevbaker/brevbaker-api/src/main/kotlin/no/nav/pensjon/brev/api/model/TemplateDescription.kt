@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api.model
 
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.util.Objects
@@ -49,12 +50,12 @@ interface TemplateDescription {
             "Redigerbar(name='$name', letterDataClass='$letterDataClass', languages=$languages, metadata=$metadata, kategori=$kategori, brevkontekst=$brevkontekst, sakstyper=$sakstyper)"
 
         @JvmInline
-        value class Brevkategori(override val kode: String) : IBrevkategori {
+        value class Brevkategori @InternKonstruktoer constructor(override val kode: String) : IBrevkategori {
             override fun toString() = kode
         }
 
         @JvmInline
-        value class Sakstype(val kode: String) {
+        value class Sakstype @InternKonstruktoer constructor(val kode: String) {
             override fun toString() = kode
         }
     }
