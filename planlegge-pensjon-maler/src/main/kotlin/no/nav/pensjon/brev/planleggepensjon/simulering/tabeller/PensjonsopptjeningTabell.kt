@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 
 data class PensjonsopptjeningTabell(
@@ -21,16 +20,16 @@ data class PensjonsopptjeningTabell(
                 column {
                     text(bokmal { +"År" })
                 }
-                column(alignment = RIGHT) {
+                column(columnSpan = 4, alignment = RIGHT) {
                     text(bokmal { +"Pensjonsgivende inntekt" })
                 }
-                column(alignment = RIGHT) {
+                column(columnSpan = 3, alignment = RIGHT) {
                     text(bokmal { +"Pensjonspoeng" })
                 }
-                column(alignment = RIGHT) {
+                column(columnSpan = 4, alignment = RIGHT) {
                     text(bokmal { +"Pensjonsbeholdning" })
                 }
-                column {
+                column(columnSpan = 4) {
                     text(bokmal { +"Merknad" })
                 }
             }) {
