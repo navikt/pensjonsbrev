@@ -1575,13 +1575,17 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                 includePhrase(Ufoeretrygd.BeregningenDinKanBliEndret)
                 paragraph {
                     text(
-                        bokmal { +"<STRYK TEKSTEN UNDER DERSOM DEN IKKE ER AKTUELL>" },
-                        nynorsk { +"<STRYK TEKSTEN UNDER DERSOM DEN IKKE ER AKTUELL>" },
+                        bokmal { +fritekst("STRYK TEKSTEN UNDER DERSOM DEN IKKE ER AKTUELL") },
+                        nynorsk { +fritekst("STRYK TEKSTEN UNDER DERSOM DEN IKKE ER AKTUELL") },
                     )
+                }
+                title1 {
                     text(
                         bokmal { +"En utenlandsk myndighet krever refusjon" },
                         nynorsk { +"Eit utanlandsk organ krev refusjon" },
                     )
+                }
+                paragraph {
                     text(
                         bokmal { +"" + fritekst("land") + " har varslet Nav at de kan ha utbetalt for mye penger til deg. De har mulighet til å kreve dette tilbake i etterbetalingen av den norske uføretrygden din. Vi vil holde tilbake etterbetalingen inntil vi har fått svar fra " + fritekst("land") + ". Har du spørsmål om dette, kan du ta kontakt med " + fritekst("nasjonalitet") + " myndigheter." },
                         nynorsk { +"" + fritekst("Land") + " har varsla Nav at dei kan ha betalt ut for mykje pengar til deg. Dei har høve til å krevje dette tilbake i etterbetalinga av den norske uføretrygda di. Vi vil halde tilbake etterbetalinga inntil vi har fått svar frå " + fritekst("Land") + ". Har du spørsmål om dette, kan du ta kontakt med " + fritekst("Nasjonalitet") + " styresmakter." },
