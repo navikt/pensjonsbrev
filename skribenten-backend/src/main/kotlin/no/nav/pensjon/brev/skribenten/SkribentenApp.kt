@@ -102,7 +102,7 @@ fun Application.skribentenApp() {
             call.respond(status = cause.status, BrevExceptionDto("Adresse mangler", "Fant ingen kontaktadresse for personen"))
         }
         exception<ServiceException> { call, cause ->
-            logger.error(cause.message, cause)
+            logger.info(cause.message, cause)
             call.respond(status = cause.status, message = cause.message)
         }
         exception<Exception> { call, cause ->
