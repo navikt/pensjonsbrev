@@ -15,12 +15,12 @@ dependencies {
     // Konsumenter deklarerer dem selv.
     implementation(libs.brevbaker.api)
     implementation(libs.markup.model)
-    api(libs.jackson.databind)
-    api(libs.jackson.annotations)
-    api(libs.jackson.datatype.jsr310) {
+    implementation(libs.jackson.databind)
+    implementation(libs.jackson.annotations)
+    implementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
     }
-    api(libs.jackson.module.kotlin) {
+    implementation(libs.jackson.module.kotlin) {
         because("markup bruker value classes og default-verdier i konstruktører, som Jackson kun ser med kotlin-modulen")
     }
 
