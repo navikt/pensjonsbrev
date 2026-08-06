@@ -43,7 +43,7 @@ fun letterMarkupWithDataUsage(
     markup: LetterMarkup,
     brevtype: Markup.Brevtype,
     letterDataUsage: Set<LetterMarkupWithDataUsage.Property> = emptySet(),
-): LetterMarkupWithDataUsage = LetterMarkupWithDataUsage(
+): LetterMarkupWithDataUsage = letterMarkupWithDataUsage(
     markup = markup,
     letterDataUsage = letterDataUsage,
     brevtype = brevtype,

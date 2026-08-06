@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker.markup
 
+import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage.Property
 import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.EditBehaviour
 import no.nav.brev.brevbaker.markup.outline.Text
@@ -92,4 +93,9 @@ object MarkupModel {
 
     fun saksbehandlerSignatur(saksbehandlerNavn: String, attesterendeSaksbehandlerNavn: String?): SaksbehandlerSignatur =
         SaksbehandlerSignatur(saksbehandlerNavn, attesterendeSaksbehandlerNavn)
+
+    fun letterMarkupWithDataUsage(markup: LetterMarkup,
+                                  letterDataUsage: Set<Property>,
+                                  brevtype: Markup.Brevtype) =
+        LetterMarkupWithDataUsage(markup, letterDataUsage, brevtype)
 }

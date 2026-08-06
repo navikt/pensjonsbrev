@@ -2,9 +2,7 @@ package no.nav.brev.brevbaker.markup.dsl
 
 import no.nav.brev.brevbaker.markup.Attachment
 import no.nav.brev.brevbaker.markup.LetterMarkup
-import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.PDFTittel
-import no.nav.brev.brevbaker.markup.SaksbehandlerSignatur
 import no.nav.brev.brevbaker.markup.Saksinformasjon
 import no.nav.brev.brevbaker.markup.Signatur
 import no.nav.brev.brevbaker.markup.outline.Block

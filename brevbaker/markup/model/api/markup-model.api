@@ -38,12 +38,9 @@ public final class no/nav/brev/brevbaker/markup/LetterMarkup$Companion {
 }
 
 public final class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage {
-	public fun <init> (Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/Set;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;)V
 	public final fun component1 ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
 	public final fun component2 ()Ljava/util/Set;
 	public final fun component3 ()Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
-	public final fun copy (Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/Set;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;
-	public static synthetic fun copy$default (Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/Set;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBrevtype ()Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
 	public final fun getLetterDataUsage ()Ljava/util/Set;
@@ -132,6 +129,7 @@ public final class no/nav/brev/brevbaker/markup/MarkupModel {
 	public final fun item (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Item;
 	public final fun itemList (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$ItemList;
 	public final fun letterMarkup (Ljava/util/List;Lno/nav/brev/brevbaker/markup/Saksinformasjon;Ljava/util/List;Lno/nav/brev/brevbaker/markup/Signatur;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
+	public final fun letterMarkupWithDataUsage (Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/Set;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;
 	public final fun literal (ILjava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;)Lno/nav/brev/brevbaker/markup/outline/Text$Literal;
 	public static synthetic fun literal$default (Lno/nav/brev/brevbaker/markup/MarkupModel;ILjava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Text$Literal;
 	public final fun newLine (I)Lno/nav/brev/brevbaker/markup/outline/Text$NewLine;
