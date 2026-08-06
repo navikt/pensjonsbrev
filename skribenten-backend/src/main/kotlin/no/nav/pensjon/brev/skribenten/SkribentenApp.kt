@@ -16,9 +16,9 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.di.*
 import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.*
+import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
@@ -96,6 +96,10 @@ fun Application.skribentenApp() {
             logger.info("${cause.status} - Feil ved henting av brevdata: ${cause.message}")
             call.respond(status = cause.status, "Teknisk feil ved henting av brevdata, prøv igjen litt senere")
 
+        }
+        exception<PenAdresseManglerException> { call, cause ->
+            logger.info("${cause.status} - Adresse mangler: ${cause.message}")
+            call.respond(status = cause.status, BrevExceptionDto("Adresse mangler", "Fant ingen kontaktadresse for personen"))
         }
         exception<ServiceException> { call, cause ->
             logger.error(cause.message, cause)

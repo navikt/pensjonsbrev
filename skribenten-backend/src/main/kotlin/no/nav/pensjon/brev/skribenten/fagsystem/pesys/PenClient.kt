@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -48,18 +50,19 @@ interface PenClient {
     )
 }
 
+class PenAdresseManglerException : ServiceException("Adresse mangler", status = HttpStatusCode.UnprocessableEntity)
 class PenServiceException(message: String) : ServiceException(message)
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
 class PenFeilIDatabyggerException(message: String) : ServiceException(message)
 
-class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenClient, ServiceStatus, Closeable {
+class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine = CIO.create()) : PenClient, ServiceStatus, Closeable {
     private val penUrl = config.url
     private val penScope = config.scope
 
     @Suppress("unused") // Brukes av ktor-di
     constructor(config: SkribentenConfig, authService: AuthService): this(config.services.pen, authService)
 
-    private val client = lagHttpClient {
+    private val client = lagHttpClient(engine) {
         defaultRequest {
             url(penUrl)
         }
@@ -77,6 +80,14 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenCli
         when {
             status.isSuccess() -> body()
             status == HttpStatusCode.NotFound -> null
+            status == HttpStatusCode.UnprocessableEntity -> {
+                val parsed = body<Pen.BestillBrevResponse>()
+                if (parsed.error?.tekniskgrunn == "AdresseMangler") {
+                    throw PenAdresseManglerException()
+                } else {
+                    throw PenServiceException("Feil ved kall til PEN som ga unprocessable entity: $parsed")
+                }
+            }
             else -> throw PenServiceException("Feil ved kall til PEN: ${bodyAsText()}")
         }
 
