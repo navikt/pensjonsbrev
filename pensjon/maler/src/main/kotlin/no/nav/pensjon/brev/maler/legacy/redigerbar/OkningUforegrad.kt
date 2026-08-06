@@ -622,8 +622,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
 
             paragraph {
                 text(
-                    bokmal { +"Vi har tidligere fastsatt uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
-                    nynorsk { +"Vi har tidlegare fastsett uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
+                    bokmal { +"Vi har fastsatt uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
+                    nynorsk { +"Vi har fastsett uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
                 )
             }
 
