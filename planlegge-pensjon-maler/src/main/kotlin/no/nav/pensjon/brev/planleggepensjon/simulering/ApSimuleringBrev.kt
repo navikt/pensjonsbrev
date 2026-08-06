@@ -53,8 +53,12 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
                 text(bokmal { +"Beregning av alderspensjon" })
             }
         }
+        val fritekst = "<Legg til tekst>"
 
         outline {
+            paragraph {
+                text(bokmal { +fritekst })
+            }
         }
 
         includeAttachment(
