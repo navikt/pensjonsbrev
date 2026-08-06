@@ -1,23 +1,17 @@
 package no.nav.pensjon.brev.skribenten.auth
 
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonSubTypes
-import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.annotation.*
 import com.fasterxml.jackson.databind.DeserializationFeature
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.utils.io.core.Closeable
-import no.nav.pensjon.brev.skribenten.AzureADConfig
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
-import no.nav.pensjon.brev.skribenten.common.Cache
-import no.nav.pensjon.brev.skribenten.common.Cacheomraade
-import no.nav.pensjon.brev.skribenten.common.cached
+import io.ktor.utils.io.core.*
+import no.nav.pensjon.brev.skribenten.*
+import no.nav.pensjon.brev.skribenten.common.*
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brev.skribenten.services.installRetry
 import org.slf4j.LoggerFactory
@@ -50,9 +44,9 @@ interface AuthService {
     suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse.OnBehalfOfToken
 }
 
-class AzureADService(private val jwtConfig: AzureADConfig, private val cache: Cache, engine: HttpClientEngine = CIO.create()) : AuthService, Closeable {
+class AzureADService(private val jwtConfig: AzureADConfig, private val cache: Cache, engine: HttpClientEngine) : AuthService, Closeable {
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, cache: Cache, engine: HttpClientEngine = CIO.create()): this(config.azureAD, cache, engine)
+    constructor(config: SkribentenConfig, cache: Cache, engine: HttpClientEngine): this(config.azureAD, cache, engine)
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val client = lagHttpClient(engine) {

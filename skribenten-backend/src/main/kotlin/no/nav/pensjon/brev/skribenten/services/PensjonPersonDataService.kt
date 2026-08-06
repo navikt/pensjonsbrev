@@ -53,12 +53,12 @@ interface PensjonPersonDataService {
 class PensjonPersonDataServiceImpl(
     config: OboClientConfig,
     authService: AuthService,
-    clientEngine: HttpClientEngine = CIO.create(),
+    clientEngine: HttpClientEngine,
     private val cache: Cache,
 ): ServiceStatus, PensjonPersonDataService, Closeable {
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, clientEngine: HttpClientEngine = CIO.create(), cache: Cache):
+    constructor(config: SkribentenConfig, authService: AuthService, clientEngine: HttpClientEngine, cache: Cache):
             this(config.services.pensjonPersondata, authService, clientEngine, cache)
 
     private val logger = LoggerFactory.getLogger(javaClass)

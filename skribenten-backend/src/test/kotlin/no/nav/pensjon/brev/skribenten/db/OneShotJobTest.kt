@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.db
 
+import io.ktor.client.engine.cio.CIO
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
@@ -37,7 +38,7 @@ class OneShotJobTest {
         val name = jobName("test-job")
 
         runBlocking {
-            oneShotJobs(NaisLeaderService(null)) {
+            oneShotJobs(NaisLeaderService(null, CIO.create())) {
                 job(name) {
                     isExecuted = true
                 }
@@ -59,7 +60,7 @@ class OneShotJobTest {
         val name = jobName("no-duplicate-execution")
         fun aJob() {
             runBlocking {
-                oneShotJobs(NaisLeaderService(null)) {
+                oneShotJobs(NaisLeaderService(null, CIO.create())) {
                     job(name) {
                         executionCount++
                     }
@@ -79,7 +80,7 @@ class OneShotJobTest {
         val name = jobName("failing-job")
 
         fun failingJob() = runBlocking {
-            oneShotJobs(NaisLeaderService(null)) {
+            oneShotJobs(NaisLeaderService(null, CIO.create())) {
                 job(name) {
                     isExecuted = true
                     throw RuntimeException("Simulated failure")
