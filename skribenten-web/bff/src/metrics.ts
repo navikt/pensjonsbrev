@@ -28,8 +28,11 @@ const svartid = new Histogram({
  * Oppdelingen er bevisst grov: skribenten-backend eksponerer allerede latens per rute, så det er
  * der man finner ut *hvilket* endepunkt som er tregt. BFF-ens oppgave er å vise om proxylaget som
  * helhet er tregt eller feiler, inkludert OBO-veksling og nettverk.
+ *
+ * Tar imot en url som kan inneholde query-streng, slik at den kan kalles med `request.originalUrl`.
  */
-export function klassifiserRute(sti: string): string {
+export function klassifiserRute(url: string): string {
+  const sti = url.split("?")[0];
   if (sti.startsWith("/bff/skribenten-backend")) {
     return "proxy";
   }
@@ -44,6 +47,12 @@ export function klassifiserRute(sti: string): string {
 
 const maalSvartid = (request: Request, response: Response, next: NextFunction): void => {
   const stopp = svartid.startTimer();
+  // originalUrl, ikke path: express fjerner mount-prefikset fra request.url inne i middleware som
+  // er montert med en sti (`server.use("/bff/skribenten-backend", ...)` i apiProxy). Proxyen
+  // avslutter forespørselen uten å kalle next(), så prefikset er fortsatt borte når "close" fyres.
+  // request.path ville derfor gitt "static" for hvert eneste proxy-kall, og "proxy" ville aldri
+  // fått en tidsserie. originalUrl settes én gang og muteres aldri.
+  const rute = klassifiserRute(request.originalUrl);
   // "close" fyres både når svaret er ferdig sendt og når klienten kobler fra underveis. "finish"
   // ville mistet avbrutte forespørsler, og det er nettopp de trege vi er mest interessert i.
   response.once("close", () => {
@@ -53,7 +62,7 @@ const maalSvartid = (request: Request, response: Response, next: NextFunction): 
     const avbrutt = !response.writableEnded;
     stopp({
       method: request.method,
-      route: klassifiserRute(request.path),
+      route: rute,
       status_code: avbrutt ? 499 : response.statusCode,
     });
   });

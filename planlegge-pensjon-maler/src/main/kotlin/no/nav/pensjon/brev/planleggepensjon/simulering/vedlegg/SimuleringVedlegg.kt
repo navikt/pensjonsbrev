@@ -352,7 +352,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         includePhrase(PensjonsopptjeningTabell(it))
     }
 
-    title2 {
+    title1 {
         text(bokmal { +"Forbehold" })
     }
 
