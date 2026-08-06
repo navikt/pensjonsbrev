@@ -170,7 +170,7 @@ Disse er spesielt verdifulle for oss fordi de dekker feilmoduser applikasjonen *
 | Nærhet til minnegrensen, før OOM-kill inntreffer.
 
 | `container_cpu_cfs_throttled_seconds_total`
-| CPU-struping. Særlig relevant for pdf-bygger, der typst-prosesser er CPU-tunge.
+| Ikke i bruk. CPU-struping kan ikke måles så lenge vi ikke setter `limits.cpu`, jf. <<ikke-alarmer, Bevisste ikke-alarmer>>.
 
 | `kube_horizontalpodautoscaler_status_current_replicas` / `..._spec_max_replicas`
 | Autoskalering står i taket og kan ikke absorbere mer last.
@@ -286,7 +286,7 @@ Deklarert i `pensjon/brevbaker/.nais/alerts.yaml`.
 | `BrevbakerKoeBunnerSegOpp`
 | `ktor_http_server_requests_active` har ikke vært under 10 på noe tidspunkt i 15 min
 | `warning`
-| Requests fullføres ikke. Typisk tegn på at pdf-bygger henger og at retry-logikken holder tråder opptatt. `min_over_time` skiller vedvarende oppbygging fra normale topper, som drenerer mellom hver spike. *Terskelen på 10 er ikke kalibrert mot prod* og bør justeres når vi har sett den over en batch.
+| Requests fullføres ikke. Typisk tegn på at pdf-bygger henger og at retry-logikken holder tråder opptatt. `min_over_time` skiller vedvarende oppbygging fra normale topper, som drenerer mellom hver spike.
 
 | `BrevbakerIngenBrevProdusert`
 | `pensjon_brevbaker_letter_request_count_total` under 1 på 2 timer, i kontortid på ukedager
@@ -326,24 +326,11 @@ Definert i `brevbaker/pdf-bygger/.nais/alerts.yaml`.
 | `warning`
 | Tidlig varsel før brevbaker begynner å time ut. Fordi brevbaker retry-er, ser vi treghet her *før* vi ser feil der. Høyest målte p95 i prod var 5,10s.
 
-| `PdfByggerCpuStrupes`
-| Over 50 % av CPU-periodene strupes, i 15 min
-| `warning`
-| Typst er CPU-bundet. Strupning gir direkte treghet, og readiness-probene er allerede spesialtilpasset for å tåle korte CPU-spikes — vedvarende strupning betyr at tilpasningen ikke lenger holder.
-
 | `PdfByggerHpaITaket`
 | `current_replicas` er lik `max_replicas` i 15 min
 | `warning`
 | Vi har ikke mer kapasitet å skalere ut med. Neste steg er økt latens og timeouts i brevbaker.
 |===
-
-[NOTE]
-====
-CPU-strupning måles som *andel strupede perioder* (`container_cpu_cfs_throttled_periods_total / container_cpu_cfs_periods_total`), ikke som strupede sekunder.
-
-`container_cpu_cfs_throttled_seconds_total` summerer på tvers av kjerner, slik at tallet vokser med antall kjerner uten at strupningen er verre.
-Det finnes derfor ingen meningsfull absolutt terskel for den metrikken. En andel er sammenlignbar mellom poder og over tid.
-====
 
 [[skribenten-backend]]
 === skribenten-backend
@@ -499,7 +486,7 @@ De brukerrammende årsakene til at scraping feiler, er dessuten dekket raskere a
 
 Igjen står tilfellet der appen betjener brukerne normalt, men metrikkendepunktet er ødelagt. Det passer definisjonen av `warning`: noe er allerede ødelagt uten at brukerne merker det.
 
-Risikoen ved å stå blind over tid håndteres av en dødmannsknapp per app, ikke av alvorlighetsgraden her — se hull 10.
+Risikoen ved å stå blind over tid håndteres av en dødmannsknapp per app, ikke av alvorlighetsgraden her — se hull 9.
 
 [[ikke-alarmer]]
 == Bevisste ikke-alarmer
@@ -524,6 +511,18 @@ Forventede 4xx-responser::
 
 Enkeltstående retries mot pdf-bygger::
 Retry-logikken finnes nettopp for å absorbere forbigående feil. Vi alarmerer på *oppbrukte* retries og på resulterende feilrate, ikke på at en retry skjedde.
+
+CPU-strupning i pdf-bygger::
+Typst er CPU-bundet, så strupning ville vært et reelt problem — men det *kan ikke oppstå* slik appene er satt opp.
+CFS-strupning forutsetter en CPU-kvote på containeren, og kvoten kommer kun av `resources.limits.cpu`.
+Ingen av applikasjonene våre setter den, Nais setter ingen default for CPU (i motsetning til minne), og https://doc.nais.io/workloads/application/reference/application-spec/[Nais fraråder den aktivt].
+Uten kvote finnes `container_cpu_cfs_throttled_periods_total` ikke for containeren, og en alarm på den ville aldri utløst.
++
+Vi hadde en slik alarm, `PdfByggerCpuStrupes`, frem til den ble avdekket som varig stum under gjennomgangen av alarmreglene mot prod.
+Symptomet den var ment å fange — treg brevproduksjon — dekkes allerede av `PdfByggerTregProduksjon`, jf. <<prinsipper, prinsipp 1>>.
++
+Skulle vi senere sette et CPU-limit, må denne vurderingen gjøres på nytt.
+Da må strupning måles som *andel strupede perioder* (`container_cpu_cfs_throttled_periods_total / container_cpu_cfs_periods_total`), ikke som strupede sekunder: `container_cpu_cfs_throttled_seconds_total` summerer på tvers av kjerner, slik at tallet vokser med antall kjerner uten at strupningen er verre.
 
 Utløpte brevreservasjoner::
 En brevreservasjon kan ikke «henge». Gyldighet beregnes ved lesing i `BrevreservasjonPolicy.erGyldig` som `sistReservert + timeout > nå`, med en timeout på 10 minutter.
@@ -571,23 +570,23 @@ Disse er bevisste, prioriterte oppgaver — ikke forglemmelser — og listes her
 | Middels
 
 | 7
-| Alarmene er ikke sett utløse i praksis. `promtool` validerer syntaks, ikke at reglene faktisk returnerer serier. En regel som ikke matcher blir *stille* — den feiler ikke, den utløser bare aldri. Metrikk- og labelnavnene er verifisert mot Grafana, men sammenstillingen i hver enkelt regel er det ikke.
-| Bekreft i Grafana at hver regel returnerer serier, og at `MinnebrukNaerGrensen` faktisk matcher par. Bør gjøres første gang alarmene er rullet ut.
-| Middels
-
-| 8
 | Fall i `pensjon_brevbaker_letter_request_count_total` for en enkelt `brevkode` (`warning`). Kan bety at én brevmal er ødelagt selv om totalen ser normal ut.
 | Hent ut forventede tall for hver brevmal basert på metrikk-historikk.
 | Middels
 
-| 9
+| 8
 | Ingen alarm på brå økning i 4xx for brevbaker og pdf-bygger, slik `SkribentenOektAndelKlientfeil` gir for skribenten-backend. Begge har kun maskinelle konsumenter — Pesys og brevbaker — så en 4xx er ikke en bruker som taster feil, men en konsument som sender noe vi ikke lenger godtar. Typisk et kontraktsbrudd etter deploy av én av partene, jf. <<prinsipper, prinsipp 6>>. I dag er dette usynlig: 4xx teller ikke i 5xx-alarmene, og et avvist kall gir heller ingen `throwable`.
 | Legg til `BrevbakerOektAndelKlientfeil` og `PdfByggerOektAndelKlientfeil` etter mønster av `SkribentenOektAndelKlientfeil`, på `ktor_http_server_requests_seconds_count` med `status=~"4.."`. Unntakslisten må settes per app framfor å arves: `401`/`403` er maskinell autentisering som ikke skal feile jevnt, og bør trolig telle med. Terskelen må leses av faktisk 4xx-nivå i prod først, siden normalnivået for maskinell trafikk er et annet enn for skribenten.
 | Middels
 
-| 10
+| 9
 | pdf-bygger og skribenten-backend kan være blinde over tid uten at noe sier fra, siden `PrometheusKlarerIkkeAScrape` bevisst er `warning`. Brevbaker er dekket ved at `BrevbakerIngenBrevProdusert` bruker `absent()` og dermed utløser når serien forsvinner.
 | Legg til en dødmannsknapp per app: en `absent()`-basert regel på en metrikk appen alltid produserer. Bedre enn å heve `PrometheusKlarerIkkeAScrape` til `critical`, fordi det alarmerer på at signalet er borte framfor på selve scrape-mekanismen.
+| Middels
+
+| 10
+| BrevbakerKoeBunnerSegOpp: terskelen på 10 er ikke kalibrert mot prod.
+| Må justeres når vi har observert den over en stor behandling som produserer mange brev.
 | Middels
 |===
 
