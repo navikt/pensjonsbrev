@@ -13,7 +13,14 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetids
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.selectors.vedtaksbrev.*
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.selectors.personSak.*
 import no.nav.pensjon.brev.maler.legacy.*
-import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.*
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.beregning.*
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.minsteytelse.*
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.inntekt.*
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.trygdetid.*
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.inntektsgrense.*
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.kompensasjon.*
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.barnetillegg.*
+import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.etteroppgjoer.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.createAttachment
@@ -40,6 +47,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             erUforetidspunktMaanedEtterFoedsel(this, foedselsdato)
         }.ifNull(false)
 
+        // ============================================================
+        // Innledning: virkningsdato og grunnbeløp
+        // ============================================================
         title2 {
             text(
                 bokmal { + "Opplysninger vi har brukt i beregningen fra " },
@@ -61,85 +71,75 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             )
         }
 
-        includePhrase(TBU010V(pe))
-        includePhrase(TBUxx1V(pe))
+        includePhrase(OpplysningerBruktIBeregningTabell(pe))
+        includePhrase(OpplysningerOmAvdoedTabell(pe))
 
+        // ============================================================
         // Slik beregner vi uføretrygden din
+        // ============================================================
         showIf (pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()) {
-            includePhrase(TBUxx2V(pe))
+            includePhrase(SlikBeregnerViUfoeretrygdenKonvertert(pe))
         }.orShow {
-            includePhrase(TBU011V_TBU016V(pe))
+            includePhrase(SlikBeregnerViUfoeretrygden(pe))
         }
 
         // Minsteytelse
-        includePhrase(TBU080V_TBU027V(pe))
+        includePhrase(ForDegSomHarRettTilMinsteytelse(pe))
 
         // TODO TBU028V-TBU020V trengs for brev PE_UT_04_300 og PE_UT_14_300
 
         showIf(
-            pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
-                    and pe.pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300")) {
-            includePhrase(TBU034V_036V(pe))
+            pe.skalViseGrunnbeloepOgYrkesskadeForklaring()) {
+            includePhrase(GrunnbeloepOgYrkesskadeForklaring(pe))
         }
 
+        // ============================================================
         // Dette er inntektene vi har brukt i beregningen din
-        showIf(not(pe.ut_uforetidspunkt_foer_17())
-                        and not(pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup())
-                        and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
-                        and pe.pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300", "PE_UT_07_100", "PE_UT_05_100", "PE_UT_04_300", "PE_UT_14_300", "PE_UT_04_500")
-                        and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))) {
+        // ============================================================
+        showIf(pe.skalViseInntekterBruktIBeregning()) {
             title1 {
                 text(
                     bokmal { +"Dette er inntektene vi har brukt i beregningen din" },
                     nynorsk { +"Dette er inntektene vi har brukt i berekninga di" },
                 )
             }
-            includePhrase(TBU037V_1(pe))
-            includePhrase(TBU037V_2(pe))
+            includePhrase(InntektsgrunnlagFolketrygd(pe))
+            includePhrase(InntektsgrunnlagFolketrygdUthevetNotat(pe))
 
-            includePhrase(TBU038V_1(pe))
-            includePhrase(TBU038V_2(pe))
+            includePhrase(InntektsgrunnlagUtland(pe))
+            includePhrase(InntektsgrunnlagUtlandUthevetNotat(pe))
 
-            includePhrase(TBU037V_3(pe))
-            includePhrase(TBU037V_4(pe))
+            includePhrase(InntektsgrunnlagFolketrygdAvdoed(pe))
+            includePhrase(InntektsgrunnlagFolketrygdAvdoedUthevetNotat(pe))
 
-            includePhrase(TBU038V_3(pe))
-            includePhrase(TBU038V_4(pe))
+            includePhrase(InntektsgrunnlagUtlandAvdoed(pe))
+            includePhrase(InntektsgrunnlagUtlandAvdoedUthevetNotat(pe))
         }
 
+        // ============================================================
         // Dette er trygdetiden din
+        // ============================================================
         showIf(pe.ut_trygdetid()) {
-            includePhrase(TBU039V_TBU044V_1(pe, erMndEtterFoedsel))
+            includePhrase(DetteErTrygdetidenDin(pe, erMndEtterFoedsel))
 
-            showIf(not(erMndEtterFoedsel)
-                    and (pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40) or pe.vedtaksdata_kravhode_boddarbeidutland())
-                    and pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull()) {
-                ifNotNull(pe.safe { vedtaksbrev }.safe { grunnlag }.safe { persongrunnlagsliste }.getOrNull().safe { trygdetidsgrunnlaglistenor }.safe { trygdetidsgrunnlag }) { trygdetidsliste ->
+            showIf(pe.skalViseTrygdetidNorTabell(erMndEtterFoedsel)) {
+                ifNotNull(pe.trygdetidNorListe()) { trygdetidsliste ->
                     includePhrase(TrygdetidListeNorTabell(trygdetidsliste))
                 }
             }
 
-            showIf(not(erMndEtterFoedsel) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fatteos().greaterThan(0)){
-                ifNotNull(pe.safe { vedtaksbrev }.safe { grunnlag }.safe { persongrunnlagsliste }.getOrNull().safe { trygdetidsgrunnlaglisteeos }.safe { trygdetidsgrunnlageos }){
-                    includePhrase(TBU045V_1)
+            showIf(pe.skalViseTrygdetidEOSTabell(erMndEtterFoedsel)){
+                ifNotNull(pe.trygdetidEOSListe()){
+                    includePhrase(TrygdetidEOSInnledning)
                     includePhrase(TrygdetidsListeEOSTabell(it))
                 }
             }
         }
 
-        showIf(not(erMndEtterFoedsel)
-                    and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
-                    and ((pe.pebrevkode().equalTo("PE_UT_04_101") or pe.pebrevkode().equalTo("PE_UT_04_114"))
-                    or (pe.pebrevkode().notEqualTo("PE_UT_05_100")
-                    and pe.pebrevkode().notEqualTo("PE_UT_07_100")
-                    and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().lessThan(40)))
-                    and pe.pebrevkode().notEqualTo("PE_UT_04_108")
-                    and pe.pebrevkode().notEqualTo("PE_UT_04_109")
-                    and pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral()
-                .notNull()){
+        showIf(pe.skalViseTrygdetidBilateralTabell(erMndEtterFoedsel)){
 
-            ifNotNull(pe.safe { vedtaksbrev }.safe { grunnlag }.safe { persongrunnlagsliste }.getOrNull().safe { trygdetidsgrunnlaglistebilateral }.safe { trygdetidsgrunnlagbilateral }){
-                includePhrase(TBU046V_1)
+            ifNotNull(pe.trygdetidBilateralListe()){
+                includePhrase(TrygdetidBilateralInnledning)
                 includePhrase(TrygdetidsListeBilateralTabell(it))
             }
         }
@@ -147,46 +147,57 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         showIf(pe.ut_trygdetid()
                 and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_redusertframtidigtrygdetid()
                 and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd")) {
-            includePhrase(TBU047V)
+            includePhrase(RedusertFramtidigTrygdetid)
         }
 
-        includePhrase(TBU1187(pe))
-        includePhrase(TBU1382(pe))
-        includePhrase(TBU1384(pe))
+        includePhrase(TrygdetidNorAvdoedInnledning(pe))
+        includePhrase(TrygdetidEOSAvdoedInnledning(pe))
+        includePhrase(TrygdetidBilateralAvdoedInnledning(pe))
 
+        // ============================================================
         // Slik har vi fastsatt den nye inntektsgrensen din
+        // ============================================================
         showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endring_ifu")){
-            includePhrase(TBU500v)
+            includePhrase(NyInntektsgrense)
         }
 
-        showIf((pe.pebrevkode().notEqualTo("PE_UT_07_100") and pe.pebrevkode().notEqualTo("PE_UT_05_100") and pe.pebrevkode().notEqualTo("PE_UT_04_115") and pe.pebrevkode().notEqualTo("PE_UT_04_103") and pe.pebrevkode().notEqualTo("PE_UT_06_100") and pe.pebrevkode().notEqualTo("PE_UT_04_300") and pe.pebrevkode().notEqualTo("PE_UT_14_300") and pe.pebrevkode().notEqualTo("PE_UT_07_200") and pe.pebrevkode().notEqualTo("PE_UT_06_300") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().notEqualTo("") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieubegrunnelse().notEqualTo(""))) or pe.pebrevkode().equalTo("PE_UT_04_500") or (pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse()) or (pe.pebrevkode().equalTo("PE_UT_04_108") or pe.pebrevkode().equalTo("PE_UT_04_109") and pe.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_andelytelseavoifu().greaterThan(95.0)) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu")) {
-            includePhrase(TBUxx4v_og_TBU048V_TBU055V(pe))
+        showIf(pe.skalViseInntektsgrenseOgAvkortning()) {
+            includePhrase(InntektsgrenseOgAvkortning(pe))
         }
 
+        // ============================================================
+        // Kompensasjonsgrad og utbetaling
+        // ============================================================
         // TODO vises kun om brevkode er PE_UT_14_300 or PE_UT_04_300
         //includePhrase(TBU052V_TBU073V_Del_1_InntektenDinFoerDuBleUfoer())
 
-        includePhrase(TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(pe))
+        includePhrase(SlikHarViFastsattKompensasjonsgradenDin(pe))
 
-        includePhrase(TBU052V_TBU073V_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(pe))
+        includePhrase(SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDinEndres(pe))
 
-        includePhrase(TBU052V_TBU073V_SlikBeregnerViReduksjonenAvUfoeretrygden(pe))
+        includePhrase(SlikBeregnerViReduksjonenAvUfoeretrygden(pe))
 
-        includePhrase(TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(pe))
+        includePhrase(SlikBlirDinUtbetalingFoerSkatt(pe))
 
+        // ============================================================
+        // Barnetillegg og andre tillegg
+        // ============================================================
         showIf(pe.pe_ut_tbu601v_tbu604v()) {
-            includePhrase(TBU052V_TBU073V_SlikRedusererViBarnetilleggetUtFraInntekt(pe))
+            includePhrase(SlikRedusererViBarnetilleggetUtFraInntekt(pe))
         }
-        includePhrase(TBU052V_TBU073V_ForDegSomHarRettTilBarnetillegg(pe))
+        includePhrase(ForDegSomHarRettTilBarnetillegg(pe))
 
-        includePhrase(TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(pe))
+        includePhrase(SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(pe))
 
-        includePhrase(TBU052V_TBU073V_SlikBeregnerViGjenlevendetilleggetDitt(pe))
+        includePhrase(SlikBeregnerViGjenlevendetilleggetDitt(pe))
 
-        includePhrase(TBU052V_TBU073V_ForDegSomMottarEktefelletillegg(pe))
+        includePhrase(ForDegSomMottarEktefelletillegg(pe))
 
-        showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode().notEqualTo("PE_UT_04_500") and pe.pebrevkode().notEqualTo("PE_UT_07_200") and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))) or pe.pebrevkode().equalTo("PE_UT_06_300")) {
-            includePhrase(TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(pe))
+        // ============================================================
+        // Etteroppgjør av uføretrygd og barnetillegg
+        // ============================================================
+        showIf(pe.skalViseEtteroppgjoer()) {
+            includePhrase(EtteroppgjoerAvUforetrygdOgBarnetillegg(pe))
         }
     }
 

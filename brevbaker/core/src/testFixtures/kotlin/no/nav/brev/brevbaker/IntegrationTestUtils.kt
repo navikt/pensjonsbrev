@@ -7,6 +7,7 @@ import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.render.Letter2MarkupV2
+import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
 import no.nav.brev.brevbaker.template.render.toMarkup
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
@@ -142,6 +143,22 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: Str
         .also { writeTestHTML(htmlFileName, it, buildSubDir) }
 
     return this
+}
+
+/**
+ * Renders a [Letter] to its [LetterWithAttachmentsMarkup] (letter + attachments) without producing a PDF.
+ *
+ * Useful for behavior-preservation / snapshot tests: the resulting markup is deterministic and can be
+ * serialized to JSON and compared against a committed golden file.
+ */
+fun <ParameterType : Any> Letter<ParameterType>.renderToMarkup(): LetterWithAttachmentsMarkup {
+    if (!FeatureToggleSingleton.isInitialized) {
+        FeatureToggleSingleton.init(object : FeatureToggleService {
+            override fun isEnabled(toggle: FeatureToggle): Boolean = true
+            override fun verifiserAtAlleBrytereErDefinert(entries: List<FeatureToggle>) { }
+        })
+    }
+    return Letter2Markup.render(this)
 }
 
 fun <AttachmentData : VedleggData, Lang : LanguageSupport> createVedleggTestTemplate(
