@@ -77,17 +77,12 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // TODO TBU028V-TBU020V trengs for brev PE_UT_04_300 og PE_UT_14_300
 
         showIf(
-            pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
-                    and pe.pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300")) {
+            pe.skalViseTBU034V036V()) {
             includePhrase(TBU034V_036V(pe))
         }
 
         // Dette er inntektene vi har brukt i beregningen din
-        showIf(not(pe.ut_uforetidspunkt_foer_17())
-                        and not(pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup())
-                        and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
-                        and pe.pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300", "PE_UT_07_100", "PE_UT_05_100", "PE_UT_04_300", "PE_UT_14_300", "PE_UT_04_500")
-                        and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))) {
+        showIf(pe.skalViseInntekterBruktIBeregning()) {
             title1 {
                 text(
                     bokmal { +"Dette er inntektene vi har brukt i beregningen din" },
@@ -111,34 +106,23 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         showIf(pe.ut_trygdetid()) {
             includePhrase(TBU039V_TBU044V_1(pe, erMndEtterFoedsel))
 
-            showIf(not(erMndEtterFoedsel)
-                    and (pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40) or pe.vedtaksdata_kravhode_boddarbeidutland())
-                    and pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull()) {
-                ifNotNull(pe.safe { vedtaksbrev }.safe { grunnlag }.safe { persongrunnlagsliste }.getOrNull().safe { trygdetidsgrunnlaglistenor }.safe { trygdetidsgrunnlag }) { trygdetidsliste ->
+            showIf(pe.skalViseTrygdetidNorTabell(erMndEtterFoedsel)) {
+                ifNotNull(pe.trygdetidNorListe()) { trygdetidsliste ->
                     includePhrase(TrygdetidListeNorTabell(trygdetidsliste))
                 }
             }
 
-            showIf(not(erMndEtterFoedsel) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fatteos().greaterThan(0)){
-                ifNotNull(pe.safe { vedtaksbrev }.safe { grunnlag }.safe { persongrunnlagsliste }.getOrNull().safe { trygdetidsgrunnlaglisteeos }.safe { trygdetidsgrunnlageos }){
+            showIf(pe.skalViseTrygdetidEOSTabell(erMndEtterFoedsel)){
+                ifNotNull(pe.trygdetidEOSListe()){
                     includePhrase(TBU045V_1)
                     includePhrase(TrygdetidsListeEOSTabell(it))
                 }
             }
         }
 
-        showIf(not(erMndEtterFoedsel)
-                    and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
-                    and ((pe.pebrevkode().equalTo("PE_UT_04_101") or pe.pebrevkode().equalTo("PE_UT_04_114"))
-                    or (pe.pebrevkode().notEqualTo("PE_UT_05_100")
-                    and pe.pebrevkode().notEqualTo("PE_UT_07_100")
-                    and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().lessThan(40)))
-                    and pe.pebrevkode().notEqualTo("PE_UT_04_108")
-                    and pe.pebrevkode().notEqualTo("PE_UT_04_109")
-                    and pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral()
-                .notNull()){
+        showIf(pe.skalViseTrygdetidBilateralTabell(erMndEtterFoedsel)){
 
-            ifNotNull(pe.safe { vedtaksbrev }.safe { grunnlag }.safe { persongrunnlagsliste }.getOrNull().safe { trygdetidsgrunnlaglistebilateral }.safe { trygdetidsgrunnlagbilateral }){
+            ifNotNull(pe.trygdetidBilateralListe()){
                 includePhrase(TBU046V_1)
                 includePhrase(TrygdetidsListeBilateralTabell(it))
             }
@@ -159,7 +143,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(TBU500v)
         }
 
-        showIf((pe.pebrevkode().notEqualTo("PE_UT_07_100") and pe.pebrevkode().notEqualTo("PE_UT_05_100") and pe.pebrevkode().notEqualTo("PE_UT_04_115") and pe.pebrevkode().notEqualTo("PE_UT_04_103") and pe.pebrevkode().notEqualTo("PE_UT_06_100") and pe.pebrevkode().notEqualTo("PE_UT_04_300") and pe.pebrevkode().notEqualTo("PE_UT_14_300") and pe.pebrevkode().notEqualTo("PE_UT_07_200") and pe.pebrevkode().notEqualTo("PE_UT_06_300") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().notEqualTo("") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieubegrunnelse().notEqualTo(""))) or pe.pebrevkode().equalTo("PE_UT_04_500") or (pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse()) or (pe.pebrevkode().equalTo("PE_UT_04_108") or pe.pebrevkode().equalTo("PE_UT_04_109") and pe.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_andelytelseavoifu().greaterThan(95.0)) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu")) {
+        showIf(pe.skalViseInntektsgrenseOgAvkortning()) {
             includePhrase(TBUxx4v_og_TBU048V_TBU055V(pe))
         }
 
@@ -185,7 +169,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         includePhrase(TBU052V_TBU073V_ForDegSomMottarEktefelletillegg(pe))
 
-        showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode().notEqualTo("PE_UT_04_500") and pe.pebrevkode().notEqualTo("PE_UT_07_200") and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod")))) or pe.pebrevkode().equalTo("PE_UT_06_300")) {
+        showIf(pe.skalViseEtteroppgjoer()) {
             includePhrase(TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(pe))
         }
     }
