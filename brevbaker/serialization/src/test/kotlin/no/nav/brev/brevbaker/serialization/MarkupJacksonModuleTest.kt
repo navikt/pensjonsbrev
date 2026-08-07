@@ -1,4 +1,4 @@
-package no.nav.brev.brevbaker.jackson
+package no.nav.brev.brevbaker.serialization
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.databind.SerializationFeature

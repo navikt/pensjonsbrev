@@ -19,8 +19,8 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.*
-import no.nav.brev.brevbaker.jackson.LetterMarkupV1JacksonModule
-import no.nav.brev.brevbaker.jackson.TemplateModelSpecificationJacksonModule
+import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
+import no.nav.brev.brevbaker.serialization.TemplateModelSpecificationJacksonModule
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity

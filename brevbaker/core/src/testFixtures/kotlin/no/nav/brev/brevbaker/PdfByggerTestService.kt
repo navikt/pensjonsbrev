@@ -13,7 +13,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
-import no.nav.brev.brevbaker.jackson.internalObjectMapper
+import no.nav.brev.brevbaker.serialization.internalObjectMapper
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 
 /**

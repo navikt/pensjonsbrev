@@ -101,5 +101,5 @@ object MarkupModel {
         LetterMarkupWithDataUsage(markup, letterDataUsage, brevtype)
 
     fun letterMarkupWithDataUsageProperty(typeName: String, propertyName: String) =
-        LetterMarkupWithDataUsage.Property(typeName, propertyName)
+        Property(typeName, propertyName)
 }

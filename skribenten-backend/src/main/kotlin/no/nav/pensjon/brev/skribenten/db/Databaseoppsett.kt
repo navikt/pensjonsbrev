@@ -8,7 +8,7 @@ import com.typesafe.config.Config
 import com.zaxxer.hikari.*
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
-import no.nav.brev.brevbaker.jackson.LetterMarkupV1JacksonModule
+import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.core.dao.id.IdTable

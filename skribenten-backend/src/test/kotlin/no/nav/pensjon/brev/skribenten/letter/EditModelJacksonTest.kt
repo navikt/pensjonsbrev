@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.letter
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.brev.brevbaker.jackson.LetterMarkupV1JacksonModule
+import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

@@ -6,7 +6,7 @@ import io.ktor.http.*
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.*
-import no.nav.brev.brevbaker.jackson.internalObjectMapper
+import no.nav.brev.brevbaker.serialization.internalObjectMapper
 import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.Markup

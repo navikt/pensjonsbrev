@@ -17,7 +17,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.logging.Logger
 import no.nav.brev.brevbaker.PDFRequest
-import no.nav.brev.brevbaker.jackson.internalObjectMapper
+import no.nav.brev.brevbaker.serialization.internalObjectMapper
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.pensjon.brev.pdfbygger.Metrics.configureMetrics
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
@@ -123,4 +123,3 @@ private suspend fun RoutingContext.handleResult(
         }
     }
 }
-

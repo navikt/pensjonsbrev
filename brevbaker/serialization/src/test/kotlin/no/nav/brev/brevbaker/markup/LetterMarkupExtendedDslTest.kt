@@ -2,7 +2,7 @@ package no.nav.brev.brevbaker.markup
 
 import no.nav.brev.brevbaker.markup.dsl.*
 import no.nav.brev.brevbaker.markup.dsl.extended.*
-import no.nav.brev.brevbaker.jackson.internalObjectMapper
+import no.nav.brev.brevbaker.serialization.internalObjectMapper
 import no.nav.brev.brevbaker.markup.outline.EditBehaviour
 import no.nav.brev.brevbaker.markup.outline.EditBehaviour.FRITEKST
 import no.nav.brev.brevbaker.markup.dsl.*

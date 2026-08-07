@@ -1,4 +1,4 @@
-package no.nav.brev.brevbaker.jackson
+package no.nav.brev.brevbaker.serialization
 
 import no.nav.brev.brevbaker.markup.dsl.*
 import no.nav.brev.brevbaker.markup.dsl.extended.*
