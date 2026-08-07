@@ -91,7 +91,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         }
         installRetry(logger, shouldNotRetry = { method, url, cause -> method == HttpMethod.Post && url.segments.last() == "pdf" && cause?.unwrapCancellationException() !is EOFException })
         install(HttpTimeout) {
-            // Satt til dette fordi det er standardverdien fra CIOEngineConfig
+            // Om denne ikke settes til noe så får man ingen timeout, valgte denne verdien fordi det er standardverdien fra CIOEngineConfig
             requestTimeoutMillis = 15.seconds.inWholeMilliseconds
         }
         install(ContentNegotiation) {
