@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.model
 
+import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode

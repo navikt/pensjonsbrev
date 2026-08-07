@@ -1,7 +1,7 @@
 package no.nav.brev.brevbaker.template.render.text
 
-import no.nav.brev.brevbaker.markup.dsl.ExtendedContentBuilder
-import no.nav.brev.brevbaker.markup.dsl.PlainExtendedTextBuilder
+import no.nav.brev.brevbaker.markup.dsl.extended.ExtendedContentBuilder
+import no.nav.brev.brevbaker.markup.dsl.extended.PlainExtendedTextBuilder
 import no.nav.brev.brevbaker.template.render.RenderContext
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent
 

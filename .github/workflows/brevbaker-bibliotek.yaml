@@ -1,0 +1,167 @@
+name: "Build and release published Brevbaker artifacts"
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - "main"
+    paths:
+      - "brevbaker/markup/**"
+      - "brevbaker/brevdata/**"
+      - "brevbaker/brevbaker-api/**"
+      - "pensjon/api-model/**"
+      - "alder/api-model/**"
+      - "ufoere/api-model/**"
+      - "gradle/libs.versions.toml"
+      - ".github/workflows/.release.yaml"
+      - ".github/workflows/brevbaker-bibliotek.yaml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
+  push:
+    branches:
+      - "main"
+    paths:
+      - "brevbaker/markup/**"
+      - "brevbaker/brevdata/**"
+      - "brevbaker/brevbaker-api/**"
+      - "pensjon/api-model/**"
+      - "alder/api-model/**"
+      - "ufoere/api-model/**"
+      - "gradle/libs.versions.toml"
+      - ".github/workflows/.release.yaml"
+      - ".github/workflows/brevbaker-bibliotek.yaml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  abi:
+    name: "Finn endrede artefakter"
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      brevdata: ${{ steps.changes.outputs.brevdata }}
+      markup: ${{ steps.changes.outputs.markup }}
+      brevbakerApi: ${{ steps.changes.outputs.brevbakerApi }}
+      pensjonApiModel: ${{ steps.changes.outputs.pensjonApiModel }}
+      alderApiModel: ${{ steps.changes.outputs.alderApiModel }}
+      ufoereApiModel: ${{ steps.changes.outputs.ufoereApiModel }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
+        id: changes
+        with:
+          filters: |
+            brevdata:
+              - 'brevbaker/brevdata/api/brevdata.api'
+            markup:
+              - 'brevbaker/markup/model/api/markup-model.api'
+              - 'brevbaker/markup/dsl/api/markup-dsl.api'
+            brevbakerApi:
+              - 'brevbaker/brevbaker-api/api/brevbaker-api.api'
+            pensjonApiModel:
+              - 'pensjon/api-model/gradle.properties'
+            alderApiModel:
+              - 'alder/api-model/gradle.properties'
+            ufoereApiModel:
+              - 'ufoere/api-model/gradle.properties'
+
+  release-brevdata:
+    name: "brevdata"
+    uses: ./.github/workflows/.release.yaml
+    secrets: inherit
+    needs: [ abi ]
+    permissions:
+      contents: read
+      packages: write
+    with:
+      gradleTarget: 'brevbaker:brevdata'
+      changes: ${{ needs.abi.outputs.brevdata }}
+
+  release-markup:
+    name: "markup"
+    uses: ./.github/workflows/.release.yaml
+    secrets: inherit
+    needs: [ abi ]
+    permissions:
+      contents: read
+      packages: write
+    with:
+      gradleTarget: 'brevbaker:markup-model brevbaker:markup-dsl'
+      changes: ${{ needs.abi.outputs.markup }}
+      localDependenciesToPublish: ':brevbaker:markup-model:publishToMavenLocal'
+
+  release-pensjon:
+    name: "pensjon-brevbaker-api-model"
+    uses: ./.github/workflows/.release.yaml
+    secrets: inherit
+    needs: [ abi, release-brevdata ]
+    permissions:
+      contents: read
+      packages: write
+    with:
+      gradleTarget: 'pensjon:api-model'
+      changes: ${{ needs.abi.outputs.pensjonApiModel == 'true' || needs.abi.outputs.brevdata == 'true' }}
+      localDependenciesToPublish: ':brevbaker:brevdata:publishToMavenLocal'
+
+  release-alder:
+    name: "alder-api-model"
+    uses: ./.github/workflows/.release.yaml
+    secrets: inherit
+    needs: [ abi, release-brevdata ]
+    permissions:
+      contents: read
+      packages: write
+    with:
+      gradleTarget: 'alder:api-model'
+      changes: ${{ needs.abi.outputs.alderApiModel == 'true' || needs.abi.outputs.brevdata == 'true' }}
+      localDependenciesToPublish: ':brevbaker:brevdata:publishToMavenLocal'
+
+  release-ufoere:
+    name: "ufoere-api-model"
+    uses: ./.github/workflows/.release.yaml
+    secrets: inherit
+    needs: [ abi, release-brevdata ]
+    permissions:
+      contents: read
+      packages: write
+    with:
+      gradleTarget: 'ufoere:api-model'
+      changes: ${{ needs.abi.outputs.ufoereApiModel == 'true' || needs.abi.outputs.brevdata == 'true' }}
+      localDependenciesToPublish: ':brevbaker:brevdata:publishToMavenLocal'
+
+  release-brevbaker-api:
+    name: "brevbaker-api"
+    uses: ./.github/workflows/.release.yaml
+    secrets: inherit
+    needs: [ abi, release-brevdata, release-markup ]
+    permissions:
+      contents: read
+      packages: write
+    with:
+      gradleTarget: 'brevbaker:brevbaker-api'
+      changes: ${{ needs.abi.outputs.brevbakerApi == 'true' || needs.abi.outputs.brevdata == 'true' || needs.abi.outputs.markup == 'true' }}
+      localDependenciesToPublish: >-
+        :brevbaker:brevdata:publishToMavenLocal
+        :brevbaker:markup-model:publishToMavenLocal
+
+  klarTilMerge:
+    name: "Klar til merge"
+    needs: [ release-brevdata, release-markup, release-pensjon, release-alder, release-ufoere, release-brevbaker-api ]
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: "ubuntu-latest"
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr

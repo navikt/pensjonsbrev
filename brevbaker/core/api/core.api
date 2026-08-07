@@ -31,20 +31,9 @@ public final class no/nav/brev/brevbaker/ContentTypes {
 	public static final field TEXT_HTML_UTF8 Ljava/lang/String;
 }
 
-public final class no/nav/brev/brevbaker/HttpStatusCodes : java/lang/Enum {
-	public static final field BadRequest Lno/nav/brev/brevbaker/HttpStatusCodes;
-	public static final field InternalServerError Lno/nav/brev/brevbaker/HttpStatusCodes;
-	public static final field ServiceUnavailable Lno/nav/brev/brevbaker/HttpStatusCodes;
-	public final fun getCode ()I
-	public final fun getDescription ()Ljava/lang/String;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/HttpStatusCodes;
-	public static fun values ()[Lno/nav/brev/brevbaker/HttpStatusCodes;
-}
-
 public abstract interface class no/nav/brev/brevbaker/PDFByggerService {
 	public abstract fun producePDF (Lno/nav/brev/brevbaker/PDFRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun producePDFV2 (Lno/nav/brev/brevbaker/markup/LetterPDFRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun producePDFV2 (Lno/nav/brev/brevbaker/pdfbygger/api/LetterPDFRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun validateResponse (ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

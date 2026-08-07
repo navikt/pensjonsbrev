@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker
 
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -24,7 +25,7 @@ object SaksbehandlervalgEksempelBrev : RedigerbarTemplate<SaksbehandlervalgTestD
     @OptIn(InternKonstruktoer::class)
     override val kategori = TemplateDescription.Redigerbar.Brevkategori("Innhente opplysninger")
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
-    override val sakstyper = setOf(object : TemplateDescription.ISakstype {
+    override val sakstyper = setOf(object : ISakstype {
         override val kode = "ALDER"
     })
     override val kode = SaksbehandlervalgTestBrevkode.TESTBREV_SAKSBEHANDLERVALG

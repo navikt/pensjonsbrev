@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.planleggepensjon.simulering
 
+import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.pensjon.brev.api.model.IBrevkategori
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
@@ -29,9 +31,9 @@ data class ApSimuleringBrevDto(override val saksbehandlerValg: ApSimuleringDto, 
 
 @TemplateModelHelpers
 object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
-    override val kategori: TemplateDescription.IBrevkategori = Brevkategori.AP_SIMULERINGSBREV
+    override val kategori: IBrevkategori = Brevkategori.AP_SIMULERINGSBREV
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
-    override val sakstyper: Set<TemplateDescription.ISakstype> = emptySet()
+    override val sakstyper: Set<ISakstype> = emptySet()
     override val kode: Brevkode.Redigerbart = PlanleggePensjonBrevkoder.Redigerbar.PENSJONSKALKULATOR_AP_SIMULERING
     override val featureToggle = FeatureToggles.apSimulering.toggle
     override val modelSpecification: TemplateModelSpecification = TemplateModelSpecification(emptyMap(), null)

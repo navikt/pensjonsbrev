@@ -1,8 +1,8 @@
 package no.nav.brev.brevbaker
 
-import no.nav.brev.brevbaker.HttpStatusCodes.*
-import no.nav.brev.brevbaker.PDFRequest
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.HttpStatusCodes.*
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
 
 class PDFCompileException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 class PDFTimeoutException(msg: String, cause: Throwable? = null) : Exception(msg, cause)

@@ -883,7 +883,7 @@ public abstract interface class no/nav/pensjon/brev/template/RedigerbarTemplate 
 	public fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar;
 	public synthetic fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription;
 	public abstract fun getBrevkontekst ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
-	public abstract fun getKategori ()Lno/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori;
+	public abstract fun getKategori ()Lno/nav/pensjon/brev/api/model/IBrevkategori;
 	public abstract fun getSakstyper ()Ljava/util/Set;
 }
 
