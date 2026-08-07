@@ -104,16 +104,16 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                 )
             }
             includePhrase(InntektsgrunnlagFolketrygd(pe))
-            includePhrase(InntektsgrunnlagFolketrygdUthevetNote(pe))
+            includePhrase(InntektsgrunnlagFolketrygdUthevetNotat(pe))
 
             includePhrase(InntektsgrunnlagUtland(pe))
-            includePhrase(InntektsgrunnlagUtlandUthevetNote(pe))
+            includePhrase(InntektsgrunnlagUtlandUthevetNotat(pe))
 
             includePhrase(InntektsgrunnlagFolketrygdAvdoed(pe))
-            includePhrase(InntektsgrunnlagFolketrygdAvdoedUthevetNote(pe))
+            includePhrase(InntektsgrunnlagFolketrygdAvdoedUthevetNotat(pe))
 
             includePhrase(InntektsgrunnlagUtlandAvdoed(pe))
-            includePhrase(InntektsgrunnlagUtlandAvdoedUthevetNote(pe))
+            includePhrase(InntektsgrunnlagUtlandAvdoedUthevetNotat(pe))
         }
 
         // ============================================================

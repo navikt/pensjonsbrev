@@ -10,12 +10,12 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.text
 
 /** Exstream: TBU038V. */
-data class InntektsgrunnlagUtlandAvdoedUthevetNote(
+data class InntektsgrunnlagUtlandAvdoedUthevetNotat(
     val pe: Expression<PEgruppe10>
 ): OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         showIf(pe.ut_avdod() and pe.ut_inntektslandtruehvorbruktlikfalse_avdod()){
-            //[InntektsgrunnlagUtlandAvdoedUthevetNote]
+            //[InntektsgrunnlagUtlandAvdoedUthevetNotat]
 
             paragraph {
                 text (
@@ -50,7 +50,7 @@ data class InntektsgrunnlagUtlandAvdoedUthevetNote(
                     )
                 }
             }
-            //[InntektsgrunnlagUtlandAvdoedUthevetNote]
+            //[InntektsgrunnlagUtlandAvdoedUthevetNotat]
 
             paragraph {
                 text (

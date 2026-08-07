@@ -13,13 +13,13 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.text
 
 /** Exstream: TBU037V. */
-data class InntektsgrunnlagFolketrygdUthevetNote(
+data class InntektsgrunnlagFolketrygdUthevetNotat(
     val pe: Expression<PEgruppe10>,
 ): OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
         showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd") ){
-            //[InntektsgrunnlagFolketrygdUthevetNote]
+            //[InntektsgrunnlagFolketrygdUthevetNotat]
 
             paragraph {
                 text (
@@ -34,7 +34,7 @@ data class InntektsgrunnlagFolketrygdUthevetNote(
             //      NEXT
 
             // manuellt konvertert
-            //[InntektsgrunnlagFolketrygdUthevetNote]
+            //[InntektsgrunnlagFolketrygdUthevetNotat]
 
             showIf(pe.harOpptjeningUTMedFoerstegangstjenesteOgOmsorg()) {
                 paragraph {
@@ -48,7 +48,7 @@ data class InntektsgrunnlagFolketrygdUthevetNote(
             // FOR i = 1 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Omsorgsaar)
             //      IF(  FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Omsorgsaar,i) = true AND FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste,i) = 0  ) THEN      INCLUDE ENDIF NEXT
 
-            //[InntektsgrunnlagFolketrygdUthevetNote]
+            //[InntektsgrunnlagFolketrygdUthevetNotat]
             // manuellt konvertert
             showIf(pe.harOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste()) {
                 paragraph {
@@ -61,7 +61,7 @@ data class InntektsgrunnlagFolketrygdUthevetNote(
 
             //Integer i i = 1 FOR i = 1 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste)  IF(  FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Omsorgsaar,i) = false AND FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste,i) <> 0    ) THEN      INCLUDE ENDIF NEXT
             // har ett år med førstegangstjeneste og ikke omsorg:
-            //[InntektsgrunnlagFolketrygdUthevetNote]
+            //[InntektsgrunnlagFolketrygdUthevetNotat]
             // manuellt konvertert
 
             showIf(pe.harOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg()) {

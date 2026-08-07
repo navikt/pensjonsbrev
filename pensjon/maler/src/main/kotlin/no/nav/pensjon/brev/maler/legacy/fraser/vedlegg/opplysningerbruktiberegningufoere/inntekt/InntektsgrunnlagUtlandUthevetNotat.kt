@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.text
 
 /** Exstream: TBU038V. */
-data class InntektsgrunnlagUtlandUthevetNote(
+data class InntektsgrunnlagUtlandUthevetNotat(
     val pe: Expression<PEgruppe10>
 ): OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
