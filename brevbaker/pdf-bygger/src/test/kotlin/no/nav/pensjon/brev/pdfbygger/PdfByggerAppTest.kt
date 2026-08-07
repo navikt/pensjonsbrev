@@ -1,18 +1,17 @@
 package no.nav.pensjon.brev.pdfbygger
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.client.request.*
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.MapApplicationConfig
 import io.ktor.server.testing.*
-import kotlinx.serialization.json.Json
-import no.nav.brev.brevbaker.PDFCompilationOutput
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.serialization.internalObjectMapper
+import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
-import no.nav.brev.brevbaker.markup.dsl.letterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
 import no.nav.brev.brevbaker.markup.dsl.paragraph
 import no.nav.brev.brevbaker.markup.dsl.saksinformasjon
 import no.nav.brev.brevbaker.markup.dsl.signatur
@@ -30,7 +29,7 @@ import java.io.OutputStreamWriter
 
 class PdfByggerAppTest {
 
-    private val mapper = jacksonObjectMapper().apply { pdfByggerConfig() }
+    private val mapper = internalObjectMapper()
 
     @Test
     fun appRuns() {
@@ -41,6 +40,26 @@ class PdfByggerAppTest {
 
             val response = client.get("/isAlive")
             assertEquals(HttpStatusCode.OK, response.status)
+        }
+    }
+
+    @Test
+    fun `ugyldig json gir 400 paa begge produserBrev-endepunktene`() {
+        testApplication {
+            environment {
+                config = MapApplicationConfig()
+            }
+            application {
+                setUp(TypstCompileService())
+            }
+
+            listOf("/produserBrev", "/v2/produserBrev").forEach { path ->
+                val response = client.post(path) {
+                    contentType(ContentType.Application.Json)
+                    setBody("""{"letterMarkup": "ikke et objekt"}""")
+                }
+                assertEquals(HttpStatusCode.BadRequest, response.status, "$path skal svare 400 paa ugyldig json")
+            }
         }
     }
 
@@ -104,7 +123,7 @@ class PdfByggerAppTest {
     }
 
     /**
-     * Happy-path-test for `/v2/produserBrev` som verifiserer at routing, kotlinx-JSON-deserialisering av
+     * Happy-path-test for `/v2/produserBrev` som verifiserer at routing, Jackson-deserialisering av
      * [LetterPDFRequest] og kall til [no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2]
      * er korrekt koblet sammen, uten å kreve at faktisk `typst`-binær er tilgjengelig.
      */
@@ -127,7 +146,7 @@ class PdfByggerAppTest {
         val request = letterPDFRequest(
             spraak = Markup.Spraak.BOKMAL,
             brevtype = Markup.Brevtype.VEDTAKSBREV,
-            letter = letterMarkup(
+            letterMarkup = letterMarkup(
                 saksinformasjon = saksinformasjon(
                     gjelderNavn = PdfByggerTestData.gjelderNavn,
                     gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
@@ -153,7 +172,7 @@ class PdfByggerAppTest {
 
             val response = client.post("/v2/produserBrev") {
                 contentType(ContentType.Application.Json)
-                setBody(Json.encodeToString(LetterPDFRequest.serializer(), request))
+                setBody(mapper.writeValueAsString(request))
             }
 
             assertEquals(HttpStatusCode.OK, response.status)

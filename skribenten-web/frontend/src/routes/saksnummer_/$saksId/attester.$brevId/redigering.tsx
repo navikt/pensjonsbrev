@@ -67,6 +67,10 @@ type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
   historySnapshot?: LetterSnapshot;
 };
 
+const queryRetries = 3;
+const shouldSkipRetry = (status: number | undefined) =>
+  status === 403 || status === 404 || status === 409 || status === 422 || status === 423;
+
 const VedtakWrapper = () => {
   const { saksId, brevId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -75,6 +79,8 @@ const VedtakWrapper = () => {
   const hentBrevQuery = useQuery({
     ...getBrevAttestering(saksId, Number(brevId)),
     staleTime: Number.POSITIVE_INFINITY,
+    retry: (failureCount: number, error: AxiosError) =>
+      failureCount < queryRetries && !shouldSkipRetry(error.response?.status),
   });
 
   return queryFold({
@@ -125,6 +131,29 @@ const VedtakWrapper = () => {
             />
           );
         }
+      }
+
+      if (err.response?.status === 500) {
+        return (
+          <Box asChild background="default">
+            <VStack align="center" flexGrow="1" gap="space-8" padding="space-24">
+              <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />
+              <Button
+                onClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevbehandler",
+                    params: { saksId },
+                    search: { vedtaksId, enhetsId, brevId: Number(brevId) },
+                  })
+                }
+                size="small"
+                variant="secondary"
+              >
+                Gå til brevbehandler
+              </Button>
+            </VStack>
+          </Box>
+        );
       }
 
       return (

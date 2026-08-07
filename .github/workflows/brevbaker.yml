@@ -6,7 +6,8 @@ on:
       - "build.gradle.kts"
       - "gradle.properties"
       - "gradle/libs.versions.toml"
-      - "brevbaker/api-model-common/**"
+      - "brevbaker/brevdata/**"
+      - "brevbaker/brevbaker-api/**"
       - "brevbaker/core/**"
       - "brevbaker/template-model-generator/**"
       - "brevbaker/dsl/**"
@@ -30,7 +31,8 @@ on:
       - "build.gradle.kts"
       - "gradle.properties"
       - "gradle/libs.versions.toml"
-      - "brevbaker/api-model-common/**"
+      - "brevbaker/brevdata/**"
+      - "brevbaker/brevbaker-api/**"
       - "brevbaker/core/**"
       - "brevbaker/template-model-generator/**"
       - "brevbaker/dsl/**"
@@ -65,7 +67,10 @@ jobs:
       path: pensjon/brevbaker
       target: brevbaker
       gradleTarget: pensjon:brevbaker
-      extraModulesToBuild: ':pensjon:api-model:publishToMavenLocal :alder:api-model:publishToMavenLocal :ufoere:api-model:publishToMavenLocal'
+      extraModulesToBuild: >-
+        :pensjon:api-model:publishToMavenLocal
+        :alder:api-model:publishToMavenLocal
+        :ufoere:api-model:publishToMavenLocal
       buildImage: true
 
   salsa-brevbaker:
@@ -96,7 +101,10 @@ jobs:
           "java-version": ${{ env.JavaVersion }}
       - name: "run integration tests"
         run: |
-          ./gradlew :brevbaker:api-model-common:publishToMavenLocal 
+          ./gradlew :brevbaker:brevdata:publishToMavenLocal
+          ./gradlew :brevbaker:markup-model:publishToMavenLocal
+          ./gradlew :brevbaker:markup-dsl:publishToMavenLocal
+          ./gradlew :brevbaker:brevbaker-api:publishToMavenLocal
           ./gradlew :pensjon:api-model:publishToMavenLocal
           ./gradlew :alder:api-model:publishToMavenLocal
           ./gradlew :ufoere:api-model:publishToMavenLocal

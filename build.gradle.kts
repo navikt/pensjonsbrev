@@ -33,7 +33,7 @@ allprojects {
                 includeGroup("no.nav.pensjon.alder.brev")
                 includeGroup("no.nav.pensjon.ufoere.brev")
                 includeGroup("no.nav.pensjon.brev")
-                // api-model-common
+                // brevbaker-api m.fl.
                 includeGroup("no.nav.brev.brevbaker")
             }
         }

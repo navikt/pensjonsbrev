@@ -1,0 +1,287 @@
+{
+  "letterMarkup" : {
+    "title1" : [ {
+      "type" : "LITERAL",
+      "id" : 0,
+      "text" : "Vedtak om ",
+      "fontType" : "PLAIN",
+      "editBehaviour" : null
+    }, {
+      "type" : "VARIABLE",
+      "id" : 1,
+      "text" : "uføretrygd",
+      "fontType" : "PLAIN",
+      "editBehaviour" : null
+    } ],
+    "saksinformasjon" : {
+      "gjelderNavn" : "Ola Nordmann",
+      "gjelderPersonidentifikator" : "12345678901",
+      "annenMottakerNavn" : "Kari Nordmann",
+      "saksnummer" : "9876543",
+      "dokumentDato" : "2026-07-09"
+    },
+    "blocks" : [ {
+      "type" : "TITLE2",
+      "id" : 2,
+      "content" : [ {
+        "type" : "LITERAL",
+        "id" : 3,
+        "text" : "Innledning",
+        "fontType" : "PLAIN",
+        "editBehaviour" : null
+      } ]
+    }, {
+      "type" : "TITLE3",
+      "id" : 4,
+      "content" : [ {
+        "type" : "LITERAL",
+        "id" : 5,
+        "text" : "Mellomtittel",
+        "fontType" : "PLAIN",
+        "editBehaviour" : null
+      } ]
+    }, {
+      "type" : "TITLE4",
+      "id" : 6,
+      "content" : [ {
+        "type" : "LITERAL",
+        "id" : 7,
+        "text" : "Detaljer",
+        "fontType" : "PLAIN",
+        "editBehaviour" : null
+      } ]
+    }, {
+      "type" : "PARAGRAPH",
+      "id" : 8,
+      "content" : [ {
+        "type" : "LITERAL",
+        "id" : 9,
+        "text" : "Du får ",
+        "fontType" : "PLAIN",
+        "editBehaviour" : null
+      }, {
+        "type" : "VARIABLE",
+        "id" : 10,
+        "text" : "20 000 kr",
+        "fontType" : "BOLD",
+        "editBehaviour" : null
+      }, {
+        "type" : "NEW_LINE",
+        "id" : 11
+      }, {
+        "type" : "LITERAL",
+        "id" : 12,
+        "text" : "i måneden.",
+        "fontType" : "ITALIC",
+        "editBehaviour" : "FRITEKST"
+      }, {
+        "type" : "VARIABLE",
+        "id" : 13,
+        "text" : "fra 2026",
+        "fontType" : "PLAIN",
+        "editBehaviour" : "REDIGERBAR_DATA"
+      } ]
+    }, {
+      "type" : "ITEM_LIST",
+      "id" : 14,
+      "items" : [ {
+        "id" : 15,
+        "content" : [ {
+          "type" : "LITERAL",
+          "id" : 16,
+          "text" : "Punkt 1",
+          "fontType" : "PLAIN",
+          "editBehaviour" : null
+        } ]
+      }, {
+        "id" : 17,
+        "content" : [ {
+          "type" : "LITERAL",
+          "id" : 18,
+          "text" : "Punkt 2",
+          "fontType" : "PLAIN",
+          "editBehaviour" : null
+        } ]
+      } ]
+    }, {
+      "type" : "NUMBERED_LIST",
+      "id" : 19,
+      "items" : [ {
+        "id" : 20,
+        "content" : [ {
+          "type" : "LITERAL",
+          "id" : 21,
+          "text" : "Steg 1",
+          "fontType" : "PLAIN",
+          "editBehaviour" : null
+        } ]
+      }, {
+        "id" : 22,
+        "content" : [ {
+          "type" : "LITERAL",
+          "id" : 23,
+          "text" : "Steg 2",
+          "fontType" : "PLAIN",
+          "editBehaviour" : null
+        } ]
+      } ]
+    }, {
+      "type" : "TABLE",
+      "id" : 24,
+      "rows" : [ {
+        "id" : 31,
+        "cells" : [ {
+          "id" : 32,
+          "content" : [ {
+            "type" : "LITERAL",
+            "id" : 33,
+            "text" : "Uføretrygd",
+            "fontType" : "PLAIN",
+            "editBehaviour" : null
+          } ]
+        }, {
+          "id" : 34,
+          "content" : [ {
+            "type" : "VARIABLE",
+            "id" : 35,
+            "text" : "20 000 kr",
+            "fontType" : "PLAIN",
+            "editBehaviour" : null
+          } ]
+        } ]
+      } ],
+      "header" : {
+        "id" : 25,
+        "colSpec" : [ {
+          "id" : 26,
+          "content" : [ {
+            "type" : "LITERAL",
+            "id" : 27,
+            "text" : "Ytelse",
+            "fontType" : "PLAIN",
+            "editBehaviour" : null
+          } ],
+          "alignment" : "LEFT",
+          "span" : 1
+        }, {
+          "id" : 28,
+          "content" : [ {
+            "type" : "LITERAL",
+            "id" : 29,
+            "text" : "Beløp ",
+            "fontType" : "PLAIN",
+            "editBehaviour" : null
+          }, {
+            "type" : "VARIABLE",
+            "id" : 30,
+            "text" : "2026",
+            "fontType" : "PLAIN",
+            "editBehaviour" : null
+          } ],
+          "alignment" : "RIGHT",
+          "span" : 2
+        } ]
+      }
+    }, {
+      "type" : "FORM_TEXT",
+      "id" : 36,
+      "content" : [ {
+        "type" : "LITERAL",
+        "id" : 37,
+        "text" : "Skriv her",
+        "fontType" : "PLAIN",
+        "editBehaviour" : null
+      } ],
+      "size" : "LONG",
+      "vspace" : true
+    }, {
+      "type" : "FORM_TEXT",
+      "id" : 38,
+      "content" : [ {
+        "type" : "LITERAL",
+        "id" : 39,
+        "text" : "Dato",
+        "fontType" : "PLAIN",
+        "editBehaviour" : null
+      } ],
+      "size" : "SHORT",
+      "vspace" : false
+    }, {
+      "type" : "FORM_CHOICE",
+      "id" : 40,
+      "prompt" : [ {
+        "type" : "LITERAL",
+        "id" : 41,
+        "text" : "Ønsker du å klage?",
+        "fontType" : "PLAIN",
+        "editBehaviour" : null
+      } ],
+      "choices" : [ {
+        "id" : 42,
+        "content" : [ {
+          "type" : "LITERAL",
+          "id" : 43,
+          "text" : "Ja",
+          "fontType" : "PLAIN",
+          "editBehaviour" : null
+        } ]
+      }, {
+        "id" : 44,
+        "content" : [ {
+          "type" : "LITERAL",
+          "id" : 45,
+          "text" : "Nei",
+          "fontType" : "PLAIN",
+          "editBehaviour" : null
+        } ]
+      } ],
+      "vspace" : true
+    } ],
+    "signatur" : {
+      "saksbehandlerSignatur" : {
+        "saksbehandlerNavn" : "Sak S. Behandler",
+        "attesterendeSaksbehandlerNavn" : "Att Esterer"
+      },
+      "navAvsenderEnhet" : "Nav Familie- og pensjonsytelser"
+    },
+    "version" : 2
+  },
+  "attachments" : [ {
+    "title1" : [ {
+      "type" : "LITERAL",
+      "id" : 1000,
+      "text" : "Vedlegg 1",
+      "fontType" : "PLAIN",
+      "editBehaviour" : null
+    } ],
+    "blocks" : [ {
+      "type" : "PARAGRAPH",
+      "id" : 1001,
+      "content" : [ {
+        "type" : "LITERAL",
+        "id" : 1002,
+        "text" : "Sats: ",
+        "fontType" : "PLAIN",
+        "editBehaviour" : null
+      }, {
+        "type" : "VARIABLE",
+        "id" : 1003,
+        "text" : "2G",
+        "fontType" : "PLAIN",
+        "editBehaviour" : null
+      } ]
+    } ],
+    "inkluderSaksinformasjon" : true
+  } ],
+  "pdfVedlegg" : [ {
+    "title1" : [ {
+      "type" : "LITERAL",
+      "id" : 1004,
+      "text" : "Klagerettar",
+      "fontType" : "PLAIN",
+      "editBehaviour" : null
+    } ]
+  } ],
+  "spraak" : "NYNORSK",
+  "brevtype" : "VEDTAKSBREV"
+}

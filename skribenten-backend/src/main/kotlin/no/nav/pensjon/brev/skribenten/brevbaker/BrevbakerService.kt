@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.skribenten.brevbaker
 
-import com.fasterxml.jackson.databind.*
+import no.nav.pensjon.brev.api.model.TemplateDescription
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
@@ -13,10 +15,21 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.*
 import kotlinx.io.EOFException
+import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
+import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brev.skribenten.common.Cache
+import no.nav.pensjon.brev.skribenten.common.Cacheomraade
+import no.nav.pensjon.brev.skribenten.common.cached
+import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
+import no.nav.brev.brevbaker.serialization.TemplateModelSpecificationJacksonModule
+import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.skribenten.common.*
 import no.nav.pensjon.brev.skribenten.serialize.*
 import no.nav.pensjon.brev.skribenten.services.*
@@ -97,8 +110,8 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
-                registerModule(LetterMarkupJacksonModule)
-                registerMixin(TemplateModelSpecificationMixins)
+                registerModule(LetterMarkupV1JacksonModule)
+                registerModule(TemplateModelSpecificationJacksonModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             }
@@ -259,7 +272,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         }
     }
 
-    override suspend fun getTemplates(): List<TemplateDescription.Redigerbar>? {
+    override suspend fun getTemplates(): List<Redigerbar>? {
         val response = client.get("/templates/redigerbar") {
             url {
                 parameters.append("includeMetadata", "true")

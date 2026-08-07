@@ -6,7 +6,6 @@ import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
 import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkupV2
 import no.nav.brev.brevbaker.template.render.toMarkup
 import no.nav.brev.brevbaker.template.toScope
-import no.nav.brev.brevbaker.PDFRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.Letter
@@ -15,7 +14,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupLetterMarkup
 import no.nav.brev.brevbaker.markup.Attachment as MarkupAttachment
-import no.nav.brev.brevbaker.markup.dsl.letterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 
 internal class BrevbakerPDF(
@@ -65,15 +64,12 @@ internal class BrevbakerPDF(
         renderCompleteMarkupV2(letter, redigertBrev, redigerteVedlegg).let { markup ->
             pdfByggerService.producePDFV2(
                 letterPDFRequest(
+                    letterMarkup = markup.letterMarkup,
+                    attachments = markup.attachments,
+                    pdfVedlegg = Letter2MarkupV2.renderPDFTitle(letter.toScope(), pdfVedlegg),
                     spraak = letter.language.toCode().toMarkup(),
                     brevtype = letter.template.letterMetadata.brevtype.toMarkup(),
-                    letter = markup.letterMarkup,
-                ) {
-                    markup.attachments.forEach { attachment(it) }
-                    Letter2MarkupV2.renderPDFTitle(letter.toScope(), pdfVedlegg).forEach {
-                        pdfVedlegg(it)
-                    }
-                },
+                ),
             )
         }.let { pdf ->
             LetterResponse(

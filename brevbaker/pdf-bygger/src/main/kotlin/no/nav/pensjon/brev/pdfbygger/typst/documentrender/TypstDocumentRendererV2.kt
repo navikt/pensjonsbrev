@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
 import no.nav.brev.brevbaker.markup.Attachment
 import no.nav.brev.brevbaker.markup.LetterMarkup
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.PDFTittel
 import no.nav.brev.brevbaker.markup.clean

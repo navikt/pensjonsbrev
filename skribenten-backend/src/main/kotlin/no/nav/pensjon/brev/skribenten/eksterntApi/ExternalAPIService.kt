@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.eksterntApi
 
+import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.SkribentenConfig

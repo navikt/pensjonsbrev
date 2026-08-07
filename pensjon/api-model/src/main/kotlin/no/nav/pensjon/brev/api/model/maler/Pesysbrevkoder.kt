@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 
 object Pesysbrevkoder {
     enum class AutoBrev : Automatisk {
@@ -44,7 +43,8 @@ object Pesysbrevkoder {
         UT_VEDTAK_ETTERBETALING_OPPHOR_2026,
         UT_VEDTAK_ETTERBETALING_OPPHOR_2026_OKT_IFU,
         UT_VEDTAK_ETTERBETALING_OPPHOR_2026_REDPROS,
-        UT_VEDTAK_ENDRING_BT_EPS_2026_AUTO;
+        UT_VEDTAK_ENDRING_BT_EPS_2026_AUTO,
+        UT_VEDTAK_OKT_BUNNFRADRAG_2026;
 
         override fun kode(): String = this.name
     }
@@ -108,15 +108,9 @@ object Pesysbrevkoder {
         UT_VEDTAK_REDUKSJONSPROSENT_2026_RED,
         GP_INNVILGELSE_BOSATT_NORGE_ETTER_UTLAND,
         UP_AVSLAG_UFOEREPENSJON,
-        UT_VEDTAK_ETTERBETALING_OPPHOR_2026_RED;
+        UT_VEDTAK_ETTERBETALING_OPPHOR_2026_RED,
+        UT_VEDTAK_OKT_BUNNFRADRAG_2026_RED;
 
         override fun kode(): String = this.name
     }
-
-    enum class AlltidValgbareVedlegg(override val visningstekst: String) : AlltidValgbartVedleggKode {
-        ;
-
-        override val kode: String = name
-    }
 }
-

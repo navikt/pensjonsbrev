@@ -50,11 +50,15 @@ jobs:
         with:
           cache-encryption-key: ${{ secrets.GRADLEKEY }}
 
-      - name: "publish artifact dependencies to Maven local"
+      - name: "publish brevbaker-biblioteket to Maven local"
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          ./gradlew :brevbaker:api-model-common:publishToMavenLocal
-          ./gradlew :brevbaker:markup:publishToMavenLocal
+          # Ett Gradle-kall per modul: innenfor ett kall resolveres konsumentens compileClasspath
+          # for publiseringen av modulen den avhenger av har skjedd.
+          ./gradlew :brevbaker:brevdata:publishToMavenLocal
+          ./gradlew :brevbaker:markup-model:publishToMavenLocal
+          ./gradlew :brevbaker:markup-dsl:publishToMavenLocal
+          ./gradlew :brevbaker:brevbaker-api:publishToMavenLocal
 
       - name: "publish extra modules to Maven local"
         if: ${{ github.event_name == 'pull_request' }}

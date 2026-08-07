@@ -5,7 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runInterruptible
 import kotlinx.coroutines.withContext
-import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import org.slf4j.LoggerFactory
 import java.io.IOException

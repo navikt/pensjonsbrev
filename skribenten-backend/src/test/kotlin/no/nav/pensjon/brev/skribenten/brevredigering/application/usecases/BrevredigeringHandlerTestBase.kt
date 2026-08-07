@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.*
+import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.*
@@ -303,6 +304,7 @@ abstract class BrevredigeringHandlerTestBase {
             sakType = Sakstype("ALDER"),
             pid = Pid("12345678910"),
             behandlingsnumre = listOf(),
+            tema = Tema("tema1"),
         )
 
         val fagsak1 = Fagsak(

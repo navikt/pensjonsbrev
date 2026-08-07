@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDto
 import no.nav.pensjon.brev.alder.model.afp.selectors.varselAfpEtteroppgjoerForeloepigDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.afp.selectors.varselAfpEtteroppgjoerForeloepigDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk

@@ -10,7 +10,7 @@ import io.ktor.http.HttpStatusCode
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.testBrevbakerApp

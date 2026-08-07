@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.planleggepensjon
 
+import no.nav.pensjon.brev.api.model.IBrevkategori
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.FeatureToggle
-import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -19,7 +19,7 @@ object PlanleggePensjonTemplates : AllTemplates {
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()
 }
 
-enum class Brevkategori : TemplateDescription.IBrevkategori {
+enum class Brevkategori : IBrevkategori {
     AP_SIMULERINGSBREV;
 
     override val kode = name

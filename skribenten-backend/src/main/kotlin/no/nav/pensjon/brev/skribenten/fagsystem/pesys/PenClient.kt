@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
+import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
@@ -48,6 +49,7 @@ interface PenClient {
     )
 }
 
+class PenAdresseManglerException : ServiceException("Adresse mangler", status = HttpStatusCode.UnprocessableEntity)
 class PenServiceException(message: String) : ServiceException(message)
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
 class PenFeilIDatabyggerException(message: String) : ServiceException(message)
@@ -59,7 +61,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
     @Suppress("unused") // Brukes av ktor-di
     constructor(config: SkribentenConfig, authService: AuthService, engine: HttpClientEngine): this(config.services.pen, authService, engine)
 
-    private val client = lagHttpClient(engine) {
+    private val client = lagHttpClient {
         defaultRequest {
             url(penUrl)
         }
@@ -77,6 +79,14 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         when {
             status.isSuccess() -> body()
             status == HttpStatusCode.NotFound -> null
+            status == HttpStatusCode.UnprocessableEntity -> {
+                val parsed = body<Pen.BestillBrevResponse>()
+                if (parsed.error?.tekniskgrunn == "AdresseMangler") {
+                    throw PenAdresseManglerException()
+                } else {
+                    throw PenServiceException("Feil ved kall til PEN som ga unprocessable entity: $parsed")
+                }
+            }
             else -> throw PenServiceException("Feil ved kall til PEN: ${bodyAsText()}")
         }
 
@@ -89,6 +99,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
                 sakType = it.sakType,
                 pid = it.pid,
                 behandlingsnumre = it.behandlingsnumre,
+                tema = it.tema,
             )
         }
 
@@ -185,6 +196,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         val enhetId: String?,
         val pid: Pid,
         val behandlingsnumre: List<Behandlingsnummer>,
+        val tema: Tema,
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }
