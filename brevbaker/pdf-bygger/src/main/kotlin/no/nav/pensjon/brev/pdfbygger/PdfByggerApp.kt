@@ -11,7 +11,6 @@ import io.ktor.server.plugins.callid.callIdMdc
 import io.ktor.server.plugins.callid.generate
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -62,8 +61,6 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         filter(Metrics::skalObserveres)
         mdc("x_response_code") { it.response.status()?.value?.toString() }
     }
-
-    install(StatusPages)
 
     install(CallId) {
         retrieveFromHeader("X-Request-ID")

@@ -56,17 +56,12 @@ dependencies {
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
-    implementation(libs.ktor.server.status.pages)
     implementation(libs.bundles.metrics)
 
     implementation(libs.brevbaker.api) // trengs fortsatt fordi gammel letterMarkup ligger her. Kan fjernes når den er borte.
     implementation(libs.markup.model)
     implementation(project(":brevbaker:serialization"))
     implementation(libs.kotlinx.serialization.json)
-
-    implementation(libs.jackson.datatype.jsr310) {
-        because("we require deserialization/serialization of java.time.LocalDate")
-    }
 
     testImplementation(libs.bundles.junit)
     testImplementation(libs.ktor.server.test.host) {
