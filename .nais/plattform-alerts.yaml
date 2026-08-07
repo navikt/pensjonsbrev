@@ -63,10 +63,21 @@ spec:
             action: "Sjekk om det sammenfaller med et spesielt stort brev. Vurder å heve limits.memory, eller finn minnelekkasjen."
 
         - alert: MinnebrukNaerGrensen
+          # max by (...) på begge sider er nødvendig, ikke pynt. cAdvisor rapporterer en egen serie per
+          # container-instans, med hver sin id og name. Restarter containeren, finnes den døde og den nye
+          # instansen samtidig en kort stund, og da har vektormatchingen to serier på venstre side for
+          # samme (namespace, pod, container). Uten aggregering feiler hele spørringen med
+          # "found duplicate series for the match group", altså nøyaktig når en container restarter -
+          # som er da vi trenger alarmen mest. max og ikke sum, fordi sum ville dobbelttelt den døde
+          # containerens minnebruk.
           expr: |
-            container_memory_working_set_bytes{namespace="pensjonsbrev", container=~"pensjon-brevbaker|pensjon-pdf-bygger|skribenten-backend|skribenten-web"}
+            max by (namespace, pod, container) (
+              container_memory_working_set_bytes{namespace="pensjonsbrev", container=~"pensjon-brevbaker|pensjon-pdf-bygger|skribenten-backend|skribenten-web"}
+            )
             / on(namespace, pod, container)
-            kube_pod_container_resource_limits{namespace="pensjonsbrev", container=~"pensjon-brevbaker|pensjon-pdf-bygger|skribenten-backend|skribenten-web", resource="memory"}
+            max by (namespace, pod, container) (
+              kube_pod_container_resource_limits{namespace="pensjonsbrev", container=~"pensjon-brevbaker|pensjon-pdf-bygger|skribenten-backend|skribenten-web", resource="memory"}
+            )
             > 0.9
           for: 15m
           labels:
