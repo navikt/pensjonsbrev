@@ -40,6 +40,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             erUforetidspunktMaanedEtterFoedsel(this, foedselsdato)
         }.ifNull(false)
 
+        // ============================================================
+        // Innledning: virkningsdato og grunnbeløp
+        // ============================================================
         title2 {
             text(
                 bokmal { + "Opplysninger vi har brukt i beregningen fra " },
@@ -64,7 +67,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         includePhrase(TBU010V(pe))
         includePhrase(TBUxx1V(pe))
 
+        // ============================================================
         // Slik beregner vi uføretrygden din
+        // ============================================================
         showIf (pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()) {
             includePhrase(TBUxx2V(pe))
         }.orShow {
@@ -81,7 +86,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(TBU034V_036V(pe))
         }
 
+        // ============================================================
         // Dette er inntektene vi har brukt i beregningen din
+        // ============================================================
         showIf(pe.skalViseInntekterBruktIBeregning()) {
             title1 {
                 text(
@@ -102,7 +109,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(TBU038V_4(pe))
         }
 
+        // ============================================================
         // Dette er trygdetiden din
+        // ============================================================
         showIf(pe.ut_trygdetid()) {
             includePhrase(TBU039V_TBU044V_1(pe, erMndEtterFoedsel))
 
@@ -138,7 +147,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         includePhrase(TBU1382(pe))
         includePhrase(TBU1384(pe))
 
+        // ============================================================
         // Slik har vi fastsatt den nye inntektsgrensen din
+        // ============================================================
         showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endring_ifu")){
             includePhrase(TBU500v)
         }
@@ -147,6 +158,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(TBUxx4v_og_TBU048V_TBU055V(pe))
         }
 
+        // ============================================================
+        // Kompensasjonsgrad og utbetaling
+        // ============================================================
         // TODO vises kun om brevkode er PE_UT_14_300 or PE_UT_04_300
         //includePhrase(TBU052V_TBU073V_Del_1_InntektenDinFoerDuBleUfoer())
 
@@ -158,6 +172,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         includePhrase(TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(pe))
 
+        // ============================================================
+        // Barnetillegg og andre tillegg
+        // ============================================================
         showIf(pe.pe_ut_tbu601v_tbu604v()) {
             includePhrase(TBU052V_TBU073V_SlikRedusererViBarnetilleggetUtFraInntekt(pe))
         }
@@ -169,6 +186,9 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         includePhrase(TBU052V_TBU073V_ForDegSomMottarEktefelletillegg(pe))
 
+        // ============================================================
+        // Etteroppgjør av uføretrygd og barnetillegg
+        // ============================================================
         showIf(pe.skalViseEtteroppgjoer()) {
             includePhrase(TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(pe))
         }
