@@ -2,32 +2,29 @@ package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
-import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.utils.io.core.Closeable
+import io.ktor.utils.io.core.*
 import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
+import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
-import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
+import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 
@@ -61,7 +58,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
     @Suppress("unused") // Brukes av ktor-di
     constructor(config: SkribentenConfig, authService: AuthService, engine: HttpClientEngine): this(config.services.pen, authService, engine)
 
-    private val client = lagHttpClient {
+    private val client = lagHttpClient(engine) {
         defaultRequest {
             url(penUrl)
         }

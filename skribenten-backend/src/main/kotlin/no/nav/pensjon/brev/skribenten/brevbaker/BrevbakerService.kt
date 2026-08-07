@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevbaker
 
-import no.nav.pensjon.brev.api.model.TemplateDescription
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
@@ -15,23 +13,12 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.*
 import kotlinx.io.EOFException
-import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
-import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
+import no.nav.brev.brevbaker.serialization.*
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
-import no.nav.pensjon.brev.skribenten.common.Cache
-import no.nav.pensjon.brev.skribenten.common.Cacheomraade
-import no.nav.pensjon.brev.skribenten.common.cached
-import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
-import no.nav.brev.brevbaker.serialization.TemplateModelSpecificationJacksonModule
-import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.skribenten.common.*
-import no.nav.pensjon.brev.skribenten.serialize.*
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.*
@@ -272,7 +259,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         }
     }
 
-    override suspend fun getTemplates(): List<Redigerbar>? {
+    override suspend fun getTemplates(): List<TemplateDescription.Redigerbar>? {
         val response = client.get("/templates/redigerbar") {
             url {
                 parameters.append("includeMetadata", "true")
