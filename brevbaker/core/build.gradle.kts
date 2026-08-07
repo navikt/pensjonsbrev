@@ -32,7 +32,7 @@ dependencies {
     // @ExtendedMarkupDsl, som denne modulen opter inn på under.
     api(libs.markup.dsl)
 
-    implementation(project(":brevbaker:jackson"))
+    implementation(project(":brevbaker:serialization"))
     ksp(project(":brevbaker:template-model-generator"))
     kspTest(project(":brevbaker:template-model-generator"))
     implementation(libs.kotlinx.html)
@@ -45,7 +45,7 @@ dependencies {
     testImplementation(testFixtures(project(":brevbaker:core")))
 
     testFixturesApi(libs.brevbaker.api)
-    testFixturesImplementation(project(":brevbaker:jackson"))
+    testFixturesImplementation(project(":brevbaker:serialization"))
     // Testfixturene bygger PDF-forespørsler slik en ekstern konsument ville gjort det.
     testFixturesImplementation(libs.ktor.serialization.jackson)
     testFixturesImplementation(libs.ktor.client.cio)

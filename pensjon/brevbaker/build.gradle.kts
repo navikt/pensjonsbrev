@@ -91,7 +91,7 @@ dependencies {
     implementation(project(":etterlattemaler"))
     implementation(project(":brevbaker:core"))
     implementation(libs.brevbaker.api)
-    implementation(project(":brevbaker:jackson")) {
+    implementation(project(":brevbaker:serialization")) {
         because("bruker internalObjectMapper for serialisering av intern trafikk")
     }
     ksp(project(":brevbaker:template-model-generator"))

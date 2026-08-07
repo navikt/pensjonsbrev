@@ -78,7 +78,7 @@ If the agent finds itself about to write to one of these, stop and change the up
 - `brevbaker/brevbaker-api` - Shared API models, bestiller-DTOs (published)
 - `brevbaker/markup/model` + `brevbaker/markup/dsl` - Markup model (incl. the pdf-bygger wire
   contract) and its DSL (published, **model is dependency-free**)
-- `brevbaker/jackson` (`internalObjectMapper()`) and `brevbaker/pdf-bygger/client` - never published
+- `brevbaker/serialization` (`internalObjectMapper()`) and `brevbaker/pdf-bygger/client` - never published
 
 Published versions live in `gradle/libs.versions.toml` (`brevdataVersion`, `markupVersion` covers both
 markup modules, `brevbakerApiVersion`); consumers use the catalog aliases, and a bump requires

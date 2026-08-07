@@ -15,7 +15,8 @@ data class LetterMarkupWithDataUsage internal constructor(
     val brevtype: Markup.Brevtype,
 ) {
     /** Et enkelt datafelt (type og property) brevet leser fra. */
-    data class Property(
+    @ConsistentCopyVisibility
+    data class Property internal constructor(
         val typeName: String,
         val propertyName: String,
     )

@@ -42,10 +42,10 @@ package "brevbaker" {
     markupDsl : - dette er artefaktet en ekstern konsument\n  deklarerer selv
   }
 
-  object "brevbaker:jackson" as jackson
-  jackson : - Jackson-serialisering av intern trafikk\n  (internalObjectMapper, MarkupJacksonModule)
-  jackson : - re-eksporterer ingen modeller; konsumenter\n  deklarerer dem selv
-  jackson : - publiseres aldri
+  object "brevbaker:serialization" as serialization
+  serialization : - Jackson-serialisering av intern trafikk\n  (internalObjectMapper, MarkupJacksonModule)
+  serialization : - re-eksporterer ingen modeller; konsumenter\n  deklarerer dem selv
+  serialization : - publiseres aldri
 
   object "brevbaker:dsl" as dsl
   dsl : - det som trengs for å lage en mal
@@ -88,13 +88,13 @@ object Gjenny #yellow
 markupDsl --> markupModel
 brevbakerapi --> brevdata
 brevbakerapi --> markupModel : BestillRedigertBrevRequest v1/v2
-jackson --> brevbakerapi
+serialization --> brevbakerapi
 dsl --> brevbakerapi
 core --> dsl
-core --> jackson
+core --> serialization
 core --> markupDsl : opt-in @ExtendedMarkupDsl
 tmg --> dsl
-pdfbygger --> jackson
+pdfbygger --> serialization
 
 ' malmoduler
 pensjonsmalene --> core
@@ -124,7 +124,7 @@ skribenten ..> brevbakerApp : HTTP
 
 
 ' konsumenter
-skribenten --> jackson
+skribenten --> serialization
 PEN --> pensjonapimodel
 PEN --> alderapimodel
 PEN --> ufoereapimodel

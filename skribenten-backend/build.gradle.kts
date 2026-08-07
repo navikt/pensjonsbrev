@@ -163,7 +163,7 @@ dependencies {
     // Domenemodell
     implementation(libs.brevbaker.api)
     implementation(libs.markup.model)
-    implementation(project(":brevbaker:jackson"))
+    implementation(project(":brevbaker:serialization"))
 
     // For å merge førsteside med resten av pdf-en
     implementation(libs.pdfbox)

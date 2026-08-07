@@ -24,7 +24,7 @@ updates:
       - "/brevbaker/brevbaker-api"
       - "/brevbaker/markup/model"
       - "/brevbaker/markup/dsl"
-      - "/brevbaker/jackson"
+      - "/brevbaker/serialization"
       - "/brevbaker"
       - "/brevbaker/dsl"
       - "/etterlattemaler"

@@ -61,7 +61,7 @@ dependencies {
 
     implementation(libs.brevbaker.api) // trengs fortsatt fordi gammel letterMarkup ligger her. Kan fjernes når den er borte.
     implementation(libs.markup.model)
-    implementation(project(":brevbaker:jackson"))
+    implementation(project(":brevbaker:serialization"))
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.jackson.datatype.jsr310) {

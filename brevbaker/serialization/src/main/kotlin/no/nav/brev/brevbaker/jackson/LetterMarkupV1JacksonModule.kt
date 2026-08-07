@@ -18,7 +18,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageImpl
  * Jackson-oppsett for den gamle (v1) markup-modellen: kobler interface til implementasjon og
  * deserialiserer polymorfe elementer via `type`-diskriminatoren.
  *
- * Modellen er intern (den bor i `brevbaker:jackson`), og både brevbaker og skribenten trenger
+ * Modellen er intern (den bor i `brevbaker:serialization`), og både brevbaker og skribenten trenger
  * nøyaktig samme oppsett. Tidligere fantes to nesten-like kopier – én i `pensjon:brevbaker` og én i
  * `skribenten-backend` – som kunne drifte fra hverandre. Dette er den ene kilden.
  */

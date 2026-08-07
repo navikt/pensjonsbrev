@@ -5,6 +5,7 @@ import no.nav.brev.brevbaker.markup.outline.Block
 import no.nav.brev.brevbaker.markup.outline.EditBehaviour
 import no.nav.brev.brevbaker.markup.outline.Text
 import java.time.LocalDate
+import kotlin.String
 
 /**
  * Fabrikkflaten som lar et DSL-lag konstruere markup-modellen.
@@ -98,4 +99,7 @@ object MarkupModel {
                                   letterDataUsage: Set<Property>,
                                   brevtype: Markup.Brevtype) =
         LetterMarkupWithDataUsage(markup, letterDataUsage, brevtype)
+
+    fun letterMarkupWithDataUsageProperty(typeName: String, propertyName: String) =
+        LetterMarkupWithDataUsage.Property(typeName, propertyName)
 }
