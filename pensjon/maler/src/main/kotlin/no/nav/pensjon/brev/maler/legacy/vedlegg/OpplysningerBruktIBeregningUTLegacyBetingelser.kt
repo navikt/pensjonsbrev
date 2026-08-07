@@ -43,7 +43,7 @@ fun Expression<PEgruppe10>.trygdetidBilateralListe() =
 // --- Seksjonsbetingelser ---
 
 /** Gate for TBU034V-036V (rett før inntektsseksjonen). */
-fun Expression<PEgruppe10>.skalViseTBU034V036V(): Expression<Boolean> =
+fun Expression<PEgruppe10>.skalViseGrunnbeloepOgYrkesskadeForklaring(): Expression<Boolean> =
     vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and
         pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300")
 

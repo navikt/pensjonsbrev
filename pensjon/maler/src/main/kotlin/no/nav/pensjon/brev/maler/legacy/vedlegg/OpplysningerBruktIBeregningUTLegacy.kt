@@ -89,7 +89,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // TODO TBU028V-TBU020V trengs for brev PE_UT_04_300 og PE_UT_14_300
 
         showIf(
-            pe.skalViseTBU034V036V()) {
+            pe.skalViseGrunnbeloepOgYrkesskadeForklaring()) {
             includePhrase(GrunnbeloepOgYrkesskadeForklaring(pe))
         }
 
