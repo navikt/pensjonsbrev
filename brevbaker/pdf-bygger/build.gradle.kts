@@ -64,10 +64,6 @@ dependencies {
     implementation(project(":brevbaker:serialization"))
     implementation(libs.kotlinx.serialization.json)
 
-    implementation(libs.jackson.datatype.jsr310) {
-        because("we require deserialization/serialization of java.time.LocalDate")
-    }
-
     testImplementation(libs.bundles.junit)
     testImplementation(libs.ktor.server.test.host) {
         exclude("org.jetbrains.kotlin", "kotlin-test")
