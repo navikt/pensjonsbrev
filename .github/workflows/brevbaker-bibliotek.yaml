@@ -61,12 +61,12 @@ jobs:
         with:
           filters: |
             brevdata:
-              - 'brevbaker/brevdata/api/brevdata.api'
+              - 'brevbaker/brevdata/src/main/**'
             markup:
-              - 'brevbaker/markup/model/api/markup-model.api'
-              - 'brevbaker/markup/dsl/api/markup-dsl.api'
+              - 'brevbaker/markup/model/src/main/**'
+              - 'brevbaker/markup/dsl/src/main/**'
             brevbakerApi:
-              - 'brevbaker/brevbaker-api/api/brevbaker-api.api'
+              - 'brevbaker/brevbaker-api/src/main/**'
             pensjonApiModel:
               - 'pensjon/api-model/gradle.properties'
             alderApiModel:
