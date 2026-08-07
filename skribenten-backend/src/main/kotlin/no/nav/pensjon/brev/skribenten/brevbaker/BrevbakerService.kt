@@ -90,7 +90,10 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             url(brevbakerUrl)
         }
         installRetry(logger, shouldNotRetry = { method, url, cause -> method == HttpMethod.Post && url.segments.last() == "pdf" && cause?.unwrapCancellationException() !is EOFException })
-        install(HttpTimeout)
+        install(HttpTimeout) {
+            // Satt til dette fordi det er standardverdien fra CIOEngineConfig
+            requestTimeoutMillis = 15.seconds.inWholeMilliseconds
+        }
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())

@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.db
 
-import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.cio.*
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
@@ -9,9 +9,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.selectAll
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.*
 import java.util.concurrent.atomic.AtomicInteger
 
 class OneShotJobTest {
@@ -25,6 +23,7 @@ class OneShotJobTest {
     @AfterAll
     fun kansellerDbAvhengighet() {
         SharedPostgres.cancelSubscription(this)
+        engine.close()
     }
 
     // Util function to avoid silly name collisions in tests
@@ -32,13 +31,15 @@ class OneShotJobTest {
         return "${jobnameCounter.incrementAndGet()}-$name"
     }
 
+    private val engine = CIO.create()
+
     @Test
     fun `will execute the job and record it as completed`() {
         var isExecuted = false
         val name = jobName("test-job")
 
         runBlocking {
-            oneShotJobs(NaisLeaderService(null, CIO.create())) {
+            oneShotJobs(NaisLeaderService(null, engine)) {
                 job(name) {
                     isExecuted = true
                 }
@@ -60,7 +61,7 @@ class OneShotJobTest {
         val name = jobName("no-duplicate-execution")
         fun aJob() {
             runBlocking {
-                oneShotJobs(NaisLeaderService(null, CIO.create())) {
+                oneShotJobs(NaisLeaderService(null, engine)) {
                     job(name) {
                         executionCount++
                     }
@@ -80,7 +81,7 @@ class OneShotJobTest {
         val name = jobName("failing-job")
 
         fun failingJob() = runBlocking {
-            oneShotJobs(NaisLeaderService(null, CIO.create())) {
+            oneShotJobs(NaisLeaderService(null, engine)) {
                 job(name) {
                     isExecuted = true
                     throw RuntimeException("Simulated failure")
