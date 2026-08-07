@@ -351,9 +351,9 @@ data class AvsnittHjemmel(
                 paragraph {
                     showIf(erFoerstegangsbehandling) {
                         text(
-                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13." },
-                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13." },
-                            english { +"This decision was made pursuant to the provisions of §§ 20-2, 20-3, 20-9 to 20-15, 22-12 and 22-13 of the National Insurance Act." }
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 20-2, 20-3, 20-9 til 20-15 og 22-12." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 20-2, 20-3, 20-9 til 20-15 og 22-12." },
+                            english { +"This decision was made pursuant to the provisions of §§ 20-2, 20-3, 20-9 to 20-15 and 22-12 of the National Insurance Act." }
                         )
                     }.orShow {
                         text(
