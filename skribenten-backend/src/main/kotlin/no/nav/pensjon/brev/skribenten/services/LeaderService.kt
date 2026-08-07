@@ -23,12 +23,12 @@ interface LeaderService {
 
 class NaisLeaderService(
     config: NoAuthClientConfig?,
-    clientEngine: HttpClientEngine = CIO.create(),
+    clientEngine: HttpClientEngine,
 ) : LeaderService, Closeable {
     private val url: String? = config?.url
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, clientEngine: HttpClientEngine = CIO.create()) : this(config.services.leader, clientEngine)
+    constructor(config: SkribentenConfig, clientEngine: HttpClientEngine) : this(config.services.leader, clientEngine)
 
     private val client = lagHttpClient(clientEngine) {
         install(ContentNegotiation) {

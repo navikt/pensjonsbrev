@@ -29,10 +29,10 @@ import no.nav.pensjon.brev.skribenten.services.installRetry
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import org.slf4j.LoggerFactory
 
-class FoerstesidegeneratorClient(config: OboClientConfig, authService: AuthService, clientEngine: HttpClientEngine = CIO.create()) : Closeable {
+class FoerstesidegeneratorClient(config: OboClientConfig, authService: AuthService, clientEngine: HttpClientEngine) : Closeable {
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService) : this(config.services.foerstesidegenerator, authService)
+    constructor(config: SkribentenConfig, authService: AuthService, engine: HttpClientEngine) : this(config.services.foerstesidegenerator, authService, engine)
     private val logger = LoggerFactory.getLogger(javaClass)
 
     private val foerstesidegeneratorUrl = config.url

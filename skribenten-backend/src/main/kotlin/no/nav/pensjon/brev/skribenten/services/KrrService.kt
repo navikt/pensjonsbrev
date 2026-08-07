@@ -21,10 +21,10 @@ import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 
-class KrrService(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine = CIO.create()) : ServiceStatus, Closeable {
+class KrrService(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine) : ServiceStatus, Closeable {
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService): this(config.services.krr, authService)
+    constructor(config: SkribentenConfig, authService: AuthService, engine: HttpClientEngine): this(config.services.krr, authService, engine)
 
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val client = lagHttpClient(engine) {

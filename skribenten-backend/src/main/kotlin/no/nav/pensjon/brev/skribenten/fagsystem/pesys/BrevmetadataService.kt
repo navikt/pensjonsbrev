@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 import com.fasterxml.jackson.databind.DeserializationFeature
 import no.nav.pensjon.brev.skribenten.NoAuthClientConfig
 import io.ktor.client.call.*
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -27,14 +28,15 @@ interface BrevmetadataService {
 
 class BrevmetadataServiceHttp(
     config: NoAuthClientConfig,
+    engine: HttpClientEngine,
 ) : BrevmetadataService, ServiceStatus, Closeable {
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig): this(config.services.brevmetadata)
+    constructor(config: SkribentenConfig, engine: HttpClientEngine): this(config.services.brevmetadata, engine)
 
     private val brevmetadataUrl = config.url
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
-    private val httpClient = lagHttpClient {
+    private val httpClient = lagHttpClient(engine) {
         defaultRequest {
             url(brevmetadataUrl)
         }
