@@ -158,7 +158,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         // Slik har vi fastsatt den nye inntektsgrensen din
         // ============================================================
         showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endring_ifu")){
-            includePhrase(NyInntektsgrenseTittel)
+            includePhrase(NyInntektsgrense)
         }
 
         showIf(pe.skalViseInntektsgrenseOgAvkortning()) {
