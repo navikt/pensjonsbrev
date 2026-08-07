@@ -1,16 +1,19 @@
 package no.nav.pensjon.brev.pdfbygger
 
+import com.fasterxml.jackson.core.JacksonException
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.JacksonConverter
 import io.ktor.server.application.*
 import io.ktor.server.config.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.callid.CallId
 import io.ktor.server.plugins.callid.callIdMdc
 import io.ktor.server.plugins.callid.generate
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -60,6 +63,19 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         disableDefaultColors()
         filter(Metrics::skalObserveres)
         mdc("x_response_code") { it.response.status()?.value?.toString() }
+    }
+
+    install(StatusPages) {
+        exception<BadRequestException> { call, cause ->
+            val jacksonCause = cause.findJacksonCause()
+            if (jacksonCause != null) {
+                val message = jacksonCause.message ?: "Failed to deserialize json body: unknown reason"
+                call.application.log.info(message)
+                call.respond(HttpStatusCode.BadRequest, message)
+            } else {
+                call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
+            }
+        }
     }
 
     install(CallId) {
@@ -120,3 +136,7 @@ private suspend fun RoutingContext.handleResult(
         }
     }
 }
+
+
+private fun Throwable.findJacksonCause(): JacksonException? =
+    cause as? JacksonException ?: cause?.findJacksonCause()

@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
+    implementation(libs.ktor.server.status.pages)
     implementation(libs.bundles.metrics)
 
     implementation(libs.brevbaker.api) // trengs fortsatt fordi gammel letterMarkup ligger her. Kan fjernes når den er borte.
