@@ -22,6 +22,7 @@ import { type Focus, type LiteralIndex } from "~/Brevredigering/LetterEditor/mod
 import {
   areAnyContentEditableSiblingsPlacedHigher,
   areAnyContentEditableSiblingsPlacedLower,
+  ensureVisibleInScrollContainer,
   findOnLineAbove,
   findOnLineBelow,
   focusAtOffset,
@@ -438,9 +439,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const next = findOnLineAbove(element);
 
       if (next) {
+        // Linjen over kan ligge utenfor det synlige rulleområdet. Koordinat-basert plassering av
+        // markøren treffer bare elementer innenfor rulleområdet, så rull den inn i bildet først.
+        ensureVisibleInScrollContainer(next);
         gotoCoordinates({
           x: caretCoordinates.x,
-          y: next.bottom - Y_COORD_SAFETY_MARGIN,
+          y: next.getBoundingClientRect().bottom - Y_COORD_SAFETY_MARGIN,
         });
         event.preventDefault();
       }
@@ -495,9 +499,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const next = findOnLineBelow(element);
 
       if (next) {
+        // Linjen under kan ligge utenfor det synlige rulleområdet. Koordinat-basert plassering av
+        // markøren treffer bare elementer innenfor rulleområdet, så rull den inn i bildet først.
+        ensureVisibleInScrollContainer(next);
         gotoCoordinates({
           x: caretCoordinates.x,
-          y: next.top + Y_COORD_SAFETY_MARGIN,
+          y: next.getBoundingClientRect().top + Y_COORD_SAFETY_MARGIN,
         });
         event.preventDefault();
       }
