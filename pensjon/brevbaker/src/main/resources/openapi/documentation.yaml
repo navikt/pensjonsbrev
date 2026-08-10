@@ -195,6 +195,146 @@ paths:
         '404':
           description: Malen eksisterer ikke
 
+  /v2/letter/autobrev/json:
+    post:
+      summary: Bestill brev i redigerbart LetterMarkup (v2) format
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BestillBrevRequest"
+      responses:
+        '200':
+          description: Brev i redigerbart LetterMarkup (v2) format. Se data klasse `no.nav.brev.brevbaker.markup.LetterMarkup`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LetterMarkupV2"
+        '404':
+          description: Malen eksisterer ikke
+
+  /v2/letter/autobrev/pdf:
+    post:
+      summary: Bestill brev i PDF format (rendret via LetterMarkup v2)
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BestillBrevRequest"
+      responses:
+        '200':
+          $ref: "#/components/responses/LetterResponse_PDF"
+        '404':
+          description: Malen eksisterer ikke
+
+  /v2/letter/redigerbar/markup:
+    post:
+      summary: Bestill brev i redigerbart LetterMarkup (v2) format
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BestillBrevRequest"
+      responses:
+        '200':
+          description: Brev i redigerbart LetterMarkup (v2) format. Se data klasse `no.nav.brev.brevbaker.markup.LetterMarkup`.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LetterMarkupV2"
+        '404':
+          description: Malen eksisterer ikke
+
+  /v2/letter/redigerbar/markup-usage:
+    post:
+      summary: Bestill brev i redigerbart LetterMarkup (v2) format, med informasjon om hvilke felter i brevdata som ble brukt
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BestillBrevRequest"
+      responses:
+        '200':
+          description: Se data klasse `no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage`.
+        '404':
+          description: Malen eksisterer ikke
+
+  /v2/letter/redigerbar/redigerbare-vedlegg/titler:
+    post:
+      summary: Hent titler for alltid-valgbare vedlegg (v2) som kan legges til i brevet
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BestillBrevRequest"
+      responses:
+        '200':
+          description: Se data klasse `no.nav.pensjon.brevbaker.api.model.RedigerbareVedleggTitler`.
+        '404':
+          description: Malen eksisterer ikke
+
+  /v2/letter/redigerbar/redigerbare-vedlegg/{vedleggId}:
+    post:
+      summary: Hent LetterMarkup (v2) for et alltid-valgbart vedlegg
+      security:
+        - BearerAuth: [ ]
+      parameters:
+        - name: vedleggId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillBrevRequest`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BestillBrevRequest"
+      responses:
+        '200':
+          description: Se data klasse `no.nav.brev.brevbaker.markup.Attachment`.
+        '404':
+          description: Malen eller vedlegget eksisterer ikke
+
+  /v2/letter/redigerbar/pdf:
+    post:
+      summary: Bestill brev i PDF format fra redigert LetterMarkup (v2)
+      security:
+        - BearerAuth: [ ]
+      requestBody:
+        required: true
+        description: Se data klasse `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2`.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BestillRedigertBrevRequestV2"
+      responses:
+        '200':
+          $ref: "#/components/responses/LetterResponse_PDF"
+        '404':
+          description: Malen eksisterer ikke
+
 components:
   securitySchemes:
     BearerAuth:
@@ -310,7 +450,28 @@ components:
           $ref: "#/components/schemas/LanguageCode"
         letterMarkup:
           $ref: "#/components/schemas/LetterMarkup"
-    LetterResponse:
+    BestillRedigertBrevRequestV2:
+      type: object
+      description: Se `no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2`
+      required:
+        - kode
+        - letterData
+        - felles
+        - language
+      properties:
+        kode:
+          type: string
+          description: Brevkode (name på enum)
+        letterData:
+          type: object
+          description: Brevdata som følger skjema for valgt brevkode (se data klasser i no.nav.pensjon.brev:pensjon:api-model)
+        felles:
+          type: object
+          description: Felles brevdata for alle brev (se Felles-klassen i no.nav.pensjon.brev:pensjon:api-model)
+        language:
+          $ref: "#/components/schemas/LanguageCode"
+        letterMarkup:
+          $ref: "#/components/schemas/LetterMarkupV2"
       type: object
       description: Se data klasse `no.nav.pensjon.brev.api.model.LetterResponse.V2`
       properties:
@@ -831,6 +992,31 @@ components:
                     - $ref: "#/components/schemas/LetterMarkup_NewLine"
         vspace:
           type: boolean
+
+    LetterMarkupV2:
+      type: object
+      description: |
+        Se data klasse `no.nav.brev.brevbaker.markup.LetterMarkup`. Strukturert på samme måte som
+        `LetterMarkup` (v1), men modellert i det delte biblioteket `brevbaker/markup`. Se kildekoden
+        for full detaljert modell (blocks, outline-tekst, tabeller, lister, skjema-elementer, vedlegg).
+      required:
+        - title1
+        - saksinformasjon
+        - blocks
+        - signatur
+      properties:
+        title1:
+          type: array
+          description: Tittel som liste av tekst-tokens.
+        saksinformasjon:
+          type: object
+          description: Se `no.nav.brev.brevbaker.markup.Saksinformasjon`.
+        blocks:
+          type: array
+          description: Se `no.nav.brev.brevbaker.markup.outline.Block`.
+        signatur:
+          type: object
+          description: Se `no.nav.brev.brevbaker.markup.Signatur`.
 
     TemplateDoc:
       type: object
