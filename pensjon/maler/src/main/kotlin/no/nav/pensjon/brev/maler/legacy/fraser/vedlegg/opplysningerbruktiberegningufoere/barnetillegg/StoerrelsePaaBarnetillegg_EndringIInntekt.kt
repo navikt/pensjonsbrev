@@ -176,67 +176,9 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
 
         showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())) {
             paragraph {
-                showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "" },
-                    )
-                }
-
-                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "" },
-                    )
-                }
-                text(
-                    bokmal { + "" },
-                    nynorsk { + "" },
-                )
-
-                showIf(
-                    (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
-                        "bormed 1-5"
-                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed 3-2") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 1_5"))
-                ) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "" },
-                    )
-                }
-                text(
-                    bokmal { + "" },
-                    nynorsk { + "" },
-                )
-            }
-        }
-
-        showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())) {
-            paragraph {
                 text(
                     bokmal { + "50 prosent av den inntekten som overstiger fribeløpet for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre " },
                     nynorsk { + "50 prosent av inntekta som overstig fribeløpet for " + pe.ut_barnet_barna_felles() + " som bur med begge foreldra " },
-                )
-
-                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_antallbarnfelles().equalTo(1)) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "" },
-                    )
-                }
-
-                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_antallbarnfelles().greaterThan(1))) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "" },
-                    )
-                }
-                text(
-                    bokmal { + "" },
-                    nynorsk { + "" },
                 )
 
                 showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert()) {
@@ -317,34 +259,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     bokmal { + "For " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene " },
                     nynorsk { + "For " + pe.ut_barnet_barna_serkull() + " som ikkje bur med begge foreldra " },
                 )
-                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_antallbarnserkull().equalTo(1)) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "" },
-                    )
-                }
-                text(
-                    bokmal { + "" },
-                    nynorsk { + "" },
-                )
-
-                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_antallbarnserkull().equalTo(1)) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "" },
-                    )
-                }
-
-                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_antallbarnserkull().greaterThan(1))) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "" },
-                    )
-                }
-                text(
-                    bokmal { + "" },
-                    nynorsk { + "" },
-                )
 
                 showIf(not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert())) {
                     text(
@@ -359,13 +273,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                         nynorsk { + "blir 50 prosent av den inntekta som overstig fribeløpet regna om til et årleg beløp som svarer til " },
 
                         )
-                }
-
-                showIf(not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert())) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "" },
-                    )
                 }
 
                 text(
