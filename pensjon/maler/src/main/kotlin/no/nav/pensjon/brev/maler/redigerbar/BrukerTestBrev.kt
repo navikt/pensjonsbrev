@@ -43,10 +43,10 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
         )
     ) {
 
-        val utsiktenFraKontoret = saksbehandlervalg("UtsiktenFraKontoret", "Utsikten fra kontoret").enum<BrukerTestBrevDto.UtsiktenFraKontoret>()
-        val denBesteKaken = saksbehandlervalg("DenBesteKaken", "Den beste kaken").enum<BrukerTestBrevDto.DenBesteKaken>()
-        val kaffemaskinensTilgjengelighet = saksbehandlervalg("KaffemaskinensTilgjengelighet", "Kaffemaskinens tilgjengelighet").bool()
-        val kontorplantenTorlill = saksbehandlervalg("KontorplantenTorlill", "Kontorplanten TorLill").bool()
+        val utsiktenFraKontoret = saksbehandlervalg("utsiktenFraKontoret", "Utsikten fra kontoret").enum<BrukerTestBrevDto.UtsiktenFraKontoret>()
+        val denBesteKaken = saksbehandlervalg("denBesteKaken", "Den beste kaken").enum<BrukerTestBrevDto.DenBesteKaken>()
+        val kaffemaskinensTilgjengelighet = saksbehandlervalg("kaffemaskinensTilgjengelighet", "Kaffemaskinens tilgjengelighet").bool()
+        val kontorplantenTorlill = saksbehandlervalg("kontorplantenTorlill", "Kontorplanten TorLill").bool()
 
         title {
             text(
