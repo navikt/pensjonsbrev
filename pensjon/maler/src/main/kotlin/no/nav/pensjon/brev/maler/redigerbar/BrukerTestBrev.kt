@@ -6,8 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDto.DenBesteKaken.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDto.UtsiktenFraKontoret.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.brukerTestBrevDto.saksbehandlerValg.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.brukerTestBrevDto.*
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.model.Brevkategori
@@ -24,6 +22,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brev.template.saksbehandlervalg
 
 @TemplateModelHelpers
 object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
@@ -43,6 +42,12 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
+
+        val utsiktenFraKontoret = saksbehandlervalg("UtsiktenFraKontoret", "Utsikten fra kontoret").enum<BrukerTestBrevDto.UtsiktenFraKontoret>()
+        val denBesteKaken = saksbehandlervalg("DenBesteKaken", "Den beste kaken").enum<BrukerTestBrevDto.DenBesteKaken>()
+        val kaffemaskinensTilgjengelighet = saksbehandlervalg("KaffemaskinensTilgjengelighet", "Kaffemaskinens tilgjengelighet").bool()
+        val kontorplantenTorlill = saksbehandlervalg("KontorplantenTorlill", "Kontorplanten TorLill").bool()
+
         title {
             text(
                 bokmal { + "Alt i dette brevet er tull" },
@@ -97,7 +102,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                 )
             }
 
-            showIf(saksbehandlerValg.utsiktenFraKontoret.equalTo(MOT_TRAER_OG_NATUR)) {
+            showIf(utsiktenFraKontoret.equalTo(MOT_TRAER_OG_NATUR)) {
                 title1 {
                     text(
                         bokmal { + "Trær og natur" },
@@ -108,7 +113,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                         bokmal { + "Fin balanse mellom distraksjon og dagslys." },
                     )
                 }
-            }.orShowIf(saksbehandlerValg.utsiktenFraKontoret.equalTo(MOT_PARKERINGSPLASSEN)) {
+            }.orShowIf(utsiktenFraKontoret.equalTo(MOT_PARKERINGSPLASSEN)) {
                 title1 {
                     text(
                         bokmal { + "Parkeringsplassen" },
@@ -121,7 +126,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                 }
             }
 
-            ifNotNull(saksbehandlerValg.denBesteKaken) { denBesteKaken ->
+            ifNotNull(denBesteKaken) { denBesteKaken ->
                 showIf(denBesteKaken.isOneOf(GULROTKAKE, RULLEKAKE, OSTEKAKE)) {
                     title1 {
                         showIf(denBesteKaken.equalTo(GULROTKAKE)) {
@@ -155,7 +160,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                     }
                 }
             }
-            showIf(saksbehandlerValg.kaffemaskinensTilgjengelighet) {
+            showIf(kaffemaskinensTilgjengelighet) {
                 title1 {
                     text(
                         bokmal { + "Kaffemaskinens tilgjengelighet" },
@@ -167,7 +172,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                     )
                 }
             }
-            showIf(saksbehandlerValg.kontorplantenTorlill) {
+            showIf(kontorplantenTorlill) {
                 title1 {
                     text(
                         bokmal { + "Kontorplanten TorLill" },
