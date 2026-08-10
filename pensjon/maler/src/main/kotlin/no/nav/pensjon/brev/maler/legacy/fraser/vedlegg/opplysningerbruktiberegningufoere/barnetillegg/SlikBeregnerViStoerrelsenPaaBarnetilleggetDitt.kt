@@ -6,14 +6,6 @@ import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 
-/**
- * TBU052V-TBU073V "Slik beregner vi størrelsen på barnetillegget ditt".
- *
- * Orkestrerer delfrasene i rekkefølge. Innholdet er delt opp i tematiske delfraser
- * (innledning, ett barnekull, TBU613, særkull, fellesbarn) for lesbarhet — rendret
- * output er identisk med den opprinnelige samlede fila.
- */
-/** Exstream: TBU052V–TBU073V. */
 data class SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
     val pe: Expression<PEgruppe10>
 ) : OutlinePhrase<LangBokmalNynorsk>() {

@@ -12,10 +12,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
-/**
- * Delfrase av TBU052V-TBU073V "Slik beregner vi størrelsen på barnetillegget ditt".
- * Splittet ut fra den opprinnelige ~1930-linjers fila for lesbarhet; rendret output er uendret.
- */
 data class StoerrelsePaaBarnetillegg_Fellesbarn(
     val pe: Expression<PEgruppe10>
 ) : OutlinePhrase<LangBokmalNynorsk>() {

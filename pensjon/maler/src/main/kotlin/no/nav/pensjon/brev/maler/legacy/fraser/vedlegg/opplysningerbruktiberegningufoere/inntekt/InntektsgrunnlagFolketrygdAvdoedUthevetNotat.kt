@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.text
 
-/** Exstream: TBU037V. */
 data class InntektsgrunnlagFolketrygdAvdoedUthevetNotat(
     val pe: Expression<PEgruppe10>,
 ): OutlinePhrase<LangBokmalNynorsk>() {

@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 
-/** Exstream: TBUxx4V, TBU048V–TBU055V. */
 object SlikFastsetterViUfoeregraden : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         title1 {

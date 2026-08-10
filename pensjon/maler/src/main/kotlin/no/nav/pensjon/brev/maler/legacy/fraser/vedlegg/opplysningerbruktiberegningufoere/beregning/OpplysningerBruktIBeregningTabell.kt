@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 
-/** Exstream: TBU010V. */
 data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {

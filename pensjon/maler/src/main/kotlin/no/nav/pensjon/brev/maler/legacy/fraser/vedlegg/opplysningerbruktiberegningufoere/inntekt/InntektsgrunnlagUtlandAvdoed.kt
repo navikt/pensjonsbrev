@@ -18,7 +18,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
-/** Exstream: TBU038V. */
 data class InntektsgrunnlagUtlandAvdoed(
     val pe: Expression<PEgruppe10>,
 ): OutlinePhrase<LangBokmalNynorsk>(){

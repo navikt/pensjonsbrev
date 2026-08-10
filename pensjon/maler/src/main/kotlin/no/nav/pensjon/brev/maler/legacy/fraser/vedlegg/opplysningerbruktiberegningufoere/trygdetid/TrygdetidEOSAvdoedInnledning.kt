@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.text
 
-/** Exstream: TBU1382. */
 data class TrygdetidEOSAvdoedInnledning(
     val pe: Expression<PEgruppe10>
 ): OutlinePhrase<LangBokmalNynorsk>(){

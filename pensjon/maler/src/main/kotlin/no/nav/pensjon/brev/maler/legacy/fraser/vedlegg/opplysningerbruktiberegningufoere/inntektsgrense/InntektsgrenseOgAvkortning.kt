@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
-/** Exstream: TBUxx4V, TBU048V–TBU055V. */
 data class InntektsgrenseOgAvkortning(
     val pe: Expression<PEgruppe10>,
 ): OutlinePhrase<LangBokmalNynorsk>(){

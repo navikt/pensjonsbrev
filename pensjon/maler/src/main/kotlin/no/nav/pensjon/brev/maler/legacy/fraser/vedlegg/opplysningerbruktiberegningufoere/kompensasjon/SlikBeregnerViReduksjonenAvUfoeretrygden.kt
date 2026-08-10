@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
-/** Exstream: TBU052V–TBU073V. */
 data class SlikBeregnerViReduksjonenAvUfoeretrygden(
     val pe: Expression<PEgruppe10>
 ) : OutlinePhrase<LangBokmalNynorsk>(){

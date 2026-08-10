@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.text
 
-/** Exstream: TBU037V. */
 data class InntektsgrunnlagFolketrygdUthevetNotat(
     val pe: Expression<PEgruppe10>,
 ): OutlinePhrase<LangBokmalNynorsk>(){

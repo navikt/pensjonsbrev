@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
-/** Exstream: TBU039V–TBU044V. */
 data class DetteErTrygdetidenDin(
     val pe: Expression<PEgruppe10>,
     val erMndEtterFoedsel: Expression<Boolean>,

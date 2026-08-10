@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.text
 
-/** Exstream: TBUxx2V. */
 data class SlikBeregnerViUfoeretrygdenKonvertert(
     val pe: Expression<PEgruppe10>,
 ): OutlinePhrase<LangBokmalNynorsk>(){

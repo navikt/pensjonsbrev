@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 
-/** Exstream: TBU080V, TBU027V. */
 data class ForDegSomHarRettTilMinsteytelse(
     val pe: Expression<PEgruppe10>,
 ): OutlinePhrase<LangBokmalNynorsk>(){
