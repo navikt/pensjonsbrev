@@ -16,6 +16,7 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
   const highlightedIds = useInsertedTekstValgHighlight();
   const isFocused = hasFocus(editorState.focus, literalIndex);
   const isInserted = isTekstValgHighlighted(highlightedIds, content);
+  const variableContentText = content.type === "VARIABLE" && content.text === "_" ? "" : content.text;
 
   switch (content.type) {
     case "NEW_LINE": {
@@ -58,7 +59,7 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
             }));
           }}
         >
-          {content.text}
+          {variableContentText}
         </span>
       );
     }

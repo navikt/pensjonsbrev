@@ -32,7 +32,7 @@ const ManagedLetterEditor = (props: {
       const stateWithCursor = Actions.cursorPosition(state, getCursorOffset());
 
       setEditorState((previousState) => ({
-        ...previousState,
+        ...Actions.cursorPosition(previousState, getCursorOffset()),
         saveStatus: "SAVE_PENDING",
       }));
       // oppdaterBrevtekst only saves redigertBrev; tekstvalg changes require saveDirtyLetter.

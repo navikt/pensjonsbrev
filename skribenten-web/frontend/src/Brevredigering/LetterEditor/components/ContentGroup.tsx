@@ -210,7 +210,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const element = contentEditableReference.current;
     if (!element) return;
 
-    if (element.textContent !== text) {
+    const selectionAnchor = globalThis.getSelection()?.anchorNode ?? null;
+    // Bare behold DOM-teksten når brukeren faktisk holder en levende markør/markering i elementet.
+    // En markør i et element som er fjernet fra dokumentet (f.eks. etter merge) er død og skal
+    // ikke hindre at riktig tekst synkes.
+    const harLevendeMarkering = selectionAnchor?.isConnected === true && element.contains(selectionAnchor);
+
+    if (element.textContent !== text && !(harLevendeMarkering && element.textContent !== "")) {
       element.textContent = text;
     }
 
@@ -239,7 +245,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           element.contains(selection.anchorNode) &&
           element.contains(selection.focusNode)
         ) {
-          // Do not set fallback or move caret yet.
+          if (selection.isCollapsed && element.childNodes[0]) {
+            // A collapsed caret here was dropped by a no-op text sync; restore the same offset.
+            focusAtOffset(
+              element.childNodes[0],
+              Math.min(selection.anchorOffset, element.childNodes[0].textContent?.length ?? 0),
+            );
+          }
           return;
         }
 
