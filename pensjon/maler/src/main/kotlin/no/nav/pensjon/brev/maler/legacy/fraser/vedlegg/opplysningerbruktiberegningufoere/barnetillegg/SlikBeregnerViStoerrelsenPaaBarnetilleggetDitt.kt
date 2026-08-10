@@ -21,7 +21,7 @@ data class SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
         includePhrase(StoerrelsePaaBarnetillegg_Innledning(pe))
         includePhrase(StoerrelsePaaBarnetillegg_EttBarnekull(pe))
         includePhrase(StoerrelsePaaBarnetillegg_EndringIInntekt(pe))
-        includePhrase(StoerrelsePaaBarnetillegg_Serkull(pe))
         includePhrase(StoerrelsePaaBarnetillegg_Fellesbarn(pe))
+        includePhrase(StoerrelsePaaBarnetillegg_Serkull(pe))
     }
 }

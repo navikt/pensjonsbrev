@@ -20,123 +20,119 @@ data class StoerrelsePaaBarnetillegg_Fellesbarn(
     val pe: Expression<PEgruppe10>
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true) THEN    INCLUDE END IF
+        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())) {
 
-        showIf(pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v()) {
-            paragraph {
-                text(
-                    bokmal {
-                        +"Hvis du har barnetillegg bare deler av året, er inntektene og fribeløpet for beregning av barnetillegg justert slik at det kun gjelder for den perioden du mottar barnetillegg. " +
-                                "Får du barnetillegg for hele året, beregnes dette ut fra hele årets inntekter og fradrag."
-                    },
-                    nynorsk {
-                        +"Hvis du har barnetillegg berre delar av året, er inntektene og fribeløpet for berekning av barnetillegg justert slik at det kun gjeld for den perioden du mottar barnetillegg. " +
-                                "Får du barnetillegg for heile året, bereknas dette ut fra heile årets inntekter og frådrag."
-                    },
-                )
-            }
-        }
-
-        //IF (PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true) THEN    INCLUDE END IF
-        showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
             //[TBU052V-TBU073V]
-
             paragraph {
-                table(
-                    header = {
-                        column(columnSpan = 4) {
-                            text (
-                                bokmal { + "Reduksjon av barnetillegg for særkullsbarn før skatt " },
-                                nynorsk { + "Reduksjon av barnetillegg for særkullsbarn før skatt " },
+                table(header = {
+                    column(columnSpan = 4) {
+                        text(
+                            bokmal { + "Reduksjon av barnetillegg for fellesbarn før skatt " },
+                            nynorsk { + "Reduksjon av barnetillegg for fellesbarn før skatt " },
+                        )
+
+                        //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = false) THEN      INCLUDE ENDIF
+                        showIf((not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom())))) {
+                            text(
+                                bokmal { + "i år" },
+                                nynorsk { + "i år" },
                             )
-
-                            //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = false) THEN      INCLUDE ENDIF
-                            showIf((not(FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom())))){
-                                text (
-                                    bokmal { + "i år" },
-                                    nynorsk { + "i år" },
-                                )
-                            }
-
-                            //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = true) THEN      INCLUDE ENDIF
-                            showIf((FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom()))){
-                                text (
-                                    bokmal { + "for neste år" },
-                                    nynorsk { + "for neste år" },
-                                )
-                            }
                         }
-                        column(columnSpan = 1,alignment = ColumnAlignment.RIGHT) {
 
+                        //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = true) THEN      INCLUDE ENDIF
+                        showIf((FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom()))) {
+                            text(
+                                bokmal { + "for neste år" },
+                                nynorsk { + "for neste år" },
+                            )
                         }
                     }
-                ) {
-
+                    column(columnSpan = 1,alignment = ColumnAlignment.RIGHT) {}
+                }) {
                     row {
                         cell {
                             text(
                                 bokmal { + "Årlig barnetillegg før reduksjon ut fra inntekt" },
                                 nynorsk { + "Årleg barnetillegg før reduksjon ut frå inntekt" },
-                                FontType.BOLD
                             )
                         }
                         cell {
                             text(
-                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbbruttoperar().format(false) + " kr" },
-                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbbruttoperar().format(false) + " kr" },
-                                FontType.BOLD
+                                bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbruttoperar()
+                                    .format(false) + " kr" },
+                                nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbruttoperar()
+                                    .format(false) + " kr" },
                             )
                         }
                     }
                     row {
                         cell {
-                            text (
-                                bokmal { + "Samlet inntekt brukt i fastsettelse av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
+                            text(
+                                bokmal { + "Samlet inntekt brukt i fastsettelse av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
                                     .format(false) + " kr" },
-                                nynorsk { + "Samla inntekt brukt i fastsetting av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
+                                nynorsk { + "Samla inntekt brukt i fastsetting av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
                                     .format(false) + " kr" },
                             )
                         }
-                        cell { }
+                        cell {
+
+                        }
                     }
-
-
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().greaterThan(0)
-                                or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0)
-                                    and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0))
-                    ){
+                    showIf(
+                        (pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                            .greaterThan(
+                                0
+                            ) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                            .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                            .notEqualTo(
+                                0
+                            ))))
+                    ) {
                         //[TBU052V-TBU073V]
 
                         row {
                             cell {
                                 text(
-                                    bokmal { + "Fribeløp brukt i fastsettelsen av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format(false) + " kr" },
-                                    nynorsk { + "Fribeløp brukt i fastsetting av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format(false) + " kr" },
+                                    bokmal { + "Fribeløp brukt i fastsettelsen av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
+                                        .format(false) + " kr" },
+                                    nynorsk { + "Fribeløp brukt i fastsetting av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
+                                        .format(false) + " kr" },
                                 )
                             }
                             cell { }
                         }
                     }
 
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0)
-                                or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0)
-                            and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0))
-                    ){
+                    showIf(
+                        pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                            .notEqualTo(0)
+                                or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0)
+                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                            .notEqualTo(0))
+                    ) {
+                        //[TBU052V-TBU073V]
                         row {
                             cell {
                                 text(
-                                    bokmal { + "Inntekt over fribeløpet er " + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format(false) + " kr" },
-                                    nynorsk { + "Inntekt over fribeløpet er " + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format(false) + " kr" },
+                                    bokmal { + "Inntekt over fribeløpet er " + pe.ut_btfbinntektbruktiavkortningminusbtfbfribelop()
+                                        .format(false) + " kr" },
+                                    nynorsk { + "Inntekt over fribeløpet er " + pe.ut_btfbinntektbruktiavkortningminusbtfbfribelop()
+                                        .format(false) + " kr" },
                                 )
                             }
-                            cell { }
+                            cell {}
                         }
                     }
 
-                    showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0)
-                            or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0)
-                            and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0))
-                            and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar().greaterThan(0)
-                    ){
+                    showIf(
+                        ((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0)
+                                or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0)
+                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                            .notEqualTo(0)))
+                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                            .greaterThan(0))
+                    ) {
                         //[TBU052V-TBU073V]
 
                         row {
@@ -158,22 +154,28 @@ data class StoerrelsePaaBarnetillegg_Fellesbarn(
                             }
                             cell {
                                 text(
-                                    bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar().format(false) + " kr" },
-                                    nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar().format(false) + " kr" },
+                                    bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                                        .format(false) + " kr" },
+                                    nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                                        .format(false) + " kr" },
                                     FontType.BOLD
                                 )
                             }
                         }
                     }
 
-                    showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0)){
+                    showIf(
+                        (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                            .notEqualTo(0))
+                    ) {
                         //[TBU052V-TBU073V]
 
                         row {
-
-                            cell {//IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr > 0) THEN      INCLUDE ENDIF
+                            cell {
+                                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr > 0) THEN      INCLUDE ENDIF
                                 showIf(
-                                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().greaterThan(0))
+                                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+                                        .greaterThan(0))
                                 ) {
                                     text(
                                         bokmal { + "-" },
@@ -181,9 +183,9 @@ data class StoerrelsePaaBarnetillegg_Fellesbarn(
                                     )
                                 }
 
-                                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr < 0) THEN      INCLUDE ENDIF
+                                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr < 0) THEN      INCLUDE ENDIF
                                 showIf(
-                                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
                                         .lessThan(0))
                                 ) {
                                     text(
@@ -198,19 +200,21 @@ data class StoerrelsePaaBarnetillegg_Fellesbarn(
                             }
                             cell {
                                 text(
-                                    bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar_utenminus().format(false) + " kr" },
-                                    nynorsk { + pe.barnetilleggserkull_justeringsbelopperarutenminus().format(false) + " kr" },
+                                    bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar_utenminus()
+                                        .format(false) + " kr" },
+                                    nynorsk { + pe.barnetilleggfelles_justeringsbelopperarutenminus().format(false) + " kr" },
                                 )
                             }
                         }
                     }
 
                     showIf(
-                        pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0)
-                                or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0)
-                                    and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0))){
+                        (pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                            .notEqualTo(0)
+                                or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0)
+                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0))))
+                    ) {
                         //[TBU052V-TBU073V]
-
                         row {
                             cell {
                                 text(
@@ -221,19 +225,22 @@ data class StoerrelsePaaBarnetillegg_Fellesbarn(
                             }
                             cell {
                                 text(
-                                    bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format(false) + " kr" },
-                                    nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format(false) + " kr" },
+                                    bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().format(false) + " kr" },
+                                    nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().format(false) + " kr" },
                                     FontType.BOLD
                                 )
                             }
                         }
                     }
 
+
+
                     showIf(
-                        pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0)
-                                or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0)
-                                    and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0))
-                    ){
+                        (pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                            .notEqualTo(0)
+                                or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0)
+                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().notEqualTo(0))))
+                    ) {
                         //[TBU052V-TBU073V]
 
                         row {
@@ -245,16 +252,17 @@ data class StoerrelsePaaBarnetillegg_Fellesbarn(
                             }
                             cell {
                                 text(
-                                    bokmal { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().format(false) + " kr" },
-                                    nynorsk { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().format(false) + " kr" },
+                                    bokmal { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                                        .format(false) + " kr" },
+                                    nynorsk { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                                        .format(false) + " kr" },
                                 )
                             }
                         }
                     }
 
-                    showIf(
-                        (pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0)
-                                and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0))){
+                    showIf((pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0)
+                            and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0))){
                         //[TBU052V-TBU073V]
 
                         row {
@@ -267,8 +275,8 @@ data class StoerrelsePaaBarnetillegg_Fellesbarn(
                             }
                             cell {
                                 text(
-                                    bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format(false) + " kr" },
-                                    nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format(false) + " kr" },
+                                    bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format(false) + " kr" },
+                                    nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format(false) + " kr" },
                                     FontType.BOLD
                                 )
                             }
@@ -278,92 +286,77 @@ data class StoerrelsePaaBarnetillegg_Fellesbarn(
             }
         }
 
-        //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto > 0 AND PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true) THEN      INCLUDE ENDIF
+        //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto > 0 AND PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true) THEN      INCLUDE ENDIF
         showIf(
-            (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+            (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
                 .greaterThan(
                     0
-                ) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
+                ) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())){
             //[TBU052V-TBU073V]
 
             paragraph {
                 text (
-                    bokmal { + "Du vil få utbetalt " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                    bokmal { + "Du vil få utbetalt " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
                         .format() + " i måneden før skatt i barnetillegg" },
-                    nynorsk { + "Du vil få utbetalt " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+                    nynorsk { + "Du vil få utbetalt " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
                         .format() + " i månaden før skatt i barnetillegg" },
                 )
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_UT_Etteroppgjor_BT_Utbetalt() = true) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.ut_etteroppgjor_bt_utbetalt())){
                     text (
-                        bokmal { + " for " + pe.ut_barnet_barna_serkull() + " som ikke bor med begge sine foreldre" },
-                        nynorsk { + " for " + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra" },
+                        bokmal { + " for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre" },
+                        nynorsk { + " for " + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine" },
                     )
                 }
                 text (
                     bokmal { + ". " },
-                    nynorsk { + ". " },
+                    nynorsk { + "." },
                 )
             }
         }
 
-        //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0 AND PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU609V_TBU611V() = true) THEN      INCLUDE ENDIF
-        showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-            .equalTo(0) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v())){
+        //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0 AND PE_UT_TBU606V_TBU611V() = true AND PE_UT_TBU606V_TBU608V() = true) THEN      INCLUDE ENDIF
+        showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+            .equalTo(0) and pe.ut_tbu606v_tbu611v() and pe.ut_tbu606v_tbu608v())){
             //[TBU052V-TBU073V]
 
             paragraph {
 
-                //IF(PE_UT_TBU611_Far_Ikke() = true) THEN      INCLUDE ENDIF
-                showIf((pe.ut_tbu611_far_ikke())){
+                //IF(PE_UT_TBU608_Far_Ikke() = true) THEN      INCLUDE ENDIF
+                showIf((pe.ut_tbu608_far_ikke())){
                     text (
                         bokmal { + "Du får ikke utbetalt barnetillegget " },
                         nynorsk { + "Du får ikkje utbetalt barnetillegget " },
                     )
                 }
 
-                //IF(PE_UT_TBU611_Far_Ikke() = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
-                showIf((pe.ut_tbu611_far_ikke() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())){
+                //IF(PE_UT_TBU608_Far_Ikke() = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
+                showIf((pe.ut_tbu608_far_ikke() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())){
                     text (
-                        bokmal { + "for " + pe.ut_barnet_barna_serkull() + " som ikke bor med begge sine foreldre " },
-                        nynorsk { + "for " + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra " },
+                        bokmal { + "for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre " },
+                        nynorsk { + "for " + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine " },
                     )
                 }
 
-                //IF(PE_UT_TBU611_Far_Ikke() = true) THEN      INCLUDE ENDIF
-                showIf((pe.ut_tbu611_far_ikke())){
+                //IF(PE_UT_TBU608_Far_Ikke() = true) THEN      INCLUDE ENDIF
+                showIf((pe.ut_tbu608_far_ikke())){
                     text (
                         bokmal { + "fordi samlet inntekt er over grensen for å få utbetalt barnetillegg. " },
                         nynorsk { + "fordi samla inntekt er over grensa for å få utbetalt barnetillegg. " },
                     )
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0) THEN      INCLUDE ENDIF
+                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0) THEN      INCLUDE ENDIF
                 showIf(
-                    (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-                        .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+                    (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+                        .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
                         .notEqualTo(0))){
                     text (
-                        bokmal { + "Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året." },
+                        bokmal { + "Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året. " },
                         nynorsk { + "Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året. " },
                     )
                 }
-            }
-        }
-
-        showIf(pe.ut_tbu606v_tbu611v() and pe.ut_tbu609v_tbu611v()) {
-            paragraph {
-                text(
-                    bokmal {
-                        +"Hvis du har barnetillegg bare deler av året, er inntektene og fribeløpet for beregning av barnetillegg justert slik at det kun gjelder for den perioden du mottar barnetillegg. " +
-                                "Får du barnetillegg for hele året, beregnes dette ut fra hele årets inntekter og fradrag."
-                    },
-                    nynorsk {
-                        +"Hvis du har barnetillegg berre delar av året, er inntektene og fribeløpet for berekning av barnetillegg justert slik at det kun gjeld for den perioden du mottar barnetillegg. " +
-                                "Får du barnetillegg for heile året, bereknas dette ut fra heile årets inntekter og frådrag."
-                    },
-                )
             }
         }
     }
