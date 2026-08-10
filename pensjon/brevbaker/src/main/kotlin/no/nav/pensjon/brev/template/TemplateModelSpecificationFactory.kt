@@ -61,7 +61,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
         is SaksbehandlervalgVerdi.Bool -> FieldType.Scalar(nullable = true, kind = Kind.BOOLEAN, displayText = displayText)
         is SaksbehandlervalgVerdi.Integer -> FieldType.Scalar(nullable = true, kind = Kind.NUMBER, displayText = displayText)
         is SaksbehandlervalgVerdi.Text -> FieldType.Scalar(nullable = true, kind = Kind.STRING, displayText = displayText)
-        is SaksbehandlervalgVerdi.Enum<*> -> FieldType.Enum(nullable = true, clazz.java.enumConstants.map { FieldType.EnumEntry(it.name, (it as SaksbehandlerValgEnum).displayText) }.toSet())
+        is SaksbehandlervalgVerdi.Enum<*> -> FieldType.Enum(nullable = true, clazz.java.enumConstants.map { FieldType.EnumEntry(it.name, (it as SaksbehandlerValgEnum).displayText) }.toSet(), displayText = displayText)
     }
 
     private fun validate(spec: TemplateModelSpecification): TemplateModelSpecification {
