@@ -37,18 +37,18 @@ class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<Saksbehandlervalg
     private fun <T> createSaksbehandlervalg(saksbehandlervalgVerdi: SaksbehandlervalgVerdi<T>): UnaryInvoke<SaksbehandlervalgIDSL, T> {
         scope.lagreSaksbehandlervalg(id, saksbehandlervalgVerdi)
         return UnaryInvoke(
-            UnaryInvoke(scope.argument, Select(SaksbehandlervalgIDSLSelector(saksbehandlervalgVerdi.typename, id, clazz))),
+            UnaryInvoke(scope.argument, Select(SaksbehandlervalgIDSLSelector(clazz))),
             Select(EttSaksbehandlervalgSelector(id, saksbehandlervalgVerdi))
         )
     }
 }
 
 private class SaksbehandlervalgIDSLSelector<LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>>(
-    override val propertyType: String,
-    override val propertyName: String,
     clazz: KClass<LetterData>
 ) : TemplateModelSelector<LetterData, SaksbehandlervalgIDSL> {
     override val className = clazz.qualifiedName!!
+    override val propertyName: String = "saksbehandlerValg"
+    override val propertyType: String = SaksbehandlervalgIDSL::class.qualifiedName!!
     override val selector: LetterData.() -> SaksbehandlervalgIDSL = { saksbehandlerValg }
 }
 
@@ -56,7 +56,7 @@ private class EttSaksbehandlervalgSelector<Type>(
     override val propertyName: String,
     val saksbehandlervalgVerdi: SaksbehandlervalgVerdi<Type>
 ) : TemplateModelSelector<SaksbehandlervalgIDSL, Type> {
-    override val className: String = "SaksbehandlervalgIDSL"
+    override val className: String = SaksbehandlervalgIDSL::class.qualifiedName!!
     override val selector: SaksbehandlervalgIDSL.() -> Type = { saksbehandlervalgVerdi.getValue(this) }
     override val propertyType: String
         get() = saksbehandlervalgVerdi.typename
