@@ -21,7 +21,7 @@ on:
         required: true
         type: string
       extraModulesToBuild:
-        description: "Modules to build"
+        description: "Additional Gradle tasks to prepare dependencies before the build"
         required: false
         type: string
       buildImage:
@@ -63,7 +63,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6.2.0
         with:
           cache-encryption-key: ${{ secrets.GRADLEKEY }}
-      - uses: actions/setup-java@1bcf9fb12cf4aa7d266a90ae39939e61372fe520 # v5.4.0
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
         with:
           "distribution": ${{ env.JavaDistribution }}
           "java-version": ${{ env.JavaVersion }}
@@ -75,10 +75,13 @@ jobs:
           scope: "@navikt"
           cache: "npm"
           cache-dependency-path: skribenten-web/frontend/package-lock.json
-      - name: "publish common to Maven local"
+      - name: "publish common brevbaker artifacts to Maven local"
         run: |
-          ./gradlew :brevbaker:api-model-common:publishToMavenLocal
-      - name: "publish extra modules to Maven local"
+          ./gradlew :brevbaker:brevdata:publishToMavenLocal
+          ./gradlew :brevbaker:markup-model:publishToMavenLocal
+          ./gradlew :brevbaker:markup-dsl:publishToMavenLocal
+          ./gradlew :brevbaker:brevbaker-api:publishToMavenLocal
+      - name: "prepare extra dependencies"
         if: ${{ inputs.extraModulesToBuild != '' }}
         run: |
           ./gradlew ${{ inputs.extraModulesToBuild }}
@@ -88,7 +91,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ github.token }}
       - name: "Build and publish container image to GAR"
-        uses: nais/docker-build-push@31c3a7321909bcb20799fdf46153fec721fd9512 # v0
+        uses: nais/docker-build-push@2d2b0a7193e65422b7f0355d4afb445e0a8b2cc3 # v0
         id: docker-push
         if: ${{ inputs.buildImage && ((github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch') || (github.event_name == 'schedule' && github.ref == 'refs/heads/main')) }}
         with:

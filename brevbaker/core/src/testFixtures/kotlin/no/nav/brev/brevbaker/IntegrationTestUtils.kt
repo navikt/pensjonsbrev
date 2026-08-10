@@ -10,10 +10,9 @@ import no.nav.brev.brevbaker.template.render.Letter2MarkupV2
 import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
 import no.nav.brev.brevbaker.template.render.toMarkup
 import no.nav.brev.brevbaker.template.toScope
-import no.nav.brev.brevbaker.PDFRequest
-import no.nav.brev.brevbaker.markup.dsl.letterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
 import no.nav.pensjon.brev.api.FeatureToggleService
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -107,14 +106,12 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDFV2(
             runBlocking {
                 pdfBygger.producePDFV2(
                     letterPDFRequest(
+                        letterMarkup = rendered.letterMarkup,
                         spraak = language.toCode().toMarkup(),
                         brevtype = template.letterMetadata.brevtype.toMarkup(),
-                        letter = rendered.letterMarkup,
-                    ) {
-                        rendered.attachments.forEach { a -> attachment(a) }
-                        Letter2MarkupV2.renderPDFTitle(this@renderTestPDFV2.toScope(), listOf())
-                            .forEach { t -> pdfVedlegg(t) }
-                    },
+                        attachments = rendered.attachments,
+                        pdfVedlegg = Letter2MarkupV2.renderPDFTitle(this@renderTestPDFV2.toScope(), listOf()),
+                    ),
                 )
             }
         }

@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -31,15 +32,20 @@ interface SamhandlerService {
     suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto
 }
 
-class SamhandlerServiceHttp(config: OboClientConfig, authService: AuthService, private val cache: Cache) : SamhandlerService, ServiceStatus, Closeable {
+class SamhandlerServiceHttp(
+    config: OboClientConfig,
+    authService: AuthService,
+    private val cache: Cache,
+    engine: HttpClientEngine,
+) : SamhandlerService, ServiceStatus, Closeable {
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache): this(config.services.samhandlerProxy, authService, cache)
+    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache, engine: HttpClientEngine): this(config.services.samhandlerProxy, authService, cache, engine)
 
     private val samhandlerProxyUrl = config.url
     private val samhandlerProxyScope = config.scope
 
-    private val samhandlerProxyClient = lagHttpClient {
+    private val samhandlerProxyClient = lagHttpClient(engine) {
         defaultRequest {
             url(samhandlerProxyUrl)
         }

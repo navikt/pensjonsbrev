@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.model
 
-import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.ISakstype
 
 @JvmInline
 value class SaksId(val id: Long) {
@@ -8,6 +8,6 @@ value class SaksId(val id: Long) {
 }
 
 @JvmInline
-value class Sakstype(override val kode: String) : TemplateDescription.ISakstype {
+value class Sakstype(override val kode: String) : ISakstype {
     override fun toString() = kode
 }

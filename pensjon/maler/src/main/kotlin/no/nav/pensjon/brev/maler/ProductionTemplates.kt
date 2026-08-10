@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.maler.legacy.VedtakOmEtterbetalingOpphor2026OktIfuAut
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.legacy.VedtakOmEndringBarnetilleggEPSAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereMinstesatsAuto
+import no.nav.pensjon.brev.maler.legacy.VedtakOmOktBunnfradragAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereReduksjonsprosentAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmOktMinsteIFUAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmOktMinsteIFULavereReduksjonsprosentAuto
@@ -49,6 +50,7 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.OpphoerGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheter
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmLavereMinstesatsRedigerbar
+import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmOktBunnfradragRedigerbar
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmLavereReduksjonsprosentRedigerbar
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmOktMinsteIFURedigerbar
@@ -134,6 +136,7 @@ object ProductionTemplates : AllTemplates {
         HvilendeRettOppHoer,
         HvilendeRettVarselOpphoer,
         VedtakOmLavereMinstesatsAuto,
+        VedtakOmOktBunnfradragAuto,
         VedtakOmOktMinsteIFUAuto,
         VedtakOmLavereReduksjonsprosentAuto,
         VedtakOmOktMinsteIFULavereReduksjonsprosentAuto,
@@ -197,6 +200,7 @@ object ProductionTemplates : AllTemplates {
         VedtakOmFjerningAvOmsorgsopptjening,
         VedtakOmInnvilgelseAvOmsorgspoeng,
         VedtakOmLavereMinstesatsRedigerbar,
+        VedtakOmOktBunnfradragRedigerbar,
         VedtakOmOktMinsteIFURedigerbar,
         VedtakOmLavereReduksjonsprosentRedigerbar,
         VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar,

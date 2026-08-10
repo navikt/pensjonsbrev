@@ -16,9 +16,11 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.di.*
 import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.*
+import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
+import no.nav.brev.brevbaker.serialization.TemplateModelSpecificationJacksonModule
+import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
@@ -26,7 +28,6 @@ import no.nav.pensjon.brev.skribenten.common.oneShotJobs
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.serialize.*
 import no.nav.pensjon.brev.skribenten.services.*
 import org.apache.pdfbox.pdmodel.font.PDType1Font
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts
@@ -97,8 +98,12 @@ fun Application.skribentenApp() {
             call.respond(status = cause.status, "Teknisk feil ved henting av brevdata, prøv igjen litt senere")
 
         }
+        exception<PenAdresseManglerException> { call, cause ->
+            logger.info("${cause.status} - Adresse mangler: ${cause.message}")
+            call.respond(status = cause.status, BrevExceptionDto("Adresse mangler", "Fant ingen kontaktadresse for personen"))
+        }
         exception<ServiceException> { call, cause ->
-            logger.error(cause.message, cause)
+            logger.info(cause.message, cause)
             call.respond(status = cause.status, message = cause.message)
         }
         exception<Exception> { call, cause ->
@@ -190,8 +195,8 @@ fun Application.skribentenContenNegotiation() {
 
 fun ObjectMapper.skribentenServerJackson() = apply {
     registerModule(JavaTimeModule())
-    registerMixin(TemplateModelSpecificationMixins)
-    registerModule(LetterMarkupJacksonModule)
+    registerModule(TemplateModelSpecificationJacksonModule)
+    registerModule(LetterMarkupV1JacksonModule)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 }
