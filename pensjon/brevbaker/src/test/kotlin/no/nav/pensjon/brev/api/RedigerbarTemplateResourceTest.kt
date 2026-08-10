@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api
 
+import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.PDFByggerService
@@ -105,7 +106,7 @@ class RedigerbarTemplateResourceTest {
     }
 
     @Test
-    fun `renderPDFV2 redigertBrev uses letterMarkup (v2) from argument`(): Unit = kotlinx.coroutines.runBlocking {
+    fun `renderPDFV2 redigertBrev uses letterMarkup (v2) from argument`(): Unit = runBlocking {
         val result = redigerbar.renderPDFV2(validRedigertBrevRequestV2)
 
         assertThat(String(result.file)).isEqualTo(pdfInnhold)
