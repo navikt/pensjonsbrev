@@ -99,11 +99,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     bokmal { + "" },
                     nynorsk { + " blir reduksjonen av barnetilleggene vurdert på nytt." },
                 )
-            }
-        }
-
-        showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())) {
-            paragraph {
 
                 showIf(((pe.ut_tbu605v_eller_til_din()))) {
                     text(

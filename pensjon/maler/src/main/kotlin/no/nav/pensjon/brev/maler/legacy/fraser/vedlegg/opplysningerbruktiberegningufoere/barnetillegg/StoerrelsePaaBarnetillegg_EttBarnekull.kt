@@ -175,11 +175,7 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
                         nynorsk { + "Dette beløpet bruker vi til å redusere barnetillegget ditt for heile året. " },
                     )
                 }
-            }
-        }
 
-        showIf((pe.ut_tbu605())) {
-            paragraph {
                 showIf(((pe.ut_tbu605v_eller_til_din()))) {
                     text(
                         bokmal { + "Har det vært en endring i inntekten din" },
