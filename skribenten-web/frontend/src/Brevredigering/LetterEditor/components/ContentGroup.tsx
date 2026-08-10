@@ -439,8 +439,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const next = findOnLineAbove(element);
 
       if (next) {
-        // Linjen over kan ligge utenfor det synlige rulleområdet. Koordinat-basert plassering av
-        // markøren treffer bare elementer innenfor rulleområdet, så rull den inn i bildet først.
+        // The line above may be outside the visible scroll area. Coordinate-based caret placement
+        // only hits elements inside the scroll area, so scroll it into view first.
         ensureVisibleInScrollContainer(next);
         gotoCoordinates({
           x: caretCoordinates.x,
@@ -499,8 +499,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const next = findOnLineBelow(element);
 
       if (next) {
-        // Linjen under kan ligge utenfor det synlige rulleområdet. Koordinat-basert plassering av
-        // markøren treffer bare elementer innenfor rulleområdet, så rull den inn i bildet først.
+        // The line below may be outside the visible scroll area. Coordinate-based caret placement
+        // only hits elements inside the scroll area, so scroll it into view first.
         ensureVisibleInScrollContainer(next);
         gotoCoordinates({
           x: caretCoordinates.x,
