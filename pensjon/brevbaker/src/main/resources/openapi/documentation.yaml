@@ -472,6 +472,7 @@ components:
           $ref: "#/components/schemas/LanguageCode"
         letterMarkup:
           $ref: "#/components/schemas/LetterMarkupV2"
+    LetterResponse:
       type: object
       description: Se data klasse `no.nav.pensjon.brev.api.model.LetterResponse.V2`
       properties:
