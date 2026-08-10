@@ -166,7 +166,7 @@ object Fixtures : LetterDataFactory {
                     pensjonsgivendeInntekt = Kroner(550000),
                 ),
                 AarligInntektOgPensjon(
-                    alderLabel = "67 år",
+                    alderLabel = "Livsvarig fra 67 år",
                     alderspensjon = Kroner(29133),
                     avtalefestetPensjon = Kroner(5000),
                     pensjonsgivendeInntekt = Kroner(0),

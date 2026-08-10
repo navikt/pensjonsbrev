@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.planleggepensjon.serviceberegning
 
+import no.nav.pensjon.brev.api.model.IBrevkategori
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.planleggepensjon.Brevkategori
@@ -33,9 +35,9 @@ import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.mello
 
 @TemplateModelHelpers
 object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
-    override val kategori: TemplateDescription.IBrevkategori = Brevkategori.SERVICEBEREGNING_SIMULERINGSBREV
+    override val kategori: IBrevkategori = Brevkategori.SERVICEBEREGNING_SIMULERINGSBREV
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
-    override val sakstyper: Set<TemplateDescription.ISakstype> = emptySet()
+    override val sakstyper: Set<ISakstype> = emptySet()
     override val kode: Brevkode.Redigerbart = PlanleggePensjonBrevkoder.Redigerbar.SERVICEBEREGNING_SIMULERINGSBREV
     override val featureToggle = FeatureToggles.apSimulering.toggle
     override val modelSpecification: TemplateModelSpecification = TemplateModelSpecification(emptyMap(), null)
