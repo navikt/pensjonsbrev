@@ -88,7 +88,6 @@ tasks {
         classpath = files(test.map { it.sources.runtimeClasspath })
     }
 }
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.compilerOptions {
-    freeCompilerArgs.set(listOf("-Xcontext-parameters"))
+tasks.withType<KotlinCompile>().configureEach {
+    compilerOptions.freeCompilerArgs.add("-Xcontext-parameters")
 }
