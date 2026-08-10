@@ -1,10 +1,16 @@
 import { css } from "@emotion/react";
 import { ArrowLeftIcon } from "@navikt/aksel-icons";
-import { BodyLong, Box, Button, Heading, HGrid, Select, VStack } from "@navikt/ds-react";
+import { BodyLong, Box, Button, Heading, HGrid, Select, ToggleGroup, VStack } from "@navikt/ds-react";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 
-import { getTemplateDescription, getTemplateDocumentation, type MalType } from "~/api/brevbaker-api-endpoints";
+import {
+  getTemplateDescription,
+  getTemplateDocumentation,
+  getTemplateDocumentationV2,
+  type MalType,
+} from "~/api/brevbaker-api-endpoints";
 import {
   type Attachment,
   type Conditional,
@@ -18,6 +24,7 @@ import {
   type TemplateDocumentation,
 } from "~/api/brevbakerTypes";
 import { DataClasses, trimClassName } from "~/components/DataClasses";
+import { DocumentV2 } from "~/components/TemplateDocumentationV2View";
 
 export const Route = createFileRoute("/template/$malType/$templateId")({
   loaderDeps: ({ search: { language } }) => ({ language }),
@@ -61,7 +68,9 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     language?: string;
     highlightedDataClass?: string;
     highlightedDataField?: string;
+    highlightedDataFieldOwner?: string;
     index?: number;
+    docVersion?: "v1" | "v2";
   } => {
     const indexRaw = search.index?.toString();
     const index = indexRaw !== undefined && /^\d+$/.test(indexRaw) ? Number(indexRaw) : undefined;
@@ -69,7 +78,9 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
       language: search.language?.toString(),
       highlightedDataClass: search.highlightedDataClass?.toString(),
       highlightedDataField: search.highlightedDataField?.toString(),
+      highlightedDataFieldOwner: search.highlightedDataFieldOwner?.toString(),
       index,
+      docVersion: search.docVersion === "v2" ? "v2" : "v1",
     };
   },
   component: TemplateExplorer,
@@ -78,7 +89,7 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
 function TemplateExplorer() {
   const { documentation } = Route.useLoaderData();
   const { templateId } = Route.useParams();
-  const { index } = Route.useSearch();
+  const { index, docVersion = "v1" } = Route.useSearch();
   const previewRef = useRef<HTMLDivElement>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: documentation is an intentional trigger so we re-highlight when navigating between templates with the same index.
@@ -128,6 +139,7 @@ function TemplateExplorer() {
           Oppskrift for {templateId}
         </Heading>
         <SelectLanguage />
+        <SelectDocVersion />
         <div
           css={css`
             width: 100%;
@@ -140,13 +152,71 @@ function TemplateExplorer() {
           `}
           ref={previewRef}
         >
-          <Document templateDocumentation={documentation} />
-          {documentation.attachments.map((attachment, index) => (
-            <Document key={index} templateDocumentation={attachment} />
-          ))}
+          {docVersion === "v2" ? <TemplateDocumentationV2Section /> : <TemplateDocumentationV1Section />}
         </div>
       </VStack>
     </HGrid>
+  );
+}
+
+function TemplateDocumentationV1Section() {
+  const { documentation } = Route.useLoaderData();
+
+  return (
+    <>
+      <Document templateDocumentation={documentation} />
+      {documentation.attachments.map((attachment, index) => (
+        <Document key={index} templateDocumentation={attachment} />
+      ))}
+    </>
+  );
+}
+
+function TemplateDocumentationV2Section() {
+  const { malType, templateId } = Route.useParams();
+  const { language } = Route.useSearch();
+  const { description } = Route.useLoaderData();
+  const resolvedLanguage = language ?? description.languages[0];
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: getTemplateDocumentationV2.queryKey(malType, templateId, resolvedLanguage ?? ""),
+    queryFn: () => getTemplateDocumentationV2.queryFn(malType, templateId, resolvedLanguage ?? ""),
+    enabled: Boolean(resolvedLanguage),
+  });
+
+  if (isLoading) {
+    return <BodyLong>Laster v2-dokumentasjon …</BodyLong>;
+  }
+  if (isError || !data) {
+    return <BodyLong>Kunne ikke laste v2-dokumentasjon for denne malen/språket.</BodyLong>;
+  }
+
+  return (
+    <>
+      <DocumentV2 templateDocumentation={data} />
+      {data.attachments.map((attachment, index) => (
+        <DocumentV2 key={index} templateDocumentation={attachment} />
+      ))}
+    </>
+  );
+}
+
+function SelectDocVersion() {
+  const { docVersion = "v1" } = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+
+  return (
+    <ToggleGroup
+      css={css`
+        margin-bottom: var(--ax-space-16);
+      `}
+      onChange={(value) => navigate({ search: (s) => ({ ...s, docVersion: value as "v1" | "v2" }), replace: true })}
+      size="small"
+      value={docVersion}
+    >
+      <ToggleGroup.Item label="v1" value="v1" />
+      <ToggleGroup.Item label="v2" value="v2" />
+    </ToggleGroup>
   );
 }
 
