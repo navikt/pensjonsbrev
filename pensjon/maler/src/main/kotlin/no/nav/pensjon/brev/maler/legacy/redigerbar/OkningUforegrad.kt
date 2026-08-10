@@ -685,7 +685,7 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             showIf(((ifubegrunnelse).equalTo("stdbegr_12_8_2_3") and (ieuBegrunnelse).notEqualTo("stdbegr_12_8_1_3"))) {
                 paragraph {
                     text(
-                        bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er derfor tidligere fastsatt til " + ifuinntekt.format() + " på uføretidspunktet ditt. Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,3 ganger grunnbeløpet." },
+                        bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er derfor tidligere fastsatt til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,3 ganger grunnbeløpet." }
                         nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør, er fastsett til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,3 gonger grunnbeløpet." },
                     )
                     showIf(oifuMerEnnIfu) {
