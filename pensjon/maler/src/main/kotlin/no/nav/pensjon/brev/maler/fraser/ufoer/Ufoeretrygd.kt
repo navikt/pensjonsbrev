@@ -400,7 +400,7 @@ object Ufoeretrygd {
                 title1 {
                     text(
                         bokmal { +"Derfor har vi avslått søknaden din om barnetillegg" },
-                        nynorsk { +"Derfor har vi avslått søknaden din om barnetillegg" },
+                        nynorsk { +"Difor har vi avslått søknaden din om barnetillegg" },
                     )
                 }
                 paragraph {
@@ -428,7 +428,7 @@ object Ufoeretrygd {
                 title1 {
                     text(
                         bokmal { +"Derfor har vi avslått søknaden din om barnetillegg" },
-                        nynorsk { +"Derfor har vi avslått søknaden din om barnetillegg" },
+                        nynorsk { +"Difor har vi avslått søknaden din om barnetillegg" },
                     )
                 }
                 paragraph {
