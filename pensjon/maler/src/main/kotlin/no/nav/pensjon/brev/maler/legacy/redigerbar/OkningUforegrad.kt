@@ -197,7 +197,7 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                         bokmal { +"Vi har avslått barnetillegg i uføretrygden din for" },
                         nynorsk { +"Vi har avslått barnetillegg i uføretrygda di for" },
                     )
-                    includePhrase(Felles.TextOrList(pesysData.nyeAvslagBarnetillegg.map(BarnetilleggFormatter), 0))
+                    includePhrase(Felles.TextOrList(pesysData.nyeAvslagBarnetillegg.map(BarnetilleggFlereBarnFormatter), 0))
                 }
             }
 
@@ -1598,7 +1598,7 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                     )
                 }
             }
-            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
+            includePhrase(Ufoeretrygd.AvslagBarnetillegg2(pesysData.nyeAvslagBarnetillegg))
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
             includePhrase(Felles.RettTilAAKlage)
