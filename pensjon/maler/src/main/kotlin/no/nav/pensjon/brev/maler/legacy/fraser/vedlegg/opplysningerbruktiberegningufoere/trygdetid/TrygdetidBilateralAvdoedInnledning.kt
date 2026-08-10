@@ -17,10 +17,7 @@ data class TrygdetidBilateralAvdoedInnledning(
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
-        //IF( PE_UT_Trygdetid_Avdod() = true  AND  (FF_GetArrayElement_Date_Boolean(PE_Grunnlag_PersongrunnlagAvdod_TrygdetidsgrunnlagListeBilateral_TrygdetidsgrunnlagBilateral_TrygdetidFomBilateral) = true)) THEN      INCLUDE ENDIF
         showIf((pe.ut_trygdetid_avdod() and (pe.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral().notNull()))){
-            //[TB1384_h]
-
             paragraph {
                 text (
                     bokmal { + "Trygdetiden til avdøde i land som Norge har trygdeavtale med, er fastsatt ut fra følgende perioder:" },

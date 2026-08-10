@@ -14,10 +14,7 @@ data class SlikHarViFastsattKompensasjonsgradenDin(
     val pe: Expression<PEgruppe10>
 ): OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        //IF(PE_UT_TBU056V() = true) THEN      INCLUDE ENDIF
         showIf(pe.ut_tbu056v()) {
-            //[TBU052V-TBU073V]
-
             title1 {
                 text(
                     bokmal { + "Slik har vi fastsatt reduksjonsprosenten din" },
@@ -31,7 +28,6 @@ data class SlikHarViFastsattKompensasjonsgradenDin(
                     nynorsk { + "Vi fastset reduksjonsprosenten ved å samanlikne det du " },
                 )
 
-                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = 100
                 showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().equalTo(100)) {
                     text(
                         bokmal { + "har rett til i" },
@@ -39,7 +35,6 @@ data class SlikHarViFastsattKompensasjonsgradenDin(
                     )
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad < 100) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().lessThan(100))) {
                     text(
                         bokmal { + "ville hatt rett til i" },
@@ -53,14 +48,11 @@ data class SlikHarViFastsattKompensasjonsgradenDin(
             }
         }
 
-        //IF(PE_UT_TBU056V() = true AND  (PE_pebrevkode <> "PE_UT_04_114" AND PE_pebrevkode <> "PE_UT_04_102" AND PE_pebrevkode <> "PE_UT_05_100" AND PE_pebrevkode <> "PE_UT_07_100") ) THEN      INCLUDE ENDIF
         showIf(
             (pe.ut_tbu056v() and (pe.pebrevkode()
                 .notEqualTo("PE_UT_04_114") and pe.pebrevkode().notEqualTo("PE_UT_04_102") and pe.pebrevkode().notEqualTo(
                 "PE_UT_05_100"
             ) and pe.pebrevkode().notEqualTo("PE_UT_07_100")))) {
-            //[TBU052V-TBU073V]
-
             paragraph {
                 text(
                     bokmal {
@@ -122,10 +114,7 @@ data class SlikHarViFastsattKompensasjonsgradenDin(
             }
         }
 
-        //IF(PE_UT_TBU056V() = true) THEN      INCLUDE ENDIF
         showIf(pe.ut_tbu056v()) {
-            //[TBU052V-TBU073V]
-
             paragraph {
                 text(
                     bokmal { + "Hvis uføretrygden din i løpet av et kalenderår endres, bruker vi en gjennomsnittlig reduksjonsprosent i beregningen." },

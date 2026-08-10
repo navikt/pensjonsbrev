@@ -24,8 +24,6 @@ data class InntektsgrunnlagFolketrygd(
         ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()){ virkFom ->
 
             showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd")){
-                //[InntektsgrunnlagFolketrygd]
-
                 paragraph {
                     text (
                         bokmal { + "Inntekt lagt til grunn for beregning av uføretrygden din fra " + virkFom.format() },
@@ -33,7 +31,6 @@ data class InntektsgrunnlagFolketrygd(
                         BOLD
                     )
                 }
-                //[InntektsgrunnlagFolketrygd]
 
                 paragraph {
                     table(header = {

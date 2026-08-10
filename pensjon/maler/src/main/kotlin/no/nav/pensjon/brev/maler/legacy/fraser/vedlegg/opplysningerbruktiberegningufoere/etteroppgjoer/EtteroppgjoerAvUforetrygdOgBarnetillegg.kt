@@ -17,15 +17,12 @@ data class EtteroppgjoerAvUforetrygdOgBarnetillegg(
     val pe: Expression<PEgruppe10>
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        //[TBU052V-TBU073V]
-
         title1 {
             text (
                 bokmal { + "Etteroppgjør av uføretrygd" },
                 nynorsk { + "Etteroppgjer av uføretrygd" },
             )
 
-            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true )) THEN   INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()))){
                 text (
                     bokmal { + " og barnetillegg" },
@@ -40,7 +37,6 @@ data class EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 nynorsk { + "Kvart år når skattefastsettinga er klar, får vi opplysningar om inntekta" },
             )
 
-            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true )) THEN   INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()))) {
                 text(
                     bokmal { + " til deg og din " },
@@ -48,7 +44,6 @@ data class EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 )
             }
 
-            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle") )) THEN   INCLUDE ENDIF
             showIf(
                 ((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
                     .equalTo(
@@ -62,7 +57,6 @@ data class EtteroppgjoerAvUforetrygdOgBarnetillegg(
                     )
             }
 
-            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert partner") )) THEN   INCLUDE ENDIF
             showIf(
                 ((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
                     .equalTo(
@@ -76,7 +70,6 @@ data class EtteroppgjoerAvUforetrygdOgBarnetillegg(
                     )
             }
 
-            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5"     OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2") )) THEN   INCLUDE ENDIF
             showIf(
                 ((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
                     .equalTo(
@@ -89,7 +82,6 @@ data class EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 )
             }
 
-            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true )) THEN   INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()))) {
                 text(
                     bokmal { + "" },
@@ -97,7 +89,6 @@ data class EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 )
             }
 
-            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false )) THEN   INCLUDE ENDIF
             showIf(((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())))) {
                 text(
                     bokmal { + " din" },
@@ -109,7 +100,6 @@ data class EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 nynorsk { + " frå Skatteetaten. Vi bruker opplysningane frå skattefastsettinga til å berekne riktig utbetaling av uføretrygd" },
             )
 
-            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true )) THEN   INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()))) {
                 text(
                     bokmal { + " og barnetillegg" },
@@ -121,7 +111,6 @@ data class EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 nynorsk { + " for det året som fastsettinga gjeld for. Har du fått for mykje eller for lite utbetalt i uføretrygd" },
             )
 
-            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true )) THEN   INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()))) {
                 text(
                     bokmal { + " og barnetillegg" },
@@ -133,7 +122,6 @@ data class EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 nynorsk { + ", vil vi gjere eit etteroppgjer. " },
             )
 
-            //IF(FF_GetArrayElement_String(PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> "nor" AND FF_GetArrayElement_String(PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland) <> "") THEN      INCLUDE ENDIF
             showIf(
                 (pe.grunnlag_persongrunnlagsliste_personbostedsland()
                     .notEqualTo("nor") and pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo(
@@ -156,7 +144,7 @@ data class EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 bokmal { + "Det er viktig at du melder fra om inntektsendringer slik at uføretrygden" },
                 nynorsk { + "Det er viktig at du melder frå om inntektsendringar slik at uføretrygda " },
             )
-            //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true )) THEN   INCLUDE ENDIF
+
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()))){
                 text (
                     bokmal { + " og barnetillegget" },

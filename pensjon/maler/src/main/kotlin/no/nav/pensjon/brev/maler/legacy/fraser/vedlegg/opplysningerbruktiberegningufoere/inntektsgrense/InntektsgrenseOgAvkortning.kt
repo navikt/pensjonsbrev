@@ -16,15 +16,12 @@ data class InntektsgrenseOgAvkortning(
 ): OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
-        //[TBUxx4 og TBU048V-TBU055V]
-
         title1 {
             text (
                 bokmal { + "Slik fastsetter vi inntekten din før du ble ufør" },
                 nynorsk { + "Slik fastset vi inntekta di før du blei ufør" },
             )
         }
-        //[TBUxx4 og TBU048V-TBU055V]
 
         paragraph {
             text (
@@ -32,7 +29,6 @@ data class InntektsgrenseOgAvkortning(
                 nynorsk { + "Inntekta di før du blei ufør har betydning for korleis vi fastset uføregraden din, og ei eventuell justering av uføretrygda ut frå inntekt. Inntekta di før du blei ufør har ingen samanheng med korleis vi bereknar uføretrygda di." },
             )
         }
-        //[TBUxx4 og TBU048V-TBU055V]
 
         paragraph {
             text (
@@ -40,7 +36,6 @@ data class InntektsgrenseOgAvkortning(
                 nynorsk { + "Når vi fastset inntekta di før du blei ufør tek vi utgangspunkt i den normale inntektssituasjonen din før du blei ufør. Dersom du ikkje har arbeidd i full stilling, vil inntekta di bli rekna om til ein årsinntekt i full stilling. Inntekt før du blei ufør blir fastsett forskjellig for arbeidstakare, sjølvstendig næringsdrivande og personar utan inntekt." },
             )
         }
-        //[TBUxx4 og TBU048V-TBU055V]
 
         paragraph {
             text (
@@ -48,7 +43,6 @@ data class InntektsgrenseOgAvkortning(
                 nynorsk { + "For deg som er arbeidstakar" },
             )
         }
-        //[TBUxx4 og TBU048V-TBU055V]
 
         paragraph {
             text (
@@ -57,10 +51,7 @@ data class InntektsgrenseOgAvkortning(
             )
         }
 
-        //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad < 100) THEN      INCLUDE ENDIF
         showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().lessThan(100))){
-            //[TBUxx4 og TBU048V-TBU055V]
-
             paragraph {
                 text (
                     bokmal { + "Hvis du er i arbeid kan vi fastsette inntekten din før du ble ufør ut fra din nåværende stillingsandel. Inntekten du har skal regnes om til en årsinntekt i full stilling. Årsinntekten blir deretter justert tilbake til uføretidspunktet ditt og vil tilsvare inntekten din før du ble ufør. Dette gjør vi for at du skal få riktig uføregrad." },
@@ -68,7 +59,6 @@ data class InntektsgrenseOgAvkortning(
                 )
             }
         }
-        //[TBUxx4 og TBU048V-TBU055V]
 
         paragraph {
             text (
@@ -76,7 +66,6 @@ data class InntektsgrenseOgAvkortning(
                 nynorsk { + "For deg som er sjølvstendig næringsdrivande" },
             )
         }
-        //[TBUxx4 og TBU048V-TBU055V]
 
         paragraph {
             text (
@@ -86,15 +75,12 @@ data class InntektsgrenseOgAvkortning(
         }
 
 
-        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) = "stdbegr_12_8_2_3" OR FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) = "stdbegr_12_8_2_4" OR FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) = "stdbegr_12_8_2_5" OR PE_pebrevkode = "PE_UT_04_500") THEN      INCLUDE ENDIF
         showIf(
             (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
                 .equalTo("stdbegr_12_8_2_3") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
                 .equalTo("stdbegr_12_8_2_4") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().equalTo(
                 "stdbegr_12_8_2_5"
             ) or pe.pebrevkode().equalTo("PE_UT_04_500"))){
-            //[TBUxx4 og TBU048V-TBU055V]
-
             paragraph {
                 text (
                     bokmal { + "Minstenivå på inntekt før uførhet" },
@@ -103,15 +89,12 @@ data class InntektsgrenseOgAvkortning(
             }
         }
 
-        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) = "stdbegr_12_8_2_3" OR FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) = "stdbegr_12_8_2_4" OR FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) = "stdbegr_12_8_2_5" OR PE_pebrevkode = "PE_UT_04_500") THEN      INCLUDE ENDIF
         showIf(
             (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
                 .equalTo("stdbegr_12_8_2_3") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
                 .equalTo("stdbegr_12_8_2_4") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().equalTo(
                 "stdbegr_12_8_2_5"
             ) or pe.pebrevkode().equalTo("PE_UT_04_500"))){
-            //[TBUxx4 og TBU048V-TBU055V]
-
             paragraph {
                 text (
                     bokmal { + "Før 1. januar 2026 skal inntekten din før du ble ufør ikke settes lavere enn:" },
@@ -155,12 +138,9 @@ data class InntektsgrenseOgAvkortning(
         }
 
 
-        //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad < 100 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad > 0) THEN      INCLUDE ENDIF
         showIf(
             (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
                 .lessThan(100) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().greaterThan(0))){
-            //[TBUxx4 og TBU048V-TBU055V]
-
             paragraph {
                 text (
                     bokmal { + "Endring av inntekt før du ble ufør" },
@@ -176,10 +156,7 @@ data class InntektsgrenseOgAvkortning(
             }
         }
 
-        //IF(PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_04_109") THEN      INCLUDE ENDIF
         showIf(pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109")){
-            //[TBUxx4 og TBU048V-TBU055V]
-
             title1 {
                 text (
                     bokmal { + "Slik fastsetter vi inntekten din etter at du ble ufør" },

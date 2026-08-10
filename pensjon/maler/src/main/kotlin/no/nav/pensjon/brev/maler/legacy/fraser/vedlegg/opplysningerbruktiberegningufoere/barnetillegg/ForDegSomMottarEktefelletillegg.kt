@@ -19,7 +19,6 @@ data class ForDegSomMottarEktefelletillegg(
     val pe: Expression<PEgruppe10>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        //IF(PE_pebrevkode <> "PE_UT_04_101"  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true  AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt"  AND PE_pebrevkode <> "PE_UT_04_108"  AND PE_pebrevkode <> "PE_UT_04_109"  AND PE_pebrevkode <> "PE_UT_04_500" AND PE_pebrevkode <> "PE_UT_07_200" AND PE_pebrevkode <> "PE_UT_06_300" AND (PE_pebrevkode <> "PE_UT_04_102"      OR (PE_pebrevkode = "PE_UT_04_102"     AND PE_Vedtaksdata_Kravhode_KravArsakType <> "tilst_dod"))) THEN      INCLUDE ENDIF
         showIf((pe.pebrevkode().notEqualTo("PE_UT_04_101")
                 and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
                 and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
@@ -32,8 +31,6 @@ data class ForDegSomMottarEktefelletillegg(
             .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
             "tilst_dod"
         ))))){
-            //[TBU052V-TBU073V]
-
             title1 {
                 text (
                     bokmal { + "For deg som mottar ektefelletillegg" },
@@ -49,7 +46,6 @@ data class ForDegSomMottarEktefelletillegg(
             }
         }
 
-        //IF( ( (PE_pebrevkode = "PE_UT_04_300"  OR  PE_pebrevkode = "PE_UT_14_300") AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true ) OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true AND PE_pebrevkode <> "PE_UT_04_101" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_pebrevkode <> "PE_UT_04_108"  AND PE_pebrevkode <> "PE_UT_04_109" AND PE_pebrevkode <> "PE_UT_04_500" AND PE_pebrevkode <> "PE_UT_06_300" AND (PE_pebrevkode <> "PE_UT_04_102"      OR (PE_pebrevkode = "PE_UT_04_102"     AND PE_Vedtaksdata_Kravhode_KravArsakType <> "tilst_dod")))  ) THEN      INCLUDE ENDIF
         showIf((((pe.pebrevkode().equalTo("PE_UT_04_300") or pe.pebrevkode()
             .equalTo("PE_UT_14_300")) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and pe.pebrevkode()
             .notEqualTo("PE_UT_04_101") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.pebrevkode()
@@ -59,11 +55,7 @@ data class ForDegSomMottarEktefelletillegg(
             .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
             "tilst_dod"
         )))))){
-            //[TBU052V-TBU073V]
-
             paragraph {
-
-                //IF(PE_pebrevkode = "PE_UT_04_300" OR PE_pebrevkode = "PE_UT_14_300") THEN      INCLUDE ENDIF
                 showIf((pe.pebrevkode().equalTo("PE_UT_04_300") or pe.pebrevkode().equalTo("PE_UT_14_300"))){
                     text (
                         bokmal { + "Når vi beregner ektefelletillegget tar vi utgangspunkt i den årlige uførepensjonen du har rett til i desember 2014. Deretter regner vi ut tillegget ut fra fastsatte overgangsregler. " },
@@ -71,7 +63,6 @@ data class ForDegSomMottarEktefelletillegg(
                     )
                 }
 
-                //IF(PE_pebrevkode <> "PE_UT_04_101"  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true  AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt"  AND PE_pebrevkode <> "PE_UT_04_108"  AND PE_pebrevkode <> "PE_UT_04_109"  AND  PE_pebrevkode <> "PE_UT_04_500"  AND PE_pebrevkode <> "PE_UT_07_200" AND PE_pebrevkode <> "PE_UT_06_300" AND (PE_pebrevkode <> "PE_UT_04_102"      OR (PE_pebrevkode = "PE_UT_04_102"     AND PE_Vedtaksdata_Kravhode_KravArsakType <> "tilst_dod"))) THEN      INCLUDE ENDIF
                 showIf((pe.pebrevkode()
                     .notEqualTo("PE_UT_04_101") and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and pe.vedtaksdata_kravhode_kravarsaktype()
                     .notEqualTo(
@@ -91,7 +82,6 @@ data class ForDegSomMottarEktefelletillegg(
             }
         }
 
-        //IF(PE_pebrevkode <> "PE_UT_04_101"  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true  AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt"  AND PE_pebrevkode <> "PE_UT_04_108"  AND PE_pebrevkode <> "PE_UT_04_109"  AND  PE_pebrevkode <> "PE_UT_04_500"  AND PE_pebrevkode <> "PE_UT_07_200" AND PE_pebrevkode <> "PE_UT_06_300" AND (PE_pebrevkode <> "PE_UT_04_102"      OR (PE_pebrevkode = "PE_UT_04_102"     AND PE_Vedtaksdata_Kravhode_KravArsakType <> "tilst_dod"))) THEN      INCLUDE ENDIF
         showIf((pe.pebrevkode()
             .notEqualTo("PE_UT_04_101") and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and pe.vedtaksdata_kravhode_kravarsaktype()
             .notEqualTo(
@@ -102,8 +92,6 @@ data class ForDegSomMottarEktefelletillegg(
             .notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo(
             "tilst_dod"
         ))))){
-            //[TBU052V-TBU073V]
-
             paragraph {
                 text (
                     bokmal { + "Ektefelletillegget vil falle bort hvis du skiller deg, uføretrygden opphører eller hvis ektefellen din dør." },
@@ -112,15 +100,12 @@ data class ForDegSomMottarEktefelletillegg(
             }
         }
 
-        //IF(PE_pebrevkode = "PE_UT_04_300" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_Sats = 3.76 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true) THEN      INCLUDE ENDIF
         showIf(
             (pe.pebrevkode()
                 .equalTo("PE_UT_04_300") and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats()
                 .equalTo(
                     3.76
                 ) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget())){
-            //[TBU052V-TBU073V]
-
             paragraph {
                 text (
                     bokmal { + "Du har minstepensjon og tillegg for ektefelle som har fylt 60 år. Du har derfor rett til å motta uføretrygd som minst tilsvarer 3,76 ganger folketrygdens grunnbeløp. Dette grunnlaget justeres ut fra uføregraden og trygdetiden din, og du beholder dette ut vedtaksperioden for ektefelletillegget. Etter dette vil vi beregne uføretrygden etter ordinære regler." },

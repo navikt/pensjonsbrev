@@ -32,7 +32,6 @@ data class ForDegSomHarRettTilBarnetillegg(
             }
 
 
-            //IF( PE_UT_TBU501V() = true AND (PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarKravlinjeKode(SYS_TableRow) = "bt" AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVedtakResultat(SYS_TableRow) = "innv")  ) THEN      INCLUDE ENDIF
             showIf(pe.foedselsdatoTilBarnTilleggErInnvilgetFor().isNotEmpty()){
                 forEach(pe.foedselsdatoTilBarnTilleggErInnvilgetFor()){
                     paragraph {
@@ -50,7 +49,6 @@ data class ForDegSomHarRettTilBarnetillegg(
                         nynorsk { + "Barnetillegget kan utgjere opptil 40 prosent av grunnbeløpet i folketrygda for kvart barn du forsørgjer. Du har rett til barnetillegg så lenge du forsørgjer barn som er under 18 år. Barnetillegget opphøyrer når barnet fyller 18 år." },
                     )
 
-                    //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid < 40 AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) <> "oppfylt") THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().lessThan(40) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().notEqualTo("oppfylt"))){
                         text (
                             bokmal { + "Hvor mye du får i barnetillegg er også avhengig av trygdetiden din. Fordi trygdetiden din er kortere enn 40 år, blir barnetillegget ditt redusert. " },

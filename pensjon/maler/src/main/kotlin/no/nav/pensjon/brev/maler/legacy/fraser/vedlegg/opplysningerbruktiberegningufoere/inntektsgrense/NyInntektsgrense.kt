@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.template.dsl.text
 
 object NyInntektsgrense: OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-
         title1 {
             text (
                 bokmal { + "Slik har vi fastsatt den nye inntektsgrensen din" },

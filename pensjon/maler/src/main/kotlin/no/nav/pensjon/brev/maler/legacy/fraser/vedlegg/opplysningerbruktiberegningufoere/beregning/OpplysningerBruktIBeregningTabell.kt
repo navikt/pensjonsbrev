@@ -31,10 +31,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     column(columnSpan = 1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
                 }
             ) {
-                //IF(isEmpty(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforetidspunkt) = false) THEN      INCLUDE ENDIF
                 ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforetidspunkt()){ uforetidspunkt ->
-                    //[OpplysningerBruktIBeregningTabell]
-
                     val foedselsdato = pe.personsak.foedselsdato
                     val erMndEtterFoedsel = erUforetidspunktMaanedEtterFoedsel(uforetidspunkt, foedselsdato)
                     val visUforetidspunkt = ifElse(erMndEtterFoedsel, foedselsdato.formatMonthYear(), uforetidspunkt.format())
@@ -56,10 +53,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_BeregningsgrunnlagOrdinerArsbelop <> 0) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_beregningsgrunnlagordinerarsbelop().notEqualTo(0))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -79,10 +73,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagYrkesskadeArsbelop > 0) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadearsbelop().greaterThan(0))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -102,10 +93,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUInntekt) > 0) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().greaterThan(0))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -123,10 +111,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUInntekt) > 0) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().greaterThan(0))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -143,7 +128,6 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
 
                     }
                 }
-                //[OpplysningerBruktIBeregningTabell]
 
                 row {
                     cell {
@@ -161,10 +145,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
 
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense > 0) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().greaterThan(0))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -182,10 +163,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_ForventetInntekt > 0) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().greaterThan(0))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -205,10 +183,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Kompensasjonsgrad > 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().greaterThan(0.0) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().lessThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -227,7 +202,6 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
 
                     }
                 }
-                //[OpplysningerBruktIBeregningTabell]
 
                 row {
                     cell {
@@ -236,7 +210,6 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                             nynorsk { + "Inntekt som fører til at uføretrygda ikkje blir utbetalt" },
                         )
                     }
-                    //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense < PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) THEN      INCLUDE ENDIF
                     cell {
                         showIf(
                             (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
@@ -248,7 +221,6 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                             )
                         }
 
-                        //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense >= PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektstak) THEN      INCLUDE ENDIF
                         showIf(
                             (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                                 .greaterThanOrEqual(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()))
@@ -262,10 +234,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
 
                 }
 
-                //IF( (PE_pebrevkode = "PE_UT_04_300" OR PE_pebrevkode = "PE_UT_14_300")  OR  (PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_Sats <> 0 AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget <> true)   ) THEN      INCLUDE ENDIF
                 showIf(((pe.pebrevkode().equalTo("PE_UT_04_300") or pe.pebrevkode().equalTo("PE_UT_14_300")) or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().notEqualTo(0.0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().not()))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -274,7 +243,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                             )
                         }
 
-                        cell {//IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "gift men lever adskilt" AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "gift") OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "separert bor med ektefelle") THEN      INCLUDE ENDIF
+                        cell {
                             showIf(
                                 ((pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("gift men lever adskilt") and pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("gift")) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("separert bor med ektefelle"))
                             ) {
@@ -284,7 +253,6 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                                 )
                             }
 
-                            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert partner" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "registrert partner men lever adskilt" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "separert bormed partner") THEN      INCLUDE ENDIF
                             showIf(
                                 (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("registrert partner men lever adskilt") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("separert bormed partner"))
                             ) {
@@ -294,7 +262,6 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                                 )
                             }
 
-                            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "separert bormed 3-2" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "gift ektefelle bormed 3-2" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "registrert partner bormed 3-2" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "separert partner bormed 3-2") THEN      INCLUDE ENDIF
                             showIf(
                                 (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("separert bormed 3-2") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("gift ektefelle bormed 3-2") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("registrert partner bormed 3-2") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("separert partner bormed 3-2"))
                             ) {
@@ -304,7 +271,6 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                                 )
                             }
 
-                            //PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5"
                             showIf(pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 1-5")) {
                                 text(
                                     bokmal { + "Samboer (jf. folketrygdloven § 1-5)" },
@@ -312,7 +278,6 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                                 )
                             }
 
-                            //PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "enke"
                             showIf(pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("enke")) {
                                 text(
                                     bokmal { + "Enke/Enkemann " },
@@ -320,7 +285,6 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                                 )
                             }
 
-                            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "enslig" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "enslig separert" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "enslig separert partner"  OR (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "gift men lever adskilt" AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "sepr") ) THEN      INCLUDE ENDIF
                             showIf(
                                 (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("enslig") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("enslig separert") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("enslig separert partner") or (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("gift men lever adskilt") and pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("sepr")))
                             ) {
@@ -333,10 +297,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = PE_SivilstandAnvendt_registrert_partner_men_lever_adskilt) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("registrert partner men lever adskilt".expr()))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -350,10 +311,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = PE_SivilstandAnvendt_gift_men_lever_adskilt AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "gift") THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("gift men lever adskilt") and pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("gift"))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -367,10 +325,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_UngUforResultat) = "oppfylt") THEN      INCLUDE ENDIF
                 showIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat().equalTo("oppfylt")){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -384,10 +339,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad <> 0) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().notEqualTo(0))) {
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -404,11 +356,8 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad <> 0) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().notEqualTo(0))){
                     ifNotNull(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_skadetidspunkt()) { skadetidspunkt ->
-                        //[OpplysningerBruktIBeregningTabell]
-
                         row {
                             cell {
                                 text(
@@ -426,10 +375,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad <> 0) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().notEqualTo(0))) {
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -446,10 +392,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "folketrygd"
                 showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd")){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -466,10 +409,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "eos" OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "nordisk") THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos") or pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("nordisk"))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -486,10 +426,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "eos" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "nordisk" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "folketrygd") THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("eos") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("nordisk") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("folketrygd"))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -506,10 +443,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "folketrygd") THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("folketrygd"))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -526,10 +460,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "eos"
                 showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos")){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -546,10 +477,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "eos"
                 showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos")){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -566,10 +494,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "eos"
                 showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos")){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -588,10 +513,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "nordisk"
                 showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("nordisk")){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -608,9 +530,6 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(  (PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "folketrygd" OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "nordisk")  AND  (FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk)/12<40)  )  THEN      INCLUDE ENDIF
-
-                //[OpplysningerBruktIBeregningTabell]
                 showIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_framtidigttnorsk().lessThan(480)
                         and (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd") or pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("nordisk"))) {
                     row {
@@ -629,10 +548,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "nordisk"
                 showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("nordisk")){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -651,10 +567,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "nordisk"
                 showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("nordisk")){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -671,10 +584,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "folketrygd" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "eos" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "nordisk") THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("folketrygd") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("eos") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("nordisk"))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -691,10 +601,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "folketrygd" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "eos" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "nordisk") THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("folketrygd") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("eos") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("nordisk"))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -711,10 +618,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "folketrygd" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "eos" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "nordisk") THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("folketrygd") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("eos") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("nordisk"))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -733,10 +637,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_kravhode_kravgjelder().equalTo("f_bh_bo_utl") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().lessThan(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -755,10 +656,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagOrdinar_AntallArInntektIAvtaleland <> 0) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagordinar_antallarinntektiavtaleland().notEqualTo(0))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -777,10 +675,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -797,10 +692,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_GradertOppjustertIFU > 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_AndelYtelseAvOIFU > 95 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom >= DateValue("01/01/2016")) THEN      INCLUDE ENDIF
                 showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().greaterThan(0) and pe.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_andelytelseavoifu().greaterThan(95.0) and pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().ifNull(LocalDate.of(2000,1,1)).greaterThanOrEqual(LocalDate.of(2016,1,1))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -817,10 +709,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true
                 showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -839,10 +728,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
                 showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -861,10 +747,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -873,7 +756,6 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                             )
                         }
 
-                        //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false
                         cell {
                             showIf(not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())) {
                                 text(
@@ -882,7 +764,6 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                                 )
                             }
 
-                            //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
                             showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
                                 text(
                                     bokmal { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning().format(false) },
@@ -897,10 +778,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
                 showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -917,10 +795,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBbelopFratrukketAnnenForeldersInntekt > 0) THEN      INCLUDE ENDIF
                 showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt().greaterThan(0)){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -939,10 +814,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom >= DateValue("01/01/2016")) THEN      INCLUDE ENDIF
                 showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().ifNull(LocalDate.of(2000,1,1)).greaterThanOrEqual(LocalDate.of(2016,1,1).expr())){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(
@@ -961,10 +833,7 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
                     }
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom >= DateValue("01/01/2016")) THEN      INCLUDE ENDIF
                 showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().ifNull(LocalDate.of(2000,1,1)).greaterThanOrEqual(LocalDate.of(2016,1,1))){
-                    //[OpplysningerBruktIBeregningTabell]
-
                     row {
                         cell {
                             text(

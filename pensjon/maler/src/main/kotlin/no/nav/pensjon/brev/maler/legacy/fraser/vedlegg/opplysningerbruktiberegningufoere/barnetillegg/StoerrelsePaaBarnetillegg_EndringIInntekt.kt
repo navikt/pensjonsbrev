@@ -16,14 +16,8 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
     val pe: Expression<PEgruppe10>
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        // Velger å ikke slå sammen denne teksten ettersom det er vesentlige forskjeller i styringen på de ulike språklagene.
-        //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_1_3() = true) THEN      INCLUDE ENDIF
         showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())) {
-            //[TBU052V-TBU073V]
-
             paragraph {
-
-                //IF(PE_Vedtaksdata_Kravhode_KravArsakType <> "endret_inntekt") THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))) {
                     text(
                         bokmal { + "" },
@@ -31,7 +25,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //IF(PE_Vedtaksdata_Kravhode_KravArsakType <> "endret_inntekt"  AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2")) THEN      INCLUDE ENDIF
                 showIf(
                     (pe.vedtaksdata_kravhode_kravarsaktype()
                         .notEqualTo("endret_inntekt") and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
@@ -47,7 +40,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //IF(PE_Vedtaksdata_Kravhode_KravArsakType <> "endret_inntekt") THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))) {
                     text(
                         bokmal { + "" },
@@ -55,7 +47,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //IF(PE_Vedtaksdata_Kravhode_KravArsakType <> "endret_inntekt"  AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2")) THEN      INCLUDE ENDIF
                 showIf(
                     (pe.vedtaksdata_kravhode_kravarsaktype()
                         .notEqualTo("endret_inntekt") and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
@@ -71,7 +62,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //IF(PE_Vedtaksdata_Kravhode_KravArsakType <> "endret_inntekt") THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))) {
                     text(
                         bokmal { + "" },
@@ -79,7 +69,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
                     text(
                         bokmal { + "" },
@@ -87,7 +76,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //IF(PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"  AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2")) THEN      INCLUDE ENDIF
                 showIf(
                     (pe.vedtaksdata_kravhode_kravarsaktype()
                         .equalTo("endret_inntekt") and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
@@ -103,7 +91,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
                     text(
                         bokmal { + "" },
@@ -117,14 +104,9 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
             }
         }
 
-        // Velger å ikke slå sammen denne teksten ettersom det er vesentlige forskjeller i styringen på de ulike språklagene.
-        //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_1_3() = true) THEN      INCLUDE ENDIF
         showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())) {
-            //[TBU052V-TBU073V]
-
             paragraph {
 
-                //IF(( PE_UT_TBU605V_eller_til_din() )) THEN    INCLUDE ENDIF
                 showIf(((pe.ut_tbu605v_eller_til_din()))) {
                     text(
                         bokmal { + "Har det vært en endring i inntekten din" },
@@ -132,7 +114,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //IF(( PE_UT_TBU605V_eller_til_din() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert partner" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2") )) THEN      INCLUDE ENDIF
                 showIf(
                     ((pe.ut_tbu605v_eller_til_din() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
                         .equalTo(
@@ -151,7 +132,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //IF(( PE_UT_TBU605V_eller_til_din() )) THEN    INCLUDE ENDIF
                 showIf(((pe.ut_tbu605v_eller_til_din()))) {
                     text(
                         bokmal { + " " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "," },
@@ -159,7 +139,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
                     text(
                         bokmal { + "Når inntekten din " },
@@ -167,7 +146,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //IF(PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"  AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2")) THEN      INCLUDE ENDIF
                 showIf(
                     (pe.vedtaksdata_kravhode_kravarsaktype()
                         .equalTo("endret_inntekt") and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
@@ -183,7 +161,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
                     text(
                         bokmal { + "endrer seg," },
@@ -197,14 +174,8 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
             }
         }
 
-        // Velger å ikke slå sammen denne teksten ettersom det er vesentlige forskjeller i styringen på de ulike språklagene.
-        //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_1_3() = true) THEN      INCLUDE ENDIF
         showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())) {
-            //[TBU052V-TBU073V]
-
             paragraph {
-
-                //IF(PE_Vedtaksdata_Kravhode_KravArsakType <> "endret_inntekt") THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))) {
                     text(
                         bokmal { + "" },
@@ -212,7 +183,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
                     text(
                         bokmal { + "" },
@@ -224,7 +194,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     nynorsk { + "" },
                 )
 
-                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert partner" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5") THEN      INCLUDE ENDIF
                 showIf(
                     (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
                         .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
@@ -244,21 +213,14 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                 )
             }
         }
-        //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_1_3() = true) THEN      INCLUDE ENDIF
 
-        //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_1_3() = true) THEN      INCLUDE ENDIF
-
-        //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_1_3() = true) THEN      INCLUDE ENDIF
         showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())) {
-            //[TBU052V-TBU073V]
-
             paragraph {
                 text(
                     bokmal { + "50 prosent av den inntekten som overstiger fribeløpet for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre " },
                     nynorsk { + "50 prosent av inntekta som overstig fribeløpet for " + pe.ut_barnet_barna_felles() + " som bur med begge foreldra " },
                 )
 
-//PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_AntallBarnFelles = 1
                 showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_antallbarnfelles().equalTo(1)) {
                     text(
                         bokmal { + "" },
@@ -266,7 +228,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_AntallBarnFelles > 1) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_antallbarnfelles().greaterThan(1))) {
                     text(
                         bokmal { + "" },
@@ -277,7 +238,7 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     bokmal { + "" },
                     nynorsk { + "" },
                 )
-                //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true
+
                 showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert()) {
                     text(
                         bokmal { + "blir omregnet til et årlig beløp som tilsvarer " },
@@ -285,7 +246,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = false
                 showIf(not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert())) {
                     text(
                         bokmal { + "er " },
@@ -299,7 +259,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                         .format() + ". " },
                 )
 
-                //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0
                 showIf(
                     pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
                         .equalTo(0)
@@ -312,22 +271,18 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
             }
         }
 
-        //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_1_3() = true AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr <> 0) THEN      INCLUDE ENDIF
         showIf(
             (pe.ut_tbu613v() and pe.ut_tbu613v_1_3() and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
                 .notEqualTo(
                     0
                 ))
         ) {
-            //[TBU052V-TBU073V]
-
             paragraph {
                 text(
                     bokmal { + "Vi tar hensyn til hvordan barnetillegget eventuelt har vært redusert tidligere, og vi har derfor " },
                     nynorsk { + "Vi tek omsyn til korleis eit barnetillegg eventuelt har vore redusert tidlegare, og har derfor " },
                 )
 
-                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr > 0) THEN      INCLUDE ENDIF
                 showIf(
                     (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
                         .greaterThan(0))
@@ -338,7 +293,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr < 0) THEN      INCLUDE ENDIF
                 showIf(
                     (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
                         .lessThan(0))
@@ -357,10 +311,7 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
             }
         }
 
-        //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_4_5() = true) THEN      INCLUDE ENDIF
         showIf((pe.ut_tbu613v() and pe.ut_tbu613v_4_5())) {
-            //[TBU052V-TBU073V]
-
             paragraph {
                 text(
                     bokmal { + "For " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene " },
@@ -384,7 +335,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_AntallBarnSerkull > 1) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_antallbarnserkull().greaterThan(1))) {
                     text(
                         bokmal { + "" },
@@ -395,7 +345,7 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     bokmal { + "" },
                     nynorsk { + "" },
                 )
-                //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert = false
+
                 showIf(not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert())) {
                     text(
                         bokmal { + "er 50 prosent av den inntekten som overstiger fribeløpet " },
@@ -403,7 +353,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert = true
                 showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert()) {
                     text(
                         bokmal { + "blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer " },
@@ -411,6 +360,7 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
 
                         )
                 }
+
                 showIf(not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert())) {
                     text(
                         bokmal { + "" },
@@ -425,7 +375,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                         .format() + ". " },
                 )
 
-                //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0
                 showIf(
                     pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
                         .equalTo(0)
@@ -438,22 +387,18 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
             }
         }
 
-        //IF(PE_UT_TBU613V() = true AND PE_UT_TBU613V_4_5() = true AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr <> 0) THEN      INCLUDE ENDIF
         showIf(
             (pe.ut_tbu613v() and pe.ut_tbu613v_4_5() and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
                 .notEqualTo(
                     0
                 ))
         ) {
-            //[TBU052V-TBU073V]
-
             paragraph {
                 text(
                     bokmal { + "Vi tar hensyn til hvordan barnetillegget eventuelt har vært redusert tidligere, og vi har derfor " },
                     nynorsk { + "Vi tek omsyn til korleis eit barnetillegg eventuelt har vore redusert tidlegare, og har derfor " },
                 )
 
-                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr > 0) THEN      INCLUDE ENDIF
                 showIf(
                     (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
                         .greaterThan(0))
@@ -464,7 +409,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                     )
                 }
 
-                //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr < 0) THEN      INCLUDE ENDIF
                 showIf(
                     (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
                         .lessThan(0))

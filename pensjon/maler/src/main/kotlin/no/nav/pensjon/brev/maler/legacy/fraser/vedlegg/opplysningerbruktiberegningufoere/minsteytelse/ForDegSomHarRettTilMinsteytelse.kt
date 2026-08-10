@@ -29,7 +29,6 @@ data class ForDegSomHarRettTilMinsteytelse(
                     )
                 }
 
-                //[TBU080V-TBU027V] Block 1: fom < 2016-09-01 AND virkningsdato >= 2024-07-01
                 showIf(
                     pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().legacyLessThan(LocalDate.of(2016, 9, 1))
                             and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyGreaterThanOrEqual(LocalDate.of(2024, 7, 1))
@@ -49,7 +48,6 @@ data class ForDegSomHarRettTilMinsteytelse(
                     }
                 }
 
-                //[TBU080V-TBU027V] Block 2: fom < 2016-09-01 AND virkningsdato < 2024-07-01
                 showIf(
                     pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().legacyLessThan(LocalDate.of(2016, 9, 1))
                             and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyLessThan(LocalDate.of(2024, 7, 1))
@@ -69,7 +67,6 @@ data class ForDegSomHarRettTilMinsteytelse(
                     }
                 }
 
-                //[TBU080V-TBU027V] Block 3: fom >= 2016-09-01 AND virkningsdato >= 2024-07-01
                 showIf(
                     pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().legacyGreaterThanOrEqual(LocalDate.of(2016, 9, 1))
                             and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyGreaterThanOrEqual(LocalDate.of(2024, 7, 1))
@@ -117,7 +114,6 @@ data class ForDegSomHarRettTilMinsteytelse(
                     }
                 }
 
-                //[TBU080V-TBU027V] Block 4: fom >= 2016-09-01 AND virkningsdato < 2024-07-01
                 showIf(
                     pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().legacyGreaterThanOrEqual(LocalDate.of(2016, 9, 1))
                             and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyLessThan(LocalDate.of(2024, 7, 1))

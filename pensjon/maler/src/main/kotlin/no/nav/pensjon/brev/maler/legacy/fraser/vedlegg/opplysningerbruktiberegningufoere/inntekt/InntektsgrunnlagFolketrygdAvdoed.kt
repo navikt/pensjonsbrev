@@ -29,8 +29,6 @@ data class InntektsgrunnlagFolketrygdAvdoed(
         ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()){ virkFom ->
 
             showIf(pe.ut_avdod() and pe.ut_inntektslandtruehvorbruktliktrue_avdod() ){
-                //[InntektsgrunnlagFolketrygdAvdoed]
-
                 paragraph {
                     text (
                         bokmal { + "Inntekt lagt til grunn for beregning av avdødes uføretrygd fra " + virkFom.format() },
@@ -38,7 +36,6 @@ data class InntektsgrunnlagFolketrygdAvdoed(
                         BOLD
                     )
                 }
-                //[InntektsgrunnlagFolketrygdAvdoed]
 
                 paragraph {
                     table(header = {

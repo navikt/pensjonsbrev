@@ -16,13 +16,6 @@ data class SlikBeregnerViReduksjonenAvUfoeretrygden(
     val pe: Expression<PEgruppe10>
 ) : OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-        // [TBU052V-TBU073V]
-        // IF(PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt"
-        //    AND BelopGammelUT <> BelopNyUT
-        //    AND ForventetInntekt >= Inntektsgrense
-        //    AND Inntektsgrense < Inntektstak
-        //    AND PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_04_109"
-        //    AND BelopNyUT > 0) THEN INCLUDE ENDIF
         val skalViseReduksjon =
             pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt") and
                 pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()) and

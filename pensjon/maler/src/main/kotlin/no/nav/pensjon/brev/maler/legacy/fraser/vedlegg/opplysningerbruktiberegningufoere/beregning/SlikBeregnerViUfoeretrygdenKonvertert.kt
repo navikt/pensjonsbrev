@@ -18,15 +18,12 @@ data class SlikBeregnerViUfoeretrygdenKonvertert(
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
         showIf((pe.pebrevkode().notEqualTo("PE_UT_04_300") and pe.pebrevkode().notEqualTo("PE_UT_14_300") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.pebrevkode().notEqualTo("PE_UT_05_100") and pe.pebrevkode().notEqualTo("PE_UT_07_100") and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode().notEqualTo("PE_UT_07_200") and pe.pebrevkode().notEqualTo("PE_UT_06_300"))){
-            //[SlikBeregnerViUfoeretrygdenKonvertert]
-
             title1 {
                 text (
                     bokmal { + "Slik beregner vi uføretrygden din" },
                     nynorsk { + "Slik bereknar vi uføretrygda di" },
                 )
             }
-            //[SlikBeregnerViUfoeretrygdenKonvertert]
 
             paragraph {
                 text (
@@ -35,17 +32,13 @@ data class SlikBeregnerViUfoeretrygdenKonvertert(
                 )
             }
 
-            //IF(PE_pebrevkode = "PE_UT_04_102") THEN      INCLUDE ENDIF
             showIf((pe.pebrevkode().equalTo("PE_UT_04_102"))){
-                //[SlikBeregnerViUfoeretrygdenKonvertert]
-
                 paragraph {
                     text (
                         bokmal { + "Når uføretrygden din endres, kan dette medføre at beregningsgrunnlaget har blitt endret." },
                         nynorsk { + "Når uføretrygda di blir endra, kan dette føre til at berekningsgrunnlaget har blitt endra." },
                     )
 
-                    //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_NyttGjenlevendetillegg = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN      INCLUDE ENDIF
                     showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget())){
                         text (
                             bokmal { + " Dette gjelder også for gjenlevendetillegget du mottar i uføretrygden." },
@@ -56,17 +49,13 @@ data class SlikBeregnerViUfoeretrygdenKonvertert(
                 }
             }
 
-            //IF(PE_pebrevkode = "PE_UT_04_114") THEN      INCLUDE ENDIF
             showIf((pe.pebrevkode().equalTo("PE_UT_04_114"))){
-                //[SlikBeregnerViUfoeretrygdenKonvertert]
-
                 paragraph {
                     text (
                         bokmal { + "Når uføregraden din øker, sammenligner vi det tidligere beregningsgrunnlaget på uførepensjonen med beregningsgrunnlaget på uføretrygd. Du får alternativet som gir deg høyest uføretrygd." },
                         nynorsk { + "Når uføregraden din aukar, samanliknar vi det tidligare berekningsgrunnlaget på uførepensjonen med berekningsgrunnlaget på uføretrygd. Du får det alternativet som gjer deg høgast uføretrygd." },
                     )
 
-                    //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget())){
                         text (
                             bokmal { + " Gjenlevendetillegget ditt vil øke med samme grad som uføregraden din." },

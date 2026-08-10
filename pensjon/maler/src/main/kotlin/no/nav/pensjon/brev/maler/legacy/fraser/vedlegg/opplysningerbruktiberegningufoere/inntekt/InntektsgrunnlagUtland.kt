@@ -29,7 +29,6 @@ data class InntektsgrunnlagUtland(
         ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()){ virkFom ->
 
             showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("folketrygd")){
-
                 paragraph {
                     text (
                         bokmal { + "Inntekt lagt til grunn for beregning av uføretrygden din fra " + virkFom.format() },
