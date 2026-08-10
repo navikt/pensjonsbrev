@@ -202,7 +202,7 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                 paragraph {
                     text(
                         bokmal { +"Se begrunnelse under avsnittet Derfor har vi avslått søknaden din om barnetillegg" },
-                        nynorsk { +"Sjå grunngiving under avsnittet Difor har vi avslått søknaden din om barnetillegg" },
+                        nynorsk { +"Sjå grunngiving under avsnittet Derfor har vi avslått søknaden din om barnetillegg" },
                     )
                 }
             }
