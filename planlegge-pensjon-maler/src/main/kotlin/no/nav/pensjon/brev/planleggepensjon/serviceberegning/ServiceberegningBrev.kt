@@ -63,21 +63,21 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
 
         outline {
             paragraph {
-                text(bokmal { +fritekst("Bruker har ingen ytelser som ikke kan kombineres med AFP.") })
+                text(bokmal { +("Bruker har ingen ytelser som ikke kan kombineres med AFP.") })
             }
             paragraph {
-                text(bokmal { +fritekst("Bruker har hatt utbetalt alderspensjon frem til DD.MM.ÅÅÅÅ.") })
+                text(bokmal { +("Bruker har hatt utbetalt alderspensjon frem til " + fritekst("DD.MM.ÅÅÅÅ") + ".") })
             }
             paragraph {
-                text(bokmal { +fritekst("Bruker har XX % uføretrygd fra folketrygden.") })
+                text(bokmal { +("Bruker har " + fritekst("XX") + " % uføretrygd fra folketrygden.") })
             }
             paragraph {
-                text(bokmal { +fritekst("Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag.") })
+                text(bokmal { +("Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag.") })
             }
             paragraph {
                 text(
                     bokmal {
-                        +fritekst("Bruker mottar eller søker om sykepenger. Nav arbeid og ytelser er informert om at bruker søker AFP.")
+                        +("Bruker mottar eller søker om sykepenger. Nav arbeid og ytelser er informert om at bruker søker AFP.")
                     },
                 )
             }
@@ -96,8 +96,10 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
             title1 {
                 text(bokmal { +"Opptjeningsgrunnlag i folketrygden" })
             }
-            paragraph {
-                text(bokmal { +"Forventet fremtidig inntekt: " + saksbehandlerValg.forventetFremtidigInntekt.format().redigerbar() + "." })
+            ifNotNull(saksbehandlerValg.forventetFremtidigInntekt) { forventetFremtidigInntekt ->
+                paragraph {
+                    text(bokmal { +"Forventet fremtidig inntekt: " + forventetFremtidigInntekt.format().redigerbar() + "." })
+                }
             }
             includePhrase(AfpOffentligTidsbegrensetOpptjeningTabell(saksbehandlerValg.afp))
         }
