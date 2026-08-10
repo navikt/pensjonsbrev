@@ -25,11 +25,6 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.ResourceLock
 
-/**
- * Ende-til-ende-tester for v2 PDF-rutene: brevbaker rendrer [no.nav.brev.brevbaker.markup.LetterMarkup] (v2)
- * og sender den til den kjørende pdf-bygger-containeren. Verifiserer dermed at hele v2-kjeden
- * (renderer -> LetterPDFRequest -> pdf-bygger -> PDF) er koblet sammen. Speiler [LetterRoutesITest] (v1).
- */
 @Tag(TestTags.INTEGRATION_TEST)
 @ResourceLock("FeatureToggleHandler")
 class LetterRoutesV2ITest {

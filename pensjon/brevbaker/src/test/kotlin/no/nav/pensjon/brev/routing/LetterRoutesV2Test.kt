@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.routing
 
 import io.ktor.client.call.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.markup.LetterMarkup
@@ -16,12 +15,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-/**
- * Ruter-nivå-tester for v2-endepunktene (`/v2/letter/...`) som rendrer
- * [no.nav.brev.brevbaker.markup.LetterMarkup] (v2). Speiler dekningen i [LetterRoutesITest] (v1) der det
- * er meningsfullt, uten å redusere v1-dekningen der. Ende-til-ende PDF-produksjon (som krever en kjørende
- * pdf-bygger) dekkes i [LetterRoutesV2ITest].
- */
+
 class LetterRoutesV2Test {
     private val autoBrevRequest = BestillBrevRequest(
         kode = LetterExample.kode,
