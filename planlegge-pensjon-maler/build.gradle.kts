@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val apiModelJavaTarget: String by System.getProperties()
 
@@ -86,4 +87,8 @@ tasks {
         testClassesDirs = files(test.map { it.sources.output.classesDirs })
         classpath = files(test.map { it.sources.runtimeClasspath })
     }
+}
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.compilerOptions {
+    freeCompilerArgs.set(listOf("-Xcontext-parameters"))
 }
