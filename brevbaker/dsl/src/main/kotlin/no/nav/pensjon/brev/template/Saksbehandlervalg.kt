@@ -15,24 +15,17 @@ class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<Saksbehandlervalg
         require(scope.saksbehandlervalg.containsKey(id).not()) { "Saksbehandlervalg med id $id allerede definert" }
     }
 
-    fun bool(default: Boolean = false): Expression<Boolean> = createSaksbehandlervalg(SaksbehandlervalgVerdi.Bool(id, displayText)).ifNull(default)
+    fun bool(): Expression<Boolean> = createSaksbehandlervalg(SaksbehandlervalgVerdi.Bool(id, displayText)).ifNull(false)
 
-    fun int(default: Int): Expression<Int> = createSaksbehandlervalg(SaksbehandlervalgVerdi.Integer(id, displayText)).ifNull(default)
     fun int(): Expression<Int?> = createSaksbehandlervalg(SaksbehandlervalgVerdi.Integer(id, displayText))
 
-    fun text(default: String): Expression<String> = createSaksbehandlervalg(SaksbehandlervalgVerdi.Text(id, displayText)).ifNull(default)
     fun text(): Expression<String?> = createSaksbehandlervalg(SaksbehandlervalgVerdi.Text(id, displayText))
 
-    inline fun <reified T> enum(default: T): Expression<T> where T : SaksbehandlerValgEnum, T : Enum<T> = enum(T::class, default)
     inline fun <reified T> enum(): Expression<T?> where T : SaksbehandlerValgEnum, T : Enum<T> = enum(T::class)
 
     @BrevbakerDSLInternal
     fun <T> enum(clazz: KClass<T>): Expression<T?> where T : SaksbehandlerValgEnum, T : Enum<T> =
         createSaksbehandlervalg(SaksbehandlervalgVerdi.Enum(id, displayText, clazz))
-
-    @BrevbakerDSLInternal
-    fun <T> enum(clazz: KClass<T>, default: T): Expression<T> where T : SaksbehandlerValgEnum, T : Enum<T> =
-        createSaksbehandlervalg(SaksbehandlervalgVerdi.Enum(id, displayText, clazz)).ifNull(default)
 
     private fun <T> createSaksbehandlervalg(saksbehandlervalgVerdi: SaksbehandlervalgVerdi<T>): UnaryInvoke<SaksbehandlervalgIDSL, T> {
         scope.lagreSaksbehandlervalg(id, saksbehandlervalgVerdi)
