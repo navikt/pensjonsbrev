@@ -5,9 +5,8 @@ import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrevDto
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningPesysData
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimulering
@@ -64,12 +63,10 @@ object Fixtures : LetterDataFactory {
     private fun createSimuleringBrevDto() = createBrevDtoMedAfpPrivat()
 
     fun createServiceberegningBrevDto() = ServiceberegningBrevDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
-        pesysData = ServiceberegningPesysData(
-            fornavn = "Ola",
-            etternavn = "Nordmann",
+        saksbehandlerValg = ServiceberegningDto(
             uttaksalder = Alder(62, 10),
-            uttaksdato = LocalDate.of(2027, 2, 1),
+            uttaksdato = "01.02.2027",
+            forventetFremtidigInntekt = Kroner(158000),
             afp = TidsbegrensetOffentligAfp(
                 alderAar = 62,
                 totaltAfpBeloep = Kroner(31353),
@@ -86,7 +83,7 @@ object Fixtures : LetterDataFactory {
                 afpGrad = Percent(100),
                 erAvkortet = true,
             ),
-        ),
+        )
     )
 
     fun createBrevDtoMedAfpPrivat() = ApSimuleringBrevDto(

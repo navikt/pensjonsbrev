@@ -22,7 +22,7 @@ object PlanleggePensjonTemplates : AllTemplates {
 
 enum class Brevkategori : TemplateDescription.IBrevkategori {
     AP_SIMULERINGSBREV,
-    SERVICEBEREGNING;
+    SERVICEBEREGNING_SIMULERINGSBREV;
 
     override val kode = name
 }
@@ -34,13 +34,12 @@ object PlanleggePensjonBrevkoder {
     }
     enum class Redigerbar : Brevkode.Redigerbart {
         PENSJONSKALKULATOR_AP_SIMULERING,
-        SERVICEBEREGNING;
+        SERVICEBEREGNING_SIMULERINGSBREV;
         override fun kode() = name
     }
 }
 
 enum class FeatureToggles(key: String) {
-    apSimulering("apSimulering"),
-    serviceberegning("serviceberegning");
+    apSimulering("apSimulering");
     val toggle = FeatureToggle(key)
 }

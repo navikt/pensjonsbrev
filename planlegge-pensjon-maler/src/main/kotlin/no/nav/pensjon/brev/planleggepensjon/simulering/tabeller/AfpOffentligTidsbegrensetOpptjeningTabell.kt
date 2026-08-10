@@ -30,12 +30,12 @@ data class AfpOffentligTidsbegrensetOpptjeningTabell(
                     cell { text(bokmal { +afp.afpGrad.format() + " %" }) }
                 }
                 row {
-                    cell { text(bokmal { +"Grunnbeløp (G)" }) }
-                    cell { text(bokmal { +afp.grunnbeloep.format(denominator = false) + " kr" }) }
-                }
-                row {
                     cell { text(bokmal { +"Tidligere arbeidsinntekt" }) }
                     cell { text(bokmal { +afp.tidligereArbeidsinntekt.format(denominator = false) + " kr" }) }
+                }
+                row {
+                    cell { text(bokmal { +"Grunnbeløp (G)" }) }
+                    cell { text(bokmal { +afp.grunnbeloep.format(denominator = false) + " kr" }) }
                 }
                 row {
                     cell { text(bokmal { +"Sluttpoengtall" }) }
@@ -50,12 +50,12 @@ data class AfpOffentligTidsbegrensetOpptjeningTabell(
                     cell { text(bokmal { +afp.trygdetid.format() + " år" }) }
                 }
                 row {
-                    cell { text(bokmal { +"Poengår før 1992 (45 %)" }) }
-                    cell { text(bokmal { +afp.poengaarTom1991.format() }) }
-                }
-                row {
                     cell { text(bokmal { +"Poengår etter 1991 (42 %)" }) }
                     cell { text(bokmal { +afp.poengaarFom1992.format() }) }
+                }
+                row {
+                    cell { text(bokmal { +"Poengår før 1992 (45 %)" }) }
+                    cell { text(bokmal { +afp.poengaarTom1991.format() }) }
                 }
             }
         }
