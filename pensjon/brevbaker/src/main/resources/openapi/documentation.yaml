@@ -997,11 +997,7 @@ components:
     LetterMarkupV2:
       type: object
       description: |
-        Redigerbart brev, modellert i det delte biblioteket `brevbaker/markup` som
-        `no.nav.brev.brevbaker.markup.LetterMarkup`. Inneholder brevets tittel (`title1`),
-        saksinformasjon (mottaker, saksnummer, dokumentdato), en liste av innholdsblokker
-        (`blocks`) med outline-tekst, tabeller, lister og skjema-elementer, samt signatur
-        (saksbehandler/attestant og NAV-enhet). Se kildekoden for full detaljert modell.
+        Se `no.nav.brev.brevbaker.markup.LetterMarkup` i `brevbaker/markup`.
       required:
         - title1
         - saksinformasjon
