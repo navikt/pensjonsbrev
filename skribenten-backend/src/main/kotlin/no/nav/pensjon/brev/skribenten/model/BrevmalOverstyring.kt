@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.skribenten.model
 
-import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.IBrevkategori
 
 
 object BrevmalOverstyring {
 
     // Når BrevmalOverstyring-objektet fjernast, bør vi fjerne denne enum-klassa også
-    private enum class Overstyringskategori(override val kode: String) : TemplateDescription.IBrevkategori {
+    private enum class Overstyringskategori(override val kode: String) : IBrevkategori {
         ETTEROPPGJOER("ETTEROPPGJOER"),
         FOERSTEGANGSBEHANDLING("FOERSTEGANGSBEHANDLING"),
         VEDTAK_ENDRING_OG_REVURDERING("VEDTAK_ENDRING_OG_REVURDERING"),
@@ -25,7 +25,7 @@ object BrevmalOverstyring {
         FRITEKSTBREV("FRITEKSTBREV")
     }
 
-    val kategori: Map<String, TemplateDescription.IBrevkategori> = mapOf(
+    val kategori: Map<String, IBrevkategori> = mapOf(
         Overstyringskategori.ETTEROPPGJOER to listOf(
             "PE_AF_03_101",
             "PE_AF_04_100",

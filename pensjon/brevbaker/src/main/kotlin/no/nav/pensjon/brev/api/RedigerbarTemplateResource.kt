@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api
 
 import no.nav.brev.brevbaker.Brevbaker
 import no.nav.brev.brevbaker.PDFByggerService
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata

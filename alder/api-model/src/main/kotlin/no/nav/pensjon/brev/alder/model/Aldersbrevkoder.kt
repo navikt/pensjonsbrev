@@ -95,9 +95,18 @@ object Aldersbrevkoder {
         override fun kode(): String = this.name
     }
 
-    enum class AlltidValgbareVedlegg(override val visningstekst: String, override val spraak: Set<LanguageCode>) : AlltidValgbartVedleggKode {
-        SKJEMA_FOR_BANKOPPLYSNINGER("Skjema for bankopplysninger", setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH)),
-        UTTAKSSKJEMA("Uttaksskjema", setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH))
+    enum class AlltidValgbareVedlegg(
+        override val visningstekst: String,
+        override val spraak: Set<LanguageCode>,
+    ) : AlltidValgbartVedleggKode {
+        SKJEMA_FOR_BANKOPPLYSNINGER(
+            "Skjema for bankopplysninger",
+            setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH),
+        ),
+        UTTAKSSKJEMA(
+            "Uttaksskjema",
+            setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH),
+        ),
         ;
 
         override val kode = name

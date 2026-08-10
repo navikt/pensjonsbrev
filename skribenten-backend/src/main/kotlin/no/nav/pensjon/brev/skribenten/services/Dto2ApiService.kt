@@ -64,6 +64,7 @@ class Dto2ApiService(
             spraak = info.spraak.toApi(),
             journalpostId = info.journalpostId,
             vedtaksId = info.vedtaksId,
+            leggVedFoersteside = info.leggVedFoersteside
         )
     }
 

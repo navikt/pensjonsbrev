@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpAutoD
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.innvilgelseAvAfpDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk

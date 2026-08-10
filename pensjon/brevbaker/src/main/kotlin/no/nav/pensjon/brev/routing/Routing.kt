@@ -19,7 +19,7 @@ import no.nav.brev.brevbaker.AllTemplates
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.pensjon.brev.api.AutobrevTemplateResource
 import no.nav.pensjon.brev.api.RedigerbarTemplateResource
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.etterlatte.EtterlatteMaler
 

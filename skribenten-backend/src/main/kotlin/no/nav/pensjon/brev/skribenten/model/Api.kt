@@ -70,6 +70,7 @@ object Api {
         val spraak: SpraakKode,
         val journalpostId: JournalpostId?,
         val vedtaksId: VedtaksId?,
+        val leggVedFoersteside: Boolean?
     )
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
