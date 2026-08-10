@@ -169,6 +169,12 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     )
                     includePhrase(Felles.TextOrList(pesysData.nyeAvslagBarnetillegg.map(BarnetilleggFormatter), 0))
                 }
+                paragraph {
+                    text(
+                        bokmal { +"Se begrunnelse under avsnittet Derfor har vi avslått søknaden din om barnetillegg" },
+                        nynorsk { +"Sjå grunngiving under avsnittet Difor har vi avslått søknaden din om barnetillegg" },
+                    )
+                }
             }
 
             showIf(kravarsak.isOneOf("omgj_etter_klage", "omgj_etter_anke")) {
@@ -196,6 +202,12 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                         nynorsk { +"Vi har stansa barnetillegget i uføretrygda di for" },
                     )
                     includePhrase(Felles.TextOrList(pesysData.nyeOpphorteBarnetillegg.map(BarnetilleggOpphorFormatter), 0))
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Se begrunnelse under avsnittet Derfor har vi opphørt barnetillegget ditt" },
+                        nynorsk { +"Sjå grunngiving under avsnittet Difor har vi stansa barnetillegget ditt" },
+                    )
                 }
             }
 

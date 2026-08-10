@@ -199,6 +199,12 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                     )
                     includePhrase(Felles.TextOrList(pesysData.nyeAvslagBarnetillegg.map(BarnetilleggFlereBarnFormatter), 0))
                 }
+                paragraph {
+                    text(
+                        bokmal { +"Se begrunnelse under avsnittet Derfor har vi avslått søknaden din om barnetillegg" },
+                        nynorsk { +"Sjå grunngiving under avsnittet Difor har vi avslått søknaden din om barnetillegg" },
+                    )
+                }
             }
 
             showIf(gjenlevendetilleggInnvilget) {

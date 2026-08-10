@@ -122,6 +122,12 @@ object Innvilgelse {
                     )
                     includePhrase(Felles.TextOrList(nyeAvslagBarnetillegg.map(BarnetilleggFormatter), 0))
                 }
+                paragraph {
+                    text(
+                        bokmal { +"Se begrunnelse under avsnittet Derfor har vi avslått søknaden din om barnetillegg" },
+                        nynorsk { +"Sjå grunngiving under avsnittet Difor har vi avslått søknaden din om barnetillegg" },
+                    )
+                }
             }
 
             showIf(gjenlevendetilleggInnvilget) {

@@ -397,10 +397,10 @@ object Ufoeretrygd {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
             forEach(barnetilleggAvslatt) { barnetillegg ->
-                title2 {
+                title1 {
                     text(
-                        bokmal { +"Nav har avslått søknaden din om barnetillegg" },
-                        nynorsk { +"Nav har avslått søknaden din om barnetillegg" },
+                        bokmal { +"Derfor har vi avslått søknaden din om barnetillegg" },
+                        nynorsk { +"Derfor har vi avslått søknaden din om barnetillegg" },
                     )
                 }
                 paragraph {
@@ -425,10 +425,10 @@ object Ufoeretrygd {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
             forEach(barnetilleggAvslatt) { barnetillegg ->
-                title2 {
+                title1 {
                     text(
-                        bokmal { +"Nav har avslått søknaden din om barnetillegg" },
-                        nynorsk { +"Nav har avslått søknaden din om barnetillegg" },
+                        bokmal { +"Derfor har vi avslått søknaden din om barnetillegg" },
+                        nynorsk { +"Derfor har vi avslått søknaden din om barnetillegg" },
                     )
                 }
                 paragraph {
@@ -476,10 +476,10 @@ object Ufoeretrygd {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
             forEach(barnetilleggOpphort) { barnetillegg ->
-                title2 {
+                title1 {
                     text(
-                        bokmal { +"Nav har opphørt barnetillegget ditt" },
-                        nynorsk { +"Nav har stansa barnetillegget ditt" },
+                        bokmal { +"Derfor har vi opphørt barnetillegget ditt" },
+                        nynorsk { +"Derfor har vi stansa barnetillegget ditt" },
                     )
                 }
                 paragraph {
