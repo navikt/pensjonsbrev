@@ -1,21 +1,22 @@
 package no.nav.pensjon.brev.planleggepensjon.simulering.tabeller
 
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.planleggepensjon.redigerbar
 import no.nav.pensjon.brev.planleggepensjon.simulering.TidsbegrensetOffentligAfp
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.tidsbegrensetOffentligAfp.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
-import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.RedigerbarOutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.text
 
-data class AfpOffentligTidsbegrensetTabell(
+data class AfpOffentligTidsbegrensetTabellRedigerbar(
     val afp: Expression<TidsbegrensetOffentligAfp>,
     val sumLabel: String = "Sum AFP",
-) : OutlinePhrase<LangBokmal>() {
+) : RedigerbarOutlinePhrase<LangBokmal>() {
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         paragraph {
             table(header = {
@@ -29,37 +30,35 @@ data class AfpOffentligTidsbegrensetTabell(
                 showIf(afp.grunnpensjon.greaterThan(0)) {
                     row {
                         cell { text(bokmal { +"Grunnpensjon" }) }
-                        cell { text(bokmal { +afp.grunnpensjon.format(denominator = false) }) }
+                        cell { text(bokmal { +afp.grunnpensjon.format(denominator = false).redigerbar() }) }
                     }
                 }
                 showIf(afp.tilleggspensjon.greaterThan(0)) {
                     row {
                         cell { text(bokmal { +"Tilleggspensjon" }) }
-                        cell { text(bokmal { +afp.tilleggspensjon.format(denominator = false) }) }
+                        cell { text(bokmal { +afp.tilleggspensjon.format(denominator = false).redigerbar() }) }
                     }
                 }
                 showIf(afp.afpTillegg.greaterThan(0)) {
                     row {
                         cell { text(bokmal { +"AFP-tillegg" }) }
-                        cell { text(bokmal { +afp.afpTillegg.format(denominator = false) }) }
+                        cell { text(bokmal { +afp.afpTillegg.format(denominator = false).redigerbar() }) }
                     }
                 }
                 showIf(afp.saertillegg.greaterThan(0)) {
                     row {
                         cell { text(bokmal { +"Særtillegg" }) }
-                        cell { text(bokmal { +afp.saertillegg.format(denominator = false) }) }
+                        cell { text(bokmal { +afp.saertillegg.format(denominator = false).redigerbar() }) }
                     }
                 }
                 row {
                     cell { text(bokmal { +sumLabel }, fontType = BOLD) }
-                    cell { text(bokmal { +afp.totaltAfpBeloep.format(denominator = false) }, fontType = BOLD) }
+                    cell { text(bokmal { +afp.totaltAfpBeloep.format(denominator = false).redigerbar() }, fontType = BOLD) }
                 }
             }
             showIf(afp.erAvkortet) {
                 text(bokmal { +"Sum redusert pga. total pensjon oversteg 70 % av tidligere inntekt." })
             }
         }
-
-
     }
 }
