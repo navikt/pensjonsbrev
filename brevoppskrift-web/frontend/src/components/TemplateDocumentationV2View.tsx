@@ -1,5 +1,6 @@
 import { css } from "@emotion/react";
 import { BodyLong, Heading, Tag } from "@navikt/ds-react";
+import { Link } from "@tanstack/react-router";
 
 import {
   type AttachmentV2,
@@ -11,11 +12,13 @@ import {
   type ElementV2,
   type ElseIfV2,
   type Expr,
+  type ExprFieldPath,
   ExprType,
   type ForEachV2,
   isDataSourceScope,
   type TemplateDocumentationV2,
 } from "~/api/brevbakerTypesV2";
+import { trimClassName } from "~/components/DataClasses";
 
 /**
  * Rendering for TemplateDocumentationRendererV2 ("v2"). Speiler strukturen i
@@ -23,9 +26,10 @@ import {
  * .preview/.expression/.conditional/.show-if/.show-else), men uttrykk (Expr) er
  * et generalisert sealed-hierarki i stedet for v1s løse operator+first+second-tre.
  *
- * NB: v2s FieldPath.leafType er alltid null i nåværende backend-renderer, så vi har
- * ingen presis feltype-info å lenke feltnavn til DataClasses-highlighting med (slik
- * v1 gjør). Feltstier vises derfor som ren tekst her.
+ * `FieldPath.leafType` er en fullt kvalifisert Kotlin-type-streng for det siste
+ * segmentet i feltstien (f.eks. "no.nav.pensjon.brevbaker.api.model.SomeDto?" eller
+ * "kotlin.String"), satt av backend-rendereren. Vi bruker den til å lenke feltstier
+ * til DataClasses-sidepanelet, på samme måte som v1 gjør for postfix-uttrykk.
  */
 export function DocumentV2({
   templateDocumentation,
@@ -317,6 +321,40 @@ function editableKindLabel(kind: string): string {
 }
 
 /**
+ * Er den fullt kvalifiserte Kotlin-type-strengen fra `leafType` en primitiv/innebygd
+ * type (starter med "kotlin." eller "java.") i stedet for en av modellens egne
+ * data-klasser? Samme konvensjon som v1 sin ExpressionToText bruker for postfix-uttrykk.
+ */
+function isPrimitiveType(leafType: string): boolean {
+  return leafType.includes("kotlin") || leafType.includes("java");
+}
+
+function FieldPathLink({ expr }: { expr: ExprFieldPath }) {
+  const path = [dataSourceLabel(expr.source), ...expr.segments].join(".");
+  const lastSegment = expr.segments.at(-1);
+
+  if (!expr.leafType || !lastSegment) {
+    return <span>{path}</span>;
+  }
+
+  const primitive = isPrimitiveType(expr.leafType);
+  return (
+    <Link
+      from="/template/$malType/$templateId"
+      preload={false}
+      replace
+      search={(s) => ({
+        ...s,
+        highlightedDataClass: primitive ? undefined : trimClassName(expr.leafType ?? "").replace("?", ""),
+        highlightedDataField: primitive ? lastSegment : undefined,
+      })}
+    >
+      {path}
+    </Link>
+  );
+}
+
+/**
  * Om et uttrykk trenger parentes når det vises som operand i en annen node (f.eks. en
  * AssociativeOp eller Comparison nøstet i en annen), for lesbarhet.
  */
@@ -345,8 +383,7 @@ export function ExprToText({ expr }: { expr: Expr }) {
       return <span>{expr.value}</span>;
     }
     case ExprType.FIELD_PATH: {
-      const path = [dataSourceLabel(expr.source), ...expr.segments].join(".");
-      return <span>{path}</span>;
+      return <FieldPathLink expr={expr} />;
     }
     case ExprType.ASSOCIATIVE_OP: {
       const symbol = assocOpSymbol(expr.op);
