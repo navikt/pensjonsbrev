@@ -1,8 +1,9 @@
 package no.nav.pensjon.brev.alder.model.avslag
 
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016Dto.SaksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 
@@ -27,6 +28,6 @@ data class AvslagUttakFoerNormertPensjonsalderAP2016Dto(
 }
 
 data class AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto(
-    override val saksbehandlerValg: EmptySaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto>
+) : RedigerbarBrevdataMedSaksbehandlerValg<AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto>

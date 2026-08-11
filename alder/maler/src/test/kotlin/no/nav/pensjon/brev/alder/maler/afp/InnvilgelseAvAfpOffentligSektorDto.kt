@@ -13,14 +13,14 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmBeregningenAfpDto.A
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmBeregningenAfpDto.SivilstandKategori
 import no.nav.pensjon.brev.alder.model.vedlegg.Pensjonspoeng
 import no.nav.pensjon.brev.alder.model.PoengTallsType
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import java.time.LocalDate
 
 fun createInnvilgelseAvAfpOffentligSektorDto(): InnvilgelseAvAfpOffentligSektorDto =
     InnvilgelseAvAfpOffentligSektorDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = PesysData(
             kravMottattDato = LocalDate.of(2026, 1, 15),
             virkningFom = LocalDate.of(2026, 3, 1),
