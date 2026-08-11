@@ -213,14 +213,17 @@ export type ExprEditableField = {
 };
 
 /**
- * Kotlin-typen `DataSource` mangler `@JsonTypeInfo`, så Jackson serialiserer den uten
- * diskriminator-felt. Vi duck-typer derfor på felt-tilstedeværelse: `Scope` har `name`,
- * `ForEachVar` har `label`+`depth`.
+ * `DataSource` er nå diskriminert i backend via `@JsonTypeInfo(property = "dataSourceType")`
+ * (samme mønster som `Expr`): `SCOPE` for scope-baserte kilder (argument/felles/language),
+ * `FOR_EACH_VAR` for løkkevariabler, og `COMPUTED` for feltaksess på et vilkårlig beregnet
+ * uttrykk (f.eks. `getOrNull(...).felt` eller `(a ?: b).felt`) — sistnevnte lar en `FieldPath`
+ * bygges videre på toppen av et hvilket som helst `Expr`, ikke bare Scope/ForEachVar.
  */
-export type DataSource = DataSourceScope | DataSourceForEachVar;
-export type DataSourceScope = { name: string };
-export type DataSourceForEachVar = { label: string; depth: number };
+export type DataSource = DataSourceScope | DataSourceForEachVar | DataSourceComputed;
+export type DataSourceScope = { dataSourceType: "SCOPE"; name: string };
+export type DataSourceForEachVar = { dataSourceType: "FOR_EACH_VAR"; label: string; depth: number };
+export type DataSourceComputed = { dataSourceType: "COMPUTED"; expr: Expr };
 
 export function isDataSourceScope(source: DataSource): source is DataSourceScope {
-  return "name" in source;
+  return source.dataSourceType === "SCOPE";
 }

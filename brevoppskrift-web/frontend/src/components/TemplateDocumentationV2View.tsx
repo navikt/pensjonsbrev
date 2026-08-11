@@ -16,7 +16,6 @@ import {
   type ExprFieldPath,
   ExprType,
   type ForEachV2,
-  isDataSourceScope,
   type TemplateDocumentationV2,
 } from "~/api/brevbakerTypesV2";
 import { trimClassName } from "~/components/DataClasses";
@@ -298,10 +297,19 @@ function assocOpSymbol(op: string): string {
 }
 
 function dataSourceLabel(source: DataSource): string {
-  if (isDataSourceScope(source)) {
-    return source.name;
+  switch (source.dataSourceType) {
+    case "SCOPE": {
+      return source.name;
+    }
+    case "FOR_EACH_VAR": {
+      return source.depth > 0 ? `${source.label}₍${source.depth}₎` : source.label;
+    }
+    case "COMPUTED": {
+      // Brukes kun som fallback her — FieldPathLink håndterer COMPUTED eksplisitt som en
+      // postfix-kjede (<uttrykk>.segment) i stedet for å slå denne sammen med et punktum.
+      return "";
+    }
   }
-  return source.depth > 0 ? `${source.label}₍${source.depth}₎` : source.label;
 }
 
 function editableKindLabel(kind: string): string {
@@ -369,7 +377,19 @@ function isPrimitiveType(leafType: string): boolean {
 }
 
 function FieldPathLink({ expr }: { expr: ExprFieldPath }) {
-  const path = [dataSourceLabel(expr.source), ...expr.segments].join(".");
+  // For en Computed-base (feltaksess på et vilkårlig beregnet uttrykk, f.eks.
+  // `getOrNull(...).felt`) rendres kilden som selve uttrykket etterfulgt av segmentene som en
+  // postfix-kjede (`<uttrykk>.segment1.segment2`), fremfor et prefiks-aktig punktum-join —
+  // dette gjør f.eks. `getOrNull(liste, 0).vilkar.unguforresultat` naturlig lesbart.
+  const path: ReactNode =
+    expr.source.dataSourceType === "COMPUTED" ? (
+      <>
+        <MaybeParens expr={expr.source.expr} />
+        {expr.segments.map((segment) => `.${segment}`).join("")}
+      </>
+    ) : (
+      [dataSourceLabel(expr.source), ...expr.segments].join(".")
+    );
   const lastSegment = expr.segments.at(-1);
 
   if (!expr.leafType || !lastSegment) {
@@ -434,6 +454,12 @@ function isNullLiteral(expr: Expr): boolean {
 export function ExprToText({ expr }: { expr: Expr }) {
   switch (expr.exprType) {
     case ExprType.LITERAL: {
+      // Strengliteraler vises med anførselstegn, slik at f.eks. en tom streng-fallback i
+      // `ifNull("")` fortsatt er synlig i teksten (NullCoalesce sin fallback ville ellers
+      // fremstått som et usynlig/tomt felt).
+      if (expr.kind === "STRING") {
+        return <span>"{expr.value}"</span>;
+      }
       return <span>{expr.value}</span>;
     }
     case ExprType.FIELD_PATH: {
