@@ -1107,8 +1107,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             }.orShowIf(virkningbegrunnelseStdbegr_22_12_1_5) {
                 paragraph {
                     text(
-                        bokmal { +"Du har fått innvilget uføretrygd fra " + onsketvirkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Vi mottok søknaden din " + pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()).format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " + fritekst("Fritekst") },
-                        nynorsk { +"Du har fått innvilga uføretrygd frå " + onsketvirkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Vi fekk søknaden din " + pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()).format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " + fritekst("Fritekst") },
+                        bokmal { +"Du har fått innvilget uføretrygd fra " + onsketvirkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Ditt krav ble framsatt " + pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()).format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " + fritekst("Fritekst") },
+                        nynorsk { +"Du har fått innvilga uføretrygd frå " + onsketvirkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Kravet ditt blei framsatt " + pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()).format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " + fritekst("Fritekst") },
                     )
                 }
             }.orShowIf(((virkningstidspunktBegrunnelse).equalTo("stdbegr_22_12_1_12"))) {
