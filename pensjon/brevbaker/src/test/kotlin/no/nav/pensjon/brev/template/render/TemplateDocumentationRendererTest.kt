@@ -63,6 +63,7 @@ class TemplateDocumentationRendererTest {
         }
         val expected = Content(
             Paragraph(
+                0,
                 listOf(
                     Conditional(
                         predicate = Expression.Literal("true"),
@@ -112,6 +113,7 @@ class TemplateDocumentationRendererTest {
         }
         val expected = Content(
             Paragraph(
+                0,
                 listOf(
                     Conditional(
                         predicate = Expression.Literal("true"),
@@ -152,6 +154,7 @@ class TemplateDocumentationRendererTest {
         }
         val expected = Content(
             Paragraph(
+                0,
                 listOf(
                     Content(
                         Text.Expression(
