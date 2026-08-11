@@ -25,6 +25,7 @@ dependencies {
     api("no.nav.pensjon.brev:pensjon-api-model:$apiModelVersion")
 
     testImplementation(libs.bundles.junit)
+    testImplementation(kotlin("reflect"))
     testImplementation(testFixtures(project(":brevbaker:core")))
     testImplementation(testFixtures(project(":brevbaker:dsl")))
 }
