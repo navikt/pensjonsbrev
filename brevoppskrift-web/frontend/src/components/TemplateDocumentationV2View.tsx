@@ -411,6 +411,32 @@ function functionCallPhrase(name: string, args: Expr[]): ReactNode | null {
         </span>
       ) : null;
     }
+    case "IntToKroner": {
+      // UnaryOperation.MapValue(IntToKroner) — heltall pakket om til et Kroner-beløp
+      // (selve valutaformateringen skjer separat via en LocalizedFormatter/Format-node).
+      return args[0] ? (
+        <span>
+          <MaybeParens expr={args[0]} /> som kronebeløp
+        </span>
+      ) : null;
+    }
+    case "IntToYear": {
+      // UnaryOperation.MapValue(IntToYear)
+      return args[0] ? (
+        <span>
+          <MaybeParens expr={args[0]} /> som årstall
+        </span>
+      ) : null;
+    }
+    case "SakstypeNavn": {
+      // pensjon/maler sin BinaryOperation<Sakstype, Language, String?> — andre argument er
+      // alltid Expression.FromScope.Language og gir ingen leservediendig informasjon.
+      return args[0] ? (
+        <span>
+          navnet på sakstypen <MaybeParens expr={args[0]} />
+        </span>
+      ) : null;
+    }
     default: {
       return null;
     }
