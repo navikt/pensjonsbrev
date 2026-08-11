@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.alder.model.afp
 
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import java.time.LocalDate
 
 /**
@@ -15,9 +15,9 @@ import java.time.LocalDate
  * fylles ut av saksbehandler ved hjelp av [no.nav.pensjon.brev.template.dsl.fritekst].
  */
 data class AvslagAfpGammelDto(
-    override val saksbehandlerValg: EmptySaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, AvslagAfpGammelDto.PesysData> {
+) : RedigerbarBrevdataMedSaksbehandlerValg<AvslagAfpGammelDto.PesysData> {
 
     data class PesysData(
         // PE_Kravdata_Kravhode_KravMotattDato
