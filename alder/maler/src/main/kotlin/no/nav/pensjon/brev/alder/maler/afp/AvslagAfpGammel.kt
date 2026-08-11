@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.alder.model.afp.AvslagAfpGammelDto
 import no.nav.pensjon.brev.alder.model.afp.selectors.avslagAfpGammelDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.afp.selectors.avslagAfpGammelDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate

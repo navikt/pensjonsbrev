@@ -53,6 +53,12 @@ export const FontType: Record<FontType, FontType> = {
   ITALIC: "ITALIC",
 };
 
+export type ListType = generated.Listetype;
+export const ListType: Record<ListType, ListType> = {
+  PUNKTLISTE: "PUNKTLISTE",
+  NUMMERERT_LISTE: "NUMMERERT_LISTE",
+};
+
 export type Item = generated.EditParagraphContentItemListItem;
 
 export type Row = generated.EditParagraphContentTableRow;
@@ -61,7 +67,4 @@ export type Header = generated.EditParagraphContentTableHeader;
 export type ColumnSpec = generated.EditParagraphContentTableColumnSpec;
 export type ColumnAlignment = generated.EditParagraphContentTableColumnAlignment;
 
-export interface PropertyUsage {
-  readonly typeName: string;
-  readonly propertyName: string;
-}
+export type PropertyUsage = generated.LetterMarkupWithDataUsageProperty;

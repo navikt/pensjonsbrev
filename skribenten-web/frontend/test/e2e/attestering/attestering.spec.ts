@@ -3,13 +3,13 @@ import { expect, type Page, test } from "@playwright/test";
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { type BrevResponse } from "~/types/brev";
 
-import { nyBrevInfo, nyBrevResponse } from "../../utils/brevredigeringTestUtils";
+import { brevInfo, brevResponse } from "../../utils/letterEditorTestUtils";
 import brev from "../fixtures/bekreftelsePåFlyktningstatus/brev.json" with { type: "json" };
 import { setupSakStubs } from "../utils/helpers";
 
-const defaultBrev = nyBrevResponse({});
+const defaultBrev = brevResponse({});
 const bekreftelsePaaFlyktningstatusBrev = brev as unknown as BrevResponse;
-const vedtaksBrev = nyBrevResponse({
+const vedtaksBrev = brevResponse({
   ...bekreftelsePaaFlyktningstatusBrev,
   info: { ...bekreftelsePaaFlyktningstatusBrev.info, brevtype: "VEDTAKSBREV" },
 });
@@ -54,7 +54,7 @@ test.describe("attestering", () => {
             ...vedtaksBrev,
             saksbehandlerValg: body.saksbehandlerValg,
             redigertBrev: body.redigertBrev,
-            info: nyBrevInfo({ ...body.info, status: { type: "Kladd" } }),
+            info: brevInfo({ ...body.info, status: { type: "Kladd" } }),
           },
         });
       }
@@ -89,7 +89,7 @@ test.describe("attestering", () => {
     expect(lagreBrevCount).toBe(0);
 
     // brevbehandler
-    const brevEtterLaas = nyBrevInfo({
+    const brevEtterLaas = brevInfo({
       ...vedtaksBrev.info,
       status: { type: "Attestering" },
     });
@@ -146,6 +146,16 @@ test.describe("attestering", () => {
       if (route.request().method() === "POST") {
         return route.fulfill({
           json: { journalpostId: 9908, error: null },
+        });
+      }
+      return route.fallback();
+    });
+
+    const pdfBase64 = (await import("node:fs")).readFileSync("test/e2e/fixtures/helloWorldPdf.txt", "base64");
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/pdf", (route) => {
+      if (route.request().method() === "GET") {
+        return route.fulfill({
+          json: { pdf: pdfBase64, rendretBrevErEndret: false },
         });
       }
       return route.fallback();
@@ -230,7 +240,9 @@ test.describe("attestering", () => {
     await expect(page.getByText("Distribusjonstype")).toBeVisible();
     await expect(page.getByText("Sentral print")).toBeVisible();
 
-    await page.getByText("Send brev").click();
+    const sendBrevButton = page.getByRole("button", { name: "Send brev" });
+    await expect(sendBrevButton).toBeEnabled();
+    await sendBrevButton.click();
     await expect(page.getByText("Vil du sende brevet?")).toBeVisible();
     await expect(page.getByText("Du kan ikke angre denne handlingen.")).toBeVisible();
     const pdfResponsePromise = page.waitForResponse(

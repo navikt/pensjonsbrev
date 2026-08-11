@@ -1,32 +1,28 @@
 package no.nav.pensjon.brev.skribenten.db
 
 import com.fasterxml.jackson.core.JacksonException
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.*
 import com.typesafe.config.Config
-import com.zaxxer.hikari.HikariConfig
-import com.zaxxer.hikari.HikariDataSource
+import com.zaxxer.hikari.*
+import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
-import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
+import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
 import org.flywaydb.core.Flyway
-import org.jetbrains.exposed.v1.core.Column
-import org.jetbrains.exposed.v1.core.Table
-import org.jetbrains.exposed.v1.core.columnTransformer
+import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
-import org.jetbrains.exposed.v1.jdbc.Database
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.sql.DataSource
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 val databaseReady: AtomicBoolean = AtomicBoolean(false)
 
 
 internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
-    registerModule(LetterMarkupJacksonModule)
+    registerModule(LetterMarkupV1JacksonModule)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 }
@@ -50,29 +46,32 @@ internal inline fun <reified T> IdTable<*>.readJsonBinary(json: ByteArray): T =
         throw DatabaseJsonDeserializeException(e)
     }
 
+fun dataSourceFactory(config: SkribentenConfig): HikariDataSource = with(config.database) {
+    initDatabase(
+        jdbcUrl = "jdbc:postgresql://$host:$port/$name",
+        username = username,
+        password = password,
+        maxPoolSize = maxPoolSize,
+    )
+}
 
-fun initDatabase(config: Config) =
-    config.getConfig("database").let {
-        initDatabase(
-            jdbcUrl = createJdbcUrl(it),
-            username = it.getString("username"),
-            password = it.getString("password"),
-            maxPoolSize = it.getInt("maxPoolSize"),
-        )
-    }
-
-fun initDatabase(jdbcUrl: String, username: String, password: String, maxPoolSize: Int = 2) =
+fun initDatabase(jdbcUrl: String, username: String, password: String, maxPoolSize: Int = 2): HikariDataSource =
     HikariDataSource(HikariConfig().apply {
         this.jdbcUrl = jdbcUrl
         this.username = username
         this.password = password
         this.initializationFailTimeout = 6000
         maximumPoolSize = maxPoolSize
+        // Cloud SQL/proxy kan lukke inaktive forbindelser før Hikari sin default maxLifetime (30 min),
+        // som gir "Failed to validate connection ... This connection has been closed".
+        // Poolen er bevisst fixed-size (minimumIdle == maximumPoolSize), så idleTimeout settes ikke.
+        maxLifetime = 10.minutes.inWholeMilliseconds
+        keepaliveTime = 2.minutes.inWholeMilliseconds
+        connectionTimeout = 5.seconds.inWholeMilliseconds
+        validationTimeout = 3.seconds.inWholeMilliseconds
         validate()
-    })
-        .also { konfigurerFlyway(it) }
-        .also { Database.connect(it) }
-        .also { databaseReady.set(true) }
+    }).also { konfigurerFlyway(it) }
+
 
 private fun konfigurerFlyway(dataSource: DataSource) = Flyway
     .configure()

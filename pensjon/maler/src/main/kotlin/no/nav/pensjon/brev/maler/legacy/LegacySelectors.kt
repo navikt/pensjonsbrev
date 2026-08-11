@@ -77,6 +77,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 import java.time.Month
+import no.nav.pensjon.brev.template.dsl.expression.localDateNow
 
 
 fun Expression<PEgruppe10>.avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg(): Expression<Boolean> = functions.avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg
@@ -299,7 +300,7 @@ fun Expression<PEgruppe10>.vedtaksdata_kravhode_boddarbeidutlandavdod(): Express
 fun Expression<PEgruppe10>.vedtaksdata_kravhode_kravarsaktype(): Expression<String> = vedtaksbrev.safe{ vedtaksdata }.safe{ kravhode }.safe{ kravarsaktype }.ifNull("")
 fun Expression<PEgruppe10>.vedtaksdata_kravhode_kravgjelder(): Expression<String> = vedtaksbrev.safe{ vedtaksdata }.safe{ kravhode }.safe{ kravgjelder }.ifNull("")
 fun Expression<PEgruppe10>.vedtaksdata_kravhode_kravlinjeliste_kravlinje_kravlinjetype(): Expression<String> = vedtaksbrev.vedtaksdata.safe{ kravhode }.safe{ kravlinjeliste }.getOrNull().safe{ kravlinjetype }.ifNull("")
-fun Expression<PEgruppe10>.vedtaksdata_kravhode_kravmottatdato(): Expression<LocalDate> = vedtaksbrev.vedtaksdata.safe{ kravhode }.safe{ kravmottattdato }.ifNull(LocalDate.now())
+fun Expression<PEgruppe10>.vedtaksdata_kravhode_kravmottatdato(): Expression<LocalDate> = vedtaksbrev.vedtaksdata.safe{ kravhode }.safe{ kravmottattdato }.ifNull(localDateNow)
 fun Expression<PEgruppe10>.vedtaksdata_kravhode_onsketvirkningsdato(): Expression<LocalDate?> = vedtaksbrev.safe{ vedtaksdata }.safe{ kravhode }.safe{ onsketvirkningsdato }
 fun Expression<PEgruppe10>.vedtaksdata_kravhode_vurderetrygdeavtale(): Expression<Boolean> = vedtaksbrev.safe{ vedtaksdata }.safe{ kravhode }.safe{ vurderetrygdeavtale }.ifNull(false)
 fun Expression<PEgruppe10>.vedtaksdata_trygdetidavdod_fatt_a10_netto(): Expression<Int> = vedtaksbrev.safe{ vedtaksdata }.safe{ trygdetidavdod }.safe{ fatta10netto }.ifNull(0)
@@ -355,7 +356,7 @@ fun Expression<PEgruppe10>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_un
 fun Expression<PEgruppe10>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskadebegrunnelse(): Expression<String> = vedtaksbrev.vedtaksdata.safe{ vilkarsvedtaklist }.safe{ vilkarsvedtak }.getOrNull().safe{ vilkar }.safe{ yrkesskadebegrunnelse }.ifNull("")
 fun Expression<PEgruppe10>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat(): Expression<String> = vedtaksbrev.safe{ vedtaksdata }.safe{ vilkarsvedtaklist }.safe{ vilkarsvedtak }.getOrNull().safe{ vilkar }.safe{ yrkesskaderesultat }.ifNull("")
 fun Expression<PEgruppe10>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom(): Expression<LocalDate?> = vedtaksbrev.safe{ vedtaksdata }.safe{ vilkarsvedtaklist }.safe{ vilkarsvedtak }.getOrNull().safe{ vilkarvirkningfom }
-fun Expression<PEgruppe10>.vedtaksdata_virkningfom(): Expression<LocalDate> = vedtaksbrev.safe{ vedtaksdata }.safe{ virkningfom }.ifNull(LocalDate.now())
+fun Expression<PEgruppe10>.vedtaksdata_virkningfom(): Expression<LocalDate> = vedtaksbrev.safe{ vedtaksdata }.safe{ virkningfom }.ifNull(localDateNow)
 fun Expression<PEgruppe10>.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto(): Expression<Kroner> = vedtaksbrev.safe{ vedtaksdata }.safe{ beregningsdata }.safe{ beregningsresultattilrevurderingtotalnetto }.ifNull(Kroner(0))
 fun Expression<PEgruppe10>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse(): Expression<String> = vedtaksbrev.safe{ vedtaksdata }.safe{ vilkarsvedtaklist }.safe{ vilkarsvedtak }.getOrNull().safe{ beregningsvilkar }.safe{ virkningbegrunnelse }.ifNull("")
 fun Expression<PEgruppe10>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_unntakfraforutgaendemedlemskap(): Expression<Boolean> = vedtaksbrev.safe{ vedtaksdata }.safe{ vilkarsvedtaklist }.safe{ vilkarsvedtak }.getOrNull().safe{ vilkar }.safe{ forutgaendemedlemskap }.safe{ unntakfraforutgaendemedlemskap }.ifNull(false)

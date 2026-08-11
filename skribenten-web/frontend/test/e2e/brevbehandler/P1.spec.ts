@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 
 import { expect, type Page, test } from "@playwright/test";
 
-import { nyBrevResponse } from "../../utils/brevredigeringTestUtils";
+import { brevResponse } from "../../utils/letterEditorTestUtils";
 import p1Data from "../fixtures/p1Data.json" with { type: "json" };
 import { setupSakStubs } from "../utils/helpers";
 
@@ -35,14 +35,14 @@ test.describe("P1 med forsidebrev", () => {
     await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) => {
       if (route.request().method() === "GET") {
         // @ts-expect-error: JSON fixture data might miss optional complex types but works for runtime
-        return route.fulfill({ json: nyBrevResponse({ info: p1BrevInfo }) });
+        return route.fulfill({ json: brevResponse({ info: p1BrevInfo }) });
       }
       return route.fallback();
     });
     await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=false", (route) => {
       if (route.request().method() === "GET") {
         // @ts-expect-error: JSON fixture data might miss optional complex types but works for runtime
-        return route.fulfill({ json: nyBrevResponse({ info: p1BrevInfo }) });
+        return route.fulfill({ json: brevResponse({ info: p1BrevInfo }) });
       }
       return route.fallback();
     });

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.fagsystem
 
+import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription

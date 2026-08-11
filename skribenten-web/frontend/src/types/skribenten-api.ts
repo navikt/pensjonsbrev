@@ -4,40 +4,6 @@
  */
 
 export interface paths {
-    "/status": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["StatusResponse"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/land": {
         parameters: {
             query?: never;
@@ -567,6 +533,12 @@ export interface paths {
                         "application/json": components["schemas"]["ApiBrevInfo"][];
                     };
                 };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
             };
         };
         put?: never;
@@ -634,6 +606,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -726,6 +706,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         put: {
@@ -802,6 +790,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         post?: never;
@@ -864,6 +860,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -940,6 +944,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1024,6 +1036,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1120,6 +1140,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         post?: never;
@@ -1156,53 +1184,11 @@ export interface paths {
                         "application/json": components["schemas"]["RedigerbartVedleggInfo"][];
                     };
                 };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
+                    content?: never;
                 };
             };
         };
@@ -1290,6 +1276,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         put: {
@@ -1354,6 +1348,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1426,6 +1428,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1513,6 +1523,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1609,6 +1627,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         post?: never;
@@ -1673,6 +1699,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1755,6 +1789,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -1849,6 +1891,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         delete?: never;
@@ -1934,6 +1984,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         put: {
@@ -2010,6 +2068,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         post?: never;
@@ -2043,9 +2109,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            [key: string]: unknown;
-                        };
+                        "application/json": components["schemas"]["P1RedigerbarDto"];
                     };
                 };
                 404: {
@@ -2074,10 +2138,14 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            [key: string]: unknown;
-                        };
+                        "application/json": components["schemas"]["P1RedigerbarDto"];
                     };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
                 };
             };
         };
@@ -2114,9 +2182,112 @@ export interface paths {
                         "application/json": components["schemas"]["ValgbartVedlegg"][];
                     };
                 };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
             };
         };
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sak/{saksId}/brev/{brevId}/foersteside": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    saksId: string;
+                    brevId: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ApiOppdaterFoerstesideRequest"];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiBrevInfo"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["BrevExceptionDto"];
+                    };
+                };
+                423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
         post?: never;
         delete?: never;
         options?: never;
@@ -2154,9 +2325,7 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
+                    content?: never;
                 };
             };
         };
@@ -2238,6 +2407,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -2328,6 +2505,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         put?: never;
@@ -2390,6 +2575,14 @@ export interface paths {
                     };
                 };
                 423: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+                500: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -2480,6 +2673,14 @@ export interface paths {
                         "application/json": string;
                     };
                 };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
             };
         };
         delete?: never;
@@ -2518,53 +2719,11 @@ export interface paths {
                         "application/json": components["schemas"]["DiffBrevHandlerResponse"];
                     };
                 };
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
-                };
                 404: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content: {
-                        "application/json": string;
-                    };
-                };
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["BrevExceptionDto"];
-                    };
-                };
-                423: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": string;
-                    };
+                    content?: never;
                 };
             };
         };
@@ -2746,6 +2905,12 @@ export interface paths {
                         "application/json": string[];
                     };
                 };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
             };
         };
         put?: never;
@@ -2770,6 +2935,12 @@ export interface paths {
                         "application/json": components["schemas"]["Unit"];
                     };
                 };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
             };
         };
         delete: {
@@ -2792,6 +2963,12 @@ export interface paths {
                     content: {
                         "application/json": components["schemas"]["Unit"];
                     };
+                };
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
                 };
             };
         };
@@ -2872,16 +3049,6 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** StatusResponse */
-        StatusResponse: {
-            errors: {
-                [key: string]: string;
-            };
-            overall: boolean;
-            services: {
-                [key: string]: boolean;
-            };
-        };
         /** BrevLandmodellLand */
         BrevLandmodellLand: {
             kode: string;
@@ -2894,9 +3061,9 @@ export interface components {
         BrevSystem: "EXSTREAM" | "BREVBAKER";
         /**
          * BrevdataDtoDokumentkategoriCode
-         * @enum {string|null}
+         * @enum {string}
          */
-        BrevdataDtoDokumentkategoriCode: "B" | "E_BLANKETT" | "IB" | "SED" | "VB" | null;
+        BrevdataDtoDokumentkategoriCode: "B" | "E_BLANKETT" | "IB" | "SED" | "VB";
         /**
          * SpraakKode
          * @enum {string}
@@ -2906,7 +3073,7 @@ export interface components {
         ApiBrevmal: {
             brevkategori?: string | null;
             brevsystem: components["schemas"]["BrevSystem"];
-            dokumentkategoriCode?: components["schemas"]["BrevdataDtoDokumentkategoriCode"];
+            dokumentkategoriCode?: components["schemas"]["BrevdataDtoDokumentkategoriCode"] | null;
             id: string;
             name: string;
             redigerbarBrevtittel: boolean;
@@ -3043,6 +3210,7 @@ export interface components {
             pid: string;
             sakType: string;
             saksId: number;
+            tema: string;
         };
         /** ApiSakContext */
         ApiSakContext: {
@@ -3068,12 +3236,12 @@ export interface components {
         };
         /**
          * ApiBestillOgRedigerBrevResponseFailureType
-         * @enum {string|null}
+         * @enum {string}
          */
-        ApiBestillOgRedigerBrevResponseFailureType: "EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT" | "EXSTREAM_REDIGERING_GENERELL" | "FERDIGSTILLING_TIMEOUT" | "SAF_ERROR" | "SKRIBENTEN_INTERNAL_ERROR" | "ENHET_UNAUTHORIZED" | "NAVANSATT_MANGLER_NAVN" | null;
+        ApiBestillOgRedigerBrevResponseFailureType: "EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT" | "EXSTREAM_REDIGERING_GENERELL" | "FERDIGSTILLING_TIMEOUT" | "SAF_ERROR" | "SKRIBENTEN_INTERNAL_ERROR" | "ENHET_UNAUTHORIZED" | "NAVANSATT_MANGLER_NAVN";
         /** ApiBestillOgRedigerBrevResponse */
         ApiBestillOgRedigerBrevResponse: {
-            failureType?: components["schemas"]["ApiBestillOgRedigerBrevResponseFailureType"];
+            failureType?: components["schemas"]["ApiBestillOgRedigerBrevResponseFailureType"] | null;
             journalpostId?: number | null;
             url?: string | null;
         };
@@ -3097,13 +3265,13 @@ export interface components {
         };
         /**
          * KrrServiceKontaktinfoResponseFailureType
-         * @enum {string|null}
+         * @enum {string}
          */
-        KrrServiceKontaktinfoResponseFailureType: "NOT_FOUND" | "ERROR" | null;
+        KrrServiceKontaktinfoResponseFailureType: "NOT_FOUND" | "ERROR";
         /** KrrServiceKontaktinfoResponse */
         KrrServiceKontaktinfoResponse: {
-            failure?: components["schemas"]["KrrServiceKontaktinfoResponseFailureType"];
-            spraakKode?: components["schemas"]["SpraakKode"];
+            failure?: components["schemas"]["KrrServiceKontaktinfoResponseFailureType"] | null;
+            spraakKode?: components["schemas"]["SpraakKode"] | null;
         };
         /** NavEnhet */
         NavEnhet: {
@@ -3117,15 +3285,15 @@ export interface components {
         Distribusjon: "SENTRALPRINT" | "LOKALPRINT";
         /**
          * DtoMottakerManueltAdressertTil
-         * @enum {string|null}
+         * @enum {string}
          */
-        DtoMottakerManueltAdressertTil: "BRUKER" | "ANNEN" | "IKKE_RELEVANT" | null;
+        DtoMottakerManueltAdressertTil: "BRUKER" | "ANNEN" | "IKKE_RELEVANT";
         /** ApiOverstyrtMottakerNorskAdresse */
         ApiOverstyrtMottakerNorskAdresse: {
             adresselinje1?: string | null;
             adresselinje2?: string | null;
             adresselinje3?: string | null;
-            manueltAdressertTil?: components["schemas"]["DtoMottakerManueltAdressertTil"];
+            manueltAdressertTil?: components["schemas"]["DtoMottakerManueltAdressertTil"] | null;
             navn: string;
             postnummer: string;
             poststed: string;
@@ -3151,7 +3319,7 @@ export interface components {
             adresselinje2?: string | null;
             adresselinje3?: string | null;
             landkode: string;
-            manueltAdressertTil?: components["schemas"]["DtoMottakerManueltAdressertTil"];
+            manueltAdressertTil?: components["schemas"]["DtoMottakerManueltAdressertTil"] | null;
             navn: string;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -3160,7 +3328,7 @@ export interface components {
             type: "UtenlandskAdresse";
         };
         /** ApiOverstyrtMottaker */
-        ApiOverstyrtMottaker: components["schemas"]["ApiOverstyrtMottakerNorskAdresse"] | components["schemas"]["ApiOverstyrtMottakerSamhandler"] | components["schemas"]["ApiOverstyrtMottakerUtenlandskAdresse"] | null;
+        ApiOverstyrtMottaker: components["schemas"]["ApiOverstyrtMottakerNorskAdresse"] | components["schemas"]["ApiOverstyrtMottakerSamhandler"] | components["schemas"]["ApiOverstyrtMottakerUtenlandskAdresse"];
         /** ApiNavAnsatt */
         ApiNavAnsatt: {
             id: string;
@@ -3219,7 +3387,8 @@ export interface components {
             distribusjonstype: components["schemas"]["Distribusjon"];
             id: number;
             journalpostId?: number | null;
-            mottaker?: components["schemas"]["ApiOverstyrtMottaker"];
+            leggVedFoersteside?: boolean | null;
+            mottaker?: components["schemas"]["ApiOverstyrtMottaker"] | null;
             /** Format: date-time */
             opprettet: string;
             opprettetAv: components["schemas"]["ApiNavAnsatt"];
@@ -3231,14 +3400,16 @@ export interface components {
             status: components["schemas"]["ApiBrevStatus"];
             vedtaksId?: number | null;
         };
+        /** SaksbehandlervalgVerdi */
+        SaksbehandlervalgVerdi: boolean | number | string | null;
         /** ApiOpprettBrevRequest */
         ApiOpprettBrevRequest: {
             avsenderEnhetsId: string;
             brevkode: string;
-            mottaker?: components["schemas"]["ApiOverstyrtMottaker"];
+            mottaker?: components["schemas"]["ApiOverstyrtMottaker"] | null;
             reserverForRedigering?: boolean | null;
             saksbehandlerValg: {
-                [key: string]: unknown;
+                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
             };
             spraak: components["schemas"]["SpraakKode"];
             vedtaksId?: number | null;
@@ -3253,6 +3424,11 @@ export interface components {
             propertyName: string;
             typeName: string;
         };
+        /**
+         * Listetype
+         * @enum {string}
+         */
+        Listetype: "PUNKTLISTE" | "NUMMERERT_LISTE";
         /**
          * EditParagraphContentTextFontType
          * @enum {string}
@@ -3270,7 +3446,7 @@ export interface components {
         EditParagraphContentType: "ITEM_LIST" | "LITERAL" | "VARIABLE" | "TABLE" | "NEW_LINE";
         /** EditParagraphContentTextLiteral */
         EditParagraphContentTextLiteral: {
-            editedFontType?: components["schemas"]["EditParagraphContentTextFontType"];
+            editedFontType?: components["schemas"]["EditParagraphContentTextFontType"] | null;
             editedText?: string | null;
             fontType: components["schemas"]["EditParagraphContentTextFontType"];
             id?: number | null;
@@ -3317,14 +3493,10 @@ export interface components {
             id?: number | null;
             parentId?: number | null;
         };
-        /**
-         * Listetype
-         * @enum {string}
-         */
-        Listetype: "PUNKTLISTE" | "NUMMERERT_LISTE";
         /** EditParagraphContentItemList */
         EditParagraphContentItemList: {
             deletedItems: number[];
+            editedListType?: components["schemas"]["Listetype"] | null;
             id?: number | null;
             items: components["schemas"]["EditParagraphContentItemListItem"][];
             listType: components["schemas"]["Listetype"];
@@ -3342,6 +3514,7 @@ export interface components {
         EditParagraphContentTableColumnAlignment: "LEFT" | "RIGHT";
         /** EditParagraphContentTableCell */
         EditParagraphContentTableCell: {
+            deletedContent: number[];
             id?: number | null;
             parentId?: number | null;
             text: components["schemas"]["EditParagraphContentText"][];
@@ -3357,12 +3530,14 @@ export interface components {
         /** EditParagraphContentTableHeader */
         EditParagraphContentTableHeader: {
             colSpec: components["schemas"]["EditParagraphContentTableColumnSpec"][];
+            deletedColSpecs: number[];
             id?: number | null;
             parentId?: number | null;
         };
         /** EditParagraphContentTableRow */
         EditParagraphContentTableRow: {
             cells: components["schemas"]["EditParagraphContentTableCell"][];
+            deletedCells: number[];
             id?: number | null;
             parentId?: number | null;
         };
@@ -3393,7 +3568,7 @@ export interface components {
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
-            originalType?: components["schemas"]["EditBlockType"];
+            originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -3408,7 +3583,7 @@ export interface components {
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
-            originalType?: components["schemas"]["EditBlockType"];
+            originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -3423,7 +3598,7 @@ export interface components {
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
-            originalType?: components["schemas"]["EditBlockType"];
+            originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -3438,7 +3613,7 @@ export interface components {
             editable: boolean;
             id?: number | null;
             missingFromTemplate: boolean;
-            originalType?: components["schemas"]["EditBlockType"];
+            originalType?: components["schemas"]["EditBlockType"] | null;
             parentId?: number | null;
             /**
              * @description discriminator enum property added by openapi-typescript
@@ -3477,8 +3652,6 @@ export interface components {
             signatur: components["schemas"]["LetterMarkupSignatur"];
             title: components["schemas"]["EditTitle"];
         };
-        /** SaksbehandlerValgBrevdata */
-        SaksbehandlerValgBrevdata: Record<string, never>;
         /** AlltidValgbartVedleggBrevkode */
         AlltidValgbartVedleggBrevkode: {
             kode: string;
@@ -3491,14 +3664,16 @@ export interface components {
             propertyUsage?: components["schemas"]["LetterMarkupWithDataUsageProperty"][] | null;
             redigertBrev: components["schemas"]["EditLetter"];
             redigertBrevHash: string;
-            saksbehandlerValg: components["schemas"]["SaksbehandlerValgBrevdata"];
+            saksbehandlerValg: {
+                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
+            };
             valgteVedlegg?: components["schemas"]["AlltidValgbartVedleggBrevkode"][] | null;
         };
         /** ApiOppdaterBrevRequest */
         ApiOppdaterBrevRequest: {
             redigertBrev: components["schemas"]["EditLetter"];
             saksbehandlerValg: {
-                [key: string]: unknown;
+                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
             };
         };
         /** ApiDelvisOppdaterBrevRequest */
@@ -3553,8 +3728,93 @@ export interface components {
         ApiOppdaterAttesteringRequest: {
             redigertBrev: components["schemas"]["EditLetter"];
             saksbehandlerValg: {
-                [key: string]: unknown;
+                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
             };
+        };
+        /**
+         * P1RedigerbarDtoAvslagsbegrunnelse
+         * @enum {string}
+         */
+        P1RedigerbarDtoAvslagsbegrunnelse: "IngenOpptjeningsperioder" | "OpptjeningsperiodePaaMindreEnnEttAar" | "KravTilKvalifiseringsperiodeEllerAndreKvalifiseringskravErIkkeOppfylt" | "VilkaarOmUfoerhetErIkkeOppfylt" | "InntektstakErOverskredet" | "PensjonsalderErIkkeNaadd" | "AndreAarsaker";
+        /** P1RedigerbarDtoInstitusjon */
+        P1RedigerbarDtoInstitusjon: {
+            /** Format: date */
+            datoForVedtak?: string | null;
+            institusjonsnavn?: string | null;
+            land?: string | null;
+            pin?: string | null;
+            saksnummer?: string | null;
+            vedtaksdato?: string | null;
+        };
+        /**
+         * P1RedigerbarDtoPensjonstype
+         * @enum {string}
+         */
+        P1RedigerbarDtoPensjonstype: "Alder" | "Ufoere" | "Etterlatte";
+        /** P1RedigerbarDtoAvslaattPensjon */
+        P1RedigerbarDtoAvslaattPensjon: {
+            adresseNyVurdering?: string | null;
+            avslagsbegrunnelse?: components["schemas"]["P1RedigerbarDtoAvslagsbegrunnelse"] | null;
+            institusjon?: components["schemas"]["P1RedigerbarDtoInstitusjon"] | null;
+            pensjonstype?: components["schemas"]["P1RedigerbarDtoPensjonstype"] | null;
+            vurderingsperiode?: string | null;
+        };
+        /** P1RedigerbarDtoP1Person */
+        P1RedigerbarDtoP1Person: {
+            adresselinje?: string | null;
+            etternavn?: string | null;
+            etternavnVedFoedsel?: string | null;
+            /** Format: date */
+            foedselsdato?: string | null;
+            fornavn?: string | null;
+            landkode?: string | null;
+            postnummer?: string | null;
+            poststed?: string | null;
+        };
+        /**
+         * P1RedigerbarDtoGrunnlagInnvilget
+         * @enum {string}
+         */
+        P1RedigerbarDtoGrunnlagInnvilget: "IHenholdTilNasjonalLovgivning" | "ProRata" | "MindreEnnEttAar";
+        /**
+         * P1RedigerbarDtoReduksjonsgrunnlag
+         * @enum {string}
+         */
+        P1RedigerbarDtoReduksjonsgrunnlag: "PaaGrunnAvAndreYtelserEllerAnnenInntekt" | "PaaGrunnAvOverlappendeGodskrevnePerioder";
+        /** P1RedigerbarDtoInnvilgetPensjon */
+        P1RedigerbarDtoInnvilgetPensjon: {
+            adresseNyVurdering?: string | null;
+            /** Format: date */
+            datoFoersteUtbetaling?: string | null;
+            grunnlagInnvilget?: components["schemas"]["P1RedigerbarDtoGrunnlagInnvilget"] | null;
+            institusjon?: components["schemas"]["P1RedigerbarDtoInstitusjon"] | null;
+            pensjonstype?: components["schemas"]["P1RedigerbarDtoPensjonstype"] | null;
+            reduksjonsgrunnlag?: components["schemas"]["P1RedigerbarDtoReduksjonsgrunnlag"] | null;
+            utbetalt?: string | null;
+            vurderingsperiode?: string | null;
+        };
+        /** P1RedigerbarDtoUtfyllendeInstitusjon */
+        P1RedigerbarDtoUtfyllendeInstitusjon: {
+            adresselinje: string;
+            /** Format: date */
+            dato?: string | null;
+            epost?: string | null;
+            faksnummer?: string | null;
+            institusjonsID?: string | null;
+            landkode: string;
+            navn: string;
+            postnummer: string;
+            poststed: string;
+            telefonnummer?: string | null;
+        };
+        /** P1RedigerbarDto */
+        P1RedigerbarDto: {
+            avslaattePensjoner: components["schemas"]["P1RedigerbarDtoAvslaattPensjon"][];
+            forsikrede: components["schemas"]["P1RedigerbarDtoP1Person"];
+            innehaver: components["schemas"]["P1RedigerbarDtoP1Person"];
+            innvilgedePensjoner: components["schemas"]["P1RedigerbarDtoInnvilgetPensjon"][];
+            sakstype: string;
+            utfyllendeInstitusjon: components["schemas"]["P1RedigerbarDtoUtfyllendeInstitusjon"];
         };
         /** ValgbartVedlegg */
         ValgbartVedlegg: {
@@ -3562,6 +3822,10 @@ export interface components {
             spraak: components["schemas"]["LanguageCode"][];
             tilgjengeligForSpraak: boolean;
             visningstekst: string;
+        };
+        /** ApiOppdaterFoerstesideRequest */
+        ApiOppdaterFoerstesideRequest: {
+            leggVedFoersteside: boolean;
         };
         /** Duration */
         Duration: {
@@ -3639,9 +3903,9 @@ export interface components {
         };
         /**
          * HentSamhandlerResponseDtoFailureType
-         * @enum {string|null}
+         * @enum {string}
          */
-        HentSamhandlerResponseDtoFailureType: "GENERISK" | "IKKE_FUNNET" | null;
+        HentSamhandlerResponseDtoFailureType: "GENERISK" | "IKKE_FUNNET";
         /** HentSamhandlerResponseDtoSuccess */
         HentSamhandlerResponseDtoSuccess: {
             idType: string;
@@ -3651,7 +3915,7 @@ export interface components {
         };
         /** HentSamhandlerResponseDto */
         HentSamhandlerResponseDto: {
-            failure?: components["schemas"]["HentSamhandlerResponseDtoFailureType"];
+            failure?: components["schemas"]["HentSamhandlerResponseDtoFailureType"] | null;
             success?: components["schemas"]["HentSamhandlerResponseDtoSuccess"] | null;
         };
         /** HentSamhandlerAdresseRequestDto */
@@ -3670,13 +3934,13 @@ export interface components {
         };
         /**
          * HentSamhandlerAdresseResponseDtoFailureType
-         * @enum {string|null}
+         * @enum {string}
          */
-        HentSamhandlerAdresseResponseDtoFailureType: "NOT_FOUND" | "GENERISK" | null;
+        HentSamhandlerAdresseResponseDtoFailureType: "NOT_FOUND" | "GENERISK";
         /** HentSamhandlerAdresseResponseDto */
         HentSamhandlerAdresseResponseDto: {
             adresse?: components["schemas"]["HentSamhandlerAdresseResponseDtoSamhandlerPostadresse"] | null;
-            failureType?: components["schemas"]["HentSamhandlerAdresseResponseDtoFailureType"];
+            failureType?: components["schemas"]["HentSamhandlerAdresseResponseDtoFailureType"] | null;
         };
         /** ApiUserInfo */
         ApiUserInfo: {
@@ -3698,7 +3962,6 @@ export interface components {
     headers: never;
     pathItems: never;
 }
-export type StatusResponse = components['schemas']['StatusResponse'];
 export type BrevLandmodellLand = components['schemas']['BrevLandmodellLand'];
 export type BrevSystem = components['schemas']['BrevSystem'];
 export type BrevdataDtoDokumentkategoriCode = components['schemas']['BrevdataDtoDokumentkategoriCode'];
@@ -3747,9 +4010,11 @@ export type ApiBrevStatusKlar = components['schemas']['ApiBrevStatusKlar'];
 export type ApiBrevStatusUnderRedigering = components['schemas']['ApiBrevStatusUnderRedigering'];
 export type ApiBrevStatus = components['schemas']['ApiBrevStatus'];
 export type ApiBrevInfo = components['schemas']['ApiBrevInfo'];
+export type SaksbehandlervalgVerdi = components['schemas']['SaksbehandlervalgVerdi'];
 export type ApiOpprettBrevRequest = components['schemas']['ApiOpprettBrevRequest'];
 export type BrevExceptionDto = components['schemas']['BrevExceptionDto'];
 export type LetterMarkupWithDataUsageProperty = components['schemas']['LetterMarkupWithDataUsageProperty'];
+export type Listetype = components['schemas']['Listetype'];
 export type EditParagraphContentTextFontType = components['schemas']['EditParagraphContentTextFontType'];
 export type ElementTags = components['schemas']['ElementTags'];
 export type EditParagraphContentType = components['schemas']['EditParagraphContentType'];
@@ -3758,7 +4023,6 @@ export type EditParagraphContentTextNewLine = components['schemas']['EditParagra
 export type EditParagraphContentTextVariable = components['schemas']['EditParagraphContentTextVariable'];
 export type EditParagraphContentText = components['schemas']['EditParagraphContentText'];
 export type EditParagraphContentItemListItem = components['schemas']['EditParagraphContentItemListItem'];
-export type Listetype = components['schemas']['Listetype'];
 export type EditParagraphContentItemList = components['schemas']['EditParagraphContentItemList'];
 export type EditParagraphContentTableColumnAlignment = components['schemas']['EditParagraphContentTableColumnAlignment'];
 export type EditParagraphContentTableCell = components['schemas']['EditParagraphContentTableCell'];
@@ -3777,7 +4041,6 @@ export type LetterMarkupSakspart = components['schemas']['LetterMarkupSakspart']
 export type LetterMarkupSignatur = components['schemas']['LetterMarkupSignatur'];
 export type EditTitle = components['schemas']['EditTitle'];
 export type EditLetter = components['schemas']['EditLetter'];
-export type SaksbehandlerValgBrevdata = components['schemas']['SaksbehandlerValgBrevdata'];
 export type AlltidValgbartVedleggBrevkode = components['schemas']['AlltidValgbartVedleggBrevkode'];
 export type ApiBrevResponse = components['schemas']['ApiBrevResponse'];
 export type ApiOppdaterBrevRequest = components['schemas']['ApiOppdaterBrevRequest'];
@@ -3792,7 +4055,18 @@ export type ApiPdfResponse = components['schemas']['ApiPdfResponse'];
 export type ApiBestillBrevResponseError = components['schemas']['ApiBestillBrevResponseError'];
 export type ApiBestillBrevResponse = components['schemas']['ApiBestillBrevResponse'];
 export type ApiOppdaterAttesteringRequest = components['schemas']['ApiOppdaterAttesteringRequest'];
+export type P1RedigerbarDtoAvslagsbegrunnelse = components['schemas']['P1RedigerbarDtoAvslagsbegrunnelse'];
+export type P1RedigerbarDtoInstitusjon = components['schemas']['P1RedigerbarDtoInstitusjon'];
+export type P1RedigerbarDtoPensjonstype = components['schemas']['P1RedigerbarDtoPensjonstype'];
+export type P1RedigerbarDtoAvslaattPensjon = components['schemas']['P1RedigerbarDtoAvslaattPensjon'];
+export type P1RedigerbarDtoP1Person = components['schemas']['P1RedigerbarDtoP1Person'];
+export type P1RedigerbarDtoGrunnlagInnvilget = components['schemas']['P1RedigerbarDtoGrunnlagInnvilget'];
+export type P1RedigerbarDtoReduksjonsgrunnlag = components['schemas']['P1RedigerbarDtoReduksjonsgrunnlag'];
+export type P1RedigerbarDtoInnvilgetPensjon = components['schemas']['P1RedigerbarDtoInnvilgetPensjon'];
+export type P1RedigerbarDtoUtfyllendeInstitusjon = components['schemas']['P1RedigerbarDtoUtfyllendeInstitusjon'];
+export type P1RedigerbarDto = components['schemas']['P1RedigerbarDto'];
 export type ValgbartVedlegg = components['schemas']['ValgbartVedlegg'];
+export type ApiOppdaterFoerstesideRequest = components['schemas']['ApiOppdaterFoerstesideRequest'];
 export type Duration = components['schemas']['Duration'];
 export type ApiReservasjonResponse = components['schemas']['ApiReservasjonResponse'];
 export type DiffBrevHandlerResponse = components['schemas']['DiffBrevHandlerResponse'];

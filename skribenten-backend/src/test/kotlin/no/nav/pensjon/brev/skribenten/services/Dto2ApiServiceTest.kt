@@ -123,6 +123,7 @@ class Dto2ApiServiceTest {
         spraak = LanguageCode.BOKMAL,
         journalpostId = null,
         attestertAv = attestertAv,
-        status = Dto.BrevStatus.KLADD
+        status = Dto.BrevStatus.KLADD,
+        leggVedFoersteside = false,
     )
 }

@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.text
 
 data class AfpOffentligTidsbegrensetTabell(
     val afp: Expression<TidsbegrensetOffentligAfp>,
+    val sumLabel: String = "Sum AFP",
 ) : OutlinePhrase<LangBokmal>() {
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         paragraph {
@@ -28,32 +29,37 @@ data class AfpOffentligTidsbegrensetTabell(
                 showIf(afp.grunnpensjon.greaterThan(0)) {
                     row {
                         cell { text(bokmal { +"Grunnpensjon" }) }
-                        cell { text(bokmal { +afp.grunnpensjon.format() }) }
+                        cell { text(bokmal { +afp.grunnpensjon.format(denominator = false) }) }
                     }
                 }
                 showIf(afp.tilleggspensjon.greaterThan(0)) {
                     row {
                         cell { text(bokmal { +"Tilleggspensjon" }) }
-                        cell { text(bokmal { +afp.tilleggspensjon.format() }) }
+                        cell { text(bokmal { +afp.tilleggspensjon.format(denominator = false) }) }
                     }
                 }
                 showIf(afp.afpTillegg.greaterThan(0)) {
                     row {
                         cell { text(bokmal { +"AFP-tillegg" }) }
-                        cell { text(bokmal { +afp.afpTillegg.format() }) }
+                        cell { text(bokmal { +afp.afpTillegg.format(denominator = false) }) }
                     }
                 }
                 showIf(afp.saertillegg.greaterThan(0)) {
                     row {
                         cell { text(bokmal { +"Særtillegg" }) }
-                        cell { text(bokmal { +afp.saertillegg.format() }) }
+                        cell { text(bokmal { +afp.saertillegg.format(denominator = false) }) }
                     }
                 }
                 row {
-                    cell { text(bokmal { +"Sum AFP" }, fontType = BOLD) }
-                    cell { text(bokmal { +afp.totaltAfpBeloep.format() }, fontType = BOLD) }
+                    cell { text(bokmal { +sumLabel }, fontType = BOLD) }
+                    cell { text(bokmal { +afp.totaltAfpBeloep.format(denominator = false) }, fontType = BOLD) }
                 }
             }
+            showIf(afp.erAvkortet) {
+                text(bokmal { +"Sum redusert pga. total pensjon oversteg 70 % av tidligere inntekt." })
+            }
         }
+
+
     }
 }

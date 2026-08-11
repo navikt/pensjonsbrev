@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Heading, HGrid, HStack, Label, Tabs, VStack } from "@navikt/ds-react";
+import { Alert, Box, Button, Heading, HGrid, HStack, Label, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
@@ -7,6 +7,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { getBrev, getBrevmetadata, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
+import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import { createLetterSnapshot, createSaksbehandlerValgEndretHistoryEntry } from "~/Brevredigering/LetterEditor/history";
 import {
@@ -16,11 +17,8 @@ import {
   hasAnyTekstvalgBeenToggledOn,
   InsertedTekstValgHighlightProvider,
 } from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
-import {
-  SaksbehandlerValgModelEditor,
-  usePartitionedModelSpecification,
-} from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
+import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
@@ -51,7 +49,9 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
 });
 
 const queryRetries = 3;
-const isSpecialCaseErrorStatus = (status: number | undefined) => status === 404 || status === 409 || status === 423;
+const shouldSkipRetry = (status: number | undefined) =>
+  status === 404 || status === 409 || status === 422 || status === 423;
+const shouldHandleLocally = (status: number | undefined) => shouldSkipRetry(status) || status === 500;
 
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
@@ -65,9 +65,9 @@ function RedigerBrevPage() {
     queryFn: () => getBrev.queryFn(saksId, brevId),
     staleTime: Number.POSITIVE_INFINITY,
     retry: (failureCount: number, error: AxiosError) => {
-      return failureCount < queryRetries && !isSpecialCaseErrorStatus(error.response?.status);
+      return failureCount < queryRetries && !shouldSkipRetry(error.response?.status);
     },
-    throwOnError: (error: AxiosError) => !isSpecialCaseErrorStatus(error.response?.status),
+    throwOnError: (error: AxiosError) => !shouldHandleLocally(error.response?.status),
   });
 
   useEffect(() => {
@@ -191,6 +191,41 @@ function RedigerBrevPage() {
           </VStack>
         );
       }
+      if (errorStatus === 500) {
+        return (
+          <VStack align="center" flexGrow="1" gap="space-8" padding="space-24">
+            <ApiError error={error} title="En feil skjedde ved henting av brev" />
+            <HStack gap="space-8">
+              <Button
+                onClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevvelger",
+                    params: { saksId },
+                    search: { enhetsId, vedtaksId, brevId },
+                  })
+                }
+                size="small"
+                variant="secondary"
+              >
+                Gå til brevvelger
+              </Button>
+              <Button
+                onClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevbehandler",
+                    params: { saksId },
+                    search: { enhetsId, vedtaksId, brevId },
+                  })
+                }
+                size="small"
+                variant="secondary"
+              >
+                Gå til brevbehandler
+              </Button>
+            </HStack>
+          </VStack>
+        );
+      }
       return <ApiError error={error} title="En feil skjedde ved henting av brev" />;
     },
     success: (brev) => (
@@ -231,6 +266,7 @@ function RedigerBrev({
     kind: WarnModalKind;
     count?: number;
   } | null>(null);
+  const pendingSubmitValuesRef = useRef<RedigerBrevSidemenyFormData | null>(null);
 
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
@@ -351,7 +387,7 @@ function RedigerBrev({
     brevkode: brev.info.brevkode,
     form,
     redigertBrev: editorState.redigertBrev,
-    propertyUsage: brev.propertyUsage ?? [],
+    propertyUsage: brev.propertyUsage ?? undefined,
   });
 
   const onTekstValgAndOverstyringChange = () => {
@@ -397,10 +433,12 @@ function RedigerBrev({
   const guardedSubmit = form.handleSubmit((values) => {
     const warning = getWarning();
     if (warning) {
+      pendingSubmitValuesRef.current = values;
       setWarn(warning);
       setWarnOpen(true);
       return;
     }
+    pendingSubmitValuesRef.current = null;
     onSubmit(values, navigateToBrevbehandler);
   });
 
@@ -421,7 +459,7 @@ function RedigerBrev({
     form.reset(defaultValuesModelEditor);
   }, [defaultValuesModelEditor, form]);
 
-  const freeze = oppdaterBrevMutation.isPending || editorState.saveStatus === "SAVE_PENDING";
+  const freeze = oppdaterBrevMutation.isPending;
 
   const error = oppdaterBrevMutation.isError;
 
@@ -441,23 +479,33 @@ function RedigerBrev({
 
   // TODO: disable SaksbehandlerValgModelEditor during SAVE_PENDING
 
-  // TODO: Trenger form å være helt ytterst her? Kunne vi hatt det lenger inn i hierarkiet, f.eks i OpprettetBrevSidemenyForm.
   return (
     <FormProvider {...form}>
       <Box asChild background="default" maxWidth="1106px" minWidth="945px">
-        <VStack asChild flexGrow="1" marginInline="auto">
+        <VStack asChild height="100%" marginInline="auto">
           <form onSubmit={guardedSubmit}>
             <WarnModal
               count={warn?.count ?? 0}
               kind={warn?.kind ?? "fritekst"}
               onClose={() => {
+                pendingSubmitValuesRef.current = null;
                 setWarnOpen(false);
+                if (warn?.kind === "fritekst" || warn?.kind === "fritekstOgTekstValg") {
+                  const focus = findFirstUneditedFritekstFocus(editorState.redigertBrev);
+                  if (focus) {
+                    setEditorState((s) => ({ ...s, focus }));
+                  }
+                }
                 setWarn(null);
               }}
               onFortsett={() => {
+                const values = pendingSubmitValuesRef.current;
+
+                pendingSubmitValuesRef.current = null;
                 setWarnOpen(false);
                 setWarn(null);
-                onSubmit(form.getValues(), navigateToBrevbehandler);
+                if (!values) return;
+                onSubmit(values, navigateToBrevbehandler);
               }}
               open={warnOpen}
             />
@@ -466,7 +514,7 @@ function RedigerBrev({
               onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
               reservasjon={reservasjonQuery.data}
             />
-            <HGrid columns="minmax(304px, 384px) minmax(640px, 694px)" height="var(--main-page-content-height)">
+            <HGrid columns="minmax(304px, 384px) minmax(640px, 694px)" flexGrow="1" overflowY="hidden">
               <Box
                 asChild
                 borderColor="neutral-subtle"
@@ -478,7 +526,11 @@ function RedigerBrev({
                   <Heading size="small" spacing>
                     {brevmal.data?.name}
                   </Heading>
-                  <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
+                  <BrevmalAlternativer
+                    brevkode={brev.info.brevkode}
+                    propertyUsage={brev.propertyUsage ?? undefined}
+                    submitOnChange={onTekstValgAndOverstyringChange}
+                  />
                   <UnderskriftTextField of="Saksbehandler" />
                 </VStack>
               </Box>
@@ -527,90 +579,3 @@ function RedigerBrev({
     </FormProvider>
   );
 }
-
-enum BrevSidemenyTabs {
-  TEKSTVALG = "TEKSTVALG",
-  OVERSTYRING = "OVERSTYRING",
-}
-
-// TODO: Funksjonelt er denne komponenten ganske lik BrevmalAlternativer.tsx. Se på om vi kan bruke samme komponent.
-const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevResponse; submitOnChange?: () => void }) => {
-  const specificationFormElements = usePartitionedModelSpecification(
-    brev.info.brevkode,
-    brev.propertyUsage ?? undefined,
-  );
-
-  const optionalFields = specificationFormElements.status === "success" ? specificationFormElements.optionalFields : [];
-  const requiredFields = specificationFormElements.status === "success" ? specificationFormElements.requiredFields : [];
-  const hasOptional = optionalFields.length > 0;
-  const hasRequired = requiredFields.length > 0;
-
-  if (!hasOptional && !hasRequired) {
-    return (
-      <SaksbehandlerValgModelEditor
-        brevkode={brev.info.brevkode}
-        fieldsToRender="optional"
-        specificationFormElements={specificationFormElements}
-        submitOnChange={submitOnChange}
-      />
-    );
-  }
-
-  if (hasOptional && !hasRequired) {
-    return (
-      <>
-        <Heading size="xsmall">Tekstvalg</Heading>
-        <SaksbehandlerValgModelEditor
-          brevkode={brev.info.brevkode}
-          fieldsToRender="optional"
-          specificationFormElements={specificationFormElements}
-          submitOnChange={submitOnChange}
-        />
-      </>
-    );
-  }
-
-  if (hasRequired && !hasOptional)
-    return (
-      <>
-        <Heading size="xsmall">Overstyring</Heading>
-        <SaksbehandlerValgModelEditor
-          brevkode={brev.info.brevkode}
-          fieldsToRender="required"
-          specificationFormElements={specificationFormElements}
-          submitOnChange={submitOnChange}
-        />
-      </>
-    );
-
-  const defaultTab = BrevSidemenyTabs.TEKSTVALG;
-
-  return (
-    <Tabs defaultValue={defaultTab} fill size="small">
-      <Tabs.List>
-        <Tabs.Tab label="Tekstvalg" value={BrevSidemenyTabs.TEKSTVALG} />
-        <Tabs.Tab label="Overstyring" value={BrevSidemenyTabs.OVERSTYRING} />
-      </Tabs.List>
-      <Tabs.Panel value={BrevSidemenyTabs.TEKSTVALG}>
-        <Box marginBlock="space-20 space-0">
-          <SaksbehandlerValgModelEditor
-            brevkode={brev.info.brevkode}
-            fieldsToRender="optional"
-            specificationFormElements={specificationFormElements}
-            submitOnChange={submitOnChange}
-          />
-        </Box>
-      </Tabs.Panel>
-      <Tabs.Panel value={BrevSidemenyTabs.OVERSTYRING}>
-        <Box marginBlock="space-20 space-0">
-          <SaksbehandlerValgModelEditor
-            brevkode={brev.info.brevkode}
-            fieldsToRender="required"
-            specificationFormElements={specificationFormElements}
-            submitOnChange={submitOnChange}
-          />
-        </Box>
-      </Tabs.Panel>
-    </Tabs>
-  );
-};

@@ -46,7 +46,7 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvar : RedigerbarTemplat
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - AFP etteroppgjør (nye opplysninger)",
+            displayTitle = "Vedtak - ingen endring (andre avvik) etter mottatt svar - AFP etteroppgjør",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),

@@ -92,9 +92,14 @@ dependencies {
     implementation(project(":ufoere:maler"))
     implementation(project(":etterlattemaler"))
     implementation(project(":brevbaker:core"))
+    implementation(libs.brevbaker.api)
+    implementation(project(":brevbaker:serialization")) {
+        because("bruker internalObjectMapper for serialisering av intern trafikk")
+    }
     ksp(project(":brevbaker:template-model-generator"))
+    kspTest(project(":brevbaker:template-model-generator"))
 
-    implementation(libs.pdfbox)
+    testImplementation(libs.pdfbox)
 
     implementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
@@ -111,5 +116,5 @@ dependencies {
 
     testImplementation(testFixtures(project(":brevbaker:core")))
     testImplementation(testFixtures(project(":brevbaker:dsl")))
+    testImplementation(libs.jsoup)
 }
-

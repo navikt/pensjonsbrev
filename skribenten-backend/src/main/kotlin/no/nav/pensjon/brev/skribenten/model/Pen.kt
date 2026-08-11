@@ -1,9 +1,12 @@
 package no.nav.pensjon.brev.skribenten.model
 
+import no.nav.pensjon.brev.api.model.IBrevkategori
+import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
+import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
@@ -18,6 +21,7 @@ object Pen {
         val sakType: Sakstype,
         val pid: Pid,
         val behandlingsnumre: List<Behandlingsnummer>,
+        val tema: Tema,
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }
@@ -76,7 +80,7 @@ object Pen {
         val dokumentDato: LocalDate,
         val saksId: SaksId,
         val brevkode: Brevkode.Redigerbart,
-        val enhetId: EnhetId,
+        val enhetsId: EnhetId,
         val pdf: ByteArray,
         val eksternReferanseId: String,
         val mottaker: Mottaker?
@@ -91,7 +95,7 @@ object Pen {
             if (dokumentDato != other.dokumentDato) return false
             if (saksId != other.saksId) return false
             if (brevkode != other.brevkode) return false
-            if (enhetId != other.enhetId) return false
+            if (enhetsId != other.enhetsId) return false
             if (!pdf.contentEquals(other.pdf)) return false
             if (eksternReferanseId != other.eksternReferanseId) return false
             if (mottaker != other.mottaker) return false
@@ -104,7 +108,7 @@ object Pen {
             result = 31 * result + dokumentDato.hashCode()
             result = 31 * result + saksId.hashCode()
             result = 31 * result + brevkode.hashCode()
-            result = 31 * result + enhetId.hashCode()
+            result = 31 * result + enhetsId.hashCode()
             result = 31 * result + pdf.contentHashCode()
             result = 31 * result + eksternReferanseId.hashCode()
             result = 31 * result + mottaker.hashCode()
@@ -154,5 +158,5 @@ object Pen {
         "VEDTAK_FLYTTE_MELLOM_LAND" to "Vedtak - flytte mellom land"
     )
 
-    fun finnVisningstekst(brevkategori: TemplateDescription.IBrevkategori) = brevkategoriTilVisningstekst[brevkategori.kode]
+    fun finnVisningstekst(brevkategori: IBrevkategori) = brevkategoriTilVisningstekst[brevkategori.kode]
 }

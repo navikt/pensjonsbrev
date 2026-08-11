@@ -50,6 +50,37 @@ test.describe("Brevredigering", () => {
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();
   });
 
+  test("kan gå til brevbehandler når henting av brev feiler", async ({ page }) => {
+    let requestCount = 0;
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) => {
+      requestCount++;
+      return route.fulfill({ status: 500 });
+    });
+
+    await page.goto("/saksnummer/123456/brev/1");
+
+    await expect(page.getByText("En feil skjedde ved henting av brev")).toBeVisible({ timeout: 15_000 });
+    expect(requestCount).toBe(4);
+    await expect(page.getByRole("button", { name: "Gå til brevvelger" })).toBeVisible();
+    await page.getByRole("button", { name: "Gå til brevbehandler" }).click();
+    await expect(page).toHaveURL(/\/saksnummer\/123456\/brevbehandler\?brevId=1/);
+  });
+
+  test("kan gå til brevvelger når henting av brev feiler", async ({ page }) => {
+    let requestCount = 0;
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) => {
+      requestCount++;
+      return route.fulfill({ status: 500 });
+    });
+
+    await page.goto("/saksnummer/123456/brev/1");
+
+    await expect(page.getByText("En feil skjedde ved henting av brev")).toBeVisible({ timeout: 15_000 });
+    expect(requestCount).toBe(4);
+    await page.getByRole("button", { name: "Gå til brevvelger" }).click();
+    await expect(page).toHaveURL(/\/saksnummer\/123456\/brevvelger\?brevId=1/);
+  });
+
   test("Autolagrer etter redigering", async ({ page }) => {
     await page.goto("/saksnummer/123456/brev/1");
     await expect(page.getByText("Lagret")).toBeVisible();
@@ -213,10 +244,10 @@ test.describe("Brevredigering", () => {
     await page.goto("/saksnummer/123456/brev/1");
 
     await page.getByText("Du må melde").click();
-    await page.getByTestId("editor-bullet-list").click();
+    await page.getByTestId("bullet-list-button").click();
     await expect(page.locator("ul li span").last()).toContainText("Du må melde");
 
-    await page.getByTestId("editor-bullet-list").click();
+    await page.getByTestId("bullet-list-button").click();
     await expect(page.locator("ul li span").last()).not.toContainText("Du må melde");
   });
 

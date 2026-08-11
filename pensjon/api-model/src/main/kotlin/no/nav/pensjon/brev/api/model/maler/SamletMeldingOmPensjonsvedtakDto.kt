@@ -2,10 +2,7 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
-import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import java.time.LocalDate
 
 data class SamletMeldingOmPensjonsvedtakDto(
@@ -25,7 +22,7 @@ data class P1Dto(
     val innvilgedePensjoner: List<InnvilgetPensjon>,
     val avslaattePensjoner: List<AvslaattPensjon>,
     val utfyllendeInstitusjon: UtfyllendeInstitusjon, // I praksis Nav eller Nav-enheten
-) : PDFVedleggData {
+) {
 
     data class P1Person(
         val fornavn: String?,

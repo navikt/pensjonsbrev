@@ -57,8 +57,8 @@ object OrienteringOmSaksbehandlingstid : RedigerbarTemplate<OrienteringOmSaksbeh
 
             paragraph {
                 text(
-                    bokmal { + "Søknaden vil bli behandlet så snart som mulig og senest innen 4 måneder. " },
-                    nynorsk { + "Søknaden vil bli behandla så snart som mogleg og seinast innan 4 månader. " },
+                    bokmal { + "Søknaden vil bli behandlet så snart som mulig og senest innen 6 måneder. " },
+                    nynorsk { + "Søknaden vil bli behandla så snart som mogleg og seinast innan 6 månader. " },
                 )
             }
 

@@ -47,6 +47,7 @@ import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
+import no.nav.pensjon.brev.template.dsl.expression.localDateNow
 
 
 fun Expression<PEgruppe10>.ut_trygdetid(): Expression<Boolean> =
@@ -178,7 +179,7 @@ fun Expression<PEgruppe10>.ut_firstday(): Expression<LocalDate?> = vedtaksbrev_g
 fun Expression<PEgruppe10>.ut_lastday(): Expression<LocalDate?> = vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().ifNull(LocalDate.of(2014,10,14)).lastDayOfYear
 
 fun Expression<PEgruppe10>.aarstall_trygdetid(): Expression<Int> =
-    vedtaksbrev.safe { vedtaksdata }.safe { kravhode }.safe { kravmottattdato }.ifNull(LocalDate.now()).year
+    vedtaksbrev.safe { vedtaksdata }.safe { kravhode }.safe { kravmottattdato }.ifNull(localDateNow).year
 
 fun Expression<PEgruppe10>.aars_trygdetid(): Expression<String> {
     val erEngelsk = Expression.FromScope.Language.equalTo(English)

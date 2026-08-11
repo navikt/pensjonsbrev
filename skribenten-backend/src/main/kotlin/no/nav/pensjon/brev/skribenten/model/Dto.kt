@@ -23,7 +23,7 @@ object Dto {
         val info: BrevInfo,
         val redigertBrev: Edit.Letter,
         val redigertBrevHash: Hash<Edit.Letter>,
-        val saksbehandlerValg: SaksbehandlerValg,
+        val saksbehandlerValg: SaksbehandlervalgMap,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
         val valgteVedlegg: List<AlltidValgbartVedleggBrevkode>?
     )
@@ -47,6 +47,7 @@ object Dto {
         val journalpostId: JournalpostId?,
         val attestertAv: NavIdent?,
         val status: BrevStatus,
+        val leggVedFoersteside: Boolean?,
     )
 
     enum class BrevStatus {

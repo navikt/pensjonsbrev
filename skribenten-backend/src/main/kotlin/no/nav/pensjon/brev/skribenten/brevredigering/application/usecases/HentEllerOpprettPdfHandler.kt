@@ -1,36 +1,62 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
+import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.IngenFoersteside
+import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
+import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Service
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.PDFMerger
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
+import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggSkribenten
+import no.nav.pensjon.brev.skribenten.vedlegg.SideAppender
+import no.nav.pensjon.brev.skribenten.vedlegg.vedleggsliste
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
+import org.jetbrains.exposed.v1.jdbc.Database
 
 class HentEllerOpprettPdfHandler(
     private val brevdataService: BrevdataService,
     private val renderService: RenderService,
     private val brevmalService: BrevmalService,
-    private val p1Service: P1Service,
-) : BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult> {
+    private val hentP1DataHandler: HentP1DataHandler,
+    private val genererFoerstesideHandler: GenererFoerstesideHandler,
+    private val pdfVedleggAppender: PDFVedleggAppender,
+    database: Database,
+) : TransactionHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult, IngenFoersteside>(database) {
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
+        val fagsak: Fagsak,
     ) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Dto.HentDocumentResult, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+    override suspend fun execute(request: Request): Outcome<Dto.HentDocumentResult, IngenFoersteside>? {
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
         val document = brev.document
 
-        val pesysBrevdata = brevdataService.hentBrevdata(brev).withP1DataIfP1(brev)
+        val pesysBrevdata = brevdataService.hentBrevdata(brev).let { brevdata ->
+            if (brev.brevkode.kode() == P1_BREVKODE) {
+                hentP1DataHandler(HentP1DataHandler.Request(brevId = brev.id.value, saksId = brev.saksId))
+                    ?.asSuccess()
+                    ?.let { p1 -> brevdata.copy(brevdata = brevdata.medP1Data(p1.value)) }
+                    ?: throw IllegalStateException("Fant ikke P1-data for brev ${brev.id.value}")
+            } else {
+                brevdata
+            }
+        }
         val nyBrevdataHash = Hash.read(pesysBrevdata)
         val nyVedleggHash = brev.vedleggHash
 
@@ -44,7 +70,20 @@ class HentEllerOpprettPdfHandler(
                 brev.redigertBrev.updateEditedLetter(rendretBrev.markup).blocks != brev.redigertBrev.blocks
             }
 
-            val pdfBytes = renderService.renderPdf(brev, pesysBrevdata)
+            val pdfVedlegg = vedleggsliste[brev.brevkode.kode()] ?: emptyList()
+
+            val pdfBytes = renderService.renderPdf(
+                brev,
+                pesysBrevdata,
+                pdfVedlegg = pdfVedlegg.mapNotNull { v -> v.tittel[brev.spraak]?.let { PDFVedleggTittel(it) }}
+            ).let {
+                leggVedPDFVedlegg(pdfVedlegg, pesysBrevdata, it, brev)
+            }.let { rendretBrev ->
+                if (Features.foersteside.isEnabled() && brev.leggVedFoersteside == true) {
+                    genererFoersteside(request, brev, rendretBrev) ?: return Outcome.failure(IngenFoersteside(request.brevId))
+                } else { rendretBrev }
+            }
+
             val newDocument = Dto.Document(
                 pdf = pdfBytes,
                 dokumentDato = pesysBrevdata.felles.dokumentDato,
@@ -57,15 +96,45 @@ class HentEllerOpprettPdfHandler(
         }
     }
 
-    override fun requiresReservasjon(request: Request): Boolean = false
+    private fun leggVedPDFVedlegg(
+        pdfVedlegg: List<PDFVedleggSkribenten>,
+        pesysBrevdata: BrevdataResponse.Data,
+        response: LetterResponse,
+        brev: BrevredigeringEntity,
+    ): ByteArray = pdfVedleggAppender.leggPaaVedlegg(
+        response.file,
+        pdfVedlegg
+            .mapNotNull { it.vedlegg(pesysBrevdata) }
+            .map {
+            {
+                SideAppender.lesInnPDF(
+                    it.sider,
+                    brev.spraak
+                ) { spraak, side -> "/vedlegg/${side.filnavn}-${spraak.name}" }
+            }
+        }
+    )
 
-    private suspend fun BrevdataResponse.Data.withP1DataIfP1(brev: Brevredigering): BrevdataResponse.Data =
-        p1Service.patchMedP1DataOmP1(
-            brevdataResponse = this,
-            brevkode = brev.brevkode,
-            brevId = brev.id.value,
-            saksId = brev.saksId
+    private suspend fun genererFoersteside(
+        request: Request,
+        brev: BrevredigeringEntity,
+        rendretBrev: ByteArray,
+    ): ByteArray? = genererFoerstesideHandler(
+        request = GenererFoerstesideHandler.Request(
+            brevId = request.brevId,
+            saksId = request.saksId,
+            pid = request.fagsak.pid,
+            sakstype = request.fagsak.sakType,
+            tema = request.fagsak.tema,
+            vedlegg = brev.valgteVedlegg.map { GenererFoerstesideHandler.Tittel(it.visningstekst) }
         )
+    )?.asSuccess()?.value?.let { foersteside ->
+        PDFMerger.merge(rendretBrev, foersteside.foersteside)
+    }
+
+    private fun BrevdataResponse.Data.medP1Data(p1: P1RedigerbarDto): Api.GeneriskBrevdata = brevdata.apply { put(P1_VEDLEGG_KEY, p1) }
 }
 
-
+// Disse må være i sync med api-modellen
+const val P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2"
+const val P1_VEDLEGG_KEY = "p1Vedlegg"

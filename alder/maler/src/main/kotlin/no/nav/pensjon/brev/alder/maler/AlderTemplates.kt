@@ -175,11 +175,11 @@ object AlderTemplates : AllTemplates {
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf(
         AlltidValgbartVedlegg(
             skjemaForBankopplysninger,
-            Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
+            Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER,
         ),
         AlltidValgbartVedlegg(
             uttaksskjema,
-            Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA
-        )
+            Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA,
+        ),
     )
 }

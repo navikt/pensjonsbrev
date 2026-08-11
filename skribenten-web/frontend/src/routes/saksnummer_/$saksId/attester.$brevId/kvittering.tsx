@@ -36,13 +36,7 @@ const Kvittering = () => {
 
   if (sendteBrevLista.length === 0) {
     return (
-      <Box
-        asChild
-        background="default"
-        height="calc(var(--main-page-content-height) + var(--nav-bar-height))"
-        marginInline="auto"
-        width="fit-content"
-      >
+      <Box asChild background="default" height="100%" marginInline="auto" width="fit-content">
         <HGrid columns="minmax(304px, 384px) 1px minmax(640px, 720px)">
           <HStack justify="start" overflow="auto" paddingBlock="space-20" paddingInline="space-16">
             <VStack>
@@ -71,13 +65,7 @@ const Kvittering = () => {
   }
 
   return (
-    <Box
-      asChild
-      background="default"
-      height="calc(var(--main-page-content-height) + var(--nav-bar-height))"
-      marginInline="auto"
-      width="fit-content"
-    >
+    <Box asChild background="default" height="100%" marginInline="auto" width="fit-content">
       <HGrid columns="minmax(304px, 384px) 1px minmax(640px, 720px)">
         <HStack justify="start" overflow="auto" paddingBlock="space-20" paddingInline="space-16">
           <VStack gap="space-20">

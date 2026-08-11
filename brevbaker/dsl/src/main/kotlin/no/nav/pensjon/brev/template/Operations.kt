@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import java.time.LocalDate
 import java.util.Objects
 import kotlin.math.absoluteValue
 
@@ -50,6 +51,10 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     @BrevbakerDSLInternal
     object Fritekst : UnaryOperation<String, String>(), StableHash by StableHash.of("UnaryOperation.Fritekst") {
         override fun apply(input: String): String = input
+    }
+
+    object LocalDateNow : UnaryOperation<Unit, LocalDate>(), StableHash by StableHash.of("UnaryOperation.LocalDateNow") {
+        override fun apply(input: Unit): LocalDate = LocalDate.now()
     }
 
     @BrevbakerDSLInternal
@@ -246,5 +251,4 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun toString(): String = "SafeCall(operation=$operation,doc=$doc)"
 
     }
-
 }

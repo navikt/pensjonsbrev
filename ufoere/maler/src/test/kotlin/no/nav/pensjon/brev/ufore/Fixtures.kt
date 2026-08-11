@@ -29,7 +29,6 @@ object Fixtures : LetterDataFactory {
     override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
             InfoEndretUTPgaInntektDto::class -> lagInfoEndretUTPgaInntektDto() as T
-            UforeAvslagUtenVurderingDto::class -> lagUforeAvslagUtenVurderingDto() as T
             UforeAvslagTestmalDto::class -> lagUforeAvslagTestmalDto() as T
             UforeAvslagEnkelDto::class -> lagUforeAvslagEnkelDto() as T
             UforeAvslagInntektDto::class -> lagUforeAvslagInntektDto() as T
@@ -76,12 +75,6 @@ object Fixtures : LetterDataFactory {
         )
     )
 
-    private fun lagUforeAvslagUtenVurderingDto() = UforeAvslagUtenVurderingDto(
-        pesysData = UforeAvslagUtenVurderingDto.UforeAvslagPendata(
-            kravMottattDato = vilkaarligDato,
-        ), EmptySaksbehandlerValg
-    )
-
     private fun lagUforeAvslagUforetidspunkt26Dto() = UforeAvslagUforetidspunkt26Dto(
         pesysData = UforeAvslagUforetidspunkt26Dto.UforeAvslagPendata(
             kravMottattDato = vilkaarligDato,
@@ -107,6 +100,7 @@ object Fixtures : LetterDataFactory {
     private fun lagUforeAvslagEnkelDto() = UforeAvslagEnkelDto(
         pesysData = UforeAvslagEnkelDto.UforeAvslagPendata(
             kravMottattDato = vilkaarligDato,
+            kravFremsattDato = vilkaarligDato,
             vurdering = "Vurdering 1"
         ),
         saksbehandlerValg = UforeAvslagEnkelDto.Saksbehandlervalg(
@@ -117,7 +111,8 @@ object Fixtures : LetterDataFactory {
     private fun lagUforeAvslagTestmalDto() = UforeAvslagTestmalDto(
         pesysData = UforeAvslagTestmalDto.UforeAvslagPendata(
             kravMottattDato = vilkaarligDato,
-            vurdering = listOf("Vurdering 1", "Vurdering 2")
+            vurdering = listOf("Vurdering 1", "Vurdering 2"),
+            vurderingsTekst = "Vurdering 3"
         ),
         saksbehandlerValg = UforeAvslagTestmalDto.Saksbehandlervalg(
             VisVurderingFraVilkarvedtak = true
@@ -127,6 +122,7 @@ object Fixtures : LetterDataFactory {
     private fun lagUforeAvslagSupplerendeStonadEnkelDto() = UforeAvslagSupplerendeStonadEnkelDto(
         pesysData = UforeAvslagSupplerendeStonadEnkelDto.UforeAvslagPendata(
             kravMottattDato = vilkaarligDato,
+            kravFremsattDato = vilkaarligDato,
             vurdering = "Vurdering 1"
         ),
         saksbehandlerValg = UforeAvslagSupplerendeStonadEnkelDto.Saksbehandlervalg(
@@ -138,6 +134,7 @@ object Fixtures : LetterDataFactory {
     private fun lagUforeAvslagUtlandDto() = UforeAvslagUtlandDto(
         pesysData = UforeAvslagUtlandDto.UforeAvslagPendata(
             kravMottattDato = LocalDate.now(),
+            kravFremsattDato = vilkaarligDato,
             kravGjelder = UforeAvslagUtlandDto.KravGjelder.MELLOMBH,
             eosNordisk = false,
             avtaletype = "USA",
@@ -165,6 +162,7 @@ object Fixtures : LetterDataFactory {
     private fun lagUforeAvslagInntektDto() = UforeAvslagInntektDto(
         pesysData = UforeAvslagInntektDto.UforeAvslagInntektPendata(
             kravMottattDato = vilkaarligDato,
+            kravFremsattDato = vilkaarligDato,
             vurdering = "Vurdering 1",
             uforetidspunkt = vilkaarligDato,
             uforegrad = 50,

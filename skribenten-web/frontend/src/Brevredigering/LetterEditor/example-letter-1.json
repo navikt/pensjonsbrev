@@ -196,6 +196,7 @@
               ]
             }
           ],
+          "listType": "PUNKTLISTE",
           "type": "ITEM_LIST"
         }
       ],

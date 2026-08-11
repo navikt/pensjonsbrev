@@ -7,16 +7,17 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
+import no.nav.pensjon.brev.skribenten.vedlegg.P1Data
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.dao.Entity
 import org.jetbrains.exposed.v1.dao.EntityClass
 import java.time.Instant
+import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 interface Brevredigering {
@@ -26,7 +27,7 @@ interface Brevredigering {
     val brevkode: RedigerbarBrevkode
     val spraak: LanguageCode
     val avsenderEnhetId: EnhetId
-    val saksbehandlerValg: SaksbehandlerValg
+    val saksbehandlerValg: SaksbehandlervalgMap
     val redigertBrev: Edit.Letter
     val redigertBrevHash: Hash<Edit.Letter>
 
@@ -53,6 +54,7 @@ interface Brevredigering {
     val isVedtaksbrev: Boolean
     val redigerteVedlegg: List<Dto.RedigertVedlegg>
     val vedleggHash: Hash<VedleggSnapshot>
+    val leggVedFoersteside: Boolean?
 
     fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon?
     fun reserver(
@@ -105,11 +107,17 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var sistReservert by BrevredigeringTable.sistReservert
         private set
     override var journalpostId by BrevredigeringTable.journalpostId
-        // TODO: private set?
 
-    private val _documentEntityList by DocumentEntity referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
+    override var leggVedFoersteside by BrevredigeringTable.leggVedFoersteside
+
+    // orderBy is intentionally NOT used on the referrersOn delegate: the Referrers object is shared across all
+    // entity instances (cached in the companion object's refDefinitions HashMap). Its orderByExpressions
+    // LinkedHashSet is mutated on every entity construction and read concurrently under Dispatchers.IO, which
+    // can produce a null array element that propagates to Query.orderByExpressions and causes NPE in prepareSQL.
+    // Sorting in Kotlin instead avoids that race entirely.
+    private val _documentEntityList by DocumentEntity referrersOn DocumentTable.brevredigering
     override var document: Dto.Document?
-        get() = _documentEntityList.firstOrNull()?.toDto()
+        get() = _documentEntityList.maxByOrNull { it.id.value }?.toDto()
         set(documentDto) = settDocument(documentDto)
 
     private val _mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
@@ -132,6 +140,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
                 redigerteVedlegg = _redigerteVedlegg
                     .map { VedleggSnapshot.RedigertVedleggHash(it.vedleggId.value.id, it.redigertVedleggHash.toString()) }
                     .sortedBy { it.vedleggId },
+                leggVedFoersteside = leggVedFoersteside?.let { VedleggSnapshot.LeggVedFoerstesideHash(it, LocalDate.now()) }
             )
         )
 
@@ -156,7 +165,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             brevkode: RedigerbarBrevkode,
             spraak: LanguageCode,
             avsenderEnhetId: EnhetId,
-            saksbehandlerValg: SaksbehandlerValg,
+            saksbehandlerValg: SaksbehandlervalgMap,
             redigertBrev: Edit.Letter,
             brevtype: LetterMetadata.Brevtype,
             timestamp: Instant = Instant.now(),
@@ -244,7 +253,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             ?.let { if (it is TemplateModelSpecification.FieldType.Object) it.typeName else null }
             ?.let { modelSpec.types[it] }
 
-        saksbehandlerValg = SaksbehandlerValg().apply {
+        saksbehandlerValg = SaksbehandlervalgMap().apply {
             putAll(saksbehandlerValg)
             saksbehandlerValgSpec?.entries?.forEach {
                 val fieldType = it.value
@@ -277,7 +286,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             return
         }
 
-        val existingDocument = _documentEntityList.firstOrNull()
+        val existingDocument = _documentEntityList.maxByOrNull { it.id.value }
 
         if (existingDocument != null) {
             existingDocument.apply {
@@ -381,6 +390,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
                 laastForRedigering -> Dto.BrevStatus.KLAR
 
                 else -> Dto.BrevStatus.KLADD
-            }
+            },
+            leggVedFoersteside = leggVedFoersteside
         )
 }

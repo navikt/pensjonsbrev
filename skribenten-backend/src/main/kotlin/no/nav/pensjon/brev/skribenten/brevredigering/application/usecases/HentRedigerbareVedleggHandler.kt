@@ -1,26 +1,29 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
+import org.jetbrains.exposed.v1.jdbc.Database
 
 class HentRedigerbareVedleggHandler(
     private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
-) : BrevredigeringHandler<HentRedigerbareVedleggHandler.Request, List<RedigerbartVedleggInfo>> {
+    database: Database,
+) : TransactionHandler<HentRedigerbareVedleggHandler.Request, List<RedigerbartVedleggInfo>, Nothing>(database) {
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
     ) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<List<RedigerbartVedleggInfo>, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+    override suspend fun execute(request: Request): Outcome<List<RedigerbartVedleggInfo>, Nothing>? {
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
         // Trenger ikke å gå videre med tyngre kall om det ikke er noe redigerbare vedlegg på malen.
         if (!brevmalService.harRedigerbareVedlegg(brev.brevkode)) {
@@ -40,8 +43,6 @@ class HentRedigerbareVedleggHandler(
 
         return success(vedlegg)
     }
-
-    override fun requiresReservasjon(request: Request) = false
 }
 
 private fun List<Edit.ParagraphContent.Text>?.format() = this?.joinToString("") { it.text }

@@ -6,7 +6,7 @@ metadata:
   labels:
     "team": "pensjonsbrev"
   annotations:
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    haproxy.org/timeout-server: "300s"
 spec:
   image: {{image}}
   port: 8080

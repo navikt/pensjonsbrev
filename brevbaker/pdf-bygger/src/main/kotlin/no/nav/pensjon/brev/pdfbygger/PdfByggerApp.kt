@@ -3,30 +3,34 @@ package no.nav.pensjon.brev.pdfbygger
 import com.fasterxml.jackson.core.JacksonException
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.jackson.jackson
+import io.ktor.serialization.jackson.JacksonConverter
 import io.ktor.server.application.*
 import io.ktor.server.config.*
-import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.callid.CallId
 import io.ktor.server.plugins.callid.callIdMdc
 import io.ktor.server.plugins.callid.generate
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
-import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.logging.Logger
-import io.micrometer.prometheusmetrics.PrometheusConfig
-import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
-import no.nav.pensjon.brev.PDFRequest
+import no.nav.brev.brevbaker.PDFRequest
+import no.nav.brev.brevbaker.serialization.internalObjectMapper
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
+import no.nav.pensjon.brev.pdfbygger.Metrics.configureMetrics
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
+import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2
 import org.slf4j.LoggerFactory
 
+private val objectMapper = internalObjectMapper()
+
 fun main(args: Array<String>) = EngineMain.main(args)
+
 
 fun ApplicationConfig.getProperty(name: String): String =
     property(name).getString()
@@ -48,37 +52,29 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         it.log.info("Application preparing to shutdown gracefully")
     }
 
-    val prometheusMeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
-    install(MicrometerMetrics) {
-        registry = prometheusMeterRegistry
-    }
-
-    routing {
-        get("/metrics") {
-            call.respond(prometheusMeterRegistry.scrape())
-        }
-    }
-
+    configureMetrics()
 
     install(ContentNegotiation) {
-        jackson {
-            pdfByggerConfig()
-        }
+        register(ContentType.Application.Json, JacksonConverter(objectMapper))
     }
 
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
-        val ignorePaths = setOf("/isAlive", "/isReady", "/metrics")
-        filter {
-            !ignorePaths.contains(it.request.path())
-        }
+        filter(Metrics::skalObserveres)
         mdc("x_response_code") { it.response.status()?.value?.toString() }
     }
 
     install(StatusPages) {
-        exception<JacksonException> { call, cause ->
-            call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown reason")
+        exception<BadRequestException> { call, cause ->
+            val jacksonCause = cause.findJacksonCause()
+            if (jacksonCause != null) {
+                val message = jacksonCause.message ?: "Failed to deserialize json body: unknown reason"
+                call.application.log.info(message)
+                call.respond(HttpStatusCode.BadRequest, message)
+            } else {
+                call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
+            }
         }
     }
 
@@ -94,6 +90,14 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
             val request = call.receive<PDFRequest>()
             val result = typstCompileService.createLetter {
                 TypstDocumentRenderer.render(request, it)
+            }
+            handleResult(result, call.application.environment.log)
+        }
+
+        post("/v2/produserBrev") {
+            val request = call.receive<LetterPDFRequest>()
+            val result = typstCompileService.createLetter {
+                TypstDocumentRendererV2.render(request, it)
             }
             handleResult(result, call.application.environment.log)
         }
@@ -133,3 +137,6 @@ private suspend fun RoutingContext.handleResult(
     }
 }
 
+
+private fun Throwable.findJacksonCause(): JacksonException? =
+    cause as? JacksonException ?: cause?.findJacksonCause()

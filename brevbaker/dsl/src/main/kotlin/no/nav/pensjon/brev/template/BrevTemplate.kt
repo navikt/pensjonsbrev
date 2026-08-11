@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.FeatureToggle
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import no.nav.pensjon.brev.api.model.IBrevkategori
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
@@ -14,6 +15,7 @@ import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brev.template.validation.validator
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import kotlin.reflect.KClass
 
 sealed interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>> : HasModel<LetterData> {
@@ -23,6 +25,12 @@ sealed interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkod
     val featureToggle: FeatureToggle?
         get() = null
 
+    /**
+     * Overstyr denne om du ikke ønsker synlige saksbehandlervalg i Skribenten, eller ønsker å begrense hva som er synlig.
+     * F.eks `override val modelSpecification = TemplateModelSpecification(emptyMap(), null)` for ingen synlige saksbehandlervalg.
+     */
+    val modelSpecification: TemplateModelSpecification? get() = null
+
     fun <Lang : LanguageSupport, LetterData : BrevbakerBrevdata> createTemplate(
         letterDataType: KClass<LetterData>,
         languages: Lang,
@@ -30,7 +38,7 @@ sealed interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkod
         init: TemplateRootScope<Lang, LetterData>.() -> Unit
     ): LetterTemplate<Lang, LetterData> =
         with(TemplateRootScope<Lang, LetterData>(validator = validator()).apply(init)) {
-            return LetterTemplate(title, letterDataType, languages, outline, attachments, pdfAttachments, letterMetadata)
+            return LetterTemplate(title, letterDataType, languages, outline, attachments, saksbehandlervalg, letterMetadata)
         }
 }
 
@@ -41,7 +49,7 @@ inline fun <Kode : Brevkode<Kode>, Lang : LanguageSupport, reified LetterData : 
 ): LetterTemplate<Lang, LetterData> = createTemplate(LetterData::class, languages, letterMetadata, init)
 
 interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerValgBrevdata, out FagsystemBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart>, DslExtensionForRedigerbareBrev {
-    val kategori: TemplateDescription.IBrevkategori
+    val kategori: IBrevkategori
     val brevkontekst: TemplateDescription.Brevkontekst
     val sakstyper: Set<ISakstype>
 

@@ -23,11 +23,12 @@ data class OkningUforegradDto(
 
     data class PesysData(
         val pe: PEgruppe10,
+        val kravFremsattDato: LocalDate?,
         val oifuVedVirkningstidspunkt: Kroner?,
         val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
         val dineRettigheterOgPlikterUfore: DineRettigheterOgPlikterUforeDto,
         val nyeInnvilgedeBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
-        val nyeAvslagBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
+        val nyeAvslagBarnetillegg: List<BarnetilleggMedSammeBegrunnelsePaSammeTid> = emptyList(),
         val sisteTrygdetidsgrunnlag: Trygdetidsgrunnlag?,
         val hjemler: Set<String>
     ) : FagsystemBrevdata

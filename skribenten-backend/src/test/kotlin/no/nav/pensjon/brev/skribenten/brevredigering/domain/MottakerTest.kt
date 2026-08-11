@@ -94,7 +94,7 @@ class MottakerTest {
             brevkode = Testbrevkoder.TESTBREV,
             spraak = LanguageCode.BOKMAL,
             avsenderEnhetId = EnhetId("1111"),
-            saksbehandlerValg = Api.GeneriskBrevdata(),
+            saksbehandlerValg = SaksbehandlervalgMap(),
             distribusjonstype = Distribusjon.SENTRALPRINT,
             redigertBrev = Edit.Letter(
                 Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(null, "a"))),

@@ -1,7 +1,14 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import com.typesafe.config.ConfigFactory
+import io.ktor.callid.withCallId
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.network.sockets.ConnectTimeoutException
+import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.skribenten.MockPrincipal
+import no.nav.pensjon.brev.skribenten.OboClientConfig
 import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
+import no.nav.pensjon.brev.skribenten.auth.withPrincipal
+import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.services.KrrService.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
@@ -10,7 +17,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 
 class KrrServiceTest {
-    private val config = ConfigFactory.parseMap(mapOf("scope" to "test-scope", "url" to "http://krr.test"))
+    private val config = OboClientConfig(url = "http://krr.test", scope = "test-scope")
 
     @Test
     fun `kan hente foretrukket spraak fra KRR`() {
@@ -70,5 +77,19 @@ class KrrServiceTest {
             assertNull(preferredLocale.spraakKode)
             assertEquals(KontaktinfoResponse.FailureType.ERROR, preferredLocale.failure)
         }
+    }
+
+    @Test
+    fun `connect timeout mot KRR gir feil ogsaa hos oss`() = httpClientTest(Unit) { _ ->
+        val engine = MockEngine { throw ConnectTimeoutException("Connect timeout has expired [url=http://krr.test]") }
+        val service = KrrService(
+            config = config,
+            authService = FakeAuthService,
+            engine = engine,
+        )
+
+        val preferredLocale = service.getPreferredLocale(Pid("12345"))
+        assertNull(preferredLocale.spraakKode)
+        assertEquals(KontaktinfoResponse.FailureType.ERROR, preferredLocale.failure)
     }
 }

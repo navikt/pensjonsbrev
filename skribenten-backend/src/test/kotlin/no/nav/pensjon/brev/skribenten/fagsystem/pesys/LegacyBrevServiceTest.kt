@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto.*
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto.BrevSystem
 import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.override
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.assertj.core.api.Assertions.assertThat
@@ -181,6 +182,7 @@ class LegacyBrevServiceTest {
     @Test
     fun `kan bestille exstream eblankett med riktig tilgang`() {
         runBlocking {
+            Features.override(Features.vergeForExstream, false)
             val bestillBrevResult = withPrincipal(principal) {
                 legacyBrevService.bestillOgRedigerEblankett(
                     gjelderPid = Pid("9999"), request = Api.BestillEblankettRequest(

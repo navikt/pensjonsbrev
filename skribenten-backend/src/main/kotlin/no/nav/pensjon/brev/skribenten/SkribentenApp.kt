@@ -1,49 +1,36 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.core.JacksonException
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import com.typesafe.config.ConfigParseOptions
-import com.typesafe.config.ConfigResolveOptions
 import io.ktor.http.*
 import io.ktor.serialization.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.*
 import io.ktor.server.plugins.callid.*
 import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.cors.routing.*
+import io.ktor.server.plugins.di.*
 import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
+import no.nav.brev.brevbaker.serialization.TemplateModelSpecificationJacksonModule
+import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
-import no.nav.pensjon.brev.skribenten.common.InMemoryCache
-import no.nav.pensjon.brev.skribenten.common.Valkey
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
-import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Exception
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenDataException
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenFeilIDatabyggerException
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationMixins
-import no.nav.pensjon.brev.skribenten.serialize.registerMixin
-import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
-import no.nav.pensjon.brev.skribenten.services.HttpClientFactory
-import no.nav.pensjon.brev.skribenten.services.ServiceException
+import no.nav.pensjon.brev.skribenten.services.*
+import org.apache.pdfbox.pdmodel.font.PDType1Font
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -53,51 +40,20 @@ import kotlin.time.Duration.Companion.seconds
 
 private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.SkribentenApp")
 
-fun main() {
-    try {
-        run()
-    } catch (e: Exception) {
-        logger.error(e.message, e)
-        throw e
-    }
+fun main(args: Array<String>) = try {
+    EngineMain.main(args)
+} catch (e: Exception) {
+    logger.error(e.message, e)
+    throw e
 }
 
-private fun run() {
-    val skribentenConfig: Config =
-        ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-            .resolveWith(
-                ConfigFactory.load("azuread"),
-                ConfigResolveOptions.defaults().setAllowUnresolved(true)
-            ) // loads azuread secrets for local
-            .resolveWith(ConfigFactory.load("unleash"))
-            .getConfig("skribenten")
-
-    ADGroups.init(skribentenConfig.getConfig("groups"))
-    KrypteringService.init(skribentenConfig.getString("krypteringsnoekkel"))
-
-    embeddedServer(
-        Netty,
-        configure = {
-            connectors.add(EngineConnectorBuilder().apply {
-                host = "0.0.0.0"
-                port = skribentenConfig.getInt("port")
-            })
-            shutdownGracePeriod = 25.seconds.inWholeMilliseconds
-            shutdownTimeout = 29.seconds.inWholeMilliseconds
-        },
-    ) {
-        skribentenApp(skribentenConfig)
-    }.start(wait = true)
-}
-
-suspend fun Application.skribentenApp(skribentenConfig: Config) {
+// Er satt i application.conf slik at EngineMain kaller på skribentenApp.
+@Suppress("unused")
+fun Application.skribentenApp() {
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
-        val ignorePaths = setOf("/isAlive", "/isReady", "/metrics")
-        filter {
-            !ignorePaths.contains(it.request.path())
-        }
+        filter(Metrics::skalObserveres)
         mdc("x_userId") { call ->
             call.principal<JwtUserPrincipal>()?.navIdent?.id
         }
@@ -133,12 +89,6 @@ suspend fun Application.skribentenApp(skribentenConfig: Config) {
             logger.info(cause.message, cause)
             call.respond(HttpStatusCode.InternalServerError, cause.message)
         }
-        exception<P1Exception> { call, cause ->
-            logger.info(cause.message, cause)
-            when(cause) {
-                is P1Exception.ManglerDataException -> call.respond(HttpStatusCode.UnprocessableEntity, cause.message)
-            }
-        }
         exception<PenDataException> { call, cause ->
             logger.info("${cause.status} - Feil ved oppdatering av brev: ${cause.message}")
             call.respond(status = cause.status, cause.feil)
@@ -148,8 +98,12 @@ suspend fun Application.skribentenApp(skribentenConfig: Config) {
             call.respond(status = cause.status, "Teknisk feil ved henting av brevdata, prøv igjen litt senere")
 
         }
+        exception<PenAdresseManglerException> { call, cause ->
+            logger.info("${cause.status} - Adresse mangler: ${cause.message}")
+            call.respond(status = cause.status, BrevExceptionDto("Adresse mangler", "Fant ingen kontaktadresse for personen"))
+        }
         exception<ServiceException> { call, cause ->
-            logger.error(cause.message, cause)
+            logger.info(cause.message, cause)
             call.respond(status = cause.status, message = cause.message)
         }
         exception<Exception> { call, cause ->
@@ -159,6 +113,9 @@ suspend fun Application.skribentenApp(skribentenConfig: Config) {
     }
 
     skribentenContenNegotiation()
+    configureDependencies()
+
+    val skribentenConfig: SkribentenConfig by dependencies
 
     install(CORS) {
         allowMethod(HttpMethod.Options)
@@ -168,33 +125,24 @@ suspend fun Application.skribentenApp(skribentenConfig: Config) {
         allowHeader(HttpHeaders.Authorization)
         allowHeader(HttpHeaders.ContentType)
         allowHeader("X-Request-ID")
-        skribentenConfig.getConfig("cors").also {
-            val schemes = it.getStringList("schemes")
-            it.getString("host").split(",").forEach { host ->
-                allowHost(host, schemes = schemes)
-            }
+        skribentenConfig.cors.host.split(",").forEach { host ->
+            allowHost(host, schemes = skribentenConfig.cors.schemes)
         }
     }
 
-    val valkeyConfig = skribentenConfig.getConfig("valkey")
-    val cache = if (valkeyConfig.getBoolean("enabled")) {
-        Valkey(valkeyConfig)
-    } else {
-        log.warn("Valkey is disabled, this is not recommended for production")
-        InMemoryCache()
+    install(Authentication) {
+        skribentenJwt(skribentenConfig.azureAD)
     }
 
-    val azureADConfig = skribentenConfig.requireAzureADConfig()
-    install(Authentication) {
-        skribentenJwt(azureADConfig)
-    }
-    configureRouting(azureADConfig, skribentenConfig, cache)
+    configureRouting()
     configureMetrics()
 
     monitor.subscribe(ServerReady) {
         launch {
             delay(5.minutes)
-            oneShotJobs(skribentenConfig) {
+
+            val leaderService: NaisLeaderService by dependencies
+            oneShotJobs(leaderService) {
                 job("2026-06-24-document-vedlegghash") {
                     val dokumentIder = transaction {
                         DocumentTable.select(DocumentTable.id).map { it[DocumentTable.id].value }
@@ -206,18 +154,14 @@ suspend fun Application.skribentenApp(skribentenConfig: Config) {
                             }
                         }
                     }
-
                 }
                 // Sett opp evt. jobber her
             }
         }
-    }
-
-    monitor.subscribe(ApplicationStopPreparing) {
-        Features.shutdown()
-    }
-    monitor.subscribe(ApplicationStopping) {
-        HttpClientFactory.close()
+        launch {
+            delay(20.seconds)
+            PDType1Font(Standard14Fonts.FontName.HELVETICA) // Trigger denne her for å få bygd opp font-cachen
+        }
     }
 }
 
@@ -251,8 +195,8 @@ fun Application.skribentenContenNegotiation() {
 
 fun ObjectMapper.skribentenServerJackson() = apply {
     registerModule(JavaTimeModule())
-    registerMixin(TemplateModelSpecificationMixins)
-    registerModule(LetterMarkupJacksonModule)
+    registerModule(TemplateModelSpecificationJacksonModule)
+    registerModule(LetterMarkupV1JacksonModule)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 }

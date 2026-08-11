@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.BrevTemplate
@@ -40,6 +41,7 @@ import java.nio.file.Path
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 import kotlin.reflect.KProperty
+import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.jvm.jvmErasure
 
 
@@ -69,8 +71,13 @@ abstract class BrevmodulTest(
     @Test
     fun `alle redigerbare brev har displaytext for alle saksbehandlervalg`() {
         templates.hentRedigerbareMaler().map { it.template.letterDataType.java }.forEach { clazz ->
-            val saksbehandlervalg = clazz.declaredFields.map { it.type }.filter { field -> SaksbehandlerValgBrevdata::class.java.isAssignableFrom(field) }.map { it.kotlin }
-            saksbehandlervalg.flatMap { it.members }.filterIsInstance<KProperty<*>>().forEach { field ->
+            val saksbehandlervalg = clazz.declaredFields.asSequence()
+                .map { it.type.kotlin }
+                .filter { it.isSubclassOf(SaksbehandlerValgBrevdata::class) }
+                .filterNot { it.isSubclassOf(SaksbehandlervalgIDSL::class) }
+                .singleOrNull()
+
+            saksbehandlervalg?.members?.filterIsInstance<KProperty<*>>()?.forEach { field ->
                 val hasDisplayText = field.annotations.filterIsInstance<DisplayText>().any()
                 assertTrue(hasDisplayText, "Alle saksbehandlervalg må ha displaytext, ${field.name} i klasse ${clazz.name} mangler det")
             }

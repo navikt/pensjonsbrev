@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
+import no.nav.pensjon.brev.maler.example.SaksbehandlervalgIDSLTestbrev
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -98,6 +99,7 @@ class AllTemplatesTest {
                         ProductionTemplates.hentRedigerbareMaler()
                         + LetterExample
                         + EksempelbrevRedigerbart
+                        + SaksbehandlervalgIDSLTestbrev
                         ).filter { filter.isEmpty() || filter.any { f -> it.kode.kode() == f.kode() } }
                     .map { Arguments.of(it.template, it.kode, spraak) }
             }

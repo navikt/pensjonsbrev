@@ -5,16 +5,22 @@ import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.symbol.ClassKind.CLASS
 import com.google.devtools.ksp.symbol.ClassKind.INTERFACE
 import com.google.devtools.ksp.visitor.KSDefaultVisitor
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 
 private val SKIPPED_NO_WARN_PACKAGES: Set<String> = setOf("kotlin", "java.util", "java.time", "kotlin.collections", "kotlin.ranges")
-private val SKIPPED_NO_WARN_CLASSES: Set<String> = setOf(
-    "no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata",
-    "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata",
-    "no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata",
-    "no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata",
-    "no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg",
-    "no.nav.pensjon.brev.api.model.maler.EmptyVedleggData"
-)
+internal val SKIPPED_NO_WARN_CLASSES: Set<String> = setOf(
+    EmptyAutobrevdata::class,
+    EmptyFagsystemdata::class,
+    EmptyRedigerbarBrevdata::class,
+    EmptySaksbehandlerValg::class,
+    EmptyVedleggData::class,
+    SaksbehandlervalgIDSL::class
+).map { it.qualifiedName!! }.toSet()
 
 private fun KSPLogger.logSkipped(classDeclaration: KSClassDeclaration) {
     val message = "Skipping ${classDeclaration.qualifiedName?.asString() ?: classDeclaration}: can only generate helpers for classes and interfaces"
@@ -46,10 +52,15 @@ internal class TemplateModelVisitor(
         return pkg != name && !pkg.startsWith(nameWithSeparator)
     }
 
+    private fun KSClassDeclaration.shouldGenerateSelectors(): Boolean =
+        notInPackage("java") &&
+                notInPackage("kotlin") &&
+                qualifiedName?.asString() !in SKIPPED_NO_WARN_CLASSES
+
     override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: SelectorModels): SelectorModels =
         if (data.isVisited(classDeclaration)) {
             data.withDependency(classDeclaration, dependency)
-        } else if (classDeclaration.classKind in setOf(CLASS, INTERFACE) && classDeclaration.notInPackage("java") && classDeclaration.notInPackage("kotlin")) {
+        } else if (classDeclaration.classKind in setOf(CLASS, INTERFACE) && classDeclaration.shouldGenerateSelectors()) {
             classDeclaration.getAllProperties().toList().foldAccept(data.withNeeded(classDeclaration, dependency), this)
         } else {
             logger.logSkipped(classDeclaration)

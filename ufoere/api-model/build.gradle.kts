@@ -9,6 +9,10 @@ plugins {
 
 group = "no.nav.pensjon.ufoere.brev"
 
+base {
+    archivesName.set("ufoere-api-model")
+}
+
 java {
     withSourcesJar()
     withJavadocJar()
@@ -20,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    api(libs.brevbaker.common)
+    api(libs.brevdata)
 }
 
 publishing {
@@ -36,6 +40,7 @@ publishing {
     }
     publications {
         register<MavenPublication>("gpr") {
+            artifactId = "ufoere-api-model"
             from(components["java"])
         }
     }

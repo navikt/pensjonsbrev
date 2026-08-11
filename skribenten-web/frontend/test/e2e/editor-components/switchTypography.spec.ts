@@ -4,19 +4,19 @@ import { SpraakKode } from "~/types/apiTypes";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 
 import {
-  nyBrevInfo,
-  nyBrevResponse,
-  nyLiteral,
-  nyParagraphBlock,
-  nyRedigertBrev,
-  nySignatur,
-  nyTitle1Block,
-  nyTitle2Block,
-  nyTitle3Block,
-} from "../../utils/brevredigeringTestUtils";
+  brevInfo,
+  brevResponse,
+  editedLetter,
+  literal,
+  paragraph,
+  signatur,
+  title1,
+  title2,
+  title3,
+} from "../../utils/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
-const editorInfo = nyBrevInfo({
+const editorInfo = brevInfo({
   brevkode: "BREV1",
   brevtittel: "Brev 1",
   opprettet: "2024-01-01",
@@ -30,14 +30,14 @@ const editorInfo = nyBrevInfo({
 });
 
 function makeBrevResponse(redigertBrev: EditedLetter) {
-  return nyBrevResponse({ info: editorInfo, redigertBrev });
+  return brevResponse({ info: editorInfo, redigertBrev });
 }
 
 function makeLiteral(id: number, parentId: number | null, text: string) {
-  return { ...nyLiteral({ id, text }), parentId };
+  return { ...literal({ id, text }), parentId };
 }
 
-const typographyLetter = nyRedigertBrev({
+const typographyLetter = editedLetter({
   title: {
     text: [makeLiteral(1, null, "Test Typography")],
     deletedContent: [],
@@ -49,24 +49,24 @@ const typographyLetter = nyRedigertBrev({
     dokumentDato: "2024-03-15",
   },
   blocks: [
-    nyTitle1Block({
+    title1({
       id: 10,
       content: [makeLiteral(11, 10, "Dette er en title1 block")],
     }),
-    nyTitle2Block({
+    title2({
       id: 20,
       content: [makeLiteral(21, 20, "Dette er en title2 block")],
     }),
-    nyTitle3Block({
+    title3({
       id: 30,
       content: [makeLiteral(31, 30, "Dette er en title3 block")],
     }),
-    nyParagraphBlock({
+    paragraph({
       id: 40,
       content: [makeLiteral(41, 40, "Dette er en paragraph block")],
     }),
   ],
-  signatur: nySignatur({
+  signatur: signatur({
     hilsenTekst: "Med vennlig hilsen",
     saksbehandlerNavn: "Ole",
     attesterendeSaksbehandlerNavn: "",

@@ -31,7 +31,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import java.time.LocalDate
+import no.nav.pensjon.brev.template.dsl.expression.localDateNow
 
 @TemplateModelHelpers
 object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfoeretrygdMellombehandlingDto> {
@@ -53,8 +53,8 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
     ) {
         val pe = pesysData.pe
 
-        val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(LocalDate.now())
-        val virkningstidpunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt().ifNull(LocalDate.now())
+        val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(localDateNow)
+        val virkningstidpunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt().ifNull(localDateNow)
         val virkningbegrunnelseStdbegr_22_12_1_5 = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse().equalTo("stdbegr_22_12_1_5")
         val uforegrad = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
 
@@ -106,7 +106,7 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
                 ungUforResultat = ungUforResultat,
                 kravarsak = kravarsak,
                 kravGjelder = kravGjelder,
-                kravmottatdato = pe.vedtaksdata_kravhode_kravmottatdato(),
+                soknadsdato = pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()),
                 uforegrad = uforegrad,
                 virkningfom = pe.vedtaksdata_virkningfom(),
                 virkningstidpunkt = virkningstidpunkt,
@@ -244,6 +244,7 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
 
             includePhrase(Innvilgelse.Virkningstidspunkt(
                 pe = pe,
+                kravFremsattDato = pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()),
                 virkningbegrunnelseStdbegr_22_12_1_5 = virkningbegrunnelseStdbegr_22_12_1_5,
             ))
 

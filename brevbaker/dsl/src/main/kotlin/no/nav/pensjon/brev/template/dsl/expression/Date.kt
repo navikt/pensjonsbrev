@@ -56,6 +56,7 @@ private object LocalDateSelectors {
 
 }
 
+val localDateNow: Expression<LocalDate> = UnaryOperation.LocalDateNow(Unit.expr())
 
 val Expression<LocalDate>.year: Expression<Int>
     get() = select(LocalDateSelectors.yearSelector)

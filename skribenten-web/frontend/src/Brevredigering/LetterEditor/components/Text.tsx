@@ -22,6 +22,7 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
       return <br data-literal-index={JSON.stringify(literalIndex)} />;
     }
     case "VARIABLE": {
+      const isEmpty = content.text.trim().length === 0;
       return (
         /**
          * biome-ignore lint/a11y/useKeyWithClickEvents: Klikk trenger ikke en tilsvarende
@@ -40,6 +41,12 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
             outline: `${isFocused ? "2px solid var(--ax-border-accent)" : "1px solid var(--ax-border-neutral-strong)"}`,
             padding: "0 var(--ax-space-2)",
 
+            ...(isEmpty && {
+              background: "transparent",
+              margin: 0,
+              outline: "none",
+              padding: 0,
+            }),
             ...(content.fontType === FontType.BOLD ? { fontWeight: "var(--ax-font-weight-bold)" } : {}),
             ...(content.fontType === FontType.ITALIC ? { fontStyle: "italic" } : {}),
           }}
@@ -58,21 +65,21 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
   }
 };
 
-const hasFocus = (focus: Focus, idx: LiteralIndex) => {
-  const isBlockContentFocused = focus.blockIndex === idx.blockIndex && focus.contentIndex === idx.contentIndex;
+const hasFocus = (focus: Focus, index: LiteralIndex) => {
+  const isBlockContentFocused = focus.blockIndex === index.blockIndex && focus.contentIndex === index.contentIndex;
 
-  if (isTableCellIndex(focus) && isTableCellIndex(idx)) {
+  if (isTableCellIndex(focus) && isTableCellIndex(index)) {
     return (
       isBlockContentFocused &&
-      focus.rowIndex === idx.rowIndex &&
-      focus.cellIndex === idx.cellIndex &&
-      focus.cellContentIndex === idx.cellContentIndex
+      focus.rowIndex === index.rowIndex &&
+      focus.cellIndex === index.cellIndex &&
+      focus.cellContentIndex === index.cellContentIndex
     );
-  } else if (isItemContentIndex(focus) && isItemContentIndex(idx)) {
+  } else if (isItemContentIndex(focus) && isItemContentIndex(index)) {
     return (
-      isBlockContentFocused && focus.itemIndex === idx.itemIndex && focus.itemContentIndex === idx.itemContentIndex
+      isBlockContentFocused && focus.itemIndex === index.itemIndex && focus.itemContentIndex === index.itemContentIndex
     );
-  } else if (isBlockContentIndex(focus) && isBlockContentIndex(idx)) {
+  } else if (isBlockContentIndex(focus) && isBlockContentIndex(index)) {
     return isBlockContentFocused;
   } else {
     return false;

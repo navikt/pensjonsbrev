@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingN
 import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -58,7 +58,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - AFP etteroppgjør med tilbakekreving (nye opplysninger)",
+            displayTitle = "Vedtak - tilbakekreving av for mye utbetalt pensjon - AFP etteroppgjør",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),

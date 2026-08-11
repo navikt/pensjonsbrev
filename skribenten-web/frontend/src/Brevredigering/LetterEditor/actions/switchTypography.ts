@@ -1,6 +1,7 @@
 import {
   addElements,
   findAdjoiningContent,
+  isFromTemplate,
   newParagraph,
   newTitle,
   removeElements,
@@ -21,7 +22,7 @@ export const switchTypography: Action<LetterEditorState, [typography: "PARAGRAPH
     }
 
     // mark the block with originalType so that the block is concidered edited.
-    if (!block.originalType && block.id !== null) {
+    if (!block.originalType && isFromTemplate(block)) {
       block.originalType = block.type;
     }
 

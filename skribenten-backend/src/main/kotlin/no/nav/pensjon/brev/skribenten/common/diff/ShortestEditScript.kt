@@ -127,7 +127,7 @@ private class MyersDiff<T : Any>(val old: ArrayList<T>, val new: ArrayList<T>, v
     }
 
     private fun findFurthestReachingForwardDpathInDiagonalK(d: Int, k: Int, vForward: Vectors): Path {
-        val fromX = if (k == -d || k != d && vForward[k - 1] < vForward[k + 1]) {
+        val fromX = if (k == -d || (k != d && vForward[k - 1] < vForward[k + 1])) {
             vForward[k + 1]
         } else {
             vForward[k - 1] + 1
@@ -164,7 +164,7 @@ private class MyersDiff<T : Any>(val old: ArrayList<T>, val new: ArrayList<T>, v
     }
 
     private fun findFurthestReachingReverseDpathInDiagonalK(d: Int, k: Int, vReverse: Vectors): Path {
-        val fromY = if (k == -d || k != d && vReverse[k - 1] > vReverse[k + 1]) {
+        val fromY = if (k == -d || (k != d && vReverse[k - 1] > vReverse[k + 1])) {
             vReverse[k + 1]
         } else {
             vReverse[k - 1] - 1

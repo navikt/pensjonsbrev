@@ -10,6 +10,8 @@ import { z } from "zod";
 
 import { getBrevAttestering, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
+import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
+import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
   createLetterSnapshot,
   createSaksbehandlerValgEndretHistoryEntry,
@@ -37,10 +39,12 @@ import { UnderskriftTextField } from "~/components/ManagedLetterEditor/Underskri
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
+import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
 import {
   type BrevResponse,
+  type OppdaterAttesteringRequest,
   type OppdaterBrevRequest,
   type ReservasjonResponse,
   type SaksbehandlerValg,
@@ -63,6 +67,10 @@ type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
   historySnapshot?: LetterSnapshot;
 };
 
+const queryRetries = 3;
+const shouldSkipRetry = (status: number | undefined) =>
+  status === 403 || status === 404 || status === 409 || status === 422 || status === 423;
+
 const VedtakWrapper = () => {
   const { saksId, brevId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -71,6 +79,8 @@ const VedtakWrapper = () => {
   const hentBrevQuery = useQuery({
     ...getBrevAttestering(saksId, Number(brevId)),
     staleTime: Number.POSITIVE_INFINITY,
+    retry: (failureCount: number, error: AxiosError) =>
+      failureCount < queryRetries && !shouldSkipRetry(error.response?.status),
   });
 
   return queryFold({
@@ -123,6 +133,29 @@ const VedtakWrapper = () => {
         }
       }
 
+      if (err.response?.status === 500) {
+        return (
+          <Box asChild background="default">
+            <VStack align="center" flexGrow="1" gap="space-8" padding="space-24">
+              <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />
+              <Button
+                onClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevbehandler",
+                    params: { saksId },
+                    search: { vedtaksId, enhetsId, brevId: Number(brevId) },
+                  })
+                }
+                size="small"
+                variant="secondary"
+              >
+                Gå til brevbehandler
+              </Button>
+            </VStack>
+          </Box>
+        );
+      }
+
       return (
         <Box background="default" flexGrow="1">
           <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />
@@ -157,6 +190,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   const [forbidReason, setForbidReason] = useState<AttestForbiddenReason | null>(null);
   const [unexpectedError, setUnexpectedError] = useState<AxiosError | null>(null);
+  const [warnOpen, setWarnOpen] = useState(false);
+  const [warn, setWarn] = useState<{ kind: WarnModalKind; count?: number } | null>(null);
+  const pendingSubmitValuesRef = useRef<VedtakSidemenyFormData | null>(null);
 
   const lastSeenLetterIdsRef = useRef<ReadonlySet<number>>(collectAllIds(props.brev.redigertBrev));
   const previousTekstvalgRef = useRef(props.brev.saksbehandlerValg);
@@ -212,6 +248,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const form = useForm<VedtakSidemenyFormData>({
     resolver: zodResolver(vedtakSidemenySchema),
     defaultValues: defaultValuesModelEditor,
+  });
+
+  const { getWarning } = useBrevEditorWarnings({
+    brevkode: props.brev.info.brevkode,
+    form,
+    redigertBrev: editorState.redigertBrev,
+    propertyUsage: props.brev.propertyUsage ?? undefined,
   });
 
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevMutationVariables>({
@@ -270,7 +313,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
 
-  const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
+  const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterAttesteringRequest>({
     mutationFn: (requestData) =>
       attesterBrev({
         saksId: props.saksId,
@@ -300,8 +343,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     );
   };
 
-  const freeze =
-    oppdaterBrevMutation.isPending || attesterMutation.isPending || editorState.saveStatus === "SAVE_PENDING";
+  const freeze = oppdaterBrevMutation.isPending || attesterMutation.isPending;
   const error = oppdaterBrevMutation.isError || attesterMutation.isError;
 
   const saveDirtyLetter = (state: {
@@ -332,123 +374,162 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     });
   }, [editorState.redigertBrev.signatur.attesterendeSaksbehandlerNavn, form]);
 
+  const proceedToForhandsvisning = () => {
+    const varighetSekunder = Math.round((Date.now() - attesteringStartTime.current) / 1000);
+    trackEvent("tid brukt i attestering", {
+      brevId: props.brev.info.id,
+      brevkode: props.brev.info.brevkode,
+      varighetSekunder,
+      varighetMinutter: Math.round(varighetSekunder / 60),
+      enhetsId: props.brev.info.avsenderEnhet.enhetNr,
+    });
+    trackEvent("brev attestert", {
+      brevId: props.brev.info.id,
+      brevkode: props.brev.info.brevkode,
+      enhetsId: props.brev.info.avsenderEnhet.enhetNr,
+    });
+    navigate({
+      to: "/saksnummer/$saksId/attester/$brevId/forhandsvisning",
+      params: {
+        saksId: props.saksId,
+        brevId: props.brev.info.id.toString(),
+      },
+      search: {
+        vedtaksId: props.brev.info?.vedtaksId?.toString(),
+        enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
+      },
+    });
+  };
+
+  const submitAttest = (values: VedtakSidemenyFormData) => onSubmit(values, proceedToForhandsvisning);
+
+  const guardedSubmit = form.handleSubmit((values) => {
+    const warning = getWarning();
+    if (warning) {
+      pendingSubmitValuesRef.current = values;
+      setWarn(warning);
+      setWarnOpen(true);
+      return;
+    }
+    pendingSubmitValuesRef.current = null;
+    submitAttest(values);
+  });
+
   return (
-    <form
-      onSubmit={form.handleSubmit((v) => {
-        onSubmit(v, () => {
-          const varighetSekunder = Math.round((Date.now() - attesteringStartTime.current) / 1000);
-          trackEvent("tid brukt i attestering", {
-            brevId: props.brev.info.id,
-            brevkode: props.brev.info.brevkode,
-            varighetSekunder,
-            varighetMinutter: Math.round(varighetSekunder / 60),
-            enhetsId: props.brev.info.avsenderEnhet.enhetNr,
-          });
-          trackEvent("brev attestert", {
-            brevId: props.brev.info.id,
-            brevkode: props.brev.info.brevkode,
-            enhetsId: props.brev.info.avsenderEnhet.enhetNr,
-          });
-          navigate({
-            to: "/saksnummer/$saksId/attester/$brevId/forhandsvisning",
-            params: {
-              saksId: props.saksId,
-              brevId: props.brev.info.id.toString(),
-            },
-            search: {
-              vedtaksId: props.brev.info?.vedtaksId?.toString(),
-              enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
-            },
-          });
-        });
-      })}
-    >
-      {forbidReason && <AttestForbiddenModal onClose={() => setForbidReason(null)} reason={forbidReason} />}
+    <VStack asChild height="100%">
+      <form onSubmit={guardedSubmit}>
+        <WarnModal
+          count={warn?.count ?? 0}
+          fortsettLabel="Fortsett til forhåndsvisning"
+          kind={warn?.kind ?? "fritekst"}
+          onClose={() => {
+            pendingSubmitValuesRef.current = null;
+            setWarnOpen(false);
+            if (warn?.kind === "fritekst" || warn?.kind === "fritekstOgTekstValg") {
+              const focus = findFirstUneditedFritekstFocus(editorState.redigertBrev);
+              if (focus) {
+                setEditorState((s) => ({ ...s, focus }));
+              }
+            }
+            setWarn(null);
+          }}
+          onFortsett={() => {
+            const values = pendingSubmitValuesRef.current;
+            pendingSubmitValuesRef.current = null;
+            setWarnOpen(false);
+            setWarn(null);
+            if (!values) return;
+            submitAttest(values);
+          }}
+          open={warnOpen}
+        />
+        {forbidReason && <AttestForbiddenModal onClose={() => setForbidReason(null)} reason={forbidReason} />}
 
-      {unexpectedError && <ApiError error={unexpectedError} title="Uventet feil ved attestering" />}
+        {unexpectedError && <ApiError error={unexpectedError} title="Uventet feil ved attestering" />}
 
-      <ThreeSectionLayout
-        bottom={
-          <Button icon={<ArrowRightIcon />} iconPosition="right" loading={freeze} size="small">
-            Fortsett
-          </Button>
-        }
-        left={
-          <FormProvider {...form}>
-            <VStack gap="space-32">
-              <Heading size="small">{props.brev.info.brevtittel}</Heading>
-              <VStack gap="space-16">
-                <OppsummeringAvMottaker mottaker={props.brev.info.mottaker ?? null} saksId={props.saksId} withTitle />
+        <ThreeSectionLayout
+          bottom={
+            <Button icon={<ArrowRightIcon />} iconPosition="right" loading={freeze} size="small">
+              Fortsett
+            </Button>
+          }
+          left={
+            <FormProvider {...form}>
+              <VStack gap="space-32">
+                <Heading size="small">{props.brev.info.brevtittel}</Heading>
+                <VStack gap="space-16">
+                  <OppsummeringAvMottaker mottaker={props.brev.info.mottaker ?? null} saksId={props.saksId} withTitle />
+                  <VStack>
+                    <Label size="small">Distribusjonstype</Label>
+                    <BodyShort size="small">{props.brev.info.distribusjonstype}</BodyShort>
+                  </VStack>
+                </VStack>
+                <Divider />
+                <VStack gap="space-20">
+                  <Hide above="sm" asChild>
+                    <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
+                  </Hide>
+                  <Hide above="sm" asChild>
+                    <Switch size="small">Vis slettet tekst</Switch>
+                  </Hide>
+                  <UnderskriftTextField
+                    controlled
+                    error={form.formState.errors.attestantSignatur?.message}
+                    of="Attestant"
+                  />
+                </VStack>
+                <Divider />
                 <VStack>
-                  <Label size="small">Distribusjonstype</Label>
-                  <BodyShort size="small">{props.brev.info.distribusjonstype}</BodyShort>
+                  <BrevmalAlternativer
+                    brevkode={props.brev.info.brevkode}
+                    propertyUsage={props.brev.propertyUsage ?? undefined}
+                    submitOnChange={() => {
+                      const updatedValg = form.getValues("saksbehandlerValg");
+                      if (hasAnyTekstvalgBeenToggledOn(previousTekstvalgRef.current, updatedValg)) {
+                        idsBeforeTekstvalgToggleRef.current = collectAllIds(editorState.redigertBrev);
+                      }
+                      previousTekstvalgRef.current = updatedValg;
+                      oppdaterBrevMutation.mutate({
+                        redigertBrev: editorState.redigertBrev,
+                        saksbehandlerValg: updatedValg,
+                        historySnapshot: createLetterSnapshot(editorState),
+                      });
+                    }}
+                  />
                 </VStack>
               </VStack>
-              <Divider />
-              <VStack gap="space-20">
-                <Hide above="sm" asChild>
-                  <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
-                </Hide>
-                <Hide above="sm" asChild>
-                  <Switch size="small">Vis slettet tekst</Switch>
-                </Hide>
-                <UnderskriftTextField
-                  controlled
-                  error={form.formState.errors.attestantSignatur?.message}
-                  of="Attestant"
+            </FormProvider>
+          }
+          right={
+            <>
+              <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
+                <ManagedLetterEditor
+                  brev={props.brev}
+                  error={error}
+                  freeze={freeze}
+                  saveDirtyLetter={saveDirtyLetter}
+                  showDebug={showDebug}
                 />
-              </VStack>
-              <Divider />
-              <VStack>
-                <BrevmalAlternativer
-                  brevkode={props.brev.info.brevkode}
-                  submitOnChange={() => {
-                    const updatedValg = form.getValues("saksbehandlerValg");
-                    if (hasAnyTekstvalgBeenToggledOn(previousTekstvalgRef.current, updatedValg)) {
-                      idsBeforeTekstvalgToggleRef.current = collectAllIds(editorState.redigertBrev);
-                    }
-                    previousTekstvalgRef.current = updatedValg;
-                    oppdaterBrevMutation.mutate({
-                      redigertBrev: editorState.redigertBrev,
-                      saksbehandlerValg: updatedValg,
-                      historySnapshot: createLetterSnapshot(editorState),
-                    });
-                  }}
-                  withTitle
-                />
-              </VStack>
-            </VStack>
-          </FormProvider>
-        }
-        right={
-          <>
-            <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
-              <ManagedLetterEditor
-                brev={props.brev}
-                error={error}
-                freeze={freeze}
-                saveDirtyLetter={saveDirtyLetter}
-                showDebug={showDebug}
+              </InsertedTekstValgHighlightProvider>
+              {/* Modal som ikke tar opp plass i DOM her */}
+              <ReservertBrevError
+                doRetry={props.doReload}
+                onNeiClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevbehandler",
+                    params: { saksId: props.saksId },
+                    search: {
+                      vedtaksId: props.brev.info?.vedtaksId?.toString(),
+                      enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
+                    },
+                  })
+                }
+                reservasjon={reservasjonQuery.data}
               />
-            </InsertedTekstValgHighlightProvider>
-            {/* Modal som ikke tar opp plass i DOM her */}
-            <ReservertBrevError
-              doRetry={props.doReload}
-              onNeiClick={() =>
-                navigate({
-                  to: "/saksnummer/$saksId/brevbehandler",
-                  params: { saksId: props.saksId },
-                  search: {
-                    vedtaksId: props.brev.info?.vedtaksId?.toString(),
-                    enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
-                  },
-                })
-              }
-              reservasjon={reservasjonQuery.data}
-            />
-          </>
-        }
-      />
-    </form>
+            </>
+          }
+        />
+      </form>
+    </VStack>
   );
 };

@@ -98,7 +98,7 @@ class JacksonSchemaReflectionAdapter(
      *
      * Mirrors `fun getDiscriminatorProperty(kClass: KClass<*>): String` from Ktor main branch.
      */
-    fun getDiscriminatorProperty(kClass: KClass<*>): String {
+    override fun getDiscriminatorProperty(kClass: KClass<*>): String {
         val visited = mutableSetOf<KClass<*>>()
         val queue = ArrayDeque<KClass<*>>()
         queue.add(kClass)

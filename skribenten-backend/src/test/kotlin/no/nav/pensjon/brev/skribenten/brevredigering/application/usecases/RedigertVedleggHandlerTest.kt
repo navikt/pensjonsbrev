@@ -40,8 +40,8 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<List<RedigerbartVedleggInfo>, BrevredigeringError>? =
         withPrincipal(principal) {
-            brevredigeringFacade.hentRedigerbareVedlegg(
-                HentRedigerbareVedleggHandler.Request(brevId = brevId)
+            hentRedigerbareVedlegg(
+                HentRedigerbareVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId)
             )
         }
 
@@ -52,8 +52,8 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         withPrincipal(principal) {
-            brevredigeringFacade.endreRedigertVedlegg(
-                EndreRedigertVedleggHandler.Request(brevId = brevId, vedleggId = VedleggId(vedleggId), redigertVedlegg = vedlegg)
+            endreRedigertVedlegg(
+                EndreRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId(vedleggId), redigertVedlegg = vedlegg)
             )
         }
 
@@ -63,8 +63,8 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Edit.Attachment, BrevredigeringError>? =
         withPrincipal(principal) {
-            brevredigeringFacade.hentRedigertVedlegg(
-                HentRedigertVedleggHandler.Request(brevId = brevId, vedleggId = VedleggId(vedleggId))
+            hentRedigertVedlegg(
+                HentRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId(vedleggId))
             )
         }
 
@@ -74,8 +74,8 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         withPrincipal(principal) {
-            brevredigeringFacade.slettRedigertVedlegg(
-                SlettRedigertVedleggHandler.Request(brevId = brevId, vedleggId = VedleggId(vedleggId))
+            slettRedigertVedlegg(
+                SlettRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId(vedleggId))
             )
         }
 

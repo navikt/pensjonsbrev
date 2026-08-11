@@ -2,33 +2,25 @@
 
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
+import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import no.nav.brev.InternKonstruktoer
-import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
-import no.nav.pensjon.brev.skribenten.auth.ADGroups
-import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
-import no.nav.pensjon.brev.skribenten.auth.withPrincipal
+import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
-import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacadeFactory
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.*
+import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Service
-import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.letter.letter
+import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.*
-import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.NavEnhet
@@ -40,10 +32,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphIm
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import org.apache.pdfbox.pdmodel.PDDocument
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.*
 import org.opentest4j.AssertionFailedError
 import java.time.LocalDate
 
@@ -77,6 +68,7 @@ abstract class BrevredigeringHandlerTestBase {
         brevbakerService.redigerbareMaler[Testbrevkoder.INFORMASJONSBREV] = informasjonsbrev
         brevbakerService.redigerbareMaler[Testbrevkoder.VEDTAKSBREV] = vedtaksbrev
         brevbakerService.redigerbareMaler[Testbrevkoder.VARSELBREV] = varselbrevIVedtakskontekst
+        brevbakerService.alltidValgbareVedleggResultat = emptySet()
         stagePdf(stagetPDF)
 
         penService.pesysBrevdata = brevdataResponseData
@@ -84,7 +76,7 @@ abstract class BrevredigeringHandlerTestBase {
     }
 
 
-    private val navAnsattService = FakeNavansattService(
+    protected val navAnsattService = FakeNavansattService(
         harTilgangTilEnhet = mapOf(
             Pair(saksbehandler1Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
             Pair(saksbehandler2Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
@@ -102,12 +94,200 @@ abstract class BrevredigeringHandlerTestBase {
     protected val brevbakerService = BrevredigeringFakeBrevbakerService()
     protected val penService = FakePenClient()
     protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
+    protected val brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService())
+    protected val brevdataService = BrevdataService(penService, samhandlerService)
+    protected val brevService = BrevService(penService, LegacyBrevServiceStub())
+    protected val redigerBrevPolicy = RedigerBrevPolicy()
+    protected val brevreservasjonPolicy = BrevreservasjonPolicy()
+    protected val attesterBrevPolicy = AttesterBrevPolicy()
+    protected val ferdigRedigertPolicy = FerdigRedigertPolicy()
+    protected val sendBrevPolicy = SendBrevPolicy(ferdigRedigertPolicy)
+    protected val reserverBrevHandler by lazy { ReserverBrevHandler(brevreservasjonPolicy, SharedPostgres.database) }
 
-    protected val brevredigeringFacade = createFacade()
+    protected val endreMottaker by lazy {
+        EndreMottakerHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevdataService = brevdataService,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val endreDistribusjonstype by lazy {
+        EndreDistribusjonstypeHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val leggVedFoersteside by lazy {
+        LeggVedFoerstesideHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val veksleKlarStatus by lazy {
+        VeksleKlarStatusHandler(
+            ferdigRedigertPolicy = ferdigRedigertPolicy,
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val hentBrevAttestering by lazy {
+        HentBrevAttesteringHandler(
+            attesterBrevPolicy = attesterBrevPolicy,
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            navansattService = navAnsattService,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val hentBrevInfoHandler by lazy { HentBrevInfoHandler(brevreservasjonPolicy, SharedPostgres.database) }
+    protected val hentBrevForSakHandler by lazy { HentBrevForSakHandler(brevreservasjonPolicy, SharedPostgres.database) }
+    protected val hentBrevForAlleSakerHandler by lazy { HentBrevForAlleSakerHandler(brevreservasjonPolicy, SharedPostgres.database) }
 
-    protected companion object Fixtures {
+    protected val hentBrev by lazy {
+        HentBrevHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val attesterBrev by lazy {
+        AttesterBrevHandler(
+            attesterBrevPolicy = attesterBrevPolicy,
+            ferdigRedigertPolicy = ferdigRedigertPolicy,
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            navansattService = navAnsattService,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val oppdaterBrev by lazy {
+        OppdaterBrevHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val opprettBrev by lazy {
+        OpprettBrevHandler(
+            opprettBrevPolicy = OpprettBrevPolicy(brevmalService, navAnsattService),
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            navansattService = navAnsattService,
+            database = SharedPostgres.database
+        )
+    }
+    protected val tilbakestillBrev by lazy {
+        TilbakestillBrevHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val endreValgteVedlegg by lazy {
+        EndreValgteVedleggHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val endreRedigertVedlegg by lazy {
+        EndreRedigertVedleggHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val slettRedigertVedlegg by lazy {
+        SlettRedigertVedleggHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val hentRedigertVedlegg by lazy {
+        HentRedigertVedleggHandler(
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val hentRedigerbareVedlegg by lazy {
+        HentRedigerbareVedleggHandler(
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val hentEllerOpprettPdf by lazy {
+        HentEllerOpprettPdfHandler(
+            brevdataService = brevdataService,
+            renderService = RenderService(brevbakerService),
+            brevmalService = brevmalService,
+            hentP1DataHandler = HentP1DataHandler(
+                penClient = PenClientStub(),
+                database = SharedPostgres.database,
+            ),
+            genererFoerstesideHandler = GenererFoerstesideHandler(
+                FoerstesidegeneratorClient(
+                    config = OboClientConfig(url = "http://localhost", scope = "test"),
+                    authService = FakeAuthService,
+                    clientEngine = MockEngine { respond("", HttpStatusCode.OK) },
+                )
+            ),
+            database = SharedPostgres.database,
+            pdfVedleggAppender = object : PDFVedleggAppender {
+                override fun leggPaaVedlegg(pdfCompilationOutput: ByteArray, vedlegg: List<() -> PDDocument>) = pdfCompilationOutput
+            }
+        )
+    }
+    protected val sendBrevHandler by lazy {
+        SendBrevHandler(
+            sendBrevPolicy = sendBrevPolicy,
+            brevService = brevService,
+            brevmalService = brevmalService,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val slettBrevHandler by lazy {
+        SlettBrevHandler(
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+
+    companion object Fixtures {
         init {
             KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
+            Features.override(UnleashToggle("må sørge for at det finnes en FeatureToggleService"), false)
             initADGroups()
         }
 
@@ -124,6 +304,17 @@ abstract class BrevredigeringHandlerTestBase {
             sakType = Sakstype("ALDER"),
             pid = Pid("12345678910"),
             behandlingsnumre = listOf(),
+            tema = Tema("tema1"),
+        )
+
+        val fagsak1 = Fagsak(
+            saksId = sak1.saksId,
+            foedselsdato = sak1.foedselsdato,
+            navn = Fagsak.Navn(sak1.navn.fornavn, sak1.navn.mellomnavn, sak1.navn.etternavn),
+            sakType = sak1.sakType,
+            pid = sak1.pid,
+            behandlingsnumre = sak1.behandlingsnumre,
+            tema = sak1.tema,
         )
 
         val letter = letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"))))
@@ -213,30 +404,29 @@ abstract class BrevredigeringHandlerTestBase {
                     annenMottakerNavn = navn,
                 )
             )
+
+        class ResultFailure(error: BrevredigeringError) :
+            AssertionFailedError(null, Outcome.Success::class.java, error::class.java)
+
+        fun <T> Outcome<T, BrevredigeringError>?.resultOrFail(): T = when (this) {
+            is Outcome.Success -> value
+            is Outcome.Failure -> throw ResultFailure(error)
+            null -> throw AssertionError("Resultat var null")
+        }
     }
 
-    protected fun createFacade(p1Service: P1Service = FakeP1Service()): BrevredigeringFacade = BrevredigeringFacadeFactory.create(
-        brevService = BrevService(penService, LegacyBrevServiceStub()),
-        brevdataService = BrevdataService(penService, samhandlerService),
-        brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService()),
-        navansattService = navAnsattService,
-        p1Service = p1Service,
-        renderService = RenderService(brevbakerService),
-    )
-
     protected suspend fun opprettBrev(
-        facade: BrevredigeringFacade = brevredigeringFacade,
         principal: UserPrincipal = saksbehandler1Principal,
         reserverForRedigering: Boolean = false,
         mottaker: Dto.Mottaker? = null,
-        saksbehandlerValg: SaksbehandlerValg = SaksbehandlerValg().apply { put("valg", true) },
+        saksbehandlerValg: SaksbehandlervalgMap = SaksbehandlervalgMap().apply { put("valg", true) },
         brevkode: RedigerbarBrevkode = Testbrevkoder.INFORMASJONSBREV,
         vedtaksId: VedtaksId? = null,
         sak: Pen.SakSelection = sak1,
         avsenderEnhetsId: EnhetId = PRINCIPAL_NAVENHET_ID,
     ): Outcome<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
-        facade.opprettBrev(
-            OpprettBrevHandlerImpl.Request(
+        opprettBrev.invoke(
+            OpprettBrevHandler.Request(
                 saksId = sak.saksId,
                 vedtaksId = vedtaksId,
                 brevkode = brevkode,
@@ -251,14 +441,16 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected suspend fun oppdaterBrev(
         brevId: BrevId,
-        nyeSaksbehandlerValg: SaksbehandlerValg? = null,
+        nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
         nyttRedigertbrev: Edit.Letter? = null,
         frigiReservasjon: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.oppdaterBrev(
+        oppdaterBrev.invoke(
             OppdaterBrevHandler.Request(
                 brevId = brevId,
+                saksId = saksId,
                 nyeSaksbehandlerValg = nyeSaksbehandlerValg,
                 nyttRedigertbrev = nyttRedigertbrev,
                 frigiReservasjon = frigiReservasjon
@@ -270,14 +462,25 @@ abstract class BrevredigeringHandlerTestBase {
         brevId: BrevId,
         reserverForRedigering: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.hentBrev(
+        hentBrev(
             HentBrevHandler.Request(
                 brevId = brevId,
+                saksId = saksId,
                 reserverForRedigering = reserverForRedigering,
             )
         )
     }
+
+    protected suspend fun hentBrevInfo(brevId: BrevId): Outcome<Dto.BrevInfo, Nothing>? =
+        hentBrevInfoHandler(HentBrevInfoHandler.Request(brevId))
+
+    protected suspend fun hentBrevForSak(saksId: SaksId): Outcome<List<Dto.BrevInfo>, Nothing>? =
+        hentBrevForSakHandler(HentBrevForSakHandler.Request(saksId))
+
+    protected suspend fun hentBrevForAlleSaker(saksIder: Set<SaksId>): Outcome<List<Dto.BrevInfo>, Nothing>? =
+        hentBrevForAlleSakerHandler(HentBrevForAlleSakerHandler.Request(saksIder))
 
     protected suspend fun slettBrev(
         brev: Dto.Brevredigering,
@@ -287,20 +490,23 @@ abstract class BrevredigeringHandlerTestBase {
     protected suspend fun slettBrev(
         brevId: BrevId,
         principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
     ): Outcome<Unit, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.slettBrev(SlettBrevHandler.Request(brevId = brevId))
+        slettBrevHandler(SlettBrevHandler.Request(brevId = brevId, saksId = saksId))
     }
 
     protected suspend fun attester(
         brev: Dto.Brevredigering,
         attestant: UserPrincipal = attestant1Principal,
         frigiReservasjon: Boolean = false,
-        nyeSaksbehandlerValg: SaksbehandlerValg? = null,
+        nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
         nyttRedigertbrev: Edit.Letter? = null,
+        saksId: SaksId = sak1.saksId,
     ) = withPrincipal(attestant) {
-        brevredigeringFacade.attesterBrev(
+        attesterBrev(
             AttesterBrevHandler.Request(
                 brevId = brev.info.id,
+                saksId = saksId,
                 frigiReservasjon = frigiReservasjon,
                 nyeSaksbehandlerValg = nyeSaksbehandlerValg,
                 nyttRedigertbrev = nyttRedigertbrev,
@@ -312,10 +518,12 @@ abstract class BrevredigeringHandlerTestBase {
         brev: Dto.Brevredigering,
         klar: Boolean,
         principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
     ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.veksleKlarStatus(
+        veksleKlarStatus(
             VeksleKlarStatusHandler.Request(
                 brevId = brev.info.id,
+                saksId = saksId,
                 klar = klar
             )
         )
@@ -341,28 +549,40 @@ abstract class BrevredigeringHandlerTestBase {
     protected suspend fun hentEllerOpprettPdf(
         brev: Dto.Brevredigering,
         principal: UserPrincipal = saksbehandler1Principal,
-        facade: BrevredigeringFacade = brevredigeringFacade,
+        handler: HentEllerOpprettPdfHandler = hentEllerOpprettPdf,
+        saksId: SaksId = sak1.saksId,
     ): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
         withPrincipal(principal) {
-            facade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
+            handler(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id, saksId = saksId, fagsak = fagsak1))
         }
 
     protected suspend fun endreDistribusjonstype(
         brevId: BrevId,
         nyDistribusjonstype: Distribusjon,
         principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
     ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.endreDistribusjonstype(
+        endreDistribusjonstype(
             EndreDistribusjonstypeHandler.Request(
                 brevId = brevId,
+                saksId = saksId,
                 type = nyDistribusjonstype,
             )
         )
     }
 
+    protected suspend fun leggVedFoersteside(
+        brevId: BrevId,
+        leggVedFoersteside: Boolean,
+        principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
+    ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
+        leggVedFoersteside(LeggVedFoerstesideHandler.Request(brevId = brevId, saksId = saksId, leggVedFoersteside = leggVedFoersteside))
+    }
+
     protected suspend fun sendBrev(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.SendBrevResult, BrevredigeringError>? =
         withPrincipal(principal) {
-            brevredigeringFacade.sendBrev(SendBrevHandler.Request(brevId = brev.info.id))
+            sendBrevHandler(SendBrevHandler.Request(brevId = brev.info.id, saksId = sak1.saksId))
         }
 
     protected fun stagePdf(pdf: ByteArray) {
@@ -377,19 +597,11 @@ abstract class BrevredigeringHandlerTestBase {
         )
     }
 
-    protected class ResultFailure(error: BrevredigeringError) :
-        AssertionFailedError(null, Outcome.Success::class.java, error::class.java)
-
-    protected fun <T> Outcome<T, BrevredigeringError>?.resultOrFail(): T = when (this) {
-        is Outcome.Success -> value
-        is Outcome.Failure -> throw ResultFailure(error)
-        null -> throw AssertionError("Resultat var null")
-    }
-
     protected class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
         lateinit var renderMarkupResultat: suspend ((f: BrevbakerFelles) -> LetterMarkup)
         lateinit var renderPdfResultat: LetterResponse
         var modelSpecificationResultat: TemplateModelSpecification? = null
+        var alltidValgbareVedleggResultat: Set<AlltidValgbartVedleggBrevkode> = emptySet()
         override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
         val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
         val renderPdfKall = mutableListOf<LetterMarkup>()
@@ -415,13 +627,14 @@ abstract class BrevredigeringHandlerTestBase {
             redigertBrev: LetterMarkup,
             alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
             redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment>,
+            pdfVedlegg: List<PDFVedleggTittel>,
         ) = renderPdfResultat.also {
             renderPdfKall.add(redigertBrev)
             renderPdfRedigerteVedleggKall.add(redigerteVedlegg)
         }
 
         override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
-        override suspend fun getAlltidValgbareVedlegg(brevId: BrevId) = notYetStubbed()
+        override suspend fun getAlltidValgbareVedlegg() = alltidValgbareVedleggResultat
 
         override suspend fun hentRedigerbareVedleggTitler(
             brevkode: Brevkode.Redigerbart,

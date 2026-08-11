@@ -5,10 +5,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageImpl
 
 class SelectorUsage {
-    private val _propertyUsage: MutableSet<LetterMarkupWithDataUsage.Property> = mutableSetOf()
-    val propertyUsage: Set<LetterMarkupWithDataUsage.Property> get() = _propertyUsage
+    val propertyUsage: Set<LetterMarkupWithDataUsage.Property> field: MutableSet<LetterMarkupWithDataUsage.Property> = mutableSetOf()
 
     operator fun plusAssign(selector: TemplateModelSelector<*, *>) {
-        _propertyUsage += LetterMarkupWithDataUsageImpl.PropertyImpl(typeName = selector.className, propertyName = selector.propertyName)
+        propertyUsage += LetterMarkupWithDataUsageImpl.PropertyImpl(typeName = selector.className, propertyName = selector.propertyName)
     }
 }

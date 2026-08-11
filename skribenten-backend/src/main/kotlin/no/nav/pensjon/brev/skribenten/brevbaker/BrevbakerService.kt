@@ -1,10 +1,9 @@
 package no.nav.pensjon.brev.skribenten.brevbaker
 
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.typesafe.config.Config
 import io.ktor.client.call.*
+import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -12,21 +11,14 @@ import io.ktor.client.statement.*
 import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.utils.io.core.*
 import kotlinx.io.EOFException
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
-import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
-import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.brev.brevbaker.serialization.*
+import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
-import no.nav.pensjon.brev.skribenten.common.Cache
-import no.nav.pensjon.brev.skribenten.common.Cacheomraade
-import no.nav.pensjon.brev.skribenten.common.cached
-import no.nav.pensjon.brev.skribenten.model.BrevId
-import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationMixins
-import no.nav.pensjon.brev.skribenten.serialize.registerMixin
+import no.nav.pensjon.brev.skribenten.common.*
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.*
@@ -56,6 +48,7 @@ interface BrevbakerService {
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
         redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(),
+        pdfVedlegg: List<PDFVedleggTittel>,
     ): LetterResponse
 
     suspend fun hentRedigerbareVedleggTitler(
@@ -81,27 +74,31 @@ interface BrevbakerService {
 
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
-    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggBrevkode>
+    suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode>
 }
 
-class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus {
+class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, val cache: Cache, engine: HttpClientEngine) : BrevbakerService, ServiceStatus, Closeable {
     private val logger = LoggerFactory.getLogger(BrevbakerServiceHttp::class.java)!!
 
-    private val brevbakerUrl = config.getString("url")
-    private val scope = config.getString("scope")
-    private val client = lagHttpClient {
+    @Suppress("unused") // Brukes av ktor-di
+    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache, engine: HttpClientEngine) : this(config.services.brevbaker, authService, cache, engine)
+
+    private val brevbakerUrl = config.url
+    private val scope = config.scope
+    private val client = lagHttpClient(engine) {
         defaultRequest {
             url(brevbakerUrl)
         }
         installRetry(logger, shouldNotRetry = { method, url, cause -> method == HttpMethod.Post && url.segments.last() == "pdf" && cause?.unwrapCancellationException() !is EOFException })
-        engine {
-            requestTimeout = 60.seconds.inWholeMilliseconds
+        install(HttpTimeout) {
+            // Om denne ikke settes til noe så får man ingen timeout, valgte denne verdien fordi det er standardverdien fra CIOEngineConfig
+            requestTimeoutMillis = 15.seconds.inWholeMilliseconds
         }
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
-                registerModule(LetterMarkupJacksonModule)
-                registerMixin(TemplateModelSpecificationMixins)
+                registerModule(LetterMarkupV1JacksonModule)
+                registerModule(TemplateModelSpecificationJacksonModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             }
@@ -162,8 +159,10 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
         redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment>,
+        pdfVedlegg: List<PDFVedleggTittel>,
     ): LetterResponse {
         val response = client.post("/letter/redigerbar/pdf") {
+            timeout { requestTimeoutMillis = 60.seconds.inWholeMilliseconds }
             contentType(ContentType.Application.Json)
             setBody(
                 BestillRedigertBrevRequest(
@@ -174,6 +173,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
                     letterMarkup = redigertBrev,
                     alltidValgbareVedlegg = alltidValgbareVedlegg,
                     redigerteVedlegg = redigerteVedlegg,
+                    pdfVedlegg = pdfVedlegg
                 )
             )
         }
@@ -266,7 +266,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             }
         }
         return if (response.status.isSuccess()) {
-             response.body()
+            response.body()
         } else {
             logger.error("Feilet ved henting av maler fra Brevbaker: ${response.status.value} - ${response.bodyAsText()}")
             null
@@ -278,7 +278,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             val response = client.get("/templates/redigerbar/${brevkode.kode()}")
 
             if (response.status.isSuccess()) {
-                 response.body()
+                response.body()
             } else if (response.status == HttpStatusCode.NotFound) {
                 null
             } else {
@@ -287,8 +287,8 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             }
         }
 
-    override suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggBrevkode> =
-        cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, brevId) {
+    override suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode> =
+        cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, "alltidValgbareVedlegg") {
             val response = client.get("/letter/redigerbar/alltidValgbareVedlegg")
 
             if (response.status.isSuccess()) {
@@ -296,11 +296,12 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             } else {
                 throw BrevbakerServiceException(
                     response.bodyAsText().takeIf { it.isNotBlank() }
-                        ?: "Ukjent feil oppstod ved henting av alltid valgbare vedlegg for brev $brevId"
+                        ?: "Ukjent feil oppstod ved henting av alltid valgbare vedlegg for brev"
                 )
             }
         }
 
     override suspend fun ping() = ping("Brevbaker") { client.get("/ping_authorized") }
+    override fun close() { client.close() }
 }
 

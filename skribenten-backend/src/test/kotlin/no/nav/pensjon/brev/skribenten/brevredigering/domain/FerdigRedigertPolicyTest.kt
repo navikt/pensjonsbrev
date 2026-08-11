@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
+import no.nav.pensjon.brev.skribenten.override
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -17,7 +18,9 @@ class FerdigRedigertPolicyTest {
     }
 
     private val fritekst = setOf(ElementTags.FRITEKST)
-    private val policy = FerdigRedigertPolicy()
+    private val policy = FerdigRedigertPolicy().also {
+        Features.override(Features.hindreDuplikateAvsnitt, false)
+    }
 
     @Test
     suspend fun `tomt brev er klar til sending`() {

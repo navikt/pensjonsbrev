@@ -10,6 +10,7 @@ import {
   type Identifiable,
   type Item,
   type ItemList,
+  type ListType,
   type LiteralValue,
   type NewLine,
   type ParagraphBlock,
@@ -48,6 +49,10 @@ export function isNewLine(obj: Identifiable | null | undefined): obj is NewLine 
 export function isItemList(obj: Draft<Identifiable | null | undefined>): obj is Draft<ItemList>;
 export function isItemList(obj: Identifiable | null | undefined): obj is ItemList {
   return !!obj && "type" in obj && obj.type === "ITEM_LIST";
+}
+
+export function effectiveListType(itemList: ItemList | Draft<ItemList>): ListType {
+  return itemList.editedListType ?? itemList.listType;
 }
 
 export function isFritekst(literal: LiteralValue): boolean {
@@ -91,15 +96,15 @@ export function isParagraph(block: AnyBlock | undefined | null): block is Paragr
   return block?.type === "PARAGRAPH";
 }
 
-export function isTableCellIndex(idx: Focus | LiteralIndex | undefined): idx is TableCellIndex {
+export function isTableCellIndex(index: Focus | LiteralIndex | undefined): index is TableCellIndex {
   return (
-    idx !== undefined &&
-    "rowIndex" in idx &&
-    typeof idx.rowIndex === "number" &&
-    "cellIndex" in idx &&
-    typeof idx.cellIndex === "number" &&
-    "cellContentIndex" in idx &&
-    typeof idx.cellContentIndex === "number"
+    index !== undefined &&
+    "rowIndex" in index &&
+    typeof index.rowIndex === "number" &&
+    "cellIndex" in index &&
+    typeof index.cellIndex === "number" &&
+    "cellContentIndex" in index &&
+    typeof index.cellContentIndex === "number"
   );
 }
 

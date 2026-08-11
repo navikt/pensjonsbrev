@@ -4,11 +4,10 @@ import { VerticalDivider } from "./Divider";
 
 const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNode; bottom: React.ReactNode }) => {
   return (
-    <Box asChild background="default">
+    <Box asChild background="default" flexGrow="1" overflowY="hidden">
       <VStack justify="space-between">
-        <HGrid columns="minmax(304px, 384px) 1px auto" height="var(--main-page-content-height)" overflowY="hidden">
+        <HGrid columns="minmax(304px, 384px) 1px auto" flexGrow="1" overflowY="hidden">
           <Box
-            height="var(--main-page-content-height)"
             overflowY="auto"
             padding={{ xs: "space-12" }}
             paddingBlock={{ lg: "space-16" }}
@@ -17,7 +16,7 @@ const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNo
             {props.left}
           </Box>
           <VerticalDivider />
-          {props.right}
+          <Box minHeight="0">{props.right}</Box>
         </HGrid>
         <Box
           asChild

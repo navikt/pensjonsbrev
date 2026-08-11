@@ -5,15 +5,14 @@ import no.nav.pensjon.brev.template.validation.BrevTemplateValidator
 
 @LetterTemplateMarker
 class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constructor(internal val validator: BrevTemplateValidator): OutlineScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent<Lang>, OutlineOnlyScope<Lang, LetterData>> {
-    private val _elements = mutableListOf<OutlineElement<Lang>>()
-    @BrevbakerDSLInternal override val elements: List<OutlineElement<Lang>> get() = _elements
+    @BrevbakerDSLInternal override val elements: List<OutlineElement<Lang>> field = mutableListOf<OutlineElement<Lang>>()
     @BrevbakerDSLInternal override fun scopeFactory(): OutlineOnlyScope<Lang, LetterData> = OutlineOnlyScope(validator.subScope())
     @BrevbakerDSLInternal override fun addControlStructure(e: OutlineElement<Lang>) = addOutlineContent(e)
 
     @BrevbakerDSLInternal
     override fun addOutlineContent(e: OutlineElement<Lang>) {
         validator.validate(e)
-        _elements.add(e)
+        elements.add(e)
     }
 
     @BrevbakerDSLInternal

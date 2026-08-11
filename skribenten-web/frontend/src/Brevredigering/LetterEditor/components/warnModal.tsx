@@ -1,33 +1,27 @@
 import { BodyLong, Button, Modal } from "@navikt/ds-react";
 import type React from "react";
 
-export type WarnModalKind = "fritekst" | "tekstValg" | "fritekstOgTekstValg";
+export type WarnModalKind = "fritekst" | "tekstValg" | "fritekstOgTekstValg" | "avsnittIkkeIMal";
 
 // Used discriminated props so that only relevant props are required for each kind.
-// here in this case "count" is only relevant for "fritekst" and "fritekstOgTekstValg" kinds.
-type WarnModalProps =
-  | {
-      kind: "tekstValg";
-      open: boolean;
-      onClose: () => void;
-      onFortsett: () => void;
-    }
-  | {
-      kind: "fritekst";
-      count: number;
-      open: boolean;
-      onClose: () => void;
-      onFortsett: () => void;
-    }
-  | {
-      kind: "fritekstOgTekstValg";
-      count: number;
-      open: boolean;
-      onClose: () => void;
-      onFortsett: () => void;
-    };
+// here in this case "count" is only relevant for "fritekst", "fritekstOgTekstValg" and "avsnittIkkeIMal" kinds.
+// "fortsettLabel" is optional and defaults to "Fortsett til brevbehandler".
+type WarnModalCommonProps = {
+  open: boolean;
+  onClose: () => void;
+  onFortsett: () => void;
+  fortsettLabel?: string;
+};
 
-export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFortsett, ...rest }) => {
+type WarnModalProps = WarnModalCommonProps &
+  (
+    | { kind: "tekstValg" }
+    | { kind: "fritekst"; count: number }
+    | { kind: "fritekstOgTekstValg"; count: number }
+    | { kind: "avsnittIkkeIMal"; count: number }
+  );
+
+export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFortsett, fortsettLabel, ...rest }) => {
   // Early return so the modal unmounts when open is false
   if (!open) {
     return null;
@@ -44,6 +38,8 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
         return `Du må fylle ut ${count} fritekstfelt`;
       case "fritekstOgTekstValg":
         return `Du må fylle ut ${count} fritekstfelt og velge tekst`;
+      case "avsnittIkkeIMal":
+        return `Du må velge om du vil beholde eller slette ${count} avsnitt`;
       default:
         return "";
     }
@@ -53,11 +49,15 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
   const body = (() => {
     switch (kind) {
       case "tekstValg":
-        return "Du kan fortsette til brevbehandler, men brevet kan ikke sendes før du har valgt et eller flere obligatoriske tekstvalg.";
+        return "Du kan fortsette, men brevet kan ikke sendes før du har valgt et eller flere obligatoriske tekstvalg.";
       case "fritekst":
-        return "Du kan fortsette til brevbehandler, men brevet kan ikke sendes før alle fritekstfelter er fylt ut.";
+        return "Du kan fortsette, men brevet kan ikke sendes før alle fritekstfelter er fylt ut.";
       case "fritekstOgTekstValg":
-        return "Du kan fortsette til brevbehandler, men brevet kan ikke sendes før alle fritekstfelter er fylt ut og du har valgt et eller flere obligatoriske tekstvalg.";
+        return "Du kan fortsette, men brevet kan ikke sendes før alle fritekstfelter er fylt ut og du har valgt et eller flere obligatoriske tekstvalg.";
+      case "avsnittIkkeIMal":
+        return count === 1
+          ? "Dette avsnittet er markert i brevet. Velg «Behold» eller «Slett». Du kan fortsette, men brevet kan ikke sendes før dette er gjort."
+          : "Disse avsnittene er markert i brevet. Velg «Behold» eller «Slett» for hvert av dem. Du kan fortsette, men brevet kan ikke sendes før dette er gjort.";
     }
   })();
 
@@ -72,13 +72,12 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
         </Button>
         <Button
           onClick={() => {
-            onClose();
             onFortsett();
           }}
           type="button"
           variant="tertiary"
         >
-          Fortsett til brevbehandler
+          {fortsettLabel ?? "Fortsett til brevbehandler"}
         </Button>
       </Modal.Footer>
     </Modal>
