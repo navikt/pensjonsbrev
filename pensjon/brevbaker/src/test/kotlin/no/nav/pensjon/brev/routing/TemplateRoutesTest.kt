@@ -178,6 +178,17 @@ class TemplateRoutesTest {
     }
 
     @Test
+    fun `filtrerer bort deaktiverte maler`() = runBlocking {
+        testBrevbakerApp(enableAllToggles = false, isIntegrationTest = false) { client ->
+            val response = client.get("/templates/redigerbar?includeMetadata=true")
+            assertEquals(HttpStatusCode.OK, response.status)
+            val body = response.body<List<LinkedHashMap<*, *>>>()
+            assertNull(body.map { it["name"] }.firstOrNull { it == "PE_OVERSETTELSE_AV_DOKUMENTER" })
+            assertNull(body.map { it["name"] }.firstOrNull { it == "UT_AVSLAG_UFOERETRYGD" })
+        }
+    }
+
+    @Test
     fun `batch doc endpoint returns one entry per autobrev template per supported language`() =
         testBrevbakerApp(isIntegrationTest = false) { client ->
             val response = client.get("/templates/autobrev/all")
