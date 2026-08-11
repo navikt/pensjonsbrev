@@ -38,7 +38,6 @@ import { useUserInfo } from "~/hooks/useUserInfo";
 import {
   type BrevResponse,
   type OppdaterAttesteringRequest,
-  type OppdaterBrevRequest,
   type ReservasjonResponse,
   type SaksbehandlerValg,
 } from "~/types/brev";
