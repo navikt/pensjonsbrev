@@ -40,8 +40,8 @@ class SaksbehandlervalgPerMalTest {
 
         val forventet = mapOf(
             Redigerbar.INFO_BEKREFTELSE_UTSENDING_KRAV_TIL_UTLANDET to emptyList(),
-            Redigerbar.INFO_BRUKER_AFP_PRIVAT_SOKER_UFORETRYGD to listOf("harSoktUforeTrygd: kotlin.Boolean"),
-            Redigerbar.INFO_BRUKER_UFORETRYGD_SOKER_AFP_PRIVAT to listOf("brukerHarSoktAfpPrivat: kotlin.Boolean"),
+            Redigerbar.INFO_BRUKER_AFP_PRIVAT_SOKER_UFORETRYGD to listOf("harSoktUforeTrygd: Boolean"),
+            Redigerbar.INFO_BRUKER_UFORETRYGD_SOKER_AFP_PRIVAT to listOf("brukerHarSoktAfpPrivat: Boolean"),
             Redigerbar.PE_AFP_AVSLAG to emptyList(),
             Redigerbar.PE_AFP_AVSLAG_GAMMEL to emptyList(),
             Redigerbar.PE_AFP_ETTEROPPGJOER_ETTERBETALING to emptyList(),
@@ -57,24 +57,24 @@ class SaksbehandlervalgPerMalTest {
             Redigerbar.PE_AF_INNVILGELSE_OFFENTLIG to emptyList(),
             Redigerbar.PE_AF_VEDTAK_ENDRING_OFFENTLIG to emptyList(),
             Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER to emptyList(),
-            Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_AP2016 to listOf("visInfoOmUttakFoer67: kotlin.Boolean?"),
+            Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_AP2016 to emptyList(),
             Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_ETT_AAR to emptyList(),
             Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER to listOf("visInfoOmUttakFoer67: Boolean"),
-            Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER_AP2016 to listOf("visInfoOmUttakFoer67: kotlin.Boolean?"),
+            Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER_AP2016 to listOf("visInfoOmUttakFoer67: Boolean"),
             Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_GARANTITILLEGG to emptyList(),
             Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SAERSKILT_SATS to listOf(
-                "aarligKontrollEPS: kotlin.Boolean",
-                "eps: no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSatsDto.SaksbehandlerValg.EPS?",
-                "etterbetaling: kotlin.Boolean?",
-                "feilutbetaling: kotlin.Boolean",
+                "aarligKontrollEPS: Boolean",
+                "eps: no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSatsDto.EPS",
+                "etterbetaling: Boolean",
+                "feilutbetaling: Boolean",
             ),
             Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND to listOf(
-                "etterbetaling: kotlin.Boolean?",
-                "feilutbetaling: kotlin.Boolean?",
-                "sivilstandsendringsaarsak: no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg.Sivilstandsendringsaarsak?",
+                "etterbetaling: Boolean",
+                "feilutbetaling: Boolean",
+                "sivilstandsendringsaarsak: no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDto.Sivilstandsendringsaarsak",
             ),
             Redigerbar.PE_AP_OMREGNING_ALDER_UFORE_2016 to emptyList(),
-            Redigerbar.PE_AP_STANS_FLYTTING_MELLOM_LAND to listOf("feilutbetaling: kotlin.Boolean"),
+            Redigerbar.PE_AP_STANS_FLYTTING_MELLOM_LAND to listOf("feilutbetaling: Boolean"),
         )
 
         assertEquals(

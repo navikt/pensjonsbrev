@@ -19,7 +19,6 @@ import no.nav.pensjon.brev.alder.model.EksportForbudKode
 import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.stans.VedtakStansAlderspensjonFlyttingMellomLandDto
 import no.nav.pensjon.brev.alder.model.stans.selectors.vedtakStansAlderspensjonFlyttingMellomLandDto.pesysData.*
-import no.nav.pensjon.brev.alder.model.stans.selectors.vedtakStansAlderspensjonFlyttingMellomLandDto.saksbehandlerValg.*
 import no.nav.pensjon.brev.alder.model.stans.selectors.vedtakStansAlderspensjonFlyttingMellomLandDto.*
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -35,6 +34,7 @@ import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 //MF_000128 / AP_STANS_FLYTT_MAN
@@ -57,6 +57,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
         val kravVirkDatoFom = pesysData.kravVirkDatoFom
         val minst20ArTrygdetid = pesysData.minst20ArTrygdetid
         val regelverkType = pesysData.regelverkType
+        val feilutbetaling = saksbehandlervalg("feilutbetaling", "Hvis reduksjon tilbake i tid").bool()
 
         title {
             text(
@@ -203,7 +204,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                 )
             }
 
-            showIf(saksbehandlerValg.feilutbetaling) { includePhrase(FeilutbetalingAP) }
+            showIf(feilutbetaling) { includePhrase(FeilutbetalingAP) }
 
             // skattAPstans
             title1 {
