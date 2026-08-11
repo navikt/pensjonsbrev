@@ -19,6 +19,12 @@ spec:
     port: 8080
     initialDelay: 20
     timeout: 60
+    # initialDelay er lav for at oppskalering ved surge skal gå raskt (readiness styrer
+    # trafikk-routing). Liveness er derfor gitt et bredere feilbudsjett i stedet, slik at
+    # normal variasjon i JVM-oppstart ikke trigger unødvendige restarter/ContainerCrashlooper.
+    # failureThreshold * periodSeconds = 120s margin før poden faktisk drepes.
+    periodSeconds: 10
+    failureThreshold: 10
   readiness:
     path: "/isReady"
     port: 8080
