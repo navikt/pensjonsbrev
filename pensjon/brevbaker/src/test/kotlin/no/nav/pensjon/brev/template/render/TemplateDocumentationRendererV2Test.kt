@@ -242,12 +242,22 @@ class TemplateDocumentationRendererV2Test {
         }
         val conditional = TemplateDocumentationRendererV2.render(templ, Bokmal, templ.modelSpecification()).outline.first()
 
-        val listeFieldPath = Expr.FieldPath(TemplateDocumentationV2.DataSource.Scope("argument"), listOf("liste"), leafType = null)
+        val listeFieldPath = Expr.FieldPath(
+            TemplateDocumentationV2.DataSource.Scope("argument"),
+            listOf("liste"),
+            leafType = "List<Vilkar>",
+            leafOwnerType = "VilkarListeArg",
+        )
         val getOrNullCall = Expr.FunctionCall(
             "getOrNull",
             listOf(listeFieldPath, Expr.Literal("0", TemplateModelSpecification.FieldType.Scalar.Kind.NUMBER)),
         )
-        val fieldAccess = Expr.FieldPath(TemplateDocumentationV2.DataSource.Computed(getOrNullCall), listOf("unguforresultat"), leafType = null)
+        val fieldAccess = Expr.FieldPath(
+            TemplateDocumentationV2.DataSource.Computed(getOrNullCall),
+            listOf("unguforresultat"),
+            leafType = "String",
+            leafOwnerType = "Vilkar",
+        )
         assertEquals(
             Content(
                 Paragraph(
