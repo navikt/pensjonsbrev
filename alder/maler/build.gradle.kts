@@ -26,6 +26,7 @@ dependencies {
 
     testImplementation(libs.bundles.junit)
     testImplementation(testFixtures(project(":brevbaker:core")))
+    testImplementation(kotlin("reflect"))
 }
 
 tasks.test {
