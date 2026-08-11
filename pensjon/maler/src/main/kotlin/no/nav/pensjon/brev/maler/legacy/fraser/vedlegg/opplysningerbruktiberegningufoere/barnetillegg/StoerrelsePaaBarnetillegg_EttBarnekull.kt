@@ -54,7 +54,14 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
                 ) {
                     text(
                         bokmal { + "" },
-                        nynorsk { + "til deg eller " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " " },
+                        nynorsk { + "til deg eller " },
+                    )
+                }
+
+                showIf((pe.ut_tbu605v_eller_til_din() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())) {
+                    text(
+                        bokmal { + "" },
+                        nynorsk { + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " " },
                     )
                 }
 
@@ -83,7 +90,7 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
                     )
                 }
 
-                showIf(((pe.ut_tbu605v_eller_til_din()))) {
+                showIf((pe.ut_tbu605v_eller_til_din() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())) {
                     text(
                         bokmal { + "" },
                         nynorsk { + "," },
