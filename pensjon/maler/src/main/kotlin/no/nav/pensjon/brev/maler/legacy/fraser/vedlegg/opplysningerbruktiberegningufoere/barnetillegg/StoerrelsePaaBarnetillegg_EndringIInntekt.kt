@@ -16,6 +16,11 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())) {
             paragraph {
+                // Åpningssetningen bygges som to språkspesifikke sekvenser (først nynorsk, så bokmål)
+                // fordi eigedomspronomenet står i ulik ordstilling: bokmål "inntekten din ... til din
+                // {samboar}", nynorsk "inntekta ... til deg eller {samboar} din" (bygd som "di" + "n").
+                // Ordstillinga hindrar ein felles per-fragment-struktur. Den felles halen (" blir
+                // reduksjonen ...") er slått saman til eitt tospråkleg text()-kall nedst i avsnittet.
                 showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))) {
                     text(
                         bokmal { + "" },
@@ -33,7 +38,14 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                 ) {
                     text(
                         bokmal { + "" },
-                        nynorsk { + "til deg eller " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " " },
+                        nynorsk { + "til deg eller " },
+                    )
+                }
+
+                showIf((pe.ut_tbu605v_eller_til_din())) {
+                    text(
+                        bokmal { + "" },
+                        nynorsk { + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " " },
                     )
                 }
 
@@ -93,10 +105,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                         nynorsk { + "endrar seg," },
                     )
                 }
-                text(
-                    bokmal { + "" },
-                    nynorsk { + " blir reduksjonen av barnetilleggene vurdert på nytt." },
-                )
 
                 showIf(((pe.ut_tbu605v_eller_til_din()))) {
                     text(
@@ -160,7 +168,7 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                 }
                 text(
                     bokmal { + " blir reduksjonen av barnetilleggene vurdert på nytt. " },
-                    nynorsk { + "" },
+                    nynorsk { + " blir reduksjonen av barnetilleggene vurdert på nytt." },
                 )
             }
         }
