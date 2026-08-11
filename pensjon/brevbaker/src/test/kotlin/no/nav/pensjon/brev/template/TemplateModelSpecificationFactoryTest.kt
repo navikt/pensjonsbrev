@@ -221,6 +221,7 @@ class TemplateModelSpecificationFactoryTest {
             FieldType.Enum(
                 true,
                 setOf(FieldType.EnumEntry("ALTERNATIV_EN", "Alternativ en"), FieldType.EnumEntry("ALTERNATIV_TO", "Alternativ to")),
+                "Enum display"
             )
         )
     }
