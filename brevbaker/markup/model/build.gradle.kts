@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "no.nav.brev.brevbaker"
-version = libs.versions.markupVersion.get()
+version = publishedLibs.versions.markupVersion.get()
 
 base {
     archivesName.set("markup-model")

@@ -26,11 +26,11 @@ repositories {
 
 dependencies {
     api(project(":brevbaker:dsl"))
-    api(libs.brevbaker.api)
+    api(publishedLibs.brevbaker.api)
     // Den utvidede (id-eksplisitte) markup-DSL-en, brukt av Letter2Markup, og kontrakten mot pdf-bygger
     // som følger med via markup:model. DSL-en bor i samme modul som den vanlige og er gatet med
     // @ExtendedMarkupDsl, som denne modulen opter inn på under.
-    api(libs.markup.dsl)
+    api(publishedLibs.markup.dsl)
 
     implementation(project(":brevbaker:serialization"))
     ksp(project(":brevbaker:template-model-generator"))
@@ -44,7 +44,7 @@ dependencies {
     testImplementation(testFixtures(project(":brevbaker:dsl")))
     testImplementation(testFixtures(project(":brevbaker:core")))
 
-    testFixturesApi(libs.brevbaker.api)
+    testFixturesApi(publishedLibs.brevbaker.api)
     testFixturesImplementation(project(":brevbaker:serialization"))
     // Testfixturene bygger PDF-forespørsler slik en ekstern konsument ville gjort det.
     testFixturesImplementation(libs.ktor.serialization.jackson)

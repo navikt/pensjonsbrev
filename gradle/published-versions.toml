@@ -1,0 +1,10 @@
+[versions]
+brevdataVersion = "1.0.1"
+brevbakerApiVersion = "1.0.1"
+markupVersion = "2.0.1"
+
+[libraries]
+brevdata = { module = "no.nav.brev.brevbaker:brevdata", version.ref = "brevdataVersion" }
+brevbaker-api = { module = "no.nav.brev.brevbaker:brevbaker-api", version.ref = "brevbakerApiVersion" }
+markup-model = { module = "no.nav.brev.brevbaker:markup-model", version.ref = "markupVersion" }
+markup-dsl = { module = "no.nav.brev.brevbaker:markup-dsl", version.ref = "markupVersion" }
