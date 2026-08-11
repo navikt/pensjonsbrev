@@ -458,6 +458,9 @@ components:
         - letterData
         - felles
         - language
+        - letterMarkup
+        - alltidValgbareVedlegg
+        - redigerteVedlegg
       properties:
         kode:
           type: string
@@ -472,6 +475,37 @@ components:
           $ref: "#/components/schemas/LanguageCode"
         letterMarkup:
           $ref: "#/components/schemas/LetterMarkupV2"
+        alltidValgbareVedlegg:
+          type: array
+          description: Se `no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode`.
+          items:
+            $ref: "#/components/schemas/AlltidValgbartVedleggKode"
+        redigerteVedlegg:
+          type: object
+          description: Redigerte vedlegg per vedleggId. Se `no.nav.brev.brevbaker.markup.Attachment`.
+          additionalProperties:
+            $ref: "#/components/schemas/AttachmentV2"
+        pdfVedlegg:
+          type: array
+          description: Tittel på PDF-vedlegg. Se `no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel`.
+          items:
+            type: string
+    AlltidValgbartVedleggKode:
+      type: object
+      description: Se `no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode`
+      required:
+        - kode
+        - visningstekst
+        - spraak
+      properties:
+        kode:
+          type: string
+        visningstekst:
+          type: string
+        spraak:
+          type: array
+          items:
+            $ref: "#/components/schemas/LanguageCode"
     LetterResponse:
       type: object
       description: Se data klasse `no.nav.pensjon.brev.api.model.LetterResponse.V2`
@@ -1006,16 +1040,45 @@ components:
       properties:
         title1:
           type: array
-          description: Tittel som liste av tekst-tokens.
+          description: Tittel som liste av tekst-tokens. Se `no.nav.brev.brevbaker.markup.outline.Text`.
+          items:
+            type: object
         saksinformasjon:
           type: object
           description: Se `no.nav.brev.brevbaker.markup.Saksinformasjon`.
         blocks:
           type: array
           description: Se `no.nav.brev.brevbaker.markup.outline.Block`.
+          items:
+            type: object
         signatur:
           type: object
           description: Se `no.nav.brev.brevbaker.markup.Signatur`.
+        version:
+          type: integer
+          description: Versjon av markup-modellen.
+
+    AttachmentV2:
+      type: object
+      description: |
+        Se `no.nav.brev.brevbaker.markup.Attachment` i `brevbaker/markup`.
+      required:
+        - title1
+        - blocks
+        - inkluderSaksinformasjon
+      properties:
+        title1:
+          type: array
+          description: Tittel som liste av tekst-tokens. Se `no.nav.brev.brevbaker.markup.outline.Text`.
+          items:
+            type: object
+        blocks:
+          type: array
+          description: Se `no.nav.brev.brevbaker.markup.outline.Block`.
+          items:
+            type: object
+        inkluderSaksinformasjon:
+          type: boolean
 
     TemplateDoc:
       type: object
