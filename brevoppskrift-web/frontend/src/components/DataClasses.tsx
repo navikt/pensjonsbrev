@@ -47,18 +47,33 @@ function DataPresentation({
         {trimClassName(name)}(
       </span>
       {Object.entries(objectTypeSpecification).map(([key, value]) => (
-        <DataField fieldType={value} key={key} name={key} />
+        <DataField fieldType={value} key={key} name={key} ownerClassName={name} />
       ))}
       <span>)</span>
     </VStack>
   );
 }
 
-function DataField({ name, fieldType }: { name: string; fieldType: FieldType }) {
-  const { highlightedDataField } = useSearch({ from: "/template/$malType/$templateId" });
+function DataField({
+  name,
+  fieldType,
+  ownerClassName,
+}: {
+  name: string;
+  fieldType: FieldType;
+  ownerClassName: string;
+}) {
+  const { highlightedDataField, highlightedDataFieldOwner } = useSearch({ from: "/template/$malType/$templateId" });
   const reference = useRef<HTMLSpanElement>(null);
 
-  const isHighlighted = highlightedDataField === name;
+  // Uten highlightedDataFieldOwner (slik v1 lenker felt) matches feltnavnet globalt på
+  // tvers av alle data-klasser, som tidligere. Når highlightedDataFieldOwner er satt
+  // (v2s FieldPath-lenker, som kjenner feltets eierklasse via leafOwnerType), skal
+  // treffet begrenses til akkurat den klassen, slik at felt med samme navn i andre
+  // klasser ikke highlightes ved en feiltakelse.
+  const isHighlighted =
+    highlightedDataField === name &&
+    (!highlightedDataFieldOwner || highlightedDataFieldOwner === trimClassName(ownerClassName));
 
   useEffect(() => {
     if (isHighlighted && reference.current) {
