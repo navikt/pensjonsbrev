@@ -5,6 +5,7 @@ import {
   BodyShort,
   Box,
   Button,
+  Checkbox,
   Detail,
   Heading,
   HStack,
@@ -123,6 +124,8 @@ function AllTemplates() {
   const {
     query,
     setQuery,
+    fuzzy,
+    setFuzzy,
     isSearching,
     isLoading,
     failedCount,
@@ -166,6 +169,9 @@ function AllTemplates() {
             variant="simple"
           />
         </Box>
+        <Checkbox checked={fuzzy} onChange={(e) => setFuzzy(e.target.checked)} size="small">
+          Fuzzy søk
+        </Checkbox>
         <Detail aria-live="polite" textColor="subtle">
           {isLoading
             ? "Indekserer innhold …"

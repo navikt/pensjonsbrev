@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { renderHook, waitFor } from "@testing-library/react";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import { type ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -83,5 +83,32 @@ describe("useTemplateSearch", () => {
       expect(result.current.failedCount).toBe(0);
     });
     expect(getAllTemplateDocumentation.queryFn.mock.calls.length).toBeGreaterThan(callsBeforeRetry);
+  });
+
+  it("defaults to fuzzy search enabled, and setFuzzy(false) disables typo tolerance", async () => {
+    const typoTolerantContent: SearchableContent[] = [
+      {
+        brevkode: "A1",
+        language: "BOKMAL",
+        lines: [{ index: 0, segments: [{ type: "text", value: "Vi har beregnet din alderspensjon" }] }],
+      },
+    ];
+    getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
+      Promise.resolve(malType === "autobrev" ? typoTolerantContent : []),
+    );
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
+    const { result } = renderHook(() => useTemplateSearch(refs), { wrapper: wrapper(queryClient) });
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+
+    expect(result.current.fuzzy).toBe(true);
+
+    act(() => result.current.setQuery("alderspenjson")); // transposed letters
+    await waitFor(() => expect(result.current.isSearching).toBe(true));
+    await waitFor(() => expect(result.current.contentHits).toHaveLength(1));
+
+    act(() => result.current.setFuzzy(false));
+    await waitFor(() => expect(result.current.fuzzy).toBe(false));
+    await waitFor(() => expect(result.current.contentHits).toHaveLength(0));
   });
 });

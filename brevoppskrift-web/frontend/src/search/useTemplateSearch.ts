@@ -18,6 +18,9 @@ export type TemplateRef = {
 export type TemplateSearch = {
   query: string;
   setQuery: (query: string) => void;
+  /** Whether typo-tolerant (fuzzy) matching is enabled. On by default. */
+  fuzzy: boolean;
+  setFuzzy: (fuzzy: boolean) => void;
   isSearching: boolean;
   isLoading: boolean;
   failedCount: number;
@@ -66,6 +69,7 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
     })),
   });
   const titleByKey = useMemo(() => new Map(templates.map((t) => [`${t.malType}/${t.brevkode}`, t.title])), [templates]);
+  const [fuzzy, setFuzzy] = useState(true);
   // Depends on data identity (not fetch timestamps), so an unchanged corpus that
   // revalidated to a 304 keeps the same reference and does not rebuild the index.
   const freshnessKey = queries.map((q) => referenceId(q.data)).join("|");
@@ -85,8 +89,8 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
         });
       }
     });
-    return buildIndex(entries);
-  }, [freshnessKey, malTypes, titleByKey]);
+    return buildIndex(entries, fuzzy);
+  }, [freshnessKey, malTypes, titleByKey, fuzzy]);
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
   const trimmedQuery = deferredQuery.trim();
@@ -107,6 +111,8 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
   return {
     query,
     setQuery,
+    fuzzy,
+    setFuzzy,
     isSearching,
     isLoading: queries.some((q) => q.data === undefined && !q.isError),
     failedCount: failedMalTypes.length,
