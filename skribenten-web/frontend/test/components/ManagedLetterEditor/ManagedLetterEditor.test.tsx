@@ -37,7 +37,7 @@ vi.mock("~/Brevredigering/LetterEditor/LetterEditor", async (importOriginal) => 
   const original = await importOriginal<typeof import("~/Brevredigering/LetterEditor/LetterEditor")>();
   return {
     ...original,
-    // Redigeringsflaten erstattes med en knapp som simulerer en redigering.
+    // The editing surface is replaced with a button that simulates an edit.
     LetterEditor: (props: { setEditorState: (fn: (s: LetterEditorState) => LetterEditorState) => void }) => (
       <button
         data-testid="rediger"
@@ -60,13 +60,13 @@ const StateProbe = () => {
   return null;
 };
 
-describe("ManagedLetterEditor autolagring", () => {
+describe("ManagedLetterEditor autosave", () => {
   afterEach(() => {
     vi.restoreAllMocks();
     observedState = null;
   });
 
-  test("lagrer gjeldende markørposisjon i state når autolagring starter", async () => {
+  test("stores the current caret position in state when autosave starts", async () => {
     vi.useFakeTimers();
     const brev = brevResponse();
     vi.mocked(brevQueries.oppdaterBrevtekst).mockResolvedValue(brev);
@@ -81,14 +81,14 @@ describe("ManagedLetterEditor autolagring", () => {
       </QueryClientProvider>,
     );
 
-    // Brukeren redigerer (state får cursorPosition 3), og flytter deretter
-    // markøren med piltaster — noe som ikke oppdaterer editorState.focus.
+    // The user edits (state gets cursorPosition 3), then moves the caret with the
+    // arrow keys — which does not update editorState.focus.
     act(() => {
       getByTestId("rediger").click();
     });
     expect(observedState?.focus.cursorPosition).toBe(3);
 
-    // Simuler at markøren nå står på offset 7 i DOM.
+    // Simulate that the caret is now at offset 7 in the DOM.
     const textNode = document.createTextNode("tekst som er lang nok");
     document.body.append(textNode);
     const range = document.createRange();
@@ -102,7 +102,7 @@ describe("ManagedLetterEditor autolagring", () => {
       await vi.advanceTimersByTimeAsync(AUTOSAVE_TIMER);
     });
 
-    // State skal ha fersk markørposisjon (7), ikke den utdaterte (3).
+    // State should hold the fresh caret position (7), not the stale one (3).
     expect(observedState?.focus.cursorPosition).toBe(7);
     expect(observedState?.saveStatus).not.toBe("DIRTY");
     vi.useRealTimers();

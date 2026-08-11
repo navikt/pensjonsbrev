@@ -96,13 +96,13 @@ const caretInfo = () => {
   };
 };
 
-describe("caret etter autolagring", () => {
+describe("caret after autosave", () => {
   afterEach(() => {
     cleanup();
     globalThis.getSelection()?.removeAllRanges();
   });
 
-  test("beholder markøren når lagret brev er strukturelt likt", () => {
+  test("keeps the caret when the saved letter is structurally identical", () => {
     render(<Harness initial={initialState()} />);
     const span = screen.getByText(lit1.text);
     placeCaret(span, 5);
@@ -117,18 +117,18 @@ describe("caret etter autolagring", () => {
     expect(caret.anchorText).toBe(lit1.text);
   });
 
-  test("overskriver ikke tekst/markør i fokusert literal når server-svar er eldre enn skjermbilde", () => {
+  test("does not overwrite text/caret in the focused literal when the save response is older than the screen", () => {
     const state = initialState();
     render(<Harness initial={state} />);
     const span = screen.getByText(lit1.text);
     placeCaret(span, 5);
 
-    // Brukeren skriver et tegn; DOM oppdateres nativt og state lagrer ny tekst + cursorPosition.
+    // The user types a character; the DOM updates natively and state stores the new text + cursorPosition.
     span.textContent = `${lit1.text}x`;
     placeCaret(span, 6);
     fireEvent.input(span);
 
-    // Server-svaret (sendt før tastetrykket) ekkoer den gamle teksten tilbake.
+    // The save response (sent before the keystroke) echoes the old text back.
     fireEvent.click(screen.getByTestId("apply-save-response"));
 
     const caret = caretInfo();
@@ -137,10 +137,10 @@ describe("caret etter autolagring", () => {
     expect(caret.offset).toBe(6);
   });
 
-  // Dokumentert og akseptert begrensning i den minimale fiksen: har serveren FAKTISK endret teksten i
-  // den fokuserte literalen, beholdes skjermteksten og den levende markøren (ingen tvungen sync).
-  // Markøren forblir på sin nåværende plass i stedet for å gjenopprettes fra focus.cursorPosition.
-  test("dokumentert begrensning: server har endret teksten i fokusert literal", () => {
+  // Documented, accepted limitation of the minimal fix: if the server HAS actually changed the text of
+  // the focused literal, the on-screen text and the live caret are kept (no forced sync). The caret
+  // stays where it is instead of being restored from focus.cursorPosition.
+  test("documented limitation: server changed the text of the focused literal", () => {
     render(<Harness initial={initialState()} />);
     const span = screen.getByText(lit1.text);
     placeCaret(span, 5);
@@ -153,23 +153,23 @@ describe("caret etter autolagring", () => {
     expect(caret.anchorText).toBe(lit1.text);
   });
 
-  test("dokumentert begrensning: cursorPosition mangler i state (flyttet med piltaster) + endret tekst fra server", () => {
+  test("documented limitation: cursorPosition missing from state (moved with arrow keys) + server changed text", () => {
     render(<Harness initial={{ ...initialState(), focus: { blockIndex: 0, contentIndex: 0 } }} />);
     const span = screen.getByText(lit1.text);
     placeCaret(span, 5);
 
     fireEvent.click(screen.getByTestId("apply-save-response-changed-text"));
 
-    // Uten lagret cursorPosition beholdes teksten på skjermen, men markøren gjenopprettes ikke
-    // (i nettleseren havner den i starten av elementet etter textContent-sync).
+    // Without a stored cursorPosition the on-screen text is kept, but the caret is not restored
+    // (in the browser it lands at the start of the element after the textContent sync).
     const caret = caretInfo();
     expect(span.textContent).toBe(lit1.text);
     expect(caret.rangeCount).toBe(1);
   });
 
-  test("beholder mus-markering i literal som ikke er focus-target etter autolagring", () => {
-    // State.focus peker på contentIndex 0 (siste redigering), men brukeren har
-    // markert tekst i contentIndex 1 med musen.
+  test("keeps a mouse selection in a literal that is not the focus target after autosave", () => {
+    // state.focus points at contentIndex 0 (the last edit), but the user has
+    // selected text in contentIndex 1 with the mouse.
     render(<Harness initial={initialState()} />);
     const span = screen.getByText(lit2.text);
     const range = document.createRange();
@@ -187,7 +187,7 @@ describe("caret etter autolagring", () => {
     expect(after?.getRangeAt(0).toString()).toBe(lit2.text.slice(2, 8));
   });
 
-  test("server-merge setter inn innhold før fokusert literal (indeks-skift)", () => {
+  test("server merge inserts content before the focused literal (index shift)", () => {
     render(<Harness initial={initialState()} />);
     const span = screen.getByText(lit1.text);
     placeCaret(span, 5);

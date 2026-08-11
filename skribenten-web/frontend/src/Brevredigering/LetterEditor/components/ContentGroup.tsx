@@ -211,9 +211,9 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     if (!element) return;
 
     const selectionAnchor = globalThis.getSelection()?.anchorNode ?? null;
-    // Bare behold DOM-teksten når brukeren faktisk holder en levende markør/markering i elementet.
-    // En markør i et element som er fjernet fra dokumentet (f.eks. etter merge) er død og skal
-    // ikke hindre at riktig tekst synkes.
+    // Only preserve the DOM text when the user actually holds a live caret/selection inside the element.
+    // A caret in an element that has been removed from the document (e.g. after a merge) is dead and
+    // must not block the correct text from being synced back.
     const harLevendeMarkering = selectionAnchor?.isConnected === true && element.contains(selectionAnchor);
 
     if (element.textContent !== text && !(harLevendeMarkering && element.textContent !== "")) {
