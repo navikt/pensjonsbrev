@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import { BodyLong, Heading, Tag } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
+import { type ReactNode } from "react";
 
 import {
   type AttachmentV2,
@@ -250,25 +251,25 @@ function ShowElseV2<E extends ElementV2>({ cocs }: { cocs: ContentOrControlStruc
   );
 }
 
-function compareOpSymbol(op: string): string {
+function compareOpPhrase(op: string): string {
   switch (op) {
     case "EQUAL": {
-      return "==";
+      return "er lik";
     }
     case "NOT_EQUAL": {
-      return "!=";
+      return "er ulik";
     }
     case "GREATER_THAN": {
-      return ">";
+      return "er større enn";
     }
     case "GREATER_THAN_OR_EQUAL": {
-      return ">=";
+      return "er større enn eller lik";
     }
     case "LESS_THAN": {
-      return "<";
+      return "er mindre enn";
     }
     case "LESS_THAN_OR_EQUAL": {
-      return "<=";
+      return "er mindre enn eller lik";
     }
     default: {
       return op;
@@ -316,6 +317,44 @@ function editableKindLabel(kind: string): string {
     }
     default: {
       return kind;
+    }
+  }
+}
+
+/**
+ * Strukturell humanisering (4.A) av kjente, innebygde operasjoner (den lukkede listen
+ * `UnaryOperation`/`BinaryOperation` i `Operations.kt`) til faste norske frasemaler, f.eks.
+ * "{X} er tom" for `isEmpty`, "antall {X}" for `size`. Returnerer `null` for ukjente
+ * funksjonsnavn, slik at `ExprToText` faller tilbake til den generiske `navn(args)`-visningen.
+ */
+function functionCallPhrase(name: string, args: Expr[]): ReactNode | null {
+  switch (name) {
+    case "isEmpty": {
+      return args[0] ? (
+        <span>
+          <MaybeParens expr={args[0]} /> er tom
+        </span>
+      ) : null;
+    }
+    case "enabled": {
+      return args[0] ? (
+        <span>
+          funksjonsbryteren <MaybeParens expr={args[0]} /> er aktivert
+        </span>
+      ) : null;
+    }
+    case "size": {
+      return args[0] ? (
+        <span>
+          antall <MaybeParens expr={args[0]} />
+        </span>
+      ) : null;
+    }
+    case "today": {
+      return <span>dagens dato</span>;
+    }
+    default: {
+      return null;
     }
   }
 }
@@ -382,6 +421,16 @@ function MaybeParens({ expr }: { expr: Expr }) {
   return <ExprToText expr={expr} />;
 }
 
+/**
+ * Er dette literal-noden for Kotlin `null` (fra `Expression.Literal(null)`, brukt internt av
+ * DSL-ens `isNull()`/`notNull()`)? Kjennetegnes ved at verdien er strengen "null" og `kind` er
+ * ukjent (`inferScalarKind(null)` gir ingen treff), til forskjell fra en faktisk strengliteral
+ * med innholdet "null".
+ */
+function isNullLiteral(expr: Expr): boolean {
+  return expr.exprType === ExprType.LITERAL && expr.value === "null" && expr.kind === null;
+}
+
 export function ExprToText({ expr }: { expr: Expr }) {
   switch (expr.exprType) {
     case ExprType.LITERAL: {
@@ -404,20 +453,36 @@ export function ExprToText({ expr }: { expr: Expr }) {
       );
     }
     case ExprType.COMPARISON: {
+      // Strukturell humanisering (4.A): `isNull()`/`notNull()` i DSL-en representeres internt
+      // som en EQUAL/NOT_EQUAL-comparison mot literal null (se Base.kt). Vis dette som "har X" /
+      // "mangler X" i stedet for "X == null" / "X != null" for bedre lesbarhet — krever ingen
+      // maldata utover det som allerede finnes i Expr-treet.
+      if ((expr.op === "EQUAL" || expr.op === "NOT_EQUAL") && isNullLiteral(expr.right)) {
+        return (
+          <span>
+            {expr.op === "NOT_EQUAL" ? "har " : "mangler "}
+            <MaybeParens expr={expr.left} />
+          </span>
+        );
+      }
       return (
         <span>
-          <MaybeParens expr={expr.left} /> {compareOpSymbol(expr.op)} <MaybeParens expr={expr.right} />
+          <MaybeParens expr={expr.left} /> {compareOpPhrase(expr.op)} <MaybeParens expr={expr.right} />
         </span>
       );
     }
     case ExprType.NOT: {
       return (
         <span>
-          !<MaybeParens expr={expr.term} />
+          ikke <MaybeParens expr={expr.term} />
         </span>
       );
     }
     case ExprType.FUNCTION_CALL: {
+      const phrase = functionCallPhrase(expr.name, expr.args);
+      if (phrase) {
+        return <span>{phrase}</span>;
+      }
       return (
         <span>
           {expr.name}(
