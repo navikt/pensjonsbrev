@@ -257,7 +257,10 @@ object TemplateDocumentationRendererV2 {
             val segment = operation.selector.propertyName
             return when (val base = renderExpr(value, assignments, forEachDepth)) {
                 is FieldPath -> base.copy(segments = base.segments + segment)
-                else -> FunctionCall(".$segment", listOf(base))
+                // Feltaksess på et beregnet uttrykk (f.eks. `getOrNull(...).felt`,
+                // `(a ?: b).felt`) — DataSource.Computed lar oss fortsatt bygge en lesbar
+                // FieldPath-kjede i stedet for en bakvendt FunctionCall(".felt", [base]).
+                else -> FieldPath(TemplateDocumentationV2.DataSource.Computed(base), listOf(segment), leafType = null)
             }
         }
 
@@ -517,11 +520,21 @@ data class TemplateDocumentationV2(
     @JsonSubTypes(
         JsonSubTypes.Type(DataSource.Scope::class, name = "SCOPE"),
         JsonSubTypes.Type(DataSource.ForEachVar::class, name = "FOR_EACH_VAR"),
+        JsonSubTypes.Type(DataSource.Computed::class, name = "COMPUTED"),
     )
     @JsonPropertyOrder("dataSourceType")
     sealed class DataSource {
         data class Scope(val name: String) : DataSource()
         data class ForEachVar(val label: String, val depth: Int) : DataSource()
+
+        /**
+         * Feltaksess på et vilkårlig beregnet uttrykk, f.eks. `getOrNull(liste, 0).felt` eller
+         * `(a ?: b).felt`. Uten denne varianten havnet slike kjeder i en bakvendt
+         * `FunctionCall(".felt", [base])`-representasjon (se `renderUnaryInvoke`s
+         * `UnaryOperation.Select`-håndtering) — [Computed] gjør at [FieldPath.segments] kan
+         * bygges videre på toppen av hvilken som helst [Expr], ikke bare `Scope`/`ForEachVar`.
+         */
+        data class Computed(val expr: Expr) : DataSource()
     }
 
     enum class AssocOp { AND, OR, CONCAT, PLUS }
