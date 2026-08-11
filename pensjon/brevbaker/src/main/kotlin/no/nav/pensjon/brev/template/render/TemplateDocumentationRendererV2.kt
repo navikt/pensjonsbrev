@@ -305,12 +305,26 @@ object TemplateDocumentationRendererV2 {
                 return base
             }
             val segment = selector.propertyName
+            // `propertyType` er en fullt kvalifisert Kotlin-type-streng (f.eks.
+            // "no.nav.pensjon.brevbaker.api.model.SomeDto?" eller "kotlin.String"), satt av
+            // hver Select i kjeden. Siden feltstien bygges innenfra og ut (se renderExpr sin
+            // rekursjon), er det den siste (ytterste) Select-en som overskriver leafType sist,
+            // slik at den til slutt reflekterer typen til det faktiske siste/leaf-segmentet.
             return when (base) {
-                is FieldPath -> base.copy(segments = base.segments + segment)
+                is FieldPath -> base.copy(
+                    segments = base.segments + segment,
+                    leafType = selector.propertyType,
+                    leafOwnerType = selector.className,
+                )
                 // Feltaksess på et beregnet uttrykk (f.eks. `getOrNull(...).felt`,
                 // `(a ?: b).felt`) — DataSource.Computed lar oss fortsatt bygge en lesbar
                 // FieldPath-kjede i stedet for en bakvendt FunctionCall(".felt", [base]).
-                else -> FieldPath(TemplateDocumentationV2.DataSource.Computed(base), listOf(segment), leafType = null)
+                else -> FieldPath(
+                    TemplateDocumentationV2.DataSource.Computed(base),
+                    listOf(segment),
+                    leafType = selector.propertyType,
+                    leafOwnerType = selector.className,
+                )
             }
         }
 
