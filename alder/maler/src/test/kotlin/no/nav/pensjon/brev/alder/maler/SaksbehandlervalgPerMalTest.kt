@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.alder.maler
 
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.Redigerbar
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import kotlin.reflect.KClass
@@ -15,15 +17,25 @@ import kotlin.reflect.full.memberProperties
 class SaksbehandlervalgPerMalTest {
 
     @Test
+    @OptIn(BrevbakerDSLInternal::class)
     fun `hvert redigerbart brev har forventede saksbehandlervalg`() {
         val faktiske = AlderTemplates.hentRedigerbareMaler().associate { mal ->
             val saksbehandlerValgType = mal.template.letterDataType.members
                 .single { it.name == "saksbehandlerValg" }
                 .returnType.classifier as KClass<*>
 
-            (mal.kode as Redigerbar) to saksbehandlerValgType.memberProperties
-                .map { "${it.name}: ${it.returnType}" }
-                .sorted()
+            // Maler migrert til saksbehandlervalg-DSL-en deklarerer valgene sine i template-body
+            // (`saksbehandlervalg("id", "...")`) i stedet for som felter på en egen SaksbehandlerValg-type,
+            // og har `saksbehandlerValg: SaksbehandlervalgIDSL` på Dto-en. De registrerte valgene finnes da i
+            // `mal.template.saksbehandlervalg`. Ikke-migrerte maler har fremdeles en typet SaksbehandlerValg-klasse,
+            // som vi da faller tilbake til å reflektere over.
+            val valg = if (saksbehandlerValgType == SaksbehandlervalgIDSL::class) {
+                mal.template.saksbehandlervalg.orEmpty().entries.map { (id, verdi) -> "$id: ${verdi.typename}" }
+            } else {
+                saksbehandlerValgType.memberProperties.map { "${it.name}: ${it.returnType}" }
+            }
+
+            (mal.kode as Redigerbar) to valg.sorted()
         }
 
         val forventet = mapOf(
