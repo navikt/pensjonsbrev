@@ -63,15 +63,18 @@ jobs:
             brevdata:
               - 'brevbaker/brevdata/src/main/**'
               - 'brevbaker/brevdata/api/brevdata.api'
+              - 'gradle/published-versions.toml'
             markup:
               - 'brevbaker/markup/model/src/main/**'
               - 'brevbaker/markup/model/api/markup-model.api'
               - 'brevbaker/markup/dsl/src/main/**'
               - 'brevbaker/markup/dsl/api/markup-dsl.api'
+              - 'gradle/published-versions.toml'
 
             brevbakerApi:
               - 'brevbaker/brevbaker-api/src/main/**'
               - 'brevbaker/brevbaker-api/api/brevbaker-api.api'
+              - 'gradle/published-versions.toml'
             pensjonApiModel:
               - 'pensjon/api-model/gradle.properties'
             alderApiModel:

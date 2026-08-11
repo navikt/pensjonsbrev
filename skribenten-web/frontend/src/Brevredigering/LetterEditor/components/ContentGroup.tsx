@@ -41,6 +41,7 @@ import {
   type LiteralValue,
   TITLE_INDEX,
 } from "~/types/brevbakerTypes";
+import { getPasteMetadata } from "~/utils/pasteTracking";
 import { trackEvent } from "~/utils/umami";
 
 import { updateFocus } from "../actions/cursorPosition";
@@ -561,11 +562,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const pastedText = event.clipboardData.getData("text/plain");
       const pasteLength = pastedText.length;
       if (pasteLength > 0) {
+        const pasteMetadata = getPasteMetadata(event.clipboardData);
         trackEvent("tekst limt inn", {
           brevkode: editorState.info.brevkode,
           antallTegn: pasteLength,
           merEnn200: pasteLength > 200,
           limInnMetode,
+          ...pasteMetadata,
         });
       }
 
@@ -577,11 +580,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         const pastedText = event.clipboardData.getData("text/plain");
         const pasteLength = pastedText.length;
         if (pasteLength > 0) {
+          const pasteMetadata = getPasteMetadata(event.clipboardData);
           trackEvent("tekst erstattet", {
             brevkode: editorState.info.brevkode,
             antallTegn: pasteLength,
             merEnn200: pasteLength > 200,
             limInnMetode,
+            ...pasteMetadata,
           });
         }
 

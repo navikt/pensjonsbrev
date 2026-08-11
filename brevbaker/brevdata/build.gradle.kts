@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "no.nav.brev.brevbaker"
-version = libs.versions.brevdataVersion.get()
+version = publishedLibs.versions.brevdataVersion.get()
 
 base {
     archivesName.set("brevdata")
