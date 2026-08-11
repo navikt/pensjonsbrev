@@ -109,13 +109,11 @@ function TemplateExplorer() {
   return (
     <HGrid columns="minmax(360px, 35%) 1fr" height="100%" overflow="hidden">
       <Box background="neutral-soft" borderColor="neutral-subtle" borderWidth="0 1 0 0" minHeight="0">
-        <Link to="/templates">
-          <Box asChild marginBlock="space-16 space-0" marginInline="space-16">
-            <Button as="a" icon={<ArrowLeftIcon />} size="small" variant="secondary">
-              Tilbake til mal-oversikten
-            </Button>
-          </Box>
-        </Link>
+        <Box asChild marginBlock="space-16 space-0" marginInline="space-16">
+          <Button as={Link} icon={<ArrowLeftIcon />} size="small" to="/templates" variant="secondary">
+            Tilbake til mal-oversikten
+          </Button>
+        </Box>
         <DataClasses templateModelSpecification={documentation.templateModelSpecification} />
       </Box>
       <VStack
