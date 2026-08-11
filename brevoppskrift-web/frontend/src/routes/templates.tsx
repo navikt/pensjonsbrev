@@ -1,5 +1,19 @@
 import { css } from "@emotion/react";
-import { Bleed, BodyShort, Box, Detail, Heading, HStack, Loader, Search, Tabs, Tag, VStack } from "@navikt/ds-react";
+import {
+  Alert,
+  Bleed,
+  BodyShort,
+  Box,
+  Button,
+  Detail,
+  Heading,
+  HStack,
+  Loader,
+  Search,
+  Tabs,
+  Tag,
+  VStack,
+} from "@navikt/ds-react";
 import { type QueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
@@ -20,6 +34,14 @@ import {
 function displayTitleOf(description: { name: string; metadata?: { displayTitle?: string } | null }): string {
   const title = description.metadata?.displayTitle;
   return title?.trim() ? title : description.name;
+}
+const MAL_TYPE_LABELS: Record<MalType, string> = {
+  autobrev: "automatiske brev",
+  redigerbar: "redigerbare brev",
+};
+/** Human-readable Norwegian label for the malType(s) whose corpus failed to load. */
+function malTypeLabels(malTypes: MalType[]): string {
+  return malTypes.map((malType) => MAL_TYPE_LABELS[malType]).join(" og ");
 }
 export const Route = createFileRoute("/templates")({
   loader: async ({ context }) => {
@@ -104,6 +126,8 @@ function AllTemplates() {
     isSearching,
     isLoading,
     failedCount,
+    failedMalTypes,
+    retryFailed,
     contentHits,
     brevHits,
     contentTemplateCount,
@@ -149,6 +173,19 @@ function AllTemplates() {
                 failedCount > 0 ? ` (${failedCount} feilet)` : ""
               }`}
         </Detail>
+        {failedCount > 0 ? (
+          <Alert size="small" variant="warning">
+            <HStack align="center" gap="space-16" justify="space-between">
+              <BodyShort>
+                Kunne ikke hente innhold for {malTypeLabels(failedMalTypes)}. Søkeresultatene kan derfor være
+                ufullstendige.
+              </BodyShort>
+              <Button onClick={retryFailed} size="small" variant="secondary">
+                Prøv igjen
+              </Button>
+            </HStack>
+          </Alert>
+        ) : null}
         <VStack asChild flexGrow="1" overflow="hidden">
           <Bleed asChild marginInline="space-16">
             <Tabs

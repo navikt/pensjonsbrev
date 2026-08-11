@@ -21,6 +21,10 @@ export type TemplateSearch = {
   isSearching: boolean;
   isLoading: boolean;
   failedCount: number;
+  /** malType(s) whose corpus fetch failed; search results may be incomplete. */
+  failedMalTypes: MalType[];
+  /** Refetches every malType whose corpus fetch is currently failing. */
+  retryFailed: () => void;
   contentHits: ContentHit[];
   brevHits: BrevHit[];
   contentTemplateCount: number;
@@ -92,12 +96,22 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
     [index, isSearching, trimmedQuery],
   );
   const languageTotal = useMemo(() => new Set(templates.flatMap((t) => t.languages)).size, [templates]);
+  const failedMalTypes = malTypes.filter((_, i) => queries[i]?.isError);
+  const retryFailed = () => {
+    for (const q of queries) {
+      if (q.isError) {
+        void q.refetch();
+      }
+    }
+  };
   return {
     query,
     setQuery,
     isSearching,
     isLoading: queries.some((q) => q.data === undefined && !q.isError),
-    failedCount: queries.filter((q) => q.isError).length,
+    failedCount: failedMalTypes.length,
+    failedMalTypes,
+    retryFailed,
     contentHits: results.content,
     brevHits: results.brev,
     contentTemplateCount: templateCount(results.content),
