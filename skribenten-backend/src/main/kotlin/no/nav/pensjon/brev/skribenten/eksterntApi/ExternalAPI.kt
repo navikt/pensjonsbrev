@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -41,7 +42,7 @@ object ExternalAPI {
         val brevkode: RedigerbarBrevkode,
         val spraak: SpraakKode,
         val avsenderEnhetsId: EnhetId,
-        val saksbehandlerValg: Map<String, Any?>?,
+        val saksbehandlerValg: SaksbehandlervalgMap?,
         val reserverForRedigering: Boolean?,
         val vedtaksId: VedtaksId?
     )

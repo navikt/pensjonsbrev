@@ -6,7 +6,6 @@ import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
 import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkupV2
 import no.nav.brev.brevbaker.template.render.toMarkup
 import no.nav.brev.brevbaker.template.toScope
-import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.Letter
@@ -15,13 +14,18 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupLetterMarkup
 import no.nav.brev.brevbaker.markup.Attachment as MarkupAttachment
-import no.nav.brev.brevbaker.markup.dsl.letterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggTittel
 
 internal class BrevbakerPDF(
     private val pdfByggerService: PDFByggerService,
-    private val pdfVedleggAppender: PDFVedleggAppender,
 ) {
-    suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null, redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()): LetterResponse =
+    suspend fun renderPDF(
+        letter: Letter<BrevbakerBrevdata>,
+        redigertBrev: LetterMarkup? = null,
+        redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment> = emptyMap(),
+        pdfVedleggTitler: List<PDFVedleggTittel> = listOf(),
+    ): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev, redigerteVedlegg).let { markup ->
             pdfByggerService.producePDF(
                 PDFRequest(
@@ -29,22 +33,14 @@ internal class BrevbakerPDF(
                     attachments = markup.attachments,
                     language = letter.language.toCode(),
                     brevtype = letter.template.letterMetadata.brevtype,
-                    pdfVedlegg = Letter2Markup.renderPDFTitlesOnly(letter.toScope(), letter.template)
+                    pdfVedlegg = Letter2Markup.renderPDFTitle(letter.toScope(), pdfVedleggTitler)
                 ),
-            )
-        }.let { pdf ->
-            pdfVedleggAppender.leggPaaVedlegg(
-                pdf,
-                letter.template.pdfAttachments
-                    .filter { a -> a.predicate.eval(letter.toScope()) }
-                    .map { a -> a.eval(letter.toScope()) },
-                letter.language.toCode()
             )
         }.let { pdf ->
             LetterResponse(
                 file = pdf.bytes,
                 contentType = ContentTypes.PDF,
-                letterMetadata = letter.template.letterMetadata
+                letterMetadata = letter.template.letterMetadata,
             )
         }
 
@@ -63,26 +59,17 @@ internal class BrevbakerPDF(
         letter: Letter<BrevbakerBrevdata>,
         redigertBrev: MarkupLetterMarkup? = null,
         redigerteVedlegg: Map<VedleggId, MarkupAttachment> = emptyMap(),
+        pdfVedlegg: List<PDFVedleggTittel> = listOf(),
     ): LetterResponse =
         renderCompleteMarkupV2(letter, redigertBrev, redigerteVedlegg).let { markup ->
             pdfByggerService.producePDFV2(
                 letterPDFRequest(
+                    letterMarkup = markup.letterMarkup,
+                    attachments = markup.attachments,
+                    pdfVedlegg = Letter2MarkupV2.renderPDFTitle(letter.toScope(), pdfVedlegg),
                     spraak = letter.language.toCode().toMarkup(),
                     brevtype = letter.template.letterMetadata.brevtype.toMarkup(),
-                    letter = markup.letterMarkup
-                ) {
-                    markup.attachments.forEach { attachment(it) }
-                    Letter2MarkupV2.renderPDFTitlesOnly(letter.toScope(), letter.template)
-                        .forEach { pdfVedlegg(it) }
-                },
-            )
-        }.let { pdf ->
-            pdfVedleggAppender.leggPaaVedlegg(
-                pdf,
-                letter.template.pdfAttachments
-                    .filter { a -> a.predicate.eval(letter.toScope()) }
-                    .map { a -> a.eval(letter.toScope()) },
-                letter.language.toCode()
+                ),
             )
         }.let { pdf ->
             LetterResponse(

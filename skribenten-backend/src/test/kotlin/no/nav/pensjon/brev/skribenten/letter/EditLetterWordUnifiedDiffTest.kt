@@ -1,11 +1,13 @@
-@file:OptIn(InterneDataklasser::class)
-
 package no.nav.pensjon.brev.skribenten.letter
 
-import no.nav.brev.InterneDataklasser
-import no.nav.pensjon.brev.skribenten.letter.ContentIndex.BlockContentIndex
-import no.nav.pensjon.brev.skribenten.letter.ContentIndex.ItemContentIndex
-import no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableCellContentIndex
+import no.nav.pensjon.brev.skribenten.letter.UnifiedDiff.BlockEdit
+import no.nav.pensjon.brev.skribenten.letter.UnifiedDiff.ContentEdit
+import no.nav.pensjon.brev.skribenten.letter.UnifiedDiff.DeletedTextSegment
+import no.nav.pensjon.brev.skribenten.letter.UnifiedDiff.RowEdit
+import no.nav.pensjon.brev.skribenten.letter.UnifiedDiff.TextEdit
+import no.nav.pensjon.brev.skribenten.letter.UnifiedDiff.TextOnlyEdit
+import no.nav.pensjon.brev.skribenten.letter.UnifiedDiff.TextSegment
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -14,60 +16,81 @@ class EditLetterWordUnifiedDiffTest {
     private val wordDiff = EditLetterWordDiff()
 
     @Test
-    fun `no change produces empty inserts and deletes`() {
+    fun `no change produces empty editedBlocks and deletedBlocks`() {
         val letter = editedLetter { paragraph { literal(text = "hello world") } }
-        val (inserts, deletes) = wordDiff.unifiedDiff(letter, letter)
-        assertEquals(emptyList<DiffSegment>(), inserts)
-        assertEquals(emptyList<UnifiedDeleteSegment>(), deletes)
+        val diff = wordDiff.unifiedDiff(letter, letter)
+        assertEquals(emptyMap<Int, BlockEdit>(), diff.editedBlocks)
+        assertEquals(emptyMap<Int, List<Edit.Block>>(), diff.deletedBlocks)
     }
 
     @Test
-    fun `changed word produces insert DiffSegment and delete with text`() {
+    fun `changed word produces insert and delete in the TextEdit for that content`() {
         val old = editedLetter { paragraph { literal(text = "hello world") } }
         val new = editedLetter { paragraph { literal(text = "hello goodbye") } }
-        val (inserts, deletes) = wordDiff.unifiedDiff(old, new)
-        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 6, 13)), inserts)
-        assertEquals(listOf(UnifiedDeleteSegment(BlockContentIndex(0, 0), 6, 11, "world")), deletes)
+        val diff = wordDiff.unifiedDiff(old, new)
+        assertEquals(
+            mapOf(0 to BlockEdit(contentEdits = mapOf(0 to textContentEdit(inserts = listOf(TextSegment(6, 13)), deletes = listOf(DeletedTextSegment(6, 11, "world")))), deletedContent = emptyMap())),
+            diff.editedBlocks,
+        )
+        assertEquals(emptyMap<Int, List<Edit.Block>>(), diff.deletedBlocks)
     }
 
     @Test
-    fun `added word produces insert DiffSegment and no delete`() {
+    fun `added word produces insert and no delete`() {
         val old = editedLetter { paragraph { literal(text = "hello") } }
         val new = editedLetter { paragraph { literal(text = "hello world") } }
-        val (inserts, deletes) = wordDiff.unifiedDiff(old, new)
-        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 6, 11)), inserts)
-        assertEquals(emptyList<UnifiedDeleteSegment>(), deletes)
+        val diff = wordDiff.unifiedDiff(old, new)
+        assertEquals(
+            mapOf(0 to BlockEdit(contentEdits = mapOf(0 to textContentEdit(inserts = listOf(TextSegment(6, 11)))), deletedContent = emptyMap())),
+            diff.editedBlocks,
+        )
     }
 
     @Test
     fun `removed word produces no insert and delete with text`() {
         val old = editedLetter { paragraph { literal(text = "hello world") } }
         val new = editedLetter { paragraph { literal(text = "hello") } }
-        val (inserts, deletes) = wordDiff.unifiedDiff(old, new)
-        assertEquals(emptyList<DiffSegment>(), inserts)
-        assertEquals(listOf(UnifiedDeleteSegment(BlockContentIndex(0, 0), 6, 11, "world")), deletes)
+        val diff = wordDiff.unifiedDiff(old, new)
+        assertEquals(
+            mapOf(0 to BlockEdit(contentEdits = mapOf(0 to textContentEdit(deletes = listOf(DeletedTextSegment(6, 11, "world")))), deletedContent = emptyMap())),
+            diff.editedBlocks,
+        )
     }
 
     @Test
     fun `consecutive changed words are merged into one delete segment with combined text`() {
         val old = editedLetter { paragraph { literal(text = "hello foo bar") } }
         val new = editedLetter { paragraph { literal(text = "hello aaa bbb") } }
-        val (inserts, deletes) = wordDiff.unifiedDiff(old, new)
-        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 6, 13)), inserts)
-        assertEquals(listOf(UnifiedDeleteSegment(BlockContentIndex(0, 0), 6, 13, "foo bar")), deletes)
+        val diff = wordDiff.unifiedDiff(old, new)
+        assertEquals(
+            mapOf(0 to BlockEdit(contentEdits = mapOf(0 to textContentEdit(inserts = listOf(TextSegment(6, 13)), deletes = listOf(DeletedTextSegment(6, 13, "foo bar")))), deletedContent = emptyMap())),
+            diff.editedBlocks,
+        )
     }
 
     @Test
-    fun `changed word in item list produces delete with ItemContentIndex and text`() {
+    fun `changed word in item list produces delete in the item's TextOnlyEdit`() {
         val old = editedLetter { paragraph { itemList { item { literal(text = "hello world") } } } }
         val new = editedLetter { paragraph { itemList { item { literal(text = "hello goodbye") } } } }
-        val (inserts, deletes) = wordDiff.unifiedDiff(old, new)
-        assertEquals(listOf(DiffSegment(ItemContentIndex(0, 0, 0, 0), 6, 13)), inserts)
-        assertEquals(listOf(UnifiedDeleteSegment(ItemContentIndex(0, 0, 0, 0), 6, 11, "world")), deletes)
+        val diff = wordDiff.unifiedDiff(old, new)
+        assertEquals(
+            mapOf(
+                0 to BlockEdit(
+                    contentEdits = mapOf(
+                        0 to ContentEdit.ItemListEdit(
+                            itemEdits = mapOf(0 to textOnlyEdit(inserts = listOf(TextSegment(6, 13)), deletes = listOf(DeletedTextSegment(6, 11, "world")))),
+                            deletedItems = emptyMap(),
+                        ),
+                    ),
+                    deletedContent = emptyMap(),
+                ),
+            ),
+            diff.editedBlocks,
+        )
     }
 
     @Test
-    fun `changed word in table body cell produces delete with TableCellContentIndex and text`() {
+    fun `changed word in table body cell produces delete in the cell's TextOnlyEdit`() {
         val old = editedLetter {
             paragraph {
                 table {
@@ -84,13 +107,30 @@ class EditLetterWordUnifiedDiffTest {
                 }
             }
         }
-        val (inserts, deletes) = wordDiff.unifiedDiff(old, new)
-        assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, 0, 0, 0), 6, 13)), inserts)
-        assertEquals(listOf(UnifiedDeleteSegment(TableCellContentIndex(0, 0, 0, 0, 0), 6, 11, "world")), deletes)
+        val diff = wordDiff.unifiedDiff(old, new)
+        assertEquals(
+            mapOf(
+                0 to BlockEdit(
+                    contentEdits = mapOf(
+                        0 to ContentEdit.TableEdit(
+                            rowEdits = mapOf(
+                                0 to RowEdit(
+                                    cellEdits = mapOf(0 to textOnlyEdit(inserts = listOf(TextSegment(6, 13)), deletes = listOf(DeletedTextSegment(6, 11, "world")))),
+                                    deletedCells = emptyMap(),
+                                ),
+                            ),
+                            deletedRows = emptyMap(),
+                        ),
+                    ),
+                    deletedContent = emptyMap(),
+                ),
+            ),
+            diff.editedBlocks,
+        )
     }
 
     @Test
-    fun `produces deletes that take into account previously deleted blocks`() {
+    fun `entirely deleted block is embedded in deletedBlocks at its unified position`() {
         val old = editedLetter {
             paragraph(id = 1) {
                 literal(text = "abcdefg")
@@ -110,18 +150,20 @@ class EditLetterWordUnifiedDiffTest {
                 literal(text = "opqrstu")
             }
         }
-        val deletes = wordDiff.unifiedDiff(old, new).deletes
+        val diff = wordDiff.unifiedDiff(old, new)
+
+        // block id=1 is entirely deleted; it retains its unified position (blockIndex 0), since it's the
+        // first block in the merged view. block id=2 is unchanged, so it produces no editedBlocks entry.
+        assertEquals(mapOf(0 to listOf(old.blocks[0])), diff.deletedBlocks)
+        // block id=3 survives at blockIndex 1 in `new`, with "vwxyz" removed from its text.
         assertEquals(
-            listOf(
-                UnifiedDeleteSegment(index = BlockContentIndex(blockIndex = 0, contentIndex = 0), startOffset = 0, endOffset = 7, text = "abcdefg"),
-                UnifiedDeleteSegment(index = BlockContentIndex(blockIndex = 1, contentIndex = 0), startOffset = 8, endOffset = 13, text = "vwxyz")
-            ),
-            deletes
+            mapOf(1 to BlockEdit(contentEdits = mapOf(0 to textContentEdit(deletes = listOf(DeletedTextSegment(8, 13, "vwxyz")))), deletedContent = emptyMap())),
+            diff.editedBlocks,
         )
     }
 
     @Test
-    fun `produces deletes that take into account previously deleted content within a block`() {
+    fun `entirely deleted content within a block is embedded in deletedContent at its unified position`() {
         // Old contentIndex: 0="alpha" (entirely deleted), 1=NewLine (entirely deleted), 2="beta gamma"
         // New contentIndex: 0="beta epsilon"
         val old = editedLetter {
@@ -136,24 +178,27 @@ class EditLetterWordUnifiedDiffTest {
                 literal(text = "beta epsilon")
             }
         }
-        val (inserts, deletes) = wordDiff.unifiedDiff(old, new)
+        val diff = wordDiff.unifiedDiff(old, new)
+        val oldContent = (old.blocks[0] as Edit.Block.Paragraph).content
+
         // "beta epsilon" is the only content in the new block, so it - and everything sharing its unified
         // position - must use contentIndex 0, since there is no contentIndex 1 in the new document.
-        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 5, 12)), inserts)
         assertEquals(
-            listOf(
-                // "alpha" is entirely deleted content, retaining its unified position (contentIndex 0)
-                UnifiedDeleteSegment(BlockContentIndex(0, 0), 0, 5, "alpha"),
-                // "gamma" is deleted from the same literal as the "epsilon" insert, so shares its unified
-                // contentIndex (0) rather than its old-document contentIndex (2)
-                UnifiedDeleteSegment(BlockContentIndex(0, 0), 5, 10, "gamma"),
+            mapOf(
+                0 to BlockEdit(
+                    // "gamma" -> "epsilon" is a word-level change within the still-existing "beta ..." literal
+                    contentEdits = mapOf(0 to textContentEdit(inserts = listOf(TextSegment(5, 12)), deletes = listOf(DeletedTextSegment(5, 10, "gamma")))),
+                    // "alpha" and the NewLine are entirely deleted content, embedded in full, retaining their
+                    // unified position (contentIndex 0) rather than their old-document position (0 and 1)
+                    deletedContent = mapOf(0 to listOf(oldContent[0], oldContent[1])),
+                ),
             ),
-            deletes,
+            diff.editedBlocks,
         )
     }
 
     @Test
-    fun `produces deletes that take into account previously deleted content within an item`() {
+    fun `entirely deleted content within an item is embedded in deletedContent at its unified position`() {
         val old = editedLetter {
             paragraph {
                 itemList {
@@ -174,19 +219,33 @@ class EditLetterWordUnifiedDiffTest {
                 }
             }
         }
-        val (inserts, deletes) = wordDiff.unifiedDiff(old, new)
-        assertEquals(listOf(DiffSegment(ItemContentIndex(0, 0, 0, 0), 5, 12)), inserts)
+        val diff = wordDiff.unifiedDiff(old, new)
+        val oldItemContent = ((old.blocks[0] as Edit.Block.Paragraph).content[0] as Edit.ParagraphContent.ItemList).items[0].content
+
         assertEquals(
-            listOf(
-                UnifiedDeleteSegment(ItemContentIndex(0, 0, 0, 0), 0, 5, "alpha"),
-                UnifiedDeleteSegment(ItemContentIndex(0, 0, 0, 0), 5, 10, "gamma"),
+            mapOf(
+                0 to BlockEdit(
+                    contentEdits = mapOf(
+                        0 to ContentEdit.ItemListEdit(
+                            itemEdits = mapOf(
+                                0 to textOnlyEdit(
+                                    inserts = listOf(TextSegment(5, 12)),
+                                    deletes = listOf(DeletedTextSegment(5, 10, "gamma")),
+                                    deletedContent = mapOf(0 to listOf(oldItemContent[0], oldItemContent[1])),
+                                ),
+                            ),
+                            deletedItems = emptyMap(),
+                        ),
+                    ),
+                    deletedContent = emptyMap(),
+                ),
             ),
-            deletes,
+            diff.editedBlocks,
         )
     }
 
     @Test
-    fun `produces deletes that take into account previously deleted content within a table cell`() {
+    fun `entirely deleted content within a table cell is embedded in deletedContent at its unified position`() {
         val old = editedLetter {
             paragraph {
                 table {
@@ -213,14 +272,105 @@ class EditLetterWordUnifiedDiffTest {
                 }
             }
         }
-        val (inserts, deletes) = wordDiff.unifiedDiff(old, new)
-        assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, 0, 0, 0), 5, 12)), inserts)
+        val diff = wordDiff.unifiedDiff(old, new)
+        val oldTable = (old.blocks[0] as Edit.Block.Paragraph).content[0] as Edit.ParagraphContent.Table
+        val oldCellContent = oldTable.rows[0].cells[0].text
+
         assertEquals(
-            listOf(
-                UnifiedDeleteSegment(TableCellContentIndex(0, 0, 0, 0, 0), 0, 5, "alpha"),
-                UnifiedDeleteSegment(TableCellContentIndex(0, 0, 0, 0, 0), 5, 10, "gamma"),
+            mapOf(
+                0 to BlockEdit(
+                    contentEdits = mapOf(
+                        0 to ContentEdit.TableEdit(
+                            rowEdits = mapOf(
+                                0 to RowEdit(
+                                    cellEdits = mapOf(
+                                        0 to textOnlyEdit(
+                                            inserts = listOf(TextSegment(5, 12)),
+                                            deletes = listOf(DeletedTextSegment(5, 10, "gamma")),
+                                            deletedContent = mapOf(0 to listOf(oldCellContent[0], oldCellContent[1])),
+                                        ),
+                                    ),
+                                    deletedCells = emptyMap(),
+                                ),
+                            ),
+                            deletedRows = emptyMap(),
+                        ),
+                    ),
+                    deletedContent = emptyMap(),
+                ),
             ),
-            deletes,
+            diff.editedBlocks,
         )
     }
+
+    @Test
+    fun `succeeding entire container deletions are correctly tracked at their unified positions`() {
+        val old = editedLetter {
+            title1 { literal(text = "alpha") }
+            paragraph {
+                literal(text = "beta")
+                literal(text = "epsilon")
+            }
+            paragraph { literal(text = "hello") }
+        }
+        val new = editedLetter {
+            paragraph {
+                literal(text = "beta")
+            }
+            paragraph { literal(text = "hello") }
+        }
+        val diff = wordDiff.unifiedDiff(old, new)
+        assertThat(diff.deletedBlocks[0]).contains(old.blocks[0])
+        // "epsilon" is a trailing delete relative to the surviving "beta" (unified index 0), so it is correctly
+        // attributed to unified index 1 - one past "beta" - rather than colliding with a leading delete at index 0.
+        assertThat(diff.editedBlocks[0]!!.deletedContent[1]).contains(old.blocks[1].content[1])
+    }
+
+    @Test
+    fun `deletedContent distinguishes a leading delete from a trailing delete relative to the same survivor`() {
+        // NewLine sits before the surviving "def" - a leading delete, sharing unified position 0 with "abc".
+        val oldLeading = editedLetter {
+            paragraph {
+                literal(text = "abc")
+                newLine()
+                variable(text = "def")
+            }
+        }
+        // NewLine sits after the surviving "def" - a trailing delete, at unified position 1 (one past "def").
+        val oldTrailing = editedLetter {
+            paragraph {
+                literal(text = "abc")
+                variable(text = "def")
+                newLine()
+            }
+        }
+        val new = editedLetter {
+            paragraph {
+                variable(text = "def")
+            }
+        }
+
+        val leadingDiff = wordDiff.unifiedDiff(oldLeading, new)
+        val leadingContent = (oldLeading.blocks[0] as Edit.Block.Paragraph).content
+        assertEquals(
+            mapOf(0 to listOf(leadingContent[0], leadingContent[1])),
+            leadingDiff.editedBlocks[0]!!.deletedContent,
+        )
+
+        val trailingDiff = wordDiff.unifiedDiff(oldTrailing, new)
+        val trailingContent = (oldTrailing.blocks[0] as Edit.Block.Paragraph).content
+        assertEquals(
+            mapOf(0 to listOf(trailingContent[0]), 1 to listOf(trailingContent[2])),
+            trailingDiff.editedBlocks[0]!!.deletedContent,
+        )
+    }
+
+    private fun textContentEdit(inserts: List<TextSegment> = emptyList(), deletes: List<DeletedTextSegment> = emptyList()): ContentEdit.TextContentEdit =
+        ContentEdit.TextContentEdit(TextEdit(inserts, deletes))
+
+    private fun textOnlyEdit(
+        inserts: List<TextSegment> = emptyList(),
+        deletes: List<DeletedTextSegment> = emptyList(),
+        deletedContent: Map<Int, List<Edit.ParagraphContent.Text>> = emptyMap(),
+    ): TextOnlyEdit = TextOnlyEdit(textEdits = mapOf(0 to TextEdit(inserts, deletes)), deletedContent = deletedContent)
 }

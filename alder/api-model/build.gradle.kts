@@ -9,6 +9,8 @@ plugins {
 
 group = "no.nav.pensjon.alder.brev"
 
+base { archivesName.set("alder-api-model") }
+
 java {
     withSourcesJar()
     withJavadocJar()
@@ -20,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    api(libs.brevbaker.common)
+    api(publishedLibs.brevdata)
 }
 
 publishing {
@@ -36,6 +38,7 @@ publishing {
     }
     publications {
         register<MavenPublication>("gpr") {
+            artifactId = "alder-api-model"
             from(components["java"])
         }
     }

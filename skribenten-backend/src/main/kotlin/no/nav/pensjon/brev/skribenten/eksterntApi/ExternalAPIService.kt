@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.eksterntApi
 
+import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
@@ -13,8 +14,8 @@ import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.asSuccess
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
 import no.nav.pensjon.brev.skribenten.routes.toLanguageCode
 import no.nav.pensjon.brev.skribenten.services.toApi
 import org.slf4j.LoggerFactory
@@ -104,7 +105,7 @@ class ExternalAPIService(
                 brevkode = request.brevkode,
                 spraak = request.spraak.toLanguageCode(),
                 avsenderEnhetsId = request.avsenderEnhetsId,
-                saksbehandlerValg = Api.GeneriskBrevdata().also { data -> request.saksbehandlerValg?.forEach { (k, v) -> data[k] = v } },
+                saksbehandlerValg = request.saksbehandlerValg ?: SaksbehandlervalgMap(),
                 reserverForRedigering = request.reserverForRedigering ?: true
             )
         )

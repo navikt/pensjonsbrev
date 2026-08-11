@@ -44,6 +44,8 @@ spec:
     requests:
       cpu: "200m"
       memory: "256Mi"
+    limits:
+      memory: "768Mi"
   gcp:
     sqlInstances:
       - type: {{database.postgresVersion}}
@@ -106,6 +108,16 @@ spec:
       - name: AD_GROUP_{{g.name}}
         value: {{g.id}}
     {{/each}}
+      # ActiveProcessorCount: vi setter ikke limits.cpu, og fra JDK 19 brukes ikke cpu.shares
+      # (requests.cpu) til CPU-telling. Uten kvote dimensjonerer JVM-en antall GC-tråder,
+      # kompilatortråder og Netty-event-loops etter NODEN og ikke poden, og hver tråd koster
+      # 1 MB stakk utenfor heapen.
+      # ExitOnOutOfMemoryError: Nettys event loop fanger Throwable, så en OutOfMemoryError kan
+      # etterlate appen halvdød mens probene fortsatt svarer. Bedre å dø og la kubernetes restarte.
+      # Må være value og ikke valueFrom: OTel-operatoren appender -javaagent til denne variabelen,
+      # men hopper stille over den dersom den er satt via valueFrom.
+      - name: JAVA_TOOL_OPTIONS
+        value: "-XX:ActiveProcessorCount=2 -XX:+ExitOnOutOfMemoryError"
   envFrom:
     - secret: "{{ app-name }}-unleash-api-token"
     - secret: "krypteringsnoekkel"

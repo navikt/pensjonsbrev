@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvsla
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagTestmalDto.saksbehandlervalg.VisVurderingFraVilkarvedtak
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagTestmalDto.uforeAvslagPendata.kravMottattDato
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagTestmalDto.uforeAvslagPendata.vurdering
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagTestmalDto.uforeAvslagPendata.vurderingsTekst
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
@@ -90,6 +91,10 @@ object UforeAvslagTestmal : RedigerbarTemplate<UforeAvslagTestmalDto> {
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+//                paragraph {
+//                    text(bokmal { +redigerbarData(pesysData.vurderingsTekst) },
+//                        nynorsk { +redigerbarData(pesysData.vurderingsTekst) })
+//                }
                 forEach(pesysData.vurdering) {
                     paragraph {
                         text(bokmal { + redigerbarData(it) },
@@ -97,6 +102,7 @@ object UforeAvslagTestmal : RedigerbarTemplate<UforeAvslagTestmalDto> {
                     }
                 }
             }
+
             paragraph {
                 text(bokmal { + fritekst("Individuell vurdering") },
                     nynorsk { + fritekst("Individuell vurdering") }

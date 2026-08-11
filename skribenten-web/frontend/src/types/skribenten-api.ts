@@ -3387,6 +3387,7 @@ export interface components {
             distribusjonstype: components["schemas"]["Distribusjon"];
             id: number;
             journalpostId?: number | null;
+            leggVedFoersteside?: boolean | null;
             mottaker?: components["schemas"]["ApiOverstyrtMottaker"] | null;
             /** Format: date-time */
             opprettet: string;
@@ -3399,6 +3400,8 @@ export interface components {
             status: components["schemas"]["ApiBrevStatus"];
             vedtaksId?: number | null;
         };
+        /** SaksbehandlervalgVerdi */
+        SaksbehandlervalgVerdi: boolean | number | string | null;
         /** ApiOpprettBrevRequest */
         ApiOpprettBrevRequest: {
             avsenderEnhetsId: string;
@@ -3406,7 +3409,7 @@ export interface components {
             mottaker?: components["schemas"]["ApiOverstyrtMottaker"] | null;
             reserverForRedigering?: boolean | null;
             saksbehandlerValg: {
-                [key: string]: unknown;
+                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
             };
             spraak: components["schemas"]["SpraakKode"];
             vedtaksId?: number | null;
@@ -3649,8 +3652,6 @@ export interface components {
             signatur: components["schemas"]["LetterMarkupSignatur"];
             title: components["schemas"]["EditTitle"];
         };
-        /** SaksbehandlerValgBrevdata */
-        SaksbehandlerValgBrevdata: Record<string, never>;
         /** AlltidValgbartVedleggBrevkode */
         AlltidValgbartVedleggBrevkode: {
             kode: string;
@@ -3663,14 +3664,16 @@ export interface components {
             propertyUsage?: components["schemas"]["LetterMarkupWithDataUsageProperty"][] | null;
             redigertBrev: components["schemas"]["EditLetter"];
             redigertBrevHash: string;
-            saksbehandlerValg: components["schemas"]["SaksbehandlerValgBrevdata"];
+            saksbehandlerValg: {
+                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
+            };
             valgteVedlegg?: components["schemas"]["AlltidValgbartVedleggBrevkode"][] | null;
         };
         /** ApiOppdaterBrevRequest */
         ApiOppdaterBrevRequest: {
             redigertBrev: components["schemas"]["EditLetter"];
             saksbehandlerValg: {
-                [key: string]: unknown;
+                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
             };
         };
         /** ApiDelvisOppdaterBrevRequest */
@@ -3725,7 +3728,7 @@ export interface components {
         ApiOppdaterAttesteringRequest: {
             redigertBrev: components["schemas"]["EditLetter"];
             saksbehandlerValg: {
-                [key: string]: unknown;
+                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
             };
         };
         /**
@@ -4007,6 +4010,7 @@ export type ApiBrevStatusKlar = components['schemas']['ApiBrevStatusKlar'];
 export type ApiBrevStatusUnderRedigering = components['schemas']['ApiBrevStatusUnderRedigering'];
 export type ApiBrevStatus = components['schemas']['ApiBrevStatus'];
 export type ApiBrevInfo = components['schemas']['ApiBrevInfo'];
+export type SaksbehandlervalgVerdi = components['schemas']['SaksbehandlervalgVerdi'];
 export type ApiOpprettBrevRequest = components['schemas']['ApiOpprettBrevRequest'];
 export type BrevExceptionDto = components['schemas']['BrevExceptionDto'];
 export type LetterMarkupWithDataUsageProperty = components['schemas']['LetterMarkupWithDataUsageProperty'];
@@ -4037,7 +4041,6 @@ export type LetterMarkupSakspart = components['schemas']['LetterMarkupSakspart']
 export type LetterMarkupSignatur = components['schemas']['LetterMarkupSignatur'];
 export type EditTitle = components['schemas']['EditTitle'];
 export type EditLetter = components['schemas']['EditLetter'];
-export type SaksbehandlerValgBrevdata = components['schemas']['SaksbehandlerValgBrevdata'];
 export type AlltidValgbartVedleggBrevkode = components['schemas']['AlltidValgbartVedleggBrevkode'];
 export type ApiBrevResponse = components['schemas']['ApiBrevResponse'];
 export type ApiOppdaterBrevRequest = components['schemas']['ApiOppdaterBrevRequest'];

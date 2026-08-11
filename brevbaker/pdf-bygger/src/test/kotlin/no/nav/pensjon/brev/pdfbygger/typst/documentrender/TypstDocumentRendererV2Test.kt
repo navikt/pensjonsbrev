@@ -1,11 +1,12 @@
 package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
 import no.nav.brev.brevbaker.markup.LetterMarkup
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.Signatur
 import no.nav.brev.brevbaker.markup.dsl.ContentBuilder
 import no.nav.brev.brevbaker.markup.dsl.LetterMarkupBuilder
+import no.nav.brev.brevbaker.markup.dsl.attachment
 import no.nav.brev.brevbaker.markup.dsl.cell
 import no.nav.brev.brevbaker.markup.dsl.choice
 import no.nav.brev.brevbaker.markup.dsl.column
@@ -15,9 +16,10 @@ import no.nav.brev.brevbaker.markup.dsl.header
 import no.nav.brev.brevbaker.markup.dsl.item
 import no.nav.brev.brevbaker.markup.dsl.itemList
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
-import no.nav.brev.brevbaker.markup.dsl.letterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
 import no.nav.brev.brevbaker.markup.dsl.numberedList
 import no.nav.brev.brevbaker.markup.dsl.paragraph
+import no.nav.brev.brevbaker.markup.dsl.pdfTittel
 import no.nav.brev.brevbaker.markup.dsl.prompt
 import no.nav.brev.brevbaker.markup.dsl.row
 import no.nav.brev.brevbaker.markup.dsl.saksinformasjon
@@ -28,12 +30,12 @@ import no.nav.brev.brevbaker.markup.dsl.title2
 import no.nav.brev.brevbaker.markup.dsl.title3
 import no.nav.brev.brevbaker.markup.dsl.title4
 import no.nav.brev.brevbaker.markup.outline.Block.FormText.Size
+import no.nav.pensjon.brev.pdfbygger.PdfByggerTestData
 import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.io.ByteArrayOutputStream
 import java.io.OutputStreamWriter
-import java.time.LocalDate
 
 /**
  * Unit tests for [TypstDocumentRendererV2] that inspect the generated Typst source
@@ -51,19 +53,22 @@ class TypstDocumentRendererV2Test {
     }
 
     private val saksinformasjon = saksinformasjon(
-        gjelderNavn = "Navn Navnesen",
-        gjelderPersonidentifikator = "12345678901",
-        saksnummer = "123",
-        dokumentDato = LocalDate.of(2025, 1, 1),
+        gjelderNavn = PdfByggerTestData.gjelderNavn,
+        gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
+        saksnummer = PdfByggerTestData.saksnummer,
+        dokumentDato = PdfByggerTestData.dokumentDato,
     )
 
     private fun brev(
-        signatur: Signatur = signatur("hilsen", "Nav sentralt", saksbehandlerNavn = "Saksbehandler Saksbehandlersen"),
+        signatur: Signatur = signatur(
+            navAvsenderEnhet = PdfByggerTestData.navAvsenderEnhet,
+            saksbehandlerNavn = PdfByggerTestData.saksbehandlerNavn,
+        ),
         build: LetterMarkupBuilder<ContentBuilder>.() -> Unit,
     ): LetterMarkup = letterMarkup(saksinformasjon = saksinformasjon, signatur = signatur, build = build)
 
     private fun request(letter: LetterMarkup): LetterPDFRequest =
-        letterPDFRequest(spraak = Markup.Spraak.BOKMAL, brevtype = Markup.Brevtype.VEDTAKSBREV, letter = letter)
+        letterPDFRequest(letterMarkup = letter, spraak = Markup.Spraak.BOKMAL, brevtype = Markup.Brevtype.VEDTAKSBREV)
 
     @Test
     fun `renderer skriver ut brevtittel og importer riktige typst-funksjoner`() {
@@ -142,18 +147,19 @@ class TypstDocumentRendererV2Test {
     @Test
     fun `vedlegg renderes med startAttachment og endAttachment`() {
         val request = letterPDFRequest(
-            spraak = Markup.Spraak.BOKMAL,
-            brevtype = Markup.Brevtype.VEDTAKSBREV,
-            letter = brev {
+            letterMarkup = brev {
                 title1("Tittel")
                 outline { paragraph("Innhold") }
             },
-        ) {
-            attachment {
-                title1("Vedleggstittel")
-                outline { paragraph("Vedleggsinnhold") }
-            }
-        }
+            spraak = Markup.Spraak.BOKMAL,
+            brevtype = Markup.Brevtype.VEDTAKSBREV,
+            attachments = listOf(
+                attachment {
+                    title1("Vedleggstittel")
+                    outline { paragraph("Vedleggsinnhold") }
+                }
+            ),
+        )
 
         val typst = render(request)
 
@@ -169,8 +175,7 @@ class TypstDocumentRendererV2Test {
             request(
                 brev(
                     signatur = signatur(
-                        "hilsen",
-                        "Nav sentralt",
+                        navAvsenderEnhet = PdfByggerTestData.navAvsenderEnhet,
                         saksbehandlerNavn = "Kari Saksbehandler",
                         attesterendeSaksbehandlerNavn = "Ola Attestant",
                     )
@@ -189,7 +194,7 @@ class TypstDocumentRendererV2Test {
     fun `manglende saksbehandlersignatur gir none i stedet for feil`() {
         val typst = render(
             request(
-                brev(signatur = signatur("hilsen", "Nav sentralt")) {
+                brev(signatur = signatur(navAvsenderEnhet = PdfByggerTestData.navAvsenderEnhet)) {
                     title1("Tittel")
                     outline { paragraph("Innhold") }
                 }
@@ -248,15 +253,14 @@ class TypstDocumentRendererV2Test {
     @Test
     fun `pdfVedlegg med PDFTittel renderes i attachments-listen`() {
         val request = letterPDFRequest(
-            spraak = Markup.Spraak.BOKMAL,
-            brevtype = Markup.Brevtype.VEDTAKSBREV,
-            letter = brev {
+            letterMarkup = brev {
                 title1("Tittel")
                 outline { paragraph("Innhold") }
             },
-        ) {
-            pdfVedlegg { text("Skannet vedleggstittel") }
-        }
+            spraak = Markup.Spraak.BOKMAL,
+            brevtype = Markup.Brevtype.VEDTAKSBREV,
+            pdfVedlegg = listOf(pdfTittel { text("Skannet vedleggstittel") }),
+        )
 
         val typst = render(request)
 

@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPS
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsAutoDto
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktBunnfradragAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.*
@@ -56,7 +57,6 @@ object Fixtures : LetterDataFactory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
-            AnkeTilsvarTilAnkendePartDto::class -> createAnkeTilsvarTilAnkendePartDto() as T
             FullmektigBprofAutoDto::class -> createFullmektigBprofAutoDto() as T
             FullmaktsgiverBprofAutoDto::class -> createFullmaktsgiverBprofAutoDto() as T
             AvslagForLiteTrygdetidAPDto::class -> createAvslagForLiteTrygdetidAPDto() as T
@@ -86,8 +86,6 @@ object Fixtures : LetterDataFactory {
             InnvilgelseAvAlderspensjonDto::class -> createInnvilgelseAvAlderspensjonDto() as T
             InnvilgelseAvAlderspensjonAutoDto::class -> createInnvilgelseAvAlderspensjonAutoDto() as T
             InnvilgelseAvAlderspensjonTrygdeavtaleDto::class -> createInnvilgelseAvAlderspensjonTrygdeavtaleDto() as T
-            KlageOrienteringOmOversendelseTilKlageinstansDto::class -> createKlageOrienteringOmOversendelseTilKlageinstansDto() as T
-            KlageOrienteringOmSaksbehandlingstidDto::class -> createKlageOrienteringOmSaksbehandlingstidDto() as T
             LetterExampleDto::class -> createLetterExampleDto() as T
             OmsorgEgenAutoDto::class -> createOmsorgEgenAutoDto() as T
             OmsorgEgenManuellDto::class -> createOmsorgManuellDto() as T
@@ -126,9 +124,11 @@ object Fixtures : LetterDataFactory {
             AvslagGjenlevendepensjonDto::class -> createAvslagGjenlevendepensjonDto() as T
             AvslagGjenlevendepensjonUtlandDto::class -> createAvslagGjenlevendepensjonUtlandDto() as T
             VedtakOmLavereMinstesatsAutoDto::class -> createVedtakOmLavereMinstesatsAutoDto() as T
+            VedtakOmOktBunnfradragAutoDto::class -> createVedtakOmOktBunnfradragAutoDto() as T
             VedtakOmIFUReduksjonsprosentRedigerbarDto::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
             VedtakOmIFUReduksjonsprosentAutoDto::class -> createVedtakOmIFUReduksjonsprosentAutoDto() as T
             VedtakOmLavereMinstesatsRedigerbarDto::class -> createVedtakOmLavereMinstesatsRedigerbarDto() as T
+            VedtakOmOktBunnfradragRedigerbarDto::class -> createVedtakOmOktBunnfradragRedigerbarDto() as T
             InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto::class -> createInnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto() as T
             HvilendeRettUforetrygdDto::class -> createHvilendeRettUforetrygdDto() as T
             AvslagUfoerepensjonDto::class -> createAvslagUfoerepensjonDto() as T

@@ -21,19 +21,20 @@ class OppdaterBrevHandler(
 
     data class Request(
         override val brevId: BrevId,
-        val nyeSaksbehandlerValg: SaksbehandlerValg? = null,
+        override val saksId: SaksId,
+        val nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
         val nyttRedigertbrev: Edit.Letter? = null,
         val frigiReservasjon: Boolean = false,
     ) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
         val principal = PrincipalInContext.require()
 
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
 
         if (request.nyeSaksbehandlerValg != null) {
-            brev.saksbehandlerValg = request.nyeSaksbehandlerValg
+            brev.saksbehandlerValg = brev.saksbehandlerValg.mergeInn(request.nyeSaksbehandlerValg)
         }
         if (request.nyttRedigertbrev != null) {
             brev.oppdaterRedigertBrev(request.nyttRedigertbrev, principal.navIdent)

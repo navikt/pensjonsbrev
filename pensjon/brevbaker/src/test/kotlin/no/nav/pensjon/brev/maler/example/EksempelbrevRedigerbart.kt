@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.example
 
+import no.nav.pensjon.brev.api.model.IBrevkategori
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -304,7 +305,7 @@ data class TextOnlyPhraseTestWithParams(val dato: Expression<LocalDate>) : TextO
         )
 }
 
-enum class Brevkategori : TemplateDescription.IBrevkategori {
+enum class Brevkategori : IBrevkategori {
     INNHENTE_OPPLYSNINGER,
     VARSEL;
 

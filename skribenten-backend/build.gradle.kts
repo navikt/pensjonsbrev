@@ -161,7 +161,9 @@ dependencies {
     implementation(libs.unleash)
 
     // Domenemodell
-    implementation(libs.brevbaker.common)
+    implementation(publishedLibs.brevbaker.api)
+    implementation(publishedLibs.markup.model)
+    implementation(project(":brevbaker:serialization"))
 
     // For å merge førsteside med resten av pdf-en
     implementation(libs.pdfbox)
@@ -188,5 +190,6 @@ dependencies {
     testImplementation(libs.ktor.client.mock)
     testImplementation(libs.testcontainers.postgresql)
     testImplementation(libs.jackson.yaml)
+    testImplementation(project(":brevbaker:dsl"))
 
 }

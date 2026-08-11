@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.routing
 
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.alleAutobrevmaler
 import no.nav.pensjon.brev.alleRedigerbareMaler
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -14,14 +14,21 @@ import no.nav.pensjon.brev.maler.example.OverstyrtModelSpecificationTemplate
 import no.nav.pensjon.brev.maler.redigerbar.BrukerTestBrev
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import no.nav.pensjon.brev.template.render.TemplateDocumentation
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
+import no.nav.pensjon.brev.template.render.TemplateTextExtractor
+import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brev.testBrevbakerApp
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.parallel.Isolated
+import java.util.zip.GZIPInputStream
 
 class TemplateRoutesTest {
 
@@ -171,14 +178,101 @@ class TemplateRoutesTest {
     }
 
     @Test
-    fun `filtrerer bort deaktiverte maler`() = runBlocking {
-        testBrevbakerApp(enableAllToggles = false, isIntegrationTest = false) { client ->
-            val response = client.get("/templates/redigerbar?includeMetadata=true")
-            assertEquals(HttpStatusCode.OK, response.status)
-            val body = response.body<List<LinkedHashMap<*, *>>>()
-            assertNull(body.map { it["name"] }.firstOrNull { it == "PE_OVERSETTELSE_AV_DOKUMENTER" })
-            assertNull(body.map { it["name"] }.firstOrNull { it == "UT_AVSLAG_UFOERETRYGD" })
-        }
+    fun `filtrerer bort deaktiverte maler`() = testBrevbakerApp(enableAllToggles = false, isIntegrationTest = false) { client ->
+        val response = client.get("/templates/redigerbar?includeMetadata=true")
+        assertEquals(HttpStatusCode.OK, response.status)
+        val navn = response.body<List<LinkedHashMap<*, *>>>().map { it["name"] }
+        assertNull(navn.firstOrNull { it == "PE_OVERSETTELSE_AV_DOKUMENTER" })
+        assertNull(navn.firstOrNull { it == "UT_AVSLAG_UFOERETRYGD" })
     }
 
+    /** Dokumentasjon for alle autobrevmaler på alle språk, i ett kall. */
+    @Nested
+    inner class BatchDoc {
+
+        @Test
+        fun `har en oppfoering per autobrevmal per spraak malen stoetter`() = testBrevbakerApp(isIntegrationTest = false) { client ->
+            val body = client.get("/templates/autobrev/all").body<List<SearchableContent>>()
+
+            val forventet = alleAutobrevmaler.flatMap { mal ->
+                mal.template.language.all().map { mal.kode.kode() to it.toCode() }
+            }.toSet()
+            assertEquals(forventet, body.map { it.brevkode to it.language }.toSet())
+        }
+
+        @Test
+        fun `linjene er de samme som dokumentasjonsendepunktet for malen gir`() = testBrevbakerApp(isIntegrationTest = false) { client ->
+            val body = client.get("/templates/autobrev/all").body<List<SearchableContent>>()
+
+            val mal = body.first { it.brevkode == ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.kode.name && it.language == LanguageCode.BOKMAL }
+            assertEquals(
+                TemplateTextExtractor.extract(
+                    TemplateDocumentationRenderer.render(
+                        ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
+                        Language.Bokmal,
+                        TemplateModelSpecification(types = emptyMap(), letterModelTypeName = null),
+                    ),
+                ),
+                mal.lines,
+            )
+        }
+
+        @Test
+        fun `alle linjer har minst ett segment`() = testBrevbakerApp(isIntegrationTest = false) { client ->
+            val body = client.get("/templates/autobrev/all").body<List<SearchableContent>>()
+
+            assertTrue(body.all { innhold -> innhold.lines.all { it.segments.isNotEmpty() } })
+        }
+
+        @Test
+        fun `svarer med en ETag`() = testBrevbakerApp(isIntegrationTest = false) { client ->
+            val response = client.get("/templates/autobrev/all")
+
+            assertTrue(!response.headers[HttpHeaders.ETag].isNullOrBlank())
+        }
+
+        @Test
+        fun `ETag er stabil mellom kall, siden innholdet ikke endrer seg`() = testBrevbakerApp(isIntegrationTest = false) { client ->
+            val foerste = client.get("/templates/autobrev/all")
+            val andre = client.get("/templates/autobrev/all")
+
+            assertEquals(foerste.headers[HttpHeaders.ETag], andre.headers[HttpHeaders.ETag])
+        }
+
+        @Test
+        fun `matchende If-None-Match gir 304 uten body`() = testBrevbakerApp(isIntegrationTest = false) { client ->
+            val etag = client.get("/templates/autobrev/all").headers[HttpHeaders.ETag]
+
+            val response = client.get("/templates/autobrev/all") { header(HttpHeaders.IfNoneMatch, etag) }
+
+            assertEquals(HttpStatusCode.NotModified, response.status)
+        }
+
+        @Test
+        fun `utdatert If-None-Match gir hele svaret`() = testBrevbakerApp(isIntegrationTest = false) { client ->
+            val response = client.get("/templates/autobrev/all") {
+                header(HttpHeaders.IfNoneMatch, "\"not-the-current-etag\"")
+            }
+
+            assertEquals(HttpStatusCode.OK, response.status)
+        }
+
+        @Test
+        fun `svarer med Content-Encoding gzip naar klienten godtar gzip`() = testBrevbakerApp(isIntegrationTest = false) { client ->
+            val response = client.get("/templates/autobrev/all") { header(HttpHeaders.AcceptEncoding, "gzip") }
+
+            assertEquals("gzip", response.headers[HttpHeaders.ContentEncoding])
+        }
+
+        @Test
+        fun `gzippet body har samme innhold som det ukomprimerte svaret`() = testBrevbakerApp(isIntegrationTest = false) { client ->
+            val forventet = client.get("/templates/autobrev/all").body<List<SearchableContent>>()
+
+            val gzippet = client.get("/templates/autobrev/all") { header(HttpHeaders.AcceptEncoding, "gzip") }
+
+            // Ktor sin testklient pakker ikke ut selv, så vi gunzipper og sjekker at innholdet er det samme.
+            val utpakket = GZIPInputStream(gzippet.readRawBytes().inputStream()).use { it.readBytes() }
+            assertEquals(forventet.toSet(), brevbakerJacksonObjectMapper().readValue<List<SearchableContent>>(utpakket).toSet())
+        }
+    }
 }

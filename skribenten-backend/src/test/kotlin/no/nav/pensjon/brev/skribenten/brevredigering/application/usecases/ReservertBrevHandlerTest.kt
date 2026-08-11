@@ -73,7 +73,7 @@ class ReservertBrevHandlerTest {
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
                 spraak = LanguageCode.BOKMAL,
                 avsenderEnhetsId = principalEnhet,
-                saksbehandlerValg = Api.GeneriskBrevdata(),
+                saksbehandlerValg = SaksbehandlervalgMap(),
                 reserverForRedigering = reserverBrev,
                 mottaker = null,
             )
@@ -93,7 +93,7 @@ class ReservertBrevHandlerTest {
         val result = withPrincipal(saksbehandler1Principal) {
             object : HentBrevStub() {
                 override fun requiresReservasjon(request: HentBrevHandler.Request) = true
-            }(HentBrevHandler.Request(brev.info.id))
+            }(HentBrevHandler.Request(brevId = brev.info.id, saksId = SaksId(1)))
         }
 
         assertThat(result).isSuccess { assertThat(it.info.redigeresAv).isEqualTo(saksbehandler1Principal.navIdent) }
@@ -107,7 +107,7 @@ class ReservertBrevHandlerTest {
         val result = withPrincipal(saksbehandler1Principal) {
             object : HentBrevStub() {
                 override fun requiresReservasjon(request: HentBrevHandler.Request) = false
-            }(HentBrevHandler.Request(brev.info.id))
+            }(HentBrevHandler.Request(brevId = brev.info.id, saksId = SaksId(1)))
         }
 
         assertThat(result).isSuccess { assertThat(it.info.redigeresAv).isNull() }
@@ -129,7 +129,7 @@ class ReservertBrevHandlerTest {
                 }
 
                 override fun requiresReservasjon(request: HentBrevHandler.Request) = true
-            }(HentBrevHandler.Request(brev.info.id))
+            }(HentBrevHandler.Request(brevId = brev.info.id, saksId = SaksId(1)))
         }
 
         assertThat(interceptor.didRollback).isTrue()
@@ -150,7 +150,7 @@ class ReservertBrevHandlerTest {
                     return success(BrevredigeringEntity[brev.info.id].toDto(brevreservasjonPolicy, emptySet()))
                 }
                 override fun requiresReservasjon(request: HentBrevHandler.Request) = true
-            }(HentBrevHandler.Request(brev.info.id))
+            }(HentBrevHandler.Request(brevId = brev.info.id, saksId = SaksId(1)))
         }
 
         assertThat(interceptor.didRollback).isFalse()

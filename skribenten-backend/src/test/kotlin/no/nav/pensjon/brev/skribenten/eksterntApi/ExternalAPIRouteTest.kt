@@ -25,20 +25,23 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBr
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
+import no.nav.pensjon.brev.skribenten.common.Cache
+import no.nav.pensjon.brev.skribenten.common.InMemoryCache
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
+import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
-import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjon
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
 import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.FakeBrevbakerService
@@ -88,7 +91,7 @@ class ExternalAPIRouteTest {
         info = brevInfo,
         redigertBrev = editedLetter(),
         redigertBrevHash = Hash("abc"),
-        saksbehandlerValg = Api.GeneriskBrevdata(),
+        saksbehandlerValg = SaksbehandlervalgMap(),
         propertyUsage = null,
         valgteVedlegg = null
     )
@@ -147,11 +150,13 @@ class ExternalAPIRouteTest {
                                 navn = Pen.SakSelection.Navn("fornavn1", mellomnavn = null, "etternavn2"),
                                 sakType = Sakstype("hei"),
                                 pid = BrevbakerType.Pid("123"),
-                                behandlingsnumre = listOf()
+                                behandlingsnumre = listOf(),
+                                tema = Tema("tema1"),
                             )
                         }
                     )
                 }
+                provide<Cache> { InMemoryCache() }
             }
             routing {
                 externalAPI()

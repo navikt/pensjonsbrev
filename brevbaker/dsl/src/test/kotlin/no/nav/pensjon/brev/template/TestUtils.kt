@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.pensjon.brev.api.model.IBrevkategori
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
@@ -23,9 +25,9 @@ class SimpleSelector<Model : Any, Property>(override val className: String, prop
 
 fun redigerbarMal(init: TemplateRootScope<LangBokmal, EmptyRedigerbarBrevdata>.() -> Unit) =
     object : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
-        override val kategori: TemplateDescription.IBrevkategori get() = TODO("Not yet implemented")
+        override val kategori: IBrevkategori get() = TODO("Not yet implemented")
         override val brevkontekst: TemplateDescription.Brevkontekst get() = TODO("Not yet implemented")
-        override val sakstyper: Set<TemplateDescription.ISakstype> get() = TODO("Not yet implemented")
+        override val sakstyper: Set<ISakstype> get() = TODO("Not yet implemented")
         override val kode: Brevkode.Redigerbart get() = TODO("Not yet implemented")
 
         override val template = createTemplate(

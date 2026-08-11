@@ -5,7 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.brev.Listetype
-import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
+import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
@@ -99,7 +99,7 @@ class BrevbakerServiceTest {
     )
 
     val mapper = jacksonObjectMapper().apply {
-        registerModule(LetterMarkupJacksonModule)
+        registerModule(LetterMarkupV1JacksonModule)
         registerModule(JavaTimeModule())
         disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     }

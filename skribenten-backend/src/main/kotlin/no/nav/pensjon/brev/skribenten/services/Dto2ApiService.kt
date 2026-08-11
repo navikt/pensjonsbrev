@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.Api.BrevStatus
 import no.nav.pensjon.brev.skribenten.model.Api.NavAnsatt
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.toRedigerbarSaksbehandlervalgMap
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 class Dto2ApiService(
@@ -26,7 +27,7 @@ class Dto2ApiService(
             info = toApi(brevredigering.info),
             redigertBrev = brevredigering.redigertBrev,
             redigertBrevHash = brevredigering.redigertBrevHash,
-            saksbehandlerValg = brevredigering.saksbehandlerValg,
+            saksbehandlerValg = brevredigering.saksbehandlerValg.toRedigerbarSaksbehandlervalgMap(),
             propertyUsage = brevredigering.propertyUsage,
             valgteVedlegg = brevredigering.valgteVedlegg,
         )
@@ -63,6 +64,7 @@ class Dto2ApiService(
             spraak = info.spraak.toApi(),
             journalpostId = info.journalpostId,
             vedtaksId = info.vedtaksId,
+            leggVedFoersteside = info.leggVedFoersteside
         )
     }
 

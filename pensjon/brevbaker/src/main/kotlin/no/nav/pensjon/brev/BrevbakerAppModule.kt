@@ -2,13 +2,16 @@ package no.nav.pensjon.brev
 
 import com.fasterxml.jackson.core.JacksonException
 import io.ktor.http.*
+import io.ktor.http.content.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.config.*
 import io.ktor.server.plugins.*
+import io.ktor.server.plugins.cachingheaders.*
 import io.ktor.server.plugins.callid.*
 import io.ktor.server.plugins.calllogging.*
+import io.ktor.server.plugins.conditionalheaders.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
@@ -24,13 +27,11 @@ import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.routing.DocumentationETag
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
-import org.apache.pdfbox.pdmodel.font.PDType1Font
-import org.apache.pdfbox.pdmodel.font.Standard14Fonts.FontName
 import kotlin.time.Duration.Companion.minutes
-import kotlin.time.Duration.Companion.seconds
 
 fun Application.brevbakerModule(
     templates: AllTemplates
@@ -46,10 +47,7 @@ fun Application.brevbakerModule(
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
-        val ignorePaths = setOf("/isAlive", "/isReady", "/metrics")
-        filter {
-            !ignorePaths.contains(it.request.path())
-        }
+        filter(Metrics::skalObserveres)
         mdc("x_response_code") { it.response.status()?.value?.toString() }
         mdc("x_brevkode") { it.useBrevkodeFromCallContext() }
     }
@@ -104,6 +102,21 @@ fun Application.brevbakerModule(
         verify { it.isNotEmpty() }
     }
 
+    // Conditional/caching headers for endpoints that opt in by setting `DocumentationETag`
+    // (currently the static template-documentation batch endpoint). ConditionalHeaders
+    // handles the If-None-Match -> 304 revalidation, so we only have to provide the tag.
+    install(ConditionalHeaders) {
+        version { call, _ ->
+            call.attributes.getOrNull(DocumentationETag)?.let { listOf(EntityTagVersion(it)) } ?: emptyList()
+        }
+    }
+    install(CachingHeaders) {
+        options { call, _ ->
+            call.attributes.getOrNull(DocumentationETag)
+                ?.let { CachingOptions(CacheControl.NoCache(null)) }
+        }
+    }
+
     install(ContentNegotiation) {
         jackson {
             brevbakerConfig()
@@ -148,10 +161,6 @@ private fun Application.konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
         async {
             delay(1.minutes)
             FeatureToggleSingleton.verifiserAtAlleBrytereErDefinert(FeatureToggles.entries.map { it.toggle })
-        }
-        async {
-            delay(20.seconds)
-            PDType1Font(FontName.HELVETICA) // Trigger denne her for å få bygd opp font-cachen
         }
     }
 }

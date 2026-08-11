@@ -18,31 +18,31 @@ data class AarligInntektOgPensjonTabell(
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         paragraph {
             table(header = {
-                column(columnSpan = 1) {
+                column(columnSpan = 5) {
                     text(bokmal { +"Alder" })
                 }
-                column(columnSpan = 1, alignment = RIGHT) {
+                column(columnSpan = 3, alignment = RIGHT) {
                     text(bokmal { +"Alderspensjon" })
                 }
-                column(columnSpan = 1, alignment = RIGHT) {
+                column(columnSpan = 4, alignment = RIGHT) {
                     text(bokmal { +"Avtalefestet pensjon" })
                 }
-                column(columnSpan = 1, alignment = RIGHT) {
+                column(columnSpan = 4, alignment = RIGHT) {
                     text(bokmal { +"Pensjonsgivende inntekt" })
                 }
-                column(columnSpan = 1, alignment = RIGHT) {
+                column(columnSpan = 4, alignment = RIGHT) {
                     text(bokmal { +"Sum kr per år" })
                 }
             }) {
                 forEach(aarligInntektOgPensjonListe) { rad ->
                     row {
                         cell { text(bokmal { +rad.alderLabel }) }
-                        cell { text(bokmal { +rad.alderspensjon.format() }) }
-                        cell { text(bokmal { +rad.avtalefestetPensjon.format() }) }
-                        cell { text(bokmal { +rad.pensjonsgivendeInntekt.format() }) }
+                        cell { text(bokmal { +rad.alderspensjon.format(denominator = false) }) }
+                        cell { text(bokmal { +rad.avtalefestetPensjon.format(denominator = false) }) }
+                        cell { text(bokmal { +rad.pensjonsgivendeInntekt.format(denominator = false) }) }
                         cell {
                             val sum = rad.alderspensjon + rad.avtalefestetPensjon + rad.pensjonsgivendeInntekt
-                            text(bokmal { +sum.format() }, fontType = BOLD)
+                            text(bokmal { +sum.format(denominator = false) }, fontType = BOLD)
                         }
                     }
                 }

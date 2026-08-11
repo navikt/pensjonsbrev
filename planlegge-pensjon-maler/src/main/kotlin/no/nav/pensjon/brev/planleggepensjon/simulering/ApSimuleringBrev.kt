@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.planleggepensjon.simulering
 
+import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.pensjon.brev.api.model.IBrevkategori
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
@@ -7,9 +9,11 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringBrevDto.*
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringDto.*
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringBrevDto.saksbehandlerValg
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringDto.simulering
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.afpOffentligLivsvarig
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.afpOffentligTidsbegrenset
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.afpPrivat
 import no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg.simuleringVedlegg
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -27,9 +31,9 @@ data class ApSimuleringBrevDto(override val saksbehandlerValg: ApSimuleringDto, 
 
 @TemplateModelHelpers
 object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
-    override val kategori: TemplateDescription.IBrevkategori = Brevkategori.AP_SIMULERINGSBREV
+    override val kategori: IBrevkategori = Brevkategori.AP_SIMULERINGSBREV
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
-    override val sakstyper: Set<TemplateDescription.ISakstype> = emptySet()
+    override val sakstyper: Set<ISakstype> = emptySet()
     override val kode: Brevkode.Redigerbart = PlanleggePensjonBrevkoder.Redigerbar.PENSJONSKALKULATOR_AP_SIMULERING
     override val featureToggle = FeatureToggles.apSimulering.toggle
     override val modelSpecification: TemplateModelSpecification = TemplateModelSpecification(emptyMap(), null)
@@ -43,49 +47,19 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
         )
     ) {
         title {
-            text(bokmal { +"Beregning av pensjon" })
+            showIf(saksbehandlerValg.simulering.afpPrivat.notNull()) {
+                text(bokmal { +"Beregning av alderspensjon og AFP i privat sektor" })
+            }.orShowIf(saksbehandlerValg.simulering.afpOffentligTidsbegrenset.notNull() or saksbehandlerValg.simulering.afpOffentligLivsvarig.notNull()) {
+                text(bokmal { +"Beregning av AFP i offentlig sektor etterfulgt av alderspensjon" })
+            }.orShow {
+                text(bokmal { +"Beregning av alderspensjon" })
+            }
         }
+        val fritekst = fritekst("<Legg til tekst>")
 
         outline {
-            showIf(saksbehandlerValg.simulering.afpPrivat.notNull()) {
-                title1 {
-                    text(bokmal { +"Beregning av alderspensjon og AFP i privat sektor" })
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du har fått en foreløpig beregning av alderspensjon og AFP i privat sektor. "
-                            +"Se vedlegg for beløp og detaljer om beregningen. "
-                            +"Kontakt Nav hvis du har spørsmål."
-                        },
-                    )
-                }
-            }.orShowIf(saksbehandlerValg.simulering.afpOffentligTidsbegrenset.notNull() or saksbehandlerValg.simulering.afpOffentligLivsvarig.notNull()) {
-                title1 {
-                    text(bokmal { +"Beregning av alderspensjon og AFP i offentlig sektor" })
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du har fått en foreløpig beregning av alderspensjon og AFP i offentlig sektor. "
-                            +"Se vedlegg for beløp og detaljer om beregningen. "
-                            +"Kontakt Nav hvis du har spørsmål."
-                        },
-                    )
-                }
-            }.orShow {
-                title1 {
-                    text(bokmal { +"Beregning av alderspensjon" })
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du har fått en foreløpig beregning av alderspensjon. "
-                            +"Se vedlegg for beløp og detaljer om beregningen. "
-                            +"Kontakt Nav hvis du har spørsmål."
-                        },
-                    )
-                }
+            paragraph {
+                text(bokmal { +fritekst })
             }
         }
 

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import no.nav.pensjon.brev.api.model.IBrevkategori
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
@@ -97,7 +98,7 @@ private class BrevTemplateTest {
 }
 
 
-enum class Brevkategori : TemplateDescription.IBrevkategori {
+enum class Brevkategori : IBrevkategori {
     INNHENTE_OPPLYSNINGER;
 
     override val kode: String = name

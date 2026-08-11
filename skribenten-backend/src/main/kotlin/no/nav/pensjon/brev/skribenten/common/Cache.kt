@@ -129,6 +129,7 @@ class InMemoryCache : Cache() {
 enum class Cacheomraade(val prefix: String) {
     AD("AD"),
     ALLTID_VALGBARE_VEDLEGG("ALLTID_VALGBARE_VEDLEGG"),
+    FAGSAK("fagsak"),
     NAVANSATT("Navansatt"),
     NAVANSATTENHET("NavAnsattEnhet"),
     NORG("Norg"),

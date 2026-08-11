@@ -6,22 +6,23 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.*
 import com.typesafe.config.Config
 import com.zaxxer.hikari.*
-import io.ktor.server.plugins.di.annotations.*
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
-import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
+import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.v1.core.*
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.sql.DataSource
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 val databaseReady: AtomicBoolean = AtomicBoolean(false)
 
 
 internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
-    registerModule(LetterMarkupJacksonModule)
+    registerModule(LetterMarkupV1JacksonModule)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 }
@@ -61,6 +62,13 @@ fun initDatabase(jdbcUrl: String, username: String, password: String, maxPoolSiz
         this.password = password
         this.initializationFailTimeout = 6000
         maximumPoolSize = maxPoolSize
+        // Cloud SQL/proxy kan lukke inaktive forbindelser før Hikari sin default maxLifetime (30 min),
+        // som gir "Failed to validate connection ... This connection has been closed".
+        // Poolen er bevisst fixed-size (minimumIdle == maximumPoolSize), så idleTimeout settes ikke.
+        maxLifetime = 10.minutes.inWholeMilliseconds
+        keepaliveTime = 2.minutes.inWholeMilliseconds
+        connectionTimeout = 5.seconds.inWholeMilliseconds
+        validationTimeout = 3.seconds.inWholeMilliseconds
         validate()
     }).also { konfigurerFlyway(it) }
 

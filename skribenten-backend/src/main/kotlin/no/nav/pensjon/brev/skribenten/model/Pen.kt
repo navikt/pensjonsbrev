@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.skribenten.model
 
+import no.nav.pensjon.brev.api.model.IBrevkategori
+import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -19,11 +21,7 @@ object Pen {
         val sakType: Sakstype,
         val pid: Pid,
         val behandlingsnumre: List<Behandlingsnummer>,
-        val tema: Tema = if (sakType.kode == "UFO") {
-            Tema("UFO")
-        } else {
-            Tema("PEN")
-        }, // TODO: send med frå PEN
+        val tema: Tema,
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }
@@ -160,5 +158,5 @@ object Pen {
         "VEDTAK_FLYTTE_MELLOM_LAND" to "Vedtak - flytte mellom land"
     )
 
-    fun finnVisningstekst(brevkategori: TemplateDescription.IBrevkategori) = brevkategoriTilVisningstekst[brevkategori.kode]
+    fun finnVisningstekst(brevkategori: IBrevkategori) = brevkategoriTilVisningstekst[brevkategori.kode]
 }

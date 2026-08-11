@@ -22,6 +22,10 @@ spec:
   readiness:
     path: /internal/health/readiness
     initialDelay: 5
+  prometheus:
+    enabled: true
+    path: "/internal/metrics"
+    port: "8080"
   observability:
     autoInstrumentation:
       enabled: true

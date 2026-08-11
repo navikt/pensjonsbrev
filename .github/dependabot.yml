@@ -20,7 +20,11 @@ updates:
       - "/"
       - "/alder/api-model"
       - "/alder/maler"
-      - "/brevbaker/api-model-common"
+      - "/brevbaker/brevdata"
+      - "/brevbaker/brevbaker-api"
+      - "/brevbaker/markup/model"
+      - "/brevbaker/markup/dsl"
+      - "/brevbaker/serialization"
       - "/brevbaker"
       - "/brevbaker/dsl"
       - "/etterlattemaler"
@@ -41,7 +45,7 @@ updates:
     registries:
       - gradle-artifactory
     ignore:
-      - dependency-name: "no.nav.brev.brevbaker:api-model-common"
+      - dependency-name: "no.nav.brev.brevbaker:brevbaker-api"
     groups:
       backend:
         patterns:

@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.selectors.a
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.selectors.afpPrivatSokerUforeTrygdDto.*
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
