@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val alderApiModelVersion = 88
+val alderApiModelVersion = 89
 
 val apiModelJavaTarget: String by System.getProperties()
 

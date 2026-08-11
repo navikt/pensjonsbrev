@@ -56,10 +56,10 @@ class SaksbehandlervalgPerMalTest {
             Redigerbar.PE_AFP_PRIVAT_ENDRING to emptyList(),
             Redigerbar.PE_AF_INNVILGELSE_OFFENTLIG to emptyList(),
             Redigerbar.PE_AF_VEDTAK_ENDRING_OFFENTLIG to emptyList(),
-            Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER to listOf("visInfoOmUttakFoer67: kotlin.Boolean?"),
+            Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER to emptyList(),
             Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_AP2016 to listOf("visInfoOmUttakFoer67: kotlin.Boolean?"),
             Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_ETT_AAR to emptyList(),
-            Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER to listOf("visInfoOmUttakFoer67: kotlin.Boolean?"),
+            Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER to listOf("visInfoOmUttakFoer67: Boolean"),
             Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER_AP2016 to listOf("visInfoOmUttakFoer67: kotlin.Boolean?"),
             Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_GARANTITILLEGG to emptyList(),
             Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SAERSKILT_SATS to listOf(

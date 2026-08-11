@@ -8,14 +8,9 @@ import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalde
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 data class AvslagUttakFoerNormertPensjonsalderDto(
-    override val saksbehandlerValg: SaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: AvslagUttakFoerNormertPensjonsalderAutoDto
-) : RedigerbarBrevdata<AvslagUttakFoerNormertPensjonsalderDto.SaksbehandlerValg, AvslagUttakFoerNormertPensjonsalderAutoDto> {
-    data class SaksbehandlerValg(
-        @DisplayText("Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år")
-        val visInfoOmUttakFoer67: Boolean?
-    ) : SaksbehandlerValgBrevdata
-}
+) : RedigerbarBrevdataMedSaksbehandlerValg<AvslagUttakFoerNormertPensjonsalderAutoDto>
 
 data class AvslagUttakFoerNormertPensjonsalderAP2016Dto(
     override val saksbehandlerValg: SaksbehandlerValg,

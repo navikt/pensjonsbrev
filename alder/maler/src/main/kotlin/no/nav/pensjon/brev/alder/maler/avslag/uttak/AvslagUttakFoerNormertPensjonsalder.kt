@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagUttakFoerNormertPensjonsalderAutoDto.*
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderDto
-import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagUttakFoerNormertPensjonsalderDto.saksbehandlerValg.*
 import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagUttakFoerNormertPensjonsalderDto.*
 import no.nav.pensjon.brev.alder.model.avslag.selectors.opplysningerBruktIBeregningen.*
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerBruktIBeregningenAP2025Vedlegg
@@ -17,10 +16,10 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -36,6 +35,11 @@ object AvslagUttakFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUttakFoerN
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
+        val visInfoOmUttakFoer67 = saksbehandlervalg(
+            "visInfoOmUttakFoer67",
+            "Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år"
+        ).bool()
+
         title {
             text(
                 bokmal { + "Nav har avslått søknaden din om alderspensjon fra " + pesysData.virkFom.format() },
@@ -58,7 +62,7 @@ object AvslagUttakFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUttakFoerN
                     regelverkType = pesysData.regelverkType,
                     harEOSLand = pesysData.harEOSLand,
                     avtaleland = pesysData.avtaleland,
-                    visInfoOmUttakFoer67 = saksbehandlerValg.visInfoOmUttakFoer67.ifNull(false)
+                    visInfoOmUttakFoer67 = visInfoOmUttakFoer67
                 )
             )
         }
