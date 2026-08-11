@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.render.TemplateDocumentationV2.ContentOrCont
 import no.nav.pensjon.brev.template.render.TemplateDocumentationV2.Element.OutlineContent.Paragraph
 import no.nav.pensjon.brev.template.render.TemplateDocumentationV2.Element.ParagraphContent.Text
 import no.nav.pensjon.brev.template.render.TemplateDocumentationV2.Expr
+import no.nav.pensjon.brev.template.TemplateModelSelector
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -123,5 +124,66 @@ class TemplateDocumentationRendererV2Test {
         val text = ((TemplateDocumentationRendererV2.render(templ, Bokmal, templ.modelSpecification()).outline.first() as Content<Paragraph>)
             .content.paragraph.first() as Content<Text>).content
         assertEquals(Text.Literal("hei på deg"), text)
+    }
+
+    private data class Vilkar(val unguforresultat: String?)
+    private data class VilkarListeArg(val liste: List<Vilkar>)
+
+    /**
+     * Reproduserer det virkelige, legacy-mønsteret fra
+     * `LegacySelectors.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat`:
+     * `liste.getOrNull().safe { vilkar }.safe { unguforresultat }.ifNull("")`. `.select(...)`
+     * på resultatet av `getOrNull()` er akkurat tilfellet som tidligere ga en bakvendt
+     * `FunctionCall(".unguforresultat", [...])`-representasjon (se commit-melding/PR).
+     */
+    @Test
+    fun `feltaksess paa et beregnet uttrykk (getOrNull) blir en lesbar FieldPath med Computed-base`() {
+        val listeSelector = object : TemplateModelSelector<VilkarListeArg, List<Vilkar>> {
+            override val className = "VilkarListeArg"
+            override val propertyName = "liste"
+            override val propertyType = "List<Vilkar>"
+            override val selector: VilkarListeArg.() -> List<Vilkar> = { liste }
+        }
+        val vilkarSelector = object : TemplateModelSelector<Vilkar, String?> {
+            override val className = "Vilkar"
+            override val propertyName = "unguforresultat"
+            override val propertyType = "String"
+            override val selector: Vilkar.() -> String? = { unguforresultat }
+        }
+
+        val templ = outlineTestTemplate<VilkarListeArg> {
+            paragraph {
+                showIf(argument.select(listeSelector).getOrNull().select(vilkarSelector).ifNull("").notEqualTo("oppfylt")) {
+                    text(bokmal { +"vises" })
+                }
+            }
+        }
+        val conditional = TemplateDocumentationRendererV2.render(templ, Bokmal, templ.modelSpecification()).outline.first()
+
+        val listeFieldPath = Expr.FieldPath(TemplateDocumentationV2.DataSource.Scope("argument"), listOf("liste"), leafType = null)
+        val getOrNullCall = Expr.FunctionCall(
+            "getOrNull",
+            listOf(listeFieldPath, Expr.Literal("0", TemplateModelSpecification.FieldType.Scalar.Kind.NUMBER)),
+        )
+        val fieldAccess = Expr.FieldPath(TemplateDocumentationV2.DataSource.Computed(getOrNullCall), listOf("unguforresultat"), leafType = null)
+        assertEquals(
+            Content(
+                Paragraph(
+                    listOf(
+                        Conditional(
+                            predicate = Expr.Comparison(
+                                left = Expr.NullCoalesce(fieldAccess, Expr.Literal("", TemplateModelSpecification.FieldType.Scalar.Kind.STRING)),
+                                op = TemplateDocumentationV2.CompareOp.NOT_EQUAL,
+                                right = Expr.Literal("oppfylt", TemplateModelSpecification.FieldType.Scalar.Kind.STRING),
+                            ),
+                            showIf = listOf(Content(Text.Literal("vises"))),
+                            elseIf = emptyList(),
+                            showElse = emptyList(),
+                        )
+                    )
+                )
+            ),
+            conditional,
+        )
     }
 }
