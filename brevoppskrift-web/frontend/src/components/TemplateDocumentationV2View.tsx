@@ -418,6 +418,54 @@ function functionCallPhrase(name: string, args: Expr[]): ReactNode | null {
 }
 
 /**
+ * Norske fraser for de vanligste `LocalizedFormatter`-implementasjonene (fra
+ * `brevbaker/dsl/.../LocalizedFormatter.kt`). Ukjente/parametriserte formatterere
+ * (f.eks. `DoubleFormat(scale)`, `CurrencyFormatKroner(denominator)`) faller tilbake til
+ * "formatert med <formatterName>" siden parameterverdien ikke er tilgjengelig i `Expr`-treet.
+ */
+function formatterPhrase(formatterName: string): string {
+  switch (formatterName) {
+    case "ShortDateFormat": {
+      return "formatert som kort dato";
+    }
+    case "DateFormat": {
+      return "formatert som dato";
+    }
+    case "MonthYearFormatter": {
+      return "formatert som måned og år";
+    }
+    case "MonthFormatter": {
+      return "formatert som måned";
+    }
+    case "MonthFormatterShort": {
+      return "formatert som kort måned";
+    }
+    case "IntFormat": {
+      return "formatert som tall";
+    }
+    case "CurrencyFormat":
+    case "CurrencyFormatKroner": {
+      return "formatert som kroner";
+    }
+    case "TelefonnummerFormat": {
+      return "formatert som telefonnummer";
+    }
+    case "FoedselsnummerFormat": {
+      return "formatert som fødselsnummer";
+    }
+    case "CollectionFormat": {
+      return "formatert som liste";
+    }
+    case "LandnavnFormat": {
+      return "formatert som landnavn";
+    }
+    default: {
+      return `formatert med ${formatterName}`;
+    }
+  }
+}
+
+/**
  * Er den fullt kvalifiserte Kotlin-type-strengen fra `leafType` en primitiv/innebygd
  * type (starter med "kotlin." eller "java.") i stedet for en av modellens egne
  * data-klasser? Samme konvensjon som v1 sin ExpressionToText bruker for postfix-uttrykk.
@@ -573,9 +621,10 @@ export function ExprToText({ expr }: { expr: Expr }) {
       );
     }
     case ExprType.FORMAT: {
+      const phrase = formatterPhrase(expr.formatterName);
       return (
         <span>
-          {expr.formatterName}(<ExprToText expr={expr.value} />)
+          <MaybeParens expr={expr.value} /> {phrase}
         </span>
       );
     }
