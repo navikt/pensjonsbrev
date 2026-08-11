@@ -513,6 +513,12 @@ data class TemplateDocumentationV2(
         data class EditableField(val kind: EditableKind, val value: Expr?, val fallback: Expr?) : Expr()
     }
 
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "dataSourceType", include = JsonTypeInfo.As.PROPERTY)
+    @JsonSubTypes(
+        JsonSubTypes.Type(DataSource.Scope::class, name = "SCOPE"),
+        JsonSubTypes.Type(DataSource.ForEachVar::class, name = "FOR_EACH_VAR"),
+    )
+    @JsonPropertyOrder("dataSourceType")
     sealed class DataSource {
         data class Scope(val name: String) : DataSource()
         data class ForEachVar(val label: String, val depth: Int) : DataSource()
