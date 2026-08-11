@@ -361,6 +361,56 @@ function functionCallPhrase(name: string, args: Expr[]): ReactNode | null {
     case "today": {
       return <span>dagens dato</span>;
     }
+    case "abs": {
+      // UnaryOperation.AbsoluteValue / AbsoluteValueKroner
+      return args[0] ? (
+        <span>
+          absoluttverdien av <MaybeParens expr={args[0]} />
+        </span>
+      ) : null;
+    }
+    case "str": {
+      // UnaryOperation.ToString
+      return args[0] ? (
+        <span>
+          <MaybeParens expr={args[0]} /> som tekst
+        </span>
+      ) : null;
+    }
+    case "fulltNavn": {
+      // UnaryOperation.BrukerFulltNavn
+      return args[0] ? (
+        <span>
+          <MaybeParens expr={args[0]} /> sitt fulle navn
+        </span>
+      ) : null;
+    }
+    case "isOneOf": {
+      // BinaryOperation.EnumInList / IsOneOf: (verdi, liste)
+      return args[0] && args[1] ? (
+        <span>
+          <MaybeParens expr={args[0]} /> er en av <MaybeParens expr={args[1]} />
+        </span>
+      ) : null;
+    }
+    case "getOrNull": {
+      // BinaryOperation.GetElementOrNull: (liste, indeks)
+      return args[0] && args[1] ? (
+        <span>
+          element nr. <MaybeParens expr={args[1]} /> i <MaybeParens expr={args[0]} />
+        </span>
+      ) : null;
+    }
+    case "-": {
+      // BinaryOperation.IntMinus, eneste gjenværende INFIX-doc-operasjon som ikke
+      // allerede flates ut/spesialhåndteres av renderBinaryInvoke (i motsetning til +,
+      // som flates ut som en AssociativeOp).
+      return args[0] && args[1] ? (
+        <span>
+          <MaybeParens expr={args[0]} /> - <MaybeParens expr={args[1]} />
+        </span>
+      ) : null;
+    }
     default: {
       return null;
     }
