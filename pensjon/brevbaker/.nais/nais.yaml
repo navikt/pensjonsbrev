@@ -22,7 +22,7 @@ spec:
     # initialDelay er lav for at oppskalering ved surge skal gå raskt (readiness styrer
     # trafikk-routing). Liveness er derfor gitt et bredere feilbudsjett i stedet, slik at
     # normal variasjon i JVM-oppstart ikke trigger unødvendige restarter/ContainerCrashlooper.
-    # failureThreshold * periodSeconds = 120s margin før poden faktisk drepes.
+    # initialDelay + (failureThreshold * periodSeconds) = 20s + 100s = 120s før poden faktisk drepes.
     periodSeconds: 10
     failureThreshold: 10
   readiness:
