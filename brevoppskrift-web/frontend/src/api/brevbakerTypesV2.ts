@@ -145,6 +145,7 @@ export type ExprFieldPath = {
   source: DataSource;
   segments: string[];
   leafType: string | null;
+  leafOwnerType?: string | null;
 };
 
 export type AssocOp = "AND" | "OR" | "CONCAT" | "PLUS";

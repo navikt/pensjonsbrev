@@ -308,8 +308,11 @@ object TemplateDocumentationRendererV2 {
             // `propertyType` er en fullt kvalifisert Kotlin-type-streng (f.eks.
             // "no.nav.pensjon.brevbaker.api.model.SomeDto?" eller "kotlin.String"), satt av
             // hver Select i kjeden. Siden feltstien bygges innenfra og ut (se renderExpr sin
-            // rekursjon), er det den siste (ytterste) Select-en som overskriver leafType sist,
-            // slik at den til slutt reflekterer typen til det faktiske siste/leaf-segmentet.
+            // rekursjon), er det den siste (ytterste) Select-en som overskriver leafType/
+            // leafOwnerType sist, slik at de til slutt reflekterer typen og eierklassen til
+            // det faktiske siste/leaf-segmentet. `className` er eierklassen feltet er
+            // deklarert i, og brukes av frontend til å skille feltnavn som finnes i flere
+            // datamodell-klasser fra hverandre ved DataClasses-lenking.
             return when (base) {
                 is FieldPath -> base.copy(
                     segments = base.segments + segment,
@@ -609,7 +612,7 @@ data class TemplateDocumentationV2(
     sealed class Expr {
         data class Literal(val value: String, val kind: TemplateModelSpecification.FieldType.Scalar.Kind?) : Expr()
 
-        data class FieldPath(val source: DataSource, val segments: List<String>, val leafType: String?) : Expr()
+        data class FieldPath(val source: DataSource, val segments: List<String>, val leafType: String?, val leafOwnerType: String? = null) : Expr()
 
         data class AssociativeOp(val op: AssocOp, val operands: List<Expr>) : Expr()
 

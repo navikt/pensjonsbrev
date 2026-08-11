@@ -338,6 +338,10 @@ function FieldPathLink({ expr }: { expr: ExprFieldPath }) {
   }
 
   const primitive = isPrimitiveType(expr.leafType);
+  // `leafOwnerType` er eierklassen feltet er deklarert i. Ved å sende den med som
+  // highlightedDataFieldOwner unngår vi at felt med samme navn i andre data-klasser
+  // highlightes ved en feiltakelse (se DataClasses.tsx sin DataField).
+  const ownerClassName = expr.leafOwnerType ? trimClassName(expr.leafOwnerType).replace("?", "") : undefined;
   return (
     <Link
       from="/template/$malType/$templateId"
@@ -347,6 +351,7 @@ function FieldPathLink({ expr }: { expr: ExprFieldPath }) {
         ...s,
         highlightedDataClass: primitive ? undefined : trimClassName(expr.leafType ?? "").replace("?", ""),
         highlightedDataField: primitive ? lastSegment : undefined,
+        highlightedDataFieldOwner: primitive ? ownerClassName : undefined,
       })}
     >
       {path}
