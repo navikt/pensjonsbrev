@@ -16,100 +16,15 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())) {
             paragraph {
-                // Åpningssetningen bygges som to språkspesifikke sekvenser (først nynorsk, så bokmål)
-                // fordi eigedomspronomenet står i ulik ordstilling: bokmål "inntekten din ... til din
-                // {samboar}", nynorsk "inntekta ... til deg eller {samboar} din" (bygd som "di" + "n").
-                // Ordstillinga hindrar ein felles per-fragment-struktur. Den felles halen (" blir
-                // reduksjonen ...") er slått saman til eitt tospråkleg text()-kall nedst i avsnittet.
-                showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "Har det vore ei endring i inntekta " },
-                    )
-                }
-
-                showIf(
-                    (pe.ut_tbu605v_eller_til_din() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
-                        "bormed 1-5"
-                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2")))
-                ) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "til deg eller " },
-                    )
-                }
-
-                showIf((pe.ut_tbu605v_eller_til_din())) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " " },
-                    )
-                }
-
-                showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "di" },
-                    )
-                }
-
-                showIf(
-                    (pe.ut_tbu605v_eller_til_din() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
-                        "bormed 1-5"
-                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2")))
-                ) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "n" },
-                    )
-                }
-
-                showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "," },
-                    )
-                }
-
-                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "Når inntekta di " },
-                    )
-                }
-
-                showIf(
-                    (pe.vedtaksdata_kravhode_kravarsaktype()
-                        .equalTo("endret_inntekt") and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed registrert") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
-                        "bormed 1-5"
-                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2")))
-                ) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "eller til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
-                    )
-                }
-
-                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "endrar seg," },
-                    )
-                }
-
+                // Åpningssetningen er slått saman til éi felles tospråkleg sekvens: kvart fragment
+                // har både bokmål og nynorsk under same showIf-guard. Nynorsk-ordlyden er lagt om
+                // slik at eigedomspronomenet følgjer same ordstilling som bokmål ("inntekta di ...
+                // til {samboar} din"), slik at me slepp den tidlegare "di" + "n"-splittinga og eigne
+                // per-språk-sekvensar.
                 showIf(((pe.ut_tbu605v_eller_til_din()))) {
                     text(
                         bokmal { + "Har det vært en endring i inntekten din" },
-                        nynorsk { + "" },
+                        nynorsk { + "Har det vore ei endring i inntekta di" },
                     )
                 }
 
@@ -127,21 +42,21 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                 ) {
                     text(
                         bokmal { + " eller til din" },
-                        nynorsk { + "" },
+                        nynorsk { + " eller til" },
                     )
                 }
 
                 showIf(((pe.ut_tbu605v_eller_til_din()))) {
                     text(
                         bokmal { + " " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "," },
-                        nynorsk { + "" },
+                        nynorsk { + " " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din," },
                     )
                 }
 
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
                     text(
                         bokmal { + "Når inntekten din " },
-                        nynorsk { + "" },
+                        nynorsk { + "Når inntekta di " },
                     )
                 }
 
@@ -156,14 +71,14 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                 ) {
                     text(
                         bokmal { + "eller til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " },
-                        nynorsk { + "" },
+                        nynorsk { + "eller til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
                     )
                 }
 
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
                     text(
                         bokmal { + "endrer seg," },
-                        nynorsk { + "" },
+                        nynorsk { + "endrar seg," },
                     )
                 }
                 text(
