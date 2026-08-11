@@ -161,8 +161,8 @@ dependencies {
     implementation(libs.unleash)
 
     // Domenemodell
-    implementation(libs.brevbaker.api)
-    implementation(libs.markup.model)
+    implementation(publishedLibs.brevbaker.api)
+    implementation(publishedLibs.markup.model)
     implementation(project(":brevbaker:serialization"))
 
     // For å merge førsteside med resten av pdf-en

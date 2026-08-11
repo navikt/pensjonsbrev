@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "no.nav.brev.brevbaker"
-version = libs.versions.brevbakerApiVersion.get()
+version = publishedLibs.versions.brevbakerApiVersion.get()
 
 java {
     withSourcesJar()
@@ -31,10 +31,10 @@ repositories {
 }
 
 dependencies {
-    api(libs.brevdata) {
+    api(publishedLibs.brevdata) {
         because("brevbaker-api uttrykker HTTP-kontrakten i det samme vokabularet som bestillerne beskriver brevdata med.")
     }
-    api(libs.markup.model) {
+    api(publishedLibs.markup.model) {
         because("BestillRedigertBrevRequestV2 er uttrykt i markup-modellen. markup:model har ingen runtime-avhengigheter, så dette drar ikke inn noe tungt.")
     }
 }

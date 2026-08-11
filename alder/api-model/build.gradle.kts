@@ -22,7 +22,7 @@ repositories {
 }
 
 dependencies {
-    api(libs.brevdata)
+    api(publishedLibs.brevdata)
 }
 
 publishing {

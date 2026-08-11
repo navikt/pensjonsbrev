@@ -1,5 +1,13 @@
 rootProject.name = "pensjonsbrev"
 
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("publishedLibs") {
+            from(files("gradle/published-versions.toml"))
+        }
+    }
+}
+
 include("ktlint-rules")
 
 include("brevbaker:core")

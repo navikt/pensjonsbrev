@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "no.nav.brev.brevbaker"
-version = libs.versions.markupVersion.get()
+version = publishedLibs.versions.markupVersion.get()
 
 base {
     archivesName.set("markup-dsl")
@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    api(libs.markup.model)
+    api(publishedLibs.markup.model)
     testImplementation(libs.bundles.junit)
 }
 
