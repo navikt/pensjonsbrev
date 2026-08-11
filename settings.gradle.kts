@@ -2,6 +2,9 @@ rootProject.name = "pensjonsbrev"
 
 dependencyResolutionManagement {
     versionCatalogs {
+        create("libs") {
+            from(files("gradle/libs.versions.toml"))
+        }
         create("publishedLibs") {
             from(files("gradle/published-versions.toml"))
         }
