@@ -394,10 +394,13 @@ function functionCallPhrase(name: string, args: Expr[]): ReactNode | null {
       ) : null;
     }
     case "getOrNull": {
-      // BinaryOperation.GetElementOrNull: (liste, indeks)
+      // BinaryOperation.GetElementOrNull: (liste, indeks). Rendres som array-access-syntaks
+      // (`liste[indeks]`) i stedet for en prosa-frase, slik at en påfølgende feltaksess-kjede
+      // på resultatet (Computed-base i FieldPath) leses naturlig som `liste[indeks].felt` i
+      // stedet for at kjeden tvetydig ser ut til å høre til selve listen.
       return args[0] && args[1] ? (
         <span>
-          element nr. <MaybeParens expr={args[1]} /> i <MaybeParens expr={args[0]} />
+          <MaybeParens expr={args[0]} />[<ExprToText expr={args[1]} />]
         </span>
       ) : null;
     }
@@ -502,13 +505,17 @@ function isPrimitiveType(leafType: string): boolean {
 
 function FieldPathLink({ expr }: { expr: ExprFieldPath }) {
   // For en Computed-base (feltaksess på et vilkårlig beregnet uttrykk, f.eks.
-  // `getOrNull(...).felt`) rendres kilden som selve uttrykket etterfulgt av segmentene som en
-  // postfix-kjede (`<uttrykk>.segment1.segment2`), fremfor et prefiks-aktig punktum-join —
-  // dette gjør f.eks. `getOrNull(liste, 0).vilkar.unguforresultat` naturlig lesbart.
+  // `getOrNull(...)[0].felt`) rendres kilden som selve uttrykket etterfulgt av segmentene som
+  // en postfix-kjede (`<uttrykk>.segment1.segment2`), fremfor et prefiks-aktig punktum-join.
+  // Selve uttrykket parentetiseres med mindre det allerede er en FieldPath eller et
+  // FunctionCall/array-access (disse binder tett nok til at kjeding uten parentes er
+  // utvetydig, f.eks. `liste[0].felt` eller `fn(x).felt`) — for f.eks. Comparison,
+  // AssociativeOp, Conditional eller NullCoalesce som Computed-base er parentes nødvendig
+  // for at segmentene tydelig skal tilhøre HELE det beregnede uttrykket, ikke bare siste ledd.
   const path: ReactNode =
     expr.source.dataSourceType === "COMPUTED" ? (
       <>
-        <MaybeParens expr={expr.source.expr} />
+        <MaybeParensForPostfix expr={expr.source.expr} />
         {expr.segments.map((segment) => `.${segment}`).join("")}
       </>
     ) : (
@@ -556,6 +563,36 @@ function needsParens(expr: Expr): boolean {
 
 function MaybeParens({ expr }: { expr: Expr }) {
   if (needsParens(expr)) {
+    return (
+      <>
+        (<ExprToText expr={expr} />)
+      </>
+    );
+  }
+  return <ExprToText expr={expr} />;
+}
+
+/**
+ * Trengs parentes rundt Computed-basen i en FieldPath (`<uttrykk>.segment1.segment2`)? En
+ * `FieldPath` uten Computed-base kjeder naturlig (`x.y.z`), og `getOrNull` rendres som
+ * array-access-syntaks (`liste[0]`) som binder tett nok til at etterfølgende segmenter
+ * utvetydig tilhører resultatet (`liste[0].felt`). Alle andre `FunctionCall`-er rendres som
+ * prosafraser (f.eks. "X er tom") som IKKE kjeder naturlig, så de – i likhet med Comparison,
+ * AssociativeOp, Conditional, NullCoalesce, Not, Format, EditableField, Literal – trenger
+ * parentes for at segmentene ikke skal se ut til å tilhøre bare siste ledd av frasen.
+ */
+function needsParensForPostfix(expr: Expr): boolean {
+  if (expr.exprType === ExprType.FIELD_PATH) {
+    return false;
+  }
+  if (expr.exprType === ExprType.FUNCTION_CALL) {
+    return expr.name !== "getOrNull";
+  }
+  return true;
+}
+
+function MaybeParensForPostfix({ expr }: { expr: Expr }) {
+  if (needsParensForPostfix(expr)) {
     return (
       <>
         (<ExprToText expr={expr} />)
