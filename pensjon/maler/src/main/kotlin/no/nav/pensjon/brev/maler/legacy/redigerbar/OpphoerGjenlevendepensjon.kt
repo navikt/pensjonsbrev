@@ -4,8 +4,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto.SaksbehandlerValg.FolketrygdlovenAlternativ.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.opphoerGjenlevendepensjonDto.saksbehandlerValg.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto.FolketrygdlovenAlternativ.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.opphoerGjenlevendepensjonDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -17,9 +16,10 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 //PE_GP_04_030 Vedtak opphør av gjenlevendepensjon
@@ -43,6 +43,8 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
+        val folketrygdlovenAlternativ = saksbehandlervalg("folketrygdlovenAlternativ", "Velg § 17-11 alternativ:").enum<OpphoerGjenlevendepensjonDto.FolketrygdlovenAlternativ>()
+        val opphoerMedTilbakekreving = saksbehandlervalg("opphoerMedTilbakekreving", "Hvis opphør med tilbakekreving").bool()
         title {
             text(
                 bokmal { +"Gjenlevendepensjon - melding om vedtak" },
@@ -68,7 +70,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                 )
 
                 showIf(
-                    saksbehandlerValg.folketrygdlovenAlternativ.equalTo(gifterSeg)
+                    folketrygdlovenAlternativ.equalTo(gifterSeg)
                 ) {
                     val dato = fritekst("dato")
                     text(
@@ -77,7 +79,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                         english { +"We refer to your marriage of " + dato + "." }
                     )
                 }.orShowIf(
-                    saksbehandlerValg.folketrygdlovenAlternativ.equalTo(inngaaPartnerskap)
+                    folketrygdlovenAlternativ.equalTo(inngaaPartnerskap)
                 ) {
                     val dato = fritekst("dato")
                     text(
@@ -95,9 +97,8 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                         }
                     )
                 }.orShowIf(
-                    saksbehandlerValg.folketrygdlovenAlternativ.isOneOf(
-                        erErSamboerOgFellesBarn, blirSamboerOgHarFellesBarn
-                    )
+                    folketrygdlovenAlternativ.equalTo(erErSamboerOgFellesBarn)
+                        .or(folketrygdlovenAlternativ.equalTo(blirSamboerOgHarFellesBarn))
                 )
                 {
                     val datoSamboerskap = fritekst("dato for samboerskap")
@@ -116,7 +117,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                             +"We have based our decision on our finding that from "
                         }
                     )
-                    showIf(saksbehandlerValg.folketrygdlovenAlternativ.isOneOf(blirSamboerOgHarFellesBarn)) {
+                    showIf(folketrygdlovenAlternativ.equalTo(blirSamboerOgHarFellesBarn)) {
                         text(bokmal { +datoSamboerskap }, nynorsk { +datoSamboerskap }, english { +datoSamboerskap })
                     }.orShow {
                         text(bokmal { +datoFellesbarn }, nynorsk { +datoFellesbarn }, english { +datoFellesbarn })
@@ -126,7 +127,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                         nynorsk { +" er sambuarar med felles barn." },
                         english { +" you are cohabiting and have children in common." }
                     )
-                }.orShowIf(saksbehandlerValg.folketrygdlovenAlternativ.isOneOf(blirSamboerTidligereGift)) {
+                }.orShowIf(folketrygdlovenAlternativ.equalTo(blirSamboerTidligereGift)) {
                     val dato = fritekst("dato for fødsel av fellesbarn")
                     text(
                         bokmal {
@@ -145,7 +146,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                 }
             }
 
-            showIf(saksbehandlerValg.opphoerMedTilbakekreving) {
+            showIf(opphoerMedTilbakekreving) {
                 paragraph {
                     text(
                         bokmal {
