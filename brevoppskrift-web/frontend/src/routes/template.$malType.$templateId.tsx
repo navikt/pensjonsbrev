@@ -248,11 +248,11 @@ function SelectLanguage() {
 function Document({ templateDocumentation }: { templateDocumentation: TemplateDocumentation | Attachment }) {
   return (
     <Box background="default" padding="space-48">
-      <div>
+      <Heading level="1" size="large" spacing>
         {templateDocumentation.title.map((cocs, index) => {
           return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
         })}
-      </div>
+      </Heading>
       <div>
         {templateDocumentation.outline.map((cocs, index) => {
           return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
@@ -293,7 +293,7 @@ function ContentComponent({ content }: { content: Element }) {
   switch (content.elementType) {
     case ElementType.TITLE1: {
       return (
-        <Heading data-block-index={content.index} size="medium" spacing>
+        <Heading data-block-index={content.index} level="2" size="medium" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
@@ -302,7 +302,7 @@ function ContentComponent({ content }: { content: Element }) {
     }
     case ElementType.TITLE2: {
       return (
-        <Heading data-block-index={content.index} size="small" spacing>
+        <Heading data-block-index={content.index} level="3" size="small" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
@@ -311,7 +311,7 @@ function ContentComponent({ content }: { content: Element }) {
     }
     case ElementType.TITLE3: {
       return (
-        <Heading data-block-index={content.index} size="xsmall" spacing>
+        <Heading data-block-index={content.index} level="4" size="xsmall" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponent cocs={cocs} key={index} />
           ))}
