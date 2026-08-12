@@ -206,10 +206,7 @@ function ConditionalComponentV2<E extends ElementV2>({ conditional }: { conditio
   return (
     <div className="conditional">
       <div className="show-if">
-        <div className="expression">
-          <code>If </code>
-          <ExprToText expr={conditional.predicate} />
-        </div>
+        <ConditionalPredicateDisclosure label="If" predicate={conditional.predicate} />
         {conditional.showIf.map((cocs, index) => (
           <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
         ))}
@@ -225,14 +222,32 @@ function ConditionalComponentV2<E extends ElementV2>({ conditional }: { conditio
 function ShowElseIfV2<E extends ElementV2>({ elseIf }: { elseIf: ElseIfV2<E> }) {
   return (
     <div className="show-if">
-      <div className="expression">
-        <code>Else If </code>
-        <ExprToText expr={elseIf.predicate} />
-      </div>
+      <ConditionalPredicateDisclosure label="Else If" predicate={elseIf.predicate} />
       {elseIf.showIf.map((cocs, index) => (
         <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
       ))}
     </div>
+  );
+}
+
+/**
+ * "If <predikat>"/"Else If <predikat>"-raden kan bli svært lang (nøstede AND/OR-kjeder, lange
+ * feltstier) og dominerer plassen når man leser gjennom brevoppskriften - selv om det som regel
+ * er selve den betingede TEKSTEN (innholdet under raden) man er ute etter, ikke predikatet. Vises
+ * derfor kollapset som standard (kun label + en liten trekant-markør), med en native
+ * <details>/<summary>-disclosure man kan klikke - eller taste Enter/Space på, siden <summary> er
+ * fokuserbar og har innebygd tastaturstøtte - for å vise selve predikatet.
+ */
+function ConditionalPredicateDisclosure({ label, predicate }: { label: string; predicate: Expr }) {
+  return (
+    <details className="conditional-predicate">
+      <summary>
+        <code>{label}</code>
+      </summary>
+      <div className="expression">
+        <ExprToText expr={predicate} />
+      </div>
+    </details>
   );
 }
 
