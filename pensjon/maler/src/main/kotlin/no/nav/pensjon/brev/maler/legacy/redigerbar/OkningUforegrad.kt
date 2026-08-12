@@ -628,8 +628,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
 
             paragraph {
                 text(
-                    bokmal { +"Vi har fastsatt uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
-                    nynorsk { +"Vi har fastsett uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
+                    bokmal { +"Vi har tidligere fastsatt uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
+                    nynorsk { +"Vi har tidlegare fastsett uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
                 )
             }
 
@@ -691,8 +691,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             showIf(((ifubegrunnelse).equalTo("stdbegr_12_8_2_3") and (ieuBegrunnelse).notEqualTo("stdbegr_12_8_1_3"))) {
                 paragraph {
                     text(
-                        bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er derfor tidligere fastsatt til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,3 ganger grunnbeløpet." },
-                        nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør, er fastsett til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,3 gonger grunnbeløpet." },
+                        bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er fastsatt til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,3 ganger grunnbeløpet." },
+                        nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør er fastsett til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,3 gonger grunnbeløpet." },
                     )
                     showIf(oifuMerEnnIfu) {
                         text(
@@ -706,8 +706,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             showIf(((ifubegrunnelse).equalTo("stdbegr_12_8_2_5") and (ieuBegrunnelse).notEqualTo("stdbegr_12_8_1_3"))) {
                 paragraph {
                     text(
-                        bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er derfor tidligere fastsatt til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,5 ganger folketrygdens grunnbeløp." },
-                        nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør, er fastsett til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,5 gonger grunnbeløpet." },
+                        bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er fastsatt til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,5 ganger folketrygdens grunnbeløp." },
+                        nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør er fastsett til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,5 gonger grunnbeløpet." },
                     )
                     showIf(oifuMerEnnIfu) {
                         text(
