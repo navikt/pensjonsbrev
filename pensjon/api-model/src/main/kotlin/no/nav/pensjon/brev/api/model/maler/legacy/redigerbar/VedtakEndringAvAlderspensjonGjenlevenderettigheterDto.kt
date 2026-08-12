@@ -4,36 +4,19 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
-    override val saksbehandlerValg: SaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg, VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData> {
-    data class SaksbehandlerValg(
-        @DisplayText("Omregnet til enslig i samme vedtak")
-        val omregnetTilEnsligISammeVedtak: Boolean?,
-        @DisplayText("Hvis bruker under 67 år og avdøde har redusert trygdetid/poengår")
-        val brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar: Boolean?,
-        @DisplayText("Hvis avdøde har redusert trygdetid/poengår")
-        val avdoedeHarRedusertTrygdetidEllerPoengaar: Boolean?,
-        @DisplayText("Hvis etterbetaling av pensjon")
-        val etterbetaling: Boolean?,
-        @DisplayText("Hvis økning av pensjon")
-        val okningBelop: Boolean?,
-        @DisplayText("Hvis ingen endring av pensjon")
-        val ingenEndringBelop: Boolean?,
-        @DisplayText("Hvis økt tilleggspensjon, men ingen endring i total alderspensjon")
-        val oktTilleggMpn: Boolean?,
-    ) : SaksbehandlerValgBrevdata
+) : RedigerbarBrevdataMedSaksbehandlerValg<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData> {
 
     data class PesysData(
         val avdod: Avdod,
