@@ -215,7 +215,7 @@ class SaksbehandlervalgPerMalTest {
                 "refusjon: Boolean",
             ),
             Redigerbar.UT_OKNING_UFOREGRAD to listOf(
-                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg?",
+                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg",
             ),
             Redigerbar.UT_OMREGNING_UFOEREPENSJON_TIL_UFOERETRYGD to emptyList(),
             Redigerbar.UT_ORIENTERING_OM_SAKSBEHANDLINGSTID to listOf(

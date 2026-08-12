@@ -278,7 +278,9 @@ fun createInnvilgelseUforetrygdMedEndringDto() =
 
 fun createOkningUforegradDto() =
     OkningUforegradDto(
-        saksbehandlerValg = OkningUforegradDto.Saksbehandlervalg(periodisertInntekt = PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT),
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "periodisertInntekt" to PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT,
+        ),
         pesysData = OkningUforegradDto.PesysData(
             pe = createPEgruppe10(),
             kravFremsattDato = LocalDate.of(2020, Month.JANUARY, 1),
