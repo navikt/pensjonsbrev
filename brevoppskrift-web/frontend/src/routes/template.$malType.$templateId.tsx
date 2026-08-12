@@ -23,7 +23,7 @@ import {
   type ForEach,
   type TemplateDocumentation,
 } from "~/api/brevbakerTypes";
-import { DataClasses, trimClassName } from "~/components/DataClasses";
+import { DataClassesPanel, trimClassName } from "~/components/DataClasses";
 import { DocumentV2 } from "~/components/TemplateDocumentationV2View";
 
 export const Route = createFileRoute("/template/$malType/$templateId")({
@@ -118,44 +118,44 @@ function TemplateExplorer() {
   }, [index, documentation]);
 
   return (
-    <HGrid columns="minmax(360px, 35%) 1fr" height="100%" overflow="hidden">
-      <Box background="neutral-soft" borderColor="neutral-subtle" borderWidth="0 1 0 0" minHeight="0">
-        <Box asChild marginBlock="space-16 space-0" marginInline="space-16">
-          <Button as={Link} icon={<ArrowLeftIcon />} size="small" to="/templates" variant="secondary">
-            Tilbake til mal-oversikten
-          </Button>
-        </Box>
-        <DataClasses templateModelSpecification={documentation.templateModelSpecification} />
+    <VStack height="100%" overflow="hidden">
+      <Box asChild flexShrink="0" marginBlock="space-16 space-0" marginInline="space-16">
+        <Button as={Link} icon={<ArrowLeftIcon />} size="small" to="/templates" variant="secondary">
+          Tilbake til mal-oversikten
+        </Button>
       </Box>
-      <VStack
-        align="center"
-        gap="space-16"
-        overflow="auto"
-        paddingBlock="space-16"
-        paddingInline="space-16"
-        width="100%"
-      >
-        <Heading size="medium" spacing>
-          Oppskrift for {templateId}
-        </Heading>
-        <SelectLanguage />
-        <SelectDocVersion />
-        <div
-          css={css`
-            width: 100%;
-
-            .search-target {
-              outline: 3px solid var(--ax-warning-400);
-              border-radius: var(--ax-radius-4);
-              scroll-margin-top: var(--ax-space-64);
-            }
-          `}
-          ref={previewRef}
+      <HGrid columns="auto 1fr" flexGrow="1" minHeight="0" overflow="hidden">
+        <DataClassesPanel templateModelSpecification={documentation.templateModelSpecification} />
+        <VStack
+          align="center"
+          gap="space-16"
+          overflow="auto"
+          paddingBlock="space-16"
+          paddingInline="space-16"
+          width="100%"
         >
-          {docVersion === "v2" ? <TemplateDocumentationV2Section /> : <TemplateDocumentationV1Section />}
-        </div>
-      </VStack>
-    </HGrid>
+          <Heading size="medium" spacing>
+            Oppskrift for {templateId}
+          </Heading>
+          <SelectLanguage />
+          <SelectDocVersion />
+          <div
+            css={css`
+              width: 100%;
+
+              .search-target {
+                outline: 3px solid var(--ax-warning-400);
+                border-radius: var(--ax-radius-4);
+                scroll-margin-top: var(--ax-space-64);
+              }
+            `}
+            ref={previewRef}
+          >
+            {docVersion === "v2" ? <TemplateDocumentationV2Section /> : <TemplateDocumentationV1Section />}
+          </div>
+        </VStack>
+      </HGrid>
+    </VStack>
   );
 }
 
