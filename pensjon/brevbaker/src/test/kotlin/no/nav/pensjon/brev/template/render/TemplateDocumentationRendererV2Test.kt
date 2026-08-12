@@ -167,6 +167,51 @@ class TemplateDocumentationRendererV2Test {
     private data class VilkarListeArg(val liste: List<Vilkar>)
 
     /**
+     * `Format`-noder (LocalizedFormatter, f.eks. dato-/kroneformattering) skal ha et
+     * `exampleText` produsert ved å faktisk kalle den ekte formatterings-logikken
+     * (`LocalizedFormatter.apply`) med en syntetisk eksempelverdi og riktig språk — se
+     * designnotatet. Dette gir et 100% korrekt eksempel uten å reimplementere
+     * formatteringslogikk i frontend.
+     */
+    @Test
+    fun `Format-node faar et korrekt formattert eksempel via LocalizedFormatter-apply`() {
+        val templ = outlineTestTemplate<no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner> {
+            paragraph {
+                text(bokmal { +argument.format(no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormatKroner()) })
+            }
+        }
+        @Suppress("UNCHECKED_CAST")
+        val text = ((TemplateDocumentationRendererV2.render(templ, Bokmal, templ.modelSpecification()).outline.first() as Content<Paragraph>)
+            .content.paragraph.first() as Content<Text>).content
+        val format = (text as Text.Expression).expression as Expr.Format
+        assertEquals("CurrencyFormatKroner", format.formatterName)
+        assertEquals("12\u00A0345 kroner", format.exampleText)
+    }
+
+    /**
+     * For en ukjent/uimplementert formatterer (som ikke er dekket i `formatterExampleText`)
+     * skal `exampleText` være `null` i stedet for å kaste eller gjette feil verdi — frontend
+     * faller da tilbake til dagens fraseviisning.
+     */
+    @Test
+    fun `Format-node faar exampleText = null for ukjent formatterer`() {
+        val ukjentFormatterer = object : no.nav.pensjon.brev.template.LocalizedFormatter<String>() {
+            override fun stableHashCode(): Int = "UkjentFormatterer".hashCode()
+            override fun apply(first: String, second: no.nav.pensjon.brev.template.Language): String = first
+        }
+        val templ = outlineTestTemplate<Unit> {
+            paragraph {
+                text(bokmal { +"verdi".expr().format(ukjentFormatterer) })
+            }
+        }
+        @Suppress("UNCHECKED_CAST")
+        val text = ((TemplateDocumentationRendererV2.render(templ, Bokmal, templ.modelSpecification()).outline.first() as Content<Paragraph>)
+            .content.paragraph.first() as Content<Text>).content
+        val format = (text as Text.Expression).expression as Expr.Format
+        assertEquals(null, format.exampleText)
+    }
+
+    /**
      * Reproduserer det virkelige, legacy-mønsteret fra
      * `LegacySelectors.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat`:
      * `liste.getOrNull().safe { vilkar }.safe { unguforresultat }.ifNull("")`. `.select(...)`

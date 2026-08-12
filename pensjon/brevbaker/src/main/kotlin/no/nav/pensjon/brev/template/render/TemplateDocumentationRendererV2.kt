@@ -41,31 +41,33 @@ object TemplateDocumentationRendererV2 {
         TemplateDocumentationV2.Attachment(
             title = renderText(attachment.template.title, lang),
             outline = renderOutline(attachment.template.outline, lang),
-            include = renderExpr(attachment.predicate, emptyMap(), forEachDepth = 0),
-            attachmentData = renderExpr(attachment.data, emptyMap(), forEachDepth = 0),
+            include = renderExpr(attachment.predicate, emptyMap(), forEachDepth = 0, lang = lang),
+            attachmentData = renderExpr(attachment.data, emptyMap(), forEachDepth = 0, lang = lang),
         )
 
     private fun <T : Element<*>, R : TemplateDocumentationV2.Element> renderContentOrStructure(
         contentOrStructure: List<ContentOrControlStructure<*, T>>,
         forEachDepth: Int,
+        lang: Language,
         mapper: (T) -> List<R>,
     ): List<TemplateDocumentationV2.ContentOrControlStructure<R>> =
-        contentOrStructure.flatMap { el -> renderContentOrStructure(el, forEachDepth) { mapper(it) } }
+        contentOrStructure.flatMap { el -> renderContentOrStructure(el, forEachDepth, lang) { mapper(it) } }
 
     private fun <T : Element<*>, R : TemplateDocumentationV2.Element> renderContentOrStructure(
         contentOrStructure: ContentOrControlStructure<*, T>,
         forEachDepth: Int,
+        lang: Language,
         mapper: (T) -> List<R>,
     ): List<TemplateDocumentationV2.ContentOrControlStructure<R>> =
         when (contentOrStructure) {
             is ContentOrControlStructure.Content -> mapper(contentOrStructure.content).map { TemplateDocumentationV2.ContentOrControlStructure.Content(it) }
 
             is ContentOrControlStructure.Conditional -> {
-                val elseIf = liftNestedIfElse(contentOrStructure.showElse, forEachDepth, mapper)
+                val elseIf = liftNestedIfElse(contentOrStructure.showElse, forEachDepth, lang, mapper)
                 listOf(
                     TemplateDocumentationV2.ContentOrControlStructure.Conditional(
-                        predicate = renderExpr(contentOrStructure.predicate, emptyMap(), forEachDepth),
-                        showIf = renderContentOrStructure(contentOrStructure.showIf, forEachDepth, mapper),
+                        predicate = renderExpr(contentOrStructure.predicate, emptyMap(), forEachDepth, lang),
+                        showIf = renderContentOrStructure(contentOrStructure.showIf, forEachDepth, lang, mapper),
                         elseIf = elseIf.first,
                         showElse = elseIf.second,
                     )
@@ -74,8 +76,8 @@ object TemplateDocumentationRendererV2 {
 
             is ContentOrControlStructure.ForEach<*, T, *> -> listOf(
                 TemplateDocumentationV2.ContentOrControlStructure.ForEach(
-                    items = renderExpr(contentOrStructure.items, emptyMap(), forEachDepth),
-                    body = renderContentOrStructure(contentOrStructure.body.toList(), forEachDepth + 1, mapper),
+                    items = renderExpr(contentOrStructure.items, emptyMap(), forEachDepth, lang),
+                    body = renderContentOrStructure(contentOrStructure.body.toList(), forEachDepth + 1, lang, mapper),
                 )
             )
         }
@@ -83,20 +85,21 @@ object TemplateDocumentationRendererV2 {
     private fun <T : Element<*>, R : TemplateDocumentationV2.Element> liftNestedIfElse(
         showElse: List<ContentOrControlStructure<*, T>>,
         forEachDepth: Int,
+        lang: Language,
         mapper: (T) -> List<R>,
     ): Pair<List<TemplateDocumentationV2.ContentOrControlStructure.Conditional.ElseIf<R>>, List<TemplateDocumentationV2.ContentOrControlStructure<R>>> {
         val first = showElse.firstOrNull()
         return if (showElse.size == 1 && first is ContentOrControlStructure.Conditional) {
-            liftNestedIfElse(first.showElse, forEachDepth, mapper).let { (nestedIfElse, nestedElse) ->
+            liftNestedIfElse(first.showElse, forEachDepth, lang, mapper).let { (nestedIfElse, nestedElse) ->
                 listOf(
                     TemplateDocumentationV2.ContentOrControlStructure.Conditional.ElseIf(
-                        renderExpr(first.predicate, emptyMap(), forEachDepth),
-                        renderContentOrStructure(first.showIf, forEachDepth, mapper)
+                        renderExpr(first.predicate, emptyMap(), forEachDepth, lang),
+                        renderContentOrStructure(first.showIf, forEachDepth, lang, mapper)
                     )
                 ).plus(nestedIfElse) to nestedElse
             }
         } else {
-            emptyList<TemplateDocumentationV2.ContentOrControlStructure.Conditional.ElseIf<R>>() to renderContentOrStructure(showElse, forEachDepth, mapper)
+            emptyList<TemplateDocumentationV2.ContentOrControlStructure.Conditional.ElseIf<R>>() to renderContentOrStructure(showElse, forEachDepth, lang, mapper)
         }
     }
 
@@ -104,7 +107,7 @@ object TemplateDocumentationRendererV2 {
         outline: List<OutlineElement<*>>,
         lang: Language,
     ): List<TemplateDocumentationV2.ContentOrControlStructure<TemplateDocumentationV2.Element.OutlineContent>> =
-        renderContentOrStructure(outline, forEachDepth = 0) { listOf(renderOutline(it, lang)) }
+        renderContentOrStructure(outline, forEachDepth = 0, lang) { listOf(renderOutline(it, lang)) }
 
     private fun renderOutline(element: Element.OutlineContent<*>, lang: Language): TemplateDocumentationV2.Element.OutlineContent =
         when (element) {
@@ -112,7 +115,7 @@ object TemplateDocumentationRendererV2 {
             is Element.OutlineContent.Title2 -> TemplateDocumentationV2.Element.OutlineContent.Title2(renderText(element.text, lang))
             is Element.OutlineContent.Title3 -> TemplateDocumentationV2.Element.OutlineContent.Title3(renderText(element.text, lang))
             is Element.OutlineContent.Paragraph -> TemplateDocumentationV2.Element.OutlineContent.Paragraph(
-                renderContentOrStructure(element.paragraph, forEachDepth = 0) {
+                renderContentOrStructure(element.paragraph, forEachDepth = 0, lang) {
                     renderParagraphContent(it, lang)
                 }
             )
@@ -126,7 +129,7 @@ object TemplateDocumentationRendererV2 {
             is Element.OutlineContent.ParagraphContent.Form -> listOf(TemplateDocumentationV2.Element.ParagraphContent.Text.Literal("## missing documentation ##"))
             is Element.OutlineContent.ParagraphContent.ItemList -> listOf(
                 TemplateDocumentationV2.Element.ParagraphContent.ItemList(
-                    renderContentOrStructure(element.items, forEachDepth = 0) { listOf(renderItem(it, lang)) }
+                    renderContentOrStructure(element.items, forEachDepth = 0, lang) { listOf(renderItem(it, lang)) }
                 )
             )
 
@@ -137,7 +140,7 @@ object TemplateDocumentationRendererV2 {
     private fun renderTable(table: Element.OutlineContent.ParagraphContent.Table<*>, lang: Language): TemplateDocumentationV2.Element.ParagraphContent {
         return TemplateDocumentationV2.Element.ParagraphContent.Table(
             header = renderRow(table.header.colSpec.map { it.headerContent }, lang),
-            rows = renderContentOrStructure(table.rows, forEachDepth = 0) { listOf(renderRow(it.cells, lang)) }
+            rows = renderContentOrStructure(table.rows, forEachDepth = 0, lang) { listOf(renderRow(it.cells, lang)) }
         )
     }
 
@@ -158,7 +161,7 @@ object TemplateDocumentationRendererV2 {
         text: List<TextElement<*>>,
         lang: Language,
     ): List<TemplateDocumentationV2.ContentOrControlStructure<TemplateDocumentationV2.Element.ParagraphContent.Text>> =
-        renderContentOrStructure(text, forEachDepth = 0) { renderText(it, lang) }
+        renderContentOrStructure(text, forEachDepth = 0, lang) { renderText(it, lang) }
 
     private fun renderText(
         element: Element.OutlineContent.ParagraphContent.Text<*>,
@@ -166,8 +169,8 @@ object TemplateDocumentationRendererV2 {
     ): List<TemplateDocumentationV2.Element.ParagraphContent.Text> =
         when (element) {
             is Element.OutlineContent.ParagraphContent.Text.Literal -> listOf(TemplateDocumentationV2.Element.ParagraphContent.Text.Literal(element.text(lang)))
-            is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage -> renderTextExpression(element.expr(lang))
-            is Element.OutlineContent.ParagraphContent.Text.Expression -> renderTextExpression(element.expression)
+            is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage -> renderTextExpression(element.expr(lang), lang)
+            is Element.OutlineContent.ParagraphContent.Text.Expression -> renderTextExpression(element.expression, lang)
             is Element.OutlineContent.ParagraphContent.Text.NewLine -> emptyList()
         }
 
@@ -179,6 +182,7 @@ object TemplateDocumentationRendererV2 {
 
     private fun renderTextExpression(
         expr: Expression<String>,
+        lang: Language,
     ): List<TemplateDocumentationV2.Element.ParagraphContent.Text> {
         @Suppress("UNCHECKED_CAST") // For Concat så vet vi at operandene er StringExpression
         val pieces = flattenAssociative(expr) { it is BinaryOperation.Concat }.map { it as StringExpression }.mergeLiterals()
@@ -186,7 +190,7 @@ object TemplateDocumentationRendererV2 {
             if (it is Expression.Literal<String>) {
                 TemplateDocumentationV2.Element.ParagraphContent.Text.Literal(it.value)
             } else {
-                TemplateDocumentationV2.Element.ParagraphContent.Text.Expression(renderExpr(it, emptyMap(), forEachDepth = 0))
+                TemplateDocumentationV2.Element.ParagraphContent.Text.Expression(renderExpr(it, emptyMap(), forEachDepth = 0, lang))
             }
         }
     }
@@ -197,6 +201,7 @@ object TemplateDocumentationRendererV2 {
         expr: Expression<*>,
         assignments: AssignedReplacementsV2,
         forEachDepth: Int,
+        lang: Language,
     ): Expr =
         when (expr) {
             is Expression.Literal -> Literal(expr.value.toString(), inferScalarKind(expr.value))
@@ -206,19 +211,20 @@ object TemplateDocumentationRendererV2 {
             is Expression.FromScope.Argument -> FieldPath(TemplateDocumentationV2.DataSource.Scope("argument"), emptyList(), leafType = null)
             is Expression.FromScope.Assigned ->
                 assignments[expr]
-                    ?.let { renderExpr(it, assignments, forEachDepth) }
+                    ?.let { renderExpr(it, assignments, forEachDepth, lang) }
                     // Løkkevariabelen i den nærmeste omsluttende forEach. Uten reflection over
                     // Item-typen kan vi ikke gi et semantisk navn, men depth gjør at nøstede
                     // løkker i det minste kan skilles fra hverandre (til forskjell fra v1 der
                     // alle heter "X").
                     ?: FieldPath(TemplateDocumentationV2.DataSource.ForEachVar("item", forEachDepth), emptyList(), leafType = null)
 
-            is Expression.UnaryInvoke<*, *> -> renderUnaryInvoke(expr.value, expr.operation, assignments, forEachDepth)
-            is Expression.BinaryInvoke<*, *, *> -> renderBinaryInvoke(expr.first, expr.second, expr.operation, assignments, forEachDepth)
+            is Expression.UnaryInvoke<*, *> -> renderUnaryInvoke(expr.value, expr.operation, assignments, forEachDepth, lang)
+            is Expression.BinaryInvoke<*, *, *> -> renderBinaryInvoke(expr.first, expr.second, expr.operation, assignments, forEachDepth, lang)
             is Expression.NullSafeApplication<*, *> -> renderExpr(
                 expr = expr.application,
                 assignments = assignments + (expr.assigned to expr.input),
                 forEachDepth = forEachDepth,
+                lang = lang,
             )
         }
 
@@ -272,24 +278,25 @@ object TemplateDocumentationRendererV2 {
         operation: UnaryOperation<*, *>,
         assignments: AssignedReplacementsV2,
         forEachDepth: Int,
+        lang: Language,
     ): Expr {
         // `?` i safeCall bæres ikke videre til dokumentasjonen (samme forenkling som v1).
         if (operation is UnaryOperation.SafeCall<*, *>) {
-            return renderUnaryInvoke(value, operation.operation, assignments, forEachDepth)
+            return renderUnaryInvoke(value, operation.operation, assignments, forEachDepth, lang)
         }
 
         // Representerer `!(a == b)` som en egen NOT_EQUAL-comparison i stedet for Not(Equal(..)).
         if (operation is UnaryOperation.Not && value is Expression.BinaryInvoke<*, *, *> && value.operation is BinaryOperation.Equal<*>) {
             return Comparison(
-                left = renderExpr(value.first, assignments, forEachDepth),
+                left = renderExpr(value.first, assignments, forEachDepth, lang),
                 op = TemplateDocumentationV2.CompareOp.NOT_EQUAL,
-                right = renderExpr(value.second, assignments, forEachDepth),
+                right = renderExpr(value.second, assignments, forEachDepth, lang),
             )
         }
 
         if (operation is UnaryOperation.Select<*, *>) {
             val selector = operation.selector
-            val base = renderExpr(value, assignments, forEachDepth)
+            val base = renderExpr(value, assignments, forEachDepth, lang)
             // Value classes (f.eks. Kroner, Year, Percent, Postnummer) er for oss bare en
             // semantisk innpakning rundt én verdi — å vise utpakkingen som et eget FieldPath-
             // segment (".value") gir ingen ekstra menneskelig informasjon, kun støy. Behold
@@ -307,7 +314,7 @@ object TemplateDocumentationRendererV2 {
             }
         }
 
-        val rendered = renderExpr(value, assignments, forEachDepth)
+        val rendered = renderExpr(value, assignments, forEachDepth, lang)
         return when (operation) {
             is UnaryOperation.Not -> Not(rendered)
             is UnaryOperation.AbsoluteValue -> FunctionCall("abs", listOf(rendered))
@@ -334,82 +341,133 @@ object TemplateDocumentationRendererV2 {
         operation: BinaryOperation<*, *, *>,
         assignments: AssignedReplacementsV2,
         forEachDepth: Int,
+        lang: Language,
     ): Expr {
         // `?` i safeCall bæres ikke videre til dokumentasjonen (samme forenkling som v1).
         if (operation is BinaryOperation.SafeCall<*, *, *>) {
-            return renderBinaryInvoke(first, second, operation.operation, assignments, forEachDepth)
+            return renderBinaryInvoke(first, second, operation.operation, assignments, forEachDepth, lang)
         }
         if (operation is BinaryOperation.Flip<*, *, *>) {
-            return renderBinaryInvoke(second, first, operation.operation, assignments, forEachDepth)
+            return renderBinaryInvoke(second, first, operation.operation, assignments, forEachDepth, lang)
         }
 
         if (operation is LocalizedFormatter<*>) {
-            return Format(renderExpr(first, assignments, forEachDepth), operation::class.simpleName ?: "format")
+            return Format(
+                value = renderExpr(first, assignments, forEachDepth, lang),
+                formatterName = operation::class.simpleName ?: "format",
+                exampleText = formatterExampleText(operation, lang),
+            )
         }
 
         if (operation is BinaryOperation.And) {
             return AssociativeOp(TemplateDocumentationV2.AssocOp.AND, (flattenAssociative(first) { it is BinaryOperation.And } + flattenAssociative(second) { it is BinaryOperation.And })
-                .map { renderExpr(it, assignments, forEachDepth) })
+                .map { renderExpr(it, assignments, forEachDepth, lang) })
         }
         if (operation is BinaryOperation.Or) {
             return AssociativeOp(TemplateDocumentationV2.AssocOp.OR, (flattenAssociative(first) { it is BinaryOperation.Or } + flattenAssociative(second) { it is BinaryOperation.Or })
-                .map { renderExpr(it, assignments, forEachDepth) })
+                .map { renderExpr(it, assignments, forEachDepth, lang) })
         }
         if (operation is BinaryOperation.IntPlus) {
             return AssociativeOp(TemplateDocumentationV2.AssocOp.PLUS, (flattenAssociative(first) { it is BinaryOperation.IntPlus } + flattenAssociative(second) { it is BinaryOperation.IntPlus })
-                .map { renderExpr(it, assignments, forEachDepth) })
+                .map { renderExpr(it, assignments, forEachDepth, lang) })
         }
         if (operation is BinaryOperation.Concat) {
             @Suppress("UNCHECKED_CAST")
             val pieces = (flattenAssociative(first) { it is BinaryOperation.Concat } + flattenAssociative(second) { it is BinaryOperation.Concat })
                 .map { it as StringExpression }
                 .mergeLiterals()
-            return if (pieces.size == 1) renderExpr(pieces.first(), assignments, forEachDepth)
-            else AssociativeOp(TemplateDocumentationV2.AssocOp.CONCAT, pieces.map { renderExpr(it, assignments, forEachDepth) })
+            return if (pieces.size == 1) renderExpr(pieces.first(), assignments, forEachDepth, lang)
+            else AssociativeOp(TemplateDocumentationV2.AssocOp.CONCAT, pieces.map { renderExpr(it, assignments, forEachDepth, lang) })
         }
 
-        if (operation is BinaryOperation.Equal<*>) return Comparison(renderExpr(first, assignments, forEachDepth), TemplateDocumentationV2.CompareOp.EQUAL, renderExpr(second, assignments, forEachDepth))
-        if (operation is BinaryOperation.GreaterThan<*>) return Comparison(renderExpr(first, assignments, forEachDepth), TemplateDocumentationV2.CompareOp.GREATER_THAN, renderExpr(second, assignments, forEachDepth))
-        if (operation is BinaryOperation.GreaterThanOrEqual<*>) return Comparison(renderExpr(first, assignments, forEachDepth), TemplateDocumentationV2.CompareOp.GREATER_THAN_OR_EQUAL, renderExpr(second, assignments, forEachDepth))
-        if (operation is BinaryOperation.LessThan<*>) return Comparison(renderExpr(first, assignments, forEachDepth), TemplateDocumentationV2.CompareOp.LESS_THAN, renderExpr(second, assignments, forEachDepth))
-        if (operation is BinaryOperation.LessThanOrEqual<*>) return Comparison(renderExpr(first, assignments, forEachDepth), TemplateDocumentationV2.CompareOp.LESS_THAN_OR_EQUAL, renderExpr(second, assignments, forEachDepth))
+        if (operation is BinaryOperation.Equal<*>) return Comparison(renderExpr(first, assignments, forEachDepth, lang), TemplateDocumentationV2.CompareOp.EQUAL, renderExpr(second, assignments, forEachDepth, lang))
+        if (operation is BinaryOperation.GreaterThan<*>) return Comparison(renderExpr(first, assignments, forEachDepth, lang), TemplateDocumentationV2.CompareOp.GREATER_THAN, renderExpr(second, assignments, forEachDepth, lang))
+        if (operation is BinaryOperation.GreaterThanOrEqual<*>) return Comparison(renderExpr(first, assignments, forEachDepth, lang), TemplateDocumentationV2.CompareOp.GREATER_THAN_OR_EQUAL, renderExpr(second, assignments, forEachDepth, lang))
+        if (operation is BinaryOperation.LessThan<*>) return Comparison(renderExpr(first, assignments, forEachDepth, lang), TemplateDocumentationV2.CompareOp.LESS_THAN, renderExpr(second, assignments, forEachDepth, lang))
+        if (operation is BinaryOperation.LessThanOrEqual<*>) return Comparison(renderExpr(first, assignments, forEachDepth, lang), TemplateDocumentationV2.CompareOp.LESS_THAN_OR_EQUAL, renderExpr(second, assignments, forEachDepth, lang))
 
         if (operation is BinaryOperation.IfNull<*>) {
-            return NullCoalesce(renderExpr(first, assignments, forEachDepth), renderExpr(second, assignments, forEachDepth))
+            return NullCoalesce(renderExpr(first, assignments, forEachDepth, lang), renderExpr(second, assignments, forEachDepth, lang))
         }
 
         if (operation is BinaryOperation.BrevdataEllerFritekst) {
             return EditableField(
                 kind = TemplateDocumentationV2.EditableKind.BREVDATA_ELLER_FRITEKST,
-                value = renderExpr(first, assignments, forEachDepth),
-                fallback = renderExpr(second, assignments, forEachDepth),
+                value = renderExpr(first, assignments, forEachDepth, lang),
+                fallback = renderExpr(second, assignments, forEachDepth, lang),
             )
         }
 
         // `IfElse(pred, Tuple(ifTrue, ifElse))`: løft ut de to grenene som egen Conditional-node.
         if (operation is BinaryOperation.IfElse<*> && second is Expression.BinaryInvoke<*, *, *> && second.operation is BinaryOperation.Tuple<*, *>) {
             return Conditional(
-                predicate = renderExpr(first, assignments, forEachDepth),
-                ifTrue = renderExpr(second.first, assignments, forEachDepth),
-                ifElse = renderExpr(second.second, assignments, forEachDepth),
+                predicate = renderExpr(first, assignments, forEachDepth, lang),
+                ifTrue = renderExpr(second.first, assignments, forEachDepth, lang),
+                ifElse = renderExpr(second.second, assignments, forEachDepth, lang),
             )
         }
 
         if (operation is BinaryOperation.EnumInList<*> || operation is BinaryOperation.IsOneOf<*>) {
-            return FunctionCall("isOneOf", listOf(renderExpr(first, assignments, forEachDepth), renderExpr(second, assignments, forEachDepth)))
+            return FunctionCall("isOneOf", listOf(renderExpr(first, assignments, forEachDepth, lang), renderExpr(second, assignments, forEachDepth, lang)))
         }
         if (operation is BinaryOperation.GetElementOrNull<*>) {
-            return FunctionCall("getOrNull", listOf(renderExpr(first, assignments, forEachDepth), renderExpr(second, assignments, forEachDepth)))
+            return FunctionCall("getOrNull", listOf(renderExpr(first, assignments, forEachDepth, lang), renderExpr(second, assignments, forEachDepth, lang)))
         }
         if (operation is BinaryOperation.MapCollection<*, *, *>) {
-            return FunctionCall("map", listOf(renderExpr(first, assignments, forEachDepth), renderExpr(second, assignments, forEachDepth)))
+            return FunctionCall("map", listOf(renderExpr(first, assignments, forEachDepth, lang), renderExpr(second, assignments, forEachDepth, lang)))
         }
 
         return FunctionCall(
             name = operation.doc?.name ?: operation::class.simpleName ?: "undocumentedOperation",
-            args = listOf(renderExpr(first, assignments, forEachDepth), renderExpr(second, assignments, forEachDepth)),
+            args = listOf(renderExpr(first, assignments, forEachDepth, lang), renderExpr(second, assignments, forEachDepth, lang)),
         )
     }
+
+    /**
+     * Genererer et 100% korrekt eksempel på hvordan en [LocalizedFormatter] faktisk ville
+     * formattert en verdi i et ferdig brev, ved å kalle den ekte `apply`-metoden direkte med en
+     * syntetisk eksempelverdi og riktig språk — se drøfting i template-documentation-v2-design.md
+     * seksjon om Format-visning. Vi reimplementerer bevisst IKKE formatteringslogikk her (ville
+     * garantert drifte fra sannheten i brevrendering over tid); i stedet velger vi kun en
+     * plausibel input-verdi av riktig type per kjent formatter og lar formatteren gjøre jobben.
+     * Returnerer `null` for ukjente/fremtidige formatterer (frontend faller da tilbake til
+     * fraseviisning "formatert med <formatterName>"), og ved uventede feil under kallet.
+     */
+    @Suppress("UNCHECKED_CAST")
+    private fun formatterExampleText(operation: LocalizedFormatter<*>, lang: Language): String? =
+        try {
+            when (operation) {
+                is LocalizedFormatter.ShortDateFormat -> operation.apply(EXAMPLE_DATE, lang)
+                is LocalizedFormatter.DateFormat -> operation.apply(EXAMPLE_DATE, lang)
+                is LocalizedFormatter.MonthYearFormatter -> operation.apply(EXAMPLE_DATE, lang)
+                is LocalizedFormatter.MonthFormatter -> operation.apply(EXAMPLE_MONTH, lang)
+                is LocalizedFormatter.MonthFormatterShort -> operation.apply(EXAMPLE_MONTH, lang)
+                is LocalizedFormatter.DoubleFormat -> operation.apply(EXAMPLE_DOUBLE, lang)
+                is LocalizedFormatter.IntFormat -> operation.apply(EXAMPLE_INT, lang)
+                is LocalizedFormatter.CurrencyFormat -> operation.apply(EXAMPLE_INT, lang)
+                is LocalizedFormatter.CurrencyFormatKroner -> operation.apply(no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner(EXAMPLE_INT), lang)
+                is LocalizedFormatter.TelefonnummerFormat -> operation.apply(no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer(EXAMPLE_TELEFONNUMMER), lang)
+                is LocalizedFormatter.FoedselsnummerFormat -> operation.apply(no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer(EXAMPLE_FOEDSELSNUMMER), lang)
+                is LocalizedFormatter.CollectionFormat -> operation.apply(EXAMPLE_COLLECTION, lang)
+                is LocalizedFormatter.LandnavnFormat -> operation.apply(EXAMPLE_LANDKODE, lang)
+                // Ukjent/fremtidig formatter-type: vi kjenner ikke en trygg syntetisk verdi å
+                // kalle `apply` med, så vi lar frontend falle tilbake til fraseviisning i stedet
+                // for å risikere en kastet exception eller en misvisende "tilfeldig" verdi.
+                else -> null
+            }
+        } catch (_: Exception) {
+            null
+        }
+
+    private val EXAMPLE_DATE: java.time.LocalDate = java.time.LocalDate.of(2024, 3, 17)
+    private val EXAMPLE_MONTH: java.time.Month = java.time.Month.MARCH
+    private const val EXAMPLE_DOUBLE: Double = 1234.5
+    private const val EXAMPLE_INT: Int = 12345
+    private const val EXAMPLE_TELEFONNUMMER: String = "12345678"
+    private const val EXAMPLE_FOEDSELSNUMMER: String = "12345678901"
+    private val EXAMPLE_COLLECTION: List<String> = listOf("Ola", "Kari", "Per")
+    private val EXAMPLE_LANDKODE: no.nav.brev.BrevLandmodell.Landkode = no.nav.brev.BrevLandmodell.Landkode("NO")
+
 
     /**
      * Flater ut en venstre-assosiativ kjede av [expr] slik at f.eks. `a and b and c`, som i
@@ -547,7 +605,16 @@ data class TemplateDocumentationV2(
 
         data class FunctionCall(val name: String, val args: List<Expr>) : Expr()
 
-        data class Format(val value: Expr, val formatterName: String) : Expr()
+        /**
+         * [exampleText] er et syntetisk, men 100% korrekt formattert eksempel (produsert ved å
+         * kalle den faktiske [no.nav.pensjon.brev.template.LocalizedFormatter.apply] med en
+         * fast eksempelverdi og riktig språk) — f.eks. "17. mars 2024" for et datofelt formattert
+         * med `DateFormat`. Frontend bør vise dette som primær, kompakt tekst, og legge selve
+         * uttrykksstrukturen (value + formatterName) bak en detaljvisning (popover). `null` når
+         * formatteren er ukjent for oss eller eksempel-genereringen feiler — frontend faller da
+         * tilbake til dagens fraseviisning ("formatert med <formatterName>").
+         */
+        data class Format(val value: Expr, val formatterName: String, val exampleText: String?) : Expr()
 
         /** Erstatter v1s `Invoke(IfElse, first, Tuple(ifTrue, ifElse))`-innpakking. */
         data class Conditional(val predicate: Expr, val ifTrue: Expr, val ifElse: Expr) : Expr()
