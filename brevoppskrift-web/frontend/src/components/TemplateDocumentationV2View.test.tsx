@@ -154,11 +154,11 @@ describe("ExprToText linjeskift og innrykk for AND/OR-kjeder", () => {
 });
 
 describe("ExprToText linjeskift og innrykk for Conditional (if/then/else)", () => {
-  it("rendrer if/then/else som tre separate rader i en blokk", () => {
+  it("rendrer if/then/else som tre separate rader i en blokk (når grenene IKKE begge er literaler)", () => {
     const expr: Expr = {
       exprType: ExprType.CONDITIONAL_EXPR,
       predicate: fieldPath("harBarn"),
-      ifTrue: { exprType: ExprType.LITERAL, value: "ja", kind: "STRING" },
+      ifTrue: fieldPath("navn"),
       ifElse: { exprType: ExprType.LITERAL, value: "nei", kind: "STRING" },
     };
 
@@ -168,5 +168,48 @@ describe("ExprToText linjeskift og innrykk for Conditional (if/then/else)", () =
     expect(rendered).toContain("if");
     expect(rendered).toContain("then");
     expect(rendered).toContain("else");
+  });
+});
+
+/** Innholdet i selve `<button>`-markøren, uten den (skjulte) popover-innholdet ved siden av. */
+function buttonText(html: string): string {
+  const match = /<button[^>]*>(.*?)<\/button>/s.exec(html);
+  return match ? text(match[1]) : "";
+}
+
+describe("ExprToText kompakt Conditional-visning for rene literal-grener", () => {
+  it("rendrer [ifTrue] når ifElse er tom streng, uten if/then/else-blokk", () => {
+    const expr: Expr = {
+      exprType: ExprType.CONDITIONAL_EXPR,
+      predicate: fieldPath("harBarn"),
+      ifTrue: { exprType: ExprType.LITERAL, value: "med barnetillegg", kind: "STRING" },
+      ifElse: { exprType: ExprType.LITERAL, value: "", kind: "STRING" },
+    };
+
+    const html = render(expr);
+    expect(html).not.toContain("expr-block");
+    expect(html).toContain("expr-conditional-compact");
+    expect(buttonText(html)).toBe("[med barnetillegg]");
+    // Predikatet skal IKKE vises direkte i markøren (kun tilgjengelig via popover).
+    expect(buttonText(html)).not.toContain("harBarn");
+    // Popoveren finnes i DOM-en (for tilgjengelighet), men er skjult som standard.
+    expect(html).toContain("aksel-popover--hidden");
+    expect(html).toContain("Hvis");
+    expect(html).toContain("harBarn");
+  });
+
+  it("rendrer ifTrue|ifElse når begge grener har innhold, uten if/then/else-blokk", () => {
+    const expr: Expr = {
+      exprType: ExprType.CONDITIONAL_EXPR,
+      predicate: fieldPath("erGift"),
+      ifTrue: { exprType: ExprType.LITERAL, value: "ja", kind: "STRING" },
+      ifElse: { exprType: ExprType.LITERAL, value: "nei", kind: "STRING" },
+    };
+
+    const html = render(expr);
+    expect(html).not.toContain("expr-block");
+    expect(buttonText(html)).toBe("ja|nei");
+    expect(buttonText(html)).not.toContain("erGift");
+    expect(html).toContain("aksel-popover--hidden");
   });
 });
