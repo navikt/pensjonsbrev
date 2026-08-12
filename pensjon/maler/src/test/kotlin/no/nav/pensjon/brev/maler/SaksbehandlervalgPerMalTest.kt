@@ -190,7 +190,7 @@ class SaksbehandlervalgPerMalTest {
             Redigerbar.UT_DELVIS_EKSPORT_AV_UFORETRYGD to emptyList(),
             Redigerbar.UT_ENDRING_UFOERETRYGD to emptyList(),
             Redigerbar.UT_INFORMASJON_OM_SAKSBEHANDLINGSTID to listOf(
-                "forlengetSaksbehandlingstid: kotlin.Boolean",
+                "forlengetSaksbehandlingstid: Boolean",
             ),
             Redigerbar.UT_INNVILGELSE_UFOERETRYGD to listOf(
                 "barnetilleggInfo: kotlin.Boolean",
