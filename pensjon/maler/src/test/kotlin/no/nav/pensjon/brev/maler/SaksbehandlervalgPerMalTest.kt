@@ -164,10 +164,10 @@ class SaksbehandlervalgPerMalTest {
             Redigerbar.PE_TILBAKEKREVING_AV_FEILUTBETALT_BELOEP to emptyList(),
             Redigerbar.PE_VARSEL_OM_MULIG_AVSLAG to emptyList(),
             Redigerbar.PE_VARSEL_OM_TILBAKEKREVING_FEILUTBETALT_BELOEP to listOf(
-                "hvisAktueltAaIleggeRentetillegg: kotlin.Boolean",
+                "hvisAktueltAaIleggeRentetillegg: Boolean",
             ),
             Redigerbar.PE_VARSEL_REVURDERING_AV_PENSJON to listOf(
-                "tittelValg: no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg",
+                "tittelValg: no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto.TittelValg",
             ),
             Redigerbar.PE_VEDTAK_AVSLAG_PAA_OMSORGSOPPTJENING to listOf(
                 "brukerFoedtFoer1948: kotlin.Boolean",
