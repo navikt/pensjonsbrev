@@ -138,10 +138,10 @@ class SaksbehandlervalgPerMalTest {
             Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS to emptyList(),
             Redigerbar.PE_BEKREFTELSE_PAA_PENSJON to emptyList(),
             Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER to listOf(
-                "opplystOmBotid: kotlin.Boolean",
+                "opplystOmBotid: Boolean",
             ),
             Redigerbar.PE_FORESPOERSEL_DOKUM_BOTIDINORGE_ETTERLATTE to listOf(
-                "opplystOmBotid: kotlin.Boolean",
+                "opplystOmBotid: Boolean",
             ),
             Redigerbar.PE_INFORMASJON_OM_GJENLEVENDERETTIGHETER to listOf(
                 "gjenlevendeHarBarnUnder18MedAvdoed: kotlin.Boolean",
