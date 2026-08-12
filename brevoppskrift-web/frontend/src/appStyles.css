@@ -58,3 +58,25 @@ body {
   box-shadow: 0 0 0 0.2rem var(--ax-warning-300);
   animation: highlight-animation 0.5s ease-out;
 }
+
+/* Syntax highlighting for v2-uttrykk (TemplateDocumentationV2View sin ExprToText), for å
+   skille visuelt mellom variabler/feltstier, literaler, operatorer/nøkkelord og funksjonskall.
+   Fargene er valgt fra Aksel sine semantiske tekst-tokens (kontrasttestet mot både lys/mørk
+   tema) for å følge temaet automatisk. Kun tekstfarge (og fet skrift for operatorer) endres -
+   ingen layout-endringer. Unngår meta-purple siden .expression allerede har lilla bakgrunn. */
+.expr-variable {
+  color: var(--ax-text-accent);
+}
+
+.expr-literal {
+  color: var(--ax-text-success);
+}
+
+.expr-operator {
+  color: var(--ax-text-danger);
+  font-weight: 600;
+}
+
+.expr-function {
+  color: var(--ax-text-warning);
+}

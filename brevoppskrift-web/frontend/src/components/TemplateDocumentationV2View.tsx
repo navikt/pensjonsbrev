@@ -527,22 +527,25 @@ function FieldPathLink({ expr }: { expr: ExprFieldPath }) {
   // for at segmentene tydelig skal tilhøre HELE det beregnede uttrykket, ikke bare siste ledd.
   const path: ReactNode =
     expr.source.dataSourceType === "COMPUTED" ? (
-      <>
+      <span className="expr-variable">
         <MaybeParensForPostfix expr={expr.source.expr} />
         {expr.segments.map((segment) => `.${segment}`).join("")}
-      </>
+      </span>
     ) : (
       // dataSourceLabel kan returnere "" (skjult "argument"-scope) — filtrer bort tomme
       // strenger før vi join'er, ellers ville vi fått en misvisende leading dot (".felt").
       // Om det ikke er noen segmenter igjen etter filtreringen (dvs. selve argument-objektet
       // brukes direkte uten feltaksess), faller vi tilbake til det opprinnelige scope-navnet
       // så vi aldri viser en tom lenke-tekst.
-      [dataSourceLabel(expr.source), ...expr.segments].filter(Boolean).join(".") || dataSourceLabelFallback(expr.source)
+      <span className="expr-variable">
+        {[dataSourceLabel(expr.source), ...expr.segments].filter(Boolean).join(".") ||
+          dataSourceLabelFallback(expr.source)}
+      </span>
     );
   const lastSegment = expr.segments.at(-1);
 
   if (!expr.leafType || !lastSegment) {
-    return <span>{path}</span>;
+    return path;
   }
 
   const primitive = isPrimitiveType(expr.leafType);
@@ -637,9 +640,9 @@ export function ExprToText({ expr }: { expr: Expr }) {
       // `ifNull("")` fortsatt er synlig i teksten (NullCoalesce sin fallback ville ellers
       // fremstått som et usynlig/tomt felt).
       if (expr.kind === "STRING") {
-        return <span>"{expr.value}"</span>;
+        return <span className="expr-literal">"{expr.value}"</span>;
       }
-      return <span>{expr.value}</span>;
+      return <span className="expr-literal">{expr.value}</span>;
     }
     case ExprType.FIELD_PATH: {
       return <FieldPathLink expr={expr} />;
@@ -650,7 +653,7 @@ export function ExprToText({ expr }: { expr: Expr }) {
         <span>
           {expr.operands.map((operand, index) => (
             <span key={index}>
-              {index > 0 && symbol}
+              {index > 0 && <span className="expr-operator">{symbol}</span>}
               <MaybeParens expr={operand} />
             </span>
           ))}
@@ -665,32 +668,33 @@ export function ExprToText({ expr }: { expr: Expr }) {
       if ((expr.op === "EQUAL" || expr.op === "NOT_EQUAL") && isNullLiteral(expr.right)) {
         return (
           <span>
-            {expr.op === "NOT_EQUAL" ? "har " : "mangler "}
+            <span className="expr-operator">{expr.op === "NOT_EQUAL" ? "har " : "mangler "}</span>
             <MaybeParens expr={expr.left} />
           </span>
         );
       }
       return (
         <span>
-          <MaybeParens expr={expr.left} /> {compareOpPhrase(expr.op)} <MaybeParens expr={expr.right} />
+          <MaybeParens expr={expr.left} /> <span className="expr-operator">{compareOpPhrase(expr.op)}</span>{" "}
+          <MaybeParens expr={expr.right} />
         </span>
       );
     }
     case ExprType.NOT: {
       return (
         <span>
-          ikke <MaybeParens expr={expr.term} />
+          <span className="expr-operator">ikke</span> <MaybeParens expr={expr.term} />
         </span>
       );
     }
     case ExprType.FUNCTION_CALL: {
       const phrase = functionCallPhrase(expr.name, expr.args);
       if (phrase) {
-        return <span>{phrase}</span>;
+        return <span className="expr-function">{phrase}</span>;
       }
       return (
         <span>
-          {expr.name}(
+          <span className="expr-function">{expr.name}</span>(
           {expr.args.map((arg, index) => (
             <span key={index}>
               {index > 0 && ", "}
@@ -705,22 +709,24 @@ export function ExprToText({ expr }: { expr: Expr }) {
       const phrase = formatterPhrase(expr.formatterName);
       return (
         <span>
-          <MaybeParens expr={expr.value} /> {phrase}
+          <MaybeParens expr={expr.value} /> <span className="expr-function">{phrase}</span>
         </span>
       );
     }
     case ExprType.CONDITIONAL_EXPR: {
       return (
         <span>
-          if (<ExprToText expr={expr.predicate} />) then <MaybeParens expr={expr.ifTrue} /> else{" "}
-          <MaybeParens expr={expr.ifElse} />
+          <span className="expr-operator">if</span> (<ExprToText expr={expr.predicate} />){" "}
+          <span className="expr-operator">then</span> <MaybeParens expr={expr.ifTrue} />{" "}
+          <span className="expr-operator">else</span> <MaybeParens expr={expr.ifElse} />
         </span>
       );
     }
     case ExprType.NULL_COALESCE: {
       return (
         <span>
-          <MaybeParens expr={expr.value} /> ?: <MaybeParens expr={expr.fallback} />
+          <MaybeParens expr={expr.value} /> <span className="expr-operator">?:</span>{" "}
+          <MaybeParens expr={expr.fallback} />
         </span>
       );
     }
