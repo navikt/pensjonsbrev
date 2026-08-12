@@ -156,8 +156,8 @@ class SaksbehandlervalgPerMalTest {
             Redigerbar.PE_KLAGE_ORIENTERING_OM_OVERSENDELSE_KLAGEINSTANS to emptyList(),
             Redigerbar.PE_KLAGE_ORIENTERING_OM_SAKSBEHANDLINGSTID to emptyList(),
             Redigerbar.PE_OMSORG_EGEN_MANUELL to listOf(
-                "aarEgenerklaringOmsorgspoeng: no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year",
-                "aarInnvilgetOmsorgspoeng: no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year",
+                "aarEgenerklaringOmsorgspoeng: kotlin.Int",
+                "aarInnvilgetOmsorgspoeng: kotlin.Int",
             ),
             Redigerbar.PE_ORIENTERING_OM_FORLENGET_SAKSBEHANDLINGSTID to emptyList(),
             Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER to emptyList(),
