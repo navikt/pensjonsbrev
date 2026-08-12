@@ -120,7 +120,7 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/RedigerbarBr
 public abstract interface class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdataMedSaksbehandlerValg : no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata {
 }
 
-public abstract interface class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdataMedSaksbehandlerValgUtenFagsystemdata : no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata {
+public abstract interface class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdataMedSaksbehandlerValgUtenFagsystemdata : no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdataMedSaksbehandlerValg {
 }
 
 public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/nav/pensjon/brev/api/model/maler/Brevkode$Redigerbart {
