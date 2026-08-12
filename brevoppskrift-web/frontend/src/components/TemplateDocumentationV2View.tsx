@@ -157,6 +157,19 @@ function ContentComponentV2({ content }: { content: ElementV2 }) {
             .expression {
               grid-column: span ${content.header.cells.length};
             }
+
+            /*
+             * ConditionalPredicateDisclosure sin <details> er en direkte etterkommer av dette
+             * grid-elementet (siden .conditional/.show-if/.show-else er display: contents), og må
+             * derfor selv få samme grid-column: span-behandling som .expression - ellers havner den
+             * i én enkelt grid-celle (i stedet for å spenne hele raden), skyver de påfølgende
+             * .cell-ene ut av kolonnejustering, og viser gitter-bakgrunnen (svart) rundt seg siden
+             * den ikke har noen egen bakgrunnsfarge (i motsetning til .cell/.expression).
+             */
+            .conditional-predicate {
+              background: var(--ax-meta-purple-300);
+              grid-column: span ${content.header.cells.length};
+            }
           `}
         >
           {content.header.cells.map((cell, index) => (
