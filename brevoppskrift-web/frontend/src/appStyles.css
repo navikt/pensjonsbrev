@@ -127,3 +127,32 @@ body {
   margin: 0;
   padding: 0 0 1px;
 }
+
+/* If/Else If sin betingelse (predikat) er kollapset som standard bak en native
+   <details>/<summary>-disclosure (se ConditionalPredicateDisclosure) for å spare plass -
+   predikatet er som regel mindre interessant enn den betingede teksten under. Fjerner
+   nettleserens standard trekant-markør (::marker/::-webkit-details-marker) til fordel for en
+   egen ▸/▾-markør, slik at den kan style konsistent med .expr-operator-fargen brukt ellers for
+   uttrykk-syntaks. */
+.conditional-predicate > summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.conditional-predicate > summary::-webkit-details-marker {
+  display: none;
+}
+
+.conditional-predicate > summary::before {
+  color: var(--ax-text-danger);
+  content: "▸ ";
+  font-weight: 600;
+}
+
+.conditional-predicate[open] > summary::before {
+  content: "▾ ";
+}
+
+.conditional-predicate > summary:hover {
+  text-decoration: underline;
+}

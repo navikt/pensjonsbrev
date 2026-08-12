@@ -2,8 +2,15 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { type Expr, ExprType } from "~/api/brevbakerTypesV2";
-import { ExprToText } from "~/components/TemplateDocumentationV2View";
+import {
+  ContentOrControlStructureTypeV2,
+  type ContentOrControlStructureV2,
+  ElementTypeV2,
+  type Expr,
+  ExprType,
+  type OutlineContentV2,
+} from "~/api/brevbakerTypesV2";
+import { DocumentV2, ExprToText } from "~/components/TemplateDocumentationV2View";
 
 function render(expr: Expr): string {
   return renderToStaticMarkup(<ExprToText expr={expr} />);
@@ -244,5 +251,82 @@ describe("ExprToText Format med eksempeltekst", () => {
     expect(html).not.toContain("expr-popover-trigger");
     expect(html).not.toContain("aksel-popover--hidden");
     expect(text(html)).toContain("ukjentFelt");
+  });
+});
+
+function textLiteralParagraph(text: string): ContentOrControlStructureV2<OutlineContentV2> {
+  return {
+    controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+    content: {
+      elementType: ElementTypeV2.PARAGRAPH,
+      paragraph: [
+        {
+          controlStructureType: ContentOrControlStructureTypeV2.CONTENT,
+          content: { elementType: ElementTypeV2.PARAGRAPH_TEXT_LITERAL, text },
+        },
+      ],
+    },
+  };
+}
+
+describe("DocumentV2 block-level Conditional (If/Else If)", () => {
+  it("skjuler predikatet bak en lukket <details>/<summary>-disclosure, men viser selve den betingede teksten direkte", () => {
+    const html = renderToStaticMarkup(
+      <DocumentV2
+        templateDocumentation={{
+          title: [],
+          outline: [
+            {
+              controlStructureType: ContentOrControlStructureTypeV2.CONDITIONAL,
+              predicate: fieldPath("harBarn"),
+              showIf: [textLiteralParagraph("Du har barnetillegg.")],
+              elseIf: [],
+              showElse: [],
+            },
+          ],
+          include: fieldPath("dummy"),
+          attachmentData: fieldPath("dummy"),
+        }}
+      />,
+    );
+
+    // <details> uten `open`-attributt er kollapset som standard.
+    expect(html).toContain("<details");
+    expect(html).not.toContain("<details open");
+    expect(html).toContain("<summary");
+    // Selve den betingede TEKSTEN (utfallet leseren faktisk vil se i brevet) er alltid synlig,
+    // uavhengig av om disclosure-en er åpen - den er ikke skjult bak popover/details.
+    expect(text(html)).toContain("Du har barnetillegg.");
+    // Predikatet finnes fortsatt i DOM-en (for tilgjengelighet/søk), men bare inni <details>.
+    const detailsMatch = /<details[^>]*>(.*?)<\/details>/s.exec(html);
+    expect(detailsMatch).not.toBeNull();
+    expect(text(detailsMatch?.[1] ?? "")).toContain("harBarn");
+  });
+
+  it("rendrer 'Else If' med samme kollapsede disclosure-mønster", () => {
+    const html = renderToStaticMarkup(
+      <DocumentV2
+        templateDocumentation={{
+          title: [],
+          outline: [
+            {
+              controlStructureType: ContentOrControlStructureTypeV2.CONDITIONAL,
+              predicate: fieldPath("harBarn"),
+              showIf: [textLiteralParagraph("Med barnetillegg.")],
+              elseIf: [
+                { predicate: fieldPath("harEktefelle"), showIf: [textLiteralParagraph("Med ektefelletillegg.")] },
+              ],
+              showElse: [],
+            },
+          ],
+          include: fieldPath("dummy"),
+          attachmentData: fieldPath("dummy"),
+        }}
+      />,
+    );
+
+    expect((html.match(/<summary/g) ?? []).length).toBe(2);
+    expect(text(html)).toContain("Else If");
+    expect(text(html)).toContain("Med ektefelletillegg.");
   });
 });
