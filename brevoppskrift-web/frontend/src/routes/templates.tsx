@@ -124,8 +124,8 @@ function AllTemplates() {
   const {
     query,
     setQuery,
-    fuzzy,
-    setFuzzy,
+    exactOnly,
+    setExactOnly,
     isSearching,
     isLoading,
     failedCount,
@@ -169,7 +169,7 @@ function AllTemplates() {
             variant="simple"
           />
         </Box>
-        <Checkbox checked={!fuzzy} onChange={(e) => setFuzzy(!e.target.checked)} size="small">
+        <Checkbox checked={exactOnly} onChange={(e) => setExactOnly(e.target.checked)} size="small">
           Vis kun nøyaktige treff
         </Checkbox>
         <Detail aria-live="polite" textColor="subtle">

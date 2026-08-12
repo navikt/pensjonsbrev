@@ -18,9 +18,9 @@ export type TemplateRef = {
 export type TemplateSearch = {
   query: string;
   setQuery: (query: string) => void;
-  /** Whether typo-tolerant (fuzzy) matching is enabled. On by default. */
-  fuzzy: boolean;
-  setFuzzy: (fuzzy: boolean) => void;
+  /** Whether the user wants exact matches only (no typo tolerance). Off by default. */
+  exactOnly: boolean;
+  setExactOnly: (exactOnly: boolean) => void;
   isSearching: boolean;
   isLoading: boolean;
   failedCount: number;
@@ -69,7 +69,7 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
     })),
   });
   const titleByKey = useMemo(() => new Map(templates.map((t) => [`${t.malType}/${t.brevkode}`, t.title])), [templates]);
-  const [fuzzy, setFuzzy] = useState(true);
+  const [exactOnly, setExactOnly] = useState(false);
   // True while any malType's corpus hasn't resolved yet (success or error).
   // Reused below both to gate index building and in the returned object, so
   // the two can never disagree on what "still loading" means.
@@ -78,9 +78,10 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
   // revalidated to a 304 keeps the same reference and does not rebuild the index.
   const freshnessKey = queries.map((q) => referenceId(q.data)).join("|");
   // Both the fuzzy and the exact index are built together whenever the corpus
-  // changes, and `fuzzy` (the toggle) is deliberately NOT in this memo's deps:
-  // toggling it below only switches which already-built index we read from, so
-  // it never re-triggers a (synchronous, main-thread-blocking) Fuse rebuild.
+  // changes, and `exactOnly` (the toggle) is deliberately NOT in this memo's
+  // deps: toggling it below only switches which already-built index we read
+  // from, so it never re-triggers a (synchronous, main-thread-blocking) Fuse
+  // rebuild.
   // While `isLoading` is true, some malType's corpus hasn't arrived yet, so we
   // skip building entirely rather than repeatedly indexing a partial corpus
   // that no one can search yet (the UI shows a loading spinner instead).
@@ -117,7 +118,7 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
     performance.clearMeasures("search-index-build");
     return built;
   }, [freshnessKey, malTypes, titleByKey, isLoading]);
-  const index = indexes ? (fuzzy ? indexes.fuzzy : indexes.exact) : undefined;
+  const index = indexes ? (exactOnly ? indexes.exact : indexes.fuzzy) : undefined;
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
   const trimmedQuery = deferredQuery.trim();
@@ -138,8 +139,8 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
   return {
     query,
     setQuery,
-    fuzzy,
-    setFuzzy,
+    exactOnly,
+    setExactOnly,
     isSearching,
     isLoading,
     failedCount: failedMalTypes.length,

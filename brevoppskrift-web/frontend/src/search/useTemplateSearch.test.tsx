@@ -100,7 +100,7 @@ describe("useTemplateSearch", () => {
     expect(getAllTemplateDocumentation.queryFn.mock.calls.length).toBeGreaterThan(callsBeforeRetry);
   });
 
-  it("defaults to fuzzy search enabled, and setFuzzy(false) disables typo tolerance", async () => {
+  it("defaults to fuzzy search enabled (exactOnly off), and setExactOnly(true) disables typo tolerance", async () => {
     const typoTolerantContent: SearchableContent[] = [
       {
         brevkode: "A1",
@@ -116,18 +116,18 @@ describe("useTemplateSearch", () => {
     const { result } = renderHook(() => useTemplateSearch(refs), { wrapper: wrapper(queryClient) });
     await waitFor(() => expect(result.current.isLoading).toBe(false));
 
-    expect(result.current.fuzzy).toBe(true);
+    expect(result.current.exactOnly).toBe(false);
 
     act(() => result.current.setQuery("alderspenjson")); // transposed letters
     await waitFor(() => expect(result.current.isSearching).toBe(true));
     await waitFor(() => expect(result.current.contentHits).toHaveLength(1));
 
-    act(() => result.current.setFuzzy(false));
-    await waitFor(() => expect(result.current.fuzzy).toBe(false));
+    act(() => result.current.setExactOnly(true));
+    await waitFor(() => expect(result.current.exactOnly).toBe(true));
     await waitFor(() => expect(result.current.contentHits).toHaveLength(0));
   });
 
-  it("pre-builds both the fuzzy and exact indexes once per corpus, and toggling fuzzy never rebuilds them", async () => {
+  it("pre-builds both the fuzzy and exact indexes once per corpus, and toggling exactOnly never rebuilds them", async () => {
     getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
       Promise.resolve(malType === "autobrev" ? autobrevContent : []),
     );
@@ -141,10 +141,10 @@ describe("useTemplateSearch", () => {
     // fully loaded (no wasted builds off a partial corpus along the way).
     expect(constructionsAfterLoad).toBe(4);
 
-    act(() => result.current.setFuzzy(false));
-    await waitFor(() => expect(result.current.fuzzy).toBe(false));
-    act(() => result.current.setFuzzy(true));
-    await waitFor(() => expect(result.current.fuzzy).toBe(true));
+    act(() => result.current.setExactOnly(true));
+    await waitFor(() => expect(result.current.exactOnly).toBe(true));
+    act(() => result.current.setExactOnly(false));
+    await waitFor(() => expect(result.current.exactOnly).toBe(false));
 
     // Toggling back and forth must not trigger any further Fuse construction:
     // both indexes were already built and cached when the corpus first loaded.
