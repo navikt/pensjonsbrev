@@ -104,3 +104,24 @@ body {
   padding-left: 1.25rem;
   border-left: 2px solid var(--ax-border-subtle);
 }
+
+/* Kompakt Conditional-visning (`[tekst]` / `tekst1|tekst2`) for `ifElse(pred, ...)`-uttrykk der
+   begge grener bare er literaler - se `isCompactLiteralConditional` i
+   TemplateDocumentationV2View.tsx. Rendres som en <button> (for tastatur-/skjermleser-tilgang),
+   men nullstilt til å se ut og oppføre seg som vanlig inline tekst i flyten. Understreken (i
+   stedet for f.eks. bakgrunnsfarge) signaliserer "her er det skjult informasjon å hente" uten å
+   konkurrere med den eksisterende syntax highlighting-fargen (`.expr-literal`) på selve teksten.
+   `cursor: help` + popover på hover/fokus avslører predikatet uten å måtte vise
+   if/then/else-blokken hele tiden. */
+.expr-conditional-compact {
+  appearance: none;
+  background: none;
+  border: none;
+  border-bottom: 2px dotted var(--ax-text-success);
+  color: inherit;
+  cursor: help;
+  display: inline;
+  font: inherit;
+  margin: 0;
+  padding: 0 0 1px;
+}

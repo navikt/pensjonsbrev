@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
-import { BodyLong, Heading, Tag } from "@navikt/ds-react";
+import { BodyLong, Heading, Popover, Tag } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
-import { type ReactNode } from "react";
+import { type ReactNode, useRef, useState } from "react";
 
 import {
   type AssocOp,
@@ -15,6 +15,7 @@ import {
   type ElseIfV2,
   type Expr,
   type ExprFieldPath,
+  type ExprLiteral,
   ExprType,
   type ForEachV2,
   type TemplateDocumentationV2,
@@ -659,6 +660,66 @@ function isNullLiteral(expr: Expr): boolean {
   return expr.exprType === ExprType.LITERAL && expr.value === "null" && expr.kind === null;
 }
 
+function isSimpleLiteral(expr: Expr): expr is ExprLiteral {
+  return expr.exprType === ExprType.LITERAL;
+}
+
+/**
+ * Et `Conditional` der begge grener bare er tekst-/verdiliteraler (svært vanlig - malforfattere
+ * bruker ofte `ifElse(pred, "en tekst", "")` eller `ifElse(pred, "ja", "nei")` for kortfattede
+ * setningsvarianter) trenger ikke den fulle if/then/else-blokkvisningen: selve predikatet er
+ * ofte bare "hvorfor akkurat denne varianten", ikke noe leseren trenger foran seg hele tiden.
+ * Vi viser i stedet kun de(n) faktiske teksten(e), med predikatet tilgjengelig i en popover.
+ */
+function isCompactLiteralConditional(
+  expr: Expr,
+): expr is { exprType: ExprType.CONDITIONAL_EXPR; predicate: Expr; ifTrue: ExprLiteral; ifElse: ExprLiteral } {
+  return expr.exprType === ExprType.CONDITIONAL_EXPR && isSimpleLiteral(expr.ifTrue) && isSimpleLiteral(expr.ifElse);
+}
+
+/**
+ * Rå literal-tekst (uten anførselstegn) - brukes KUN i den kompakte Conditional-visningen, der
+ * `[`/`]`/`|`-markørene allerede avgrenser verdien tydelig nok, og selve verdien som regel er
+ * brevtekst som skal se ut som brevtekst (ikke en generisk kodeverdi som trenger kvotering).
+ */
+function compactLiteralText(literal: ExprLiteral): string {
+  return literal.value;
+}
+
+/**
+ * Viser `children` (den kompakte `[tekst]`/`tekst1|tekst2`-markøren) med en hover/fokus-popover
+ * som avslører predikatet bak - full struktur er alltid tilgjengelig, bare skjult som standard.
+ */
+function ConditionalPredicatePopover({ predicate, children }: { predicate: Expr; children: ReactNode }) {
+  const [open, setOpen] = useState(false);
+  const anchorRef = useRef<HTMLButtonElement>(null);
+
+  return (
+    <>
+      <button
+        aria-label="Vis betingelse"
+        className="expr-conditional-compact"
+        onBlur={() => setOpen(false)}
+        onFocus={() => setOpen(true)}
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+        ref={anchorRef}
+        type="button"
+      >
+        {children}
+      </button>
+      <Popover anchorEl={anchorRef.current} onClose={() => setOpen(false)} open={open} placement="top">
+        <Popover.Content>
+          <span className="expression">
+            <code>Hvis </code>
+            <ExprToText expr={predicate} />
+          </span>
+        </Popover.Content>
+      </Popover>
+    </>
+  );
+}
+
 export function ExprToText({ expr }: { expr: Expr }) {
   switch (expr.exprType) {
     case ExprType.LITERAL: {
@@ -753,6 +814,21 @@ export function ExprToText({ expr }: { expr: Expr }) {
       );
     }
     case ExprType.CONDITIONAL_EXPR: {
+      // Svært vanlig mønster: begge grener er bare literaler (`ifElse(pred, "tekst", "")` eller
+      // `ifElse(pred, "ja", "nei")`), der predikatet er mindre interessant enn selve teksten(e)
+      // som faktisk vises. Vis da en kompakt markør (`[tekst]` når den ene grenen er tom
+      // streng, ellers `tekst1|tekst2`) med predikatet tilgjengelig via popover i stedet for
+      // den fulle if/then/else-blokken.
+      if (isCompactLiteralConditional(expr)) {
+        const ifTrueText = compactLiteralText(expr.ifTrue);
+        const ifElseText = compactLiteralText(expr.ifElse);
+        const compact = ifElseText === "" ? `[${ifTrueText}]` : `${ifTrueText}|${ifElseText}`;
+        return (
+          <ConditionalPredicatePopover predicate={expr.predicate}>
+            <span className="expr-literal">{compact}</span>
+          </ConditionalPredicatePopover>
+        );
+      }
       // if/then/else har naturlig tre "ledd" og drar samme nytte av linjeskift+innrykk som en
       // AND/OR-kjede - se `.expr-block` i appStyles.css. Prediktatet parentetiseres fortsatt
       // eksplisitt (i motsetning til AND/OR-ledd) siden det ikke er et likestilt ledd i samme
