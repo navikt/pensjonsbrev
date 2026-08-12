@@ -131,9 +131,9 @@ class SaksbehandlervalgPerMalTest {
                 "vanligSkattetrekk: Boolean",
             ),
             Redigerbar.PE_AP_INNVILGELSE_TRYGDEAVTALE to listOf(
-                "etterbetaling: kotlin.Boolean?",
-                "medfoererInnvilgelseAvAPellerOektUttaksgrad: kotlin.Boolean",
-                "nyBeregningAvInnvilgetAP: kotlin.Boolean",
+                "etterbetaling: Boolean",
+                "medfoererInnvilgelseAvAPellerOektUttaksgrad: Boolean",
+                "nyBeregningAvInnvilgetAP: Boolean",
             ),
             Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS to emptyList(),
             Redigerbar.PE_BEKREFTELSE_PAA_PENSJON to emptyList(),
