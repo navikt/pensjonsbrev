@@ -18,6 +18,20 @@ vi.mock("~/api/brevbaker-api-endpoints", async () => {
   return { ...actual, getAllTemplateDocumentation };
 });
 
+/** Tracks how many `Fuse` instances have been constructed, so tests can assert
+ *  whether toggling `fuzzy` triggers a (re)build of the underlying indexes. */
+const fuseConstructions = vi.hoisted(() => ({ count: 0 }));
+vi.mock("fuse.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("fuse.js")>();
+  class TrackedFuse<T> extends actual.default<T> {
+    constructor(...args: ConstructorParameters<typeof actual.default<T>>) {
+      super(...args);
+      fuseConstructions.count++;
+    }
+  }
+  return { ...actual, default: TrackedFuse };
+});
+
 function wrapper(queryClient: QueryClient) {
   return function Wrapper({ children }: { children: ReactNode }) {
     return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
@@ -36,6 +50,7 @@ const autobrevContent: SearchableContent[] = [
 describe("useTemplateSearch", () => {
   afterEach(() => {
     getAllTemplateDocumentation.queryFn.mockReset();
+    fuseConstructions.count = 0;
   });
 
   it("reports failedCount/failedMalTypes when one malType's corpus fetch fails, without leaving isLoading stuck", async () => {
@@ -110,5 +125,58 @@ describe("useTemplateSearch", () => {
     act(() => result.current.setFuzzy(false));
     await waitFor(() => expect(result.current.fuzzy).toBe(false));
     await waitFor(() => expect(result.current.contentHits).toHaveLength(0));
+  });
+
+  it("pre-builds both the fuzzy and exact indexes once per corpus, and toggling fuzzy never rebuilds them", async () => {
+    getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
+      Promise.resolve(malType === "autobrev" ? autobrevContent : []),
+    );
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
+    const { result } = renderHook(() => useTemplateSearch(refs), { wrapper: wrapper(queryClient) });
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    const constructionsAfterLoad = fuseConstructions.count;
+    // Two Fuse instances (content + brev) built for each of the two variants
+    // (fuzzy, exact) = 4 constructions total, and only once the corpus is
+    // fully loaded (no wasted builds off a partial corpus along the way).
+    expect(constructionsAfterLoad).toBe(4);
+
+    act(() => result.current.setFuzzy(false));
+    await waitFor(() => expect(result.current.fuzzy).toBe(false));
+    act(() => result.current.setFuzzy(true));
+    await waitFor(() => expect(result.current.fuzzy).toBe(true));
+
+    // Toggling back and forth must not trigger any further Fuse construction:
+    // both indexes were already built and cached when the corpus first loaded.
+    expect(fuseConstructions.count).toBe(constructionsAfterLoad);
+  });
+
+  it("does not build any index while the corpus is still (partially) loading", async () => {
+    let resolveRedigerbar!: (content: SearchableContent[]) => void;
+    const redigerbarPending = new Promise<SearchableContent[]>((resolve) => {
+      resolveRedigerbar = resolve;
+    });
+    getAllTemplateDocumentation.queryFn.mockImplementation((malType: string) =>
+      malType === "autobrev" ? Promise.resolve(autobrevContent) : redigerbarPending,
+    );
+    const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+
+    const { result } = renderHook(() => useTemplateSearch(refs), { wrapper: wrapper(queryClient) });
+
+    // The "autobrev" corpus has resolved but "redigerbar" is still pending,
+    // so the overall corpus isn't ready yet: no index should be built.
+    await waitFor(() => expect(getAllTemplateDocumentation.queryFn).toHaveBeenCalledTimes(2));
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(result.current.isLoading).toBe(true);
+    expect(fuseConstructions.count).toBe(0);
+
+    await act(async () => {
+      resolveRedigerbar([]);
+      await Promise.resolve();
+    });
+    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    expect(fuseConstructions.count).toBe(4);
   });
 });

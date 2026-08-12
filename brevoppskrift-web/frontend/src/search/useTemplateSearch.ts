@@ -70,11 +70,25 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
   });
   const titleByKey = useMemo(() => new Map(templates.map((t) => [`${t.malType}/${t.brevkode}`, t.title])), [templates]);
   const [fuzzy, setFuzzy] = useState(true);
+  // True while any malType's corpus hasn't resolved yet (success or error).
+  // Reused below both to gate index building and in the returned object, so
+  // the two can never disagree on what "still loading" means.
+  const isLoading = queries.some((q) => q.data === undefined && !q.isError);
   // Depends on data identity (not fetch timestamps), so an unchanged corpus that
   // revalidated to a 304 keeps the same reference and does not rebuild the index.
   const freshnessKey = queries.map((q) => referenceId(q.data)).join("|");
+  // Both the fuzzy and the exact index are built together whenever the corpus
+  // changes, and `fuzzy` (the toggle) is deliberately NOT in this memo's deps:
+  // toggling it below only switches which already-built index we read from, so
+  // it never re-triggers a (synchronous, main-thread-blocking) Fuse rebuild.
+  // While `isLoading` is true, some malType's corpus hasn't arrived yet, so we
+  // skip building entirely rather than repeatedly indexing a partial corpus
+  // that no one can search yet (the UI shows a loading spinner instead).
   // biome-ignore lint/correctness/useExhaustiveDependencies: `queries` is a new array every render; `freshnessKey` captures the data we actually depend on.
-  const index = useMemo(() => {
+  const indexes = useMemo(() => {
+    if (isLoading) {
+      return undefined;
+    }
     const entries: TemplateText[] = [];
     queries.forEach((query, i) => {
       const malType = malTypes[i];
@@ -89,14 +103,27 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
         });
       }
     });
-    return buildIndex(entries, fuzzy);
-  }, [freshnessKey, malTypes, titleByKey, fuzzy]);
+    performance.mark("search-index-build-start");
+    const built = { fuzzy: buildIndex(entries, true), exact: buildIndex(entries, false) };
+    performance.mark("search-index-build-end");
+    const measure = performance.measure("search-index-build", "search-index-build-start", "search-index-build-end");
+    console.info(
+      `[search] built fuzzy+exact indexes for ${entries.length} entries in ${measure.duration.toFixed(1)}ms`,
+    );
+    // Avoid unbounded growth of the browser's performance entry buffer across
+    // repeated corpus reloads (e.g. periodic refetches that change the data).
+    performance.clearMarks("search-index-build-start");
+    performance.clearMarks("search-index-build-end");
+    performance.clearMeasures("search-index-build");
+    return built;
+  }, [freshnessKey, malTypes, titleByKey, isLoading]);
+  const index = indexes ? (fuzzy ? indexes.fuzzy : indexes.exact) : undefined;
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
   const trimmedQuery = deferredQuery.trim();
   const isSearching = trimmedQuery.length >= MIN_QUERY_LENGTH;
   const results = useMemo(
-    () => (isSearching ? search(index, trimmedQuery) : { content: [], brev: [] }),
+    () => (index && isSearching ? search(index, trimmedQuery) : { content: [], brev: [] }),
     [index, isSearching, trimmedQuery],
   );
   const languageTotal = useMemo(() => new Set(templates.flatMap((t) => t.languages)).size, [templates]);
@@ -114,7 +141,7 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
     fuzzy,
     setFuzzy,
     isSearching,
-    isLoading: queries.some((q) => q.data === undefined && !q.isError),
+    isLoading,
     failedCount: failedMalTypes.length,
     failedMalTypes,
     retryFailed,
