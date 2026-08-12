@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.personsak
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggMedSammeBegrunnelsePaSammeTidDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.selectors.personSak.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
@@ -77,7 +78,7 @@ object Innvilgelse {
     data class InnvilgelseDetaljer(
         val pe: Expression<PEgruppe10>,
         val nyeInnvilgedeBarnetillegg: Expression<List<BarnetilleggUTDto>>,
-        val nyeAvslagBarnetillegg: Expression<List<BarnetilleggUTDto>>,
+        val nyeAvslagBarnetillegg: Expression<List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>>,
         val btFellesInnvilget: Expression<Boolean>,
         val btFellesNetto0: Expression<Boolean>,
         val btSerkullInnvilget: Expression<Boolean>,
@@ -120,7 +121,7 @@ object Innvilgelse {
                         bokmal { +"Vi har avslått barnetillegg i uføretrygden din for" },
                         nynorsk { +"Vi har avslått barnetillegg i uføretrygda di for" },
                     )
-                    includePhrase(Felles.TextOrList(nyeAvslagBarnetillegg.map(BarnetilleggFormatter), 0))
+                    includePhrase(Felles.TextOrList(nyeAvslagBarnetillegg.map(BarnetilleggFlereBarnFormatter), 0))
                 }
                 paragraph {
                     text(

@@ -22,6 +22,7 @@ data class InnvilgelseUfoeretrygdDto(
         val dineRettigheterOgPlikterUfore: DineRettigheterOgPlikterUforeDto,
         val nyeInnvilgedeBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
         val nyeAvslagBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
+        val avslagBarnetilleggNye: List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto> = emptyList(),
         val sisteTrygdetidsgrunnlag: Trygdetidsgrunnlag?,
         val hjemler: Set<String>
     ) : FagsystemBrevdata

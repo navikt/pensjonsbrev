@@ -21,7 +21,7 @@ data class OkningUforegradDto(
         val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
         val dineRettigheterOgPlikterUfore: DineRettigheterOgPlikterUforeDto,
         val nyeInnvilgedeBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
-        val nyeAvslagBarnetillegg: List<BarnetilleggMedSammeBegrunnelsePaSammeTid> = emptyList(),
+        val nyeAvslagBarnetillegg: List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto> = emptyList(),
         val sisteTrygdetidsgrunnlag: Trygdetidsgrunnlag?,
         val hjemler: Set<String>
     ) : FagsystemBrevdata

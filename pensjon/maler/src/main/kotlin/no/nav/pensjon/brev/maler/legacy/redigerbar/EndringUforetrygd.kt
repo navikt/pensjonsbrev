@@ -160,13 +160,13 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(pesysData.nyeAvslagBarnetillegg.isNotEmpty()) {
+            showIf(pesysData.avslagBarnetilleggNye.isNotEmpty()) {
                 paragraph {
                     text(
                         bokmal { +"Vi har avslått barnetillegg i uføretrygden din for" },
                         nynorsk { +"Vi har avslått barnetillegg i uføretrygda di for" },
                     )
-                    includePhrase(Felles.TextOrList(pesysData.nyeAvslagBarnetillegg.map(BarnetilleggFormatter), 0))
+                    includePhrase(Felles.TextOrList(pesysData.avslagBarnetilleggNye.map(BarnetilleggFlereBarnFormatter), 0))
                 }
                 paragraph {
                     text(
@@ -194,13 +194,13 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(pesysData.nyeOpphorteBarnetillegg.isNotEmpty()) {
+            showIf(pesysData.opphorteBarnetilleggNye.isNotEmpty()) {
                 paragraph {
                     text(
                         bokmal { +"Vi har vedtatt at barnetillegget i uføretrygden din opphører for" },
                         nynorsk { +"Vi har stansa barnetillegget i uføretrygda di for" },
                     )
-                    includePhrase(Felles.TextOrList(pesysData.nyeOpphorteBarnetillegg.map(BarnetilleggOpphorFormatter), 0))
+                    includePhrase(Felles.TextOrList(pesysData.opphorteBarnetilleggNye.map(BarnetilleggOpphorFormatter), 0))
                 }
                 paragraph {
                     text(
@@ -831,7 +831,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(pesysData.nyeOpphorteBarnetillegg.isEmpty()) {
+            showIf(pesysData.opphorteBarnetilleggNye.isEmpty()) {
                 paragraph {
                     showIf(barnetilleggInnvilget) {
                         text(
@@ -1059,8 +1059,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
-            includePhrase(Ufoeretrygd.OpphorBarnetillegg(pesysData.nyeOpphorteBarnetillegg))
+            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.avslagBarnetilleggNye))
+            includePhrase(Ufoeretrygd.OpphorBarnetillegg(pesysData.opphorteBarnetilleggNye))
 
             title1 {
                 text(
