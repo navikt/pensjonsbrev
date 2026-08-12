@@ -113,6 +113,43 @@ class TemplateDocumentationRendererV2Test {
         )
     }
 
+    /**
+     * `value class`-typer (Kroner, Year, Percent, Postnummer, ...) er for oss bare en semantisk
+     * innpakning rundt én verdi. `.value`-utpakkingen skal derfor IKKE legge til et eget
+     * FieldPath-segment — det gir ingen ekstra menneskelig informasjon, kun støy
+     * (`argument.value` i stedet for f.eks. bare `argument`).
+     */
+    @Test
+    fun `utpakking av value class (Kroner-value) legger ikke til et eget FieldPath-segment`() {
+        val templ = outlineTestTemplate<no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner> {
+            paragraph {
+                showIf(argument.value.greaterThan(0)) {
+                    text(bokmal { +"har beløp" })
+                }
+            }
+        }
+        val conditional = TemplateDocumentationRendererV2.render(templ, Bokmal, templ.modelSpecification()).outline.first()
+        assertEquals(
+            Content(
+                Paragraph(
+                    listOf(
+                        Conditional(
+                            predicate = Expr.Comparison(
+                                left = Expr.FieldPath(TemplateDocumentationV2.DataSource.Scope("argument"), emptyList(), leafType = null),
+                                op = TemplateDocumentationV2.CompareOp.GREATER_THAN,
+                                right = Expr.Literal("0", TemplateModelSpecification.FieldType.Scalar.Kind.NUMBER),
+                            ),
+                            showIf = listOf(Content(Text.Literal("har beløp"))),
+                            elseIf = emptyList(),
+                            showElse = emptyList(),
+                        )
+                    )
+                )
+            ),
+            conditional,
+        )
+    }
+
     @Test
     fun `tekstkonkatenering flates ut og merger nabo-literals`() {
         val templ = outlineTestTemplate<Unit> {
