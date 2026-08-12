@@ -4,6 +4,7 @@ import { Link } from "@tanstack/react-router";
 import { type ReactNode } from "react";
 
 import {
+  type AssocOp,
   type AttachmentV2,
   type ConditionalV2,
   ContentOrControlStructureTypeV2,
@@ -594,6 +595,31 @@ function MaybeParens({ expr }: { expr: Expr }) {
 }
 
 /**
+ * En AND/OR-kjede med flere ledd (f.eks. lange showIf-predikater) rendres som en egen
+ * innrykket blokk (linjeskift per ledd) i stedet for én lang linje - se `.expr-block` i
+ * appStyles.css. CONCAT/PLUS holdes fortsatt inline: de bygger sammenhengende tekst/tall
+ * (f.eks. brevtekst-konkatenering), og linjeskift der ville fragmentert lesbar prosa.
+ * En enkeltstående operand (operands.length <= 1, som i praksis ikke skal forekomme siden
+ * AssociativeOp alltid flates ut av backend fra minst to ledd) trenger heller ingen blokk.
+ */
+function isMultilineAssocOp(op: AssocOp, operandCount: number): boolean {
+  return (op === "AND" || op === "OR") && operandCount > 1;
+}
+
+/**
+ * Et AND/OR-ledd som selv er en nøstet AND/OR-kjede (f.eks. en OR nøstet inni en AND) rendres
+ * som sin egen innrykkede blokk (se `.expr-block`) i stedet for med eksplisitte parenteser -
+ * innrykket/border-left kommuniserer allerede grupperingen tydelig og uten dobbel visuell støy.
+ * Alle andre leddtyper beholder den vanlige parentes-logikken (`MaybeParens`).
+ */
+function AssocOperandNode({ expr }: { expr: Expr }) {
+  if (expr.exprType === ExprType.ASSOCIATIVE_OP && isMultilineAssocOp(expr.op, expr.operands.length)) {
+    return <ExprToText expr={expr} />;
+  }
+  return <MaybeParens expr={expr} />;
+}
+
+/**
  * Trengs parentes rundt Computed-basen i en FieldPath (`<uttrykk>.segment1.segment2`)? En
  * `FieldPath` uten Computed-base kjeder naturlig (`x.y.z`), og `getOrNull` rendres som
  * array-access-syntaks (`liste[0]`) som binder tett nok til at etterfølgende segmenter
@@ -649,6 +675,19 @@ export function ExprToText({ expr }: { expr: Expr }) {
     }
     case ExprType.ASSOCIATIVE_OP: {
       const symbol = assocOpSymbol(expr.op);
+      if (isMultilineAssocOp(expr.op, expr.operands.length)) {
+        const operatorWord = symbol.trim();
+        return (
+          <div className="expr-block">
+            {expr.operands.map((operand, index) => (
+              <div className="expr-block-row" key={index}>
+                {index > 0 && <span className="expr-operator">{operatorWord} </span>}
+                <AssocOperandNode expr={operand} />
+              </div>
+            ))}
+          </div>
+        );
+      }
       return (
         <span>
           {expr.operands.map((operand, index) => (
@@ -714,12 +753,22 @@ export function ExprToText({ expr }: { expr: Expr }) {
       );
     }
     case ExprType.CONDITIONAL_EXPR: {
+      // if/then/else har naturlig tre "ledd" og drar samme nytte av linjeskift+innrykk som en
+      // AND/OR-kjede - se `.expr-block` i appStyles.css. Prediktatet parentetiseres fortsatt
+      // eksplisitt (i motsetning til AND/OR-ledd) siden det ikke er et likestilt ledd i samme
+      // kjede, men selve betingelsen for grenene under.
       return (
-        <span>
-          <span className="expr-operator">if</span> (<ExprToText expr={expr.predicate} />){" "}
-          <span className="expr-operator">then</span> <MaybeParens expr={expr.ifTrue} />{" "}
-          <span className="expr-operator">else</span> <MaybeParens expr={expr.ifElse} />
-        </span>
+        <div className="expr-block">
+          <div className="expr-block-row">
+            <span className="expr-operator">if</span> (<ExprToText expr={expr.predicate} />)
+          </div>
+          <div className="expr-block-row">
+            <span className="expr-operator">then</span> <MaybeParens expr={expr.ifTrue} />
+          </div>
+          <div className="expr-block-row">
+            <span className="expr-operator">else</span> <MaybeParens expr={expr.ifElse} />
+          </div>
+        </div>
       );
     }
     case ExprType.NULL_COALESCE: {

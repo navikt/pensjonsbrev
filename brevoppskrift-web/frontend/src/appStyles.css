@@ -80,3 +80,24 @@ body {
 .expr-function {
   color: var(--ax-text-warning);
 }
+
+/* Linjeskift + innrykk for uttrykk med flere underuttrykk (f.eks. lange AND/OR-kjeder i
+   showIf-predikater eller if/then/else), slik at hvert ledd får sin egen linje på samme
+   innrykksnivå i stedet for én lang, vanskelig lesbar linje. Selve toppnivå-kjeden får ingen
+   border/innrykk (unødvendig visuell støy for enkle predikater) - kun NØSTEDE kjeder (f.eks.
+   en OR inni en AND) får border-left + innrykk, som et visuelt grupperingshint. Innrykket
+   forsterkes automatisk for hvert ekstra nøstingsnivå, siden hver .expr-block sin padding-left
+   legges til INNENFOR forelderens allerede tilførte padding - ingen eksplisitt dybde-telling
+   trengs, selve HTML-blokkmodellen gir kumulativt innrykk. */
+.expr-block {
+  display: block;
+}
+
+.expr-block-row {
+  display: block;
+}
+
+.expr-block .expr-block {
+  padding-left: 1.25rem;
+  border-left: 2px solid var(--ax-border-subtle);
+}
