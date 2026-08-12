@@ -44,12 +44,7 @@ fun main(args: Array<String>) {
     Thread.setDefaultUncaughtExceptionHandler { thread, ex ->
         logger.error("Uncaught exception in thread ${thread.name}", ex)
     }
-    try {
-        EngineMain.main(args)
-    } catch (e: Exception) {
-        logger.error(e.message, e)
-        throw e
-    }
+    EngineMain.main(args)
 }
 
 // Er satt i application.conf slik at EngineMain kaller på skribentenApp.
