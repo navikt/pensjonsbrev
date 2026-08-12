@@ -5,34 +5,22 @@ import no.nav.pensjon.brev.api.model.EksportForbudKode
 import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 data class VedtakEndringVedFlyttingMellomLandDto(
-    override val saksbehandlerValg: SaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<VedtakEndringVedFlyttingMellomLandDto.SaksbehandlerValg, VedtakEndringVedFlyttingMellomLandDto.PesysData> {
-    data class SaksbehandlerValg(
-        @DisplayText("Innvandret")
-        val innvandret: Boolean,
-        @DisplayText("Reduksjon tilbake i tid")
-        val reduksjonTilbakeITid: Boolean,
-        @DisplayText("Endring i pensjon")
-        val endringIPensjonen: Boolean,
-        @DisplayText("Etterbetaling")
-        val etterbetaling: Boolean,
-        @DisplayText("Relevant hvis innvandret")
-        val aarsakTilAtPensjonenOeker: AarsakTilAtPensjonenOeker,
-    ) : SaksbehandlerValgBrevdata
+) : RedigerbarBrevdataMedSaksbehandlerValg<VedtakEndringVedFlyttingMellomLandDto.PesysData> {
 
     data class PesysData(
         val krav: Krav,
@@ -93,14 +81,10 @@ data class VedtakEndringVedFlyttingMellomLandDto(
         ANNET
     }
 
-    enum class AarsakTilAtPensjonenOeker {
-        @DisplayText("Ingen")
-        INGEN,
-        @DisplayText("Eksportberegning med redusert trygdetid")
-        EKSPORTBEREGNING_MED_REDUSERT_TRYGDETID,
-        @DisplayText("Eksportberegning ung ufør")
-        EKSPORTFORBUD_UNG_UFOER,
-        @DisplayText("Eksportberegning flyktning")
-        EKSPORTFORBUD_FLYKTNING
+    enum class AarsakTilAtPensjonenOeker(override val displayText: String) : SaksbehandlerValgEnum {
+        INGEN("Ingen"),
+        EKSPORTBEREGNING_MED_REDUSERT_TRYGDETID("Eksportberegning med redusert trygdetid"),
+        EKSPORTFORBUD_UNG_UFOER("Eksportberegning ung ufør"),
+        EKSPORTFORBUD_FLYKTNING("Eksportberegning flyktning")
     }
 }

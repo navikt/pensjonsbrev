@@ -84,10 +84,10 @@ class SaksbehandlervalgPerMalTest {
             ),
             Redigerbar.PE_AP_ENDRING_FLYTTING_MELLOM_LAND to listOf(
                 "aarsakTilAtPensjonenOeker: no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto.AarsakTilAtPensjonenOeker",
-                "endringIPensjonen: kotlin.Boolean",
-                "etterbetaling: kotlin.Boolean",
-                "innvandret: kotlin.Boolean",
-                "reduksjonTilbakeITid: kotlin.Boolean",
+                "endringIPensjonen: Boolean",
+                "etterbetaling: Boolean",
+                "innvandret: Boolean",
+                "reduksjonTilbakeITid: Boolean",
             ),
             Redigerbar.PE_AP_ENDRING_GJENLEVENDERETT to listOf(
                 "avdoedeHarRedusertTrygdetidEllerPoengaar: kotlin.Boolean?",
