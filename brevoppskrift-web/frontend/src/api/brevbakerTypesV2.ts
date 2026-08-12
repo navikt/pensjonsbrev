@@ -186,6 +186,12 @@ export type ExprFormat = {
   exprType: ExprType.FORMAT;
   value: Expr;
   formatterName: string;
+  /**
+   * Syntetisk, men 100% korrekt formattert eksempel (produsert av den ekte
+   * `LocalizedFormatter`), eller `null` hvis formattereren er ukjent eller
+   * formatteringen feilet for eksempelverdien.
+   */
+  exampleText: string | null;
 };
 
 /** Erstatter v1s `Invoke(IfElse, first, Tuple(ifTrue, ifElse))`-innpakking. */

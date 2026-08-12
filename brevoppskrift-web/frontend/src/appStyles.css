@@ -105,15 +105,17 @@ body {
   border-left: 2px solid var(--ax-border-subtle);
 }
 
-/* Kompakt Conditional-visning (`[tekst]` / `tekst1|tekst2`) for `ifElse(pred, ...)`-uttrykk der
-   begge grener bare er literaler - se `isCompactLiteralConditional` i
+/* Kompakt visning med "skjult struktur bak popover" - brukes for både Conditional
+   (`[tekst]` / `tekst1|tekst2` for `ifElse(pred, ...)`-uttrykk der begge grener bare er
+   literaler, se `isCompactLiteralConditional`) og Format (eksempeltekst i stedet for
+   `<uttrykk> formatert som <formatterer>`, se `ExprType.FORMAT`-casen) i
    TemplateDocumentationV2View.tsx. Rendres som en <button> (for tastatur-/skjermleser-tilgang),
    men nullstilt til å se ut og oppføre seg som vanlig inline tekst i flyten. Understreken (i
    stedet for f.eks. bakgrunnsfarge) signaliserer "her er det skjult informasjon å hente" uten å
    konkurrere med den eksisterende syntax highlighting-fargen (`.expr-literal`) på selve teksten.
-   `cursor: help` + popover på hover/fokus avslører predikatet uten å måtte vise
-   if/then/else-blokken hele tiden. */
-.expr-conditional-compact {
+   `cursor: help` + popover på hover/fokus avslører den fulle strukturen uten å måtte vise den
+   hele tiden. */
+.expr-popover-trigger {
   appearance: none;
   background: none;
   border: none;

@@ -188,7 +188,7 @@ describe("ExprToText kompakt Conditional-visning for rene literal-grener", () =>
 
     const html = render(expr);
     expect(html).not.toContain("expr-block");
-    expect(html).toContain("expr-conditional-compact");
+    expect(html).toContain("expr-popover-trigger");
     expect(buttonText(html)).toBe("[med barnetillegg]");
     // Predikatet skal IKKE vises direkte i markøren (kun tilgjengelig via popover).
     expect(buttonText(html)).not.toContain("harBarn");
@@ -211,5 +211,38 @@ describe("ExprToText kompakt Conditional-visning for rene literal-grener", () =>
     expect(buttonText(html)).toBe("ja|nei");
     expect(buttonText(html)).not.toContain("erGift");
     expect(html).toContain("aksel-popover--hidden");
+  });
+});
+
+describe("ExprToText Format med eksempeltekst", () => {
+  it("viser exampleText kompakt med full uttrykk+formatterer tilgjengelig via popover", () => {
+    const expr: Expr = {
+      exprType: ExprType.FORMAT,
+      value: fieldPath("fodselsdato"),
+      formatterName: "DateFormat",
+      exampleText: "17. mars 2024",
+    };
+
+    const html = render(expr);
+    expect(html).toContain("expr-popover-trigger");
+    expect(buttonText(html)).toBe("17. mars 2024");
+    // Den abstrakte "formatert som"-frasen skal IKKE vises i markøren, kun i popoveren.
+    expect(buttonText(html)).not.toContain("fodselsdato");
+    expect(html).toContain("aksel-popover--hidden");
+    expect(html).toContain("fodselsdato");
+  });
+
+  it("faller tilbake til <uttrykk> formatert som <formatterer> når exampleText er null", () => {
+    const expr: Expr = {
+      exprType: ExprType.FORMAT,
+      value: fieldPath("ukjentFelt"),
+      formatterName: "UkjentFormatter",
+      exampleText: null,
+    };
+
+    const html = render(expr);
+    expect(html).not.toContain("expr-popover-trigger");
+    expect(html).not.toContain("aksel-popover--hidden");
+    expect(text(html)).toContain("ukjentFelt");
   });
 });
