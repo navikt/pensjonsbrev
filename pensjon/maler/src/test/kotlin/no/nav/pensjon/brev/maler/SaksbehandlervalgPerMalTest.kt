@@ -197,7 +197,7 @@ class SaksbehandlervalgPerMalTest {
                 "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg",
             ),
             Redigerbar.UT_INNVILGELSE_UFOERETRYGD_MED_ENDRING to listOf(
-                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg?",
+                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg",
             ),
             Redigerbar.UT_INNVILGELSE_UFOERETRYGD_MELLOMBEHANDLING to listOf(
                 "barnetilleggInfo: Boolean",

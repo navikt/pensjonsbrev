@@ -228,7 +228,9 @@ fun createInnvilgelseUforetrygdMellombehandlingDto() =
 
 fun createInnvilgelseUforetrygdMedEndringDto() =
     InnvilgelseUforetrygdMedEndringDto(
-        saksbehandlerValg = InnvilgelseUforetrygdMedEndringDto.Saksbehandlervalg(periodisertInntekt = PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT),
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "periodisertInntekt" to PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT,
+        ),
         pesysData = InnvilgelseUforetrygdMedEndringDto.PesysData(
             pe = createPEgruppe10(),
             oifuVedVirkningstidspunkt = Kroner(10000),
