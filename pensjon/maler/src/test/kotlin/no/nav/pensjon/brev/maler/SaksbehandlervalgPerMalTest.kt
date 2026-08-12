@@ -55,8 +55,8 @@ class SaksbehandlervalgPerMalTest {
                 "opphoerMedTilbakekreving: kotlin.Boolean",
             ),
             Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID to listOf(
-                "soeknadMottattFraUtland: kotlin.Boolean",
-                "venterPaaSvarAFP: kotlin.Boolean",
+                "soeknadMottattFraUtland: Boolean",
+                "venterPaaSvarAFP: Boolean",
             ),
             Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK to emptyList(),
             Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2 to emptyList(),
@@ -219,7 +219,7 @@ class SaksbehandlervalgPerMalTest {
             ),
             Redigerbar.UT_OMREGNING_UFOEREPENSJON_TIL_UFOERETRYGD to emptyList(),
             Redigerbar.UT_ORIENTERING_OM_SAKSBEHANDLINGSTID to listOf(
-                "soeknadOversendesTilUtlandet: kotlin.Boolean?",
+                "soeknadOversendesTilUtlandet: Boolean",
             ),
             Redigerbar.UT_VEDTAK_ETTERBETALING_OPPHOR_2026_RED to emptyList(),
             Redigerbar.UT_VEDTAK_MINSTE_IFU_2026_RED to emptyList(),

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
@@ -15,9 +16,9 @@ import org.junit.jupiter.api.Test
 class InformasjonOmSaksbehandlingstidITest {
 
     private val data = InformasjonOmSaksbehandlingstidDto(
-        saksbehandlerValg = InformasjonOmSaksbehandlingstidDto.SaksbehandlerValg(
-            soeknadMottattFraUtland = false,
-            venterPaaSvarAFP = false,
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "soeknadMottattFraUtland" to false,
+            "venterPaaSvarAFP" to false,
         ),
         pesysData = EmptyFagsystemdata
     )
@@ -29,14 +30,17 @@ class InformasjonOmSaksbehandlingstidITest {
 
     @Test
     fun `med land`() {
-        writeAllLanguages("med-land", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(soeknadMottattFraUtland = true)))
+        writeAllLanguages(
+            "med-land",
+            data.copy(saksbehandlerValg = lagSaksbehandlervalg("soeknadMottattFraUtland" to true, "venterPaaSvarAFP" to false)),
+        )
     }
 
     @Test
     fun `med venter svar AFP`() {
         writeAllLanguages(
             "med-venter-svar",
-            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(venterPaaSvarAFP = true))
+            data.copy(saksbehandlerValg = lagSaksbehandlervalg("soeknadMottattFraUtland" to false, "venterPaaSvarAFP" to true)),
         )
     }
 

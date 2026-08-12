@@ -4,8 +4,6 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.informasjonOmSaksbehandlingstidDto.saksbehandlerValg.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.informasjonOmSaksbehandlingstidDto.*
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -13,6 +11,7 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -32,6 +31,9 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
+        val soeknadMottattFraUtland = saksbehandlervalg("soeknadMottattFraUtland", "Søknad mottatt fra utland").bool()
+        val venterPaaSvarAFP = saksbehandlervalg("venterPaaSvarAFP", "Venter på svar AFP").bool()
+
         title {
             text(
                 bokmal { + "Informasjon om saksbehandlingstiden vår" },
@@ -45,7 +47,7 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
                 val mottattDato = fritekst("dato")
                 val ytelse = fritekst("ytelse")
 
-                showIf(saksbehandlerValg.soeknadMottattFraUtland) {
+                showIf(soeknadMottattFraUtland) {
                     val annetLand = fritekst("land")
                     text(
                         bokmal { + "Vi har " + mottattDato + " mottatt søknaden din om " + ytelse + " fra trygdemyndighetene i " + annetLand + "." },
@@ -61,7 +63,7 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
                     )
                 }
             }
-            showIf(saksbehandlerValg.venterPaaSvarAFP) {
+            showIf(venterPaaSvarAFP) {
                 paragraph {
                     val uttaksDato = fritekst("uttaksdato")
                     val prosent = fritekst("uttaksgrad alderspensjon")
