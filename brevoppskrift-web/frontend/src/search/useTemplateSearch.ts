@@ -104,19 +104,7 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
         });
       }
     });
-    performance.mark("search-index-build-start");
-    const built = { fuzzy: buildIndex(entries, true), exact: buildIndex(entries, false) };
-    performance.mark("search-index-build-end");
-    const measure = performance.measure("search-index-build", "search-index-build-start", "search-index-build-end");
-    console.info(
-      `[search] built fuzzy+exact indexes for ${entries.length} entries in ${measure.duration.toFixed(1)}ms`,
-    );
-    // Avoid unbounded growth of the browser's performance entry buffer across
-    // repeated corpus reloads (e.g. periodic refetches that change the data).
-    performance.clearMarks("search-index-build-start");
-    performance.clearMarks("search-index-build-end");
-    performance.clearMeasures("search-index-build");
-    return built;
+    return { fuzzy: buildIndex(entries, true), exact: buildIndex(entries, false) };
   }, [freshnessKey, malTypes, titleByKey, isLoading]);
   const index = indexes ? (exactOnly ? indexes.exact : indexes.fuzzy) : undefined;
   const [query, setQuery] = useState("");
