@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { BodyLong, Heading, Popover, Tag } from "@navikt/ds-react";
+import { BodyLong, Box, Heading, Popover, Tag } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
 import { type ReactNode, useRef, useState } from "react";
 
@@ -39,7 +39,7 @@ export function DocumentV2({
   templateDocumentation: TemplateDocumentationV2 | AttachmentV2;
 }) {
   return (
-    <div className="preview">
+    <Box background="default" className="preview letter-page" padding="space-48">
       <Heading level="1" size="large" spacing>
         {templateDocumentation.title.map((cocs, index) => (
           <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
@@ -50,7 +50,7 @@ export function DocumentV2({
           <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
         ))}
       </div>
-    </div>
+    </Box>
   );
 }
 

@@ -247,7 +247,7 @@ function SelectLanguage() {
 
 function Document({ templateDocumentation }: { templateDocumentation: TemplateDocumentation | Attachment }) {
   return (
-    <Box background="default" padding="space-48">
+    <Box background="default" className="letter-page" padding="space-48">
       <Heading level="1" size="large" spacing>
         {templateDocumentation.title.map((cocs, index) => {
           return <ContentOrControlStructureComponent cocs={cocs} key={index} />;
