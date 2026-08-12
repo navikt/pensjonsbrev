@@ -3,44 +3,19 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 
 @Suppress("unused")
 data class AvslagPaaGjenlevenderettIAlderspensjonDto(
-    override val saksbehandlerValg: SaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<AvslagPaaGjenlevenderettIAlderspensjonDto.SaksbehandlerValg, AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData> {
-    data class SaksbehandlerValg(
-        @DisplayText("Samboer uten felles barn")
-        val samboerUtenFellesBarn: Boolean,
-        @DisplayText("Avdød navn")
-        val avdoedNavn: String,
-        @DisplayText("Under ett års medlemstid EØS eller avtaleland")
-        val underEttAarsMedlemstidEOESEllerAvtaleland: Boolean,
-        @DisplayText("Under tre/fem års medlemstid nasjonal sak")
-        val underTreFemAarsMedlemstidNasjonalSak: Boolean,
-        @DisplayText("Under tre/fem års medlemstid EØS-sak")
-        val underTreFemAarsMedlemstidEOESSak: Boolean,
-        @DisplayText("Under tre/fem års medlemstid avtalesak")
-        val underTrefemAarsMedlemstidAvtalesak: Boolean,
-        @DisplayText("Under 20 år botid")
-        val under20AarBotid: Boolean,
-        @DisplayText("Ekteskap under fem år")
-        val ekteskapUnderFemAar: Boolean,
-        @DisplayText("Hjemmel EØS")
-        val hjemmelEOES: Boolean,
-        @DisplayText("Hjemmel avtaleland")
-        val hjemmelAvtaleland: Boolean,
-        @DisplayText("Inkluder tekst om trygdetid")
-        val harTrygdetid: Boolean,
-    ) : SaksbehandlerValgBrevdata
+) : RedigerbarBrevdataMedSaksbehandlerValg<AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData> {
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val krav: Krav,
