@@ -156,3 +156,14 @@ body {
 .conditional-predicate > summary:hover {
   text-decoration: underline;
 }
+
+/* Brevets "side" i forhåndsvisningen - kapper bredden til A4 sin bredde (210mm ≈ 793px ved
+   96dpi), slik at tekstbredde og linjebrekk i forhåndsvisningen stemmer bedre overens med det
+   faktiske utskrevne brevet enn en ubegrenset full-bredde visning på brede skjermer ville gjort.
+   Brukes på samme <Box>-element (v1 sin Document, v2 sin DocumentV2) som allerede har den hvite
+   bakgrunnen og paddingen som etterligner sidemargene. */
+.letter-page {
+  margin-inline: auto;
+  max-width: 793px;
+  width: 100%;
+}
