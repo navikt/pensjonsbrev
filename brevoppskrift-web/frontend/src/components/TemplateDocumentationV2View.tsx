@@ -299,7 +299,11 @@ function assocOpSymbol(op: string): string {
 function dataSourceLabel(source: DataSource): string {
   switch (source.dataSourceType) {
     case "SCOPE": {
-      return source.name;
+      // Praktisk talt alle felt-uttrykk starter i "argument"-scopet (brevets Dto-rot), så det
+      // gir bare støy å skrive det ut hver gang – samme konvensjon som v1s ExpressionToText,
+      // som returnerer "" for scopeName "argument". "felles"/"language" er egne, mindre
+      // brukte scopes og beholder navnet sitt for å unngå tvetydighet.
+      return source.name === "argument" ? "" : source.name;
     }
     case "FOR_EACH_VAR": {
       return source.depth > 0 ? `${source.label}₍${source.depth}₎` : source.label;
@@ -310,6 +314,15 @@ function dataSourceLabel(source: DataSource): string {
       return "";
     }
   }
+}
+
+/**
+ * Samme som dataSourceLabel, men uten "argument"-skjulingen — brukt kun som fallback-tekst
+ * i FieldPathLink for det sjeldne tilfellet der en FieldPath ikke har noen segmenter igjen
+ * (selve scope-objektet brukes direkte), slik at vi aldri viser en tom lenke-tekst.
+ */
+function dataSourceLabelFallback(source: DataSource): string {
+  return source.dataSourceType === "SCOPE" ? source.name : dataSourceLabel(source);
 }
 
 function editableKindLabel(kind: string): string {
@@ -519,7 +532,12 @@ function FieldPathLink({ expr }: { expr: ExprFieldPath }) {
         {expr.segments.map((segment) => `.${segment}`).join("")}
       </>
     ) : (
-      [dataSourceLabel(expr.source), ...expr.segments].join(".")
+      // dataSourceLabel kan returnere "" (skjult "argument"-scope) — filtrer bort tomme
+      // strenger før vi join'er, ellers ville vi fått en misvisende leading dot (".felt").
+      // Om det ikke er noen segmenter igjen etter filtreringen (dvs. selve argument-objektet
+      // brukes direkte uten feltaksess), faller vi tilbake til det opprinnelige scope-navnet
+      // så vi aldri viser en tom lenke-tekst.
+      [dataSourceLabel(expr.source), ...expr.segments].filter(Boolean).join(".") || dataSourceLabelFallback(expr.source)
     );
   const lastSegment = expr.segments.at(-1);
 
