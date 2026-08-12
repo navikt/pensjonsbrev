@@ -13,4 +13,10 @@ data object EmptyRedigerbarBrevdata : RedigerbarBrevdata<EmptySaksbehandlerValg,
     override val pesysData = EmptyFagsystemdata
 }
 
+@ConsistentCopyVisibility
+data class EmptyRedigerbarBrevdataMedSaksbehandlerValg internal constructor(
+    override val pesysData: EmptyFagsystemdata = EmptyFagsystemdata,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
+) : RedigerbarBrevdataMedSaksbehandlerValgUtenFagsystemdata
+
 data object EmptyVedleggData : VedleggData
