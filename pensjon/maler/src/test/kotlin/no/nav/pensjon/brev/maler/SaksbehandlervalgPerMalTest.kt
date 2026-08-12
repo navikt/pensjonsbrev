@@ -80,7 +80,7 @@ class SaksbehandlervalgPerMalTest {
             ),
             Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS_BRUKER_ELLER_VERGE to emptyList(),
             Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS_IKKE_BRUKER_VERGE to listOf(
-                "aarsak: no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.SaksbehandlerValg.Aarsak",
+                "aarsak: no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.Aarsak",
             ),
             Redigerbar.PE_AP_ENDRING_FLYTTING_MELLOM_LAND to listOf(
                 "aarsakTilAtPensjonenOeker: no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto.AarsakTilAtPensjonenOeker",

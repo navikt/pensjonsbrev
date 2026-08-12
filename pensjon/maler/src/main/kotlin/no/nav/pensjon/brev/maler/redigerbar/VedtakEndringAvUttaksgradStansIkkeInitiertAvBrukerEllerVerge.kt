@@ -5,12 +5,12 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.SaksbehandlerValg.Aarsak
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.Aarsak
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.alderspensjonVedVirk.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.krav.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.saksbehandlerValg.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.*
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
@@ -20,7 +20,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -43,6 +43,8 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
+        val aarsak = saksbehandlervalg("aarsak", "Årsak").enum<Aarsak>()
+
         title {
             text(
                 bokmal { + "Vi stanser utbetalingen av alderspensjonen din" },
@@ -54,7 +56,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
         outline {
             includePhrase(Vedtak.Overskrift)
 
-            showIf(saksbehandlerValg.aarsak.equalTo(Aarsak.ufoeregradErOekt)) {
+            showIf(aarsak.equalTo(Aarsak.ufoeregradErOekt)) {
                 paragraph {
                     // stansAPOktUFG_001
                     text(
@@ -63,7 +65,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                         english { + "We are stopping payment of your retirement pension from " + pesysData.krav.virkDatoFom.format() + " because your degree of disability has changed." },
                     )
                 }
-            }.orShowIf(saksbehandlerValg.aarsak.equalTo(Aarsak.ufoeretrygdErInnvilget)) {
+            }.orShowIf(aarsak.equalTo(Aarsak.ufoeretrygdErInnvilget)) {
                 paragraph {
                     // stansAPInnvUT_001
                     text(
@@ -72,7 +74,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                         english { + "We are stopping payment of your retirement pension from " + pesysData.krav.virkDatoFom.format() + " because you have been granted disability benefit." },
                     )
                 }
-            }.orShowIf(saksbehandlerValg.aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
+            }.orShowIf(aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
                 paragraph {
                     // stansAPOpptjen_001
                     text(
@@ -96,7 +98,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
             showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2011)) { // radiobutton i doksys
                 // endrUtaksgradAP2011_001 - Uføretrygd er innvilget eller uføregrad er økt
                 // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(saksbehandlerValg.aarsak.isOneOf(Aarsak.ufoeregradErOekt, Aarsak.ufoeretrygdErInnvilget)) {
+                showIf(aarsak.equalTo(Aarsak.ufoeregradErOekt).or(aarsak.equalTo(Aarsak.ufoeretrygdErInnvilget))) {
                     paragraph {
                         text(
                             bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12 og 22-12." },
@@ -104,7 +106,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                             english { + "This decision was made pursuant to the provisions of §§ 19-10, 19-12 and 22-12 of the National Insurance Act." }
                         )
                     }
-                }.orShowIf(saksbehandlerValg.aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
+                }.orShowIf(aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
                     // avslagAP2011TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
                     // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                     paragraph {
@@ -117,7 +119,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                 }
             }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2016)) { // radiobuttons
                 // avslagAP2016TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
-                showIf(saksbehandlerValg.aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
+                showIf(aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
                     paragraph {
                         text(
                             bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-11, 19-15, 20-15 og 20-19." },
@@ -125,7 +127,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                             english { + "This decision was made pursuant to the provisions of §§ 19-11, 19-15, 20-15 and 20-19 of the National Insurance Act." }
                         )
                     }
-                }.orShowIf(saksbehandlerValg.aarsak.isOneOf(Aarsak.ufoeregradErOekt, Aarsak.ufoeretrygdErInnvilget)) {
+                }.orShowIf(aarsak.equalTo(Aarsak.ufoeregradErOekt).or(aarsak.equalTo(Aarsak.ufoeretrygdErInnvilget))) {
                     // endrUtaksgradAP2016_001 - Uføretrygd er innvilget eller uføregrad er økt
                     paragraph {
                         text(
@@ -137,7 +139,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                 }
             }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) { // radiobuttons
                     // avslagAP2025TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
-                    showIf(saksbehandlerValg.aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
+                    showIf(aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
                         paragraph {
                             text(
                                 bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 20-15 og 22-13." },
@@ -145,7 +147,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                                 english { + "This decision was made pursuant to the provisions of §§ 20-15 and 22-13 of the National Insurance Act." }
                             )
                         }
-                    }.orShowIf(saksbehandlerValg.aarsak.isOneOf(Aarsak.ufoeregradErOekt, Aarsak.ufoeretrygdErInnvilget)) {
+                    }.orShowIf(aarsak.equalTo(Aarsak.ufoeregradErOekt).or(aarsak.equalTo(Aarsak.ufoeretrygdErInnvilget))) {
                         // endrUtaksgradAP2025_001 - Uføretrygd er innvilget eller uføregrad er økt
                         paragraph {
                             text(

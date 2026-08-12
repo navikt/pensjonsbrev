@@ -4,13 +4,15 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
 import java.time.LocalDate
 import java.time.Month
 
 fun createVedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto() = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto(
-    saksbehandlerValg = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.SaksbehandlerValg(
-        aarsak = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.SaksbehandlerValg.Aarsak.ufoeretrygdErInnvilget),
+    saksbehandlerValg = lagSaksbehandlervalg(
+        "aarsak" to VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.Aarsak.ufoeretrygdErInnvilget
+    ),
     pesysData = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.PesysData(
         krav = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.Krav(
             virkDatoFom = LocalDate.of(2024, Month.JANUARY, 1)
