@@ -193,8 +193,8 @@ class SaksbehandlervalgPerMalTest {
                 "forlengetSaksbehandlingstid: Boolean",
             ),
             Redigerbar.UT_INNVILGELSE_UFOERETRYGD to listOf(
-                "barnetilleggInfo: kotlin.Boolean",
-                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg?",
+                "barnetilleggInfo: Boolean",
+                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg",
             ),
             Redigerbar.UT_INNVILGELSE_UFOERETRYGD_MED_ENDRING to listOf(
                 "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg?",

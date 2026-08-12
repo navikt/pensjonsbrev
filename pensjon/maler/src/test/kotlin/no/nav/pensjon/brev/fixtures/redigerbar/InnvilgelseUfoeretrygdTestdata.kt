@@ -22,7 +22,10 @@ import java.time.Month
 
 fun createInnvilgelseUfoeretrygdDto() =
     InnvilgelseUfoeretrygdDto(
-        saksbehandlerValg = InnvilgelseUfoeretrygdDto.Saksbehandlervalg(barnetilleggInfo = true, periodisertInntekt = PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT),
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "barnetilleggInfo" to true,
+            "periodisertInntekt" to PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT,
+        ),
         pesysData = InnvilgelseUfoeretrygdDto.PesysData(
             pe = createPEgruppe10(),
             kravFremsattDato = LocalDate.of(2020, Month.JANUARY, 1),
