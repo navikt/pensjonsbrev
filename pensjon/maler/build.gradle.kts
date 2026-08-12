@@ -25,7 +25,7 @@ dependencies {
     api("no.nav.pensjon.brev:pensjon-api-model:$apiModelVersion")
 
     testImplementation(libs.bundles.junit)
-    testImplementation(kotlin("reflect"))
+    testImplementation(kotlin("reflect")) // TODO: midlertidig fram til vi har migrert ferdig til saksbehandlervalgidsl
     testImplementation(testFixtures(project(":brevbaker:core")))
     testImplementation(testFixtures(project(":brevbaker:dsl")))
 }
