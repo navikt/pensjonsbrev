@@ -66,10 +66,10 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
                 text(
                     bokmal {
                         +fritekst(
-                            "Bruker har ingen ytelser som ikke kan kombineres med AFP.\n" +
-                                    "Bruker har hatt utbetalt alderspensjon frem til DD.MM.ÅÅÅÅ.\n" +
-                                    "Bruker har XX % uføretrygd fra folketrygden.\n" +
-                                    "Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag.\n" +
+                            "Bruker har ingen ytelser som ikke kan kombineres med AFP." + newline() +
+                                    "Bruker har hatt utbetalt alderspensjon frem til DD.MM.ÅÅÅÅ." + newline() +
+                                    "Bruker har XX % uføretrygd fra folketrygden." + newline() +
+                                    "Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag." + newline() +
                                     "Bruker mottar eller søker om sykepenger. Nav arbeid og ytelser er informert om at bruker søker AFP.",
                         )
                     },
