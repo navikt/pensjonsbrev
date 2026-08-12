@@ -232,6 +232,40 @@ object TemplateDocumentationRendererV2 {
             else -> null
         }
 
+    private val valueClassUnwrapCache = java.util.concurrent.ConcurrentHashMap<String, Boolean>()
+
+    /**
+     * Avgjør om et `Select` er en utpakking av en semantisk énverdi-wrapper (f.eks.
+     * `BrevbakerType.Kroner`, `Year`, `Percent`, `Postnummer`) — ikke et "ekte" domenefelt.
+     * To tilfeller dekkes:
+     *  - `selector.className` er faktisk et Kotlin `value class` (avgjøres via refleksjon;
+     *    `TemplateModelSelector.className` lagrer den punktum-separerte Kotlin-navnet, mens
+     *    JVM-ets faktiske (binære) klassenavn bruker `$` for nøstede klasser, så vi prøver oss
+     *    fra høyre mot venstre til klassen faktisk lar seg laste).
+     *  - `selector.propertyName == "value"` — dekker i tillegg det delte `IntValue`-grensesnittet
+     *    (`Kroner`/`Year`/`Percent`/`Months`/`Days` sin felles `.value`-utpakking brukt internt
+     *    av bl.a. `equalTo`/`greaterThan`/`plus`), som er et grensesnitt og ikke en value class,
+     *    så refleksjonssjekket alene ikke fanger opp dette tilfellet. I hele kodebasen er
+     *    property-navnet "value" utelukkende brukt til nettopp denne typen wrapper-utpakking
+     *    (aldri et reelt domenefelt), så heuristikken er trygg.
+     */
+    private fun isValueClassUnwrap(selector: TemplateModelSelector<*, *>): Boolean =
+        selector.propertyName == "value" ||
+            valueClassUnwrapCache.getOrPut(selector.className) { loadKotlinClass(selector.className)?.isValue == true }
+
+    private fun loadKotlinClass(qualifiedName: String): kotlin.reflect.KClass<*>? {
+        var candidate = qualifiedName
+        while (true) {
+            try {
+                return Class.forName(candidate).kotlin
+            } catch (_: ClassNotFoundException) {
+                val lastDot = candidate.lastIndexOf('.')
+                if (lastDot < 0) return null
+                candidate = candidate.substring(0, lastDot) + "$" + candidate.substring(lastDot + 1)
+            }
+        }
+    }
+
     @OptIn(BrevbakerDSLInternal::class)
     private fun renderUnaryInvoke(
         value: Expression<*>,
@@ -254,8 +288,17 @@ object TemplateDocumentationRendererV2 {
         }
 
         if (operation is UnaryOperation.Select<*, *>) {
-            val segment = operation.selector.propertyName
-            return when (val base = renderExpr(value, assignments, forEachDepth)) {
+            val selector = operation.selector
+            val base = renderExpr(value, assignments, forEachDepth)
+            // Value classes (f.eks. Kroner, Year, Percent, Postnummer) er for oss bare en
+            // semantisk innpakning rundt én verdi — å vise utpakkingen som et eget FieldPath-
+            // segment (".value") gir ingen ekstra menneskelig informasjon, kun støy. Behold
+            // derfor `base` uendret når selectoren er en value-class-utpakking.
+            if (isValueClassUnwrap(selector)) {
+                return base
+            }
+            val segment = selector.propertyName
+            return when (base) {
                 is FieldPath -> base.copy(segments = base.segments + segment)
                 // Feltaksess på et beregnet uttrykk (f.eks. `getOrNull(...).felt`,
                 // `(a ?: b).felt`) — DataSource.Computed lar oss fortsatt bygge en lesbar
