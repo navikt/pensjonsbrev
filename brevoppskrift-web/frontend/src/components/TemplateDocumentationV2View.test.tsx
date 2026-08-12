@@ -50,14 +50,51 @@ describe("ExprToText FieldPath med Computed-base", () => {
 
     // Listen som indekseres skal være tydelig avgrenset til getOrNull sitt første argument
     // (`...vilkarsvedtak[0]`) - de påfølgende `.vilkar.unguforresultat`-segmentene skal IKKE
-    // se ut til å høre til selve listeuttrykket.
+    // se ut til å høre til selve listeuttrykket. "argument."-prefikset skal være skjult, siden
+    // praktisk talt alle uttrykk starter der og det bare er støy.
     expect(rendered).toContain(
-      "argument.pesysData.pe.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak[0].vilkar.unguforresultat",
+      "pesysData.pe.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak[0].vilkar.unguforresultat",
     );
+    expect(rendered).not.toContain("argument.");
     // Ingen prosafrase ("element nr. ... i ...") som ikke tydeliggjør grensen mellom
     // funksjonskallet og de påfølgende segmentene.
     expect(rendered).not.toContain("element nr.");
     // Tom streng-fallback skal fortsatt være synlig (kvotert).
     expect(rendered).toContain("&quot;&quot;");
+  });
+});
+
+describe("ExprToText FieldPath argument-scope", () => {
+  it("skjuler 'argument.'-prefikset siden praktisk talt alle uttrykk starter der", () => {
+    const expr: Expr = {
+      exprType: ExprType.FIELD_PATH,
+      source: { dataSourceType: "SCOPE", name: "argument" },
+      segments: ["person", "navn"],
+      leafType: null,
+    };
+
+    expect(text(render(expr))).toBe("person.navn");
+  });
+
+  it("beholder navnet til andre scopes enn 'argument' (f.eks. 'felles')", () => {
+    const expr: Expr = {
+      exprType: ExprType.FIELD_PATH,
+      source: { dataSourceType: "SCOPE", name: "felles" },
+      segments: ["dato"],
+      leafType: null,
+    };
+
+    expect(text(render(expr))).toBe("felles.dato");
+  });
+
+  it("faller tilbake til 'argument' når det ikke er noen segmenter å vise (hele scopet brukt direkte)", () => {
+    const expr: Expr = {
+      exprType: ExprType.FIELD_PATH,
+      source: { dataSourceType: "SCOPE", name: "argument" },
+      segments: [],
+      leafType: null,
+    };
+
+    expect(text(render(expr))).toBe("argument");
   });
 });
