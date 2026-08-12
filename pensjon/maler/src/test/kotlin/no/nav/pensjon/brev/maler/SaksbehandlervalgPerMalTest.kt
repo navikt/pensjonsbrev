@@ -76,7 +76,7 @@ class SaksbehandlervalgPerMalTest {
                 "underTrefemAarsMedlemstidAvtalesak: Boolean",
             ),
             Redigerbar.PE_AP_ENDRET_UTTAKSGRAD to listOf(
-                "etterbetaling: kotlin.Boolean?",
+                "etterbetaling: Boolean",
             ),
             Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS_BRUKER_ELLER_VERGE to emptyList(),
             Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS_IKKE_BRUKER_VERGE to listOf(

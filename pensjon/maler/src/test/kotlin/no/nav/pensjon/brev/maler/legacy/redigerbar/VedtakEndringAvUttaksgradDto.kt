@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUtta
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningenEndretUttaksgradDto
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import java.time.LocalDate
@@ -13,8 +14,8 @@ import java.time.Month
 
 fun createVedtakEndringAvUttaksgradDto() =
     VedtakEndringAvUttaksgradDto(
-        saksbehandlerValg = VedtakEndringAvUttaksgradDto.SaksbehandlerValg(
-            etterbetaling = true
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "etterbetaling" to true,
         ),
         pesysData = VedtakEndringAvUttaksgradDto.PesysData(
             orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),

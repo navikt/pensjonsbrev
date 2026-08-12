@@ -3,25 +3,20 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import java.time.LocalDate
 
 data class VedtakEndringAvUttaksgradDto(
-    override val saksbehandlerValg: SaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<VedtakEndringAvUttaksgradDto.SaksbehandlerValg, VedtakEndringAvUttaksgradDto.PesysData> {
-    data class SaksbehandlerValg(
-        @DisplayText("Hvis etterbetaling")
-        val etterbetaling: Boolean?,
-    ) : SaksbehandlerValgBrevdata
+) : RedigerbarBrevdataMedSaksbehandlerValg<VedtakEndringAvUttaksgradDto.PesysData> {
 
     data class PesysData(
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,
