@@ -98,3 +98,75 @@ describe("ExprToText FieldPath argument-scope", () => {
     expect(text(render(expr))).toBe("argument");
   });
 });
+
+function fieldPath(name: string): Expr {
+  return {
+    exprType: ExprType.FIELD_PATH,
+    source: { dataSourceType: "SCOPE", name: "argument" },
+    segments: [name],
+    leafType: null,
+  };
+}
+
+describe("ExprToText linjeskift og innrykk for AND/OR-kjeder", () => {
+  it("rendrer en flat AND-kjede med flere ledd som en blokk med én rad per ledd, uten nøstet border/innrykk", () => {
+    const expr: Expr = {
+      exprType: ExprType.ASSOCIATIVE_OP,
+      op: "AND",
+      operands: [fieldPath("a"), fieldPath("b"), fieldPath("c")],
+    };
+
+    const html = render(expr);
+    // Kun én blokk (ingen nøsting) siden alle tre ledd er "flate" FieldPath-er.
+    expect((html.match(/class="expr-block"/g) ?? []).length).toBe(1);
+    expect((html.match(/class="expr-block-row"/g) ?? []).length).toBe(3);
+    expect(text(html)).toBe("aog bog c");
+  });
+
+  it("rendrer en nøstet OR inni en AND som sin egen innrykkede blokk, uten eksplisitte parenteser", () => {
+    const expr: Expr = {
+      exprType: ExprType.ASSOCIATIVE_OP,
+      op: "AND",
+      operands: [
+        fieldPath("a"),
+        { exprType: ExprType.ASSOCIATIVE_OP, op: "OR", operands: [fieldPath("b"), fieldPath("c")] },
+      ],
+    };
+
+    const html = render(expr);
+    // To nøstede blokker: den ytre AND-blokken og den indre OR-blokken.
+    expect((html.match(/class="expr-block"/g) ?? []).length).toBe(2);
+    // Ingen parenteser rundt den nøstede OR-en - innrykket/border kommuniserer grupperingen.
+    expect(text(html)).not.toContain("(");
+    expect(text(html)).toContain("eller");
+  });
+
+  it("holder CONCAT/PLUS-kjeder inline (ingen linjeskift/blokk-formattering)", () => {
+    const expr: Expr = {
+      exprType: ExprType.ASSOCIATIVE_OP,
+      op: "CONCAT",
+      operands: [{ exprType: ExprType.LITERAL, value: "Hei ", kind: "STRING" }, fieldPath("navn")],
+    };
+
+    const html = render(expr);
+    expect(html).not.toContain("expr-block");
+  });
+});
+
+describe("ExprToText linjeskift og innrykk for Conditional (if/then/else)", () => {
+  it("rendrer if/then/else som tre separate rader i en blokk", () => {
+    const expr: Expr = {
+      exprType: ExprType.CONDITIONAL_EXPR,
+      predicate: fieldPath("harBarn"),
+      ifTrue: { exprType: ExprType.LITERAL, value: "ja", kind: "STRING" },
+      ifElse: { exprType: ExprType.LITERAL, value: "nei", kind: "STRING" },
+    };
+
+    const html = render(expr);
+    expect((html.match(/class="expr-block-row"/g) ?? []).length).toBe(3);
+    const rendered = text(html);
+    expect(rendered).toContain("if");
+    expect(rendered).toContain("then");
+    expect(rendered).toContain("else");
+  });
+});
