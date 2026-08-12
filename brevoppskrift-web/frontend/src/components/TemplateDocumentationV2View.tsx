@@ -687,18 +687,20 @@ function compactLiteralText(literal: ExprLiteral): string {
 }
 
 /**
- * Viser `children` (den kompakte `[tekst]`/`tekst1|tekst2`-markøren) med en hover/fokus-popover
- * som avslører predikatet bak - full struktur er alltid tilgjengelig, bare skjult som standard.
+ * Viser `children` (en kompakt tekst-markør, f.eks. Conditional sin `[tekst]`/`tekst1|tekst2`
+ * eller Format sin eksempeltekst) med en hover/fokus-popover som avslører `content` (den fulle
+ * strukturen bak - predikat, eller uttrykk+formatterer) - full struktur er alltid tilgjengelig,
+ * bare skjult som standard.
  */
-function ConditionalPredicatePopover({ predicate, children }: { predicate: Expr; children: ReactNode }) {
+function ExprPopover({ ariaLabel, content, children }: { ariaLabel: string; content: ReactNode; children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
 
   return (
     <>
       <button
-        aria-label="Vis betingelse"
-        className="expr-conditional-compact"
+        aria-label={ariaLabel}
+        className="expr-popover-trigger"
         onBlur={() => setOpen(false)}
         onFocus={() => setOpen(true)}
         onMouseEnter={() => setOpen(true)}
@@ -710,10 +712,7 @@ function ConditionalPredicatePopover({ predicate, children }: { predicate: Expr;
       </button>
       <Popover anchorEl={anchorRef.current} onClose={() => setOpen(false)} open={open} placement="top">
         <Popover.Content>
-          <span className="expression">
-            <code>Hvis </code>
-            <ExprToText expr={predicate} />
-          </span>
+          <span className="expression">{content}</span>
         </Popover.Content>
       </Popover>
     </>
@@ -807,11 +806,23 @@ export function ExprToText({ expr }: { expr: Expr }) {
     }
     case ExprType.FORMAT: {
       const phrase = formatterPhrase(expr.formatterName);
-      return (
+      const fullExpr = (
         <span>
           <MaybeParens expr={expr.value} /> <span className="expr-function">{phrase}</span>
         </span>
       );
+      // Når backend har klart å produsere et ekte, korrekt formattert eksempel (via den
+      // faktiske `LocalizedFormatter`), vis det i stedet for den abstrakte
+      // "<uttrykk> formatert som <formatterer>"-frasen - eksempelet ligner det leseren faktisk
+      // vil se i et ferdig brev. Full struktur er fortsatt tilgjengelig via popover.
+      if (expr.exampleText !== null) {
+        return (
+          <ExprPopover ariaLabel="Vis fullt uttrykk" content={fullExpr}>
+            <span className="expr-literal">{expr.exampleText}</span>
+          </ExprPopover>
+        );
+      }
+      return fullExpr;
     }
     case ExprType.CONDITIONAL_EXPR: {
       // Svært vanlig mønster: begge grener er bare literaler (`ifElse(pred, "tekst", "")` eller
@@ -824,9 +835,17 @@ export function ExprToText({ expr }: { expr: Expr }) {
         const ifElseText = compactLiteralText(expr.ifElse);
         const compact = ifElseText === "" ? `[${ifTrueText}]` : `${ifTrueText}|${ifElseText}`;
         return (
-          <ConditionalPredicatePopover predicate={expr.predicate}>
+          <ExprPopover
+            ariaLabel="Vis betingelse"
+            content={
+              <>
+                <code>Hvis </code>
+                <ExprToText expr={expr.predicate} />
+              </>
+            }
+          >
             <span className="expr-literal">{compact}</span>
-          </ConditionalPredicatePopover>
+          </ExprPopover>
         );
       }
       // if/then/else har naturlig tre "ledd" og drar samme nytte av linjeskift+innrykk som en
