@@ -126,9 +126,9 @@ class SaksbehandlervalgPerMalTest {
             ),
             Redigerbar.PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER to emptyList(),
             Redigerbar.PE_AP_INNVILGELSE to listOf(
-                "etterbetaling: kotlin.Boolean?",
-                "kravVirkDatoFomSenereEnnOensketUttakstidspunkt: kotlin.Boolean?",
-                "vanligSkattetrekk: kotlin.Boolean?",
+                "etterbetaling: Boolean",
+                "kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean",
+                "vanligSkattetrekk: Boolean",
             ),
             Redigerbar.PE_AP_INNVILGELSE_TRYGDEAVTALE to listOf(
                 "etterbetaling: kotlin.Boolean?",
