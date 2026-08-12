@@ -40,11 +40,11 @@ export function DocumentV2({
 }) {
   return (
     <div className="preview">
-      <div>
+      <Heading level="1" size="large" spacing>
         {templateDocumentation.title.map((cocs, index) => (
           <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
         ))}
-      </div>
+      </Heading>
       <div>
         {templateDocumentation.outline.map((cocs, index) => (
           <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
@@ -85,7 +85,7 @@ function ContentComponentV2({ content }: { content: ElementV2 }) {
   switch (content.elementType) {
     case ElementTypeV2.TITLE1: {
       return (
-        <Heading size="medium" spacing>
+        <Heading level="2" size="medium" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
           ))}
@@ -94,7 +94,7 @@ function ContentComponentV2({ content }: { content: ElementV2 }) {
     }
     case ElementTypeV2.TITLE2: {
       return (
-        <Heading size="small" spacing>
+        <Heading level="3" size="small" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
           ))}
@@ -103,7 +103,7 @@ function ContentComponentV2({ content }: { content: ElementV2 }) {
     }
     case ElementTypeV2.TITLE3: {
       return (
-        <Heading size="xsmall" spacing>
+        <Heading level="4" size="xsmall" spacing>
           {content.text.map((cocs, index) => (
             <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
           ))}
