@@ -226,7 +226,8 @@ class SaksbehandlervalgPerMalTest {
             Redigerbar.UT_VEDTAK_MINSTE_IFU_REDUKSJONSPROSENT_2026_RED to emptyList(),
             Redigerbar.UT_VEDTAK_OKT_BUNNFRADRAG_2026_RED to emptyList(),
             Redigerbar.UT_VEDTAK_OM_LAVERE_MINSTESATS_2026 to emptyList(),
-            Redigerbar.UT_VEDTAK_REDUKSJONSPROSENT_2026_RED to emptyList(),        )
+            Redigerbar.UT_VEDTAK_REDUKSJONSPROSENT_2026_RED to emptyList()
+        )
 
         assertEquals(
             forventet.keys,
