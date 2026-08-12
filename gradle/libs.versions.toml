@@ -1,11 +1,7 @@
 [versions]
-brevdataVersion = "1.0.0"
-brevbakerApiVersion = "1.0.0"
-markupVersion = "2.0.0"
-
 kotlinVersion = "2.4.10"
 kotlinKspVersion = "2.3.10"
-ktorVersion = "3.5.1"
+ktorVersion = "3.5.2"
 assertJVersion = "3.27.7"
 classGraphVersion = "4.8.186"
 commonsCodecVersion = "1.22.1"
@@ -36,10 +32,6 @@ ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinVersion" }
 
 [libraries]
-brevdata = { module = "no.nav.brev.brevbaker:brevdata", version.ref = "brevdataVersion" }
-brevbaker-api = { module = "no.nav.brev.brevbaker:brevbaker-api", version.ref = "brevbakerApiVersion" }
-markup-model = { module = "no.nav.brev.brevbaker:markup-model", version.ref = "markupVersion" }
-markup-dsl = { module = "no.nav.brev.brevbaker:markup-dsl", version.ref = "markupVersion" }
 commons-codec = { module = "commons-codec:commons-codec", version.ref = "commonsCodecVersion" }
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikariVersion" }
 io-github-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classGraphVersion" }
@@ -84,6 +76,7 @@ ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt" }
 ktor-server-caching-headers = { module = "io.ktor:ktor-server-caching-headers" }
 ktor-server-callId = { module = "io.ktor:ktor-server-call-id" }
 ktor-server-callLogging = { module = "io.ktor:ktor-server-call-logging" }
+ktor-server-conditional-headers = { module = "io.ktor:ktor-server-conditional-headers"}
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation" }
 ktor-server-core = { module = "io.ktor:ktor-server-core" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors" }

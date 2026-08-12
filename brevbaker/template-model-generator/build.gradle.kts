@@ -34,7 +34,7 @@ tasks {
 dependencies {
     implementation(libs.ksp.symbol.processing.api)
     implementation(project(":brevbaker:dsl"))
-    implementation(libs.brevbaker.api)
+    implementation(publishedLibs.brevbaker.api)
 
     testImplementation(kotlin("reflect"))
     testImplementation(libs.bundles.junit)

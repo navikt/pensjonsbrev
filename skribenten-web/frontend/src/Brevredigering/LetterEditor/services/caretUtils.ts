@@ -213,6 +213,44 @@ export function getRange() {
   return (selection?.rangeCount ?? 0) > 0 ? selection?.getRangeAt(0) : undefined;
 }
 
+// Finds the nearest parent element configured for vertical scrolling.
+// Returns undefined if no such parent exists.
+function getVerticalScrollContainer(element: Element): HTMLElement | undefined {
+  let parent = element.parentElement;
+
+  while (parent) {
+    const { overflowY } = getComputedStyle(parent);
+    const isVerticallyScrollable = overflowY === "auto" || overflowY === "scroll";
+
+    if (isVerticallyScrollable) {
+      return parent;
+    }
+
+    parent = parent.parentElement;
+  }
+
+  return undefined;
+}
+
+// Scrolls the nearest vertical scroll container just enough to fully show the element.
+// Does nothing if the element is already visible or no scroll container exists.
+export function ensureVisibleInScrollContainer(element: Element) {
+  const scrollContainer = getVerticalScrollContainer(element);
+  if (!scrollContainer) return;
+
+  const elementRect = element.getBoundingClientRect();
+  const containerRect = scrollContainer.getBoundingClientRect();
+
+  const distanceAbove = containerRect.top - elementRect.top;
+  const distanceBelow = elementRect.bottom - containerRect.bottom;
+
+  if (distanceAbove > 0) {
+    scrollContainer.scrollTop -= distanceAbove;
+  } else if (distanceBelow > 0) {
+    scrollContainer.scrollTop += distanceBelow;
+  }
+}
+
 export function findOnLineBelow(element: Element) {
   const currentRect = element.getBoundingClientRect();
 
@@ -224,10 +262,8 @@ export function findOnLineBelow(element: Element) {
     return undefined;
   }
 
-  const nextRect = next.getBoundingClientRect();
-
-  if (currentRect.bottom !== nextRect.bottom) {
-    return nextRect;
+  if (currentRect.bottom !== next.getBoundingClientRect().bottom) {
+    return next;
   }
 
   return findOnLineBelow(next);
@@ -244,10 +280,8 @@ export function findOnLineAbove(element: Element) {
     return undefined;
   }
 
-  const previousRect = previous.getBoundingClientRect();
-
-  if (currentRect.bottom !== previousRect.bottom) {
-    return previousRect;
+  if (currentRect.bottom !== previous.getBoundingClientRect().bottom) {
+    return previous;
   }
 
   return findOnLineAbove(previous);

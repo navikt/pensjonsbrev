@@ -106,7 +106,7 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
                 ungUforResultat = ungUforResultat,
                 kravarsak = kravarsak,
                 kravGjelder = kravGjelder,
-                soknadsdato = pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()),
+                kravmottatdato = pe.vedtaksdata_kravhode_kravmottatdato(),
                 uforegrad = uforegrad,
                 virkningfom = pe.vedtaksdata_virkningfom(),
                 virkningstidpunkt = virkningstidpunkt,
@@ -244,7 +244,7 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
 
             includePhrase(Innvilgelse.Virkningstidspunkt(
                 pe = pe,
-                kravFremsattDato = pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()),
+                kravFremsattDato = null.expr(),
                 virkningbegrunnelseStdbegr_22_12_1_5 = virkningbegrunnelseStdbegr_22_12_1_5,
             ))
 

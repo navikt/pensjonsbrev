@@ -59,8 +59,8 @@ dependencies {
     implementation(libs.ktor.server.status.pages)
     implementation(libs.bundles.metrics)
 
-    implementation(libs.brevbaker.api) // trengs fortsatt fordi gammel letterMarkup ligger her. Kan fjernes når den er borte.
-    implementation(libs.markup.model)
+    implementation(publishedLibs.brevbaker.api) // trengs fortsatt fordi gammel letterMarkup ligger her. Kan fjernes når den er borte.
+    implementation(publishedLibs.markup.model)
     implementation(project(":brevbaker:serialization"))
     implementation(libs.kotlinx.serialization.json)
 
@@ -70,7 +70,7 @@ dependencies {
     }
     testImplementation(libs.ktor.client.cio)
     testImplementation(libs.ktor.client.content.negotiation)
-    testImplementation(libs.markup.dsl)
+    testImplementation(publishedLibs.markup.dsl)
     testImplementation(libs.testcontainers.core)
 }
 

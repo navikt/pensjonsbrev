@@ -76,8 +76,10 @@ dependencies {
     implementation(libs.ktor.serialization.jackson)
     implementation(libs.ktor.server.auth)
     implementation(libs.ktor.server.auth.jwt)
+    implementation(libs.ktor.server.caching.headers)
     implementation(libs.ktor.server.callId)
     implementation(libs.ktor.server.callLogging)
+    implementation(libs.ktor.server.conditional.headers)
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
@@ -90,7 +92,7 @@ dependencies {
     implementation(project(":ufoere:maler"))
     implementation(project(":etterlattemaler"))
     implementation(project(":brevbaker:core"))
-    implementation(libs.brevbaker.api)
+    implementation(publishedLibs.brevbaker.api)
     implementation(project(":brevbaker:serialization")) {
         because("bruker internalObjectMapper for serialisering av intern trafikk")
     }

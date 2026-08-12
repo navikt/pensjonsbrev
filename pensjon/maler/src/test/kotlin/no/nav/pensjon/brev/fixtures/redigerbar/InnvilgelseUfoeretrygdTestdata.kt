@@ -73,7 +73,6 @@ fun createInnvilgelseUfoeretrygdUtlandDto() =
         saksbehandlerValg = InnvilgelseUfoeretrygdUtlandDto.Saksbehandlervalg(refusjon = true, barnetilleggInfo = true, innvilgetEtter12_2Andreledd = true, innvilgetEtter12_2Tredjeledd = true, periodisertInntekt = PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT),
         pesysData = InnvilgelseUfoeretrygdUtlandDto.PesysData(
             pe = createPEgruppe10(),
-            kravFremsattDato = LocalDate.of(2020, Month.JANUARY, 1),
             oifuVedVirkningstidspunkt = Kroner(10000),
             maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(
                 ufoeretrygdPerioder = listOf(
@@ -168,7 +167,6 @@ fun createInnvilgelseUforetrygdMellombehandlingDto() =
         saksbehandlerValg = InnvilgelseUfoeretrygdMellombehandlingDto.Saksbehandlervalg(refusjon = true, barnetilleggInfo = true, innvilgetEtter12_2Andreledd = true, innvilgetEtter12_2Tredjeledd = true, periodisertInntekt = PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT),
         pesysData = InnvilgelseUfoeretrygdMellombehandlingDto.PesysData(
             pe = createPEgruppe10(),
-            kravFremsattDato = LocalDate.of(2020, Month.JANUARY, 1),
             oifuVedVirkningstidspunkt = Kroner(10000),
             maanedligUfoeretrygdFoerSkatt = MaanedligUfoeretrygdFoerSkattDto(
                 ufoeretrygdPerioder = listOf(
