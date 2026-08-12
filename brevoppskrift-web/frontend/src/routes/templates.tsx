@@ -169,8 +169,8 @@ function AllTemplates() {
             variant="simple"
           />
         </Box>
-        <Checkbox checked={fuzzy} onChange={(e) => setFuzzy(e.target.checked)} size="small">
-          Fuzzy søk
+        <Checkbox checked={!fuzzy} onChange={(e) => setFuzzy(!e.target.checked)} size="small">
+          Vis kun nøyaktige treff
         </Checkbox>
         <Detail aria-live="polite" textColor="subtle">
           {isLoading
