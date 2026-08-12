@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.template.dsl.text
 
 data class AfpOffentligTidsbegrensetTabellRedigerbar(
     val afp: Expression<TidsbegrensetOffentligAfp>,
-    val sumLabel: String = "Sum AFP",
 ) : RedigerbarOutlinePhrase<LangBokmal>() {
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         paragraph {
@@ -52,7 +51,7 @@ data class AfpOffentligTidsbegrensetTabellRedigerbar(
                     }
                 }
                 row {
-                    cell { text(bokmal { +sumLabel }, fontType = BOLD) }
+                    cell { text(bokmal { +"Sum AFP" }, fontType = BOLD) }
                     cell { text(bokmal { +afp.totaltAfpBeloep.format(denominator = false).redigerbar() }, fontType = BOLD) }
                 }
             }

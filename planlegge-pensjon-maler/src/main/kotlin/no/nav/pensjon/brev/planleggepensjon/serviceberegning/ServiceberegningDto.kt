@@ -19,7 +19,7 @@ data class ServiceberegningDto(
     @DisplayText("Uttaksdato")
     val uttaksdato: String,
     @DisplayText("Forventet fremtidig inntekt")
-    val forventetFremtidigInntekt: Kroner?,
+    val forventetFremtidigInntekt: Kroner,
     @DisplayText("AFP i offentlig sektor")
     val afp: TidsbegrensetOffentligAfp,
 ) : SaksbehandlerValgBrevdata

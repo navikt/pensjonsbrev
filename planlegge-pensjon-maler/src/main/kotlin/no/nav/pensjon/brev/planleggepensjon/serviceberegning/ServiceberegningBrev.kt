@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.IBrevkategori
 import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
@@ -15,9 +16,8 @@ import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.servicebe
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.uttaksdato
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.alder.aar
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.alder.maaneder
-import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.AfpOffentligTidsbegrensetTabellRedigerbar
 import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.AfpOffentligTidsbegrensetOpptjeningTabell
-import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.AfpOffentligTidsbegrensetTabellRedigerbar
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -46,7 +46,7 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
     override val template: LetterTemplate<*, ServiceberegningBrevDto> = createTemplate(
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Serviceberegning",
+            displayTitle = "Serviceberegning AFP",
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
@@ -63,21 +63,15 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
 
         outline {
             paragraph {
-                text(bokmal { +fritekst("Bruker har ingen ytelser som ikke kan kombineres med AFP.") })
-            }
-            paragraph {
-                text(bokmal { +fritekst("Bruker har hatt utbetalt alderspensjon frem til DD.MM.ÅÅÅÅ.") })
-            }
-            paragraph {
-                text(bokmal { +fritekst("Bruker har XX % uføretrygd fra folketrygden.") })
-            }
-            paragraph {
-                text(bokmal { +fritekst("Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag.") })
-            }
-            paragraph {
                 text(
                     bokmal {
-                        +fritekst("Bruker mottar eller søker om sykepenger. Nav arbeid og ytelser er informert om at bruker søker AFP.")
+                        +fritekst(
+                            "Bruker har ingen ytelser som ikke kan kombineres med AFP.\n" +
+                                    "Bruker har hatt utbetalt alderspensjon frem til DD.MM.ÅÅÅÅ.\n" +
+                                    "Bruker har XX % uføretrygd fra folketrygden.\n" +
+                                    "Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag.\n" +
+                                    "Bruker mottar eller søker om sykepenger. Nav arbeid og ytelser er informert om at bruker søker AFP.",
+                        )
                     },
                 )
             }
@@ -91,16 +85,16 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
                 }
                 text(bokmal { +" (" + saksbehandlerValg.uttaksdato.redigerbar() + ")" })
             }
-            includePhrase(AfpOffentligTidsbegrensetTabellRedigerbar(saksbehandlerValg.afp, sumLabel = "Sum"))
+            includePhrase(AfpOffentligTidsbegrensetTabellRedigerbar(saksbehandlerValg.afp))
 
             title1 {
                 text(bokmal { +"Opptjeningsgrunnlag i folketrygden" })
             }
-            ifNotNull(saksbehandlerValg.forventetFremtidigInntekt) { forventetFremtidigInntekt ->
-                paragraph {
-                    text(bokmal { +"Forventet fremtidig inntekt: " + forventetFremtidigInntekt.format().redigerbar() + "." })
-                }
+
+            paragraph {
+                text(bokmal { +"Forventet fremtidig inntekt: " + saksbehandlerValg.forventetFremtidigInntekt.format().redigerbar() + "." })
             }
+
             includePhrase(AfpOffentligTidsbegrensetOpptjeningTabell(saksbehandlerValg.afp))
         }
     }
