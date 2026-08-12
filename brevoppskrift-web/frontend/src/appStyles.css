@@ -41,16 +41,20 @@ body {
 @keyframes highlight-animation {
   0% {
     background-color: var(--ax-warning-500);
-    box-shadow: 0 0 0 1rem var(--ax-warning-500);
+    box-shadow: 0 0 0 0.2rem var(--ax-warning-500);
   }
   100% {
     background-color: var(--ax-warning-300);
-    box-shadow: 0 0 0 1rem var(--ax-warning-300);
+    box-shadow: 0 0 0 0.2rem var(--ax-warning-300);
   }
 }
 
+/* Spredningen på box-shadow må holdes liten: elementet som highlightes (f.eks. et
+   enkelt felt i data-klasse-panelet) kan ha svært lite mellomrom (4px) til nabolinjer,
+   så en stor spredning (som tidligere 1rem) dekker over teksten over/under i stedet
+   for å bare fremheve selve elementet. */
 .highlight {
   background: var(--ax-warning-300);
-  box-shadow: 0 0 0 1rem var(--ax-warning-300);
+  box-shadow: 0 0 0 0.2rem var(--ax-warning-300);
   animation: highlight-animation 0.5s ease-out;
 }
