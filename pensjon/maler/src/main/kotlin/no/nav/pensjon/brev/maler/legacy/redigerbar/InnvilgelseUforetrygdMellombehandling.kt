@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdMellombehandlingDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdMellombehandlingDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdMellombehandlingDto.saksbehandlervalg.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdMellombehandlingDto.trygdetidsgrunnlag.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdMellombehandlingDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
@@ -29,6 +29,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.dsl.expression.localDateNow
@@ -51,6 +52,12 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
+        val barnetilleggInfo = saksbehandlervalg("barnetilleggInfo", "Info om rett til barnetillegg").bool()
+        val refusjon = saksbehandlervalg("refusjon", "Refusjon").bool()
+        val innvilgetEtter12_2Andreledd = saksbehandlervalg("innvilgetEtter12_2Andreledd", "Innvilget etter 12-2 2.ledd").bool()
+        val innvilgetEtter12_2Tredjeledd = saksbehandlervalg("innvilgetEtter12_2Tredjeledd", "Innvilget etter 12-2 3.ledd").bool()
+        val periodisertInntekt = saksbehandlervalg("periodisertInntekt", "Periodisert inntekt barnetillegg").enum<PeriodisertInntektBarnetillegg>()
+
         val pe = pesysData.pe
 
         val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(localDateNow)
@@ -231,8 +238,8 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
                 pe = pe,
                 oppfyltvedsammenlegging = oppfyltvedsammenlegging,
                 yrkesskadeResultat = yrkesskadeResultat,
-                innvilgetEtter12_2_andreledd = saksbehandlerValg.innvilgetEtter12_2Andreledd,
-                innvilgetEtter12_2_tredjeledd = saksbehandlerValg.innvilgetEtter12_2Tredjeledd
+                innvilgetEtter12_2_andreledd = innvilgetEtter12_2Andreledd,
+                innvilgetEtter12_2_tredjeledd = innvilgetEtter12_2Tredjeledd
             ))
 
             includePhrase(Innvilgelse.YrkesskadeEllerYrkessykdom(
@@ -308,7 +315,7 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
                     btSerkullInnvilget = btSerkullInnvilget,
                     btSerkullNetto0 = btSerkullNetto0,
                     btFellesNetto0 = btFellesNetto0,
-                    periodisertInntekt = saksbehandlerValg.periodisertInntekt
+                    periodisertInntekt = periodisertInntekt
                 )
             )
 
@@ -340,7 +347,7 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
             ))
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-            includePhrase(Innvilgelse.RettTilBarnetillegg(barnetilleggInfo = saksbehandlerValg.barnetilleggInfo))
+            includePhrase(Innvilgelse.RettTilBarnetillegg(barnetilleggInfo = barnetilleggInfo))
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)

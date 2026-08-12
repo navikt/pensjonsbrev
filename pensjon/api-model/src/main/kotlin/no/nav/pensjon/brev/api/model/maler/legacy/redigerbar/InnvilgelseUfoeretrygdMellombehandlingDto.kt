@@ -1,32 +1,18 @@
 package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
-import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
 
 data class InnvilgelseUfoeretrygdMellombehandlingDto(
-    override val saksbehandlerValg: Saksbehandlervalg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-    ) : RedigerbarBrevdata<InnvilgelseUfoeretrygdMellombehandlingDto.Saksbehandlervalg, InnvilgelseUfoeretrygdMellombehandlingDto.PesysData> {
-
-    data class Saksbehandlervalg(
-        @DisplayText("Info om rett til barnetillegg")
-        val barnetilleggInfo: Boolean,
-        @DisplayText("Refusjon")
-        val refusjon: Boolean,
-        @DisplayText("Innvilget etter 12-2 2.ledd")
-        val innvilgetEtter12_2Andreledd: Boolean = false,
-        @DisplayText("Innvilget etter 12-2 3.ledd")
-        val innvilgetEtter12_2Tredjeledd: Boolean = false,
-        @DisplayText("Periodisert inntekt barnetillegg")
-        val periodisertInntekt: PeriodisertInntektBarnetillegg?,
-        ) : SaksbehandlerValgBrevdata
+) : RedigerbarBrevdataMedSaksbehandlerValg<InnvilgelseUfoeretrygdMellombehandlingDto.PesysData> {
 
     data class PesysData(
         val pe: PEgruppe10,
