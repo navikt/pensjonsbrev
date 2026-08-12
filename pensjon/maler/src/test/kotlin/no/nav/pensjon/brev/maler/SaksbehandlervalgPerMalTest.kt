@@ -208,11 +208,11 @@ class SaksbehandlervalgPerMalTest {
             ),
             Redigerbar.UT_INNVILGELSE_UFOERETRYGD_NORGE_UTLAND to emptyList(),
             Redigerbar.UT_INNVILGELSE_UFOERETRYGD_UTLAND to listOf(
-                "barnetilleggInfo: kotlin.Boolean",
-                "innvilgetEtter12_2Andreledd: kotlin.Boolean",
-                "innvilgetEtter12_2Tredjeledd: kotlin.Boolean",
-                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg?",
-                "refusjon: kotlin.Boolean",
+                "barnetilleggInfo: Boolean",
+                "innvilgetEtter12_2Andreledd: Boolean",
+                "innvilgetEtter12_2Tredjeledd: Boolean",
+                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg",
+                "refusjon: Boolean",
             ),
             Redigerbar.UT_OKNING_UFOREGRAD to listOf(
                 "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg?",

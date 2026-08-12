@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggMedSammeBegrunnelsePaSammeTid
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode
@@ -70,7 +71,13 @@ fun createInnvilgelseUfoeretrygdDto() =
 
 fun createInnvilgelseUfoeretrygdUtlandDto() =
     InnvilgelseUfoeretrygdUtlandDto(
-        saksbehandlerValg = InnvilgelseUfoeretrygdUtlandDto.Saksbehandlervalg(refusjon = true, barnetilleggInfo = true, innvilgetEtter12_2Andreledd = true, innvilgetEtter12_2Tredjeledd = true, periodisertInntekt = PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT),
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "refusjon" to true,
+            "barnetilleggInfo" to true,
+            "innvilgetEtter12_2Andreledd" to true,
+            "innvilgetEtter12_2Tredjeledd" to true,
+            "periodisertInntekt" to PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT,
+        ),
         pesysData = InnvilgelseUfoeretrygdUtlandDto.PesysData(
             pe = createPEgruppe10(),
             oifuVedVirkningstidspunkt = Kroner(10000),
