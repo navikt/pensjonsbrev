@@ -181,7 +181,7 @@ class SaksbehandlervalgPerMalTest {
                 "privatAFPavslaat: kotlin.Boolean",
             ),
             Redigerbar.PE_VEDTAK_OM_FJERNING_AV_OMSORGSOPPTJENING to listOf(
-                "aktuelleAar: kotlin.String",
+                "aktuelleAar: String",
             ),
             Redigerbar.PE_VEDTAK_OM_INNVILGELSE_AV_OMSORGSPOENG to emptyList(),
             Redigerbar.UP_AVSLAG_UFOEREPENSJON to emptyList(),
