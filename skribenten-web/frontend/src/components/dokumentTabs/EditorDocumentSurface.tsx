@@ -1,0 +1,53 @@
+import { Box, Heading, VStack } from "@navikt/ds-react";
+import { type ReactNode } from "react";
+
+import { useDokumentTabsContext } from "./DokumentTabsProvider";
+
+const Placeholder = (props: { title: string; description: string }) => (
+  <Box asChild padding="space-24">
+    <VStack align="center" gap="space-8">
+      <Heading level="2" size="small">
+        {props.title}
+      </Heading>
+      <p>{props.description}</p>
+    </VStack>
+  </Box>
+);
+
+/**
+ * Decides what to render in the editor surface based on the active document, so the route stays
+ * orchestration rather than a chain of if/else. The brev renderer is passed in (it already exists
+ * and is brev-session-specific); the vedlegg/P1 renderers are introduced in their own phases and
+ * replace these placeholders.
+ */
+export const EditorDocumentSurface = (props: { renderBrev: () => ReactNode }) => {
+  const { activeTab } = useDokumentTabsContext();
+
+  if (!activeTab || activeTab.type === "brev") {
+    return props.renderBrev();
+  }
+
+  switch (activeTab.type) {
+    case "redigerbartVedlegg": {
+      return (
+        <Placeholder description="Redigering av redigerbart vedlegg kommer i en senere fase." title={activeTab.label} />
+      );
+    }
+    case "alltidValgbartVedlegg": {
+      return (
+        <Placeholder
+          description="Skrivebeskyttet forhåndsvisning av vedlegg kommer i en senere fase."
+          title={activeTab.label}
+        />
+      );
+    }
+    case "p1": {
+      return <Placeholder description="P1-skjemaet flyttes hit i en senere fase." title="P1" />;
+    }
+    // "brev" is handled by the early return above; the default keeps the switch exhaustive and is a
+    // safe fallback to the brev renderer.
+    default: {
+      return props.renderBrev();
+    }
+  }
+};

@@ -20,6 +20,10 @@ import {
 import { ApiError } from "~/components/ApiError";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { CenteredLoader } from "~/components/CenteredLoader";
+import { DokumentTabsBar } from "~/components/dokumentTabs/DokumentTabsBar";
+import { DokumentTabsProvider } from "~/components/dokumentTabs/DokumentTabsProvider";
+import { EditorDocumentSurface } from "~/components/dokumentTabs/EditorDocumentSurface";
+import { useDokumentTabs } from "~/components/dokumentTabs/useDokumentTabs";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
   ManagedLetterEditorContextProvider,
@@ -257,9 +261,17 @@ function RedigerBrev({
   vedtaksId: string | undefined;
 }) {
   const navigate = useNavigate({ from: Route.fullPath });
-  const { enhetsId } = Route.useSearch();
+  const { enhetsId, vedlegg: aktivVedlegg } = Route.useSearch();
   const editorStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
+
+  const { tabs } = useDokumentTabs({ saksId, brev });
+
+  const onSelectTab = (tabId: string) =>
+    navigate({
+      search: (prev) => ({ ...prev, vedlegg: tabId === "brev" ? undefined : tabId }),
+      replace: true,
+    });
 
   const [warnOpen, setWarnOpen] = useState(false);
   const [warn, setWarn] = useState<{
@@ -514,36 +526,52 @@ function RedigerBrev({
               onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
               reservasjon={reservasjonQuery.data}
             />
-            <HGrid columns="minmax(304px, 384px) minmax(640px, 694px)" flexGrow="1" overflowY="hidden">
-              <Box
-                asChild
-                borderColor="neutral-subtle"
-                borderWidth="0 1 0 0"
-                overflowY="auto"
-                padding={{ sm: "space-12", lg: "space-24" }}
-              >
-                <VStack gap="space-12">
-                  <Heading size="small" spacing>
-                    {brevmal.data?.name}
-                  </Heading>
-                  <BrevmalAlternativer
-                    brevkode={brev.info.brevkode}
-                    propertyUsage={brev.propertyUsage ?? undefined}
-                    submitOnChange={onTekstValgAndOverstyringChange}
-                  />
-                  <UnderskriftTextField of="Saksbehandler" />
-                </VStack>
-              </Box>
-              <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                <ManagedLetterEditor
-                  brev={brev}
-                  error={error}
-                  freeze={freeze}
-                  saveDirtyLetter={saveDirtyLetter}
-                  showDebug={showDebug}
+            <DokumentTabsProvider activeTabId={aktivVedlegg} onActiveTabChange={onSelectTab} tabs={tabs}>
+              <Box asChild borderColor="neutral-subtle" borderWidth="0 0 1 0">
+                <DokumentTabsBar
+                  activeTabId={aktivVedlegg ?? "brev"}
+                  onAddVedlegg={() => {
+                    // The add-vedlegg modal is wired in a later phase.
+                  }}
+                  onSelectTab={onSelectTab}
+                  tabs={tabs}
                 />
-              </InsertedTekstValgHighlightProvider>
-            </HGrid>
+              </Box>
+              <HGrid columns="minmax(304px, 384px) minmax(640px, 694px)" flexGrow="1" overflowY="hidden">
+                <Box
+                  asChild
+                  borderColor="neutral-subtle"
+                  borderWidth="0 1 0 0"
+                  overflowY="auto"
+                  padding={{ sm: "space-12", lg: "space-24" }}
+                >
+                  <VStack gap="space-12">
+                    <Heading size="small" spacing>
+                      {brevmal.data?.name}
+                    </Heading>
+                    <BrevmalAlternativer
+                      brevkode={brev.info.brevkode}
+                      propertyUsage={brev.propertyUsage ?? undefined}
+                      submitOnChange={onTekstValgAndOverstyringChange}
+                    />
+                    <UnderskriftTextField of="Saksbehandler" />
+                  </VStack>
+                </Box>
+                <InsertedTekstValgHighlightProvider ids={highlightedIds}>
+                  <EditorDocumentSurface
+                    renderBrev={() => (
+                      <ManagedLetterEditor
+                        brev={brev}
+                        error={error}
+                        freeze={freeze}
+                        saveDirtyLetter={saveDirtyLetter}
+                        showDebug={showDebug}
+                      />
+                    )}
+                  />
+                </InsertedTekstValgHighlightProvider>
+              </HGrid>
+            </DokumentTabsProvider>
             <Box
               asChild
               background="default"

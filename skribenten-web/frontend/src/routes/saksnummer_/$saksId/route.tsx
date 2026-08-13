@@ -24,6 +24,8 @@ import { SendtBrevProvider } from "./kvittering/-components/SendtBrevContext";
 export const baseSearchSchema = z.object({
   vedtaksId: z.coerce.string().optional(),
   enhetsId: z.coerce.string().optional(),
+  // The active document tab in the brev editor: absent means the brev itself, otherwise a vedleggId/kode.
+  vedlegg: z.coerce.string().optional(),
 });
 type BaseSearchParamsSchema = z.infer<typeof baseSearchSchema>;
 
