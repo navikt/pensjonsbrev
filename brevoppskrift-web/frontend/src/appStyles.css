@@ -24,9 +24,18 @@ body {
 
 /* Ingen vertikal margin på selve blokken lenger - en Conditional skal ikke tvinge frem ekstra
    luft rundt seg (se .conditional-predicate under for hvordan If/Else If-predikatet i seg selv
-   unngår å legge til en egen linje). Bakgrunnsfargen beholdes som et visuelt grupperingshint. */
+   unngår å legge til en egen linje). Bakgrunnsfargen beholdes som et visuelt grupperingshint.
+   font-size/font-weight nullstilles eksplisitt til normal brødtekst-størrelse: uten dette ville
+   en Conditional som pakker inn (deler av) en tittel - dvs. er nøstet INNI en <Heading> fra
+   Aksel, som f.eks. TITLE1/TITLE2/TITLE3 - arvet titelens langt større font-size/vekt, og både
+   markøren (▸/▾) og bakgrunnsfargede predikat-/uttrykksbokser ville blitt urimelig store. Selve
+   tittel-teksten (som Aksel sin Heading-komponent setter font-size DIREKTE på, ikke arvet) er
+   upåvirket av dette - kun den generelle Conditional/expression-visualiseringen rundt/inni
+   tittelen tvinges tilbake til vanlig størrelse, likt Conditional ellers i brevet. */
 .conditional {
   background: var(--ax-accent-100);
+  font-size: var(--ax-font-size-medium);
+  font-weight: var(--ax-font-weight-regular);
 }
 
 .show-if,
