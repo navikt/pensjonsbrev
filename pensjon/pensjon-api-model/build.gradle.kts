@@ -9,10 +9,6 @@ plugins {
 
 group = "no.nav.pensjon.brev"
 
-base {
-    archivesName.set("pensjon-api-model")
-}
-
 java {
     withSourcesJar()
     withJavadocJar()
@@ -40,7 +36,6 @@ publishing {
     }
     publications {
         register<MavenPublication>("gpr") {
-            artifactId = "pensjon-api-model"
             from(components["java"])
         }
     }

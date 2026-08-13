@@ -9,7 +9,7 @@ info:
     - HTML: arkiverbar med inline css og bilder
     - PDF: arkiverbar PDFa
     
-    Kotlin data klasser er tilgjengelig i maven modulen `no.nav.pensjon.brev:pensjon:api-model`:
+    Kotlin data klasser er tilgjengelig i maven modulen `no.nav.pensjon.brev:pensjon:pensjon-api-model`:
     - request/response body for endepunkter
     - brevdata til brevmaler
   version: 1.0.0
@@ -422,10 +422,10 @@ components:
           description: Brevkode (name på enum)
         letterData:
           type: object
-          description: Brevdata som følger skjema for valgt brevkode (se data klasser i no.nav.pensjon.brev:pensjon:api-model)
+          description: Brevdata som følger skjema for valgt brevkode (se data klasser i no.nav.pensjon.brev:pensjon:pensjon-api-model)
         felles:
           type: object
-          description: Felles brevdata for alle brev (se Felles-klassen i no.nav.pensjon.brev:pensjon:api-model)
+          description: Felles brevdata for alle brev (se Felles-klassen i no.nav.pensjon.brev:pensjon:pensjon-api-model)
         language:
           $ref: "#/components/schemas/LanguageCode"
     BestillRedigertBrevRequest:
@@ -442,10 +442,10 @@ components:
           description: Brevkode (name på enum)
         letterData:
           type: object
-          description: Brevdata som følger skjema for valgt brevkode (se data klasser i no.nav.pensjon.brev:pensjon:api-model)
+          description: Brevdata som følger skjema for valgt brevkode (se data klasser i no.nav.pensjon.brev:pensjon:pensjon-api-model)
         felles:
           type: object
-          description: Felles brevdata for alle brev (se Felles-klassen i no.nav.pensjon.brev:pensjon:api-model)
+          description: Felles brevdata for alle brev (se Felles-klassen i no.nav.pensjon.brev:pensjon:pensjon-api-model)
         language:
           $ref: "#/components/schemas/LanguageCode"
         letterMarkup:
@@ -467,10 +467,10 @@ components:
           description: Brevkode (name på enum)
         letterData:
           type: object
-          description: Brevdata som følger skjema for valgt brevkode (se data klasser i no.nav.pensjon.brev:pensjon:api-model)
+          description: Brevdata som følger skjema for valgt brevkode (se data klasser i no.nav.pensjon.brev:pensjon:pensjon-api-model)
         felles:
           type: object
-          description: Felles brevdata for alle brev (se Felles-klassen i no.nav.pensjon.brev:pensjon:api-model)
+          description: Felles brevdata for alle brev (se Felles-klassen i no.nav.pensjon.brev:pensjon:pensjon-api-model)
         language:
           $ref: "#/components/schemas/LanguageCode"
         letterMarkup:
