@@ -5,8 +5,6 @@ val apiModelJavaTarget: String by System.getProperties()
 plugins {
     kotlin("jvm")
     `maven-publish`
-    id("java-library")
-    id("java-test-fixtures")
 }
 
 group = "no.nav.brev.brevbaker"

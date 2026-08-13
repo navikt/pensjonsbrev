@@ -27,7 +27,6 @@ dependencies {
     testImplementation(libs.bundles.junit)
     testImplementation(kotlin("reflect")) // TODO: midlertidig fram til vi har migrert ferdig til saksbehandlervalgidsl
     testImplementation(testFixtures(project(":brevbaker:core")))
-    testImplementation(testFixtures(project(":brevbaker:brevdata")))
     testImplementation(testFixtures(project(":brevbaker:dsl")))
 }
 
