@@ -19,12 +19,15 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.logging.Logger
 import no.nav.brev.brevbaker.PDFRequest
+import no.nav.brev.brevbaker.document.Document
+import no.nav.brev.brevbaker.document.DocumentPDFRequest
 import no.nav.brev.brevbaker.serialization.internalObjectMapper
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.pensjon.brev.pdfbygger.Metrics.configureMetrics
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2
+import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDokumentRenderer
 import org.slf4j.LoggerFactory
 
 private val objectMapper = internalObjectMapper()
@@ -102,6 +105,19 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
             handleResult(result, call.application.environment.log)
         }
 
+        post("/produserDokument") {
+            val request = call.receive<DocumentPDFRequest>()
+            val valideringsfeil = request.document.valider()
+            if (valideringsfeil != null) {
+                call.respond(HttpStatusCode.BadRequest, valideringsfeil)
+                return@post
+            }
+            val result = typstCompileService.createLetter {
+                TypstDokumentRenderer.render(request, it)
+            }
+            handleResult(result, call.application.environment.log)
+        }
+
         get("/isAlive") {
             call.respondText("Alive!", ContentType.Text.Plain, HttpStatusCode.OK)
         }
@@ -140,3 +156,17 @@ private suspend fun RoutingContext.handleResult(
 
 private fun Throwable.findJacksonCause(): JacksonException? =
     cause as? JacksonException ?: cause?.findJacksonCause()
+
+/**
+ * Server-side kontroll av dokumentets invarianter. Modellen håndhever de samme reglene i
+ * konstruktøren, men den sjekken kan omgås hvis en konsument deserialiserer på annet vis, og
+ * feilmeldingen herfra er tydeligere for kallende system.
+ *
+ * @return en feilmelding, eller `null` hvis dokumentet er gyldig.
+ */
+private fun Document.valider(): String? =
+    if (visFooter && saksinformasjon == null) {
+        "visFooter krever saksinformasjon: footeren viser saksnummer"
+    } else {
+        null
+    }

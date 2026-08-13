@@ -1,3 +1,65 @@
+public final class no/nav/brev/brevbaker/document/CleanDocumentKt {
+	public static final fun clean (Lno/nav/brev/brevbaker/document/Document;)Lno/nav/brev/brevbaker/document/Document;
+}
+
+public final class no/nav/brev/brevbaker/document/Document {
+	public static final field Companion Lno/nav/brev/brevbaker/document/Document$Companion;
+	public static final field VERSION I
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Z
+	public final fun component3 ()Z
+	public final fun component4 ()Lno/nav/brev/brevbaker/document/DocumentSaksinformasjon;
+	public final fun component5 ()Ljava/time/LocalDate;
+	public final fun component6 ()Z
+	public final fun component7 ()Ljava/util/List;
+	public final fun component8 ()I
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBlocks ()Ljava/util/List;
+	public final fun getDokumentDato ()Ljava/time/LocalDate;
+	public final fun getSaksinformasjon ()Lno/nav/brev/brevbaker/document/DocumentSaksinformasjon;
+	public final fun getTittel ()Ljava/lang/String;
+	public final fun getVersion ()I
+	public final fun getVisFooter ()Z
+	public final fun getVisLogo ()Z
+	public final fun getVisTittel ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/document/Document$Companion {
+}
+
+public final class no/nav/brev/brevbaker/document/DocumentModel {
+	public static final field INSTANCE Lno/nav/brev/brevbaker/document/DocumentModel;
+	public final fun document (Ljava/lang/String;ZZLno/nav/brev/brevbaker/document/DocumentSaksinformasjon;Ljava/time/LocalDate;ZLjava/util/List;)Lno/nav/brev/brevbaker/document/Document;
+	public final fun documentPDFRequest (Lno/nav/brev/brevbaker/document/Document;Lno/nav/brev/brevbaker/markup/Markup$Spraak;)Lno/nav/brev/brevbaker/document/DocumentPDFRequest;
+	public final fun documentSaksinformasjon (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/document/DocumentSaksinformasjon;
+}
+
+public final class no/nav/brev/brevbaker/document/DocumentPDFRequest {
+	public final fun component1 ()Lno/nav/brev/brevbaker/document/Document;
+	public final fun component2 ()Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDocument ()Lno/nav/brev/brevbaker/document/Document;
+	public final fun getSpraak ()Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/document/DocumentSaksinformasjon {
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2-YJ9aDXQ ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4-Bu5HaUw ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAnnenMottakerNavn ()Ljava/lang/String;
+	public final fun getGjelderNavn ()Ljava/lang/String;
+	public final fun getGjelderPersonidentifikator-YJ9aDXQ ()Ljava/lang/String;
+	public final fun getSaksnummer-Bu5HaUw ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class no/nav/brev/brevbaker/markup/Attachment {
 	public final fun component1 ()Ljava/util/List;
 	public final fun component2 ()Ljava/util/List;

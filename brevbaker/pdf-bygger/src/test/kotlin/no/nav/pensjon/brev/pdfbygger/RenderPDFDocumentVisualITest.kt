@@ -1,0 +1,91 @@
+package no.nav.pensjon.brev.pdfbygger
+
+import kotlinx.coroutines.runBlocking
+import no.nav.brev.brevbaker.document.dsl.document
+import no.nav.brev.brevbaker.document.dsl.documentPDFRequest
+import no.nav.brev.brevbaker.document.dsl.documentSaksinformasjon
+import no.nav.brev.brevbaker.markup.Markup
+import no.nav.brev.brevbaker.markup.dsl.cell
+import no.nav.brev.brevbaker.markup.dsl.column
+import no.nav.brev.brevbaker.markup.dsl.header
+import no.nav.brev.brevbaker.markup.dsl.item
+import no.nav.brev.brevbaker.markup.dsl.itemList
+import no.nav.brev.brevbaker.markup.dsl.numberedList
+import no.nav.brev.brevbaker.markup.dsl.paragraph
+import no.nav.brev.brevbaker.markup.dsl.row
+import no.nav.brev.brevbaker.markup.dsl.table
+import no.nav.brev.brevbaker.markup.dsl.title2
+import no.nav.brev.brevbaker.markup.dsl.title3
+import no.nav.brev.brevbaker.markup.outline.Block.Table.ColumnAlignment
+import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
+import java.nio.file.Path
+
+/**
+ * Visuell test for `/produserDokument`. Skriver PDF-en til `build/test_visual/pdf`, som
+ * `.github/workflows/pdfbygger.yml` konverterer til PNG og sammenligner med reg-suit — endringer i
+ * dokument-rendringen blir dermed fanget opp som visuelle diff-er.
+ *
+ * Testen har bevisst kun én case, med *alle* elementer synlige, slik at hele oppsettet (logo,
+ * saksinformasjon, dokumentdato, tittel og footer) dekkes av baselinen.
+ */
+@Tag(TestTags.INTEGRATION_TEST)
+class RenderPDFDocumentVisualITest {
+
+    private val pdfCompileService = PdfByggerTestService()
+
+    @Test
+    fun `document med alle elementer`() {
+        val request = documentPDFRequest(
+            document(
+                tittel = "Dokument med alle elementer",
+                saksinformasjon = documentSaksinformasjon(
+                    gjelderNavn = PdfByggerTestData.gjelderNavn,
+                    gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
+                    saksnummer = PdfByggerTestData.saksnummer,
+                ),
+                dokumentDato = PdfByggerTestData.dokumentDato,
+                visFooter = true,
+            ) {
+                paragraph(
+                    "Dette dokumentet viser alle elementene et dokument kan inneholde: logo, " +
+                        "saksinformasjon, dokumentdato, tittel og footer."
+                )
+                title2("Overskrift på nivå 2")
+                paragraph("Et avsnitt under overskriften.")
+                title3("Overskrift på nivå 3")
+                itemList {
+                    item("Første punkt i punktlisten")
+                    item("Andre punkt i punktlisten")
+                }
+                numberedList {
+                    item("Første steg")
+                    item("Andre steg")
+                }
+                table {
+                    header {
+                        column("Ytelse")
+                        column("Beløp", alignment = ColumnAlignment.RIGHT)
+                    }
+                    row {
+                        cell("Alderspensjon")
+                        cell("20 000 kr")
+                    }
+                    row {
+                        cell("Uføretrygd")
+                        cell("15 000 kr")
+                    }
+                }
+            },
+            Markup.Spraak.BOKMAL,
+        )
+
+        val pdf = runBlocking { pdfCompileService.producePDFDokument(request) }
+
+        writeTestPDF(
+            pdfFileName = "document med alle elementer",
+            pdf = pdf.bytes,
+            path = Path.of("build/test_visual/pdf"),
+        )
+    }
+}

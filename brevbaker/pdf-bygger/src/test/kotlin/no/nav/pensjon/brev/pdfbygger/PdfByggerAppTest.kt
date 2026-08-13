@@ -9,6 +9,10 @@ import io.ktor.server.testing.*
 import no.nav.brev.brevbaker.serialization.internalObjectMapper
 import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
+import no.nav.brev.brevbaker.document.DocumentPDFRequest
+import no.nav.brev.brevbaker.document.dsl.document
+import no.nav.brev.brevbaker.document.dsl.documentPDFRequest
+import no.nav.brev.brevbaker.document.dsl.documentSaksinformasjon
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
 import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
@@ -44,7 +48,7 @@ class PdfByggerAppTest {
     }
 
     @Test
-    fun `ugyldig json gir 400 paa begge produserBrev-endepunktene`() {
+    fun `ugyldig json gir 400 paa alle produser-endepunktene`() {
         testApplication {
             environment {
                 config = MapApplicationConfig()
@@ -53,7 +57,7 @@ class PdfByggerAppTest {
                 setUp(TypstCompileService())
             }
 
-            listOf("/produserBrev", "/v2/produserBrev").forEach { path ->
+            listOf("/produserBrev", "/v2/produserBrev", "/produserDokument").forEach { path ->
                 val response = client.post(path) {
                     contentType(ContentType.Application.Json)
                     setBody("""{"letterMarkup": "ikke et objekt"}""")
@@ -181,6 +185,104 @@ class PdfByggerAppTest {
 
             val output = mapper.readValue(response.bodyAsText(), PDFCompilationOutput::class.java)
             assertTrue(expectedPdfBytes.contentEquals(output.bytes), "PDF-bytes skal returneres uendret til klienten")
+        }
+    }
+
+    /**
+     * Happy-path-test for `/produserDokument` som verifiserer routing, Jackson-deserialisering av
+     * [DocumentPDFRequest] og kall til [no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDokumentRenderer].
+     */
+    @Test
+    fun `produserDokument happy path returnerer PDFCompilationOutput`() {
+        val expectedPdfBytes = byteArrayOf(0x25, 0x50, 0x44, 0x46) // "%PDF"
+        val rendererCalled = ArrayList<Int>()
+
+        val fakeCompileService = object : TypstCompileService() {
+            override suspend fun createLetter(writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
+                val captured = ByteArrayOutputStream()
+                OutputStreamWriter(captured, Charsets.UTF_8).use { writer ->
+                    writeLetter(TypstFileWriter(writer))
+                }
+                rendererCalled.add(captured.size())
+                return PDFCompilationResponse.Success(PDFCompilationOutput(expectedPdfBytes))
+            }
+        }
+
+        val request = documentPDFRequest(
+            document(
+                tittel = "Et dokument",
+                saksinformasjon = documentSaksinformasjon(
+                    gjelderNavn = PdfByggerTestData.gjelderNavn,
+                    gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
+                    saksnummer = PdfByggerTestData.saksnummer,
+                ),
+                dokumentDato = PdfByggerTestData.dokumentDato,
+                visFooter = true,
+            ) {
+                paragraph("Hei, dette er et dokument.")
+            },
+            Markup.Spraak.BOKMAL,
+        )
+
+        testApplication {
+            environment {
+                config = MapApplicationConfig()
+            }
+            application {
+                setUp(fakeCompileService)
+            }
+
+            val response = client.post("/produserDokument") {
+                contentType(ContentType.Application.Json)
+                setBody(mapper.writeValueAsString(request))
+            }
+
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(1, rendererCalled.size, "TypstDokumentRenderer skal være kalt nøyaktig én gang")
+            assertTrue(rendererCalled.single() > 0, "TypstDokumentRenderer skal ha skrevet Typst-innhold")
+
+            val output = mapper.readValue(response.bodyAsText(), PDFCompilationOutput::class.java)
+            assertTrue(expectedPdfBytes.contentEquals(output.bytes), "PDF-bytes skal returneres uendret til klienten")
+        }
+    }
+
+    @Test
+    fun `produserDokument med footer uten saksinformasjon gir 400`() {
+        // Bygges som rå json fordi både DSL-en og modellen håndhever invarianten.
+        val ugyldigJson = """
+            {
+              "document": {
+                "tittel": "Et dokument",
+                "visTittel": true,
+                "visLogo": true,
+                "saksinformasjon": null,
+                "dokumentDato": null,
+                "visFooter": true,
+                "blocks": [],
+                "version": 1
+              },
+              "spraak": "BOKMAL"
+            }
+        """.trimIndent()
+
+        testApplication {
+            environment {
+                config = MapApplicationConfig()
+            }
+            application {
+                setUp(TypstCompileService())
+            }
+
+            val response = client.post("/produserDokument") {
+                contentType(ContentType.Application.Json)
+                setBody(ugyldigJson)
+            }
+
+            assertEquals(HttpStatusCode.BadRequest, response.status)
+            assertTrue(
+                response.bodyAsText().contains("visFooter"),
+                "Feilmeldingen skal forklare at footeren krever saksinformasjon, var: ${response.bodyAsText()}",
+            )
         }
     }
 }
