@@ -11,7 +11,7 @@ import java.time.Month
 
 fun createVedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto() = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto(
     saksbehandlerValg = lagSaksbehandlervalg(
-        "aarsak" to VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.Aarsak.ufoeretrygdErInnvilget
+        "aarsak" to VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.Aarsak.ufoeretrygdErInnvilget.name
     ),
     pesysData = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.PesysData(
         krav = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.Krav(

@@ -7,7 +7,7 @@ import java.time.LocalDate
 fun createAvslagGjenlevendepensjonDto() =
     AvslagGjenlevendepensjonDto(
         saksbehandlerValg = lagSaksbehandlervalg(
-            "folketrygdlovenParagraf" to AvslagGjenlevendepensjonDto.FolketrygdlovenParagraf.paragraf17_2_foersteEllerTredje_ledd,
+            "folketrygdlovenParagraf" to AvslagGjenlevendepensjonDto.FolketrygdlovenParagraf.paragraf17_2_foersteEllerTredje_ledd.name,
         ),
         pesysData = AvslagGjenlevendepensjonDto.PesysData(
             kravMottattDato = LocalDate.of(2024, 1, 1),

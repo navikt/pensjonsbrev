@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonD
 fun createOpphoerGjenlevendepensjonDto() =
     OpphoerGjenlevendepensjonDto(
         saksbehandlerValg = lagSaksbehandlervalg(
-            "folketrygdlovenAlternativ" to OpphoerGjenlevendepensjonDto.FolketrygdlovenAlternativ.gifterSeg,
+            "folketrygdlovenAlternativ" to OpphoerGjenlevendepensjonDto.FolketrygdlovenAlternativ.gifterSeg.name,
             "opphoerMedTilbakekreving" to false,
         ),
         pesysData = EmptyFagsystemdata,

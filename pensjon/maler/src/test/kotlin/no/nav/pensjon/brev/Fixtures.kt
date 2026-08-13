@@ -2,7 +2,6 @@ package no.nav.pensjon.brev
 
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.brev.brevbaker.SaksbehandlervalgIDSLTestImpl
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmaktsgiverBprofAutoDto
 import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmektigBprofAutoDto

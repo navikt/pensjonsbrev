@@ -24,7 +24,7 @@ fun createInnvilgelseUfoeretrygdDto() =
     InnvilgelseUfoeretrygdDto(
         saksbehandlerValg = lagSaksbehandlervalg(
             "barnetilleggInfo" to true,
-            "periodisertInntekt" to PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT,
+            "periodisertInntekt" to PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT.name,
         ),
         pesysData = InnvilgelseUfoeretrygdDto.PesysData(
             pe = createPEgruppe10(),
@@ -79,7 +79,7 @@ fun createInnvilgelseUfoeretrygdUtlandDto() =
             "barnetilleggInfo" to true,
             "innvilgetEtter12_2Andreledd" to true,
             "innvilgetEtter12_2Tredjeledd" to true,
-            "periodisertInntekt" to PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT,
+            "periodisertInntekt" to PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT.name,
         ),
         pesysData = InnvilgelseUfoeretrygdUtlandDto.PesysData(
             pe = createPEgruppe10(),
@@ -179,7 +179,7 @@ fun createInnvilgelseUforetrygdMellombehandlingDto() =
             "barnetilleggInfo" to true,
             "innvilgetEtter12_2Andreledd" to true,
             "innvilgetEtter12_2Tredjeledd" to true,
-            "periodisertInntekt" to PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT,
+            "periodisertInntekt" to PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT.name,
         ),
         pesysData = InnvilgelseUfoeretrygdMellombehandlingDto.PesysData(
             pe = createPEgruppe10(),
@@ -229,7 +229,7 @@ fun createInnvilgelseUforetrygdMellombehandlingDto() =
 fun createInnvilgelseUforetrygdMedEndringDto() =
     InnvilgelseUforetrygdMedEndringDto(
         saksbehandlerValg = lagSaksbehandlervalg(
-            "periodisertInntekt" to PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT,
+            "periodisertInntekt" to PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT.name,
         ),
         pesysData = InnvilgelseUforetrygdMedEndringDto.PesysData(
             pe = createPEgruppe10(),
@@ -279,7 +279,7 @@ fun createInnvilgelseUforetrygdMedEndringDto() =
 fun createOkningUforegradDto() =
     OkningUforegradDto(
         saksbehandlerValg = lagSaksbehandlervalg(
-            "periodisertInntekt" to PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT,
+            "periodisertInntekt" to PeriodisertInntektBarnetillegg.PERIODISERT_INNTEKT.name,
         ),
         pesysData = OkningUforegradDto.PesysData(
             pe = createPEgruppe10(),

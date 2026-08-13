@@ -12,8 +12,8 @@ fun createInformasjonOmGjenlevenderettigheterDto() = InformasjonOmGjenlevenderet
         "gjenlevendeHarBarnUnder18MedAvdoed" to false,
         "gjenlevenderHarEllerKanHaAFPIOffentligSektor" to false,
         "gjenlevevendeHarAfpOgUttaksgradPaaApSattTilNull" to false,
-        "vilkarForGjenlevendeytelsen" to InformasjonOmGjenlevenderettigheterDto.VilkarForGjenlevendeytelsen.GJENLEVENDE_EPS,
-        "hvorBorBruker" to InformasjonOmGjenlevenderettigheterDto.HvorBorBruker.GJENLEVENDE_BOR_I_AVTALELAND,
+        "vilkarForGjenlevendeytelsen" to InformasjonOmGjenlevenderettigheterDto.VilkarForGjenlevendeytelsen.GJENLEVENDE_EPS.name,
+        "hvorBorBruker" to InformasjonOmGjenlevenderettigheterDto.HvorBorBruker.GJENLEVENDE_BOR_I_AVTALELAND.name,
     ),
     pesysData = InformasjonOmGjenlevenderettigheterDto.PesysData(
         sakstype = Sakstype.ALDER,

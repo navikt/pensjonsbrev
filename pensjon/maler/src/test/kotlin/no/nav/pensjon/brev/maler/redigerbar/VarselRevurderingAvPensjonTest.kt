@@ -19,7 +19,7 @@ class VarselRevurderingAvPensjonTest {
 
     private val data = VarselRevurderingAvPensjonDto(
         saksbehandlerValg = lagSaksbehandlervalg(
-            "tittelValg" to VarselRevurderingAvPensjonDto.TittelValg.RevurderingAvRett,
+            "tittelValg" to VarselRevurderingAvPensjonDto.TittelValg.RevurderingAvRett.name,
         ),
         pesysData = VarselRevurderingAvPensjonDto.PesysData(sakstype = Sakstype.FAM_PL)
         )
@@ -30,7 +30,7 @@ class VarselRevurderingAvPensjonTest {
             "revurdering av rett",
             data.copy(
                 saksbehandlerValg = lagSaksbehandlervalg(
-                    "tittelValg" to VarselRevurderingAvPensjonDto.TittelValg.RevurderingAvRett,
+                    "tittelValg" to VarselRevurderingAvPensjonDto.TittelValg.RevurderingAvRett.name,
                 ),
             )
         )
@@ -42,7 +42,7 @@ class VarselRevurderingAvPensjonTest {
             "revurdering reduksjon",
             data.copy(
                 saksbehandlerValg = lagSaksbehandlervalg(
-                    "tittelValg" to VarselRevurderingAvPensjonDto.TittelValg.RevurderingReduksjon,
+                    "tittelValg" to VarselRevurderingAvPensjonDto.TittelValg.RevurderingReduksjon.name,
                 ),
             )
         )

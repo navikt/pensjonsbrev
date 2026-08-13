@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
-import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 enum class PeriodisertInntektBarnetillegg(override val displayText: String) : SaksbehandlerValgEnum {
     PERIODISERT_INNTEKT("Periodisert inntekt"),
