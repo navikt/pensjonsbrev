@@ -38,9 +38,9 @@ object TypstDokumentRenderer {
         appendDictionary(
             "input",
             mapOf(
-                "gjelderNavn" to document.saksinformasjon?.gjelderNavn,
-                "gjelderFoedselsnummer" to document.saksinformasjon?.gjelderPersonidentifikator?.format(),
-                "annenMottakerNavn" to document.saksinformasjon?.annenMottakerNavn,
+                "gjelderNavn" to document.saksinformasjon?.mottaker?.gjelderNavn,
+                "gjelderFoedselsnummer" to document.saksinformasjon?.mottaker?.gjelderPersonidentifikator?.format(),
+                "annenMottakerNavn" to document.saksinformasjon?.mottaker?.annenMottakerNavn,
                 "saksnummer" to document.saksinformasjon?.saksnummer?.value,
                 "dokumentDato" to document.dokumentDato?.format(pdfDateFormatter(language, FormatStyle.LONG)),
             )
@@ -59,9 +59,9 @@ object TypstDokumentRenderer {
         appendCodeln("""  title: "${document.tittel.typstStringEscape()}",""")
         appendCodeln("""  showTitle: ${document.visTittel.typst()},""")
         appendCodeln("""  showLogo: ${document.visLogo.typst()},""")
-        appendCodeln("""  showCaseDetails: ${(document.saksinformasjon != null).typst()},""")
+        appendCodeln("""  showCaseDetails: ${(document.saksinformasjon?.mottaker != null).typst()},""")
         appendCodeln("""  showDocumentDate: ${(document.dokumentDato != null).typst()},""")
-        appendCodeln("""  showFooter: ${document.visFooter.typst()},""")
+        appendCodeln("""  showFooter: ${(document.saksinformasjon?.visFooter == true).typst()},""")
         appendCodeln("""  input: input,""")
         appendCodeln("""  languageSettings: languageSettings,""")
         appendCodeln(""")""")

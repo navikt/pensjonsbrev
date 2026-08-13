@@ -2,6 +2,7 @@ package no.nav.brev.brevbaker.document.dsl
 
 import no.nav.brev.brevbaker.document.Document
 import no.nav.brev.brevbaker.document.DocumentModel
+import no.nav.brev.brevbaker.document.DocumentMottaker
 import no.nav.brev.brevbaker.document.DocumentPDFRequest
 import no.nav.brev.brevbaker.document.DocumentSaksinformasjon
 import no.nav.brev.brevbaker.markup.Markup
@@ -15,7 +16,6 @@ fun document(
     visLogo: Boolean = true,
     saksinformasjon: DocumentSaksinformasjon? = null,
     dokumentDato: LocalDate? = null,
-    visFooter: Boolean = false,
     build: OutlineBuilder<ContentBuilder>.() -> Unit,
 ): Document {
     require(tittel.isNotBlank()) { "Dokumentet må ha en tittel" }
@@ -25,21 +25,28 @@ fun document(
         visLogo = visLogo,
         saksinformasjon = saksinformasjon,
         dokumentDato = dokumentDato,
-        visFooter = visFooter,
         blocks = OutlineBuilder(::ContentBuilder).apply(build).build(),
     )
 }
 
 fun documentSaksinformasjon(
+    saksnummer: String,
+    visFooter: Boolean = false,
+    mottaker: DocumentMottaker? = null,
+): DocumentSaksinformasjon = DocumentModel.documentSaksinformasjon(
+    saksnummer = saksnummer,
+    visFooter = visFooter,
+    mottaker = mottaker,
+)
+
+fun documentMottaker(
     gjelderNavn: String,
     gjelderPersonidentifikator: String,
-    saksnummer: String,
     annenMottakerNavn: String? = null,
-): DocumentSaksinformasjon = DocumentModel.documentSaksinformasjon(
+): DocumentMottaker = DocumentModel.documentMottaker(
     gjelderNavn = gjelderNavn,
     gjelderPersonidentifikator = gjelderPersonidentifikator,
     annenMottakerNavn = annenMottakerNavn,
-    saksnummer = saksnummer,
 )
 
 fun documentPDFRequest(document: Document, spraak: Markup.Spraak): DocumentPDFRequest =

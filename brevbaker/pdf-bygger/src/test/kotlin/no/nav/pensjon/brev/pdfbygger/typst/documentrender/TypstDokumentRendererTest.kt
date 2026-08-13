@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 import no.nav.brev.brevbaker.document.DocumentPDFRequest
 import no.nav.brev.brevbaker.document.dsl.document
 import no.nav.brev.brevbaker.document.dsl.documentPDFRequest
+import no.nav.brev.brevbaker.document.dsl.documentMottaker
 import no.nav.brev.brevbaker.document.dsl.documentSaksinformasjon
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.dsl.item
@@ -13,7 +14,6 @@ import no.nav.pensjon.brev.pdfbygger.PdfByggerTestData
 import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.io.ByteArrayOutputStream
 import java.io.OutputStreamWriter
 
@@ -31,10 +31,15 @@ class TypstDokumentRendererTest {
         return output.toString(Charsets.UTF_8)
     }
 
-    private val saksinformasjon = documentSaksinformasjon(
+    private val mottaker = documentMottaker(
         gjelderNavn = PdfByggerTestData.gjelderNavn,
         gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
+    )
+
+    private val saksinformasjon = documentSaksinformasjon(
         saksnummer = PdfByggerTestData.saksnummer,
+        visFooter = true,
+        mottaker = mottaker,
     )
 
     @Test
@@ -45,7 +50,6 @@ class TypstDokumentRendererTest {
                     tittel = "Mitt dokument",
                     saksinformasjon = saksinformasjon,
                     dokumentDato = PdfByggerTestData.dokumentDato,
-                    visFooter = true,
                 ) {
                     title2("Overskrift")
                     paragraph("Et avsnitt.")
@@ -108,10 +112,24 @@ class TypstDokumentRendererTest {
     }
 
     @Test
-    fun `footer uten saksinformasjon er ugyldig`() {
-        assertThrows<IllegalArgumentException> {
-            document(tittel = "Dokument", visFooter = true) { paragraph("Et avsnitt.") }
-        }
+    fun `saksinformasjon uten mottaker gir footer uten saksinformasjonsblokk`() {
+        val typst = render(
+            documentPDFRequest(
+                document(
+                    tittel = "Dokument",
+                    saksinformasjon = documentSaksinformasjon(
+                        saksnummer = PdfByggerTestData.saksnummer,
+                        visFooter = true,
+                    ),
+                ) { paragraph("Et avsnitt.") },
+                Markup.Spraak.BOKMAL,
+            )
+        )
+
+        assertThat(typst).contains("showCaseDetails: false")
+        assertThat(typst).contains("showFooter: true")
+        assertThat(typst).contains(""""${PdfByggerTestData.saksnummer}"""")
+        assertThat(typst).contains("gjelderNavn: none")
     }
 
     @Test

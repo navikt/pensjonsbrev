@@ -14,7 +14,6 @@ object DocumentModel {
         visLogo: Boolean,
         saksinformasjon: DocumentSaksinformasjon?,
         dokumentDato: LocalDate?,
-        visFooter: Boolean,
         blocks: List<Block>,
     ): Document = Document(
         tittel = tittel,
@@ -22,20 +21,27 @@ object DocumentModel {
         visLogo = visLogo,
         saksinformasjon = saksinformasjon,
         dokumentDato = dokumentDato,
-        visFooter = visFooter,
         blocks = blocks,
     )
 
     fun documentSaksinformasjon(
+        saksnummer: String,
+        visFooter: Boolean,
+        mottaker: DocumentMottaker?,
+    ): DocumentSaksinformasjon = DocumentSaksinformasjon(
+        saksnummer = Markup.Saksnummer(saksnummer),
+        visFooter = visFooter,
+        mottaker = mottaker,
+    )
+
+    fun documentMottaker(
         gjelderNavn: String,
         gjelderPersonidentifikator: String,
         annenMottakerNavn: String?,
-        saksnummer: String,
-    ): DocumentSaksinformasjon = DocumentSaksinformasjon(
+    ): DocumentMottaker = DocumentMottaker(
         gjelderNavn = gjelderNavn,
         gjelderPersonidentifikator = Markup.Personidentifikator(gjelderPersonidentifikator),
         annenMottakerNavn = annenMottakerNavn,
-        saksnummer = Markup.Saksnummer(saksnummer),
     )
 
     fun documentPDFRequest(document: Document, spraak: Markup.Spraak): DocumentPDFRequest =

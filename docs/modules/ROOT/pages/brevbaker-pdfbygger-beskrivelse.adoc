@@ -204,21 +204,26 @@ hilsen, signatur eller vedlegg.
 |Nav-logoen øverst på første side.
 
 |Saksinformasjon
-|`saksinformasjon`
-|Navn, fødselsnummer, saksnummer og eventuell annen mottaker. Utelates når feltet er `null`.
+|`saksinformasjon.mottaker`
+|Navn, fødselsnummer, saksnummer og eventuell annen mottaker. Blokken utelates når `saksinformasjon` eller `mottaker` er `null`.
 
 |Dokumentdato
 |`dokumentDato`
 |Vises inne i saksinformasjonen når begge er med, ellers alene. Utelates når feltet er `null`.
 
 |Footer
-|`visFooter`
-|Saksnummer og "side N av M" nederst på hver side. Krever `saksinformasjon`, siden footeren viser saksnummer – ellers svarer pdf-bygger 400.
+|`saksinformasjon.visFooter`
+|Saksnummer og "side N av M" nederst på hver side. Valget ligger i `saksinformasjon` fordi footeren viser saksnummer.
 |===
 
 Elementene rendres i fast rekkefølge: logo, saksinformasjon (med dato), tittel og deretter
 innholdet. Er et element skjult, kollapser avstanden over det neste, slik at dokumentet ikke får
 et hull på toppen.
+
+`saksinformasjon` er strukturert slik at valgene ikke kan settes uten dataene de trenger:
+saksnummeret ligger alltid ytterst sammen med `visFooter`, mens mottakeropplysningene ligger i den
+nullbare `mottaker`. Et dokument kan dermed ha footer med saksnummer uten å vise
+saksinformasjonsblokken, men aldri en footer uten saksnummer.
 
 Typst-roten er egen (`document.typ`), mens innholdskomponentene under `content/`, saksinformasjonen
 (`casedetails.typ`) og footeren deles med brev. Endringer i disse delte komponentene påvirker altså

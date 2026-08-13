@@ -12,6 +12,7 @@ import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.document.DocumentPDFRequest
 import no.nav.brev.brevbaker.document.dsl.document
 import no.nav.brev.brevbaker.document.dsl.documentPDFRequest
+import no.nav.brev.brevbaker.document.dsl.documentMottaker
 import no.nav.brev.brevbaker.document.dsl.documentSaksinformasjon
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup
@@ -212,12 +213,14 @@ class PdfByggerAppTest {
             document(
                 tittel = "Et dokument",
                 saksinformasjon = documentSaksinformasjon(
-                    gjelderNavn = PdfByggerTestData.gjelderNavn,
-                    gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
                     saksnummer = PdfByggerTestData.saksnummer,
+                    visFooter = true,
+                    mottaker = documentMottaker(
+                        gjelderNavn = PdfByggerTestData.gjelderNavn,
+                        gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
+                    ),
                 ),
                 dokumentDato = PdfByggerTestData.dokumentDato,
-                visFooter = true,
             ) {
                 paragraph("Hei, dette er et dokument.")
             },
@@ -243,46 +246,6 @@ class PdfByggerAppTest {
 
             val output = mapper.readValue(response.bodyAsText(), PDFCompilationOutput::class.java)
             assertTrue(expectedPdfBytes.contentEquals(output.bytes), "PDF-bytes skal returneres uendret til klienten")
-        }
-    }
-
-    @Test
-    fun `produserDokument med footer uten saksinformasjon gir 400`() {
-        // Bygges som rå json fordi både DSL-en og modellen håndhever invarianten.
-        val ugyldigJson = """
-            {
-              "document": {
-                "tittel": "Et dokument",
-                "visTittel": true,
-                "visLogo": true,
-                "saksinformasjon": null,
-                "dokumentDato": null,
-                "visFooter": true,
-                "blocks": [],
-                "version": 1
-              },
-              "spraak": "BOKMAL"
-            }
-        """.trimIndent()
-
-        testApplication {
-            environment {
-                config = MapApplicationConfig()
-            }
-            application {
-                setUp(TypstCompileService())
-            }
-
-            val response = client.post("/produserDokument") {
-                contentType(ContentType.Application.Json)
-                setBody(ugyldigJson)
-            }
-
-            assertEquals(HttpStatusCode.BadRequest, response.status)
-            assertTrue(
-                response.bodyAsText().contains("visFooter"),
-                "Feilmeldingen skal forklare at footeren krever saksinformasjon, var: ${response.bodyAsText()}",
-            )
         }
     }
 }

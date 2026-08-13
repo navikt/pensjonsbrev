@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.pdfbygger
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.document.dsl.document
 import no.nav.brev.brevbaker.document.dsl.documentPDFRequest
+import no.nav.brev.brevbaker.document.dsl.documentMottaker
 import no.nav.brev.brevbaker.document.dsl.documentSaksinformasjon
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.dsl.cell
@@ -40,12 +41,14 @@ class RenderPDFDocumentVisualITest {
             document(
                 tittel = "Dokument med alle elementer",
                 saksinformasjon = documentSaksinformasjon(
-                    gjelderNavn = PdfByggerTestData.gjelderNavn,
-                    gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
                     saksnummer = PdfByggerTestData.saksnummer,
+                    visFooter = true,
+                    mottaker = documentMottaker(
+                        gjelderNavn = PdfByggerTestData.gjelderNavn,
+                        gjelderPersonidentifikator = PdfByggerTestData.gjelderPersonidentifikator,
+                    ),
                 ),
                 dokumentDato = PdfByggerTestData.dokumentDato,
-                visFooter = true,
             ) {
                 paragraph(
                     "Dette dokumentet viser alle elementene et dokument kan inneholde: logo, " +
