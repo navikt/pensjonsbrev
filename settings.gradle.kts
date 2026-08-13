@@ -37,3 +37,20 @@ include("alder:api-model")
 include("etterlattemaler")
 
 include("planlegge-pensjon-maler")
+
+// Substitute published artifacts with local project modules so the IDE navigates
+// to source files in this repo rather than decompiled classes from a sources.jar.
+gradle.allprojects {
+    configurations.all {
+        if (System.getenv("CI")?.toBoolean() == true) return@all
+        resolutionStrategy.dependencySubstitution {
+            substitute(module("no.nav.pensjon.brev:pensjon-api-model")).using(project(":pensjon:api-model"))
+            substitute(module("no.nav.pensjon.alder.brev:alder-api-model")).using(project(":alder:api-model"))
+            substitute(module("no.nav.pensjon.ufoere.brev:ufoere-api-model")).using(project(":ufoere:api-model"))
+            substitute(module("no.nav.brev.brevbaker:brevdata")).using(project(":brevbaker:brevdata"))
+            substitute(module("no.nav.brev.brevbaker:brevbaker-api")).using(project(":brevbaker:brevbaker-api"))
+            substitute(module("no.nav.brev.brevbaker:markup-model")).using(project(":brevbaker:markup-model"))
+            substitute(module("no.nav.brev.brevbaker:markup-dsl")).using(project(":brevbaker:markup-dsl"))
+        }
+    }
+}
