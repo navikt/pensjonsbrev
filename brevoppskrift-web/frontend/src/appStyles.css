@@ -22,13 +22,21 @@ body {
   white-space: break-spaces;
 }
 
+/* Ingen vertikal margin på selve blokken lenger - en Conditional skal ikke tvinge frem ekstra
+   luft rundt seg (se .conditional-predicate under for hvordan If/Else If-predikatet i seg selv
+   unngår å legge til en egen linje). Bakgrunnsfargen beholdes som et visuelt grupperingshint. */
 .conditional {
   background: var(--ax-accent-100);
-  margin: 1rem 0;
 }
 
 .show-if,
 .show-else {
+  /* .conditional-predicate/.show-else-label plasseres i selve BREVETS marg (venstre padding på
+     .letter-page/.preview-boksen) via CSS-transform, IKKE i en egen reservert gutter inni
+     innholdet - position: relative her er kun for å gi dem et Y-ankerpunkt (samme vertikale
+     posisjon som starten av den betingede teksten). */
+  position: relative;
+
   .conditional {
     margin-left: 1rem;
   }
@@ -130,13 +138,15 @@ body {
 
 /* If/Else If sin betingelse (predikat) er kollapset som standard bak en native
    <details>/<summary>-disclosure (se ConditionalPredicateDisclosure) for å spare plass -
-   predikatet er som regel mindre interessant enn den betingede teksten under. Fjerner
-   nettleserens standard trekant-markør (::marker/::-webkit-details-marker) til fordel for en
-   egen ▸/▾-markør, slik at den kan style konsistent med .expr-operator-fargen brukt ellers for
-   uttrykk-syntaks. */
+   predikatet er som regel mindre interessant enn den betingede teksten under. <summary> vises
+   KUN som en liten ▸/▾-ikon-markør (selve "If"/"Else If"-teksten er tilgjengelig via
+   `title`-attributtet på <details>, og vises i sin helhet inni predikat-blokken når
+   ekspandert) - holder markøren smal nok til å få plass i brevets egen marg (se under) uten å
+   dekke over teksten. */
 .conditional-predicate > summary {
   cursor: pointer;
   list-style: none;
+  width: 1em;
 }
 
 .conditional-predicate > summary::-webkit-details-marker {
@@ -145,16 +155,48 @@ body {
 
 .conditional-predicate > summary::before {
   color: var(--ax-text-danger);
-  content: "▸ ";
+  content: "▸";
   font-weight: 600;
 }
 
 .conditional-predicate[open] > summary::before {
-  content: "▾ ";
+  content: "▾";
 }
 
 .conditional-predicate > summary:hover {
   text-decoration: underline;
+}
+
+/* Selve markøren (kollapset) skal IKKE legge til en egen linje/vertikal plass, og skal IKKE
+   dekke over selve den betingede teksten - den plasseres derfor i selve BREVETS venstre marg
+   (utenfor .show-if/.show-else sin egen innholdsboks, via translateX), i stedet for på sin egen
+   linje over eller inni innholdet. For brevets øverste nivå er dette bokstavelig talt i
+   `.letter-page` sin egen padding (space-48) - for nøstede Conditional (som får innrykk via
+   `.show-if .conditional { margin-left: 1rem }`) havner den i innrykks-mellomrommet til det
+   nivået, som uansett er tomt (ingen tekst der). Kun når disclosure-en EKSPANDERES (brukeren
+   har eksplisitt bedt om å se predikatet) flyter den normalt og skyver innholdet ned - det er
+   da forventet at det tar plass. Samme prinsipp brukes for den statiske "Else"-markøren (ingen
+   predikat/disclosure, men samme visuelle plassering). */
+.show-if > .conditional-predicate:not([open]) {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  transform: translateX(calc(-100% - 0.5rem));
+}
+
+.show-if > .conditional-predicate[open] {
+  display: block;
+  margin: 0 0 0.5rem;
+}
+
+.show-else > .expression:first-child {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 0;
+  background: none;
+  padding: 0;
 }
 
 /* Brevets "side" i forhåndsvisningen - kapper bredden til A4 sin bredde (210mm ≈ 793px ved
