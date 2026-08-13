@@ -31,6 +31,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKl
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import no.nav.pensjon.brev.model.Brevkategori
+import no.nav.pensjon.brev.template.BrevdataEllerFritekst
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -77,7 +78,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
         val initiertAvNav = pesysData.krav.kravInitiertAv.equalTo(NAV)
 
         val samboerUtenFellesBarn = saksbehandlervalg("samboerUtenFellesBarn", "Samboer uten felles barn").bool()
-        val avdoedNavn = saksbehandlervalg("avdoedNavn", "Avdød navn").text().ifNull("")
+        val avdoedNavn = saksbehandlervalg("avdoedNavn", "Avdød navn").text().ifNull(fritekst("Avdød navn"))
         val underEttAarsMedlemstidEOESEllerAvtaleland = saksbehandlervalg("underEttAarsMedlemstidEOESEllerAvtaleland", "Under ett års medlemstid EØS eller avtaleland").bool()
         val underTreFemAarsMedlemstidNasjonalSak = saksbehandlervalg("underTreFemAarsMedlemstidNasjonalSak", "Under tre/fem års medlemstid nasjonal sak").bool()
         val underTreFemAarsMedlemstidEOESSak = saksbehandlervalg("underTreFemAarsMedlemstidEOESSak", "Under tre/fem års medlemstid EØS-sak").bool()
@@ -472,7 +473,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
     private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, AvslagPaaGjenlevenderettIAlderspensjonDto>.derforHarDuIkkeGjenlevenderett(
         initiertAvBrukerEllerVerge: Expression<Boolean>,
         initiertAvNav: Expression<Boolean>,
-        avdoedNavn: Expression<String>,
+        avdoedNavn: BrevdataEllerFritekst,
         uniqueness: String? = null,
     ) {
         paragraph(uniqueness = uniqueness) {

@@ -42,7 +42,7 @@ object VedtakOmFjerningAvOmsorgsopptjening : RedigerbarTemplate<VedtakOmFjerning
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
-        val aktuelleAar = saksbehandlervalg("aktuelleAar", "Aktuelle år").text().ifNull("")
+        val aktuelleAar = saksbehandlervalg("aktuelleAar", "Aktuelle år").text().ifNull(fritekst("aktuelle år"))
         title {
             text(
                 bokmal { + "Omsorgsopptjening for " + aktuelleAar + " er fjernet" },
