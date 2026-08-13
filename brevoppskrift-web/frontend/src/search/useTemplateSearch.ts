@@ -18,6 +18,9 @@ export type TemplateRef = {
 export type TemplateSearch = {
   query: string;
   setQuery: (query: string) => void;
+  /** Whether the user wants exact matches only (no typo tolerance). Off by default. */
+  exactOnly: boolean;
+  setExactOnly: (exactOnly: boolean) => void;
   isSearching: boolean;
   isLoading: boolean;
   failedCount: number;
@@ -66,11 +69,27 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
     })),
   });
   const titleByKey = useMemo(() => new Map(templates.map((t) => [`${t.malType}/${t.brevkode}`, t.title])), [templates]);
+  const [exactOnly, setExactOnly] = useState(false);
+  // True while any malType's corpus hasn't resolved yet (success or error).
+  // Reused below both to gate index building and in the returned object, so
+  // the two can never disagree on what "still loading" means.
+  const isLoading = queries.some((q) => q.data === undefined && !q.isError);
   // Depends on data identity (not fetch timestamps), so an unchanged corpus that
   // revalidated to a 304 keeps the same reference and does not rebuild the index.
   const freshnessKey = queries.map((q) => referenceId(q.data)).join("|");
+  // Both the fuzzy and the exact index are built together whenever the corpus
+  // changes, and `exactOnly` (the toggle) is deliberately NOT in this memo's
+  // deps: toggling it below only switches which already-built index we read
+  // from, so it never re-triggers a (synchronous, main-thread-blocking) Fuse
+  // rebuild.
+  // While `isLoading` is true, some malType's corpus hasn't arrived yet, so we
+  // skip building entirely rather than repeatedly indexing a partial corpus
+  // that no one can search yet (the UI shows a loading spinner instead).
   // biome-ignore lint/correctness/useExhaustiveDependencies: `queries` is a new array every render; `freshnessKey` captures the data we actually depend on.
-  const index = useMemo(() => {
+  const indexes = useMemo(() => {
+    if (isLoading) {
+      return undefined;
+    }
     const entries: TemplateText[] = [];
     queries.forEach((query, i) => {
       const malType = malTypes[i];
@@ -85,14 +104,15 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
         });
       }
     });
-    return buildIndex(entries);
-  }, [freshnessKey, malTypes, titleByKey]);
+    return { fuzzy: buildIndex(entries, true), exact: buildIndex(entries, false) };
+  }, [freshnessKey, malTypes, titleByKey, isLoading]);
+  const index = indexes ? (exactOnly ? indexes.exact : indexes.fuzzy) : undefined;
   const [query, setQuery] = useState("");
   const deferredQuery = useDeferredValue(query);
   const trimmedQuery = deferredQuery.trim();
   const isSearching = trimmedQuery.length >= MIN_QUERY_LENGTH;
   const results = useMemo(
-    () => (isSearching ? search(index, trimmedQuery) : { content: [], brev: [] }),
+    () => (index && isSearching ? search(index, trimmedQuery) : { content: [], brev: [] }),
     [index, isSearching, trimmedQuery],
   );
   const languageTotal = useMemo(() => new Set(templates.flatMap((t) => t.languages)).size, [templates]);
@@ -107,8 +127,10 @@ export function useTemplateSearch(templates: TemplateRef[]): TemplateSearch {
   return {
     query,
     setQuery,
+    exactOnly,
+    setExactOnly,
     isSearching,
-    isLoading: queries.some((q) => q.data === undefined && !q.isError),
+    isLoading,
     failedCount: failedMalTypes.length,
     failedMalTypes,
     retryFailed,
