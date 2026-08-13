@@ -144,6 +144,14 @@ body {
    ekspandert) - holder markøren smal nok til å få plass i brevets egen marg (se under) uten å
    dekke over teksten. */
 .conditional-predicate > summary {
+  /* Absolutt-posisjonert (relativt til .show-if, se lenger ned) UANSETT åpen/lukket-tilstand,
+     slik at selve ▸/▾-ikonet ALLTID blir liggende i brevets marg og ikke hopper til
+     innholdskolonnen når disclosure-en ekspanderes - kun .expression (predikat-teksten under)
+     skal flyte normalt og ta plass når den vises. */
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateX(calc(-100% - 0.5rem));
   cursor: pointer;
   list-style: none;
   width: 1em;
@@ -167,26 +175,17 @@ body {
   text-decoration: underline;
 }
 
-/* Selve markøren (kollapset) skal IKKE legge til en egen linje/vertikal plass, og skal IKKE
-   dekke over selve den betingede teksten - den plasseres derfor i selve BREVETS venstre marg
-   (utenfor .show-if/.show-else sin egen innholdsboks, via translateX), i stedet for på sin egen
-   linje over eller inni innholdet. For brevets øverste nivå er dette bokstavelig talt i
-   `.letter-page` sin egen padding (space-48) - for nøstede Conditional (som får innrykk via
-   `.show-if .conditional { margin-left: 1rem }`) havner den i innrykks-mellomrommet til det
-   nivået, som uansett er tomt (ingen tekst der). Kun når disclosure-en EKSPANDERES (brukeren
-   har eksplisitt bedt om å se predikatet) flyter den normalt og skyver innholdet ned - det er
-   da forventet at det tar plass. Samme prinsipp brukes for den statiske "Else"-markøren (ingen
-   predikat/disclosure, men samme visuelle plassering). */
-.show-if > .conditional-predicate:not([open]) {
-  position: absolute;
-  left: 0;
-  top: 0;
+/* Selve <details>-elementet er ALLTID i normal flyt (ikke absolutt) - det er kun `summary` sitt
+   ▸/▾-ikon (se over) som escaper til brevets marg. Når lukket er `.expression` skjult
+   (native <details>-oppførsel for ikke-summary-barn), så <details> tar da ingen synlig
+   plass selv i normal flyt. Når EKSPANDERT flyter `.expression` normalt og tar plass, som
+   forventet siden brukeren eksplisitt har bedt om å se predikatet. Samme prinsipp brukes for
+   den statiske "Else"-markøren (ingen predikat/disclosure, men samme visuelle plassering). */
+.conditional-predicate {
   margin: 0;
-  transform: translateX(calc(-100% - 0.5rem));
 }
 
-.show-if > .conditional-predicate[open] {
-  display: block;
+.conditional-predicate[open] {
   margin: 0 0 0.5rem;
 }
 
