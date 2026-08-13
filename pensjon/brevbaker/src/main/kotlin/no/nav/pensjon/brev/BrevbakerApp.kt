@@ -10,7 +10,12 @@ import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.BrevbakerApp")
 
-fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+fun main(args: Array<String>) {
+    Thread.setDefaultUncaughtExceptionHandler { thread, ex ->
+        logger.error("Uncaught exception in thread ${thread.name}", ex)
+    }
+    io.ktor.server.netty.EngineMain.main(args)
+}
 
 @Suppress("unused") // Referenced in application.conf
 fun Application.brevbakerModulePensjon() = try {

@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.*
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.http.*
 import io.ktor.serialization.*
 import io.ktor.serialization.jackson.*
@@ -18,8 +17,7 @@ import io.ktor.server.plugins.di.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.*
-import no.nav.brev.brevbaker.serialization.LetterMarkupV1JacksonModule
-import no.nav.brev.brevbaker.serialization.TemplateModelSpecificationJacksonModule
+import no.nav.brev.brevbaker.serialization.internalJacksonConfig
 import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
@@ -40,11 +38,11 @@ import kotlin.time.Duration.Companion.seconds
 
 private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.SkribentenApp")
 
-fun main(args: Array<String>) = try {
+fun main(args: Array<String>) {
+    Thread.setDefaultUncaughtExceptionHandler { thread, ex ->
+        logger.error("Uncaught exception in thread ${thread.name}", ex)
+    }
     EngineMain.main(args)
-} catch (e: Exception) {
-    logger.error(e.message, e)
-    throw e
 }
 
 // Er satt i application.conf slik at EngineMain kaller på skribentenApp.
@@ -193,10 +191,4 @@ fun Application.skribentenContenNegotiation() {
     }
 }
 
-fun ObjectMapper.skribentenServerJackson() = apply {
-    registerModule(JavaTimeModule())
-    registerModule(TemplateModelSpecificationJacksonModule)
-    registerModule(LetterMarkupV1JacksonModule)
-    disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-}
+fun ObjectMapper.skribentenServerJackson() = apply { internalJacksonConfig() }
