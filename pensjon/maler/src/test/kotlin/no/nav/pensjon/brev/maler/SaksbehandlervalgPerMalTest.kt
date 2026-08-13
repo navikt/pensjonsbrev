@@ -3,13 +3,15 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.BrevbakerDSLInternal
+import no.nav.pensjon.brevbaker.api.model.DisplayText
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import kotlin.reflect.KClass
+import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
 /**
- * Dokumenterer og verifiserer hvilke saksbehandlervalg (felter på SaksbehandlerValg, med datatype)
+ * Dokumenterer og verifiserer hvilke saksbehandlervalg (felter på SaksbehandlerValg, med datatype og displayText)
  * som er tilgjengelige for hvert redigerbare brev i pensjon-modulen. Testen gjør ingen rendring —
  * den sjekker kun strukturen på `saksbehandlerValg`-typen til hver mal, slik at endringer i
  * hvilke valg saksbehandler kan gjøre blir synlige i en PR-diff.
@@ -30,9 +32,12 @@ class SaksbehandlervalgPerMalTest {
             // `mal.template.saksbehandlervalg`. Ikke-migrerte maler har fremdeles en typet SaksbehandlerValg-klasse,
             // som vi da faller tilbake til å reflektere over.
             val valg = if (saksbehandlerValgType == SaksbehandlervalgIDSL::class) {
-                mal.template.saksbehandlervalg.orEmpty().entries.map { (id, verdi) -> "$id: ${verdi.typename}" }
+                mal.template.saksbehandlervalg.orEmpty().entries.map { (id, verdi) -> "$id: ${verdi.typename} (${verdi.displayText})" }
             } else {
-                saksbehandlerValgType.memberProperties.map { "${it.name}: ${it.returnType}" }
+                saksbehandlerValgType.memberProperties.map { prop ->
+                    val displayText = prop.findAnnotation<DisplayText>()?.text ?: "<mangler>"
+                    "${prop.name}: ${prop.returnType} ($displayText)"
+                }
             }
 
             (mal.kode as Redigerbar) to valg.sorted()
@@ -40,148 +45,148 @@ class SaksbehandlervalgPerMalTest {
 
         val forventet = mapOf(
             Redigerbar.BRUKERTEST_BREV_PENSJON_2025 to listOf(
-                "denBesteKaken: no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDto.DenBesteKaken",
-                "kaffemaskinensTilgjengelighet: Boolean",
-                "kontorplantenTorlill: Boolean",
-                "utsiktenFraKontoret: no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDto.UtsiktenFraKontoret",
+                "denBesteKaken: no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDto.DenBesteKaken (Den beste kaken)",
+                "kaffemaskinensTilgjengelighet: Boolean (Kaffemaskinens tilgjengelighet)",
+                "kontorplantenTorlill: Boolean (Kontorplanten TorLill)",
+                "utsiktenFraKontoret: no.nav.pensjon.brev.api.model.maler.redigerbar.BrukerTestBrevDto.UtsiktenFraKontoret (Utsikten fra kontoret)",
             ),
             Redigerbar.GP_AVSLAG_GJENLEVENDEPENSJON to listOf(
-                "folketrygdlovenParagraf: no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDto.FolketrygdlovenParagraf",
+                "folketrygdlovenParagraf: no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDto.FolketrygdlovenParagraf (Velg folketrygdloven paragraf:)",
             ),
             Redigerbar.GP_AVSLAG_GJENLEVENDEPENSJON_UTLAND to emptyList(),
             Redigerbar.GP_INNVILGELSE_BOSATT_NORGE_ETTER_UTLAND to emptyList(),
             Redigerbar.GP_OPPHOER_GJENLEVENDEPENSJON to listOf(
-                "folketrygdlovenAlternativ: no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto.FolketrygdlovenAlternativ",
-                "opphoerMedTilbakekreving: Boolean",
+                "folketrygdlovenAlternativ: no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto.FolketrygdlovenAlternativ (Velg § 17-11 alternativ:)",
+                "opphoerMedTilbakekreving: Boolean (Hvis opphør med tilbakekreving)",
             ),
             Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID to listOf(
-                "soeknadMottattFraUtland: Boolean",
-                "venterPaaSvarAFP: Boolean",
+                "soeknadMottattFraUtland: Boolean (Søknad mottatt fra utland)",
+                "venterPaaSvarAFP: Boolean (Venter på svar AFP)",
             ),
             Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK to emptyList(),
             Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2 to emptyList(),
             Redigerbar.PE_ANKE_TILSVAR_TIL_ANKENDE_PART to emptyList(),
             Redigerbar.PE_AP_AVSLAG_FOR_LITE_TRYGDETID to emptyList(),
             Redigerbar.PE_AP_AVSLAG_GJENLEVENDERETT to listOf(
-                "avdoedNavn: String",
-                "ekteskapUnderFemAar: Boolean",
-                "harTrygdetid: Boolean",
-                "hjemmelAvtaleland: Boolean",
-                "hjemmelEOES: Boolean",
-                "samboerUtenFellesBarn: Boolean",
-                "under20AarBotid: Boolean",
-                "underEttAarsMedlemstidEOESEllerAvtaleland: Boolean",
-                "underTreFemAarsMedlemstidEOESSak: Boolean",
-                "underTreFemAarsMedlemstidNasjonalSak: Boolean",
-                "underTrefemAarsMedlemstidAvtalesak: Boolean",
+                "avdoedNavn: String (Avdød navn)",
+                "ekteskapUnderFemAar: Boolean (Ekteskap under fem år)",
+                "harTrygdetid: Boolean (Inkluder tekst om trygdetid)",
+                "hjemmelAvtaleland: Boolean (Hjemmel avtaleland)",
+                "hjemmelEOES: Boolean (Hjemmel EØS)",
+                "samboerUtenFellesBarn: Boolean (Samboer uten felles barn)",
+                "under20AarBotid: Boolean (Under 20 år botid)",
+                "underEttAarsMedlemstidEOESEllerAvtaleland: Boolean (Under ett års medlemstid EØS eller avtaleland)",
+                "underTreFemAarsMedlemstidEOESSak: Boolean (Under tre/fem års medlemstid EØS-sak)",
+                "underTreFemAarsMedlemstidNasjonalSak: Boolean (Under tre/fem års medlemstid nasjonal sak)",
+                "underTrefemAarsMedlemstidAvtalesak: Boolean (Under tre/fem års medlemstid avtalesak)",
             ),
             Redigerbar.PE_AP_ENDRET_UTTAKSGRAD to listOf(
-                "etterbetaling: Boolean",
+                "etterbetaling: Boolean (Hvis etterbetaling)",
             ),
             Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS_BRUKER_ELLER_VERGE to emptyList(),
             Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS_IKKE_BRUKER_VERGE to listOf(
-                "aarsak: no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.Aarsak",
+                "aarsak: no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.Aarsak (Årsak)",
             ),
             Redigerbar.PE_AP_ENDRING_FLYTTING_MELLOM_LAND to listOf(
-                "aarsakTilAtPensjonenOeker: no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto.AarsakTilAtPensjonenOeker",
-                "endringIPensjonen: Boolean",
-                "etterbetaling: Boolean",
-                "innvandret: Boolean",
-                "reduksjonTilbakeITid: Boolean",
+                "aarsakTilAtPensjonenOeker: no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto.AarsakTilAtPensjonenOeker (Relevant hvis innvandret)",
+                "endringIPensjonen: Boolean (Endring i pensjon)",
+                "etterbetaling: Boolean (Etterbetaling)",
+                "innvandret: Boolean (Innvandret)",
+                "reduksjonTilbakeITid: Boolean (Reduksjon tilbake i tid)",
             ),
             Redigerbar.PE_AP_ENDRING_GJENLEVENDERETT to listOf(
-                "avdoedeHarRedusertTrygdetidEllerPoengaar: Boolean",
-                "brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar: Boolean",
-                "etterbetaling: Boolean",
-                "ingenEndringBelop: Boolean",
-                "okningBelop: Boolean",
-                "oktTilleggMpn: Boolean",
-                "omregnetTilEnsligISammeVedtak: Boolean",
+                "avdoedeHarRedusertTrygdetidEllerPoengaar: kotlin.Boolean? (Hvis avdøde har redusert trygdetid/poengår)",
+                "brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar: kotlin.Boolean? (Hvis bruker under 67 år og avdøde har redusert trygdetid/poengår)",
+                "etterbetaling: kotlin.Boolean? (Hvis etterbetaling av pensjon)",
+                "ingenEndringBelop: kotlin.Boolean? (Hvis ingen endring av pensjon)",
+                "okningBelop: kotlin.Boolean? (Hvis økning av pensjon)",
+                "oktTilleggMpn: kotlin.Boolean? (Hvis økt tilleggspensjon, men ingen endring i total alderspensjon)",
+                "omregnetTilEnsligISammeVedtak: kotlin.Boolean? (Omregnet til enslig i samme vedtak)",
             ),
             Redigerbar.PE_AP_ENDRING_INSTITUSJONSOPPHOLD to listOf(
-                "alderspensjonRedusert: Boolean",
-                "alderspensjonStanset: Boolean",
-                "alderspensjonUnderOppholdIInstitusjon: Boolean",
-                "alderspensjonUnderSoning: Boolean",
-                "alderspensjonVedVaretektsfengsling: Boolean",
-                "etterbetaling: Boolean",
-                "hvisReduksjonTilbakeITid: Boolean",
-                "informasjonOmSivilstandVedInstitusjonsopphold: Boolean",
+                "alderspensjonRedusert: kotlin.Boolean (Alderspensjon redusert)",
+                "alderspensjonStanset: kotlin.Boolean (Alderspensjon stanset)",
+                "alderspensjonUnderOppholdIInstitusjon: kotlin.Boolean (Alderspensjon under opphold i institusjon)",
+                "alderspensjonUnderSoning: kotlin.Boolean (Alderspensjon under soning)",
+                "alderspensjonVedVaretektsfengsling: kotlin.Boolean (Alderspensjon ved varetektsfengsling)",
+                "etterbetaling: kotlin.Boolean? (Hvis etterbetaling)",
+                "hvisReduksjonTilbakeITid: kotlin.Boolean (Hvis reduksjon tilbake i tid)",
+                "informasjonOmSivilstandVedInstitusjonsopphold: kotlin.Boolean (Informasjon om sivilstand ved institusjonsopphold)",
             ),
             Redigerbar.PE_AP_ENDRING_PGA_OPPTJENING to emptyList(),
             Redigerbar.PE_AP_INNHENTING_DOKUMENTASJON_FRA_BRUKER to emptyList(),
             Redigerbar.PE_AP_INNHENTING_INFORMASJON_FRA_BRUKER to listOf(
-                "amerikanskSocialSecurityNumber: Boolean",
-                "bankopplysninger: Boolean",
-                "boOgArbeidsperioder: Boolean",
-                "bosattIEoesLandSedErEoesBlanketter: Boolean",
-                "eps60aarOgInntektUnder1g: Boolean",
-                "eps62aarOgInntektUnder1gBoddArbeidUtland: Boolean",
-                "epsInntektUnder2g: Boolean",
-                "forsoergerEpsBosattIUtlandet: Boolean",
-                "inntektsopplysninger: Boolean",
-                "manglendeOpptjening: Boolean",
-                "registreringAvSivilstand: Boolean",
-                "tidspunktForUttak: Boolean",
+                "amerikanskSocialSecurityNumber: kotlin.Boolean? (Amerikansk social security number)",
+                "bankopplysninger: kotlin.Boolean? (Bankopplysninger)",
+                "boOgArbeidsperioder: kotlin.Boolean? (Bo- og arbeidsperioder)",
+                "bosattIEoesLandSedErEoesBlanketter: kotlin.Boolean? (Bosatt i EØS-land. SED-er/EØS-blanketter)",
+                "eps60aarOgInntektUnder1g: kotlin.Boolean? (Ektefelle/partner/samboer 60 år og inntekt under 1G)",
+                "eps62aarOgInntektUnder1gBoddArbeidUtland: kotlin.Boolean? (Ektefelle/partner/samboer 62 år og bodd og/eller arbeidet i utlandet)",
+                "epsInntektUnder2g: kotlin.Boolean? (Ektefelles/partners/samboers inntekt under 2G)",
+                "forsoergerEpsBosattIUtlandet: kotlin.Boolean? (Forsørger ektefellen/partneren/samboeren som er bosatt i utlandet)",
+                "inntektsopplysninger: kotlin.Boolean? (Inntektsopplysninger)",
+                "manglendeOpptjening: kotlin.Boolean? (Manglende opptjening)",
+                "registreringAvSivilstand: kotlin.Boolean? (Registrering av sivilstand)",
+                "tidspunktForUttak: kotlin.Boolean? (Tidspunkt for uttak / ønsket uttaksgrad)",
             ),
             Redigerbar.PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER to emptyList(),
             Redigerbar.PE_AP_INNVILGELSE to listOf(
-                "etterbetaling: Boolean",
-                "kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean",
-                "vanligSkattetrekk: Boolean",
+                "etterbetaling: kotlin.Boolean? (Hvis etterbetaling av pensjon)",
+                "kravVirkDatoFomSenereEnnOensketUttakstidspunkt: kotlin.Boolean? (Virkningstidspunktet er senere enn ønsket uttakstidspunkt)",
+                "vanligSkattetrekk: kotlin.Boolean? (Bruk vanlig skattetrekk)",
             ),
             Redigerbar.PE_AP_INNVILGELSE_TRYGDEAVTALE to listOf(
-                "etterbetaling: Boolean",
-                "medfoererInnvilgelseAvAPellerOektUttaksgrad: Boolean",
-                "nyBeregningAvInnvilgetAP: Boolean",
+                "etterbetaling: kotlin.Boolean? (Hvis etterbetaling av pensjon)",
+                "medfoererInnvilgelseAvAPellerOektUttaksgrad: kotlin.Boolean (Slutthandling medfører: Innvilgelse av alderspensjon eller økt uttaksgrad)",
+                "nyBeregningAvInnvilgetAP: kotlin.Boolean (Tittel - Ny beregning av innvilget alderspensjon. Ingen endring av uttaksgraden)",
             ),
             Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS to emptyList(),
             Redigerbar.PE_BEKREFTELSE_PAA_PENSJON to emptyList(),
             Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER to listOf(
-                "opplystOmBotid: Boolean",
+                "opplystOmBotid: Boolean (Opplyst om botid)",
             ),
             Redigerbar.PE_FORESPOERSEL_DOKUM_BOTIDINORGE_ETTERLATTE to listOf(
-                "opplystOmBotid: Boolean",
+                "opplystOmBotid: Boolean (Opplyst om botid)",
             ),
             Redigerbar.PE_INFORMASJON_OM_GJENLEVENDERETTIGHETER to listOf(
-                "gjenlevendeHarBarnUnder18MedAvdoed: Boolean",
-                "gjenlevenderHarEllerKanHaAFPIOffentligSektor: Boolean",
-                "gjenlevevendeHarAfpOgUttaksgradPaaApSattTilNull: Boolean",
-                "hvorBorBruker: no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto.HvorBorBruker",
-                "infoHvordanSoekeOmstillingsstoenad: Boolean",
-                "infoOmstillingsstoenad: Boolean",
-                "infoVilkaarSkiltGjenlevende: Boolean",
-                "vilkarForGjenlevendeytelsen: no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto.VilkarForGjenlevendeytelsen",
+                "gjenlevendeHarBarnUnder18MedAvdoed: kotlin.Boolean (Gjenlevende har barn under 18 år sammen med avdøde)",
+                "gjenlevenderHarEllerKanHaAFPIOffentligSektor: kotlin.Boolean (Gjenlevende har eller kan ha AFP i offentlig sektor)",
+                "gjenlevevendeHarAfpOgUttaksgradPaaApSattTilNull: kotlin.Boolean (Gjenlevende har AFP privat og uttaksgrad på AP satt til 0)",
+                "hvorBorBruker: no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto.HvorBorBruker? (Hvor bor bruker)",
+                "infoHvordanSoekeOmstillingsstoenad: kotlin.Boolean (Hvis gradert uføretrygd, info søke omstillingsstønad)",
+                "infoOmstillingsstoenad: kotlin.Boolean (Hvis gradert uføretrygd, info omstillingsstønad)",
+                "infoVilkaarSkiltGjenlevende: kotlin.Boolean (Hvis gradert uføretrygd, info vilkår skilt gjenlevende)",
+                "vilkarForGjenlevendeytelsen: no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto.VilkarForGjenlevendeytelsen? (Vilkår for gjenlevendeytelsen)",
             ),
             Redigerbar.PE_KLAGE_ORIENTERING_OM_OVERSENDELSE_KLAGEINSTANS to emptyList(),
             Redigerbar.PE_KLAGE_ORIENTERING_OM_SAKSBEHANDLINGSTID to emptyList(),
             Redigerbar.PE_OMSORG_EGEN_MANUELL to listOf(
-                "aarEgenerklaringOmsorgspoeng: kotlin.Int",
-                "aarInnvilgetOmsorgspoeng: kotlin.Int",
+                "aarEgenerklaringOmsorgspoeng: kotlin.Int (År egenerklæring omsorgspoeng)",
+                "aarInnvilgetOmsorgspoeng: kotlin.Int (År innvilget omsorgspoeng)",
             ),
             Redigerbar.PE_ORIENTERING_OM_FORLENGET_SAKSBEHANDLINGSTID to emptyList(),
             Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER to emptyList(),
             Redigerbar.PE_TILBAKEKREVING_AV_FEILUTBETALT_BELOEP to emptyList(),
             Redigerbar.PE_VARSEL_OM_MULIG_AVSLAG to emptyList(),
             Redigerbar.PE_VARSEL_OM_TILBAKEKREVING_FEILUTBETALT_BELOEP to listOf(
-                "hvisAktueltAaIleggeRentetillegg: Boolean",
+                "hvisAktueltAaIleggeRentetillegg: Boolean (Hvis aktuelt å ilegge rentetillegg)",
             ),
             Redigerbar.PE_VARSEL_REVURDERING_AV_PENSJON to listOf(
-                "tittelValg: no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto.TittelValg",
+                "tittelValg: no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto.TittelValg (Tittelvalg)",
             ),
             Redigerbar.PE_VEDTAK_AVSLAG_PAA_OMSORGSOPPTJENING to listOf(
-                "brukerFoedtFoer1948: Boolean",
-                "omsorgsarbeidEtter69Aar: Boolean",
-                "omsorgsarbeidFoer1992: Boolean",
-                "omsorgsarbeidForBarnUnder7aarFoer1992: Boolean",
-                "omsorgsarbeidMindreEnn22Timer: Boolean",
-                "omsorgsarbeidMindreEnn22TimerOgMindreEnn6Maaneder: Boolean",
-                "omsorgsarbeidMindreEnn6Maaneder: Boolean",
-                "omsorgsopptjeningenGodskrevetEktefellen: Boolean",
-                "privatAFPavslaat: Boolean",
+                "brukerFoedtFoer1948: Boolean (Hvis bruker er født før 1948)",
+                "omsorgsarbeidEtter69Aar: Boolean (Omsorgsarbeid utført etter 69 år)",
+                "omsorgsarbeidFoer1992: Boolean (Omsorgsarbeid utført for en syk, funksjonshemmet eller eldre person før 1992)",
+                "omsorgsarbeidForBarnUnder7aarFoer1992: Boolean (Hvis det søkes om omsorgsopptjeningen for omsorg for barn under 7 år før 1992 uten at det er søkt om AFP privat)",
+                "omsorgsarbeidMindreEnn22Timer: Boolean (Pleie- og omsorgsarbeid mindre enn 22 timer)",
+                "omsorgsarbeidMindreEnn22TimerOgMindreEnn6Maaneder: Boolean (Pleie- og omsorgsarbeid mindre enn 22 timer  og mindre enn 6 måneder)",
+                "omsorgsarbeidMindreEnn6Maaneder: Boolean (Pleie- og omsorgsarbeid mindre enn 6 måneder)",
+                "omsorgsopptjeningenGodskrevetEktefellen: Boolean (Hvis omsorgsopptjening før 1992 allerede er godskrevet ektefellen)",
+                "privatAFPavslaat: Boolean (Hvis søknad om AFP privat er avslått av Fellesordningen)",
             ),
             Redigerbar.PE_VEDTAK_OM_FJERNING_AV_OMSORGSOPPTJENING to listOf(
-                "aktuelleAar: String",
+                "aktuelleAar: String (Aktuelle år)",
             ),
             Redigerbar.PE_VEDTAK_OM_INNVILGELSE_AV_OMSORGSPOENG to emptyList(),
             Redigerbar.UP_AVSLAG_UFOEREPENSJON to emptyList(),
@@ -190,36 +195,36 @@ class SaksbehandlervalgPerMalTest {
             Redigerbar.UT_DELVIS_EKSPORT_AV_UFORETRYGD to emptyList(),
             Redigerbar.UT_ENDRING_UFOERETRYGD to emptyList(),
             Redigerbar.UT_INFORMASJON_OM_SAKSBEHANDLINGSTID to listOf(
-                "forlengetSaksbehandlingstid: Boolean",
+                "forlengetSaksbehandlingstid: Boolean (Forlenget saksbehandlingstid)",
             ),
             Redigerbar.UT_INNVILGELSE_UFOERETRYGD to listOf(
-                "barnetilleggInfo: Boolean",
-                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg",
+                "barnetilleggInfo: kotlin.Boolean (Info om rett til barnetillegg)",
+                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg? (Periodisert inntekt barnetillegg)",
             ),
             Redigerbar.UT_INNVILGELSE_UFOERETRYGD_MED_ENDRING to listOf(
-                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg",
+                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg? (Periodisert inntekt barnetillegg)",
             ),
             Redigerbar.UT_INNVILGELSE_UFOERETRYGD_MELLOMBEHANDLING to listOf(
-                "barnetilleggInfo: Boolean",
-                "innvilgetEtter12_2Andreledd: Boolean",
-                "innvilgetEtter12_2Tredjeledd: Boolean",
-                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg",
-                "refusjon: Boolean",
+                "barnetilleggInfo: kotlin.Boolean (Info om rett til barnetillegg)",
+                "innvilgetEtter12_2Andreledd: kotlin.Boolean (Innvilget etter 12-2 2.ledd)",
+                "innvilgetEtter12_2Tredjeledd: kotlin.Boolean (Innvilget etter 12-2 3.ledd)",
+                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg? (Periodisert inntekt barnetillegg)",
+                "refusjon: kotlin.Boolean (Refusjon)",
             ),
             Redigerbar.UT_INNVILGELSE_UFOERETRYGD_NORGE_UTLAND to emptyList(),
             Redigerbar.UT_INNVILGELSE_UFOERETRYGD_UTLAND to listOf(
-                "barnetilleggInfo: Boolean",
-                "innvilgetEtter12_2Andreledd: Boolean",
-                "innvilgetEtter12_2Tredjeledd: Boolean",
-                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg",
-                "refusjon: Boolean",
+                "barnetilleggInfo: kotlin.Boolean (Info om rett til barnetillegg)",
+                "innvilgetEtter12_2Andreledd: kotlin.Boolean (Innvilget etter 12-2 2.ledd)",
+                "innvilgetEtter12_2Tredjeledd: kotlin.Boolean (Innvilget etter 12-2 3.ledd)",
+                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg? (Periodisert inntekt barnetillegg)",
+                "refusjon: kotlin.Boolean (Refusjon)",
             ),
             Redigerbar.UT_OKNING_UFOREGRAD to listOf(
-                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg",
+                "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg? (Periodisert inntekt barnetillegg)",
             ),
             Redigerbar.UT_OMREGNING_UFOEREPENSJON_TIL_UFOERETRYGD to emptyList(),
             Redigerbar.UT_ORIENTERING_OM_SAKSBEHANDLINGSTID to listOf(
-                "soeknadOversendesTilUtlandet: Boolean",
+                "soeknadOversendesTilUtlandet: kotlin.Boolean? (Søknad oversendes til utlandet)",
             ),
             Redigerbar.UT_VEDTAK_ETTERBETALING_OPPHOR_2026_RED to emptyList(),
             Redigerbar.UT_VEDTAK_MINSTE_IFU_2026_RED to emptyList(),

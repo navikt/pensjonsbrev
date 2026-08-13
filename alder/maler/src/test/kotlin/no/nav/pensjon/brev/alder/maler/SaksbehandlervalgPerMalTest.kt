@@ -3,13 +3,15 @@ package no.nav.pensjon.brev.alder.maler
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.Redigerbar
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.BrevbakerDSLInternal
+import no.nav.pensjon.brevbaker.api.model.DisplayText
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import kotlin.reflect.KClass
+import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.memberProperties
 
 /**
- * Dokumenterer og verifiserer hvilke saksbehandlervalg (felter på SaksbehandlerValg, med datatype)
+ * Dokumenterer og verifiserer hvilke saksbehandlervalg (felter på SaksbehandlerValg, med datatype og displayText)
  * som er tilgjengelige for hvert redigerbare brev i alder-modulen. Testen gjør ingen rendring —
  * den sjekker kun strukturen på `saksbehandlerValg`-typen til hver mal, slik at endringer i
  * hvilke valg saksbehandler kan gjøre blir synlige i en PR-diff.
@@ -30,9 +32,12 @@ class SaksbehandlervalgPerMalTest {
             // `mal.template.saksbehandlervalg`. Ikke-migrerte maler har fremdeles en typet SaksbehandlerValg-klasse,
             // som vi da faller tilbake til å reflektere over.
             val valg = if (saksbehandlerValgType == SaksbehandlervalgIDSL::class) {
-                mal.template.saksbehandlervalg.orEmpty().entries.map { (id, verdi) -> "$id: ${verdi.typename}" }
+                mal.template.saksbehandlervalg.orEmpty().entries.map { (id, verdi) -> "$id: ${verdi.typename} (${verdi.displayText})" }
             } else {
-                saksbehandlerValgType.memberProperties.map { "${it.name}: ${it.returnType}" }
+                saksbehandlerValgType.memberProperties.map { prop ->
+                    val displayText = prop.findAnnotation<DisplayText>()?.text ?: "<mangler>"
+                    "${prop.name}: ${prop.returnType} ($displayText)"
+                }
             }
 
             (mal.kode as Redigerbar) to valg.sorted()
@@ -40,8 +45,8 @@ class SaksbehandlervalgPerMalTest {
 
         val forventet = mapOf(
             Redigerbar.INFO_BEKREFTELSE_UTSENDING_KRAV_TIL_UTLANDET to emptyList(),
-            Redigerbar.INFO_BRUKER_AFP_PRIVAT_SOKER_UFORETRYGD to listOf("harSoktUforeTrygd: kotlin.Boolean"),
-            Redigerbar.INFO_BRUKER_UFORETRYGD_SOKER_AFP_PRIVAT to listOf("brukerHarSoktAfpPrivat: kotlin.Boolean"),
+            Redigerbar.INFO_BRUKER_AFP_PRIVAT_SOKER_UFORETRYGD to listOf("harSoktUforeTrygd: kotlin.Boolean (Bruker har søkt UføreTrygd)"),
+            Redigerbar.INFO_BRUKER_UFORETRYGD_SOKER_AFP_PRIVAT to listOf("brukerHarSoktAfpPrivat: kotlin.Boolean (Bruker har søkt Afp Privat)"),
             Redigerbar.PE_AFP_AVSLAG to emptyList(),
             Redigerbar.PE_AFP_AVSLAG_GAMMEL to emptyList(),
             Redigerbar.PE_AFP_ETTEROPPGJOER_ETTERBETALING to emptyList(),
@@ -56,25 +61,25 @@ class SaksbehandlervalgPerMalTest {
             Redigerbar.PE_AFP_PRIVAT_ENDRING to emptyList(),
             Redigerbar.PE_AF_INNVILGELSE_OFFENTLIG to emptyList(),
             Redigerbar.PE_AF_VEDTAK_ENDRING_OFFENTLIG to emptyList(),
-            Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER to listOf("visInfoOmUttakFoer67: kotlin.Boolean?"),
-            Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_AP2016 to listOf("visInfoOmUttakFoer67: kotlin.Boolean?"),
+            Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER to listOf("visInfoOmUttakFoer67: kotlin.Boolean? (Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år)"),
+            Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_AP2016 to listOf("visInfoOmUttakFoer67: kotlin.Boolean? (Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år)"),
             Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_ETT_AAR to emptyList(),
-            Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER to listOf("visInfoOmUttakFoer67: kotlin.Boolean?"),
-            Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER_AP2016 to listOf("visInfoOmUttakFoer67: kotlin.Boolean?"),
+            Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER to listOf("visInfoOmUttakFoer67: kotlin.Boolean? (Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år)"),
+            Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER_AP2016 to listOf("visInfoOmUttakFoer67: kotlin.Boolean? (Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år)"),
             Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_GARANTITILLEGG to emptyList(),
             Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SAERSKILT_SATS to listOf(
-                "aarligKontrollEPS: kotlin.Boolean",
-                "eps: no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSatsDto.SaksbehandlerValg.EPS?",
-                "etterbetaling: kotlin.Boolean?",
-                "feilutbetaling: kotlin.Boolean",
+                "aarligKontrollEPS: kotlin.Boolean (Informasjon om årlig kontroll til 67 år)",
+                "eps: no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSatsDto.SaksbehandlerValg.EPS? (Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå)",
+                "etterbetaling: kotlin.Boolean? (Hvis etterbetaling)",
+                "feilutbetaling: kotlin.Boolean (Hvis reduksjon tilbake i tid)",
             ),
             Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND to listOf(
-                "etterbetaling: kotlin.Boolean?",
-                "feilutbetaling: kotlin.Boolean?",
-                "sivilstandsendringsaarsak: no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg.Sivilstandsendringsaarsak?",
+                "etterbetaling: kotlin.Boolean? (Hvis etterbetaling)",
+                "feilutbetaling: kotlin.Boolean? (Hvis reduksjon tilbake i tid)",
+                "sivilstandsendringsaarsak: no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg.Sivilstandsendringsaarsak? (Årsak til sivilstandsendringen)",
             ),
             Redigerbar.PE_AP_OMREGNING_ALDER_UFORE_2016 to emptyList(),
-            Redigerbar.PE_AP_STANS_FLYTTING_MELLOM_LAND to listOf("feilutbetaling: kotlin.Boolean"),
+            Redigerbar.PE_AP_STANS_FLYTTING_MELLOM_LAND to listOf("feilutbetaling: kotlin.Boolean (Hvis reduksjon tilbake i tid)"),
         )
 
         assertEquals(
