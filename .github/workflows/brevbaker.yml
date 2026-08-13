@@ -70,7 +70,7 @@ jobs:
       extraModulesToBuild: >-
         :pensjon:pensjon-api-model:publishToMavenLocal
         :alder:api-model:publishToMavenLocal
-        :ufoere:api-model:publishToMavenLocal
+        :ufoere:ufoere-api-model:publishToMavenLocal
       buildImage: true
 
   salsa-brevbaker:
@@ -107,7 +107,7 @@ jobs:
           ./gradlew :brevbaker:brevbaker-api:publishToMavenLocal
           ./gradlew :pensjon:pensjon-api-model:publishToMavenLocal
           ./gradlew :alder:api-model:publishToMavenLocal
-          ./gradlew :ufoere:api-model:publishToMavenLocal
+          ./gradlew :ufoere:ufoere-api-model:publishToMavenLocal
           ./gradlew :pensjon:brevbaker:integrationTest
         env:
           "PDF_BYGGER_IMAGE": "ghcr.io/navikt/pensjonsbrev/pdf-bygger:main"

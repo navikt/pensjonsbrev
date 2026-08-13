@@ -29,7 +29,7 @@ include("pensjon:maler")
 include("pensjon:pensjon-api-model")
 
 include("ufoere:maler")
-include("ufoere:api-model")
+include("ufoere:ufoere-api-model")
 
 include("alder:maler")
 include("alder:api-model")
