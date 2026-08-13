@@ -26,6 +26,3 @@ val vilkaarligMaaned = YearMonth.of(2025, Month.OCTOBER)
 fun writeJsonToFile(path: Path, content: Any) {
     Files.writeString(path, jacksonObjectMapper().writeValueAsString(content))
 }
-
-fun toPrettyJson(content: Any): String =
-    jacksonObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(content)
