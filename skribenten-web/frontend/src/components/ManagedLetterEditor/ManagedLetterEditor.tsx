@@ -37,7 +37,11 @@ const ManagedLetterEditor = (props: {
       }));
       // oppdaterBrevtekst only saves redigertBrev; tekstvalg changes require saveDirtyLetter.
       if (isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
-        return oppdaterBrevtekst(props.brev.info.id, stateWithCursor.redigertBrev);
+        return oppdaterBrevtekst({
+          brevId: props.brev.info.id,
+          redigertBrev: stateWithCursor.redigertBrev,
+          frigiReservasjon: false,
+        });
       }
       if (!props.saveDirtyLetter) {
         throw new Error("saveDirtyLetter is required when saksbehandlerValg has changed");
