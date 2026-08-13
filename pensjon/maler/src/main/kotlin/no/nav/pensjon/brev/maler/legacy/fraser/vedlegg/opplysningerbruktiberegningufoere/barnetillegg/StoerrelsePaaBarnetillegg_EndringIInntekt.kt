@@ -16,11 +16,6 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())) {
             paragraph {
-                // Åpningssetningen er slått saman til éi felles tospråkleg sekvens: kvart fragment
-                // har både bokmål og nynorsk under same showIf-guard. Nynorsk-ordlyden er lagt om
-                // slik at eigedomspronomenet følgjer same ordstilling som bokmål ("inntekta di ...
-                // til {samboar} din"), slik at me slepp den tidlegare "di" + "n"-splittinga og eigne
-                // per-språk-sekvensar.
                 showIf(((pe.ut_tbu605v_eller_til_din()))) {
                     text(
                         bokmal { + "Har det vært en endring i inntekten din" },

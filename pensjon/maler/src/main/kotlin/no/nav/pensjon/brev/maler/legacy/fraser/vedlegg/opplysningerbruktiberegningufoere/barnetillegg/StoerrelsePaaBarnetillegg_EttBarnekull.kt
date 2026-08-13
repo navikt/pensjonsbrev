@@ -33,12 +33,6 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
 
         showIf((pe.ut_tbu605())) {
             paragraph {
-                // Åpningssetningen er slått saman til tospråklege text()-kall med felles guards.
-                // For å få lik logikk måtte nynorsk-ordlyden endrast: eigedomspronomenet er baka inn i
-                // grunnsetninga ("inntekta di", som bokmål "inntekten din") og betegnelsen ber sitt eige
-                // "din" til slutt ("ektefellen din"), i staden for den tidlegare "til deg eller ... di"+"n"-
-                // konstruksjonen. Bokmål er uendra; nynorsk partnar-tilfelle les no "inntekta di eller til
-                // ektefellen din" (før: "inntekta til deg eller ektefellen din").
                 showIf(((pe.ut_tbu605v_eller_til_din()))) {
                     text(
                         bokmal { + "Har det vært en endring i inntekten din" },
