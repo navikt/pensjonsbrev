@@ -30,11 +30,11 @@ updates:
       - "/etterlattemaler"
       - "/brevbaker/pdf-bygger"
       - "/pensjon/brevbaker"
-      - "/pensjon/api-model"
+      - "/pensjon/pensjon-api-model"
       - "/pensjon/maler"
       - "/skribenten-backend"
       - "/brevbaker/template-model-generator"
-      - "/ufoere/api-model"
+      - "/ufoere/ufoere-api-model"
       - "/ufoere/maler"
     schedule:
       interval: "monthly"
