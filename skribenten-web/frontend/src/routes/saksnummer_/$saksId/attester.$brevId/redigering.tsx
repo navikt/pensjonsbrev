@@ -190,13 +190,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const [forbidReason, setForbidReason] = useState<AttestForbiddenReason | null>(null);
   const [unexpectedError, setUnexpectedError] = useState<AxiosError | null>(null);
 
-  const {
-    highlightedIds: highlightedInsertedTekstvalgIds,
-    beforeTekstvalgChange,
-    onAfterSave,
-  } = useTekstvalgInsertHighlight({
-    redigertBrev: props.brev.redigertBrev,
-    saksbehandlerValg: editorState.saksbehandlerValg,
+  const { highlightedIds: highlightedInsertedTekstvalgIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
+    lagretRedigertBrev: props.brev.redigertBrev,
+    editorState,
     setEditorState,
   });
 
@@ -243,7 +239,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     brevId: props.brev.info.id,
     setEditorState,
     onSaveSuccess,
-    onAfterSave,
   });
 
   const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterAttesteringRequest>({

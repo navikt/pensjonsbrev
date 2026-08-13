@@ -242,9 +242,9 @@ function RedigerBrev({
 
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
-  const { highlightedIds, beforeTekstvalgChange, onAfterSave } = useTekstvalgInsertHighlight({
-    redigertBrev: brev.redigertBrev,
-    saksbehandlerValg: editorState.saksbehandlerValg,
+  const { highlightedIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
+    lagretRedigertBrev: brev.redigertBrev,
+    editorState,
     setEditorState,
   });
 
@@ -270,7 +270,6 @@ function RedigerBrev({
     brevId: brev.info.id,
     setEditorState,
     onSaveSuccess,
-    onAfterSave,
   });
   const { oppdaterBrevMutation, saveDirtyLetter } = oppdaterBrevAutosave;
 

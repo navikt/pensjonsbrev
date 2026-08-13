@@ -46,13 +46,11 @@ export function useOppdaterBrevAutosave({
   brevId,
   setEditorState,
   onSaveSuccess,
-  onAfterSave,
 }: {
   saksId: string;
   brevId: number;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   onSaveSuccess: (response: BrevResponse, options?: SaveSuccessOptions) => void;
-  onAfterSave?: (response: BrevResponse, responseWasApplied: boolean) => void;
 }) {
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevMutationVariables>({
     mutationFn: (values) => {
@@ -81,15 +79,6 @@ export function useOppdaterBrevAutosave({
             }
           : undefined,
       );
-
-      // The editor may have gone DIRTY while the request was in flight (user typed);
-      // onSaveSuccess discards the response in that case, so callers must know whether it was applied.
-      let responseWasApplied = true;
-      setEditorState((current) => {
-        responseWasApplied = current.saveStatus !== "DIRTY";
-        return current;
-      });
-      onAfterSave?.(response, responseWasApplied);
     },
     onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });

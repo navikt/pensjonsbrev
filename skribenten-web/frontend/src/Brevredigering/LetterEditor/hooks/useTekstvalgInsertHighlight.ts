@@ -7,44 +7,55 @@ import {
   hasAnyTekstvalgBeenToggledOn,
 } from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import { type BrevResponse, type SaksbehandlerValg } from "~/types/brev";
+import { type SaksbehandlerValg } from "~/types/brev";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 
 const HIGHLIGHT_DURATION_MS = 2200;
 
+type PendingToggle = {
+  /** All ids in the letter at the moment the tekstvalg was toggled on. */
+  idsBeforeToggle: ReadonlySet<number>;
+  /**
+   * Ids known to be saved at that same moment. Captured here — rather than read when the save
+   * lands — so the result cannot depend on the order effects happen to run in.
+   */
+  lastSeenIds: ReadonlySet<number>;
+};
+
 /**
- * Tracks which content ids were inserted by a tekstvalg toggle-on so they can be
- * flash-highlighted and focused once the autosave response comes back.
+ * Flash-highlights the content a tekstvalg toggle inserted, and moves the cursor to the end of it.
  *
- * `redigertBrev` should be the server-known letter (e.g. the initially fetched `brev.redigertBrev`,
- * not the in-progress `editorState.redigertBrev`) — it is only used to seed/refresh the set of
- * "already seen" ids, so newly typed-but-unsaved content is never mistaken for a tekstvalg insert.
+ * The highlight is derived from the editor state the user is actually looking at, so content is
+ * never flashed from a save response that `onSaveSuccess` discarded (which happens when the user
+ * types while the save is in flight).
+ *
+ * `lagretRedigertBrev` is the server-known letter (e.g. `brev.redigertBrev` from the query cache,
+ * not `editorState.redigertBrev`) — it only seeds the set of "already saved" ids, so newly
+ * typed-but-unsaved content is never mistaken for a tekstvalg insert.
  */
 export function useTekstvalgInsertHighlight({
-  redigertBrev,
-  saksbehandlerValg,
+  lagretRedigertBrev,
+  editorState,
   setEditorState,
 }: {
-  redigertBrev: EditedLetter;
-  saksbehandlerValg: SaksbehandlerValg | null | undefined;
+  lagretRedigertBrev: EditedLetter;
+  editorState: LetterEditorState;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
 }) {
-  // Tracks the latest server-known letter and saksbehandlerValg for event handlers
-  // and mutation callbacks. These refs do not affect rendering.
-  const lastSeenIdsRef = useRef<ReadonlySet<number>>(collectAllIds(redigertBrev));
-  const previousValgRef = useRef(saksbehandlerValg);
+  const lastSeenIdsRef = useRef<ReadonlySet<number>>(collectAllIds(lagretRedigertBrev));
+  const previousValgRef = useRef(editorState.saksbehandlerValg);
 
-  const idsBeforeToggleRef = useRef<ReadonlySet<number> | null>(null);
+  const pendingToggleRef = useRef<PendingToggle | null>(null);
   const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [highlightedIds, setHighlightedIds] = useState<ReadonlySet<number>>(() => new Set<number>());
 
   useEffect(() => {
-    lastSeenIdsRef.current = collectAllIds(redigertBrev);
-  }, [redigertBrev]);
+    lastSeenIdsRef.current = collectAllIds(lagretRedigertBrev);
+  }, [lagretRedigertBrev]);
 
   useEffect(() => {
-    previousValgRef.current = saksbehandlerValg;
-  }, [saksbehandlerValg]);
+    previousValgRef.current = editorState.saksbehandlerValg;
+  }, [editorState.saksbehandlerValg]);
 
   useEffect(
     () => () => {
@@ -55,41 +66,51 @@ export function useTekstvalgInsertHighlight({
     [],
   );
 
-  // Call before triggering the autosave mutation for a tekstvalg/overstyring change.
-  // Records the pre-change ids only if a tekstvalg was toggled ON — not on toggle-off or overstyring edits.
-  const beforeTekstvalgChange = (updatedValg: SaksbehandlerValg, currentRedigertBrev: EditedLetter) => {
-    if (hasAnyTekstvalgBeenToggledOn(previousValgRef.current, updatedValg)) {
-      idsBeforeToggleRef.current = collectAllIds(currentRedigertBrev);
+  const { saveStatus, redigertBrev } = editorState;
+
+  useEffect(() => {
+    const pending = pendingToggleRef.current;
+    if (!pending) return;
+
+    // The user typed while the save was in flight, so `onSaveSuccess` discarded the response.
+    // Drop the pending toggle instead of highlighting later, which would move the cursor
+    // out from under someone who is still typing.
+    if (saveStatus === "DIRTY") {
+      pendingToggleRef.current = null;
+      return;
     }
+    // Still in flight.
+    if (saveStatus !== "SAVED") return;
+
+    const newIds = new Set<number>();
+    for (const id of collectNewIds(pending.idsBeforeToggle, redigertBrev)) {
+      if (!pending.lastSeenIds.has(id)) newIds.add(id);
+    }
+    // The save has not landed yet — `saveStatus` is also "SAVED" at rest, so keep waiting rather
+    // than dropping the pending toggle.
+    if (newIds.size === 0) return;
+
+    pendingToggleRef.current = null;
+    setHighlightedIds(newIds);
+
+    const focus = findLastInsertedFocus(redigertBrev, newIds);
+    if (focus) {
+      setEditorState((state) => ({ ...state, focus }));
+    }
+
+    if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+    highlightTimerRef.current = setTimeout(() => setHighlightedIds(new Set<number>()), HIGHLIGHT_DURATION_MS);
+  }, [saveStatus, redigertBrev, setEditorState]);
+
+  // Call before triggering the autosave for a tekstvalg/overstyring change.
+  // Only a toggle ON inserts content — toggle-off and overstyring edits must not arm a highlight,
+  // and must clear any previously armed one.
+  const beforeTekstvalgChange = (updatedValg: SaksbehandlerValg, currentRedigertBrev: EditedLetter) => {
+    pendingToggleRef.current = hasAnyTekstvalgBeenToggledOn(previousValgRef.current, updatedValg)
+      ? { idsBeforeToggle: collectAllIds(currentRedigertBrev), lastSeenIds: lastSeenIdsRef.current }
+      : null;
     previousValgRef.current = updatedValg;
   };
 
-  // Call from the autosave mutation's onSuccess, after onSaveSuccess has been applied
-  // (or discarded, if the editor went DIRTY while the request was in flight).
-  const onAfterSave = (response: BrevResponse, responseWasApplied: boolean) => {
-    const idsBeforeToggle = idsBeforeToggleRef.current;
-    idsBeforeToggleRef.current = null;
-
-    // The editor went DIRTY while the request was in flight (user typed);
-    // onSaveSuccess discarded the response, so do not flash or move the cursor based on a letter the user is not seeing.
-    if (!idsBeforeToggle || !responseWasApplied) return;
-
-    const lastSeenIds = lastSeenIdsRef.current;
-    const newIds = new Set<number>();
-    for (const id of collectNewIds(idsBeforeToggle, response.redigertBrev)) {
-      // Ignore ids that already existed in the letter before this save.
-      if (!lastSeenIds.has(id)) newIds.add(id);
-    }
-    if (newIds.size === 0) return;
-
-    setHighlightedIds(newIds);
-    const focus = findLastInsertedFocus(response.redigertBrev, newIds);
-    if (focus) {
-      setEditorState((s) => ({ ...s, focus }));
-    }
-    if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
-    highlightTimerRef.current = setTimeout(() => setHighlightedIds(new Set<number>()), HIGHLIGHT_DURATION_MS);
-  };
-
-  return { highlightedIds, beforeTekstvalgChange, onAfterSave };
+  return { highlightedIds, beforeTekstvalgChange };
 }
