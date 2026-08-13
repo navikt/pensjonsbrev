@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { BodyLong, Box, Heading, Popover, Tag } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
-import { type ReactNode, useRef, useState } from "react";
+import { createContext, type ReactNode, useContext, useRef, useState } from "react";
 
 import {
   type AssocOp,
@@ -18,9 +18,52 @@ import {
   type ExprLiteral,
   ExprType,
   type ForEachV2,
+  type RowV2,
   type TemplateDocumentationV2,
 } from "~/api/brevbakerTypesV2";
 import { trimClassName } from "~/components/DataClasses";
+
+/**
+ * Signaliserer at vi rendrer INNI en PARAGRAPH_TABLE sine rader (E = RowV2), og at gridet har
+ * en ekstra, reservert "markør-kolonne" (kolonne 1) satt av fordi tabellen har minst én
+ * betinget rad (se `hasConditionalRows`). Brukes av ConditionalComponentV2/ShowElseIfV2/
+ * ShowElseV2/ForEachComponentV2/PARAGRAPH_TABLE_ROW til å vite om de skal forskyve sine egne
+ * celler +1 kolonne og gi plass til en kompakt klikkbar markør i stedet for den fulle
+ * "If <predikat>"-blokk-visningen som brukes utenfor tabeller. Nullstilles eksplisitt til
+ * `null` når vi rendrer en celles TEKST-innhold (`cell.text`), siden inline tekst-uttrykk kan
+ * ha SINE EGNE (Text-nivå) betingelser som ikke skal få tabell-radbehandling.
+ */
+const TableGridContext = createContext<{ hasMarkerColumn: boolean } | null>(null);
+
+/**
+ * Sjekker om en tabells rader (rekursivt gjennom FOR_EACH) inneholder minst én CONDITIONAL, som
+ * avgjør om vi må reservere en ekstra markør-kolonne (kolonne 1) i gridet for kompakte
+ * klikkbare If/Else If/Else-markører.
+ */
+function hasConditionalRows(rows: ContentOrControlStructureV2<RowV2>[]): boolean {
+  return rows.some((row) => {
+    if (row.controlStructureType === ContentOrControlStructureTypeV2.CONDITIONAL) {
+      return true;
+    }
+    if (row.controlStructureType === ContentOrControlStructureTypeV2.FOR_EACH) {
+      return hasConditionalRows(row.body);
+    }
+    return false;
+  });
+}
+
+/**
+ * Det vanlige/enkle tilfellet - en gren (showIf/showIf i en Else If/showElse) som består av
+ * nøyaktig én direkte rad (CONTENT), uten nøstet FOR_EACH/CONDITIONAL. Da kan vi rendre
+ * markøren og radens celler som søsken i det samme grid-elementet, uten koordinering på tvers
+ * av komponenter. Nøstede/sammensatte grener faller tilbake til den eldre, alltid synlige
+ * disclosure-raden (se `ConditionalPredicateDisclosure`).
+ */
+function singleDirectRow<E>(branch: ContentOrControlStructureV2<E>[]): E | null {
+  return branch.length === 1 && branch[0].controlStructureType === ContentOrControlStructureTypeV2.CONTENT
+    ? branch[0].content
+    : null;
+}
 
 /**
  * Rendering for TemplateDocumentationRendererV2 ("v2"). Speiler strukturen i
@@ -81,7 +124,19 @@ function ForEachComponentV2({ content }: { content: ForEachV2<ElementV2> }) {
   );
 }
 
+/** Tom, hvit fylle-celle for kolonne 1 (markør-kolonnen) - brukes av rader som IKKE selv er den
+ * første raden i en betinget gren, slik at kolonne 1 alltid har et grid-element med hvit
+ * bakgrunn (i stedet for en fullstendig ubrukt grid-celle, som ville vist gridets sorte
+ * "linje"-bakgrunn som en hel svart rute for den raden). */
+function TableMarkerGutterCell() {
+  return <span className="cell" style={{ gridColumn: 1 }} />;
+}
+
 function ContentComponentV2({ content }: { content: ElementV2 }) {
+  // Kalles ubetinget her (i stedet for inni PARAGRAPH_TABLE_ROW-caset under) for å følge
+  // "rules of hooks" - denne komponenten har ett React-hook-kall uansett hvilket case som
+  // trigges, selv om resultatet kun brukes av PARAGRAPH_TABLE_ROW.
+  const tableGrid = useContext(TableGridContext);
   switch (content.elementType) {
     case ElementTypeV2.TITLE1: {
       return (
@@ -130,12 +185,16 @@ function ContentComponentV2({ content }: { content: ElementV2 }) {
       );
     }
     case ElementTypeV2.PARAGRAPH_TABLE: {
+      // Reserverer en ekstra, smal markør-kolonne (kolonne 1) KUN hvis tabellen faktisk har
+      // minst én betinget rad - unngår en unødvendig tom gutter-kolonne for det store flertallet
+      // av tabeller som ikke har noen Conditional-rader i det hele tatt.
+      const hasMarkerColumn = hasConditionalRows(content.rows);
       return (
         <div
           css={css`
             display: grid;
             gap: 1px;
-            grid-template-columns: repeat(${content.header.cells.length}, 1fr);
+            grid-template-columns: ${hasMarkerColumn ? "auto " : ""}repeat(${content.header.cells.length}, 1fr);
             border: 1px solid black;
             background: black;
             overflow: auto;
@@ -144,7 +203,8 @@ function ContentComponentV2({ content }: { content: ElementV2 }) {
               background: white;
             }
 
-            .expression + .cell {
+            .expression + .cell,
+            .table-conditional-marker + .cell {
               padding-left: var(--ax-space-16);
             }
 
@@ -154,45 +214,88 @@ function ContentComponentV2({ content }: { content: ElementV2 }) {
               display: contents;
             }
 
-            .expression {
-              grid-column: span ${content.header.cells.length};
+            /*
+             * "1 / -1" spenner alltid fra første til siste gridlinje, uansett om
+             * markør-kolonnen finnes eller ikke - slipper å regne ut antall kolonner på nytt
+             * her for hver ny slik full-bredde-rad (For hver X i:, den valgfrie
+             * If/Else If-predikat-raden når den er ekspandert, osv). .conditional-predicate
+             * (native <details>) er fallback-visningen for sammensatte/nøstede grener (se
+             * TableConditionalBranch) som ikke kan rendres kompakt - må også få hvit bakgrunn,
+             * siden bare selve <summary>-en er synlig når den er kollapset.
+             */
+            .expression,
+            .table-conditional-predicate,
+            .conditional-predicate {
+              grid-column: 1 / -1;
             }
 
-            /*
-             * ConditionalPredicateDisclosure sin <details> er en direkte etterkommer av dette
-             * grid-elementet (siden .conditional/.show-if/.show-else er display: contents), og må
-             * derfor selv få samme grid-column: span-behandling som .expression - ellers havner den
-             * i én enkelt grid-celle (i stedet for å spenne hele raden), skyver de påfølgende
-             * .cell-ene ut av kolonnejustering, og viser gitter-bakgrunnen (svart) rundt seg siden
-             * den ikke har noen egen bakgrunnsfarge (i motsetning til .cell/.expression).
-             */
             .conditional-predicate {
+              background: white;
+            }
+
+            .table-conditional-predicate {
               background: var(--ax-meta-purple-300);
-              grid-column: span ${content.header.cells.length};
+            }
+
+            /* Den kompakte klikkbare ▸/▾-markøren (If/Else If) eller det statiske
+             * Else-merket, plassert i den reserverte markør-kolonnen (kolonne 1) på SAMME
+             * grid-rad som den første raden i grenen den hører til - i stedet for en egen,
+             * alltid synlig rad. Se ConditionalComponentV2/ShowElseIfV2/ShowElseV2. */
+            .table-conditional-marker {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              background: white;
+              border: none;
+              cursor: pointer;
+              font: inherit;
+              padding: 0 var(--ax-space-4);
+            }
+
+            .table-conditional-marker[aria-expanded="true"] {
+              color: var(--ax-text-danger);
+              font-weight: 600;
             }
           `}
         >
+          {hasMarkerColumn && <b className="cell" style={{ gridColumn: 1 }} />}
           {content.header.cells.map((cell, index) => (
-            <b className="cell" key={index}>
+            <b className="cell" key={index} style={hasMarkerColumn ? { gridColumn: index + 2 } : undefined}>
               {cell.text.map((t, index) => (
                 <ContentOrControlStructureComponentV2 cocs={t} key={index} />
               ))}
             </b>
           ))}
-          {content.rows.map((r, index) => (
-            <ContentOrControlStructureComponentV2 cocs={r} key={index} />
-          ))}
+          <TableGridContext.Provider value={{ hasMarkerColumn }}>
+            {content.rows.map((r, index) => (
+              <ContentOrControlStructureComponentV2 cocs={r} key={index} />
+            ))}
+          </TableGridContext.Provider>
         </div>
       );
     }
     case ElementTypeV2.PARAGRAPH_TABLE_ROW: {
-      return content.cells.map((cell, index) => (
-        <span className="cell" key={index}>
-          {cell.text.map((t, index) => (
-            <ContentOrControlStructureComponentV2 cocs={t} key={index} />
+      return (
+        <>
+          {tableGrid?.hasMarkerColumn && <TableMarkerGutterCell />}
+          {content.cells.map((cell, index) => (
+            <span
+              className="cell"
+              key={index}
+              style={tableGrid?.hasMarkerColumn ? { gridColumn: index + 2 } : undefined}
+            >
+              {/* Nullstiller kontekst: en celles TEKST-innhold kan ha SINE EGNE (Text-nivå)
+               * betingelser, som skal rendres med den vanlige blokk-stilen - ikke tabell-radens
+               * kompakte markør-stil. */}
+              <TableGridContext.Provider value={null}>
+                {cell.text.map((t, index) => (
+                  <ContentOrControlStructureComponentV2 cocs={t} key={index} />
+                ))}
+              </TableGridContext.Provider>
+            </span>
           ))}
-        </span>
-      ));
+        </>
+      );
     }
     case ElementTypeV2.PARAGRAPH_ITEMLIST: {
       return (
@@ -216,6 +319,18 @@ function ContentComponentV2({ content }: { content: ElementV2 }) {
 }
 
 function ConditionalComponentV2<E extends ElementV2>({ conditional }: { conditional: ConditionalV2<E> }) {
+  const tableGrid = useContext(TableGridContext);
+  if (tableGrid?.hasMarkerColumn) {
+    return (
+      <>
+        <TableConditionalBranch branch={conditional.showIf} label="If" predicate={conditional.predicate} />
+        {conditional.elseIf.map((elseIf, index) => (
+          <TableConditionalBranch branch={elseIf.showIf} key={index} label="Else If" predicate={elseIf.predicate} />
+        ))}
+        <TableConditionalElseBranch cocs={conditional.showElse} />
+      </>
+    );
+  }
   return (
     <div className="conditional">
       <div className="show-if">
@@ -244,21 +359,128 @@ function ShowElseIfV2<E extends ElementV2>({ elseIf }: { elseIf: ElseIfV2<E> }) 
 }
 
 /**
+ * Rendrer en If/Else If-gren for TABELL-rader (E = RowV2). Det vanlige/enkle tilfellet - grenen
+ * består av nøyaktig én direkte rad - rendres kompakt: en klikkbar ▸/▾-markør i markør-kolonnen
+ * (kolonne 1) på SAMME grid-rad som selve radens celler, i stedet for en alltid synlig egen
+ * rad. Kun når disclosure-en er ekspandert settes det inn en EKSTRA, full-bredde rad over med
+ * selve predikatet - se TableConditionalToggle. Sammensatte/nøstede grener (f.eks. FOR_EACH av
+ * rader) faller tilbake til den eldre, alltid synlige disclosure-raden, siden markøren da ikke
+ * entydig kan knyttes til én bestemt rad.
+ */
+function TableConditionalBranch<E extends ElementV2>({
+  label,
+  predicate,
+  branch,
+}: {
+  label: string;
+  predicate: Expr;
+  branch: ContentOrControlStructureV2<E>[];
+}) {
+  const directRow = singleDirectRow(branch);
+  if (directRow) {
+    return (
+      <TableConditionalToggle label={label} predicate={predicate}>
+        <ContentOrControlStructureComponentV2
+          cocs={{ controlStructureType: ContentOrControlStructureTypeV2.CONTENT, content: directRow }}
+        />
+      </TableConditionalToggle>
+    );
+  }
+  return (
+    <>
+      <ConditionalPredicateDisclosure label={label} predicate={predicate} />
+      {branch.map((cocs, index) => (
+        <ContentOrControlStructureComponentV2 cocs={cocs} key={index} />
+      ))}
+    </>
+  );
+}
+
+function TableConditionalElseBranch<E extends ElementV2>({ cocs }: { cocs: ContentOrControlStructureV2<E>[] }) {
+  if (cocs.length === 0) {
+    return null;
+  }
+  const directRow = singleDirectRow(cocs);
+  if (directRow) {
+    return (
+      <>
+        <span className="table-conditional-marker" style={{ gridColumn: 1 }} title="Else">
+          <code>?</code>
+        </span>
+        <ContentOrControlStructureComponentV2
+          cocs={{ controlStructureType: ContentOrControlStructureTypeV2.CONTENT, content: directRow }}
+        />
+      </>
+    );
+  }
+  return (
+    <>
+      <div className="expression">
+        <code>Else</code>
+      </div>
+      {cocs.map((a, index) => (
+        <ContentOrControlStructureComponentV2 cocs={a} key={index} />
+      ))}
+    </>
+  );
+}
+
+/**
+ * Kompakt If/Else If-markør for tabellrader: en liten klikkbar ▸/▾-knapp i markør-kolonnen
+ * (kolonne 1), på SAMME grid-rad som `children` (den betingede radens celler) - i stedet for en
+ * alltid synlig, full-bredde "If <predikat>"-rad. Kun når `open` er `true` settes det inn en
+ * EKSTRA, full-bredde rad OVER selve raden med det fulle predikatet - dette er den eneste
+ * gangen en betinget tabellrad legger til en ekstra grid-rad.
+ */
+function TableConditionalToggle({
+  label,
+  predicate,
+  children,
+}: {
+  label: string;
+  predicate: Expr;
+  children: ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      {open && (
+        <div className="table-conditional-predicate">
+          <code>{label}</code> <ExprToText expr={predicate} />
+        </div>
+      )}
+      <button
+        aria-expanded={open}
+        className="table-conditional-marker"
+        onClick={() => setOpen((o) => !o)}
+        style={{ gridColumn: 1 }}
+        title={`${label}${open ? " (klikk for å skjule betingelsen)" : ": klikk for å vise betingelsen"}`}
+        type="button"
+      >
+        {open ? "▾" : "▸"}
+      </button>
+      {children}
+    </>
+  );
+}
+
+/**
  * "If <predikat>"/"Else If <predikat>"-raden kan bli svært lang (nøstede AND/OR-kjeder, lange
  * feltstier) og dominerer plassen når man leser gjennom brevoppskriften - selv om det som regel
  * er selve den betingede TEKSTEN (innholdet under raden) man er ute etter, ikke predikatet. Vises
- * derfor kollapset som standard (kun label + en liten trekant-markør), med en native
- * <details>/<summary>-disclosure man kan klikke - eller taste Enter/Space på, siden <summary> er
- * fokuserbar og har innebygd tastaturstøtte - for å vise selve predikatet.
+ * derfor kollapset som standard bak en native <details>/<summary>-disclosure man kan klikke -
+ * eller taste Enter/Space på, siden <summary> er fokuserbar og har innebygd tastaturstøtte - for
+ * å vise selve predikatet. <summary> viser KUN en liten ▸/▾-ikon-markør (label som "If"/"Else
+ * If" er kun tilgjengelig via `title`-attributtet, og vises i sin helhet inni predikat-teksten
+ * når ekspandert) - holder markøren smal nok til å plasseres i selve BREVETS marg (se
+ * .conditional-predicate i appStyles.css) uten å dekke over den betingede teksten ved siden av.
  */
 function ConditionalPredicateDisclosure({ label, predicate }: { label: string; predicate: Expr }) {
   return (
-    <details className="conditional-predicate">
-      <summary>
-        <code>{label}</code>
-      </summary>
+    <details className="conditional-predicate" title={label}>
+      <summary aria-label={label} />
       <div className="expression">
-        <ExprToText expr={predicate} />
+        <code>{label}</code> <ExprToText expr={predicate} />
       </div>
     </details>
   );
