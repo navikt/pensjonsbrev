@@ -449,8 +449,11 @@ function ContentComponentV2({ content }: { content: ElementV2 }) {
 }
 
 function ConditionalComponentV2<E extends ElementV2>({ conditional }: { conditional: ConditionalV2<E> }) {
+  // Kun når det finnes flere enn én gren (If pluss minst én Else If/Else) gir det mening å tegne
+  // en forbindelseslinje mellom markørene i margen - med bare "If" er det ingenting å forbinde.
+  const hasMultipleBranches = conditional.elseIf.length > 0 || conditional.showElse.length > 0;
   return (
-    <div className="conditional">
+    <div className={hasMultipleBranches ? "conditional conditional-multi-branch" : "conditional"}>
       <div className="show-if">
         <ConditionalPredicateDisclosure label="If" predicate={conditional.predicate} />
         {conditional.showIf.map((cocs, index) => (
@@ -483,16 +486,25 @@ function ShowElseIfV2<E extends ElementV2>({ elseIf }: { elseIf: ElseIfV2<E> }) 
  * derfor kollapset som standard bak en native <details>/<summary>-disclosure man kan klikke -
  * eller taste Enter/Space på, siden <summary> er fokuserbar og har innebygd tastaturstøtte - for
  * å vise selve predikatet. <summary> viser KUN en liten ▸/▾-ikon-markør (label som "If"/"Else
- * If" er kun tilgjengelig via `title`-attributtet, og vises i sin helhet inni predikat-teksten
- * når ekspandert) - holder markøren smal nok til å plasseres i selve BREVETS marg (se
- * .conditional-predicate i appStyles.css) uten å dekke over den betingede teksten ved siden av.
+ * If"/"Else" er kun tilgjengelig via `title`-attributtet, og vises i sin helhet inni
+ * predikat-teksten når ekspandert) - holder markøren smal nok til å plasseres i selve BREVETS
+ * marg (se .conditional-predicate i appStyles.css) uten å dekke over den betingede teksten ved
+ * siden av. `predicate` er valgfri: "Else"-grenen har ikke noe eget predikat å vise (den er per
+ * definisjon "alt som ikke traff If/Else If over"), så der rendres kun selve "Else"-labelen
+ * ekspandert, uten noe `<ExprToText>`-uttrykk.
  */
-function ConditionalPredicateDisclosure({ label, predicate }: { label: string; predicate: Expr }) {
+function ConditionalPredicateDisclosure({ label, predicate }: { label: string; predicate?: Expr }) {
   return (
     <details className="conditional-predicate" title={label}>
       <summary aria-label={label} />
       <div className="expression">
-        <code>{label}</code> <ExprToText expr={predicate} />
+        <code>{label}</code>
+        {predicate === undefined ? null : (
+          <>
+            {" "}
+            <ExprToText expr={predicate} />
+          </>
+        )}
       </div>
     </details>
   );
@@ -504,9 +516,7 @@ function ShowElseV2<E extends ElementV2>({ cocs }: { cocs: ContentOrControlStruc
   }
   return (
     <div className="show-else">
-      <div className="expression">
-        <code>Else</code>
-      </div>
+      <ConditionalPredicateDisclosure label="Else" />
       {cocs.map((a, index) => (
         <ContentOrControlStructureComponentV2 cocs={a} key={index} />
       ))}
