@@ -9,8 +9,7 @@ import {
   type LetterSnapshot,
 } from "~/Brevredigering/LetterEditor/history";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import { type BrevResponse, type OppdaterBrevRequest, type SaksbehandlerValg } from "~/types/brev";
-import { type EditedLetter } from "~/types/brevbakerTypes";
+import { type BrevResponse, type OppdaterBrevRequest } from "~/types/brev";
 
 type SaveSuccessOptions = {
   createHistoryEntry?: (
@@ -22,24 +21,20 @@ type SaveSuccessOptions = {
 export type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
   historySnapshot?: LetterSnapshot;
   /**
-   * Defaults to `false`: autosaving a tekstvalg/overstyring change (or a dirty letter, via
-   * `saveDirtyLetter`) must never release the caseworker's reservation lock on the letter.
-   * Pass `true` explicitly for a final "done editing" submit that should release the lock
-   * (e.g. `brev.$brevId.tsx`'s "Fortsett" button, which reuses this same mutation for its
-   * final submit — unlike attestering, which submits via a separate `attesterBrev` mutation).
+   * Defaults to `false`: å lagre en tekstvalg-/overstyringsendring skal aldri frigi reservasjonen
+   * saksbehandler har på brevet. Send `true` eksplisitt for en avsluttende "ferdig"-innsending som
+   * skal frigi reservasjonen (f.eks. "Fortsett"-knappen i `brev.$brevId.tsx`, som gjenbruker denne
+   * mutasjonen — i motsetning til attestering, som sender inn via en egen `attesterBrev`-mutasjon).
    */
   frigiReservasjon?: boolean;
 };
 
 /**
- * Shared autosave plumbing for tekstvalg/overstyring changes and dirty-letter saves.
+ * Rutens lagring av tekstvalg-/overstyringsendringer og av "ferdig"-innsendingen.
  *
- * Passes `frigiReservasjon: false` to `oppdaterBrev` by default — autosaving a tekstvalg/overstyring
- * change or a dirty letter must never release the caseworker's reservation lock on the letter.
- * (This fixes a prior drift where `brev.$brevId.tsx`'s autosave omitted `frigiReservasjon`; the
- * `oppdaterBrev` API wrapper defaults it to `true` client-side, which released the lock on every
- * autosave.) Callers that reuse this mutation for a final submit (releasing the lock intentionally)
- * must pass `frigiReservasjon: true` explicitly via the mutate variables.
+ * Denne mutasjonen eies av ruten, som bruker `isPending`/`isError` til å fryse editoren og vise
+ * feil. Autolagringen av selve brevteksten hører derimot hjemme i <ManagedLetterEditor />, som har
+ * sin egen mutasjon — deler vi denne, ville editoren blitt frosset for hvert tastetrykk.
  */
 export function useOppdaterBrevAutosave({
   saksId,
@@ -83,16 +78,5 @@ export function useOppdaterBrevAutosave({
     onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
 
-  const saveDirtyLetter = (state: { redigertBrev: EditedLetter; saksbehandlerValg: SaksbehandlerValg }) =>
-    oppdaterBrev({
-      saksId: Number.parseInt(saksId, 10),
-      brevId,
-      frigiReservasjon: false,
-      request: {
-        redigertBrev: state.redigertBrev,
-        saksbehandlerValg: state.saksbehandlerValg,
-      },
-    });
-
-  return { oppdaterBrevMutation, saveDirtyLetter };
+  return { oppdaterBrevMutation };
 }

@@ -234,7 +234,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     propertyUsage: props.brev.propertyUsage ?? undefined,
   });
 
-  const { oppdaterBrevMutation, saveDirtyLetter } = useOppdaterBrevAutosave({
+  const { oppdaterBrevMutation } = useOppdaterBrevAutosave({
     saksId: props.saksId,
     brevId: props.brev.info.id,
     setEditorState,
@@ -393,13 +393,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           right={
             <>
               <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
-                <ManagedLetterEditor
-                  brev={props.brev}
-                  error={error}
-                  freeze={freeze}
-                  saveDirtyLetter={saveDirtyLetter}
-                  showDebug={showDebug}
-                />
+                <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
               </InsertedTekstValgHighlightProvider>
               {/* Modal som ikke tar opp plass i DOM her */}
               <ReservertBrevError

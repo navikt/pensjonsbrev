@@ -271,7 +271,7 @@ function RedigerBrev({
     setEditorState,
     onSaveSuccess,
   });
-  const { oppdaterBrevMutation, saveDirtyLetter } = oppdaterBrevAutosave;
+  const { oppdaterBrevMutation } = oppdaterBrevAutosave;
 
   const defaultValuesModelEditor = useMemo(
     () => ({
@@ -419,13 +419,7 @@ function RedigerBrev({
               }
               right={
                 <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                  <ManagedLetterEditor
-                    brev={brev}
-                    error={error}
-                    freeze={freeze}
-                    saveDirtyLetter={saveDirtyLetter}
-                    showDebug={showDebug}
-                  />
+                  <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
                 </InsertedTekstValgHighlightProvider>
               }
               rightColumnWidth="minmax(640px, 694px)"
