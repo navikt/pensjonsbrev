@@ -25,17 +25,13 @@ body {
 /* Ingen vertikal margin på selve blokken lenger - en Conditional skal ikke tvinge frem ekstra
    luft rundt seg (se .conditional-predicate under for hvordan If/Else If-predikatet i seg selv
    unngår å legge til en egen linje). Bakgrunnsfargen beholdes som et visuelt grupperingshint.
-   font-size/font-weight nullstilles eksplisitt til normal brødtekst-størrelse: uten dette ville
-   en Conditional som pakker inn (deler av) en tittel - dvs. er nøstet INNI en <Heading> fra
-   Aksel, som f.eks. TITLE1/TITLE2/TITLE3 - arvet titelens langt større font-size/vekt, og både
-   markøren (▸/▾) og bakgrunnsfargede predikat-/uttrykksbokser ville blitt urimelig store. Selve
-   tittel-teksten (som Aksel sin Heading-komponent setter font-size DIREKTE på, ikke arvet) er
-   upåvirket av dette - kun den generelle Conditional/expression-visualiseringen rundt/inni
-   tittelen tvinges tilbake til vanlig størrelse, likt Conditional ellers i brevet. */
+   IKKE nullstill font-size/vekt her: .conditional/.show-if omslutter selve INNHOLDET (f.eks.
+   tittel-teksten når Conditional er nøstet inni en <Heading>, se TITLE1/TITLE2/TITLE3), som skal
+   arve og beholde tittelens font-size/vekt uendret - kun selve BETINGELSEN (se
+   .conditional-predicate og .show-else sin "Else"-label under) skal tvinges til normal
+   brødtekst-størrelse. */
 .conditional {
   background: var(--ax-accent-100);
-  font-size: var(--ax-font-size-medium);
-  font-weight: var(--ax-font-weight-regular);
 }
 
 .show-if,
@@ -189,8 +185,15 @@ body {
    (native <details>-oppførsel for ikke-summary-barn), så <details> tar da ingen synlig
    plass selv i normal flyt. Når EKSPANDERT flyter `.expression` normalt og tar plass, som
    forventet siden brukeren eksplisitt har bedt om å se predikatet. Samme prinsipp brukes for
-   den statiske "Else"-markøren (ingen predikat/disclosure, men samme visuelle plassering). */
+   den statiske "Else"-markøren (ingen predikat/disclosure, men samme visuelle plassering).
+   font-size/vekt nullstilles her (ikke på .conditional/.show-if, se over) til normal
+   brødtekst-størrelse: `.conditional-predicate` er kun BETINGELSEN selv (markør + evt.
+   predikat-tekst når ekspandert) - en SØSKEN-node til selve det betingede INNHOLDET (som
+   fortsatt skal arve f.eks. tittel-font-størrelse uendret når Conditional er nøstet inni en
+   <Heading>), ikke en forelder til det. */
 .conditional-predicate {
+  font-size: var(--ax-font-size-medium);
+  font-weight: var(--ax-font-weight-regular);
   margin: 0;
 }
 
@@ -198,6 +201,8 @@ body {
   margin: 0 0 0.5rem;
 }
 
+/* Samme normal-størrelse-nullstilling som .conditional-predicate over, av samme grunn: dette er
+   kun den statiske "Else"-etiketten (betingelsen), ikke selve det betingede innholdet. */
 .show-else > .expression:first-child {
   position: absolute;
   left: 0;
@@ -205,6 +210,8 @@ body {
   margin: 0;
   background: none;
   padding: 0;
+  font-size: var(--ax-font-size-medium);
+  font-weight: var(--ax-font-weight-regular);
 }
 
 /* Brevets "side" i forhåndsvisningen - kapper bredden til A4 sin bredde (210mm ≈ 793px ved
