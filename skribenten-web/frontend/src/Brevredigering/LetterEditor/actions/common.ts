@@ -17,6 +17,7 @@ import {
   type Cell,
   type ColumnSpec,
   type Content,
+  type EditedDocument,
   type EditedLetter,
   type ElementTags,
   FontType,
@@ -1017,7 +1018,7 @@ export function safeIndex(index: number, array: unknown[]) {
   return Math.max(0, Math.min(index, array.length - 1));
 }
 
-export function isValidIndex(letter: EditedLetter, index: LiteralIndex) {
+export function isValidIndex(letter: EditedDocument, index: LiteralIndex) {
   const content = letter.blocks[index.blockIndex]?.content[index.contentIndex];
 
   if (isItemList(content) && isItemContentIndex(index)) {
@@ -1078,7 +1079,7 @@ export function normalizeDeletedArrays(obj: unknown): unknown {
  * predicate), so the two can't drift apart if the letter's content model changes.
  */
 function findLiteral<T>(
-  letter: EditedLetter,
+  letter: EditedDocument,
   visit: (literal: LiteralValue, focus: Focus) => T | undefined,
 ): T | undefined {
   for (let contentIndex = 0; contentIndex < (letter.title?.text.length ?? 0); contentIndex++) {
@@ -1177,7 +1178,7 @@ function findLiteral<T>(
   return undefined;
 }
 
-export function collectAllLiteralValues(letter: EditedLetter): LiteralValue[] {
+export function collectAllLiteralValues(letter: EditedDocument): LiteralValue[] {
   const result: LiteralValue[] = [];
   findLiteral(letter, (literal) => {
     result.push(literal);
@@ -1186,11 +1187,11 @@ export function collectAllLiteralValues(letter: EditedLetter): LiteralValue[] {
   return result;
 }
 
-export function collectFritekstLiterals(letter: EditedLetter): LiteralValue[] {
+export function collectFritekstLiterals(letter: EditedDocument): LiteralValue[] {
   return collectAllLiteralValues(letter).filter((literal) => isFritekst(literal));
 }
 
-export const countUneditedFritekstPlaceholders = (letter: EditedLetter): number => {
+export const countUneditedFritekstPlaceholders = (letter: EditedDocument): number => {
   return collectFritekstLiterals(letter).filter((literal) => literal.editedText === null).length;
 };
 
@@ -1205,7 +1206,7 @@ export const countUneditedFritekstPlaceholders = (letter: EditedLetter): number 
  * (rather than just placing a caret) once it scrolls into view and receives focus — replicating what
  * happens when the user clicks the fritekst directly.
  */
-export function findFirstUneditedFritekstFocus(letter: EditedLetter): Focus | null {
+export function findFirstUneditedFritekstFocus(letter: EditedDocument): Focus | null {
   return (
     findLiteral(letter, (literal, focus) =>
       isFritekst(literal) && literal.editedText === null ? { ...focus, selectAll: true } : undefined,
@@ -1213,7 +1214,7 @@ export function findFirstUneditedFritekstFocus(letter: EditedLetter): Focus | nu
   );
 }
 
-export const countMissingFromTemplateBlocks = (letter: EditedLetter): number => {
+export const countMissingFromTemplateBlocks = (letter: EditedDocument): number => {
   return letter.blocks.filter((block) => block.missingFromTemplate).length;
 };
 

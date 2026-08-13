@@ -31,6 +31,18 @@ export type Title1Block = generated.EditBlockTitle1;
 export type Title2Block = generated.EditBlockTitle2;
 export type Title3Block = generated.EditBlockTitle3;
 
+/**
+ * The minimal editable document the letter editor engine operates on. Both EditedLetter
+ * (the brev) and EditAttachment (a redigerbart vedlegg) satisfy this shape structurally, so the
+ * block/title editing actions can be reused for both without either pretending to be the other.
+ * Brev-only metadata (sakspart, signatur) is intentionally excluded — it is a render-time concern.
+ */
+export type EditedDocument = {
+  title: Title;
+  blocks: AnyBlock[];
+  deletedBlocks: number[];
+};
+
 export type TextContent = generated.EditParagraphContentText;
 export type Content = generated.EditParagraphContent;
 

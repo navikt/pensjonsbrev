@@ -35,7 +35,7 @@ import {
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import {
   type Content,
-  type EditedLetter,
+  type EditedDocument,
   ElementTags,
   FontType,
   ListType,
@@ -72,7 +72,7 @@ function startsWithPunctuation(content: Content): boolean {
  */
 const Y_COORD_SAFETY_MARGIN = 10;
 
-function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
+function getContent(letter: EditedDocument, literalIndex: LiteralIndex) {
   if (literalIndex.blockIndex === TITLE_INDEX) {
     return letter.title.text;
   }
