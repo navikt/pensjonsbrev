@@ -83,6 +83,28 @@ class TemplateResourceTest {
             autobrev.renderHTML(validAutobrevRequest.copy(letterData = SampleLetterData(true)))
         }
     }
+
+    @Test
+    fun `can renderPDFV2 with valid letterData`(): Unit = runBlocking {
+        val result = autobrev.renderPDFV2(validAutobrevRequest)
+        assertEquals(
+            LetterResponse(pdfInnhold.encodeToByteArray(), ContentType.Application.Pdf.toString(), LetterExample.template.letterMetadata),
+            result
+        )
+    }
+
+    @Test
+    fun `can renderLetterMarkupV2 with valid letterData`() {
+        val result = autobrev.renderLetterMarkupV2(validAutobrevRequest)
+        assertEquals(true, result.title1.isNotEmpty())
+    }
+
+    @Test
+    fun `fails renderPDFV2 with invalid letterData`(): Unit = runBlocking {
+        assertThrows<ParseLetterDataException> {
+            autobrev.renderPDFV2(validAutobrevRequest.copy(letterData = SampleLetterData(true)))
+        }
+    }
 }
 
 private fun <T: Brevkode<T>> BestillBrevRequest<T>.copy(letterData: SampleLetterData): BestillBrevRequest<T> =
