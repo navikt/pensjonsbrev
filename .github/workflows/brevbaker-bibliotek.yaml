@@ -116,7 +116,7 @@ jobs:
       contents: read
       packages: write
     with:
-      gradleTarget: 'pensjon:api-model'
+      gradleTarget: 'pensjon:pensjon-api-model'
       changes: ${{ needs.abi.outputs.pensjonApiModel == 'true' || needs.abi.outputs.brevdata == 'true' }}
       localDependenciesToPublish: ':brevbaker:brevdata:publishToMavenLocal'
 

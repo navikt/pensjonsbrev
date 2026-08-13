@@ -26,7 +26,7 @@ include("skribenten-backend")
 
 include("pensjon:brevbaker")
 include("pensjon:maler")
-include("pensjon:api-model")
+include("pensjon:pensjon-api-model")
 
 include("ufoere:maler")
 include("ufoere:api-model")
