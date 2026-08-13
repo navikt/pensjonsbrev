@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.innhentingInformasjonFraBrukerDto.*
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Alderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
