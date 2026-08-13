@@ -35,155 +35,8 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
             paragraph {
                 showIf(((pe.ut_tbu605v_eller_til_din()))) {
                     text(
-                        bokmal { + "" },
-                        nynorsk { + "Har det vore ei endring i inntekta " },
-                    )
-                }
-
-                showIf(
-                    ((pe.ut_tbu605v_eller_til_din() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo(
-                            "bormed ektefelle"
-                        ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
-                        "bormed 1-5"
-                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
-                        "bormed 3-2"
-                    ))))
-                ) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "til deg eller " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " " },
-                    )
-                }
-
-                showIf(((pe.ut_tbu605v_eller_til_din()))) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "di" },
-                    )
-                }
-
-                showIf(
-                    ((pe.ut_tbu605v_eller_til_din() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo(
-                            "bormed ektefelle"
-                        ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
-                        "bormed 1-5"
-                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
-                        "bormed 3-2"
-                    ))))
-                ) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "n" },
-                    )
-                }
-
-                showIf(((pe.ut_tbu605v_eller_til_din()))) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "," },
-                    )
-                }
-
-                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "Når inntekta di " },
-                    )
-                }
-
-                showIf(
-                    ((pe.vedtaksdata_kravhode_kravarsaktype()
-                        .equalTo("endret_inntekt") and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed registrert partner") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
-                        "bormed 1-5"
-                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2"))))
-                ) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "eller til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
-                    )
-                }
-
-                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "endrar seg" + "," },
-                    )
-                }
-                text(
-                    bokmal { + "" },
-                    nynorsk { + " blir reduksjonen av barnetillegget vurdert på nytt. 50 prosent av inntekta som overstig fribeløpet " },
-                )
-
-                showIf(harPeriodisertFribelopEllerInntekt) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "blir rekna om til et årleg beløp som svarer til " },
-                    )
-                }
-
-                showIf(
-                    (not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert()) and not(
-                        pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert()
-                    ) and not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektperiodisert()) and not(
-                        pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektperiodisert()
-                    ))
-                ) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "er " },
-                    )
-                }
-
-                showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
-                            .format(false) },
-                    )
-                }
-
-                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()))) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
-                            .format(false) },
-                    )
-                }
-                text(
-                    bokmal { + "" },
-                    nynorsk { + " kroner. " },
-                )
-
-                showIf(
-                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
-                        .equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-                        .equalTo(
-                            0
-                        ))
-                ) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "Dette beløpet bruker vi til å redusere barnetillegget ditt for heile året. " },
-                    )
-                }
-            }
-        }
-
-        showIf((pe.ut_tbu605())) {
-            paragraph {
-                showIf(((pe.ut_tbu605v_eller_til_din()))) {
-                    text(
                         bokmal { + "Har det vært en endring i inntekten din" },
-                        nynorsk { + "" },
+                        nynorsk { + "Har det vore ei endring i inntekta di" },
                     )
                 }
 
@@ -201,21 +54,21 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
                 ) {
                     text(
                         bokmal { + " eller til din " },
-                        nynorsk { + "" },
+                        nynorsk { + " eller til " },
                     )
                 }
 
                 showIf(((pe.ut_tbu605v_eller_til_din() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()))) {
                     text(
                         bokmal { + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "," },
-                        nynorsk { + "" },
+                        nynorsk { + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din," },
                     )
                 }
 
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
                     text(
                         bokmal { + "Når inntekten din " },
-                        nynorsk { + "" },
+                        nynorsk { + "Når inntekta di " },
                     )
                 }
 
@@ -230,25 +83,25 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
                 ) {
                     text(
                         bokmal { + "eller til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " },
-                        nynorsk { + "" },
+                        nynorsk { + "eller til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
                     )
                 }
 
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
                     text(
                         bokmal { + "endrer seg," },
-                        nynorsk { + "" },
+                        nynorsk { + "endrar seg," },
                     )
                 }
                 text(
                     bokmal { + " blir reduksjonen av barnetillegget vurdert på nytt. 50 prosent av den inntekten som overstiger fribeløpet " },
-                    nynorsk { + "" },
+                    nynorsk { + " blir reduksjonen av barnetillegget vurdert på nytt. 50 prosent av inntekta som overstig fribeløpet " },
                 )
 
                 showIf(harPeriodisertFribelopEllerInntekt) {
                     text(
                         bokmal { + "blir omregnet til et årlig beløp som tilsvarer " },
-                        nynorsk { + "" },
+                        nynorsk { + "blir rekna om til et årleg beløp som svarer til " },
                     )
                 }
 
@@ -261,7 +114,7 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
                 ) {
                     text(
                         bokmal { + "er " },
-                        nynorsk { + "" },
+                        nynorsk { + "er " },
                     )
                 }
 
@@ -269,7 +122,8 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
                     text(
                         bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
                             .format(false) },
-                        nynorsk { + "" },
+                        nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
+                            .format(false) },
                     )
                 }
 
@@ -277,12 +131,13 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
                     text(
                         bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
                             .format(false) },
-                        nynorsk { + "" },
+                        nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
+                            .format(false) },
                     )
                 }
                 text(
                     bokmal { + " kroner. " },
-                    nynorsk { + "" },
+                    nynorsk { + " kroner. " },
                 )
 
                 showIf(
@@ -294,7 +149,7 @@ data class StoerrelsePaaBarnetillegg_EttBarnekull(
                 ) {
                     text(
                         bokmal { + "Dette beløpet bruker vi til å redusere barnetillegget ditt for hele året. " },
-                        nynorsk { + "" },
+                        nynorsk { + "Dette beløpet bruker vi til å redusere barnetillegget ditt for heile året. " },
                     )
                 }
             }

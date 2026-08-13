@@ -16,99 +16,10 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())) {
             paragraph {
-                showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "Har det vore ei endring i inntekta " },
-                    )
-                }
-
-                showIf(
-                    (pe.vedtaksdata_kravhode_kravarsaktype()
-                        .notEqualTo("endret_inntekt") and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed registrert") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
-                        "bormed 1-5"
-                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2")))
-                ) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "til deg eller " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " " },
-                    )
-                }
-
-                showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "di" },
-                    )
-                }
-
-                showIf(
-                    (pe.vedtaksdata_kravhode_kravarsaktype()
-                        .notEqualTo("endret_inntekt") and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed registrert") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
-                        "bormed 1-5"
-                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2")))
-                ) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "n" },
-                    )
-                }
-
-                showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt"))) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "," },
-                    )
-                }
-
-                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "Når inntekta di " },
-                    )
-                }
-
-                showIf(
-                    (pe.vedtaksdata_kravhode_kravarsaktype()
-                        .equalTo("endret_inntekt") and (pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed registrert") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo(
-                        "bormed 1-5"
-                    ) or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt()
-                        .equalTo("bormed 1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2")))
-                ) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "eller til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
-                    )
-                }
-
-                showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
-                    text(
-                        bokmal { + "" },
-                        nynorsk { + "endrar seg," },
-                    )
-                }
-                text(
-                    bokmal { + "" },
-                    nynorsk { + " blir reduksjonen av barnetilleggene vurdert på nytt." },
-                )
-            }
-        }
-
-        showIf((pe.ut_tbu613v() and pe.ut_tbu613v_1_3())) {
-            paragraph {
-
                 showIf(((pe.ut_tbu605v_eller_til_din()))) {
                     text(
                         bokmal { + "Har det vært en endring i inntekten din" },
-                        nynorsk { + "" },
+                        nynorsk { + "Har det vore ei endring i inntekta di" },
                     )
                 }
 
@@ -126,21 +37,21 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                 ) {
                     text(
                         bokmal { + " eller til din" },
-                        nynorsk { + "" },
+                        nynorsk { + " eller til" },
                     )
                 }
 
                 showIf(((pe.ut_tbu605v_eller_til_din()))) {
                     text(
                         bokmal { + " " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "," },
-                        nynorsk { + "" },
+                        nynorsk { + " " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din," },
                     )
                 }
 
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
                     text(
                         bokmal { + "Når inntekten din " },
-                        nynorsk { + "" },
+                        nynorsk { + "Når inntekta di " },
                     )
                 }
 
@@ -155,19 +66,19 @@ data class StoerrelsePaaBarnetillegg_EndringIInntekt(
                 ) {
                     text(
                         bokmal { + "eller til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " },
-                        nynorsk { + "" },
+                        nynorsk { + "eller til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
                     )
                 }
 
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")) {
                     text(
                         bokmal { + "endrer seg," },
-                        nynorsk { + "" },
+                        nynorsk { + "endrar seg," },
                     )
                 }
                 text(
                     bokmal { + " blir reduksjonen av barnetilleggene vurdert på nytt. " },
-                    nynorsk { + "" },
+                    nynorsk { + " blir reduksjonen av barnetilleggene vurdert på nytt." },
                 )
             }
         }
