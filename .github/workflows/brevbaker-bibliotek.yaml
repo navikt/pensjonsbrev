@@ -142,7 +142,7 @@ jobs:
       contents: read
       packages: write
     with:
-      gradleTarget: 'ufoere:api-model'
+      gradleTarget: 'ufoere:ufoere-api-model'
       changes: ${{ needs.abi.outputs.ufoereApiModel == 'true' || needs.abi.outputs.brevdata == 'true' }}
       localDependenciesToPublish: ':brevbaker:brevdata:publishToMavenLocal'
 
