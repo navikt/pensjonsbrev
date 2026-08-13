@@ -186,14 +186,20 @@ body {
    plass selv i normal flyt. Når EKSPANDERT flyter `.expression` normalt og tar plass, som
    forventet siden brukeren eksplisitt har bedt om å se predikatet. Samme prinsipp brukes for
    den statiske "Else"-markøren (ingen predikat/disclosure, men samme visuelle plassering).
-   font-size/vekt nullstilles her (ikke på .conditional/.show-if, se over) til normal
+   font-size/vekt/line-height nullstilles her (ikke på .conditional/.show-if, se over) til normal
    brødtekst-størrelse: `.conditional-predicate` er kun BETINGELSEN selv (markør + evt.
    predikat-tekst når ekspandert) - en SØSKEN-node til selve det betingede INNHOLDET (som
    fortsatt skal arve f.eks. tittel-font-størrelse uendret når Conditional er nøstet inni en
-   <Heading>), ikke en forelder til det. */
+   <Heading>), ikke en forelder til det. `line-height` MÅ nullstilles eksplisitt her i tillegg
+   til font-size/vekt: Aksel sine heading-varianter setter `line-height` som en ABSOLUTT rem-verdi
+   (f.eks. 2.25rem for h1), ikke et enhetsløst forhold - en slik verdi arves UENDRET av barn
+   uansett barnets EGEN (mindre) font-size, så uten denne nullstillingen ville predikat-teksten
+   rendret ved normal font-størrelse (16px) men med h1 sin 36px linjehøyde, og sett unormalt
+   "strukket" ut vertikalt når disclosure-en ekspanderes inni en tittel. */
 .conditional-predicate {
   font-size: var(--ax-font-size-medium);
   font-weight: var(--ax-font-weight-regular);
+  line-height: var(--ax-font-line-height-medium);
   margin: 0;
 }
 
@@ -201,8 +207,9 @@ body {
   margin: 0 0 0.5rem;
 }
 
-/* Samme normal-størrelse-nullstilling som .conditional-predicate over, av samme grunn: dette er
-   kun den statiske "Else"-etiketten (betingelsen), ikke selve det betingede innholdet. */
+/* Samme normal-størrelse/linjehøyde-nullstilling som .conditional-predicate over, av samme
+   grunn: dette er kun den statiske "Else"-etiketten (betingelsen), ikke selve det betingede
+   innholdet. */
 .show-else > .expression:first-child {
   position: absolute;
   left: 0;
