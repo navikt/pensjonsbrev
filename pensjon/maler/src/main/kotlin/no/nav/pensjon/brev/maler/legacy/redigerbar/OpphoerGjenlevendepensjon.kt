@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto.FolketrygdlovenAlternativ.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.opphoerGjenlevendepensjonDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.generated.TBU2212_Generated
@@ -16,7 +15,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.saksbehandlervalg
@@ -96,10 +95,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                             +"We refer to your registered partnership of " + dato + "."
                         }
                     )
-                }.orShowIf(
-                    folketrygdlovenAlternativ.equalTo(erErSamboerOgFellesBarn)
-                        .or(folketrygdlovenAlternativ.equalTo(blirSamboerOgHarFellesBarn))
-                )
+                }.orShowIf(folketrygdlovenAlternativ.isOneOf(erErSamboerOgFellesBarn, blirSamboerOgHarFellesBarn))
                 {
                     val datoSamboerskap = fritekst("dato for samboerskap")
                     val datoFellesbarn = fritekst("dato for fødsel av fellesbarn")
