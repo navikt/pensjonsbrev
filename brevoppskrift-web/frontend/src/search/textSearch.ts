@@ -85,6 +85,14 @@ const TOKEN_SEARCH_OPTIONS = {
   ignoreFieldNorm: true,
 } as const;
 
+/** Same tuning as `TOKEN_SEARCH_OPTIONS`, but with fuzziness disabled
+ *  (`threshold: 0`), so each term must occur as an exact (case-insensitive)
+ *  substring. Used when the user turns off fuzzy search. */
+const EXACT_TOKEN_SEARCH_OPTIONS = {
+  ...TOKEN_SEARCH_OPTIONS,
+  threshold: 0,
+} as const;
+
 /** Pre-built Fuse indexes: one over every searchable line (content search),
  *  one over template title/brevkode (metadata search). */
 export type SearchIndex = {
@@ -92,7 +100,7 @@ export type SearchIndex = {
   brevFuse: Fuse<BrevRecord>;
 };
 
-export function buildIndex(templates: TemplateText[]): SearchIndex {
+export function buildIndex(templates: TemplateText[], fuzzy = true): SearchIndex {
   const contentRecords: ContentRecord[] = [];
   const brevRecords: BrevRecord[] = [];
   for (const template of templates) {
@@ -104,12 +112,13 @@ export function buildIndex(templates: TemplateText[]): SearchIndex {
     });
     brevRecords.push({ template, title: template.title, id: template.id });
   }
+  const tokenSearchOptions = fuzzy ? TOKEN_SEARCH_OPTIONS : EXACT_TOKEN_SEARCH_OPTIONS;
   const contentFuse = new Fuse(contentRecords, {
-    ...TOKEN_SEARCH_OPTIONS,
+    ...tokenSearchOptions,
     keys: ["text"],
   });
   const brevFuse = new Fuse(brevRecords, {
-    ...TOKEN_SEARCH_OPTIONS,
+    ...tokenSearchOptions,
     keys: [
       { name: "title", weight: 2 },
       { name: "id", weight: 1 },

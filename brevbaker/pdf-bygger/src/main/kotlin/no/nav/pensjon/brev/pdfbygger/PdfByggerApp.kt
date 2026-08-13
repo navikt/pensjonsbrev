@@ -31,7 +31,12 @@ import org.slf4j.LoggerFactory
 
 private val objectMapper = internalObjectMapper()
 
-fun main(args: Array<String>) = EngineMain.main(args)
+fun main(args: Array<String>) {
+    Thread.setDefaultUncaughtExceptionHandler { thread, ex ->
+        logger.error("Uncaught exception in thread ${thread.name}", ex)
+    }
+    EngineMain.main(args)
+}
 
 
 fun ApplicationConfig.getProperty(name: String): String =

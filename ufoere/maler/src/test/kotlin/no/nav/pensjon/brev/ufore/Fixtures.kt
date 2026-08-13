@@ -100,7 +100,6 @@ object Fixtures : LetterDataFactory {
     private fun lagUforeAvslagEnkelDto() = UforeAvslagEnkelDto(
         pesysData = UforeAvslagEnkelDto.UforeAvslagPendata(
             kravMottattDato = vilkaarligDato,
-            kravFremsattDato = vilkaarligDato,
             vurdering = "Vurdering 1"
         ),
         saksbehandlerValg = UforeAvslagEnkelDto.Saksbehandlervalg(
@@ -122,7 +121,6 @@ object Fixtures : LetterDataFactory {
     private fun lagUforeAvslagSupplerendeStonadEnkelDto() = UforeAvslagSupplerendeStonadEnkelDto(
         pesysData = UforeAvslagSupplerendeStonadEnkelDto.UforeAvslagPendata(
             kravMottattDato = vilkaarligDato,
-            kravFremsattDato = vilkaarligDato,
             vurdering = "Vurdering 1"
         ),
         saksbehandlerValg = UforeAvslagSupplerendeStonadEnkelDto.Saksbehandlervalg(
@@ -134,7 +132,6 @@ object Fixtures : LetterDataFactory {
     private fun lagUforeAvslagUtlandDto() = UforeAvslagUtlandDto(
         pesysData = UforeAvslagUtlandDto.UforeAvslagPendata(
             kravMottattDato = LocalDate.now(),
-            kravFremsattDato = vilkaarligDato,
             kravGjelder = UforeAvslagUtlandDto.KravGjelder.MELLOMBH,
             eosNordisk = false,
             avtaletype = "USA",
@@ -162,7 +159,6 @@ object Fixtures : LetterDataFactory {
     private fun lagUforeAvslagInntektDto() = UforeAvslagInntektDto(
         pesysData = UforeAvslagInntektDto.UforeAvslagInntektPendata(
             kravMottattDato = vilkaarligDato,
-            kravFremsattDato = vilkaarligDato,
             vurdering = "Vurdering 1",
             uforetidspunkt = vilkaarligDato,
             uforegrad = 50,

@@ -109,4 +109,51 @@ describe("search", () => {
     expect(content).toEqual([]);
     expect(brev).toEqual([]);
   });
+
+  it("does not tolerate typos in content search when fuzzy is disabled", () => {
+    const templates = [template({ id: "A1", title: "Alderspensjon", lines: ["Vi har beregnet din alderspensjon"] })];
+    const index = buildIndex(templates, false);
+
+    const { content } = search(index, "alderspenjson"); // transposed letters
+
+    expect(content).toEqual([]);
+  });
+
+  it("still finds exact substring matches in content search when fuzzy is disabled", () => {
+    const templates = [
+      template({ id: "A1", title: "Alderspensjon", lines: ["Vi har beregnet din alderspensjon"] }),
+      template({ id: "A2", title: "Uføretrygd", lines: ["Vi har vurdert din søknad om uføretrygd"] }),
+    ];
+    const index = buildIndex(templates, false);
+
+    const { content } = search(index, "alderspensjon");
+
+    expect(content).toHaveLength(1);
+    expect(content[0].template.id).toBe("A1");
+  });
+
+  it("does not tolerate typos in brev (title/brevkode) search when fuzzy is disabled", () => {
+    const templates = [
+      template({ id: "PE_ETTER_01", title: "Etterbetaling av alderspensjon", lines: ["Uinteressant tekst."] }),
+    ];
+    const index = buildIndex(templates, false);
+
+    const { brev } = search(index, "etterbetlaing"); // transposed letters
+
+    expect(brev).toEqual([]);
+  });
+
+  it("still finds exact title/brevkode matches when fuzzy is disabled", () => {
+    const templates = [
+      template({ id: "PE_ETTER_01", title: "Etterbetaling av alderspensjon", lines: ["Uinteressant tekst."] }),
+      template({ id: "PE_INNV_01", title: "Innvilgelse av alderspensjon", lines: ["Uinteressant tekst."] }),
+    ];
+    const index = buildIndex(templates, false);
+
+    const byTitle = search(index, "etterbetaling");
+    const byBrevkode = search(index, "PE_INNV_01");
+
+    expect(byTitle.brev.map((hit) => hit.template.id)).toEqual(["PE_ETTER_01"]);
+    expect(byBrevkode.brev.map((hit) => hit.template.id)).toEqual(["PE_INNV_01"]);
+  });
 });

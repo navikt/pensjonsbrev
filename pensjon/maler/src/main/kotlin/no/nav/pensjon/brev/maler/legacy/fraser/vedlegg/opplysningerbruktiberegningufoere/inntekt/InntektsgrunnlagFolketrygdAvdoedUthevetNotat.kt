@@ -1,0 +1,58 @@
+package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.inntekt
+
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.maler.legacy.avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg
+import no.nav.pensjon.brev.maler.legacy.avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg
+import no.nav.pensjon.brev.maler.legacy.avdodHarOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste
+import no.nav.pensjon.brev.maler.legacy.ut_avdod
+import no.nav.pensjon.brev.maler.legacy.ut_inntektslandtruehvorbruktliktrue_avdod
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.text
+
+data class InntektsgrunnlagFolketrygdAvdoedUthevetNotat(
+    val pe: Expression<PEgruppe10>,
+): OutlinePhrase<LangBokmalNynorsk>() {
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+
+        showIf(pe.ut_avdod() and pe.ut_inntektslandtruehvorbruktliktrue_avdod() ) {
+            paragraph {
+                text(
+                    bokmal { + "Inntektene som er uthevet er valgt siden dette gir det beste resultatet for deg." },
+                    nynorsk { + "Inntektene som er utheva, er valde sidan dette gir det beste resultatet for deg." },
+                )
+            }
+
+            showIf(pe.avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg()) {
+                paragraph {
+                    text(
+                        bokmal { + "*) Markerer år med omsorgsopptjening og militær eller sivil førstegangstjeneste. Det skal ses bort fra år med pensjonsopptjening på grunnlag av omsorgsarbeid dersom dette er en fordel. Dersom inntekten i året før militær eller sivil førstegangstjeneste tok til er høyere, benyttes denne inntekten." },
+                        nynorsk { + "*) Markerer år med omsorgsopptening og militær eller sivil førstegongsteneste. Ein skal sjå bort frå år med pensjonsopptening på grunnlag av omsorgsarbeid dersom dette er ein fordel. Dersom inntekta i året før militær eller sivil førstegongsteneste tok til, er høgare, blir denne inntekta brukt." },
+                    )
+                }
+            }
+
+            showIf(pe.avdodHarOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste()) {
+                paragraph {
+                    text(
+                        bokmal { + "*) Markerer år med omsorgsopptjening. Det skal ses bort fra år med pensjonsopptjening på grunnlag av omsorgsarbeid dersom dette er en fordel." },
+                        nynorsk { + "*) Markerer år med omsorgsopptening. Ein skal sjå bort frå år med pensjonsopptening på grunnlag av omsorgsarbeid dersom dette er ein fordel." },
+                    )
+                }
+            }
+
+            showIf(pe.avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg()) {
+                paragraph {
+                    text(
+                        bokmal { + "*) Markerer år med militær eller sivil førstegangstjeneste. Dersom inntekten i året før tjenesten tok til er høyere, benyttes denne inntekten." },
+                        nynorsk { + "*) Markerer år med militær eller sivil førstegongsteneste. Dersom inntekta i året før tenesta tok til, er høgare, blir denne inntekta brukt." },
+                    )
+                }
+            }
+        }
+
+    }
+}

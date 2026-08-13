@@ -14,9 +14,10 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
  * - `null` skrives ut eksplisitt, slik at «feltet mangler» og «feltet er null» ikke blir tvetydig.
  *   (`NON_NULL` ville også fungert teknisk, siden begge ender bruker Jackson med [KotlinModule].)
  */
-fun internalObjectMapper(): ObjectMapper =
-    ObjectMapper()
-        .registerModule(KotlinModule.Builder().build())
+fun internalObjectMapper(): ObjectMapper = ObjectMapper().internalJacksonConfig()
+
+fun ObjectMapper.internalJacksonConfig(): ObjectMapper =
+    registerModule(KotlinModule.Builder().build())
         .registerModule(JavaTimeModule())
         .registerModule(MarkupJacksonModule)
         .registerModule(LetterMarkupV1JacksonModule)
