@@ -338,8 +338,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                     }
                     item {
                         text(
-                            bokmal { +"Du må ha vært medlem av folketrygden i de siste tre årene fram til uføretidspunktet, eller oppfylle en av unntaksreglene." },
-                            nynorsk { +"Du må ha vore medlem av folketrygda i dei siste tre åra fram til uføretidspunktet, eller oppfylle ein av unntaksreglane." },
+                            bokmal { +"Du må ha vært medlem av folketrygden i de siste fem årene fram til uføretidspunktet, eller oppfylle en av unntaksreglene." },
+                            nynorsk { +"Du må ha vore medlem av folketrygda i dei siste fem åra fram til uføretidspunktet, eller oppfylle ein av unntaksreglane." },
                         )
                     }
                     item {
