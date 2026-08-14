@@ -37,7 +37,7 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
     override val kode: Brevkode.Redigerbart = PlanleggePensjonBrevkoder.Redigerbar.PENSJONSKALKULATOR_AP_SIMULERING
     override val featureToggle = FeatureToggles.apSimulering.toggle
     override val modelSpecification: TemplateModelSpecification = TemplateModelSpecification(emptyMap(), null)
-
+    
     override val template: LetterTemplate<*, ApSimuleringBrevDto> = createTemplate(
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(

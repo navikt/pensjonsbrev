@@ -63,15 +63,13 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
 
         outline {
             paragraph {
+                text(bokmal { +"<Bruker har ingen ytelser som ikke kan kombineres med AFP.>" })
+                text(bokmal { +"<Bruker har hatt utbetalt alderspensjon frem til DD.MM.ÅÅÅÅ.>" })
+                text(bokmal { +"<Bruker har XX % uføretrygd fra folketrygden.>" })
+                text(bokmal { +"<Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag.>" })
                 text(
                     bokmal {
-                        +fritekst(
-                            "Bruker har ingen ytelser som ikke kan kombineres med AFP." + newline() +
-                                    "Bruker har hatt utbetalt alderspensjon frem til DD.MM.ÅÅÅÅ." + newline() +
-                                    "Bruker har XX % uføretrygd fra folketrygden." + newline() +
-                                    "Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag." + newline() +
-                                    "Bruker mottar eller søker om sykepenger. Nav arbeid og ytelser er informert om at bruker søker AFP.",
-                        )
+                        +"<Bruker mottar eller søker om sykepenger. Nav arbeid og ytelser er informert om at bruker søker AFP.>"
                     },
                 )
             }
