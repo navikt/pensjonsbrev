@@ -17,7 +17,7 @@ Når man legger til nye verdier underveis er det nødvendig å publisere api-mod
 
 [source,kotlin]
 ----
-// I f.eks pensjonsbrev/alder/api-model/.../maler/<relevantDomene>/
+// I f.eks pensjonsbrev/alder/alder-api-model/.../maler/<relevantDomene>/
 data class MittBrevDto(
     val uforegrad: Percent,
     val virkningFom: LocalDate,

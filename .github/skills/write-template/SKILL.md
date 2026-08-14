@@ -27,7 +27,7 @@ Letter templates live in several maler modules — pick the one matching the dom
 | Module | Brevkode registry (`api-model`)                         | Fixtures file | `AllTemplates` registry object |
 |---|---------------------------------------------------------|---|---|
 | `pensjon/maler` | `pensjon/pensjon-api-model/.../maler/Pesysbrevkoder.kt` | `pensjon/maler/src/test/kotlin/no/nav/pensjon/brev/Fixtures.kt` | `ProductionTemplates` |
-| `alder/maler` | `alder/api-model/.../model/Aldersbrevkoder.kt`          | `alder/maler/src/test/kotlin/no/nav/pensjon/brev/alder/Fixtures.kt` | `AlderTemplates` |
+| `alder/maler` | `alder/alder-api-model/.../model/Aldersbrevkoder.kt`    | `alder/maler/src/test/kotlin/no/nav/pensjon/brev/alder/Fixtures.kt` | `AlderTemplates` |
 | `ufoere/maler` | `ufoere/ufoere-api-model/.../Ufoerebrevkoder.kt`        | `ufoere/maler/src/test/kotlin/no/nav/pensjon/brev/ufore/Fixtures.kt` | `UfoereTemplates` |
 | `etterlattemaler` | domain-local registry under `etterlattemaler/…`         | `etterlattemaler/src/test/kotlin/no/nav/pensjon/etterlatte/Fixtures.kt` | `EtterlatteMaler` |
 | `planlegge-pensjon-maler` | domain-local registry                                   | `planlegge-pensjon-maler/src/test/kotlin/no/nav/pensjon/brev/planleggepensjon/Fixtures.kt` | `PlanleggePensjonTemplates` |

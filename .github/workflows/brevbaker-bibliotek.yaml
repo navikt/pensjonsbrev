@@ -9,7 +9,7 @@ on:
       - "brevbaker/brevdata/**"
       - "brevbaker/brevbaker-api/**"
       - "pensjon/pensjon-api-model/**"
-      - "alder/api-model/**"
+      - "alder/alder-api-model/**"
       - "ufoere/ufoere-api-model/**"
       - "gradle/libs.versions.toml"
       - ".github/workflows/.release.yaml"
@@ -24,7 +24,7 @@ on:
       - "brevbaker/brevdata/**"
       - "brevbaker/brevbaker-api/**"
       - "pensjon/pensjon-api-model/**"
-      - "alder/api-model/**"
+      - "alder/alder-api-model/**"
       - "ufoere/ufoere-api-model/**"
       - "gradle/libs.versions.toml"
       - ".github/workflows/.release.yaml"
@@ -78,7 +78,7 @@ jobs:
             pensjonApiModel:
               - 'pensjon/pensjon-api-model/gradle.properties'
             alderApiModel:
-              - 'alder/api-model/gradle.properties'
+              - 'alder/alder-api-model/gradle.properties'
             ufoereApiModel:
               - 'ufoere/ufoere-api-model/gradle.properties'
 
@@ -129,7 +129,7 @@ jobs:
       contents: read
       packages: write
     with:
-      gradleTarget: 'alder:api-model'
+      gradleTarget: 'alder:alder-api-model'
       changes: ${{ needs.abi.outputs.alderApiModel == 'true' || needs.abi.outputs.brevdata == 'true' }}
       localDependenciesToPublish: ':brevbaker:brevdata:publishToMavenLocal'
 

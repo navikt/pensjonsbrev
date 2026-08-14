@@ -69,7 +69,7 @@ jobs:
       gradleTarget: pensjon:brevbaker
       extraModulesToBuild: >-
         :pensjon:pensjon-api-model:publishToMavenLocal
-        :alder:api-model:publishToMavenLocal
+        :alder:alder-api-model:publishToMavenLocal
         :ufoere:ufoere-api-model:publishToMavenLocal
       buildImage: true
 
@@ -106,7 +106,7 @@ jobs:
           ./gradlew :brevbaker:markup-dsl:publishToMavenLocal
           ./gradlew :brevbaker:brevbaker-api:publishToMavenLocal
           ./gradlew :pensjon:pensjon-api-model:publishToMavenLocal
-          ./gradlew :alder:api-model:publishToMavenLocal
+          ./gradlew :alder:alder-api-model:publishToMavenLocal
           ./gradlew :ufoere:ufoere-api-model:publishToMavenLocal
           ./gradlew :pensjon:brevbaker:integrationTest
         env:
