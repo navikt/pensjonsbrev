@@ -67,8 +67,12 @@ export function useTekstvalgInsertHighlight({
   );
 
   const { saveStatus, redigertBrev } = editorState;
+  const previousSaveStatusRef = useRef(saveStatus);
 
   useEffect(() => {
+    const previousSaveStatus = previousSaveStatusRef.current;
+    previousSaveStatusRef.current = saveStatus;
+
     const pending = pendingToggleRef.current;
     if (!pending) return;
 
@@ -79,18 +83,18 @@ export function useTekstvalgInsertHighlight({
       pendingToggleRef.current = null;
       return;
     }
-    // Still in flight.
-    if (saveStatus !== "SAVED") return;
+    // Wait for the save to actually land. "SAVED" is also the resting state, so the transition out
+    // of "SAVE_PENDING" — not the value alone — is what tells us a response was applied.
+    if (saveStatus !== "SAVED" || previousSaveStatus !== "SAVE_PENDING") return;
 
-    const newIds = new Set<number>();
-    for (const id of collectNewIds(pending.idsBeforeToggle, redigertBrev)) {
-      if (!pending.lastSeenIds.has(id)) newIds.add(id);
-    }
-    // The save has not landed yet — `saveStatus` is also "SAVED" at rest, so keep waiting rather
-    // than dropping the pending toggle.
+    // Exactly one save is inspected per toggle. A tekstvalg change does not necessarily insert
+    // anything (a radio change may just swap text inside existing content), and leaving the toggle
+    // armed for "next time" would flash content the user typed themselves later on.
+    pendingToggleRef.current = null;
+
+    const newIds = collectNewIds(pending.idsBeforeToggle, redigertBrev).difference(pending.lastSeenIds);
     if (newIds.size === 0) return;
 
-    pendingToggleRef.current = null;
     setHighlightedIds(newIds);
 
     const focus = findLastInsertedFocus(redigertBrev, newIds);

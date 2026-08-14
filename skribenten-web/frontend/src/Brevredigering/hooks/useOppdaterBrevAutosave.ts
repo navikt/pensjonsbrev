@@ -32,9 +32,10 @@ export type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
 /**
  * Rutens lagring av tekstvalg-/overstyringsendringer og av "ferdig"-innsendingen.
  *
- * Denne mutasjonen eies av ruten, som bruker `isPending`/`isError` til å fryse editoren og vise
- * feil. Autolagringen av selve brevteksten hører derimot hjemme i <ManagedLetterEditor />, som har
- * sin egen mutasjon — deler vi denne, ville editoren blitt frosset for hvert tastetrykk.
+ * Mutasjonen eies av ruten fordi ruten utleder `freeze = oppdaterBrevMutation.isPending` (og
+ * tilsvarende for feilvisning) og sender det inn i <ManagedLetterEditor />. Autolagringen av selve
+ * brevteksten har derfor sin egen mutasjon inne i <ManagedLetterEditor />: deler de én mutasjon,
+ * ville `freeze` slått inn for hvert tastetrykk og låst editoren mens saksbehandler skriver.
  */
 export function useOppdaterBrevAutosave({
   saksId,

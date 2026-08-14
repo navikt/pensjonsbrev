@@ -180,4 +180,28 @@ describe("tekstvalg-highlight ved lagring", () => {
     expect([...harness().highlightedIds]).toEqual([]);
     expect(harness().focus).toEqual({ blockIndex: 0, contentIndex: 0 });
   });
+
+  test("lar ikke et tekstvalg som ikke satte inn noe markere en senere lagring", async () => {
+    // Et tekstvalg kan endres uten at det kommer nye id-er, f.eks. når et radio-tekstvalg bare
+    // bytter ut tekst i eksisterende innhold.
+    const førsteSvar = utsattSvar();
+    const harness = renderHarness();
+
+    act(() => {
+      harness().beforeTekstvalgChange(nyeValg);
+      harness().lagreTekstvalg();
+    });
+    await førsteSvar({ ...lagretBrev, redigertBrevHash: "utenNyeIder", saksbehandlerValg: nyeValg });
+
+    expect([...harness().highlightedIds]).toEqual([]);
+
+    // Neste lagring inneholder nytt innhold saksbehandler selv har skrevet. Den forrige,
+    // tomme tekstvalg-endringen skal ikke få denne til å blinke eller flytte markøren.
+    const andreSvar = utsattSvar();
+    act(() => harness().lagreTekstvalg());
+    await andreSvar(brevMedTekstvalg);
+
+    expect([...harness().highlightedIds]).toEqual([]);
+    expect(harness().focus).toEqual({ blockIndex: 0, contentIndex: 0 });
+  });
 });
