@@ -7,12 +7,17 @@ import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonTemplates
 import no.nav.pensjon.brev.ufore.maler.UfoereTemplates
 import org.slf4j.LoggerFactory
+import java.util.concurrent.RejectedExecutionException
 
 private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.BrevbakerApp")
 
 fun main(args: Array<String>) {
     Thread.setDefaultUncaughtExceptionHandler { thread, ex ->
-        logger.error("Uncaught exception in thread ${thread.name}", ex)
+        if (ex is RejectedExecutionException) {
+            logger.warn("Uncaught exception in thread ${thread.name}", ex)
+        } else {
+            logger.error("Uncaught exception in thread ${thread.name}", ex)
+        }
     }
     io.ktor.server.netty.EngineMain.main(args)
 }

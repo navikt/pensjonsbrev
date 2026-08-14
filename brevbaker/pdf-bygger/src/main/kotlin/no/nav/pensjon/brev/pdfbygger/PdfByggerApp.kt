@@ -26,12 +26,17 @@ import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2
 import org.slf4j.LoggerFactory
+import java.util.concurrent.RejectedExecutionException
 
 private val objectMapper = internalObjectMapper()
 
 fun main(args: Array<String>) {
     Thread.setDefaultUncaughtExceptionHandler { thread, ex ->
-        logger.error("Uncaught exception in thread ${thread.name}", ex)
+        if (ex is RejectedExecutionException) {
+            logger.warn("Uncaught exception in thread ${thread.name}", ex)
+        } else {
+            logger.error("Uncaught exception in thread ${thread.name}", ex)
+        }
     }
     EngineMain.main(args)
 }
