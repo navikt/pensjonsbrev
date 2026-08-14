@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingDodsboSaksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
@@ -184,8 +183,8 @@ object Fixtures : LetterDataFactory {
         pesysData = VarselFeilutbetalingPesysData(
             feilutbetaltBrutto = 100
         ),
-        saksbehandlerValg = VarselFeilutbetalingUforeDto.Saksbehandlervalg(
-            rentetillegg = true
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "rentetillegg" to true
         ),
     )
 
@@ -303,7 +302,9 @@ object Fixtures : LetterDataFactory {
     )
 
     fun lagFeilutbetalingVarselDodsbo() = FeilutbetalingVarselDodsboDto(
-        saksbehandlerValg = FeilutbetalingDodsboSaksbehandlervalg(),
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "kjentBobestyrer" to true
+        ),
         pesysData = VarselFeilutbetalingPesysData(feilutbetaltBrutto = 100)
     )
 

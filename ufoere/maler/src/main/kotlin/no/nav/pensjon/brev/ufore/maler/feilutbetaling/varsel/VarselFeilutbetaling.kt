@@ -13,12 +13,12 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.varselFeilutbetalingUforeDto.saksbehandlervalg.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.varselFeilutbetalingUforeDto.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.varselFeilutbetalingPesysData.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -40,6 +40,7 @@ object VarselFeilutbetaling : RedigerbarTemplate<VarselFeilutbetalingUforeDto> {
     ) {
         val dato = fritekst("dato")
         val bruttoFeilutbetalt = pesysData.feilutbetaltBrutto.format(LocalizedFormatter.CurrencyFormat)
+        val rentetillegg = saksbehandlervalg("rentetillegg", "Vurdert rentetillegg").bool()
 
 
         title {
@@ -145,7 +146,7 @@ object VarselFeilutbetaling : RedigerbarTemplate<VarselFeilutbetalingUforeDto> {
                 )
             }
 
-            showIf(saksbehandlerValg.rentetillegg) {
+            showIf(rentetillegg) {
                 title1 {
                     text(
                         bokmal { + "Rentetillegg " },

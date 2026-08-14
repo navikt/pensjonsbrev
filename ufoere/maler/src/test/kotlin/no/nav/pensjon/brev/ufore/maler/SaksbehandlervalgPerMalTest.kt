@@ -139,7 +139,7 @@ class SaksbehandlervalgPerMalTest {
             Redigerbar.UT_FEILUTBETALING_VARSEL_BARN_FLYTTER to emptyList(),
             Redigerbar.UT_FEILUTBETALING_VARSEL_BARN_UTLAND to emptyList(),
             Redigerbar.UT_FEILUTBETALING_VARSEL_DODSBO to listOf(
-                "kjentBobestyrer: kotlin.Boolean (Kjent bobestyrer)",
+                "kjentBobestyrer: Boolean (Kjent bobestyrer)",
             ),
             Redigerbar.UT_FEILUTBETALING_VARSEL_INSTITUSJON to emptyList(),
             Redigerbar.UT_FEILUTBETALING_VARSEL_SIVILSTAND to emptyList(),
@@ -172,7 +172,7 @@ class SaksbehandlervalgPerMalTest {
             Redigerbar.UT_S_VARSEL_OKT_MINSTE_IFU to emptyList(),
             Redigerbar.UT_S_VARSEL_OKT_MINSTE_IFU_LAVERE_REDPROS to emptyList(),
             Redigerbar.UT_VARSEL_FEILUTBETALING to listOf(
-                "rentetillegg: kotlin.Boolean (Vurdert rentetillegg)",
+                "rentetillegg: Boolean (Vurdert rentetillegg)",
             ),
             Redigerbar.UT_VEDTAK_FEILUTBETALING to emptyList(),
             Redigerbar.UT_VEDTAK_FEILUTBETALING_ETTERGITT_FORELDET to emptyList(),
