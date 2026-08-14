@@ -87,9 +87,9 @@ object Fixtures : LetterDataFactory {
             kravMottattDato = vilkaarligDato,
             vurdering = "Vurdering 1"
         ),
-        saksbehandlerValg = UforeAvslagUforetidspunkt26Dto.Saksbehandlervalg(
-            VisVurderingFraVilkarvedtak = true,
-            visUforetidspunktEtter26 = true
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "VisVurderingFraVilkarvedtak" to true,
+            "visUforetidspunktEtter26" to true
         )
     )
 
@@ -98,9 +98,9 @@ object Fixtures : LetterDataFactory {
             kravMottattDato = vilkaarligDato,
             vurdering = "Vurdering 1"
         ),
-        saksbehandlerValg = UforeAvslagForverrelseEtter26Dto.Saksbehandlervalg(
-            VisVurderingFraVilkarvedtak = true,
-            visForverrelseEtter26 = true
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "VisVurderingFraVilkarvedtak" to true,
+            "visForverrelseEtter26" to true
         )
     )
 

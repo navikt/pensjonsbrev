@@ -125,12 +125,12 @@ class SaksbehandlervalgPerMalTest {
                 "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_UNG_UFOR_36 to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
-                "visUforetidspunktEtter26: kotlin.Boolean (Uføretidspunkt etter 26 år)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "visUforetidspunktEtter26: Boolean (Uføretidspunkt etter 26 år)",
             ),
             Redigerbar.UT_AVSLAG_UNG_UFOR_VARIG to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
-                "visForverrelseEtter26: kotlin.Boolean (Forverrelse etter 26 år)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "visForverrelseEtter26: Boolean (Forverrelse etter 26 år)",
             ),
             Redigerbar.UT_AVSLAG_YRKESSKADE_GODKJENT to listOf(
                 "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
