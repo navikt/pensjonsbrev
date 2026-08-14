@@ -88,10 +88,13 @@ updates:
     registries:
       - npm-github
     groups:
+      typescript:
+        patterns:
+          - "typescript"
+          - "openapi-typescript"
       dev:
         patterns:
           - "*biome*"
-          - "typescript"
           - "stylelint*"
       frontend:
         patterns:
