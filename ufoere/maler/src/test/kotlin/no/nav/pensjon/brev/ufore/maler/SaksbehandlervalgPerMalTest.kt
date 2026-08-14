@@ -152,7 +152,7 @@ class SaksbehandlervalgPerMalTest {
             Redigerbar.UT_INNH_OPPL_FLERE_OPPL_GENERELL to emptyList(),
             Redigerbar.UT_INNH_OPPL_LEGE_LEGEERKLAERING to emptyList(),
             Redigerbar.UT_INNH_OPPL_NAERINGSINNTEKTER to listOf(
-                "ikkeMottattInntektsskjema: kotlin.Boolean (Ikke mottatt inntektsskjema)",
+                "ikkeMottattInntektsskjema: Boolean (Ikke mottatt inntektsskjema)",
             ),
             Redigerbar.UT_INNH_OPPL_NY_SIVILSTAND to emptyList(),
             Redigerbar.UT_INNH_OPPL_OPPGITT_SAMBOER to listOf(

@@ -70,8 +70,8 @@ object Fixtures : LetterDataFactory {
 
     private fun lagInnhentingOpplysningerNaeringsinntekt() = InnhentingOpplysningerNaeringsinntektDto(
         pesysData = EmptyFagsystemdata,
-        saksbehandlerValg = InnhentingOpplysningerNaeringsinntektDto.Saksbehandlervalg(
-            ikkeMottattInntektsskjema = true
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "ikkeMottattInntektsskjema" to true
         )
     )
 
