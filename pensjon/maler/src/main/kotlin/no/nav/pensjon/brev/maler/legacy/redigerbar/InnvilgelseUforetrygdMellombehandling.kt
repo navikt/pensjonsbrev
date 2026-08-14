@@ -143,7 +143,7 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
             includePhrase(Innvilgelse.InnvilgelseDetaljer(
                 pe = pe,
                 nyeInnvilgedeBarnetillegg = pesysData.nyeInnvilgedeBarnetillegg,
-                nyeAvslagBarnetillegg = pesysData.nyeAvslagBarnetillegg,
+                nyeAvslagBarnetillegg = pesysData.avslagBarnetilleggNye,
                 btFellesInnvilget = btFellesInnvilget,
                 btFellesNetto0 = btFellesNetto0,
                 btSerkullInnvilget = btSerkullInnvilget,
@@ -340,7 +340,7 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
 
             includePhrase(Ufoeretrygd.BeregningenDinKanBliEndret)
 
-            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
+            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.avslagBarnetilleggNye))
 
             includePhrase(Innvilgelse.Honnoerkort(
                 uforegrad = uforegrad,

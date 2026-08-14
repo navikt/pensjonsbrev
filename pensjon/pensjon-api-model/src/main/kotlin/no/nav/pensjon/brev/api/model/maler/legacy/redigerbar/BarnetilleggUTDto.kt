@@ -2,7 +2,10 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 
 import java.time.LocalDate
 
-data class BarnetilleggMedSammeBegrunnelsePaSammeTid(val begrunnelse: BtBegrunnelseCode, val fom: LocalDate, val tom: LocalDate? = null, val barnetillegg: List<BarnetilleggUTDto>)
+data class BarnetilleggMedSammeBegrunnelsePaSammeTidDto(val begrunnelse: BtBegrunnelseCode, val fom: LocalDate, val tom: LocalDate? = null, val barn: List<BarnDto>) {
+    fun erFlereBarn(): Boolean = barn.size > 1 && barn.first().antallBarn > 1
+}
+data class BarnDto(val antallBarn: Int, val fodselsdato: LocalDate)
 data class BarnetilleggUTDto(val antallBarn: Int, val begrunnelse: BtBegrunnelseCode, val fodselsdato: LocalDate, val fom: LocalDate, val tom: LocalDate? = null)
 enum class BtBegrunnelseCode {
     INNVILGET,
