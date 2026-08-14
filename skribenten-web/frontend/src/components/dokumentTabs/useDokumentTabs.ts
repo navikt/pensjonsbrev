@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import { getRedigerbareVedlegg } from "~/api/redigerbareVedlegg-endpoints";
-import { type BrevResponse, P1_BREVKODE } from "~/types/brev";
+import { type BrevResponse } from "~/types/brev";
 
-import { BREV_TAB_ID, type DokumentTab, P1_TAB_ID } from "./types";
+import { BREV_TAB_ID, type DokumentTab } from "./types";
 
 /**
  * Builds the editor's tab list from the brev plus the lightweight redigerbareVedlegg list query.
@@ -46,11 +46,10 @@ export function useDokumentTabs(args: { saksId: string; brev: BrevResponse }): {
       locked: true,
     }));
 
-    const p1Tab: DokumentTab[] =
-      brev.info.brevkode === P1_BREVKODE ? [{ id: P1_TAB_ID, label: "P1", type: "p1", locked: false }] : [];
-
-    return [brevTab, ...redigerbareTabs, ...alltidValgbareTabs, ...p1Tab];
-  }, [brev.info.brevtittel, brev.info.brevkode, brev.valgteVedlegg, redigerbareVedleggQuery.data]);
+    // P1 is moved to a separate PR (it has its own form, not the letter editor). The P1 tab is
+    // intentionally omitted here so no dead "P1" placeholder appears; it is re-added in the P1 PR.
+    return [brevTab, ...redigerbareTabs, ...alltidValgbareTabs];
+  }, [brev.info.brevtittel, brev.valgteVedlegg, redigerbareVedleggQuery.data]);
 
   return { tabs };
 }

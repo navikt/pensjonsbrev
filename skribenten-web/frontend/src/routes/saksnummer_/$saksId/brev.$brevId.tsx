@@ -563,6 +563,7 @@ function RedigerBrev({
                 </Box>
                 <InsertedTekstValgHighlightProvider ids={highlightedIds}>
                   <EditorDocumentSurface
+                    brev={brev}
                     renderBrev={() => (
                       <ManagedLetterEditor
                         brev={brev}
@@ -572,6 +573,7 @@ function RedigerBrev({
                         showDebug={showDebug}
                       />
                     )}
+                    saksId={saksId}
                   />
                 </InsertedTekstValgHighlightProvider>
               </HGrid>
