@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
@@ -197,7 +196,8 @@ object Fixtures : LetterDataFactory {
             sumTilInnkrevingTotalBelop = 2,
             dineRettigheterOgMulighetTilAKlageDto = createDineRettigheterOgMulighetTilAaKlageDto(),
             oversiktOverFeilutbetalingPEDto = createOversiktOverFeilutbetalingPEDto(),
-        ), EmptySaksbehandlerValg
+        ),
+        saksbehandlerValg = lagSaksbehandlervalg(),
     )
 
     private fun lagFeilutbetalingPerAr(): List<FeilutbetalingPerAr> {
@@ -246,7 +246,7 @@ object Fixtures : LetterDataFactory {
             dineRettigheterOgMulighetTilAKlageDto = createDineRettigheterOgMulighetTilAaKlageDto(),
             oversiktOverFeilutbetalingPEDto = createOversiktOverFeilutbetalingPEDto(),
         ),
-        saksbehandlerValg = EmptySaksbehandlerValg
+        saksbehandlerValg = lagSaksbehandlervalg(),
     )
 
     private fun createDineRettigheterOgMulighetTilAaKlageDto() = DineRettigheterOgMulighetTilAKlageDto(
