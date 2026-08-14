@@ -275,8 +275,6 @@ public abstract interface annotation class no/nav/pensjon/brev/template/Brevbake
 }
 
 public final class no/nav/pensjon/brev/template/BrevdataEllerFritekst : no/nav/pensjon/brev/template/SpesialkonstruksjonIMal {
-	public final fun getFritekst ()Lno/nav/pensjon/brev/template/Expression;
-	public final fun getTekst ()Lno/nav/pensjon/brev/template/Expression;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -632,7 +630,6 @@ public final class no/nav/pensjon/brev/template/Fritekst : no/nav/pensjon/brev/t
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
 	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
-	public final fun getStr ()Ljava/lang/String;
 	public fun hashCode ()I
 	public static fun hashCode-impl (Ljava/lang/String;)I
 	public fun toString ()Ljava/lang/String;
@@ -855,7 +852,6 @@ public final class no/nav/pensjon/brev/template/RedigerbarData : no/nav/pensjon/
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Object;)Z
 	public static final fun equals-impl0 (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Z
-	public final fun getVariabel ()Lno/nav/pensjon/brev/template/Expression;
 	public fun hashCode ()I
 	public static fun hashCode-impl (Lno/nav/pensjon/brev/template/Expression;)I
 	public fun toString ()Ljava/lang/String;
