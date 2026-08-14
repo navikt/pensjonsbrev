@@ -84,8 +84,8 @@ class SaksbehandlervalgPerMalTest {
                 "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_MEDLEMSKAP to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
-                "visSupplerendeStonadUforeFlykninger: kotlin.Boolean (Supplerende stønad til uføre flyktninger)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "visSupplerendeStonadUforeFlykninger: Boolean (Supplerende stønad til uføre flyktninger)",
             ),
             Redigerbar.UT_AVSLAG_MEDLEMSKAP_UTLAND to listOf(
                 "visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning: Boolean (Tekst hvis bruker ikke omfattes av personkretsen i trygdeforordningen)",
@@ -119,7 +119,7 @@ class SaksbehandlervalgPerMalTest {
                 "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_TESTMAL to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_UNG_UFOR_26 to listOf(
                 "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",

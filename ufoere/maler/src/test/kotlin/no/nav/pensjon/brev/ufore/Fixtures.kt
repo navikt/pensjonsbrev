@@ -120,8 +120,8 @@ object Fixtures : LetterDataFactory {
             vurdering = listOf("Vurdering 1", "Vurdering 2"),
             vurderingsTekst = "Vurdering 3"
         ),
-        saksbehandlerValg = UforeAvslagTestmalDto.Saksbehandlervalg(
-            VisVurderingFraVilkarvedtak = true
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "VisVurderingFraVilkarvedtak" to true
         )
     )
 
@@ -130,9 +130,9 @@ object Fixtures : LetterDataFactory {
             kravMottattDato = vilkaarligDato,
             vurdering = "Vurdering 1"
         ),
-        saksbehandlerValg = UforeAvslagSupplerendeStonadEnkelDto.Saksbehandlervalg(
-            VisVurderingFraVilkarvedtak = true,
-            visSupplerendeStonadUforeFlykninger = true,
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "VisVurderingFraVilkarvedtak" to true,
+            "visSupplerendeStonadUforeFlykninger" to true,
         )
     )
 

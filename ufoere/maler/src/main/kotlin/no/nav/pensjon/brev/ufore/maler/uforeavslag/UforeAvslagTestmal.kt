@@ -13,8 +13,7 @@ import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagTestmalDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagTestmalDto.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagTestmalDto.saksbehandlerValg
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagTestmalDto.saksbehandlervalg.VisVurderingFraVilkarvedtak
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagTestmalDto.uforeAvslagPendata.kravMottattDato
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagTestmalDto.uforeAvslagPendata.vurdering
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagTestmalDto.uforeAvslagPendata.vurderingsTekst
@@ -44,6 +43,8 @@ object UforeAvslagTestmal : RedigerbarTemplate<UforeAvslagTestmalDto> {
         ),
     )
     {
+        val visVurderingFraVilkarvedtak = saksbehandlervalg("VisVurderingFraVilkarvedtak", "Bruk vurdering fra vilkårsvedtak").bool()
+
         title {
             text (bokmal { + "Nav har avslått søknaden din om uføretrygd"},
                 nynorsk { + "Nav har avslått søknaden din om uføretrygd" })
@@ -90,7 +91,7 @@ object UforeAvslagTestmal : RedigerbarTemplate<UforeAvslagTestmalDto> {
                 }
             }
 
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+            showIf(visVurderingFraVilkarvedtak) {
 //                paragraph {
 //                    text(bokmal { +redigerbarData(pesysData.vurderingsTekst) },
 //                        nynorsk { +redigerbarData(pesysData.vurderingsTekst) })
