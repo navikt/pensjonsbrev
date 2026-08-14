@@ -3,36 +3,17 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 data class VedtakEndringAvAlderspensjonInstitusjonsoppholdDto(
-    override val saksbehandlerValg: SaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData
-) : RedigerbarBrevdata<VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.SaksbehandlerValg, VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.PesysData> {
-    data class SaksbehandlerValg(
-        @DisplayText("Alderspensjon under opphold i institusjon")
-        val alderspensjonUnderOppholdIInstitusjon: Boolean,
-        @DisplayText("Alderspensjon under soning")
-        val alderspensjonUnderSoning: Boolean,
-        @DisplayText("Alderspensjon ved varetektsfengsling")
-        val alderspensjonVedVaretektsfengsling: Boolean,
-        @DisplayText("Alderspensjon redusert")
-        val alderspensjonRedusert: Boolean,
-        @DisplayText("Alderspensjon stanset")
-        val alderspensjonStanset: Boolean,
-        @DisplayText("Informasjon om sivilstand ved institusjonsopphold")
-        val informasjonOmSivilstandVedInstitusjonsopphold: Boolean,
-        @DisplayText("Hvis reduksjon tilbake i tid")
-        val hvisReduksjonTilbakeITid: Boolean,
-        @DisplayText("Hvis etterbetaling")
-        val etterbetaling: Boolean?,
-    ) : SaksbehandlerValgBrevdata
+) : RedigerbarBrevdataMedSaksbehandlerValg<VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.PesysData> {
 
     data class PesysData(
         val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,

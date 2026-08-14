@@ -2,28 +2,21 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
 
 data class VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto(
-    override val saksbehandlerValg: SaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.SaksbehandlerValg, VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.PesysData> {
-    data class SaksbehandlerValg(
-        @DisplayText("Årsak")
-        val aarsak: Aarsak
-    ) : SaksbehandlerValgBrevdata {
-        enum class Aarsak {
-            @DisplayText("Uføretrygd er innvilget")
-            ufoeretrygdErInnvilget,
-            @DisplayText("Uføregrad er økt")
-            ufoeregradErOekt,
-            @DisplayText("Pensjonsopptjeningen er endret")
-            pensjonsopptjeningenErEndret,
-        }
+) : RedigerbarBrevdataMedSaksbehandlerValg<VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.PesysData> {
+
+    enum class Aarsak(override val displayText: String) : SaksbehandlerValgEnum {
+        ufoeretrygdErInnvilget("Uføretrygd er innvilget"),
+        ufoeregradErOekt("Uføregrad er økt"),
+        pensjonsopptjeningenErEndret("Pensjonsopptjeningen er endret"),
     }
 
     data class PesysData(

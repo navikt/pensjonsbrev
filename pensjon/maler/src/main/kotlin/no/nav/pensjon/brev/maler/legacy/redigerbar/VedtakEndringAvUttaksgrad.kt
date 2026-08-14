@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakEnd
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakEndringAvUttaksgradDto.beregnetPensjonPerManed.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakEndringAvUttaksgradDto.krav.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakEndringAvUttaksgradDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakEndringAvUttaksgradDto.saksbehandlerValg.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakEndringAvUttaksgradDto.*
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjonKort
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
@@ -39,7 +38,6 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
@@ -47,6 +45,7 @@ import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 
@@ -66,6 +65,8 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
+        val etterbetaling = saksbehandlervalg("etterbetaling", "Hvis etterbetaling").bool()
+
         title {
             // innvilgelseAPTittel_001
             showIf(pesysData.krav.kravInitiertAv.isOneOf(BRUKER, VERGE)) {
@@ -285,7 +286,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             // skattAPendring_001
             includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
 
-            showIf(saksbehandlerValg.etterbetaling.ifNull(false)) {
+            showIf(etterbetaling) {
                 // etterbetalingAP_002
                 includePhrase(Vedtak.Etterbetaling(pesysData.krav.virkDatoFom))
             }

@@ -1,24 +1,18 @@
 package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
-import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
 
 data class InnvilgelseUforetrygdMedEndringDto(
-    override val saksbehandlerValg: Saksbehandlervalg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<InnvilgelseUforetrygdMedEndringDto.Saksbehandlervalg, InnvilgelseUforetrygdMedEndringDto.PesysData> {
-
-    data class Saksbehandlervalg(
-        @DisplayText("Periodisert inntekt barnetillegg")
-        val periodisertInntekt: PeriodisertInntektBarnetillegg?,
-    ) : SaksbehandlerValgBrevdata
+) : RedigerbarBrevdataMedSaksbehandlerValg<InnvilgelseUforetrygdMedEndringDto.PesysData> {
 
     data class PesysData(
         val pe: PEgruppe10,

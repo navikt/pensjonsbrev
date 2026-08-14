@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
@@ -15,10 +16,10 @@ import java.time.LocalDate
 
 fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
     InnvilgelseAvAlderspensjonTrygdeavtaleDto(
-        saksbehandlerValg = InnvilgelseAvAlderspensjonTrygdeavtaleDto.SaksbehandlerValg(
-            nyBeregningAvInnvilgetAP = false,
-            medfoererInnvilgelseAvAPellerOektUttaksgrad = false,
-            etterbetaling = true
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "nyBeregningAvInnvilgetAP" to false,
+            "medfoererInnvilgelseAvAPellerOektUttaksgrad" to false,
+            "etterbetaling" to true
         ),
         pesysData = InnvilgelseAvAlderspensjonTrygdeavtaleDto.PesysData(
             afpPrivatResultatFellesKontoret = false,

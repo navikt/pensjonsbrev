@@ -1,7 +1,7 @@
 [versions]
-brevdataVersion = "1.0.2"
-brevbakerApiVersion = "1.0.2"
-markupVersion = "2.0.2"
+brevdataVersion = "1.0.3"
+brevbakerApiVersion = "1.0.3"
+markupVersion = "2.0.3"
 
 [libraries]
 brevdata = { module = "no.nav.brev.brevbaker:brevdata", version.ref = "brevdataVersion" }
