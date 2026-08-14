@@ -18,7 +18,6 @@ import {
   type ColumnSpec,
   type Content,
   type EditedDocument,
-  type EditedLetter,
   type ElementTags,
   FontType,
   type Identifiable,
@@ -273,7 +272,7 @@ export function create(brev: BrevResponse): LetterEditorState {
  * so they only get persisted to the backend if the user later makes a real
  * edit that triggers a save.
  */
-export function normalizeTableSeparators(letter: EditedLetter): EditedLetter {
+export function normalizeTableSeparators<TDoc extends EditedDocument>(letter: TDoc): TDoc {
   return produce(letter, applyTableSeparatorNormalization);
 }
 
@@ -286,7 +285,7 @@ export function normalizeTableSeparators(letter: EditedLetter): EditedLetter {
  * spinning up a nested `produce` call. Callers are responsible for setting
  * `saveStatus` themselves — this function only adjusts the letter structure.
  */
-export function applyTableSeparatorNormalization(draft: Draft<EditedLetter>) {
+export function applyTableSeparatorNormalization(draft: Draft<EditedDocument>) {
   const blocks = draft.blocks;
   for (let blockIndex = 0; blockIndex < blocks.length; blockIndex++) {
     const block = blocks[blockIndex];

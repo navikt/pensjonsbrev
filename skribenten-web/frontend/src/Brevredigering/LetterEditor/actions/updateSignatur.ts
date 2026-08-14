@@ -1,8 +1,11 @@
 import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { isLetterDocument } from "~/types/brevbakerTypes";
 
 export const updateSignatur: Action<LetterEditorState, [of: "Saksbehandler" | "Attestant", signatur: string]> =
   withPatches((draft, of, signatur) => {
+    // Signatur only exists on a letter; this action is never dispatched for a vedlegg.
+    if (!isLetterDocument(draft.redigertBrev)) return;
     if (of === "Saksbehandler") {
       draft.redigertBrev.signatur.saksbehandlerNavn = signatur;
       draft.saveStatus = "DIRTY";

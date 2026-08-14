@@ -1,5 +1,5 @@
 import { type BrevInfo, type SaksbehandlerValg } from "~/types/brev";
-import { type Content, type EditedLetter } from "~/types/brevbakerTypes";
+import { type Content, type EditedDocument } from "~/types/brevbakerTypes";
 
 import { type History } from "../history";
 
@@ -33,7 +33,13 @@ export type Focus = LiteralIndex & {
 
 export type LetterEditorState = {
   info: BrevInfo;
-  redigertBrev: EditedLetter;
+  /**
+   * The editable document payload. Widened from EditedLetter to EditedDocument so a redigerbart
+   * vedlegg (EditAttachment) can drive the same editor. The content engine only reads
+   * title/blocks/deletedBlocks; sakspart/signatur exist only when this is a letter (EditedLetter)
+   * and are accessed via the brev layer's render props / signatur action, never by content actions.
+   */
+  redigertBrev: EditedDocument;
   redigertBrevHash: string;
   saksbehandlerValg: SaksbehandlerValg;
   saveStatus: "DIRTY" | "SAVE_PENDING" | "SAVED";

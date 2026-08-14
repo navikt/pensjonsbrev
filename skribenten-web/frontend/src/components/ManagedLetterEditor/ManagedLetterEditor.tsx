@@ -10,6 +10,7 @@ import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/stat
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { type BrevResponse } from "~/types/brev";
+import { asLetterDocument } from "~/types/brevbakerTypes";
 
 import { AUTOSAVE_TIMER } from "./autosave_timer";
 
@@ -37,7 +38,7 @@ const ManagedLetterEditor = (props: {
       }));
       // oppdaterBrevtekst only saves redigertBrev; tekstvalg changes require saveDirtyLetter.
       if (isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
-        return oppdaterBrevtekst(props.brev.info.id, stateWithCursor.redigertBrev);
+        return oppdaterBrevtekst(props.brev.info.id, asLetterDocument(stateWithCursor.redigertBrev));
       }
       if (!props.saveDirtyLetter) {
         throw new Error("saveDirtyLetter is required when saksbehandlerValg has changed");

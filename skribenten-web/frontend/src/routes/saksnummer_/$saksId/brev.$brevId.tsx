@@ -41,6 +41,7 @@ import {
   type ReservasjonResponse,
   type SaksbehandlerValg,
 } from "~/types/brev";
+import { asLetterDocument } from "~/types/brevbakerTypes";
 import { genericErrorMessage, getErrorMessage } from "~/utils/errorUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
@@ -412,9 +413,12 @@ function RedigerBrev({
         }
         previousValgRef.current = updatedValg;
         oppdaterBrevMutation.mutate({
-          redigertBrev: editorState.redigertBrev,
+          redigertBrev: asLetterDocument(editorState.redigertBrev),
           saksbehandlerValg: updatedValg,
-          historySnapshot: createLetterSnapshot(editorState),
+          historySnapshot: createLetterSnapshot({
+            ...editorState,
+            redigertBrev: asLetterDocument(editorState.redigertBrev),
+          }),
         });
       }
     });
@@ -423,7 +427,7 @@ function RedigerBrev({
   const onSubmit = (values: RedigerBrevSidemenyFormData, navigateDone?: () => void) => {
     oppdaterBrevMutation.mutate(
       {
-        redigertBrev: editorState.redigertBrev,
+        redigertBrev: asLetterDocument(editorState.redigertBrev),
         saksbehandlerValg: values.saksbehandlerValg,
       },
       {
@@ -484,7 +488,7 @@ function RedigerBrev({
       brevId: brev.info.id,
       frigiReservasjon: false,
       request: {
-        redigertBrev: state.redigertBrev,
+        redigertBrev: asLetterDocument(state.redigertBrev),
         saksbehandlerValg: state.saksbehandlerValg,
       },
     });

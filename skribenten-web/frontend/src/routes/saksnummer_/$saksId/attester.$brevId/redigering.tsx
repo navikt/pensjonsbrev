@@ -49,6 +49,7 @@ import {
   type ReservasjonResponse,
   type SaksbehandlerValg,
 } from "~/types/brev";
+import { asLetterDocument } from "~/types/brevbakerTypes";
 import { type AttestForbiddenReason } from "~/utils/parseAttest403";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
@@ -188,6 +189,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const attesteringStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
 
+  // Attestering edits the letter itself, never a vedlegg — narrow once for the letter-only reads
+  // (signatur) and saves below.
+  const redigertBrev = asLetterDocument(editorState.redigertBrev);
+
   const [forbidReason, setForbidReason] = useState<AttestForbiddenReason | null>(null);
   const [unexpectedError, setUnexpectedError] = useState<AxiosError | null>(null);
   const [warnOpen, setWarnOpen] = useState(false);
@@ -253,7 +258,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const { getWarning } = useBrevEditorWarnings({
     brevkode: props.brev.info.brevkode,
     form,
-    redigertBrev: editorState.redigertBrev,
+    redigertBrev: redigertBrev,
     propertyUsage: props.brev.propertyUsage ?? undefined,
   });
 
@@ -337,7 +342,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     attesterMutation.mutate(
       {
         saksbehandlerValg: values.saksbehandlerValg,
-        redigertBrev: editorState.redigertBrev,
+        redigertBrev: redigertBrev,
       },
       { onSuccess: onSuccess },
     );
@@ -355,7 +360,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       brevId: props.brev.info.id,
       frigiReservasjon: false,
       request: {
-        redigertBrev: state.redigertBrev,
+        redigertBrev: asLetterDocument(state.redigertBrev),
         saksbehandlerValg: state.saksbehandlerValg,
       },
     });
@@ -369,10 +374,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   }, [defaultValuesModelEditor, form]);
 
   useEffect(() => {
-    form.setValue("attestantSignatur", editorState.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?? "", {
+    form.setValue("attestantSignatur", redigertBrev.signatur.attesterendeSaksbehandlerNavn ?? "", {
       shouldValidate: form.formState.isSubmitted,
     });
-  }, [editorState.redigertBrev.signatur.attesterendeSaksbehandlerNavn, form]);
+  }, [redigertBrev.signatur.attesterendeSaksbehandlerNavn, form]);
 
   const proceedToForhandsvisning = () => {
     const varighetSekunder = Math.round((Date.now() - attesteringStartTime.current) / 1000);
@@ -490,9 +495,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                       }
                       previousTekstvalgRef.current = updatedValg;
                       oppdaterBrevMutation.mutate({
-                        redigertBrev: editorState.redigertBrev,
+                        redigertBrev: redigertBrev,
                         saksbehandlerValg: updatedValg,
-                        historySnapshot: createLetterSnapshot(editorState),
+                        historySnapshot: createLetterSnapshot({ ...editorState, redigertBrev }),
                       });
                     }}
                   />

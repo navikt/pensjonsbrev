@@ -4,6 +4,7 @@ import { type ChangeEvent, useCallback } from "react";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
+import { isLetterDocument } from "~/types/brevbakerTypes";
 
 export const UnderskriftTextField = ({
   of,
@@ -16,8 +17,14 @@ export const UnderskriftTextField = ({
 }) => {
   const { editorState, setEditorState } = useManagedLetterEditorContext();
 
-  const signatur = editorState.redigertBrev.signatur;
-  const value = of === "Saksbehandler" ? signatur.saksbehandlerNavn : signatur.attesterendeSaksbehandlerNavn;
+  // The underskrift field is only rendered for a letter, never a vedlegg. Read signatur only when
+  // the document is a letter (a vedlegg has none); the field is not rendered otherwise.
+  const signatur = isLetterDocument(editorState.redigertBrev) ? editorState.redigertBrev.signatur : undefined;
+  const value = signatur
+    ? of === "Saksbehandler"
+      ? signatur.saksbehandlerNavn
+      : signatur.attesterendeSaksbehandlerNavn
+    : undefined;
   const update = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => applyAction(Actions.updateSignatur, setEditorState, of, e.target.value),
     [of, setEditorState],

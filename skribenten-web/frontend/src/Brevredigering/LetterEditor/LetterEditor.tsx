@@ -9,7 +9,7 @@ import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEdito
 import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
-import { TITLE_INDEX } from "~/types/brevbakerTypes";
+import { isLetterDocument, TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
 import { getBlockClassName } from "./actions/common";
@@ -123,7 +123,13 @@ export const LetterEditor = ({
         />
         <VStack align="center" flexGrow="1" minHeight="0" overflowY="auto">
           <Box className="editor" css={freeze ? { cursor: "wait" } : {}} height="100%">
-            {(renderSakspart ?? (() => <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />))()}
+            {(
+              renderSakspart ??
+              (() =>
+                isLetterDocument(letter) ? (
+                  <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />
+                ) : null)
+            )()}
             <Heading
               className="letter-title"
               level="1"
@@ -184,7 +190,11 @@ export const LetterEditor = ({
                 </div>
               ))}
             </div>
-            {renderSignatur ? renderSignatur() : <SignaturView signatur={letter.signatur} />}
+            {renderSignatur ? (
+              renderSignatur()
+            ) : isLetterDocument(letter) ? (
+              <SignaturView signatur={letter.signatur} />
+            ) : null}
           </Box>
         </VStack>
         {showDebug && <DebugPanel />}
