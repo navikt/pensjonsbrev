@@ -20,7 +20,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -98,7 +98,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
             showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2011)) { // radiobutton i doksys
                 // endrUtaksgradAP2011_001 - Uføretrygd er innvilget eller uføregrad er økt
                 // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(aarsak.equalTo(Aarsak.ufoeregradErOekt).or(aarsak.equalTo(Aarsak.ufoeretrygdErInnvilget))) {
+                showIf(aarsak.isOneOf(Aarsak.ufoeregradErOekt, Aarsak.ufoeretrygdErInnvilget)) {
                     paragraph {
                         text(
                             bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12 og 22-12." },
@@ -127,7 +127,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                             english { + "This decision was made pursuant to the provisions of §§ 19-11, 19-15, 20-15 and 20-19 of the National Insurance Act." }
                         )
                     }
-                }.orShowIf(aarsak.equalTo(Aarsak.ufoeregradErOekt).or(aarsak.equalTo(Aarsak.ufoeretrygdErInnvilget))) {
+                }.orShowIf(aarsak.isOneOf(Aarsak.ufoeregradErOekt, Aarsak.ufoeretrygdErInnvilget)) {
                     // endrUtaksgradAP2016_001 - Uføretrygd er innvilget eller uføregrad er økt
                     paragraph {
                         text(
@@ -147,7 +147,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                                 english { + "This decision was made pursuant to the provisions of §§ 20-15 and 22-13 of the National Insurance Act." }
                             )
                         }
-                    }.orShowIf(aarsak.equalTo(Aarsak.ufoeregradErOekt).or(aarsak.equalTo(Aarsak.ufoeretrygdErInnvilget))) {
+                    }.orShowIf(aarsak.isOneOf(Aarsak.ufoeregradErOekt, Aarsak.ufoeretrygdErInnvilget)) {
                         // endrUtaksgradAP2025_001 - Uføretrygd er innvilget eller uføregrad er økt
                         paragraph {
                             text(
