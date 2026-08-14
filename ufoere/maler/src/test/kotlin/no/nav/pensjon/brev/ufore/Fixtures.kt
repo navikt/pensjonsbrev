@@ -64,7 +64,7 @@ object Fixtures : LetterDataFactory {
 
     private fun lagFeilutbetalingSpesfikkVarsel() = FeilutbetalingSpesifikkVarselDto(
         pesysData = VarselFeilutbetalingPesysData(100),
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
     )
 
     private fun lagInnhentingOpplysningerNaeringsinntekt() = InnhentingOpplysningerNaeringsinntektDto(
