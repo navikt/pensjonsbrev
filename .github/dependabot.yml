@@ -64,6 +64,7 @@ updates:
           - "org.flyway*"
           - "org.jetbrains*"
           - "org.junit*"
+          - "org.jsoup*"
           - "org.postgresql:postgresql"
           - "org.testcontainers*"
           - "io.github.classgraph:classgraph"
@@ -110,6 +111,13 @@ updates:
       codeql:
         patterns:
           - "github/codeql-action*"
+      gradle:
+        patterns:
+          - "gradle/actions/*"
+      trygge:
+        patterns:
+          - "dorny/paths-filter"
+          - "actions/labeler"
       nais:
         patterns:
           - "nais/*"
