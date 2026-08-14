@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_INNTEKTSEVNE_30
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagInntektDto.saksbehandlervalgInntekt.*
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagInntektDto.uforeAvslagInntektPendata.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagInntektDto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
@@ -40,6 +40,12 @@ object UforeAvslagInntektsevne30 : RedigerbarTemplate<UforeAvslagInntektDto> {
         ),
     )
     {
+        @Suppress("unused")
+        val visVurderingFraVilkarvedtak = saksbehandlervalg("VisVurderingFraVilkarvedtak", "Vis vurdering fra vilkår").bool()
+        val visVurderingIFU = saksbehandlervalg("visVurderingIFU", "Vis vurdering 12-9 IFU").bool()
+        val visVurderingIEU = saksbehandlervalg("visVurderingIEU", "Vis vurdering 12-9 IEU").bool()
+        val visUnntaksregelFremtidigInntekt = saksbehandlervalg("visUnntaksregelFremtidigInntekt", "Unntaksregel om fremtidig inntekt").bool()
+
         title {
             text (bokmal { + "Nav har avslått søknaden din om uføretrygd"},
                 nynorsk { + "Nav har avslått søknaden din om uføretrygd"})
@@ -78,7 +84,7 @@ object UforeAvslagInntektsevne30 : RedigerbarTemplate<UforeAvslagInntektDto> {
                 text(bokmal { +"Inntekten din før du ble ufør er fastsatt til " + pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner." },
                     nynorsk { +"Inntekta di før du blei ufør er fastsett til " + pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner." }
                 )
-                showIf(saksbehandlerValg.visVurderingIFU) {
+                showIf(visVurderingIFU) {
                     text( bokmal { + redigerbarData(pesysData.vurderingIFU) },
                         nynorsk { + redigerbarData(pesysData.vurderingIFU) } )
                 }.orShow {
@@ -90,7 +96,7 @@ object UforeAvslagInntektsevne30 : RedigerbarTemplate<UforeAvslagInntektDto> {
                     nynorsk { + " Oppjustert til dagens verdi tilsvarar dette ein inntekt på " + fritekst("oppjustert IFU") + " kroner. " +
                             "Inntekt etter uførleik er satt til " + pesysData.inntektEtterUforhet.format(CurrencyFormat) + " kroner. " }
                 )
-                showIf(saksbehandlerValg.visVurderingIEU) {
+                showIf(visVurderingIEU) {
                     text( bokmal { + redigerbarData(pesysData.vurderingIEU) },
                         nynorsk { + redigerbarData(pesysData.vurderingIEU) } )
                 }.orShow {
@@ -114,7 +120,7 @@ object UforeAvslagInntektsevne30 : RedigerbarTemplate<UforeAvslagInntektDto> {
                     nynorsk { + "Du har ein godkjent yrkesskade eller yrkessjukdom, men inntektsevna di er ikkje nedsett med minst 30 prosent. " })
             }
 
-            showIf(saksbehandlerValg.visUnntaksregelFremtidigInntekt) {
+            showIf(visUnntaksregelFremtidigInntekt) {
                 title1 {
                     text(bokmal { +"Unntaksregel om fremtidig inntekt" },
                         nynorsk { +"Unntaksregel om framtidig inntekt" })

@@ -174,9 +174,9 @@ object Fixtures : LetterDataFactory {
             vurderingIFU = "Vurdering IFU",
             vurderingIEU = "Vurdering IEU"
         ),
-        saksbehandlerValg = UforeAvslagInntektDto.SaksbehandlervalgInntekt(
-            VisVurderingFraVilkarvedtak = false,
-            visVurderingIFU = false
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "VisVurderingFraVilkarvedtak" to false,
+            "visVurderingIFU" to false
         )
     )
 
