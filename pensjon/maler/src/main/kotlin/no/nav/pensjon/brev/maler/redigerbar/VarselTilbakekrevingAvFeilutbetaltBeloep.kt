@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselTilbakekrevingAvFeilutbetaltBeloepDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.varselTilbakekrevingAvFeilutbetaltBeloepDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.varselTilbakekrevingAvFeilutbetaltBeloepDto.saksbehandlerValg.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.varselTilbakekrevingAvFeilutbetaltBeloepDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -20,6 +19,7 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
@@ -38,6 +38,7 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
             brevtype = INFORMASJONSBREV
         )
     ) {
+        val hvisAktueltAaIleggeRentetillegg = saksbehandlervalg("hvisAktueltAaIleggeRentetillegg", "Hvis aktuelt å ilegge rentetillegg").bool()
         val sakstype = pesysData.sakstype.format().ifNull(fritekst("ytelse"))
         title {
             text(
@@ -174,7 +175,7 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
                 )
             }
 
-            showIf(saksbehandlerValg.hvisAktueltAaIleggeRentetillegg) {
+            showIf(hvisAktueltAaIleggeRentetillegg) {
                 paragraph {
                     text(
                         bokmal { +"Hvis du bevisst har gitt oss feil eller mangelfull informasjon eller opptrådt grovt uaktsomt, kan vi beregne et rentetillegg på ti prosent av beløpet vi krever tilbakebetalt. Dette går fram av folketrygdloven § 22-17a." },

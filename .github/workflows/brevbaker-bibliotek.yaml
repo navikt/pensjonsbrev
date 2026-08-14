@@ -8,9 +8,9 @@ on:
       - "brevbaker/markup/**"
       - "brevbaker/brevdata/**"
       - "brevbaker/brevbaker-api/**"
-      - "pensjon/api-model/**"
+      - "pensjon/pensjon-api-model/**"
       - "alder/api-model/**"
-      - "ufoere/api-model/**"
+      - "ufoere/ufoere-api-model/**"
       - "gradle/libs.versions.toml"
       - ".github/workflows/.release.yaml"
       - ".github/workflows/brevbaker-bibliotek.yaml"
@@ -23,9 +23,9 @@ on:
       - "brevbaker/markup/**"
       - "brevbaker/brevdata/**"
       - "brevbaker/brevbaker-api/**"
-      - "pensjon/api-model/**"
+      - "pensjon/pensjon-api-model/**"
       - "alder/api-model/**"
-      - "ufoere/api-model/**"
+      - "ufoere/ufoere-api-model/**"
       - "gradle/libs.versions.toml"
       - ".github/workflows/.release.yaml"
       - ".github/workflows/brevbaker-bibliotek.yaml"
@@ -56,7 +56,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: dorny/paths-filter@7b450fff21473bca461d4b92ce414b9d0420d706 # v4.0.2
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         id: changes
         with:
           filters: |
@@ -76,11 +76,11 @@ jobs:
               - 'brevbaker/brevbaker-api/api/brevbaker-api.api'
               - 'gradle/published-versions.toml'
             pensjonApiModel:
-              - 'pensjon/api-model/gradle.properties'
+              - 'pensjon/pensjon-api-model/gradle.properties'
             alderApiModel:
               - 'alder/api-model/gradle.properties'
             ufoereApiModel:
-              - 'ufoere/api-model/gradle.properties'
+              - 'ufoere/ufoere-api-model/gradle.properties'
 
   release-brevdata:
     name: "brevdata"
@@ -142,7 +142,7 @@ jobs:
       contents: read
       packages: write
     with:
-      gradleTarget: 'ufoere:api-model'
+      gradleTarget: 'ufoere:ufoere-api-model'
       changes: ${{ needs.abi.outputs.ufoereApiModel == 'true' || needs.abi.outputs.brevdata == 'true' }}
       localDependenciesToPublish: ':brevbaker:brevdata:publishToMavenLocal'
 

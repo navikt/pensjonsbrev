@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.innvilgelseAvAlderspensjonTrygdeavtaleDto.alderspensjonVedVirk.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.innvilgelseAvAlderspensjonTrygdeavtaleDto.inngangOgEksportVurdering.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.innvilgelseAvAlderspensjonTrygdeavtaleDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.innvilgelseAvAlderspensjonTrygdeavtaleDto.saksbehandlerValg.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.innvilgelseAvAlderspensjonTrygdeavtaleDto.vedtaksresultatUtland.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.innvilgelseAvAlderspensjonTrygdeavtaleDto.*
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
@@ -25,6 +24,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
@@ -47,6 +47,10 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             brevtype = VEDTAKSBREV
         )
     ) {
+        val nyBeregningAvInnvilgetAP = saksbehandlervalg("nyBeregningAvInnvilgetAP", "Tittel - Ny beregning av innvilget alderspensjon. Ingen endring av uttaksgraden").bool()
+        val medfoererInnvilgelseAvAPellerOektUttaksgrad = saksbehandlervalg("medfoererInnvilgelseAvAPellerOektUttaksgrad", "Slutthandling medfører: Innvilgelse av alderspensjon eller økt uttaksgrad").bool()
+        val etterbetaling = saksbehandlervalg("etterbetaling", "Hvis etterbetaling av pensjon").bool()
+
         val afpPrivatResultatFellesKontoret = pesysData.safe { afpPrivatResultatFellesKontoret }.ifNull(false)
         val antallLandVilkarsprovd = pesysData.safe { vedtaksresultatUtland }.safe { antallLandVilkarsprovd }.ifNull(then = (0))
         val avtalelandNavn = pesysData.safe { avtalelandNavn }.ifNull(then = fritekst("AVTALELAND"))
@@ -79,7 +83,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
 
 
         title {
-            showIf(not(erMellombehandling) and saksbehandlerValg.nyBeregningAvInnvilgetAP) {
+            showIf(not(erMellombehandling) and nyBeregningAvInnvilgetAP) {
                 includePhrase(BeregnaPaaNytt(pesysData.kravVirkDatoFom))
             }.orShow {
                 text(
@@ -238,7 +242,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
 
             showIf(not(borINorge)) { includePhrase(Skatteplikt) }
 
-            showIf(saksbehandlerValg.etterbetaling.ifNull(false)) {
+            showIf(etterbetaling) {
                 includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
             }
 

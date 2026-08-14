@@ -70,7 +70,7 @@ jobs:
       extraModulesToBuild: >-
         :pensjon:pensjon-api-model:publishToMavenLocal
         :alder:api-model:publishToMavenLocal
-        :ufoere:api-model:publishToMavenLocal
+        :ufoere:ufoere-api-model:publishToMavenLocal
       buildImage: true
 
   salsa-brevbaker:
@@ -92,7 +92,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6.2.0
+      - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
         with:
           cache-encryption-key: ${{ secrets.GRADLEKEY }}
       - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
@@ -107,7 +107,7 @@ jobs:
           ./gradlew :brevbaker:brevbaker-api:publishToMavenLocal
           ./gradlew :pensjon:pensjon-api-model:publishToMavenLocal
           ./gradlew :alder:api-model:publishToMavenLocal
-          ./gradlew :ufoere:api-model:publishToMavenLocal
+          ./gradlew :ufoere:ufoere-api-model:publishToMavenLocal
           ./gradlew :pensjon:brevbaker:integrationTest
         env:
           "PDF_BYGGER_IMAGE": "ghcr.io/navikt/pensjonsbrev/pdf-bygger:main"

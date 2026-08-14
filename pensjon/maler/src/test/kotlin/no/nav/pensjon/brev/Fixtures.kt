@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev
 
 import no.nav.brev.brevbaker.LetterDataFactory
+import no.nav.brev.brevbaker.SaksbehandlervalgIDSLTestImpl
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmaktsgiverBprofAutoDto
 import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmektigBprofAutoDto
@@ -68,6 +69,7 @@ object Fixtures : LetterDataFactory {
             EksempelRedigerbartDto::class -> createEksempelbrevRedigerbartDto() as T
             EmptyAutobrevdata::class -> EmptyAutobrevdata as T
             EmptyRedigerbarBrevdata::class -> EmptyRedigerbarBrevdata as T
+            EmptyRedigerbarBrevdataMedSaksbehandlerValg::class -> EmptyRedigerbarBrevdataMedSaksbehandlerValg(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             EmptySaksbehandlerValg::class -> EmptySaksbehandlerValg as T
             EndretBarnetilleggUfoeretrygdDto::class -> createEndretBarnetilleggUfoeretrygdDto() as T
             EndretUTPgaInntektDtoV2::class -> createEndretUTPgaInntektDtoV2() as T

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
@@ -16,14 +17,14 @@ import java.time.Month
 
 fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
     VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
-        saksbehandlerValg = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg(
-            omregnetTilEnsligISammeVedtak = true,
-            brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar = true,
-            avdoedeHarRedusertTrygdetidEllerPoengaar = true,
-            etterbetaling = true,
-            okningBelop = true,
-            ingenEndringBelop = false,
-            oktTilleggMpn = false
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "omregnetTilEnsligISammeVedtak" to true,
+            "brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar" to true,
+            "avdoedeHarRedusertTrygdetidEllerPoengaar" to true,
+            "etterbetaling" to true,
+            "okningBelop" to true,
+            "ingenEndringBelop" to false,
+            "oktTilleggMpn" to false,
         ),
         pesysData = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData(
             avdod = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.Avdod(

@@ -4,9 +4,9 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.saksbehandlervalg.periodisertInntekt
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -29,6 +29,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
@@ -52,6 +53,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
+        val periodisertInntekt = saksbehandlervalg("periodisertInntekt", "Periodisert inntekt barnetillegg").enum<PeriodisertInntektBarnetillegg>()
+
         title {
             text(
                 bokmal { +"Nav har innvilget søknaden din om økt uføretrygd" },
@@ -335,8 +338,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                     }
                     item {
                         text(
-                            bokmal { +"Du må ha vært medlem av folketrygden i de siste tre årene fram til uføretidspunktet, eller oppfylle en av unntaksreglene." },
-                            nynorsk { +"Du må ha vore medlem av folketrygda i dei siste tre åra fram til uføretidspunktet, eller oppfylle ein av unntaksreglane." },
+                            bokmal { +"Du må ha vært medlem av folketrygden i de siste fem årene fram til uføretidspunktet, eller oppfylle en av unntaksreglene." },
+                            nynorsk { +"Du må ha vore medlem av folketrygda i dei siste fem åra fram til uføretidspunktet, eller oppfylle ein av unntaksreglane." },
                         )
                     }
                     item {
@@ -1163,7 +1166,7 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                             btSerkullInnvilget = barnetilleggSerkullInnvilget,
                             grunnbelop = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop(),
                             pe = pe,
-                            periodisertInntekt = saksbehandlerValg.periodisertInntekt
+                            periodisertInntekt = periodisertInntekt
                         )
                     )
                 }

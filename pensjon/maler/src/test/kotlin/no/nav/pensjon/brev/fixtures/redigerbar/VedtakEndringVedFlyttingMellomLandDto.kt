@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.api.model.KravArsakType
@@ -14,12 +15,12 @@ import java.time.LocalDate
 import java.time.Month
 
 fun createVedtakEndringVedFlyttingMellomLandDto() = VedtakEndringVedFlyttingMellomLandDto(
-    saksbehandlerValg = VedtakEndringVedFlyttingMellomLandDto.SaksbehandlerValg(
-        innvandret = false,
-        reduksjonTilbakeITid = true,
-        endringIPensjonen = true,
-        etterbetaling = true,
-        aarsakTilAtPensjonenOeker = VedtakEndringVedFlyttingMellomLandDto.AarsakTilAtPensjonenOeker.EKSPORTFORBUD_FLYKTNING,
+    saksbehandlerValg = lagSaksbehandlervalg(
+        "innvandret" to false,
+        "reduksjonTilbakeITid" to true,
+        "endringIPensjonen" to true,
+        "etterbetaling" to true,
+        "aarsakTilAtPensjonenOeker" to VedtakEndringVedFlyttingMellomLandDto.AarsakTilAtPensjonenOeker.EKSPORTFORBUD_FLYKTNING.name,
     ),
     pesysData = VedtakEndringVedFlyttingMellomLandDto.PesysData(
         krav = VedtakEndringVedFlyttingMellomLandDto.PesysData.Krav(

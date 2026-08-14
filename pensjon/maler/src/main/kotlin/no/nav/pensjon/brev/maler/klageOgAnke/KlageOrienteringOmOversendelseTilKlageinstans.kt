@@ -2,7 +2,8 @@ package no.nav.pensjon.brev.maler.klageOgAnke
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KLAGEINSTANS
@@ -14,7 +15,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -23,11 +23,10 @@ import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.navn
 
-@TemplateModelHelpers
-
 // Erstatte PE_IY_03_157
+@TemplateModelHelpers
 object KlageOrienteringOmOversendelseTilKlageinstans :
-    RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+    RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
 
     override val featureToggle = FeatureToggles.brevmalKlageOrienteringOmOversendelseTilKlageinstans.toggle
 
