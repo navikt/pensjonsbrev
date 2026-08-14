@@ -24,9 +24,9 @@ import no.nav.brev.brevbaker.serialization.internalObjectMapper
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.pensjon.brev.pdfbygger.Metrics.configureMetrics
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
+import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstLetterRenderer
+import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstLetterRendererV2
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
-import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2
-import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDokumentRenderer
 import org.slf4j.LoggerFactory
 
 private val objectMapper = internalObjectMapper()
@@ -96,7 +96,7 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         post("/produserBrev") {
             val request = call.receive<PDFRequest>()
             val result = typstCompileService.createLetter {
-                TypstDocumentRenderer.render(request, it)
+                TypstLetterRenderer.render(request, it)
             }
             handleResult(result, call.application.environment.log)
         }
@@ -104,7 +104,7 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         post("/v2/produserBrev") {
             val request = call.receive<LetterPDFRequest>()
             val result = typstCompileService.createLetter {
-                TypstDocumentRendererV2.render(request, it)
+                TypstLetterRendererV2.render(request, it)
             }
             handleResult(result, call.application.environment.log)
         }
@@ -112,7 +112,7 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         post("/produserDokument") {
             val request = call.receive<DocumentPDFRequest>()
             val result = typstCompileService.createLetter {
-                TypstDokumentRenderer.render(request, it)
+                TypstDocumentRenderer.render(request, it)
             }
             handleResult(result, call.application.environment.log)
         }

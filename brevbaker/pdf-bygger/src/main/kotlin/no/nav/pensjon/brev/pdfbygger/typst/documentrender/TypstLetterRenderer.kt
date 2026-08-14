@@ -11,7 +11,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.PDFTittel
 import java.time.format.FormatStyle
 
-object TypstDocumentRenderer {
+object TypstLetterRenderer {
 
     internal fun render(pdfRequest: PDFRequest, typstWriter: TypstFileWriter): Unit = render(
         letter = pdfRequest.letterMarkup.clean(),

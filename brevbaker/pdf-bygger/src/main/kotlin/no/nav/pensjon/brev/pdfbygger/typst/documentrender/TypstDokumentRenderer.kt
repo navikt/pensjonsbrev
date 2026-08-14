@@ -10,15 +10,7 @@ import no.nav.pensjon.brev.pdfbygger.typst.typstStringEscape
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import java.time.format.FormatStyle
 
-/**
- * Renderer for det generiske "document"-konseptet (`/produserDokument`).
- *
- * Merk navnene i denne pakken: [TypstDocumentRenderer] og [TypstDocumentRendererV2] rendrer *brev*
- * ("document" der er PDF-dokumentet), mens denne rendrer datamodellen [Document]. Innholdsblokkene
- * deles med brev via [renderBlocksV2]; det som er eget er Typst-roten (`document.typ`) og hvilke
- * topp-elementer som tas med.
- */
-object TypstDokumentRenderer {
+object TypstDocumentRenderer {
 
     internal fun render(pdfRequest: DocumentPDFRequest, typstWriter: TypstFileWriter): Unit =
         render(pdfRequest.document.clean(), pdfRequest.spraak.toLanguageCode(), typstWriter)

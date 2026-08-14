@@ -3,7 +3,7 @@ package no.nav.brev.brevbaker.document
 import no.nav.brev.brevbaker.markup.Markup
 
 /**
- * En ferdig bestilling som pdf-bygger kan rendre til PDF via `/produserDokument`.
+ * En bestilling som pdf-bygger kan rendre til PDF via `/produserDokument`.
  *
  * Til forskjell fra `LetterPDFRequest` har et dokument verken vedlegg eller brevtype: [spraak]
  * trengs kun for å velge ledetekster i saksinformasjonen og formatere dokumentdatoen.

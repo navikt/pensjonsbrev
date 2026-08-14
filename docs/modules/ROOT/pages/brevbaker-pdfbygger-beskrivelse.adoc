@@ -178,57 +178,6 @@ Pdf-byggeren kjører XeTeX på letter.tex filen og returnerer resulterende PDF t
 === 4. Brevbaker svarer med brev-metadata og pdf
 Brevbakeren svarer bestillende system med PDF og metadata som hører til brevmalen som produserte brevet definert i LetterMetadata.
 
-== Generiske dokumenter (`/produserDokument`)
-
-I tillegg til brev-endepunktene (`/produserBrev` og `/v2/produserBrev`) tilbyr pdf-bygger et mer
-generisk konsept: *document*. Et dokument bruker samme innholdsmodell (blokker: avsnitt,
-overskrifter, lister, tabeller og skjemaelementer) og de samme Typst-komponentene som brev, men
-kallende system velger selv hvilke av brevets topp-elementer som skal være med.
-
-Modellen ligger i `brevbaker:markup-model` (`no.nav.brev.brevbaker.document.Document`), og bygges
-med `document(...)`-DSL-en i `brevbaker:markup-dsl`. Bestillingen sendes som en
-`DocumentPDFRequest`, som kun inneholder dokumentet og språket – et dokument har verken brevtype,
-hilsen, signatur eller vedlegg.
-
-.Elementer som kan slås av og på
-[cols="1,1,3"]
-|===
-|Element |Felt |Kommentar
-
-|Tittel
-|`tittel` + `visTittel`
-|`tittel` er obligatorisk fordi den alltid settes som tittel i PDF-metadataene. `visTittel` styrer kun om tittelen også skrives ut på siden.
-
-|Logo
-|`visLogo`
-|Nav-logoen øverst på første side.
-
-|Saksinformasjon
-|`saksinformasjon.mottaker`
-|Navn, fødselsnummer, saksnummer og eventuell annen mottaker. Blokken utelates når `saksinformasjon` eller `mottaker` er `null`.
-
-|Dokumentdato
-|`dokumentDato`
-|Vises inne i saksinformasjonen når begge er med, ellers alene. Utelates når feltet er `null`.
-
-|Footer
-|`saksinformasjon.visFooter`
-|Saksnummer og "side N av M" nederst på hver side. Valget ligger i `saksinformasjon` fordi footeren viser saksnummer.
-|===
-
-Elementene rendres i fast rekkefølge: logo, saksinformasjon (med dato), tittel og deretter
-innholdet. Er et element skjult, kollapser avstanden over det neste, slik at dokumentet ikke får
-et hull på toppen.
-
-`saksinformasjon` er strukturert slik at valgene ikke kan settes uten dataene de trenger:
-saksnummeret ligger alltid ytterst sammen med `visFooter`, mens mottakeropplysningene ligger i den
-nullbare `mottaker`. Et dokument kan dermed ha footer med saksnummer uten å vise
-saksinformasjonsblokken, men aldri en footer uten saksnummer.
-
-Typst-roten er egen (`document.typ`), mens innholdskomponentene under `content/`, saksinformasjonen
-(`casedetails.typ`) og footeren deles med brev. Endringer i disse delte komponentene påvirker altså
-både brev og dokumenter, og fanges opp av den visuelle regresjonstestingen (reg-suit).
-
 == Teknologivalg
 
 === Github actions

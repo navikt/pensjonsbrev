@@ -1,4 +1,4 @@
-// Rot-templaten for det generiske "document"-konseptet.
+// Rot-templaten for det generiske "document"
 //
 // Til forskjell fra `template.typ` (brev) har et dokument verken hilsen, signatur eller vedlegg, og
 // konsumenten velger selv hvilke topp-elementer som vises. Side- og tekstoppsettet er felles med
@@ -10,8 +10,6 @@
 #import "content/header.typ": logo, mainTitle
 #import "content/pagesetup.typ": pageSetup
 
-// Avstand mellom topp-elementene. Det første synlige elementet får ingen ekstra avstand, slik at
-// dokumentet ikke får et hull på toppen når et element er skjult.
 #let elementSpacing = 48pt
 
 #let documentTemplate(
@@ -30,24 +28,26 @@
   {
     section-start(1)
 
-    // Datoen vises i saksinformasjonen når begge er med, ellers alene.
-    let elements = ()
-    if showLogo { elements.push("logo") }
-    if showCaseDetails { elements.push("casedetails") }
-    if showDocumentDate and not showCaseDetails { elements.push("date") }
-    if showTitle { elements.push("title") }
+    // Settes til `elementSpacing` etter det første synlige elementet.
+    let above = 0pt
 
-    for (index, element) in elements.enumerate() {
-      let above = if index == 0 { 0pt } else { elementSpacing }
-      if element == "logo" {
-        block(logo, above: above, below: 0pt)
-      } else if element == "casedetails" {
-        casedetails(input, languageSettings, above: above)
-      } else if element == "date" {
-        documentDate(input.dokumentDato, above: above)
-      } else if element == "title" {
-        mainTitle(title, above: above)
-      }
+    if showLogo {
+      block(logo, above: above, below: 0pt)
+      above = elementSpacing
+    }
+
+    if showCaseDetails {
+      casedetails(input, languageSettings, above: above)
+      above = elementSpacing
+    } else if showDocumentDate {
+      // Datoen vises i saksinformasjonen når begge er med, ellers alene.
+      documentDate(input.dokumentDato, above: above)
+      above = elementSpacing
+    }
+
+    if showTitle {
+      mainTitle(title, above: above)
+      above = elementSpacing
     }
 
     doc

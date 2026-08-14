@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.pdfbygger.typst.typstStringEscape
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import java.time.format.FormatStyle
 
-object TypstDocumentRendererV2 {
+object TypstLetterRendererV2 {
 
     internal fun render(pdfRequest: LetterPDFRequest, typstWriter: TypstFileWriter): Unit = render(
         letter = pdfRequest.letterMarkup.clean(),
@@ -82,7 +82,7 @@ object TypstDocumentRendererV2 {
     /**
      * Render the main letter.typ file content.
      *
-     * Structure mirrors v1's [no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer],
+     * Structure mirrors v1's [no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstLetterRenderer],
      * with the letter's own title coming from `title1` (renamed from v1's `title`)
      * and body blocks (Title2/3/4, Paragraph, ItemList, NumberedList, Table) as a
      * flat sibling list.

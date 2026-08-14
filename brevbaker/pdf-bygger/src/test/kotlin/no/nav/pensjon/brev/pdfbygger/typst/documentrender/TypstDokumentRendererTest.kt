@@ -18,7 +18,7 @@ import java.io.ByteArrayOutputStream
 import java.io.OutputStreamWriter
 
 /**
- * Enhetstester for [TypstDokumentRenderer] som inspiserer den genererte Typst-kilden direkte,
+ * Enhetstester for [TypstDocumentRenderer] som inspiserer den genererte Typst-kilden direkte,
  * uten å kreve `typst`-binæren eller en dockerisert kompileringstjeneste.
  */
 class TypstDokumentRendererTest {
@@ -26,7 +26,7 @@ class TypstDokumentRendererTest {
     private fun render(request: DocumentPDFRequest): String {
         val output = ByteArrayOutputStream()
         OutputStreamWriter(output, Charsets.UTF_8).use { writer ->
-            TypstDokumentRenderer.render(request, TypstFileWriter(writer))
+            TypstDocumentRenderer.render(request, TypstFileWriter(writer))
         }
         return output.toString(Charsets.UTF_8)
     }

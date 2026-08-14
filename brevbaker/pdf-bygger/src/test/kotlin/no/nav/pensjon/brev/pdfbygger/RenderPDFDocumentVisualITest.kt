@@ -22,14 +22,6 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.nio.file.Path
 
-/**
- * Visuell test for `/produserDokument`. Skriver PDF-en til `build/test_visual/pdf`, som
- * `.github/workflows/pdfbygger.yml` konverterer til PNG og sammenligner med reg-suit — endringer i
- * dokument-rendringen blir dermed fanget opp som visuelle diff-er.
- *
- * Testen har bevisst kun én case, med *alle* elementer synlige, slik at hele oppsettet (logo,
- * saksinformasjon, dokumentdato, tittel og footer) dekkes av baselinen.
- */
 @Tag(TestTags.INTEGRATION_TEST)
 class RenderPDFDocumentVisualITest {
 

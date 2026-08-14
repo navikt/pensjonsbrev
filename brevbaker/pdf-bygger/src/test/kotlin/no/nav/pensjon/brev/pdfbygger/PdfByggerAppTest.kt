@@ -70,7 +70,7 @@ class PdfByggerAppTest {
 
     /**
      * Happy-path-test for `/produserBrev` som verifiserer at routing, JSON-deserialisering av [PDFRequest]
-     * og kall til [no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer] er korrekt
+     * og kall til [no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstLetterRenderer] er korrekt
      * koblet sammen, uten å kreve at faktisk `typst`-binær er tilgjengelig (slik integrasjonstestene
      * mot pdf-bygger-containeren krever).
      */
@@ -129,7 +129,7 @@ class PdfByggerAppTest {
 
     /**
      * Happy-path-test for `/v2/produserBrev` som verifiserer at routing, Jackson-deserialisering av
-     * [LetterPDFRequest] og kall til [no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2]
+     * [LetterPDFRequest] og kall til [no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstLetterRendererV2]
      * er korrekt koblet sammen, uten å kreve at faktisk `typst`-binær er tilgjengelig.
      */
     @Test
@@ -191,7 +191,7 @@ class PdfByggerAppTest {
 
     /**
      * Happy-path-test for `/produserDokument` som verifiserer routing, Jackson-deserialisering av
-     * [DocumentPDFRequest] og kall til [no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDokumentRenderer].
+     * [DocumentPDFRequest] og kall til [no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer].
      */
     @Test
     fun `produserDokument happy path returnerer PDFCompilationOutput`() {

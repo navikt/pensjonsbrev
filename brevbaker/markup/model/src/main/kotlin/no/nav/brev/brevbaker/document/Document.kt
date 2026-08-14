@@ -1,6 +1,7 @@
 package no.nav.brev.brevbaker.document
 
 import no.nav.brev.brevbaker.markup.Markup
+import no.nav.brev.brevbaker.markup.cleanBlocks
 import no.nav.brev.brevbaker.markup.outline.Block
 import java.time.LocalDate
 
@@ -41,3 +42,5 @@ data class DocumentMottaker internal constructor(
     val gjelderPersonidentifikator: Markup.Personidentifikator,
     val annenMottakerNavn: String?,
 )
+
+fun Document.clean(): Document = copy(blocks = blocks.cleanBlocks())
