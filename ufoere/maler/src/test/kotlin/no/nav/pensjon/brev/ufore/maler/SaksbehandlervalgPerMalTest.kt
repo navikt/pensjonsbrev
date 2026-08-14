@@ -88,11 +88,11 @@ class SaksbehandlervalgPerMalTest {
                 "visSupplerendeStonadUforeFlykninger: kotlin.Boolean (Supplerende stønad til uføre flyktninger)",
             ),
             Redigerbar.UT_AVSLAG_MEDLEMSKAP_UTLAND to listOf(
-                "visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning: kotlin.Boolean (Tekst hvis bruker ikke omfattes av personkretsen i trygdeforordningen)",
-                "visInnvilgetPensjonEOSLand: kotlin.Boolean (Bruker har fått innvilget pensjon fra EØS-land)",
-                "visSupplerendeStonadUforeFlykninger: kotlin.Boolean (Supplerende stønad til uføre flyktninger)",
-                "visTekstVedArtikkel57Avslag: kotlin.Boolean (Tekst ved artikkel 57 avslag)",
-                "visVedtakFraAndreLand: kotlin.Boolean (Vedtak fra andre land)",
+                "visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning: Boolean (Tekst hvis bruker ikke omfattes av personkretsen i trygdeforordningen)",
+                "visInnvilgetPensjonEOSLand: Boolean (Bruker har fått innvilget pensjon fra EØS-land)",
+                "visSupplerendeStonadUforeFlykninger: Boolean (Supplerende stønad til uføre flyktninger)",
+                "visTekstVedArtikkel57Avslag: Boolean (Tekst ved artikkel 57 avslag)",
+                "visVedtakFraAndreLand: Boolean (Vedtak fra andre land)",
             ),
             Redigerbar.UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_ARB_TILTAK_I1 to listOf(
                 "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",

@@ -156,10 +156,10 @@ object Fixtures : LetterDataFactory {
                 )
             )
         ),
-        saksbehandlerValg = UforeAvslagUtlandDto.Saksbehandlervalg(
-            visInnvilgetPensjonEOSLand = true,
-            visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning = true,
-            visSupplerendeStonadUforeFlykninger = true,
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "visInnvilgetPensjonEOSLand" to true,
+            "visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning" to true,
+            "visSupplerendeStonadUforeFlykninger" to true,
         )
     )
 
