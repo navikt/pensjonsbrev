@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.ufore
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.brev.brevbaker.SaksbehandlervalgIDSLTestImpl
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
@@ -108,8 +109,8 @@ object Fixtures : LetterDataFactory {
             kravMottattDato = vilkaarligDato,
             vurdering = "Vurdering 1"
         ),
-        saksbehandlerValg = UforeAvslagEnkelDto.Saksbehandlervalg(
-            VisVurderingFraVilkarvedtak = true
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "VisVurderingFraVilkarvedtak" to true
         )
     )
 

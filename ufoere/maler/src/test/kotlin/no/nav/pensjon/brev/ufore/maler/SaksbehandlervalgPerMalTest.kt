@@ -45,22 +45,22 @@ class SaksbehandlervalgPerMalTest {
 
         val forventet = mapOf(
             Redigerbar.UT_AVSLAG_ALDER to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I1 to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I2 to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_HENSIKTSMESSIG_BEHANDLING to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_IFU_IKKE_VARIG to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_IFU_OKT_STILLING to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_INNTEKTSEVNE_30 to listOf(
                 "VisVurderingFraVilkarvedtak: kotlin.Boolean (Vis vurdering fra vilkår)",
@@ -81,7 +81,7 @@ class SaksbehandlervalgPerMalTest {
                 "visVurderingIFU: kotlin.Boolean (Vis vurdering 12-9 IFU)",
             ),
             Redigerbar.UT_AVSLAG_MANGLENDE_DOK to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_MEDLEMSKAP to listOf(
                 "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
@@ -95,13 +95,13 @@ class SaksbehandlervalgPerMalTest {
                 "visVedtakFraAndreLand: kotlin.Boolean (Vedtak fra andre land)",
             ),
             Redigerbar.UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_ARB_TILTAK_I1 to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_ARB_TILTAK_I2 to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_BEHANDLING to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_OKT_GRAD_INNTEKTSEVNE to listOf(
                 "VisVurderingFraVilkarvedtak: kotlin.Boolean (Vis vurdering fra vilkår)",
@@ -110,19 +110,19 @@ class SaksbehandlervalgPerMalTest {
                 "visVurderingIFU: kotlin.Boolean (Vis vurdering 12-9 IFU)",
             ),
             Redigerbar.UT_AVSLAG_OKT_GRAD_MANGLENDE_DOK to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_OKT_GRAD_SYKDOM to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_SYKDOM to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_TESTMAL to listOf(
                 "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_UNG_UFOR_26 to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_UNG_UFOR_36 to listOf(
                 "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
@@ -133,7 +133,7 @@ class SaksbehandlervalgPerMalTest {
                 "visForverrelseEtter26: kotlin.Boolean (Forverrelse etter 26 år)",
             ),
             Redigerbar.UT_AVSLAG_YRKESSKADE_GODKJENT to listOf(
-                "VisVurderingFraVilkarvedtak: kotlin.Boolean (Bruk vurdering fra vilkårsvedtak)",
+                "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_YRKESSKADE_IKKE_GODKJENT to emptyList(),
             Redigerbar.UT_FEILUTBETALING_VARSEL_BARN_FLYTTER to emptyList(),
