@@ -77,8 +77,8 @@ object Fixtures : LetterDataFactory {
 
     private fun lagInnhentingOpplysningerSamboer() = InnhentingOpplysningerSamboerDto(
         pesysData = EmptyFagsystemdata,
-        saksbehandlerValg = InnhentingOpplysningerSamboerDto.Saksbehandlervalg(
-            ukjentSamboer = false
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "ukjentSamboer" to false
         )
     )
 

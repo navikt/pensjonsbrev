@@ -156,7 +156,7 @@ class SaksbehandlervalgPerMalTest {
             ),
             Redigerbar.UT_INNH_OPPL_NY_SIVILSTAND to emptyList(),
             Redigerbar.UT_INNH_OPPL_OPPGITT_SAMBOER to listOf(
-                "ukjentSamboer: kotlin.Boolean (Ukjent samboer)",
+                "ukjentSamboer: Boolean (Ukjent samboer)",
             ),
             Redigerbar.UT_INNH_OPPL_SOKNAD_BARNETILLEGG to emptyList(),
             Redigerbar.UT_INNH_OPPL_SOKNAD_BARNETILLEGG_FOSTERFORELDER to emptyList(),
