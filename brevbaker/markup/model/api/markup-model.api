@@ -1,7 +1,3 @@
-public final class no/nav/brev/brevbaker/document/CleanDocumentKt {
-	public static final fun clean (Lno/nav/brev/brevbaker/document/Document;)Lno/nav/brev/brevbaker/document/Document;
-}
-
 public final class no/nav/brev/brevbaker/document/Document {
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Z
@@ -18,6 +14,10 @@ public final class no/nav/brev/brevbaker/document/Document {
 	public final fun getVisTittel ()Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/document/DocumentKt {
+	public static final fun clean (Lno/nav/brev/brevbaker/document/Document;)Lno/nav/brev/brevbaker/document/Document;
 }
 
 public final class no/nav/brev/brevbaker/document/DocumentModel {
