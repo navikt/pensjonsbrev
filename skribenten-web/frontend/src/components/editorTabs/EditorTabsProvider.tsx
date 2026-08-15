@@ -1,15 +1,15 @@
 import { createContext, type ReactNode, useContext, useMemo } from "react";
 
-import { BREV_TAB_ID, type DokumentTab } from "./types";
+import { BREV_TAB_ID, type EditorTab } from "./types";
 
-type DokumentTabsContextValue = {
-  tabs: DokumentTab[];
+type EditorTabsContextValue = {
+  tabs: EditorTab[];
   activeTabId: string;
-  activeTab: DokumentTab | undefined;
+  activeTab: EditorTab | undefined;
   selectTab: (tabId: string) => void;
 };
 
-const DokumentTabsContext = createContext<DokumentTabsContextValue | null>(null);
+const EditorTabsContext = createContext<EditorTabsContextValue | null>(null);
 
 /**
  * Owns "which document is active" for the editor and exposes selection. It is route-agnostic: the
@@ -20,15 +20,15 @@ const DokumentTabsContext = createContext<DokumentTabsContextValue | null>(null)
  * Per-document editor session state (brev/vedlegg) is intentionally NOT held here; each document
  * manages its own session. This provider only tracks selection.
  */
-export const DokumentTabsProvider = (props: {
-  tabs: DokumentTab[];
+export const EditorTabsProvider = (props: {
+  tabs: EditorTab[];
   activeTabId: string | undefined;
   onActiveTabChange: (tabId: string) => void;
   children: ReactNode;
 }) => {
   const activeTabId = props.activeTabId ?? BREV_TAB_ID;
 
-  const value = useMemo<DokumentTabsContextValue>(() => {
+  const value = useMemo<EditorTabsContextValue>(() => {
     const activeTab = props.tabs.find((tab) => tab.id === activeTabId);
 
     return {
@@ -42,13 +42,13 @@ export const DokumentTabsProvider = (props: {
     };
   }, [props.tabs, activeTabId, props.onActiveTabChange]);
 
-  return <DokumentTabsContext.Provider value={value}>{props.children}</DokumentTabsContext.Provider>;
+  return <EditorTabsContext.Provider value={value}>{props.children}</EditorTabsContext.Provider>;
 };
 
-export const useDokumentTabsContext = (): DokumentTabsContextValue => {
-  const context = useContext(DokumentTabsContext);
+export const useEditorTabsContext = (): EditorTabsContextValue => {
+  const context = useContext(EditorTabsContext);
   if (!context) {
-    throw new Error("useDokumentTabsContext must be used within a <DokumentTabsProvider>");
+    throw new Error("useEditorTabsContext must be used within a <EditorTabsProvider>");
   }
   return context;
 };

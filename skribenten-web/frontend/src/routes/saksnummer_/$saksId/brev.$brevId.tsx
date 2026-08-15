@@ -20,10 +20,10 @@ import {
 import { ApiError } from "~/components/ApiError";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { CenteredLoader } from "~/components/CenteredLoader";
-import { DokumentTabsBar } from "~/components/dokumentTabs/DokumentTabsBar";
-import { DokumentTabsProvider } from "~/components/dokumentTabs/DokumentTabsProvider";
-import { EditorDocumentSurface } from "~/components/dokumentTabs/EditorDocumentSurface";
-import { useDokumentTabs } from "~/components/dokumentTabs/useDokumentTabs";
+import { EditorTabContent } from "~/components/editorTabs/EditorTabContent";
+import { EditorTabsBar } from "~/components/editorTabs/EditorTabsBar";
+import { EditorTabsProvider } from "~/components/editorTabs/EditorTabsProvider";
+import { useEditorTabs } from "~/components/editorTabs/useEditorTabs";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
   ManagedLetterEditorContextProvider,
@@ -266,7 +266,7 @@ function RedigerBrev({
   const editorStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
 
-  const { tabs } = useDokumentTabs({ saksId, brev });
+  const { tabs } = useEditorTabs({ saksId, brev });
 
   const onSelectTab = (tabId: string) =>
     navigate({
@@ -541,9 +541,9 @@ function RedigerBrev({
               onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
               reservasjon={reservasjonQuery.data}
             />
-            <DokumentTabsProvider activeTabId={gyldigAktivVedlegg} onActiveTabChange={onSelectTab} tabs={tabs}>
+            <EditorTabsProvider activeTabId={gyldigAktivVedlegg} onActiveTabChange={onSelectTab} tabs={tabs}>
               <Box asChild borderColor="neutral-subtle" borderWidth="0 0 1 0">
-                <DokumentTabsBar
+                <EditorTabsBar
                   activeTabId={gyldigAktivVedlegg ?? "brev"}
                   onAddVedlegg={() => {
                     // The add-vedlegg modal is wired in a later phase.
@@ -573,7 +573,7 @@ function RedigerBrev({
                   </VStack>
                 </Box>
                 <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                  <EditorDocumentSurface
+                  <EditorTabContent
                     brev={brev}
                     renderBrev={() => (
                       <ManagedLetterEditor
@@ -588,7 +588,7 @@ function RedigerBrev({
                   />
                 </InsertedTekstValgHighlightProvider>
               </HGrid>
-            </DokumentTabsProvider>
+            </EditorTabsProvider>
             <Box
               asChild
               background="default"

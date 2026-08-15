@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { getRedigerbareVedlegg } from "~/api/redigerbareVedlegg-endpoints";
 import { type BrevResponse } from "~/types/brev";
 
-import { alltidValgbartVedleggTabId, BREV_TAB_ID, type DokumentTab, redigerbartVedleggTabId } from "./types";
+import { alltidValgbartVedleggTabId, BREV_TAB_ID, type EditorTab, redigerbartVedleggTabId } from "./types";
 
 /**
  * Builds the editor's tab list from the brev plus the lightweight redigerbareVedlegg list query.
@@ -16,7 +16,7 @@ import { alltidValgbartVedleggTabId, BREV_TAB_ID, type DokumentTab, redigerbartV
  *  3. AlltidValgbare vedlegg the saksbehandler has selected, from brev.valgteVedlegg (read-only).
  *  4. P1, derived from the brev (brevkode), not from any vedlegg endpoint.
  */
-export function useDokumentTabs(args: { saksId: string; brev: BrevResponse }): { tabs: DokumentTab[] } {
+export function useEditorTabs(args: { saksId: string; brev: BrevResponse }): { tabs: EditorTab[] } {
   const { saksId, brev } = args;
 
   const redigerbareVedleggQuery = useQuery({
@@ -24,22 +24,22 @@ export function useDokumentTabs(args: { saksId: string; brev: BrevResponse }): {
     queryFn: () => getRedigerbareVedlegg.queryFn(saksId, brev.info.id),
   });
 
-  const tabs = useMemo<DokumentTab[]>(() => {
-    const brevTab: DokumentTab = {
+  const tabs = useMemo<EditorTab[]>(() => {
+    const brevTab: EditorTab = {
       id: BREV_TAB_ID,
       label: brev.info.brevtittel,
       type: "brev",
       locked: false,
     };
 
-    const redigerbareTabs: DokumentTab[] = (redigerbareVedleggQuery.data ?? []).map((vedlegg) => ({
+    const redigerbareTabs: EditorTab[] = (redigerbareVedleggQuery.data ?? []).map((vedlegg) => ({
       id: redigerbartVedleggTabId(vedlegg.vedleggId),
       label: vedlegg.tittel,
       type: "redigerbartVedlegg",
       locked: false,
     }));
 
-    const alltidValgbareTabs: DokumentTab[] = (brev.valgteVedlegg ?? []).map((vedlegg) => ({
+    const alltidValgbareTabs: EditorTab[] = (brev.valgteVedlegg ?? []).map((vedlegg) => ({
       id: alltidValgbartVedleggTabId(vedlegg.kode),
       label: vedlegg.visningstekst,
       type: "alltidValgbartVedlegg",

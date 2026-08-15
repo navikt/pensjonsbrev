@@ -4,16 +4,16 @@
  * content is fetched on demand by the active tab's renderer.
  */
 
-export type DokumentType = "brev" | "redigerbartVedlegg" | "alltidValgbartVedlegg" | "p1";
+export type EditorTabType = "brev" | "redigerbartVedlegg" | "alltidValgbartVedlegg" | "p1";
 
-export type DokumentTab = {
+export type EditorTab = {
   /**
    * Stable identity used for selection and for the ?vedlegg= search param. The brev tab uses the
    * brevId as a string; vedlegg tabs use their vedleggId / kode; P1 uses a fixed key.
    */
   id: string;
   label: string;
-  type: DokumentType;
+  type: EditorTabType;
   /**
    * True for read-only tabs (alltidValgbare vedlegg). Drives the lock icon in the tab and the
    * read-only rendering in the document surface.

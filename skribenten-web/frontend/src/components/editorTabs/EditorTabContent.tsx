@@ -3,8 +3,8 @@ import { type ReactNode } from "react";
 
 import { type BrevResponse } from "~/types/brev";
 
-import { useDokumentTabsContext } from "./DokumentTabsProvider";
 import { VedleggEditor } from "./documents/VedleggEditor";
+import { useEditorTabsContext } from "./EditorTabsProvider";
 import { vedleggIdFromTabId } from "./types";
 
 const Placeholder = (props: { title: string; description: string }) => (
@@ -24,8 +24,8 @@ const Placeholder = (props: { title: string; description: string }) => (
  * and is brev-session-specific); a redigerbart vedlegg renders a real VedleggEditor; the rest are
  * placeholders introduced in their own phases.
  */
-export const EditorDocumentSurface = (props: { saksId: string; brev: BrevResponse; renderBrev: () => ReactNode }) => {
-  const { activeTab } = useDokumentTabsContext();
+export const EditorTabContent = (props: { saksId: string; brev: BrevResponse; renderBrev: () => ReactNode }) => {
+  const { activeTab } = useEditorTabsContext();
 
   if (!activeTab || activeTab.type === "brev") {
     return props.renderBrev();

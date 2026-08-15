@@ -12,7 +12,7 @@ import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { ApiError } from "~/components/ApiError";
 import { CenteredLoader } from "~/components/CenteredLoader";
-import { useManagedDocument } from "~/components/ManagedDocumentEditor/useManagedDocument";
+import { useVedleggAutosave } from "~/components/editorTabs/documents/useVedleggAutosave";
 import { type BrevResponse, type EditAttachment } from "~/types/brev";
 
 /**
@@ -80,7 +80,7 @@ const VedleggEditorReady = (props: {
   // saksbehandlerValg / document hash like the brev). The save response is the parent BrevResponse,
   // which does not contain the saved vedlegg, so we keep the editor's own state as the source of
   // truth and only use the response to invalidate the affected queries.
-  const { isError } = useManagedDocument<EditAttachment, BrevResponse>({
+  const { isError } = useVedleggAutosave<EditAttachment, BrevResponse>({
     content: editorState.redigertBrev as EditAttachment,
     saveStatus: editorState.saveStatus,
     mutationFn: (redigertVedlegg) => lagreRedigerbartVedlegg(saksId, brev.info.id, vedleggId, redigertVedlegg),
