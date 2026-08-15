@@ -1,14 +1,18 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { getRedigerbartVedlegg, redigerbareVedleggKeys } from "~/api/redigerbareVedlegg-endpoints";
+import {
+  getRedigerbartVedlegg,
+  lagreRedigerbartVedlegg,
+  redigerbareVedleggKeys,
+} from "~/api/redigerbareVedlegg-endpoints";
+import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { SakspartView } from "~/Brevredigering/LetterEditor/components/SakspartView";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { ApiError } from "~/components/ApiError";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import { useManagedDocument } from "~/components/ManagedDocumentEditor/useManagedDocument";
-import { createVedleggPersistence } from "~/components/ManagedDocumentEditor/vedleggPersistence";
 import { type BrevResponse, type EditAttachment } from "~/types/brev";
 
 /**
@@ -72,17 +76,22 @@ const VedleggEditorReady = (props: {
   const { saksId, brev, vedleggId, vedlegg, queryClient } = props;
   const [editorState, setEditorState] = useState<LetterEditorState>(() => createVedleggState(brev, vedlegg));
 
-  const persistence = createVedleggPersistence({ saksId, brevId: brev.info.id, vedleggId, queryClient });
-
+  // The vedlegg owns its save flow: the PUT body is just the edited attachment (no
+  // saksbehandlerValg / document hash like the brev). The save response is the parent BrevResponse,
+  // which does not contain the saved vedlegg, so we keep the editor's own state as the source of
+  // truth and only use the response to invalidate the affected queries.
   const { isError } = useManagedDocument<EditAttachment, BrevResponse>({
     content: editorState.redigertBrev as EditAttachment,
     saveStatus: editorState.saveStatus,
-    persistence,
+    mutationFn: (redigertVedlegg) => lagreRedigerbartVedlegg(saksId, brev.info.id, vedleggId, redigertVedlegg),
     onSaveStart: () => setEditorState((s) => ({ ...s, saveStatus: "SAVE_PENDING" })),
-    onSaveSuccess: () => {
+    onSaveSuccess: (response) => {
       setEditorState((s) => ({ ...s, saveStatus: "SAVED" }));
       // Keep the content query in sync so a remount does not refetch stale content.
       queryClient.setQueryData(redigerbareVedleggKeys.vedlegg(brev.info.id, vedleggId), editorState.redigertBrev);
+      // The edited title may have changed, and the vedlegg is part of the rendered letter PDF.
+      queryClient.invalidateQueries({ queryKey: redigerbareVedleggKeys.liste(brev.info.id) });
+      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(response.info.id) });
     },
     onSaveError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
