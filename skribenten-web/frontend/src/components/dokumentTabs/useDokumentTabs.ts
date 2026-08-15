@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { getRedigerbareVedlegg } from "~/api/redigerbareVedlegg-endpoints";
 import { type BrevResponse } from "~/types/brev";
 
-import { BREV_TAB_ID, type DokumentTab } from "./types";
+import { alltidValgbartVedleggTabId, BREV_TAB_ID, type DokumentTab, redigerbartVedleggTabId } from "./types";
 
 /**
  * Builds the editor's tab list from the brev plus the lightweight redigerbareVedlegg list query.
@@ -33,14 +33,14 @@ export function useDokumentTabs(args: { saksId: string; brev: BrevResponse }): {
     };
 
     const redigerbareTabs: DokumentTab[] = (redigerbareVedleggQuery.data ?? []).map((vedlegg) => ({
-      id: vedlegg.vedleggId,
+      id: redigerbartVedleggTabId(vedlegg.vedleggId),
       label: vedlegg.tittel,
       type: "redigerbartVedlegg",
       locked: false,
     }));
 
     const alltidValgbareTabs: DokumentTab[] = (brev.valgteVedlegg ?? []).map((vedlegg) => ({
-      id: vedlegg.kode,
+      id: alltidValgbartVedleggTabId(vedlegg.kode),
       label: vedlegg.visningstekst,
       type: "alltidValgbartVedlegg",
       locked: true,

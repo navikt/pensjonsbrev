@@ -29,6 +29,11 @@ export function useManagedDocument<TDoc, TResponse>(args: {
   const latest = useRef({ mutationFn, prepareForSave, onSaveStart, onSaveSuccess, onSaveError });
   latest.current = { mutationFn, prepareForSave, onSaveStart, onSaveSuccess, onSaveError };
 
+  // The freshest content/saveStatus, so an unmount flush captures edits made after the last render's
+  // debounce was scheduled. Mutated every render; read only in the unmount cleanup.
+  const stateRef = useRef({ content, saveStatus });
+  stateRef.current = { content, saveStatus };
+
   const { mutate, isError } = useMutation<TResponse, AxiosError, TDoc>({
     mutationFn: (doc) => {
       latest.current.onSaveStart();
@@ -37,6 +42,9 @@ export function useManagedDocument<TDoc, TResponse>(args: {
     onSuccess: (response) => latest.current.onSaveSuccess(response),
     onError: () => latest.current.onSaveError(),
   });
+
+  const mutateRef = useRef(mutate);
+  mutateRef.current = mutate;
 
   // Autosave: when the content becomes DIRTY, persist after a debounce.
   useEffect(() => {
@@ -48,6 +56,19 @@ export function useManagedDocument<TDoc, TResponse>(args: {
     }, AUTOSAVE_TIMER);
     return () => clearTimeout(timeoutId);
   }, [saveStatus, content, mutate]);
+
+  // Flush on unmount (e.g. switching to another document tab): if there are unsaved edits when the
+  // editor unmounts, save them immediately instead of dropping them with the cleared debounce timer.
+  useEffect(
+    () => () => {
+      const { content: latestContent, saveStatus: latestStatus } = stateRef.current;
+      if (latestStatus === "DIRTY") {
+        const prepared = latest.current.prepareForSave ? latest.current.prepareForSave(latestContent) : latestContent;
+        mutateRef.current(prepared);
+      }
+    },
+    [],
+  );
 
   return { isError };
 }

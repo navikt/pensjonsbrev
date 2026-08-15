@@ -274,6 +274,17 @@ function RedigerBrev({
       replace: true,
     });
 
+  // Normalize an invalid ?vedlegg= value (e.g. a removed vedlegg or a stale link): fall back to the
+  // brev tab and clean the URL so the Tabs selection always matches a real tab.
+  const aktivTabExists = aktivVedlegg === undefined || tabs.some((tab) => tab.id === aktivVedlegg);
+  const gyldigAktivVedlegg = aktivTabExists ? aktivVedlegg : undefined;
+
+  useEffect(() => {
+    if (!aktivTabExists) {
+      navigate({ search: (prev) => ({ ...prev, vedlegg: undefined }), replace: true });
+    }
+  }, [aktivTabExists, navigate]);
+
   const [warnOpen, setWarnOpen] = useState(false);
   const [warn, setWarn] = useState<{
     kind: WarnModalKind;
@@ -530,10 +541,10 @@ function RedigerBrev({
               onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
               reservasjon={reservasjonQuery.data}
             />
-            <DokumentTabsProvider activeTabId={aktivVedlegg} onActiveTabChange={onSelectTab} tabs={tabs}>
+            <DokumentTabsProvider activeTabId={gyldigAktivVedlegg} onActiveTabChange={onSelectTab} tabs={tabs}>
               <Box asChild borderColor="neutral-subtle" borderWidth="0 0 1 0">
                 <DokumentTabsBar
-                  activeTabId={aktivVedlegg ?? "brev"}
+                  activeTabId={gyldigAktivVedlegg ?? "brev"}
                   onAddVedlegg={() => {
                     // The add-vedlegg modal is wired in a later phase.
                   }}

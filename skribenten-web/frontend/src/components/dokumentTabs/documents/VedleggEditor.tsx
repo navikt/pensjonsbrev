@@ -86,7 +86,10 @@ const VedleggEditorReady = (props: {
     mutationFn: (redigertVedlegg) => lagreRedigerbartVedlegg(saksId, brev.info.id, vedleggId, redigertVedlegg),
     onSaveStart: () => setEditorState((s) => ({ ...s, saveStatus: "SAVE_PENDING" })),
     onSaveSuccess: (response) => {
-      setEditorState((s) => ({ ...s, saveStatus: "SAVED" }));
+      // If the user typed again while the save was in flight, the state is DIRTY and the newer
+      // edits are not covered by this response. Keep it DIRTY so the autosave fires again instead of
+      // incorrectly marking it SAVED (same guard the brev's onSaveSuccess uses).
+      setEditorState((s) => (s.saveStatus === "DIRTY" ? s : { ...s, saveStatus: "SAVED" }));
       // Keep the content query in sync so a remount does not refetch stale content.
       queryClient.setQueryData(redigerbareVedleggKeys.vedlegg(brev.info.id, vedleggId), editorState.redigertBrev);
       // The edited title may have changed, and the vedlegg is part of the rendered letter PDF.

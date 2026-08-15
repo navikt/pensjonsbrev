@@ -5,6 +5,7 @@ import { type BrevResponse } from "~/types/brev";
 
 import { useDokumentTabsContext } from "./DokumentTabsProvider";
 import { VedleggEditor } from "./documents/VedleggEditor";
+import { vedleggIdFromTabId } from "./types";
 
 const Placeholder = (props: { title: string; description: string }) => (
   <Box asChild padding="space-24">
@@ -32,7 +33,7 @@ export const EditorDocumentSurface = (props: { saksId: string; brev: BrevRespons
 
   switch (activeTab.type) {
     case "redigerbartVedlegg": {
-      return <VedleggEditor brev={props.brev} saksId={props.saksId} vedleggId={activeTab.id} />;
+      return <VedleggEditor brev={props.brev} saksId={props.saksId} vedleggId={vedleggIdFromTabId(activeTab.id)} />;
     }
     case "alltidValgbartVedlegg": {
       return (
