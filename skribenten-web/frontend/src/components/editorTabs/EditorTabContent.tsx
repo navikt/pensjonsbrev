@@ -3,7 +3,7 @@ import { type ReactNode } from "react";
 
 import { type BrevResponse } from "~/types/brev";
 
-import { VedleggEditor } from "./documents/VedleggEditor";
+import { ManagedVedleggEditor } from "./documents/ManagedVedleggEditor";
 import { useEditorTabsContext } from "./EditorTabsProvider";
 import { vedleggIdFromTabId } from "./types";
 
@@ -21,8 +21,8 @@ const Placeholder = (props: { title: string; description: string }) => (
 /**
  * Decides what to render in the editor surface based on the active document, so the route stays
  * orchestration rather than a chain of if/else. The brev renderer is passed in (it already exists
- * and is brev-session-specific); a redigerbart vedlegg renders a real VedleggEditor; the rest are
- * placeholders introduced in their own phases.
+ * and is brev-session-specific); a redigerbart vedlegg renders a real ManagedVedleggEditor; the rest
+ * are placeholders introduced in their own phases.
  */
 export const EditorTabContent = (props: { saksId: string; brev: BrevResponse; renderBrev: () => ReactNode }) => {
   const { activeTab } = useEditorTabsContext();
@@ -33,7 +33,9 @@ export const EditorTabContent = (props: { saksId: string; brev: BrevResponse; re
 
   switch (activeTab.type) {
     case "redigerbartVedlegg": {
-      return <VedleggEditor brev={props.brev} saksId={props.saksId} vedleggId={vedleggIdFromTabId(activeTab.id)} />;
+      return (
+        <ManagedVedleggEditor brev={props.brev} saksId={props.saksId} vedleggId={vedleggIdFromTabId(activeTab.id)} />
+      );
     }
     case "alltidValgbartVedlegg": {
       return (

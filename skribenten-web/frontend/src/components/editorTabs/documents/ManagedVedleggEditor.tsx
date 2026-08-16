@@ -37,7 +37,7 @@ const createVedleggState = (brev: BrevResponse, vedlegg: EditAttachment): Letter
  * persistence adapter. Sakspart is shown only when the vedlegg's includeSakspart flag is set; there
  * is no signatur. The brev reservation (owned by the page) covers vedlegg saves — no separate lock.
  */
-export const VedleggEditor = (props: { saksId: string; brev: BrevResponse; vedleggId: string }) => {
+export const ManagedVedleggEditor = (props: { saksId: string; brev: BrevResponse; vedleggId: string }) => {
   const { saksId, brev, vedleggId } = props;
   const queryClient = useQueryClient();
 
@@ -55,7 +55,7 @@ export const VedleggEditor = (props: { saksId: string; brev: BrevResponse; vedle
   }
 
   return (
-    <VedleggEditorReady
+    <ManagedVedleggEditorReady
       brev={brev}
       key={vedleggId}
       queryClient={queryClient}
@@ -66,7 +66,7 @@ export const VedleggEditor = (props: { saksId: string; brev: BrevResponse; vedle
   );
 };
 
-const VedleggEditorReady = (props: {
+const ManagedVedleggEditorReady = (props: {
   saksId: string;
   brev: BrevResponse;
   vedleggId: string;
