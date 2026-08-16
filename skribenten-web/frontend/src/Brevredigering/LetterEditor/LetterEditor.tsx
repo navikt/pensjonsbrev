@@ -29,21 +29,12 @@ export const LetterEditor = ({
   editorState,
   setEditorState,
   showDebug,
-  renderSakspart,
-  renderSignatur,
 }: {
   freeze: boolean;
   error: boolean;
   editorState: LetterEditorState;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   showDebug: boolean;
-  /**
-   * Optional overrides for the sakspart/signatur chrome around the editable content. When omitted,
-   * the brev's own sakspart/signatur are rendered (the existing behavior). A redigerbart vedlegg
-   * passes renderSakspart only when its includeSakspart flag is set, and never renderSignatur.
-   */
-  renderSakspart?: () => React.ReactNode;
-  renderSignatur?: () => React.ReactNode;
 }) => {
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
@@ -123,13 +114,7 @@ export const LetterEditor = ({
         />
         <VStack align="center" flexGrow="1" minHeight="0" overflowY="auto">
           <Box className="editor" css={freeze ? { cursor: "wait" } : {}} height="100%">
-            {(
-              renderSakspart ??
-              (() =>
-                isLetterDocument(letter) ? (
-                  <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />
-                ) : null)
-            )()}
+            {isLetterDocument(letter) && <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />}
             <Heading
               className="letter-title"
               level="1"
@@ -190,11 +175,7 @@ export const LetterEditor = ({
                 </div>
               ))}
             </div>
-            {renderSignatur ? (
-              renderSignatur()
-            ) : isLetterDocument(letter) ? (
-              <SignaturView signatur={letter.signatur} />
-            ) : null}
+            {isLetterDocument(letter) && <SignaturView signatur={letter.signatur} />}
           </Box>
         </VStack>
         {showDebug && <DebugPanel />}

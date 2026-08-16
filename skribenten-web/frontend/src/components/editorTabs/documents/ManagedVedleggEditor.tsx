@@ -7,7 +7,6 @@ import {
   redigerbareVedleggKeys,
 } from "~/api/redigerbareVedlegg-endpoints";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
-import { SakspartView } from "~/Brevredigering/LetterEditor/components/SakspartView";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { ApiError } from "~/components/ApiError";
@@ -99,19 +98,11 @@ const ManagedVedleggEditorReady = (props: {
     onSaveError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
 
-  const vedleggDoc = editorState.redigertBrev as EditAttachment;
-
   return (
     <LetterEditor
       editorState={editorState}
       error={isError}
       freeze={false}
-      renderSakspart={
-        vedleggDoc.includeSakspart
-          ? () => <SakspartView sakspart={brev.redigertBrev.sakspart} spraak={brev.info.spraak} />
-          : () => null
-      }
-      renderSignatur={() => null}
       setEditorState={setEditorState}
       showDebug={false}
     />
