@@ -1,7 +1,18 @@
+import { css } from "@emotion/react";
 import { PadlockLockedIcon, PlusIcon } from "@navikt/aksel-icons";
 import { Button, HStack, Tabs } from "@navikt/ds-react";
 
 import { type EditorTab } from "./types";
+
+const tabsBarStyle = css`
+  background: var(--ax-bg-accent-soft);
+  max-height: 48px;
+  border-bottom: 1px solid var(--ax-border-neutral-subtleA);
+
+  && .aksel-tabs__tab--small {
+    min-height: 3rem;
+  }
+`;
 
 const TabLabel = (props: { tab: EditorTab }) => (
   <HStack align="center" gap="space-4">
@@ -21,7 +32,7 @@ export const EditorTabsBar = (props: {
   onSelectTab: (tabId: string) => void;
   onAddVedlegg: () => void;
 }) => (
-  <HStack align="center" justify="space-between" paddingInline="space-8">
+  <HStack align="center" css={tabsBarStyle} justify="space-between" paddingInline="space-8">
     <Tabs onChange={(value) => props.onSelectTab(value)} size="small" value={props.activeTabId}>
       <Tabs.List>
         {props.tabs.map((tab) => (
