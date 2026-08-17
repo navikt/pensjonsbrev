@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
@@ -26,7 +25,7 @@ fun createVedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto() = VedtakEndrin
 )
 
 fun createVedtakEndringAvUttaksgradStansBrukerEllerVergeDto() = VedtakEndringAvUttaksgradStansBrukerEllerVergeDto(
-    saksbehandlerValg = EmptySaksbehandlerValg,
+    saksbehandlerValg = lagSaksbehandlervalg(),
     pesysData = VedtakEndringAvUttaksgradStansBrukerEllerVergeDto.PesysData(
         krav = VedtakEndringAvUttaksgradStansBrukerEllerVergeDto.Krav(
             virkDatoFom = LocalDate.of(2024, Month.JANUARY, 1)
