@@ -75,7 +75,11 @@ export const EndreMottakerModal = (properties: {
       linje1: "",
       linje2: "",
       linje3: "",
-      //standard er ANNEN: en manuelt utfylt adresse tilhører noen andre enn bruker med mindre saksbehandler krysser av
+      /*
+      Standard er ANNEN fordi saksbehandler nesten alltid skal sende til noen andre enn bruker når de
+      først overstyrer adressen. Normaltilfellet krever da ingen avkryssing. Krysser de av, er bruker
+      selv mottaker - bare på en annen adresse enn den registrerte.
+      */
       manueltAdressertTil: ManueltAdressertTil.ANNEN,
       postnr: null,
       poststed: null,
