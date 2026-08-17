@@ -4,7 +4,6 @@ import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrevDto
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjon
@@ -47,7 +46,6 @@ object Fixtures : LetterDataFactory {
         when (letterDataType) {
             ApSimuleringBrevDto::class -> createSimuleringBrevDto() as T
             ServiceberegningBrevDto::class -> createServiceberegningBrevDto() as T
-            EmptyRedigerbarBrevdata::class -> EmptyRedigerbarBrevdata as T
             EmptyAutobrevdata::class -> EmptyAutobrevdata as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

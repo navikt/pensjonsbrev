@@ -61,7 +61,7 @@ data class XDto(
 
 - All the Dto design rules from `SKILL.md` apply to both nested classes (non-nullable by default, no defaults on required fields, group related fields).
 - **Every `Saksbehandlervalg` property must carry a `@DisplayText("...")` annotation** (`no.nav.pensjon.brevbaker.api.model.DisplayText`). The string is the label Skribenten renders next to the form input — write it in Norwegian, sentence case, describing the choice from the saksbehandler's perspective (e.g. `@DisplayText("Har barnetillegg")`, not the field name). Examples: see `VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.SaksbehandlerValg`.
-- Empty shortcuts when a side is not needed: `EmptySaksbehandlerValg`, `EmptyFagsystemdata`, or `EmptyRedigerbarBrevdata` for the whole thing.
+- Empty shortcuts when a side is not needed: `EmptySaksbehandlerValg` or `EmptyFagsystemdata`.
 - Generated selectors expose the split: `XDtoSelectors.saksbehandlerValg.harBarnetillegg`, `XDtoSelectors.pesysData.virkDatoFom`. The property names become the selector names — choose them deliberately.
 
 ## Extra overrides on the template object
