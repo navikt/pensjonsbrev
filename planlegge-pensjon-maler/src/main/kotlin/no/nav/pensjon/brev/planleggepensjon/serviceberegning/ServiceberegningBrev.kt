@@ -41,6 +41,12 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
     override val featureToggle = FeatureToggles.apSimulering.toggle
     override val modelSpecification: TemplateModelSpecification = TemplateModelSpecification(
         types = mapOf(
+            ServiceberegningBrevDto::class.qualifiedName!! to mapOf(
+                "saksbehandlerValg" to TemplateModelSpecification.FieldType.Object(
+                    nullable = false,
+                    typeName = ServiceberegningDto::class.qualifiedName!!,
+                ),
+            ),
             ServiceberegningDto::class.qualifiedName!! to mapOf(
                 "alt1" to TemplateModelSpecification.FieldType.Scalar(
                     nullable = false,
