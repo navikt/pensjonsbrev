@@ -32,7 +32,7 @@ include("ufoere:maler")
 include("ufoere:ufoere-api-model")
 
 include("alder:maler")
-include("alder:api-model")
+include("alder:alder-api-model")
 
 include("etterlattemaler")
 

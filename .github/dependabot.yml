@@ -18,7 +18,7 @@ updates:
   - package-ecosystem: "gradle"
     directories:
       - "/"
-      - "/alder/api-model"
+      - "/alder/alder-api-model"
       - "/alder/maler"
       - "/brevbaker/brevdata"
       - "/brevbaker/brevbaker-api"
