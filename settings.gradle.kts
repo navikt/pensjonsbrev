@@ -26,13 +26,13 @@ include("skribenten-backend")
 
 include("pensjon:brevbaker")
 include("pensjon:maler")
-include("pensjon:api-model")
+include("pensjon:pensjon-api-model")
 
 include("ufoere:maler")
-include("ufoere:api-model")
+include("ufoere:ufoere-api-model")
 
 include("alder:maler")
-include("alder:api-model")
+include("alder:alder-api-model")
 
 include("etterlattemaler")
 

@@ -1,7 +1,7 @@
 * @navikt/pensjonsbrev
 /etterlattemaler @navikt/etterlatte @navikt/pensjonsbrev
 /pensjon/maler @navikt/ufore @navikt/pensjon-alder @navikt/pensjonsbrev
-/pensjon/api-model @navikt/ufore @navikt/pensjon-alder @navikt/pensjonsbrev
+/pensjon/pensjon-api-model @navikt/ufore @navikt/pensjon-alder @navikt/pensjonsbrev
 /alder @navikt/pensjon-alder @navikt/pensjonsbrev
 /ufoere @navikt/ufore @navikt/pensjonsbrev
 /planlegge-pensjon-maler @navikt/pensjonskalkulator @navikt/pensjonsbrev

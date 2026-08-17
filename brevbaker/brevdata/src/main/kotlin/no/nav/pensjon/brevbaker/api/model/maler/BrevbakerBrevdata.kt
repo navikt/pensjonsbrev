@@ -13,6 +13,8 @@ interface RedigerbarBrevdata<Valg : SaksbehandlerValgBrevdata, Data : FagsystemB
 
 interface RedigerbarBrevdataMedSaksbehandlerValg<Data : FagsystemBrevdata> : RedigerbarBrevdata<SaksbehandlervalgIDSL, Data>
 
+interface RedigerbarBrevdataMedSaksbehandlerValgUtenFagsystemdata : RedigerbarBrevdataMedSaksbehandlerValg<EmptyFagsystemdata>
+
 interface AutobrevData : BrevbakerBrevdata, FagsystemBrevdata
 
 interface FagsystemBrevdata

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
@@ -15,8 +16,8 @@ import org.junit.jupiter.api.Test
 class InformasjonOmSaksbehandlingstidUtTest {
 
     private val data = InformasjonOmSaksbehandlingstidUtDto(
-        saksbehandlerValg = InformasjonOmSaksbehandlingstidUtDto.SaksbehandlerValg(
-            forlengetSaksbehandlingstid = false
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "forlengetSaksbehandlingstid" to false,
         ),
         pesysData = EmptyFagsystemdata
     )
@@ -28,7 +29,10 @@ class InformasjonOmSaksbehandlingstidUtTest {
 
     @Test
     fun `med forlengetSaksbehandlingstid`() {
-        writeAllLanguages("med-forlengset-saksbehandlingstid", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(forlengetSaksbehandlingstid = true)))
+        writeAllLanguages(
+            "med-forlengset-saksbehandlingstid",
+            data.copy(saksbehandlerValg = lagSaksbehandlervalg("forlengetSaksbehandlingstid" to true)),
+        )
     }
 
     private fun writeAllLanguages(testNavn: String, data: InformasjonOmSaksbehandlingstidUtDto) {

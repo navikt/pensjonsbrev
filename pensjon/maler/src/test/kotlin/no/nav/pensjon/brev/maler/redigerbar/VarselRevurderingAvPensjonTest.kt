@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
@@ -17,8 +18,8 @@ import org.junit.jupiter.api.Test
 class VarselRevurderingAvPensjonTest {
 
     private val data = VarselRevurderingAvPensjonDto(
-        saksbehandlerValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg(
-            tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "tittelValg" to VarselRevurderingAvPensjonDto.TittelValg.RevurderingAvRett.name,
         ),
         pesysData = VarselRevurderingAvPensjonDto.PesysData(sakstype = Sakstype.FAM_PL)
         )
@@ -27,7 +28,11 @@ class VarselRevurderingAvPensjonTest {
     fun `med revurdering av rett`() {
         writeAllLanguages(
             "revurdering av rett",
-            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett))
+            data.copy(
+                saksbehandlerValg = lagSaksbehandlervalg(
+                    "tittelValg" to VarselRevurderingAvPensjonDto.TittelValg.RevurderingAvRett.name,
+                ),
+            )
         )
     }
 
@@ -35,7 +40,11 @@ class VarselRevurderingAvPensjonTest {
     fun `med revurdering av reduksjon`() {
         writeAllLanguages(
             "revurdering reduksjon",
-            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon))
+            data.copy(
+                saksbehandlerValg = lagSaksbehandlervalg(
+                    "tittelValg" to VarselRevurderingAvPensjonDto.TittelValg.RevurderingReduksjon.name,
+                ),
+            )
         )
     }
 

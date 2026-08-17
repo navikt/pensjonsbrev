@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_BEHANDLING
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.saksbehandlervalg.*
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.uforeAvslagPendata.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
@@ -39,6 +39,8 @@ object UforegradAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagE
         ),
     )
     {
+        val visVurderingFraVilkarvedtak = saksbehandlervalg("VisVurderingFraVilkarvedtak", "Bruk vurdering fra vilkårsvedtak").bool()
+
         title {
             text (bokmal { + "Nav har avslått søknaden din om økt uføregrad"},
                 nynorsk { + "Nav har avslått søknaden din om auka uføregrad"})
@@ -85,7 +87,7 @@ object UforegradAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagE
                 }
             }
 
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+            showIf(visVurderingFraVilkarvedtak) {
                 paragraph {
                     text(bokmal { + redigerbarData(pesysData.vurdering) },
                         nynorsk { + redigerbarData(pesysData.vurdering) })

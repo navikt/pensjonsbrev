@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_OKT_GRAD_INNTEKTSEVNE
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagInntektDto.saksbehandlervalgInntekt.*
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagInntektDto.uforeAvslagInntektPendata.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagInntektDto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
@@ -40,6 +40,13 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
         ),
     )
     {
+        @Suppress("unused")
+        val visVurderingFraVilkarvedtak = saksbehandlervalg("VisVurderingFraVilkarvedtak", "Vis vurdering fra vilkår").bool()
+        val visVurderingIFU = saksbehandlervalg("visVurderingIFU", "Vis vurdering 12-9 IFU").bool()
+        val visVurderingIEU = saksbehandlervalg("visVurderingIEU", "Vis vurdering 12-9 IEU").bool()
+        @Suppress("unused")
+        val visUnntaksregelFremtidigInntekt = saksbehandlervalg("visUnntaksregelFremtidigInntekt", "Unntaksregel om fremtidig inntekt").bool()
+
         title {
             text (bokmal { + "Nav har avslått søknaden din om økt uføregrad"},
                 nynorsk { + "Nav har avslått søknaden din om auka uføregrad"})
@@ -71,7 +78,7 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
                 text(bokmal { +"Inntekten din før du ble ufør er fastsatt til " + pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner. " },
                     nynorsk { +"Inntekten din før du blei ufør er fastsett til " + pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner. " })
 
-                showIf(saksbehandlerValg.visVurderingIFU) {
+                showIf(visVurderingIFU) {
                     text(bokmal { +redigerbarData(pesysData.vurderingIFU) },
                         nynorsk { +redigerbarData(pesysData.vurderingIFU) } )
                 }.orShow {
@@ -88,7 +95,7 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
                     }
                 )
 
-                showIf(saksbehandlerValg.visVurderingIEU) {
+                showIf(visVurderingIEU) {
                     text(bokmal { +redigerbarData(pesysData.vurderingIEU) },
                         nynorsk { +redigerbarData(pesysData.vurderingIEU) } )
                 }.orShow {
