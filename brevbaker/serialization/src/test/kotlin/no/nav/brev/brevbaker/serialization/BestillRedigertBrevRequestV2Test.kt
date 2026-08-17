@@ -7,9 +7,10 @@ import no.nav.brev.brevbaker.markup.Attachment
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -19,25 +20,29 @@ import java.time.LocalDate
 
 class BestillRedigertBrevRequestV2Test {
 
-    data class TestSaksbehandlerValg(val begrunnelse: String) : SaksbehandlerValgBrevdata
+    class TestSaksbehandlerValg : SaksbehandlervalgIDSL, LinkedHashMap<String, Any?>()
+
+    private fun lagSaksbehandlervalg(vararg verdier: Pair<String, Any?>): TestSaksbehandlerValg =
+        TestSaksbehandlerValg().apply { putAll(verdier) }
+
     data class TestPesysData(val belop: Int) : FagsystemBrevdata
     data class TestBrevdata(
-        override val saksbehandlerValg: TestSaksbehandlerValg,
+        override val saksbehandlerValg: SaksbehandlervalgIDSL,
         override val pesysData: TestPesysData,
-    ) : RedigerbarBrevdata<TestSaksbehandlerValg, TestPesysData>
+    ) : RedigerbarBrevdataMedSaksbehandlerValg<TestPesysData>
 
     private val mapper = internalObjectMapper().registerModule(
         SimpleModule().apply {
             addAbstractTypeMapping(Brevkode.Redigerbart::class.java, RedigerbarBrevkode::class.java)
             addAbstractTypeMapping(RedigerbarBrevdata::class.java, TestBrevdata::class.java)
-            addAbstractTypeMapping(SaksbehandlerValgBrevdata::class.java, TestSaksbehandlerValg::class.java)
+            addAbstractTypeMapping(SaksbehandlervalgIDSL::class.java, TestSaksbehandlerValg::class.java)
             addAbstractTypeMapping(FagsystemBrevdata::class.java, TestPesysData::class.java)
         }
     )
 
     private fun request() = BestillRedigertBrevRequestV2(
         kode = RedigerbarBrevkode("TEST_BREV"),
-        letterData = TestBrevdata(TestSaksbehandlerValg("fordi"), TestPesysData(1234)),
+        letterData = TestBrevdata(lagSaksbehandlervalg("begrunnelse" to "fordi"), TestPesysData(1234)),
         felles = felles(),
         language = LanguageCode.BOKMAL,
         letterMarkup = MarkupGoldenFixture.letter(),
