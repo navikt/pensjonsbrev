@@ -176,22 +176,8 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosentRev {
             }.orShow {
                 paragraph {
                     text(
-                        bokmal { +"Regelverksendringene fører til at beregnet barnetillegg for fellesbarn i én eller flere perioder blir endret, fordi den samlede inntekten til deg og barnets andre forelder er høyere enn fribeløpet på " + data.fribelop.format() + ". " },
-                        nynorsk { +"Regelverksendringane fører til at berekna barnetillegg for fellesbarn i éin eller fleire periodar blir endra, fordi den samla inntekta til deg og barnets andre forelder er høgare enn fribeløpet på " + data.fribelop.format() + ". " },
-                    )
-                }
-
-                paragraph {
-                    text(
-                        bokmal { +"Ny beregning av barnetillegg fra 1. juli (før skatt) er " + data.nettoBarnetilleggFB.format() + ". " },
-                        nynorsk { +"Ny berekning av barnetillegg frå 1. juli (før skatt) er " + data.nettoBarnetilleggFB.format() + ". " },
-                    )
-                }
-
-                paragraph {
-                    text(
-                        bokmal { +"Dersom du i perioden 1. januar til 1. juli 2026, har fått for mye utbetalt barnetillegg, vil dette bli regulert i etteroppgjøret neste år. " },
-                        nynorsk { +"Dersom du i perioden 1. januar til 1. juli 2026, har fått for mykje utbetalt barnetillegg, vil dette bli regulert i etteroppgjeret neste år. " },
+                        bokmal { +"Regelverksendringene fører til at beregnet barnetillegg for fellesbarn endres. Dersom vi i år allerede har utbetalt for mye barnetillegg, vil dette bli regulert i etteroppgjøret neste år. " },
+                        nynorsk { +"Regelverksendringane fører til at berekna barnetillegg for fellesbarn endras. Dersom vi i år allereie har utbetalt for mykje barnetillegg, vil dette bli regulert i etteroppgjeret neste år. " },
                     )
                 }
             }
