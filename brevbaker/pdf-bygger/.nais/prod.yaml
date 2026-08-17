@@ -2,3 +2,8 @@ app-name: "pensjon-pdf-bygger"
 brevbaker-app: "pensjon-brevbaker"
 ingresses: []
 minReplicas: 6
+
+inbound:
+  - name: pensjon-selvbetjening-soknad-alder-backend
+    namespace: pensjonselvbetjening
+    cluster: prod-gcp
