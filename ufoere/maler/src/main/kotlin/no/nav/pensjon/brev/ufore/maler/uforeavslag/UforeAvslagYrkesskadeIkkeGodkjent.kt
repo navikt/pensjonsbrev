@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.ufore.maler.uforeavslag
 
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -18,7 +18,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
 
     override val kode = UT_AVSLAG_YRKESSKADE_IKKE_GODKJENT
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING

@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagForverrelseEtter26Dto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagForverrelseEtter26Dto.saksbehandlervalg.*
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagForverrelseEtter26Dto.uforeAvslagPendata.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagForverrelseEtter26Dto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
@@ -38,6 +38,9 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagForverrelseEtter2
         ),
     )
     {
+        val visVurderingFraVilkarvedtak = saksbehandlervalg("VisVurderingFraVilkarvedtak", "Bruk vurdering fra vilkårsvedtak").bool()
+        val visForverrelseEtter26 = saksbehandlervalg("visForverrelseEtter26", "Forverrelse etter 26 år").bool()
+
         title {
             text (bokmal { + "Nav har vurdert at du ikke har rett til beregning som ung ufør"},
                 nynorsk { + "Nav har vurdert at du ikkje har rett til berekning som ung ufør"})
@@ -69,7 +72,7 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagForverrelseEtter2
                             "Det er dokumentert at du blei varig ufør før fylte 26 år på grunn av " + fritekst("diagnose") +
                             ", men sjukdomen er ikkje vurdert som alvorleg nok til å oppfylle vilkåra for ung ufør. " }
                 )
-                showIf(saksbehandlerValg.visForverrelseEtter26) {
+                showIf(visForverrelseEtter26) {
                     text(bokmal {
                         +"Vi ser at sykdommen din har blitt betydelig forverret etter at du fylte 26 år. " +
                                 "Det er helsesituasjonen din før du fylte 26 år som avgjør om du kan få rettighet som ung ufør."
@@ -87,7 +90,7 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagForverrelseEtter2
                     nynorsk { + "I vurderinga har vi lagt vekt på: " + fritekst("Sett inn konkret argument med kilde og dato") })
             }
 
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+            showIf(visVurderingFraVilkarvedtak) {
                 paragraph {
                     text(bokmal { +redigerbarData(pesysData.vurdering) },
                         nynorsk { +redigerbarData(pesysData.vurdering) })

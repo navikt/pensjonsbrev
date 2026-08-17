@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.ufore.api.model.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import java.time.LocalDate
@@ -11,12 +11,13 @@ import java.time.Month
 // TODO: Slå sammen dto'ene og legge data klasser på innsiden. Ikke lengre behov for to ulike etter vi fjernet unødige saksbehandlervalg
 data class VedtakFeilutbetalingUforeIngenTilbakekrevingDto(
     override val pesysData: PesysData,
-    override val saksbehandlerValg: EmptySaksbehandlerValg,
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, PesysData>
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
+) : RedigerbarBrevdataMedSaksbehandlerValg<PesysData>
 
 data class VedtakFeilutbetalingUforeDto(
-    override val pesysData: PesysData, override val saksbehandlerValg: EmptySaksbehandlerValg
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, PesysData>
+    override val pesysData: PesysData,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
+) : RedigerbarBrevdataMedSaksbehandlerValg<PesysData>
 
 data class PesysData(
     val feilutbetaltTotalBelop: Int,
