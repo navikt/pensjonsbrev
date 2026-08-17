@@ -38,7 +38,7 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosentRev {
                         nynorsk { +"Vi har endra barnetillegget i uføretrygda di. " },
                     )
                     table(header = {
-                        column { text(bokmal { +"Du får per måned før skatt fra 1. oktober:" }, nynorsk { +"Du får per månad før skatt fra 1. oktober:" }) }
+                        column { text(bokmal { +"Du får per måned før skatt fra 1. oktober:" }, nynorsk { +"Du får per månad før skatt frå 1. oktober:" }) }
                         column(alignment = RIGHT) { text(bokmal { +"Kroner" }, nynorsk { +"Kroner" }) }
                     }) {
                         row {
