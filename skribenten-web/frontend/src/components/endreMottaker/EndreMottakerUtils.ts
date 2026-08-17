@@ -95,7 +95,7 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
    *
    * Når land først er valgt har manuell adresse 2 krav for utfylling:
    * For norske adresser (der land er "NO") - kreves navn, postnummer, og poststed.
-   * For utenlandkse adresser (alle andre land som ikke er "NO") - kreves navn, og adresselinje1
+   * For utenlandske adresser (alle andre land som ikke er "NO") - kreves navn, og adresselinje1
    */
   adresse: z
     .object({
