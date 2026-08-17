@@ -80,11 +80,9 @@ If the agent finds itself about to write to one of these, stop and change the up
   contract) and its DSL (published, **model is dependency-free**)
 - `brevbaker/serialization` (`internalObjectMapper()`) and `brevbaker/pdf-bygger/client` - never published
 
-Published versions live in one file per artifact under `gradle/published/`: `brevdata.properties`,
-`markup.properties` (covers both markup modules) and `brevbaker-api.properties`. The files are combined
-into a single version catalog, `publishedLibs`, in `settings.gradle.kts`, and consumers use its aliases
-(`publishedLibs.brevdata`, `publishedLibs.markup.model`, ...). A bump requires `publishToMavenLocal`
-before building consumers.
+Published versions live in `gradle/libs.versions.toml` (`brevdataVersion`, `markupVersion` covers both
+markup modules, `brevbakerApiVersion`); consumers use the catalog aliases, and a bump requires
+`publishToMavenLocal` before building them.
 
 ### Critical Build Commands
 ```bash
