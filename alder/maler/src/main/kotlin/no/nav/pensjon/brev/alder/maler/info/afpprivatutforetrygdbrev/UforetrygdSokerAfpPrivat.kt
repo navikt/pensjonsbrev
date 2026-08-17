@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.forbeholdTilBeregningeneUforeTryg
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.UforeTrygdSokerAfpPrivatDto
-import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.selectors.uforeTrygdSokerAfpPrivatDto.saksBehandlerValg.*
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.selectors.uforeTrygdSokerAfpPrivatDto.*
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -15,6 +14,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -42,6 +42,8 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
+        val brukerHarSoktAfpPrivat = saksbehandlervalg("brukerHarSoktAfpPrivat", "Bruker har søkt Afp Privat").bool()
+
         title {
             text(
                 bokmal { +"Du må velge mellom uføretrygd og AFP i privat sektor" },
@@ -356,7 +358,7 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                     nynorsk { +"Dette må du gjere" }
                 )
             }
-            showIf(saksbehandlerValg.brukerHarSoktAfpPrivat) {
+            showIf(brukerHarSoktAfpPrivat) {
                 paragraph {
                     text(
                         bokmal {

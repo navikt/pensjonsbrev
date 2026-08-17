@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.alder.model.afpprivat
 
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import java.time.LocalDate
 
 /**
@@ -11,9 +11,9 @@ import java.time.LocalDate
  * Konvertert fra Exstream-malen `PE_AF_04_112`.
  */
 data class AvslagAfpPrivatDto(
-    override val saksbehandlerValg: EmptySaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, AvslagAfpPrivatDto.PesysData> {
+) : RedigerbarBrevdataMedSaksbehandlerValg<AvslagAfpPrivatDto.PesysData> {
 
     /**
      * Begrunnelsene tilsvarer rådata-strenger i originalen

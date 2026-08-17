@@ -8,34 +8,22 @@ import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dt
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
-import no.nav.pensjon.brevbaker.api.model.DisplayText
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 @Suppress("unused")
 data class EndringAvAlderspensjonSivilstandDto(
     override val pesysData: PesysData,
-    override val saksbehandlerValg: SaksbehandlerValg,
-) : RedigerbarBrevdata<EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg, EndringAvAlderspensjonSivilstandDto.PesysData> {
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
+) : RedigerbarBrevdataMedSaksbehandlerValg<EndringAvAlderspensjonSivilstandDto.PesysData> {
 
-    data class SaksbehandlerValg(
-        @DisplayText("Årsak til sivilstandsendringen")
-        val sivilstandsendringsaarsak: Sivilstandsendringsaarsak?,
-        @DisplayText("Hvis reduksjon tilbake i tid")
-        val feilutbetaling: Boolean?,
-        @DisplayText("Hvis etterbetaling")
-        val etterbetaling: Boolean?,
-    ) : SaksbehandlerValgBrevdata {
-        enum class Sivilstandsendringsaarsak {
-            @DisplayText("Fraflytting")
-            fraFlyttet,
-            @DisplayText("Inngått ekteskap, men bor ikke sammen")
-            giftBorIkkeSammen,
-            @DisplayText("Annet eller ingen")
-            annet
-        }
+    enum class Sivilstandsendringsaarsak(override val displayText: String) : SaksbehandlerValgEnum {
+        fraFlyttet("Fraflytting"),
+        giftBorIkkeSammen("Inngått ekteskap, men bor ikke sammen"),
+        annet("Annet eller ingen")
     }
 
     data class PesysData(

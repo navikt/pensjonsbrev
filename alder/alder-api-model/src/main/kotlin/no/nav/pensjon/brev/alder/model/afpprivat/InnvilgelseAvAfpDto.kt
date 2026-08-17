@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.model.afpprivat
 
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 
 /**
  * Vedtak — innvilgelse av AFP i privat sektor (redigerbar).
@@ -12,6 +12,6 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
  * innhold styres av pesys-data og kan eventuelt redigeres i Skribenten.
  */
 data class InnvilgelseAvAfpDto(
-    override val saksbehandlerValg: EmptySaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: InnvilgelseAvAfpAutoDto,
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, InnvilgelseAvAfpAutoDto>
+) : RedigerbarBrevdataMedSaksbehandlerValg<InnvilgelseAvAfpAutoDto>
