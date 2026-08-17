@@ -24,6 +24,7 @@ import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
@@ -40,13 +41,7 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
     override val featureToggle = FeatureToggles.apSimulering.toggle
     override val modelSpecification: TemplateModelSpecification = TemplateModelSpecification(
         types = mapOf(
-            ServiceberegningBrevDto::class.qualifiedName!! to mapOf(
-                "saksbehandlerValg" to TemplateModelSpecification.FieldType.Object(
-                    nullable = false,
-                    typeName = ServiceberegningDto::class.qualifiedName!!,
-                ),
-            ),
-            ServiceberegningDto::class.qualifiedName!! to mapOf(
+            "ServiceberegningDto" to mapOf(
                 "alt1" to TemplateModelSpecification.FieldType.Scalar(
                     nullable = false,
                     kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,

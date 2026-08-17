@@ -30,6 +30,6 @@ data class ServiceberegningDto(
     val alt3: Boolean = true,
     @DisplayText("AAP utbetales")
     val alt4: Boolean = true,
-    @DisplayText("Mottar / søker om sykepenger")
-    val alt5: Boolean = true,
+    //@DisplayText("Mottar / søker om sykepenger")
+    //val alt5: Boolean = true,
 ) : SaksbehandlerValgBrevdata
