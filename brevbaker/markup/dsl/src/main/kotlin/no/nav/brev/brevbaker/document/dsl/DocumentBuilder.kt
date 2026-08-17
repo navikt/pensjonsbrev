@@ -19,13 +19,15 @@ fun document(
     build: OutlineBuilder<ContentBuilder>.() -> Unit,
 ): Document {
     require(tittel.isNotBlank()) { "Dokumentet må ha en tittel" }
+    val blocks = OutlineBuilder(::ContentBuilder).apply(build).build()
+    require(blocks.isNotEmpty()) { "Dokumentet må ha innhold" }
     return DocumentModel.document(
         tittel = tittel,
         visTittel = visTittel,
         visLogo = visLogo,
         saksinformasjon = saksinformasjon,
         dokumentDato = dokumentDato,
-        blocks = OutlineBuilder(::ContentBuilder).apply(build).build(),
+        blocks = blocks,
     )
 }
 
@@ -34,7 +36,7 @@ fun documentSaksinformasjon(
     visFooter: Boolean = false,
     mottaker: DocumentMottaker? = null,
 ): DocumentSaksinformasjon = DocumentModel.documentSaksinformasjon(
-    saksnummer = saksnummer,
+    saksnummer = Markup.Saksnummer(saksnummer),
     visFooter = visFooter,
     mottaker = mottaker,
 )
@@ -45,7 +47,7 @@ fun documentMottaker(
     annenMottakerNavn: String? = null,
 ): DocumentMottaker = DocumentModel.documentMottaker(
     gjelderNavn = gjelderNavn,
-    gjelderPersonidentifikator = gjelderPersonidentifikator,
+    gjelderPersonidentifikator = Markup.Personidentifikator(gjelderPersonidentifikator),
     annenMottakerNavn = annenMottakerNavn,
 )
 

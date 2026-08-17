@@ -130,15 +130,3 @@ object TypstLetterRendererV2 {
         appendCodeln("}")
     }
 }
-
-private fun Markup.Spraak.toLanguageCode(): LanguageCode =
-    when (this) {
-        Markup.Spraak.BOKMAL -> LanguageCode.BOKMAL
-        Markup.Spraak.NYNORSK -> LanguageCode.NYNORSK
-        Markup.Spraak.ENGLISH -> LanguageCode.ENGLISH
-    }
-
-private val personidentRegex = Regex("([0-9]{6})([0-9]{5})")
-
-private fun Markup.Personidentifikator.format(): String =
-    personidentRegex.replace(value, "${'$'}1 ${'$'}2")

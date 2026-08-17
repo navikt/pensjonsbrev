@@ -42,7 +42,7 @@ import java.io.OutputStreamWriter
  * directly (string-level assertions), without requiring the `typst` binary or a
  * dockerized compile service. Bygger markup via markup-modulens DSL.
  */
-class TypstDocumentRendererV2Test {
+class TypstLetterRendererV2Test {
 
     private fun render(request: LetterPDFRequest): String {
         val output = ByteArrayOutputStream()

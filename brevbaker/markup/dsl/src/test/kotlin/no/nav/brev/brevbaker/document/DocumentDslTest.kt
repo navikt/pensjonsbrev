@@ -80,6 +80,13 @@ class DocumentDslTest {
     }
 
     @Test
+    fun `dokumentet maa ha innhold`() {
+        assertThrows<IllegalArgumentException> {
+            document(tittel = "Min tittel") { }
+        }
+    }
+
+    @Test
     fun `clean fjerner tomme blokker`() {
         val dokument = document(tittel = "Min tittel") {
             paragraph("Innhold")

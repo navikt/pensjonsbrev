@@ -23,9 +23,9 @@ public final class no/nav/brev/brevbaker/document/DocumentKt {
 public final class no/nav/brev/brevbaker/document/DocumentModel {
 	public static final field INSTANCE Lno/nav/brev/brevbaker/document/DocumentModel;
 	public final fun document (Ljava/lang/String;ZZLno/nav/brev/brevbaker/document/DocumentSaksinformasjon;Ljava/time/LocalDate;Ljava/util/List;)Lno/nav/brev/brevbaker/document/Document;
-	public final fun documentMottaker (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/document/DocumentMottaker;
+	public final fun documentMottaker-eWvvIUI (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/document/DocumentMottaker;
 	public final fun documentPDFRequest (Lno/nav/brev/brevbaker/document/Document;Lno/nav/brev/brevbaker/markup/Markup$Spraak;)Lno/nav/brev/brevbaker/document/DocumentPDFRequest;
-	public final fun documentSaksinformasjon (Ljava/lang/String;ZLno/nav/brev/brevbaker/document/DocumentMottaker;)Lno/nav/brev/brevbaker/document/DocumentSaksinformasjon;
+	public final fun documentSaksinformasjon-sgrxbZQ (Ljava/lang/String;ZLno/nav/brev/brevbaker/document/DocumentMottaker;)Lno/nav/brev/brevbaker/document/DocumentSaksinformasjon;
 }
 
 public final class no/nav/brev/brevbaker/document/DocumentMottaker {
@@ -141,6 +141,7 @@ public abstract interface class no/nav/brev/brevbaker/markup/Markup$Identifiable
 
 public final class no/nav/brev/brevbaker/markup/Markup$Personidentifikator {
 	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Markup$Personidentifikator;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
 	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
@@ -154,6 +155,7 @@ public final class no/nav/brev/brevbaker/markup/Markup$Personidentifikator {
 
 public final class no/nav/brev/brevbaker/markup/Markup$Saksnummer {
 	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Markup$Saksnummer;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
 	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z

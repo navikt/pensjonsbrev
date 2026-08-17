@@ -1,6 +1,6 @@
 [versions]
-brevdataVersion = "1.0.2"
-brevbakerApiVersion = "1.0.2"
+brevdataVersion = "1.0.3"
+brevbakerApiVersion = "1.0.3"
 markupVersion = "2.1.0"
 
 [libraries]

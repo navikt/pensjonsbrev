@@ -25,22 +25,22 @@ object DocumentModel {
     )
 
     fun documentSaksinformasjon(
-        saksnummer: String,
+        saksnummer: Markup.Saksnummer,
         visFooter: Boolean,
         mottaker: DocumentMottaker?,
     ): DocumentSaksinformasjon = DocumentSaksinformasjon(
-        saksnummer = Markup.Saksnummer(saksnummer),
+        saksnummer = saksnummer,
         visFooter = visFooter,
         mottaker = mottaker,
     )
 
     fun documentMottaker(
         gjelderNavn: String,
-        gjelderPersonidentifikator: String,
+        gjelderPersonidentifikator: Markup.Personidentifikator,
         annenMottakerNavn: String?,
     ): DocumentMottaker = DocumentMottaker(
         gjelderNavn = gjelderNavn,
-        gjelderPersonidentifikator = Markup.Personidentifikator(gjelderPersonidentifikator),
+        gjelderPersonidentifikator = gjelderPersonidentifikator,
         annenMottakerNavn = annenMottakerNavn,
     )
 

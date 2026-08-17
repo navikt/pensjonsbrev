@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 import no.nav.brev.brevbaker.document.Document
 import no.nav.brev.brevbaker.document.DocumentPDFRequest
 import no.nav.brev.brevbaker.document.clean
-import no.nav.brev.brevbaker.markup.Markup
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
 import no.nav.pensjon.brev.pdfbygger.typst.typstStringEscape
@@ -67,15 +66,3 @@ object TypstDocumentRenderer {
 }
 
 private fun Boolean.typst(): String = if (this) "true" else "false"
-
-private fun Markup.Spraak.toLanguageCode(): LanguageCode =
-    when (this) {
-        Markup.Spraak.BOKMAL -> LanguageCode.BOKMAL
-        Markup.Spraak.NYNORSK -> LanguageCode.NYNORSK
-        Markup.Spraak.ENGLISH -> LanguageCode.ENGLISH
-    }
-
-private val personidentRegex = Regex("([0-9]{6})([0-9]{5})")
-
-private fun Markup.Personidentifikator.format(): String =
-    personidentRegex.replace(value, "${'$'}1 ${'$'}2")
