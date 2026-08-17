@@ -82,12 +82,15 @@ export async function oppdaterBrev(args: {
   saksId: number;
   brevId: number;
   request: OppdaterBrevRequest;
-  frigiReservasjon?: boolean;
+  /**
+   * Required on purpose: releasing the caseworker's reservation lock must always be a deliberate
+   * choice. Autosaving must pass `false`; only a final "done editing" submit passes `true`.
+   */
+  frigiReservasjon: boolean;
 }) {
-  const frigiReservasjon = args.frigiReservasjon ?? true;
   return (
     await axios.put<BrevResponse>(
-      `${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}?frigiReservasjon=${frigiReservasjon}`,
+      `${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}?frigiReservasjon=${args.frigiReservasjon}`,
       {
         saksbehandlerValg: args.request.saksbehandlerValg,
         redigertBrev: args.request.redigertBrev,
@@ -96,11 +99,16 @@ export async function oppdaterBrev(args: {
   ).data;
 }
 
-export async function oppdaterBrevtekst(brevId: number, redigertBrev: EditedLetter, frigiReservasjon?: boolean) {
+export async function oppdaterBrevtekst(args: {
+  brevId: number;
+  redigertBrev: EditedLetter;
+  /** Required on purpose — see `oppdaterBrev`. */
+  frigiReservasjon: boolean;
+}) {
   return (
     await axios.put<BrevResponse>(
-      `${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/redigertBrev?frigiReservasjon=${frigiReservasjon === true}`,
-      redigertBrev,
+      `${SKRIBENTEN_API_BASE_PATH}/brev/${args.brevId}/redigertBrev?frigiReservasjon=${args.frigiReservasjon}`,
+      args.redigertBrev,
     )
   ).data;
 }
