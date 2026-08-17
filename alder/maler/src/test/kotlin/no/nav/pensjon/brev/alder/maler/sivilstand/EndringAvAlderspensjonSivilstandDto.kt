@@ -17,7 +17,7 @@ fun createEndringAvAlderspensjonSivilstandDto() =
     EndringAvAlderspensjonSivilstandDto(
         saksbehandlerValg = lagSaksbehandlervalg(
             "feilutbetaling" to false,
-            "sivilstandsendringsaarsak" to EndringAvAlderspensjonSivilstandDto.Sivilstandsendringsaarsak.annet,
+            "sivilstandsendringsaarsak" to EndringAvAlderspensjonSivilstandDto.Sivilstandsendringsaarsak.annet.name,
             "etterbetaling" to true,
         ),
         pesysData =

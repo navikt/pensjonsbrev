@@ -24,7 +24,7 @@ data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
         epsIkkeFylt62Aar("Brukt i beregningen. EPS ikke fylt 62 år"),
         epsIkkeRettTilFullAlderspensjon("Brukt i beregningen. EPS har ikke rett til å ta ut full alderspensjon"),
         epsAvkallPaaEgenAlderspenspensjon("Ikke brukt i beregningen. EPS gir avkall på egen alderspensjon"),
-        epsAvkallPaaEgenUfoeretrygd("Ikke brukt i beregningen. EPS git avkall på egen uføretrygd"),
+        epsAvkallPaaEgenUfoeretrygd("Ikke brukt i beregningen. EPS gitt avkall på egen uføretrygd"),
         epsHarInntektOver1G("Ikke brukt i beregningen. EPS har inntekt over 1 G"),
         epsHarRettTilFullAlderspensjon("Ikke brukt i beregningen. EPS har rett til full alderspensjon"),
         epsTarUtAlderspensjon("Ikke brukt i beregningen. EPS tar ut alderspensjon"),

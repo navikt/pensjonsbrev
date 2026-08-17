@@ -17,7 +17,7 @@ fun createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() =
     EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
         saksbehandlerValg =
             lagSaksbehandlervalg(
-                "eps" to EndringAvAlderspensjonSivilstandSaerskiltSatsDto.EPS.epsHarInntektOver1G,
+                "eps" to EndringAvAlderspensjonSivilstandSaerskiltSatsDto.EPS.epsHarInntektOver1G.name,
                 "aarligKontrollEPS" to false,
                 "feilutbetaling" to false,
                 "etterbetaling" to true,
