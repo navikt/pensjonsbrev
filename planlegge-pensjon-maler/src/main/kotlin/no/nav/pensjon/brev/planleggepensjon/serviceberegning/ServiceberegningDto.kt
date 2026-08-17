@@ -14,12 +14,12 @@ data class ServiceberegningBrevDto(
 ) : RedigerbarBrevdata<ServiceberegningDto, EmptyFagsystemdata>
 
 data class ServiceberegningDto(
-    @DisplayText("Uttaksalder")
     val uttaksalder: Alder,
-    @DisplayText("Uttaksdato")
     val uttaksdato: String,
-    @DisplayText("Forventet fremtidig inntekt")
     val forventetFremtidigInntekt: Kroner,
-    @DisplayText("AFP i offentlig sektor")
     val afp: TidsbegrensetOffentligAfp,
+    @DisplayText("Alternativ 1")
+    val alt1: Boolean,
+    @DisplayText("Alternativ 2")
+    val alt2: Boolean,
 ) : SaksbehandlerValgBrevdata

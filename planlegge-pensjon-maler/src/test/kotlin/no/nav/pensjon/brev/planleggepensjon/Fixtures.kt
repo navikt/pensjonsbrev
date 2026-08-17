@@ -83,6 +83,8 @@ object Fixtures : LetterDataFactory {
                 afpGrad = Percent(100),
                 erAvkortet = true,
             ),
+            alt1 = true,
+            alt2 = false,
         )
     )
 

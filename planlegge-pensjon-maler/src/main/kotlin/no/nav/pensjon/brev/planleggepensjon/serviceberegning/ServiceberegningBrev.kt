@@ -11,6 +11,8 @@ import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
 import no.nav.pensjon.brev.planleggepensjon.redigerbar
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.saksbehandlerValg
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.afp
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.alt1
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.alt2
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.forventetFremtidigInntekt
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.uttaksalder
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.uttaksdato
@@ -41,7 +43,29 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
     override val sakstyper: Set<ISakstype> = emptySet()
     override val kode: Brevkode.Redigerbart = PlanleggePensjonBrevkoder.Redigerbar.SERVICEBEREGNING_SIMULERINGSBREV
     override val featureToggle = FeatureToggles.apSimulering.toggle
-    override val modelSpecification: TemplateModelSpecification = TemplateModelSpecification(emptyMap(), null)
+    override val modelSpecification: TemplateModelSpecification = TemplateModelSpecification(
+        types = mapOf(
+            ServiceberegningBrevDto::class.qualifiedName!! to mapOf(
+                "saksbehandlerValg" to TemplateModelSpecification.FieldType.Object(
+                    nullable = false,
+                    typeName = ServiceberegningDto::class.qualifiedName!!,
+                ),
+            ),
+            ServiceberegningDto::class.qualifiedName!! to mapOf(
+                "alt1" to TemplateModelSpecification.FieldType.Scalar(
+                    nullable = false,
+                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
+                    displayText = "Alternativ 1",
+                ),
+                "alt2" to TemplateModelSpecification.FieldType.Scalar(
+                    nullable = false,
+                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
+                    displayText = "Alternativ 2",
+                ),
+            ),
+        ),
+        letterModelTypeName = ServiceberegningBrevDto::class.qualifiedName,
+    )
 
     override val template: LetterTemplate<*, ServiceberegningBrevDto> = createTemplate(
         languages = languages(Language.Bokmal),
@@ -62,9 +86,17 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
         }
 
         outline {
+            showIf(saksbehandlerValg.alt1) {
+                paragraph {
+                    text(bokmal { +"Bruker har ingen ytelser som ikke kan kombineres med AFP." })
+                }
+            }
+            showIf(saksbehandlerValg.alt2) {
+                paragraph {
+                    text(bokmal { +"Bruker har hatt utbetalt alderspensjon frem til " + fritekst("DD.MM.ÅÅÅÅ") + "." })
+                }
+            }
             paragraph {
-                text(bokmal { +"<Bruker har ingen ytelser som ikke kan kombineres med AFP.>" })
-                text(bokmal { +"<Bruker har hatt utbetalt alderspensjon frem til DD.MM.ÅÅÅÅ.>" })
                 text(bokmal { +"<Bruker har XX % uføretrygd fra folketrygden.>" })
                 text(bokmal { +"<Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag.>" })
                 text(
