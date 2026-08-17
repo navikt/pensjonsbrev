@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, HStack, Modal, Tabs, VStack } from "@navikt/ds-react";
 import { type UseMutationResult, useMutation } from "@tanstack/react-query";
-import { type AxiosError } from "axios";
 import { useCallback, useState } from "react";
 import { type Control, FormProvider, useForm } from "react-hook-form";
 
@@ -28,7 +27,7 @@ export const EndreMottakerModal = (properties: {
   åpen: boolean;
   onBekreftNyMottaker: (id: string | Adresse) => void;
   resetOnBekreftState: () => void;
-  error: Nullable<AxiosError>;
+  error: Nullable<Error>;
   isPending: Nullable<boolean>;
   onClose: () => void;
   skalKunOppdatereSamhandler?: boolean;
@@ -185,7 +184,7 @@ const ModalTabs = (properties: {
   onFinnSamhandlerSubmit: UseMutationResult<FinnSamhandlerResponseDto, Error, FinnSamhandlerRequestDto, unknown>;
   onBekreftNyMottaker: (id: string | Adresse) => void;
   resetOnBekreftState: () => void;
-  error: Nullable<AxiosError>;
+  error: Nullable<Error>;
   isPending: Nullable<boolean>;
   skalKunOppdatereSamhandler?: boolean;
 }) => {

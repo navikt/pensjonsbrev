@@ -1,7 +1,6 @@
 import { css } from "@emotion/react";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Button, Checkbox, HStack, Link, TextField, UNSAFE_Combobox, VStack } from "@navikt/ds-react";
-import { type AxiosError } from "axios";
 import { useMemo } from "react";
 import { type Control, Controller, useFormContext, useWatch } from "react-hook-form";
 
@@ -17,7 +16,7 @@ const NORGE = "NO";
 const UtfyllingAvManuellAdresseForm = (properties: {
   control: Control<CombinedFormData>;
   onCloseIntent: () => void;
-  error: Nullable<AxiosError>;
+  error: Nullable<Error>;
   isPending: Nullable<boolean>;
 }) => {
   const { data: landData, isLoading, isError, isSuccess } = useLandData();
