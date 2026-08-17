@@ -84,17 +84,6 @@ public final class no/nav/pensjon/brev/api/model/maler/EmptyFagsystemdata : no/n
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/api/model/maler/EmptyRedigerbarBrevdata : no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata {
-	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptyRedigerbarBrevdata;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/EmptyFagsystemdata;
-	public synthetic fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/FagsystemBrevdata;
-	public fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/EmptySaksbehandlerValg;
-	public synthetic fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class no/nav/pensjon/brev/api/model/maler/EmptySaksbehandlerValg : no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata {
 	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptySaksbehandlerValg;
 	public fun equals (Ljava/lang/Object;)Z
