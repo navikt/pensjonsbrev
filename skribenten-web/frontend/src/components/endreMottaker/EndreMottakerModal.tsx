@@ -41,7 +41,7 @@ export const EndreMottakerModal = (properties: {
   const onFinnsamhandlerSubmit = (values: FinnSamhandlerFormData) => {
     switch (values.søketype) {
       case null: {
-        throw new Error("Teknisk feil - Fikk case 'null' ved søk for samhandler. Ble ikke denne fanget av validering?");
+        throw new Error("Teknisk feil - Fikk case 'null' ved søk for samhandler");
       }
       case Søketype.DIREKTE_OPPSLAG: {
         return finnSamhandlerMutation.mutate({
@@ -79,8 +79,8 @@ export const EndreMottakerModal = (properties: {
       manueltAdressertTil: ManueltAdressertTil.BRUKER,
       postnr: null,
       poststed: null,
-      //default value skal være norge. Siden vi henter alle landkodene i backend, hardkoder vi norges verdi.
-      land: "NO",
+      //land er gating-feltet: ingenting kan fylles ut før saksbehandler har valgt land
+      land: null,
     },
   };
   const defaultFinnSamhandler = {

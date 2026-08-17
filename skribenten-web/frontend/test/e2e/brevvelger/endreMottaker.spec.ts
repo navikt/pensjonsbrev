@@ -11,6 +11,25 @@ async function expectOrderLetterSuccess(page: Page, expectedUrl: string) {
   );
 }
 
+async function velgLand(page: Page, søketekst: string) {
+  await page.getByTestId("land-combobox").click();
+  await page.getByTestId("land-combobox").pressSequentially(søketekst);
+  await page.keyboard.press("Enter");
+}
+
+/*
+Aksel sin single-select combobox har ingen "fjern"-knapp: for å velge bort et land må man
+navigere til det allerede valgte alternativet i listen og velge det på nytt, slik at
+toggleOption kaller removeSelectedOption. Å skrive inn samme verdi og trykke Enter uten å
+flytte fokus ned i listen tømmer bare søkefeltet, og fjerner ikke selve valget.
+*/
+async function fjernValgtLand(page: Page, landnavn: string) {
+  await page.getByTestId("land-combobox").click();
+  await page.getByTestId("land-combobox").pressSequentially(landnavn);
+  await page.keyboard.press("ArrowDown");
+  await page.keyboard.press("Enter");
+}
+
 test.describe("Endrer på mottaker", () => {
   test.beforeEach(async ({ page }) => {
     await setupSakStubs(page);
@@ -288,12 +307,75 @@ test.describe("Endrer på mottaker", () => {
     await expect(page.getByTestId("endre-mottaker-modal").getByText("Feltet må fylles ut").first()).toBeVisible();
   });
 
+  test("land må velges før resten av adressen kan fylles ut", async ({ page }) => {
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("Informasjon om saksbehandlingstid");
+    await page.getByText("Informasjon om saksbehandlingstid").click();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
+    await page.getByText("Legg til manuelt").click();
+
+    // Uten valgt land er alle adressefeltene låst
+    await expect(page.getByText("Du må velge land før resten kan fylles ut.")).toBeVisible();
+    for (const felt of ["Navn", "Adresselinje 1", "Adresselinje 2", "Adresselinje 3", "Postnummer", "Poststed"]) {
+      await expect(page.getByLabel(felt, { exact: true })).toHaveAttribute("readonly", "");
+    }
+
+    // Lagring blokkeres, og vi klager kun på land - ikke på feltene saksbehandler ikke fikk fylle ut
+    await page.getByTestId("endre-mottaker-modal").getByText("Lagre og lukk").click();
+    await expect(page.getByTestId("endre-mottaker-modal").getByText("Du må velge land", { exact: true })).toBeVisible();
+    await expect(page.getByTestId("endre-mottaker-modal").getByText("Obligatorisk")).not.toBeVisible();
+
+    // Etter at land er valgt låses feltene opp
+    await velgLand(page, "Norge");
+    for (const felt of ["Navn", "Adresselinje 1", "Adresselinje 2", "Adresselinje 3", "Postnummer", "Poststed"]) {
+      await expect(page.getByLabel(felt, { exact: true })).not.toHaveAttribute("readonly", "");
+    }
+  });
+
+  test("Norge ligger øverst i landlisten, resten er alfabetisk", async ({ page }) => {
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("Informasjon om saksbehandlingstid");
+    await page.getByText("Informasjon om saksbehandlingstid").click();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
+    await page.getByText("Legg til manuelt").click();
+
+    await page.getByTestId("land-combobox").click();
+
+    // Alfabetisk ville rekkefølgen vært Danmark, Norge, Sverige - Norge løftes bevisst til toppen.
+    // Merk: må scopes til combobox-listen, ellers plukker role=option også opp <option> i vanlige select-er på siden.
+    await expect(page.locator(".aksel-combobox__list-options").getByRole("option")).toHaveText([
+      "Norge",
+      "Danmark",
+      "Sverige",
+    ]);
+  });
+
+  test("fjerning av land låser feltene igjen og tømmer det som er fylt ut", async ({ page }) => {
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("Informasjon om saksbehandlingstid");
+    await page.getByText("Informasjon om saksbehandlingstid").click();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
+    await page.getByText("Legg til manuelt").click();
+
+    await velgLand(page, "Norge");
+    await page.getByLabel("Navn", { exact: true }).click();
+    await page.locator(":focus").pressSequentially("Test Testesen");
+
+    // Fjern landet igjen
+    await fjernValgtLand(page, "Norge");
+
+    await expect(page.getByLabel("Navn", { exact: true })).toHaveValue("");
+    await expect(page.getByLabel("Navn", { exact: true })).toHaveAttribute("readonly", "");
+  });
+
   test("viser valideringsfeil for manuell adresse med norsk adresse", async ({ page }) => {
     await page.getByTestId("brevmal-search").click();
     await page.getByTestId("brevmal-search").pressSequentially("Informasjon om saksbehandlingstid");
     await page.getByText("Informasjon om saksbehandlingstid").click();
     await page.getByTestId("toggle-endre-mottaker-modal").click();
     await page.getByText("Legg til manuelt").click();
+
+    await velgLand(page, "Norge");
 
     // submit with empty fields — name is mandatory
     await page.getByTestId("endre-mottaker-modal").getByText("Lagre og lukk").click();
@@ -317,12 +399,13 @@ test.describe("Endrer på mottaker", () => {
     await page.getByTestId("toggle-endre-mottaker-modal").click();
     await page.getByText("Legg til manuelt").click();
 
-    // Switch to foreign address — postal code/city should be hidden
-    await page.getByTestId("land-combobox").click();
-    await page.getByTestId("land-combobox").pressSequentially("Sver");
-    await page.keyboard.press("Enter");
+    // Switch to foreign address — postal code/city should be hidden, address lines remain
+    await velgLand(page, "Sver");
     await expect(page.getByLabel("Postnummer")).not.toBeVisible();
     await expect(page.getByLabel("Poststed")).not.toBeVisible();
+    await expect(page.getByLabel("Adresselinje 1")).toBeVisible();
+    await expect(page.getByLabel("Adresselinje 2")).toBeVisible();
+    await expect(page.getByLabel("Adresselinje 3")).toBeVisible();
 
     // Fill name but leave address line 1 empty
     await page.getByLabel("Navn", { exact: true }).click();
@@ -338,6 +421,7 @@ test.describe("Endrer på mottaker", () => {
     await page.getByText("Informasjon om saksbehandlingstid").click();
     await page.getByTestId("toggle-endre-mottaker-modal").click();
     await page.getByText("Legg til manuelt").click();
+    await velgLand(page, "Norge");
     await page.getByLabel("Navn", { exact: true }).click();
     await page.locator(":focus").pressSequentially("Fornavn Etternavnsen");
     await page.getByLabel("Adresselinje 1").click();
@@ -346,9 +430,8 @@ test.describe("Endrer på mottaker", () => {
     await page.locator(":focus").pressSequentially("0000");
     await page.getByLabel("Poststed").click();
     await page.locator(":focus").pressSequentially("Poststedet");
-    await page.getByTestId("land-combobox").click();
-    await page.getByTestId("land-combobox").pressSequentially("Sver");
-    await page.keyboard.press("Enter");
+    // Bytter til utenlandsk adresse — postnummer og poststed skal ikke bli med videre
+    await velgLand(page, "Sver");
     await page.getByTestId("endre-mottaker-modal").getByText("Lagre og lukk").click();
 
     await expect(page.getByText("Fornavn Etternavnsen")).toBeVisible();
@@ -384,6 +467,7 @@ test.describe("Endrer på mottaker", () => {
     await page.getByText("Informasjon om saksbehandlingstid").click();
     await page.getByTestId("toggle-endre-mottaker-modal").click();
     await page.getByText("Legg til manuelt").click();
+    await velgLand(page, "Norge");
     await page.getByLabel("Navn", { exact: true }).click();
     await page.locator(":focus").pressSequentially("Fornavn Etternavnsen");
     await page.getByText("Avbryt").click();
@@ -407,6 +491,7 @@ test.describe("Endrer på mottaker", () => {
     await page.getByText("Informasjon om saksbehandlingstid").click();
     await page.getByTestId("toggle-endre-mottaker-modal").click();
     await page.getByText("Legg til manuelt").click();
+    await velgLand(page, "Norge");
     await page.getByLabel("Navn", { exact: true }).click();
     await page.locator(":focus").pressSequentially("Fornavn Etternavnsen");
 
