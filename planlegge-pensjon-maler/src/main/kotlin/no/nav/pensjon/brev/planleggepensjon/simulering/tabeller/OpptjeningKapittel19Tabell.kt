@@ -46,7 +46,7 @@ data class OpptjeningKapittel19Tabell(
                 ifNotNull(alderspensjon.forholdstall) {
                     row {
                         cell { text(bokmal { +"Forholdstall ved uttak" }) }
-                        cell { text(bokmal { +it.format(2) }) }
+                        cell { text(bokmal { +it.format(3) }) }
                     }
                 }
                 ifNotNull(alderspensjon.sluttpoengtall) {

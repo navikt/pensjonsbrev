@@ -19,7 +19,17 @@ data class ServiceberegningDto(
     @DisplayText("Uttaksdato")
     val uttaksdato: String,
     @DisplayText("Forventet fremtidig inntekt")
-    val forventetFremtidigInntekt: Kroner?,
-    @DisplayText("AFP i offentlig sektor")
+    val forventetFremtidigInntekt: Kroner,
+    @DisplayText("AFP")
     val afp: TidsbegrensetOffentligAfp,
+    @DisplayText("Ingen ytelser")
+    val alt1: Boolean = false,
+    @DisplayText("Vedtak om alderspensjon")
+    val alt2: Boolean = false,
+    @DisplayText("Vedtak om uføretrygd")
+    val alt3: Boolean = false,
+    @DisplayText("AAP utbetales")
+    val alt4: Boolean = false,
+    @DisplayText("Mottar / søker om sykepenger")
+    val alt5: Boolean = false,
 ) : SaksbehandlerValgBrevdata
