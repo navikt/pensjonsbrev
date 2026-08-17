@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.pdfbygger.typst.typstStringEscape
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import java.time.format.FormatStyle
 
-object TypstDocumentRendererV2 {
+object TypstLetterRendererV2 {
 
     internal fun render(pdfRequest: LetterPDFRequest, typstWriter: TypstFileWriter): Unit = render(
         letter = pdfRequest.letterMarkup.clean(),
@@ -82,7 +82,7 @@ object TypstDocumentRendererV2 {
     /**
      * Render the main letter.typ file content.
      *
-     * Structure mirrors v1's [no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer],
+     * Structure mirrors v1's [no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstLetterRenderer],
      * with the letter's own title coming from `title1` (renamed from v1's `title`)
      * and body blocks (Title2/3/4, Paragraph, ItemList, NumberedList, Table) as a
      * flat sibling list.
@@ -130,15 +130,3 @@ object TypstDocumentRendererV2 {
         appendCodeln("}")
     }
 }
-
-private fun Markup.Spraak.toLanguageCode(): LanguageCode =
-    when (this) {
-        Markup.Spraak.BOKMAL -> LanguageCode.BOKMAL
-        Markup.Spraak.NYNORSK -> LanguageCode.NYNORSK
-        Markup.Spraak.ENGLISH -> LanguageCode.ENGLISH
-    }
-
-private val personidentRegex = Regex("([0-9]{6})([0-9]{5})")
-
-private fun Markup.Personidentifikator.format(): String =
-    personidentRegex.replace(value, "${'$'}1 ${'$'}2")

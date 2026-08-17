@@ -38,16 +38,16 @@ import java.io.ByteArrayOutputStream
 import java.io.OutputStreamWriter
 
 /**
- * Unit tests for [TypstDocumentRendererV2] that inspect the generated Typst source
+ * Unit tests for [TypstLetterRendererV2] that inspect the generated Typst source
  * directly (string-level assertions), without requiring the `typst` binary or a
  * dockerized compile service. Bygger markup via markup-modulens DSL.
  */
-class TypstDocumentRendererV2Test {
+class TypstLetterRendererV2Test {
 
     private fun render(request: LetterPDFRequest): String {
         val output = ByteArrayOutputStream()
         OutputStreamWriter(output, Charsets.UTF_8).use { writer ->
-            TypstDocumentRendererV2.render(request, TypstFileWriter(writer))
+            TypstLetterRendererV2.render(request, TypstFileWriter(writer))
         }
         return output.toString(Charsets.UTF_8)
     }

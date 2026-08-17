@@ -13,6 +13,7 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import no.nav.brev.brevbaker.PDFRequest
+import no.nav.brev.brevbaker.document.DocumentPDFRequest
 import no.nav.brev.brevbaker.serialization.internalObjectMapper
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
@@ -49,6 +50,12 @@ class PdfByggerTestService(
 
     suspend fun producePDFV2(pdfRequest: LetterPDFRequest): PDFCompilationOutput =
         httpClient.post("$pdfByggerUrl/v2/produserBrev") {
+            contentType(ContentType.Application.Json)
+            setBody(objectMapper.writeValueAsBytes(pdfRequest))
+        }.body()
+
+    suspend fun producePDFDokument(pdfRequest: DocumentPDFRequest): PDFCompilationOutput =
+        httpClient.post("$pdfByggerUrl/produserDokument") {
             contentType(ContentType.Application.Json)
             setBody(objectMapper.writeValueAsBytes(pdfRequest))
         }.body()
