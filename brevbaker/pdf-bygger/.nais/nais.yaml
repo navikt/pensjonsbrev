@@ -58,4 +58,9 @@ spec:
     inbound:
       rules:
         - application: {{brevbaker-app}}
+{{#each inbound as |app|}}
+        - application: {{app.name}}
+          namespace: {{app.namespace}}
+          cluster: {{app.cluster}}
+{{/each}}
   ingresses: [{{#each ingresses as |url|}}{{url}},{{/each}}]
