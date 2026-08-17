@@ -19,8 +19,11 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -97,19 +100,22 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
         }
 
         outline {
-            showIf(saksbehandlerValg.alt1) {
+            val allTogglesAreOff = saksbehandlerValg.alt1.not() and saksbehandlerValg.alt2.not() and
+                saksbehandlerValg.alt3.not() and saksbehandlerValg.alt4.not() and saksbehandlerValg.alt5.not()
+
+            showIf(saksbehandlerValg.alt1 or allTogglesAreOff) {
                 paragraph { text(bokmal { +"Bruker har ingen ytelser som ikke kan kombineres med AFP." }) }
             }
-            showIf(saksbehandlerValg.alt2) {
+            showIf(saksbehandlerValg.alt2 or allTogglesAreOff) {
                 paragraph { text(bokmal { +"Bruker har hatt utbetalt alderspensjon frem til " + fritekst("DD.MM.ÅÅÅÅ") + "." }) }
             }
-            showIf(saksbehandlerValg.alt3) {
+            showIf(saksbehandlerValg.alt3 or allTogglesAreOff) {
                 paragraph { text(bokmal { +"Bruker har " + fritekst("XX %") + " uføretrygd fra folketrygden." }) }
             }
-            showIf(saksbehandlerValg.alt4) {
+            showIf(saksbehandlerValg.alt4 or allTogglesAreOff) {
                 paragraph { text(bokmal { +"Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag." }) }
             }
-            showIf(saksbehandlerValg.alt5) {
+            showIf(saksbehandlerValg.alt5 or allTogglesAreOff) {
                 paragraph {
                     text(
                         bokmal {
