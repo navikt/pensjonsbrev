@@ -10,12 +10,7 @@ import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
 import no.nav.pensjon.brev.planleggepensjon.redigerbar
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.saksbehandlerValg
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.afp
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.alt1
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.alt2
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.forventetFremtidigInntekt
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.uttaksalder
-import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.uttaksdato
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.alder.aar
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.alder.maaneder
 import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.AfpOffentligTidsbegrensetOpptjeningTabell
@@ -55,12 +50,27 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
                 "alt1" to TemplateModelSpecification.FieldType.Scalar(
                     nullable = false,
                     kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Alternativ 1",
+                    displayText = "Ingen ytelse",
                 ),
                 "alt2" to TemplateModelSpecification.FieldType.Scalar(
                     nullable = false,
                     kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Alternativ 2",
+                    displayText = "Alderspensjon",
+                ),
+                "alt3" to TemplateModelSpecification.FieldType.Scalar(
+                    nullable = false,
+                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
+                    displayText = "Uføretrygd",
+                ),
+                "alt4" to TemplateModelSpecification.FieldType.Scalar(
+                    nullable = false,
+                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
+                    displayText = "Arbeidsavklaringspenger",
+                ),
+                "alt5" to TemplateModelSpecification.FieldType.Scalar(
+                    nullable = false,
+                    kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
+                    displayText = "Sykepenger",
                 ),
             ),
         ),
@@ -86,24 +96,25 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
         }
 
         outline {
-            showIf(saksbehandlerValg.alt1) {
-                paragraph {
+            paragraph {
+                showIf(saksbehandlerValg.alt1) {
                     text(bokmal { +"Bruker har ingen ytelser som ikke kan kombineres med AFP." })
                 }
-            }
-            showIf(saksbehandlerValg.alt2) {
-                paragraph {
+                showIf(saksbehandlerValg.alt2) {
                     text(bokmal { +"Bruker har hatt utbetalt alderspensjon frem til " + fritekst("DD.MM.ÅÅÅÅ") + "." })
                 }
-            }
-            paragraph {
-                text(bokmal { +"<Bruker har XX % uføretrygd fra folketrygden.>" })
-                text(bokmal { +"<Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag.>" })
-                text(
-                    bokmal {
-                        +"<Bruker mottar eller søker om sykepenger. Nav arbeid og ytelser er informert om at bruker søker AFP.>"
-                    },
-                )
+                showIf(saksbehandlerValg.alt3) {
+                    text(bokmal { +"Bruker har " + fritekst("XX %") + " uføretrygd fra folketrygden." })
+                }
+                showIf(saksbehandlerValg.alt4) {
+                    text(bokmal { +"Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag." })
+                }
+                showIf(saksbehandlerValg.alt5) {
+                    text(
+                        bokmal {
+                            +"Bruker mottar eller søker om sykepenger. Nav arbeid og ytelser er informert om at bruker søker AFP."
+                        })
+                }
             }
 
             title1 {

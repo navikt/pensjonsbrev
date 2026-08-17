@@ -26,4 +26,10 @@ data class ServiceberegningDto(
     val alt1: Boolean = true,
     @DisplayText("Alternativ 2")
     val alt2: Boolean = true,
+    @DisplayText("Alternativ 3")
+    val alt3: Boolean = true,
+    @DisplayText("Alternativ 4")
+    val alt4: Boolean = true,
+    @DisplayText("Alternativ 5")
+    val alt5: Boolean = true,
 ) : SaksbehandlerValgBrevdata
