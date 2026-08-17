@@ -510,4 +510,82 @@ test.describe("Endrer på mottaker", () => {
     await page.getByText("Ja, avbryt").click();
     await expect(page.getByTestId("endre-mottaker-modal")).not.toBeVisible();
   });
+
+  /*
+  Avkrysningsboksen «Overstyring av brukers adresse» har motsatt polaritet av enum-verdien den styrer:
+  avkrysset betyr at bruker selv er mottaker (BRUKER), uavkrysset at adressen tilhører noen andre (ANNEN).
+  Verdien avgjør om brevet får «Mottaker: <navn>» + «Saken gjelder: <bruker>» i sakspart-blokken, så
+  disse testene låser koblingen mellom avkrysning og utgående verdi.
+  */
+  async function bestillBrevMedManuellAdresse(page: Page, krysseAvOverstyring: boolean) {
+    let requestBody: Record<string, unknown> | undefined;
+    await page.route("**/bff/skribenten-backend/sak/123456/brev", async (route) => {
+      if (route.request().method() === "POST") {
+        requestBody = route.request().postDataJSON();
+        return route.fulfill({ path: "test/e2e/fixtures/brevResponse.json", contentType: "application/json" });
+      }
+      return route.fallback();
+    });
+
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("Informasjon om saksbehandlingstid");
+    await page.getByText("Informasjon om saksbehandlingstid").click();
+
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
+    await page.getByText("Legg til manuelt").click();
+
+    const overstyringsboks = page.getByRole("checkbox", { name: "Overstyring av brukers adresse" });
+    await expect(overstyringsboks).not.toBeChecked();
+    if (krysseAvOverstyring) {
+      await overstyringsboks.check();
+    }
+
+    await velgLand(page, "Norge");
+    await page.getByLabel("Navn", { exact: true }).click();
+    await page.locator(":focus").pressSequentially("Fornavn Etternavnsen");
+    await page.getByLabel("Adresselinje 1").click();
+    await page.locator(":focus").pressSequentially("Adresselinjen 1");
+    await page.getByLabel("Postnummer").click();
+    await page.locator(":focus").pressSequentially("0000");
+    await page.getByLabel("Poststed").click();
+    await page.locator(":focus").pressSequentially("Poststedet");
+    await page.getByTestId("endre-mottaker-modal").getByText("Lagre og lukk").click();
+    await expect(page.getByTestId("endre-mottaker-modal")).not.toBeVisible();
+
+    await page.locator("select[name=enhetsId]").selectOption({ label: "Nav Arbeid og ytelser Innlandet" });
+    await page.getByLabel("Mottatt søknad").click();
+    await page.locator(":focus").pressSequentially("09.10.2024");
+    await page.getByLabel("Ytelse").click();
+    await page.locator(":focus").pressSequentially("Alderspensjon");
+    await page.getByLabel("Svartid uker").click();
+    await page.locator(":focus").pressSequentially("4");
+    await page.getByRole("button", { name: "Fortsett" }).click();
+
+    await expect(page).toHaveURL(/\/saksnummer\/123456\/brev\/1/);
+    return requestBody;
+  }
+
+  test("uavkrysset overstyring sender manueltAdressertTil ANNEN", async ({ page }) => {
+    const requestBody = await bestillBrevMedManuellAdresse(page, false);
+
+    expect(requestBody?.mottaker).toEqual({
+      type: "NorskAdresse",
+      navn: "Fornavn Etternavnsen",
+      manueltAdressertTil: "ANNEN",
+      adresselinje1: "Adresselinjen 1",
+      adresselinje2: "",
+      adresselinje3: "",
+      postnummer: "0000",
+      poststed: "Poststedet",
+    });
+  });
+
+  test("avkrysset overstyring sender manueltAdressertTil BRUKER", async ({ page }) => {
+    const requestBody = await bestillBrevMedManuellAdresse(page, true);
+
+    expect(requestBody?.mottaker).toMatchObject({
+      navn: "Fornavn Etternavnsen",
+      manueltAdressertTil: "BRUKER",
+    });
+  });
 });

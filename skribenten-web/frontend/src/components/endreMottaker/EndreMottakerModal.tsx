@@ -75,7 +75,8 @@ export const EndreMottakerModal = (properties: {
       linje1: "",
       linje2: "",
       linje3: "",
-      manueltAdressertTil: ManueltAdressertTil.BRUKER,
+      //standard er ANNEN: en manuelt utfylt adresse tilhører noen andre enn bruker med mindre saksbehandler krysser av
+      manueltAdressertTil: ManueltAdressertTil.ANNEN,
       postnr: null,
       poststed: null,
       //land er gating-feltet: ingenting kan fylles ut før saksbehandler har valgt land

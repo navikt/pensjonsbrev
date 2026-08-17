@@ -75,12 +75,18 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           control={properties.control}
           name="manuellAdresse.adresse.manueltAdressertTil"
           render={({ field }) => (
+            /*
+            Avkrysset = BRUKER: brevet går til bruker selv, bare på en annen adresse enn den registrerte.
+            Uavkrysset (standard) = ANNEN: adressen tilhører noen andre enn bruker. Da sendes navnet videre
+            som annenMottakerNavn, og sakspart-blokken i brevet får «Mottaker: <navn>» + «Saken gjelder:
+            <bruker>» i stedet for «Navn: <bruker>».
+            */
             <Checkbox
               {...field}
-              checked={field.value === ManueltAdressertTil.ANNEN}
+              checked={field.value === ManueltAdressertTil.BRUKER}
               description="Kryss av hvis bruker skal motta brevet på en annen adresse"
               onChange={(event) =>
-                field.onChange(event.target.checked ? ManueltAdressertTil.ANNEN : ManueltAdressertTil.BRUKER)
+                field.onChange(event.target.checked ? ManueltAdressertTil.BRUKER : ManueltAdressertTil.ANNEN)
               }
               size="small"
             >
