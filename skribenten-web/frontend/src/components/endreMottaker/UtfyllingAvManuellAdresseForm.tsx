@@ -44,7 +44,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
   */
   const landOptions = useMemo(() => {
     const alfabetisk = (landData ?? [])
-      .toSorted((a, b) => (a.navn > b.navn ? 1 : -1))
+      .toSorted((a, b) => a.navn.localeCompare(b.navn, "no"))
       .map((land) => ({ label: land.navn, value: land.kode }));
 
     return alfabetisk.toSorted((a, b) => Number(b.value === NORGE) - Number(a.value === NORGE));
