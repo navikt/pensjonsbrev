@@ -23,7 +23,7 @@ data class ServiceberegningDto(
     @DisplayText("AFP")
     val afp: TidsbegrensetOffentligAfp,
     @DisplayText("Alternativ 1")
-    val alt1: Boolean? = true,
+    val alt1: Boolean = true,
     @DisplayText("Alternativ 2")
-    val alt2: Boolean? = true,
+    val alt2: Boolean = true,
 ) : SaksbehandlerValgBrevdata
