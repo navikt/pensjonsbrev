@@ -110,7 +110,7 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
                 paragraph { text(bokmal { +"Bruker har hatt utbetalt alderspensjon frem til " + fritekst("DD.MM.ÅÅÅÅ") + "." }) }
             }
             showIf(saksbehandlerValg.alt3 or allTogglesAreOff) {
-                paragraph { text(bokmal { +"Bruker har " + fritekst("XX %") + " uføretrygd fra folketrygden." }) }
+                paragraph { text(bokmal { +"Bruker har " + fritekst("XX") + " % uføretrygd fra folketrygden." }) }
             }
             showIf(saksbehandlerValg.alt4 or allTogglesAreOff) {
                 paragraph { text(bokmal { +"Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag." }) }
