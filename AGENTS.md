@@ -94,7 +94,7 @@ markup modules, `brevbakerApiVersion`); consumers use the catalog aliases, and a
 
 **Binary compatibility validation** (Kotlin Gradle plugin's built-in `abiValidation`): Public API changes in `brevbaker:brevdata`, `brevbaker:brevbaker-api`, `brevbaker:markup-model`, `brevbaker:markup-dsl`, `brevbaker:dsl` and `brevbaker:core` require running `./gradlew updateKotlinAbi` to update `.api` files or build fails (`checkKotlinAbi` runs as part of `check`).
 
-**Published-artifact version bumps**: the three version axes live in `gradle/libs.versions.toml` — `brevdataVersion`, `markupVersion` (shared by `markup-model` and `markup-dsl`) and `brevbakerApiVersion`. Bump the relevant one whenever that artifact's public API/models change, then run `publishToMavenLocal` for the library modules before building their consumers.
+**Published-artifact version bumps**: the three version axes live in separate files so that a bump of one artifact doesn't trigger a release of the others — `gradle/published/brevdata.properties` (`brevdataVersion`), `gradle/published/markup.properties` (`markupVersion`, shared by `markup-model` and `markup-dsl`) and `gradle/published/brevbaker-api.properties` (`brevbakerApiVersion`). Bump the relevant one whenever that artifact's public API/models change, then run `publishToMavenLocal` for the library modules before building their consumers.
 
 ## Code Generation (KSP)
 

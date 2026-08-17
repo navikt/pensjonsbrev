@@ -1,9 +1,23 @@
 rootProject.name = "pensjonsbrev"
 
+fun publishedVersion(artifact: String): String =
+    settingsDir.resolve("gradle/published/$artifact.properties")
+        .inputStream()
+        .use { java.util.Properties().apply { load(it) } }
+        .getProperty("version")
+        ?: throw GradleException("Mangler 'version' i gradle/published/$artifact.properties")
+
 dependencyResolutionManagement {
     versionCatalogs {
         create("publishedLibs") {
-            from(files("gradle/published-versions.toml"))
+            version("brevdataVersion", publishedVersion("brevdata"))
+            version("markupVersion", publishedVersion("markup"))
+            version("brevbakerApiVersion", publishedVersion("brevbaker-api"))
+
+            library("brevdata", "no.nav.brev.brevbaker", "brevdata").versionRef("brevdataVersion")
+            library("brevbaker-api", "no.nav.brev.brevbaker", "brevbaker-api").versionRef("brevbakerApiVersion")
+            library("markup-model", "no.nav.brev.brevbaker", "markup-model").versionRef("markupVersion")
+            library("markup-dsl", "no.nav.brev.brevbaker", "markup-dsl").versionRef("markupVersion")
         }
     }
 }

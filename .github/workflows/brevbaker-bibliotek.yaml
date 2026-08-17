@@ -12,6 +12,7 @@ on:
       - "alder/alder-api-model/**"
       - "ufoere/ufoere-api-model/**"
       - "gradle/libs.versions.toml"
+      - "gradle/published/**"
       - ".github/workflows/.release.yaml"
       - ".github/workflows/brevbaker-bibliotek.yaml"
       - "gradle/wrapper/gradle-wrapper.jar"
@@ -27,6 +28,7 @@ on:
       - "alder/alder-api-model/**"
       - "ufoere/ufoere-api-model/**"
       - "gradle/libs.versions.toml"
+      - "gradle/published/**"
       - ".github/workflows/.release.yaml"
       - ".github/workflows/brevbaker-bibliotek.yaml"
       - "gradle/wrapper/gradle-wrapper.jar"
@@ -63,18 +65,18 @@ jobs:
             brevdata:
               - 'brevbaker/brevdata/src/main/**'
               - 'brevbaker/brevdata/api/brevdata.api'
-              - 'gradle/published-versions.toml'
+              - 'gradle/published/brevdata.properties'
             markup:
               - 'brevbaker/markup/model/src/main/**'
               - 'brevbaker/markup/model/api/markup-model.api'
               - 'brevbaker/markup/dsl/src/main/**'
               - 'brevbaker/markup/dsl/api/markup-dsl.api'
-              - 'gradle/published-versions.toml'
+              - 'gradle/published/markup.properties'
 
             brevbakerApi:
               - 'brevbaker/brevbaker-api/src/main/**'
               - 'brevbaker/brevbaker-api/api/brevbaker-api.api'
-              - 'gradle/published-versions.toml'
+              - 'gradle/published/brevbaker-api.properties'
             pensjonApiModel:
               - 'pensjon/pensjon-api-model/gradle.properties'
             alderApiModel:
