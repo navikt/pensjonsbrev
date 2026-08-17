@@ -22,14 +22,14 @@ data class ServiceberegningDto(
     val forventetFremtidigInntekt: Kroner,
     @DisplayText("AFP")
     val afp: TidsbegrensetOffentligAfp,
-    @DisplayText("Alternativ 1")
+    @DisplayText("Ingen ytelser")
     val alt1: Boolean = true,
-    @DisplayText("Alternativ 2")
+    @DisplayText("Vedtak om alderspensjon")
     val alt2: Boolean = true,
-    @DisplayText("Alternativ 3")
+    @DisplayText("Vedtak om uføretrygd")
     val alt3: Boolean = true,
-    @DisplayText("Alternativ 4")
+    @DisplayText("AAP utbetales")
     val alt4: Boolean = true,
-    @DisplayText("Alternativ 5")
+    @DisplayText("Mottar / søker om sykepenger")
     val alt5: Boolean = true,
 ) : SaksbehandlerValgBrevdata

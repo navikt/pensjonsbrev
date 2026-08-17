@@ -50,27 +50,27 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
                 "alt1" to TemplateModelSpecification.FieldType.Scalar(
                     nullable = false,
                     kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Ingen ytelse",
+                    displayText = "Ingen ytelser",
                 ),
                 "alt2" to TemplateModelSpecification.FieldType.Scalar(
                     nullable = false,
                     kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Alderspensjon",
+                    displayText = "Vedtak om alderspensjon",
                 ),
                 "alt3" to TemplateModelSpecification.FieldType.Scalar(
                     nullable = false,
                     kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Uføretrygd",
+                    displayText = "Vedtak om uføretrygd",
                 ),
                 "alt4" to TemplateModelSpecification.FieldType.Scalar(
                     nullable = false,
                     kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Arbeidsavklaringspenger",
+                    displayText = "AAP utbetales",
                 ),
                 "alt5" to TemplateModelSpecification.FieldType.Scalar(
                     nullable = false,
                     kind = TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN,
-                    displayText = "Sykepenger",
+                    displayText = "Mottar / søker om sykepenger",
                 ),
             ),
         ),
@@ -96,26 +96,27 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
         }
 
         outline {
-            paragraph {
-                showIf(saksbehandlerValg.alt1) {
-                    text(bokmal { +"Bruker har ingen ytelser som ikke kan kombineres med AFP." })
-                }
-                showIf(saksbehandlerValg.alt2) {
-                    text(bokmal { +"Bruker har hatt utbetalt alderspensjon frem til " + fritekst("DD.MM.ÅÅÅÅ") + "." })
-                }
-                showIf(saksbehandlerValg.alt3) {
-                    text(bokmal { +"Bruker har " + fritekst("XX %") + " uføretrygd fra folketrygden." })
-                }
-                showIf(saksbehandlerValg.alt4) {
-                    text(bokmal { +"Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag." })
-                }
-                showIf(saksbehandlerValg.alt5) {
+            showIf(saksbehandlerValg.alt1) {
+                paragraph { text(bokmal { +"Bruker har ingen ytelser som ikke kan kombineres med AFP." }) }
+            }
+            showIf(saksbehandlerValg.alt2) {
+                paragraph { text(bokmal { +"Bruker har hatt utbetalt alderspensjon frem til " + fritekst("DD.MM.ÅÅÅÅ") + "." }) }
+            }
+            showIf(saksbehandlerValg.alt3) {
+                paragraph { text(bokmal { +"Bruker har " + fritekst("XX %") + " uføretrygd fra folketrygden." }) }
+            }
+            showIf(saksbehandlerValg.alt4) {
+                paragraph { text(bokmal { +"Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag." }) }
+            }
+            showIf(saksbehandlerValg.alt5) {
+                paragraph {
                     text(
                         bokmal {
                             +"Bruker mottar eller søker om sykepenger. Nav arbeid og ytelser er informert om at bruker søker AFP."
                         })
                 }
             }
+
 
             title1 {
                 text(bokmal { +"Månedlig pensjon før skatt ved " + saksbehandlerValg.uttaksalder.aar.format().redigerbar() + " år" })
