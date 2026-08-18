@@ -46,11 +46,13 @@ export const ManagedVedleggEditor = (props: { saksId: string; brev: BrevResponse
     staleTime: Number.POSITIVE_INFINITY,
   });
 
-  if (vedleggQuery.isPending) {
+  const { data: vedlegg, isPending, isError, error } = vedleggQuery;
+
+  if (isPending) {
     return <CenteredLoader label="Henter vedlegg..." />;
   }
-  if (vedleggQuery.isError) {
-    return <ApiError error={vedleggQuery.error} title="Klarte ikke å hente vedlegg" />;
+  if (isError) {
+    return <ApiError error={error} title="Klarte ikke å hente vedlegg" />;
   }
 
   return (
@@ -59,7 +61,7 @@ export const ManagedVedleggEditor = (props: { saksId: string; brev: BrevResponse
       key={vedleggId}
       queryClient={queryClient}
       saksId={saksId}
-      vedlegg={vedleggQuery.data}
+      vedlegg={vedlegg}
       vedleggId={vedleggId}
     />
   );
@@ -89,6 +91,13 @@ const ManagedVedleggEditorReady = (props: {
       // edits are not covered by this response. Keep it DIRTY so the autosave fires again instead of
       // incorrectly marking it SAVED (same guard the brev's onSaveSuccess uses).
       setEditorState((s) => (s.saveStatus === "DIRTY" ? s : { ...s, saveStatus: "SAVED" }));
+      // TODO(backend): the PUT currently returns the parent BrevResponse, which does NOT contain the
+      // saved vedlegg, so we persist/refresh from our own state via the content query cache below.
+      // Once the backend returns the saved EditAttachment (and ideally a per-vedlegg revision), sync
+      // the editor from the response instead — e.g.:
+      //   queryClient.setQueryData(redigerbareVedleggKeys.vedlegg(brev.info.id, vedleggId), response.vedlegg);
+      // and drop the local-state cache write.
+      //
       // Keep the content query in sync so a remount does not refetch stale content.
       queryClient.setQueryData(redigerbareVedleggKeys.vedlegg(brev.info.id, vedleggId), editorState.redigertBrev);
       // The edited title may have changed, and the vedlegg is part of the rendered letter PDF.

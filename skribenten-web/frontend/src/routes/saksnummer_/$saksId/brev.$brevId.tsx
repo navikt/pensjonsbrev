@@ -543,14 +543,7 @@ function RedigerBrev({
             />
             <EditorTabsProvider activeTabId={gyldigAktivVedlegg} onActiveTabChange={onSelectTab} tabs={tabs}>
               <Box asChild borderColor="neutral-subtle" borderWidth="0 0 1 0">
-                <EditorTabsBar
-                  activeTabId={gyldigAktivVedlegg ?? "brev"}
-                  onAddVedlegg={() => {
-                    // The add-vedlegg modal is wired in a later phase.
-                  }}
-                  onSelectTab={onSelectTab}
-                  tabs={tabs}
-                />
+                <EditorTabsBar activeTabId={gyldigAktivVedlegg ?? "brev"} onSelectTab={onSelectTab} tabs={tabs} />
               </Box>
               <HGrid columns="minmax(304px, 384px) minmax(640px, 694px)" flexGrow="1" overflowY="hidden">
                 <Box
