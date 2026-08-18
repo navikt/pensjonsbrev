@@ -33,6 +33,7 @@ import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.slf4j.LoggerFactory
+import java.util.concurrent.RejectedExecutionException
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
@@ -40,7 +41,11 @@ private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.Skr
 
 fun main(args: Array<String>) {
     Thread.setDefaultUncaughtExceptionHandler { thread, ex ->
-        logger.error("Uncaught exception in thread ${thread.name}", ex)
+        if (ex is RejectedExecutionException) {
+            logger.warn("Uncaught exception in thread ${thread.name}", ex)
+        } else {
+            logger.error("Uncaught exception in thread ${thread.name}", ex)
+        }
     }
     EngineMain.main(args)
 }
