@@ -80,7 +80,6 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
-        val innvandret = saksbehandlervalg("innvandret", "Innvandret").bool()
         val reduksjonTilbakeITid = saksbehandlervalg("reduksjonTilbakeITid", "Reduksjon tilbake i tid").bool()
         val endringIPensjonen = saksbehandlervalg("endringIPensjonen", "Endring i pensjon").bool()
         val etterbetaling = saksbehandlervalg("etterbetaling", "Etterbetaling").bool()
