@@ -161,7 +161,7 @@ export const LetterEditor = ({
                             brevtittel: editorState.info.brevtittel,
                             brevtype: editorState.info.brevtype,
                             spraak: editorState.info.spraak,
-                            antallGjenværendeMissing: blocks.filter((b) => b.missingFromTemplate).length,
+                            restAntall: blocks.filter((b) => b.missingFromTemplate).length - 1,
                             blockIndex,
                           });
                           applyAction(Actions.keepMissingFromTemplateBlock, setEditorState, blockIndex);
@@ -181,7 +181,7 @@ export const LetterEditor = ({
                             brevtittel: editorState.info.brevtittel,
                             brevtype: editorState.info.brevtype,
                             spraak: editorState.info.spraak,
-                            antallGjenværendeMissing: blocks.filter((b) => b.missingFromTemplate).length,
+                            restAntall: blocks.filter((b) => b.missingFromTemplate).length - 1,
                             blockIndex,
                           });
                           applyAction(Actions.removeMissingFromTemplateBlock, setEditorState, blockIndex);
