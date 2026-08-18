@@ -9,6 +9,10 @@ which base64 || (
   echo "ERROR: You need to install the base64 tool on your machine. (brew install base64 on macOS)" && exit 1
 ) || exit 1
 
+kubectl --context ${KUBE_CLUSTER} -n pensjonsbrev get secrets > /dev/null 2>&1 || (
+  echo "ERROR: Could not access secrets in namespace pensjonsbrev on cluster ${KUBE_CLUSTER}. Make sure you are connected to naisdevice and have run 'kubectl config use-context ${KUBE_CLUSTER}'." && exit 1
+) || exit 1
+
 mkdir -p secrets
 kubectl --context $KUBE_CLUSTER -n pensjonsbrev get secret azure-locust -o json | jq '.data | map_values(@base64d)' > secrets/azuread.json
 echo "All secrets are fetched and stored in the \"secrets\" folder."

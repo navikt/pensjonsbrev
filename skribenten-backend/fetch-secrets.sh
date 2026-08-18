@@ -9,12 +9,23 @@ which base64 || (
   echo "ERROR: You need to install the base64 tool on your machine. (brew install base64 on macOS)" && exit 1
 ) || exit 1
 
+kubectl --context ${KUBE_CLUSTER} -n pensjonsbrev get secrets > /dev/null 2>&1 || (
+  echo "ERROR: Could not access secrets in namespace pensjonsbrev on cluster ${KUBE_CLUSTER}. Make sure you are connected to naisdevice and have run 'kubectl config use-context ${KUBE_CLUSTER}'." && exit 1
+) || exit 1
+
 function getSecret() {
   local secret_name="$1"
   local output_name="$2"
 
   echo ""
-  kubectl --context $KUBE_CLUSTER -n pensjonsbrev get secret "${secret_name}" -o json | jq '.data | map_values(@base64d)' > secrets/"${output_name}".json
+  local secret_json
+  secret_json=$(kubectl --context $KUBE_CLUSTER -n pensjonsbrev get secret "${secret_name}" -o json 2>&1)
+  if [ $? -ne 0 ]; then
+    echo "WARNING: Could not fetch secret \"${secret_name}\" — skipping ${output_name}.env. (kubectl error: ${secret_json})"
+    return 1
+  fi
+
+  echo "$secret_json" | jq '.data | map_values(@base64d)' > secrets/"${output_name}".json
 
   echo "Creating ${output_name}.env file from ${output_name}.json..."
   jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' secrets/"${output_name}".json > secrets/"${output_name}".env
@@ -24,8 +35,12 @@ function getSecret() {
 mkdir -p secrets
 
 # AzureAD
-secret_name="$(kubectl --context $KUBE_CLUSTER -n pensjonsbrev get azureapp skribenten-backend -o=jsonpath='{.spec.secretName}')"
-getSecret "$secret_name" azuread
+secret_name="$(kubectl --context $KUBE_CLUSTER -n pensjonsbrev get azureapp skribenten-backend -o=jsonpath='{.spec.secretName}' 2>&1)"
+if [ $? -ne 0 ]; then
+  echo "WARNING: Could not fetch azureapp secret name — skipping azuread.env. (kubectl error: ${secret_name})"
+else
+  getSecret "$secret_name" azuread
+fi
 
 # Unleash ApiToken
 getSecret skribenten-backend-unleash-api-token unleash

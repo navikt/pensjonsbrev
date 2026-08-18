@@ -9,6 +9,10 @@ which base64 || (
   echo "ERROR: You need to install the base64 tool on your machine. (brew install base64 on macOS)" && exit 1
 ) || exit 1
 
+kubectl --context ${KUBE_CLUSTER} -n pensjonsbrev get secrets > /dev/null 2>&1 || (
+  echo "ERROR: Could not access secrets in namespace pensjonsbrev on cluster ${KUBE_CLUSTER}. Make sure you are connected to naisdevice and have run 'kubectl config use-context ${KUBE_CLUSTER}'." && exit 1
+) || exit 1
+
 function getSecret() {
   local secret_name="$1"
   local output_name="$2"
