@@ -209,7 +209,6 @@ class SaksbehandlervalgPerMalTest {
                 "innvilgetEtter12_2Andreledd: Boolean (Innvilget etter 12-2 2.ledd)",
                 "innvilgetEtter12_2Tredjeledd: Boolean (Innvilget etter 12-2 3.ledd)",
                 "periodisertInntekt: no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg (Periodisert inntekt barnetillegg)",
-                "refusjon: Boolean (Refusjon)",
             ),
             Redigerbar.UT_INNVILGELSE_UFOERETRYGD_NORGE_UTLAND to emptyList(),
             Redigerbar.UT_INNVILGELSE_UFOERETRYGD_UTLAND to listOf(

@@ -40,12 +40,8 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
         ),
     )
     {
-        @Suppress("unused")
-        val visVurderingFraVilkarvedtak = saksbehandlervalg("VisVurderingFraVilkarvedtak", "Vis vurdering fra vilkår").bool()
         val visVurderingIFU = saksbehandlervalg("visVurderingIFU", "Vis vurdering 12-9 IFU").bool()
         val visVurderingIEU = saksbehandlervalg("visVurderingIEU", "Vis vurdering 12-9 IEU").bool()
-        @Suppress("unused")
-        val visUnntaksregelFremtidigInntekt = saksbehandlervalg("visUnntaksregelFremtidigInntekt", "Unntaksregel om fremtidig inntekt").bool()
 
         title {
             text (bokmal { + "Nav har avslått søknaden din om økt uføregrad"},

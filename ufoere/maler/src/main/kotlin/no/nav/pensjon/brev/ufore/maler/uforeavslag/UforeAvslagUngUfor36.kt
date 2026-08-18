@@ -39,8 +39,6 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagUforetidspunkt26Dto>
     )
     {
         val visVurderingFraVilkarvedtak = saksbehandlervalg("VisVurderingFraVilkarvedtak", "Bruk vurdering fra vilkårsvedtak").bool()
-        @Suppress("unused")
-        val visUforetidspunktEtter26 = saksbehandlervalg("visUforetidspunktEtter26", "Uføretidspunkt etter 26 år").bool()
 
         title {
             text (bokmal { + "Nav har vurdert at du ikke har rett til beregning som ung ufør"},
