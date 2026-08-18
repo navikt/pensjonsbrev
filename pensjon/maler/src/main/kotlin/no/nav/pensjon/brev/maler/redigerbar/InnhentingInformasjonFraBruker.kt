@@ -4,8 +4,6 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.innhentingInformasjonFraBrukerDto.saksbehandlerValg.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.innhentingInformasjonFraBrukerDto.*
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Alderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
@@ -16,10 +14,10 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -36,6 +34,19 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
     ) {
+        val bosattIEoesLandSedErEoesBlanketter = saksbehandlervalg("bosattIEoesLandSedErEoesBlanketter", "Bosatt i EØS-land. SED-er/EØS-blanketter").bool()
+        val inntektsopplysninger = saksbehandlervalg("inntektsopplysninger", "Inntektsopplysninger").bool()
+        val bankopplysninger = saksbehandlervalg("bankopplysninger", "Bankopplysninger").bool()
+        val amerikanskSocialSecurityNumber = saksbehandlervalg("amerikanskSocialSecurityNumber", "Amerikansk social security number").bool()
+        val registreringAvSivilstand = saksbehandlervalg("registreringAvSivilstand", "Registrering av sivilstand").bool()
+        val eps60aarOgInntektUnder1g = saksbehandlervalg("eps60aarOgInntektUnder1g", "Ektefelle/partner/samboer 60 år og inntekt under 1G").bool()
+        val eps62aarOgInntektUnder1gBoddArbeidUtland = saksbehandlervalg("eps62aarOgInntektUnder1gBoddArbeidUtland", "Ektefelle/partner/samboer 62 år og bodd og/eller arbeidet i utlandet").bool()
+        val epsInntektUnder2g = saksbehandlervalg("epsInntektUnder2g", "Ektefelles/partners/samboers inntekt under 2G").bool()
+        val forsoergerEpsBosattIUtlandet = saksbehandlervalg("forsoergerEpsBosattIUtlandet", "Forsørger ektefellen/partneren/samboeren som er bosatt i utlandet").bool()
+        val tidspunktForUttak = saksbehandlervalg("tidspunktForUttak", "Tidspunkt for uttak / ønsket uttaksgrad").bool()
+        val manglendeOpptjening = saksbehandlervalg("manglendeOpptjening", "Manglende opptjening").bool()
+        val boOgArbeidsperioder = saksbehandlervalg("boOgArbeidsperioder", "Bo- og arbeidsperioder").bool()
+
         title {
             text(
                 bokmal { + "Du må sende oss flere opplysninger" },
@@ -90,7 +101,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.inntektsopplysninger.ifNull(false)) {
+            showIf(inntektsopplysninger) {
                 title1 {
                     text(
                         bokmal { + "Inntektsopplysninger" },
@@ -107,7 +118,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.bankopplysninger.ifNull(false)) {
+            showIf(bankopplysninger) {
                 title1 {
                     text(
                         bokmal { + "Bankopplysninger" },
@@ -131,7 +142,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.amerikanskSocialSecurityNumber.ifNull(false)) {
+            showIf(amerikanskSocialSecurityNumber) {
                 title1 {
                     text(
                         bokmal { + "Amerikansk social security-nummer" },
@@ -150,7 +161,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
 
 
 
-            showIf(saksbehandlerValg.registreringAvSivilstand.ifNull(false)) {
+            showIf(registreringAvSivilstand) {
                 title1 {
                     text(
                         bokmal { + "Personnummer/ID for " + fritekst("ektefellen/partneren/samboeren") + " din" },
@@ -177,7 +188,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.eps60aarOgInntektUnder1g.ifNull(false)) {
+            showIf(eps60aarOgInntektUnder1g) {
                 title1 {
                     text(
                         bokmal { + "Dokumentasjon på din " + fritekst("ektefelle/partner/samboer") + " sin inntekt" },
@@ -278,7 +289,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.eps62aarOgInntektUnder1gBoddArbeidUtland.ifNull(false)) {
+            showIf(eps62aarOgInntektUnder1gBoddArbeidUtland) {
                 title1 {
                     text(
                         bokmal { + "Opplysninger om din ektefelles/partners/samboers opphold i utlandet" },
@@ -358,7 +369,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.epsInntektUnder2g.ifNull(false)) {
+            showIf(epsInntektUnder2g) {
                 title1 {
                     text(
                         bokmal { + "Dokumentasjon på din ektefelle/partner/samboer sin inntekt" },
@@ -476,7 +487,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.forsoergerEpsBosattIUtlandet.ifNull(false)) {
+            showIf(forsoergerEpsBosattIUtlandet) {
                 title1 {
                     text(
                         bokmal { + "Dokumentasjon på at du forsørger " + fritekst("ektefellen/partneren/samboeren") + " din" },
@@ -493,7 +504,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.manglendeOpptjening.ifNull(false)) {
+            showIf(manglendeOpptjening) {
                 title1 {
 
                     text(
@@ -518,7 +529,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.boOgArbeidsperioder.ifNull(false)) {
+            showIf(boOgArbeidsperioder) {
                 title1 {
                     text(
                         bokmal { + "Bo- og arbeidsperioder i Norge" },
@@ -535,7 +546,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.bosattIEoesLandSedErEoesBlanketter.ifNull(false)) {
+            showIf(bosattIEoesLandSedErEoesBlanketter) {
                 title1 {
                     text(
                         bokmal { + "Søknad fra EØS-land" },
@@ -558,7 +569,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                     )
                 }
             }
-            showIf(saksbehandlerValg.tidspunktForUttak.ifNull(false)) {
+            showIf(tidspunktForUttak) {
                 title1 {
                     text(
                         bokmal { + "Tidspunkt for uttak/ønsket uttaksgrad" },

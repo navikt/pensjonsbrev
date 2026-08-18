@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.api
 
 import io.micrometer.core.instrument.Tag
 import no.nav.pensjon.brev.Metrics
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
-import no.nav.pensjon.brev.api.model.BrevRequest
+import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.maler.BrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata

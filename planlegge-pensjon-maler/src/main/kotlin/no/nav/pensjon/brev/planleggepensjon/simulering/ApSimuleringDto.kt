@@ -21,6 +21,8 @@ data class ApSimuleringDto(
     val pensjonsgivendeInntektListe: List<AarligBeloep>?,
     @DisplayText("Årlig inntekt og pensjon")
     val aarligInntektOgPensjonListe: List<AarligInntektOgPensjon>?,
+    @DisplayText("Pensjonsopptjening")
+    val pensjonsopptjeningListe: List<Pensjonsopptjening>?,
     @DisplayText("Forbehold")
     val forbehold: ForbeholdInnhold,
 ) : SaksbehandlerValgBrevdata, VedleggData
@@ -120,7 +122,8 @@ data class Alder(
 
 data class Uttaksinformasjon (
     val alder: Alder,
-    val uttaksdato: String
+    val uttaksdato: String,
+    val grad: Int
 )
 
 data class Simuleringsinformasjon(
@@ -213,6 +216,14 @@ data class AarligInntektOgPensjon(
     val pensjonsgivendeInntekt: Kroner,
 )
 
+data class Pensjonsopptjening(
+    val aarstall: Year,
+    val pensjonsgivendeInntekt: Kroner?,
+    val pensjonspoeng: Double?,
+    val pensjonsbeholdning: Kroner?,
+    val merknad: String?,
+)
+
 data class SimuleringUtenlandsperiode(
     val fom: LocalDate,
     val tom: LocalDate? = null,
@@ -225,13 +236,13 @@ enum class Sivilstatus(val value: String = "None") {
     UOPPGITT,
     UGIFT("Ugift"),
     GIFT("Gift"),
-    ENKE_ELLER_ENKEMANN,
+    ENKE_ELLER_ENKEMANN("Enke/enkemann"),
     SKILT("Skilt"),
     SEPARERT("Separert"),
-    REGISTRERT_PARTNER,
-    SEPARERT_PARTNER,
-    SKILT_PARTNER,
-    GJENLEVENDE_PARTNER,
+    REGISTRERT_PARTNER("Registrert partner"),
+    SEPARERT_PARTNER("Separert partner"),
+    SKILT_PARTNER("Skilt partner"),
+    GJENLEVENDE_PARTNER("Gjenlevende partner"),
     SAMBOER("Samboer")
 }
 

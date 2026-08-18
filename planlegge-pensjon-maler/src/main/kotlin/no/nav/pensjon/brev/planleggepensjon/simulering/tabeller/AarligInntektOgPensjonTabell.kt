@@ -18,19 +18,19 @@ data class AarligInntektOgPensjonTabell(
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         paragraph {
             table(header = {
-                column(columnSpan = 1) {
+                column(columnSpan = 5) {
                     text(bokmal { +"Alder" })
                 }
-                column(columnSpan = 1, alignment = RIGHT) {
+                column(columnSpan = 3, alignment = RIGHT) {
                     text(bokmal { +"Alderspensjon" })
                 }
-                column(columnSpan = 1, alignment = RIGHT) {
+                column(columnSpan = 4, alignment = RIGHT) {
                     text(bokmal { +"Avtalefestet pensjon" })
                 }
-                column(columnSpan = 1, alignment = RIGHT) {
+                column(columnSpan = 4, alignment = RIGHT) {
                     text(bokmal { +"Pensjonsgivende inntekt" })
                 }
-                column(columnSpan = 1, alignment = RIGHT) {
+                column(columnSpan = 4, alignment = RIGHT) {
                     text(bokmal { +"Sum kr per år" })
                 }
             }) {

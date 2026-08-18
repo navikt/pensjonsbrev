@@ -3,7 +3,7 @@ import { type AxiosError } from "axios";
 import isEqual from "lodash/isEqual";
 import { useEffect } from "react";
 
-import { oppdaterBrevtekst } from "~/api/brev-queries";
+import { oppdaterBrev, oppdaterBrevtekst } from "~/api/brev-queries";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
@@ -18,13 +18,7 @@ import { AUTOSAVE_TIMER } from "./autosave_timer";
  *
  * <ManagedLetterEditor /> krever at har <ManagedLetterEditorContextProvider /> som parent.
  */
-const ManagedLetterEditor = (props: {
-  brev: BrevResponse;
-  freeze: boolean;
-  error: boolean;
-  showDebug?: boolean;
-  saveDirtyLetter?: (editorState: LetterEditorState) => Promise<BrevResponse>;
-}) => {
+const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error: boolean; showDebug?: boolean }) => {
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
   const { mutate, isError } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
@@ -35,14 +29,25 @@ const ManagedLetterEditor = (props: {
         ...previousState,
         saveStatus: "SAVE_PENDING",
       }));
-      // oppdaterBrevtekst only saves redigertBrev; tekstvalg changes require saveDirtyLetter.
+
+      // Autolagring skal aldri frigi reservasjonen saksbehandler har på brevet.
       if (isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
-        return oppdaterBrevtekst(props.brev.info.id, stateWithCursor.redigertBrev);
+        return oppdaterBrevtekst({
+          brevId: props.brev.info.id,
+          redigertBrev: stateWithCursor.redigertBrev,
+          frigiReservasjon: false,
+        });
       }
-      if (!props.saveDirtyLetter) {
-        throw new Error("saveDirtyLetter is required when saksbehandlerValg has changed");
-      }
-      return props.saveDirtyLetter(stateWithCursor);
+      // Tekstvalg er endret, og de lagres ikke av redigertBrev-endepunktet.
+      return oppdaterBrev({
+        saksId: stateWithCursor.info.saksId,
+        brevId: stateWithCursor.info.id,
+        frigiReservasjon: false,
+        request: {
+          redigertBrev: stateWithCursor.redigertBrev,
+          saksbehandlerValg: stateWithCursor.saksbehandlerValg,
+        },
+      });
     },
     onSuccess: (response) => onSaveSuccess(response),
     onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),

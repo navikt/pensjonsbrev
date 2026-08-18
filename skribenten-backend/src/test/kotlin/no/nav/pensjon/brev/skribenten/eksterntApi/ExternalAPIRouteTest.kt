@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
+import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
 import no.nav.pensjon.brev.skribenten.model.BrevId
@@ -149,7 +150,8 @@ class ExternalAPIRouteTest {
                                 navn = Pen.SakSelection.Navn("fornavn1", mellomnavn = null, "etternavn2"),
                                 sakType = Sakstype("hei"),
                                 pid = BrevbakerType.Pid("123"),
-                                behandlingsnumre = listOf()
+                                behandlingsnumre = listOf(),
+                                tema = Tema("tema1"),
                             )
                         }
                     )

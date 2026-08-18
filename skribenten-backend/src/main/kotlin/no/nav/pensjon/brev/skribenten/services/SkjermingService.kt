@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.client.call.*
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -28,15 +29,16 @@ private val logger = LoggerFactory.getLogger(SkjermingService::class.java)
 class SkjermingServiceHttp(
     config: OboClientConfig,
     authService: AuthService,
-    private val cache: Cache
+    private val cache: Cache,
+    engine: HttpClientEngine,
 ) : SkjermingService, Closeable {
     private val url: String = config.url
     private val scope: String = config.scope
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache): this(config.services.skjerming, authService, cache)
+    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache, engine: HttpClientEngine): this(config.services.skjerming, authService, cache, engine)
 
-    private val client = lagHttpClient {
+    private val client = lagHttpClient(engine) {
         defaultRequest { url(this@SkjermingServiceHttp.url) }
         installRetry(logger)
         install(ContentNegotiation) { jackson() }

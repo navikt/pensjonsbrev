@@ -1,5 +1,6 @@
-#let casedetails(input, languageSettings) = {
+#let casedetails(input, languageSettings, above: 48pt) = {
   let annenMottaker = input.annenMottakerNavn != none
+  let dokumentDato = input.at("dokumentDato", default: none)
   set text(size: 11pt)
   block(
     grid(
@@ -16,8 +17,17 @@
       [#input.gjelderNavn],
       [#languageSettings.foedselsnummerprefix], [#input.gjelderFoedselsnummer],
       [#languageSettings.saksnummerprefix],
-      [#input.saksnummer #h(1fr) #input.dokumentDato],
+      if dokumentDato != none {
+        [#input.saksnummer #h(1fr) #dokumentDato]
+      } else {
+        [#input.saksnummer]
+      },
     ),
-    above: 48pt,
+    above: above,
   )
+}
+
+#let documentDate(dokumentDato, above: 48pt) = {
+  set text(size: 11pt)
+  block(align(right)[#dokumentDato], above: above)
 }

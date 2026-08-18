@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -29,16 +30,21 @@ interface NavansattService {
 
 class NavansattServiceException(message: String) : ServiceException(message)
 
-class NavansattServiceHttp(config: OboClientConfig, authService: AuthService, private val cache: Cache) : NavansattService, ServiceStatus, Closeable {
+class NavansattServiceHttp(
+    config: OboClientConfig,
+    authService: AuthService,
+    private val cache: Cache,
+    engine: HttpClientEngine,
+) : NavansattService, ServiceStatus, Closeable {
     private val logger = LoggerFactory.getLogger(NavansattServiceHttp::class.java)
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache): this(config.services.navansatt, authService, cache)
+    constructor(config: SkribentenConfig, authService: AuthService, cache: Cache, engine: HttpClientEngine): this(config.services.navansatt, authService, cache, engine)
 
     private val navansattUrl = config.url
     private val navansattScope = config.scope
 
-    private val client = lagHttpClient {
+    private val client = lagHttpClient(engine) {
         defaultRequest {
             url(navansattUrl)
         }

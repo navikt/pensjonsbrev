@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
 fun createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto(): VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto =
-    VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto(EmptySaksbehandlerValg,
+    VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto(lagSaksbehandlervalg(),
         VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvarDto.PesysData(
             oppgjoersAar = Year(2024),
             inntektFoerUttak = Kroner(412_500),

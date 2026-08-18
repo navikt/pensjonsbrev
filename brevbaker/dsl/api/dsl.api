@@ -883,7 +883,7 @@ public abstract interface class no/nav/pensjon/brev/template/RedigerbarTemplate 
 	public fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar;
 	public synthetic fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription;
 	public abstract fun getBrevkontekst ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
-	public abstract fun getKategori ()Lno/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori;
+	public abstract fun getKategori ()Lno/nav/pensjon/brev/api/model/IBrevkategori;
 	public abstract fun getSakstyper ()Ljava/util/Set;
 }
 
@@ -900,12 +900,9 @@ public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls 
 
 public final class no/nav/pensjon/brev/template/SaksbehandlerValgBuilder {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/reflect/KClass;Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;)V
-	public final fun bool (Z)Lno/nav/pensjon/brev/template/Expression;
-	public static synthetic fun bool$default (Lno/nav/pensjon/brev/template/SaksbehandlerValgBuilder;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun bool ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun int ()Lno/nav/pensjon/brev/template/Expression;
-	public final fun int (I)Lno/nav/pensjon/brev/template/Expression;
 	public final fun text ()Lno/nav/pensjon/brev/template/Expression;
-	public final fun text (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/SimpleSelector : no/nav/pensjon/brev/template/TemplateModelSelector {
@@ -1418,6 +1415,7 @@ public final class no/nav/pensjon/brev/template/dsl/expression/BaseKt {
 	public static final fun isNull (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun isOneOf (Lno/nav/pensjon/brev/template/Expression;[Ljava/lang/Enum;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun isOneOf (Lno/nav/pensjon/brev/template/Expression;[Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun isOneOfNullable (Lno/nav/pensjon/brev/template/Expression;[Ljava/lang/Enum;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun not (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notNull (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notOperator (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;

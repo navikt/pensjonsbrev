@@ -5,15 +5,20 @@ import { useState } from "react";
 import { getBrev } from "~/api/brev-queries";
 import { endreMottaker, fjernOverstyrtMottaker, hentAlleBrevInfoForSak, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { type Adresse } from "~/types/apiTypes";
-import { type BrevInfo, type BrevResponse, type Mottaker } from "~/types/brev";
+import { type BrevInfo, type BrevResponse } from "~/types/brev";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
 export function useEndreMottaker(saksId: string, brevId: number) {
   const queryClient = useQueryClient();
   const [modalÅpen, setModalÅpen] = useState(false);
 
-  const mottakerMutation = useMutation<BrevInfo, AxiosError, Mottaker>({
-    mutationFn: (mottaker) => endreMottaker(saksId, brevId, { mottaker }),
+  const mottakerMutation = useMutation<BrevInfo, Error, string | Adresse>({
+    /*
+    Mappingen skjer med vilje inne i mutationFn og ikke i endreMottaker under. Kaster den utenfor
+    mutasjonen, havner feilen i en promise ingen venter på, og saksbehandler ser bare at knappen
+    slutter å spinne. Her fanger TanStack Query den og ruter den til endreMottakerError -> ApiError.
+    */
+    mutationFn: (mottaker) => endreMottaker(saksId, brevId, { mottaker: mapEndreMottakerValueTilMottaker(mottaker) }),
     onSuccess: (response) => {
       queryClient.setQueryData(
         hentAlleBrevInfoForSak.queryKey(saksId),
@@ -48,7 +53,7 @@ export function useEndreMottaker(saksId: string, brevId: number) {
     åpneModal: () => setModalÅpen(true),
     lukkModal: () => setModalÅpen(false),
     endreMottaker: (mottaker: string | Adresse) => {
-      mottakerMutation.mutate(mapEndreMottakerValueTilMottaker(mottaker));
+      mottakerMutation.mutate(mottaker);
     },
     resetEndreMottaker: () => mottakerMutation.reset(),
     endreMottakerError: mottakerMutation.error,

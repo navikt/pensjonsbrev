@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val ufoereApiModelVersion = 83
+val ufoereApiModelVersion = 91
 
 val apiModelJavaTarget: String by System.getProperties()
 
@@ -20,10 +20,11 @@ repositories {
 dependencies {
     implementation(project(":brevbaker:core"))
     ksp(project(":brevbaker:template-model-generator"))
-    api("no.nav.pensjon.ufoere.brev:api-model:${ufoereApiModelVersion}")
+    api("no.nav.pensjon.ufoere.brev:ufoere-api-model:${ufoereApiModelVersion}")
 
 
     testImplementation(libs.bundles.junit)
+    testImplementation(kotlin("reflect")) // TODO: midlertidig fram til vi har migrert ferdig til saksbehandlervalgidsl
     testImplementation(testFixtures(project(":brevbaker:core")))
     testImplementation(testFixtures(project(":brevbaker:dsl")))
 }

@@ -1,0 +1,51 @@
+# Alarmer for skribenten-backend.
+#
+# Begrunnelsen for hver alarm - terskler, avgrensninger og alarmer vi bevisst ikke har laget -
+# er dokumentert i docs/modules/ROOT/pages/alarmstrategi.adoc. Endrer du noe her, oppdater
+# tabellen der i samme PR.
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: skribenten-backend
+  namespace: pensjonsbrev
+  labels:
+    team: pensjonsbrev
+spec:
+  groups:
+    - name: skribenten-backend
+      rules:
+        - alert: SkribentenHoeyFeilrate
+          expr: |
+            (
+              sum(rate(ktor_http_server_requests_seconds_count{app="skribenten-backend", status=~"5.."}[10m]))
+              /
+              sum(rate(ktor_http_server_requests_seconds_count{app="skribenten-backend"}[10m]))
+            ) > 0.05
+            and
+            sum(increase(ktor_http_server_requests_seconds_count{app="skribenten-backend", status=~"5.."}[10m])) >= 3
+          for: 10m
+          labels:
+            severity: critical
+            namespace: pensjonsbrev
+          annotations:
+            summary: "Over 5 % av kallene mot skribenten-backend feiler ({{ $value | humanizePercentage }})"
+            consequence: "Saksbehandlere blir blokkert i arbeidet sitt."
+            action: "Se hvilke ruter som feiler, og om feilen kommer fra en nedstrøms tjeneste. Kall som stopper på nøyaktig 60s er requestTimeout mot brevbaker som slår inn."
+
+        - alert: SkribentenOektAndelKlientfeil
+          expr: |
+            (
+              sum(rate(ktor_http_server_requests_seconds_count{app="skribenten-backend", status=~"4..", status!~"401|403|404"}[10m]))
+              /
+              sum(rate(ktor_http_server_requests_seconds_count{app="skribenten-backend"}[10m]))
+            ) > 0.1
+            and
+            sum(increase(ktor_http_server_requests_seconds_count{app="skribenten-backend", status=~"4..", status!~"401|403|404"}[10m])) >= 3
+          for: 15m
+          labels:
+            severity: warning
+            namespace: pensjonsbrev
+          annotations:
+            summary: "Over 10 % av kallene mot skribenten-backend gir uventet 4xx ({{ $value | humanizePercentage }})"
+            consequence: "Tyder på brutt API-kontrakt mot skribenten-web, typisk etter en deploy av én av dem."
+            action: "Sjekk om skribenten-web eller skribenten-backend nylig ble deployet, og hvilken rute som gir 4xx."

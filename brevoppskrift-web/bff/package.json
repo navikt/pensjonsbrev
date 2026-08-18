@@ -16,12 +16,12 @@
   "dependencies": {
     "@navikt/vite-mode": "0.16.1",
     "express": "5.2.1",
-    "http-proxy-middleware": "4.1.1"
+    "http-proxy-middleware": "4.2.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.1",
+    "@biomejs/biome": "2.5.7",
     "@types/express": "5.0.6",
-    "lint-staged": "17.0.8",
-    "typescript": "6.0.3"
+    "lint-staged": "17.3.0",
+    "typescript": "7.0.2"
   }
 }

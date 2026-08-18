@@ -8,6 +8,7 @@ on:
       - .github/workflows/.verify-frontend.yaml
       - .github/workflows/verify-skribenten-web.yaml
       - skribenten-web/**
+      - "!skribenten-web/bff/.nais/alerts.yaml"
 
 permissions:
   contents: read

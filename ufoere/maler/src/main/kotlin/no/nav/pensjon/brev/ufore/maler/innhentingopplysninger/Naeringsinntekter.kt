@@ -10,8 +10,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_NAERINGSINNTEKTER
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerNaeringsinntektDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.innhentingOpplysningerNaeringsinntektDto.saksbehandlervalg.*
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.innhentingOpplysningerNaeringsinntektDto.*
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants
@@ -39,6 +38,8 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
         ),
     )
     {
+        val ikkeMottattInntektsskjema = saksbehandlervalg("ikkeMottattInntektsskjema", "Ikke mottatt inntektsskjema").bool()
+
         title {
             text (bokmal { + "Vi trenger opplysninger om dine næringsinntekter " })
         }
@@ -50,7 +51,7 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
                 text(bokmal { +"Som et ledd i behandlingen av uføresaken din trenger vi bekreftede opplysninger om inntekten din. " })
             }
 
-            showIf(saksbehandlerValg.ikkeMottattInntektsskjema) {
+            showIf(ikkeMottattInntektsskjema) {
                 paragraph {
                     text(bokmal { +"Du eier og driver " + fritekst("navn på firma") + ", og vi ber om at du fyller ut inntektsskjema for selvstendig næringsdrivende. " })
                 }

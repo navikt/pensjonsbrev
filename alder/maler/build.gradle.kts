@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val alderApiModelVersion = 84
+val alderApiModelVersion = 89
 
 val apiModelJavaTarget: String by System.getProperties()
 
@@ -21,11 +21,13 @@ repositories {
 dependencies {
     implementation(project(":brevbaker:core"))
     ksp(project(":brevbaker:template-model-generator"))
-    api("no.nav.pensjon.alder.brev:api-model:${alderApiModelVersion}")
+    api("no.nav.pensjon.alder.brev:alder-api-model:${alderApiModelVersion}")
 
 
     testImplementation(libs.bundles.junit)
     testImplementation(testFixtures(project(":brevbaker:core")))
+    testImplementation(testFixtures(project(":brevbaker:dsl")))
+    testImplementation(kotlin("reflect")) // TODO: midlertidig fram til vi har migrert ferdig til saksbehandlervalgidsl
 }
 
 tasks.test {

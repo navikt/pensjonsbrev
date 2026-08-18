@@ -18,19 +18,23 @@ updates:
   - package-ecosystem: "gradle"
     directories:
       - "/"
-      - "/alder/api-model"
+      - "/alder/alder-api-model"
       - "/alder/maler"
-      - "/brevbaker/api-model-common"
+      - "/brevbaker/brevdata"
+      - "/brevbaker/brevbaker-api"
+      - "/brevbaker/markup/model"
+      - "/brevbaker/markup/dsl"
+      - "/brevbaker/serialization"
       - "/brevbaker"
       - "/brevbaker/dsl"
       - "/etterlattemaler"
       - "/brevbaker/pdf-bygger"
       - "/pensjon/brevbaker"
-      - "/pensjon/api-model"
+      - "/pensjon/pensjon-api-model"
       - "/pensjon/maler"
       - "/skribenten-backend"
       - "/brevbaker/template-model-generator"
-      - "/ufoere/api-model"
+      - "/ufoere/ufoere-api-model"
       - "/ufoere/maler"
     schedule:
       interval: "monthly"
@@ -41,7 +45,7 @@ updates:
     registries:
       - gradle-artifactory
     ignore:
-      - dependency-name: "no.nav.brev.brevbaker:api-model-common"
+      - dependency-name: "no.nav.brev.brevbaker:brevbaker-api"
     groups:
       backend:
         patterns:
@@ -60,6 +64,7 @@ updates:
           - "org.flyway*"
           - "org.jetbrains*"
           - "org.junit*"
+          - "org.jsoup*"
           - "org.postgresql:postgresql"
           - "org.testcontainers*"
           - "io.github.classgraph:classgraph"
@@ -83,10 +88,13 @@ updates:
     registries:
       - npm-github
     groups:
+      typescript:
+        patterns:
+          - "typescript"
+          - "openapi-typescript"
       dev:
         patterns:
           - "*biome*"
-          - "typescript"
           - "stylelint*"
       frontend:
         patterns:
@@ -106,6 +114,13 @@ updates:
       codeql:
         patterns:
           - "github/codeql-action*"
+      gradle:
+        patterns:
+          - "gradle/actions/*"
+      trygge:
+        patterns:
+          - "dorny/paths-filter"
+          - "actions/labeler"
       nais:
         patterns:
           - "nais/*"

@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevendere
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto.VilkarForGjenlevendeytelsen.GJENLEVENDE_EPS
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto.VilkarForGjenlevendeytelsen.GJENLEVENDE_SKILT
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.informasjonOmGjenlevenderettigheterDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.informasjonOmGjenlevenderettigheterDto.saksbehandlerValg.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.informasjonOmGjenlevenderettigheterDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON_GJENLEVENDE_URL
@@ -30,6 +29,7 @@ import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -49,6 +49,15 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
     ) {
+        val infoOmstillingsstoenad = saksbehandlervalg("infoOmstillingsstoenad", "Hvis gradert uføretrygd, info omstillingsstønad").bool()
+        val infoHvordanSoekeOmstillingsstoenad = saksbehandlervalg("infoHvordanSoekeOmstillingsstoenad", "Hvis gradert uføretrygd, info søke omstillingsstønad").bool()
+        val infoVilkaarSkiltGjenlevende = saksbehandlervalg("infoVilkaarSkiltGjenlevende", "Hvis gradert uføretrygd, info vilkår skilt gjenlevende").bool()
+        val gjenlevendeHarBarnUnder18MedAvdoed = saksbehandlervalg("gjenlevendeHarBarnUnder18MedAvdoed", "Gjenlevende har barn under 18 år sammen med avdøde").bool()
+        val gjenlevenderHarEllerKanHaAFPIOffentligSektor = saksbehandlervalg("gjenlevenderHarEllerKanHaAFPIOffentligSektor", "Gjenlevende har eller kan ha AFP i offentlig sektor").bool()
+        val gjenlevevendeHarAfpOgUttaksgradPaaApSattTilNull = saksbehandlervalg("gjenlevevendeHarAfpOgUttaksgradPaaApSattTilNull", "Gjenlevende har AFP privat og uttaksgrad på AP satt til 0").bool()
+        val vilkarForGjenlevendeytelsen = saksbehandlervalg("vilkarForGjenlevendeytelsen", "Vilkår for gjenlevendeytelsen").enum<InformasjonOmGjenlevenderettigheterDto.VilkarForGjenlevendeytelsen>()
+        val hvorBorBruker = saksbehandlervalg("hvorBorBruker", "Hvor bor bruker").enum<HvorBorBruker>()
+
         title {
             text(
                 bokmal { +"Informasjon om gjenlevenderettigheter" },
@@ -66,7 +75,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                 )
             }
             showIf(pesysData.sakstype.isOneOf(UFOREP)) {
-                showIf(saksbehandlerValg.infoOmstillingsstoenad) {
+                showIf(infoOmstillingsstoenad) {
                     title2 {
                         text(
                             bokmal { +"Når du har gradert uføretrygd, kan du ha rett til omstillingsstønad" },
@@ -120,7 +129,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                         }
                     }
                 }
-                showIf(saksbehandlerValg.infoVilkaarSkiltGjenlevende) {
+                showIf(infoVilkaarSkiltGjenlevende) {
                     paragraph {
                         text(
                             bokmal { +"Har du tidligere vært gift med avdøde, og ikke har giftet deg igjen, kan du ha rett til omstillingsstønad. Da må dere ha vært gift i minst 25 år eller i minst 15 år hvis dere hadde barn sammen." },
@@ -141,7 +150,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
 
             showIf(pesysData.sakstype.isOneOf(ALDER)) {
 
-                showIf(saksbehandlerValg.vilkarForGjenlevendeytelsen.notNull()) {
+                showIf(vilkarForGjenlevendeytelsen.notNull()) {
                     title2 {
                         text(
                             bokmal { +"Hvem kan ha rett til ytelser etter avdøde?" },
@@ -150,7 +159,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                         )
                     }
                 }
-                showIf(saksbehandlerValg.vilkarForGjenlevendeytelsen.equalTo(GJENLEVENDE_EPS)) {
+                showIf(vilkarForGjenlevendeytelsen.equalTo(GJENLEVENDE_EPS)) {
                     paragraph {
                         text(
                             bokmal { +"For å ha rett til gjenlevenderett i alderspensjonen, må du som hovedregel:" },
@@ -198,7 +207,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     }
                 }
 
-                showIf(saksbehandlerValg.vilkarForGjenlevendeytelsen.equalTo(GJENLEVENDE_SKILT)) {
+                showIf(vilkarForGjenlevendeytelsen.equalTo(GJENLEVENDE_SKILT)) {
                     paragraph {
                         text(
                             bokmal { +"Har du tidligere vært gift med avdøde, og ikke har giftet deg igjen, kan du ha rett til gjenlevenderett i alderspensjonen. Da må dere ha vært gift i minst 25 år eller i minst 15 år hvis dere hadde barn sammen. Dødsfallet må ha skjedd innen 5 år etter skilsmissen." },
@@ -210,7 +219,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                 }
             }
             showIf(pesysData.sakstype.isOneOf(UFOREP)) {
-                showIf(saksbehandlerValg.infoOmstillingsstoenad) {
+                showIf(infoOmstillingsstoenad) {
                     title2 {
                         text(
                             bokmal { +"Hvor mye kan du få i omstillingsstønad?" },
@@ -234,7 +243,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     }
                 }
 
-                showIf(saksbehandlerValg.infoHvordanSoekeOmstillingsstoenad) {
+                showIf(infoHvordanSoekeOmstillingsstoenad) {
                     title2 {
                         text(
                             bokmal { +"Hvordan søker du?" },
@@ -259,7 +268,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                 }
             }
             showIf(pesysData.sakstype.isOneOf(ALDER)) {
-                showIf(saksbehandlerValg.hvorBorBruker.equalTo(HvorBorBruker.GJENLEVENDE_BOR_I_NORGE_ELLER_IKKE_AVTALELAND)) {
+                showIf(hvorBorBruker.equalTo(HvorBorBruker.GJENLEVENDE_BOR_I_NORGE_ELLER_IKKE_AVTALELAND)) {
                     paragraph {
                         text(
                             bokmal { +"Vi oppfordrer deg til å søke så snart som mulig fordi vi vanligvis kun etterbetaler for tre måneder. Du finner informasjon og søknad på $ALDERSPENSJON_GJENLEVENDE_URL." },
@@ -267,7 +276,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                             english { +"We encourage you to apply as soon as possible because we normally only pay retroactively for three months. You will find information and the application form at $ALDERSPENSJON_GJENLEVENDE_URL." },
                         )
                     }
-                }.orShowIf(saksbehandlerValg.hvorBorBruker.equalTo(HvorBorBruker.GJENLEVENDE_BOR_I_AVTALELAND)) {
+                }.orShowIf(hvorBorBruker.equalTo(HvorBorBruker.GJENLEVENDE_BOR_I_AVTALELAND)) {
                     paragraph {
                         text(
                             bokmal { +"Vi oppfordrer deg til å søke så snart som mulig fordi vi vanligvis kun etterbetaler for tre måneder. Dersom du bor i utlandet, må du kontakte trygdemyndigheter i bostedslandet ditt. Du kan lese mer om dette på ${Constants.NAV_URL}." },
@@ -278,14 +287,14 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                 }
             }
             showIf(pesysData.sakstype.isOneOf(UFOREP)
-                and (saksbehandlerValg.infoOmstillingsstoenad
-                    or saksbehandlerValg.infoHvordanSoekeOmstillingsstoenad
-                    or saksbehandlerValg.infoVilkaarSkiltGjenlevende
+                and (infoOmstillingsstoenad
+                    or infoHvordanSoekeOmstillingsstoenad
+                    or infoVilkaarSkiltGjenlevende
                 )) {
                 includePhrase(Felles.DuKanLeseMer(uniqueness = "uforep_omstillingsstoenad"))
             }
             showIf(pesysData.sakstype.isOneOf(UFOREP, ALDER)
-                    and saksbehandlerValg.gjenlevendeHarBarnUnder18MedAvdoed) {
+                    and gjenlevendeHarBarnUnder18MedAvdoed) {
                 title2 {
                     text(
                         bokmal { +"For deg som har barn under 18 år" },
@@ -313,7 +322,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
             }
 
             showIf(pesysData.gjenlevendesAlder.lessThan(67).and(pesysData.gjenlevendesAlder.greaterThanOrEqual(61))) {
-                showIf(saksbehandlerValg.gjenlevenderHarEllerKanHaAFPIOffentligSektor) {
+                showIf(gjenlevenderHarEllerKanHaAFPIOffentligSektor) {
                     title2 {
                         text(
                             bokmal { +"AFP i offentlig sektor og rettigheter som gjenlevende" },
@@ -330,7 +339,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     }
                 }
 
-                showIf(saksbehandlerValg.gjenlevevendeHarAfpOgUttaksgradPaaApSattTilNull) {
+                showIf(gjenlevevendeHarAfpOgUttaksgradPaaApSattTilNull) {
                     title2 {
                         text(
                             bokmal { +"AFP i privat sektor og rettigheter som gjenlevende" },

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.selectors.pEgruppe10.personsak
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggMedSammeBegrunnelsePaSammeTidDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.selectors.personSak.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
@@ -30,7 +31,7 @@ object Innvilgelse {
         val ungUforResultat: Expression<String>,
         val kravarsak: Expression<String>,
         val kravGjelder: Expression<String>,
-        val soknadsdato: Expression<LocalDate>,
+        val kravmottatdato: Expression<LocalDate>,
         val uforegrad: Expression<Int>,
         val virkningfom: Expression<LocalDate>,
         val virkningstidpunkt: Expression<LocalDate>,
@@ -39,8 +40,8 @@ object Innvilgelse {
             showIf((ungUforResultat.notEqualTo("oppfylt") and (kravarsak.notEqualTo("omgj_etter_klage") and kravarsak.notEqualTo("omgj_etter_anke")))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om uføretrygd som vi mottok " + soknadsdato.format() + ". Du får " + uforegrad.format() + " prosent uføretrygd fra " + virkningfom.format() + "." },
-                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd, som vi fekk " + soknadsdato.format() + ". Du får " + uforegrad.format() + " prosent uføretrygd frå " + virkningfom.format() + "." },
+                        bokmal { +"Vi har innvilget søknaden din om uføretrygd som vi mottok " + kravmottatdato.format() + ". Du får " + uforegrad.format() + " prosent uføretrygd fra " + virkningfom.format() + "." },
+                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd, som vi fekk " + kravmottatdato.format() + ". Du får " + uforegrad.format() + " prosent uføretrygd frå " + virkningfom.format() + "." },
                     )
                 }
             }
@@ -48,8 +49,8 @@ object Innvilgelse {
             showIf((ungUforResultat.equalTo("oppfylt") and (kravarsak.notEqualTo("omgj_etter_klage") and kravarsak.notEqualTo("omgj_etter_anke")))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om uføretrygd som vi mottok " + soknadsdato.format() + ". Du får " + uforegrad.format() + " prosent uføretrygd med rettighet som ung ufør fra " + virkningfom.format() + "." },
-                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd, som vi fekk " + soknadsdato.format() + ". Du får " + uforegrad.format() + " prosent uføretrygd med rett som ung ufør frå " + virkningfom.format() + "." },
+                        bokmal { +"Vi har innvilget søknaden din om uføretrygd som vi mottok " + kravmottatdato.format() + ". Du får " + uforegrad.format() + " prosent uføretrygd med rettighet som ung ufør fra " + virkningfom.format() + "." },
+                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd, som vi fekk " + kravmottatdato.format() + ". Du får " + uforegrad.format() + " prosent uføretrygd med rett som ung ufør frå " + virkningfom.format() + "." },
                     )
                 }
             }
@@ -57,8 +58,8 @@ object Innvilgelse {
             showIf((ungUforResultat.notEqualTo("oppfylt") and (kravarsak.equalTo("omgj_etter_klage") or kravarsak.equalTo("omgj_etter_anke")))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om uføretrygd som vi mottok " + soknadsdato.format() + ". Du har fått medhold i klagen din, og du får " + uforegrad.format() + " prosent uføretrygd fra " + virkningfom.format() + "." },
-                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd som vi fekk " + soknadsdato.format() + ". Du har fått medhald i klaga di, og du får " + uforegrad.format() + " prosent uføretrygd frå " + virkningfom.format() + "." },
+                        bokmal { +"Vi har innvilget søknaden din om uføretrygd som vi mottok " + kravmottatdato.format() + ". Du har fått medhold i klagen din, og du får " + uforegrad.format() + " prosent uføretrygd fra " + virkningfom.format() + "." },
+                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd som vi fekk " + kravmottatdato.format() + ". Du har fått medhald i klaga di, og du får " + uforegrad.format() + " prosent uføretrygd frå " + virkningfom.format() + "." },
                     )
                 }
             }
@@ -66,8 +67,8 @@ object Innvilgelse {
             showIf((ungUforResultat.equalTo("oppfylt") and (kravarsak.equalTo("omgj_etter_klage") or kravarsak.equalTo("omgj_etter_anke")))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om uføretrygd som vi mottok " + soknadsdato.format() + ". Du har fått medhold i klagen din, og du får " + uforegrad.format() + " prosent uføretrygd med rettighet som ung ufør fra " + virkningfom.format() + "." },
-                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd som vi fekk " + soknadsdato.format() + ". Du har fått medhald i klaga di, og du får " + uforegrad.format() + " prosent uføretrygd med rett som ung ufør frå " + virkningfom.format() + "." },
+                        bokmal { +"Vi har innvilget søknaden din om uføretrygd som vi mottok " + kravmottatdato.format() + ". Du har fått medhold i klagen din, og du får " + uforegrad.format() + " prosent uføretrygd med rettighet som ung ufør fra " + virkningfom.format() + "." },
+                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd som vi fekk " + kravmottatdato.format() + ". Du har fått medhald i klaga di, og du får " + uforegrad.format() + " prosent uføretrygd med rett som ung ufør frå " + virkningfom.format() + "." },
                     )
                 }
             }
@@ -77,7 +78,7 @@ object Innvilgelse {
     data class InnvilgelseDetaljer(
         val pe: Expression<PEgruppe10>,
         val nyeInnvilgedeBarnetillegg: Expression<List<BarnetilleggUTDto>>,
-        val nyeAvslagBarnetillegg: Expression<List<BarnetilleggUTDto>>,
+        val nyeAvslagBarnetillegg: Expression<List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>>,
         val btFellesInnvilget: Expression<Boolean>,
         val btFellesNetto0: Expression<Boolean>,
         val btSerkullInnvilget: Expression<Boolean>,
@@ -120,7 +121,13 @@ object Innvilgelse {
                         bokmal { +"Vi har avslått barnetillegg i uføretrygden din for" },
                         nynorsk { +"Vi har avslått barnetillegg i uføretrygda di for" },
                     )
-                    includePhrase(Felles.TextOrList(nyeAvslagBarnetillegg.map(BarnetilleggFormatter), 0))
+                    includePhrase(Felles.TextOrList(nyeAvslagBarnetillegg.map(BarnetilleggFlereBarnFormatter), 0))
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Se begrunnelse under avsnittet Derfor har vi avslått søknaden din om barnetillegg" },
+                        nynorsk { +"Sjå grunngiving under avsnittet Derfor har vi avslått søknaden din om barnetillegg" },
+                    )
                 }
             }
 
@@ -712,11 +719,10 @@ object Innvilgelse {
 
     data class Virkningstidspunkt(
         val pe: Expression<PEgruppe10>,
-        val kravFremsattDato: Expression<LocalDate>,
+        val kravFremsattDato: Expression<LocalDate?>,
         val virkningbegrunnelseStdbegr_22_12_1_5: Expression<Boolean>,
     ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            val soknadsdato = kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato())
 
             title1 {
                 text(
@@ -778,10 +784,17 @@ object Innvilgelse {
             showIf(virkningbegrunnelseStdbegr_22_12_1_5) {
                 ifNotNull(pe.vedtaksdata_kravhode_onsketvirkningsdato()) { virkningsdato ->
                     paragraph {
-                        text(
-                            bokmal { +"Du har fått innvilget uføretrygd fra " + virkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Vi mottok søknaden din " + soknadsdato.format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " },
-                            nynorsk { +"Du har fått innvilga uføretrygd frå " + virkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Vi fekk søknaden din " + soknadsdato.format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " },
-                        )
+                        ifNotNull(kravFremsattDato) { fremsattDato ->
+                            text(
+                                bokmal { +"Du har fått innvilget uføretrygd fra " + virkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Ditt krav ble framsatt " + fremsattDato.format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " },
+                                nynorsk { +"Du har fått innvilga uføretrygd frå " + virkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Kravet ditt blei framsatt " + fremsattDato.format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " },
+                            )
+                        }.orShow {
+                            text(
+                                bokmal { +"Du har fått innvilget uføretrygd fra " + virkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Vi mottok søknaden din " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " },
+                                nynorsk { +"Du har fått innvilga uføretrygd frå " + virkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Vi fekk søknaden din " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " },
+                            )
+                        }
                     }
                 }
             }

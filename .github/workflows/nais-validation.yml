@@ -3,8 +3,10 @@ on:
   pull_request:
     paths:
       - '**/.nais/**'
+      - '.nais/**'
       - ".github/workflows/nais-validation.yml"
       - "validate-nais.sh"
+      - "validate-alerts.sh"
 
 jobs:
   validate:
@@ -19,9 +21,32 @@ jobs:
           sudo apt install nais
           bash validate-nais.sh
 
+  # Alarmreglene valideres for seg, siden nais validate kun kjenner Application-manifester og
+  # ikke kan si noe om PromQL-en inni en PrometheusRule.
+  validateAlerts:
+    runs-on: ubuntu-latest
+    env:
+      PROMETHEUS_VERSION: "3.1.0"
+      PROMETHEUS_SHA256: "9a9d1e115d1745826b13aec3f1409780b9fcf1d4206746cb4faee46ca5add70c"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: |
+          tarball="prometheus-${PROMETHEUS_VERSION}.linux-amd64.tar.gz"
+          curl -sfSL -o "$tarball" \
+            "https://github.com/prometheus/prometheus/releases/download/v${PROMETHEUS_VERSION}/${tarball}"
+          echo "${PROMETHEUS_SHA256}  ${tarball}" | sha256sum --check --strict
+          tar -xzf "$tarball" "prometheus-${PROMETHEUS_VERSION}.linux-amd64/promtool"
+          echo "PROMTOOL=$PWD/prometheus-${PROMETHEUS_VERSION}.linux-amd64/promtool" >> "$GITHUB_ENV"
+      # validate-alerts.sh pakker ut spec: med PyYAML. Den installeres eksplisitt slik at jobben
+      # ikke avhenger av hva som tilfeldigvis ligger forhåndsinstallert i runner-imaget.
+      - run: sudo apt-get install -y -q python3-yaml
+      - run: bash validate-alerts.sh
+
   "klarTilMerge":
     name: "Klar til merge"
-    needs: [validate]
+    needs: [validate, validateAlerts]
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: "ubuntu-latest"
     steps:

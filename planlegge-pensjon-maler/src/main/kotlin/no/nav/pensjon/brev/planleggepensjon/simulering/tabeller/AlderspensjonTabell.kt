@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -16,12 +17,13 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 
 data class AlderspensjonTabell(
     val alderspensjon: Expression<SimuleringV1MaanedligAlderspensjon>,
+    val grad: Expression<Int>,
 ) : OutlinePhrase<LangBokmal>() {
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         paragraph {
             table(header = {
                 column(columnSpan = 3) {
-                    text(bokmal { +"100 % alderspensjon" })
+                    text(bokmal { +grad.format() + " % alderspensjon" })
                 }
                 column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT, columnSpan = 1) {
                     text(bokmal { +"Kr per måned" })

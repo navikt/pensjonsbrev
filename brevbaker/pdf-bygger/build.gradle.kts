@@ -38,16 +38,11 @@ tasks {
 tasks {
     test {
         useJUnitPlatform {
-            excludeTags = setOf("integration-test", "manual-test")
+            excludeTags = setOf("integration-test")
         }
     }
     val test by testing.suites.existing(JvmTestSuite::class)
     named<Test>("integrationTest") {
-        testClassesDirs = files(test.map { it.sources.output.classesDirs })
-        classpath = files(test.map { it.sources.runtimeClasspath })
-    }
-
-    named<Test>("manualTest") {
         testClassesDirs = files(test.map { it.sources.output.classesDirs })
         classpath = files(test.map { it.sources.runtimeClasspath })
     }
@@ -64,13 +59,10 @@ dependencies {
     implementation(libs.ktor.server.status.pages)
     implementation(libs.bundles.metrics)
 
-    implementation(libs.brevbaker.markup)
-    implementation(libs.brevbaker.common)
+    implementation(publishedLibs.brevbaker.api) // trengs fortsatt fordi gammel letterMarkup ligger her. Kan fjernes når den er borte.
+    implementation(publishedLibs.markup.model)
+    implementation(project(":brevbaker:serialization"))
     implementation(libs.kotlinx.serialization.json)
-
-    implementation(libs.jackson.datatype.jsr310) {
-        because("we require deserialization/serialization of java.time.LocalDate")
-    }
 
     testImplementation(libs.bundles.junit)
     testImplementation(libs.ktor.server.test.host) {
@@ -78,6 +70,7 @@ dependencies {
     }
     testImplementation(libs.ktor.client.cio)
     testImplementation(libs.ktor.client.content.negotiation)
+    testImplementation(publishedLibs.markup.dsl)
     testImplementation(libs.testcontainers.core)
 }
 

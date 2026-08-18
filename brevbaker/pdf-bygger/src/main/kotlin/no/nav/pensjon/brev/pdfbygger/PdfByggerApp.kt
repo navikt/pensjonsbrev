@@ -3,34 +3,41 @@ package no.nav.pensjon.brev.pdfbygger
 import com.fasterxml.jackson.core.JacksonException
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.jackson.jackson
+import io.ktor.serialization.jackson.JacksonConverter
 import io.ktor.server.application.*
 import io.ktor.server.config.*
 import io.ktor.server.netty.*
+import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.callid.CallId
 import io.ktor.server.plugins.callid.callIdMdc
 import io.ktor.server.plugins.callid.generate
 import io.ktor.server.plugins.calllogging.CallLogging
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.statuspages.StatusPages
-import io.ktor.server.request.path
 import io.ktor.server.request.receive
-import io.ktor.server.request.receiveText
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.logging.Logger
-import kotlinx.serialization.json.Json
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
 import no.nav.brev.brevbaker.PDFRequest
+import no.nav.brev.brevbaker.document.DocumentPDFRequest
+import no.nav.brev.brevbaker.serialization.internalObjectMapper
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.pensjon.brev.pdfbygger.Metrics.configureMetrics
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
+import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstLetterRenderer
+import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstLetterRendererV2
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
-import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2
 import org.slf4j.LoggerFactory
 
-fun main(args: Array<String>) = EngineMain.main(args)
+private val objectMapper = internalObjectMapper()
 
-private val markupJson = Json { ignoreUnknownKeys = true }
+fun main(args: Array<String>) {
+    Thread.setDefaultUncaughtExceptionHandler { thread, ex ->
+        logger.error("Uncaught exception in thread ${thread.name}", ex)
+    }
+    EngineMain.main(args)
+}
+
 
 fun ApplicationConfig.getProperty(name: String): String =
     property(name).getString()
@@ -55,24 +62,26 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
     configureMetrics()
 
     install(ContentNegotiation) {
-        jackson {
-            pdfByggerConfig()
-        }
+        register(ContentType.Application.Json, JacksonConverter(objectMapper))
     }
 
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
-        val ignorePaths = setOf("/isAlive", "/isReady", "/metrics")
-        filter {
-            !ignorePaths.contains(it.request.path())
-        }
+        filter(Metrics::skalObserveres)
         mdc("x_response_code") { it.response.status()?.value?.toString() }
     }
 
     install(StatusPages) {
-        exception<JacksonException> { call, cause ->
-            call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown reason")
+        exception<BadRequestException> { call, cause ->
+            val jacksonCause = cause.findJacksonCause()
+            if (jacksonCause != null) {
+                val message = jacksonCause.message ?: "Failed to deserialize json body: unknown reason"
+                call.application.log.info(message)
+                call.respond(HttpStatusCode.BadRequest, message)
+            } else {
+                call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
+            }
         }
     }
 
@@ -87,21 +96,23 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         post("/produserBrev") {
             val request = call.receive<PDFRequest>()
             val result = typstCompileService.createLetter {
-                TypstDocumentRenderer.render(request, it)
+                TypstLetterRenderer.render(request, it)
             }
             handleResult(result, call.application.environment.log)
         }
 
         post("/v2/produserBrev") {
-            val request = runCatching {
-                markupJson.decodeFromString(LetterPDFRequest.serializer(), call.receiveText())
-            }.getOrElse { cause ->
-                call.application.environment.log.warn("Failed to deserialize /v2/produserBrev request", cause)
-                call.respond(HttpStatusCode.BadRequest, "Failed to deserialize json body")
-                return@post
-            }
+            val request = call.receive<LetterPDFRequest>()
             val result = typstCompileService.createLetter {
-                TypstDocumentRendererV2.render(request, it)
+                TypstLetterRendererV2.render(request, it)
+            }
+            handleResult(result, call.application.environment.log)
+        }
+
+        post("/produserDokument") {
+            val request = call.receive<DocumentPDFRequest>()
+            val result = typstCompileService.createLetter {
+                TypstDocumentRenderer.render(request, it)
             }
             handleResult(result, call.application.environment.log)
         }
@@ -141,3 +152,6 @@ private suspend fun RoutingContext.handleResult(
     }
 }
 
+
+private fun Throwable.findJacksonCause(): JacksonException? =
+    cause as? JacksonException ?: cause?.findJacksonCause()

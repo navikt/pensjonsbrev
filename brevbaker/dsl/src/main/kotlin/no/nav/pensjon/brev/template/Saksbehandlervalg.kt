@@ -15,40 +15,33 @@ class SaksbehandlerValgBuilder<LetterData : RedigerbarBrevdata<Saksbehandlervalg
         require(scope.saksbehandlervalg.containsKey(id).not()) { "Saksbehandlervalg med id $id allerede definert" }
     }
 
-    fun bool(default: Boolean = false): Expression<Boolean> = createSaksbehandlervalg(SaksbehandlervalgVerdi.Bool(id, displayText)).ifNull(default)
+    fun bool(): Expression<Boolean> = createSaksbehandlervalg(SaksbehandlervalgVerdi.Bool(id, displayText)).ifNull(false)
 
-    fun int(default: Int): Expression<Int> = createSaksbehandlervalg(SaksbehandlervalgVerdi.Integer(id, displayText)).ifNull(default)
     fun int(): Expression<Int?> = createSaksbehandlervalg(SaksbehandlervalgVerdi.Integer(id, displayText))
 
-    fun text(default: String): Expression<String> = createSaksbehandlervalg(SaksbehandlervalgVerdi.Text(id, displayText)).ifNull(default)
     fun text(): Expression<String?> = createSaksbehandlervalg(SaksbehandlervalgVerdi.Text(id, displayText))
 
-    inline fun <reified T> enum(default: T): Expression<T> where T : SaksbehandlerValgEnum, T : Enum<T> = enum(T::class, default)
     inline fun <reified T> enum(): Expression<T?> where T : SaksbehandlerValgEnum, T : Enum<T> = enum(T::class)
 
     @BrevbakerDSLInternal
     fun <T> enum(clazz: KClass<T>): Expression<T?> where T : SaksbehandlerValgEnum, T : Enum<T> =
         createSaksbehandlervalg(SaksbehandlervalgVerdi.Enum(id, displayText, clazz))
 
-    @BrevbakerDSLInternal
-    fun <T> enum(clazz: KClass<T>, default: T): Expression<T> where T : SaksbehandlerValgEnum, T : Enum<T> =
-        createSaksbehandlervalg(SaksbehandlervalgVerdi.Enum(id, displayText, clazz)).ifNull(default)
-
     private fun <T> createSaksbehandlervalg(saksbehandlervalgVerdi: SaksbehandlervalgVerdi<T>): UnaryInvoke<SaksbehandlervalgIDSL, T> {
         scope.lagreSaksbehandlervalg(id, saksbehandlervalgVerdi)
         return UnaryInvoke(
-            UnaryInvoke(scope.argument, Select(SaksbehandlervalgIDSLSelector(saksbehandlervalgVerdi.typename, id, clazz))),
+            UnaryInvoke(scope.argument, Select(SaksbehandlervalgIDSLSelector(clazz))),
             Select(EttSaksbehandlervalgSelector(id, saksbehandlervalgVerdi))
         )
     }
 }
 
 private class SaksbehandlervalgIDSLSelector<LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>>(
-    override val propertyType: String,
-    override val propertyName: String,
     clazz: KClass<LetterData>
 ) : TemplateModelSelector<LetterData, SaksbehandlervalgIDSL> {
     override val className = clazz.qualifiedName!!
+    override val propertyName: String = "saksbehandlerValg"
+    override val propertyType: String = SaksbehandlervalgIDSL::class.qualifiedName!!
     override val selector: LetterData.() -> SaksbehandlervalgIDSL = { saksbehandlerValg }
 }
 
@@ -56,7 +49,7 @@ private class EttSaksbehandlervalgSelector<Type>(
     override val propertyName: String,
     val saksbehandlervalgVerdi: SaksbehandlervalgVerdi<Type>
 ) : TemplateModelSelector<SaksbehandlervalgIDSL, Type> {
-    override val className: String = "SaksbehandlervalgIDSL"
+    override val className: String = SaksbehandlervalgIDSL::class.qualifiedName!!
     override val selector: SaksbehandlervalgIDSL.() -> Type = { saksbehandlervalgVerdi.getValue(this) }
     override val propertyType: String
         get() = saksbehandlervalgVerdi.typename
