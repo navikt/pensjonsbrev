@@ -18,14 +18,7 @@ function getSecret() {
   local output_name="$2"
 
   echo ""
-  local secret_json
-  secret_json=$(kubectl --context $KUBE_CLUSTER -n pensjonsbrev get secret "${secret_name}" -o json 2>&1)
-  if [ $? -ne 0 ]; then
-    echo "WARNING: Could not fetch secret \"${secret_name}\" — skipping ${output_name}.env. (kubectl error: ${secret_json})"
-    return 1
-  fi
-
-  echo "$secret_json" | jq '.data | map_values(@base64d)' > secrets/"${output_name}".json
+  kubectl --context $KUBE_CLUSTER -n pensjonsbrev get secret "${secret_name}" -o json | jq '.data | map_values(@base64d)' > secrets/"${output_name}".json
 
   echo "Creating ${output_name}.env file from ${output_name}.json..."
   jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' secrets/"${output_name}".json > secrets/"${output_name}".env
@@ -35,12 +28,8 @@ function getSecret() {
 mkdir -p secrets
 
 # AzureAD
-secret_name="$(kubectl --context $KUBE_CLUSTER -n pensjonsbrev get azureapp skribenten-backend -o=jsonpath='{.spec.secretName}' 2>&1)"
-if [ $? -ne 0 ]; then
-  echo "WARNING: Could not fetch azureapp secret name — skipping azuread.env. (kubectl error: ${secret_name})"
-else
-  getSecret "$secret_name" azuread
-fi
+secret_name="$(kubectl --context $KUBE_CLUSTER -n pensjonsbrev get azureapp skribenten-backend -o=jsonpath='{.spec.secretName}')"
+getSecret "$secret_name" azuread
 
 # Unleash ApiToken
 getSecret skribenten-backend-unleash-api-token unleash
