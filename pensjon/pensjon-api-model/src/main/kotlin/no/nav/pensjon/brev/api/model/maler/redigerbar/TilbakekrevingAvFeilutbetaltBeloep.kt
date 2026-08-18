@@ -2,9 +2,9 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TilbakekrevingResultat
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -12,8 +12,8 @@ import java.time.LocalDate
 
 @Suppress("unused")
 data class TilbakekrevingAvFeilutbetaltBeloepDto(
-    override val pesysData: PesysData, override val saksbehandlerValg: EmptySaksbehandlerValg
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, TilbakekrevingAvFeilutbetaltBeloepDto.PesysData> {
+    override val pesysData: PesysData, override val saksbehandlerValg: SaksbehandlervalgIDSL
+) : RedigerbarBrevdataMedSaksbehandlerValg<TilbakekrevingAvFeilutbetaltBeloepDto.PesysData> {
 // tilbakekrevingTotal data hentes fra v1.TilbakekrevingTotal
     data class PesysData(
         val feilutbetaltTotalBeloep: Kroner, // feilutbetalingTotal

@@ -6,9 +6,9 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 import java.time.LocalDate
 
 data class SamletMeldingOmPensjonsvedtakDto(
-    override val saksbehandlerValg: EmptySaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, SamletMeldingOmPensjonsvedtakDto.PesysData> {
+) : RedigerbarBrevdataMedSaksbehandlerValg<SamletMeldingOmPensjonsvedtakDto.PesysData> {
     data class PesysData(
         val sakstype: Sakstype,
         val vedlegg: P1Dto,

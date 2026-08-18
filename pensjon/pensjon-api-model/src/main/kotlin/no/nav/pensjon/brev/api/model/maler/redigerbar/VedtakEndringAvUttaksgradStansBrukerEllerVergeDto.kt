@@ -1,16 +1,16 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import java.time.LocalDate
 
 data class VedtakEndringAvUttaksgradStansBrukerEllerVergeDto(
-    override val saksbehandlerValg: EmptySaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakEndringAvUttaksgradStansBrukerEllerVergeDto.PesysData> {
+) : RedigerbarBrevdataMedSaksbehandlerValg<VedtakEndringAvUttaksgradStansBrukerEllerVergeDto.PesysData> {
     data class PesysData(
         val krav: Krav,
         val alderspensjonVedVirk: AlderspensjonVedVirk,

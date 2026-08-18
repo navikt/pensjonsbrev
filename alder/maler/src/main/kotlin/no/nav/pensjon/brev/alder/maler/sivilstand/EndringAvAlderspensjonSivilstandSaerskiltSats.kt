@@ -27,16 +27,16 @@ import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.BeloepEndring
 import no.nav.pensjon.brev.alder.model.MetaforceSivilstand
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSatsDto
-import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSatsDto.SaksbehandlerValg.EPS
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSatsDto.EPS
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandSaerskiltSatsDto.alderspensjonVedVirk.*
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandSaerskiltSatsDto.beregnetPensjonPerManedVedVirk.*
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandSaerskiltSatsDto.pesysData.*
-import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandSaerskiltSatsDto.saksbehandlerValg.*
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandSaerskiltSatsDto.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
@@ -65,6 +65,11 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
     ) {
+        val eps = saksbehandlervalg("eps", "Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå").enum<EPS>()
+        val aarligKontrollEPS = saksbehandlervalg("aarligKontrollEPS", "Informasjon om årlig kontroll til 67 år").bool()
+        val feilutbetaling = saksbehandlervalg("feilutbetaling", "Hvis reduksjon tilbake i tid").bool()
+        val etterbetaling = saksbehandlervalg("etterbetaling", "Hvis etterbetaling").bool()
+
         val kravVirkDatoFom = pesysData.kravVirkDatoFom.format()
         val regelverkType = pesysData.regelverkType
         val sivilstand = pesysData.sivilstand
@@ -91,7 +96,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
 
             includePhrase(OmregningGarantiPen(regelverkType))
 
-            showIf(saksbehandlerValg.eps.equalTo(EPS.epsIkkeFylt62Aar)) {
+            showIf(eps.equalTo(EPS.epsIkkeFylt62Aar)) {
                 // SaerSatsBruktEpsUnder62
                 paragraph {
                     text(
@@ -101,7 +106,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                     )
                 }
             }
-                .orShowIf(saksbehandlerValg.eps.equalTo(EPS.epsIkkeRettTilFullAlderspensjon)) {
+                .orShowIf(eps.equalTo(EPS.epsIkkeRettTilFullAlderspensjon)) {
                     // SaerSatsBruktEpsIkkeRettTilAP
                     paragraph {
                         text(
@@ -111,7 +116,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                         )
                     }
                 }
-                .orShowIf(saksbehandlerValg.eps.equalTo(EPS.epsAvkallPaaEgenAlderspenspensjon)) {
+                .orShowIf(eps.equalTo(EPS.epsAvkallPaaEgenAlderspenspensjon)) {
                     // SaerSatsBruktEpsGittAvkallAP
                     paragraph {
                         text(
@@ -121,7 +126,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                         )
                     }
                 }
-                .orShowIf(saksbehandlerValg.eps.equalTo(EPS.epsAvkallPaaEgenUfoeretrygd)) {
+                .orShowIf(eps.equalTo(EPS.epsAvkallPaaEgenUfoeretrygd)) {
                     // SaerSatsBruktEpsGittAvkallUT
                     paragraph {
                         text(
@@ -131,7 +136,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                         )
                     }
                 }
-                .orShowIf(saksbehandlerValg.eps.equalTo(EPS.epsHarInntektOver1G)) {
+                .orShowIf(eps.equalTo(EPS.epsHarInntektOver1G)) {
                     // SaerSatsIkkeBruktEpsInntektOver1G, SaerSatsIkkeBruktEpsRettTilFullAP, SaerSatsIkkeBruktEpsMottarAP, SaerSatsIkkeBruktEpsMottarAfp, SaerSatsIkkeBruktEpsMottarUT
                     paragraph {
                         text(
@@ -147,7 +152,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                         )
                     }
                 }
-                .orShowIf(saksbehandlerValg.eps.equalTo(EPS.epsHarRettTilFullAlderspensjon)) {
+                .orShowIf(eps.equalTo(EPS.epsHarRettTilFullAlderspensjon)) {
                     // SaerSatsIkkeBruktEpsRettTilFullAP
                     paragraph {
                         text(
@@ -163,7 +168,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                         )
                     }
                 }
-                .orShowIf(saksbehandlerValg.eps.equalTo(EPS.epsTarUtAlderspensjon)) {
+                .orShowIf(eps.equalTo(EPS.epsTarUtAlderspensjon)) {
                     // SaerSatsIkkeBruktEpsMottarAP
                     paragraph {
                         text(
@@ -179,7 +184,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                         )
                     }
                 }
-                .orShowIf(saksbehandlerValg.eps.equalTo(EPS.epsTarUtAlderspensjonIStatligSektor)) {
+                .orShowIf(eps.equalTo(EPS.epsTarUtAlderspensjonIStatligSektor)) {
                     // SaerSatsIkkeBruktEpsMottarAfp
                     paragraph {
                         text(
@@ -195,7 +200,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                         )
                     }
                 }
-                .orShowIf(saksbehandlerValg.eps.equalTo(EPS.epsTarUtUfoeretrygd)) {
+                .orShowIf(eps.equalTo(EPS.epsTarUtUfoeretrygd)) {
                     // SaerSatsIkkeBruktEpsMottarUT
                     paragraph {
                         text(
@@ -250,7 +255,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                 includePhrase(BetydningForUtbetaling(regelverkType, pesysData.beloepEndring))
             }
 
-            showIf(saksbehandlerValg.aarligKontrollEPS) {
+            showIf(aarligKontrollEPS) {
                 // SaerSatsInfoAarligKontrollEps
                 paragraph {
                     text(
@@ -351,7 +356,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
             }
 
             // Selectable - Hvis reduksjon tilbake i tid - feilutbetalingAP
-            showIf(saksbehandlerValg.feilutbetaling) {
+            showIf(feilutbetaling) {
                 includePhrase(FeilutbetalingAP)
             }
 
@@ -366,7 +371,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
             }
 
             // Hvis etterbetaling (Selectable) - etterbetalingAP_002
-            showIf(saksbehandlerValg.etterbetaling.ifNull(false)) {
+            showIf(etterbetaling) {
                 includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
             }
 

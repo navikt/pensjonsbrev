@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktBunnfradragAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktBunnfradragData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmOktBunnfradragRedigerbarDto
@@ -36,7 +36,7 @@ fun createVedtakOmOktBunnfradragAutoDto() =
 
 fun createVedtakOmOktBunnfradragRedigerbarDto() =
     VedtakOmOktBunnfradragRedigerbarDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = VedtakOmOktBunnfradragRedigerbarDto.PesysData(
             vedtakData = createVedtakOmOktBunnfradragData(),
         )

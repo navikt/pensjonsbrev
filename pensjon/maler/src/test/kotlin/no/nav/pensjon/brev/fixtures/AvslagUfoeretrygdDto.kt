@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.fixtures
 
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDto
 
 fun createAvslagUfoeretrygdDto() = AvslagUfoeretrygdDto(
-    saksbehandlerValg = EmptySaksbehandlerValg,
+    saksbehandlerValg = lagSaksbehandlervalg(),
     pesysData = AvslagUfoeretrygdDto.PesysData(
         pe = createPEgruppe10(),
     )

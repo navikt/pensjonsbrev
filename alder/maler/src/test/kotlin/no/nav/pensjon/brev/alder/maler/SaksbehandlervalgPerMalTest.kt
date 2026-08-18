@@ -45,8 +45,8 @@ class SaksbehandlervalgPerMalTest {
 
         val forventet = mapOf(
             Redigerbar.INFO_BEKREFTELSE_UTSENDING_KRAV_TIL_UTLANDET to emptyList(),
-            Redigerbar.INFO_BRUKER_AFP_PRIVAT_SOKER_UFORETRYGD to listOf("harSoktUforeTrygd: kotlin.Boolean (Bruker har søkt UføreTrygd)"),
-            Redigerbar.INFO_BRUKER_UFORETRYGD_SOKER_AFP_PRIVAT to listOf("brukerHarSoktAfpPrivat: kotlin.Boolean (Bruker har søkt Afp Privat)"),
+            Redigerbar.INFO_BRUKER_AFP_PRIVAT_SOKER_UFORETRYGD to listOf("harSoktUforeTrygd: Boolean (Bruker har søkt UføreTrygd)"),
+            Redigerbar.INFO_BRUKER_UFORETRYGD_SOKER_AFP_PRIVAT to listOf("brukerHarSoktAfpPrivat: Boolean (Bruker har søkt Afp Privat)"),
             Redigerbar.PE_AFP_AVSLAG to emptyList(),
             Redigerbar.PE_AFP_AVSLAG_GAMMEL to emptyList(),
             Redigerbar.PE_AFP_ETTEROPPGJOER_ETTERBETALING to emptyList(),
@@ -61,25 +61,25 @@ class SaksbehandlervalgPerMalTest {
             Redigerbar.PE_AFP_PRIVAT_ENDRING to emptyList(),
             Redigerbar.PE_AF_INNVILGELSE_OFFENTLIG to emptyList(),
             Redigerbar.PE_AF_VEDTAK_ENDRING_OFFENTLIG to emptyList(),
-            Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER to listOf("visInfoOmUttakFoer67: kotlin.Boolean? (Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år)"),
-            Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_AP2016 to listOf("visInfoOmUttakFoer67: kotlin.Boolean? (Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år)"),
+            Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER to listOf("visInfoOmUttakFoer67: Boolean (Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år)"),
+            Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_AP2016 to listOf("visInfoOmUttakFoer67: Boolean (Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år)"),
             Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_ETT_AAR to emptyList(),
-            Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER to listOf("visInfoOmUttakFoer67: kotlin.Boolean? (Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år)"),
-            Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER_AP2016 to listOf("visInfoOmUttakFoer67: kotlin.Boolean? (Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år)"),
+            Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER to listOf("visInfoOmUttakFoer67: Boolean (Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år)"),
+            Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER_AP2016 to listOf("visInfoOmUttakFoer67: Boolean (Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år)"),
             Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_GARANTITILLEGG to emptyList(),
             Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SAERSKILT_SATS to listOf(
-                "aarligKontrollEPS: kotlin.Boolean (Informasjon om årlig kontroll til 67 år)",
-                "eps: no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSatsDto.SaksbehandlerValg.EPS? (Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå)",
-                "etterbetaling: kotlin.Boolean? (Hvis etterbetaling)",
-                "feilutbetaling: kotlin.Boolean (Hvis reduksjon tilbake i tid)",
+                "aarligKontrollEPS: Boolean (Informasjon om årlig kontroll til 67 år)",
+                "eps: no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandSaerskiltSatsDto.EPS (Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå)",
+                "etterbetaling: Boolean (Hvis etterbetaling)",
+                "feilutbetaling: Boolean (Hvis reduksjon tilbake i tid)",
             ),
             Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND to listOf(
-                "etterbetaling: kotlin.Boolean? (Hvis etterbetaling)",
-                "feilutbetaling: kotlin.Boolean? (Hvis reduksjon tilbake i tid)",
-                "sivilstandsendringsaarsak: no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg.Sivilstandsendringsaarsak? (Årsak til sivilstandsendringen)",
+                "etterbetaling: Boolean (Hvis etterbetaling)",
+                "feilutbetaling: Boolean (Hvis reduksjon tilbake i tid)",
+                "sivilstandsendringsaarsak: no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDto.Sivilstandsendringsaarsak (Årsak til sivilstandsendringen)",
             ),
             Redigerbar.PE_AP_OMREGNING_ALDER_UFORE_2016 to emptyList(),
-            Redigerbar.PE_AP_STANS_FLYTTING_MELLOM_LAND to listOf("feilutbetaling: kotlin.Boolean (Hvis reduksjon tilbake i tid)"),
+            Redigerbar.PE_AP_STANS_FLYTTING_MELLOM_LAND to listOf("feilutbetaling: Boolean (Hvis reduksjon tilbake i tid)"),
         )
 
         assertEquals(

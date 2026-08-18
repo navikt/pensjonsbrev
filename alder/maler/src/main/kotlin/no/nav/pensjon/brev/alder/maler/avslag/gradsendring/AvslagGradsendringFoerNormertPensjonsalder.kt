@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -31,6 +32,9 @@ object AvslagGradsendringFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUtt
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
+        @Suppress("unused")
+        val visInfoOmUttakFoer67 = saksbehandlervalg("visInfoOmUttakFoer67", "Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år").bool()
+
         title {
             text(
                 bokmal { + "Nav har avslått søknaden din om endring av alderspensjonen" },
