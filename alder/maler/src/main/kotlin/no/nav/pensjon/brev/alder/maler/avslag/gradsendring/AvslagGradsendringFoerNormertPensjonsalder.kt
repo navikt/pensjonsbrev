@@ -32,9 +32,6 @@ object AvslagGradsendringFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUtt
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
-        @Suppress("unused")
-        val visInfoOmUttakFoer67 = saksbehandlervalg("visInfoOmUttakFoer67", "Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år").bool()
-
         title {
             text(
                 bokmal { + "Nav har avslått søknaden din om endring av alderspensjonen" },
