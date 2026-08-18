@@ -56,13 +56,18 @@ object Utbetalingsinformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 bokmal { +
                     "Alderspensjonen din utbetales innen den 20. hver måned. Du finner oversikt over utbetalingene dine på $UTBETALINGER_URL."+
                        "Her kan du også endre kontonummeret ditt. " +
-                       "Hvis du har andre pensjonsutbetalinger gjennom Nav, blir de utbetalt i tillegg til alderspensjonen. "}, //TODO må fikses for andre språklag også
+                       "Hvis du har andre pensjonsutbetalinger gjennom Nav, blir de utbetalt i tillegg til alderspensjonen."
+                       },
                 nynorsk { +
-                    "Dersom du har andre pensjonsytingar som for eksempel AFP eller tenestepensjon, kjem slik utbetaling i tillegg til alderspensjonen. " +
-                    "Alderspensjonen din blir betalt ut innan den 20. i kvar månad. Du finn meir informasjon om utbetalingane dine på $UTBETALINGER_URL." },
+                    "Alderspensjonen din blir betalt ut innan den 20. i kvar månad. Du finn meir informasjon om utbetalingane dine på $UTBETALINGER_URL." +
+                        "Her kan du også endre kontonummeret ditt. "+
+                        "Om du har andre pensjonsutbetalingar gjennom Nav, blir dei utbetalte i tillegg til alderspensjonen"
+                        },
                 english { +
-                    "If you have occupational pensions from other schemes, this will be paid in addition to your retirement pension. " +
-                    "Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at $UTBETALINGER_URL." },
+                    "Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at $UTBETALINGER_URL."+
+                        "Here you can also change your bank account number. "+
+                        "If you receive other pension payments through Nav, these will be paid in addition to your retirement pension."
+                        },
             )
         }
     }
