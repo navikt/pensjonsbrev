@@ -6,11 +6,12 @@ import { applyPatches } from "immer";
 import React, { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useState } from "react";
 
 import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
+import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
-import { trackEvent } from "~/utils/umami";
+import { trackMissingFromTemplateAction } from "~/utils/umami";
 
 import Actions from "./actions";
 import { getBlockClassName } from "./actions/common";
@@ -39,6 +40,7 @@ export const LetterEditor = ({
 }) => {
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
+  const { redigeringsflate } = useManagedLetterEditorContext();
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
   const highlightedIds = useInsertedTekstValgHighlight();
 
@@ -155,7 +157,7 @@ export const LetterEditor = ({
                       <Button
                         icon={<CheckmarkIcon aria-hidden />}
                         onClick={() => {
-                          trackEvent("blokk beholdt", {
+                          trackMissingFromTemplateAction("blokk beholdt", redigeringsflate, {
                             brevId: editorState.info.id,
                             brevkode: editorState.info.brevkode,
                             brevtittel: editorState.info.brevtittel,
@@ -175,7 +177,7 @@ export const LetterEditor = ({
                       <Button
                         icon={<XMarkIcon aria-hidden />}
                         onClick={() => {
-                          trackEvent("blokk slettet", {
+                          trackMissingFromTemplateAction("blokk slettet", redigeringsflate, {
                             brevId: editorState.info.id,
                             brevkode: editorState.info.brevkode,
                             brevtittel: editorState.info.brevtittel,

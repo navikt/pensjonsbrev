@@ -173,7 +173,7 @@ const VedtakWrapper = () => {
         },
       };
       return (
-        <ManagedLetterEditorContextProvider brev={brevUtenAttestantSignatur}>
+        <ManagedLetterEditorContextProvider brev={brevUtenAttestantSignatur} redigeringsflate="attestant-redigering">
           <Vedtak brev={brevUtenAttestantSignatur} doReload={hentBrevQuery.refetch} saksId={saksId} />
         </ManagedLetterEditorContextProvider>
       );

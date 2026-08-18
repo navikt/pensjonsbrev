@@ -1,3 +1,4 @@
+import { type Redigeringsflate } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { truncatedSha256Hash } from "~/utils/hashUtils";
 
 interface UmamiTracker {
@@ -64,7 +65,6 @@ export const trackEvent = (eventName: UmamiEventName, eventData?: UmamiEventData
 };
 
 type MottakerClickEventName = "endre mottaker klikket" | "tilbakestill mottaker klikket";
-
 export const trackMottakerClick = async (
   eventName: MottakerClickEventName,
   kontekst: string,
@@ -84,4 +84,15 @@ export const trackMottakerClick = async (
       ...eventData,
     });
   }
+};
+
+export const trackMissingFromTemplateAction = (
+  eventName: "blokk beholdt" | "blokk slettet",
+  redigeringsflate: Redigeringsflate,
+  eventData?: UmamiEventData,
+): void => {
+  trackEvent(eventName, {
+    redigeringsflate,
+    ...eventData,
+  });
 };

@@ -22,10 +22,13 @@ type SaveSuccessOptions = {
   createHistoryEntry?: (previousState: LetterEditorState, response: BrevResponse) => HistoryEntry | null;
 };
 
+export type Redigeringsflate = "saksbehandler-redigering" | "attestant-redigering";
+
 interface ManagedLetterEditorContextValue {
   editorState: LetterEditorState;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   onSaveSuccess: (response: BrevResponse, options?: SaveSuccessOptions) => void;
+  redigeringsflate: Redigeringsflate;
 }
 
 const nullsToUndefined = (obj: unknown) =>
@@ -50,7 +53,11 @@ const resolveHistoryAfterSave = (
 
 const ManagedLetterEditorContext = createContext<ManagedLetterEditorContextValue | null>(null);
 
-export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; children: ReactNode }) => {
+export const ManagedLetterEditorContextProvider = (props: {
+  brev: BrevResponse;
+  children: ReactNode;
+  redigeringsflate: Redigeringsflate;
+}) => {
   const queryClient = useQueryClient();
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(props.brev));
 
@@ -84,7 +91,12 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
 
   return (
     <ManagedLetterEditorContext.Provider
-      value={{ editorState: editorState, setEditorState: setEditorState, onSaveSuccess: onSaveSuccess }}
+      value={{
+        editorState: editorState,
+        setEditorState: setEditorState,
+        onSaveSuccess: onSaveSuccess,
+        redigeringsflate: props.redigeringsflate,
+      }}
     >
       {props.children}
     </ManagedLetterEditorContext.Provider>
