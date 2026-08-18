@@ -239,6 +239,25 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   });
 
   const erLaast = useMemo(() => erBrevLaastForRedigering(props.brev), [props.brev]);
+  const trackMottakerClick = (
+    eventName: "endre mottaker klikket" | "tilbakestill mottaker klikket",
+    eventData?: { enhetsId?: string },
+  ) => {
+    void truncatedSha256Hash(props.saksId)
+      .then((saksIdHash) => {
+        trackEvent(eventName, {
+          kontekst: "brevbehandler",
+          saksId: saksIdHash,
+          ...eventData,
+        });
+      })
+      .catch(() => {
+        trackEvent(eventName, {
+          kontekst: "brevbehandler",
+          ...eventData,
+        });
+      });
+  };
 
   return (
     <VStack gap="space-20">
@@ -263,13 +282,9 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
                 aria-label="Endre mottaker"
                 data-testid="toggle-endre-mottaker-modal"
                 icon={<PencilIcon />}
-                onClick={async () => {
-                  trackEvent("endre mottaker klikket", {
-                    kontekst: "brevbehandler",
-                    saksId: await truncatedSha256Hash(props.saksId),
-                    enhetsId,
-                  });
+                onClick={() => {
                   åpneModal();
+                  trackMottakerClick("endre mottaker klikket", { enhetsId });
                 }}
                 size="xsmall"
                 type="button"
@@ -285,12 +300,9 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           <Button
             css={{ margin: "0 calc(-1 * var(--ax-space-8))" }}
             loading={fjernMottakerIsPending}
-            onClick={async () => {
-              trackEvent("tilbakestill mottaker klikket", {
-                kontekst: "brevbehandler",
-                saksId: await truncatedSha256Hash(props.saksId),
-              });
+            onClick={() => {
               fjernMottaker();
+              trackMottakerClick("tilbakestill mottaker klikket");
             }}
             size="xsmall"
             type="button"
