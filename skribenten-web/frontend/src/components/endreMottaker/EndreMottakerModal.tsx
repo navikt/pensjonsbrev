@@ -1,7 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, HStack, Modal, Tabs, VStack } from "@navikt/ds-react";
 import { type UseMutationResult, useMutation } from "@tanstack/react-query";
-import { type AxiosError } from "axios";
 import { useCallback, useState } from "react";
 import { type Control, FormProvider, useForm } from "react-hook-form";
 
@@ -28,7 +27,7 @@ export const EndreMottakerModal = (properties: {
   åpen: boolean;
   onBekreftNyMottaker: (id: string | Adresse) => void;
   resetOnBekreftState: () => void;
-  error: Nullable<AxiosError>;
+  error: Nullable<Error>;
   isPending: Nullable<boolean>;
   onClose: () => void;
   skalKunOppdatereSamhandler?: boolean;
@@ -41,7 +40,7 @@ export const EndreMottakerModal = (properties: {
   const onFinnsamhandlerSubmit = (values: FinnSamhandlerFormData) => {
     switch (values.søketype) {
       case null: {
-        throw new Error("Teknisk feil - Fikk case 'null' ved søk for samhandler. Ble ikke denne fanget av validering?");
+        throw new Error("Teknisk feil - Fikk case 'null' ved søk for samhandler");
       }
       case Søketype.DIREKTE_OPPSLAG: {
         return finnSamhandlerMutation.mutate({
@@ -76,11 +75,16 @@ export const EndreMottakerModal = (properties: {
       linje1: "",
       linje2: "",
       linje3: "",
-      manueltAdressertTil: ManueltAdressertTil.BRUKER,
+      /*
+      Standard er ANNEN fordi saksbehandler nesten alltid skal sende til noen andre enn bruker når de
+      først overstyrer adressen. Normaltilfellet krever da ingen avkryssing. Krysser de av, er bruker
+      selv mottaker - bare på en annen adresse enn den registrerte.
+      */
+      manueltAdressertTil: ManueltAdressertTil.ANNEN,
       postnr: null,
       poststed: null,
-      //default value skal være norge. Siden vi henter alle landkodene i backend, hardkoder vi norges verdi.
-      land: "NO",
+      //land er gating-feltet: ingenting kan fylles ut før saksbehandler har valgt land
+      land: null,
     },
   };
   const defaultFinnSamhandler = {
@@ -185,7 +189,7 @@ const ModalTabs = (properties: {
   onFinnSamhandlerSubmit: UseMutationResult<FinnSamhandlerResponseDto, Error, FinnSamhandlerRequestDto, unknown>;
   onBekreftNyMottaker: (id: string | Adresse) => void;
   resetOnBekreftState: () => void;
-  error: Nullable<AxiosError>;
+  error: Nullable<Error>;
   isPending: Nullable<boolean>;
   skalKunOppdatereSamhandler?: boolean;
 }) => {
