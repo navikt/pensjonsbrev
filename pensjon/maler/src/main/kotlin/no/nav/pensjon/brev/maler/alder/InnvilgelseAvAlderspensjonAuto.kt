@@ -125,8 +125,6 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
 
                 showIf(afpPrivatResultatFellesKontoret.ifNull(then = false)) { includePhrase(SoktAFPPrivatInfo) }
 
-                includePhrase(Utbetalingsinformasjon)
-
                 showIf(harFlereBeregningsperioder and alderspensjonVedVirk.totalPensjon.greaterThan(0)) {
                     includePhrase(Felles.FlereBeregningsperioder)
                 }
@@ -210,6 +208,7 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
                         )
                     )
                 }
+                includePhrase(Utbetalingsinformasjon)
                 paragraph {
                     text(
                         bokmal { +"Du finner informasjon om utbetalingene dine på $DITT_NAV. Her kan du også endre kontonummeret ditt." },
