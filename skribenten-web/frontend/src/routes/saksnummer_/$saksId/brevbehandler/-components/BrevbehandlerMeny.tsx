@@ -263,8 +263,12 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
                 aria-label="Endre mottaker"
                 data-testid="toggle-endre-mottaker-modal"
                 icon={<PencilIcon />}
-                onClick={() => {
-                  trackEvent("endre mottaker klikket", { kontekst: "brevbehandler", saksId: props.saksId, enhetsId });
+                onClick={async () => {
+                  trackEvent("endre mottaker klikket", {
+                    kontekst: "brevbehandler",
+                    saksId: await truncatedSha256Hash(props.saksId),
+                    enhetsId,
+                  });
                   åpneModal();
                 }}
                 size="xsmall"

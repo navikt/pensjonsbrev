@@ -10,6 +10,7 @@ import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
+import { trackEvent } from "~/utils/umami";
 
 import Actions from "./actions";
 import { getBlockClassName } from "./actions/common";
@@ -153,7 +154,18 @@ export const LetterEditor = ({
                     <HStack className="missing-from-template-actions" gap="space-4" justify="end">
                       <Button
                         icon={<CheckmarkIcon aria-hidden />}
-                        onClick={() => applyAction(Actions.keepMissingFromTemplateBlock, setEditorState, blockIndex)}
+                        onClick={() => {
+                          trackEvent("blokk beholdt", {
+                            brevId: editorState.info.id,
+                            brevkode: editorState.info.brevkode,
+                            brevtittel: editorState.info.brevtittel,
+                            brevtype: editorState.info.brevtype,
+                            spraak: editorState.info.spraak,
+                            antallGjenværendeMissing: blocks.filter((b) => b.missingFromTemplate).length,
+                            blockIndex,
+                          });
+                          applyAction(Actions.keepMissingFromTemplateBlock, setEditorState, blockIndex);
+                        }}
                         size="xsmall"
                         type="button"
                         variant="secondary"
@@ -162,7 +174,18 @@ export const LetterEditor = ({
                       </Button>
                       <Button
                         icon={<XMarkIcon aria-hidden />}
-                        onClick={() => applyAction(Actions.removeMissingFromTemplateBlock, setEditorState, blockIndex)}
+                        onClick={() => {
+                          trackEvent("blokk slettet", {
+                            brevId: editorState.info.id,
+                            brevkode: editorState.info.brevkode,
+                            brevtittel: editorState.info.brevtittel,
+                            brevtype: editorState.info.brevtype,
+                            spraak: editorState.info.spraak,
+                            antallGjenværendeMissing: blocks.filter((b) => b.missingFromTemplate).length,
+                            blockIndex,
+                          });
+                          applyAction(Actions.removeMissingFromTemplateBlock, setEditorState, blockIndex);
+                        }}
                         size="xsmall"
                         type="button"
                         variant="secondary"
