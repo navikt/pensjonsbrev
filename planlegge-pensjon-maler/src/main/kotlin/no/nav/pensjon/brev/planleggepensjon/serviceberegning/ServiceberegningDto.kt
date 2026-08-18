@@ -23,7 +23,7 @@ data class ServiceberegningDto(
     @DisplayText("AFP")
     val afp: TidsbegrensetOffentligAfp,
     @DisplayText("Ingen ytelser")
-    val alt1: Boolean = false,
+    val alt1: Boolean = true,
     @DisplayText("Vedtak om alderspensjon")
     val alt2: Boolean = false,
     @DisplayText("Vedtak om uføretrygd")
