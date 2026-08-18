@@ -8,48 +8,28 @@ import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dt
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
-import no.nav.pensjon.brevbaker.api.model.DisplayText
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 @Suppress("unused")
 data class EndringAvAlderspensjonSivilstandSaerskiltSatsDto(
     override val pesysData: PesysData,
-    override val saksbehandlerValg: SaksbehandlerValg,
-) : RedigerbarBrevdata<EndringAvAlderspensjonSivilstandSaerskiltSatsDto.SaksbehandlerValg, EndringAvAlderspensjonSivilstandSaerskiltSatsDto.PesysData> {
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
+) : RedigerbarBrevdataMedSaksbehandlerValg<EndringAvAlderspensjonSivilstandSaerskiltSatsDto.PesysData> {
 
-    data class SaksbehandlerValg(
-        @DisplayText("Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå")
-        val eps: EPS?,
-        @DisplayText("Informasjon om årlig kontroll til 67 år")
-        val aarligKontrollEPS: Boolean,
-        @DisplayText("Hvis reduksjon tilbake i tid")
-        val feilutbetaling: Boolean,
-        @DisplayText("Hvis etterbetaling")
-        val etterbetaling: Boolean?,
-    ) : SaksbehandlerValgBrevdata {
-        enum class EPS {
-            @DisplayText("Brukt i beregningen. EPS ikke fylt 62 år")
-            epsIkkeFylt62Aar,
-            @DisplayText("Brukt i beregningen. EPS har ikke rett til å ta ut full alderspensjon")
-            epsIkkeRettTilFullAlderspensjon,
-            @DisplayText("Ikke brukt i beregningen. EPS gir avkall på egen alderspensjon")
-            epsAvkallPaaEgenAlderspenspensjon,
-            @DisplayText("Ikke brukt i beregningen. EPS git avkall på egen uføretrygd")
-            epsAvkallPaaEgenUfoeretrygd,
-            @DisplayText("Ikke brukt i beregningen. EPS har inntekt over 1 G")
-            epsHarInntektOver1G,
-            @DisplayText("Ikke brukt i beregningen. EPS har rett til full alderspensjon")
-            epsHarRettTilFullAlderspensjon,
-            @DisplayText("Ikke brukt i beregningen. EPS tar ut alderspensjon")
-            epsTarUtAlderspensjon,
-            @DisplayText("Ikke brukt i beregningen. EPS tar ut AFP i statlig sektor")
-            epsTarUtAlderspensjonIStatligSektor,
-            @DisplayText("Ikke brukt i beregningen. EPS tar ut uføretrygd")
-            epsTarUtUfoeretrygd,
-        }
+    enum class EPS(override val displayText: String) : SaksbehandlerValgEnum {
+        epsIkkeFylt62Aar("Brukt i beregningen. EPS ikke fylt 62 år"),
+        epsIkkeRettTilFullAlderspensjon("Brukt i beregningen. EPS har ikke rett til å ta ut full alderspensjon"),
+        epsAvkallPaaEgenAlderspenspensjon("Ikke brukt i beregningen. EPS gir avkall på egen alderspensjon"),
+        epsAvkallPaaEgenUfoeretrygd("Ikke brukt i beregningen. EPS gitt avkall på egen uføretrygd"),
+        epsHarInntektOver1G("Ikke brukt i beregningen. EPS har inntekt over 1 G"),
+        epsHarRettTilFullAlderspensjon("Ikke brukt i beregningen. EPS har rett til full alderspensjon"),
+        epsTarUtAlderspensjon("Ikke brukt i beregningen. EPS tar ut alderspensjon"),
+        epsTarUtAlderspensjonIStatligSektor("Ikke brukt i beregningen. EPS tar ut AFP i statlig sektor"),
+        epsTarUtUfoeretrygd("Ikke brukt i beregningen. EPS tar ut uføretrygd"),
     }
 
     data class PesysData(

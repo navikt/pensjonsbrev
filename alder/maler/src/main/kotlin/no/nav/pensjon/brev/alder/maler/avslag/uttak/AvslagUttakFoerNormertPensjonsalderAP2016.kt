@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagUttakFoerNormertPensjonsalderAP2016AutoDto.*
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016Dto
-import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagUttakFoerNormertPensjonsalderAP2016Dto.saksbehandlerValg.*
 import no.nav.pensjon.brev.alder.model.avslag.selectors.avslagUttakFoerNormertPensjonsalderAP2016Dto.*
 import no.nav.pensjon.brev.alder.model.avslag.selectors.opplysningerBruktIBeregningen.*
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.opplysningerBruktIBeregningenAP2016Vedlegg
@@ -16,6 +15,7 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -36,6 +36,8 @@ object AvslagUttakFoerNormertPensjonsalderAP2016 : RedigerbarTemplate<AvslagUtta
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
+        val visInfoOmUttakFoer67 = saksbehandlervalg("visInfoOmUttakFoer67", "Hvis bruker ikke har rett til å ta ut alderspensjon før 67 år").bool()
+
         title {
             text(
                 bokmal { + "Nav har avslått søknaden din om alderspensjon fra " + pesysData.virkFom.format() },
@@ -58,7 +60,7 @@ object AvslagUttakFoerNormertPensjonsalderAP2016 : RedigerbarTemplate<AvslagUtta
                     regelverkType = pesysData.regelverkType,
                     harEOSLand = pesysData.harEOSLand,
                     avtaleland = pesysData.avtaleland,
-                    visInfoOmUttakFoer67 = saksbehandlerValg.visInfoOmUttakFoer67.ifNull(false)
+                    visInfoOmUttakFoer67 = visInfoOmUttakFoer67
                 )
             )
         }

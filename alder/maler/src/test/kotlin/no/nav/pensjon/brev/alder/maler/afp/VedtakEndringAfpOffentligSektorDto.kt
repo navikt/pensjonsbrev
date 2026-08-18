@@ -12,14 +12,14 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmBeregningenAfpDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmBeregningenAfpDto.AfpOrdning
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmBeregningenAfpDto.SivilstandKategori
 import no.nav.pensjon.brev.alder.model.vedlegg.Pensjonspoeng
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import java.time.LocalDate
 
 fun createVedtakEndringAfpOffentligSektorDto(): VedtakEndringAfpOffentligSektorDto =
     VedtakEndringAfpOffentligSektorDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = PesysData(
             virkningFom = LocalDate.of(2026, 3, 1),
             beregningVirkDatoFom = LocalDate.of(2026, 3, 1),

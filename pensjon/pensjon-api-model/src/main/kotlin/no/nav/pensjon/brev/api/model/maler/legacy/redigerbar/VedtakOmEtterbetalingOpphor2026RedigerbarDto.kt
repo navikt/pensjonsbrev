@@ -1,17 +1,17 @@
 package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 data class VedtakOmEtterbetalingOpphor2026RedigerbarDto(
-    override val saksbehandlerValg: EmptySaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakOmEtterbetalingOpphor2026RedigerbarDto.PesysData> {
+) : RedigerbarBrevdataMedSaksbehandlerValg<VedtakOmEtterbetalingOpphor2026RedigerbarDto.PesysData> {
     data class PesysData(
         val etterbetaling: Kroner,
         val hjemler: Set<String>,
