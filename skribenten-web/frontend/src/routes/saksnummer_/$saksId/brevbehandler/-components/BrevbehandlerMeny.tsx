@@ -31,8 +31,7 @@ import { type Nullable } from "~/types/Nullable";
 import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { getErrorMessage } from "~/utils/errorUtils";
-import { truncatedSha256Hash } from "~/utils/hashUtils";
-import { trackEvent } from "~/utils/umami";
+import { trackEvent, trackMottakerClick } from "~/utils/umami";
 
 import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrev } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
@@ -239,25 +238,6 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   });
 
   const erLaast = useMemo(() => erBrevLaastForRedigering(props.brev), [props.brev]);
-  const trackMottakerClick = (
-    eventName: "endre mottaker klikket" | "tilbakestill mottaker klikket",
-    eventData?: { enhetsId?: string },
-  ) => {
-    void truncatedSha256Hash(props.saksId)
-      .then((saksIdHash) => {
-        trackEvent(eventName, {
-          kontekst: "brevbehandler",
-          saksId: saksIdHash,
-          ...eventData,
-        });
-      })
-      .catch(() => {
-        trackEvent(eventName, {
-          kontekst: "brevbehandler",
-          ...eventData,
-        });
-      });
-  };
 
   return (
     <VStack gap="space-20">
@@ -284,7 +264,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
                 icon={<PencilIcon />}
                 onClick={() => {
                   åpneModal();
-                  trackMottakerClick("endre mottaker klikket", { enhetsId });
+                  void trackMottakerClick("endre mottaker klikket", "brevbehandler", props.saksId, { enhetsId });
                 }}
                 size="xsmall"
                 type="button"
@@ -302,7 +282,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
             loading={fjernMottakerIsPending}
             onClick={() => {
               fjernMottaker();
-              trackMottakerClick("tilbakestill mottaker klikket");
+              void trackMottakerClick("tilbakestill mottaker klikket", "brevbehandler", props.saksId);
             }}
             size="xsmall"
             type="button"

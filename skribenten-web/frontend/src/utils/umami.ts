@@ -1,3 +1,5 @@
+import { truncatedSha256Hash } from "~/utils/hashUtils";
+
 interface UmamiTracker {
   track: (eventName: string, eventData?: Record<string, string | number | boolean>) => void;
 }
@@ -58,5 +60,28 @@ export const trackEvent = (eventName: UmamiEventName, eventData?: UmamiEventData
     if (import.meta.env.DEV) {
       console.warn("[Umami] tracking failed:", error);
     }
+  }
+};
+
+type MottakerClickEventName = "endre mottaker klikket" | "tilbakestill mottaker klikket";
+
+export const trackMottakerClick = async (
+  eventName: MottakerClickEventName,
+  kontekst: string,
+  saksId: string,
+  eventData?: UmamiEventData,
+): Promise<void> => {
+  try {
+    const hashedSaksId = await truncatedSha256Hash(saksId);
+    trackEvent(eventName, {
+      kontekst,
+      saksId: hashedSaksId,
+      ...eventData,
+    });
+  } catch {
+    trackEvent(eventName, {
+      kontekst,
+      ...eventData,
+    });
   }
 };

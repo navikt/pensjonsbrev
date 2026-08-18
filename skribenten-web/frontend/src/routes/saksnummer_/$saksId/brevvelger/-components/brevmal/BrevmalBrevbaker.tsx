@@ -16,8 +16,7 @@ import { type LetterMetadata, type SpraakKode } from "~/types/apiTypes";
 import { type BrevInfo, type BrevResponse, type Mottaker, type SaksbehandlerValg } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
-import { truncatedSha256Hash } from "~/utils/hashUtils";
-import { trackEvent } from "~/utils/umami";
+import { trackEvent, trackMottakerClick } from "~/utils/umami";
 
 import { Route, type SubmitTemplateOptions } from "../../route";
 import BrevmalFormWrapper from "./components/BrevmalFormWrapper";
@@ -202,12 +201,9 @@ const BrevmalBrevbaker = (props: {
                   <Button
                     icon={<ArrowCirclepathReverseIcon />}
                     iconPosition="right"
-                    onClick={async () => {
-                      trackEvent("tilbakestill mottaker klikket", {
-                        kontekst: "brevbaker mal",
-                        saksId: await truncatedSha256Hash(props.saksId),
-                      });
+                    onClick={() => {
                       form.setValue("mottaker", null);
+                      void trackMottakerClick("tilbakestill mottaker klikket", "brevbaker mal", props.saksId);
                     }}
                     size="xsmall"
                     type="button"
@@ -221,8 +217,8 @@ const BrevmalBrevbaker = (props: {
                   icon={<PencilIcon />}
                   iconPosition="right"
                   onClick={() => {
-                    trackEvent("endre mottaker klikket", { kontekst: "brevbaker mal", saksId: props.saksId });
                     setModalÅpen(true);
+                    void trackMottakerClick("endre mottaker klikket", "brevbaker mal", props.saksId);
                   }}
                   size="xsmall"
                   type="button"
