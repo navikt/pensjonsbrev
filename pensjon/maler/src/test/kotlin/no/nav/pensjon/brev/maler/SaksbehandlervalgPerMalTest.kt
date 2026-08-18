@@ -91,7 +91,6 @@ class SaksbehandlervalgPerMalTest {
                 "aarsakTilAtPensjonenOeker: no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto.AarsakTilAtPensjonenOeker (Relevant hvis innvandret)",
                 "endringIPensjonen: Boolean (Endring i pensjon)",
                 "etterbetaling: Boolean (Etterbetaling)",
-                "innvandret: Boolean (Innvandret)",
                 "reduksjonTilbakeITid: Boolean (Reduksjon tilbake i tid)",
             ),
             Redigerbar.PE_AP_ENDRING_GJENLEVENDERETT to listOf(
@@ -137,7 +136,6 @@ class SaksbehandlervalgPerMalTest {
             ),
             Redigerbar.PE_AP_INNVILGELSE_TRYGDEAVTALE to listOf(
                 "etterbetaling: Boolean (Hvis etterbetaling av pensjon)",
-                "medfoererInnvilgelseAvAPellerOektUttaksgrad: Boolean (Slutthandling medfører: Innvilgelse av alderspensjon eller økt uttaksgrad)",
                 "nyBeregningAvInnvilgetAP: Boolean (Tittel - Ny beregning av innvilget alderspensjon. Ingen endring av uttaksgraden)",
             ),
             Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS to emptyList(),

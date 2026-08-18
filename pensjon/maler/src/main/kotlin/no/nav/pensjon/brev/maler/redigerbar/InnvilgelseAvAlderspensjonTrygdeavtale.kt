@@ -48,7 +48,6 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
         )
     ) {
         val nyBeregningAvInnvilgetAP = saksbehandlervalg("nyBeregningAvInnvilgetAP", "Tittel - Ny beregning av innvilget alderspensjon. Ingen endring av uttaksgraden").bool()
-        val medfoererInnvilgelseAvAPellerOektUttaksgrad = saksbehandlervalg("medfoererInnvilgelseAvAPellerOektUttaksgrad", "Slutthandling medfører: Innvilgelse av alderspensjon eller økt uttaksgrad").bool()
         val etterbetaling = saksbehandlervalg("etterbetaling", "Hvis etterbetaling av pensjon").bool()
 
         val afpPrivatResultatFellesKontoret = pesysData.safe { afpPrivatResultatFellesKontoret }.ifNull(false)

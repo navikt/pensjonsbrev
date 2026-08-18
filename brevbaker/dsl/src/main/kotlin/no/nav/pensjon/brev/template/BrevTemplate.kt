@@ -74,16 +74,16 @@ internal fun SpesialkonstruksjonIMal.somExpression() = when (this) {
 }
 
 @JvmInline
-value class Fritekst internal constructor(val str: String) : SpesialkonstruksjonIMal {
+value class Fritekst internal constructor(internal val str: String) : SpesialkonstruksjonIMal {
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
 @JvmInline
-value class RedigerbarData internal constructor(val variabel: StringExpression) : SpesialkonstruksjonIMal {
+value class RedigerbarData internal constructor(internal val variabel: StringExpression) : SpesialkonstruksjonIMal {
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
-class BrevdataEllerFritekst internal constructor(val tekst: Expression<String?>, val fritekst: Expression<String>) : SpesialkonstruksjonIMal {
+class BrevdataEllerFritekst internal constructor(internal val tekst: Expression<String?>, internal val fritekst: Expression<String>) : SpesialkonstruksjonIMal {
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
