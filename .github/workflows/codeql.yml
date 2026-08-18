@@ -48,7 +48,7 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
         with:
-          cache-encryption-key: ${{ secrets.GRADLEKEY }}
+          cache-disabled: 'true'
 
       - name: "publish brevbaker-biblioteket to Maven local"
         if: ${{ github.event_name == 'pull_request' }}
