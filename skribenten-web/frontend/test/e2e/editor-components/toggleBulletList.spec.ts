@@ -1,26 +1,13 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { SpraakKode } from "~/types/apiTypes";
 import { type Content, type EditedLetter, type Item } from "~/types/brevbakerTypes";
+import { editorInfo } from "~test/e2e/support/editorFixtures";
 import { setupSakStubs } from "~test/e2e/support/helpers";
-import { brevInfo, brevResponse, editedLetter, signatur } from "~test/support/brevFixtures";
+import { brevResponse, editedLetter, signatur } from "~test/support/brevFixtures";
 import { item, itemList, literal, paragraph } from "~test/support/letterEditorTestUtils";
 
-const editorInfo = brevInfo({
-  brevkode: "BREV1",
-  brevtittel: "Brev 1",
-  opprettet: "2024-01-01",
-  sistredigert: "2024-01-01",
-  sistredigertAv: { id: "Z123", navn: "Z entotre" },
-  opprettetAv: { id: "Z123", navn: "Z entotre" },
-  status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
-  avsenderEnhet: { enhetNr: "0001", navn: "NAV Familie- og pensjonsytelser" },
-  spraak: SpraakKode.Bokmaal,
-  saksId: 22981081,
-});
-
 function makeBrevResponse(redigertBrev: EditedLetter) {
-  return brevResponse({ info: editorInfo, redigertBrev });
+  return brevResponse({ info: editorInfo(), redigertBrev });
 }
 
 function makeLiteral(id: number, text: string, parentId: number | null = null) {

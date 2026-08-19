@@ -1,9 +1,9 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { SpraakKode } from "~/types/apiTypes";
 import { type EditedLetter, type LiteralValue } from "~/types/brevbakerTypes";
+import { baseSakspart, baseSignatur, editorInfo } from "~test/e2e/support/editorFixtures";
 import { setupSakStubs } from "~test/e2e/support/helpers";
-import { brevInfo, brevResponse, editedLetter, signatur } from "~test/support/brevFixtures";
+import { brevResponse, editedLetter } from "~test/support/brevFixtures";
 import {
   literal as _literal,
   variable as _variable,
@@ -13,33 +13,6 @@ import {
   title1,
   title2,
 } from "~test/support/letterEditorTestUtils";
-
-const baseSakspart = {
-  gjelderNavn: "Test Testeson",
-  gjelderFoedselsnummer: "12345678910",
-  saksnummer: "1234",
-  dokumentDato: "2024-03-15",
-};
-
-const baseSignatur = signatur({
-  hilsenTekst: "Med vennlig hilsen",
-  saksbehandlerNavn: "Ole Saksbehandler",
-  attesterendeSaksbehandlerNavn: "",
-  navAvsenderEnhet: "Nav Familie- og pensjonsytelser Porsgrunn",
-});
-
-const editorInfo = brevInfo({
-  brevkode: "BREV1",
-  brevtittel: "Brev 1",
-  opprettet: "2024-01-01",
-  sistredigert: "2024-01-01",
-  sistredigertAv: { id: "Z123", navn: "Z entotre" },
-  opprettetAv: { id: "Z123", navn: "Z entotre" },
-  status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
-  avsenderEnhet: { enhetNr: "0001", navn: "NAV Familie- og pensjonsytelser" },
-  spraak: SpraakKode.Bokmaal,
-  saksId: 22981081,
-});
 
 function makeLiteral(id: number, parentId: number | null, text: string) {
   return { ..._literal({ id, text }), parentId };
@@ -54,7 +27,7 @@ const exampleLetter1 = editedLetter({
     text: [makeLiteral(1, null, "Informasjon om saksbehandlingstiden vår")],
     deletedContent: [],
   },
-  sakspart: baseSakspart,
+  sakspart: baseSakspart(),
   blocks: [
     paragraph({
       id: 1,
@@ -137,11 +110,11 @@ const exampleLetter1 = editedLetter({
       content: [makeLiteral(71, 7, "Siste avsnitt for å teste at pil ned tar oss til end of line.[CP4-1]")],
     }),
   ],
-  signatur: baseSignatur,
+  signatur: baseSignatur(),
 }) as EditedLetter;
 
 function makeBrevResponse(redigertBrev: EditedLetter) {
-  return brevResponse({ info: editorInfo, redigertBrev });
+  return brevResponse({ info: editorInfo(), redigertBrev });
 }
 
 async function setupBrevRoute(page: Page, brevResponse: object) {
@@ -556,14 +529,14 @@ test.describe("LetterEditor scrolling navigation", () => {
       text: [makeLiteral(1, null, "Langt brev som ikke får plass på én skjerm")],
       deletedContent: [],
     },
-    sakspart: baseSakspart,
+    sakspart: baseSakspart(),
     blocks: Array.from({ length: 40 }, (_, i) =>
       paragraph({
         id: 100 + i,
         content: [makeLiteral(1000 + i, 100 + i, paragraphText(i + 1))],
       }),
     ),
-    signatur: baseSignatur,
+    signatur: baseSignatur(),
   }) as EditedLetter;
 
   test.beforeEach(async ({ page }) => {
