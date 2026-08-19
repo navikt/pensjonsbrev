@@ -31,12 +31,6 @@ data class InnvilgelseAvAfpAutoDto(
     val bosattINorge: Boolean,
 
     val afpBeregning: AfpBeregning,
-
-    // PE_AF_oversikt_over_pensjonen_RTF — vises kun når beregningen har flere perioder
-    // (PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder > 1). Brukes kun av
-    // den redigerbare malen `InnvilgelseAvAfp` (PE_AF_04_111); autobrevet
-    // (PE_AF_04_115) inkluderer ikke vedlegget.
-    val oversiktOverPensjonen: OversiktOverPensjonenAfpPrivatDto? = null,
 ) : AutobrevData {
 
     data class AfpBeregning(
