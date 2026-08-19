@@ -419,7 +419,13 @@ function RedigerBrev({
               }
               right={
                 <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                  <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
+                  <ManagedLetterEditor
+                    brev={brev}
+                    error={error}
+                    freeze={freeze}
+                    redigeringsflate="saksbehandler-redigering"
+                    showDebug={showDebug}
+                  />
                 </InsertedTekstValgHighlightProvider>
               }
               rightColumnWidth="minmax(640px, 694px)"

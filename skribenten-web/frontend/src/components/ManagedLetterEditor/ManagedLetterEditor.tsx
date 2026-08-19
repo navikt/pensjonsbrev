@@ -10,6 +10,7 @@ import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/stat
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { type BrevResponse } from "~/types/brev";
+import { type Redigeringsflate } from "~/utils/editorTracking";
 
 import { AUTOSAVE_TIMER } from "./autosave_timer";
 
@@ -18,7 +19,13 @@ import { AUTOSAVE_TIMER } from "./autosave_timer";
  *
  * <ManagedLetterEditor /> krever at har <ManagedLetterEditorContextProvider /> som parent.
  */
-const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error: boolean; showDebug?: boolean }) => {
+const ManagedLetterEditor = (props: {
+  brev: BrevResponse;
+  freeze: boolean;
+  error: boolean;
+  showDebug?: boolean;
+  redigeringsflate: Redigeringsflate;
+}) => {
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
   const { mutate, isError } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
@@ -85,6 +92,7 @@ const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error
       editorState={editorState}
       error={props.error || isError}
       freeze={props.freeze}
+      redigeringsflate={props.redigeringsflate}
       setEditorState={setEditorState}
       showDebug={props.showDebug ?? false}
     />

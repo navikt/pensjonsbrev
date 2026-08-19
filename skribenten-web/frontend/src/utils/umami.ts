@@ -24,7 +24,9 @@ export type UmamiEventName =
   | "tid brukt i brevbehandler"
   | "tid brukt i brevvelger"
   | "tid brukt i editor"
-  | "tilbakestill mottaker klikket";
+  | "tilbakestill mottaker klikket"
+  | "blokk beholdt"
+  | "blokk slettet";
 
 export interface UmamiEventData {
   [key: string]: string | number | boolean | undefined;
