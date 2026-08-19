@@ -63,19 +63,16 @@ class SaksbehandlervalgPerMalTest {
                 "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_INNTEKTSEVNE_30 to listOf(
-                "VisVurderingFraVilkarvedtak: Boolean (Vis vurdering fra vilkår)",
                 "visUnntaksregelFremtidigInntekt: Boolean (Unntaksregel om fremtidig inntekt)",
                 "visVurderingIEU: Boolean (Vis vurdering 12-9 IEU)",
                 "visVurderingIFU: Boolean (Vis vurdering 12-9 IFU)",
             ),
             Redigerbar.UT_AVSLAG_INNTEKTSEVNE_40 to listOf(
-                "VisVurderingFraVilkarvedtak: Boolean (Vis vurdering fra vilkår)",
                 "visUnntaksregelFremtidigInntekt: Boolean (Unntaksregel om fremtidig inntekt)",
                 "visVurderingIEU: Boolean (Vis vurdering 12-9 IEU)",
                 "visVurderingIFU: Boolean (Vis vurdering 12-9 IFU)",
             ),
             Redigerbar.UT_AVSLAG_INNTEKTSEVNE_50 to listOf(
-                "VisVurderingFraVilkarvedtak: Boolean (Vis vurdering fra vilkår)",
                 "visUnntaksregelFremtidigInntekt: Boolean (Unntaksregel om fremtidig inntekt)",
                 "visVurderingIEU: Boolean (Vis vurdering 12-9 IEU)",
                 "visVurderingIFU: Boolean (Vis vurdering 12-9 IFU)",
@@ -104,8 +101,6 @@ class SaksbehandlervalgPerMalTest {
                 "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
             ),
             Redigerbar.UT_AVSLAG_OKT_GRAD_INNTEKTSEVNE to listOf(
-                "VisVurderingFraVilkarvedtak: Boolean (Vis vurdering fra vilkår)",
-                "visUnntaksregelFremtidigInntekt: Boolean (Unntaksregel om fremtidig inntekt)",
                 "visVurderingIEU: Boolean (Vis vurdering 12-9 IEU)",
                 "visVurderingIFU: Boolean (Vis vurdering 12-9 IFU)",
             ),
@@ -126,7 +121,6 @@ class SaksbehandlervalgPerMalTest {
             ),
             Redigerbar.UT_AVSLAG_UNG_UFOR_36 to listOf(
                 "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",
-                "visUforetidspunktEtter26: Boolean (Uføretidspunkt etter 26 år)",
             ),
             Redigerbar.UT_AVSLAG_UNG_UFOR_VARIG to listOf(
                 "VisVurderingFraVilkarvedtak: Boolean (Bruk vurdering fra vilkårsvedtak)",

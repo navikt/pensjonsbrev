@@ -87,7 +87,6 @@ object Fixtures : LetterDataFactory {
         ),
         saksbehandlerValg = lagSaksbehandlervalg(
             "VisVurderingFraVilkarvedtak" to true,
-            "visUforetidspunktEtter26" to true
         )
     )
 

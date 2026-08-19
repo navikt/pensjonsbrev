@@ -184,7 +184,6 @@ fun createInnvilgelseUforetrygdBosattNorgeEtterUtlandDto() =
 fun createInnvilgelseUforetrygdMellombehandlingDto() =
     InnvilgelseUfoeretrygdMellombehandlingDto(
         saksbehandlerValg = lagSaksbehandlervalg(
-            "refusjon" to true,
             "barnetilleggInfo" to true,
             "innvilgetEtter12_2Andreledd" to true,
             "innvilgetEtter12_2Tredjeledd" to true,

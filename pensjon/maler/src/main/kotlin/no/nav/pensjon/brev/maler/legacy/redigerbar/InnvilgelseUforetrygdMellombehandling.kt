@@ -53,7 +53,6 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
         )
     ) {
         val barnetilleggInfo = saksbehandlervalg("barnetilleggInfo", "Info om rett til barnetillegg").bool()
-        val refusjon = saksbehandlervalg("refusjon", "Refusjon").bool()
         val innvilgetEtter12_2Andreledd = saksbehandlervalg("innvilgetEtter12_2Andreledd", "Innvilget etter 12-2 2.ledd").bool()
         val innvilgetEtter12_2Tredjeledd = saksbehandlervalg("innvilgetEtter12_2Tredjeledd", "Innvilget etter 12-2 3.ledd").bool()
         val periodisertInntekt = saksbehandlervalg("periodisertInntekt", "Periodisert inntekt barnetillegg").enum<PeriodisertInntektBarnetillegg>()
