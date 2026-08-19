@@ -2,10 +2,9 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { SpraakKode } from "~/types/apiTypes";
 import { type EditedLetter } from "~/types/brevbakerTypes";
+import { setupSakStubs } from "~test/e2e/support/helpers";
 import { brevInfo, brevResponse, editedLetter, signatur } from "~test/support/brevFixtures";
 import { literal, paragraph, title1, title2, title3 } from "~test/support/letterEditorTestUtils";
-
-import { setupSakStubs } from "../utils/helpers";
 
 const editorInfo = brevInfo({
   brevkode: "BREV1",

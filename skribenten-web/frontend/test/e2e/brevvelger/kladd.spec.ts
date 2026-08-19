@@ -1,8 +1,7 @@
 import { expect, test } from "@playwright/test";
 
+import { setupSakStubs } from "~test/e2e/support/helpers";
 import { brevInfo, brevResponse } from "~test/support/brevFixtures";
-
-import { setupSakStubs } from "../utils/helpers";
 
 test.describe("Kladd", () => {
   test.beforeEach(async ({ page }) => {

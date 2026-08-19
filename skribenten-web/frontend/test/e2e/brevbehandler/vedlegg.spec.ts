@@ -2,9 +2,8 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { SpraakKode } from "~/types/apiTypes";
 import { type AlltidValgbartVedlegg } from "~/types/brev";
+import { setupSakStubs } from "~test/e2e/support/helpers";
 import { brevInfo, brevResponse } from "~test/support/brevFixtures";
-
-import { setupSakStubs } from "../utils/helpers";
 
 const bokmaalBrev = brevInfo({
   spraak: SpraakKode.Bokmaal,
