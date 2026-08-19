@@ -2,8 +2,7 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { SpraakKode } from "~/types/apiTypes";
 import { type EditedLetter, type LiteralValue } from "~/types/brevbakerTypes";
-
-import { brevInfo, brevResponse, editedLetter, signatur } from "../../support/brevFixtures";
+import { brevInfo, brevResponse, editedLetter, signatur } from "~test/support/brevFixtures";
 import {
   literal as _literal,
   variable as _variable,
@@ -12,7 +11,8 @@ import {
   paragraph,
   title1,
   title2,
-} from "../../support/letterEditorTestUtils";
+} from "~test/support/letterEditorTestUtils";
+
 import { setupSakStubs } from "../utils/helpers";
 
 const baseSakspart = {

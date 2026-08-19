@@ -10,8 +10,7 @@ import { type KvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils
 import { SendtBrevProvider } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevContext";
 import { type BestillBrevResponse, type BrevInfo, Distribusjonstype } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
-
-import { brevInfo } from "../../support/brevFixtures";
+import { brevInfo } from "~test/support/brevFixtures";
 
 vi.mock("~/hooks/useSakGjelderNavn", () => ({
   useSakGjelderNavnFormatert: () => "Tydelig Bakke",

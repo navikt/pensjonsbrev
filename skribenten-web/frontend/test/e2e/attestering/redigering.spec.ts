@@ -2,8 +2,8 @@ import { expect, test } from "@playwright/test";
 import { formatISO } from "date-fns";
 
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
+import { brevResponse } from "~test/support/brevFixtures";
 
-import { brevResponse } from "../../support/brevFixtures";
 import { setupSakStubs } from "../utils/helpers";
 
 const defaultBrev = brevResponse({});

@@ -1,6 +1,7 @@
 import { expect, test } from "@playwright/test";
 
-import { brevInfo, brevResponse } from "../../support/brevFixtures";
+import { brevInfo, brevResponse } from "~test/support/brevFixtures";
+
 import { setupSakStubs } from "../utils/helpers";
 
 test.describe("Kladd", () => {

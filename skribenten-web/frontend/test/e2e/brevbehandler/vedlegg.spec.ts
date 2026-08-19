@@ -2,8 +2,8 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { SpraakKode } from "~/types/apiTypes";
 import { type AlltidValgbartVedlegg } from "~/types/brev";
+import { brevInfo, brevResponse } from "~test/support/brevFixtures";
 
-import { brevInfo, brevResponse } from "../../support/brevFixtures";
 import { setupSakStubs } from "../utils/helpers";
 
 const bokmaalBrev = brevInfo({

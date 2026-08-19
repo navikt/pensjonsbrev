@@ -3,8 +3,8 @@ import { readFileSync } from "node:fs";
 import { expect, type Page, test } from "@playwright/test";
 
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
+import { brevInfo } from "~test/support/brevFixtures";
 
-import { brevInfo } from "../../support/brevFixtures";
 import { setupSakStubs } from "../utils/helpers";
 
 test.describe("Brevbehandler", () => {

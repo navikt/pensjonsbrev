@@ -2,8 +2,8 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { type BrevResponse } from "~/types/brev";
+import { brevInfo, brevResponse } from "~test/support/brevFixtures";
 
-import { brevInfo, brevResponse } from "../../support/brevFixtures";
 import brev from "../fixtures/bekreftelsePåFlyktningstatus/brev.json" with { type: "json" };
 import { setupSakStubs } from "../utils/helpers";
 

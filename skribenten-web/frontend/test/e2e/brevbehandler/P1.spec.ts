@@ -2,7 +2,8 @@ import { readFileSync } from "node:fs";
 
 import { expect, type Page, test } from "@playwright/test";
 
-import { brevResponse } from "../../support/brevFixtures";
+import { brevResponse } from "~test/support/brevFixtures";
+
 import p1Data from "../fixtures/p1Data.json" with { type: "json" };
 import { setupSakStubs } from "../utils/helpers";
 
