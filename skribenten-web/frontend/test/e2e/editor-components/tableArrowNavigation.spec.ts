@@ -3,7 +3,8 @@ import { expect, type Page, test } from "@playwright/test";
 import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/LetterEditor/actions/common";
 import { type Row } from "~/types/brevbakerTypes";
 
-import { brevResponse, editedLetter } from "../../utils/letterEditorTestUtils";
+import { brevResponse } from "../../support/brevFixtures";
+import { editedLetter } from "../../support/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
 function tableRow(...texts: string[]): Row {

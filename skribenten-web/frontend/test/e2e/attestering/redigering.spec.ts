@@ -3,7 +3,7 @@ import { formatISO } from "date-fns";
 
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 
-import { brevResponse } from "../../utils/letterEditorTestUtils";
+import { brevResponse } from "../../support/brevFixtures";
 import { setupSakStubs } from "../utils/helpers";
 
 const defaultBrev = brevResponse({});

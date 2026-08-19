@@ -11,7 +11,7 @@ import { SendtBrevProvider } from "~/routes/saksnummer_/$saksId/kvittering/-comp
 import { type BestillBrevResponse, type BrevInfo, Distribusjonstype } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
 
-import { brevInfo } from "../../utils/letterEditorTestUtils";
+import { brevInfo } from "../../support/brevFixtures";
 
 vi.mock("~/hooks/useSakGjelderNavn", () => ({
   useSakGjelderNavnFormatert: () => "Tydelig Bakke",

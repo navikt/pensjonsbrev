@@ -3,17 +3,8 @@ import { expect, type Page, test } from "@playwright/test";
 import { SpraakKode } from "~/types/apiTypes";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 
-import {
-  brevInfo,
-  brevResponse,
-  editedLetter,
-  literal,
-  paragraph,
-  signatur,
-  title1,
-  title2,
-  title3,
-} from "../../utils/letterEditorTestUtils";
+import { brevInfo, brevResponse, signatur } from "../../support/brevFixtures";
+import { editedLetter, literal, paragraph, title1, title2, title3 } from "../../support/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
 const editorInfo = brevInfo({

@@ -3,19 +3,17 @@ import { expect, type Page, test } from "@playwright/test";
 import { SpraakKode } from "~/types/apiTypes";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 
+import { brevInfo, brevResponse, signatur } from "../../support/brevFixtures";
 import {
   literal as _literal,
   variable as _variable,
-  brevInfo,
-  brevResponse,
   editedLetter,
   item,
   itemList,
   paragraph,
-  signatur,
   title1,
   title2,
-} from "../../utils/letterEditorTestUtils";
+} from "../../support/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
 const baseSakspart = {

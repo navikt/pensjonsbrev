@@ -4,7 +4,7 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 
-import { brevInfo } from "../../utils/letterEditorTestUtils";
+import { brevInfo } from "../../support/brevFixtures";
 import { setupSakStubs } from "../utils/helpers";
 
 test.describe("Brevbehandler", () => {
