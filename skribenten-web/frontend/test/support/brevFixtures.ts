@@ -1,3 +1,4 @@
+import { newLiteral, newVariable } from "~/Brevredigering/LetterEditor/actions/common";
 import { SpraakKode } from "~/types/apiTypes";
 import {
   type BrevInfo,
@@ -10,10 +11,8 @@ import {
   type NavAnsatt,
   type SaksbehandlerValg,
 } from "~/types/brev";
-import { type EditedLetter, type Signatur } from "~/types/brevbakerTypes";
+import { type AnyBlock, type EditedLetter, type Sakspart, type Signatur, type Title } from "~/types/brevbakerTypes";
 import { type Nullable } from "~/types/Nullable";
-
-import { editedLetter } from "./letterEditorTestUtils";
 
 export const brevResponse = ({
   info = brevInfo({}),
@@ -34,6 +33,71 @@ export const brevResponse = ({
   saksbehandlerValg,
   propertyUsage: null,
   valgteVedlegg,
+});
+
+export const editedLetter = ({
+  title,
+  sakspart,
+  blocks,
+  signatur: letterSignatur = signatur(),
+  deletedBlocks,
+}: {
+  title?: Title;
+  sakspart?: Sakspart;
+  blocks?: AnyBlock[];
+  signatur?: Signatur;
+  deletedBlocks?: number[];
+} = {}): EditedLetter => ({
+  title: title ?? {
+    text: [newLiteral({ text: "Information about application processing time" })],
+    deletedContent: [],
+  },
+  sakspart: sakspart ?? {
+    gjelderNavn: "TRYGG ANBEFALING",
+    gjelderFoedselsnummer: "21418744917",
+    saksnummer: "22981081",
+    dokumentDato: "2024-09-25",
+  },
+  blocks: blocks ?? [
+    {
+      id: 272_720_182,
+      parentId: null,
+      editable: true,
+      content: [
+        newLiteral({ id: 1_507_865_607, parentId: 272_720_182, text: "We received your application for " }),
+        newVariable({ id: -726_051_414, parentId: 272_720_182, text: "alderspensjon" }),
+        newLiteral({
+          id: -711_242_333,
+          parentId: 272_720_182,
+          text: " from the Norwegian National Insurance Scheme on ",
+        }),
+        newVariable({ id: -694_080_035, parentId: 272_720_182, text: "24 July 2024" }),
+        newLiteral({ id: -1_114_690_237, parentId: 272_720_182, text: "." }),
+      ],
+      deletedContent: [],
+      missingFromTemplate: false,
+      type: "PARAGRAPH",
+    },
+    {
+      id: 822_540_105,
+      parentId: null,
+      editable: true,
+      content: [
+        newLiteral({
+          id: -1_114_690_237,
+          parentId: 822_540_105,
+          text: "Our processing time for this type of application is usually ",
+        }),
+        newVariable({ id: 1_834_595_758, parentId: 822_540_105, text: "10" }),
+        newLiteral({ id: 1_838_606_639, parentId: 822_540_105, text: " weeks." }),
+      ],
+      deletedContent: [],
+      missingFromTemplate: false,
+      type: "PARAGRAPH",
+    },
+  ],
+  signatur: letterSignatur,
+  deletedBlocks: deletedBlocks ?? [],
 });
 
 export const brevInfo = (args: {

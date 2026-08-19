@@ -4,8 +4,7 @@ import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/Le
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { type Row } from "~/types/brevbakerTypes";
 
-import { brevResponse } from "../../support/brevFixtures";
-import { editedLetter } from "../../support/letterEditorTestUtils";
+import { brevResponse, editedLetter } from "../../support/brevFixtures";
 import { setupSakStubs } from "../utils/helpers";
 
 // Playwright Chromium always reports a Windows userAgent (isMac=false in the app),

@@ -3,11 +3,10 @@ import { expect, type Page, test } from "@playwright/test";
 import { SpraakKode } from "~/types/apiTypes";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 
-import { brevInfo, brevResponse, signatur } from "../../support/brevFixtures";
+import { brevInfo, brevResponse, editedLetter, signatur } from "../../support/brevFixtures";
 import {
   literal as _literal,
   variable as _variable,
-  editedLetter,
   item,
   itemList,
   paragraph,
