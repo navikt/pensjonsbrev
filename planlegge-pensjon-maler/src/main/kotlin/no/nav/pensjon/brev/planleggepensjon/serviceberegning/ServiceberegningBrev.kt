@@ -100,22 +100,19 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
         }
 
         outline {
-            val allTogglesAreOff = saksbehandlerValg.alt1.not() and saksbehandlerValg.alt2.not() and
-                saksbehandlerValg.alt3.not() and saksbehandlerValg.alt4.not() and saksbehandlerValg.alt5.not()
-
-            showIf(saksbehandlerValg.alt1 or allTogglesAreOff) {
+            showIf(saksbehandlerValg.alt1) {
                 paragraph { text(bokmal { +"Bruker har ingen ytelser som ikke kan kombineres med AFP." }) }
             }
-            showIf(saksbehandlerValg.alt2 or allTogglesAreOff) {
+            showIf(saksbehandlerValg.alt2) {
                 paragraph { text(bokmal { +"Bruker har hatt utbetalt alderspensjon frem til " + fritekst("DD.MM.ÅÅÅÅ") + "." }) }
             }
-            showIf(saksbehandlerValg.alt3 or allTogglesAreOff) {
+            showIf(saksbehandlerValg.alt3) {
                 paragraph { text(bokmal { +"Bruker har " + fritekst("XX") + " % uføretrygd fra folketrygden." }) }
             }
-            showIf(saksbehandlerValg.alt4 or allTogglesAreOff) {
+            showIf(saksbehandlerValg.alt4) {
                 paragraph { text(bokmal { +"Bruker har arbeidsavklaringspenger (AAP) til utbetaling per i dag." }) }
             }
-            showIf(saksbehandlerValg.alt5 or allTogglesAreOff) {
+            showIf(saksbehandlerValg.alt5) {
                 paragraph {
                     text(
                         bokmal {
