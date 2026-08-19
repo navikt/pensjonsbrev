@@ -4,18 +4,16 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.orienteringOmSaksbehandlingstidDto.saksbehandlerValg.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.orienteringOmSaksbehandlingstidDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
@@ -36,6 +34,8 @@ object OrienteringOmSaksbehandlingstid : RedigerbarTemplate<OrienteringOmSaksbeh
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
+        val soeknadOversendesTilUtlandet = saksbehandlervalg("soeknadOversendesTilUtlandet", "Søknad oversendes til utlandet").bool()
+
         title {
             //[PE_UP_07_105_overskrift]
             text(
@@ -69,7 +69,7 @@ object OrienteringOmSaksbehandlingstid : RedigerbarTemplate<OrienteringOmSaksbeh
                 )
             }
 
-            showIf(saksbehandlerValg.soeknadOversendesTilUtlandet.ifNull(false)) {
+            showIf(soeknadOversendesTilUtlandet) {
                 paragraph {
                     text(
                         bokmal { + "Søknaden din vil også bli oversendt utlandet fordi du har opplyst at du har bodd/arbeidet i et land Norge har trygdeavtale med." },

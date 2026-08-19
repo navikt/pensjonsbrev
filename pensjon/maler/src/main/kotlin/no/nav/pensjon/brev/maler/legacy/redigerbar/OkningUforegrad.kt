@@ -4,9 +4,9 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.saksbehandlervalg.periodisertInntekt
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -29,6 +29,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
@@ -52,6 +53,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
+        val periodisertInntekt = saksbehandlervalg("periodisertInntekt", "Periodisert inntekt barnetillegg").enum<PeriodisertInntektBarnetillegg>()
+
         title {
             text(
                 bokmal { +"Nav har innvilget søknaden din om økt uføretrygd" },
@@ -102,17 +105,16 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             val oifuMerEnnIfu = oifuKroner.greaterThan(ifuinntekt)
 
             val txtOgEllerEktefelle = if (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().equals(true)) " og/eller ektefelle" else ""
-            val soknadsdato = pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato())
 
             paragraph {
                 text(
-                    bokmal { +"Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + soknadsdato.format() + ". " },
-                    nynorsk { +"Vi har innvilga søknaden din om auka uføretrygd som vi fekk " + soknadsdato.format() + ". " },
+                    bokmal { +"Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". " },
+                    nynorsk { +"Vi har innvilga søknaden din om auka uføretrygd som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". " },
                 )
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().isNotAnyOf("omgj_etter_klage", "omgj_etter_anke")) {
                     text(
-                        bokmal { +"Uføregraden din øker fra " + fritekst("Forrige Uforegrad") + " til " + uforegradFraBeregning.format() + " prosent fra " + virkningstidpunkt.format() + ". " },
-                        nynorsk { +"Uføregraden din aukar frå " + fritekst("Forrige Uforegrad") + " til " + uforegradFraBeregning.format() + " prosent frå " + virkningstidpunkt.format() + ". " },
+                        bokmal { +"Uføregraden din øker fra " + fritekst("Forrige uføregrad") + " til " + uforegradFraBeregning.format() + " prosent fra " + virkningstidpunkt.format() + ". " },
+                        nynorsk { +"Uføregraden din aukar frå " + fritekst("Forrige uføregrad") + " til " + uforegradFraBeregning.format() + " prosent frå " + virkningstidpunkt.format() + ". " },
                     )
                 }.orShow {
                     text(
@@ -197,7 +199,13 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                         bokmal { +"Vi har avslått barnetillegg i uføretrygden din for" },
                         nynorsk { +"Vi har avslått barnetillegg i uføretrygda di for" },
                     )
-                    includePhrase(Felles.TextOrList(pesysData.nyeAvslagBarnetillegg.map(BarnetilleggFormatter), 0))
+                    includePhrase(Felles.TextOrList(pesysData.nyeAvslagBarnetillegg.map(BarnetilleggFlereBarnFormatter), 0))
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Se begrunnelse under avsnittet Derfor har vi avslått søknaden din om barnetillegg" },
+                        nynorsk { +"Sjå grunngiving under avsnittet Derfor har vi avslått søknaden din om barnetillegg" },
+                    )
                 }
             }
 
@@ -330,8 +338,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                     }
                     item {
                         text(
-                            bokmal { +"Du må ha vært medlem av folketrygden i de siste tre årene fram til uføretidspunktet, eller oppfylle en av unntaksreglene." },
-                            nynorsk { +"Du må ha vore medlem av folketrygda i dei siste tre åra fram til uføretidspunktet, eller oppfylle ein av unntaksreglane." },
+                            bokmal { +"Du må ha vært medlem av folketrygden i de siste fem årene fram til uføretidspunktet, eller oppfylle en av unntaksreglene." },
+                            nynorsk { +"Du må ha vore medlem av folketrygda i dei siste fem åra fram til uføretidspunktet, eller oppfylle ein av unntaksreglane." },
                         )
                     }
                     item {
@@ -598,8 +606,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))) {
                 paragraph {
                     text(
-                        bokmal { +"Du har fått innvilget økt uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + ". Dette kaller vi virkningstidspunktet. Vi mottok søknaden din " + soknadsdato.format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen.<FRITEKST>." },
-                        nynorsk { +"Du har fått innvilga auka uføretrygd frå " + pe.vedtaksdata_virkningfom().format() + ". Dette kallar vi verknadstidspunktet. Vi fekk søknaden din " + soknadsdato.format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd for opptil tre månader før denne datoen.<FRITEKST>." },
+                        bokmal { +"Du har fått innvilget økt uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + ". Dette kaller vi virkningstidspunktet. Ditt krav ble framsatt " + pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()).format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " + fritekst("Fritekst") },
+                        nynorsk { +"Du har fått innvilga auka uføretrygd frå " + pe.vedtaksdata_virkningfom().format() + ". Dette kallar vi verknadstidspunktet. Kravet ditt blei framsatt " + pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()).format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " + fritekst("Fritekst") },
                     )
                 }
             }
@@ -622,8 +630,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
 
             paragraph {
                 text(
-                    bokmal { +"Vi har tidligere fastsatt uføretidspunktet ditt til " + fritekst("Første Uforetidspunkt") + ". Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
-                    nynorsk { +"Vi har tidlegare fastsett uføretidspunktet ditt til " + fritekst("Første Uforetidspunkt") + ". Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
+                    bokmal { +"Vi har tidligere fastsatt uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
+                    nynorsk { +"Vi har tidlegare fastsett uføretidspunktet ditt til " + fritekst("Første uføretidspunkt") + ". Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
                 )
             }
 
@@ -670,8 +678,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             showIf(((ifubegrunnelse).equalTo("stdbegr_12_8_2_1") and (ieuBegrunnelse).notEqualTo("stdbegr_12_8_1_3"))) {
                 paragraph {
                     text(
-                        bokmal { +"Inntekten din før du ble ufør er fastsatt til " + ifuinntekt.format() + " på uføretidspunktet i " + uforetidspunkt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + ". " },
-                        nynorsk { +"Inntekta di før du blei ufør, er fastsett til " + ifuinntekt.format() + " på uføretidspunktet i " + uforetidspunkt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + ". " },
+                        bokmal { +"Inntekten din før du ble ufør er fastsatt til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + ". " },
+                        nynorsk { +"Inntekta di før du blei ufør, er fastsett til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + ". " },
                     )
                     showIf(oifuMerEnnIfu) {
                         text(
@@ -685,8 +693,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             showIf(((ifubegrunnelse).equalTo("stdbegr_12_8_2_3") and (ieuBegrunnelse).notEqualTo("stdbegr_12_8_1_3"))) {
                 paragraph {
                     text(
-                        bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er derfor tidligere fastsatt til " + ifuinntekt.format() + " på uføretidspunktet ditt. Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,3 ganger grunnbeløpet." },
-                        nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør, er fastsett til " + ifuinntekt.format() + " på uføretidspunktet i " + uforetidspunkt.format() + ". Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,3 gonger grunnbeløpet." },
+                        bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er fastsatt til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,3 ganger grunnbeløpet." },
+                        nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør er fastsett til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,3 gonger grunnbeløpet." },
                     )
                     showIf(oifuMerEnnIfu) {
                         text(
@@ -700,8 +708,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             showIf(((ifubegrunnelse).equalTo("stdbegr_12_8_2_5") and (ieuBegrunnelse).notEqualTo("stdbegr_12_8_1_3"))) {
                 paragraph {
                     text(
-                        bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er derfor tidligere fastsatt til " + ifuinntekt.format() + " på uføretidspunktet i " + uforetidspunkt.format() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,5 ganger folketrygdens grunnbeløp." },
-                        nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør, er fastsett til " + ifuinntekt.format() + " på uføretidspunktet i " + uforetidspunkt.format() + ". Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,5 gonger grunnbeløpet." },
+                        bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er fastsatt til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,5 ganger folketrygdens grunnbeløp." },
+                        nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør er fastsett til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,5 gonger grunnbeløpet." },
                     )
                     showIf(oifuMerEnnIfu) {
                         text(
@@ -751,8 +759,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             showIf((ieuBegrunnelse.equalTo("stdbegr_12_8_1_3"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har fastsatt inntekten din før du ble ufør til " + ifuinntekt.format() + " på uføretidspunktet i " + uforetidspunkt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + "." },
-                        nynorsk { +"Vi har fastsett inntekta di før du blei ufør til " + ifuinntekt.format() + " på uføretidspunktet i " + uforetidspunkt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + "." },
+                        bokmal { +"Vi har fastsatt inntekten din før du ble ufør til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + "." },
+                        nynorsk { +"Vi har fastsett inntekta di før du blei ufør til " + ifuinntekt.format() + " på uføretidspunktet " + uforetidspunkt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + "." },
                     )
                     showIf(oifuMerEnnIfu) {
                         text(
@@ -1158,7 +1166,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                             btSerkullInnvilget = barnetilleggSerkullInnvilget,
                             grunnbelop = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop(),
                             pe = pe,
-                            periodisertInntekt = saksbehandlerValg.periodisertInntekt)
+                            periodisertInntekt = periodisertInntekt
+                        )
                     )
                 }
 
@@ -1574,13 +1583,17 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                 includePhrase(Ufoeretrygd.BeregningenDinKanBliEndret)
                 paragraph {
                     text(
-                        bokmal { +"<STRYK TEKSTEN UNDER DERSOM DEN IKKE ER AKTUELL>" },
-                        nynorsk { +"<STRYK TEKSTEN UNDER DERSOM DEN IKKE ER AKTUELL>" },
+                        bokmal { +fritekst("STRYK TEKSTEN UNDER DERSOM DEN IKKE ER AKTUELL") },
+                        nynorsk { +fritekst("STRYK TEKSTEN UNDER DERSOM DEN IKKE ER AKTUELL") },
                     )
+                }
+                title1 {
                     text(
                         bokmal { +"En utenlandsk myndighet krever refusjon" },
                         nynorsk { +"Eit utanlandsk organ krev refusjon" },
                     )
+                }
+                paragraph {
                     text(
                         bokmal { +"" + fritekst("land") + " har varslet Nav at de kan ha utbetalt for mye penger til deg. De har mulighet til å kreve dette tilbake i etterbetalingen av den norske uføretrygden din. Vi vil holde tilbake etterbetalingen inntil vi har fått svar fra " + fritekst("land") + ". Har du spørsmål om dette, kan du ta kontakt med " + fritekst("nasjonalitet") + " myndigheter." },
                         nynorsk { +"" + fritekst("Land") + " har varsla Nav at dei kan ha betalt ut for mykje pengar til deg. Dei har høve til å krevje dette tilbake i etterbetalinga av den norske uføretrygda di. Vi vil halde tilbake etterbetalinga inntil vi har fått svar frå " + fritekst("Land") + ". Har du spørsmål om dette, kan du ta kontakt med " + fritekst("Nasjonalitet") + " styresmakter." },

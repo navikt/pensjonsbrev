@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDto
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.vedtakAfpPrivatEndringDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.vedtakAfpPrivatEndringDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate

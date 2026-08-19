@@ -5,25 +5,16 @@ body {
 :root {
   --largest-width: 1500px;
   --minimum-width: 768px;
-  --header-height: 48px;
-  --breadcrumbs-height: 48px;
 }
 
 .page-margins {
-  max-width: var(--largest-width);
-  min-width: var(--minimum-width);
-  min-height: calc(100vh - var(--header-height));
+  /* max-width: var(--largest-width);
+  min-width: var(--minimum-width); */
   margin: 0 auto;
-  padding: 0 24px;
+  /* padding: 0 24px; */
   display: flex;
   flex-direction: column;
-}
-
-.preview {
-  width: 1000px;
-  background: white;
-  padding: 3rem;
-  align-self: center;
+  height: 100vh;
 }
 
 .expression {
@@ -50,13 +41,16 @@ body {
 @keyframes highlight-animation {
   0% {
     background-color: var(--ax-warning-500);
+    box-shadow: 0 0 0 1rem var(--ax-warning-500);
   }
   100% {
     background-color: var(--ax-warning-300);
+    box-shadow: 0 0 0 1rem var(--ax-warning-300);
   }
 }
 
 .highlight {
   background: var(--ax-warning-300);
+  box-shadow: 0 0 0 1rem var(--ax-warning-300);
   animation: highlight-animation 0.5s ease-out;
 }

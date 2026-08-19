@@ -2,15 +2,15 @@ package no.nav.pensjon.brev.ufore
 
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
+import no.nav.brev.brevbaker.SaksbehandlervalgIDSLTestImpl
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingDodsboSaksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
@@ -43,7 +43,7 @@ object Fixtures : LetterDataFactory {
             FeilutbetalingVarselDodsboDto::class -> lagFeilutbetalingVarselDodsbo() as T
             InnhentingOpplysningerNaeringsinntektDto::class -> lagInnhentingOpplysningerNaeringsinntekt() as T
             InnhentingOpplysningerSamboerDto::class -> lagInnhentingOpplysningerSamboer() as T
-            EmptyRedigerbarBrevdata::class -> lagEmptyRedigerbarBrevdata() as T
+            EmptyRedigerbarBrevdataMedSaksbehandlerValg::class -> lagEmptyRedigerbarBrevdataMedSaksbehandlerValg() as T
             EmptyAutobrevdata::class -> EmptyAutobrevdata as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
@@ -54,24 +54,25 @@ object Fixtures : LetterDataFactory {
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
     }
 
-    private fun lagEmptyRedigerbarBrevdata() = EmptyRedigerbarBrevdata
+    private fun lagEmptyRedigerbarBrevdataMedSaksbehandlerValg() =
+        EmptyRedigerbarBrevdataMedSaksbehandlerValg(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl())
 
     private fun lagFeilutbetalingSpesfikkVarsel() = FeilutbetalingSpesifikkVarselDto(
         pesysData = VarselFeilutbetalingPesysData(100),
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
     )
 
     private fun lagInnhentingOpplysningerNaeringsinntekt() = InnhentingOpplysningerNaeringsinntektDto(
         pesysData = EmptyFagsystemdata,
-        saksbehandlerValg = InnhentingOpplysningerNaeringsinntektDto.Saksbehandlervalg(
-            ikkeMottattInntektsskjema = true
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "ikkeMottattInntektsskjema" to true
         )
     )
 
     private fun lagInnhentingOpplysningerSamboer() = InnhentingOpplysningerSamboerDto(
         pesysData = EmptyFagsystemdata,
-        saksbehandlerValg = InnhentingOpplysningerSamboerDto.Saksbehandlervalg(
-            ukjentSamboer = false
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "ukjentSamboer" to false
         )
     )
 
@@ -80,9 +81,8 @@ object Fixtures : LetterDataFactory {
             kravMottattDato = vilkaarligDato,
             vurdering = "Vurdering 1"
         ),
-        saksbehandlerValg = UforeAvslagUforetidspunkt26Dto.Saksbehandlervalg(
-            VisVurderingFraVilkarvedtak = true,
-            visUforetidspunktEtter26 = true
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "VisVurderingFraVilkarvedtak" to true,
         )
     )
 
@@ -91,49 +91,47 @@ object Fixtures : LetterDataFactory {
             kravMottattDato = vilkaarligDato,
             vurdering = "Vurdering 1"
         ),
-        saksbehandlerValg = UforeAvslagForverrelseEtter26Dto.Saksbehandlervalg(
-            VisVurderingFraVilkarvedtak = true,
-            visForverrelseEtter26 = true
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "VisVurderingFraVilkarvedtak" to true,
+            "visForverrelseEtter26" to true
         )
     )
 
     private fun lagUforeAvslagEnkelDto() = UforeAvslagEnkelDto(
         pesysData = UforeAvslagEnkelDto.UforeAvslagPendata(
             kravMottattDato = vilkaarligDato,
-            kravFremsattDato = vilkaarligDato,
             vurdering = "Vurdering 1"
         ),
-        saksbehandlerValg = UforeAvslagEnkelDto.Saksbehandlervalg(
-            VisVurderingFraVilkarvedtak = true
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "VisVurderingFraVilkarvedtak" to true
         )
     )
 
     private fun lagUforeAvslagTestmalDto() = UforeAvslagTestmalDto(
         pesysData = UforeAvslagTestmalDto.UforeAvslagPendata(
             kravMottattDato = vilkaarligDato,
-            vurdering = listOf("Vurdering 1", "Vurdering 2")
+            vurdering = listOf("Vurdering 1", "Vurdering 2"),
+            vurderingsTekst = "Vurdering 3"
         ),
-        saksbehandlerValg = UforeAvslagTestmalDto.Saksbehandlervalg(
-            VisVurderingFraVilkarvedtak = true
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "VisVurderingFraVilkarvedtak" to true
         )
     )
 
     private fun lagUforeAvslagSupplerendeStonadEnkelDto() = UforeAvslagSupplerendeStonadEnkelDto(
         pesysData = UforeAvslagSupplerendeStonadEnkelDto.UforeAvslagPendata(
             kravMottattDato = vilkaarligDato,
-            kravFremsattDato = vilkaarligDato,
             vurdering = "Vurdering 1"
         ),
-        saksbehandlerValg = UforeAvslagSupplerendeStonadEnkelDto.Saksbehandlervalg(
-            VisVurderingFraVilkarvedtak = true,
-            visSupplerendeStonadUforeFlykninger = true,
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "VisVurderingFraVilkarvedtak" to true,
+            "visSupplerendeStonadUforeFlykninger" to true,
         )
     )
 
     private fun lagUforeAvslagUtlandDto() = UforeAvslagUtlandDto(
         pesysData = UforeAvslagUtlandDto.UforeAvslagPendata(
             kravMottattDato = LocalDate.now(),
-            kravFremsattDato = vilkaarligDato,
             kravGjelder = UforeAvslagUtlandDto.KravGjelder.MELLOMBH,
             eosNordisk = false,
             avtaletype = "USA",
@@ -151,17 +149,16 @@ object Fixtures : LetterDataFactory {
                 )
             )
         ),
-        saksbehandlerValg = UforeAvslagUtlandDto.Saksbehandlervalg(
-            visInnvilgetPensjonEOSLand = true,
-            visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning = true,
-            visSupplerendeStonadUforeFlykninger = true,
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "visInnvilgetPensjonEOSLand" to true,
+            "visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning" to true,
+            "visSupplerendeStonadUforeFlykninger" to true,
         )
     )
 
     private fun lagUforeAvslagInntektDto() = UforeAvslagInntektDto(
         pesysData = UforeAvslagInntektDto.UforeAvslagInntektPendata(
             kravMottattDato = vilkaarligDato,
-            kravFremsattDato = vilkaarligDato,
             vurdering = "Vurdering 1",
             uforetidspunkt = vilkaarligDato,
             uforegrad = 50,
@@ -170,9 +167,9 @@ object Fixtures : LetterDataFactory {
             vurderingIFU = "Vurdering IFU",
             vurderingIEU = "Vurdering IEU"
         ),
-        saksbehandlerValg = UforeAvslagInntektDto.SaksbehandlervalgInntekt(
-            VisVurderingFraVilkarvedtak = false,
-            visVurderingIFU = false
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "VisVurderingFraVilkarvedtak" to false,
+            "visVurderingIFU" to false
         )
     )
 
@@ -180,8 +177,8 @@ object Fixtures : LetterDataFactory {
         pesysData = VarselFeilutbetalingPesysData(
             feilutbetaltBrutto = 100
         ),
-        saksbehandlerValg = VarselFeilutbetalingUforeDto.Saksbehandlervalg(
-            rentetillegg = true
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "rentetillegg" to true
         ),
     )
 
@@ -194,7 +191,8 @@ object Fixtures : LetterDataFactory {
             sumTilInnkrevingTotalBelop = 2,
             dineRettigheterOgMulighetTilAKlageDto = createDineRettigheterOgMulighetTilAaKlageDto(),
             oversiktOverFeilutbetalingPEDto = createOversiktOverFeilutbetalingPEDto(),
-        ), EmptySaksbehandlerValg
+        ),
+        saksbehandlerValg = lagSaksbehandlervalg(),
     )
 
     private fun lagFeilutbetalingPerAr(): List<FeilutbetalingPerAr> {
@@ -243,7 +241,7 @@ object Fixtures : LetterDataFactory {
             dineRettigheterOgMulighetTilAKlageDto = createDineRettigheterOgMulighetTilAaKlageDto(),
             oversiktOverFeilutbetalingPEDto = createOversiktOverFeilutbetalingPEDto(),
         ),
-        saksbehandlerValg = EmptySaksbehandlerValg
+        saksbehandlerValg = lagSaksbehandlervalg(),
     )
 
     private fun createDineRettigheterOgMulighetTilAaKlageDto() = DineRettigheterOgMulighetTilAKlageDto(
@@ -299,7 +297,9 @@ object Fixtures : LetterDataFactory {
     )
 
     fun lagFeilutbetalingVarselDodsbo() = FeilutbetalingVarselDodsboDto(
-        saksbehandlerValg = FeilutbetalingDodsboSaksbehandlervalg(),
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "kjentBobestyrer" to true
+        ),
         pesysData = VarselFeilutbetalingPesysData(feilutbetaltBrutto = 100)
     )
 

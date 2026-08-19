@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.Expression
@@ -47,16 +47,12 @@ object SaksbehandlervalgIDSLTestbrev : RedigerbarTemplate<SaksbehandlervalgIDSLT
         letterDataType = SaksbehandlervalgIDSLTestbrevDto::class,
     ) {
         val bool = saksbehandlervalg("bool", "Boolsk valg").bool()
-        val boolMedDefault = saksbehandlervalg("boolMedDefault", "Boolsk valg med default").bool(default = true)
 
         val intUtenDefault = saksbehandlervalg("intUtenDefault", "Tall uten default").int()
-        val intMedDefault = saksbehandlervalg("intMedDefault", "Tall med default").int(default = 42)
 
         val tekstUtenDefault = saksbehandlervalg("tekstUtenDefault", "Tekst uten default").text()
-        val tekstMedDefault = saksbehandlervalg("tekstMedDefault", "Tekst med default").text(default = "standardtekst")
 
         val enumUtenDefault = saksbehandlervalg("enumUtenDefault", "Enum uten default").enum<SaksbehandlervalgIDSLTestValg>()
-        val enumMedDefault = saksbehandlervalg("enumMedDefault", "Enum med default").enum(default = SaksbehandlervalgIDSLTestValg.ALTERNATIV_EN)
 
         title {
             text(
@@ -81,9 +77,6 @@ object SaksbehandlervalgIDSLTestbrev : RedigerbarTemplate<SaksbehandlervalgIDSLT
             showIf(bool) {
                 paragraph { text(bokmal { +"bool = true" }, nynorsk { +"bool = true" }) }
             }
-            showIf(boolMedDefault) {
-                paragraph { text(bokmal { +"boolMedDefault = true" }, nynorsk { +"boolMedDefault = true" }) }
-            }
             ifNotNull(intUtenDefault) {
                 paragraph {
                     text(
@@ -92,19 +85,10 @@ object SaksbehandlervalgIDSLTestbrev : RedigerbarTemplate<SaksbehandlervalgIDSLT
                     )
                 }
             }
-            paragraph {
-                text(
-                    bokmal { +"intMedDefault = " + intMedDefault.format() },
-                    nynorsk { +"intMedDefault = " + intMedDefault.format() },
-                )
-            }
             ifNotNull(tekstUtenDefault) {
                 paragraph {
                     text(bokmal { +"tekstUtenDefault = " + it }, nynorsk { +"tekstUtenDefault = " + it })
                 }
-            }
-            paragraph {
-                text(bokmal { +"tekstMedDefault = " + tekstMedDefault }, nynorsk { +"tekstMedDefault = " + tekstMedDefault })
             }
             ifNotNull(enumUtenDefault) {
                 paragraph {
@@ -113,13 +97,6 @@ object SaksbehandlervalgIDSLTestbrev : RedigerbarTemplate<SaksbehandlervalgIDSLT
                     }.orShowIf(enumUtenDefault.equalTo(SaksbehandlervalgIDSLTestValg.ALTERNATIV_TO)) {
                         text(bokmal { +"enumUtenDefault = ALTERNATIV_TO" }, nynorsk { +"enumUtenDefault = ALTERNATIV_TO" })
                     }
-                }
-            }
-            paragraph {
-                showIf(enumMedDefault.equalTo(SaksbehandlervalgIDSLTestValg.ALTERNATIV_EN)) {
-                    text(bokmal { +"enumMedDefault = ALTERNATIV_EN" }, nynorsk { +"enumMedDefault = ALTERNATIV_EN" })
-                }.orShowIf(enumMedDefault.equalTo(SaksbehandlervalgIDSLTestValg.ALTERNATIV_TO)) {
-                    text(bokmal { +"enumMedDefault = ALTERNATIV_TO" }, nynorsk { +"enumMedDefault = ALTERNATIV_TO" })
                 }
             }
         }
@@ -140,7 +117,7 @@ enum class SaksbehandlervalgIDSLTestValg(override val displayText: String) : Sak
 data class SaksbehandlervalgIDSLTestbrevDto(
     override val pesysData: PesysData,
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
-) : RedigerbarBrevdataMedSaksbehandlerValg<SaksbehandlervalgIDSLTestbrevDto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<SaksbehandlervalgIDSLTestbrevDto.PesysData> {
     data class PesysData(
         val saksnummer: String,
         val opprettet: LocalDate,

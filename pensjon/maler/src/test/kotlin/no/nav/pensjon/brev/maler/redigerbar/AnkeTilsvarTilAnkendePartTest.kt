@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Test
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AnkeTilsvarTilAnkendePartDto
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.maler.klageOgAnke.AnkeTilsvarTilAnkendePart
 import org.junit.jupiter.api.Tag
 
@@ -18,7 +18,7 @@ class AnkeTilsvarTilAnkendePartTest {
     fun testPdf() {
         LetterTestImpl(
             AnkeTilsvarTilAnkendePart.template,
-            Fixtures.create<AnkeTilsvarTilAnkendePartDto>(),
+            Fixtures.create<EmptyRedigerbarBrevdataMedSaksbehandlerValg>(),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF(AnkeTilsvarTilAnkendePart.kode.name)
@@ -28,7 +28,7 @@ class AnkeTilsvarTilAnkendePartTest {
     fun testHtml() {
         LetterTestImpl(
             AnkeTilsvarTilAnkendePart.template,
-            Fixtures.create<AnkeTilsvarTilAnkendePartDto>(),
+            Fixtures.create<EmptyRedigerbarBrevdataMedSaksbehandlerValg>(),
             Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml(AnkeTilsvarTilAnkendePart.kode.name)

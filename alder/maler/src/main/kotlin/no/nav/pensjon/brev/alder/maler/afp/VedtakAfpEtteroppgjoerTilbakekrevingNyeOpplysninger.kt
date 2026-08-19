@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingN
 import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk

@@ -28,6 +28,9 @@ export const mapEndreMottakerValueTilMottaker = (v: string | Adresse): Mottaker 
       navn: null,
     };
   } else {
+    if (v.land === null) {
+      throw new Error("Teknisk feil - manuell adresse mangler land");
+    }
     return v.land === "NO"
       ? {
           type: "NorskAdresse",
@@ -45,7 +48,7 @@ export const mapEndreMottakerValueTilMottaker = (v: string | Adresse): Mottaker 
           adresselinje1: v.linje1!,
           adresselinje2: v.linje2,
           adresselinje3: v.linje3,
-          landkode: v.land!,
+          landkode: v.land,
           manueltAdressertTil: v.manueltAdressertTil,
         };
   }

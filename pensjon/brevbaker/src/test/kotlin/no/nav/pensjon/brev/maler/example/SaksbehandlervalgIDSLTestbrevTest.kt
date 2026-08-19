@@ -10,7 +10,7 @@ import io.ktor.http.HttpStatusCode
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.testBrevbakerApp
@@ -44,10 +44,6 @@ class SaksbehandlervalgIDSLTestbrevTest {
             assertThat(paragraphTekster(doc)).containsExactly(
                 "Testbrev for saksbehandlarval via SaksbehandlervalgIDSL",
                 "Saksnummer: 12345678, oppretta 15. januar 2024",
-                "boolMedDefault = true",
-                "intMedDefault = 42",
-                "tekstMedDefault = standardtekst",
-                "enumMedDefault = ALTERNATIV_EN",
             )
         }
     }
@@ -62,13 +58,9 @@ class SaksbehandlervalgIDSLTestbrevTest {
                 ),
                 saksbehandlerValg = lagSaksbehandlervalg(
                     "bool" to true,
-                    "boolMedDefault" to false,
                     "intUtenDefault" to 7,
-                    "intMedDefault" to 13,
                     "tekstUtenDefault" to "hei",
-                    "tekstMedDefault" to "annet",
                     "enumUtenDefault" to SaksbehandlervalgIDSLTestValg.ALTERNATIV_TO.name,
-                    "enumMedDefault" to SaksbehandlervalgIDSLTestValg.ALTERNATIV_TO.name,
                 ),
             )
             val letterMarkup = genererMarkup(dto, client)
@@ -79,11 +71,8 @@ class SaksbehandlervalgIDSLTestbrevTest {
                 "Saksnummer: 87654321, oppretta 1. juni 2024",
                 "bool = true",
                 "intUtenDefault = 7",
-                "intMedDefault = 13",
                 "tekstUtenDefault = hei",
-                "tekstMedDefault = annet",
                 "enumUtenDefault = ALTERNATIV_TO",
-                "enumMedDefault = ALTERNATIV_TO",
             )
         }
     }

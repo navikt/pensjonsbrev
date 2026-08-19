@@ -26,11 +26,11 @@ data class AfpOffentligLivsvarigTabell(
             }) {
                 row {
                     cell { text(bokmal { +"Livsvarig AFP" }) }
-                    cell { text(bokmal { +afp.maanedligBeloep.format() }) }
+                    cell { text(bokmal { +afp.maanedligBeloep.format(denominator = false) }) }
                 }
                 row {
                     cell { text(bokmal { +"Sum AFP" }, fontType = BOLD) }
-                    cell { text(bokmal { +afp.maanedligBeloep.format() }, fontType = BOLD) }
+                    cell { text(bokmal { +afp.maanedligBeloep.format(denominator = false) }, fontType = BOLD) }
                 }
             }
         }

@@ -133,9 +133,9 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                    // endrUtaksgradAP2011
                     paragraph {
                         text(
-                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12 og 22-12." },
-                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12 og 22-12." },
-                            english { +"This decision was made pursuant to the provisions of §§ 19-10, 19-12 and 22-12 of the National Insurance Act." }
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12, 22-12 og 22-13." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12, 22-12 og 22-13." },
+                            english { +"This decision was made pursuant to the provisions of §§ 19-10, 19-12, 22-12 and 22-13 of the National Insurance Act." }
                         )
                     }
                 }.orShowIf(regelverkType.equalTo(AP2016)) {
@@ -154,9 +154,9 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                             )
                         }
                         text(
-                            bokmal { +"19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
-                            nynorsk { +"19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
-                            english { +"19-10, 19-12, 19-15, 20-14, 20-16, 20-19 and 22-12 of the National Insurance Act." }
+                            bokmal { +"19-10, 19-12, 19-15, 20-14, 20-16, 20-19, 22-12 og 22-13." },
+                            nynorsk { +"19-10, 19-12, 19-15, 20-14, 20-16, 20-19, 22-12 og 22-13." },
+                            english { +"19-10, 19-12, 19-15, 20-14, 20-16, 20-19, 22-12 and 22-13 of the National Insurance Act." }
                         )
                     }
                 }.orShowIf(regelverkType.equalTo(AP2025)) {

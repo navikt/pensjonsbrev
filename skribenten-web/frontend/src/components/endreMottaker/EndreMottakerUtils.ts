@@ -89,13 +89,17 @@ export enum InnOgUtland {
 
 export const leggTilManuellAdresseFormDataSchema = z.object({
   /**
-   * manuell adresse har 2 krav for utfylling:
+   * Land er en gating-verdi: så lenge land er null skal ingen av de andre feltene kunne fylles ut,
+   * og vi rapporterer kun mangelen på land slik at saksbehandler ikke får feilmeldinger på felter
+   * de ikke har fått lov til å røre enda.
+   *
+   * Når land først er valgt har manuell adresse 2 krav for utfylling:
    * For norske adresser (der land er "NO") - kreves navn, postnummer, og poststed.
-   * For utenlandkse adresser (alle andre land som ikke er "NO") - kreves navn, og adresselinje1
+   * For utenlandske adresser (alle andre land som ikke er "NO") - kreves navn, og adresselinje1
    */
   adresse: z
     .object({
-      navn: z.string().min(1, "Obligatorisk").max(128, "Navn kan ikke være lengre enn 128 tegn"),
+      navn: z.string().max(128, "Navn kan ikke være lengre enn 128 tegn"),
       linje1: z.string().max(128, "Adresselinje 1 kan ikke være lengre enn 128 tegn"),
       linje2: z.string().max(128, "Adresselinje 2 kan ikke være lengre enn 128 tegn"),
       linje3: z.string().max(128, "Adresselinje 3 kan ikke være lengre enn 128 tegn"),
@@ -110,9 +114,18 @@ export const leggTilManuellAdresseFormDataSchema = z.object({
         .transform((s) => s.replace(/\s/g, ""))
         .nullable(),
       poststed: z.string().max(50, "Poststed kan ikke være lengre enn 50 tegn").nullable(),
-      land: z.string().min(1, "Obligatorisk"),
+      land: z.string().nullable(),
     })
     .superRefine((data, refinementContext) => {
+      if (data.land === null) {
+        refinementContext.addIssue({ code: "custom", message: "Du må velge land", path: ["land"] });
+        return;
+      }
+
+      if (data.navn === "") {
+        refinementContext.addIssue({ code: "custom", message: "Obligatorisk", path: ["navn"] });
+      }
+
       if (data.land === "NO") {
         if (!data.postnr || !/^\d{4}$/.test(data.postnr)) {
           refinementContext.addIssue({ code: "custom", message: "Postnummer må være 4 siffer", path: ["postnr"] });
@@ -146,7 +159,7 @@ const leggTilManuellAdresseTabNotSelectedSchema = z.object({
     ]),
     postnr: z.string().nullable(),
     poststed: z.string().nullable(),
-    land: z.string(),
+    land: z.string().nullable(),
   }),
 });
 

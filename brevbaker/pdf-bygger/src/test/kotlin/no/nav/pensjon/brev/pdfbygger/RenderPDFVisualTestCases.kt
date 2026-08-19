@@ -4,7 +4,7 @@ package no.nav.pensjon.brev.pdfbygger
 
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.PDFRequest
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.markup.Markup
 import no.nav.brev.brevbaker.markup.dsl.ContentBuilder
 import no.nav.brev.brevbaker.markup.dsl.OutlineBuilder
@@ -17,7 +17,7 @@ import no.nav.brev.brevbaker.markup.dsl.header
 import no.nav.brev.brevbaker.markup.dsl.item
 import no.nav.brev.brevbaker.markup.dsl.itemList
 import no.nav.brev.brevbaker.markup.dsl.letterMarkup as letterMarkupV2
-import no.nav.brev.brevbaker.markup.dsl.letterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
 import no.nav.brev.brevbaker.markup.dsl.numberedList
 import no.nav.brev.brevbaker.markup.dsl.paragraph
 import no.nav.brev.brevbaker.markup.dsl.prompt
@@ -93,9 +93,12 @@ data class RenderPDFVisualTestCase(
             v2Title1(this@RenderPDFVisualTestCase.title)
             outline { elements.forEach { it.v2(this) } }
         }
-        return letterPDFRequest(Markup.Spraak.BOKMAL, Markup.Brevtype.VEDTAKSBREV, letter) {
-            attachments.forEach { it.applyV2(this) }
-        }
+        return letterPDFRequest(
+            letterMarkup = letter,
+            spraak = Markup.Spraak.BOKMAL,
+            brevtype = Markup.Brevtype.VEDTAKSBREV,
+            attachments = attachments.map { it.v2() },
+        )
     }
 
     override fun toString(): String = testName
@@ -114,12 +117,11 @@ class CaseAttachment(
             outline { elements.forEach { it.v1(this) } }
         }
 
-    fun applyV2(builder: no.nav.brev.brevbaker.markup.dsl.PDFRequestBuilder) {
-        builder.attachment(inkluderSaksinformasjon = includeSakspart) {
+    fun v2(): no.nav.brev.brevbaker.markup.Attachment =
+        no.nav.brev.brevbaker.markup.dsl.attachment(inkluderSaksinformasjon = includeSakspart) {
             v2Title1(this@CaseAttachment.title)
             outline { elements.forEach { it.v2(this) } }
         }
-    }
 }
 
 internal object RenderPDFVisualTestCases {

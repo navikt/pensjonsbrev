@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.model
 
-import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.IBrevkategori
 
-enum class Brevkategori : TemplateDescription.IBrevkategori {
+enum class Brevkategori : IBrevkategori {
     ETTEROPPGJOER,
     FEILUTBETALING,
     FOERSTEGANGSBEHANDLING,

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonInstitusjonsoppholdDto
 import no.nav.pensjon.brev.maler.vedlegg.createMaanedligPensjonFoerSkattAlderspensjonDto
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
@@ -11,15 +12,15 @@ import java.time.Month
 
 fun createVedtakEndringAvAlderspensjonInstitusjonsoppholdDto() =
     VedtakEndringAvAlderspensjonInstitusjonsoppholdDto(
-        saksbehandlerValg = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.SaksbehandlerValg(
-            alderspensjonUnderOppholdIInstitusjon = true,
-            alderspensjonUnderSoning = true,
-            alderspensjonVedVaretektsfengsling = true,
-            alderspensjonRedusert = true,
-            alderspensjonStanset = true,
-            informasjonOmSivilstandVedInstitusjonsopphold = true,
-            hvisReduksjonTilbakeITid = true,
-            etterbetaling = true
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "alderspensjonUnderOppholdIInstitusjon" to true,
+            "alderspensjonUnderSoning" to true,
+            "alderspensjonVedVaretektsfengsling" to true,
+            "alderspensjonRedusert" to true,
+            "alderspensjonStanset" to true,
+            "informasjonOmSivilstandVedInstitusjonsopphold" to true,
+            "hvisReduksjonTilbakeITid" to true,
+            "etterbetaling" to true
         ),
         pesysData = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.PesysData(
             beregnetPensjonPerManedVedVirk = VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.PesysData.BeregnetPensjonPerManedVedVirk(

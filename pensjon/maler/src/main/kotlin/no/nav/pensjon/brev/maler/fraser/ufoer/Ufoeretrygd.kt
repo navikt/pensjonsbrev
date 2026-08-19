@@ -1,14 +1,16 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.barnetilleggUTDto.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggMedSammeBegrunnelsePaSammeTidDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.barnetilleggMedSammeBegrunnelsePaSammeTidDto.begrunnelse
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.barnetilleggMedSammeBegrunnelsePaSammeTidDto.fom
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
-import no.nav.pensjon.brev.maler.legacy.BarnetilleggFormatter
+import no.nav.pensjon.brev.maler.legacy.BarnetilleggFlereBarnFormatter
+import no.nav.pensjon.brev.maler.legacy.BarnetilleggOpphorFormatter
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -386,21 +388,21 @@ object Ufoeretrygd {
         }
     }
 
-    data class AvslagBarnetillegg(val barnetilleggAvslatt: Expression<List<BarnetilleggUTDto>>) :
+    data class AvslagBarnetillegg(val barnetilleggAvslatt: Expression<List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>>) :
         RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
             forEach(barnetilleggAvslatt) { barnetillegg ->
-                title2 {
+                title1 {
                     text(
-                        bokmal { +"Nav har avslått søknaden din om barnetillegg" },
-                        nynorsk { +"Nav har avslått søknaden din om barnetillegg" },
+                        bokmal { +"Derfor har vi avslått søknaden din om barnetillegg" },
+                        nynorsk { +"Derfor har vi avslått søknaden din om barnetillegg" },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +"Søknaden er avslått for " + barnetillegg.format(BarnetilleggFormatter) + "." },
-                        nynorsk { +"Søknaden er avslått for " + barnetillegg.format(BarnetilleggFormatter) + "." },
+                        bokmal { +"Søknaden er avslått for " + barnetillegg.format(BarnetilleggFlereBarnFormatter) + "." },
+                        nynorsk { +"Søknaden er avslått for " + barnetillegg.format(BarnetilleggFlereBarnFormatter) + "." },
                     )
                 }
                 paragraph {
@@ -437,21 +439,21 @@ object Ufoeretrygd {
         }
     }
 
-    data class OpphorBarnetillegg(val barnetilleggOpphort: Expression<List<BarnetilleggUTDto>>) :
+    data class OpphorBarnetillegg(val barnetilleggOpphort: Expression<List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>>) :
         RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
             forEach(barnetilleggOpphort) { barnetillegg ->
                 title2 {
                     text(
-                        bokmal { +"Nav har opphørt barnetillegget ditt" },
-                        nynorsk { +"Nav har stansa barnetillegget ditt" },
+                        bokmal { +"Derfor har vi opphørt barnetillegget ditt" },
+                        nynorsk { +"Derfor har vi stansa barnetillegget ditt" },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal { +"Barnetillegget er opphørt for " + barnetillegg.format(BarnetilleggFormatter) + "." },
-                        nynorsk { +"Barnetillegget er stansa for " + barnetillegg.format(BarnetilleggFormatter) + "." },
+                        bokmal { +"Barnetillegget er opphørt for " + barnetillegg.format(BarnetilleggOpphorFormatter) + "." },
+                        nynorsk { +"Barnetillegget er stansa for " + barnetillegg.format(BarnetilleggOpphorFormatter) + "." },
                     )
                 }
                 paragraph {
@@ -464,6 +466,7 @@ object Ufoeretrygd {
             }
         }
     }
+
 
     data class InntektBarnetillegg(
         val btFellesInnvilget: Expression<Boolean>,
@@ -603,10 +606,10 @@ object Ufoeretrygd {
         }
     }
 
-    private data class BegrunnelseBarnetilleggTekst(val barnetillegg: Expression<BarnetilleggUTDto>) : RedigerbarParagraphPhrase<LangBokmalNynorsk>() {
+    private data class BegrunnelseBarnetilleggTekst(val barnetillegg: Expression<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>) : RedigerbarParagraphPhrase<LangBokmalNynorsk>() {
         override fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            val barnetBarna = barnetillegg.antallBarn.format(BarnetBarnaFormatter)
-            val barnetBarnaStor = barnetillegg.antallBarn.format(BarnetBarnaStorFormatter)
+            val barnetBarna = barnetillegg.format(BarnetBarnaFormatter())
+            val barnetBarnaStor = barnetillegg.format(BarnetBarnaFormatter(true))
 
             showIf(barnetillegg.begrunnelse.equalTo(ANNEN_FORLD_RETT_BT) or barnetillegg.begrunnelse.equalTo(OPPHOR_ANNEN_FORLD_RETT_BT)) {
                 text(
@@ -667,14 +670,13 @@ object Ufoeretrygd {
         }
     }
 
-    private object BarnetBarnaFormatter : LocalizedFormatter<Int>() {
-        override fun apply(first: Int, second: Language): String = if (first == 1) "barnet" else "barna"
-        override fun stableHashCode(): Int = "BarnetBarnaFormatter".hashCode()
-    }
+    private class BarnetBarnaFormatter(private val storBokstav: Boolean = false) : LocalizedFormatter<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>() {
+        override fun apply(first: BarnetilleggMedSammeBegrunnelsePaSammeTidDto, second: Language): String {
+            val barn = if (first.erFlereBarn()) "barnet" else "barna"
+            return if (storBokstav) barn.replaceFirstChar { it.uppercase() } else barn
+        }
+        override fun stableHashCode(): Int = "BarnetBarnaFormatter3${storBokstav}".hashCode()
 
-    private object BarnetBarnaStorFormatter : LocalizedFormatter<Int>() {
-        override fun apply(first: Int, second: Language): String = if (first == 1) "Barnet" else "Barna"
-        override fun stableHashCode(): Int = "BarnetBarnaStorFormatter".hashCode()
     }
 }
 

@@ -73,8 +73,8 @@ class AllTemplatesTest {
     @Test
     fun lagSammenligninsgrunnlag() {
         val path = Path.of("build", "mal_sammenligning")
-        (ProductionTemplates.hentAutobrevmaler() +
-                ProductionTemplates.hentRedigerbareMaler())
+        (pensjonOgUfoereProductionTemplates.hentAutobrevmaler() +
+                pensjonOgUfoereProductionTemplates.hentRedigerbareMaler())
             .forEach { template ->
                 template.template.language.all().forEach { language ->
                     path.createDirectories()

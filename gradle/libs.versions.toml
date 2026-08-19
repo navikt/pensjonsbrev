@@ -1,31 +1,27 @@
 [versions]
-kotlinVersion = "2.4.0"
-kotlinKspVersion = "2.3.10"
-ktorVersion = "3.5.1"
+kotlinVersion = "2.4.10"
+kotlinKspVersion = "2.3.11"
+ktorVersion = "3.5.2"
 assertJVersion = "3.27.7"
-classGraphVersion = "4.8.184"
-commonsCodecVersion = "1.22.0"
-commonVersion = "2.45.0"
-markupVersion = "1.2.0"
-exposedVersion = "1.3.1"
-flywayVersion = "12.11.0"
+classGraphVersion = "4.8.189"
+commonsCodecVersion = "1.22.1"
+exposedVersion = "1.4.0"
+flywayVersion = "13.2.0"
 gradleNodePluginVersion = "7.1.0"
 hikariVersion = "7.1.0"
 jacksonVersion = "2.22.1"
-jsoupVersion = "1.22.2"
-jupiterVersion = "6.1.2"
+jsoupVersion = "1.23.1"
+jupiterVersion = "6.1.3"
 kotlinxHtmlVersion = "0.12.0"
-kotlinxCoroutinesVersion = "1.11.0"
 kotlinxSerializationVersion = "1.11.0"
 ktlintVersion = "14.2.0"
 ktlintEngineVersion = "1.8.0"
 log4j2Version = "2.26.1"
 micrometerVersion = "1.17.0"
-pdfboxVersion = "3.0.7"
+pdfboxVersion = "3.0.8"
 postgresqlVersion = "42.7.13"
-testcontainersCoreVersion = "2.0.5"
-testcontainersPostgresqlVersion = "2.0.5"
-unleashVersion = "12.2.2"
+testcontainersVersion = "2.0.5"
+unleashVersion = "12.2.3"
 valkeyVersion = "5.5.0"
 
 [plugins]
@@ -36,16 +32,16 @@ ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinVersion" }
 
 [libraries]
-brevbaker-common = { module = "no.nav.brev.brevbaker:api-model-common", version.ref = "commonVersion" }
-brevbaker-markup = { module = "no.nav.brev.brevbaker:markup", version.ref = "markupVersion" }
 commons-codec = { module = "commons-codec:commons-codec", version.ref = "commonsCodecVersion" }
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikariVersion" }
 io-github-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classGraphVersion" }
 jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations" }
 jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "jacksonVersion" }
+jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoupVersion" }
 jackson-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml" }
 jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310" }
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin" }
 kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version.ref = "kotlinxHtmlVersion" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationVersion" }
 ksp-symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "kotlinKspVersion"}
@@ -80,6 +76,7 @@ ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt" }
 ktor-server-caching-headers = { module = "io.ktor:ktor-server-caching-headers" }
 ktor-server-callId = { module = "io.ktor:ktor-server-call-id" }
 ktor-server-callLogging = { module = "io.ktor:ktor-server-call-logging" }
+ktor-server-conditional-headers = { module = "io.ktor:ktor-server-conditional-headers"}
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation" }
 ktor-server-core = { module = "io.ktor:ktor-server-core" }
 ktor-server-cors = { module = "io.ktor:ktor-server-cors" }
@@ -107,8 +104,8 @@ flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql
 assertJ = { module = "org.assertj:assertj-core", version.ref = "assertJVersion" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "jupiterVersion" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version.ref = "jupiterVersion" }
-testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainersPostgresqlVersion"}
-testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainersCoreVersion" }
+testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainersVersion" }
+testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainersVersion" }
 
 [bundles]
 junit = ["junit-jupiter", "junit-platform-launcher", "assertJ"]

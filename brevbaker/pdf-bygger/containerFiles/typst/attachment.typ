@@ -1,5 +1,5 @@
 #import "content/state.typ": section-start, section-end
-#import "template.typ": logo, mainTitle
+#import "content/header.typ": logo, mainTitle
 #import "casedetails.typ" : casedetails
 
 #let startAttachment(title, input, languageSettings, sectionNumber: int, showCaseDetails: bool) = {

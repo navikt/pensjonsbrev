@@ -7,17 +7,17 @@ import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDto
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.selectors.afpPrivatSokerUforeTrygdDto.pesysData.*
-import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.selectors.afpPrivatSokerUforeTrygdDto.saksBehandlerValg.*
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.selectors.afpPrivatSokerUforeTrygdDto.*
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -46,6 +46,8 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
+        val harSoktUforeTrygd = saksbehandlervalg("harSoktUforeTrygd", "Bruker har søkt UføreTrygd").bool()
+
         title {
             text(
                 bokmal { +"Du må velge mellom AFP i privat sektor og uføretrygd fra Nav" },
@@ -54,7 +56,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
         }
 
         outline {
-            showIf(saksbehandlerValg.harSoktUforeTrygd) {
+            showIf(harSoktUforeTrygd) {
                 paragraph {
                     text(
                         bokmal {
@@ -384,7 +386,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     }
                 }
             }
-            showIf(saksbehandlerValg.harSoktUforeTrygd) {
+            showIf(harSoktUforeTrygd) {
                 title2 {
                     text(
                         bokmal { +"Dette må du gjøre" },

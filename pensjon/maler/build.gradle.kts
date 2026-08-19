@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion = 390
+val apiModelVersion = 405
 
 val apiModelJavaTarget: String by System.getProperties()
 
@@ -22,9 +22,10 @@ dependencies {
     implementation(project(":brevbaker:core"))
     ksp(project(":brevbaker:template-model-generator"))
     kspTest(project(":brevbaker:template-model-generator"))
-    api("no.nav.pensjon.brev:api-model:$apiModelVersion")
+    api("no.nav.pensjon.brev:pensjon-api-model:$apiModelVersion")
 
     testImplementation(libs.bundles.junit)
+    testImplementation(kotlin("reflect")) // TODO: midlertidig fram til vi har migrert ferdig til saksbehandlervalgidsl
     testImplementation(testFixtures(project(":brevbaker:core")))
     testImplementation(testFixtures(project(":brevbaker:dsl")))
 }

@@ -3,13 +3,11 @@ package no.nav.pensjon.brev.maler.klageOgAnke
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AnkeTilsvarTilAnkendePartDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.ankeTilsvarTilAnkendePartDto.pesysData
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.ankeTilsvarTilAnkendePartDto.pesysData.foedselsnummer
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.ankeTilsvarTilAnkendePartDto.pesysData.navn
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.ankeTilsvarTilAnkendePartDto.pesysData.navnAvsenderEnhet
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
@@ -17,15 +15,18 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.navn
 
 // Erstatte PE_IY_03_151
 
 @TemplateModelHelpers
-object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<AnkeTilsvarTilAnkendePartDto> {
+object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
 
     override val featureToggle = FeatureToggles.brevmalAnkeTilsvarTilAnkendePart.toggle
 
@@ -53,8 +54,8 @@ object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<AnkeTilsvarTilAnkendePartD
         outline {
             paragraph {
                 text(bokmal { +"Den ankende part: " }, english { +"The appellant: " }, BOLD)
-                text(bokmal { +pesysData.navn + " " }, english { +pesysData.navn + " " })
-                text(bokmal { +pesysData.foedselsnummer.format() }, english { +pesysData.foedselsnummer.format() })
+                text(bokmal { +felles.bruker.fulltNavn() + " " }, english { +felles.bruker.fulltNavn() + " " })
+                text(bokmal { +felles.bruker.foedselsnummer.format() }, english { +felles.bruker.foedselsnummer.format() })
             }
             paragraph {
                 text(bokmal { +"Ankemotpart: " }, english { +"Other party: " }, BOLD)
@@ -95,7 +96,7 @@ object AnkeTilsvarTilAnkendePart : RedigerbarTemplate<AnkeTilsvarTilAnkendePartD
                 )
             }
             paragraph {
-                text(bokmal { +pesysData.navnAvsenderEnhet }, english { +pesysData.navnAvsenderEnhet })
+                text(bokmal { +felles.avsenderEnhet.navn }, english { +felles.avsenderEnhet.navn })
                 newline()
                 text(bokmal { +"Postboks 6600 Etterstad" }, english { +"Postboks 6600 Etterstad" })
                 newline()

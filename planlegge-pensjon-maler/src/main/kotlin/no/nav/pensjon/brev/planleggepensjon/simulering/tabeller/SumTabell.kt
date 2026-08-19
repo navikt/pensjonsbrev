@@ -31,29 +31,6 @@ data class SumTabell(
                 }
             }) {
                 row {
-                    cell { text(bokmal { +"Alderspensjon" }) }
-                    cell {
-                        val sumAlderspensjon = alderspensjon.grunnpensjonBeloep.ifNull(Kroner(0)) +
-                                alderspensjon.tilleggspensjonBeloep.ifNull(Kroner(0)) +
-                                alderspensjon.pensjonstillegg.ifNull(Kroner(0)) +
-                                alderspensjon.inntektspensjonBeloep.ifNull(Kroner(0)) +
-                                alderspensjon.garantipensjonBeloep.ifNull(Kroner(0)) +
-                                alderspensjon.garantitilleggBeloep.ifNull(Kroner(0)) +
-                                alderspensjon.skjermingstillegg.ifNull(Kroner(0)) +
-                                alderspensjon.gjenlevendetillegg.ifNull(Kroner(0))
-                        text(bokmal { +sumAlderspensjon.format() })
-                    }
-                }
-                row {
-                    cell { text(bokmal { +"AFP i privat sektor" }) }
-                    cell {
-                        val sumAfp = privatAfp.kronetillegg.ifNull(Kroner(0)) +
-                                privatAfp.livsvarig.ifNull(Kroner(0)) +
-                                privatAfp.kompensasjonstillegg.ifNull(Kroner(0))
-                        text(bokmal { +sumAfp.format() })
-                    }
-                }
-                row {
                     cell { text(bokmal { +"Sum pensjon" }, fontType = BOLD) }
                     cell {
                         val sumAlderspensjon = alderspensjon.grunnpensjonBeloep.ifNull(Kroner(0)) +
@@ -68,7 +45,7 @@ data class SumTabell(
                                 privatAfp.livsvarig.ifNull(Kroner(0)) +
                                 privatAfp.kompensasjonstillegg.ifNull(Kroner(0))
                         val sumPensjon = sumAlderspensjon + sumAfp
-                        text(bokmal { +sumPensjon.format() }, fontType = BOLD)
+                        text(bokmal { +sumPensjon.format(denominator = false) }, fontType = BOLD)
                     }
                 }
             }

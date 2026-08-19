@@ -4,8 +4,6 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.forespoerselOmDokumentasjonAvBotidINorgeDto.saksbehandlerValg.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.forespoerselOmDokumentasjonAvBotidINorgeDto.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -15,6 +13,7 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.*
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.*
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerType.foedselsnummer.*
@@ -37,6 +36,8 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<Foresp
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
+        val opplystOmBotid = saksbehandlervalg("opplystOmBotid", "Opplyst om botid").bool()
+
         title {
             text(
                 bokmal { + "Forespørsel om dokumentasjon av botid i Norge" }
@@ -53,7 +54,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<Foresp
                 text(
                     bokmal { + " e.l) for " + felles.bruker.fulltNavn() + " med fødselsnummer " + felles.bruker.foedselsnummer.value + ". " },
                 )
-                showIf(saksbehandlerValg.opplystOmBotid) {
+                showIf(opplystOmBotid) {
                     val dato = fritekst("mm.dd.år")
                     text(
                         bokmal { + "Vedkommende har opplyst at " + fritekst("han/hun") + " var sist bosatt i deres kommune fra " + dato + " til " + dato + "." },

@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDto
 import no.nav.pensjon.brev.fixtures.createDineRettigheterOgPlikterUforeDto
@@ -24,7 +24,7 @@ fun createVedtakOmEtterbetalingOpphor2026AutoDto() =
 
 fun createVedtakOmEtterbetalingOpphor2026RedigerbarDto() =
     VedtakOmEtterbetalingOpphor2026RedigerbarDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = VedtakOmEtterbetalingOpphor2026RedigerbarDto.PesysData(
             etterbetaling = Kroner(12345),
             hjemler = setOf("12-13", "22-12"),

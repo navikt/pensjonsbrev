@@ -21,10 +21,10 @@ data class CanReuseModelsDto2(val child: ChildModel) {
  *
  * If it does not compile then the test has failed.
  */
+@OptIn(InternKonstruktoer::class)
 object CanReuseModels {
 
     @TemplateModelHelpers
-    @OptIn(InternKonstruktoer::class)
     object MyClass : HasModel<CanReuseModelsDto2> {
         val data: Expression<CanReuseModelsDto2> = Expression.Literal(CanReuseModelsDto2(CanReuseModelsDto2.ChildModel(CanReuseModelsDto1.ChildModel("Scrooge"))))
         val child: Expression<CanReuseModelsDto2.ChildModel> = data.child
@@ -32,7 +32,6 @@ object CanReuseModels {
     }
 
     @TemplateModelHelpers
-    @OptIn(InternKonstruktoer::class)
     object ReUse : HasModel<CanReuseModelsDto1.ChildModel> {
         val uncleName: Expression<String> = Expression.Literal(CanReuseModelsDto1.ChildModel("Scrooge")).childName
     }

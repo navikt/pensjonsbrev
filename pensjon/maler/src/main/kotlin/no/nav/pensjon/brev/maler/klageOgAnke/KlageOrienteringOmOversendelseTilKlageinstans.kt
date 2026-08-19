@@ -1,14 +1,13 @@
 package no.nav.pensjon.brev.maler.klageOgAnke
 
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmOversendelseTilKlageinstansDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.klageOrienteringOmOversendelseTilKlageinstansDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.klageOrienteringOmOversendelseTilKlageinstansDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KLAGEINSTANS
+import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.*
@@ -16,23 +15,25 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-
-@TemplateModelHelpers
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.navn
 
 // Erstatte PE_IY_03_157
+@TemplateModelHelpers
 object KlageOrienteringOmOversendelseTilKlageinstans :
-    RedigerbarTemplate<KlageOrienteringOmOversendelseTilKlageinstansDto> {
+    RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
 
     override val featureToggle = FeatureToggles.brevmalKlageOrienteringOmOversendelseTilKlageinstans.toggle
 
     override val kode = PE_KLAGE_ORIENTERING_OM_OVERSENDELSE_KLAGEINSTANS
     override val kategori = KLAGE_OG_ANKE
     override val brevkontekst = ALLE
-    override val sakstyper: Set<Sakstype> = pensjon
+    override val sakstyper = Sakstype.all
 
     override val template = createTemplate(
         languages = languages(Bokmal, English),
@@ -47,12 +48,12 @@ object KlageOrienteringOmOversendelseTilKlageinstans :
         outline {
             paragraph {
                 text(bokmal { +"Klageren: " }, english { +"Appellant: " }, BOLD)
-                text(bokmal { +pesysData.navn + " " }, english { +pesysData.navn + " " })
-                text(bokmal { +pesysData.foedselsnummer.format() }, english { +pesysData.foedselsnummer.format() })
+                text(bokmal { +felles.bruker.fulltNavn() + " " }, english { +felles.bruker.fulltNavn() + " " })
+                text(bokmal { +felles.bruker.foedselsnummer.format() }, english { +felles.bruker.foedselsnummer.format() })
             }
             paragraph {
                 text(bokmal { +"Klagemotpart: " }, english { +"Other party: " }, BOLD)
-                text(bokmal { +pesysData.navnAvsenderEnhet }, english { +pesysData.navnAvsenderEnhet })
+                text(bokmal { +felles.avsenderEnhet.navn }, english { +felles.avsenderEnhet.navn })
             }
             paragraph {
                 text(

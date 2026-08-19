@@ -1,0 +1,586 @@
+public final class no/nav/brev/brevbaker/document/Document {
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Z
+	public final fun component3 ()Z
+	public final fun component4 ()Lno/nav/brev/brevbaker/document/DocumentSaksinformasjon;
+	public final fun component5 ()Ljava/time/LocalDate;
+	public final fun component6 ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBlocks ()Ljava/util/List;
+	public final fun getDokumentDato ()Ljava/time/LocalDate;
+	public final fun getSaksinformasjon ()Lno/nav/brev/brevbaker/document/DocumentSaksinformasjon;
+	public final fun getTittel ()Ljava/lang/String;
+	public final fun getVisLogo ()Z
+	public final fun getVisTittel ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/document/DocumentKt {
+	public static final fun clean (Lno/nav/brev/brevbaker/document/Document;)Lno/nav/brev/brevbaker/document/Document;
+}
+
+public final class no/nav/brev/brevbaker/document/DocumentModel {
+	public static final field INSTANCE Lno/nav/brev/brevbaker/document/DocumentModel;
+	public final fun document (Ljava/lang/String;ZZLno/nav/brev/brevbaker/document/DocumentSaksinformasjon;Ljava/time/LocalDate;Ljava/util/List;)Lno/nav/brev/brevbaker/document/Document;
+	public final fun documentMottaker-eWvvIUI (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/document/DocumentMottaker;
+	public final fun documentPDFRequest (Lno/nav/brev/brevbaker/document/Document;Lno/nav/brev/brevbaker/markup/Markup$Spraak;)Lno/nav/brev/brevbaker/document/DocumentPDFRequest;
+	public final fun documentSaksinformasjon-sgrxbZQ (Ljava/lang/String;ZLno/nav/brev/brevbaker/document/DocumentMottaker;)Lno/nav/brev/brevbaker/document/DocumentSaksinformasjon;
+}
+
+public final class no/nav/brev/brevbaker/document/DocumentMottaker {
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2-YJ9aDXQ ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAnnenMottakerNavn ()Ljava/lang/String;
+	public final fun getGjelderNavn ()Ljava/lang/String;
+	public final fun getGjelderPersonidentifikator-YJ9aDXQ ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/document/DocumentPDFRequest {
+	public final fun component1 ()Lno/nav/brev/brevbaker/document/Document;
+	public final fun component2 ()Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDocument ()Lno/nav/brev/brevbaker/document/Document;
+	public final fun getSpraak ()Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/document/DocumentSaksinformasjon {
+	public final fun component1-Bu5HaUw ()Ljava/lang/String;
+	public final fun component2 ()Z
+	public final fun component3 ()Lno/nav/brev/brevbaker/document/DocumentMottaker;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMottaker ()Lno/nav/brev/brevbaker/document/DocumentMottaker;
+	public final fun getSaksnummer-Bu5HaUw ()Ljava/lang/String;
+	public final fun getVisFooter ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/Attachment {
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Z
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBlocks ()Ljava/util/List;
+	public final fun getInkluderSaksinformasjon ()Z
+	public final fun getTitle1 ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/CleanMarkupKt {
+	public static final fun clean (Ljava/util/List;)Ljava/util/List;
+	public static final fun clean (Lno/nav/brev/brevbaker/markup/Attachment;)Lno/nav/brev/brevbaker/markup/Attachment;
+	public static final fun clean (Lno/nav/brev/brevbaker/markup/LetterMarkup;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
+}
+
+public final class no/nav/brev/brevbaker/markup/LetterMarkup {
+	public static final field Companion Lno/nav/brev/brevbaker/markup/LetterMarkup$Companion;
+	public static final field VERSION I
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Lno/nav/brev/brevbaker/markup/Saksinformasjon;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Lno/nav/brev/brevbaker/markup/Signatur;
+	public final fun component5 ()I
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBlocks ()Ljava/util/List;
+	public final fun getSaksinformasjon ()Lno/nav/brev/brevbaker/markup/Saksinformasjon;
+	public final fun getSignatur ()Lno/nav/brev/brevbaker/markup/Signatur;
+	public final fun getTitle1 ()Ljava/util/List;
+	public final fun getVersion ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/LetterMarkup$Companion {
+}
+
+public final class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage {
+	public final fun component1 ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
+	public final fun component2 ()Ljava/util/Set;
+	public final fun component3 ()Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBrevtype ()Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
+	public final fun getLetterDataUsage ()Ljava/util/Set;
+	public final fun getMarkup ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Property {
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPropertyName ()Ljava/lang/String;
+	public final fun getTypeName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/Markup {
+	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/Markup;
+}
+
+public final class no/nav/brev/brevbaker/markup/Markup$Brevtype : java/lang/Enum {
+	public static final field INFORMASJONSBREV Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
+	public static final field VEDTAKSBREV Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
+	public static fun values ()[Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
+}
+
+public abstract interface class no/nav/brev/brevbaker/markup/Markup$Identifiable {
+	public abstract fun getId ()I
+}
+
+public final class no/nav/brev/brevbaker/markup/Markup$Personidentifikator {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Markup$Personidentifikator;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/Markup$Saksnummer {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Markup$Saksnummer;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/Markup$Spraak : java/lang/Enum {
+	public static final field BOKMAL Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+	public static final field ENGLISH Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+	public static final field NYNORSK Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+	public static fun values ()[Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+}
+
+public abstract interface class no/nav/brev/brevbaker/markup/Markup$TextContainer {
+	public abstract fun getContent ()Ljava/util/List;
+}
+
+public final class no/nav/brev/brevbaker/markup/MarkupModel {
+	public static final field INSTANCE Lno/nav/brev/brevbaker/markup/MarkupModel;
+	public final fun attachment (Ljava/util/List;Ljava/util/List;Z)Lno/nav/brev/brevbaker/markup/Attachment;
+	public final fun cell (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Cell;
+	public final fun choice (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice;
+	public final fun columnSpec (ILjava/util/List;Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;I)Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec;
+	public final fun formChoice (ILjava/util/List;Ljava/util/List;Z)Lno/nav/brev/brevbaker/markup/outline/Block$FormChoice;
+	public final fun formText (ILjava/util/List;Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;Z)Lno/nav/brev/brevbaker/markup/outline/Block$FormText;
+	public final fun header (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;
+	public final fun item (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Item;
+	public final fun itemList (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$ItemList;
+	public final fun letterMarkup (Ljava/util/List;Lno/nav/brev/brevbaker/markup/Saksinformasjon;Ljava/util/List;Lno/nav/brev/brevbaker/markup/Signatur;)Lno/nav/brev/brevbaker/markup/LetterMarkup;
+	public final fun letterMarkupWithDataUsage (Lno/nav/brev/brevbaker/markup/LetterMarkup;Ljava/util/Set;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage;
+	public final fun letterMarkupWithDataUsageProperty (Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/LetterMarkupWithDataUsage$Property;
+	public final fun literal (ILjava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;)Lno/nav/brev/brevbaker/markup/outline/Text$Literal;
+	public static synthetic fun literal$default (Lno/nav/brev/brevbaker/markup/MarkupModel;ILjava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Text$Literal;
+	public final fun newLine (I)Lno/nav/brev/brevbaker/markup/outline/Text$NewLine;
+	public final fun numberedList (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$NumberedList;
+	public final fun paragraph (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Paragraph;
+	public final fun pdfTittel (Ljava/util/List;)Lno/nav/brev/brevbaker/markup/PDFTittel;
+	public final fun row (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$Row;
+	public final fun saksbehandlerSignatur (Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;
+	public final fun saksinformasjon (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/time/LocalDate;)Lno/nav/brev/brevbaker/markup/Saksinformasjon;
+	public final fun signatur (Ljava/lang/String;Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;)Lno/nav/brev/brevbaker/markup/Signatur;
+	public final fun table (ILjava/util/List;Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;)Lno/nav/brev/brevbaker/markup/outline/Block$Table;
+	public final fun title2 (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Title2;
+	public final fun title3 (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Title3;
+	public final fun title4 (ILjava/util/List;)Lno/nav/brev/brevbaker/markup/outline/Block$Title4;
+	public final fun variable (ILjava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;)Lno/nav/brev/brevbaker/markup/outline/Text$Variable;
+	public static synthetic fun variable$default (Lno/nav/brev/brevbaker/markup/MarkupModel;ILjava/lang/String;Lno/nav/brev/brevbaker/markup/outline/Text$FontType;Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;ILjava/lang/Object;)Lno/nav/brev/brevbaker/markup/outline/Text$Variable;
+}
+
+public abstract interface annotation class no/nav/brev/brevbaker/markup/MarkupModelApi : java/lang/annotation/Annotation {
+}
+
+public final class no/nav/brev/brevbaker/markup/PDFTittel {
+	public final fun component1 ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getTitle1 ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/SaksbehandlerSignatur {
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttesterendeSaksbehandlerNavn ()Ljava/lang/String;
+	public final fun getSaksbehandlerNavn ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/Saksinformasjon {
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2-YJ9aDXQ ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4-Bu5HaUw ()Ljava/lang/String;
+	public final fun component5 ()Ljava/time/LocalDate;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAnnenMottakerNavn ()Ljava/lang/String;
+	public final fun getDokumentDato ()Ljava/time/LocalDate;
+	public final fun getGjelderNavn ()Ljava/lang/String;
+	public final fun getGjelderPersonidentifikator-YJ9aDXQ ()Ljava/lang/String;
+	public final fun getSaksnummer-Bu5HaUw ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/Signatur {
+	public final fun component1 ()Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;
+	public final fun component2 ()Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getNavAvsenderEnhet ()Ljava/lang/String;
+	public final fun getSaksbehandlerSignatur ()Lno/nav/brev/brevbaker/markup/SaksbehandlerSignatur;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class no/nav/brev/brevbaker/markup/outline/Block : no/nav/brev/brevbaker/markup/Markup$Identifiable {
+	public abstract fun getId ()I
+	public abstract fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$FormChoice : no/nav/brev/brevbaker/markup/outline/Block {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Z
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChoices ()Ljava/util/List;
+	public fun getId ()I
+	public final fun getPrompt ()Ljava/util/List;
+	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public final fun getVspace ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$FormChoice$Choice : no/nav/brev/brevbaker/markup/Markup$Identifiable, no/nav/brev/brevbaker/markup/Markup$TextContainer {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/util/List;
+	public fun getId ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$FormText : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;
+	public final fun component4 ()Z
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/util/List;
+	public fun getId ()I
+	public final fun getSize ()Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;
+	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public final fun getVspace ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$FormText$Size : java/lang/Enum {
+	public static final field FILL Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;
+	public static final field LONG Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;
+	public static final field NONE Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;
+	public static final field SHORT Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;
+	public static fun values ()[Lno/nav/brev/brevbaker/markup/outline/Block$FormText$Size;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$Item : no/nav/brev/brevbaker/markup/Markup$Identifiable, no/nav/brev/brevbaker/markup/Markup$TextContainer {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/util/List;
+	public fun getId ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$ItemList : no/nav/brev/brevbaker/markup/outline/Block {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()I
+	public final fun getItems ()Ljava/util/List;
+	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$NumberedList : no/nav/brev/brevbaker/markup/outline/Block {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()I
+	public final fun getItems ()Ljava/util/List;
+	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$Paragraph : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/util/List;
+	public fun getId ()I
+	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$Table : no/nav/brev/brevbaker/markup/outline/Block {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHeader ()Lno/nav/brev/brevbaker/markup/outline/Block$Table$Header;
+	public fun getId ()I
+	public final fun getRows ()Ljava/util/List;
+	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Cell : no/nav/brev/brevbaker/markup/Markup$Identifiable, no/nav/brev/brevbaker/markup/Markup$TextContainer {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/util/List;
+	public fun getId ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment : java/lang/Enum {
+	public static final field LEFT Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;
+	public static final field RIGHT Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;
+	public static fun values ()[Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$Table$ColumnSpec : no/nav/brev/brevbaker/markup/Markup$Identifiable, no/nav/brev/brevbaker/markup/Markup$TextContainer {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;
+	public final fun component4 ()I
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAlignment ()Lno/nav/brev/brevbaker/markup/outline/Block$Table$ColumnAlignment;
+	public fun getContent ()Ljava/util/List;
+	public fun getId ()I
+	public final fun getSpan ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Header : no/nav/brev/brevbaker/markup/Markup$Identifiable {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getColSpec ()Ljava/util/List;
+	public fun getId ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$Table$Row : no/nav/brev/brevbaker/markup/Markup$Identifiable {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCells ()Ljava/util/List;
+	public fun getId ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$Title2 : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/util/List;
+	public fun getId ()I
+	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$Title3 : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/util/List;
+	public fun getId ()I
+	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$Title4 : no/nav/brev/brevbaker/markup/outline/Block, no/nav/brev/brevbaker/markup/Markup$TextContainer {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/util/List;
+	public fun getId ()I
+	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Block$Type : java/lang/Enum {
+	public static final field FORM_CHOICE Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public static final field FORM_TEXT Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public static final field ITEM_LIST Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public static final field NUMBERED_LIST Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public static final field PARAGRAPH Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public static final field TABLE Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public static final field TITLE2 Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public static final field TITLE3 Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public static final field TITLE4 Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+	public static fun values ()[Lno/nav/brev/brevbaker/markup/outline/Block$Type;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/EditBehaviour : java/lang/Enum {
+	public static final field FRITEKST Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
+	public static final field REDIGERBAR_DATA Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
+	public static fun values ()[Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
+}
+
+public abstract class no/nav/brev/brevbaker/markup/outline/Text : no/nav/brev/brevbaker/markup/Markup$Identifiable {
+	public abstract fun getFontType ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
+	public abstract fun getId ()I
+	public abstract fun getText ()Ljava/lang/String;
+	public abstract fun getType ()Lno/nav/brev/brevbaker/markup/outline/Text$Type;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Text$FontType : java/lang/Enum {
+	public static final field BOLD Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
+	public static final field ITALIC Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
+	public static final field PLAIN Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
+	public static fun values ()[Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Text$Literal : no/nav/brev/brevbaker/markup/outline/Text {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
+	public final fun component4 ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEditBehaviour ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
+	public fun getFontType ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
+	public fun getId ()I
+	public fun getText ()Ljava/lang/String;
+	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Text$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Text$NewLine : no/nav/brev/brevbaker/markup/outline/Text {
+	public final fun component1 ()I
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getFontType ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
+	public fun getId ()I
+	public fun getText ()Ljava/lang/String;
+	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Text$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Text$Type : java/lang/Enum {
+	public static final field LITERAL Lno/nav/brev/brevbaker/markup/outline/Text$Type;
+	public static final field NEW_LINE Lno/nav/brev/brevbaker/markup/outline/Text$Type;
+	public static final field VARIABLE Lno/nav/brev/brevbaker/markup/outline/Text$Type;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/markup/outline/Text$Type;
+	public static fun values ()[Lno/nav/brev/brevbaker/markup/outline/Text$Type;
+}
+
+public final class no/nav/brev/brevbaker/markup/outline/Text$Variable : no/nav/brev/brevbaker/markup/outline/Text {
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
+	public final fun component4 ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEditBehaviour ()Lno/nav/brev/brevbaker/markup/outline/EditBehaviour;
+	public fun getFontType ()Lno/nav/brev/brevbaker/markup/outline/Text$FontType;
+	public fun getId ()I
+	public fun getText ()Ljava/lang/String;
+	public fun getType ()Lno/nav/brev/brevbaker/markup/outline/Text$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/pdfbygger/api/HttpStatusCodes : java/lang/Enum {
+	public static final field BadRequest Lno/nav/brev/brevbaker/pdfbygger/api/HttpStatusCodes;
+	public static final field InternalServerError Lno/nav/brev/brevbaker/pdfbygger/api/HttpStatusCodes;
+	public static final field ServiceUnavailable Lno/nav/brev/brevbaker/pdfbygger/api/HttpStatusCodes;
+	public final fun getCode ()I
+	public final fun getDescription ()Ljava/lang/String;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/pdfbygger/api/HttpStatusCodes;
+	public static fun values ()[Lno/nav/brev/brevbaker/pdfbygger/api/HttpStatusCodes;
+}
+
+public final class no/nav/brev/brevbaker/pdfbygger/api/LetterPDFRequest {
+	public final fun component1 ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+	public final fun component5 ()Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttachments ()Ljava/util/List;
+	public final fun getBrevtype ()Lno/nav/brev/brevbaker/markup/Markup$Brevtype;
+	public final fun getLetterMarkup ()Lno/nav/brev/brevbaker/markup/LetterMarkup;
+	public final fun getPdfVedlegg ()Ljava/util/List;
+	public final fun getSpraak ()Lno/nav/brev/brevbaker/markup/Markup$Spraak;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/pdfbygger/api/LetterPDFRequestKt {
+	public static final fun letterPDFRequest (Lno/nav/brev/brevbaker/markup/LetterMarkup;Lno/nav/brev/brevbaker/markup/Markup$Spraak;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;Ljava/util/List;Ljava/util/List;)Lno/nav/brev/brevbaker/pdfbygger/api/LetterPDFRequest;
+	public static synthetic fun letterPDFRequest$default (Lno/nav/brev/brevbaker/markup/LetterMarkup;Lno/nav/brev/brevbaker/markup/Markup$Spraak;Lno/nav/brev/brevbaker/markup/Markup$Brevtype;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lno/nav/brev/brevbaker/pdfbygger/api/LetterPDFRequest;
+}
+
+public final class no/nav/brev/brevbaker/pdfbygger/api/PDFCompilationOutput {
+	public fun <init> ([B)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBytes ()[B
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+

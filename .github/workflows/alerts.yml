@@ -1,0 +1,52 @@
+name: "Deploy alarmer"
+
+# Alarmene deployes i en egen workflow, ikke sammen med applikasjonene. Det er et bevisst valg
+# med to grunner:
+#
+# 1. nais/deploy kjører handlebars-templating på *alle* filene i RESOURCE så snart VARS eller VAR
+#    er satt, og Prometheus-annotasjoner bruker Go-templating med samme krøllparentes-syntaks.
+#    Settes VARS eller VAR her, brekker alarmene på to måter: `{{ $value | humanizePercentage }}`
+#    gir parse-feil og stopper deployen, mens `{{ $labels.pod }}` stille blir til tom streng.
+#    Det siste er verst - plattform-alerts.yaml har ingen pipes, så den ville rullet ut uten
+#    feilmelding og med alle podnavn strøket fra alarmtekstene. Uten VARS og VAR hopper
+#    nais/deploy over templatingen helt og sender filene uendret.
+#
+#    Se docs/modules/ROOT/pages/alarmstrategi.adoc for detaljene og hvordan dette ble verifisert.
+#
+# 2. Alarmene kan endres og rulles ut uten å bygge nye images. Dette forutsetter at app-workflowene
+#    eksplisitt ekskluderer sin egen alarmfil - alarmfilene ligger under appenes .nais-mapper, og
+#    ville ellers truffet path-filtre som "pensjon/brevbaker/**". Legger du til en ny alarmfil, må
+#    den også legges inn som "!<sti>" i den tilhørende app-workflowen.
+#
+# Konsekvensen av å droppe templating er at appnavnene må skrives ut i alarmfilene. Det er greit
+# så lenge vi kun deployer alarmer til prod.
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main"
+    paths:
+      - ".nais/plattform-alerts.yaml"
+      - "pensjon/brevbaker/.nais/alerts.yaml"
+      - "brevbaker/pdf-bygger/.nais/alerts.yaml"
+      - "skribenten-backend/.nais/alerts.yaml"
+      - "skribenten-web/bff/.nais/alerts.yaml"
+      - ".github/workflows/alerts.yml"
+
+jobs:
+  deployAlerts:
+    name: "Deploy alarmer til prod"
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: "Deploy PrometheusRule til prod-gcp"
+        uses: nais/deploy/actions/deploy@849e900e3cfa7faf7ad1532bb3a3e6499c932199 # v2
+        env:
+          CLUSTER: "prod-gcp"
+          RESOURCE: ".nais/plattform-alerts.yaml,pensjon/brevbaker/.nais/alerts.yaml,brevbaker/pdf-bygger/.nais/alerts.yaml,skribenten-backend/.nais/alerts.yaml,skribenten-web/bff/.nais/alerts.yaml"

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.zaxxer.hikari.HikariDataSource
+import io.ktor.client.engine.cio.CIO
 import io.ktor.server.application.Application
 import io.ktor.server.config.getAs
 import io.ktor.server.plugins.di.dependencies
@@ -89,6 +90,7 @@ fun Application.configureDependencies() {
         provide { datasource: HikariDataSource ->
             Database.connect(datasource).also { databaseReady.set(true) }
         }
+        provide(CIO::create)
 
         provide<FeatureToggleService>(UnleashService::class)
 

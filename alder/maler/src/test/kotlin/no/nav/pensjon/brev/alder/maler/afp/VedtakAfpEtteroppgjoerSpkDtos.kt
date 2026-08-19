@@ -4,14 +4,14 @@ import no.nav.pensjon.brev.alder.model.afp.AfpPeriode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDto
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 
 fun createVedtakAfpEtteroppgjoerIngenEndringDto(): VedtakAfpEtteroppgjoerIngenEndringDto =
     VedtakAfpEtteroppgjoerIngenEndringDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = VedtakAfpEtteroppgjoerIngenEndringDto.PesysData(
             oppgjoersAar = Year(2024),
             pensjonsgivendeInntekt = Kroner(280_000),
@@ -30,7 +30,7 @@ fun createVedtakAfpEtteroppgjoerIngenEndringDto(): VedtakAfpEtteroppgjoerIngenEn
 
 fun createVedtakAfpEtteroppgjoerEtterbetalingDto(): VedtakAfpEtteroppgjoerEtterbetalingDto =
     VedtakAfpEtteroppgjoerEtterbetalingDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = VedtakAfpEtteroppgjoerEtterbetalingDto.PesysData(
             oppgjoersAar = Year(2024),
             forlitebetalt = Kroner(14_000),
@@ -55,7 +55,7 @@ fun createVedtakAfpEtteroppgjoerEtterbetalingDto(): VedtakAfpEtteroppgjoerEtterb
 
 fun createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto(): VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto =
     VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = VedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto.PesysData(
             oppgjoersAar = Year(2024),
             pensjonsgivendeInntekt = Kroner(280_000),
