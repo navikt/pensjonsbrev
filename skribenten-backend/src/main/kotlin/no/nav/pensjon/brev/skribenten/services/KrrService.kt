@@ -88,7 +88,7 @@ class KrrService(config: OboClientConfig, authService: AuthService, engine: Http
             logger.warn("IO-feil ved kall mot KRR: ${e.message}", e)
             return KontaktinfoResponse(KontaktinfoResponse.FailureType.ERROR)
         } catch (e: UnresolvedAddressException) {
-            logger.warn("IO-feil ved kall mot KRR: ${e.message}, e")
+            logger.warn("IO-feil ved kall mot KRR: ${e.message}", e)
             return KontaktinfoResponse(KontaktinfoResponse.FailureType.ERROR)
         }
         return if (response.status.isSuccess()) {
