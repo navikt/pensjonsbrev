@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.alder.model.sivilstand
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -13,7 +13,7 @@ import java.time.LocalDate
 data class EndringAvAlderspensjonGarantitilleggDto(
     override val pesysData: PesysData,
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
-) : RedigerbarBrevdataMedSaksbehandlerValg<EndringAvAlderspensjonGarantitilleggDto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<EndringAvAlderspensjonGarantitilleggDto.PesysData> {
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,

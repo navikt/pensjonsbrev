@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
@@ -16,7 +16,7 @@ import java.time.LocalDate
 data class VedtakEndringAvUttaksgradDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdataMedSaksbehandlerValg<VedtakEndringAvUttaksgradDto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<VedtakEndringAvUttaksgradDto.PesysData> {
 
     data class PesysData(
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto?,

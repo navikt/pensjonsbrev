@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValgUtenFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValgUtenFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 
@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 data class OpphoerGjenlevendepensjonDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: EmptyFagsystemdata = EmptyFagsystemdata,
-) : RedigerbarBrevdataMedSaksbehandlerValgUtenFagsystemdata {
+) : BrevdataMedSaksbehandlerValgUtenFagsystemdata {
 
     enum class FolketrygdlovenAlternativ(override val displayText: String) : SaksbehandlerValgEnum {
         gifterSeg("Gifter seg"),

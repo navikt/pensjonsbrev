@@ -11,9 +11,9 @@ interface RedigerbarBrevdata<Valg : SaksbehandlerValgBrevdata, Data : FagsystemB
     val pesysData: Data
 }
 
-interface RedigerbarBrevdataMedSaksbehandlerValg<Data : FagsystemBrevdata> : RedigerbarBrevdata<SaksbehandlervalgIDSL, Data>
+interface BrevdataMedSaksbehandlerValg<Data : FagsystemBrevdata> : RedigerbarBrevdata<SaksbehandlervalgIDSL, Data>
 
-interface RedigerbarBrevdataMedSaksbehandlerValgUtenFagsystemdata : RedigerbarBrevdataMedSaksbehandlerValg<EmptyFagsystemdata>
+interface BrevdataMedSaksbehandlerValgUtenFagsystemdata : BrevdataMedSaksbehandlerValg<EmptyFagsystemdata>
 
 interface AutobrevData : BrevbakerBrevdata, FagsystemBrevdata
 

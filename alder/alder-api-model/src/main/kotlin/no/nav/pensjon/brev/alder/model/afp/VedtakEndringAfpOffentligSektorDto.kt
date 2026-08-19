@@ -2,10 +2,9 @@ package no.nav.pensjon.brev.alder.model.afp
 
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmBeregningenAfpDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDto
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import java.time.LocalDate
@@ -14,7 +13,7 @@ import java.time.LocalDate
 data class VedtakEndringAfpOffentligSektorDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdataMedSaksbehandlerValg<VedtakEndringAfpOffentligSektorDto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<VedtakEndringAfpOffentligSektorDto.PesysData> {
 
     data class PesysData(
         val virkningFom: LocalDate,

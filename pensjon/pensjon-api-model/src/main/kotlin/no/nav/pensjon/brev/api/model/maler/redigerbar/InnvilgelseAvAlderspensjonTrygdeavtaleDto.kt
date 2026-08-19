@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
@@ -20,7 +20,7 @@ import java.time.LocalDate
 data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
     override val pesysData: PesysData,
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
-) : RedigerbarBrevdataMedSaksbehandlerValg<InnvilgelseAvAlderspensjonTrygdeavtaleDto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<InnvilgelseAvAlderspensjonTrygdeavtaleDto.PesysData> {
 
     data class PesysData(
 

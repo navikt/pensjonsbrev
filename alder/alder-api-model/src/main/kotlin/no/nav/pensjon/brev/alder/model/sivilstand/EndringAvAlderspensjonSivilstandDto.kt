@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dt
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -18,7 +18,7 @@ import java.time.LocalDate
 data class EndringAvAlderspensjonSivilstandDto(
     override val pesysData: PesysData,
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
-) : RedigerbarBrevdataMedSaksbehandlerValg<EndringAvAlderspensjonSivilstandDto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<EndringAvAlderspensjonSivilstandDto.PesysData> {
 
     enum class Sivilstandsendringsaarsak(override val displayText: String) : SaksbehandlerValgEnum {
         fraFlyttet("Fraflytting"),

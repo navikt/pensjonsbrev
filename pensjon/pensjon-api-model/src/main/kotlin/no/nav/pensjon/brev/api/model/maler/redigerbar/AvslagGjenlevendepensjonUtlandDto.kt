@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import java.time.LocalDate
 
@@ -9,7 +9,7 @@ import java.time.LocalDate
 data class AvslagGjenlevendepensjonUtlandDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdataMedSaksbehandlerValg<AvslagGjenlevendepensjonUtlandDto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<AvslagGjenlevendepensjonUtlandDto.PesysData> {
     data class PesysData(
         val kravMottattDato: LocalDate,
     ) : FagsystemBrevdata

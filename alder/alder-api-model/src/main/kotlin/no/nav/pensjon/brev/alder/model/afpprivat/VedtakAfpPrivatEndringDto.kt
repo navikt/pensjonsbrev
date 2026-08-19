@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.model.afpprivat
 
 import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDto
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import java.time.LocalDate
@@ -15,7 +15,7 @@ import java.time.LocalDate
 data class VedtakAfpPrivatEndringDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdataMedSaksbehandlerValg<VedtakAfpPrivatEndringDto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<VedtakAfpPrivatEndringDto.PesysData> {
 
     data class PesysData(
         // PE_Vedtaksdata_VirkningFom

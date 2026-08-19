@@ -8,7 +8,7 @@ import java.time.LocalDate
 data class SamletMeldingOmPensjonsvedtakV2Dto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdataMedSaksbehandlerValg<SamletMeldingOmPensjonsvedtakV2Dto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<SamletMeldingOmPensjonsvedtakV2Dto.PesysData> {
     data class PesysData(
         val sakstype: Sakstype,
         val p1Vedlegg: P1RedigerbarDto?,

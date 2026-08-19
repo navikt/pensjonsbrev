@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 
 
@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 data class VedtakOmInnvilgelseAvOmsorgspoengDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdataMedSaksbehandlerValg<VedtakOmInnvilgelseAvOmsorgspoengDto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<VedtakOmInnvilgelseAvOmsorgspoengDto.PesysData> {
 
     data class PesysData(
         val omsorgspersonNavn: String, //PE_Grunnlag_OmsorgGodskrGrunnlagListe_Godskrivesliste_OGPersonPleieTrengFornavn/Mellomnavn/Etternavn

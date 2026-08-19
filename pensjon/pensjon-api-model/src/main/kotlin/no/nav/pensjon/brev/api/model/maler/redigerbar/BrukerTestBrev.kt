@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 
@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 data class BrukerTestBrevDto(
     override val pesysData: EmptyFagsystemdata,
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
-) : RedigerbarBrevdataMedSaksbehandlerValg<EmptyFagsystemdata> {
+) : BrevdataMedSaksbehandlerValg<EmptyFagsystemdata> {
     enum class UtsiktenFraKontoret(override val displayText: String) : SaksbehandlerValgEnum {
         MOT_TRAER_OG_NATUR("Trær og natur"),
         MOT_PARKERINGSPLASSEN("Parkeringsplass"),

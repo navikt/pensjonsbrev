@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.alder.model.afpprivat
 
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 
 /**
@@ -14,4 +14,4 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 data class InnvilgelseAvAfpDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: InnvilgelseAvAfpAutoDto,
-) : RedigerbarBrevdataMedSaksbehandlerValg<InnvilgelseAvAfpAutoDto>
+) : BrevdataMedSaksbehandlerValg<InnvilgelseAvAfpAutoDto>

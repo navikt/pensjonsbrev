@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder
 
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.alder.maler.adhoc.createAdhocTidligereUfoereGradertAPAutoDto
 import no.nav.pensjon.brev.alder.maler.afpprivat.createAvslagAfpPrivatDto
 import no.nav.pensjon.brev.alder.maler.afp.createAvslagAfpGammelDto
@@ -88,6 +89,7 @@ import no.nav.pensjon.brev.alder.model.avslag.*
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDto
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AFpPrivatSokerUforeTrygdVedleggDto
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.UforeTrygdSokerAfpPrivatDto
+import no.nav.pensjon.brev.alder.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDto
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonGarantitilleggDto
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandAutoDto
@@ -110,7 +112,6 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlde
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.fixtures.alder.*
 import kotlin.reflect.KClass
 
@@ -133,7 +134,7 @@ object Fixtures : LetterDataFactory {
             AvslagUttakFoerNormertPensjonsalderDto::class -> createAvslagUttakFoerNormertPensjonsalderDto() as T
             AvslagUnder5AarTrygdetidAutoDto::class -> createUnder5AarTrygdetidAutoDto() as T
             EmptyAutobrevdata::class -> EmptyAutobrevdata as T
-            EmptyRedigerbarBrevdata::class -> EmptyRedigerbarBrevdata as T
+            EmptyRedigerbarBrevdataMedSaksbehandlerValg::class -> EmptyRedigerbarBrevdataMedSaksbehandlerValg(saksbehandlerValg = lagSaksbehandlervalg()) as T
             EndringAvAlderspensjonFordiDuFyller75AarAutoDto::class -> createEndringAvAlderspensjonFordiDuFyller75AarAutoDto() as T
             EndringAvAlderspensjonAvdodAutoDto::class -> createEndringAvAlderspensjonAvdodAuto() as T
             EndringAvAlderspensjonGarantitilleggDto::class -> createEndringAvAlderspensjonGarantitilleggDto() as T

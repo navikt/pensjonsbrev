@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
@@ -11,7 +11,7 @@ import java.time.LocalDate
 data class VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdataMedSaksbehandlerValg<VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.PesysData> {
 
     enum class Aarsak(override val displayText: String) : SaksbehandlerValgEnum {
         ufoeretrygdErInnvilget("Uføretrygd er innvilget"),
