@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.fagsystem
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValgUtenFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValgUtenFagsystemdata
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto.BrevkontekstCode.*
@@ -33,7 +33,7 @@ class BrevmalServiceTest {
     private val brevbakerbrev = listOf(
         TemplateDescription.Redigerbar(
             name = "brevbaker mal",
-            letterDataClass = RedigerbarBrevdataMedSaksbehandlerValgUtenFagsystemdata::class.java.name,
+            letterDataClass = BrevdataMedSaksbehandlerValgUtenFagsystemdata::class.java.name,
             languages = listOf(LanguageCode.BOKMAL),
             metadata = LetterMetadata(
                 "brevbaker brev",

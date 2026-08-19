@@ -3,8 +3,8 @@ package no.nav.pensjon.brev.skribenten
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.getAs
 import io.ktor.util.collections.*
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.skribenten.auth.ADGroup
@@ -44,7 +44,7 @@ object Testbrevkoder {
 data class EksempelRedigerbartDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdataMedSaksbehandlerValg<EksempelRedigerbartDto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<EksempelRedigerbartDto.PesysData> {
     data class PesysData(
         val pensjonInnvilget: Boolean,
         val datoInnvilget: LocalDate,
