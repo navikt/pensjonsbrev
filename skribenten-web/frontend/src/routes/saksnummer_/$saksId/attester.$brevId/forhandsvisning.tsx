@@ -31,7 +31,7 @@ const VedtakForhåndsvisningWrapper = () => {
     refetchOnMount: "always",
   });
 
-  const hasFetchedBrevAfterMount = hentBrevQuery.isSuccess && hentBrevQuery.isFetchedAfterMount;
+  const hasFetchedBrevAfterMount = hentBrevQuery.isFetchedAfterMount;
 
   return queryFold({
     query: hentBrevQuery,
