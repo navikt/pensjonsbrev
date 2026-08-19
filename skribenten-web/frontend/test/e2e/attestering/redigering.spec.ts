@@ -5,7 +5,7 @@ import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer"
 import { setupSakStubs } from "~test/e2e/support/helpers";
 import { brevResponse } from "~test/support/brevFixtures";
 
-const defaultBrev = brevResponse({});
+const defaultBrev = brevResponse();
 
 test.describe("attestant redigering", () => {
   test.beforeEach(async ({ page }) => {

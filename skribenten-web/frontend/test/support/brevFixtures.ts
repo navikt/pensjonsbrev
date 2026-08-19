@@ -16,7 +16,7 @@ import { type Nullable } from "~/types/Nullable";
 
 export const brevResponse = ({
   info = brevInfo(),
-  redigertBrev = editedLetter({}),
+  redigertBrev = editedLetter(),
   redigertBrevHash = "redigertBrevHash",
   saksbehandlerValg = {},
   valgteVedlegg = null,

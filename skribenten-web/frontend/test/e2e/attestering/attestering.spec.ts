@@ -7,7 +7,7 @@ import { brevInfo, brevResponse } from "~test/support/brevFixtures";
 
 import brev from "../fixtures/bekreftelsePåFlyktningstatus/brev.json" with { type: "json" };
 
-const defaultBrev = brevResponse({});
+const defaultBrev = brevResponse();
 const bekreftelsePaaFlyktningstatusBrev = brev as unknown as BrevResponse;
 const vedtaksBrev = brevResponse({
   ...bekreftelsePaaFlyktningstatusBrev,

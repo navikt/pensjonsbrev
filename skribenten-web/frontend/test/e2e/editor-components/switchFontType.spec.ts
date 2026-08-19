@@ -658,7 +658,7 @@ test.describe("Switch font type", () => {
     });
 
     test("endring av fonttype av en variable inne i et punkt skal bevare all content i punkten", async ({ page }) => {
-      const redigertBrev = editedLetter({});
+      const redigertBrev = editedLetter();
       const brevResponse = makeBrevResponse(redigertBrev);
       await setupBrevRoute(page, brevResponse);
       await navigateToEditor(page);
