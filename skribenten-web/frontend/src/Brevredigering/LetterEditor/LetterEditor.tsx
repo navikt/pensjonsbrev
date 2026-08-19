@@ -10,7 +10,11 @@ import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
-import { type Redigeringsflate, trackMissingFromTemplateAction } from "~/utils/editorTracking";
+import {
+  type MissingFromTemplateEventName,
+  type Redigeringsflate,
+  trackMissingFromTemplateAction,
+} from "~/utils/editorTracking";
 
 import Actions from "./actions";
 import { countMissingFromTemplateBlocks, getBlockClassName } from "./actions/common";
@@ -52,7 +56,7 @@ export const LetterEditor = ({
   useSelectionDeleteHotkey(editorRoot, (focus) => applyAction(Actions.deleteSelection, setEditorState, focus), !freeze);
 
   const sporMissingFromTemplateHandling = useCallback(
-    (eventName: "blokk beholdt" | "blokk slettet", blockIndex: number) =>
+    (eventName: MissingFromTemplateEventName, blockIndex: number) =>
       trackMissingFromTemplateAction(eventName, redigeringsflate, {
         brevId: editorState.info.id,
         brevkode: editorState.info.brevkode,
