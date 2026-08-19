@@ -173,7 +173,7 @@ const VedtakWrapper = () => {
         },
       };
       return (
-        <ManagedLetterEditorContextProvider brev={brevUtenAttestantSignatur} redigeringsflate="attestant-redigering">
+        <ManagedLetterEditorContextProvider brev={brevUtenAttestantSignatur}>
           <Vedtak brev={brevUtenAttestantSignatur} doReload={hentBrevQuery.refetch} saksId={saksId} />
         </ManagedLetterEditorContextProvider>
       );
@@ -393,7 +393,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           right={
             <>
               <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
-                <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
+                <ManagedLetterEditor
+                  brev={props.brev}
+                  error={error}
+                  freeze={freeze}
+                  redigeringsflate="attestant-redigering"
+                  showDebug={showDebug}
+                />
               </InsertedTekstValgHighlightProvider>
               {/* Modal som ikke tar opp plass i DOM her */}
               <ReservertBrevError

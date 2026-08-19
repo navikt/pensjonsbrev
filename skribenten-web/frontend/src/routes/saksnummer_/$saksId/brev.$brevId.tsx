@@ -212,7 +212,7 @@ function RedigerBrevPage() {
       return <ApiError error={error} title="En feil skjedde ved henting av brev" />;
     },
     success: (brev) => (
-      <ManagedLetterEditorContextProvider brev={brev} redigeringsflate="saksbehandler-redigering">
+      <ManagedLetterEditorContextProvider brev={brev}>
         <RedigerBrev brev={brev} doReload={brevQuery.refetch} saksId={saksId} vedtaksId={vedtaksId} />
       </ManagedLetterEditorContextProvider>
     ),
@@ -419,7 +419,13 @@ function RedigerBrev({
               }
               right={
                 <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                  <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
+                  <ManagedLetterEditor
+                    brev={brev}
+                    error={error}
+                    freeze={freeze}
+                    redigeringsflate="saksbehandler-redigering"
+                    showDebug={showDebug}
+                  />
                 </InsertedTekstValgHighlightProvider>
               }
               rightColumnWidth="minmax(640px, 694px)"

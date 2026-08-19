@@ -16,7 +16,7 @@ import { type LetterMetadata } from "~/types/apiTypes";
 import { type BrevInfo } from "~/types/brev";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 import { erBrevArkivert } from "~/utils/brevUtils";
-import { trackMottakerClick } from "~/utils/umami";
+import { trackMottakerClick } from "~/utils/mottakerTracking";
 
 import Oppsummeringspar from "../../kvittering/-components/Oppsummeringspar";
 import { Route, type SubmitTemplateOptions } from "../route";

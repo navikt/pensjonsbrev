@@ -6,15 +6,14 @@ import { applyPatches } from "immer";
 import React, { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useState } from "react";
 
 import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
-import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
-import { trackMissingFromTemplateAction } from "~/utils/umami";
+import { type Redigeringsflate, trackMissingFromTemplateAction } from "~/utils/editorTracking";
 
 import Actions from "./actions";
-import { getBlockClassName } from "./actions/common";
+import { countMissingFromTemplateBlocks, getBlockClassName } from "./actions/common";
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
@@ -31,16 +30,17 @@ export const LetterEditor = ({
   editorState,
   setEditorState,
   showDebug,
+  redigeringsflate,
 }: {
   freeze: boolean;
   error: boolean;
   editorState: LetterEditorState;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   showDebug: boolean;
+  redigeringsflate: Redigeringsflate;
 }) => {
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
-  const { redigeringsflate } = useManagedLetterEditorContext();
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
   const highlightedIds = useInsertedTekstValgHighlight();
 
@@ -50,6 +50,19 @@ export const LetterEditor = ({
   useDragSelectUnifier(editorRoot, !freeze);
 
   useSelectionDeleteHotkey(editorRoot, (focus) => applyAction(Actions.deleteSelection, setEditorState, focus), !freeze);
+
+  const sporMissingFromTemplateHandling = useCallback(
+    (eventName: "blokk beholdt" | "blokk slettet", blockIndex: number) =>
+      trackMissingFromTemplateAction(eventName, redigeringsflate, {
+        brevId: editorState.info.id,
+        brevkode: editorState.info.brevkode,
+        brevtype: editorState.info.brevtype,
+        spraak: editorState.info.spraak,
+        antallGjenstaaende: countMissingFromTemplateBlocks(letter) - 1,
+        blockIndex,
+      }),
+    [redigeringsflate, editorState.info, letter],
+  );
 
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
 
@@ -157,15 +170,7 @@ export const LetterEditor = ({
                       <Button
                         icon={<CheckmarkIcon aria-hidden />}
                         onClick={() => {
-                          trackMissingFromTemplateAction("blokk beholdt", redigeringsflate, {
-                            brevId: editorState.info.id,
-                            brevkode: editorState.info.brevkode,
-                            brevtittel: editorState.info.brevtittel,
-                            brevtype: editorState.info.brevtype,
-                            spraak: editorState.info.spraak,
-                            restAntall: blocks.filter((b) => b.missingFromTemplate).length - 1,
-                            blockIndex,
-                          });
+                          sporMissingFromTemplateHandling("blokk beholdt", blockIndex);
                           applyAction(Actions.keepMissingFromTemplateBlock, setEditorState, blockIndex);
                         }}
                         size="xsmall"
@@ -177,15 +182,7 @@ export const LetterEditor = ({
                       <Button
                         icon={<XMarkIcon aria-hidden />}
                         onClick={() => {
-                          trackMissingFromTemplateAction("blokk slettet", redigeringsflate, {
-                            brevId: editorState.info.id,
-                            brevkode: editorState.info.brevkode,
-                            brevtittel: editorState.info.brevtittel,
-                            brevtype: editorState.info.brevtype,
-                            spraak: editorState.info.spraak,
-                            restAntall: blocks.filter((b) => b.missingFromTemplate).length - 1,
-                            blockIndex,
-                          });
+                          sporMissingFromTemplateHandling("blokk slettet", blockIndex);
                           applyAction(Actions.removeMissingFromTemplateBlock, setEditorState, blockIndex);
                         }}
                         size="xsmall"

@@ -16,7 +16,8 @@ import { type LetterMetadata, type SpraakKode } from "~/types/apiTypes";
 import { type BrevInfo, type BrevResponse, type Mottaker, type SaksbehandlerValg } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
-import { trackEvent, trackMottakerClick } from "~/utils/umami";
+import { trackMottakerClick } from "~/utils/mottakerTracking";
+import { trackEvent } from "~/utils/umami";
 
 import { Route, type SubmitTemplateOptions } from "../../route";
 import BrevmalFormWrapper from "./components/BrevmalFormWrapper";

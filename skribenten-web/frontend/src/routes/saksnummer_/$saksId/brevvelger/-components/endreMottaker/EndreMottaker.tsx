@@ -8,7 +8,7 @@ import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { type Adresse } from "~/types/apiTypes";
 import { type Mottaker } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
-import { trackMottakerClick } from "~/utils/umami";
+import { trackMottakerClick } from "~/utils/mottakerTracking";
 
 import { Route } from "../../route";
 
