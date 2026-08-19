@@ -1,9 +1,8 @@
 import { describe, expect, test } from "vitest";
 
+import { type Adresse } from "~/types/apiTypes";
 import { ManueltAdressertTil } from "~/types/brev";
-
-import { type Adresse } from "../types/apiTypes";
-import { mapEndreMottakerValueTilMottaker } from "./AdresseUtils";
+import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
 function adresse(overstyringer: Partial<Adresse> = {}): Adresse {
   return {
