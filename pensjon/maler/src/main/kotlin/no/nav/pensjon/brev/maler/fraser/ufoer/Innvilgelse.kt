@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.RedigerbarOutlinePhrase
+import no.nav.pensjon.brev.template.RedigerbarPhraseBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
@@ -36,7 +37,7 @@ object Innvilgelse {
         val virkningfom: Expression<LocalDate>,
         val virkningstidpunkt: Expression<LocalDate>,
     ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
             showIf((ungUforResultat.notEqualTo("oppfylt") and (kravarsak.notEqualTo("omgj_etter_klage") and kravarsak.notEqualTo("omgj_etter_anke")))) {
                 paragraph {
                     text(
@@ -340,7 +341,7 @@ object Innvilgelse {
         val pe: Expression<PEgruppe10>,
         val vedleggOpplysningerBruktIBeregningUT: AttachmentTemplate<LangBokmalNynorsk, *>,
     ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
             showIf((ungUforResultat.equalTo("oppfylt") or ungUforResultat.equalTo("ikke_oppfylt"))) {
                 title1 {
                     text(
@@ -486,7 +487,7 @@ object Innvilgelse {
         val innvilgetEtter12_2_andreledd: Expression<Boolean> = false.expr(),
         val innvilgetEtter12_2_tredjeledd: Expression<Boolean> = false.expr(),
     ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
             showIf(oppfyltvedsammenlegging) {
                 title1 {
                     text(
@@ -591,7 +592,7 @@ object Innvilgelse {
         val beregningsvilkarUforegrad: Expression<Int>,
         val yrkesskadeResultat: Expression<String>,
     ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
             showIf(((yrkesskadeResultat).notEqualTo("ikke_vurdert"))) {
                 title1 {
                     text(
@@ -722,7 +723,7 @@ object Innvilgelse {
         val kravFremsattDato: Expression<LocalDate?>,
         val virkningbegrunnelseStdbegr_22_12_1_5: Expression<Boolean>,
     ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
 
             title1 {
                 text(
@@ -821,7 +822,7 @@ object Innvilgelse {
         val ungUforResultat: Expression<String>,
         val vedleggOpplysningerBruktIBeregningUT: AttachmentTemplate<LangBokmalNynorsk, *>,
     ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
             title1 {
                 text(
                     bokmal { +"Slik har vi fastsatt uføregraden din" },
@@ -1259,7 +1260,7 @@ object Innvilgelse {
         val btFellesNetto0: Expression<Boolean>,
         val periodisertInntekt: Expression<PeriodisertInntektBarnetillegg?>
     ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
             showIf((btInnvilget and pe.vedtaksdata_kravhode_sokerbt())) {
                 title1 {
                     text(
@@ -1722,7 +1723,7 @@ object Innvilgelse {
         val pe: Expression<PEgruppe10>,
         val uforetidspunkt: Expression<LocalDate>,
     ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
             val foedselsdato = pe.personsak.foedselsdato
             val erMndEtterFoedsel = erUforetidspunktMaanedEtterFoedsel(uforetidspunkt, foedselsdato)
             val visUforetidspunkt = ifElse(erMndEtterFoedsel, foedselsdato.formatMonthYear(), uforetidspunkt.formatMonthYear())

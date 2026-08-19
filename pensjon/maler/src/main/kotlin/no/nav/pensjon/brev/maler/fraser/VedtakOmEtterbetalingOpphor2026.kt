@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.RedigerbarOutlinePhrase
+import no.nav.pensjon.brev.template.RedigerbarPhraseBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.text
@@ -199,7 +200,7 @@ class VedtakOmEtterbetalingOpphor2026 {
         private val endringUforegrad: Expression<Boolean>,
         private val endringIfu: Expression<Boolean>,
     ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
             includePhrase(
                 HovedinnholdFoerHjemler(
                     etterbetaling,
