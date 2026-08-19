@@ -43,12 +43,12 @@ data class AfpOffentligTidsbegrensetOpptjeningTabell(
                     cell { text(bokmal { +afp.sluttpoengtall.format().redigerbar() }) }
                 }
                 row {
-                    cell { text(bokmal { +"Poengår" }) }
-                    cell { text(bokmal { +(afp.poengaarTom1991 + afp.poengaarFom1992).format().redigerbar() + " år" }) }
-                }
-                row {
                     cell { text(bokmal { +"Trygdetid" }) }
                     cell { text(bokmal { +afp.trygdetid.format().redigerbar() + " år" }) }
+                }
+                row {
+                    cell { text(bokmal { +"Poengår" }) }
+                    cell { text(bokmal { +(afp.poengaarTom1991 + afp.poengaarFom1992).format().redigerbar() + " år" }) }
                 }
                 row {
                     cell { text(bokmal { +"Poengår før 1992 (45 %)" }) }
