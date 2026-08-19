@@ -151,7 +151,7 @@ fun Application.skribentenApp() {
             oneShotJobs(leaderService) {
                 job("2026-07-31-fjern-p1v1") {
                     val ider = transaction {
-                        BrevredigeringTable.select(BrevredigeringTable.id)
+                        BrevredigeringTable.select(BrevredigeringTable.id, BrevredigeringTable.brevkode)
                             .filter { it[BrevredigeringTable.brevkode].kode() == "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK" }
                             .map { it[BrevredigeringTable.id] }
                     }
