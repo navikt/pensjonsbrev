@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
@@ -10,7 +10,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 data class VedtakAvslagPaaOmsorgsopptjeningDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdataMedSaksbehandlerValg<VedtakAvslagPaaOmsorgsopptjeningDto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<VedtakAvslagPaaOmsorgsopptjeningDto.PesysData> {
 
     data class PesysData(
         val navEnhet: String,

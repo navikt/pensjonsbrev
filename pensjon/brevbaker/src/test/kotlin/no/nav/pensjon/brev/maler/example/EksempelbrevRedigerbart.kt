@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.maler.example.selectors.eksempelRedigerbartDto.pesysData.*
 import no.nav.pensjon.brev.maler.example.selectors.eksempelRedigerbartDto.*
@@ -286,7 +286,7 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
 data class EksempelRedigerbartDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdataMedSaksbehandlerValg<EksempelRedigerbartDto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<EksempelRedigerbartDto.PesysData> {
     data class PesysData(
         val pensjonInnvilget: Boolean,
         val datoInnvilget: LocalDate,

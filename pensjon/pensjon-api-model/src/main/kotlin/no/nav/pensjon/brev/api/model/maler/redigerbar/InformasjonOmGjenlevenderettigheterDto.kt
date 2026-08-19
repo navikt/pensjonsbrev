@@ -2,15 +2,15 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 
 @Suppress("unused")
 data class InformasjonOmGjenlevenderettigheterDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
-    override val pesysData: PesysData
-) : RedigerbarBrevdataMedSaksbehandlerValg<InformasjonOmGjenlevenderettigheterDto.PesysData> {
+    override val pesysData: PesysData,
+) : BrevdataMedSaksbehandlerValg<InformasjonOmGjenlevenderettigheterDto.PesysData> {
 
     data class PesysData(
         val sakstype: Sakstype,

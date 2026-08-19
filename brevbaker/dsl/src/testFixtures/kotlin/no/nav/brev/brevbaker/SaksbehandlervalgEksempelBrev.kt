@@ -5,7 +5,7 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.Language
@@ -95,4 +95,4 @@ enum class TestValgEnum(override val displayText: String) : SaksbehandlerValgEnu
 data class SaksbehandlervalgTestDto(
     override val pesysData: EmptyFagsystemdata = EmptyFagsystemdata,
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
-) : RedigerbarBrevdataMedSaksbehandlerValg<EmptyFagsystemdata>
+) : BrevdataMedSaksbehandlerValg<EmptyFagsystemdata>

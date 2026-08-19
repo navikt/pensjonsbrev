@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev
 
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 
 data class UforeTrygdSokerAfpPrivatDto(
@@ -9,6 +9,6 @@ data class UforeTrygdSokerAfpPrivatDto(
     override val pesysData: EmptyFagsystemdata,
 
 
-    ) : RedigerbarBrevdataMedSaksbehandlerValg<EmptyFagsystemdata>
+    ) : BrevdataMedSaksbehandlerValg<EmptyFagsystemdata>
 
 
