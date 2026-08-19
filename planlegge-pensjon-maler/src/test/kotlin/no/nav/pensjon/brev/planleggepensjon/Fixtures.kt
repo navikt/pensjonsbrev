@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdAvsnitt
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdInnhold
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdSeksjon
+import no.nav.pensjon.brev.planleggepensjon.simulering.Kortforbehold
 import no.nav.pensjon.brev.planleggepensjon.simulering.LivsvarigOffentligAfp
 import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfp
 import no.nav.pensjon.brev.planleggepensjon.simulering.Simulering
@@ -184,6 +185,18 @@ object Fixtures : LetterDataFactory {
             simuleringsinformasjon = createSimuleringsinformasjon(),
             trygdetid = null,
             forbehold = createForbeholdInnhold(),
+            kortforbehold = Kortforbehold(
+                avsnitt = listOf(
+                    ForbeholdAvsnitt(
+                        tekst = "Dette er et kort forbehold som vises i brevet.",
+                        punktliste = null,
+                    ),
+                    ForbeholdAvsnitt(
+                        tekst = "Dette er et kort forbehold i brevet.",
+                        punktliste = null,
+                    )
+                ),
+            ),
         )
 
     private fun createForbeholdInnhold() = ForbeholdInnhold(
