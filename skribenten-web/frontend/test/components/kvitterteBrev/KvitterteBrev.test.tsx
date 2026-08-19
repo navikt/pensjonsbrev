@@ -30,7 +30,7 @@ const nyKvittertBrev = (args: {
 }): KvittertBrev => ({
   apiStatus: args.apiStatus ?? "success",
   context: args.context ?? "attestering",
-  brevFørHandling: args.brevFørHandling ?? brevInfo({}),
+  brevFørHandling: args.brevFørHandling ?? brevInfo(),
   attesteringResponse: args.attesteringResponse ?? null,
   sendtBrevResponse: args.sendtBrevResponse ?? null,
   sendtBrevError: args.sendtBrevError ?? null,
@@ -40,7 +40,7 @@ const attesteringError = nyKvittertBrev({ apiStatus: "error", context: "attester
 const attesteringSuccess = nyKvittertBrev({
   apiStatus: "success",
   context: "attestering",
-  attesteringResponse: brevInfo({}),
+  attesteringResponse: brevInfo(),
 });
 const sendBrevError = nyKvittertBrev({ apiStatus: "error", context: "sendBrev" });
 const sendBrevSuccessLokalprint = nyKvittertBrev({

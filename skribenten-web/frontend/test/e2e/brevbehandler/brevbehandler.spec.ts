@@ -547,7 +547,7 @@ test.describe("Brevbehandler", () => {
   test("brev som har uendret fritekstfelter kan ikke gjøres klar for sending", async ({ page }) => {
     await page.route("**/bff/skribenten-backend/sak/123456/brev", (route) => {
       if (route.request().method() === "GET") {
-        return route.fulfill({ json: [brevInfo({})] });
+        return route.fulfill({ json: [brevInfo()] });
       }
       return route.fallback();
     });

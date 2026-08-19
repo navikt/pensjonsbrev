@@ -15,7 +15,7 @@ import { type AnyBlock, type EditedLetter, type Sakspart, type Signatur, type Ti
 import { type Nullable } from "~/types/Nullable";
 
 export const brevResponse = ({
-  info = brevInfo({}),
+  info = brevInfo(),
   redigertBrev = editedLetter({}),
   redigertBrevHash = "redigertBrevHash",
   saksbehandlerValg = {},
@@ -100,24 +100,26 @@ export const editedLetter = ({
   deletedBlocks: deletedBlocks ?? [],
 });
 
-export const brevInfo = (args: {
-  id?: number;
-  opprettetAv?: NavAnsatt;
-  opprettet?: string;
-  sistredigertAv?: NavAnsatt;
-  sistredigert?: string;
-  brevkode?: string;
-  brevtittel?: string;
-  brevtype?: BrevType;
-  status?: BrevStatus;
-  distribusjonstype?: Distribusjonstype;
-  mottaker?: Nullable<Mottaker>;
-  avsenderEnhet?: NAVEnhet;
-  spraak?: SpraakKode;
-  journalpostId?: Nullable<number>;
-  vedtaksId?: Nullable<number>;
-  saksId?: number;
-}): BrevInfo => ({
+export const brevInfo = (
+  args: {
+    id?: number;
+    opprettetAv?: NavAnsatt;
+    opprettet?: string;
+    sistredigertAv?: NavAnsatt;
+    sistredigert?: string;
+    brevkode?: string;
+    brevtittel?: string;
+    brevtype?: BrevType;
+    status?: BrevStatus;
+    distribusjonstype?: Distribusjonstype;
+    mottaker?: Nullable<Mottaker>;
+    avsenderEnhet?: NAVEnhet;
+    spraak?: SpraakKode;
+    journalpostId?: Nullable<number>;
+    vedtaksId?: Nullable<number>;
+    saksId?: number;
+  } = {},
+): BrevInfo => ({
   id: args.id ?? 1,
   opprettetAv: args.opprettetAv ?? { id: "Z990297", navn: "Opp R. av" },
   opprettet: args.opprettet ?? "2024-09-25T06:21:46.033Z",
