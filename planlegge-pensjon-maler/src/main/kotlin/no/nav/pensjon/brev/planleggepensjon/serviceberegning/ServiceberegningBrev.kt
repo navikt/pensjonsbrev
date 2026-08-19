@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
-import no.nav.pensjon.brev.planleggepensjon.redigerbar
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningBrevDto.saksbehandlerValg
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.selectors.serviceberegningDto.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.alder.aar
@@ -86,13 +85,13 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
         ),
     ) {
         title {
-            text(bokmal { +"Serviceberegning AFP for " + felles.bruker.fornavn.redigerbar() })
+            text(bokmal { +"Serviceberegning AFP for " + redigerbarData(felles.bruker.fornavn) })
 
             ifNotNull(felles.bruker.mellomnavn) { mellomnavn ->
-                text(bokmal { +" " + mellomnavn.redigerbar() })
+                text(bokmal { +" " + redigerbarData(mellomnavn) })
             }
 
-            text(bokmal { +" " + felles.bruker.etternavn.redigerbar() })
+            text(bokmal { +" " + redigerbarData(felles.bruker.etternavn) })
         }
 
         outline {
@@ -119,13 +118,13 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
 
 
             title1 {
-                text(bokmal { +"Månedlig pensjon før skatt ved " + saksbehandlerValg.uttaksalder.aar.format().redigerbar() + " år" })
+                text(bokmal { +"Månedlig pensjon før skatt ved " + redigerbarData(saksbehandlerValg.uttaksalder.aar.format()) + " år" })
                 showIf(saksbehandlerValg.uttaksalder.maaneder greaterThan 1) {
-                    text(bokmal { +" og " + saksbehandlerValg.uttaksalder.maaneder.format().redigerbar() + " måneder" })
+                    text(bokmal { +" og " + redigerbarData(saksbehandlerValg.uttaksalder.maaneder.format()) + " måneder" })
                 }.orShowIf(saksbehandlerValg.uttaksalder.maaneder greaterThan 0) {
                     text(bokmal { +" og 1 måned" })
                 }
-                text(bokmal { +" (" + saksbehandlerValg.uttaksdato.redigerbar() + ")" })
+                text(bokmal { +" (" + redigerbarData(saksbehandlerValg.uttaksdato) + ")" })
             }
             includePhrase(AfpOffentligTidsbegrensetTabellRedigerbar(saksbehandlerValg.afp))
 
@@ -134,7 +133,7 @@ object ServiceberegningBrev : RedigerbarTemplate<ServiceberegningBrevDto> {
             }
 
             paragraph {
-                text(bokmal { +"Forventet fremtidig inntekt: " + saksbehandlerValg.forventetFremtidigInntekt.format().redigerbar() + "." })
+                text(bokmal { +"Forventet fremtidig inntekt: " + redigerbarData(saksbehandlerValg.forventetFremtidigInntekt.format()) + "." })
             }
 
             includePhrase(AfpOffentligTidsbegrensetOpptjeningTabell(saksbehandlerValg.afp))
