@@ -15,7 +15,9 @@ sealed interface DslExtensionForRedigerbareBrev {
             ?.let { Fritekst(it) }
             ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
 
-    fun TemplateGlobalScope<*>.redigerbarData(variabel: StringExpression): RedigerbarData = RedigerbarData(variabel)
+    fun <LetterData : RedigerbarBrevdata<out SaksbehandlerValgBrevdata, out FagsystemBrevdata>> TemplateGlobalScope<LetterData>.redigerbarData(
+        variabel: StringExpression,
+    ): RedigerbarData = RedigerbarData(variabel)
 
     fun <Lang : LanguageSupport> ParagraphOnlyScope<Lang, *>.includePhrase(phrase: RedigerbarParagraphPhrase<Lang>) {
         phrase.apply(this)
