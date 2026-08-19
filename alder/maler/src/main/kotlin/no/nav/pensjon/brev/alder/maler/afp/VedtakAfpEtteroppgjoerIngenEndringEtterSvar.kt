@@ -43,8 +43,6 @@ object VedtakAfpEtteroppgjoerIngenEndringEtterSvar : RedigerbarTemplate<VedtakAf
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.AFP)
 
-    override val featureToggle = FeatureToggles.vedtakAfpEtteroppgjoerIngenEndringEtterSvar.toggle
-
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(

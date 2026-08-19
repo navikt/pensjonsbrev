@@ -36,8 +36,6 @@ object VarselAfpEtteroppgjoerForeloepig : RedigerbarTemplate<VarselAfpEtteroppgj
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_VARSEL_FORELOEPIG
 
-    override val featureToggle = FeatureToggles.varselAfpEtteroppgjoerForeloepig.toggle
-
     override val kategori = Brevkategori.ETTEROPPGJOER
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK

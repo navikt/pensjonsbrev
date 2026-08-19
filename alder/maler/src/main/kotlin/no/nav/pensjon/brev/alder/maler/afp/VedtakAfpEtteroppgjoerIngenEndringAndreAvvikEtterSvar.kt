@@ -41,8 +41,6 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvikEtterSvar : RedigerbarTemplat
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.AFP)
 
-    override val featureToggle = FeatureToggles.vedtakAfpEtteroppgjoerIngenEndringNyeOpplysninger.toggle
-
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(

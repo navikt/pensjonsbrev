@@ -39,8 +39,6 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvik : RedigerbarTemplate<VedtakA
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_INGEN_ENDRING_ANDRE_AVVIK
 
-    override val featureToggle = FeatureToggles.vedtakAfpEtteroppgjoerIngenEndring.toggle
-
     override val kategori = Brevkategori.ETTEROPPGJOER
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK

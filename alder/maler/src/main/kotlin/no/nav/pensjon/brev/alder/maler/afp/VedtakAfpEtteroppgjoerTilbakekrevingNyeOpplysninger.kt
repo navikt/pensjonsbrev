@@ -47,8 +47,6 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_TILBAKEKREV_NYE_OPPL
 
-    override val featureToggle = FeatureToggles.vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger.toggle
-
     override val kategori = Brevkategori.ETTEROPPGJOER
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK

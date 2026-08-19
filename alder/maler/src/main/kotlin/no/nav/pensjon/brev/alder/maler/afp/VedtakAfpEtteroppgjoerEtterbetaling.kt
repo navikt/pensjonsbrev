@@ -52,8 +52,6 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_ETTERBETALING
 
-    override val featureToggle = FeatureToggles.vedtakAfpEtteroppgjoerEtterbetaling.toggle
-
     override val kategori = Brevkategori.ETTEROPPGJOER
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
