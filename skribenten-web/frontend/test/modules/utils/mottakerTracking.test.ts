@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { trackMottakerClick } from "./mottakerTracking";
+import { trackMottakerClick } from "~/utils/mottakerTracking";
 
 const trackMock = vi.fn();
 

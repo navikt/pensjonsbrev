@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { trackMissingFromTemplateAction } from "./editorTracking";
+import { trackMissingFromTemplateAction } from "~/utils/editorTracking";
 
 const trackMock = vi.fn();
 
