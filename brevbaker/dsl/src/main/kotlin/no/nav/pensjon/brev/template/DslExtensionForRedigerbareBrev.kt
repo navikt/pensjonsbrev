@@ -19,11 +19,15 @@ sealed interface DslExtensionForRedigerbareBrev {
         variabel: StringExpression,
     ): RedigerbarData = RedigerbarData(variabel)
 
-    fun <Lang : LanguageSupport> ParagraphOnlyScope<Lang, *>.includePhrase(phrase: RedigerbarParagraphPhrase<Lang>) {
+    fun <Lang : LanguageSupport> ParagraphOnlyScope<Lang, out RedigerbarBrevdata<out SaksbehandlerValgBrevdata, out FagsystemBrevdata>>.includePhrase(
+        phrase: RedigerbarParagraphPhrase<Lang>,
+    ) {
         phrase.apply(this)
     }
 
-    fun <Lang : LanguageSupport> OutlineOnlyScope<Lang, *>.includePhrase(phrase: RedigerbarOutlinePhrase<Lang>) {
+    fun <Lang : LanguageSupport> OutlineOnlyScope<Lang, out RedigerbarBrevdata<out SaksbehandlerValgBrevdata, out FagsystemBrevdata>>.includePhrase(
+        phrase: RedigerbarOutlinePhrase<Lang>,
+    ) {
         phrase.apply(this)
     }
 }
