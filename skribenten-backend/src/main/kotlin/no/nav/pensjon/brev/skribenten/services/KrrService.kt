@@ -5,7 +5,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -20,6 +19,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
+import java.nio.channels.UnresolvedAddressException
 
 class KrrService(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine) : ServiceStatus, Closeable {
 
@@ -86,6 +86,9 @@ class KrrService(config: OboClientConfig, authService: AuthService, engine: Http
             }
         } catch (e: IOException) {
             logger.warn("IO-feil ved kall mot KRR: ${e.message}", e)
+            return KontaktinfoResponse(KontaktinfoResponse.FailureType.ERROR)
+        } catch (e: UnresolvedAddressException) {
+            logger.warn("IO-feil ved kall mot KRR: ${e.message}, e")
             return KontaktinfoResponse(KontaktinfoResponse.FailureType.ERROR)
         }
         return if (response.status.isSuccess()) {

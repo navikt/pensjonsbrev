@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.auth.AzureAdOnBehalfOf
 import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import org.slf4j.Logger
+import java.nio.channels.UnresolvedAddressException
 import kotlin.math.pow
 import kotlin.random.Random
 
@@ -46,6 +47,7 @@ fun HttpClientConfig<*>.installRetry(logger: Logger, maxRetries: Int = 3, should
             val doRetry = actualCause is HttpRequestTimeoutException
                     || actualCause is ConnectTimeoutException
                     || actualCause is IOException
+                    || actualCause is UnresolvedAddressException
             if (!doRetry) {
                 logger.error("Won't retry for exception for ${req.method} for ${req.url}: ${actualCause.message}", actualCause)
             }
