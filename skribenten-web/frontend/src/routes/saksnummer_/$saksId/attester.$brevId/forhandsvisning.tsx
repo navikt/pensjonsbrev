@@ -26,7 +26,12 @@ export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/forh
 
 const VedtakForhåndsvisningWrapper = () => {
   const { saksId, brevId } = Route.useParams();
-  const hentBrevQuery = useQuery(getBrevAttestering(saksId, Number(brevId)));
+  const hentBrevQuery = useQuery({
+    ...getBrevAttestering(saksId, Number(brevId)),
+    refetchOnMount: "always",
+  });
+
+  const hasFetchedBrevAfterMount = hentBrevQuery.isSuccess && hentBrevQuery.isFetchedAfterMount;
 
   return queryFold({
     query: hentBrevQuery,
@@ -37,7 +42,14 @@ const VedtakForhåndsvisningWrapper = () => {
       </Box>
     ),
     error: (err) => <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />,
-    success: (brev) => <VedtaksForhåndsvisning brev={brev} saksId={saksId} />,
+    success: (brev) =>
+      hasFetchedBrevAfterMount ? (
+        <VedtaksForhåndsvisning brev={brev} saksId={saksId} />
+      ) : (
+        <Box asChild background="default" paddingBlock="space-32 space-0">
+          <CenteredLoader label="Henter brev..." verticalStrategy="flexGrow" />
+        </Box>
+      ),
   });
 };
 
