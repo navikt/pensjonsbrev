@@ -17,7 +17,7 @@ import java.time.LocalDate
 data class InnvilgelseAvAfpDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : BrevdataMedSaksbehandlerValg<InnvilgelseAvAfpDto.PesysData>{
+) : BrevdataMedSaksbehandlerValg<InnvilgelseAvAfpDto.PesysData> {
     data class PesysData(
         // PE_Vedtaksdata_Kravhode_KravMottatdato
         // (rtv-brev brev Vedtaksdata Kravhode KravMottatdato)
@@ -45,32 +45,32 @@ data class InnvilgelseAvAfpDto(
         // den redigerbare malen `InnvilgelseAvAfp` (PE_AF_04_111); autobrevet
         // (PE_AF_04_115) inkluderer ikke vedlegget.
         val oversiktOverPensjonen: OversiktOverPensjonenAfpPrivatDto? = null,
-        ) : FagsystemBrevdata {
+    ) : FagsystemBrevdata {
 
-            data class AfpBeregning(
-                // PE_Vedtaksdata_BeregningsData_Beregning_TotalPensjon
-                // (rtv-brev brev Vedtaksdata BeregningsData Beregning TotalPensjon)
-                val totalPensjon: BrevbakerType.Kroner,
+        data class AfpBeregning(
+            // PE_Vedtaksdata_BeregningsData_Beregning_TotalPensjon
+            // (rtv-brev brev Vedtaksdata BeregningsData Beregning TotalPensjon)
+            val totalPensjon: BrevbakerType.Kroner,
 
-                // Per AFP-komponent: brutto månedsbeløp, eller `null` når komponenten ikke
-                // er innvilget. Nullability erstatter den tidligere `innvilget: Boolean`-flagget
-                // (umulig tilstand "innvilget = false med brutto = X kr" er nå urepresenterbar).
-                //
-                // PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_AFPLivsvarig_AFPLivsvarBrutto
-                // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningYtelsesKomp AFPLivsvarig AFPLivsvarBrutto)
-                // Tilstede ⇔ PE_..._AFPLivsvarig_AFPLivsvarInnvilget = true
-                val livsvarigBrutto: BrevbakerType.Kroner?,
+            // Per AFP-komponent: brutto månedsbeløp, eller `null` når komponenten ikke
+            // er innvilget. Nullability erstatter den tidligere `innvilget: Boolean`-flagget
+            // (umulig tilstand "innvilget = false med brutto = X kr" er nå urepresenterbar).
+            //
+            // PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_AFPLivsvarig_AFPLivsvarBrutto
+            // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningYtelsesKomp AFPLivsvarig AFPLivsvarBrutto)
+            // Tilstede ⇔ PE_..._AFPLivsvarig_AFPLivsvarInnvilget = true
+            val livsvarigBrutto: BrevbakerType.Kroner?,
 
-                // PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_AFPKronetillegg_AFPKroneBrutto
-                // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningYtelsesKomp AFPKronetillegg AFPKroneBrutto)
-                // Tilstede ⇔ PE_..._AFPKronetillegg_AFPKroneInnvilget = true
-                val kronetilleggBrutto: BrevbakerType.Kroner?,
+            // PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_AFPKronetillegg_AFPKroneBrutto
+            // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningYtelsesKomp AFPKronetillegg AFPKroneBrutto)
+            // Tilstede ⇔ PE_..._AFPKronetillegg_AFPKroneInnvilget = true
+            val kronetilleggBrutto: BrevbakerType.Kroner?,
 
-                // PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_AFPKompensasjonstillegg_AFPKompBrutto
-                // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningYtelsesKomp AFPKompensasjonstillegg AFPKompBrutto)
-                // Tilstede ⇔ PE_..._AFPKompensasjonstillegg_AFPKompInnvilget = true
-                val kompensasjonstilleggBrutto: BrevbakerType.Kroner?,
-            )
+            // PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_AFPKompensasjonstillegg_AFPKompBrutto
+            // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningYtelsesKomp AFPKompensasjonstillegg AFPKompBrutto)
+            // Tilstede ⇔ PE_..._AFPKompensasjonstillegg_AFPKompInnvilget = true
+            val kompensasjonstilleggBrutto: BrevbakerType.Kroner?,
+        )
 
     }
 }

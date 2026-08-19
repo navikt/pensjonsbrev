@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.alder.model.afpprivat
 
-import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpPrivatDto
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import java.time.LocalDate
