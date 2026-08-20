@@ -26,7 +26,12 @@ export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/forh
 
 const VedtakForhåndsvisningWrapper = () => {
   const { saksId, brevId } = Route.useParams();
-  const hentBrevQuery = useQuery(getBrevAttestering(saksId, Number(brevId)));
+  const hentBrevQuery = useQuery({
+    ...getBrevAttestering(saksId, Number(brevId)),
+    refetchOnMount: "always",
+  });
+
+  const hasFetchedBrevAfterMount = hentBrevQuery.isFetchedAfterMount;
 
   return queryFold({
     query: hentBrevQuery,
@@ -37,7 +42,14 @@ const VedtakForhåndsvisningWrapper = () => {
       </Box>
     ),
     error: (err) => <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />,
-    success: (brev) => <VedtaksForhåndsvisning brev={brev} saksId={saksId} />,
+    success: (brev) =>
+      hasFetchedBrevAfterMount ? (
+        <VedtaksForhåndsvisning brev={brev} saksId={saksId} />
+      ) : (
+        <Box asChild background="default" paddingBlock="space-32 space-0">
+          <CenteredLoader label="Henter brev..." verticalStrategy="flexGrow" />
+        </Box>
+      ),
   });
 };
 
@@ -49,7 +61,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
     queryFn: () => hentPdfForBrev.queryFn(props.saksId, props.brev.info.id),
     refetchOnWindowFocus: false,
   });
-  const sendDisabled = !hentPdfQuery.isSuccess || hentPdfQuery.data === null;
+  const pdfIsReady = hentPdfQuery.isSuccess && !hentPdfQuery.isFetching && hentPdfQuery.data !== null;
 
   return (
     <VStack height="100%">
@@ -57,6 +69,8 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
         <SendBrevModal
           brevId={props.brev.info.id.toString()}
           onClose={() => setVilSendeBrev(false)}
+          pdfIsFetching={hentPdfQuery.isFetching}
+          pdfIsReady={pdfIsReady}
           saksId={props.saksId}
           åpen={vilSendeBrev}
         />
@@ -86,10 +100,10 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
               Tilbake til redigering
             </Button>
             <Button
-              disabled={sendDisabled}
+              disabled={!pdfIsReady}
               icon={<ArrowRightIcon />}
               iconPosition="right"
-              loading={hentPdfQuery.isPending}
+              loading={hentPdfQuery.isFetching}
               onClick={() => setVilSendeBrev(true)}
               size="small"
               type="button"
@@ -121,7 +135,14 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
   );
 };
 
-const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; onClose: () => void }) => {
+const SendBrevModal = (props: {
+  saksId: string;
+  brevId: string;
+  pdfIsFetching: boolean;
+  pdfIsReady: boolean;
+  åpen: boolean;
+  onClose: () => void;
+}) => {
   const { setBrevResult } = useSendtBrev();
   const navigate = useNavigate({ from: Route.fullPath });
 
@@ -188,7 +209,12 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
           <Button onClick={props.onClose} type="button" variant="tertiary">
             Avbryt
           </Button>
-          <Button loading={sendBrevMutation.isPending} onClick={() => sendBrevMutation.mutate()} type="button">
+          <Button
+            disabled={!props.pdfIsReady}
+            loading={sendBrevMutation.isPending || props.pdfIsFetching}
+            onClick={() => sendBrevMutation.mutate()}
+            type="button"
+          >
             Ja, send brevet
           </Button>
         </HStack>

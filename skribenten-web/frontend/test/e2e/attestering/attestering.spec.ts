@@ -265,6 +265,56 @@ test.describe("attestering", () => {
     await expect(page.getByText("9908")).toBeVisible();
   });
 
+  test("kan ikke sende cachet PDF mens en ny PDF hentes", async ({ page }) => {
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true", (route) => {
+      if (route.request().method() === "GET") {
+        return route.fulfill({ json: defaultBrev });
+      }
+      return route.fallback();
+    });
+
+    const pdfBase64 = (await import("node:fs")).readFileSync("test/e2e/fixtures/helloWorldPdf.txt", "base64");
+    let pdfRequestCount = 0;
+    let releaseSecondPdf: () => void = () => {};
+    const secondPdfGate = new Promise<void>((resolve) => {
+      releaseSecondPdf = resolve;
+    });
+
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/pdf", async (route) => {
+      if (route.request().method() !== "GET") {
+        return route.fallback();
+      }
+
+      pdfRequestCount++;
+      if (pdfRequestCount === 2) {
+        await secondPdfGate;
+      }
+
+      return route.fulfill({
+        json: { pdf: pdfBase64, rendretBrevErEndret: false },
+      });
+    });
+
+    await page.goto("/saksnummer/123456/attester/1/forhandsvisning?enhetsId=0001");
+
+    const sendBrevButton = page.getByRole("button", { name: "Send brev" });
+    await expect(sendBrevButton).toBeEnabled();
+
+    await page.getByRole("button", { name: "Tilbake til redigering" }).click();
+    await expect(page).toHaveURL(/\/saksnummer\/123456\/attester\/1\/redigering/);
+
+    const secondPdfRequest = page.waitForRequest(
+      (request) => request.url().includes("/brev/1/pdf") && request.method() === "GET",
+    );
+    await page.goBack();
+    await secondPdfRequest;
+
+    await expect(page.getByRole("button", { name: "Venter…" })).toBeDisabled();
+
+    releaseSecondPdf();
+    await expect(sendBrevButton).toBeEnabled();
+  });
+
   test("kan slette brev til attestering", async ({ page }) => {
     await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true", (route) => {
       if (route.request().method() === "GET") {
