@@ -5,8 +5,8 @@ KUBE_CLUSTER="dev-gcp"
 jq --version || (
   echo "ERROR: You need to install the jq CLI tool on your machine: https://stedolan.github.io/jq/" && exit 1
 ) || exit 1
-which base64 || (
-  echo "ERROR: You need to install the base64 tool on your machine. (brew install base64 on macOS)" && exit 1
+which nais || (
+  echo "ERROR: You need to install the nais CLI tool on your machine: https://doc.nais.io/operate/how-to/naisdevice/nais-cli/" && exit 1
 ) || exit 1
 
 team_name="$(nais status -ojson | jq -r '.[].team.Name | select(contains("pensjonsbrev"))')"
