@@ -45,8 +45,8 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
     ) {
         title {
             text(
-                bokmal { +"Klage " +fritekst("ytelse") + " - orientering om saksbehandlingstid" },
-                english { +"Appeal " +fritekst("ytelse") + " - indication of case processing time" }
+                bokmal { +"Klage - " +fritekst("ytelse") + " - orientering om saksbehandlingstid" },
+                english { +"Appeal - " +fritekst("ytelse") + " - indication of case processing time" }
             )
         }
 
