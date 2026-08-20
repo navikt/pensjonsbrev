@@ -29,7 +29,7 @@ function getSecret() {
 mkdir -p secrets
 
 # AzureAD
-secret_name="$(nais app env skribenten-backend --environment dev-gcp --team pensjonsbrev --verbose --output=json | jq -r '[.[] | select(.source.kind=="SECRET") | .source.name] | unique | .[] | select(startswith("azure-skribenten-backend"))')"
+secret_name="$(nais app env skribenten-backend --environment $KUBE_CLUSTER --team pensjonsbrev --verbose --output=json | jq -r '[.[] | select(.source.kind=="SECRET") | .source.name] | unique | .[] | select(startswith("azure-skribenten-backend"))')"
 getSecret "$secret_name" azuread
 
 # Unleash ApiToken
