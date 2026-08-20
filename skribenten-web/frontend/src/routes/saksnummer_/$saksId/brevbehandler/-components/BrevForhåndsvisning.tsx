@@ -13,13 +13,13 @@ import { queryFold } from "~/utils/tanstackUtils";
 import PDFViewer from "../../-components/PDFViewer";
 import PDFViewerTopBar from "../../-components/PDFViewerTopBar";
 
-const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) => {
+const BrevForhåndsvisning = (properties: { saksId: string; brevId: number; redigertBrevHash?: string }) => {
   const [showBrevDataEndringAlert, setShowBrevDataEndringAlert] = useState(true);
   const [oppdaterError, setOppdaterError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const hentPdfQuery = useQuery({
-    queryKey: hentPdfForBrev.queryKey(properties.brevId),
+    queryKey: hentPdfForBrev.queryKey(properties.brevId, properties.redigertBrevHash),
     queryFn: () => hentPdfForBrev.queryFn(properties.saksId, properties.brevId),
     refetchOnWindowFocus: false,
   });

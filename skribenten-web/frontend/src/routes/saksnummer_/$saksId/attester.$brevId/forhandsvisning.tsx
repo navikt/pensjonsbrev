@@ -57,7 +57,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
   const navigate = useNavigate({ from: Route.fullPath });
   const [vilSendeBrev, setVilSendeBrev] = useState(false);
   const hentPdfQuery = useQuery({
-    queryKey: hentPdfForBrev.queryKey(props.brev.info.id),
+    queryKey: hentPdfForBrev.queryKey(props.brev.info.id, props.brev.redigertBrevHash),
     queryFn: () => hentPdfForBrev.queryFn(props.saksId, props.brev.info.id),
     refetchOnWindowFocus: false,
   });
@@ -129,7 +129,13 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
             </VStack>
           </VStack>
         }
-        right={<BrevForhåndsvisning brevId={props.brev.info.id} saksId={props.saksId} />}
+        right={
+          <BrevForhåndsvisning
+            brevId={props.brev.info.id}
+            redigertBrevHash={props.brev.redigertBrevHash}
+            saksId={props.saksId}
+          />
+        }
       />
     </VStack>
   );
