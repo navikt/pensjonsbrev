@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.VedleggFinnesIkkeIMal
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
@@ -107,20 +108,29 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     private fun antallDokumenter(brevId: BrevId): Int =
         transaction { DocumentEntity.find { DocumentTable.brevredigering eq brevId }.count().toInt() }
 
+    private fun answerWithEditedAttachmentResult(vararg vedlegg: Pair<String, Edit.Attachment>) {
+        brevbakerService.renderRedigerbareVedleggResultat = vedlegg.associate { (vedleggId, attachment) ->
+            VedleggId(vedleggId) to attachment.toMarkup()
+        }
+    }
+
     @Test
     suspend fun `kan lagre og hente redigert vedlegg`() {
         val brev = opprettBrev().resultOrFail()
         val vedlegg = attachment("Overstyrt innhold")
+        answerWithEditedAttachmentResult("vedlegg1" to vedlegg)
 
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", vedlegg)).isSuccess()
         assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()).isEqualTo(vedlegg)
     }
 
     @Test
-    suspend fun `hent gir null naar vedlegg ikke er overstyrt`() {
+    suspend fun `hent gir feil naar vedlegget ikke finnes i malen`() {
         val brev = opprettBrev().resultOrFail()
 
-        assertThat(hentVedlegg(brev.info.id, "finnesIkke")).isNull()
+        assertThat(hentVedlegg(brev.info.id, "finnesIkke")).isFailure<VedleggFinnesIkkeIMal, _, _> {
+            assertThat(it.vedleggId).isEqualTo(VedleggId("finnesIkke"))
+        }
     }
 
     @Test
@@ -137,6 +147,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         val brev = opprettBrev().resultOrFail()
         val vedlegg1 = attachment("Innhold 1")
         val vedlegg2 = attachment("Innhold 2")
+        answerWithEditedAttachmentResult("vedlegg1" to vedlegg1, "vedlegg2" to vedlegg2)
 
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", vedlegg1)).isSuccess()
         assertThat(endreVedlegg(brev.info.id, "vedlegg2", vedlegg2)).isSuccess()
@@ -146,23 +157,33 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
-    suspend fun `oppdatering av vedlegg uten mal-render erstatter innholdet`() {
+    suspend fun `oppdatering av vedlegg erstatter innholdet`() {
         val brev = opprettBrev().resultOrFail()
 
+        answerWithEditedAttachmentResult("vedlegg1" to attachment("Foerste"))
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", attachment("Foerste"))).isSuccess()
+
         val oppdatert = attachment("Andre")
+        answerWithEditedAttachmentResult("vedlegg1" to oppdatert)
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", oppdatert)).isSuccess()
 
         assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()).isEqualTo(oppdatert)
     }
 
     @Test
-    suspend fun `vedlegg som ikke finnes i malen lagres uendret`() {
+    suspend fun `lagring av vedlegg som ikke finnes i malen gir feil og lagrer ingenting`() {
         val brev = opprettBrev().resultOrFail()
-        brevbakerService.renderRedigerbareVedleggResultat = emptyMap()
         val vedlegg = attachment("Innhold")
+        answerWithEditedAttachmentResult("vedlegg1" to vedlegg)
+        assertThat(endreVedlegg(brev.info.id, "vedlegg1", vedlegg)).isSuccess()
 
-        assertThat(endreVedlegg(brev.info.id, "vedlegg1", vedlegg).resultOrFail()).isEqualTo(vedlegg)
+        brevbakerService.renderRedigerbareVedleggResultat = emptyMap()
+
+        assertThat(endreVedlegg(brev.info.id, "vedlegg1", vedlegg.medRedigertTekst("Ny tekst")))
+            .isFailure<VedleggFinnesIkkeIMal, _, _>()
+
+        answerWithEditedAttachmentResult("vedlegg1" to vedlegg)
+        assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()).isEqualTo(vedlegg)
     }
 
     @Test
@@ -207,24 +228,27 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
-    suspend fun `henting returnerer lagret vedlegg uendret naar malen ikke lenger har vedlegget`() {
+    suspend fun `henting gir feil naar malen ikke lenger har vedlegget`() {
         val brev = opprettBrev().resultOrFail()
         val vedlegg = attachment("Innhold")
+        answerWithEditedAttachmentResult("vedlegg1" to vedlegg)
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", vedlegg)).isSuccess()
 
         brevbakerService.renderRedigerbareVedleggResultat = emptyMap()
 
-        assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()).isEqualTo(vedlegg)
+        assertThat(hentVedlegg(brev.info.id, "vedlegg1")).isFailure<VedleggFinnesIkkeIMal, _, _>()
     }
 
     @Test
     suspend fun `kan slette overstyrt vedlegg`() {
         val brev = opprettBrev().resultOrFail()
+        val malen = attachment("Innhold")
+        answerWithEditedAttachmentResult("vedlegg1" to malen)
 
-        assertThat(endreVedlegg(brev.info.id, "vedlegg1", attachment("Innhold"))).isSuccess()
+        assertThat(endreVedlegg(brev.info.id, "vedlegg1", malen.medRedigertTekst("Redigert"))).isSuccess()
         assertThat(slettVedlegg(brev.info.id, "vedlegg1")).isSuccess()
 
-        assertThat(hentVedlegg(brev.info.id, "vedlegg1")).isNull()
+        assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()).isEqualTo(malen)
     }
 
     @Test
@@ -233,6 +257,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
         val rendringerFoer = brevbakerService.renderPdfKall.size
 
+        answerWithEditedAttachmentResult("vedlegg1" to attachment("Innhold"))
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", attachment("Innhold"))).isSuccess()
 
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
@@ -242,6 +267,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `sletting av redigert vedlegg foerer til ny rendring ved neste pdf-henting`() {
         val brev = opprettBrev().resultOrFail()
+        answerWithEditedAttachmentResult("vedlegg1" to attachment("Innhold"))
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", attachment("Innhold"))).isSuccess()
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
         val rendringerFoer = brevbakerService.renderPdfKall.size
@@ -256,6 +282,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `overstyrt vedlegg sendes til brevbaker ved rendring`() {
         val brev = opprettBrev().resultOrFail()
         val vedlegg = attachment("Overstyrt innhold")
+        answerWithEditedAttachmentResult("vedlegg1" to vedlegg)
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", vedlegg)).isSuccess()
 
         brevbakerService.renderPdfRedigerteVedleggKall.clear()
@@ -280,6 +307,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `lagring av uendret vedlegg beholder dokumentet`() {
         val brev = opprettBrev().resultOrFail()
         val vedlegg = attachment("Innhold")
+        answerWithEditedAttachmentResult("vedlegg1" to vedlegg)
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", vedlegg)).isSuccess()
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
         assertThat(antallDokumenter(brev.info.id)).isEqualTo(1)
@@ -309,6 +337,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `kan ikke slette vedlegg for brev som redigeres av andre`() {
         val brev = opprettBrev().resultOrFail()
+        answerWithEditedAttachmentResult("vedlegg1" to attachment("Innhold"))
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", attachment("Innhold"))).isSuccess()
 
         val reservert = opprettBrev(reserverForRedigering = true).resultOrFail()
@@ -319,6 +348,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `vedlegg slettes naar brevet slettes`() {
         val brev = opprettBrev().resultOrFail()
+        answerWithEditedAttachmentResult("vedlegg1" to attachment("Innhold"))
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", attachment("Innhold"))).isSuccess()
 
         assertThat(slettBrev(brev)).isSuccess()

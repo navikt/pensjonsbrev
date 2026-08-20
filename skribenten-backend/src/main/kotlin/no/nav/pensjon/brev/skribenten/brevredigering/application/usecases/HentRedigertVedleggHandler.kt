@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
+import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.*
 import no.nav.pensjon.brev.skribenten.letter.*
@@ -26,14 +27,12 @@ class HentRedigertVedleggHandler(
     override suspend fun execute(request: Request): Outcome<Edit.Attachment, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
-        val lagretVedlegg = brev.hentRedigertVedlegg(request.vedleggId)
-
         val pesysdata = brevdataService.hentBrevdata(brev)
         val malVedlegg = brevmalService.renderRedigerbartVedlegg(brev, pesysdata, request.vedleggId)
-        // Om malen ikke lenger produserer vedlegget beholder vi saksbehandlers versjon uendret.
-            ?: return lagretVedlegg?.let { success(it) }
+            ?: return failure(VedleggFinnesIkkeIMal(request.brevId, request.vedleggId))
 
         // Uten lagret overstyring returnerer vi vedlegget slik det produseres fra mal som utgangspunkt.
+        val lagretVedlegg = brev.hentRedigertVedlegg(request.vedleggId)
         return success(lagretVedlegg?.updateEditedAttachment(malVedlegg) ?: malVedlegg.toEdit())
     }
 }

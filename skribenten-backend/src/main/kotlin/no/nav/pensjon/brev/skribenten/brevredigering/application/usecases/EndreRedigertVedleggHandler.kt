@@ -38,11 +38,11 @@ class EndreRedigertVedleggHandler(
 
         val pesysdata = brevdataService.hentBrevdata(brev)
         val malVedlegg = brevmalService.renderRedigerbartVedlegg(brev, pesysdata, request.vedleggId)
+            ?: return failure(VedleggFinnesIkkeIMal(request.brevId, request.vedleggId))
 
-        // Om malen ikke lenger produserer vedlegget beholder vi saksbehandlers versjon uendret.
-        val sammenslaatt = malVedlegg?.let { request.redigertVedlegg.updateEditedAttachment(it) } ?: request.redigertVedlegg
-
+        val sammenslaatt = request.redigertVedlegg.updateEditedAttachment(malVedlegg)
         brev.settRedigertVedlegg(request.vedleggId, sammenslaatt)
+
         if (request.frigiReservasjon) {
             brev.frigiReservasjon()
         }
