@@ -23,6 +23,7 @@ import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
+import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -30,6 +31,8 @@ import no.nav.pensjon.brev.skribenten.services.*
 import org.apache.pdfbox.pdmodel.font.PDType1Font
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
+import org.jetbrains.exposed.v1.core.inList
+import org.jetbrains.exposed.v1.jdbc.deleteWhere
 import org.jetbrains.exposed.v1.jdbc.select
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.slf4j.LoggerFactory
@@ -146,15 +149,15 @@ fun Application.skribentenApp() {
 
             val leaderService: NaisLeaderService by dependencies
             oneShotJobs(leaderService) {
-                job("2026-06-24-document-vedlegghash") {
-                    val dokumentIder = transaction {
-                        DocumentTable.select(DocumentTable.id).map { it[DocumentTable.id].value }
+                job("2026-07-31-fjern-p1v1") {
+                    val ider = transaction {
+                        BrevredigeringTable.select(BrevredigeringTable.id, BrevredigeringTable.brevkode)
+                            .filter { it[BrevredigeringTable.brevkode].kode() == "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK" }
+                            .map { it[BrevredigeringTable.id] }
                     }
-                    dokumentIder.chunked(40).forEach { idChunk ->
+                    ider.chunked(40).forEach { idChunk ->
                         transaction {
-                            DocumentEntity.forEntityIds(idChunk.map { EntityID(it, DocumentTable) }).forEach { document ->
-                                document.vedleggHash = document.brevredigering.vedleggHash
-                            }
+                            BrevredigeringTable.deleteWhere { BrevredigeringTable.id inList idChunk }
                         }
                     }
                 }
