@@ -31,25 +31,21 @@ const VedtakForhåndsvisningWrapper = () => {
     refetchOnMount: "always",
   });
 
-  const hasFetchedBrevAfterMount = hentBrevQuery.isFetchedAfterMount;
+  // Brevet hentes alltid på nytt ved mount, og vi venter på det ferske svaret før pdf-en hentes,
+  // slik at pdf-en alltid samsvarer med gjeldende redigertBrevHash.
+  const showLoading = (
+    <Box asChild background="default" paddingBlock="space-32 space-0">
+      <CenteredLoader label="Henter brev..." verticalStrategy="flexGrow" />
+    </Box>
+  );
 
   return queryFold({
     query: hentBrevQuery,
     initial: () => null,
-    pending: () => (
-      <Box asChild background="default" paddingBlock="space-32 space-0">
-        <CenteredLoader label="Henter brev..." verticalStrategy="flexGrow" />
-      </Box>
-    ),
+    pending: () => showLoading,
     error: (err) => <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />,
     success: (brev) =>
-      hasFetchedBrevAfterMount ? (
-        <VedtaksForhåndsvisning brev={brev} saksId={saksId} />
-      ) : (
-        <Box asChild background="default" paddingBlock="space-32 space-0">
-          <CenteredLoader label="Henter brev..." verticalStrategy="flexGrow" />
-        </Box>
-      ),
+      hentBrevQuery.isFetchedAfterMount ? <VedtaksForhåndsvisning brev={brev} saksId={saksId} /> : showLoading,
   });
 };
 
@@ -61,7 +57,8 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
     queryFn: () => hentPdfForBrev.queryFn(props.saksId, props.brev.info.id),
     refetchOnWindowFocus: false,
   });
-  const pdfIsReady = hentPdfQuery.isSuccess && !hentPdfQuery.isFetching && hentPdfQuery.data !== null;
+  // Pdf-en er klar når den er ferdig hentet og faktisk finnes (queryFn gir null ved 404).
+  const pdfIsReady = !hentPdfQuery.isFetching && hentPdfQuery.data !== null;
 
   return (
     <VStack height="100%">
@@ -69,7 +66,6 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
         <SendBrevModal
           brevId={props.brev.info.id.toString()}
           onClose={() => setVilSendeBrev(false)}
-          pdfIsFetching={hentPdfQuery.isFetching}
           pdfIsReady={pdfIsReady}
           saksId={props.saksId}
           åpen={vilSendeBrev}
@@ -144,7 +140,6 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
 const SendBrevModal = (props: {
   saksId: string;
   brevId: string;
-  pdfIsFetching: boolean;
   pdfIsReady: boolean;
   åpen: boolean;
   onClose: () => void;
@@ -217,7 +212,7 @@ const SendBrevModal = (props: {
           </Button>
           <Button
             disabled={!props.pdfIsReady}
-            loading={sendBrevMutation.isPending || props.pdfIsFetching}
+            loading={sendBrevMutation.isPending}
             onClick={() => sendBrevMutation.mutate()}
             type="button"
           >
