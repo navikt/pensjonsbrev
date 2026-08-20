@@ -9,10 +9,12 @@ which base64 || (
   echo "ERROR: You need to install the base64 tool on your machine. (brew install base64 on macOS)" && exit 1
 ) || exit 1
 
-kubectl --context ${KUBE_CLUSTER} -n pensjonsbrev auth can-i get secrets --request-timeout=2s > /dev/null 2>&1 || (
-  echo "ERROR: Could not access secrets in namespace pensjonsbrev on cluster ${KUBE_CLUSTER}. Make sure you are connected to naisdevice and have run 'kubectl config use-context ${KUBE_CLUSTER}'." && exit 1
-) || exit 1
+team_name="$(nais status -ojson | jq -r '.[].team.Name | select(contains("pensjonsbrev"))')"
+if [ -z "$team_name" ]; then
+  echo "ERROR: Could not find a team matching 'pensjonsbrev' via 'nais status'. Make sure you are logged in with 'nais login' and have access to the team." && exit 1
+fi
 
 mkdir -p secrets
-kubectl --context $KUBE_CLUSTER -n pensjonsbrev get secret azure-locust -o json | jq '.data | map_values(@base64d)' > secrets/azuread.json
+
+nais secret get azure-locust --environment $KUBE_CLUSTER --with-values --reason "local development" --output json | jq '.data | from_entries' > secrets/azuread.json
 echo "All secrets are fetched and stored in the \"secrets\" folder."
