@@ -26,11 +26,14 @@ class HentRedigertVedleggHandler(
     override suspend fun execute(request: Request): Outcome<Edit.Attachment, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
-        brev.hentRedigertVedlegg(request.vedleggId)?.let { return success(it) }
+        val lagretVedlegg = brev.hentRedigertVedlegg(request.vedleggId)
 
-        // Ingen overstyring lagret: returner vedlegget slik det produseres fra mal som utgangspunkt.
         val pesysdata = brevdataService.hentBrevdata(brev)
-        val malVedlegg = brevmalService.renderRedigerbartVedlegg(brev, pesysdata, request.vedleggId) ?: return null
-        return success(malVedlegg.toEdit())
+        val malVedlegg = brevmalService.renderRedigerbartVedlegg(brev, pesysdata, request.vedleggId)
+        // Om malen ikke lenger produserer vedlegget beholder vi saksbehandlers versjon uendret.
+            ?: return lagretVedlegg?.let { success(it) }
+
+        // Uten lagret overstyring returnerer vi vedlegget slik det produseres fra mal som utgangspunkt.
+        return success(lagretVedlegg?.updateEditedAttachment(malVedlegg) ?: malVedlegg.toEdit())
     }
 }

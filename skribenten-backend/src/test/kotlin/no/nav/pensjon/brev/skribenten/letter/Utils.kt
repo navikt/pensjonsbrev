@@ -59,6 +59,38 @@ fun editedLetter(
     return editedLetter(*blocks.toTypedArray(), deleted = deleted, fixParentIds = fixParentIds, dokumentDato = dokumentDato)
 }
 
+fun attachment(vararg blocks: LetterMarkup.Block, includeSakspart: Boolean = false, title: String = "En vedleggstittel"): LetterMarkup.Attachment =
+    AttachmentImpl(
+        title = listOf(ParagraphContentImpl.TextImpl.LiteralImpl(1, title)),
+        blocks = blocks.toList(),
+        includeSakspart = includeSakspart,
+    )
+
+fun editedAttachment(
+    vararg blocks: Edit.Block,
+    deleted: Set<Int> = emptySet(),
+    includeSakspart: Boolean = false,
+    fixParentIds: Boolean = true,
+    title: String = "En vedleggstittel",
+): Edit.Attachment =
+    Edit.Attachment(
+        title = Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(1, title))),
+        blocks = if (fixParentIds) blocks.map { it.fixParentIds(null) }.toList() else blocks.toList(),
+        deletedBlocks = deleted,
+        includeSakspart = includeSakspart,
+    )
+
+fun editedAttachment(
+    deleted: Set<Int> = emptySet(),
+    includeSakspart: Boolean = false,
+    fixParentIds: Boolean = true,
+    title: String = "En vedleggstittel",
+    builder: EditLetterBuilder.() -> Unit,
+): Edit.Attachment {
+    val blocks = EditLetterBuilder().apply(builder).blocks
+    return editedAttachment(*blocks.toTypedArray(), deleted = deleted, includeSakspart = includeSakspart, fixParentIds = fixParentIds, title = title)
+}
+
 private fun Edit.Block.fixParentIds(parentId: Int?): Edit.Block =
     when (this) {
         is Edit.Block.Paragraph -> copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)

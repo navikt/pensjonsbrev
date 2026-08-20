@@ -14,6 +14,10 @@ import no.nav.pensjon.brev.skribenten.letter.toMarkup
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
@@ -21,19 +25,40 @@ import org.junit.jupiter.api.Test
 
 class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
 
-    private fun attachment(tekst: String, tittel: String = "Vedlegg tittel"): Edit.Attachment =
+    private fun attachment(
+        tekst: String,
+        tittel: String = "Vedlegg tittel",
+        editedTekst: String? = null,
+        editedTittel: String? = null,
+    ): Edit.Attachment =
         Edit.Attachment(
-            title = Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(id = null, text = tittel))),
+            title = Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(id = 1, text = tittel, editedText = editedTittel))),
             blocks = listOf(
                 Edit.Block.Paragraph(
-                    id = null,
+                    id = 2,
                     editable = true,
-                    content = listOf(Edit.ParagraphContent.Text.Literal(id = null, text = tekst)),
+                    content = listOf(Edit.ParagraphContent.Text.Literal(id = 21, text = tekst, editedText = editedTekst, parentId = 2)),
                 )
             ),
             deletedBlocks = emptySet(),
             includeSakspart = false,
         )
+
+    private fun malVedlegg(vararg avsnitt: Pair<Int, String>, tittel: String = "Mal tittel"): LetterMarkup.Attachment =
+        LetterMarkupImpl.AttachmentImpl(
+            title = listOf(LiteralImpl(1, tittel)),
+            blocks = avsnitt.map { (id, tekst) -> ParagraphImpl(id, true, listOf(LiteralImpl(id * 10, tekst))) },
+            includeSakspart = false,
+        )
+
+    private fun Edit.Attachment.foersteLiteral(): Edit.ParagraphContent.Text.Literal =
+        (blocks.first() as Edit.Block.Paragraph).content.first() as Edit.ParagraphContent.Text.Literal
+
+    private fun Edit.Attachment.medRedigertTekst(tekst: String): Edit.Attachment {
+        val foerste = blocks.first() as Edit.Block.Paragraph
+        val literal = foerste.content.first() as Edit.ParagraphContent.Text.Literal
+        return copy(blocks = listOf(foerste.copy(content = listOf(literal.copy(editedText = tekst)))) + blocks.drop(1))
+    }
 
     private suspend fun hentRedigerbareVedlegg(
         brevId: BrevId,
@@ -50,7 +75,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         vedleggId: String,
         vedlegg: Edit.Attachment,
         principal: UserPrincipal = saksbehandler1Principal,
-    ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+    ): Outcome<Edit.Attachment, BrevredigeringError>? =
         withPrincipal(principal) {
             endreRedigertVedlegg(
                 EndreRedigertVedleggHandler.Request(brevId = brevId, saksId = sak1.saksId, vedleggId = VedleggId(vedleggId), redigertVedlegg = vedlegg)
@@ -121,7 +146,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
-    suspend fun `oppdatering av eksisterende overstyring erstatter innholdet uten merging`() {
+    suspend fun `oppdatering av vedlegg uten mal-render erstatter innholdet`() {
         val brev = opprettBrev().resultOrFail()
 
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", attachment("Foerste"))).isSuccess()
@@ -129,6 +154,67 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(endreVedlegg(brev.info.id, "vedlegg1", oppdatert)).isSuccess()
 
         assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()).isEqualTo(oppdatert)
+    }
+
+    @Test
+    suspend fun `vedlegg som ikke finnes i malen lagres uendret`() {
+        val brev = opprettBrev().resultOrFail()
+        brevbakerService.renderRedigerbareVedleggResultat = emptyMap()
+        val vedlegg = attachment("Innhold")
+
+        assertThat(endreVedlegg(brev.info.id, "vedlegg1", vedlegg).resultOrFail()).isEqualTo(vedlegg)
+    }
+
+    @Test
+    suspend fun `lagring merger inn nye blokker fra malen og returnerer det sammenslaatte vedlegget`() {
+        val brev = opprettBrev().resultOrFail()
+        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste"))
+        val redigert = hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()
+
+        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
+        val sammenslaatt = endreVedlegg(brev.info.id, "vedlegg1", redigert).resultOrFail()
+
+        assertThat(sammenslaatt.blocks.map { it.id }).containsExactly(1, 2)
+        assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail().blocks.map { it.id }).containsExactly(1, 2)
+    }
+
+    @Test
+    suspend fun `lagring beholder saksbehandlers redigerte tekst ved merging`() {
+        val brev = opprettBrev().resultOrFail()
+        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Mal-tekst"))
+        val redigert = hentVedlegg(brev.info.id, "vedlegg1").resultOrFail().medRedigertTekst("Saksbehandlers tekst")
+
+        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Mal-tekst", 2 to "Andre"))
+        val sammenslaatt = endreVedlegg(brev.info.id, "vedlegg1", redigert).resultOrFail()
+
+        assertThat(sammenslaatt.blocks.map { it.id }).containsExactly(1, 2)
+        assertThat(sammenslaatt.foersteLiteral().editedText).isEqualTo("Saksbehandlers tekst")
+    }
+
+    @Test
+    suspend fun `henting merger inn endringer fra malen uten aa lagre dem`() {
+        val brev = opprettBrev().resultOrFail()
+        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste"))
+        val redigert = hentVedlegg(brev.info.id, "vedlegg1").resultOrFail().medRedigertTekst("Redigert")
+        assertThat(endreVedlegg(brev.info.id, "vedlegg1", redigert)).isSuccess()
+
+        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste", 2 to "Andre"))
+        assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail().blocks.map { it.id }).containsExactly(1, 2)
+
+        // Merging ved henting skal ikke persisteres
+        brevbakerService.renderRedigerbareVedleggResultat = mapOf(VedleggId("vedlegg1") to malVedlegg(1 to "Foerste"))
+        assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail().blocks.map { it.id }).containsExactly(1)
+    }
+
+    @Test
+    suspend fun `henting returnerer lagret vedlegg uendret naar malen ikke lenger har vedlegget`() {
+        val brev = opprettBrev().resultOrFail()
+        val vedlegg = attachment("Innhold")
+        assertThat(endreVedlegg(brev.info.id, "vedlegg1", vedlegg)).isSuccess()
+
+        brevbakerService.renderRedigerbareVedleggResultat = emptyMap()
+
+        assertThat(hentVedlegg(brev.info.id, "vedlegg1").resultOrFail()).isEqualTo(vedlegg)
     }
 
     @Test
@@ -258,7 +344,7 @@ class RedigertVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         val brev = opprettBrev().resultOrFail()
         brevbakerService.renderRedigerbareVedleggResultat =
             mapOf(VedleggId("vedlegg1") to attachment("Mal-innhold", tittel = "Mal tittel").toMarkup())
-        assertThat(endreVedlegg(brev.info.id, "vedlegg1", attachment("Redigert innhold", tittel = "Redigert tittel")))
+        assertThat(endreVedlegg(brev.info.id, "vedlegg1", attachment("Mal-innhold", tittel = "Mal tittel", editedTittel = "Redigert tittel")))
             .isSuccess()
 
         val info = hentRedigerbareVedlegg(brev.info.id).resultOrFail()
