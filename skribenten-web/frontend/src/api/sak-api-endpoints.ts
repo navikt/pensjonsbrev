@@ -40,7 +40,7 @@ export const getBrevVedlegg = {
 };
 
 export const hentPdfForBrev = {
-  // redigertBrevHash gjør at en cachet pdf aldri gjenbrukes for en nyere versjon av brevet.
+  // Når redigertBrevHash er satt, sørger den for at en cachet PDF ikke gjenbrukes for en annen versjon av brevet.
   queryKey: (brevId: number, redigertBrevHash?: string) =>
     redigertBrevHash === undefined ? ["hentPdfForBrev", brevId] : ["hentPdfForBrev", brevId, redigertBrevHash],
   queryFn: async (saksId: string, brevId: string | number) => {
