@@ -14,7 +14,6 @@ import io.ktor.server.plugins.calllogging.*
 import io.ktor.server.plugins.conditionalheaders.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
@@ -138,6 +137,8 @@ fun Application.brevbakerModule(
 
     val pdfbyggerService = PensjonPdfByggerService(
         pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
+        pdfByggerScope = brevbakerConfig.property("pdfByggerScope").getString(),
+        azureADConfig = if (!developmentMode) brevbakerConfig.config("azureAD") else null,
     )
 
     konfigurerUnleash(brevbakerConfig)

@@ -12,6 +12,7 @@ import io.ktor.client.request.*
 import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.IOException
 import no.nav.brev.brevbaker.PDFByggerService
@@ -31,7 +32,9 @@ private val RETRY_MAX_DELAY = 2.seconds
 
 class PensjonPdfByggerService(
     private val pdfByggerUrl: String,
+    pdfByggerScope: String,
     private val timeout: Duration = 300.seconds,
+    azureADConfig: ApplicationConfig? = null,
 ) : PDFByggerService {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val objectmapper = internalObjectMapper()
@@ -91,6 +94,7 @@ class PensjonPdfByggerService(
                 contentType(ContentType.Application.Json)
                 accept(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
+                bearerAuthHeader()
                 //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
                 // If the body is set using an object, it will use the content-negotiation strategy which also uses a jackson object-mapper
                 // for some unknown reason, this results in all requests being halted for around 5 minutes.
@@ -108,9 +112,24 @@ class PensjonPdfByggerService(
                 contentType(ContentType.Application.Json)
                 accept(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
+                bearerAuthHeader()
                 setBody(objectmapper.writeValueAsBytes(pdfRequest))
             }.body()
         } ?: throw PDFTimeoutException("Spent more than $timeout trying to compile pdf")
 
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
+
+    private suspend fun HttpRequestBuilder.bearerAuthHeader() {
+        pdfByggerAccessToken?.let { header(HttpHeaders.Authorization, "Bearer ${it()}") }
+    }
+
+    val pdfByggerAccessToken = if (azureADConfig != null) {
+        val tokenClient = AzureAdM2mTokenClient(
+            tokenEndpoint = azureADConfig.property("tokenEndpoint").getString(),
+            clientId = azureADConfig.property("clientId").getString(),
+            clientSecret = azureADConfig.property("clientSecret").getString(),
+            scope = pdfByggerScope,
+        )
+        tokenClient::getToken
+    } else null
 }
