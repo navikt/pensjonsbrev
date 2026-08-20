@@ -56,8 +56,10 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
     queryFn: () => hentPdfForBrev.queryFn(props.saksId, props.brev.info.id),
     refetchOnWindowFocus: false,
   });
-  // Pdf-en er klar når den er ferdig hentet og faktisk finnes (queryFn gir null ved 404).
-  const pdfIsReady = !hentPdfQuery.isFetching && hentPdfQuery.data !== null;
+  // Pdf-en er klar når siste henting lyktes og pdf-en faktisk finnes (queryFn gir null ved 404).
+  // isSuccess trengs i tillegg til null-sjekken: ved en feilet refetch beholder React Query forrige
+  // data samtidig som status blir "error" - da viser forhåndsvisningen feil, og vi skal ikke kunne sende.
+  const pdfIsReady = hentPdfQuery.isSuccess && !hentPdfQuery.isFetching && hentPdfQuery.data !== null;
 
   return (
     <VStack height="100%">
