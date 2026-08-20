@@ -31,7 +31,6 @@ class HentRedigertVedleggHandler(
         val malVedlegg = brevmalService.renderRedigerbartVedlegg(brev, pesysdata, request.vedleggId)
             ?: return failure(VedleggFinnesIkkeIMal(request.brevId, request.vedleggId))
 
-        // Uten lagret overstyring returnerer vi vedlegget slik det produseres fra mal som utgangspunkt.
         val lagretVedlegg = brev.hentRedigertVedlegg(request.vedleggId)
         return success(lagretVedlegg?.updateEditedAttachment(malVedlegg) ?: malVedlegg.toEdit())
     }

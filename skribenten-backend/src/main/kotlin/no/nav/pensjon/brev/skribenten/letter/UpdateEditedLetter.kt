@@ -20,10 +20,7 @@ fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup): Edit.Letter =
         UpdateEditedLetter(rendered.variablesValueMap()).mergeLetter(this, rendered)
     }
 
-/**
- * Update an attachment edited in Skribenten with a fresh rendering from brevbaker,
- * following the same rules as [updateEditedLetter].
- */
+
 fun Edit.Attachment.updateEditedAttachment(renderedAttachment: LetterMarkup.Attachment): Edit.Attachment =
     renderedAttachment.toEdit().let { rendered ->
         UpdateEditedLetter(rendered.variablesValueMap()).mergeAttachment(this, rendered)
