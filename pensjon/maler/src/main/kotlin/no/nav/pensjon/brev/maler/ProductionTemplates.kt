@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.legacy.ReverseringLavereMinstesatsAutoDto
 import no.nav.pensjon.brev.maler.adhoc.AdhocFeilEtteroppgjoer2023
 import no.nav.pensjon.brev.maler.adhoc.AdhocInformasjonHvilendeRett4Aar
 import no.nav.pensjon.brev.maler.adhoc.AdhocMidlertidigOpphoerHvilenderett10Aar
@@ -32,6 +31,7 @@ import no.nav.pensjon.brev.maler.legacy.VedtakOmEndringBarnetilleggEPSRevAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereMinstesatsAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmOktBunnfradragAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereReduksjonsprosentAuto
+import no.nav.pensjon.brev.maler.legacy.VedtakOmOktFribelopAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmOktMinsteIFUAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmOktMinsteIFULavereReduksjonsprosentAuto
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjon
@@ -56,6 +56,7 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmLavereMinstesatsRedigerbar
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmOktBunnfradragRedigerbar
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmLavereReduksjonsprosentRedigerbar
+import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmOktFribelopRedigerbar
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmOktMinsteIFURedigerbar
 import no.nav.pensjon.brev.maler.redigerbar.AvslagForLiteTrygdetidAP
@@ -141,6 +142,7 @@ object ProductionTemplates : AllTemplates {
         HvilendeRettVarselOpphoer,
         VedtakOmLavereMinstesatsAuto,
         VedtakOmOktBunnfradragAuto,
+        VedtakOmOktFribelopAuto,
         VedtakOmOktMinsteIFUAuto,
         VedtakOmLavereReduksjonsprosentAuto,
         VedtakOmOktMinsteIFULavereReduksjonsprosentAuto,
@@ -207,6 +209,7 @@ object ProductionTemplates : AllTemplates {
         VedtakOmInnvilgelseAvOmsorgspoeng,
         VedtakOmLavereMinstesatsRedigerbar,
         VedtakOmOktBunnfradragRedigerbar,
+        VedtakOmOktFribelopRedigerbar,
         VedtakOmOktMinsteIFURedigerbar,
         VedtakOmLavereReduksjonsprosentRedigerbar,
         VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar,
