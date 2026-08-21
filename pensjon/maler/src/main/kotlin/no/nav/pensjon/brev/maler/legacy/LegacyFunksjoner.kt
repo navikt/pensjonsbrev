@@ -43,52 +43,12 @@ import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.safe
-import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 import no.nav.pensjon.brev.template.dsl.expression.localDateNow
 
 
-fun Expression<PEgruppe10>.ut_trygdetid(): Expression<Boolean> =
-    vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and
-            pebrevkode().notEqualTo("PE_UT_04_108") and
-            pebrevkode().notEqualTo("PE_UT_04_109") and
-            pebrevkode().notEqualTo("PE_UT_07_200") and
-            pebrevkode().notEqualTo("PE_UT_06_300") and
-            (
-                    (pebrevkode().equalTo("PE_UT_04_101") or pebrevkode().equalTo("PE_UT_04_114")) or
-                            (pebrevkode().notEqualTo("PE_UT_05_100") and pebrevkode().notEqualTo("PE_UT_07_100")
-                                    and vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().lessThan(40))
-                    )
-
-
-
-fun Expression<PEgruppe10>.ut_tbu056v() = (
-        pebrevkode().equalTo("PE_UT_04_102")
-                or pebrevkode().equalTo("PE_UT_04_116")
-                or pebrevkode().equalTo("PE_UT_04_101")
-                or pebrevkode().equalTo("PE_UT_04_114")
-                or pebrevkode().equalTo("PE_UT_04_300")
-                or pebrevkode().equalTo("PE_UT_14_300")
-                or pebrevkode().equalTo("PE_UT_04_500")
-                or (vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")
-                and vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().notEqualTo(
-            vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
-        )
-                )
-        ) and vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().lessThan(
-    vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
-)
-
-
-
-fun Expression<PEgruppe10>.pe_ut_tbu601v_tbu604v(): Expression<Boolean> {
-    val belopsendring = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { belopsendring }
-    return vedtaksbrev.safe { vedtaksdata }.safe { kravhode }.safe { kravarsaktype }.equalTo("endret_inntekt") and
-            (belopsendring.safe { barnetilleggfellesyk }.safe { belopgammelbtfb.ifNull(Kroner(0)) }.notEqualTo(belopsendring.safe { barnetilleggfellesyk }.safe { belopnybtfb.ifNull(Kroner(0)) }) or
-                    belopsendring.safe { barnetilleggserkullyk }.safe { belopgammelbtsb.ifNull(Kroner(0)) }.notEqualTo(belopsendring.safe { barnetilleggserkullyk }.safe { belopnybtsb.ifNull(Kroner(0)) }))
-}
 
 fun FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(date: Expression<LocalDate?>): Expression<Boolean> =
     date.ifNull(LocalDate.of(2020, 2, 2)).month.equalTo(1) and
@@ -131,32 +91,6 @@ fun Expression<PEgruppe10>.ut_barnet_barna_serkull(): Expression<String> {
     )
 }
 
-fun Expression<PEgruppe10>.pe_ut_barnet_barna_felles_serkull(): Expression<String> {
-    val erEngelsk = Expression.FromScope.Language.equalTo(English.expr())
-    val beregningytelseskomp = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }
-
-    val barnetilleggserkull = beregningytelseskomp.safe { barnetilleggserkull }
-    val barnetilleggfelles = beregningytelseskomp.safe { barnetilleggfelles }
-
-    val erEttBarn = (barnetilleggfelles.safe { antallbarnfelles }.ifNull(0).equalTo(1) and
-            barnetilleggfelles.safe { btfbnetto }.ifNull(Kroner(0)).equalTo(0)) or
-            (barnetilleggserkull.safe { antallbarnserkull }.ifNull(0).equalTo(1) and
-                    barnetilleggserkull.safe { btsbnetto }.ifNull(Kroner(0)).equalTo(0))
-
-    val erFlereBarn = (barnetilleggfelles.safe { antallbarnfelles }.ifNull(0).greaterThan(1) and
-            barnetilleggfelles.safe { btfbnetto }.ifNull(Kroner(0)).equalTo(0)) or
-            (barnetilleggserkull.safe { antallbarnserkull }.ifNull(0).greaterThan(1) and
-                    barnetilleggserkull.safe { btsbnetto }.ifNull(Kroner(0)).equalTo(0))
-    return ifElse(
-        erEttBarn, ifElse(erEngelsk, "child", "barnet"),
-        ifElse(
-            erFlereBarn,
-            ifElse(erEngelsk, "children", "barna"),
-            "".expr()
-        )
-    )
-}
-
 fun Expression<PEgruppe10>.ut_inntektsgrense_faktisk() =
     ifElse(
         vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrensenestear().equalTo(0),
@@ -164,9 +98,6 @@ fun Expression<PEgruppe10>.ut_inntektsgrense_faktisk() =
         vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrensenestear()
     )
 
-//IF FF_GetArrayElement_Date(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Virkningstidpunkt) >= DateValue("01/01/2016") THEN
-//   isGrater = true
-//ENDIF
 fun Expression<PEgruppe10>.ut_virkningstidpunktstorreenn01012016() = vedtaksbrev.safe { vedtaksdata }.safe { vilkarsvedtaklist }.safe { vilkarsvedtak }.getOrNull().safe { beregningsvilkar }.safe { virkningstidpunkt }.legacyGreaterThan(LocalDate.of(2016,1,1))
 
 fun Expression<PEgruppe10>.ut_periodefomstorre0101() = vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom().legacyGreaterThan(ut_firstday())
@@ -240,31 +171,6 @@ fun Expression<PEgruppe10>.ut_virkningstidpunkttilprosent(): Expression<Int> {
 
 fun Expression<PEgruppe10>.ut_virkningstidpunktar(): Expression<Int> =
     vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().ifNull(LocalDate.of(1000,1,1)).year
-
-//IF(PE_UT_KravLinjeKode_VedtakResultat_Antall(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_innv) = 1)
-//THEN IF UCase(PE_XML_brev_spraak) ='EN'  THEN value = "child"
-//          ELSE value = "barnet"
-//          END IF
-//ELSEIF (PE_UT_KravLinjeKode_VedtakResultat_Antall(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_innv) > 1)
-//THEN IF UCase(PE_XML_brev_spraak) ='EN'  THEN value = "children"
-//          ELSE value = "barna"
-//          END IF
-//
-//ENDIF
-fun Expression<PEgruppe10>.ut_barnet_barna_innvilget(): Expression<String> {
-    val erEngelsk = Expression.FromScope.Language.equalTo(English.expr())
-    val erEttBarn = foedselsdatoTilBarnTilleggErInnvilgetFor().size().ifNull(0).equalTo(1)
-    val erFlereBarn = foedselsdatoTilBarnTilleggErInnvilgetFor().size().ifNull(0).greaterThan(1)
-    return ifElse(
-        erEttBarn, ifElse(erEngelsk, "child", "barnet"),
-        ifElse(
-            erFlereBarn,
-            ifElse(erEngelsk, "children", "barna"),
-            "".expr()
-        )
-    )
-}
-
 
 
 // GENERATED

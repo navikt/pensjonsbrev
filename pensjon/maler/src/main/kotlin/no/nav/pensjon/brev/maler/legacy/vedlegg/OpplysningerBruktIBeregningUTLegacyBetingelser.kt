@@ -10,20 +10,58 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetids
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlageos.selectors.trygdetidsgrunnlagListeEOS.*
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlagnorge.selectors.trygdetidsgrunnlagListeNor.*
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.selectors.vedtaksbrev.*
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.selectors.barnetilleggFellesYK.belopgammelbtfb
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.selectors.barnetilleggFellesYK.belopnybtfb
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.selectors.barnetilleggSerkullYK.belopgammelbtsb
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.selectors.barnetilleggSerkullYK.belopnybtsb
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.selectors.belopsendring.barnetilleggfellesyk
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.selectors.belopsendring.barnetilleggserkullyk
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.selectors.beregningUfore.belopsendring
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.selectors.beregningsData.beregningufore
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.kravhode.selectors.kravhode.kravarsaktype
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.selectors.vedtaksdata.beregningsdata
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.selectors.vedtaksdata.kravhode
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
-/*
- * Navngitte betingelser og navigasjonskjeder for vedleggOpplysningerBruktIBeregningUTLegacy.
- *
- * Betingelsene er hentet ordrett fra det Exstream-avledede vedlegget (kun `pe.`-prefikset er fjernet
- * siden funksjonene er extensions på Expression<PEgruppe10>). Uttrykkene er strukturelt identiske med
- * originalen, så rendret output er uendret — dette er kun for lesbarhet og gjenbruk. TBU-referanser er
- * beholdt i KDoc for sporbarhet mot Exstream.
- */
+fun Expression<PEgruppe10>.ut_trygdetid(): Expression<Boolean> =
+    vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and
+            pebrevkode().notEqualTo("PE_UT_04_108") and
+            pebrevkode().notEqualTo("PE_UT_04_109") and
+            pebrevkode().notEqualTo("PE_UT_07_200") and
+            pebrevkode().notEqualTo("PE_UT_06_300") and
+            (
+                    (pebrevkode().equalTo("PE_UT_04_101") or pebrevkode().equalTo("PE_UT_04_114")) or
+                            (pebrevkode().notEqualTo("PE_UT_05_100") and pebrevkode().notEqualTo("PE_UT_07_100")
+                                    and vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().lessThan(40))
+                    )
 
-// --- Navigasjonskjeder til trygdetidslistene (Persongrunnlag) ---
+
+fun Expression<PEgruppe10>.ut_tbu056v() = (
+        pebrevkode().equalTo("PE_UT_04_102")
+                or pebrevkode().equalTo("PE_UT_04_116")
+                or pebrevkode().equalTo("PE_UT_04_101")
+                or pebrevkode().equalTo("PE_UT_04_114")
+                or pebrevkode().equalTo("PE_UT_04_300")
+                or pebrevkode().equalTo("PE_UT_14_300")
+                or pebrevkode().equalTo("PE_UT_04_500")
+                or (vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt")
+                and vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().notEqualTo(
+            vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
+        )
+                )
+        ) and vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().lessThan(
+    vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak()
+)
+
+fun Expression<PEgruppe10>.pe_ut_tbu601v_tbu604v(): Expression<Boolean> {
+    val belopsendring = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { belopsendring }
+    return vedtaksbrev.safe { vedtaksdata }.safe { kravhode }.safe { kravarsaktype }.equalTo("endret_inntekt") and
+            (belopsendring.safe { barnetilleggfellesyk }.safe { belopgammelbtfb.ifNull(Kroner(0)) }.notEqualTo(belopsendring.safe { barnetilleggfellesyk }.safe { belopnybtfb.ifNull(Kroner(0)) }) or
+                    belopsendring.safe { barnetilleggserkullyk }.safe { belopgammelbtsb.ifNull(Kroner(0)) }.notEqualTo(belopsendring.safe { barnetilleggserkullyk }.safe { belopnybtsb.ifNull(Kroner(0)) }))
+}
 
 /** Norsk trygdetidsgrunnlagsliste, eller null hvis den mangler. */
 fun Expression<PEgruppe10>.trygdetidNorListe() =
