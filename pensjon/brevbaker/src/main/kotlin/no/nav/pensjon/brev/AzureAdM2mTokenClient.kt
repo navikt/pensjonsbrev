@@ -9,8 +9,6 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.slf4j.LoggerFactory
 import java.io.Closeable
 import java.time.Instant
@@ -22,7 +20,8 @@ class AzureAdM2mTokenClient(
     private val scope: String,
 ) : Closeable {
     private val logger = LoggerFactory.getLogger(javaClass)
-    private val mutex = Mutex()
+
+    @Volatile
     private var cachedToken: CachedToken? = null
 
     private val client = HttpClient(CIO) {
@@ -31,10 +30,9 @@ class AzureAdM2mTokenClient(
         }
     }
 
-    suspend fun getToken(): String = mutex.withLock {
-        cachedToken?.takeIf { Instant.now().isBefore(it.expiresAt) }?.accessToken
-            ?: fetchToken().also { cachedToken = it }.accessToken
-    }
+    suspend fun getToken() = validCachedToken()?.accessToken ?: fetchToken().also { cachedToken = it }.accessToken
+
+    private fun validCachedToken(): CachedToken? = cachedToken?.takeIf { Instant.now().isBefore(it.expiresAt) }
 
     private suspend fun fetchToken(): CachedToken {
         val response = client.submitForm(
@@ -59,7 +57,9 @@ class AzureAdM2mTokenClient(
         return CachedToken(token.accessToken, Instant.now().plusSeconds(token.expiresIn).minusSeconds(30))
     }
 
-    override fun close() = client.close()
+    override fun close() {
+        client.close()
+    }
 
     private data class CachedToken(val accessToken: String, val expiresAt: Instant)
 }

@@ -22,6 +22,7 @@ import no.nav.brev.brevbaker.PDFTimeoutException
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.brev.brevbaker.serialization.internalObjectMapper
 import org.slf4j.LoggerFactory
+import java.io.Closeable
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -35,7 +36,7 @@ class PensjonPdfByggerService(
     pdfByggerScope: String,
     private val timeout: Duration = 300.seconds,
     azureADConfig: ApplicationConfig? = null,
-) : PDFByggerService {
+) : PDFByggerService, Closeable {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val objectmapper = internalObjectMapper()
     private val httpClient = HttpClient(CIO) {
@@ -130,5 +131,10 @@ class PensjonPdfByggerService(
             clientSecret = it.property("clientSecret").getString(),
             scope = pdfByggerScope,
         )
+    }
+
+    override fun close() {
+        azureAdTokenClient?.close()
+        httpClient.close()
     }
 }

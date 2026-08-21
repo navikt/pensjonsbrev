@@ -30,13 +30,11 @@ import no.nav.pensjon.brev.routing.DocumentationETag
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
-import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 
 fun Application.brevbakerModule(
     templates: AllTemplates
 ) {
-    private val logger = LoggerFactory.getLogger(javaClass)
     val brevbakerConfig = environment.config.config("brevbaker")
 
     monitor.subscribe(ApplicationStopPreparing) {
@@ -134,7 +132,7 @@ fun Application.brevbakerModule(
             }
         }
         configs
-    } else null.also { logger.warn("Running in development mode, skal ikke skje i produksjon") }
+    } else null.also { log.warn("Running in development mode, skal ikke skje i produksjon") }
 
 
     val pdfbyggerService = PensjonPdfByggerService(
@@ -142,6 +140,7 @@ fun Application.brevbakerModule(
         pdfByggerScope = brevbakerConfig.property("pdfByggerScope").getString(),
         azureADConfig = if (!developmentMode) brevbakerConfig.config("azureAD") else null,
     )
+    monitor.subscribe(ApplicationStopped) { pdfbyggerService.close() }
 
     konfigurerUnleash(brevbakerConfig)
 
