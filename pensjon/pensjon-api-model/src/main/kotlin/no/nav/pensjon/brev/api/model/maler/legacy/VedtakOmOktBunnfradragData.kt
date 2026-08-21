@@ -7,19 +7,30 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 data class VedtakOmOktBunnfradragData(
-    val uforetrygd: Kroner,
-    val barnetillegg: Kroner?,
-    val bunnfradrag: Kroner,
+    val uforetrygd: Kroner,                      
+    val barnetillegg: Kroner?,                   
     val fribelop: Kroner,
-    val ekstraManedligUfoeretrygdUtAret: Kroner?,
+    val bunnfradrag: Kroner,
+    val bunnfradrag2027: Kroner,
     val uforegrad: Int,
-    val oktFribelopHeleAret: Boolean,
-    val datoOkning: LocalDate,
-    val ieu: Kroner,
+    val manedligOkningUforetrygdUtAret: Kroner?,
+    val toArI2026ForForsteOktober: Boolean,
+    val toArFor2026: Boolean,
+    val okningGrad2026: OkningGrad2026?,
     val antallMnd1g: Int,
+    val okningUt: Boolean,
     val oktUforetrygd: Boolean,
     val redusertBarnetillegg: Boolean,
+    val datoOkningBunnfradrag: LocalDate,
+    val ieu: Kroner,
+
     val pe: PEgruppe10,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
+)
+
+data class OkningGrad2026(
+    val dato: LocalDate,
+    val gammelUforegrad: Int,
+    val gammelIEU: Kroner
 )
