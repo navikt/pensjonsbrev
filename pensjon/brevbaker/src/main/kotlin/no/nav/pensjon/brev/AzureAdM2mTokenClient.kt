@@ -50,9 +50,9 @@ class AzureAdM2mTokenClient(
         }
 
         if (!response.status.isSuccess()) {
-            val error = response.body<ClientCredentialsErrorResponse>()
-            logger.error("Failed to fetch Azure AD client credentials token: ${error.error} - ${error.errorDescription}")
-            throw AzureAdClientCredentialsException(error)
+            val errorBody = response.body<String>()
+            logger.error("Failed to fetch Azure AD client credentials token (status=${response.status.value}): $errorBody")
+            throw AzureAdClientCredentialsException(ClientCredentialsErrorResponse("http_${response.status.value}", errorBody))
         }
 
         val token = response.body<ClientCredentialsTokenResponse>()
