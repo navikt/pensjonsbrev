@@ -2,9 +2,10 @@ import { readFileSync } from "node:fs";
 
 import { expect, type Page, test } from "@playwright/test";
 
-import { brevResponse } from "../../utils/letterEditorTestUtils";
+import { setupSakStubs } from "~test/e2e/support/helpers";
+import { brevResponse } from "~test/support/brevFixtures";
+
 import p1Data from "../fixtures/p1Data.json" with { type: "json" };
-import { setupSakStubs } from "../utils/helpers";
 
 const { p1BrevInfo, p1BrevData, p1BrevDataWithMissingFields, countriesSubset } = p1Data;
 

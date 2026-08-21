@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { setupSakStubs } from "./utils/helpers";
+import { setupSakStubs } from "~test/e2e/support/helpers";
 
 test.describe("Kvittering", () => {
   test.beforeEach(async ({ page }) => {
