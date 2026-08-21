@@ -13,16 +13,15 @@ data class VedtakOmOktBunnfradragData(
     val bunnfradrag: Kroner,
     val bunnfradrag2027: Kroner,
     val uforegrad: Int,
+    val ieu: Kroner,
     val manedligOkningUforetrygdUtAret: Kroner?,
     val toArI2026ForForsteOktober: Boolean,
     val toArFor2026: Boolean,
-    val okningGrad2026: OkningGrad2026?,
     val antallMnd1g: Int,
     val okningUt: Boolean,
-    val oktUforetrygd: Boolean,
-    val redusertBarnetillegg: Boolean,
+    val redusertBtfb: Boolean,
     val datoOkningBunnfradrag: LocalDate,
-    val ieu: Kroner,
+    val okningGrad2026: OkningGrad2026?,
 
     val pe: PEgruppe10,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
@@ -32,5 +31,6 @@ data class VedtakOmOktBunnfradragData(
 data class OkningGrad2026(
     val dato: LocalDate,
     val gammelUforegrad: Int,
-    val gammelIEU: Kroner
+    val gammelIEU: Kroner,
+    val antallMndGammelIEU: Int,
 )

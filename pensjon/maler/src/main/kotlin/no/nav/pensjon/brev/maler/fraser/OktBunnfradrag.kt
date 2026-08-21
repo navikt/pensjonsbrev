@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktBunnfradragData
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.okningGrad2026.antallMndGammelIEU
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.okningGrad2026.dato
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.okningGrad2026.gammelIEU
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.okningGrad2026.gammelUforegrad
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.antallMnd1g
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.barnetillegg
@@ -13,7 +15,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradr
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.manedligOkningUforetrygdUtAret
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.okningGrad2026
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.okningUt
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.redusertBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.redusertBtfb
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.toArFor2026
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.toArI2026ForForsteOktober
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.uforegrad
@@ -210,10 +212,29 @@ object OktBunnfradrag {
                         nynorsk { +"Berekninga av botnfrådraget for heile året vil derfor sjå slik ut: " },
                     )
                 }
-                paragraph {//TODO Nytt regnestykke vektet
+                //TODO Skal ieu vektes eller ikke?
+                paragraph {
                     text(
-                        bokmal { +data.ieu.format() + " (inntekt etter uførhet) + 0,4 G * " + 12.expr().minus(data.antallMnd1g).format() + "/12 (mnd med gammelt fribeløp) + 1 G * " + data.antallMnd1g.format() + "/12 (mnd med nytt fribeløp)" },
-                        nynorsk { +data.ieu.format() + " (inntekt etter uførleik) + 0,4 G * " + 12.expr().minus(data.antallMnd1g).format() + "/12 (mnd med gamalt fribeløp) + 1 G * " + data.antallMnd1g.format() + "/12 (mnd med nytt fribeløp)" },
+                        bokmal { +data.ieu.format() + " (inntekt etter uførhet) * " + okningGrad2026.antallMndGammelIEU.format() + "/12" },
+                        nynorsk { +data.ieu.format() + " (inntekt etter uførleik) * " + okningGrad2026.antallMndGammelIEU.format() + "/12" },
+                        fontType = ITALIC
+                    )
+                    newline()
+                    text(
+                        bokmal { +"+ " +okningGrad2026.gammelIEU.format() + " (inntekt etter uførhet før gradsendring) * " + 12.expr().minus(okningGrad2026.antallMndGammelIEU).format() + "/12" },
+                        nynorsk { +"+ " +okningGrad2026.gammelIEU.format() + " (inntekt etter uførleik før gradsendring) * " + 12.expr().minus(okningGrad2026.antallMndGammelIEU).format() + "/12" },
+                        fontType = ITALIC
+                    )
+                    newline()
+                    text(
+                        bokmal { +"+ 0,4 G * " + 12.expr().minus(data.antallMnd1g).format() + "/12 (mnd med gammelt fribeløp) + 1 G * " + data.antallMnd1g.format() + "/12 (mnd med nytt fribeløp)" },
+                        nynorsk { +"+ 0,4 G * " + 12.expr().minus(data.antallMnd1g).format() + "/12 (mnd med gamalt fribeløp) + 1 G * " + data.antallMnd1g.format() + "/12 (mnd med nytt fribeløp)" },
+                        fontType = ITALIC
+                    )
+                    newline()
+                    text(
+                        bokmal { +"+ 1 G * " + data.antallMnd1g.format() + "/12 (mnd med nytt fribeløp)" },
+                        nynorsk { +"+ 1 G * " + data.antallMnd1g.format() + "/12 (mnd med nytt fribeløp)" },
                         fontType = ITALIC
                     )
                 }
@@ -317,7 +338,7 @@ object OktBunnfradrag {
                             nynorsk { +"Endring i barnetillegg" },
                         )
                     }
-                    showIf(data.redusertBarnetillegg) {
+                    showIf(data.redusertBtfb) {
                         paragraph {
                             text(
                                 bokmal { +"Regelverksendringene fører til at du får en høyere utbetaling av uføretrygd. Uføretrygden regnes med som inntekt når vi beregner barnetillegg. Derfor får du en lavere utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er: " + bt.format() },
