@@ -32,9 +32,9 @@ private val RETRY_MAX_DELAY = 2.seconds
 
 class PensjonPdfByggerService(
     private val pdfByggerUrl: String,
-    private val pdfByggerScope: String,
+    pdfByggerScope: String,
     private val timeout: Duration = 300.seconds,
-    private val azureADConfig: ApplicationConfig? = null,
+    azureADConfig: ApplicationConfig? = null,
 ) : PDFByggerService {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val objectmapper = internalObjectMapper()
@@ -120,13 +120,15 @@ class PensjonPdfByggerService(
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
 
     private suspend fun HttpRequestBuilder.bearerAuthHeader() {
-        azureADConfig?.let {
-            AzureAdM2mTokenClient(
-                tokenEndpoint = it.property("tokenEndpoint").getString(),
-                clientId = it.property("clientId").getString(),
-                clientSecret = it.property("clientSecret").getString(),
-                scope = pdfByggerScope,
-            )
-        }?.let { header(HttpHeaders.Authorization, "Bearer ${it.getToken()}") }
+        azureAdTokenClient?.let { header(HttpHeaders.Authorization, "Bearer ${it.getToken()}") }
+    }
+
+    private val azureAdTokenClient = azureADConfig?.let {
+        AzureAdM2mTokenClient(
+            tokenEndpoint = it.property("tokenEndpoint").getString(),
+            clientId = it.property("clientId").getString(),
+            clientSecret = it.property("clientSecret").getString(),
+            scope = pdfByggerScope,
+        )
     }
 }
