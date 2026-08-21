@@ -87,6 +87,6 @@ spec:
     - name: PDF_BYGGER_MAX_RETRIES
       value: "250"
     - name: PDF_BYGGER_SCOPE
-      value: ""{{pdf-bygger-scope}}"
+      value: "{{pdf-bygger-scope}}"
   envFrom:
     - secret: pensjon-brevbaker-unleash-api-token
