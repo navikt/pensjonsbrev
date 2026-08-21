@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger
 
 import com.auth0.jwk.JwkProviderBuilder
-import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
@@ -16,30 +15,18 @@ data class JwtConfig(
     val name: String,
     val issuer: String,
     val jwksUrl: String,
-    val audience: List<String>,
-    val preAuthorizedApps: List<PreAuthorizedApp>?,
+    val audience: String,
+    val preAuthorizedApps: List<PreAuthorizedApp>,
 ) {
     companion object {
-        private const val jwtAzureAdName = "AZURE_AD"
-
         fun requireAzureADConfig(azureAdConfig: ApplicationConfig) =
             JwtConfig(
-                name = jwtAzureAdName,
+                name = "AZURE_AD",
                 issuer = azureAdConfig.property("issuer").getString(),
                 jwksUrl = azureAdConfig.property("jwksUrl").getString(),
-                audience = listOf(azureAdConfig.property("clientId").getString()),
-                preAuthorizedApps = getPreAuthorizedApps(),
+                audience = azureAdConfig.property("clientId").getString(),
+                preAuthorizedApps = internalObjectMapper().readValue(System.getenv("AZURE_APP_PRE_AUTHORIZED_APPS")),
             )
-
-        private fun getPreAuthorizedApps(): List<PreAuthorizedApp>? =
-            System.getenv("AZURE_APP_PRE_AUTHORIZED_APPS")?.let {
-                try {
-                    internalObjectMapper().readValue(it)
-                } catch (e: JacksonException) {
-                    logger.warn("Failed to deserialize preAuthorized apps, value was: $it", e)
-                    emptyList()
-                }
-            }
     }
 }
 
@@ -49,7 +36,7 @@ fun AuthenticationConfig.pdfByggerJwt(config: JwtConfig) =
     jwt(config.name) {
         realm = "pdf-bygger-$name"
         verifier(JwkProviderBuilder(URI(config.jwksUrl).toURL()).build(), config.issuer) {
-            withAnyOfAudience(*config.audience.toTypedArray())
+            withAudience(config.audience)
             withIssuer(config.issuer)
             withClaimPresence("sub")
             withClaimPresence("exp")
@@ -58,9 +45,8 @@ fun AuthenticationConfig.pdfByggerJwt(config: JwtConfig) =
         }
         validate {
             val azp = it["azp"]
-            val isPreAuthorized = config.preAuthorizedApps?.any { app -> app.clientId == azp } == true
 
-            if (isPreAuthorized) {
+            if (config.preAuthorizedApps.any { app -> app.clientId == azp }) {
                 JWTPrincipal(it.payload)
             } else {
                 logger.info("Invalid authorization - claim 'azp' is not a preAuthorizedApp: $azp")
