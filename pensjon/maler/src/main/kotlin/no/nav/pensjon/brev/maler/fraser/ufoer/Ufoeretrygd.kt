@@ -390,7 +390,7 @@ object Ufoeretrygd {
 
     data class AvslagBarnetillegg(val barnetilleggAvslatt: Expression<List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>>) :
         RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
 
             forEach(barnetilleggAvslatt) { barnetillegg ->
                 title1 {
@@ -441,7 +441,7 @@ object Ufoeretrygd {
 
     data class OpphorBarnetillegg(val barnetilleggOpphort: Expression<List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>>) :
         RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
 
             forEach(barnetilleggOpphort) { barnetillegg ->
                 title2 {
@@ -476,7 +476,7 @@ object Ufoeretrygd {
         val periodisertInntekt: Expression<PeriodisertInntektBarnetillegg?>
     ) :
         RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
 
             showIf(periodisertInntekt.isNull() or periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.INGEN)) {
                 paragraph {
@@ -607,7 +607,7 @@ object Ufoeretrygd {
     }
 
     private data class BegrunnelseBarnetilleggTekst(val barnetillegg: Expression<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>) : RedigerbarParagraphPhrase<LangBokmalNynorsk>() {
-        override fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun ParagraphOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
             val barnetBarna = barnetillegg.format(BarnetBarnaFormatter())
             val barnetBarnaStor = barnetillegg.format(BarnetBarnaFormatter(true))
 

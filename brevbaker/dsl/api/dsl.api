@@ -875,6 +875,9 @@ public abstract class no/nav/pensjon/brev/template/RedigerbarParagraphPhrase : n
 	public fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
+public abstract interface class no/nav/pensjon/brev/template/RedigerbarPhraseBrevdata : no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata {
+}
+
 public abstract interface class no/nav/pensjon/brev/template/RedigerbarTemplate : no/nav/pensjon/brev/template/BrevTemplate, no/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev {
 	public fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar;
 	public synthetic fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription;

@@ -19,7 +19,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -56,7 +55,17 @@ object VedtakOmEtterbetalingOpphor2026Redigerbar : RedigerbarTemplate<VedtakOmEt
             }
         }
         outline {
-            includePhrase(VedtakOmEtterbetalingOpphor2026.Outline(etterbetaling = pesysData.etterbetaling, hjemler = pesysData.hjemler, reduksjonsprosent = pesysData.reduksjonsprosent, uforegrad = pesysData.uforegrad, ifu = pesysData.ifu, endringUforegrad = pesysData.endringUforegrad, endringIfu = pesysData.endringIfu, erRedigerbar = true.expr()))
+            includePhrase(
+                VedtakOmEtterbetalingOpphor2026.OutlineRedigerbar(
+                    etterbetaling = pesysData.etterbetaling,
+                    hjemler = pesysData.hjemler,
+                    reduksjonsprosent = pesysData.reduksjonsprosent,
+                    uforegrad = pesysData.uforegrad,
+                    ifu = pesysData.ifu,
+                    endringUforegrad = pesysData.endringUforegrad,
+                    endringIfu = pesysData.endringIfu
+                )
+            )
             includePhrase(VedtakOmEtterbetalingOpphor2026.RettTilAAKlage)
             includePhrase(Ufoeretrygd.RettTilInnsyn)
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)

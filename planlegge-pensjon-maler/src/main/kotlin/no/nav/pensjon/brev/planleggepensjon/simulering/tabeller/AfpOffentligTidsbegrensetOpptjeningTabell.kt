@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.RedigerbarOutlinePhrase
+import no.nav.pensjon.brev.template.RedigerbarPhraseBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -16,7 +17,7 @@ import no.nav.pensjon.brev.template.dsl.text
 data class AfpOffentligTidsbegrensetOpptjeningTabell(
     val afp: Expression<TidsbegrensetOffentligAfp>,
 ) : RedigerbarOutlinePhrase<LangBokmal>() {
-    override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
         paragraph {
             table(header = {
                 column(columnSpan = 3) {
