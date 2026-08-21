@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.TemplateModelSpecificationFactory
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
+import no.nav.pensjon.brev.template.render.TemplateDocumentationRendererV2
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>> Route.templateRoutes(resource: TemplateResource<Kode, T, *>) =
@@ -66,6 +67,20 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
 
                 if (template != null) {
                     call.respond(TemplateDocumentationRenderer.render(template, language, template.modelSpecification()))
+                } else {
+                    call.respond(HttpStatusCode.NotFound)
+                }
+            }
+
+            get("/doc/v2/{language}") {
+                val language = call.parameters.getOrFail<LanguageCode>("language").toLanguage()
+
+                val template = call.kode(resource)
+                    .let { resource.getTemplate(it)?.template }
+                    ?.takeIf { it.language.supports(language) }
+
+                if (template != null) {
+                    call.respond(TemplateDocumentationRendererV2.render(template, language, template.modelSpecification()))
                 } else {
                     call.respond(HttpStatusCode.NotFound)
                 }
