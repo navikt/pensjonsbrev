@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.sivilstand
 
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
@@ -14,12 +15,11 @@ import java.time.LocalDate
 
 fun createEndringAvAlderspensjonSivilstandDto() =
     EndringAvAlderspensjonSivilstandDto(
-        saksbehandlerValg =
-            EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg(
-                feilutbetaling = false,
-                sivilstandsendringsaarsak = EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg.Sivilstandsendringsaarsak.annet,
-                etterbetaling = true
-            ),
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "feilutbetaling" to false,
+            "sivilstandsendringsaarsak" to EndringAvAlderspensjonSivilstandDto.Sivilstandsendringsaarsak.annet.name,
+            "etterbetaling" to true,
+        ),
         pesysData =
             EndringAvAlderspensjonSivilstandDto.PesysData(
                 alderspensjonVedVirk =

@@ -4,9 +4,9 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OkningUforegradDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.okningUforegradDto.saksbehandlervalg.periodisertInntekt
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -29,6 +29,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
@@ -52,6 +53,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
+        val periodisertInntekt = saksbehandlervalg("periodisertInntekt", "Periodisert inntekt barnetillegg").enum<PeriodisertInntektBarnetillegg>()
+
         title {
             text(
                 bokmal { +"Nav har innvilget søknaden din om økt uføretrygd" },
@@ -102,12 +105,11 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             val oifuMerEnnIfu = oifuKroner.greaterThan(ifuinntekt)
 
             val txtOgEllerEktefelle = if (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().equals(true)) " og/eller ektefelle" else ""
-            val soknadsdato = pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato())
 
             paragraph {
                 text(
-                    bokmal { +"Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + soknadsdato.format() + ". " },
-                    nynorsk { +"Vi har innvilga søknaden din om auka uføretrygd som vi fekk " + soknadsdato.format() + ". " },
+                    bokmal { +"Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". " },
+                    nynorsk { +"Vi har innvilga søknaden din om auka uføretrygd som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". " },
                 )
                 showIf(pe.vedtaksdata_kravhode_kravarsaktype().isNotAnyOf("omgj_etter_klage", "omgj_etter_anke")) {
                     text(
@@ -336,8 +338,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                     }
                     item {
                         text(
-                            bokmal { +"Du må ha vært medlem av folketrygden i de siste tre årene fram til uføretidspunktet, eller oppfylle en av unntaksreglene." },
-                            nynorsk { +"Du må ha vore medlem av folketrygda i dei siste tre åra fram til uføretidspunktet, eller oppfylle ein av unntaksreglane." },
+                            bokmal { +"Du må ha vært medlem av folketrygden i de siste fem årene fram til uføretidspunktet, eller oppfylle en av unntaksreglene." },
+                            nynorsk { +"Du må ha vore medlem av folketrygda i dei siste fem åra fram til uføretidspunktet, eller oppfylle ein av unntaksreglane." },
                         )
                     }
                     item {
@@ -604,8 +606,8 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))) {
                 paragraph {
                     text(
-                        bokmal { +"Du har fått innvilget økt uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + ". Dette kaller vi virkningstidspunktet. Vi mottok søknaden din " + soknadsdato.format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " + fritekst("Fritekst") },
-                        nynorsk { +"Du har fått innvilga auka uføretrygd frå " + pe.vedtaksdata_virkningfom().format() + ". Dette kallar vi verknadstidspunktet. Vi fekk søknaden din " + soknadsdato.format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd for opptil tre månader før denne datoen. " + fritekst("Fritekst") },
+                        bokmal { +"Du har fått innvilget økt uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + ". Dette kaller vi virkningstidspunktet. Ditt krav ble framsatt " + pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()).format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " + fritekst("Fritekst") },
+                        nynorsk { +"Du har fått innvilga auka uføretrygd frå " + pe.vedtaksdata_virkningfom().format() + ". Dette kallar vi verknadstidspunktet. Kravet ditt blei framsatt " + pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()).format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " + fritekst("Fritekst") },
                     )
                 }
             }
@@ -1164,7 +1166,7 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                             btSerkullInnvilget = barnetilleggSerkullInnvilget,
                             grunnbelop = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop(),
                             pe = pe,
-                            periodisertInntekt = saksbehandlerValg.periodisertInntekt
+                            periodisertInntekt = periodisertInntekt
                         )
                     )
                 }
@@ -1604,7 +1606,7 @@ object OkningUforegrad : RedigerbarTemplate<OkningUforegradDto> {
                     )
                 }
             }
-            includePhrase(Ufoeretrygd.AvslagBarnetillegg2(pesysData.nyeAvslagBarnetillegg))
+            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
             includePhrase(Felles.RettTilAAKlage)

@@ -7,13 +7,12 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_MEDLEMSKAP
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagSupplerendeStonadEnkelDto.saksbehandlervalg.*
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagSupplerendeStonadEnkelDto.uforeAvslagPendata.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagSupplerendeStonadEnkelDto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
@@ -43,14 +42,17 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
         ),
     )
     {
+        val visVurderingFraVilkarvedtak = saksbehandlervalg("VisVurderingFraVilkarvedtak", "Bruk vurdering fra vilkårsvedtak").bool()
+        val visSupplerendeStonadUforeFlykninger = saksbehandlervalg("visSupplerendeStonadUforeFlykninger", "Supplerende stønad til uføre flyktninger").bool()
+
         title {
             text (bokmal { + "Nav har avslått søknaden din om uføretrygd"},
                 nynorsk { + "Nav har avslått søknaden din om uføretrygd"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om uføretrygd som vi fikk den " + pesysData.kravFremsattDato.ifNull(pesysData.kravMottattDato).format() + "." },
-                    nynorsk { +"Vi har avslått søknaden din om uføretrygd som vi fekk den " + pesysData.kravFremsattDato.ifNull(pesysData.kravMottattDato).format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." },
+                    nynorsk { +"Vi har avslått søknaden din om uføretrygd som vi fekk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" },
@@ -102,7 +104,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
             }
 
             paragraph {
-                showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+                showIf(visVurderingFraVilkarvedtak) {
                     text(bokmal { +redigerbarData(pesysData.vurdering) },
                         nynorsk { +redigerbarData(pesysData.vurdering) } )
                 }
@@ -134,7 +136,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
                     nynorsk { + "Vedtaket har vi gjort etter folketrygdlova § 12-2. " })
             }
 
-            showIf(saksbehandlerValg.visSupplerendeStonadUforeFlykninger) {
+            showIf(visSupplerendeStonadUforeFlykninger) {
                 title1 {
                     text(bokmal { +"Supplerende stønad til uføre flyktninger " },
                         nynorsk { +"Supplerande stønad til uføre flyktningar " })

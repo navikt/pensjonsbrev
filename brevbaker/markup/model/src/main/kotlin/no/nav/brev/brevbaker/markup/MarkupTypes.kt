@@ -29,11 +29,11 @@ object Markup {
         INFORMASJONSBREV,
     }
     @JvmInline
-    value class Personidentifikator internal constructor(val value: String) {
+    value class Personidentifikator(val value: String) {
         override fun toString() = value
     }
     @JvmInline
-    value class Saksnummer internal constructor(val value: String) {
+    value class Saksnummer(val value: String) {
         override fun toString() = value
     }
 }

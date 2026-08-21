@@ -4,7 +4,6 @@ import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrevDto
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjon
@@ -16,6 +15,7 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdAvsnitt
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdInnhold
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdSeksjon
+import no.nav.pensjon.brev.planleggepensjon.simulering.Kortforbehold
 import no.nav.pensjon.brev.planleggepensjon.simulering.LivsvarigOffentligAfp
 import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfp
 import no.nav.pensjon.brev.planleggepensjon.simulering.Simulering
@@ -47,7 +47,6 @@ object Fixtures : LetterDataFactory {
         when (letterDataType) {
             ApSimuleringBrevDto::class -> createSimuleringBrevDto() as T
             ServiceberegningBrevDto::class -> createServiceberegningBrevDto() as T
-            EmptyRedigerbarBrevdata::class -> EmptyRedigerbarBrevdata as T
             EmptyAutobrevdata::class -> EmptyAutobrevdata as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
@@ -83,6 +82,8 @@ object Fixtures : LetterDataFactory {
                 afpGrad = Percent(100),
                 erAvkortet = true,
             ),
+            alt1 = true,
+            alt2 = false,
         )
     )
 
@@ -184,6 +185,18 @@ object Fixtures : LetterDataFactory {
             simuleringsinformasjon = createSimuleringsinformasjon(),
             trygdetid = null,
             forbehold = createForbeholdInnhold(),
+            kortforbehold = Kortforbehold(
+                avsnitt = listOf(
+                    ForbeholdAvsnitt(
+                        tekst = "Dette er et kort forbehold som vises i brevet.",
+                        punktliste = null,
+                    ),
+                    ForbeholdAvsnitt(
+                        tekst = "Dette er et kort forbehold i brevet.",
+                        punktliste = null,
+                    )
+                ),
+            ),
         )
 
     private fun createForbeholdInnhold() = ForbeholdInnhold(

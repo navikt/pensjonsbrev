@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.stans
 
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.EksportForbudKode
@@ -10,8 +11,7 @@ import java.time.LocalDate
 
 fun createVedtakStansAlderspensjonFlyttingMellomLandDto() =
     VedtakStansAlderspensjonFlyttingMellomLandDto(
-        saksbehandlerValg = VedtakStansAlderspensjonFlyttingMellomLandDto.SaksbehandlerValg
-            (feilutbetaling = false),
+        saksbehandlerValg = lagSaksbehandlervalg("feilutbetaling" to false),
         pesysData = VedtakStansAlderspensjonFlyttingMellomLandDto.PesysData(
             brukersBostedsland = "Sverige",
             eksportForbudKode = EksportForbudKode.FLYKT_ALDER,

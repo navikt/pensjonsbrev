@@ -2,14 +2,14 @@ package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.model.afp.AfpPeriode
 import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDto
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 
 fun createVarselAfpEtteroppgjoerForeloepigDto(): VarselAfpEtteroppgjoerForeloepigDto =
     VarselAfpEtteroppgjoerForeloepigDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = VarselAfpEtteroppgjoerForeloepigDto.PesysData(
             oppgjoersAar = Year(2024),
             formyebetalt = Kroner(38_500),

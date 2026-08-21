@@ -112,6 +112,7 @@ const ManagedVedleggEditorReady = (props: {
       editorState={editorState}
       error={isError}
       freeze={false}
+      redigeringsflate="saksbehandler-redigering"
       setEditorState={setEditorState}
       showDebug={false}
     />

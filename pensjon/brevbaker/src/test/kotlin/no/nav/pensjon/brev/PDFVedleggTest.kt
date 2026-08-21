@@ -4,10 +4,10 @@ import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto.*
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2Dto
@@ -47,7 +47,7 @@ class PDFVedleggTest {
 
 fun createSamletMeldingOmPensjonsvedtakV2Dto() =
     SamletMeldingOmPensjonsvedtakV2Dto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = SamletMeldingOmPensjonsvedtakV2Dto.PesysData(
             sakstype = Sakstype.ALDER,
             p1Vedlegg = createP1VedleggDto(),

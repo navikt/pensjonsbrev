@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.ufore.maler.hvilenderett
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetT
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object HvilendeRettOppHoer : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object HvilendeRettOppHoer : RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
 
     override val kode = UT_S_HVILENDE_RETT_OPPHOER
     override val kategori = Brevkategori.ETTEROPPGJOER

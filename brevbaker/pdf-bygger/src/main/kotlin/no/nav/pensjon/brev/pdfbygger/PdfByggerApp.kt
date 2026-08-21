@@ -19,17 +19,29 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.logging.Logger
 import no.nav.brev.brevbaker.PDFRequest
+import no.nav.brev.brevbaker.document.DocumentPDFRequest
 import no.nav.brev.brevbaker.serialization.internalObjectMapper
 import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
 import no.nav.pensjon.brev.pdfbygger.Metrics.configureMetrics
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
+import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstLetterRenderer
+import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstLetterRendererV2
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
-import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRendererV2
 import org.slf4j.LoggerFactory
+import java.util.concurrent.RejectedExecutionException
 
 private val objectMapper = internalObjectMapper()
 
-fun main(args: Array<String>) = EngineMain.main(args)
+fun main(args: Array<String>) {
+    Thread.setDefaultUncaughtExceptionHandler { thread, ex ->
+        if (ex is RejectedExecutionException) {
+            logger.warn("Uncaught exception in thread ${thread.name}", ex)
+        } else {
+            logger.error("Uncaught exception in thread ${thread.name}", ex)
+        }
+    }
+    EngineMain.main(args)
+}
 
 
 fun ApplicationConfig.getProperty(name: String): String =
@@ -89,7 +101,7 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         post("/produserBrev") {
             val request = call.receive<PDFRequest>()
             val result = typstCompileService.createLetter {
-                TypstDocumentRenderer.render(request, it)
+                TypstLetterRenderer.render(request, it)
             }
             handleResult(result, call.application.environment.log)
         }
@@ -97,7 +109,15 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         post("/v2/produserBrev") {
             val request = call.receive<LetterPDFRequest>()
             val result = typstCompileService.createLetter {
-                TypstDocumentRendererV2.render(request, it)
+                TypstLetterRendererV2.render(request, it)
+            }
+            handleResult(result, call.application.environment.log)
+        }
+
+        post("/produserDokument") {
+            val request = call.receive<DocumentPDFRequest>()
+            val result = typstCompileService.createLetter {
+                TypstDocumentRenderer.render(request, it)
             }
             handleResult(result, call.application.environment.log)
         }

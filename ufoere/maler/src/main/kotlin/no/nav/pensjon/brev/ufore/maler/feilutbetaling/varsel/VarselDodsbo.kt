@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_FEILUTBETALING_VARSEL_DODSBO
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.feilutbetalingDodsboSaksbehandlervalg.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.feilutbetalingVarselDodsboDto.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.selectors.varselFeilutbetalingPesysData.*
@@ -23,6 +22,7 @@ import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
+import no.nav.pensjon.brev.template.saksbehandlervalg
 
 @TemplateModelHelpers
 object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
@@ -45,6 +45,7 @@ object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
         val navn = fritekst ("navn")
         val kilde = fritekst ("kilde")
         val bruttoFeilutbetalt = pesysData.feilutbetaltBrutto.format(CurrencyFormat)
+        val kjentBobestyrer = saksbehandlervalg("kjentBobestyrer", "Kjent bobestyrer").bool()
 
 
         title {
@@ -132,7 +133,7 @@ object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
 
                 )
             }
-            showIf(saksbehandlerValg.kjentBobestyrer) {
+            showIf(kjentBobestyrer) {
                 paragraph {
                     text(
                         bokmal { + "Vi har fått opplysninger om at skifteattest er utstedt til deg. Derfor får du dette varselet på vegne av boet. " },

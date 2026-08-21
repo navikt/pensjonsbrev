@@ -14,6 +14,7 @@ import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.pensjon.brev.template.brevbakerConfig
+import java.io.IOException
 
 
 fun testBrevbakerApp(
@@ -37,6 +38,7 @@ fun testBrevbakerApp(
         }
         install(HttpRequestRetry) {
             retryOnServerErrors(maxRetries = 2)
+            retryOnExceptionIf(maxRetries = 2) { _, e -> e is IOException }
         }
         defaultRequest {
             contentType(ContentType.Application.Json)

@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.legacy.ReverseringLavereMinstesatsAutoDto
 import no.nav.pensjon.brev.maler.adhoc.AdhocFeilEtteroppgjoer2023
 import no.nav.pensjon.brev.maler.adhoc.AdhocInformasjonHvilendeRett4Aar
 import no.nav.pensjon.brev.maler.adhoc.AdhocMidlertidigOpphoerHvilenderett10Aar
@@ -25,7 +26,9 @@ import no.nav.pensjon.brev.maler.legacy.VedtakOmEtterbetalingOpphor2026Auto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmEtterbetalingOpphor2026OktIfuAuto
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
+import no.nav.pensjon.brev.maler.legacy.ReverseringLavereMinstesatsAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmEndringBarnetilleggEPSAuto
+import no.nav.pensjon.brev.maler.legacy.VedtakOmEndringBarnetilleggEPSRevAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereMinstesatsAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmOktBunnfradragAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereReduksjonsprosentAuto
@@ -47,6 +50,7 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygdUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.OkningUforegrad
 import no.nav.pensjon.brev.maler.legacy.redigerbar.OmregningUfoerepensjonTilUfoeretrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.OpphoerGjenlevendepensjon
+import no.nav.pensjon.brev.maler.legacy.redigerbar.ReverseringLavereMinstesatsRedigerbar
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheter
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmLavereMinstesatsRedigerbar
@@ -140,7 +144,9 @@ object ProductionTemplates : AllTemplates {
         VedtakOmOktMinsteIFUAuto,
         VedtakOmLavereReduksjonsprosentAuto,
         VedtakOmOktMinsteIFULavereReduksjonsprosentAuto,
-        VedtakOmEndringBarnetilleggEPSAuto
+        VedtakOmEndringBarnetilleggEPSAuto,
+        ReverseringLavereMinstesatsAuto,
+        VedtakOmEndringBarnetilleggEPSRevAuto,
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
@@ -204,6 +210,7 @@ object ProductionTemplates : AllTemplates {
         VedtakOmOktMinsteIFURedigerbar,
         VedtakOmLavereReduksjonsprosentRedigerbar,
         VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar,
+        ReverseringLavereMinstesatsRedigerbar,
     )
 
     override fun hentAutobrevmaler() = autobrev

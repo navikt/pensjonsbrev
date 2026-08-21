@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.planleggepensjon.simulering.tabeller
 
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.planleggepensjon.redigerbar
 import no.nav.pensjon.brev.planleggepensjon.simulering.TidsbegrensetOffentligAfp
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.tidsbegrensetOffentligAfp.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -9,15 +8,15 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.RedigerbarOutlinePhrase
+import no.nav.pensjon.brev.template.RedigerbarPhraseBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.text
 
 data class AfpOffentligTidsbegrensetTabellRedigerbar(
     val afp: Expression<TidsbegrensetOffentligAfp>,
-    val sumLabel: String = "Sum AFP",
 ) : RedigerbarOutlinePhrase<LangBokmal>() {
-    override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    override fun OutlineOnlyScope<LangBokmal, RedigerbarPhraseBrevdata>.template() {
         paragraph {
             table(header = {
                 column(columnSpan = 3) {
@@ -30,30 +29,30 @@ data class AfpOffentligTidsbegrensetTabellRedigerbar(
                 showIf(afp.grunnpensjon.greaterThan(0)) {
                     row {
                         cell { text(bokmal { +"Grunnpensjon" }) }
-                        cell { text(bokmal { +afp.grunnpensjon.format(denominator = false).redigerbar() }) }
+                        cell { text(bokmal { +redigerbarData(afp.grunnpensjon.format(denominator = false)) }) }
                     }
                 }
                 showIf(afp.tilleggspensjon.greaterThan(0)) {
                     row {
                         cell { text(bokmal { +"Tilleggspensjon" }) }
-                        cell { text(bokmal { +afp.tilleggspensjon.format(denominator = false).redigerbar() }) }
+                        cell { text(bokmal { +redigerbarData(afp.tilleggspensjon.format(denominator = false)) }) }
                     }
                 }
                 showIf(afp.afpTillegg.greaterThan(0)) {
                     row {
                         cell { text(bokmal { +"AFP-tillegg" }) }
-                        cell { text(bokmal { +afp.afpTillegg.format(denominator = false).redigerbar() }) }
+                        cell { text(bokmal { +redigerbarData(afp.afpTillegg.format(denominator = false)) }) }
                     }
                 }
                 showIf(afp.saertillegg.greaterThan(0)) {
                     row {
                         cell { text(bokmal { +"Særtillegg" }) }
-                        cell { text(bokmal { +afp.saertillegg.format(denominator = false).redigerbar() }) }
+                        cell { text(bokmal { +redigerbarData(afp.saertillegg.format(denominator = false)) }) }
                     }
                 }
                 row {
-                    cell { text(bokmal { +sumLabel }, fontType = BOLD) }
-                    cell { text(bokmal { +afp.totaltAfpBeloep.format(denominator = false).redigerbar() }, fontType = BOLD) }
+                    cell { text(bokmal { +"Sum AFP" }, fontType = BOLD) }
+                    cell { text(bokmal { +redigerbarData(afp.totaltAfpBeloep.format(denominator = false)) }, fontType = BOLD) }
                 }
             }
             showIf(afp.erAvkortet) {

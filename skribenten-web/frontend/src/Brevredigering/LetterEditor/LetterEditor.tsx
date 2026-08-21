@@ -10,9 +10,14 @@ import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
 import { isLetterDocument, TITLE_INDEX } from "~/types/brevbakerTypes";
+import {
+  type MissingFromTemplateEventName,
+  type Redigeringsflate,
+  trackMissingFromTemplateAction,
+} from "~/utils/editorTracking";
 
 import Actions from "./actions";
-import { getBlockClassName } from "./actions/common";
+import { countMissingFromTemplateBlocks, getBlockClassName } from "./actions/common";
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
@@ -29,12 +34,14 @@ export const LetterEditor = ({
   editorState,
   setEditorState,
   showDebug,
+  redigeringsflate,
 }: {
   freeze: boolean;
   error: boolean;
   editorState: LetterEditorState;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   showDebug: boolean;
+  redigeringsflate: Redigeringsflate;
 }) => {
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
@@ -47,6 +54,19 @@ export const LetterEditor = ({
   useDragSelectUnifier(editorRoot, !freeze);
 
   useSelectionDeleteHotkey(editorRoot, (focus) => applyAction(Actions.deleteSelection, setEditorState, focus), !freeze);
+
+  const sporMissingFromTemplateHandling = useCallback(
+    (eventName: MissingFromTemplateEventName, blockIndex: number) =>
+      trackMissingFromTemplateAction(eventName, redigeringsflate, {
+        brevId: editorState.info.id,
+        brevkode: editorState.info.brevkode,
+        brevtype: editorState.info.brevtype,
+        spraak: editorState.info.spraak,
+        antallGjenstaaende: countMissingFromTemplateBlocks(letter) - 1,
+        blockIndex,
+      }),
+    [redigeringsflate, editorState.info, letter],
+  );
 
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
 
@@ -153,7 +173,10 @@ export const LetterEditor = ({
                     <HStack className="missing-from-template-actions" gap="space-4" justify="end">
                       <Button
                         icon={<CheckmarkIcon aria-hidden />}
-                        onClick={() => applyAction(Actions.keepMissingFromTemplateBlock, setEditorState, blockIndex)}
+                        onClick={() => {
+                          sporMissingFromTemplateHandling("blokk beholdt", blockIndex);
+                          applyAction(Actions.keepMissingFromTemplateBlock, setEditorState, blockIndex);
+                        }}
                         size="xsmall"
                         type="button"
                         variant="secondary"
@@ -162,7 +185,10 @@ export const LetterEditor = ({
                       </Button>
                       <Button
                         icon={<XMarkIcon aria-hidden />}
-                        onClick={() => applyAction(Actions.removeMissingFromTemplateBlock, setEditorState, blockIndex)}
+                        onClick={() => {
+                          sporMissingFromTemplateHandling("blokk slettet", blockIndex);
+                          applyAction(Actions.removeMissingFromTemplateBlock, setEditorState, blockIndex);
+                        }}
                         size="xsmall"
                         type="button"
                         variant="secondary"

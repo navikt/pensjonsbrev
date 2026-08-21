@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.Expression
@@ -117,7 +117,7 @@ enum class SaksbehandlervalgIDSLTestValg(override val displayText: String) : Sak
 data class SaksbehandlervalgIDSLTestbrevDto(
     override val pesysData: PesysData,
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
-) : RedigerbarBrevdataMedSaksbehandlerValg<SaksbehandlervalgIDSLTestbrevDto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<SaksbehandlervalgIDSLTestbrevDto.PesysData> {
     data class PesysData(
         val saksnummer: String,
         val opprettet: LocalDate,

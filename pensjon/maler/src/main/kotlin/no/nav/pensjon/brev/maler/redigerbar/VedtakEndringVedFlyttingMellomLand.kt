@@ -21,7 +21,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringVed
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringVedFlyttingMellomLandDto.pesysData.opphoersbegrunnelseVedVirk.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringVedFlyttingMellomLandDto.pesysData.ytelseskomponentInformasjon.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringVedFlyttingMellomLandDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringVedFlyttingMellomLandDto.saksbehandlerValg.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.vedtakEndringVedFlyttingMellomLandDto.*
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjonKort
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
@@ -61,6 +60,7 @@ import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -80,6 +80,11 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
+        val reduksjonTilbakeITid = saksbehandlervalg("reduksjonTilbakeITid", "Reduksjon tilbake i tid").bool()
+        val endringIPensjonen = saksbehandlervalg("endringIPensjonen", "Endring i pensjon").bool()
+        val etterbetaling = saksbehandlervalg("etterbetaling", "Etterbetaling").bool()
+        val aarsakTilAtPensjonenOeker = saksbehandlervalg("aarsakTilAtPensjonenOeker", "Relevant hvis innvandret").enum<AarsakTilAtPensjonenOeker>()
+
         val virkDatoFom = pesysData.krav.virkDatoFom.format()
         title {
             includePhrase(BeregnaPaaNytt(pesysData.krav.virkDatoFom))
@@ -265,7 +270,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 pesysData.krav.aarsak.equalTo(KravArsakType.INNVANDRET) and beloepOekning
             ) {
                 // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(saksbehandlerValg.aarsakTilAtPensjonenOeker.equalTo(AarsakTilAtPensjonenOeker.EKSPORTBEREGNING_MED_REDUSERT_TRYGDETID)) {
+                showIf(aarsakTilAtPensjonenOeker.equalTo(AarsakTilAtPensjonenOeker.EKSPORTBEREGNING_MED_REDUSERT_TRYGDETID)) {
                     // importAPRedusTT_001
                     paragraph {
                         text(
@@ -274,7 +279,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                             english { + "When you live in Norway you are eligible for your full retirement pension. We have therefore recalculated your pension." }
                         )
                     }
-                }.orShowIf(saksbehandlerValg.aarsakTilAtPensjonenOeker.equalTo(AarsakTilAtPensjonenOeker.EKSPORTFORBUD_UNG_UFOER)) {
+                }.orShowIf(aarsakTilAtPensjonenOeker.equalTo(AarsakTilAtPensjonenOeker.EKSPORTFORBUD_UNG_UFOER)) {
                     // importAPUngUfor_001
                     paragraph {
                         text(
@@ -284,7 +289,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                         )
                     }
                 }
-                    .orShowIf(saksbehandlerValg.aarsakTilAtPensjonenOeker.equalTo(AarsakTilAtPensjonenOeker.EKSPORTFORBUD_FLYKTNING)) {
+                    .orShowIf(aarsakTilAtPensjonenOeker.equalTo(AarsakTilAtPensjonenOeker.EKSPORTFORBUD_FLYKTNING)) {
                         // importAPflyktninger_001
                         paragraph {
                             text(
@@ -580,15 +585,15 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
-            showIf(saksbehandlerValg.reduksjonTilbakeITid) {
+            showIf(reduksjonTilbakeITid) {
                 includePhrase(FeilutbetalingAP)
             }
 
-            showIf(saksbehandlerValg.endringIPensjonen) {
+            showIf(endringIPensjonen) {
                 includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
             }
 
-            showIf(beloepOekning and pesysData.erEtterbetaling1Maaned and saksbehandlerValg.etterbetaling) {
+            showIf(beloepOekning and pesysData.erEtterbetaling1Maaned and etterbetaling) {
                 // etterbetalingAP_002
                 includePhrase(Vedtak.Etterbetaling(pesysData.krav.virkDatoFom))
             }

@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser
 
-import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtak.fritekst
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -10,15 +9,23 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.RedigerbarOutlinePhrase
+import no.nav.pensjon.brev.template.RedigerbarPhraseBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 class VedtakOmEtterbetalingOpphor2026 {
-    data class Outline(private val etterbetaling: Expression<Kroner>, private val hjemler: Expression<Collection<String>>, private val reduksjonsprosent: Expression<Double>, private val uforegrad: Expression<Int>, private val ifu: Expression<Kroner>, private val endringUforegrad: Expression<Boolean>, private val endringIfu: Expression<Boolean>, private val erRedigerbar: Expression<Boolean> = false.expr()) : OutlinePhrase<LangBokmalNynorsk>() {
+    private data class HovedinnholdFoerHjemler(
+        private val etterbetaling: Expression<Kroner>,
+        private val reduksjonsprosent: Expression<Double>,
+        private val uforegrad: Expression<Int>,
+        private val ifu: Expression<Kroner>,
+        private val endringUforegrad: Expression<Boolean>,
+        private val endringIfu: Expression<Boolean>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(etterbetaling.greaterThan(0)) {
                 paragraph {
@@ -82,12 +89,8 @@ class VedtakOmEtterbetalingOpphor2026 {
             }.orShow {
                 paragraph {
                     text(
-                        bokmal {
-                            +"Stortinget har vedtatt lovendringer som skal gjelde fra 1. januar 2026. "
-                        },
-                        nynorsk {
-                            +"Stortinget har vedteke lovendringer som skal gjelde frå 1. januar 2026. "
-                        },
+                        bokmal { +"Stortinget har vedtatt lovendringer som skal gjelde fra 1. januar 2026. " },
+                        nynorsk { +"Stortinget har vedteke lovendringer som skal gjelde frå 1. januar 2026. " },
                     )
                 }
                 showIf(endringIfu) {
@@ -113,44 +116,24 @@ class VedtakOmEtterbetalingOpphor2026 {
                 }
                 paragraph {
                     text(
-                        bokmal {
-                            +"Dersom du har hatt inntekt over inntektsgrensen, vil dette være til fordel for deg, fordi du vil få en mindre avkortning av uføretrygden i etteroppgjøret. "
-                        },
-                        nynorsk {
-                            +"Dersom du har hatt inntekt over inntektsgrensa, vil dette vere til fordel for deg, fordi du vil få ei mindre avkorting av uføretrygda i etteroppgjeret. "
-                        },
+                        bokmal { +"Dersom du har hatt inntekt over inntektsgrensen, vil dette være til fordel for deg, fordi du vil få en mindre avkortning av uføretrygden i etteroppgjøret. " },
+                        nynorsk { +"Dersom du har hatt inntekt over inntektsgrensa, vil dette vere til fordel for deg, fordi du vil få ei mindre avkorting av uføretrygda i etteroppgjeret. " },
                     )
                 }
                 paragraph {
                     text(
-                        bokmal {
-                            +"Dersom du ikke har hatt inntekt over inntektsgrensen, vil ikke endringen ha noen betydning for utbetalingen av uføretrygden din."
-                        },
-                        nynorsk {
-                            +"Dersom du ikkje har hatt inntekt over inntektsgrensa, vil ikkje endringa ha nokon betydning for utbetalinga av uføretrygda di."
-                        },
+                        bokmal { +"Dersom du ikke har hatt inntekt over inntektsgrensen, vil ikke endringen ha noen betydning for utbetalingen av uføretrygden din." },
+                        nynorsk { +"Dersom du ikkje har hatt inntekt over inntektsgrensa, vil ikkje endringa ha nokon betydning for utbetalinga av uføretrygda di." },
                     )
                 }
             }
+        }
+    }
 
-            paragraph {
-                text(
-                    bokmal { +"Vedtaket har vi gjort etter folketrygdloven " },
-                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova " },
-                )
-                showIf(erRedigerbar) {
-                    text(
-                        bokmal { +fritekst("Evt legg inn 12-9(IFU)") + " " },
-                        nynorsk { +fritekst("Evt legg inn 12-9(IFU)") + " " },
-                    )
-
-                }
-                text(
-                    bokmal { +hjemler.format(HjemmelFormatter(true)) + "." },
-                    nynorsk { +hjemler.format(HjemmelFormatter(true)) + "." },
-                )
-            }
-
+    private data class InformasjonOmEtterbetaling(
+        private val etterbetaling: Expression<Kroner>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(etterbetaling.greaterThan(0)) {
                 title1 {
                     text(
@@ -171,6 +154,78 @@ class VedtakOmEtterbetalingOpphor2026 {
                     )
                 }
             }
+        }
+    }
+
+    data class Outline(
+        private val etterbetaling: Expression<Kroner>,
+        private val hjemler: Expression<Collection<String>>,
+        private val reduksjonsprosent: Expression<Double>,
+        private val uforegrad: Expression<Int>,
+        private val ifu: Expression<Kroner>,
+        private val endringUforegrad: Expression<Boolean>,
+        private val endringIfu: Expression<Boolean>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            includePhrase(
+                HovedinnholdFoerHjemler(
+                    etterbetaling,
+                    reduksjonsprosent,
+                    uforegrad,
+                    ifu,
+                    endringUforegrad,
+                    endringIfu
+                )
+            )
+            paragraph {
+                text(
+                    bokmal { +"Vedtaket har vi gjort etter folketrygdloven " },
+                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova " },
+                )
+                text(
+                    bokmal { +hjemler.format(HjemmelFormatter(true)) + "." },
+                    nynorsk { +hjemler.format(HjemmelFormatter(true)) + "." },
+                )
+            }
+            includePhrase(InformasjonOmEtterbetaling(etterbetaling))
+        }
+    }
+
+    data class OutlineRedigerbar(
+        private val etterbetaling: Expression<Kroner>,
+        private val hjemler: Expression<Collection<String>>,
+        private val reduksjonsprosent: Expression<Double>,
+        private val uforegrad: Expression<Int>,
+        private val ifu: Expression<Kroner>,
+        private val endringUforegrad: Expression<Boolean>,
+        private val endringIfu: Expression<Boolean>,
+    ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
+            includePhrase(
+                HovedinnholdFoerHjemler(
+                    etterbetaling,
+                    reduksjonsprosent,
+                    uforegrad,
+                    ifu,
+                    endringUforegrad,
+                    endringIfu
+                )
+            )
+            paragraph {
+                text(
+                    bokmal { +"Vedtaket har vi gjort etter folketrygdloven " },
+                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova " },
+                )
+                text(
+                    bokmal { +fritekst("Evt legg inn 12-9(IFU)") + " " },
+                    nynorsk { +fritekst("Evt legg inn 12-9(IFU)") + " " },
+                )
+                text(
+                    bokmal { +hjemler.format(HjemmelFormatter(true)) + "." },
+                    nynorsk { +hjemler.format(HjemmelFormatter(true)) + "." },
+                )
+            }
+            includePhrase(InformasjonOmEtterbetaling(etterbetaling))
         }
     }
 

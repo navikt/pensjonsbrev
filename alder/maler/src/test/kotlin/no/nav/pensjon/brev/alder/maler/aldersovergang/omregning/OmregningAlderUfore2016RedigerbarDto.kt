@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.alder.maler.aldersovergang.omregning
 
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016RedigerbarDto
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 
 fun createOmregningAlderUfore2016RedigerbarDto() =
     OmregningAlderUfore2016RedigerbarDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = createOmregningAlderUfore2016Dto()
     )

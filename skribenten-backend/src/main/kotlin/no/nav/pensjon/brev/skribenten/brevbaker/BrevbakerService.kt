@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevbaker
 
 import com.fasterxml.jackson.databind.*
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
@@ -95,13 +94,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             requestTimeoutMillis = 15.seconds.inWholeMilliseconds
         }
         install(ContentNegotiation) {
-            jackson {
-                registerModule(JavaTimeModule())
-                registerModule(LetterMarkupV1JacksonModule)
-                registerModule(TemplateModelSpecificationJacksonModule)
-                disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-                disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-            }
+            jackson { internalJacksonConfig() }
         }
         callIdAndOnBehalfOfClient(scope, authService)
     }

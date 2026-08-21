@@ -1,3 +1,13 @@
+public final class no/nav/brev/brevbaker/document/dsl/DocumentBuilderKt {
+	public static final fun document (Ljava/lang/String;ZZLno/nav/brev/brevbaker/document/DocumentSaksinformasjon;Ljava/time/LocalDate;Lkotlin/jvm/functions/Function1;)Lno/nav/brev/brevbaker/document/Document;
+	public static synthetic fun document$default (Ljava/lang/String;ZZLno/nav/brev/brevbaker/document/DocumentSaksinformasjon;Ljava/time/LocalDate;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/brev/brevbaker/document/Document;
+	public static final fun documentMottaker (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/brevbaker/document/DocumentMottaker;
+	public static synthetic fun documentMottaker$default (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/brev/brevbaker/document/DocumentMottaker;
+	public static final fun documentPDFRequest (Lno/nav/brev/brevbaker/document/Document;Lno/nav/brev/brevbaker/markup/Markup$Spraak;)Lno/nav/brev/brevbaker/document/DocumentPDFRequest;
+	public static final fun documentSaksinformasjon (Ljava/lang/String;ZLno/nav/brev/brevbaker/document/DocumentMottaker;)Lno/nav/brev/brevbaker/document/DocumentSaksinformasjon;
+	public static synthetic fun documentSaksinformasjon$default (Ljava/lang/String;ZLno/nav/brev/brevbaker/document/DocumentMottaker;ILjava/lang/Object;)Lno/nav/brev/brevbaker/document/DocumentSaksinformasjon;
+}
+
 public abstract class no/nav/brev/brevbaker/markup/dsl/AbstractContentBuilder {
 }
 

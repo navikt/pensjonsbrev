@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_MEDLEMSKAP_UTLAND
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUtlandDto.saksbehandlervalg.*
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUtlandDto.trygdetid.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUtlandDto.uforeAvslagPendata.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUtlandDto.*
@@ -43,12 +43,23 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
         ),
     )
     {
+        val visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning =
+            saksbehandlervalg("visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning", "Tekst hvis bruker ikke omfattes av personkretsen i trygdeforordningen").bool()
+        val visTekstVedArtikkel57Avslag =
+            saksbehandlervalg("visTekstVedArtikkel57Avslag", "Tekst ved artikkel 57 avslag").bool()
+        val visInnvilgetPensjonEOSLand =
+            saksbehandlervalg("visInnvilgetPensjonEOSLand", "Bruker har fått innvilget pensjon fra EØS-land").bool()
+        val visVedtakFraAndreLand =
+            saksbehandlervalg("visVedtakFraAndreLand", "Vedtak fra andre land").bool()
+        val visSupplerendeStonadUforeFlykninger =
+            saksbehandlervalg("visSupplerendeStonadUforeFlykninger", "Supplerende stønad til uføre flyktninger").bool()
+
         title {
             text (bokmal { + "Nav har avslått søknaden din om uføretrygd"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om uføretrygd som vi fikk den " + pesysData.kravFremsattDato.ifNull(pesysData.kravMottattDato).format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
@@ -149,7 +160,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 text(bokmal { + fritekst("Individuell vurdering medlemskap og lovvalg") })
             }
 
-            showIf(saksbehandlerValg.visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning) {
+            showIf(visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning) {
                 paragraph {
                     text(bokmal { + "For at trygdetid i EØS-land kan brukes, er det et krav om at du er statsborger i et EØS-land. " })
                 }
@@ -162,7 +173,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 paragraph {
                     text(bokmal { + "Vedtaket har vi gjort etter folketrygdloven kapittel 2 og 12. Vedtaket har vi også gjort etter EØS-forordning 883/2004 artikkel 2 og artikkel 6, og Nordisk konvensjon artikkel 3 og artikkel 4." })
                 }
-            }.orShowIf(saksbehandlerValg.visTekstVedArtikkel57Avslag) {
+            }.orShowIf(visTekstVedArtikkel57Avslag) {
                 paragraph {
                     text(bokmal { + "For at trygdetid i annet EØS-land kan brukes, må du ha minst ett års medlemskap i folketrygden før uføretidspunktet, forutsatt at du har vært yrkesaktiv i Norge eller andre EØS-land. " })
                 }
@@ -195,7 +206,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                             "Når vi legger sammen all trygdetiden din, har du også mer enn fem år uten medlemskap etter du fylte 16 år." })
                 }
 
-                showIf(saksbehandlerValg.visInnvilgetPensjonEOSLand) {
+                showIf(visInnvilgetPensjonEOSLand) {
                     paragraph {
                         text(bokmal { + "I vurderingen har vi tatt hensyn til pensjon du har fått innvilget fra EØS-land, og vi har lagt til grunn en årlig utenlandsk pensjon på " + fritekst("beløp") + " kroner. " +
                                 "Kan du dokumentere at den utenlandske pensjonsutbetalingen er høyere, gjør vi en ny vurdering." })
@@ -227,7 +238,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 }
             }
 
-            showIf(saksbehandlerValg.visVedtakFraAndreLand) {
+            showIf(visVedtakFraAndreLand) {
                 title1 {
                     text(bokmal { +"Vedtak fra andre land og P1" })
                 }
@@ -243,7 +254,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 }
             }
 
-            showIf( saksbehandlerValg.visSupplerendeStonadUforeFlykninger) {
+            showIf(visSupplerendeStonadUforeFlykninger) {
                 title1 {
                     text(bokmal { +"Supplerende stønad for uføre flyktninger" })
                 }

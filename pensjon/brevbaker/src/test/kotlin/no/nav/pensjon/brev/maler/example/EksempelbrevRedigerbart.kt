@@ -4,9 +4,9 @@ import no.nav.pensjon.brev.api.model.IBrevkategori
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.maler.example.selectors.eksempelRedigerbartDto.pesysData.*
 import no.nav.pensjon.brev.maler.example.selectors.eksempelRedigerbartDto.*
 import no.nav.pensjon.brev.maler.example.selectors.exampleTilleggDto.*
@@ -284,9 +284,9 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
 
 // This data class should normally be in the api-model. Placed here for test-purposes.
 data class EksempelRedigerbartDto(
-    override val saksbehandlerValg: EmptySaksbehandlerValg,
+    override val saksbehandlerValg: SaksbehandlervalgIDSL,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, EksempelRedigerbartDto.PesysData> {
+) : BrevdataMedSaksbehandlerValg<EksempelRedigerbartDto.PesysData> {
     data class PesysData(
         val pensjonInnvilget: Boolean,
         val datoInnvilget: LocalDate,

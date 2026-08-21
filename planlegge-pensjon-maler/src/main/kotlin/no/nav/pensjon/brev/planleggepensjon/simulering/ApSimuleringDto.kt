@@ -25,6 +25,8 @@ data class ApSimuleringDto(
     val pensjonsopptjeningListe: List<Pensjonsopptjening>?,
     @DisplayText("Forbehold")
     val forbehold: ForbeholdInnhold,
+    @DisplayText("Kortforbehold")
+    val kortforbehold: Kortforbehold?,
 ) : SaksbehandlerValgBrevdata, VedleggData
 
 data class Simulering(
@@ -260,6 +262,11 @@ data class ForbeholdInnhold(
 data class ForbeholdSeksjon(
     @DisplayText("Tittel")
     val tittel: String?,
+    @DisplayText("Avsnitt")
+    val avsnitt: List<ForbeholdAvsnitt>,
+)
+
+data class Kortforbehold(
     @DisplayText("Avsnitt")
     val avsnitt: List<ForbeholdAvsnitt>,
 )

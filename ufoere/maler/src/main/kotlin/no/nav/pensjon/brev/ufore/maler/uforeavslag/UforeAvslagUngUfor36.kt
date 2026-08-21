@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_UNG_UFOR_36
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26Dto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUforetidspunkt26Dto.saksbehandlervalg.*
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUforetidspunkt26Dto.uforeAvslagPendata.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagUforetidspunkt26Dto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
@@ -38,6 +38,8 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagUforetidspunkt26Dto>
         ),
     )
     {
+        val visVurderingFraVilkarvedtak = saksbehandlervalg("VisVurderingFraVilkarvedtak", "Bruk vurdering fra vilkårsvedtak").bool()
+
         title {
             text (bokmal { + "Nav har vurdert at du ikke har rett til beregning som ung ufør"},
                 nynorsk { + "Nav har vurdert at du ikkje har rett til berekning som ung ufør"})
@@ -64,7 +66,7 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagUforetidspunkt26Dto>
                     nynorsk { +"Søkjer du etter at du fylte 36 år, må du har jobba mindre enn 50 prosent etter du fylte 26 år. Du har jobba meir enn 50 prosent over ein lengre periode etter at du fylte 26 år. " })
             }
 
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+            showIf(visVurderingFraVilkarvedtak) {
                 paragraph {
                     text(bokmal { +redigerbarData(pesysData.vurdering) },
                         nynorsk { +redigerbarData(pesysData.vurdering) } )

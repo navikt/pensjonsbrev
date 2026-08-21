@@ -7,13 +7,12 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I2
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.saksbehandlervalg.*
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.uforeAvslagPendata.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
@@ -40,14 +39,16 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagEnke
         ),
     )
     {
+        val visVurderingFraVilkarvedtak = saksbehandlervalg("VisVurderingFraVilkarvedtak", "Bruk vurdering fra vilkårsvedtak").bool()
+
         title {
             text (bokmal { + "Nav har avslått søknaden din om uføretrygd"},
                 nynorsk { + "Nav har avslått søknaden din om uføretrygd"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om uføretrygd som vi fikk den " + pesysData.kravFremsattDato.ifNull(pesysData.kravMottattDato).format() + "." },
-                    nynorsk { +"Vi har avslått søknaden din om uføretrygd som vi fekk den " + pesysData.kravFremsattDato.ifNull(pesysData.kravMottattDato).format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." },
+                    nynorsk { +"Vi har avslått søknaden din om uføretrygd som vi fekk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" },
@@ -66,7 +67,7 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagEnke
                     nynorsk { +"Du kan berre la vere å prøve ut tiltak dersom det er klare grunnar til at du ikkje bør gjennomføre dette, eller tiltak ikkje er føremålstenlege. Unntaksregelen er streng, og det skal mykje til for å ikkje måtte gjennomføre tiltak. " })
             }
 
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+            showIf(visVurderingFraVilkarvedtak) {
                 paragraph {
                     text(bokmal { +redigerbarData(pesysData.vurdering) },
                         nynorsk { +redigerbarData(pesysData.vurdering) } )

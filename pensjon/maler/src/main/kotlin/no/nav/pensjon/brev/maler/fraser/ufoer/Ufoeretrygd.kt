@@ -1,20 +1,16 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggMedSammeBegrunnelsePaSammeTid
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggMedSammeBegrunnelsePaSammeTidDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.barnetilleggMedSammeBegrunnelsePaSammeTid.begrunnelse
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.barnetilleggMedSammeBegrunnelsePaSammeTid.fom
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.barnetilleggUTDto.antallBarn
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.barnetilleggUTDto.begrunnelse
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.barnetilleggUTDto.fom
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.barnetilleggMedSammeBegrunnelsePaSammeTidDto.begrunnelse
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.barnetilleggMedSammeBegrunnelsePaSammeTidDto.fom
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
 import no.nav.pensjon.brev.maler.legacy.BarnetilleggFlereBarnFormatter
-import no.nav.pensjon.brev.maler.legacy.BarnetilleggFormatter
+import no.nav.pensjon.brev.maler.legacy.BarnetilleggOpphorFormatter
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -392,37 +388,9 @@ object Ufoeretrygd {
         }
     }
 
-    data class AvslagBarnetillegg(val barnetilleggAvslatt: Expression<List<BarnetilleggUTDto>>) :
+    data class AvslagBarnetillegg(val barnetilleggAvslatt: Expression<List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>>) :
         RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-
-            forEach(barnetilleggAvslatt) { barnetillegg ->
-                title1 {
-                    text(
-                        bokmal { +"Derfor har vi avslått søknaden din om barnetillegg" },
-                        nynorsk { +"Derfor har vi avslått søknaden din om barnetillegg" },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Søknaden er avslått for " + barnetillegg.format(BarnetilleggFormatter) + "." },
-                        nynorsk { +"Søknaden er avslått for " + barnetillegg.format(BarnetilleggFormatter) + "." },
-                    )
-                }
-                paragraph {
-                    includePhrase(BegrunnelseBarnetilleggTekst(barnetillegg))
-                    text(
-                        bokmal { +" Du oppfyller derfor ikke vilkåret, og vi avslår søknaden din om barnetillegg i uføretrygden. Du kan lese mer i folketrygdloven §§ 12-15 og 12-16." },
-                        nynorsk { +" Du oppfyller derfor ikkje vilkåret, og vi avslår søknaden din om barnetillegg i uføretrygda. Du kan lese meir i folketrygdlova §§ 12-15 og 12-16." },
-                    )
-                }
-            }
-        }
-    }
-
-    data class AvslagBarnetillegg2(val barnetilleggAvslatt: Expression<List<BarnetilleggMedSammeBegrunnelsePaSammeTid>>) :
-        RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
 
             forEach(barnetilleggAvslatt) { barnetillegg ->
                 title1 {
@@ -438,7 +406,7 @@ object Ufoeretrygd {
                     )
                 }
                 paragraph {
-                    includePhrase(BegrunnelseBarnetilleggTekst2(barnetillegg))
+                    includePhrase(BegrunnelseBarnetilleggTekst(barnetillegg))
                     text(
                         bokmal { +" Du oppfyller derfor ikke vilkåret, og vi avslår søknaden din om barnetillegg i uføretrygden. Du kan lese mer i folketrygdloven §§ 12-15 og 12-16." },
                         nynorsk { +" Du oppfyller derfor ikkje vilkåret, og vi avslår søknaden din om barnetillegg i uføretrygda. Du kan lese meir i folketrygdlova §§ 12-15 og 12-16." },
@@ -471,12 +439,12 @@ object Ufoeretrygd {
         }
     }
 
-    data class OpphorBarnetillegg(val barnetilleggOpphort: Expression<List<BarnetilleggUTDto>>) :
+    data class OpphorBarnetillegg(val barnetilleggOpphort: Expression<List<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>>) :
         RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
 
             forEach(barnetilleggOpphort) { barnetillegg ->
-                title1 {
+                title2 {
                     text(
                         bokmal { +"Derfor har vi opphørt barnetillegget ditt" },
                         nynorsk { +"Derfor har vi stansa barnetillegget ditt" },
@@ -484,40 +452,12 @@ object Ufoeretrygd {
                 }
                 paragraph {
                     text(
-                        bokmal { +"Barnetillegget er opphørt for " + barnetillegg.format(BarnetilleggFormatter) + "." },
-                        nynorsk { +"Barnetillegget er stansa for " + barnetillegg.format(BarnetilleggFormatter) + "." },
+                        bokmal { +"Barnetillegget er opphørt for " + barnetillegg.format(BarnetilleggOpphorFormatter) + "." },
+                        nynorsk { +"Barnetillegget er stansa for " + barnetillegg.format(BarnetilleggOpphorFormatter) + "." },
                     )
                 }
                 paragraph {
                     includePhrase(BegrunnelseBarnetilleggTekst(barnetillegg))
-                    text(
-                        bokmal { +" Vilkårene for barnetillegg er derfor ikke lenger oppfylt, og barnetillegget opphører fra " + barnetillegg.fom.format() + "." },
-                        nynorsk { +" Vilkåra for barnetillegg er derfor ikkje lenger oppfylte, og barnetillegget opphøyrer frå " + barnetillegg.fom.format() + "." },
-                    )
-                }
-            }
-        }
-    }
-
-    data class OpphorBarnetillegg2(val barnetilleggOpphort: Expression<List<BarnetilleggMedSammeBegrunnelsePaSammeTid>>) :
-        RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-
-            forEach(barnetilleggOpphort) { barnetillegg ->
-                title2 {
-                    text(
-                        bokmal { +"Nav har opphørt barnetillegget ditt" },
-                        nynorsk { +"Nav har stansa barnetillegget ditt" },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Barnetillegget er opphørt for " + barnetillegg.format(BarnetilleggFlereBarnFormatter) + "." },
-                        nynorsk { +"Barnetillegget er stansa for " + barnetillegg.format(BarnetilleggFlereBarnFormatter) + "." },
-                    )
-                }
-                paragraph {
-                    includePhrase(BegrunnelseBarnetilleggTekst2(barnetillegg))
                     text(
                         bokmal { +" Vilkårene for barnetillegg er derfor ikke lenger oppfylt, og barnetillegget opphører fra " + barnetillegg.fom.format() + "." },
                         nynorsk { +" Vilkåra for barnetillegg er derfor ikkje lenger oppfylte, og barnetillegget opphøyrer frå " + barnetillegg.fom.format() + "." },
@@ -536,7 +476,7 @@ object Ufoeretrygd {
         val periodisertInntekt: Expression<PeriodisertInntektBarnetillegg?>
     ) :
         RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
 
             showIf(periodisertInntekt.isNull() or periodisertInntekt.equalTo(PeriodisertInntektBarnetillegg.INGEN)) {
                 paragraph {
@@ -666,10 +606,10 @@ object Ufoeretrygd {
         }
     }
 
-    private data class BegrunnelseBarnetilleggTekst(val barnetillegg: Expression<BarnetilleggUTDto>) : RedigerbarParagraphPhrase<LangBokmalNynorsk>() {
-        override fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            val barnetBarna = barnetillegg.antallBarn.format(BarnetBarnaFormatter)
-            val barnetBarnaStor = barnetillegg.antallBarn.format(BarnetBarnaStorFormatter)
+    private data class BegrunnelseBarnetilleggTekst(val barnetillegg: Expression<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>) : RedigerbarParagraphPhrase<LangBokmalNynorsk>() {
+        override fun ParagraphOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
+            val barnetBarna = barnetillegg.format(BarnetBarnaFormatter())
+            val barnetBarnaStor = barnetillegg.format(BarnetBarnaFormatter(true))
 
             showIf(barnetillegg.begrunnelse.equalTo(ANNEN_FORLD_RETT_BT) or barnetillegg.begrunnelse.equalTo(OPPHOR_ANNEN_FORLD_RETT_BT)) {
                 text(
@@ -730,88 +670,13 @@ object Ufoeretrygd {
         }
     }
 
-    private data class BegrunnelseBarnetilleggTekst2(val barnetillegg: Expression<BarnetilleggMedSammeBegrunnelsePaSammeTid>) : RedigerbarParagraphPhrase<LangBokmalNynorsk>() {
-        override fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            val barnetBarna = barnetillegg.format(BarnetBarnaFormatter2)
-            val barnetBarnaStor = barnetillegg.format(BarnetBarnaStorFormatter2)
-
-            showIf(barnetillegg.begrunnelse.equalTo(ANNEN_FORLD_RETT_BT) or barnetillegg.begrunnelse.equalTo(OPPHOR_ANNEN_FORLD_RETT_BT)) {
-                text(
-                    bokmal { +"Når " + barnetBarna + " blir forsørget av begge foreldrene og begge mottar uføretrygd, skal barnetillegget gis til den som får det høyeste tillegget. " + barnetBarnaStor + "s andre forelder har rett til et høyere barnetillegg enn det du får." },
-                    nynorsk { +"Når " + barnetBarna + " vert forsørga av begge foreldra og begge mottar uføretrygd, skal barnetillegget givast til den som får det høgaste tillegget. Den andre forelderen til " + barnetBarna + " har rett til eit høgare barnetillegg enn det du vil få." },
-                )
-            }.orShowIf(barnetillegg.begrunnelse.equalTo(BT_GITT_TIL_ANNEN) or barnetillegg.begrunnelse.equalTo(OPPHOR_BT_GITT_TIL_ANNEN)) {
-                text(
-                    bokmal { +"Når " + barnetBarna + " blir forsørget av foreldre som ikke bor sammen, blir barnetillegget gitt til den som har samme folkeregistrerte adresse som barnet. Du bor ikke på samme folkeregistrerte adresse som " + barnetBarna + "." },
-                    nynorsk { +"Når " + barnetBarna + " vert forsørga av foreldre som ikkje bur saman, blir barnetillegget gitt til den som har same folkeregistrerte adresse som " + barnetBarna + ". Du bur ikkje på same folkeregistrerte adresse som " + barnetBarna + "." },
-                )
-            }.orShowIf(barnetillegg.begrunnelse.equalTo(MINDRE_ETT_AR_BT_FLT)) {
-                text(
-                    bokmal { +"Barnetillegg for fellesbarn kan flyttes mellom foreldrene når det har gått ett år siden tidligere overføring. Det er mindre enn ett år siden barnetillegget ble overført til den andre forelderen." },
-                    nynorsk { +"Barnetillegg for fellesbarn kan flyttast mellom foreldra når det har gått eitt år sidan tidlegare overføring. Det er mindre enn eitt år sidan barnetillegget blei overført til den andre forelderen." },
-                )
-            }.orShowIf(barnetillegg.begrunnelse.equalTo(BT_OVER_18) or barnetillegg.begrunnelse.equalTo(OPPHOR_BT_OVER_18)) {
-                text(
-                    bokmal { +barnetBarnaStor + " har fylt 18 år, og du kan derfor ikke få barnetillegg til uføretrygden. Barnetillegg gis bare for barn under 18 år." },
-                    nynorsk { +barnetBarnaStor + " har fylt 18 år, og du kan derfor ikkje få barnetillegg til uføretrygda. Barnetillegg vert berre gjeve for barn under 18 år." },
-                )
-            }.orShowIf(barnetillegg.begrunnelse.equalTo(BT_INNT_OVER_1G) or barnetillegg.begrunnelse.equalTo(OPPHOR_BT_INNT_OVER_1G)) {
-                text(
-                    bokmal { +barnetBarnaStor + "s inntekt er høyere enn 1G. Etter regelverket som gjaldt før 1. juli 2024, faller retten til barnetillegg bort hvis " + barnetBarna + " har inntekt over 1G." },
-                    nynorsk { +barnetBarnaStor + "s inntekt er høgare enn 1G. Etter regelverket som gjaldt før 1. juli 2024, fell retten til barnetillegg bort hvis " + barnetBarna + " har inntekt over 1G." },
-                )
-            }.orShowIf(barnetillegg.begrunnelse.equalTo(BRK_FORSO_IKKE_BARN) or barnetillegg.begrunnelse.equalTo(IKKE_MOTTATT_DOK)) {
-                text(
-                    bokmal { +"For å ha rett til barnetillegg må du forsørge " + barnetBarna + ". Vi har ikke fått dokumentasjon som viser at du forsørger " + barnetBarna + "." },
-                    nynorsk { +"For å ha rett til barnetillegg må du forsørge " + barnetBarna + ". Vi har ikkje fått dokumentasjon som viser at du forsørger " + barnetBarna + "." },
-                )
-            }.orShowIf(barnetillegg.begrunnelse.equalTo(OPPHOR_BRK_FORSO_IKKE_BARN) or barnetillegg.begrunnelse.equalTo(OPPHOR_IKKE_MOTTATT_DOK)) {
-                text(
-                    bokmal { +"For å ha rett til barnetillegg må du forsørge " + barnetBarna + ". Vi har ikke fått dokumentasjon som viser at du fortsatt forsørger " + barnetBarna + "." },
-                    nynorsk { +"For å ha rett til barnetillegg må du forsørge " + barnetBarna + ". Vi har ikkje fått dokumentasjon som viser at du framleis forsørger " + barnetBarna + "." },
-                )
-            }.orShowIf(barnetillegg.begrunnelse.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND) or barnetillegg.begrunnelse.equalTo(OPPHOR_BRUKER_FLYTTET_IKKE_AVT_LAND)) {
-                text(
-                    bokmal { +"For å ha rett til barnetillegg må du være medlem i folketrygden. Du bor i et land som Norge ikke har trygdeavtale med, og er derfor ikke medlem i folketrygden." },
-                    nynorsk { +"For å ha rett til barnetillegg må du være medlem i folketrygden. Du bur i eit land som Noreg ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden." },
-                )
-            }.orShowIf(barnetillegg.begrunnelse.equalTo(BARN_FLYTTET_IKKE_AVT_LAND) or barnetillegg.begrunnelse.equalTo(OPPHOR_BARN_FLYTTET_IKKE_AVT_LAND)) {
-                text(
-                    bokmal { +"For å ha rett til barnetillegg må " + barnetBarna + " være medlem i folketrygden. " + barnetBarnaStor + " bor i et land som Norge ikke har trygdeavtale med, og er derfor ikke medlem i folketrygden." },
-                    nynorsk { +"For å ha rett til barnetillegg må " + barnetBarna + " være medlem i folketrygden. " + barnetBarnaStor + " bur i eit land som Noreg ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden." },
-                )
-            }.orShowIf(barnetillegg.begrunnelse.equalTo(BARN_OPPH_IKKE_AVT_LAND) or barnetillegg.begrunnelse.equalTo(OPPHOR_BARN_OPPH_IKKE_AVT_LAND)) {
-                text(
-                    bokmal { +"For å ha rett til barnetillegg må " + barnetBarna + " være medlem i folketrygden. Fordi " + barnetBarna + " har oppholdt seg i mer enn 90 dager i et land som Norge ikke har trygdeavtale med, regnes " + barnetBarna + " ikke lenger som medlem i folketrygden." },
-                    nynorsk { +"For å ha rett til barnetillegg må " + barnetBarna + " være medlem i folketrygden. Fordi " + barnetBarna + " har opphalde seg i meir enn 90 dagar i eit land som Noreg ikkje har trygdeavtale med, reknast " + barnetBarna + " ikkje lenger som medlem i folketrygden." },
-                )
-            }.orShow {
-                text(
-                    bokmal { +fritekst("Avslagstekst for perioden") },
-                    nynorsk { +fritekst("Avslagstekst for perioden") },
-                )
-            }
+    private class BarnetBarnaFormatter(private val storBokstav: Boolean = false) : LocalizedFormatter<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>() {
+        override fun apply(first: BarnetilleggMedSammeBegrunnelsePaSammeTidDto, second: Language): String {
+            val barn = if (first.erFlereBarn()) "barnet" else "barna"
+            return if (storBokstav) barn.replaceFirstChar { it.uppercase() } else barn
         }
-    }
+        override fun stableHashCode(): Int = "BarnetBarnaFormatter3${storBokstav}".hashCode()
 
-    private object BarnetBarnaFormatter : LocalizedFormatter<Int>() {
-        override fun apply(first: Int, second: Language): String = if (first == 1) "barnet" else "barna"
-        override fun stableHashCode(): Int = "BarnetBarnaFormatter".hashCode()
-    }
-
-    private object BarnetBarnaStorFormatter : LocalizedFormatter<Int>() {
-        override fun apply(first: Int, second: Language): String = if (first == 1) "Barnet" else "Barna"
-        override fun stableHashCode(): Int = "BarnetBarnaStorFormatter".hashCode()
-    }
-
-    private object BarnetBarnaFormatter2 : LocalizedFormatter<BarnetilleggMedSammeBegrunnelsePaSammeTid>() {
-        override fun apply(first: BarnetilleggMedSammeBegrunnelsePaSammeTid, second: Language): String = if (first.barnetillegg.size == 1 && first.barnetillegg.first().antallBarn == 1) "barnet" else "barna"
-        override fun stableHashCode(): Int = "BarnetBarnaFormatter2".hashCode()
-    }
-
-    private object BarnetBarnaStorFormatter2 : LocalizedFormatter<BarnetilleggMedSammeBegrunnelsePaSammeTid>() {
-        override fun apply(first: BarnetilleggMedSammeBegrunnelsePaSammeTid, second: Language): String = if (first.barnetillegg.size == 1 && first.barnetillegg.first().antallBarn == 1) "Barnet" else "Barna"
-        override fun stableHashCode(): Int = "BarnetBarnaStorFormatter2".hashCode()
     }
 }
 

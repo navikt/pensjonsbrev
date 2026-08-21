@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
@@ -14,7 +14,7 @@ import java.time.Month
 
 fun createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() =
     VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.PesysData(
             krav = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.Krav(
                 virkDatoFom = LocalDate.of(2024, Month.MAY, 1),

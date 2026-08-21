@@ -15,7 +15,7 @@ fun List<Attachment>.clean(): List<Attachment> =
 fun Attachment.clean(): Attachment =
     copy(blocks = blocks.cleanBlocks())
 
-private fun List<Block>.cleanBlocks(): List<Block> =
+internal fun List<Block>.cleanBlocks(): List<Block> =
     mapNotNull { clean(it) }.removeEmptyBlocks()
 
 private fun List<Block>.removeEmptyBlocks(): List<Block> =

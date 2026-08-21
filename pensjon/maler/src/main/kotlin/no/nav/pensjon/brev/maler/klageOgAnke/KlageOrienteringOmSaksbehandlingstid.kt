@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.maler.klageOgAnke
 
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.Sakstype.Companion.pensjon
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -23,17 +22,17 @@ import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.bruker.foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.navn
 
-// Erstatte PE_IY_03_153 Klage - orientering om saksbehandlingstid ved Nav pensjon
+// Erstatte PE_IY_03_153 Klage - orientering om saksbehandlingstid
 
 @TemplateModelHelpers
-object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
 
     override val featureToggle = FeatureToggles.brevmalKlageOrienteringOmSaksbehandlingstid.toggle
 
     override val kode = PE_KLAGE_ORIENTERING_OM_SAKSBEHANDLINGSTID
     override val kategori = KLAGE_OG_ANKE
     override val brevkontekst = ALLE
-    override val sakstyper: Set<Sakstype> = pensjon
+    override val sakstyper = Sakstype.all
 
     override val template = createTemplate(
         languages = languages(Bokmal, English),
@@ -46,8 +45,8 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
     ) {
         title {
             text(
-                bokmal { +fritekst("ytelse") + " - orientering om saksbehandlingstid" },
-                english { +fritekst("ytelse") + " - indication of case processing time" }
+                bokmal { +"Klage - " +fritekst("ytelse") + " - orientering om saksbehandlingstid" },
+                english { +"Appeal - " +fritekst("ytelse") + " - indication of case processing time" }
             )
         }
 

@@ -6,6 +6,7 @@ on:
       - "build.gradle.kts"
       - "gradle.properties"
       - "gradle/libs.versions.toml"
+      - "gradle/published/**"
       - "brevbaker/pdf-bygger/**"
       - "!brevbaker/pdf-bygger/.nais/alerts.yaml"
       - "resources/**"
@@ -22,6 +23,7 @@ on:
       - "build.gradle.kts"
       - "gradle.properties"
       - "gradle/libs.versions.toml"
+      - "gradle/published/**"
       - "brevbaker/pdf-bygger/**"
       - "!brevbaker/pdf-bygger/.nais/alerts.yaml"
       - "resources/**"
@@ -110,7 +112,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: dorny/paths-filter@7b450fff21473bca461d4b92ce414b9d0420d706 # v4.0.2
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
         id: changes
         with:
           filters: |
@@ -132,7 +134,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: gradle/actions/setup-gradle@3f131e8634966bd73d06cc69884922b02e6faf92 # v6.2.0
+      - uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
         with:
           cache-encryption-key: ${{ secrets.GRADLEKEY }}
       - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5.7.0
@@ -200,7 +202,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         run: npm install --no-save reg-suit reg-publish-gcs-plugin reg-notify-github-with-api-plugin reg-simple-keygen-plugin
       - name: Authenticate to Google Cloud
-        uses: nais/login@bb6c3e1e14e53d40d69d0d092bd2fce2e39ae3bf # v0
+        uses: nais/login@40b72a35a18ddf2ad74b632461139ab838cc2a2f # v0
         with:
           team: pensjonsbrev
       - name: Run reg-suit

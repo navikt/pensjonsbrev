@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentData
@@ -43,7 +43,7 @@ fun createVedtakOmIFUReduksjonsprosentAutoDto() =
 
 fun createVedtakOmIFUReduksjonsprosentRedigerbarDto() =
     VedtakOmIFUReduksjonsprosentRedigerbarDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = VedtakOmIFUReduksjonsprosentRedigerbarDto.PesysData(
             vedtakData = VedtakOmIFUReduksjonsprosentData(
                 beregningFomDato = LocalDate.of(2026, Month.JULY, 1),

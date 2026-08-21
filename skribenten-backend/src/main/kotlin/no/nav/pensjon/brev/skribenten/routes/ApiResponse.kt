@@ -176,6 +176,14 @@ suspend inline fun <T> RoutingContext.respondOutcome(
                     status = HttpStatusCode.InternalServerError,
                     message = "Klarte ikke generere førsteside for ${outcome.error.brevId}"
                 )
+
+                is VedleggFinnesIkkeIMal -> call.respond(
+                    status = HttpStatusCode.Conflict,
+                    message = BrevExceptionDto(
+                        tittel = "Vedlegget finnes ikke lenger",
+                        melding = "Vedlegget du redigerer er ikke lenger en del av brevet. Last inn siden på nytt."
+                    )
+                )
             }
         }
 

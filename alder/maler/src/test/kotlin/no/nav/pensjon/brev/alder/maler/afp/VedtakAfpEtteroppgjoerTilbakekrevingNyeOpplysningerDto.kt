@@ -2,13 +2,13 @@ package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto.Scenario
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
 fun createVedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto(): VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto =
     VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto.PesysData(
             oppgjoersAar = Year(2024),
             pensjonsgivendeInntekt = Kroner(412_500),

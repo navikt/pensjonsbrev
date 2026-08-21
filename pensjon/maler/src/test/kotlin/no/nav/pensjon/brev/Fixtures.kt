@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev
 
 import no.nav.brev.brevbaker.LetterDataFactory
+import no.nav.brev.brevbaker.SaksbehandlervalgIDSLTestImpl
 import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmaktsgiverBprofAutoDto
 import no.nav.pensjon.brev.api.model.maler.adhoc.fullmakterbprof.FullmektigBprofAutoDto
@@ -9,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
+import no.nav.pensjon.brev.api.model.maler.legacy.ReverseringLavereMinstesatsAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor2026AutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentAutoDto
@@ -67,8 +69,7 @@ object Fixtures : LetterDataFactory {
             BrukerTestBrevDto::class -> createBrukerTestBrevDto() as T
             EksempelRedigerbartDto::class -> createEksempelbrevRedigerbartDto() as T
             EmptyAutobrevdata::class -> EmptyAutobrevdata as T
-            EmptyRedigerbarBrevdata::class -> EmptyRedigerbarBrevdata as T
-            EmptySaksbehandlerValg::class -> EmptySaksbehandlerValg as T
+            EmptyRedigerbarBrevdataMedSaksbehandlerValg::class -> EmptyRedigerbarBrevdataMedSaksbehandlerValg(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
             EndretBarnetilleggUfoeretrygdDto::class -> createEndretBarnetilleggUfoeretrygdDto() as T
             EndretUTPgaInntektDtoV2::class -> createEndretUTPgaInntektDtoV2() as T
             EndretUfoeretrygdPGAInntektDto::class -> createEndretUfoeretrygdPGAInntektDto() as T
@@ -135,6 +136,8 @@ object Fixtures : LetterDataFactory {
             VedtakOmEtterbetalingOpphor2026AutoDto::class -> createVedtakOmEtterbetalingOpphor2026AutoDto() as T
             VedtakOmEtterbetalingOpphor2026RedigerbarDto::class -> createVedtakOmEtterbetalingOpphor2026RedigerbarDto() as T
             VedtakOmEndringBarnetilleggEPSAutoDto::class -> createVedtakOmEndringBarnetilleggEPSAutoDto() as T
+            ReverseringLavereMinstesatsRedigerbarDto::class -> createReverseringLavereMinstesatsRedigerbarDto() as T
+            ReverseringLavereMinstesatsAutoDto::class -> createReverseringLavereMinstesatsAutoDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

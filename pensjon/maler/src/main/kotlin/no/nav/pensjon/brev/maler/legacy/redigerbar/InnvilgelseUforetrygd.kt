@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.PeriodisertInntektBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdDto.saksbehandlervalg.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.innvilgelseUfoeretrygdDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.dsl.expression.localDateNow
@@ -49,6 +50,9 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
+        val barnetilleggInfo = saksbehandlervalg("barnetilleggInfo", "Info om rett til barnetillegg").bool()
+        val periodisertInntekt = saksbehandlervalg("periodisertInntekt", "Periodisert inntekt barnetillegg").enum<PeriodisertInntektBarnetillegg>()
+
         val pe = pesysData.pe
 
         val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(localDateNow)
@@ -104,7 +108,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 ungUforResultat = ungUforResultat,
                 kravarsak = kravarsak,
                 kravGjelder = kravGjelder,
-                soknadsdato = pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()),
+                kravmottatdato = pe.vedtaksdata_kravhode_kravmottatdato(),
                 uforegrad = uforegrad,
                 virkningfom = pe.vedtaksdata_virkningfom(),
                 virkningstidpunkt = virkningstidpunkt,
@@ -120,7 +124,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             includePhrase(Innvilgelse.InnvilgelseDetaljer(
                 pe = pe,
                 nyeInnvilgedeBarnetillegg = pesysData.nyeInnvilgedeBarnetillegg,
-                nyeAvslagBarnetillegg = pesysData.nyeAvslagBarnetillegg,
+                nyeAvslagBarnetillegg = pesysData.avslagBarnetilleggNye,
                 btFellesInnvilget = btFellesInnvilget,
                 btFellesNetto0 = btFellesNetto0,
                 btSerkullInnvilget = btSerkullInnvilget,
@@ -198,7 +202,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             includePhrase(Innvilgelse.Virkningstidspunkt(
                 pe = pe,
-                kravFremsattDato = pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()),
+                kravFremsattDato = pesysData.kravFremsattDato,
                 virkningbegrunnelseStdbegr_22_12_1_5 = virkningbegrunnelseStdbegr_22_12_1_5,
             ))
 
@@ -269,7 +273,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 btSerkullInnvilget = btSerkullInnvilget,
                 btSerkullNetto0 = btSerkullNetto0,
                 btFellesNetto0 = btFellesNetto0,
-                periodisertInntekt = saksbehandlerValg.periodisertInntekt
+                periodisertInntekt = periodisertInntekt
             ))
 
             includePhrase(Innvilgelse.BarnetilleggOgUtland(
@@ -295,14 +299,14 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 includePhrase(Ufoeretrygd.BeregningenDinKanBliEndret)
             }
 
-            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
+            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.avslagBarnetilleggNye))
 
             includePhrase(Innvilgelse.Honnoerkort(
                 uforegrad = uforegrad,
             ))
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-            includePhrase(Innvilgelse.RettTilBarnetillegg(barnetilleggInfo = saksbehandlerValg.barnetilleggInfo))
+            includePhrase(Innvilgelse.RettTilBarnetillegg(barnetilleggInfo = barnetilleggInfo))
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)

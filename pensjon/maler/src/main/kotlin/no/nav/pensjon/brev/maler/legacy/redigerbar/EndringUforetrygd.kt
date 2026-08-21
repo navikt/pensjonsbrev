@@ -101,7 +101,6 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
         val txtOgEllerEktefelle = if (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().equals(true)) " og/eller ektefelle" else ""
 
         val endringIBelopUt = pe.vedtaksdata_beregningsdata_beregningufore_belopokt() or pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()
-        val soknadsdato = pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato())
 
         title {
             showIf(kravarsak.equalTo("soknad_bt") and pesysData.nyeInnvilgedeBarnetillegg.isNotEmpty()) {
@@ -134,8 +133,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 paragraph {
                     showIf(kravarsak.equalTo("soknad_bt")) {
                         text(
-                            bokmal { +"Vi har innvilget søknaden din om barnetillegg som vi mottok " + soknadsdato.format() + ". Du er innvilget barnetillegg i uføretrygden din for" },
-                            nynorsk { +"Vi har innvilga søknaden din om barnetillegg som vi fekk " + soknadsdato.format() + ". Du er innvilga barnetillegg i uføretrygda di for" },
+                            bokmal { +"Vi har innvilget søknaden din om barnetillegg som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Du er innvilget barnetillegg i uføretrygden din for" },
+                            nynorsk { +"Vi har innvilga søknaden din om barnetillegg som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Du er innvilga barnetillegg i uføretrygda di for" },
                         )
                     } orShow {
                         text(
@@ -161,13 +160,13 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(pesysData.nyeAvslagBarnetillegg.isNotEmpty()) {
+            showIf(pesysData.avslagBarnetilleggNye.isNotEmpty()) {
                 paragraph {
                     text(
                         bokmal { +"Vi har avslått barnetillegg i uføretrygden din for" },
                         nynorsk { +"Vi har avslått barnetillegg i uføretrygda di for" },
                     )
-                    includePhrase(Felles.TextOrList(pesysData.nyeAvslagBarnetillegg.map(BarnetilleggFormatter), 0))
+                    includePhrase(Felles.TextOrList(pesysData.avslagBarnetilleggNye.map(BarnetilleggFlereBarnFormatter), 0))
                 }
                 paragraph {
                     text(
@@ -195,13 +194,13 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(pesysData.nyeOpphorteBarnetillegg.isNotEmpty()) {
+            showIf(pesysData.opphorteBarnetilleggNye.isNotEmpty()) {
                 paragraph {
                     text(
                         bokmal { +"Vi har vedtatt at barnetillegget i uføretrygden din opphører for" },
                         nynorsk { +"Vi har stansa barnetillegget i uføretrygda di for" },
                     )
-                    includePhrase(Felles.TextOrList(pesysData.nyeOpphorteBarnetillegg.map(BarnetilleggOpphorFormatter), 0))
+                    includePhrase(Felles.TextOrList(pesysData.opphorteBarnetilleggNye.map(BarnetilleggOpphorFormatter), 0))
                 }
                 paragraph {
                     text(
@@ -223,8 +222,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(pe.vedtaksdata_kravhode_kravgjelder().equalTo("sok_uu")) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om rettighet som ung ufør som vi mottok " + soknadsdato.format() + ". Vi har endret uføretrygden din fra " + onsketvirkningsdato.format() + "." },
-                        nynorsk { +"Vi har innvilga søknaden din om å få rettar som ung ufør som vi fekk " + soknadsdato.format() + ". Vi har endra uføretrygda di frå " + onsketvirkningsdato.format() + "." },
+                        bokmal { +"Vi har innvilget søknaden din om rettighet som ung ufør som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har endret uføretrygden din fra " + onsketvirkningsdato.format() + "." },
+                        nynorsk { +"Vi har innvilga søknaden din om å få rettar som ung ufør som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har endra uføretrygda di frå " + onsketvirkningsdato.format() + "." },
                     )
                 }
             }
@@ -232,8 +231,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((yrkesskadegradFraVilkar.equalTo(uforegradFraVilkar) and pe.vedtaksdata_kravhode_kravgjelder().equalTo("sok_ys"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om uføretrygd etter særbestemmelsene for yrkesskade eller yrkessykdom som vi mottok " + soknadsdato.format() + ". Vi har kommet fram til at hele uførheten din skyldes en godkjent yrkesskade eller yrkessykdom, og uføretrygden din er endret fra " + onsketvirkningsdato.format() + "." },
-                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd etter særreglane for yrkesskade eller yrkessjukdom som vi fekk " + soknadsdato.format() + ". Vi har kome fram til at heile uførleiken din kjem av ein godkjend yrkesskade eller yrkessjukdom, og uføretrygda di er endra frå " + onsketvirkningsdato.format() + "." },
+                        bokmal { +"Vi har innvilget søknaden din om uføretrygd etter særbestemmelsene for yrkesskade eller yrkessykdom som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har kommet fram til at hele uførheten din skyldes en godkjent yrkesskade eller yrkessykdom, og uføretrygden din er endret fra " + onsketvirkningsdato.format() + "." },
+                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd etter særreglane for yrkesskade eller yrkessjukdom som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har kome fram til at heile uførleiken din kjem av ein godkjend yrkesskade eller yrkessjukdom, og uføretrygda di er endra frå " + onsketvirkningsdato.format() + "." },
                     )
                 }
             }
@@ -241,8 +240,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((yrkesskadegradFraVilkar.lessThan(uforegradFraBeregning) and pe.vedtaksdata_kravhode_kravgjelder().equalTo("sok_ys"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om uføretrygd etter særbestemmelsene for yrkesskade eller yrkessykdom som vi mottok " + soknadsdato.format() + ". Vi har kommet fram til at " + yrkesskadegradFraBeregning.format() + " prosent av uførheten din skyldes en godkjent yrkesskade eller yrkessykdom, og uføretrygden din er endret fra " + onsketvirkningsdato.format() + "." },
-                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd etter særreglane for yrkesskade eller yrkessjukdom som vi fekk " + soknadsdato.format() + ". Vi har kome fram til at " + yrkesskadegradFraBeregning.format() + " prosent av uførleiken din kjem av ein godkjend yrkesskade eller yrkessjukdom, og uføretrygda di er endra frå " + onsketvirkningsdato.format() + "." },
+                        bokmal { +"Vi har innvilget søknaden din om uføretrygd etter særbestemmelsene for yrkesskade eller yrkessykdom som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har kommet fram til at " + yrkesskadegradFraBeregning.format() + " prosent av uførheten din skyldes en godkjent yrkesskade eller yrkessykdom, og uføretrygden din er endret fra " + onsketvirkningsdato.format() + "." },
+                        nynorsk { +"Vi har innvilga søknaden din om uføretrygd etter særreglane for yrkesskade eller yrkessjukdom som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har kome fram til at " + yrkesskadegradFraBeregning.format() + " prosent av uførleiken din kjem av ein godkjend yrkesskade eller yrkessjukdom, og uføretrygda di er endra frå " + onsketvirkningsdato.format() + "." },
                     )
                 }
             }
@@ -832,7 +831,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(pesysData.nyeOpphorteBarnetillegg.isEmpty()) {
+            showIf(pesysData.opphorteBarnetilleggNye.isEmpty()) {
                 paragraph {
                     showIf(barnetilleggInnvilget) {
                         text(
@@ -1060,8 +1059,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
-            includePhrase(Ufoeretrygd.OpphorBarnetillegg(pesysData.nyeOpphorteBarnetillegg))
+            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.avslagBarnetilleggNye))
+            includePhrase(Ufoeretrygd.OpphorBarnetillegg(pesysData.opphorteBarnetilleggNye))
 
             title1 {
                 text(
@@ -1108,8 +1107,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             }.orShowIf(virkningbegrunnelseStdbegr_22_12_1_5) {
                 paragraph {
                     text(
-                        bokmal { +"Du har fått innvilget uføretrygd fra " + onsketvirkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Vi mottok søknaden din " + soknadsdato.format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " + fritekst("Fritekst") },
-                        nynorsk { +"Du har fått innvilga uføretrygd frå " + onsketvirkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Vi fekk søknaden din " + soknadsdato.format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " + fritekst("Fritekst") },
+                        bokmal { +"Du har fått innvilget uføretrygd fra " + onsketvirkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Ditt krav ble framsatt " + pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()).format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. " + fritekst("Fritekst") },
+                        nynorsk { +"Du har fått innvilga uføretrygd frå " + onsketvirkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Kravet ditt blei framsatt " + pesysData.kravFremsattDato.ifNull(pe.vedtaksdata_kravhode_kravmottatdato()).format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. " + fritekst("Fritekst") },
                     )
                 }
             }.orShowIf(((virkningstidspunktBegrunnelse).equalTo("stdbegr_22_12_1_12"))) {
