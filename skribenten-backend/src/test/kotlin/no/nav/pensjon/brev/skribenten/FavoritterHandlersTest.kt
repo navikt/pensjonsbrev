@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.testBrevtilgang
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
@@ -9,9 +10,10 @@ import org.junit.jupiter.api.Test
 import java.util.concurrent.atomic.AtomicInteger
 
 class FavoritterHandlersTest {
-    private val hentFavoritterHandler by lazy { HentFavoritterHandler(SharedPostgres.database) }
-    private val leggTilFavorittHandler by lazy { LeggTilFavorittHandler(SharedPostgres.database) }
-    private val fjernFavorittHandler by lazy { FjernFavorittHandler(SharedPostgres.database) }
+    private val brevtilgang by lazy { testBrevtilgang() }
+    private val hentFavoritterHandler by lazy { HentFavoritterHandler(brevtilgang) }
+    private val leggTilFavorittHandler by lazy { LeggTilFavorittHandler(brevtilgang) }
+    private val fjernFavorittHandler by lazy { FjernFavorittHandler(brevtilgang) }
 
     @BeforeAll
     fun initDb() {

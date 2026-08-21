@@ -1,0 +1,63 @@
+package no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
+
+import no.nav.pensjon.brev.skribenten.isFailure
+import no.nav.pensjon.brev.skribenten.isSuccess
+import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Dto
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+
+class SlettBrevHandlerTest : BrevredigeringHandlerTestBase() {
+
+    @Test
+    suspend fun `kan slette brev`() {
+        val brev = opprettBrev().resultOrFail()
+
+        assertThat(slettBrev(brev)).isSuccess()
+
+        // Verify the brev is actually deleted
+        assertThat(hentBrev(brev.info.id)).isNull()
+    }
+
+    @Test
+    suspend fun `kan ikke slette brev som ikke eksisterer`() {
+        val result = slettBrev(BrevId(-9999))
+
+        assertThat(result).isNull()
+    }
+
+    @Test
+    suspend fun `kan slette arkivert brev`() {
+        val brev = opprettBrev().resultOrFail()
+
+        assertThat(arkiverBrev(brev)).isSuccess().also {
+            // Verify the brev is actually archived
+            assertThat(hentBrev(brev.info.id).resultOrFail().info.status).isEqualTo(Dto.BrevStatus.ARKIVERT)
+        }
+
+        assertThat(slettBrev(brev)).isSuccess()
+
+        // Verify the brev is actually deleted
+        assertThat(hentBrev(brev.info.id)).isNull()
+    }
+
+    @Test
+    suspend fun `sletting krever reservasjon`() {
+        // Create and reserve the brev for saksbehandler1
+        val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
+
+        // Try to delete with a different principal (saksbehandler2 doesn't have the reservation)
+        val result = slettBrev(brev, principal = saksbehandler2Principal)
+
+        // Should fail because saksbehandler2 doesn't have the reservation
+        assertThat(result).isFailure()
+
+        // Verify the brev still exists
+        assertThat(hentBrev(brev.info.id)).isNotNull()
+    }
+}
+
+
+
+
