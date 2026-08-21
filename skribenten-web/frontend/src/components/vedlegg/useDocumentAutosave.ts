@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { type AxiosError } from "axios";
 import { useEffect, useRef } from "react";
 
-import { AUTOSAVE_TIMER } from "../../ManagedLetterEditor/autosave_timer";
+import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 
 export type SaveStatus = "DIRTY" | "SAVE_PENDING" | "SAVED";
 
@@ -12,7 +12,7 @@ export type SaveStatus = "DIRTY" | "SAVE_PENDING" | "SAVED";
  * `saveStatus`/`content`, debounces, and persists DIRTY content. It deliberately knows nothing about
  * any specific document, response shape, or query caches — those belong to the caller.
  */
-export function useVedleggAutosave<TDoc, TResponse>(args: {
+export function useDocumentAutosave<TDoc, TResponse>(args: {
   content: TDoc;
   saveStatus: SaveStatus;
   /** Persist the current document content. Called when state is DIRTY. */
@@ -57,7 +57,7 @@ export function useVedleggAutosave<TDoc, TResponse>(args: {
     return () => clearTimeout(timeoutId);
   }, [saveStatus, content, mutate]);
 
-  // Flush on unmount (e.g. switching to another document tab): if there are unsaved edits when the
+  // Flush on unmount (e.g. switching to another document): if there are unsaved edits when the
   // editor unmounts, save them immediately instead of dropping them with the cleared debounce timer.
   useEffect(
     () => () => {

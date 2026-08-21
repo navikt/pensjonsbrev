@@ -1,24 +1,15 @@
-import { useMutation } from "@tanstack/react-query";
-import { type AxiosError } from "axios";
-import isEqual from "lodash/isEqual";
-import { useEffect } from "react";
-
-import { oppdaterBrev, oppdaterBrevtekst } from "~/api/brev-queries";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
-import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
+import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { type BrevResponse } from "~/types/brev";
-import { asLetterDocument } from "~/types/brevbakerTypes";
 import { type Redigeringsflate } from "~/utils/editorTracking";
 
-import { AUTOSAVE_TIMER } from "./autosave_timer";
-
 /**
- * Wrapper av <LetterEditor /> som håndterer lagring av brevtekst.
+ * Redigeringsflaten for selve brevet.
  *
- * <ManagedLetterEditor /> krever at har <ManagedLetterEditorContextProvider /> som parent.
+ * Autolagringen bor i <ManagedLetterEditorContextProvider />, ikke her, slik at den overlever at
+ * denne komponenten avmonteres når saksbehandler bytter til et vedlegg.
  */
 const ManagedLetterEditor = (props: {
   brev: BrevResponse;
@@ -27,73 +18,22 @@ const ManagedLetterEditor = (props: {
   showDebug?: boolean;
   redigeringsflate: Redigeringsflate;
 }) => {
-  const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
-
-  const { mutate, isError } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
-    mutationFn: (state) => {
-      const stateWithCursor = Actions.cursorPosition(state, getCursorOffset());
-
-      setEditorState((previousState) => ({
-        ...previousState,
-        saveStatus: "SAVE_PENDING",
-      }));
-
-      // Autolagring skal aldri frigi reservasjonen saksbehandler har på brevet.
-      if (isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
-        return oppdaterBrevtekst({
-          brevId: props.brev.info.id,
-          redigertBrev: asLetterDocument(stateWithCursor.redigertBrev),
-          frigiReservasjon: false,
-        });
-      }
-      // Tekstvalg er endret, og de lagres ikke av redigertBrev-endepunktet.
-      return oppdaterBrev({
-        saksId: stateWithCursor.info.saksId,
-        brevId: stateWithCursor.info.id,
-        frigiReservasjon: false,
-        request: {
-          redigertBrev: asLetterDocument(stateWithCursor.redigertBrev),
-          saksbehandlerValg: stateWithCursor.saksbehandlerValg,
-        },
-      });
-    },
-    onSuccess: (response) => onSaveSuccess(response),
-    onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
-  });
-
-  useEffect(() => {
-    const timoutId = setTimeout(() => {
-      if (editorState.saveStatus === "DIRTY") {
-        mutate(editorState);
-      }
-    }, AUTOSAVE_TIMER);
-    return () => clearTimeout(timoutId);
-  }, [editorState.saveStatus, editorState.redigertBrev, mutate]);
-
-  useEffect(() => {
-    if (editorState.saveStatus === "SAVED" && editorState.redigertBrevHash !== props.brev.redigertBrevHash) {
-      setEditorState((previousState) => ({
-        ...previousState,
-        redigertBrev: props.brev.redigertBrev,
-        redigertBrevHash: props.brev.redigertBrevHash,
-        saksbehandlerValg: props.brev.saksbehandlerValg,
-      }));
-    }
-  }, [
-    props.brev.redigertBrev,
-    props.brev.redigertBrevHash,
-    props.brev.saksbehandlerValg,
-    editorState.redigertBrevHash,
-    setEditorState,
-    editorState.saveStatus,
-  ]);
+  const { editorState, setEditorState, lagringFeilet } = useManagedLetterEditorContext();
 
   return (
     <LetterEditor
       editorState={editorState}
-      error={props.error || isError}
+      error={props.error || lagringFeilet}
       freeze={props.freeze}
       redigeringsflate={props.redigeringsflate}
+      renderTilbakestillModal={({ åpen, onClose }) => (
+        <TilbakestillMalModal
+          brevId={props.brev.info.id}
+          onClose={onClose}
+          resetEditor={(brevResponse) => setEditorState(Actions.create(brevResponse))}
+          åpen={åpen}
+        />
+      )}
       setEditorState={setEditorState}
       showDebug={props.showDebug ?? false}
     />

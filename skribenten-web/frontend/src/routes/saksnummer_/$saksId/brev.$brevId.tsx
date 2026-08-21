@@ -2,7 +2,7 @@ import { Alert, Box, Button, Heading, HStack, Label, VStack } from "@navikt/ds-r
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -18,10 +18,6 @@ import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { CenteredLoader } from "~/components/CenteredLoader";
-import { EditorTabContent } from "~/components/editorTabs/EditorTabContent";
-import { EditorTabsBar } from "~/components/editorTabs/EditorTabsBar";
-import { EditorTabsProvider } from "~/components/editorTabs/EditorTabsProvider";
-import { useEditorTabs } from "~/components/editorTabs/useEditorTabs";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
   ManagedLetterEditorContextProvider,
@@ -30,20 +26,30 @@ import {
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
+import { AktivtDokumentProvider } from "~/components/vedlegg/AktivtDokumentContext";
+import { AktivtDokumentEditor } from "~/components/vedlegg/AktivtDokumentEditor";
+import { BrevSidepanel } from "~/components/vedlegg/BrevSidepanel";
+import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
+import { baseSearchSchema } from "~/routes/saksnummer_/$saksId/route";
 import { type BrevResponse, type ReservasjonResponse, type SaksbehandlerValg } from "~/types/brev";
-import { asLetterDocument } from "~/types/brevbakerTypes";
 import { genericErrorMessage, getErrorMessage } from "~/utils/errorUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
+
+const brevRedigeringSearchSchema = baseSearchSchema.extend({
+  /** The vedlegg shown in the editor. Absent means the brev itself. */
+  vedlegg: z.coerce.string().optional(),
+});
 
 export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
   params: {
     parse: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
   },
+  validateSearch: (search) => brevRedigeringSearchSchema.parse(search),
   component: () => <RedigerBrevPage />,
 });
 
@@ -245,26 +251,26 @@ function RedigerBrev({
   const editorStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
 
-  const { tabs } = useEditorTabs({ saksId, brev });
+  const redigerbareVedleggQuery = useRedigerbareVedlegg({ saksId, brevId: brev.info.id });
 
-  const onSelectTab = (tabId: string) =>
-    navigate({
-      search: (prev) => ({ ...prev, vedlegg: tabId === "brev" ? undefined : tabId }),
-      replace: true,
-    });
+  const velgDokument = useCallback(
+    (vedleggId: string | undefined) => navigate({ search: (prev) => ({ ...prev, vedlegg: vedleggId }), replace: true }),
+    [navigate],
+  );
 
-  // Normalize an invalid ?vedlegg= value (e.g. a removed vedlegg or a stale link): fall back to the
-  // brev tab and clean the URL so the Tabs selection always matches a real tab.
-  const aktivTabExists = aktivVedlegg === undefined || tabs.some((tab) => tab.id === aktivVedlegg);
-  const gyldigAktivVedlegg = aktivTabExists ? aktivVedlegg : undefined;
+  // A stale or removed ?vedlegg= value falls back to the brev, and the URL is cleaned so the side
+  // panel selection always matches a vedlegg that exists.
+  const vedleggFinnes =
+    aktivVedlegg === undefined ||
+    (redigerbareVedleggQuery.data?.some((vedlegg) => vedlegg.vedleggId === aktivVedlegg) ?? true);
 
   useEffect(() => {
-    if (!aktivTabExists) {
-      navigate({ search: (prev) => ({ ...prev, vedlegg: undefined }), replace: true });
+    if (!vedleggFinnes) {
+      velgDokument(undefined);
     }
-  }, [aktivTabExists, navigate]);
+  }, [vedleggFinnes, velgDokument]);
 
-  const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+  const { editorState, redigertBrev, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
   const { highlightedIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
     lagretRedigertBrev: brev.redigertBrev,
@@ -321,7 +327,6 @@ function RedigerBrev({
     form.trigger().then((isValid) => {
       if (isValid) {
         const updatedValg = form.getValues().saksbehandlerValg;
-        const redigertBrev = asLetterDocument(editorState.redigertBrev);
         beforeTekstvalgChange(updatedValg, redigertBrev);
         oppdaterBrevMutation.mutate({
           redigertBrev: redigertBrev,
@@ -335,7 +340,7 @@ function RedigerBrev({
   const onSubmit = (values: RedigerBrevSidemenyFormData, navigateDone?: () => void) => {
     oppdaterBrevMutation.mutate(
       {
-        redigertBrev: asLetterDocument(editorState.redigertBrev),
+        redigertBrev: redigertBrev,
         saksbehandlerValg: values.saksbehandlerValg,
         // This is the final "done editing" submit (navigates to brevbehandler), so release the
         // reservation lock — unlike the tekstvalg/overstyring autosave, which must keep it held.
@@ -404,7 +409,10 @@ function RedigerBrev({
               onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
               reservasjon={reservasjonQuery.data}
             />
-            <EditorTabsProvider activeTabId={gyldigAktivVedlegg} onActiveTabChange={onSelectTab} tabs={tabs}>
+            <AktivtDokumentProvider
+              aktivVedleggId={vedleggFinnes ? aktivVedlegg : undefined}
+              onVelgDokument={velgDokument}
+            >
               <ThreeSectionLayout
                 bottom={
                   <HStack justify="space-between" width="100%">
@@ -431,45 +439,45 @@ function RedigerBrev({
                 }
                 bottomJustify="space-between"
                 left={
-                  <VStack gap="space-12">
-                    <Heading size="small" spacing>
-                      {brevmal.data?.name}
-                    </Heading>
-                    <BrevmalAlternativer
-                      brevkode={brev.info.brevkode}
-                      propertyUsage={brev.propertyUsage ?? undefined}
-                      submitOnChange={onTekstValgAndOverstyringChange}
-                    />
-                    <UnderskriftTextField of="Saksbehandler" />
-                  </VStack>
+                  <BrevSidepanel
+                    brevId={brev.info.id}
+                    brevmalPanel={
+                      <VStack gap="space-12">
+                        <Heading size="small" spacing>
+                          {brevmal.data?.name}
+                        </Heading>
+                        <BrevmalAlternativer
+                          brevkode={brev.info.brevkode}
+                          propertyUsage={brev.propertyUsage ?? undefined}
+                          submitOnChange={onTekstValgAndOverstyringChange}
+                        />
+                        <UnderskriftTextField of="Saksbehandler" />
+                      </VStack>
+                    }
+                    saksId={saksId}
+                  />
                 }
                 right={
-                  <VStack height="100%" overflowY="hidden">
-                    <Box asChild borderColor="neutral-subtle" borderWidth="0 0 1 0">
-                      <EditorTabsBar activeTabId={gyldigAktivVedlegg ?? "brev"} onSelectTab={onSelectTab} tabs={tabs} />
-                    </Box>
-                    <Box flexGrow="1" minHeight="0">
+                  <AktivtDokumentEditor
+                    brev={brev}
+                    freeze={freeze}
+                    renderBrev={() => (
                       <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                        <EditorTabContent
+                        <ManagedLetterEditor
                           brev={brev}
-                          renderBrev={() => (
-                            <ManagedLetterEditor
-                              brev={brev}
-                              error={error}
-                              freeze={freeze}
-                              redigeringsflate="saksbehandler-redigering"
-                              showDebug={showDebug}
-                            />
-                          )}
-                          saksId={saksId}
+                          error={error}
+                          freeze={freeze}
+                          redigeringsflate="saksbehandler-redigering"
+                          showDebug={showDebug}
                         />
                       </InsertedTekstValgHighlightProvider>
-                    </Box>
-                  </VStack>
+                    )}
+                    saksId={saksId}
+                  />
                 }
                 rightColumnWidth="minmax(640px, 694px)"
               />
-            </EditorTabsProvider>
+            </AktivtDokumentProvider>
           </form>
         </VStack>
       </Box>

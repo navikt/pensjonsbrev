@@ -1,4 +1,5 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { type AxiosError } from "axios";
 import isEqual from "lodash/isEqual";
 import {
   createContext,
@@ -7,16 +8,20 @@ import {
   type SetStateAction,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from "react";
 
-import { attesteringBrevKeys, getBrev } from "~/api/brev-queries";
+import { attesteringBrevKeys, getBrev, oppdaterBrev, oppdaterBrevtekst } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { normalizeDeletedArrays } from "~/Brevredigering/LetterEditor/actions/common";
 import { addHistoryEntry, type HistoryEntry } from "~/Brevredigering/LetterEditor/history";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
+import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { type BrevResponse } from "~/types/brev";
+import { type EditedLetter, isLetterDocument } from "~/types/brevbakerTypes";
 
 type SaveSuccessOptions = {
   createHistoryEntry?: (previousState: LetterEditorState, response: BrevResponse) => HistoryEntry | null;
@@ -24,8 +29,16 @@ type SaveSuccessOptions = {
 
 interface ManagedLetterEditorContextValue {
   editorState: LetterEditorState;
+  /**
+   * `editorState.redigertBrev` as a letter. This provider is only ever constructed from a
+   * BrevResponse, so the narrowing always holds; the fallback exists so the letter-only fields
+   * (sakspart/signatur) can be read without a cast or a throw.
+   */
+  redigertBrev: EditedLetter;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   onSaveSuccess: (response: BrevResponse, options?: SaveSuccessOptions) => void;
+  /** Whether the brev's own autosave last failed. */
+  lagringFeilet: boolean;
 }
 
 const nullsToUndefined = (obj: unknown) =>
@@ -82,9 +95,75 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
     [queryClient, props.brev.info.id],
   );
 
+  const redigertBrev = isLetterDocument(editorState.redigertBrev) ? editorState.redigertBrev : props.brev.redigertBrev;
+
+  const { mutate: lagreBrevtekst, isError: lagringFeilet } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
+    mutationFn: (state) => {
+      const stateWithCursor = Actions.cursorPosition(state, getCursorOffset());
+      const redigertBrevMedMarkoer = isLetterDocument(stateWithCursor.redigertBrev)
+        ? stateWithCursor.redigertBrev
+        : props.brev.redigertBrev;
+
+      setEditorState((previousState) => ({ ...previousState, saveStatus: "SAVE_PENDING" }));
+
+      // Autolagring skal aldri frigi reservasjonen saksbehandler har på brevet.
+      if (isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
+        return oppdaterBrevtekst({
+          brevId: props.brev.info.id,
+          redigertBrev: redigertBrevMedMarkoer,
+          frigiReservasjon: false,
+        });
+      }
+      // Tekstvalg er endret, og de lagres ikke av redigertBrev-endepunktet.
+      return oppdaterBrev({
+        saksId: stateWithCursor.info.saksId,
+        brevId: stateWithCursor.info.id,
+        frigiReservasjon: false,
+        request: {
+          redigertBrev: redigertBrevMedMarkoer,
+          saksbehandlerValg: stateWithCursor.saksbehandlerValg,
+        },
+      });
+    },
+    onSuccess: (response) => onSaveSuccess(response),
+    onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
+  });
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (editorState.saveStatus === "DIRTY") {
+        lagreBrevtekst(editorState);
+      }
+    }, AUTOSAVE_TIMER);
+    return () => clearTimeout(timeoutId);
+  }, [editorState, lagreBrevtekst]);
+
+  useEffect(() => {
+    if (editorState.saveStatus === "SAVED" && editorState.redigertBrevHash !== props.brev.redigertBrevHash) {
+      setEditorState((previousState) => ({
+        ...previousState,
+        redigertBrev: props.brev.redigertBrev,
+        redigertBrevHash: props.brev.redigertBrevHash,
+        saksbehandlerValg: props.brev.saksbehandlerValg,
+      }));
+    }
+  }, [
+    props.brev.redigertBrev,
+    props.brev.redigertBrevHash,
+    props.brev.saksbehandlerValg,
+    editorState.redigertBrevHash,
+    editorState.saveStatus,
+  ]);
+
   return (
     <ManagedLetterEditorContext.Provider
-      value={{ editorState: editorState, setEditorState: setEditorState, onSaveSuccess: onSaveSuccess }}
+      value={{
+        editorState: editorState,
+        redigertBrev: redigertBrev,
+        setEditorState: setEditorState,
+        onSaveSuccess: onSaveSuccess,
+        lagringFeilet: lagringFeilet,
+      }}
     >
       {props.children}
     </ManagedLetterEditorContext.Provider>

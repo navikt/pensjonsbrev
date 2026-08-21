@@ -11,7 +11,6 @@ import {
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { type BrevResponse, type SaksbehandlerValg } from "~/types/brev";
-import { asLetterDocument } from "~/types/brevbakerTypes";
 
 import {
   brevInfo,
@@ -79,7 +78,7 @@ function renderHarness() {
   const harness = { current: null as Harness | null };
 
   const Testkomponent = () => {
-    const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+    const { editorState, redigertBrev, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
     // Rutene leser brevet fra query-cachen, som `onSaveSuccess` skriver til. Abonnementet her
     // gjør at `lagretRedigertBrev` oppdateres på samme måte som i produksjon.
@@ -95,7 +94,6 @@ function renderHarness() {
       editorState: editorState,
       setEditorState: setEditorState,
     });
-
     const { oppdaterBrevMutation } = useOppdaterBrevAutosave({
       saksId: SAKS_ID,
       brevId: BREV_ID,
@@ -106,10 +104,10 @@ function renderHarness() {
     harness.current = {
       highlightedIds: highlightedIds,
       focus: editorState.focus,
-      beforeTekstvalgChange: (valg) => beforeTekstvalgChange(valg, asLetterDocument(editorState.redigertBrev)),
+      beforeTekstvalgChange: (valg) => beforeTekstvalgChange(valg, redigertBrev),
       lagreTekstvalg: () =>
         oppdaterBrevMutation.mutate({
-          redigertBrev: asLetterDocument(editorState.redigertBrev),
+          redigertBrev: redigertBrev,
           saksbehandlerValg: nyeValg,
         }),
       simulerTasting: () => setEditorState((state) => ({ ...state, saveStatus: "DIRTY" })),

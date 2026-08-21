@@ -6,7 +6,6 @@ import { applyPatches } from "immer";
 import React, { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useState } from "react";
 
 import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
-import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
 import { isLetterDocument, TITLE_INDEX } from "~/types/brevbakerTypes";
@@ -35,6 +34,7 @@ export const LetterEditor = ({
   setEditorState,
   showDebug,
   redigeringsflate,
+  renderTilbakestillModal,
 }: {
   freeze: boolean;
   error: boolean;
@@ -42,6 +42,8 @@ export const LetterEditor = ({
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   showDebug: boolean;
   redigeringsflate: Redigeringsflate;
+  /** Owned by the caller because what "tilbakestill" resets depends on the document being edited. */
+  renderTilbakestillModal: (args: { åpen: boolean; onClose: () => void }) => React.ReactNode;
 }) => {
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
@@ -206,14 +208,7 @@ export const LetterEditor = ({
         </VStack>
         {showDebug && <DebugPanel />}
         {/* Åpner modal, tar ikke plass i DOM her */}
-        {vilTilbakestilleMal && (
-          <TilbakestillMalModal
-            brevId={editorState.info.id}
-            onClose={() => setVilTilbakestilleMal(false)}
-            resetEditor={(brevResponse) => setEditorState(Actions.create(brevResponse))}
-            åpen={vilTilbakestilleMal}
-          />
-        )}
+        {vilTilbakestilleMal && renderTilbakestillModal({ åpen: true, onClose: () => setVilTilbakestilleMal(false) })}
       </EditorStateContext.Provider>
     </VStack>
   );

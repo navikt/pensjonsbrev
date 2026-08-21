@@ -45,24 +45,11 @@ export type EditedDocument = {
 
 /**
  * Narrows an EditedDocument to a full EditedLetter (which additionally has sakspart/signatur).
- * The brev layer uses this at the points that legitimately need the letter-only fields (sakspart
- * rendering, signatur, saving). A redigerbart vedlegg (EditAttachment) is never a letter, so the
- * brev-specific UI that calls this is simply not rendered for vedlegg.
+ * The `includeSakspart` check keeps this accurate even if EditAttachment later gains a `sakspart`
+ * of its own — an attachment declares whether to render one, a letter carries the resolved value.
  */
-export const isLetterDocument = (doc: EditedDocument): doc is EditedLetter => "sakspart" in doc && "signatur" in doc;
-
-/**
- * Returns the document as a full EditedLetter. The brev editing/saving layer always holds a letter
- * (built from BrevResponse), so this is a safe narrowing at those letter-only boundaries — it throws
- * if ever called on a vedlegg, which would indicate a wiring bug (a vedlegg has no sakspart/signatur
- * and is saved through its own endpoint, not the brev one).
- */
-export const asLetterDocument = (doc: EditedDocument): EditedLetter => {
-  if (!isLetterDocument(doc)) {
-    throw new Error("Expected a letter document (with sakspart/signatur), but got a vedlegg");
-  }
-  return doc;
-};
+export const isLetterDocument = (doc: EditedDocument): doc is EditedLetter =>
+  "sakspart" in doc && "signatur" in doc && !("includeSakspart" in doc);
 
 export type TextContent = generated.EditParagraphContentText;
 export type Content = generated.EditParagraphContent;

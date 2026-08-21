@@ -41,7 +41,6 @@ import {
   type ReservasjonResponse,
   type SaksbehandlerValg,
 } from "~/types/brev";
-import { asLetterDocument } from "~/types/brevbakerTypes";
 import { type AttestForbiddenReason } from "~/utils/parseAttest403";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
@@ -184,13 +183,9 @@ const VedtakWrapper = () => {
 
 const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
-  const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+  const { editorState, redigertBrev, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
   const attesteringStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
-
-  // Attestering edits the letter itself, never a vedlegg — narrow once for the letter-only reads
-  // (signatur) and saves below.
-  const redigertBrev = asLetterDocument(editorState.redigertBrev);
 
   const [forbidReason, setForbidReason] = useState<AttestForbiddenReason | null>(null);
   const [unexpectedError, setUnexpectedError] = useState<AxiosError | null>(null);
