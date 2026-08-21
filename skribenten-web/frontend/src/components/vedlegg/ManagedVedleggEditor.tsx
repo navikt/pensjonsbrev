@@ -74,20 +74,19 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
   const settVedleggICache = (oppdatert: EditAttachment) =>
     queryClient.setQueryData(redigerbareVedleggKeys.vedlegg(brev.info.id, vedleggId), oppdatert);
 
-  const { isError } = useDocumentAutosave<EditedDocument, BrevResponse>({
+  const { isError } = useDocumentAutosave<EditedDocument, EditAttachment>({
     content: editorState.redigertBrev,
     saveStatus: editorState.saveStatus,
     mutationFn: (dokument) => lagreRedigerbartVedlegg(saksId, brev.info.id, vedleggId, tilVedlegg(dokument)),
     onSaveStart: () => setEditorState((s) => ({ ...s, saveStatus: "SAVE_PENDING" })),
-    onSaveSuccess: (response) => {
+    onSaveSuccess: (lagretVedlegg) => {
       // Keep it DIRTY when the user typed again while the save was in flight: those edits are not
       // covered by this response, so the autosave must fire again instead of reporting SAVED.
       setEditorState((s) => (s.saveStatus === "DIRTY" ? s : { ...s, saveStatus: "SAVED" }));
-      // The PUT returns the parent brev, not the saved vedlegg, so the editor state stays the source
-      // of truth and we only mirror it into the cache so a remount does not read stale content.
-      settVedleggICache(tilVedlegg(editorState.redigertBrev));
+      settVedleggICache(lagretVedlegg);
+      // The edited title may have changed, and the vedlegg is part of the rendered letter PDF.
       queryClient.invalidateQueries({ queryKey: redigerbareVedleggKeys.liste(brev.info.id) });
-      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(response.info.id) });
+      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brev.info.id) });
     },
     onSaveError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });

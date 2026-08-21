@@ -38,14 +38,18 @@ export const getRedigerbartVedlegg = {
     (await axios.get<EditAttachment>(`${vedleggUrl(saksId, brevId)}/${vedleggId}`)).data,
 };
 
+/**
+ * Saves the edited attachment and returns the stored result, so the caller can refresh from the
+ * response instead of assuming its local state matches what the backend persisted.
+ */
 export const lagreRedigerbartVedlegg = async (
   saksId: string,
   brevId: number | string,
   vedleggId: string,
   redigertVedlegg: EditAttachment,
-): Promise<BrevResponse> =>
+): Promise<EditAttachment> =>
   (
-    await axios.put<BrevResponse>(`${vedleggUrl(saksId, brevId)}/${vedleggId}`, {
+    await axios.put<EditAttachment>(`${vedleggUrl(saksId, brevId)}/${vedleggId}`, {
       redigertVedlegg,
     } satisfies RedigertVedleggRequest)
   ).data;

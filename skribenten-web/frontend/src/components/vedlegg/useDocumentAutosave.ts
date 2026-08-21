@@ -34,13 +34,23 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
   const stateRef = useRef({ content, saveStatus });
   stateRef.current = { content, saveStatus };
 
+  // A failed save leaves the content DIRTY, which would otherwise re-arm the debounce and retry the
+  // exact same payload forever. Remember what failed and wait for the user to change something.
+  const feiletInnholdRef = useRef<TDoc | null>(null);
+
   const { mutate, isError } = useMutation<TResponse, AxiosError, TDoc>({
     mutationFn: (doc) => {
       latest.current.onSaveStart();
       return latest.current.mutationFn(doc);
     },
-    onSuccess: (response) => latest.current.onSaveSuccess(response),
-    onError: () => latest.current.onSaveError(),
+    onSuccess: (response) => {
+      feiletInnholdRef.current = null;
+      latest.current.onSaveSuccess(response);
+    },
+    onError: () => {
+      feiletInnholdRef.current = stateRef.current.content;
+      latest.current.onSaveError();
+    },
   });
 
   const mutateRef = useRef(mutate);
@@ -49,7 +59,7 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
   // Autosave: when the content becomes DIRTY, persist after a debounce.
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (saveStatus === "DIRTY") {
+      if (saveStatus === "DIRTY" && content !== feiletInnholdRef.current) {
         const prepared = latest.current.prepareForSave ? latest.current.prepareForSave(content) : content;
         mutate(prepared);
       }
@@ -62,7 +72,7 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
   useEffect(
     () => () => {
       const { content: latestContent, saveStatus: latestStatus } = stateRef.current;
-      if (latestStatus === "DIRTY") {
+      if (latestStatus === "DIRTY" && latestContent !== feiletInnholdRef.current) {
         const prepared = latest.current.prepareForSave ? latest.current.prepareForSave(latestContent) : latestContent;
         mutateRef.current(prepared);
       }

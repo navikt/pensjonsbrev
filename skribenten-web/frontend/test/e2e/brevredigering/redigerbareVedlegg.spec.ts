@@ -5,6 +5,8 @@ import { setupSakStubs } from "../utils/helpers";
 const VEDLEGG_ID = "vedlegg-om-alderspensjon";
 const VEDLEGG_TITTEL = "Opplysninger om alderspensjon";
 const VEDLEGG_BROEDTEKST = "Vedleggsteksten som saksbehandler kan redigere.";
+/** Speiler AUTOSAVE_TIMER i src, slik at ventetidene her dekker en hel debounce-runde. */
+const AUTOSAVE_DEBOUNCE_MS = 5000;
 
 const literal = (text: string, id: number) => ({
   type: "LITERAL",
@@ -86,5 +88,49 @@ test.describe("Redigerbare vedlegg", () => {
     await page.getByRole("button", { name: VEDLEGG_TITTEL }).click();
 
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();
+  });
+
+  test("autolagrer en endring i vedlegget én gang", async ({ page }) => {
+    const lagringer: string[] = [];
+    await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, (route) => {
+      if (route.request().method() !== "PUT") {
+        return route.fulfill({ json: vedlegg });
+      }
+      const lagret = route.request().postDataJSON().redigertVedlegg;
+      lagringer.push(JSON.stringify(lagret));
+      return route.fulfill({ json: lagret });
+    });
+
+    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+    await page.getByText(VEDLEGG_BROEDTEKST).click();
+    await page.locator(":focus").pressSequentially(" endret!");
+
+    await expect(page.getByText("Lagret")).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText("Klarte ikke lagre")).toBeHidden();
+    expect(lagringer).toHaveLength(1);
+    expect(lagringer[0]).toContain("endret!");
+
+    // Ingen ny lagring uten nye endringer.
+    await page.waitForTimeout(AUTOSAVE_DEBOUNCE_MS + 2000);
+    expect(lagringer).toHaveLength(1);
+  });
+
+  test("prøver ikke samme lagring på nytt i det uendelige når lagring feiler", async ({ page }) => {
+    let forsoek = 0;
+    await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, (route) => {
+      if (route.request().method() !== "PUT") {
+        return route.fulfill({ json: vedlegg });
+      }
+      forsoek += 1;
+      return route.fulfill({ status: 500, json: "Uff" });
+    });
+
+    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+    await page.getByText(VEDLEGG_BROEDTEKST).click();
+    await page.locator(":focus").pressSequentially(" endret!");
+
+    await expect(page.getByText("Klarte ikke lagre")).toBeVisible({ timeout: 15_000 });
+    await page.waitForTimeout(AUTOSAVE_DEBOUNCE_MS + 2000);
+    expect(forsoek).toBe(1);
   });
 });
