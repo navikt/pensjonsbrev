@@ -30,6 +30,16 @@ const VedtakForhåndsvisningWrapper = () => {
 
   // Brevet hentes alltid på nytt ved mount, og vi venter på det ferske svaret før pdf-en hentes,
   // slik at pdf-en alltid samsvarer med gjeldende redigertBrevHash.
+  //
+  // Dette hviler på at spørringen bruker standard staleTime (0): dataen er stale med én gang, og
+  // React Querys standard refetchOnMount henter derfor på nytt ved hver mount. staleTime løses per
+  // observer, så `staleTime: Number.POSITIVE_INFINITY` i redigering.tsx - som deler queryKey med
+  // denne - påvirker oss ikke her.
+  //
+  // ADVARSEL: setter noen en staleTime for denne spørringen (i getBrevAttestering,
+  // queryClient.setQueryDefaults eller defaultOptions.queries på klienten i main.tsx), slutter
+  // refetchOnMount å utløses. Da kan isFetchedAfterMount bli true på cachet data, og vi risikerer å
+  // sende en pdf som hører til en utdatert redigertBrevHash.
   const showLoading = (
     <Box asChild background="default" paddingBlock="space-32 space-0">
       <CenteredLoader label="Henter brev..." verticalStrategy="flexGrow" />
