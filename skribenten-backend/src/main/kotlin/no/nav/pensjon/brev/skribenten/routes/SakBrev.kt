@@ -181,7 +181,7 @@ fun Route.sakBrev() =
                         val vedleggId = call.parameters.vedleggId()
                         val sak: Fagsak = call.attributes[SakKey]
 
-                        val brev = endreRedigertVedlegg(
+                        val result = endreRedigertVedlegg(
                             EndreRedigertVedleggHandler.Request(
                                 brevId = brevId,
                                 saksId = sak.saksId,
@@ -190,7 +190,7 @@ fun Route.sakBrev() =
                             )
                         )
 
-                        apiRespond(dto2ApiService, brev)
+                        respondOutcome(dto2ApiService, result) { respond(it) }
                     }
 
                     val slettRedigertVedlegg: SlettRedigertVedleggHandler by app.dependencies
