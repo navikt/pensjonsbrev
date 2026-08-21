@@ -58,8 +58,9 @@ fun AuthenticationConfig.pdfByggerJwt(config: JwtConfig) =
         }
         validate {
             val azp = it["azp"]
+            val isPreAuthorized = config.preAuthorizedApps?.any { app -> app.clientId == azp } == true
 
-            if (config.preAuthorizedApps == null || config.preAuthorizedApps.any { app -> app.clientId == azp }) {
+            if (isPreAuthorized) {
                 JWTPrincipal(it.payload)
             } else {
                 logger.info("Invalid authorization - claim 'azp' is not a preAuthorizedApp: $azp")
