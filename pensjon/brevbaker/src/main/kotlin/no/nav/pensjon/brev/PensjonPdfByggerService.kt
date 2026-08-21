@@ -123,13 +123,13 @@ class PensjonPdfByggerService(
         pdfByggerAccessToken?.let { header(HttpHeaders.Authorization, "Bearer ${it()}") }
     }
 
-    private val pdfByggerAccessToken: (suspend () -> String)? = if (azureADConfig != null) {
+    private val pdfByggerAccessToken = azureADConfig?.let {
         val tokenClient = AzureAdM2mTokenClient(
-            tokenEndpoint = azureADConfig.property("tokenEndpoint").getString(),
-            clientId = azureADConfig.property("clientId").getString(),
-            clientSecret = azureADConfig.property("clientSecret").getString(),
+            tokenEndpoint = it.property("tokenEndpoint").getString(),
+            clientId = it.property("clientId").getString(),
+            clientSecret = it.property("clientSecret").getString(),
             scope = pdfByggerScope,
         )
         tokenClient::getToken
-    } else null
+    }
 }
