@@ -49,6 +49,8 @@ const VedtakForhåndsvisningWrapper = () => {
   });
 };
 
+type PdfStatus = "ready" | "fetching" | "unavailable";
+
 const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const [vilSendeBrev, setVilSendeBrev] = useState(false);
@@ -57,10 +59,15 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
     queryFn: () => hentPdfForBrev.queryFn(props.saksId, props.brev.info.id),
     refetchOnWindowFocus: false,
   });
-  // Pdf-en er klar når siste henting lyktes og pdf-en faktisk finnes (queryFn gir null ved 404).
-  // isSuccess trengs i tillegg til null-sjekken: ved en feilet refetch beholder React Query forrige
-  // data samtidig som status blir "error" - da viser forhåndsvisningen feil, og vi skal ikke kunne sende.
-  const pdfIsReady = hentPdfQuery.isSuccess && !hentPdfQuery.isFetching && hentPdfQuery.data !== null;
+  // "fetching" må sjekkes først: ved en bakgrunns-refetch ligger forrige pdf fortsatt i data.
+  // isSuccess trengs i tillegg til null-sjekken, fordi React Query beholder forrige data når en
+  // refetch feiler (status blir "error") - da viser forhåndsvisningen feil, og vi skal ikke kunne sende.
+  // data === null betyr at brevet ikke har noen pdf (queryFn gir null ved 404).
+  const pdfStatus: PdfStatus = hentPdfQuery.isFetching
+    ? "fetching"
+    : hentPdfQuery.isSuccess && hentPdfQuery.data !== null
+      ? "ready"
+      : "unavailable";
 
   return (
     <VStack height="100%">
@@ -68,7 +75,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
         <SendBrevModal
           brevId={props.brev.info.id.toString()}
           onClose={() => setVilSendeBrev(false)}
-          pdfIsReady={pdfIsReady}
+          pdfStatus={pdfStatus}
           saksId={props.saksId}
           åpen={vilSendeBrev}
         />
@@ -98,10 +105,10 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
               Tilbake til redigering
             </Button>
             <Button
-              disabled={!pdfIsReady}
+              disabled={pdfStatus !== "ready"}
               icon={<ArrowRightIcon />}
               iconPosition="right"
-              loading={hentPdfQuery.isFetching}
+              loading={pdfStatus === "fetching"}
               onClick={() => setVilSendeBrev(true)}
               size="small"
               type="button"
@@ -142,7 +149,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
 const SendBrevModal = (props: {
   saksId: string;
   brevId: string;
-  pdfIsReady: boolean;
+  pdfStatus: PdfStatus;
   åpen: boolean;
   onClose: () => void;
 }) => {
@@ -213,8 +220,8 @@ const SendBrevModal = (props: {
             Avbryt
           </Button>
           <Button
-            disabled={!props.pdfIsReady}
-            loading={sendBrevMutation.isPending}
+            disabled={props.pdfStatus !== "ready"}
+            loading={sendBrevMutation.isPending || props.pdfStatus === "fetching"}
             onClick={() => sendBrevMutation.mutate()}
             type="button"
           >
