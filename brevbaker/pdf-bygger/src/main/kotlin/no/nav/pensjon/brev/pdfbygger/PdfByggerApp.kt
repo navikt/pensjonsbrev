@@ -147,7 +147,7 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
 
 private fun Routing.authenticateIfConfigured(name: String?, build: Route.() -> Unit) {
     if (name != null) {
-        authenticate(name, optional = false, build = build)
+        authenticate(name, optional = true, build = build)
     } else {
         build()
     }
