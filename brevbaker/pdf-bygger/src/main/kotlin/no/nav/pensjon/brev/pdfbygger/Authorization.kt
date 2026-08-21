@@ -34,7 +34,7 @@ data class PreAuthorizedApp(val name: String, val clientId: String)
 
 fun AuthenticationConfig.pdfByggerJwt(config: JwtConfig) =
     jwt(config.name) {
-        realm = "pdf-bygger-$name"
+        realm = "pdf-bygger-${config.name}"
         verifier(JwkProviderBuilder(URI(config.jwksUrl).toURL()).build(), config.issuer) {
             withAudience(config.audience)
             withIssuer(config.issuer)
@@ -49,7 +49,7 @@ fun AuthenticationConfig.pdfByggerJwt(config: JwtConfig) =
             if (config.preAuthorizedApps.any { app -> app.clientId == azp }) {
                 JWTPrincipal(it.payload)
             } else {
-                logger.info("Invalid authorization - claim 'azp' is not a preAuthorizedApp: $azp")
+                logger.warn("Invalid authorization - claim 'azp' is not a preAuthorizedApp: $azp")
                 null
             }
         }

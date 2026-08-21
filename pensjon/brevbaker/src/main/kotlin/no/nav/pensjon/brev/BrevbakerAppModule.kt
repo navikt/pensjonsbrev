@@ -30,11 +30,13 @@ import no.nav.pensjon.brev.routing.DocumentationETag
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
+import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 
 fun Application.brevbakerModule(
     templates: AllTemplates
 ) {
+    private val logger = LoggerFactory.getLogger(javaClass)
     val brevbakerConfig = environment.config.config("brevbaker")
 
     monitor.subscribe(ApplicationStopPreparing) {
@@ -132,7 +134,7 @@ fun Application.brevbakerModule(
             }
         }
         configs
-    } else null
+    } else null.also { logger.warn("Running in development mode, skal ikke skje i produksjon") }
 
 
     val pdfbyggerService = PensjonPdfByggerService(
