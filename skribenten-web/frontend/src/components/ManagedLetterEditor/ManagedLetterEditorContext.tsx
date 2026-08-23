@@ -136,7 +136,8 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
       }
     }, AUTOSAVE_TIMER);
     return () => clearTimeout(timeoutId);
-  }, [editorState, lagreBrevtekst]);
+    // Only content changes may restart the debounce; caret/focus activity must not postpone a save.
+  }, [editorState.saveStatus, editorState.redigertBrev, editorState.saksbehandlerValg, lagreBrevtekst]);
 
   useEffect(() => {
     if (editorState.saveStatus === "SAVED" && editorState.redigertBrevHash !== props.brev.redigertBrevHash) {
