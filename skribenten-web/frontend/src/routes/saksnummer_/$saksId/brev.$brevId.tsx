@@ -2,7 +2,7 @@ import { Alert, Box, Button, Heading, HStack, Label, VStack } from "@navikt/ds-r
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -253,6 +253,14 @@ function RedigerBrev({
 
   const redigerbareVedleggQuery = useRedigerbareVedlegg({ saksId, brevId: brev.info.id });
 
+  // The mounted document editor (currently only a vedlegg) registers how to persist its unsaved
+  // edits, so "Fortsett" can await that before the brev submit releases the reservation.
+  const lagreAktivtDokumentRef = useRef<(() => Promise<void>) | null>(null);
+  const registrerLagring = useCallback((lagreNaa: (() => Promise<void>) | null) => {
+    lagreAktivtDokumentRef.current = lagreNaa;
+  }, []);
+  const [lagrerAktivtDokument, setLagrerAktivtDokument] = useState(false);
+
   const velgDokument = useCallback(
     (vedleggId: string | undefined) => navigate({ search: (prev) => ({ ...prev, vedlegg: vedleggId }), replace: true }),
     [navigate],
@@ -337,7 +345,19 @@ function RedigerBrev({
     });
   };
 
-  const onSubmit = (values: RedigerBrevSidemenyFormData, navigateDone?: () => void) => {
+  const onSubmit = async (values: RedigerBrevSidemenyFormData, navigateDone?: () => void) => {
+    // A vedlegg is saved through its own endpoint, so it must be persisted while the reservation is
+    // still held — the submit below releases it. If it fails we stay put rather than releasing the
+    // reservation and navigating away from edits we never managed to store.
+    setLagrerAktivtDokument(true);
+    try {
+      await lagreAktivtDokumentRef.current?.();
+    } catch {
+      return;
+    } finally {
+      setLagrerAktivtDokument(false);
+    }
+
     oppdaterBrevMutation.mutate(
       {
         redigertBrev: redigertBrev,
@@ -412,6 +432,7 @@ function RedigerBrev({
             <AktivtDokumentProvider
               aktivVedleggId={vedleggFinnes ? aktivVedlegg : undefined}
               onVelgDokument={velgDokument}
+              registrerLagring={registrerLagring}
             >
               <ThreeSectionLayout
                 bottom={
@@ -430,7 +451,7 @@ function RedigerBrev({
                     >
                       Tilbake til brevvelger
                     </Button>
-                    <Button loading={oppdaterBrevMutation.isPending} size="small" type="submit">
+                    <Button loading={oppdaterBrevMutation.isPending || lagrerAktivtDokument} size="small" type="submit">
                       <HStack align="center" gap="space-8">
                         <Label size="small">Fortsett</Label>
                       </HStack>
