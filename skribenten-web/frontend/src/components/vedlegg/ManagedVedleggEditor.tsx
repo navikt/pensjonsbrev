@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   getRedigerbartVedlegg,
@@ -12,6 +12,7 @@ import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { ApiError } from "~/components/ApiError";
 import { CenteredLoader } from "~/components/CenteredLoader";
+import { useAktivtDokument } from "~/components/vedlegg/AktivtDokumentContext";
 import TilbakestillVedleggModal from "~/components/vedlegg/TilbakestillVedleggModal";
 import { useDocumentAutosave } from "~/components/vedlegg/useDocumentAutosave";
 import { type BrevResponse, type EditAttachment } from "~/types/brev";
@@ -62,6 +63,7 @@ export const ManagedVedleggEditor = (props: VedleggEditorProps) => {
 const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachment }) => {
   const { saksId, brev, vedleggId, vedlegg } = props;
   const queryClient = useQueryClient();
+  const { registrerLagring } = useAktivtDokument();
   const [editorState, setEditorState] = useState<LetterEditorState>(() => createVedleggState(brev, vedlegg));
 
   // `includeSakspart` is metadata the editor never touches, so it is kept out of the editor state
@@ -74,7 +76,7 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
   const settVedleggICache = (oppdatert: EditAttachment) =>
     queryClient.setQueryData(redigerbareVedleggKeys.vedlegg(brev.info.id, vedleggId), oppdatert);
 
-  const { isError } = useDocumentAutosave<EditedDocument, EditAttachment>({
+  const { lagringFeilet, lagreNaa, medLagringPaaPause } = useDocumentAutosave<EditedDocument, EditAttachment>({
     content: editorState.redigertBrev,
     saveStatus: editorState.saveStatus,
     mutationFn: (dokument) => lagreRedigerbartVedlegg(saksId, brev.info.id, vedleggId, tilVedlegg(dokument)),
@@ -91,23 +93,33 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
     onSaveError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
 
+  useEffect(() => {
+    registrerLagring(lagreNaa);
+    return () => registrerLagring(null);
+  }, [registrerLagring, lagreNaa]);
+
+  const tilbakestill = () =>
+    medLagringPaaPause(async () => {
+      await tilbakestillRedigerbartVedlegg(saksId, brev.info.id, vedleggId);
+      const tilbakestilt = await getRedigerbartVedlegg.queryFn(saksId, brev.info.id, vedleggId);
+      settVedleggICache(tilbakestilt);
+      // The title reverts to the template's, which the side panel list also shows.
+      queryClient.invalidateQueries({ queryKey: redigerbareVedleggKeys.liste(brev.info.id) });
+      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brev.info.id) });
+      return tilbakestilt;
+    });
+
   return (
     <LetterEditor
       editorState={editorState}
-      error={isError}
+      error={lagringFeilet}
       freeze={props.freeze}
       redigeringsflate="saksbehandler-redigering"
       renderTilbakestillModal={({ åpen, onClose }) => (
         <TilbakestillVedleggModal
           onClose={onClose}
           resetEditor={(tilbakestilt) => setEditorState(createVedleggState(brev, tilbakestilt))}
-          tilbakestill={async () => {
-            await tilbakestillRedigerbartVedlegg(saksId, brev.info.id, vedleggId);
-            const tilbakestilt = await getRedigerbartVedlegg.queryFn(saksId, brev.info.id, vedleggId);
-            settVedleggICache(tilbakestilt);
-            queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brev.info.id) });
-            return tilbakestilt;
-          }}
+          tilbakestill={tilbakestill}
           vedleggtittel={props.vedleggtittel}
           åpen={åpen}
         />

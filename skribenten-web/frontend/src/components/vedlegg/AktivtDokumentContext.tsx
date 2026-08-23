@@ -10,6 +10,11 @@ type AktivtDokumentContextValue = {
   aktivtDokument: AktivtDokument;
   velgBrev: () => void;
   velgVedlegg: (vedleggId: string) => void;
+  /**
+   * The mounted document editor registers how to persist its unsaved edits, so the page can await
+   * that before it submits the brev and releases the reservation. Pass null on unmount.
+   */
+  registrerLagring: (lagreNaa: (() => Promise<void>) | null) => void;
 };
 
 const AktivtDokumentContext = createContext<AktivtDokumentContextValue | null>(null);
@@ -22,9 +27,10 @@ const AktivtDokumentContext = createContext<AktivtDokumentContextValue | null>(n
 export const AktivtDokumentProvider = (props: {
   aktivVedleggId: string | undefined;
   onVelgDokument: (vedleggId: string | undefined) => void;
+  registrerLagring: (lagreNaa: (() => Promise<void>) | null) => void;
   children: ReactNode;
 }) => {
-  const { aktivVedleggId, onVelgDokument } = props;
+  const { aktivVedleggId, onVelgDokument, registrerLagring } = props;
 
   const velgBrev = useCallback(() => onVelgDokument(undefined), [onVelgDokument]);
   const velgVedlegg = useCallback((vedleggId: string) => onVelgDokument(vedleggId), [onVelgDokument]);
@@ -34,8 +40,9 @@ export const AktivtDokumentProvider = (props: {
       aktivtDokument: aktivVedleggId === undefined ? { type: "brev" } : { type: "vedlegg", vedleggId: aktivVedleggId },
       velgBrev: velgBrev,
       velgVedlegg: velgVedlegg,
+      registrerLagring: registrerLagring,
     }),
-    [aktivVedleggId, velgBrev, velgVedlegg],
+    [aktivVedleggId, velgBrev, velgVedlegg, registrerLagring],
   );
 
   return <AktivtDokumentContext.Provider value={value}>{props.children}</AktivtDokumentContext.Provider>;
