@@ -17,6 +17,11 @@ const sidepanelStyle = css`
     background: var(--ax-bg-default);
   }
 
+  /* Aksel sizes tabs by content — with two tabs they split the panel width evenly instead. */
+  & .aksel-tabs__tab--small {
+    width: 50%;
+  }
+
   & > .aksel-tabs__tabpanel {
     padding-top: var(--ax-space-16);
   }

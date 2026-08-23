@@ -87,7 +87,7 @@ test.describe("Redigerbare vedlegg", () => {
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();
 
     await page.getByRole("tab", { name: "Vedlegg" }).click();
-    await page.getByRole("button", { name: VEDLEGG_TITTEL }).click();
+    await page.getByRole("region", { name: VEDLEGG_TITTEL }).getByRole("button", { name: "Vis mer" }).click();
 
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeHidden();
@@ -105,7 +105,7 @@ test.describe("Redigerbare vedlegg", () => {
     await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
 
-    await page.getByRole("button", { name: VEDLEGG_TITTEL }).click();
+    await page.getByRole("region", { name: VEDLEGG_TITTEL }).getByRole("button", { name: "Vis mer" }).click();
 
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();
   });
@@ -286,7 +286,7 @@ test.describe("Redigerbare vedlegg", () => {
     await endreVedlegg(page, " endret!");
 
     // Bytt vedlegg før debouncen har løpt ut.
-    await page.getByRole("button", { name: ANNET_VEDLEGG_TITTEL }).click();
+    await page.getByRole("region", { name: ANNET_VEDLEGG_TITTEL }).getByRole("button", { name: "Vis mer" }).click();
     await expect(page.getByText(ANNET_VEDLEGG_BROEDTEKST)).toBeVisible();
 
     await expect.poll(() => lagringer.length, { timeout: 15_000 }).toBe(1);
@@ -318,12 +318,12 @@ test.describe("Redigerbare vedlegg", () => {
 
     await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
     await endreVedlegg(page, " endret!");
-    await expect(page.getByRole("button", { name: ENDRET_TITTEL })).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole("region", { name: ENDRET_TITTEL })).toBeVisible({ timeout: 15_000 });
 
     await page.getByTestId("tilbakestill-mal-button").click();
     await page.getByText("Ja, tilbakestill vedlegget").click();
 
-    await expect(page.getByRole("button", { name: VEDLEGG_TITTEL })).toBeVisible();
+    await expect(page.getByRole("region", { name: VEDLEGG_TITTEL })).toBeVisible();
   });
 
   test("tilbakestilling venter på en pågående lagring", async ({ page }) => {
