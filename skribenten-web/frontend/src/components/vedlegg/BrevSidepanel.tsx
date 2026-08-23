@@ -28,7 +28,7 @@ const sidepanelStyle = css`
  * a vedlegg.
  */
 export const BrevSidepanel = (props: { saksId: string; brevId: number; brevmalPanel: ReactNode }) => {
-  const { aktivtDokument } = useAktivtDokument();
+  const { aktivtDokument, velgBrev } = useAktivtDokument();
   const [aktivTab, setAktivTab] = useState(aktivtDokument.type === "vedlegg" ? VEDLEGG_TAB : BREVMAL_TAB);
 
   // A deep link straight to a vedlegg (?vedlegg=…) must open on the tab that shows it.
@@ -38,8 +38,17 @@ export const BrevSidepanel = (props: { saksId: string; brevId: number; brevmalPa
     }
   }, [aktivtDokument.type]);
 
+  // The brevmal controls edit the letter, so going back to that tab also brings the letter back into
+  // the editor — otherwise they would be changing a document the user cannot see.
+  const velgTab = (tab: string) => {
+    setAktivTab(tab);
+    if (tab === BREVMAL_TAB) {
+      velgBrev();
+    }
+  };
+
   return (
-    <Tabs css={sidepanelStyle} onChange={setAktivTab} size="small" value={aktivTab}>
+    <Tabs css={sidepanelStyle} onChange={velgTab} size="small" value={aktivTab}>
       <Tabs.List>
         <Tabs.Tab label="Brevmal" value={BREVMAL_TAB} />
         <Tabs.Tab label="Vedlegg" value={VEDLEGG_TAB} />
