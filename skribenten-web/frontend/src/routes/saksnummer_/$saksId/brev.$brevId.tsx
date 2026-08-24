@@ -262,8 +262,18 @@ function RedigerBrev({
   const [lagrerAktivtDokument, setLagrerAktivtDokument] = useState(false);
 
   const velgDokument = useCallback(
-    (vedleggId: string | undefined) => navigate({ search: (prev) => ({ ...prev, vedlegg: vedleggId }), replace: true }),
-    [navigate],
+    async (vedleggId: string | undefined): Promise<boolean> => {
+      if (aktivVedlegg !== undefined && vedleggId !== aktivVedlegg) {
+        try {
+          await lagreAktivtDokumentRef.current?.();
+        } catch {
+          return false;
+        }
+      }
+      await navigate({ search: (prev) => ({ ...prev, vedlegg: vedleggId }), replace: true });
+      return true;
+    },
+    [aktivVedlegg, navigate],
   );
 
   // A stale or removed ?vedlegg= value falls back to the brev, and the URL is cleaned so the side

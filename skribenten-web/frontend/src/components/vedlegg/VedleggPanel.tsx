@@ -37,7 +37,7 @@ export const VedleggPanel = (props: { saksId: string; brevId: number }) => {
             <ExpansionCard
               aria-label={v.tittel}
               key={v.vedleggId}
-              onToggle={(open) => (open ? velgVedlegg(v.vedleggId) : velgBrev())}
+              onToggle={(open) => void (open ? velgVedlegg(v.vedleggId) : velgBrev())}
               open={erAktivt}
               size="small"
             >

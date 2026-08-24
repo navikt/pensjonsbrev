@@ -298,6 +298,38 @@ test.describe("Redigerbare vedlegg", () => {
     expect(lagringer).toHaveLength(1);
   });
 
+  test("blir i vedlegget når lagring før dokumentbytte feiler", async ({ page }) => {
+    let lagringsforsoek = 0;
+    await page.route(VEDLEGGLISTE_URL, (route) =>
+      route.fulfill({
+        json: [
+          { vedleggId: VEDLEGG_ID, tittel: VEDLEGG_TITTEL },
+          { vedleggId: ANNET_VEDLEGG_ID, tittel: ANNET_VEDLEGG_TITTEL },
+        ],
+      }),
+    );
+    await page.route(vedleggUrl(ANNET_VEDLEGG_ID), (route) => route.fulfill({ json: annetVedlegg }));
+    await page.route(vedleggUrl(VEDLEGG_ID), (route) => {
+      if (route.request().method() !== "PUT") {
+        return route.fulfill({ json: vedlegg });
+      }
+      lagringsforsoek += 1;
+      return route.fulfill({ status: 500, json: "Uff" });
+    });
+
+    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+    await endreVedlegg(page, " endret!");
+    await page.getByRole("region", { name: ANNET_VEDLEGG_TITTEL }).getByRole("button", { name: "Vis mer" }).click();
+
+    await expect(page.getByText("Klarte ikke lagre")).toBeVisible();
+    await expect(
+      page.getByRole("region", { name: VEDLEGG_TITTEL }).getByRole("button", { name: "Vis mer" }),
+    ).toHaveAttribute("aria-expanded", "true");
+    await expect(page.getByText(ANNET_VEDLEGG_BROEDTEKST)).toBeHidden();
+    await expect(page).toHaveURL(new RegExp(`vedlegg=${VEDLEGG_ID}`));
+    expect(lagringsforsoek).toBe(1);
+  });
+
   test("tilbakestilling setter tittelen i vedleggslisten tilbake til malens", async ({ page }) => {
     const ENDRET_TITTEL = "Mine opplysninger";
     let listetittel = VEDLEGG_TITTEL;

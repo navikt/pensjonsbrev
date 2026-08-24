@@ -49,30 +49,39 @@ export const BrevSidepanel = (props: { saksId: string; brevId: number; brevmalPa
   useEffect(() => {
     const foersteVedlegg = vedleggQuery.data?.[0];
     if (venterPaaFoersteVedlegg && foersteVedlegg) {
-      setVenterPaaFoersteVedlegg(false);
-      velgVedlegg(foersteVedlegg.vedleggId);
+      void velgVedlegg(foersteVedlegg.vedleggId).then((valgt) => {
+        if (valgt) {
+          setVenterPaaFoersteVedlegg(false);
+        }
+      });
     }
   }, [vedleggQuery.data, velgVedlegg, venterPaaFoersteVedlegg]);
 
   // The brevmal controls edit the letter, so going back to that tab also brings the letter back into
   // the editor — otherwise they would be changing a document the user cannot see.
-  const velgTab = (tab: string) => {
-    setAktivTab(tab);
+  const velgTab = async (tab: string) => {
     if (tab === BREVMAL_TAB) {
       setVenterPaaFoersteVedlegg(false);
-      velgBrev();
+      if (await velgBrev()) {
+        setAktivTab(tab);
+      }
     } else {
       const foersteVedlegg = vedleggQuery.data?.[0];
       if (foersteVedlegg) {
-        velgVedlegg(foersteVedlegg.vedleggId);
-      } else if (vedleggQuery.isPending) {
-        setVenterPaaFoersteVedlegg(true);
+        if (await velgVedlegg(foersteVedlegg.vedleggId)) {
+          setAktivTab(tab);
+        }
+      } else {
+        setAktivTab(tab);
+        if (vedleggQuery.isPending) {
+          setVenterPaaFoersteVedlegg(true);
+        }
       }
     }
   };
 
   return (
-    <Tabs css={sidepanelStyle} onChange={velgTab} size="small" value={aktivTab}>
+    <Tabs css={sidepanelStyle} onChange={(tab) => void velgTab(tab)} size="small" value={aktivTab}>
       <Tabs.List>
         <Tabs.Tab label="Brevmal" value={BREVMAL_TAB} />
         <Tabs.Tab label="Vedlegg" value={VEDLEGG_TAB} />

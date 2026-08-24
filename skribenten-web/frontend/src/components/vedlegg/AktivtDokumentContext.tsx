@@ -8,8 +8,8 @@ export type AktivtDokument = { type: "brev" } | { type: "vedlegg"; vedleggId: st
 
 type AktivtDokumentContextValue = {
   aktivtDokument: AktivtDokument;
-  velgBrev: () => void;
-  velgVedlegg: (vedleggId: string) => void;
+  velgBrev: () => Promise<boolean>;
+  velgVedlegg: (vedleggId: string) => Promise<boolean>;
   tilbakestillAktivtVedlegg: () => void;
   registrerTilbakestilling: (tilbakestill: (() => void) | null) => void;
   /**
@@ -28,7 +28,7 @@ const AktivtDokumentContext = createContext<AktivtDokumentContextValue | null>(n
  */
 export const AktivtDokumentProvider = (props: {
   aktivVedleggId: string | undefined;
-  onVelgDokument: (vedleggId: string | undefined) => void;
+  onVelgDokument: (vedleggId: string | undefined) => Promise<boolean>;
   registrerLagring: (lagreNaa: (() => Promise<void>) | null) => void;
   children: ReactNode;
 }) => {
