@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.SlettBrevPolicy
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
@@ -11,7 +12,7 @@ import org.jetbrains.exposed.v1.jdbc.Database
 
 class SlettBrevHandler(
     reserverBrevHandler: ReserverBrevHandler,
-    slettBrevPolicy: SlettBrevPolicy,
+    val slettBrevPolicy: SlettBrevPolicy,
     database: Database,
 ) : ReservertBrevHandler<SlettBrevHandler.Request, Unit>(database, reserverBrevHandler) {
 
