@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   getRedigerbartVedlegg,
@@ -63,8 +63,9 @@ export const ManagedVedleggEditor = (props: VedleggEditorProps) => {
 const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachment }) => {
   const { saksId, brev, vedleggId, vedlegg } = props;
   const queryClient = useQueryClient();
-  const { registrerLagring } = useAktivtDokument();
+  const { registrerLagring, registrerTilbakestilling } = useAktivtDokument();
   const [editorState, setEditorState] = useState<LetterEditorState>(() => createVedleggState(brev, vedlegg));
+  const [vilTilbakestille, setVilTilbakestille] = useState(false);
 
   // `includeSakspart` is metadata the editor never touches, so it is kept out of the editor state
   // and folded back in when saving. That keeps the editor state a plain EditedDocument.
@@ -98,6 +99,13 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
     return () => registrerLagring(null);
   }, [registrerLagring, lagreNaa]);
 
+  const aapneTilbakestilling = useCallback(() => setVilTilbakestille(true), []);
+
+  useEffect(() => {
+    registrerTilbakestilling(aapneTilbakestilling);
+    return () => registrerTilbakestilling(null);
+  }, [aapneTilbakestilling, registrerTilbakestilling]);
+
   const tilbakestill = () =>
     medLagringPaaPause(async () => {
       await tilbakestillRedigerbartVedlegg(saksId, brev.info.id, vedleggId);
@@ -110,22 +118,24 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
     });
 
   return (
-    <LetterEditor
-      editorState={editorState}
-      error={lagringFeilet}
-      freeze={props.freeze}
-      redigeringsflate="saksbehandler-redigering"
-      renderTilbakestillModal={({ åpen, onClose }) => (
+    <>
+      <LetterEditor
+        editorState={editorState}
+        error={lagringFeilet}
+        freeze={props.freeze}
+        redigeringsflate="saksbehandler-redigering"
+        setEditorState={setEditorState}
+        showDebug={false}
+      />
+      {vilTilbakestille && (
         <TilbakestillVedleggModal
-          onClose={onClose}
+          onClose={() => setVilTilbakestille(false)}
           resetEditor={(tilbakestilt) => setEditorState(createVedleggState(brev, tilbakestilt))}
           tilbakestill={tilbakestill}
           vedleggtittel={props.vedleggtittel}
-          åpen={åpen}
+          åpen
         />
       )}
-      setEditorState={setEditorState}
-      showDebug={false}
-    />
+    </>
   );
 };

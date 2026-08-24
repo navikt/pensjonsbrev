@@ -321,8 +321,12 @@ test.describe("Redigerbare vedlegg", () => {
     await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
     await endreVedlegg(page, " endret!");
     await expect(page.getByRole("region", { name: ENDRET_TITTEL })).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByTestId("tilbakestill-mal-button")).toBeHidden();
 
-    await page.getByTestId("tilbakestill-mal-button").click();
+    await page
+      .getByRole("region", { name: ENDRET_TITTEL })
+      .getByRole("button", { name: "Tilbakestill vedlegg" })
+      .click();
     await page.getByText("Ja, tilbakestill vedlegget").click();
 
     await expect(page.getByRole("region", { name: VEDLEGG_TITTEL })).toBeVisible();
@@ -349,7 +353,10 @@ test.describe("Redigerbare vedlegg", () => {
     await endreVedlegg(page, " endret!");
 
     await expect.poll(() => hendelser.includes("lagring-start"), { timeout: 15_000 }).toBe(true);
-    await page.getByTestId("tilbakestill-mal-button").click();
+    await page
+      .getByRole("region", { name: VEDLEGG_TITTEL })
+      .getByRole("button", { name: "Tilbakestill vedlegg" })
+      .click();
     await page.getByText("Ja, tilbakestill vedlegget").click();
 
     await expect.poll(() => hendelser.includes("tilbakestilling"), { timeout: 15_000 }).toBe(true);

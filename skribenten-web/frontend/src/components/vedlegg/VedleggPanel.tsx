@@ -1,4 +1,4 @@
-import { Alert, BodyShort, ExpansionCard, Loader, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, Button, ExpansionCard, HStack, Loader, VStack } from "@navikt/ds-react";
 
 import { useAktivtDokument } from "~/components/vedlegg/AktivtDokumentContext";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
@@ -9,7 +9,7 @@ import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedleg
  * vedlegg and P1 are still managed from brevbehandler.
  */
 export const VedleggPanel = (props: { saksId: string; brevId: number }) => {
-  const { aktivtDokument, velgBrev, velgVedlegg } = useAktivtDokument();
+  const { aktivtDokument, tilbakestillAktivtVedlegg, velgBrev, velgVedlegg } = useAktivtDokument();
   const vedleggQuery = useRedigerbareVedlegg({ saksId: props.saksId, brevId: props.brevId });
 
   if (vedleggQuery.isPending) {
@@ -45,9 +45,22 @@ export const VedleggPanel = (props: { saksId: string; brevId: number }) => {
                 <ExpansionCard.Title size="small">{v.tittel}</ExpansionCard.Title>
               </ExpansionCard.Header>
               <ExpansionCard.Content>
-                <BodyShort size="small">
-                  Dette vedlegget er redigerbart. Innholdet vises i redigeringsflaten og kan redigeres der.
-                </BodyShort>
+                <VStack gap="space-32">
+                  <BodyShort size="small">
+                    Dette vedlegget er redigerbart. Innholdet vises i redigeringsflaten og kan redigeres der.
+                  </BodyShort>
+                  <HStack>
+                    <Button
+                      data-color="danger"
+                      onClick={tilbakestillAktivtVedlegg}
+                      size="small"
+                      type="button"
+                      variant="secondary"
+                    >
+                      Tilbakestill vedlegg
+                    </Button>
+                  </HStack>
+                </VStack>
               </ExpansionCard.Content>
             </ExpansionCard>
           );

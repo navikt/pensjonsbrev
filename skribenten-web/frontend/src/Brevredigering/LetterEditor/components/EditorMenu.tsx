@@ -52,7 +52,7 @@ type EditorMenuProps = {
   redo: () => void;
   canUndo: boolean;
   canRedo: boolean;
-  setVilTilbakestilleMal: (state: boolean) => void;
+  setVilTilbakestilleMal?: (state: boolean) => void;
 };
 
 export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMal }: EditorMenuProps) => {
@@ -82,18 +82,20 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMa
 
         <HStack align="center" gap="space-16">
           <LagringStatus />
-          <Tooltip content={tooltipText.tilbakestill}>
-            <Button
-              aria-label="Tilbakestill mal"
-              data-color="danger"
-              data-testid="tilbakestill-mal-button"
-              icon={<ArrowCirclepathReverseIcon fontSize="1.5rem" title="Tilbakestill mal" />}
-              onClick={() => setVilTilbakestilleMal(true)}
-              size="small"
-              type="button"
-              variant="primary"
-            />
-          </Tooltip>
+          {setVilTilbakestilleMal && (
+            <Tooltip content={tooltipText.tilbakestill}>
+              <Button
+                aria-label="Tilbakestill mal"
+                data-color="danger"
+                data-testid="tilbakestill-mal-button"
+                icon={<ArrowCirclepathReverseIcon fontSize="1.5rem" title="Tilbakestill mal" />}
+                onClick={() => setVilTilbakestilleMal(true)}
+                size="small"
+                type="button"
+                variant="primary"
+              />
+            </Tooltip>
+          )}
         </HStack>
       </HStack>
     </Box>

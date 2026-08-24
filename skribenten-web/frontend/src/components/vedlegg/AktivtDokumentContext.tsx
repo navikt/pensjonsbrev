@@ -1,4 +1,4 @@
-import { createContext, type ReactNode, useCallback, useContext, useMemo } from "react";
+import { createContext, type ReactNode, useCallback, useContext, useMemo, useRef } from "react";
 
 /**
  * Which document the editor surface is currently showing. The brev is the default; a redigerbart
@@ -10,6 +10,8 @@ type AktivtDokumentContextValue = {
   aktivtDokument: AktivtDokument;
   velgBrev: () => void;
   velgVedlegg: (vedleggId: string) => void;
+  tilbakestillAktivtVedlegg: () => void;
+  registrerTilbakestilling: (tilbakestill: (() => void) | null) => void;
   /**
    * The mounted document editor registers how to persist its unsaved edits, so the page can await
    * that before it submits the brev and releases the reservation. Pass null on unmount.
@@ -31,18 +33,25 @@ export const AktivtDokumentProvider = (props: {
   children: ReactNode;
 }) => {
   const { aktivVedleggId, onVelgDokument, registrerLagring } = props;
+  const tilbakestillAktivtVedleggRef = useRef<(() => void) | null>(null);
 
   const velgBrev = useCallback(() => onVelgDokument(undefined), [onVelgDokument]);
   const velgVedlegg = useCallback((vedleggId: string) => onVelgDokument(vedleggId), [onVelgDokument]);
+  const tilbakestillAktivtVedlegg = useCallback(() => tilbakestillAktivtVedleggRef.current?.(), []);
+  const registrerTilbakestilling = useCallback((tilbakestill: (() => void) | null) => {
+    tilbakestillAktivtVedleggRef.current = tilbakestill;
+  }, []);
 
   const value = useMemo<AktivtDokumentContextValue>(
     () => ({
       aktivtDokument: aktivVedleggId === undefined ? { type: "brev" } : { type: "vedlegg", vedleggId: aktivVedleggId },
       velgBrev: velgBrev,
       velgVedlegg: velgVedlegg,
+      tilbakestillAktivtVedlegg: tilbakestillAktivtVedlegg,
+      registrerTilbakestilling: registrerTilbakestilling,
       registrerLagring: registrerLagring,
     }),
-    [aktivVedleggId, velgBrev, velgVedlegg, registrerLagring],
+    [aktivVedleggId, velgBrev, velgVedlegg, tilbakestillAktivtVedlegg, registrerTilbakestilling, registrerLagring],
   );
 
   return <AktivtDokumentContext.Provider value={value}>{props.children}</AktivtDokumentContext.Provider>;
