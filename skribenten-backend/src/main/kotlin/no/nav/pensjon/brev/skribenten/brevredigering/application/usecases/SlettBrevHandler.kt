@@ -12,7 +12,7 @@ import org.jetbrains.exposed.v1.jdbc.Database
 
 class SlettBrevHandler(
     reserverBrevHandler: ReserverBrevHandler,
-    val slettBrevPolicy: SlettBrevPolicy,
+    private val slettBrevPolicy: SlettBrevPolicy,
     database: Database,
 ) : ReservertBrevHandler<SlettBrevHandler.Request, Unit>(database, reserverBrevHandler) {
 
