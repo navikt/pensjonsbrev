@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.model
 
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
@@ -98,14 +99,17 @@ object Aldersbrevkoder {
     enum class AlltidValgbareVedlegg(
         override val visningstekst: String,
         override val spraak: Set<LanguageCode>,
+        override val stoettedeSakstyper: Set<ISakstype>
     ) : AlltidValgbartVedleggKode {
         SKJEMA_FOR_BANKOPPLYSNINGER(
             "Skjema for bankopplysninger",
             setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH),
+            stoettedeSakstyper = Sakstype.pensjon
         ),
         UTTAKSSKJEMA(
             "Uttaksskjema",
             setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH),
+            stoettedeSakstyper = Sakstype.pensjon
         ),
         ;
 

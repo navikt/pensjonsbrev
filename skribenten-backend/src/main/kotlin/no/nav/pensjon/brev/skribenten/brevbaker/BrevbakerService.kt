@@ -282,7 +282,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
 
     override suspend fun getAlltidValgbareVedlegg(sakstype: Sakstype): Set<AlltidValgbartVedleggBrevkode> =
         cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, "alltidValgbareVedlegg") {
-            val response = client.get("/letter/redigerbar/alltidValgbareVedlegg")
+            val response = client.get("/letter/redigerbar/alltidValgbareVedlegg?sakstype=${sakstype.kode}")
 
             if (response.status.isSuccess()) {
                 response.body()

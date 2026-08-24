@@ -22,7 +22,7 @@ class EndreValgteVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `kan endre valgte vedlegg`() {
         val brev = opprettBrev().resultOrFail()
 
-        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf()), AlltidValgbartVedleggBrevkode("kode2", "Visningstekst 2", setOf()))
+        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf(), setOf()), AlltidValgbartVedleggBrevkode("kode2", "Visningstekst 2", setOf(), setOf()))
         assertThat(endreVedlegg(brev, vedlegg)).isSuccess {
             assertThat(it.valgteVedlegg).isEqualTo(vedlegg)
         }
@@ -32,7 +32,7 @@ class EndreValgteVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `kan fjerne valgte vedlegg`() {
         val brev = opprettBrev().resultOrFail()
 
-        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf()), AlltidValgbartVedleggBrevkode("kode2", "Visningstekst 2", setOf()))
+        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf(), setOf()), AlltidValgbartVedleggBrevkode("kode2", "Visningstekst 2", setOf(), setOf()))
         assertThat(endreVedlegg(brev, vedlegg)).isSuccess {
             assertThat(it.valgteVedlegg).isEqualTo(vedlegg)
         }
@@ -48,7 +48,7 @@ class EndreValgteVedleggHandlerTest : BrevredigeringHandlerTestBase() {
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
         val rendringerFoer = brevbakerService.renderPdfKall.size
 
-        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf()))
+        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf(), setOf()))
         assertThat(endreVedlegg(brev, vedlegg)).isSuccess()
 
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
@@ -58,7 +58,7 @@ class EndreValgteVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     @Test
     suspend fun `uendrede valgte vedlegg gjenbruker dokumentet uten ny rendring`() {
         val brev = opprettBrev().resultOrFail()
-        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf()))
+        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf(), setOf()))
         assertThat(endreVedlegg(brev, vedlegg)).isSuccess()
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
         val rendringerFoer = brevbakerService.renderPdfKall.size
@@ -73,7 +73,7 @@ class EndreValgteVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `kan ikke endre valgte vedlegg for brev som redigeres av andre`() {
         val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
 
-        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf()))
+        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf(), setOf()))
         assertThat(endreVedlegg(brev, vedlegg, saksbehandler2Principal))
             .isFailure<BrevreservasjonPolicy.ReservertAvAnnen, _, _>()
     }

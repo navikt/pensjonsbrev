@@ -14,12 +14,12 @@ class HentAlltidValgbareVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `henter alltid valgbare vedlegg sortert med spraaktilgjengelighet`() {
         val brev = opprettBrev().resultOrFail()
         brevbakerService.alltidValgbareVedleggResultat = setOf(
-            AlltidValgbartVedleggBrevkode("kode-2", "B vedlegg", setOf(LanguageCode.ENGLISH)),
-            AlltidValgbartVedleggBrevkode("kode-1", "A vedlegg", setOf(LanguageCode.BOKMAL)),
-            AlltidValgbartVedleggBrevkode("kode-3", "C vedlegg", setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH)),
+            AlltidValgbartVedleggBrevkode("kode-2", "B vedlegg", setOf(LanguageCode.ENGLISH), setOf()),
+            AlltidValgbartVedleggBrevkode("kode-1", "A vedlegg", setOf(LanguageCode.BOKMAL), setOf()),
+            AlltidValgbartVedleggBrevkode("kode-3", "C vedlegg", setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH), setOf()),
         )
 
-        assertThat(handler(HentAlltidValgbareVedleggHandler.Request(brev.info.id, sak1.saksId))).isSuccess {
+        assertThat(handler(HentAlltidValgbareVedleggHandler.Request(brev.info.id, sak1.saksId, sak1.sakType))).isSuccess {
             assertThat(it).containsExactly(
                 ValgbartVedlegg("kode-1", "A vedlegg", setOf(LanguageCode.BOKMAL), false),
                 ValgbartVedlegg("kode-2", "B vedlegg", setOf(LanguageCode.ENGLISH), true),

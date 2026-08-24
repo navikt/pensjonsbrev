@@ -54,7 +54,8 @@ fun Route.redigerbarRoutes(
         }
 
         get("/alltidValgbareVedlegg") {
-            call.respond(redigerbareBrev.alltidValgbareVedlegg.map { it.kode })
+            val sakstype = call.parameters["sakstype"]
+            call.respond(redigerbareBrev.alltidValgbareVedlegg.map { it.kode }.filter { sakstype == null || it.stoettedeSakstyper.map { it.kode }.contains(sakstype) })
         }
     }
 }
