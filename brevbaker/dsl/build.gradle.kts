@@ -8,6 +8,10 @@ plugins {
     id("java-test-fixtures")
 }
 
+dependencyLocking {
+    lockAllConfigurations()
+}
+
 group = "no.nav.brev.brevbaker"
 version = "0.0.1-SNAPSHOT"
 

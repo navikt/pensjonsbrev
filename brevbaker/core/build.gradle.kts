@@ -10,6 +10,10 @@ plugins {
     alias(libs.plugins.ksp) apply true
 }
 
+dependencyLocking {
+    lockAllConfigurations()
+}
+
 group = "no.nav.brev.brevbaker"
 version = "0.0.1-SNAPSHOT"
 
