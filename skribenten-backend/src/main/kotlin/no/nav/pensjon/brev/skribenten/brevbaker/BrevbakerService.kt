@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.brevbaker
 
-import com.fasterxml.jackson.databind.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
@@ -18,6 +17,7 @@ import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.*
+import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.*
@@ -73,7 +73,7 @@ interface BrevbakerService {
 
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
-    suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode>
+    suspend fun getAlltidValgbareVedlegg(sakstype: Sakstype): Set<AlltidValgbartVedleggBrevkode>
 }
 
 class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, val cache: Cache, engine: HttpClientEngine) : BrevbakerService, ServiceStatus, Closeable {
@@ -280,7 +280,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             }
         }
 
-    override suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode> =
+    override suspend fun getAlltidValgbareVedlegg(sakstype: Sakstype): Set<AlltidValgbartVedleggBrevkode> =
         cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, "alltidValgbareVedlegg") {
             val response = client.get("/letter/redigerbar/alltidValgbareVedlegg")
 

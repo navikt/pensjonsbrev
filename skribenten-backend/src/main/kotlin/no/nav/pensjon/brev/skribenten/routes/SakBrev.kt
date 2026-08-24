@@ -346,7 +346,7 @@ fun Route.sakBrev() =
                 val sak: Fagsak = call.attributes[SakKey]
 
                 val result = hentAlltidValgbareVedlegg(
-                    HentAlltidValgbareVedleggHandler.Request(brevId = brevId, saksId = sak.saksId)
+                    HentAlltidValgbareVedleggHandler.Request(brevId = brevId, saksId = sak.saksId, sakstype = sak.sakType)
                 )
 
                 respondSuccess(result?.asSuccess()) { respond(it) }
