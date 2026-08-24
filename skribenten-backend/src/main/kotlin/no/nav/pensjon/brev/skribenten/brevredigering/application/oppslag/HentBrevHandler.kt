@@ -26,7 +26,7 @@ class HentBrevHandler(
         if (!request.reserverForRedigering) {
             brevtilgang.forLesing(request.brevId, request.saksId) { success(brev.tilDto()) }
         } else {
-            brevtilgang.forRedigering(request.brevId, request.saksId) {
+            brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = false) {
                 val pesysdata = brevdataService.hentBrevdata(brev)
                 val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
                 brev.mergeRendretBrev(rendretBrev.markup)

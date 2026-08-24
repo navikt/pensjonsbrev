@@ -29,15 +29,13 @@ class EndreRedigertVedleggHandler(
     )
 
     suspend operator fun invoke(request: Request): Outcome<Edit.Attachment, BrevredigeringError>? =
-        brevtilgang.forRedigering(request.brevId, request.saksId) {
+        brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = request.frigiReservasjon) {
             val pesysdata = brevdataService.hentBrevdata(brev)
             val malVedlegg = brevmalService.renderRedigerbartVedlegg(brev, pesysdata, request.vedleggId)
                 ?: return@forRedigering failure(VedleggFinnesIkkeIMal(request.brevId, request.vedleggId))
 
             val sammenslaatt = request.redigertVedlegg.updateEditedAttachment(malVedlegg)
             brev.settRedigertVedlegg(request.vedleggId, sammenslaatt)
-
-            if (request.frigiReservasjon) brev.frigiReservasjon()
 
             success(sammenslaatt)
         }

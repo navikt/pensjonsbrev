@@ -18,9 +18,8 @@ class EndreValgteVedleggHandler(private val brevtilgang: Brevtilgang) {
     )
 
     suspend operator fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        brevtilgang.forRedigering(request.brevId, request.saksId) {
+        brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = true) {
             brev.valgteVedlegg = request.alltidValgbareVedlegg
-            brev.frigiReservasjon()
 
             success(brev.tilDto())
         }

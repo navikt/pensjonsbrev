@@ -23,7 +23,7 @@ class TilbakestillBrevHandler(
     data class Request(val brevId: BrevId, val saksId: SaksId)
 
     suspend operator fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        brevtilgang.forRedigering(request.brevId, request.saksId) {
+        brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = false) {
             val modelSpec = brevmalService.getModelSpecification(brev.brevkode)
                 ?: return@forRedigering failure(BrevmalFinnesIkke(brev.brevkode))
             brev.tilbakestillSaksbehandlerValg(modelSpec)

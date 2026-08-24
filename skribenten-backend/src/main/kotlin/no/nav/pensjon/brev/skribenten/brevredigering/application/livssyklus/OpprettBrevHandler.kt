@@ -3,14 +3,15 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.hentSignatur
-import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.common.getOrElse
+import no.nav.pensjon.brev.skribenten.db.Transactional
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.toEdit
@@ -22,10 +23,12 @@ import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import java.time.Instant
 
 class OpprettBrevHandler(
-    private val brevtilgang: Brevtilgang,
+    private val transactional: Transactional,
     private val opprettBrevPolicy: OpprettBrevPolicy,
+    private val brevreservasjonPolicy: BrevreservasjonPolicy,
     private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
     private val navansattService: NavansattService,
@@ -43,10 +46,11 @@ class OpprettBrevHandler(
     )
 
     override suspend fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
-        brevtilgang.iTransaksjon {
+        transactional.rollbackOnFailure {
             val principal = PrincipalInContext.require()
-
-            val parametre = opprettBrevPolicy.kanOppretteBrev(request, principal).getOrElse { return@iTransaksjon failure(it) }
+            val parametre = opprettBrevPolicy
+                .kanOppretteBrev(request.brevkode, request.vedtaksId, request.avsenderEnhetsId, principal)
+                .getOrElse { return@rollbackOnFailure failure(it) }
 
             val pesysData = brevdataService.hentBrevdata(
                 saksId = request.saksId,
@@ -77,12 +81,12 @@ class OpprettBrevHandler(
             )
 
             if (request.reserverForRedigering) {
-                brev.reserverFor(principal.navIdent)
+                brev.reserver(Instant.now(), principal.navIdent, brevreservasjonPolicy)
             }
             if (request.mottaker != null) {
                 brev.settMottaker(request.mottaker, pesysData.felles.annenMottakerNavn)
             }
 
-            success(brev.tilDto(rendretBrev.letterDataUsage))
+            success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
         }
 }

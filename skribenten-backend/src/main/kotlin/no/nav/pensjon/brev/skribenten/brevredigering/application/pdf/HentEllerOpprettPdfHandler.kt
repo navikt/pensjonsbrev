@@ -45,9 +45,9 @@ class HentEllerOpprettPdfHandler(
     )
 
     suspend operator fun invoke(request: Request): Outcome<Dto.HentDocumentResult, IngenFoersteside>? =
-        brevtilgang.forLesing(request.brevId, request.saksId) { utfoer(request, brev) }
+        brevtilgang.forLesing(request.brevId, request.saksId) { execute(request, brev) }
 
-    private suspend fun utfoer(request: Request, brev: BrevredigeringEntity): Outcome<Dto.HentDocumentResult, IngenFoersteside>? {
+    private suspend fun execute(request: Request, brev: BrevredigeringEntity): Outcome<Dto.HentDocumentResult, IngenFoersteside>? {
         val document = brev.document
 
         val pesysBrevdata = brevdataService.hentBrevdata(brev).let { brevdata ->

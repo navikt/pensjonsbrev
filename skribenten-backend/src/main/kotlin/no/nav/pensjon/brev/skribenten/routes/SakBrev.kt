@@ -34,7 +34,7 @@ fun Route.sakBrev() =
 
         get {
             val sak: Fagsak = call.attributes[SakKey]
-            respondSuccess(hentBrevForSak(HentBrevForSakHandler.Request(sak.saksId))?.asSuccess()) {
+            respondSuccess(hentBrevForSak(HentBrevForSakHandler.Request(sak.saksId)).asSuccess()) {
                 respond(HttpStatusCode.OK, it.map { brev -> dto2ApiService.toApi(brev) })
             }
         }

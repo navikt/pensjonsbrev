@@ -27,10 +27,8 @@ class OppdaterBrevHandler(
     )
 
     suspend operator fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        brevtilgang.forRedigering(request.brevId, request.saksId) {
+        brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = request.frigiReservasjon) {
             val rendretBrev = oppdaterOgRender(request.nyeSaksbehandlerValg, request.nyttRedigertbrev, brevdataService, brevmalService)
-
-            if (request.frigiReservasjon) brev.frigiReservasjon()
 
             success(brev.tilDto(rendretBrev.letterDataUsage))
         }

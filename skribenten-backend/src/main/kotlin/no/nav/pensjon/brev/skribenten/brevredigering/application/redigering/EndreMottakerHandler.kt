@@ -17,9 +17,8 @@ class EndreMottakerHandler(
     data class Request(val brevId: BrevId, val saksId: SaksId, val mottaker: Dto.Mottaker?)
 
     suspend operator fun invoke(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
-        brevtilgang.forRedigering(request.brevId, request.saksId) {
+        brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = true) {
             brev.settMottaker(request.mottaker, request.mottaker?.let { brevdataService.hentAnnenMottakerNavn(it) })
-            brev.frigiReservasjon()
 
             success(brev.tilBrevInfo())
         }

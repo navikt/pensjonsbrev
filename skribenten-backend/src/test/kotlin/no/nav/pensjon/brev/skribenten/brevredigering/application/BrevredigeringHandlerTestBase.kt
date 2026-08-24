@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.*
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.*
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
+import no.nav.pensjon.brev.skribenten.db.Transactional
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.*
 import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
@@ -113,14 +114,15 @@ abstract class BrevredigeringHandlerTestBase {
     protected val attesterBrevPolicy = AttesterBrevPolicy()
     protected val ferdigRedigertPolicy = FerdigRedigertPolicy()
     protected val sendBrevPolicy = SendBrevPolicy(ferdigRedigertPolicy)
+    protected val opprettBrevPolicy = OpprettBrevPolicy(brevmalService, navAnsattService)
+    protected val transactional by lazy { Transactional(SharedPostgres.database) }
     protected val brevtilgang by lazy {
         Brevtilgang(
             redigerBrevPolicy = redigerBrevPolicy,
             attesterBrevPolicy = attesterBrevPolicy,
-            ferdigRedigertPolicy = ferdigRedigertPolicy,
             sendBrevPolicy = sendBrevPolicy,
             brevreservasjonPolicy = brevreservasjonPolicy,
-            database = SharedPostgres.database,
+            transactional = transactional,
         )
     }
     protected val reserverBrevHandler by lazy { ReserverBrevHandler(brevtilgang) }
@@ -128,18 +130,19 @@ abstract class BrevredigeringHandlerTestBase {
     protected val endreMottaker by lazy { EndreMottakerHandler(brevtilgang, brevdataService) }
     protected val endreDistribusjonstype by lazy { EndreDistribusjonstypeHandler(brevtilgang) }
     protected val leggVedFoersteside by lazy { LeggVedFoerstesideHandler(brevtilgang) }
-    protected val veksleKlarStatus by lazy { VeksleKlarStatusHandler(brevtilgang) }
+    protected val veksleKlarStatus by lazy { VeksleKlarStatusHandler(brevtilgang, ferdigRedigertPolicy) }
     protected val hentBrevAttestering by lazy { HentBrevAttesteringHandler(brevtilgang, brevmalService, brevdataService, navAnsattService) }
     protected val hentBrevInfoHandler by lazy { HentBrevInfoHandler(brevtilgang) }
-    protected val hentBrevForSakHandler by lazy { HentBrevForSakHandler(brevtilgang) }
-    protected val hentBrevForAlleSakerHandler by lazy { HentBrevForAlleSakerHandler(brevtilgang) }
+    protected val hentBrevForSakHandler by lazy { HentBrevForSakHandler(transactional, brevreservasjonPolicy) }
+    protected val hentBrevForAlleSakerHandler by lazy { HentBrevForAlleSakerHandler(transactional, brevreservasjonPolicy) }
     protected val hentBrev by lazy { HentBrevHandler(brevtilgang, brevmalService, brevdataService) }
     protected val attesterBrev by lazy { AttesterBrevHandler(brevtilgang, ferdigRedigertPolicy, brevmalService, brevdataService, navAnsattService) }
     protected val oppdaterBrev by lazy { OppdaterBrevHandler(brevtilgang, brevmalService, brevdataService) }
     protected val opprettBrev by lazy {
         OpprettBrevHandler(
-            brevtilgang = brevtilgang,
-            opprettBrevPolicy = OpprettBrevPolicy(brevmalService, navAnsattService),
+            transactional = transactional,
+            opprettBrevPolicy = opprettBrevPolicy,
+            brevreservasjonPolicy = brevreservasjonPolicy,
             brevmalService = brevmalService,
             brevdataService = brevdataService,
             navansattService = navAnsattService,

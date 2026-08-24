@@ -35,7 +35,7 @@ class AttesterBrevHandler(
     )
 
     suspend operator fun invoke(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        brevtilgang.forAttestering(request.brevId, request.saksId) {
+        brevtilgang.forAttestering(request.brevId, request.saksId, frigiReservasjon = request.frigiReservasjon) {
             val rendretBrev = oppdaterOgRender(request.nyeSaksbehandlerValg, request.nyttRedigertbrev, brevdataService, brevmalService)
 
             ferdigRedigertPolicy.erFerdigRedigert(brev).onError { return@forAttestering failure(it) }
@@ -48,8 +48,6 @@ class AttesterBrevHandler(
             val attestantSignatur = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn
                 ?: principal.hentSignatur(navansattService)
             brev.attester(principal.navIdent, attestantSignatur)
-
-            if (request.frigiReservasjon) brev.frigiReservasjon()
 
             success(brev.tilDto(rendretBrev.letterDataUsage))
         }

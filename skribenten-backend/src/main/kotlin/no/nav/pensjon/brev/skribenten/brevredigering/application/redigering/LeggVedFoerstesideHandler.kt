@@ -13,9 +13,8 @@ class LeggVedFoerstesideHandler(private val brevtilgang: Brevtilgang) {
     data class Request(val brevId: BrevId, val saksId: SaksId, val leggVedFoersteside: Boolean)
 
     suspend operator fun invoke(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
-        brevtilgang.forRedigering(request.brevId, request.saksId) {
+        brevtilgang.forRedigering(request.brevId, request.saksId, frigiReservasjon = true) {
             brev.leggVedFoersteside = request.leggVedFoersteside
-            brev.frigiReservasjon()
 
             success(brev.tilBrevInfo())
         }

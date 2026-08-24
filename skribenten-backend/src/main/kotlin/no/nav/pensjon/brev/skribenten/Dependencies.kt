@@ -36,6 +36,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.Veks
 import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.FrigiReservasjonHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.ReserverBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.Brevtilgang
+import no.nav.pensjon.brev.skribenten.db.Transactional
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.EndreRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.EndreValgteVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.HentAlltidValgbareVedleggHandler
@@ -121,6 +122,7 @@ fun Application.configureDependencies() {
         provide(Dto2ApiService::class)
         provide(ExternalAPIService::class)
 
+        provide(Transactional::class)
         provide(Brevtilgang::class)
 
         provide(AttesterBrevPolicy::class)

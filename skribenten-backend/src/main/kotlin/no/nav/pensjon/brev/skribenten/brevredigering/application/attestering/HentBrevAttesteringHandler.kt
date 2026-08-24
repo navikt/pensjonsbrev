@@ -31,7 +31,7 @@ class HentBrevAttesteringHandler(
         if (!request.reserverForRedigering) {
             brevtilgang.forLesing(request.brevId, request.saksId) { success(brev.tilDto()) }
         } else {
-            brevtilgang.forAttestering(request.brevId, request.saksId) {
+            brevtilgang.forAttestering(request.brevId, request.saksId, frigiReservasjon = false) {
                 val principal = PrincipalInContext.require()
 
                 if (brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn == null) {

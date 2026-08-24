@@ -43,6 +43,16 @@ class VeksleKlarStatusHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
+    suspend fun `aa markere et allerede klart brev som klart er en no-op`() {
+        val brev = opprettBrev().resultOrFail()
+        assertThat(veksleKlarStatus(brev, true)).isSuccess()
+
+        assertThat(veksleKlarStatus(brev, true)).isSuccess {
+            assertThat(it.status).isEqualTo(Dto.BrevStatus.KLAR)
+        }
+    }
+
+    @Test
     suspend fun `informasjonsbrev i vedtakskontekst faar status KLAR`() {
         val brev = opprettBrev(brevkode = Testbrevkoder.VARSELBREV, vedtaksId = VedtaksId(1)).resultOrFail()
 
