@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { setupSakStubs } from "../utils/helpers";
+import { setupSakStubs } from "~test/e2e/support/helpers";
 
 const LONG_TITLE =
   "Forventa verdi av typen class no.nav.domain.pensjon.kjerne.beregning.SomeVeryLongClassName men den mangla og den var veldig lang og skulle teste om det skjer overflow i alerten";

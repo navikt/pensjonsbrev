@@ -6,9 +6,9 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimule
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.alder.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringDto.*
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdAvsnitt.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdInnhold.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdSeksjon.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.kortforbehold.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.Kull
 import no.nav.pensjon.brev.planleggepensjon.simulering.NormertPensjonsalderPlassering
 import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.*
@@ -44,19 +44,8 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
     },
     includeSakspart = false,
 ) {
-    paragraph {
-        text(
-            bokmal {
-                +"Pensjonen er beregnet med opplysninger Nav har om deg og opplysninger du har gitt på beregningstidspunktet. Dette er et foreløpig estimat. Det er ikke et vedtak og gir ikke rett til pensjon. Beregningen er vist i dagens kroneverdi før skatt. Den er gjort etter gjeldende regelverk og satser."
-            },
-        )
-    }
-    paragraph {
-        text(
-            bokmal {
-                +"Endringer i opplysninger, opptjening eller regelverk kan påvirke resultatet. Det kan også påvirke når du tidligst kan starte uttak av alderspensjon. Vi anbefaler å gjøre en ny beregning når du nærmer deg tidspunktet for uttak av pensjon."
-            }
-        )
+    ifNotNull(kortforbehold) { kortforbeholdVerdi ->
+        includePhrase(ForbeholdAvsnittPhrase(kortforbeholdVerdi.avsnitt))
     }
 
     ifNotNull(aarligInntektOgPensjonListe) {
@@ -363,20 +352,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
                     eval(tittelVerdi)
                 }
             }
-            forEach(seksjon.avsnitt) { avsnittItem ->
-                paragraph {
-                    eval(avsnittItem.tekst)
-                    ifNotNull(avsnittItem.punktliste) { punkter ->
-                        list {
-                            forEach(punkter) { punkt ->
-                                item {
-                                    eval(punkt)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            includePhrase(ForbeholdAvsnittPhrase(seksjon.avsnitt))
         }
     }
 

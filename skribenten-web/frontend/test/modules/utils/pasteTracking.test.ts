@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from "vitest";
 
-import { getPasteMetadata } from "./pasteTracking";
+import { getPasteMetadata } from "~/utils/pasteTracking";
 
 function clipboard(types: string[], data: Record<string, string> = {}): Pick<DataTransfer, "getData" | "types"> {
   return {

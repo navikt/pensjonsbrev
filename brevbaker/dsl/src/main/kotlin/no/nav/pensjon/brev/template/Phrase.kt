@@ -1,5 +1,8 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.dsl.*
 
 
@@ -39,26 +42,30 @@ sealed class AbstractPlainTextOnlyPhrase<Lang : LanguageSupport> {
     private fun applyPlainTextScope() = PlainTextOnlyScope<Lang, Unit>().apply { template() }.elements
 }
 
-abstract class ParagraphPhrase<Lang : LanguageSupport> : AbstractParagraphPhrase<Lang>()
+abstract class ParagraphPhrase<Lang : LanguageSupport> : AbstractParagraphPhrase<Lang, Unit>()
 
-abstract class RedigerbarParagraphPhrase<Lang : LanguageSupport> : AbstractParagraphPhrase<Lang>(), DslExtensionForRedigerbareBrev
+abstract class RedigerbarParagraphPhrase<Lang : LanguageSupport> :
+    AbstractParagraphPhrase<Lang, RedigerbarPhraseBrevdata>(), DslExtensionForRedigerbareBrev
 
-sealed class AbstractParagraphPhrase<Lang : LanguageSupport> {
-    abstract fun ParagraphOnlyScope<Lang, Unit>.template()
+sealed class AbstractParagraphPhrase<Lang : LanguageSupport, LetterData : Any> {
+    abstract fun ParagraphOnlyScope<Lang, LetterData>.template()
     fun apply(scope: ParagraphOnlyScope<in Lang, *>) {
-        ParagraphOnlyScope<Lang, Unit>().apply { template() }.elements
+        ParagraphOnlyScope<Lang, LetterData>().apply { template() }.elements
             .forEach { scope.addParagraphContent(it) }
     }
 }
 
-abstract class OutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Lang>()
+abstract class OutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Lang, Unit>()
 
-abstract class RedigerbarOutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Lang>(), DslExtensionForRedigerbareBrev
+abstract class RedigerbarOutlinePhrase<Lang : LanguageSupport> :
+    AbstractOutlinePhrase<Lang, RedigerbarPhraseBrevdata>(), DslExtensionForRedigerbareBrev
 
-sealed class AbstractOutlinePhrase<Lang : LanguageSupport> {
-    abstract fun OutlineOnlyScope<Lang, Unit>.template()
+sealed class AbstractOutlinePhrase<Lang : LanguageSupport, LetterData : Any> {
+    abstract fun OutlineOnlyScope<Lang, LetterData>.template()
     fun apply(scope: OutlineOnlyScope<in Lang, *>) {
-        OutlineOnlyScope<Lang, Unit>(scope.validator.subScope()).apply { template() }.elements
+        OutlineOnlyScope<Lang, LetterData>(scope.validator.subScope()).apply { template() }.elements
             .forEach { scope.addOutlineContent(it) }
     }
 }
+
+interface RedigerbarPhraseBrevdata : RedigerbarBrevdata<SaksbehandlervalgIDSL, EmptyFagsystemdata>

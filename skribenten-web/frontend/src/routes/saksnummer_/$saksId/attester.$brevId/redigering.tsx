@@ -393,7 +393,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           right={
             <>
               <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
-                <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
+                <ManagedLetterEditor
+                  brev={props.brev}
+                  error={error}
+                  freeze={freeze}
+                  redigeringsflate="attestant-redigering"
+                  showDebug={showDebug}
+                />
               </InsertedTekstValgHighlightProvider>
               {/* Modal som ikke tar opp plass i DOM her */}
               <ReservertBrevError

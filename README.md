@@ -32,12 +32,10 @@ docker-compose up -d --build
 ### Lokal kjøring av skribenten backend/front-end og brevbaker/pdf-bygger
 
 1. For å hente alle secrets må du ha installert:
-   - kubectl
-   - python
-   - vault
    - gcloud cli
    - kjørende docker/colima
    - naisdevice med standard dev-miljø tilganger
+   - nais-cli (cli.nais.io)
 2. Hent alle secrets:
    ```bash
    ./fetch-secrets.sh

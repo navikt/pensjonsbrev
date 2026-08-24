@@ -31,7 +31,7 @@ import { type Nullable } from "~/types/Nullable";
 import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { getErrorMessage } from "~/utils/errorUtils";
-import { truncatedSha256Hash } from "~/utils/hashUtils";
+import { trackMottakerClick } from "~/utils/mottakerTracking";
 import { trackEvent } from "~/utils/umami";
 
 import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrev } from "../-BrevbehandlerUtils";
@@ -264,8 +264,8 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
                 data-testid="toggle-endre-mottaker-modal"
                 icon={<PencilIcon />}
                 onClick={() => {
-                  trackEvent("endre mottaker klikket", { kontekst: "brevbehandler", saksId: props.saksId, enhetsId });
                   åpneModal();
+                  void trackMottakerClick("endre mottaker klikket", "brevbehandler", props.saksId, { enhetsId });
                 }}
                 size="xsmall"
                 type="button"
@@ -281,12 +281,9 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           <Button
             css={{ margin: "0 calc(-1 * var(--ax-space-8))" }}
             loading={fjernMottakerIsPending}
-            onClick={async () => {
-              trackEvent("tilbakestill mottaker klikket", {
-                kontekst: "brevbehandler",
-                saksId: await truncatedSha256Hash(props.saksId),
-              });
+            onClick={() => {
               fjernMottaker();
+              void trackMottakerClick("tilbakestill mottaker klikket", "brevbehandler", props.saksId);
             }}
             size="xsmall"
             type="button"

@@ -11,20 +11,19 @@ import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.NewLine
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Variable
 
-abstract class EditLetterVisitor<T>(private val letter: Letter) {
+abstract class EditLetterVisitor<T>(private val blocks: List<Block>) {
+    constructor(letter: Letter) : this(letter.blocks)
+
     private val result = mutableListOf<T>()
 
     protected fun emit(value: T) { result += value }
 
     fun build(): List<T> {
-        visit(letter)
+        blocks.forEach { visit(it) }
         return result
     }
 
     open fun visitIdentifiable(element: Edit.Identifiable) = Unit
-
-    open fun visit(letter: Letter): Unit =
-        letter.blocks.forEach { visit(it) }
 
     open fun visit(block: Block): Unit =
         when (block) {
