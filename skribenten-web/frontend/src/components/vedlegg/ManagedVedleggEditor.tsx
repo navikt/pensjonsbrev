@@ -53,7 +53,7 @@ export const ManagedVedleggEditor = (props: VedleggEditorProps) => {
   });
 
   if (vedleggQuery.isPending) {
-    return <CenteredLoader label="Henter vedlegg..." />;
+    return <CenteredLoader label="Henter vedlegg..." verticalStrategy="height" />;
   }
   if (vedleggQuery.isError) {
     return <ApiError error={vedleggQuery.error} title="Klarte ikke å hente vedlegget" />;

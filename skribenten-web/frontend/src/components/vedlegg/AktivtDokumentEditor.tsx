@@ -26,7 +26,7 @@ export const AktivtDokumentEditor = (props: {
   // The vedlegg's title comes from the list, so a deep link has to wait for it rather than flash
   // the brev on the way to the vedlegg.
   if (vedleggQuery.isPending) {
-    return <CenteredLoader label="Henter vedlegg..." />;
+    return <CenteredLoader label="Henter vedlegg..." verticalStrategy="height" />;
   }
 
   const vedlegg = vedleggQuery.data?.find((v) => v.vedleggId === aktivtDokument.vedleggId);
