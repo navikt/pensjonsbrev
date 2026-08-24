@@ -1,4 +1,5 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import isEqual from "lodash/isEqual";
 import { useCallback, useEffect, useState } from "react";
 
 import {
@@ -83,9 +84,23 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
     mutationFn: (dokument) => lagreRedigerbartVedlegg(saksId, brev.info.id, vedleggId, tilVedlegg(dokument)),
     onSaveStart: () => setEditorState((s) => ({ ...s, saveStatus: "SAVE_PENDING" })),
     onSaveSuccess: (lagretVedlegg) => {
+      const lagretDokument: EditedDocument = {
+        title: lagretVedlegg.title,
+        blocks: lagretVedlegg.blocks,
+        deletedBlocks: lagretVedlegg.deletedBlocks,
+      };
       // Keep it DIRTY when the user typed again while the save was in flight: those edits are not
       // covered by this response, so the autosave must fire again instead of reporting SAVED.
-      setEditorState((s) => (s.saveStatus === "DIRTY" ? s : { ...s, saveStatus: "SAVED" }));
+      setEditorState((s) => {
+        if (s.saveStatus === "DIRTY") return s;
+        if (isEqual(s.redigertBrev, lagretDokument)) return { ...s, saveStatus: "SAVED" };
+        return {
+          ...s,
+          redigertBrev: lagretDokument,
+          saveStatus: "SAVED",
+          history: { entries: [], entryPointer: -1 },
+        };
+      });
       settVedleggICache(lagretVedlegg);
       // The edited title may have changed, and the vedlegg is part of the rendered letter PDF.
       queryClient.invalidateQueries({ queryKey: redigerbareVedleggKeys.liste(brev.info.id) });

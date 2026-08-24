@@ -137,6 +137,37 @@ test.describe("Redigerbare vedlegg", () => {
     expect(lagringer).toHaveLength(1);
   });
 
+  test("viser innhold som backend merger inn ved lagring", async ({ page }) => {
+    const NY_TEKST_FRA_MAL = "Nytt innhold fra oppdatert vedleggsmal.";
+    await page.route(vedleggUrl(VEDLEGG_ID), (route) => {
+      if (route.request().method() !== "PUT") {
+        return route.fulfill({ json: vedlegg });
+      }
+      const lagret = route.request().postDataJSON().redigertVedlegg;
+      return route.fulfill({
+        json: {
+          ...lagret,
+          blocks: [
+            ...lagret.blocks,
+            {
+              id: 950,
+              type: "PARAGRAPH",
+              editable: true,
+              deletedContent: [],
+              content: [literal(NY_TEKST_FRA_MAL, 951)],
+            },
+          ],
+        },
+      });
+    });
+
+    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+    await endreVedlegg(page, " endret!");
+
+    await expect(page.getByText("Lagret")).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText(NY_TEKST_FRA_MAL)).toBeVisible();
+  });
+
   test("prøver ikke samme lagring på nytt i det uendelige når lagring feiler", async ({ page }) => {
     let forsoek = 0;
     await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, (route) => {
