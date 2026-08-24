@@ -9,6 +9,7 @@ plugins {
 
 dependencyLocking {
     lockAllConfigurations()
+    ignoredDependencies.add("no.nav.brev.brevbaker:markup-model")
 }
 
 group = "no.nav.brev.brevbaker"

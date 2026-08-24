@@ -10,6 +10,9 @@ plugins {
 
 dependencyLocking {
     lockAllConfigurations()
+    ignoredDependencies.add("no.nav.brev.brevbaker:brevbaker-api")
+    ignoredDependencies.add("no.nav.brev.brevbaker:brevdata")
+    ignoredDependencies.add("no.nav.brev.brevbaker:markup-model")
 }
 
 group = "no.nav.brev.brevbaker"
