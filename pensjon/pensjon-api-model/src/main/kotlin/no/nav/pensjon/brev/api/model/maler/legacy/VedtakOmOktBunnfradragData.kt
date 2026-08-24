@@ -14,13 +14,13 @@ data class VedtakOmOktBunnfradragData(
     val bunnfradrag: Kroner,
     val bunnfradrag2027: Kroner,
     val uforegrad: Int,
-    val ieu: Kroner,
     val manedligOkningUforetrygdUtAret: Kroner?,
     val okningUt: Boolean,
     val redusertBtfb: Boolean,
     val datoOkningBunnfradrag: LocalDate,
     val nettoHarBlittLikBrutto: Boolean,
-    val vektetFribelop: Int,
+    val vektetFribelop: Double,
+    val fribelopPerioder: List<FribelopPeriode>,
 
     val scenario1_1G: Boolean,
     val scenario2_1G_04G: Scenario2_1G_04G?,
@@ -39,4 +39,11 @@ data class Scenario2_1G_04G(
 data class Scenario4_04G_1G_04G(
     val dato04G: LocalDate,
     val uforegradForOkning: Int,
+)
+
+data class FribelopPeriode(
+    val fom: LocalDate,
+    val tom: LocalDate,
+    val uforegrad: Int,
+    val faktor: Double
 )
