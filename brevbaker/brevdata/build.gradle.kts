@@ -23,10 +23,6 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    testImplementation(libs.bundles.junit)
-}
-
 tasks.test {
     useJUnitPlatform()
 }
