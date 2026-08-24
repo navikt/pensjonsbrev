@@ -155,6 +155,10 @@ fun Application.skribentenApp() {
                             .filter { it[BrevredigeringTable.brevkode].kode() == "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK" }
                             .map { it[BrevredigeringTable.id] }
                     }
+                    logger.info("Fjerner ${ider.size} brevredigeringer med brevkode P1_SAMLET_MELDING_OM_PENSJONSVEDTAK")
+                    if (ider.size > 8) {
+                        throw IllegalStateException("Fant ${ider.size} brevredigeringer med brevkode P1_SAMLET_MELDING_OM_PENSJONSVEDTAK")
+                    }
                     ider.chunked(40).forEach { idChunk ->
                         transaction {
                             BrevredigeringTable.deleteWhere { BrevredigeringTable.id inList idChunk }
