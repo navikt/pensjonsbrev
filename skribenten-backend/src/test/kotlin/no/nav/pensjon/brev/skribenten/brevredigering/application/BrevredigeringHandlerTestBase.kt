@@ -1,0 +1,601 @@
+@file:OptIn(InternKonstruktoer::class)
+
+package no.nav.pensjon.brev.skribenten.brevredigering.application
+
+import io.ktor.client.engine.mock.*
+import io.ktor.http.*
+import no.nav.brev.InternKonstruktoer
+import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.api.model.maler.*
+import no.nav.pensjon.brev.skribenten.*
+import no.nav.pensjon.brev.skribenten.auth.*
+import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
+import no.nav.pensjon.brev.skribenten.brevredigering.application.attestering.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.livssyklus.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.oppslag.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.p1.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.pdf.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.redigering.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.reservasjon.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.tilgang.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.vedlegg.*
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
+import no.nav.pensjon.brev.skribenten.common.Outcome
+import no.nav.pensjon.brev.skribenten.db.Transactional
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
+import no.nav.pensjon.brev.skribenten.fagsystem.*
+import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
+import no.nav.pensjon.brev.skribenten.letter.*
+import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
+import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.*
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.NavEnhet
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import org.apache.pdfbox.pdmodel.PDDocument
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.*
+import org.opentest4j.AssertionFailedError
+import java.time.LocalDate
+
+/**
+ * Har valgt å gjøre det på denne måten underveis for å understøtte steg-for-steg refaktorering med blanding mellom ny og gammel stil.
+ * Felles fixtures tror jeg kommer til å være nyttig uansett, så det er spesielt service-mocks jeg ikke er sikker på.
+ * Jeg er også usikker på om sluttresultatet tester helt ned mot database eller ei.
+ */
+abstract class BrevredigeringHandlerTestBase {
+
+    @BeforeAll
+    fun startDbOnce() {
+        SharedPostgres.subscribeAndEnsureDatabaseInitialized(this)
+    }
+
+    @AfterAll
+    fun kansellerDbAvhengighet() {
+        SharedPostgres.cancelSubscription(this)
+    }
+
+    @BeforeEach
+    fun clearMocks() {
+        brevbakerService.renderMarkupKall.clear()
+        brevbakerService.renderMarkupResultat = {
+            letter.medSignatur(
+                saksbehandler = it.signerendeSaksbehandlere?.saksbehandler,
+                attestant = it.signerendeSaksbehandlere?.attesterendeSaksbehandler
+            ).medAnnenMottakerNavn(it.annenMottakerNavn)
+        }
+
+        brevbakerService.redigerbareMaler[Testbrevkoder.INFORMASJONSBREV] = informasjonsbrev
+        brevbakerService.redigerbareMaler[Testbrevkoder.VEDTAKSBREV] = vedtaksbrev
+        brevbakerService.redigerbareMaler[Testbrevkoder.VARSELBREV] = varselbrevIVedtakskontekst
+        brevbakerService.alltidValgbareVedleggResultat = emptySet()
+        brevbakerService.renderRedigerbareVedleggResultat = emptyMap()
+        brevbakerService.harRedigerbareVedleggResultat = null
+        stagePdf(stagetPDF)
+
+        penService.pesysBrevdata = brevdataResponseData
+        penService.sendBrevResponse = bestillBrevresponse
+    }
+
+
+    protected val navAnsattService = FakeNavansattService(
+        harTilgangTilEnhet = mapOf(
+            Pair(saksbehandler1Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
+            Pair(saksbehandler2Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
+            Pair(attestant1Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
+            Pair(attestant2Principal.navIdent, PRINCIPAL_NAVENHET_ID) to true,
+        ),
+        navansatte = mapOf(
+            saksbehandler1Principal.navIdent to saksbehandler1Principal.fullName,
+            saksbehandler2Principal.navIdent to saksbehandler2Principal.fullName,
+            attestant1Principal.navIdent to attestant1Principal.fullName,
+            attestant2Principal.navIdent to attestant2Principal.fullName,
+        )
+    )
+
+    protected val brevbakerService = BrevredigeringFakeBrevbakerService()
+    protected val penService = FakePenClient()
+    protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
+    protected val brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService())
+    protected val brevdataService = BrevdataService(penService, samhandlerService)
+    protected val brevService = BrevService(penService, LegacyBrevServiceStub())
+    protected val redigerBrevPolicy = RedigerBrevPolicy()
+    protected val brevreservasjonPolicy = BrevreservasjonPolicy()
+    protected val attesterBrevPolicy = AttesterBrevPolicy()
+    protected val ferdigRedigertPolicy = FerdigRedigertPolicy()
+    protected val sendBrevPolicy = SendBrevPolicy(ferdigRedigertPolicy)
+    protected val opprettBrevPolicy = OpprettBrevPolicy(brevmalService, navAnsattService)
+    protected val transactional by lazy { Transactional(SharedPostgres.database) }
+    protected val brevtilgang by lazy {
+        Brevtilgang(
+            redigerBrevPolicy = redigerBrevPolicy,
+            attesterBrevPolicy = attesterBrevPolicy,
+            sendBrevPolicy = sendBrevPolicy,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            transactional = transactional,
+        )
+    }
+    protected val reserverBrevHandler by lazy { ReserverBrevHandler(brevtilgang) }
+
+    protected val endreMottaker by lazy { EndreMottakerHandler(brevtilgang, brevdataService) }
+    protected val endreDistribusjonstype by lazy { EndreDistribusjonstypeHandler(brevtilgang) }
+    protected val leggVedFoersteside by lazy { LeggVedFoerstesideHandler(brevtilgang) }
+    protected val veksleKlarStatus by lazy { VeksleKlarStatusHandler(brevtilgang, ferdigRedigertPolicy) }
+    protected val hentBrevAttestering by lazy { HentBrevAttesteringHandler(brevtilgang, brevmalService, brevdataService, navAnsattService) }
+    protected val hentBrevInfoHandler by lazy { HentBrevInfoHandler(brevtilgang) }
+    protected val hentBrevForSakHandler by lazy { HentBrevForSakHandler(transactional, brevreservasjonPolicy) }
+    protected val hentBrevForAlleSakerHandler by lazy { HentBrevForAlleSakerHandler(transactional, brevreservasjonPolicy) }
+    protected val hentBrev by lazy { HentBrevHandler(brevtilgang, brevmalService, brevdataService) }
+    protected val attesterBrev by lazy { AttesterBrevHandler(brevtilgang, ferdigRedigertPolicy, brevmalService, brevdataService, navAnsattService) }
+    protected val oppdaterBrev by lazy { OppdaterBrevHandler(brevtilgang, brevmalService, brevdataService) }
+    protected val opprettBrev by lazy {
+        OpprettBrevHandler(
+            transactional = transactional,
+            opprettBrevPolicy = opprettBrevPolicy,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            navansattService = navAnsattService,
+        )
+    }
+    protected val tilbakestillBrev by lazy { TilbakestillBrevHandler(brevtilgang, brevmalService, brevdataService) }
+    protected val endreValgteVedlegg by lazy { EndreValgteVedleggHandler(brevtilgang) }
+    protected val endreRedigertVedlegg by lazy { EndreRedigertVedleggHandler(brevtilgang, brevmalService, brevdataService) }
+    protected val slettRedigertVedlegg by lazy { SlettRedigertVedleggHandler(brevtilgang) }
+    protected val hentRedigertVedlegg by lazy { HentRedigertVedleggHandler(brevtilgang, brevmalService, brevdataService) }
+    protected val hentRedigerbareVedlegg by lazy { HentRedigerbareVedleggHandler(brevtilgang, brevmalService, brevdataService) }
+    protected val hentEllerOpprettPdf by lazy {
+        HentEllerOpprettPdfHandler(
+            brevtilgang = brevtilgang,
+            brevdataService = brevdataService,
+            renderService = RenderService(brevbakerService),
+            brevmalService = brevmalService,
+            hentP1DataHandler = HentP1DataHandler(brevtilgang, PenClientStub()),
+            genererFoerstesideHandler = GenererFoerstesideHandler(
+                brevtilgang,
+                FoerstesidegeneratorClient(
+                    config = OboClientConfig(url = "http://localhost", scope = "test"),
+                    authService = FakeAuthService,
+                    clientEngine = MockEngine { respond("", HttpStatusCode.OK) },
+                ),
+            ),
+            pdfVedleggAppender = object : PDFVedleggAppender {
+                override fun leggPaaVedlegg(pdfCompilationOutput: ByteArray, vedlegg: List<() -> PDDocument>) = pdfCompilationOutput
+            },
+        )
+    }
+    protected val sendBrevHandler by lazy { SendBrevHandler(brevtilgang, brevService, brevmalService) }
+    protected val slettBrevHandler by lazy { SlettBrevHandler(brevtilgang) }
+
+    companion object Fixtures {
+        init {
+            KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
+            Features.override(UnleashToggle("må sørge for at det finnes en FeatureToggleService"), false)
+            initADGroups()
+        }
+
+        val PRINCIPAL_NAVENHET_ID = EnhetId("1234")
+        val saksbehandler1Principal = MockPrincipal(NavIdent("Agent Smith"), "Hugo Weaving", setOf(ADGroups.pensjonSaksbehandler))
+        val saksbehandler2Principal = MockPrincipal(NavIdent("Morpheus"), "Laurence Fishburne", setOf(ADGroups.pensjonSaksbehandler))
+        val attestant1Principal = MockPrincipal(NavIdent("Key Maker"), "Randall Kim", mutableSetOf(ADGroups.pensjonSaksbehandler, ADGroups.attestant))
+        val attestant2Principal = MockPrincipal(NavIdent("The Oracle"), "Gloria Foster", mutableSetOf(ADGroups.pensjonSaksbehandler, ADGroups.attestant))
+
+        val sak1 = Pen.SakSelection(
+            saksId = SaksId(1234L),
+            foedselsdato = LocalDate.now().minusYears(42),
+            navn = Pen.SakSelection.Navn("a", "b", "c"),
+            sakType = Sakstype("ALDER"),
+            pid = Pid("12345678910"),
+            behandlingsnumre = listOf(),
+            tema = Tema("tema1"),
+        )
+
+        val fagsak1 = Fagsak(
+            saksId = sak1.saksId,
+            foedselsdato = sak1.foedselsdato,
+            navn = Fagsak.Navn(sak1.navn.fornavn, sak1.navn.mellomnavn, sak1.navn.etternavn),
+            sakType = sak1.sakType,
+            pid = sak1.pid,
+            behandlingsnumre = sak1.behandlingsnumre,
+            tema = sak1.tema,
+        )
+
+        val letter = letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"))))
+            .medSignatur(saksbehandler = saksbehandler1Principal.fullName, attestant = null)
+
+        val informasjonsbrev = TemplateDescription.Redigerbar(
+            name = Testbrevkoder.INFORMASJONSBREV.kode(),
+            letterDataClass = "template letter data class",
+            languages = listOf(LanguageCode.ENGLISH),
+            metadata = LetterMetadata(
+                displayTitle = "Et informasjonsbrev",
+                distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+                brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+            ),
+            kategori = TemplateDescription.Redigerbar.Brevkategori("INFORMASJONSBREV"),
+            brevkontekst = TemplateDescription.Brevkontekst.ALLE,
+            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
+        )
+
+        val vedtaksbrev = TemplateDescription.Redigerbar(
+            name = Testbrevkoder.VEDTAKSBREV.kode(),
+            letterDataClass = "template letter data class",
+            languages = listOf(LanguageCode.ENGLISH),
+            metadata = LetterMetadata(
+                displayTitle = "Et vedtaksbrev",
+                distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+            ),
+            kategori = TemplateDescription.Redigerbar.Brevkategori("UFOEREPENSJON"),
+            brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
+            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2"))
+        )
+
+        private val varselbrevIVedtakskontekst = TemplateDescription.Redigerbar(
+            name = Testbrevkoder.VARSELBREV.kode(),
+            letterDataClass = "template letter data class",
+            languages = listOf(LanguageCode.ENGLISH),
+            metadata = LetterMetadata(
+                displayTitle = "Et varselbrev",
+                distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+                brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+            ),
+            kategori = TemplateDescription.Redigerbar.Brevkategori("VARSEL"),
+            brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
+            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
+        )
+
+        val stagetPDF = "nesten en pdf".encodeToByteArray()
+
+        val brevdataResponseData = BrevdataResponse.Data(
+            felles = BrevbakerFelles(
+                dokumentDato = LocalDate.now(),
+                saksnummer = sak1.saksId.toString(),
+                avsenderEnhet = NavEnhet(
+                    nettside = "nav.no",
+                    navn = "Nav Familie- og pensjonsytelser Porsgrunn",
+                    telefonnummer = Telefonnummer("55553334"),
+                ),
+                bruker = Bruker(
+                    fornavn = "Test",
+                    mellomnavn = "\"bruker\"",
+                    etternavn = "Testerson",
+                    foedselsnummer = Foedselsnummer("01019878910"),
+                ),
+                signerendeSaksbehandlere = SignerendeSaksbehandlere(
+                    saksbehandler = "Ole Saksbehandler",
+                    attesterendeSaksbehandler = "Per Attesterende"
+                ),
+                annenMottakerNavn = null,
+            ),
+            brevdata = Api.GeneriskBrevdata()
+        )
+
+        val bestillBrevresponse = Pen.BestillBrevResponse(JournalpostId(123), null)
+
+        fun LetterMarkupImpl.medSignatur(saksbehandler: String?, attestant: String?) =
+            copy(
+                signatur = (signatur as SignaturImpl).copy(
+                    saksbehandlerNavn = saksbehandler,
+                    attesterendeSaksbehandlerNavn = attestant
+                )
+            )
+
+        fun LetterMarkupImpl.medAnnenMottakerNavn(navn: String?) =
+            copy(
+                sakspart = (sakspart as LetterMarkupImpl.SakspartImpl).copy(
+                    annenMottakerNavn = navn,
+                )
+            )
+
+        class ResultFailure(error: BrevredigeringError) :
+            AssertionFailedError(null, Outcome.Success::class.java, error::class.java)
+
+        fun <T> Outcome<T, BrevredigeringError>?.resultOrFail(): T = when (this) {
+            is Outcome.Success -> value
+            is Outcome.Failure -> throw ResultFailure(error)
+            null -> throw AssertionError("Resultat var null")
+        }
+    }
+
+    protected suspend fun opprettBrev(
+        principal: UserPrincipal = saksbehandler1Principal,
+        reserverForRedigering: Boolean = false,
+        mottaker: Dto.Mottaker? = null,
+        saksbehandlerValg: SaksbehandlervalgMap = SaksbehandlervalgMap().apply { put("valg", true) },
+        brevkode: RedigerbarBrevkode = Testbrevkoder.INFORMASJONSBREV,
+        vedtaksId: VedtaksId? = null,
+        sak: Pen.SakSelection = sak1,
+        avsenderEnhetsId: EnhetId = PRINCIPAL_NAVENHET_ID,
+    ): Outcome<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
+        opprettBrev.invoke(
+            OpprettBrevHandler.Request(
+                saksId = sak.saksId,
+                vedtaksId = vedtaksId,
+                brevkode = brevkode,
+                spraak = LanguageCode.ENGLISH,
+                avsenderEnhetsId = avsenderEnhetsId,
+                saksbehandlerValg = saksbehandlerValg,
+                reserverForRedigering = reserverForRedigering,
+                mottaker = mottaker,
+            )
+        )
+    }
+
+    protected suspend fun oppdaterBrev(
+        brevId: BrevId,
+        nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
+        nyttRedigertbrev: Edit.Letter? = null,
+        frigiReservasjon: Boolean = false,
+        principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
+    ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
+        oppdaterBrev.invoke(
+            OppdaterBrevHandler.Request(
+                brevId = brevId,
+                saksId = saksId,
+                nyeSaksbehandlerValg = nyeSaksbehandlerValg,
+                nyttRedigertbrev = nyttRedigertbrev,
+                frigiReservasjon = frigiReservasjon
+            )
+        )
+    }
+
+    protected suspend fun hentBrev(
+        brevId: BrevId,
+        reserverForRedigering: Boolean = false,
+        principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
+    ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
+        hentBrev(
+            HentBrevHandler.Request(
+                brevId = brevId,
+                saksId = saksId,
+                reserverForRedigering = reserverForRedigering,
+            )
+        )
+    }
+
+    protected suspend fun hentBrevInfo(brevId: BrevId): Outcome<Dto.BrevInfo, Nothing>? =
+        hentBrevInfoHandler(HentBrevInfoHandler.Request(brevId))
+
+    protected suspend fun hentBrevForSak(saksId: SaksId): Outcome<List<Dto.BrevInfo>, Nothing>? =
+        hentBrevForSakHandler(HentBrevForSakHandler.Request(saksId))
+
+    protected suspend fun hentBrevForAlleSaker(saksIder: Set<SaksId>): Outcome<List<Dto.BrevInfo>, Nothing>? =
+        hentBrevForAlleSakerHandler(HentBrevForAlleSakerHandler.Request(saksIder))
+
+    protected suspend fun slettBrev(
+        brev: Dto.Brevredigering,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Unit, BrevredigeringError>? = slettBrev(brev.info.id, principal)
+
+    protected suspend fun slettBrev(
+        brevId: BrevId,
+        principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
+    ): Outcome<Unit, BrevredigeringError>? = withPrincipal(principal) {
+        slettBrevHandler(SlettBrevHandler.Request(brevId = brevId, saksId = saksId))
+    }
+
+    protected suspend fun attester(
+        brev: Dto.Brevredigering,
+        attestant: UserPrincipal = attestant1Principal,
+        frigiReservasjon: Boolean = false,
+        nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
+        nyttRedigertbrev: Edit.Letter? = null,
+        saksId: SaksId = sak1.saksId,
+    ) = withPrincipal(attestant) {
+        attesterBrev(
+            AttesterBrevHandler.Request(
+                brevId = brev.info.id,
+                saksId = saksId,
+                frigiReservasjon = frigiReservasjon,
+                nyeSaksbehandlerValg = nyeSaksbehandlerValg,
+                nyttRedigertbrev = nyttRedigertbrev,
+            )
+        )
+    }
+
+    protected suspend fun veksleKlarStatus(
+        brev: Dto.Brevredigering,
+        klar: Boolean,
+        principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
+    ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
+        veksleKlarStatus(
+            VeksleKlarStatusHandler.Request(
+                brevId = brev.info.id,
+                saksId = saksId,
+                klar = klar
+            )
+        )
+    }
+
+    protected suspend fun arkiverBrev(
+        brev: Dto.Brevredigering,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Dto.SendBrevResult, BrevredigeringError>? = withPrincipal(principal) {
+        assertThat(hentEllerOpprettPdf(brev, principal = principal)).isSuccess()
+        assertThat(veksleKlarStatus(brev, true, principal = principal)).isSuccess()
+
+        penService.sendBrevResponse = Pen.BestillBrevResponse(
+            bestillBrevresponse.journalpostId,
+            Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
+        )
+        val result = sendBrev(brev, saksbehandler1Principal)
+        penService.sendBrevResponse = bestillBrevresponse
+
+        result
+    }
+
+    protected suspend fun hentEllerOpprettPdf(
+        brev: Dto.Brevredigering,
+        principal: UserPrincipal = saksbehandler1Principal,
+        handler: HentEllerOpprettPdfHandler = hentEllerOpprettPdf,
+        saksId: SaksId = sak1.saksId,
+    ): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
+        withPrincipal(principal) {
+            handler(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id, saksId = saksId, fagsak = fagsak1))
+        }
+
+    protected suspend fun endreDistribusjonstype(
+        brevId: BrevId,
+        nyDistribusjonstype: Distribusjon,
+        principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
+    ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
+        endreDistribusjonstype(
+            EndreDistribusjonstypeHandler.Request(
+                brevId = brevId,
+                saksId = saksId,
+                type = nyDistribusjonstype,
+            )
+        )
+    }
+
+    protected suspend fun leggVedFoersteside(
+        brevId: BrevId,
+        leggVedFoersteside: Boolean,
+        principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
+    ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
+        leggVedFoersteside(LeggVedFoerstesideHandler.Request(brevId = brevId, saksId = saksId, leggVedFoersteside = leggVedFoersteside))
+    }
+
+    protected suspend fun sendBrev(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.SendBrevResult, BrevredigeringError>? =
+        withPrincipal(principal) {
+            sendBrevHandler(SendBrevHandler.Request(brevId = brev.info.id, saksId = sak1.saksId))
+        }
+
+    protected fun stagePdf(pdf: ByteArray) {
+        brevbakerService.renderPdfResultat = LetterResponse(
+            file = pdf,
+            contentType = ContentType.Application.Pdf.toString(),
+            letterMetadata = LetterMetadata(
+                displayTitle = "En fin tittel",
+                distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+                brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
+            )
+        )
+    }
+
+    protected class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
+        lateinit var renderMarkupResultat: suspend ((f: BrevbakerFelles) -> LetterMarkup)
+        lateinit var renderPdfResultat: LetterResponse
+        var modelSpecificationResultat: TemplateModelSpecification? = null
+        var alltidValgbareVedleggResultat: Set<AlltidValgbartVedleggBrevkode> = emptySet()
+        override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
+        val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
+        val renderPdfKall = mutableListOf<LetterMarkup>()
+        val renderPdfRedigerteVedleggKall = mutableListOf<Map<VedleggId, LetterMarkup.Attachment>>()
+        var renderRedigerbareVedleggResultat: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()
+        var harRedigerbareVedleggResultat: Boolean? = null
+
+        override suspend fun renderMarkup(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            brevdata: RedigerbarBrevdata<*, *>,
+            felles: BrevbakerFelles
+        ): LetterMarkupWithDataUsage =
+            renderMarkupResultat(felles)
+                .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
+                .let { LetterMarkupWithDataUsageImpl(it, emptySet(), if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV) }
+
+        override suspend fun renderPdf(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            brevdata: RedigerbarBrevdata<*, *>,
+            felles: BrevbakerFelles,
+            redigertBrev: LetterMarkup,
+            alltidValgbareVedlegg: List<AlltidValgbartVedleggBrevkode>,
+            redigerteVedlegg: Map<VedleggId, LetterMarkup.Attachment>,
+            pdfVedlegg: List<PDFVedleggTittel>,
+        ) = renderPdfResultat.also {
+            renderPdfKall.add(redigertBrev)
+            renderPdfRedigerteVedleggKall.add(redigerteVedlegg)
+        }
+
+        override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
+        override suspend fun getAlltidValgbareVedlegg() = alltidValgbareVedleggResultat
+
+        override suspend fun hentRedigerbareVedleggTitler(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            brevdata: RedigerbarBrevdata<*, *>,
+            felles: BrevbakerFelles,
+        ): RedigerbareVedleggTitler =
+            RedigerbareVedleggTitler(
+                renderRedigerbareVedleggResultat.map { (vedleggId, attachment) ->
+                    RedigerbareVedleggTitler.Vedlegg(vedleggId, attachment.title.joinToString("") { it.text })
+                }
+            )
+
+        override suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean =
+            harRedigerbareVedleggResultat ?: renderRedigerbareVedleggResultat.isNotEmpty()
+
+        override suspend fun renderRedigerbartVedlegg(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            brevdata: RedigerbarBrevdata<*, *>,
+            felles: BrevbakerFelles,
+            vedleggId: VedleggId,
+        ): LetterMarkup.Attachment? = renderRedigerbareVedleggResultat[vedleggId]
+
+        override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart) = modelSpecificationResultat
+    }
+
+    protected class FakePenClient(
+        var saker: MutableMap<SaksId, Pen.SakSelection> = mutableMapOf(),
+        var pesysBrevdata: BrevdataResponse.Data? = null,
+        var sendBrevResponse: Pen.BestillBrevResponse? = null,
+    ) : PenClientStub() {
+        val utfoerteHentPesysBrevdataKall = mutableListOf<PesysBrevdatakallRequest>()
+
+        data class PesysBrevdatakallRequest(
+            val saksId: SaksId,
+            val vedtaksId: VedtaksId?,
+            val brevkode: Brevkode.Redigerbart,
+            val avsenderEnhetsId: EnhetId?,
+        )
+
+        val utfoerteSendBrevKall = mutableListOf<Pair<Pen.SendRedigerbartBrevRequest, Boolean>>()
+
+        override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = saker[saksId]
+
+        override suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data =
+            pesysBrevdata.also {
+                utfoerteHentPesysBrevdataKall.add(PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
+            } ?: notYetStubbed("Mangler pesysBrevdata stub")
+
+        override suspend fun sendbrev(sendRedigerbartBrevRequest: Pen.SendRedigerbartBrevRequest, distribuer: Boolean) =
+            sendBrevResponse?.also {
+                utfoerteSendBrevKall.add(Pair(sendRedigerbartBrevRequest, distribuer))
+            } ?: notYetStubbed("Mangler sendBrevResponse stub")
+
+        fun verifyHentPesysBrevdata(
+            saksId: SaksId,
+            vedtaksId: VedtaksId?,
+            brevkode: Brevkode.Redigerbart,
+            avsenderEnhetsId: EnhetId?,
+        ) {
+            assertThat(utfoerteHentPesysBrevdataKall.distinct()).contains(PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
+        }
+
+        fun verifySendBrev(
+            sendRedigerbartBrevRequest: Pen.SendRedigerbartBrevRequest, distribuer: Boolean
+        ) {
+            assertThat(utfoerteSendBrevKall.distinct()).contains(Pair(sendRedigerbartBrevRequest, distribuer))
+        }
+    }
+}

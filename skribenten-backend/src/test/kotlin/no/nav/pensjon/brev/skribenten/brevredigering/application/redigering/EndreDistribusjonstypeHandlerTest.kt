@@ -1,0 +1,78 @@
+package no.nav.pensjon.brev.skribenten.brevredigering.application.redigering
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringHandlerTestBase
+
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
+import no.nav.pensjon.brev.skribenten.isFailure
+import no.nav.pensjon.brev.skribenten.isSuccess
+import no.nav.pensjon.brev.skribenten.model.Distribusjon
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
+
+class EndreDistribusjonstypeHandlerTest : BrevredigeringHandlerTestBase() {
+
+    @Test
+    suspend fun `kan endre distribusjonstype`() {
+        val brev = opprettBrev().resultOrFail()
+
+        assertThat(endreDistribusjonstype(brev.info.id, Distribusjon.LOKALPRINT))
+            .isSuccess {
+                assertThat(it.distribusjonstype).isEqualTo(Distribusjon.LOKALPRINT)
+            }
+    }
+
+    @Test
+    suspend fun `kan ikke endre distribusjonstype på brev reservert av annen saksbehandler`() {
+        val brev = opprettBrev(principal = saksbehandler1Principal, reserverForRedigering = true).resultOrFail()
+
+        val resultat = endreDistribusjonstype(
+            brevId = brev.info.id,
+            nyDistribusjonstype = Distribusjon.LOKALPRINT,
+            principal = saksbehandler2Principal,
+        )
+
+        assertThat(resultat).isFailure<BrevreservasjonPolicy.ReservertAvAnnen, _, _>()
+    }
+
+    @Test
+    suspend fun `kan endre distribusjonstype på klart brev`() {
+        val brev = opprettBrev().resultOrFail()
+        veksleKlarStatus(brev, klar = true).resultOrFail()
+
+        assertThat(endreDistribusjonstype(brev.info.id, Distribusjon.LOKALPRINT))
+            .isSuccess {
+                assertThat(it.distribusjonstype).isEqualTo(Distribusjon.LOKALPRINT)
+            }
+    }
+
+    @Test
+    suspend fun `endring til samme distribusjonstype paa arkivert brev er en no-op`() {
+        val brev = opprettBrev().resultOrFail()
+        arkiverBrev(brev).resultOrFail()
+
+        assertThat(endreDistribusjonstype(brev.info.id, brev.info.distribusjonstype))
+            .isSuccess {
+                assertThat(it.distribusjonstype).isEqualTo(brev.info.distribusjonstype)
+                assertThat(it.redigeresAv).isEqualTo(saksbehandler1Principal.navIdent)
+            }
+    }
+
+    @Test
+    suspend fun `kan ikke endre distribusjonstype på arkivert brev`() {
+        val brev = opprettBrev().resultOrFail()
+        arkiverBrev(brev).resultOrFail()
+
+        assertThat(endreDistribusjonstype(brev.info.id, Distribusjon.LOKALPRINT))
+            .isFailure<RedigerBrevPolicy.KanIkkeRedigere.ArkivertBrev, _, _>()
+    }
+
+    @Test
+    suspend fun `beholder ikke reservasjon`() {
+        val brev = opprettBrev().resultOrFail()
+
+        assertThat(endreDistribusjonstype(brev.info.id, Distribusjon.LOKALPRINT))
+            .isSuccess {
+                assertThat(it.redigeresAv).isNotEqualTo(saksbehandler1Principal.navIdent)
+            }
+    }
+}
