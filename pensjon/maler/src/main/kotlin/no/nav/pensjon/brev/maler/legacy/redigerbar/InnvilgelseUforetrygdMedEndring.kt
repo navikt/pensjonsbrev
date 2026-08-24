@@ -47,7 +47,7 @@ object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUforetryg
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - innvilgelse av uføretrygd med endring",
+            displayTitle = "Vedtak - innvilgelse av uføretrygd med endring (bosatt Norge - etter utland)",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
