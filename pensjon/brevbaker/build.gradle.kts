@@ -103,7 +103,6 @@ dependencies {
 
     testImplementation(libs.pdfbox)
 
-    // TODO: lurer på om det her kan løysast ved api i serialization
     implementation(platform(libs.jackson.bom))
     implementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
