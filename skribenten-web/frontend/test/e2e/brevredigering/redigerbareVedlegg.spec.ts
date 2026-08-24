@@ -82,13 +82,15 @@ test.describe("Redigerbare vedlegg", () => {
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeHidden();
   });
 
-  test("viser vedlegget i redigeringsfeltet når det åpnes fra vedlegg-fanen", async ({ page }) => {
+  test("åpner det første vedlegget i redigeringsfeltet når vedlegg-fanen velges", async ({ page }) => {
     await page.goto("/saksnummer/123456/brev/1");
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();
 
     await page.getByRole("tab", { name: "Vedlegg" }).click();
-    await page.getByRole("region", { name: VEDLEGG_TITTEL }).getByRole("button", { name: "Vis mer" }).click();
 
+    await expect(
+      page.getByRole("region", { name: VEDLEGG_TITTEL }).getByRole("button", { name: "Vis mer" }),
+    ).toHaveAttribute("aria-expanded", "true");
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeHidden();
     await expect(page).toHaveURL(new RegExp(`vedlegg=${VEDLEGG_ID}`));

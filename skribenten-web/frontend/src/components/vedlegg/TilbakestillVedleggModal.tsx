@@ -26,10 +26,9 @@ const TilbakestillVedleggModal = (props: {
     <Modal header={{ heading: "Vil du tilbakestille vedlegget?" }} onClose={props.onClose} open={props.åpen} portal>
       <Modal.Body>
         <BodyLong>
-          Innholdet du har endret eller lagt til i «{props.vedleggtittel}» vil bli slettet. Vedlegget blir liggende i
-          brevet.
+          Innholdet du har endret eller lagt til i {props.vedleggtittel} vil bli slettet. Vedlegget blir liggende i
+          brevet. Du kan ikke angre denne handlingen.
         </BodyLong>
-        <BodyLong>Du kan ikke angre denne handlingen.</BodyLong>
       </Modal.Body>
       <Modal.Footer>
         <HStack gap="space-16">
