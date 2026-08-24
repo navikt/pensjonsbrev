@@ -171,6 +171,7 @@ dependencies {
     // For å merge førsteside med resten av pdf-en
     implementation(libs.pdfbox)
 
+    implementation(platform(libs.log4j.bom))
     implementation(libs.bundles.logging)
 
     // Necessary for java.time.LocalDate

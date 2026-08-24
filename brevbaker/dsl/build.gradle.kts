@@ -23,6 +23,7 @@ repositories {
 
 dependencies {
     api(publishedLibs.brevbaker.api)
+    implementation(platform(libs.log4j.bom))
     implementation(libs.bundles.logging)
 
     testImplementation(libs.bundles.junit)

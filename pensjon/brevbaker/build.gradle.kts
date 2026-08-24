@@ -70,6 +70,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(platform(libs.log4j.bom))
     implementation(libs.bundles.logging)
     implementation(platform(libs.ktor.bom))
     implementation(libs.ktor.client.cio)
