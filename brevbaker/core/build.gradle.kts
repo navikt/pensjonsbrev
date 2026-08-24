@@ -47,6 +47,7 @@ dependencies {
     testFixturesApi(publishedLibs.brevbaker.api)
     testFixturesImplementation(project(":brevbaker:serialization"))
     // Testfixturene bygger PDF-forespørsler slik en ekstern konsument ville gjort det.
+    testFixturesImplementation(platform(libs.ktor.bom))
     testFixturesImplementation(libs.ktor.serialization.jackson)
     testFixturesImplementation(libs.ktor.client.cio)
     testFixturesImplementation(libs.ktor.client.content.negotiation)

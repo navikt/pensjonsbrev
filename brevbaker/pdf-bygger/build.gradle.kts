@@ -49,6 +49,7 @@ tasks {
 }
 
 dependencies {
+    implementation(platform(libs.ktor.bom))
     implementation(libs.bundles.logging)
     implementation(libs.ktor.serialization.jackson)
     implementation(libs.ktor.server.callId)

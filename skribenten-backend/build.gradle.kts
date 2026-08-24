@@ -127,6 +127,7 @@ sourceSets {
 
 dependencies {
     // Ktor
+    implementation(platform(libs.ktor.bom))
     implementation(libs.ktor.client.auth)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)

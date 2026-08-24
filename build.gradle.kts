@@ -23,7 +23,6 @@ allprojects {
         val name = it.name.lowercase()
         name.endsWith("compileclasspath") || name.endsWith("runtimeclasspath") || name.endsWith("processorclasspath")
     }.configureEach {
-        project.dependencies.add(name, project.dependencies.platform(libs.ktor.bom))
         project.dependencies.add(name, project.dependencies.platform(libs.log4j.bom))
     }
 
