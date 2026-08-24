@@ -173,6 +173,8 @@ dependencies {
     implementation(libs.bundles.logging)
 
     // Necessary for java.time.LocalDate
+    // TODO transitivt?
+    implementation(platform(libs.jackson.bom))
     implementation(libs.jackson.datatype.jsr310)
 
     // Hashing

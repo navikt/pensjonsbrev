@@ -55,6 +55,7 @@ dependencies {
     testFixturesImplementation(libs.bundles.junit)
     testFixturesApi(libs.testcontainers.core)
 
+    testFixturesImplementation(platform(libs.jackson.bom))
     testFixturesImplementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
     }
