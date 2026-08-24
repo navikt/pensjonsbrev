@@ -303,6 +303,23 @@ function RedigerBrev({
       search: { brevId: brev.info.id, enhetsId, vedtaksId },
     });
 
+  const navigateToBrevvelger = async () => {
+    setLagrerAktivtDokument(true);
+    try {
+      await lagreAktivtDokumentRef.current?.();
+    } catch {
+      return;
+    } finally {
+      setLagrerAktivtDokument(false);
+    }
+
+    await navigate({
+      to: "/saksnummer/$saksId/brevvelger",
+      params: { saksId },
+      search: (search) => ({ ...search, brevId: brev.info.id }),
+    });
+  };
+
   const brevmal = useQuery({
     ...getBrevmetadata,
     select: (data) => data.find((brevmal) => brevmal.id === brev.info.brevkode),
@@ -448,13 +465,8 @@ function RedigerBrev({
                 bottom={
                   <HStack justify="space-between" width="100%">
                     <Button
-                      onClick={() =>
-                        navigate({
-                          to: "/saksnummer/$saksId/brevvelger",
-                          params: { saksId: saksId },
-                          search: (s) => ({ ...s, brevId: brev.info.id }),
-                        })
-                      }
+                      disabled={lagrerAktivtDokument}
+                      onClick={navigateToBrevvelger}
                       size="small"
                       type="button"
                       variant="tertiary"
