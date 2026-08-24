@@ -15,7 +15,7 @@ import {
 import { attesteringBrevKeys, getBrev, oppdaterBrev, oppdaterBrevtekst } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import { normalizeDeletedArrays } from "~/Brevredigering/LetterEditor/actions/common";
+import { normalizeDocumentForComparison } from "~/Brevredigering/LetterEditor/actions/common";
 import { addHistoryEntry, type HistoryEntry } from "~/Brevredigering/LetterEditor/history";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
@@ -41,9 +41,6 @@ interface ManagedLetterEditorContextValue {
   lagringFeilet: boolean;
 }
 
-const nullsToUndefined = (obj: unknown) =>
-  JSON.parse(JSON.stringify(obj, (_, value) => (value === null ? undefined : value)));
-
 const resolveHistoryAfterSave = (
   previousState: LetterEditorState,
   response: BrevResponse,
@@ -54,8 +51,8 @@ const resolveHistoryAfterSave = (
   }
 
   const redigertBrevUnchanged = isEqual(
-    normalizeDeletedArrays(nullsToUndefined(previousState.redigertBrev)),
-    normalizeDeletedArrays(nullsToUndefined(response.redigertBrev)),
+    normalizeDocumentForComparison(previousState.redigertBrev),
+    normalizeDocumentForComparison(response.redigertBrev),
   );
 
   return redigertBrevUnchanged ? previousState.history : { entries: [], entryPointer: -1 };

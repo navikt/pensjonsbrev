@@ -1066,6 +1066,11 @@ export function normalizeDeletedArrays(obj: unknown): unknown {
   return obj;
 }
 
+export function normalizeDocumentForComparison(obj: unknown): unknown {
+  const withoutNulls = JSON.parse(JSON.stringify(obj, (_, value) => (value === null ? undefined : value)));
+  return normalizeDeletedArrays(withoutNulls);
+}
+
 /**
  * Walks every text literal in the letter in document order — title first, then blocks in order
  * (paragraph content, item-list items, table header/rows) — invoking `visit` with the literal and the

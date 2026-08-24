@@ -9,6 +9,7 @@ import {
   tilbakestillRedigerbartVedlegg,
 } from "~/api/redigerbareVedlegg-endpoints";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
+import { normalizeDocumentForComparison } from "~/Brevredigering/LetterEditor/actions/common";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { ApiError } from "~/components/ApiError";
@@ -93,7 +94,9 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
       // covered by this response, so the autosave must fire again instead of reporting SAVED.
       setEditorState((s) => {
         if (s.saveStatus === "DIRTY") return s;
-        if (isEqual(s.redigertBrev, lagretDokument)) return { ...s, saveStatus: "SAVED" };
+        if (isEqual(normalizeDocumentForComparison(s.redigertBrev), normalizeDocumentForComparison(lagretDokument))) {
+          return { ...s, saveStatus: "SAVED" };
+        }
         return {
           ...s,
           redigertBrev: lagretDokument,

@@ -168,6 +168,24 @@ test.describe("Redigerbare vedlegg", () => {
     await expect(page.getByText(NY_TEKST_FRA_MAL)).toBeVisible();
   });
 
+  test("bevarer angrehistorikk når backend returnerer null for utelatte felter", async ({ page }) => {
+    await page.route(vedleggUrl(VEDLEGG_ID), (route) => {
+      if (route.request().method() !== "PUT") {
+        return route.fulfill({ json: vedlegg });
+      }
+      const lagret = route.request().postDataJSON().redigertVedlegg;
+      return route.fulfill({ json: { ...lagret, parentId: null } });
+    });
+
+    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+    await endreVedlegg(page, " endret!");
+
+    await expect(page.getByText("Lagret")).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole("button", { name: "Angre (Undo)" })).toBeEnabled();
+    await page.getByRole("button", { name: "Angre (Undo)" }).click();
+    await expect(page.getByText(VEDLEGG_BROEDTEKST, { exact: true })).toBeVisible();
+  });
+
   test("prøver ikke samme lagring på nytt i det uendelige når lagring feiler", async ({ page }) => {
     let forsoek = 0;
     await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, (route) => {
