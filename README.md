@@ -116,6 +116,16 @@ Ved endringer av public-kode i disse modulene - inkludert sletting av metoder el
 
 Mer om dette på https://kotlinlang.org/docs/api-guidelines-backward-compatibility.html
 
+### Låsing av avhengigheter i biblioteksmodulene
+
+De samme modulene (`brevbaker:brevdata`, `brevbaker:brevbaker-api`, `brevbaker:markup-model`, `brevbaker:markup-dsl`, `brevbaker:dsl` og `brevbaker:core`) bruker Gradles innebygde dependency locking (`dependencyLocking { lockAllConfigurations() }`) for å liste opp avhengigheter i hver sin `gradle.lockfile`.
+
+Bygget feiler ved avvik fra det som er låst i `gradle.lockfile`. Endrer du en avhengighet i en av disse modulene (f.eks. ved å bumpe en versjon i `gradle/libs.versions.toml`) må du regenerere lockfilen for den aktuelle modulen og sjekke inn den oppdaterte filen:
+
+```bash
+./gradlew :brevbaker:brevdata:dependencies --write-locks
+```
+
 ### Ytelsestesting med locust
 
 Ytelsestesten er i utgangspunktet satt opp til å teste vedtaksbrevet UNG_UFOER_AUTO.
