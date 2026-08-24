@@ -4,7 +4,7 @@ import path from "node:path";
 import { expect, test } from "@playwright/test";
 import { formatISO } from "date-fns";
 
-import { setupSakStubs } from "../utils/helpers";
+import { setupSakStubs } from "~test/e2e/support/helpers";
 
 const fixturesDir = path.resolve("test/e2e/fixtures");
 const brev = JSON.parse(fs.readFileSync(path.join(fixturesDir, "brevResponse.json"), "utf-8"));

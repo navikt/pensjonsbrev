@@ -3,9 +3,8 @@ import { expect, type Page, test } from "@playwright/test";
 import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/LetterEditor/actions/common";
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { type Row } from "~/types/brevbakerTypes";
-
-import { brevResponse, editedLetter } from "../../utils/letterEditorTestUtils";
-import { setupSakStubs } from "../utils/helpers";
+import { setupSakStubs } from "~test/e2e/support/helpers";
+import { brevResponse, editedLetter } from "~test/support/brevFixtures";
 
 // Playwright Chromium always reports a Windows userAgent (isMac=false in the app),
 // so the app's undo shortcut is always Ctrl+Z in tests regardless of host OS.
