@@ -18,6 +18,7 @@ ktor {
         codeInferenceEnabled = true
     }
 }
+
 fun Project.nodeVersionFromToolVersions(): String {
     val toolVersions = rootProject.file(".tool-versions")
     require(toolVersions.exists()) { "Mangler .tool-versions i ${rootProject.projectDir}" }
@@ -145,6 +146,7 @@ dependencies {
     implementation(libs.ktor.openapi.schema.reflect)
 
     // Exposed
+    implementation(platform(libs.exposed.bom))
     implementation(libs.exposed.core)
     implementation(libs.exposed.dao)
     implementation(libs.exposed.jdbc)
