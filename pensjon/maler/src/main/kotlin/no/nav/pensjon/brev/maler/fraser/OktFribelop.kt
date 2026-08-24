@@ -1,24 +1,23 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktFribelopData
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.*
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.bunnfradrag
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.datoOkningBunnfradrag
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.oktFribelopHeleAret
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 object OktFribelop {
 
@@ -27,8 +26,8 @@ object OktFribelop {
 
             paragraph {
                 text(
-                    bokmal { +"Fra 1. oktober øker fribeløpet for uføretrygd til 1 ganger folketrygdens grunnbeløp (G). Dette er per i dag 136 549 kroner. Det betyr at du kan ha inntekt på XX kroner, før vi begynner å redusere uføretrygden din. Fribeløpet ble tidligere omtalt som inntektsgrense. Grunnbeløpet (G) justeres i mai hvert år. " },
-                    nynorsk { +"Frå 1. oktober aukar fribeløpet for uføretrygd til 1 gonger folketrygdens grunnbeløp (G). Dette er per i dag 136 549 kroner. Det tyder at du kan ha inntekt på XX kroner, før vi byrjar å redusere uføretrygda di. Fribeløpet vart tidlegare omtala som inntektsgrense. Grunnbeløpet (G) vert justert i mai kvart år. " },
+                    bokmal { +"Fra 1. oktober øker fribeløpet for uføretrygd til 1 ganger folketrygdens grunnbeløp (G). Dette er per i dag 136 549 kroner. Det betyr at du kan ha inntekt på " + data.bunnfradrag.format() + ", før vi begynner å redusere uføretrygden din. Fribeløpet ble tidligere omtalt som inntektsgrense. Grunnbeløpet (G) justeres i mai hvert år. " },
+                    nynorsk { +"Frå 1. oktober aukar fribeløpet for uføretrygd til 1 gonger folketrygdens grunnbeløp (G). Dette er per i dag 136 549 kroner. Det tyder at du kan ha inntekt på " + data.bunnfradrag.format() + ", før vi byrjar å redusere uføretrygda di. Fribeløpet vart tidlegare omtala som inntektsgrense. Grunnbeløpet (G) vert justert i mai kvart år. " },
                 )
             }
             paragraph {
@@ -58,18 +57,50 @@ object OktFribelop {
                 )
             }
 
-            showIf(!data.oktFribelopHeleAret) {
+            showIf(data.oktFribelopHeleAret) {
                 paragraph {
                     text(
-                        bokmal { +"" },
-                        nynorsk { +"" },
+                        bokmal { +"Du har hatt uføretrygd i 2 år eller lenger før 1. januar 2026, og derfor øker fribeløpet ditt til 1 G for hele 2026. " },
+                        nynorsk { +"Du har hatt uføretrygd i 2 år eller lenger før 1. januar 2026, og derfor aukar fribeløpet ditt til 1 G for heile 2026. " },
                     )
                 }
-            }.orShow {
+            }
+
+            title1 {
+                text(
+                    bokmal { +"Slik beregner vi fribeløp " },
+                    nynorsk { +"Slik reknar vi ut fribeløp " },
+                )
+            }
+
+            showIf(not(data.oktFribelopHeleAret)) {
                 paragraph {
                     text(
-                        bokmal { +"" },
-                        nynorsk { +"" },
+                        bokmal { +"Fra og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år og fribeløpet skal øke til 1G fra 1. oktober. Før 1. oktober var fribeløpet ditt 0,4 G. " },
+                        nynorsk { +"Frå og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år og fribeløpet skal auke til 1G frå 1. oktober. Før 1. oktober var fribeløpet ditt 0,4 G. " },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Beregningen av fribeløpet for hele året vil derfor se slik ut:" },
+                        nynorsk { +"Rekninga av fribeløpet for heile året vil derfor sjå slik ut:" },
+                    )
+                    newline()
+                    text(
+                        bokmal { +"(9 måneder med rett på 0,4G i fribeløp/12) * 0,4G + (3 måneder med rett på 1G i fribeløp/12) * 1G. " },
+                        nynorsk { +"(9 månader med rett på 0,4G i fribeløp/12) * 0,4G + (3 månader med rett på 1G i fribeløp/12) * 1G. " },
+                        FontType.ITALIC
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Neste år: " },
+                        nynorsk { +"Neste år: " },
+                        FontType.BOLD
+                    )
+                    text(
+                        bokmal { +"Fra 2027 vil ditt fribeløp være 1G hele året. " },
+                        nynorsk { +"Frå 2027 vil fribeløpet ditt vere 1G heile året. " },
                     )
                 }
             }

@@ -10,7 +10,6 @@ data class VedtakOmOktFribelopData(
     val bunnfradrag: Kroner,
     val fribelop: Kroner,
     val oktFribelopHeleAret: Boolean,
-    val toArI2026ForForsteOktober: Boolean,
     val datoOkningBunnfradrag: LocalDate,
     val pe: PEgruppe10,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,

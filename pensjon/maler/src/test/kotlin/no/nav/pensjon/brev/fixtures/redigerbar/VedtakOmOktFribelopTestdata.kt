@@ -18,7 +18,6 @@ fun createVedtakOmOktFribelopData() =
         pe = createPEgruppe10(),
         maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
         orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
-        toArI2026ForForsteOktober = true,
         datoOkningBunnfradrag = LocalDate.of(2026, 10, 1)
     )
 
