@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.alder.maler.afp
+package no.nav.pensjon.brev.alder.maler.afpprivat
 
 import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatAutoDto
 import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDto
