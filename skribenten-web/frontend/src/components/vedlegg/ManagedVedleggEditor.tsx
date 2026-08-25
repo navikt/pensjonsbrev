@@ -21,10 +21,10 @@ import { type BrevResponse, type EditAttachment } from "~/types/brev";
 import { type EditedDocument } from "~/types/brevbakerTypes";
 
 /**
- * Editor session for one redigerbart vedlegg. It reuses LetterEditorState so the existing
+ * Editor session for one editable attachment. It reuses LetterEditorState so the existing
  * LetterEditor and every content action work unchanged: `redigertBrev` holds the vedlegg's editable
  * body, `info` comes from the parent brev (for spraak), and hash/saksbehandlerValg are unused here
- * because a vedlegg is saved through its own endpoint.
+ * because an attachment is saved through its own endpoint.
  */
 const createVedleggState = (brev: BrevResponse, vedlegg: EditAttachment): LetterEditorState => ({
   info: brev.info,
