@@ -14,11 +14,8 @@ import java.time.LocalDate
 fun createVedtakOmOktFribelopData() =
     VedtakOmOktFribelopData(
         bunnfradrag = Kroner(200000),
-        fribelop = Kroner(136549),
         oktFribelopHeleAret = false,
         pe = createPEgruppe10(),
-        maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
-        orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
         datoOkningBunnfradrag = LocalDate.of(2026, 10, 1),
         vektetFribelop = 1.0,
         fribelopPerioder = listOf(
@@ -28,7 +25,9 @@ fun createVedtakOmOktFribelopData() =
                 uforegrad = 100,
                 faktor = 1.0
             )
-        )
+        ),
+        maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
+        orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
     )
 
 fun createVedtakOmOktFribelopAutoDto() =

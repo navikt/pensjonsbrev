@@ -8,7 +8,6 @@ import java.time.LocalDate
 
 data class VedtakOmOktFribelopData(
     val bunnfradrag: Kroner,
-    val fribelop: Kroner,
     val oktFribelopHeleAret: Boolean,
     val datoOkningBunnfradrag: LocalDate,
     val vektetFribelop: Double,
