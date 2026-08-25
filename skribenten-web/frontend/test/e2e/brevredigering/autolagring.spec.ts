@@ -4,6 +4,7 @@ import path from "node:path";
 import { expect, test } from "@playwright/test";
 import { formatISO } from "date-fns";
 
+import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { setupSakStubs } from "~test/e2e/support/helpers";
 
 const fixturesDir = path.resolve("test/e2e/fixtures");
@@ -220,6 +221,72 @@ test.describe("autolagring", () => {
       land: null,
       svartidUker: "10",
     });
+  });
+
+  test("nullstiller feilmelding fra forrige lagring når ny autolagring lykkes", async ({ page }) => {
+    let saveCount = 0;
+    let resolveSecondSave: (() => void) | undefined;
+
+    await page.route(
+      (url: URL) => url.pathname.includes("/sak/123456/brev/1") && url.search.includes("frigiReservasjon"),
+      async (route) => {
+        if (route.request().method() !== "PUT") return route.fallback();
+
+        saveCount++;
+        if (saveCount === 1) {
+          return route.fulfill({
+            status: 422,
+            json: { reason: "FritekstFelterUredigert" },
+          });
+        }
+
+        await new Promise<void>((resolve) => {
+          resolveSecondSave = resolve;
+        });
+        const body = route.request().postDataJSON();
+        return route.fulfill({
+          json: {
+            ...brev,
+            redigertBrev: body.redigertBrev,
+            saksbehandlerValg: body.saksbehandlerValg,
+            info: { ...brev.info, sistredigert: hurtiglagreTidspunkt },
+          },
+        });
+      },
+    );
+
+    await page.goto("/saksnummer/123456/brev/1");
+    await expect(page.getByText("Lagret")).toBeVisible();
+    await page.clock.install();
+
+    await page.getByText("Overstyring").click();
+    await expect(page.getByLabel("Ytelse")).toBeVisible();
+
+    const failedSavePromise = page.waitForResponse(
+      (resp) =>
+        resp.url().includes("/sak/123456/brev/1") &&
+        resp.url().includes("frigiReservasjon") &&
+        resp.request().method() === "PUT",
+    );
+    await page.getByLabel("Ytelse").fill("Supplerende stønad");
+    await failedSavePromise;
+
+    await expect(page.getByText(/Klarte ikke lagre/)).toBeVisible();
+
+    const retrySavePromise = page.waitForResponse(
+      (resp) =>
+        resp.url().includes("/sak/123456/brev/1") &&
+        resp.url().includes("frigiReservasjon") &&
+        resp.request().method() === "PUT",
+    );
+    await page.clock.fastForward(AUTOSAVE_TIMER);
+    await expect(page.getByText("Lagrer...")).toBeVisible();
+
+    resolveSecondSave?.();
+    await retrySavePromise;
+
+    await expect(page.getByText("Lagret")).toBeVisible();
+    await expect(page.getByText(/Klarte ikke lagre/)).toBeHidden();
   });
 
   test("autolagrer ikke før alle avhengige felter er utfylt", async ({ page }) => {

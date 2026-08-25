@@ -23,12 +23,14 @@ const ManagedLetterEditor = (props: {
   brev: BrevResponse;
   freeze: boolean;
   error: boolean;
+  resetParentSaveError?: () => void;
   showDebug?: boolean;
   redigeringsflate: Redigeringsflate;
 }) => {
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+  const { resetParentSaveError } = props;
 
-  const { mutate, isError } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
+  const { mutate, isError, reset } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
     mutationFn: (state) => {
       const stateWithCursor = Actions.cursorPosition(state, getCursorOffset());
 
@@ -63,11 +65,13 @@ const ManagedLetterEditor = (props: {
   useEffect(() => {
     const timoutId = setTimeout(() => {
       if (editorState.saveStatus === "DIRTY") {
+        reset();
+        resetParentSaveError?.();
         mutate(editorState);
       }
     }, AUTOSAVE_TIMER);
     return () => clearTimeout(timoutId);
-  }, [editorState.saveStatus, editorState.redigertBrev, mutate]);
+  }, [editorState.saveStatus, editorState.redigertBrev, mutate, reset, resetParentSaveError]);
 
   useEffect(() => {
     if (editorState.saveStatus === "SAVED" && editorState.redigertBrevHash !== props.brev.redigertBrevHash) {
