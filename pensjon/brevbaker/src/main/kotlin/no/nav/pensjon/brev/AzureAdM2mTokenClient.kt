@@ -54,7 +54,7 @@ class AzureAdM2mTokenClient(
         }
 
         val token = response.body<ClientCredentialsTokenResponse>()
-        return CachedToken(token.accessToken, Instant.now().plusSeconds(token.expiresIn).minusSeconds(30))
+        return CachedToken(token.accessToken, Instant.now().plusSeconds(token.expiresIn).minusSeconds(3))
     }
 
     override fun close() {
