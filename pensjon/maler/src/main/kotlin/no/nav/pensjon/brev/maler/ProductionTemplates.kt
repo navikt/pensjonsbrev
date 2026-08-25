@@ -59,7 +59,6 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmLavereReduksjonsprose
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmOktFribelopRedigerbar
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmOktMinsteIFURedigerbar
-import no.nav.pensjon.brev.maler.redigerbar.AvslagForLiteTrygdetidAP
 import no.nav.pensjon.brev.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaPensjon
@@ -153,7 +152,6 @@ object ProductionTemplates : AllTemplates {
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AnkeTilsvarTilAnkendePart,
-        AvslagForLiteTrygdetidAP,
         AvslagGjenlevendepensjon,
         AvslagGjenlevendepensjonUtland,
         AvslagPaaGjenlevenderettIAlderspensjon,
