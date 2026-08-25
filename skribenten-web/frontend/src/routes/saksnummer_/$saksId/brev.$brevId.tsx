@@ -28,7 +28,7 @@ import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import { AktivtDokumentProvider } from "~/components/vedlegg/AktivtDokumentContext";
 import { AktivtDokumentEditor } from "~/components/vedlegg/AktivtDokumentEditor";
-import { BrevSidepanel } from "~/components/vedlegg/BrevSidepanel";
+import { BrevEditorSidepanel } from "~/components/vedlegg/BrevEditorSidepanel";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
@@ -482,7 +482,7 @@ function RedigerBrev({
                 }
                 bottomJustify="space-between"
                 left={
-                  <BrevSidepanel
+                  <BrevEditorSidepanel
                     brevId={brev.info.id}
                     brevmalPanel={
                       <VStack gap="space-12">

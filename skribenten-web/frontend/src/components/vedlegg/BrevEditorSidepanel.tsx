@@ -29,11 +29,11 @@ const sidepanelStyle = css`
 `;
 
 /**
- * The brev editor's side panel: brevmal options for the letter, and the letter's vedlegg. The
+ * The letter editor's side panel: brevmal options for the letter, and the letter's attachments. The
  * brevmal tab is the default because the vast majority of letters are edited without ever touching
- * a vedlegg.
+ * an attachment.
  */
-export const BrevSidepanel = (props: { saksId: string; brevId: number; brevmalPanel: ReactNode }) => {
+export const BrevEditorSidepanel = (props: { saksId: string; brevId: number; brevmalPanel: ReactNode }) => {
   const { aktivtDokument, velgBrev, velgVedlegg } = useAktivtDokument();
   const vedleggQuery = useRedigerbareVedlegg({ saksId: props.saksId, brevId: props.brevId });
   const [aktivTab, setAktivTab] = useState(aktivtDokument.type === "vedlegg" ? VEDLEGG_TAB : BREVMAL_TAB);

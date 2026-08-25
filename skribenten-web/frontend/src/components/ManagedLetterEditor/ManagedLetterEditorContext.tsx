@@ -30,14 +30,14 @@ type SaveSuccessOptions = {
 interface ManagedLetterEditorContextValue {
   editorState: LetterEditorState;
   /**
-   * `editorState.redigertBrev` as a letter. This provider is only ever constructed from a
-   * BrevResponse, so the narrowing always holds; the fallback exists so the letter-only fields
-   * (sakspart/signatur) can be read without a cast or a throw.
+   * Letter-specific view of `editorState.redigertBrev` for consumers that need `sakspart` or
+   * `signatur`. `LetterEditorState` uses the shared `EditedDocument` shape to also support
+   * attachments, but this provider is initialized and updated exclusively with letter data.
    */
   redigertBrev: EditedLetter;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   onSaveSuccess: (response: BrevResponse, options?: SaveSuccessOptions) => void;
-  /** Whether the brev's own autosave last failed. */
+  /** Whether the letter's own autosave last failed. */
   lagringFeilet: boolean;
 }
 

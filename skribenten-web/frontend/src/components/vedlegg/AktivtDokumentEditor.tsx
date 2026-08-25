@@ -7,8 +7,8 @@ import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedleg
 import { type BrevResponse } from "~/types/brev";
 
 /**
- * Renders the editor surface for whichever document is active. The brev renderer is passed in
- * because it owns the brev's editor session; a vedlegg gets its own session here.
+ * Renders the editor surface for whichever document is active. The letter renderer is passed in
+ * because it owns the letter's editor session; an attachment gets its own session here.
  */
 export const AktivtDokumentEditor = (props: {
   saksId: string;
@@ -23,8 +23,8 @@ export const AktivtDokumentEditor = (props: {
     return props.renderBrev();
   }
 
-  // The vedlegg's title comes from the list, so a deep link has to wait for it rather than flash
-  // the brev on the way to the vedlegg.
+  // The attachment's title comes from the list, so a deep link has to wait for it rather than flash
+  // the letter on the way to the attachment.
   if (vedleggQuery.isPending) {
     return <CenteredLoader label="Henter vedlegg..." verticalStrategy="height" />;
   }
