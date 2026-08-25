@@ -18,7 +18,7 @@ data class VedtakAfpPrivatEndringOpptjeningAutoDto(
     val brukerUnder70Aar: Boolean,
     val beregning: AfpPrivatBeregningEndring,
     // PE_Grunnlag_Persongrunnlagsliste_Trygdeavtaler_Bostedsland[1] = "nor"
-    val borIForNorge: Boolean,
+    val borINorge: Boolean,
     // PE_AF_oversikt_over_pensjonen_PDF — inkluderes når BeregningAntallPerioder > 1
     val oversiktOverPensjonen: OversiktOverPensjonenAfpPrivatDto? = null,
 ) : AutobrevData
