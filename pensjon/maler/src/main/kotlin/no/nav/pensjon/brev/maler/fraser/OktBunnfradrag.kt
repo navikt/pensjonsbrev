@@ -363,8 +363,8 @@ class PengerTilGode(private val nettoInklTillegg: Expression<BrevbakerType.Krone
                         bokmal { +"Resten av året: " }, nynorsk { +"Resten av året:" }, FontType.BOLD
                     )
                     text(
-                        bokmal { +"Vi øker de månedlige utbetalingene dine ut 2026. Vi kan ikke utbetale mer enn " + nettoInklTillegg.format() + " kroner i måneden før skatt. Dette er uføretrygden din før inntektsavkorting. " },
-                        nynorsk { +"Vi aukar dei månadlege utbetalingane dine ut 2026. Vi kan ikkje utbetale meir enn " + nettoInklTillegg.format() + " kroner i månaden før skatt. Dette er uføretrygda di før inntektsavkorting. " },
+                        bokmal { +"Vi øker de månedlige utbetalingene dine ut 2026. Vi kan ikke utbetale mer enn " + nettoInklTillegg.format() + " i måneden før skatt. Dette er uføretrygden din før inntektsavkorting. " },
+                        nynorsk { +"Vi aukar dei månadlege utbetalingane dine ut 2026. Vi kan ikkje utbetale meir enn " + nettoInklTillegg.format() + " i månaden før skatt. Dette er uføretrygda di før inntektsavkorting. " },
                     )
                 }
                 showIf(nettoHarBlittLikBrutto) {
