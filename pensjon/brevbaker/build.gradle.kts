@@ -73,6 +73,7 @@ dependencies {
     implementation(platform(libs.log4j.bom))
     implementation(libs.bundles.logging)
     implementation(platform(libs.ktor.bom))
+    implementation(libs.ktor.client.call.id)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.jackson)
