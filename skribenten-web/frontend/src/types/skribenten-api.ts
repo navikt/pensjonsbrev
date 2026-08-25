@@ -3652,10 +3652,13 @@ export interface components {
             signatur: components["schemas"]["LetterMarkupSignatur"];
             title: components["schemas"]["EditTitle"];
         };
+        /** BrevkodeRedigerbart */
+        BrevkodeRedigerbart: Record<string, never>;
         /** AlltidValgbartVedleggBrevkode */
         AlltidValgbartVedleggBrevkode: {
             kode: string;
             spraak: components["schemas"]["LanguageCode"][];
+            stoettedeBrevmaler: components["schemas"]["BrevkodeRedigerbart"][];
             visningstekst: string;
         };
         /** ApiBrevResponse */
@@ -4041,6 +4044,7 @@ export type LetterMarkupSakspart = components['schemas']['LetterMarkupSakspart']
 export type LetterMarkupSignatur = components['schemas']['LetterMarkupSignatur'];
 export type EditTitle = components['schemas']['EditTitle'];
 export type EditLetter = components['schemas']['EditLetter'];
+export type BrevkodeRedigerbart = components['schemas']['BrevkodeRedigerbart'];
 export type AlltidValgbartVedleggBrevkode = components['schemas']['AlltidValgbartVedleggBrevkode'];
 export type ApiBrevResponse = components['schemas']['ApiBrevResponse'];
 export type ApiOppdaterBrevRequest = components['schemas']['ApiOppdaterBrevRequest'];
