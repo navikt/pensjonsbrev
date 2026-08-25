@@ -6,9 +6,9 @@ import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.alder.maler.adhoc.createAdhocTidligereUfoereGradertAPAutoDto
 import no.nav.pensjon.brev.alder.maler.afpprivat.createAvslagAfpPrivatDto
 import no.nav.pensjon.brev.alder.maler.afp.createAvslagAfpGammelDto
-import no.nav.pensjon.brev.alder.maler.afp.createAvslagAfpPrivatAutoDto
-import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpPrivatEndringDto
-import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpPrivatEndringOpptjeningAutoDto
+import no.nav.pensjon.brev.alder.maler.afpprivat.createAvslagAfpPrivatAutoDto
+import no.nav.pensjon.brev.alder.maler.afpprivat.createVedtakAfpPrivatEndringDto
+import no.nav.pensjon.brev.alder.maler.afpprivat.createVedtakAfpPrivatEndringOpptjeningAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerEtterbetalingDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikDto

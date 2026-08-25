@@ -1,7 +1,7 @@
 #######
 # Denne er brukt til å gjøre det mulig å bruke tokens lokalt
 #
-# secret kan hentes fra cluster med "kubectl --context dev-gcp -n pensjonsbrev get secret azure-locust -o json | jq '.data | map_values(@base64d)'"
+# secret kan hentes fra cluster med samme kommando som i brevbaker/locust/fetch-secrets.sh
 #
 # Kjøres en gang eller ved endringer med
 # kubectl apply -f .deploy/azure-ad-app-lokal.yaml

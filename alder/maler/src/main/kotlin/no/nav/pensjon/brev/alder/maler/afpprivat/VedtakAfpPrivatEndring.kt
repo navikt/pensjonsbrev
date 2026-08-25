@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -103,7 +102,7 @@ object VedtakAfpPrivatEndring : RedigerbarTemplate<VedtakAfpPrivatEndringDto> {
 
             includePhrase(AfpPrivatFraser.AfpOgAlderspensjon)
 
-            showIf(pesysData.brukerAlder.lessThan(70)) {
+            showIf(pesysData.brukerUnder70Aar) {
                 includePhrase(AfpPrivatFraser.OpptjeningEtter61Aar)
             }
 
@@ -111,11 +110,11 @@ object VedtakAfpPrivatEndring : RedigerbarTemplate<VedtakAfpPrivatEndringDto> {
 
             includePhrase(AfpPrivatFraser.MaanedligUtbetaling)
 
-            showIf(pesysData.borIForNorge) {
+            showIf(pesysData.borINorge) {
                 includePhrase(AfpPrivatFraser.SkattINorge(pesysData.beregning.kompensasjonstillegg))
             }
 
-            showIf(pesysData.borIForNorge.not()) {
+            showIf(pesysData.borINorge.not()) {
                 includePhrase(AfpPrivatFraser.SkattIUtlandet(pesysData.beregning.kompensasjonstillegg))
             }
 

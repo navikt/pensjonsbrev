@@ -45,7 +45,9 @@ class HentRedigerbareVedleggHandler(
     }
 }
 
-private fun List<Edit.ParagraphContent.Text>?.format() = this?.joinToString("") { it.text }
+private fun List<Edit.ParagraphContent.Text>?.format() = this?.joinToString("") {
+    if (it is Edit.ParagraphContent.Text.Literal) it.editedText ?: it.text else it.text
+}
 data class RedigerbartVedleggInfo(
     val vedleggId: VedleggId,
     val tittel: String,

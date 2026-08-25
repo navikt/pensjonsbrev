@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
-import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import org.slf4j.LoggerFactory
 
@@ -41,7 +40,6 @@ class Norg2ServiceHttp(config: NoAuthClientConfig, val cache: Cache, engine: Htt
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
-        install(CallIdFromContext)
     }
 
     override suspend fun getEnhet(enhetId: EnhetId): NavEnhet =

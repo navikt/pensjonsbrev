@@ -2,9 +2,8 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/LetterEditor/actions/common";
 import { type Row } from "~/types/brevbakerTypes";
-
-import { brevResponse, editedLetter } from "../../utils/letterEditorTestUtils";
-import { setupSakStubs } from "../utils/helpers";
+import { setupSakStubs } from "~test/e2e/support/helpers";
+import { brevResponse, editedLetter } from "~test/support/brevFixtures";
 
 function tableRow(...texts: string[]): Row {
   return {

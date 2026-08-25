@@ -7,6 +7,10 @@ plugins {
     `maven-publish`
 }
 
+dependencyLocking {
+    lockAllConfigurations()
+}
+
 group = "no.nav.brev.brevbaker"
 version = publishedLibs.versions.brevdataVersion.get()
 
@@ -21,10 +25,6 @@ java {
 
 repositories {
     mavenCentral()
-}
-
-dependencies {
-    testImplementation(libs.bundles.junit)
 }
 
 tasks.test {

@@ -1,9 +1,10 @@
 import { expect, test } from "@playwright/test";
 
+import { setupSakStubs } from "~test/e2e/support/helpers";
+
 import modelSpecificationBrukertestBrevPensjon2025 from "../fixtures/modelSpecificationBrukertestBrevPensjon2025.json" with {
   type: "json",
 };
-import { setupSakStubs } from "../utils/helpers";
 
 test.describe("Oppretter brevbakerbrev", () => {
   test.beforeEach(async ({ page }) => {

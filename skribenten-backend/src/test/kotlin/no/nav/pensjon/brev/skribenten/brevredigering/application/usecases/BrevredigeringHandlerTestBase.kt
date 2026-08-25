@@ -69,6 +69,8 @@ abstract class BrevredigeringHandlerTestBase {
         brevbakerService.redigerbareMaler[Testbrevkoder.VEDTAKSBREV] = vedtaksbrev
         brevbakerService.redigerbareMaler[Testbrevkoder.VARSELBREV] = varselbrevIVedtakskontekst
         brevbakerService.alltidValgbareVedleggResultat = emptySet()
+        brevbakerService.renderRedigerbareVedleggResultat = emptyMap()
+        brevbakerService.harRedigerbareVedleggResultat = null
         stagePdf(stagetPDF)
 
         penService.pesysBrevdata = brevdataResponseData
@@ -102,6 +104,7 @@ abstract class BrevredigeringHandlerTestBase {
     protected val attesterBrevPolicy = AttesterBrevPolicy()
     protected val ferdigRedigertPolicy = FerdigRedigertPolicy()
     protected val sendBrevPolicy = SendBrevPolicy(ferdigRedigertPolicy)
+    protected val slettBrevPolicy = SlettBrevPolicy()
     protected val reserverBrevHandler by lazy { ReserverBrevHandler(brevreservasjonPolicy, SharedPostgres.database) }
 
     protected val endreMottaker by lazy {
@@ -218,7 +221,8 @@ abstract class BrevredigeringHandlerTestBase {
     protected val endreRedigertVedlegg by lazy {
         EndreRedigertVedleggHandler(
             redigerBrevPolicy = redigerBrevPolicy,
-            brevreservasjonPolicy = brevreservasjonPolicy,
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
             reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
@@ -280,6 +284,7 @@ abstract class BrevredigeringHandlerTestBase {
     protected val slettBrevHandler by lazy {
         SlettBrevHandler(
             reserverBrevHandler = reserverBrevHandler,
+            slettBrevPolicy = slettBrevPolicy,
             database = SharedPostgres.database,
         )
     }

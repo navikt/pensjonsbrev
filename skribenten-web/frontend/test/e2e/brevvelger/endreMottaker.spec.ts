@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { setupSakStubs } from "../utils/helpers";
+import { setupSakStubs } from "~test/e2e/support/helpers";
 
 async function expectOrderLetterSuccess(page: Page, expectedUrl: string) {
   const successMessage = page.getByTestId("order-letter-success-message");

@@ -298,6 +298,7 @@ function RedigerBrev({
       if (isValid) {
         const updatedValg = form.getValues().saksbehandlerValg;
         beforeTekstvalgChange(updatedValg, editorState.redigertBrev);
+        oppdaterBrevMutation.reset();
         oppdaterBrevMutation.mutate({
           redigertBrev: editorState.redigertBrev,
           saksbehandlerValg: updatedValg,
@@ -308,6 +309,7 @@ function RedigerBrev({
   };
 
   const onSubmit = (values: RedigerBrevSidemenyFormData, navigateDone?: () => void) => {
+    oppdaterBrevMutation.reset();
     oppdaterBrevMutation.mutate(
       {
         redigertBrev: editorState.redigertBrev,
@@ -424,6 +426,7 @@ function RedigerBrev({
                     error={error}
                     freeze={freeze}
                     redigeringsflate="saksbehandler-redigering"
+                    resetParentSaveError={oppdaterBrevMutation.reset}
                     showDebug={showDebug}
                   />
                 </InsertedTekstValgHighlightProvider>

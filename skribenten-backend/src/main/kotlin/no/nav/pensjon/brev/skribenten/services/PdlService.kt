@@ -56,7 +56,7 @@ class PdlServiceHttp(config: OboClientConfig, authService: AuthService, engine: 
         install(ContentNegotiation) {
             jackson { registerModule(JavaTimeModule()) }
         }
-        callIdAndOnBehalfOfClient(pdlScope, authService)
+        onBehalfOfClient(pdlScope, authService)
     }
 
     private data class PDLQuery<T : Any>(

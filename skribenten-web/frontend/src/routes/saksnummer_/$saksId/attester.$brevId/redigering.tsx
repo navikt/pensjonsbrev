@@ -4,7 +4,7 @@ import { BodyShort, Box, Button, Heading, Hide, Label, Switch, VStack } from "@n
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -262,6 +262,8 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   });
 
   const onSubmit = (values: VedtakSidemenyFormData, onSuccess?: () => void) => {
+    attesterMutation.reset();
+    oppdaterBrevMutation.reset();
     attesterMutation.mutate(
       {
         saksbehandlerValg: values.saksbehandlerValg,
@@ -273,6 +275,11 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   const freeze = oppdaterBrevMutation.isPending || attesterMutation.isPending;
   const error = oppdaterBrevMutation.isError || attesterMutation.isError;
+
+  const resetSaveErrors = useCallback(() => {
+    attesterMutation.reset();
+    oppdaterBrevMutation.reset();
+  }, [attesterMutation.reset, oppdaterBrevMutation.reset]);
 
   // TODO: disable BrevmalAlternativer during SAVE_PENDING
 
@@ -398,6 +405,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   error={error}
                   freeze={freeze}
                   redigeringsflate="attestant-redigering"
+                  resetParentSaveError={resetSaveErrors}
                   showDebug={showDebug}
                 />
               </InsertedTekstValgHighlightProvider>
