@@ -44,7 +44,7 @@ class PensjonRepresentasjonService(
         }
         installRetry(logger)
         install(ContentNegotiation) { jackson() }
-        callIdAndOnBehalfOfClient(scope, authService)
+        onBehalfOfClient(scope, authService)
     }
 
     data class HasRepresentantRequest(

@@ -42,7 +42,7 @@ class SkjermingServiceHttp(
         defaultRequest { url(this@SkjermingServiceHttp.url) }
         installRetry(logger)
         install(ContentNegotiation) { jackson() }
-        callIdAndOnBehalfOfClient(scope, authService)
+        onBehalfOfClient(scope, authService)
     }
 
     override suspend fun hentSkjerming(pid: Pid): Boolean? =

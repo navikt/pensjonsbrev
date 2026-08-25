@@ -12,14 +12,12 @@ import io.ktor.http.isSuccess
 import kotlinx.io.IOException
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.auth.AzureAdOnBehalfOf
-import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import org.slf4j.Logger
 import java.nio.channels.UnresolvedAddressException
 import kotlin.math.pow
 import kotlin.random.Random
 
-fun HttpClientConfig<*>.callIdAndOnBehalfOfClient(scope: String, authService: AuthService) {
-    install(CallIdFromContext)
+fun HttpClientConfig<*>.onBehalfOfClient(scope: String, authService: AuthService) {
     install(AzureAdOnBehalfOf) {
         this.scope = scope
         this.authService = authService

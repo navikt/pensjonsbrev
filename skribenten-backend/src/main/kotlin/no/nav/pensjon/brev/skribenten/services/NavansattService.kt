@@ -55,7 +55,7 @@ class NavansattServiceHttp(
             }
         }
         installRetry(logger, maxRetries = 3)
-        callIdAndOnBehalfOfClient(navansattScope, authService)
+        onBehalfOfClient(navansattScope, authService)
     }
 
     override suspend fun hentNavAnsattEnhetListe(ansattId: NavIdent): List<NAVAnsattEnhet> {

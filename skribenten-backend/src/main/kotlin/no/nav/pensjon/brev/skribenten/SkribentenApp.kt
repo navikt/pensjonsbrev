@@ -65,7 +65,7 @@ fun Application.skribentenApp() {
         }
     }
     install(CallId) {
-        header("X-Request-ID")
+        header(HttpHeaders.XRequestId)
         generate()
         verify { it.isNotEmpty() }
     }
