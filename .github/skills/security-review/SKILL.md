@@ -1,6 +1,10 @@
 ---
 name: security-review
 description: Bruk før commit, push eller pull request for å sjekke at koden er trygg å merge
+license: MIT
+metadata:
+  domain: auth
+  tags: security pre-commit vulnerability-scanning code-review
 ---
 
 # Security Review Skill
@@ -151,13 +155,13 @@ allowedOrigins = listOf("*")
 @PostMapping("/api/vedtak")
 fun create(@RequestBody @Valid request: CreateVedtakRequest): ResponseEntity<VedtakDTO>
 
-// ✅ Use explicit polymorphism for known types only
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes(
-    JsonSubTypes.Type(value = SoknadRequest::class, name = "soknad"),
-    JsonSubTypes.Type(value = KlageRequest::class, name = "klage")
-)
-sealed interface Request
+// ✅ Limit Jackson to known types
+objectMapper.apply {
+    activateDefaultTyping(
+        polymorphicTypeValidator,
+        ObjectMapper.DefaultTyping.NON_FINAL
+    )
+}
 ```
 
 ### A09: Logging & Monitoring
@@ -187,8 +191,6 @@ private val ALLOWED_TYPES = setOf("application/pdf", "image/png", "image/jpeg")
 
 ## Dependency Management
 
-### Kotlin
-
 ```kotlin
 // build.gradle.kts — pin versions, use BOM
 dependencyManagement {
@@ -196,20 +198,10 @@ dependencyManagement {
         mavenBom("org.springframework.boot:spring-boot-dependencies:3.4.1")
     }
 }
-```
 
-```bash
-# Check outdated/vulnerable dependencies
-./gradlew dependencyUpdates
-./gradlew dependencyCheckAnalyze   # OWASP check
-trivy repo .
-```
-
-### Node/TypeScript
-
-```bash
-npm audit
-npm audit fix
+// Check vulnerable dependencies
+// ./gradlew dependencyCheckAnalyze
+// trivy repo .
 ```
 
 ## Expanded Checklist
@@ -224,6 +216,18 @@ npm audit fix
 - [ ] File upload validates type, size, and content
 - [ ] Dependencies are up to date and vulnerability-scanned
 - [ ] No `dangerouslySetInnerHTML` without sanitization
+
+## Dependency Management
+
+```bash
+# Kotlin – check for outdated/vulnerable dependencies
+./gradlew dependencyUpdates
+./gradlew dependencyCheckAnalyze   # OWASP check
+
+# Node/TypeScript
+npm audit
+npm audit fix
+```
 
 ## Security Checklist
 
