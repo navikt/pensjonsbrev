@@ -225,7 +225,19 @@ test.describe("autolagring", () => {
 
   test("nullstiller feilmelding fra forrige lagring når ny autolagring lykkes", async ({ page }) => {
     let saveCount = 0;
-    let resolveSecondSave: (() => void) | undefined;
+    const secondSaveGate = Promise.withResolvers<void>();
+
+    await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=false", async (route) => {
+      if (route.request().method() !== "PUT") return route.fallback();
+
+      return route.fulfill({
+        json: {
+          ...brev,
+          redigertBrev: route.request().postDataJSON(),
+          info: { ...brev.info, sistredigert: hurtiglagreTidspunkt },
+        },
+      });
+    });
 
     await page.route(
       (url: URL) => url.pathname.includes("/sak/123456/brev/1") && url.search.includes("frigiReservasjon"),
@@ -240,9 +252,7 @@ test.describe("autolagring", () => {
           });
         }
 
-        await new Promise<void>((resolve) => {
-          resolveSecondSave = resolve;
-        });
+        await secondSaveGate.promise;
         const body = route.request().postDataJSON();
         return route.fulfill({
           json: {
@@ -281,8 +291,9 @@ test.describe("autolagring", () => {
     );
     await page.clock.fastForward(AUTOSAVE_TIMER);
     await expect(page.getByText("Lagrer...")).toBeVisible();
+    await expect(page.getByText(/Klarte ikke lagre/)).toBeHidden();
 
-    resolveSecondSave?.();
+    secondSaveGate.resolve();
     await retrySavePromise;
 
     await expect(page.getByText("Lagret")).toBeVisible();
