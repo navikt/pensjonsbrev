@@ -54,10 +54,9 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev?: BrevResponse; i
   //
   // ADVARSEL: setter noen en staleTime for brevspørringen (i getBrevAttestering,
   // queryClient.setQueryDefaults eller defaultOptions.queries på klienten i main.tsx), slutter
-  // refetchOnMount å utløses. Da kan isBrevFresh bli true på cachet data, og vi risikerer å sende en
-  // pdf som hører til en utdatert redigertBrevHash.
+  // refetchOnMount å utløses. Da kan isBrevFresh bli true på cachet data, og vi risikerer å sende
+  // en pdf som hører til en utdatert redigertBrevHash.
   const isBrevReady = props.brev !== undefined && props.isBrevFresh;
-
   const hentPdfQuery = useQuery({
     queryKey: hentPdfForBrev.queryKey(Number(brevId), props.brev?.redigertBrevHash),
     queryFn: () => hentPdfForBrev.queryFn(props.saksId, Number(brevId)),
@@ -65,12 +64,13 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev?: BrevResponse; i
     refetchOnWindowFocus: false,
   });
 
-  // !isBrevReady må sjekkes aller først. Uten hash blir nøkkelen ["hentPdfForBrev", brevId] - nøyaktig
-  // den brevbehandler/route.tsx bruker - så det kan allerede ligge en pdf i cachen der. `enabled: false`
-  // hindrer at vi henter, men ikke at hentPdfQuery.data leser den cachede verdien.
+  // !isBrevReady må sjekkes aller først. Uten hash blir nøkkelen ["hentPdfForBrev", brevId] -
+  // nøyaktig den brevbehandler/route.tsx bruker - så det kan allerede ligge en pdf i cachen der.
+  // `enabled: false` hindrer at vi henter, men ikke at hentPdfQuery.data leser den cachede verdien.
   // Deretter "fetching": ved en bakgrunns-refetch ligger forrige pdf fortsatt i data.
   // isSuccess trengs i tillegg til null-sjekken, fordi React Query beholder forrige data når en
-  // refetch feiler (status blir "error") - da viser forhåndsvisningen feil, og vi skal ikke kunne sende.
+  // refetch feiler (status blir "error") - da viser forhåndsvisningen feil, og vi skal ikke kunne
+  // sende.
   // data === null betyr at brevet ikke har noen pdf (queryFn gir null ved 404).
   const pdfStatus: PdfStatus =
     !isBrevReady || hentPdfQuery.isFetching
