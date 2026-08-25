@@ -63,14 +63,14 @@ const ManagedLetterEditor = (props: {
   });
 
   useEffect(() => {
-    const timoutId = setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       if (editorState.saveStatus === "DIRTY") {
         reset();
         resetParentSaveError?.();
         mutate(editorState);
       }
     }, AUTOSAVE_TIMER);
-    return () => clearTimeout(timoutId);
+    return () => clearTimeout(timeoutId);
   }, [editorState.saveStatus, editorState.redigertBrev, mutate, reset, resetParentSaveError]);
 
   useEffect(() => {
