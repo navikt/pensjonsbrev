@@ -2,7 +2,7 @@ import { Alert, Box, Button, Heading, HStack, Label, VStack } from "@navikt/ds-r
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -29,7 +29,7 @@ import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import { AktivtDokumentProvider } from "~/components/vedlegg/AktivtDokumentContext";
 import { AktivtDokumentEditor } from "~/components/vedlegg/AktivtDokumentEditor";
 import { BrevEditorSidepanel } from "~/components/vedlegg/BrevEditorSidepanel";
-import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
+import { useDokumentEditorController } from "~/components/vedlegg/useDokumentEditorController";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
@@ -251,42 +251,16 @@ function RedigerBrev({
   const editorStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
 
-  const redigerbareVedleggQuery = useRedigerbareVedlegg({ saksId, brevId: brev.info.id });
-
-  // The mounted document editor (currently only a vedlegg) registers how to persist its unsaved
-  // edits, so "Fortsett" can await that before the brev submit releases the reservation.
-  const lagreAktivtDokumentRef = useRef<(() => Promise<void>) | null>(null);
-  const registrerLagring = useCallback((lagreNaa: (() => Promise<void>) | null) => {
-    lagreAktivtDokumentRef.current = lagreNaa;
-  }, []);
-  const [lagrerAktivtDokument, setLagrerAktivtDokument] = useState(false);
-
-  const velgDokument = useCallback(
-    async (vedleggId: string | undefined): Promise<boolean> => {
-      if (aktivVedlegg !== undefined && vedleggId !== aktivVedlegg) {
-        try {
-          await lagreAktivtDokumentRef.current?.();
-        } catch {
-          return false;
-        }
-      }
-      await navigate({ search: (prev) => ({ ...prev, vedlegg: vedleggId }), replace: true });
-      return true;
-    },
-    [aktivVedlegg, navigate],
+  const navigateToDocument = useCallback(
+    (vedleggId: string | undefined) => navigate({ search: (prev) => ({ ...prev, vedlegg: vedleggId }), replace: true }),
+    [navigate],
   );
-
-  // A stale or removed ?vedlegg= value falls back to the brev, and the URL is cleaned so the side
-  // panel selection always matches a vedlegg that exists.
-  const vedleggFinnes =
-    aktivVedlegg === undefined ||
-    (redigerbareVedleggQuery.data?.some((vedlegg) => vedlegg.vedleggId === aktivVedlegg) ?? true);
-
-  useEffect(() => {
-    if (!vedleggFinnes) {
-      velgDokument(undefined);
-    }
-  }, [vedleggFinnes, velgDokument]);
+  const dokumentEditor = useDokumentEditorController({
+    saksId,
+    brevId: brev.info.id,
+    aktivVedleggId: aktivVedlegg,
+    navigateToDocument,
+  });
 
   const { editorState, redigertBrev, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
@@ -304,14 +278,7 @@ function RedigerBrev({
     });
 
   const navigateToBrevvelger = async () => {
-    setLagrerAktivtDokument(true);
-    try {
-      await lagreAktivtDokumentRef.current?.();
-    } catch {
-      return;
-    } finally {
-      setLagrerAktivtDokument(false);
-    }
+    if (!(await dokumentEditor.lagreAktivtDokument())) return;
 
     await navigate({
       to: "/saksnummer/$saksId/brevvelger",
@@ -376,14 +343,7 @@ function RedigerBrev({
     // A vedlegg is saved through its own endpoint, so it must be persisted while the reservation is
     // still held — the submit below releases it. If it fails we stay put rather than releasing the
     // reservation and navigating away from edits we never managed to store.
-    setLagrerAktivtDokument(true);
-    try {
-      await lagreAktivtDokumentRef.current?.();
-    } catch {
-      return;
-    } finally {
-      setLagrerAktivtDokument(false);
-    }
+    if (!(await dokumentEditor.lagreAktivtDokument())) return;
 
     oppdaterBrevMutation.mutate(
       {
@@ -457,15 +417,15 @@ function RedigerBrev({
               reservasjon={reservasjonQuery.data}
             />
             <AktivtDokumentProvider
-              aktivVedleggId={vedleggFinnes ? aktivVedlegg : undefined}
-              onVelgDokument={velgDokument}
-              registrerLagring={registrerLagring}
+              aktivVedleggId={dokumentEditor.aktivVedleggId}
+              onVelgDokument={dokumentEditor.velgDokument}
+              registrerLagring={dokumentEditor.registrerLagring}
             >
               <ThreeSectionLayout
                 bottom={
                   <HStack justify="space-between" width="100%">
                     <Button
-                      disabled={lagrerAktivtDokument}
+                      disabled={dokumentEditor.lagrerAktivtDokument}
                       onClick={navigateToBrevvelger}
                       size="small"
                       type="button"
@@ -473,7 +433,11 @@ function RedigerBrev({
                     >
                       Tilbake til brevvelger
                     </Button>
-                    <Button loading={oppdaterBrevMutation.isPending || lagrerAktivtDokument} size="small" type="submit">
+                    <Button
+                      loading={oppdaterBrevMutation.isPending || dokumentEditor.lagrerAktivtDokument}
+                      size="small"
+                      type="submit"
+                    >
                       <HStack align="center" gap="space-8">
                         <Label size="small">Fortsett</Label>
                       </HStack>

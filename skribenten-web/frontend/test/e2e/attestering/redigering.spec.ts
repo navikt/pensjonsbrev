@@ -7,6 +7,33 @@ import { brevResponse } from "../../utils/letterEditorTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
 const defaultBrev = brevResponse({});
+const VEDLEGG_ID = "vedlegg-om-alderspensjon";
+const VEDLEGG_TITTEL = "Opplysninger om alderspensjon";
+const VEDLEGG_TEKST = "Vedleggsteksten attestanten kan redigere.";
+
+const vedlegg = {
+  includeSakspart: false,
+  title: {
+    text: [{ type: "LITERAL", id: 900, text: VEDLEGG_TITTEL, editedText: null, tags: [] }],
+    deletedContent: [],
+  },
+  deletedBlocks: [],
+  blocks: [
+    {
+      id: 901,
+      type: "PARAGRAPH",
+      editable: true,
+      deletedContent: [],
+      content: [{ type: "LITERAL", id: 902, text: VEDLEGG_TEKST, editedText: null, tags: [] }],
+    },
+  ],
+};
+
+const setupVedlegg = async (page: import("@playwright/test").Page) => {
+  await page.route("**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg", (route) =>
+    route.fulfill({ json: [{ vedleggId: VEDLEGG_ID, tittel: VEDLEGG_TITTEL }] }),
+  );
+};
 
 test.describe("attestant redigering", () => {
   test.beforeEach(async ({ page }) => {
@@ -95,6 +122,60 @@ test.describe("attestant redigering", () => {
     await signatureSavePromise;
 
     await expect(page.getByText("Den nye attestanten")).toBeVisible();
+  });
+
+  test("lagrer redigert vedlegg før brevet attesteres", async ({ page }) => {
+    await setupVedlegg(page);
+    const hendelser: string[] = [];
+
+    await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, async (route) => {
+      if (route.request().method() !== "PUT") return route.fulfill({ json: vedlegg });
+      hendelser.push("vedlegg-lagring");
+      return route.fulfill({ json: route.request().postDataJSON().redigertVedlegg });
+    });
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?frigiReservasjon=true", (route) => {
+      hendelser.push("attestering");
+      const body = route.request().postDataJSON();
+      return route.fulfill({ json: { ...defaultBrev, ...body } });
+    });
+
+    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await page.getByRole("textbox", { name: "Underskrift" }).fill("Attestant Testesen");
+    await page.getByRole("tab", { name: "Vedlegg" }).click();
+    await page.getByText(VEDLEGG_TEKST).click();
+    await page.locator(":focus").pressSequentially(" Endret.");
+
+    await page.getByRole("button", { name: "Fortsett" }).click();
+
+    await expect(page).toHaveURL(/\/attester\/1\/forhandsvisning/, { timeout: 15_000 });
+    expect(hendelser).toEqual(["vedlegg-lagring", "attestering"]);
+  });
+
+  test("attesterer ikke når redigert vedlegg ikke kan lagres", async ({ page }) => {
+    await setupVedlegg(page);
+    let attesteringer = 0;
+
+    await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, (route) =>
+      route.request().method() === "PUT"
+        ? route.fulfill({ status: 500, json: "Lagring feilet" })
+        : route.fulfill({ json: vedlegg }),
+    );
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?frigiReservasjon=true", (route) => {
+      attesteringer += 1;
+      return route.fulfill({ json: defaultBrev });
+    });
+
+    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await page.getByRole("textbox", { name: "Underskrift" }).fill("Attestant Testesen");
+    await page.getByRole("tab", { name: "Vedlegg" }).click();
+    await page.getByText(VEDLEGG_TEKST).click();
+    await page.locator(":focus").pressSequentially(" Endret.");
+
+    await page.getByRole("button", { name: "Fortsett" }).click();
+
+    await expect(page.getByText("Klarte ikke lagre")).toBeVisible();
+    await expect(page).toHaveURL(/\/attester\/1\/redigering/);
+    expect(attesteringer).toBe(0);
   });
 
   test("Blokkerer redigering om brev er reservert av noen andre", async ({ page }) => {
