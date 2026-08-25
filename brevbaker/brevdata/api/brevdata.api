@@ -136,7 +136,13 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode {
 	public abstract fun getKode ()Ljava/lang/String;
 	public abstract fun getSpraak ()Ljava/util/Set;
+	public abstract fun getStoettedeBrevmaler ()Ljava/util/Collection;
 	public abstract fun getVisningstekst ()Ljava/lang/String;
+	public fun stoetterBrevkode (Lno/nav/pensjon/brev/api/model/maler/Brevkode$Redigerbart;)Z
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode$DefaultImpls {
+	public static fun stoetterBrevkode (Lno/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode;Lno/nav/pensjon/brev/api/model/maler/Brevkode$Redigerbart;)Z
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/BrevbakerType {

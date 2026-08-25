@@ -89,8 +89,8 @@ class BrevmalService(
     suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification? =
         brevbakerService.getModelSpecification(brevkode)
 
-    suspend fun getAlltidValgbareVedlegg(sakstype: Sakstype): Set<AlltidValgbartVedleggBrevkode> =
-        brevbakerService.getAlltidValgbareVedlegg(sakstype)
+    suspend fun getAlltidValgbareVedlegg(brevkode: Brevkode.Redigerbart): Set<AlltidValgbartVedleggBrevkode> =
+        brevbakerService.getAlltidValgbareVedlegg(brevkode)
 
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>? =
         brevbakerService.getTemplates()

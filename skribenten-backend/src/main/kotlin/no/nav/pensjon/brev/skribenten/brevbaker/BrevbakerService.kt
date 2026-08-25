@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.api.model.maler.*
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.common.*
-import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.*
@@ -73,7 +72,7 @@ interface BrevbakerService {
 
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
-    suspend fun getAlltidValgbareVedlegg(sakstype: Sakstype): Set<AlltidValgbartVedleggBrevkode>
+    suspend fun getAlltidValgbareVedlegg(brevkode: Brevkode.Redigerbart): Set<AlltidValgbartVedleggBrevkode>
 }
 
 class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, val cache: Cache, engine: HttpClientEngine) : BrevbakerService, ServiceStatus, Closeable {
@@ -280,9 +279,9 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             }
         }
 
-    override suspend fun getAlltidValgbareVedlegg(sakstype: Sakstype): Set<AlltidValgbartVedleggBrevkode> =
+    override suspend fun getAlltidValgbareVedlegg(brevkode: Brevkode.Redigerbart): Set<AlltidValgbartVedleggBrevkode> =
         cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, "alltidValgbareVedlegg") {
-            val response = client.get("/letter/redigerbar/alltidValgbareVedlegg?sakstype=${sakstype.kode}")
+            val response = client.get("/letter/redigerbar/alltidValgbareVedlegg?brevkode=${brevkode.kode()}")
 
             if (response.status.isSuccess()) {
                 response.body()

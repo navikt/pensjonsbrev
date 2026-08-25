@@ -172,12 +172,14 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/BrevRequest 
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggBrevkode : no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/Set;Ljava/util/Collection;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getKode ()Ljava/lang/String;
 	public fun getSpraak ()Ljava/util/Set;
+	public fun getStoettedeBrevmaler ()Ljava/util/Collection;
 	public fun getVisningstekst ()Ljava/lang/String;
 	public fun hashCode ()I
+	public fun stoetterBrevkode (Lno/nav/pensjon/brev/api/model/maler/Brevkode$Redigerbart;)Z
 	public fun toString ()Ljava/lang/String;
 }
 
