@@ -40,6 +40,10 @@
     {
       "path": ".github/skills/api-design/",
       "hash": "a353aded69a4bd4c"
+    },
+    {
+      "path": ".github/skills/observability-debugging/",
+      "hash": "107a99f70451c01b"
     }
   ]
 }
