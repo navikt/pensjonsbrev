@@ -1,13 +1,13 @@
 {
   "collection": "(à la carte)",
-  "version": "2026.08.17-083535-a866964",
+  "version": "2026.08.24-215218-154e33d",
   "scope": "repo",
   "source_sha": "154e33d",
   "installed_at": "2026-07-15T14:11:15Z",
   "files": [
     {
       "path": ".github/skills/aksel-builder/",
-      "hash": "8093294c605378e1"
+      "hash": "514152754088a85e"
     },
     {
       "path": ".github/agents/nav-pilot.agent.md",
