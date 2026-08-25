@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Box, Button, Heading, HStack, Label, Modal, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, Button, Heading, HStack, Label, Modal, Skeleton, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
@@ -9,12 +9,10 @@ import { attesteringBrevKeys, getBrevAttestering } from "~/api/brev-queries";
 import { hentPdfForBrev, sendBrev } from "~/api/sak-api-endpoints";
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
 import { ApiError } from "~/components/ApiError";
-import { CenteredLoader } from "~/components/CenteredLoader";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import { type BestillBrevResponse, type BrevResponse } from "~/types/brev";
-import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
 
 import BrevForhåndsvisning from "../brevbehandler/-components/BrevForhåndsvisning";
@@ -28,6 +26,24 @@ const VedtakForhåndsvisningWrapper = () => {
   const { saksId, brevId } = Route.useParams();
   const hentBrevQuery = useQuery(getBrevAttestering(saksId, Number(brevId)));
 
+  // Vi rendrer layout og info til venstre med Aksel Skeleton og BrevForhåndsvisning til høyre med
+  // egen spinner for pdf. Da unngår vi en fullside-loader etterfulgt av pdf-loader.
+  if (hentBrevQuery.isError) {
+    return <ApiError error={hentBrevQuery.error} title="En feil skjedde ved henting av vedtaksbrev" />;
+  }
+
+  return (
+    <VedtaksForhåndsvisning brev={hentBrevQuery.data} isBrevFresh={hentBrevQuery.isFetchedAfterMount} saksId={saksId} />
+  );
+};
+
+type PdfStatus = "ready" | "fetching" | "unavailable";
+
+const VedtaksForhåndsvisning = (props: { saksId: string; brev?: BrevResponse; isBrevFresh: boolean }) => {
+  const { brevId } = Route.useParams();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const [vilSendeBrev, setVilSendeBrev] = useState(false);
+
   // Brevet hentes alltid på nytt ved mount, og vi venter på det ferske svaret før pdf-en hentes,
   // slik at pdf-en alltid samsvarer med gjeldende redigertBrevHash.
   //
@@ -36,49 +52,36 @@ const VedtakForhåndsvisningWrapper = () => {
   // observer, så `staleTime: Number.POSITIVE_INFINITY` i redigering.tsx - som deler queryKey med
   // denne - påvirker oss ikke her.
   //
-  // ADVARSEL: setter noen en staleTime for denne spørringen (i getBrevAttestering,
+  // ADVARSEL: setter noen en staleTime for brevspørringen (i getBrevAttestering,
   // queryClient.setQueryDefaults eller defaultOptions.queries på klienten i main.tsx), slutter
-  // refetchOnMount å utløses. Da kan isFetchedAfterMount bli true på cachet data, og vi risikerer å
-  // sende en pdf som hører til en utdatert redigertBrevHash.
-  const showLoading = (
-    <Box asChild background="default" paddingBlock="space-32 space-0">
-      <CenteredLoader label="Henter brev..." verticalStrategy="flexGrow" />
-    </Box>
-  );
+  // refetchOnMount å utløses. Da kan isBrevFresh bli true på cachet data, og vi risikerer å sende en
+  // pdf som hører til en utdatert redigertBrevHash.
+  const isBrevReady = props.brev !== undefined && props.isBrevFresh;
 
-  return queryFold({
-    query: hentBrevQuery,
-    initial: () => null,
-    pending: () => showLoading,
-    error: (err) => <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />,
-    success: (brev) =>
-      hentBrevQuery.isFetchedAfterMount ? <VedtaksForhåndsvisning brev={brev} saksId={saksId} /> : showLoading,
-  });
-};
-
-type PdfStatus = "ready" | "fetching" | "unavailable";
-
-const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) => {
-  const navigate = useNavigate({ from: Route.fullPath });
-  const [vilSendeBrev, setVilSendeBrev] = useState(false);
   const hentPdfQuery = useQuery({
-    queryKey: hentPdfForBrev.queryKey(props.brev.info.id, props.brev.redigertBrevHash),
-    queryFn: () => hentPdfForBrev.queryFn(props.saksId, props.brev.info.id),
+    queryKey: hentPdfForBrev.queryKey(Number(brevId), props.brev?.redigertBrevHash),
+    queryFn: () => hentPdfForBrev.queryFn(props.saksId, Number(brevId)),
+    enabled: isBrevReady,
     refetchOnWindowFocus: false,
   });
-  // "fetching" må sjekkes først: ved en bakgrunns-refetch ligger forrige pdf fortsatt i data.
+
+  // !isBrevReady må sjekkes aller først. Uten hash blir nøkkelen ["hentPdfForBrev", brevId] - nøyaktig
+  // den brevbehandler/route.tsx bruker - så det kan allerede ligge en pdf i cachen der. `enabled: false`
+  // hindrer at vi henter, men ikke at hentPdfQuery.data leser den cachede verdien.
+  // Deretter "fetching": ved en bakgrunns-refetch ligger forrige pdf fortsatt i data.
   // isSuccess trengs i tillegg til null-sjekken, fordi React Query beholder forrige data når en
   // refetch feiler (status blir "error") - da viser forhåndsvisningen feil, og vi skal ikke kunne sende.
   // data === null betyr at brevet ikke har noen pdf (queryFn gir null ved 404).
-  const pdfStatus: PdfStatus = hentPdfQuery.isFetching
-    ? "fetching"
-    : hentPdfQuery.isSuccess && hentPdfQuery.data !== null
-      ? "ready"
-      : "unavailable";
+  const pdfStatus: PdfStatus =
+    !isBrevReady || hentPdfQuery.isFetching
+      ? "fetching"
+      : hentPdfQuery.isSuccess && hentPdfQuery.data !== null
+        ? "ready"
+        : "unavailable";
 
   return (
     <VStack height="100%">
-      {vilSendeBrev && (
+      {vilSendeBrev && props.brev && (
         <SendBrevModal
           brevId={props.brev.info.id.toString()}
           onClose={() => setVilSendeBrev(false)}
@@ -91,8 +94,10 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
         bottom={
           <HStack gap="space-20">
             <Button
+              disabled={props.brev === undefined}
               icon={<ArrowLeftIcon />}
-              onClick={() =>
+              onClick={() => {
+                if (!props.brev) return;
                 navigate({
                   to: "/saksnummer/$saksId/attester/$brevId/redigering",
                   params: {
@@ -103,8 +108,8 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
                     vedtaksId: props.brev.info.vedtaksId?.toString() ?? undefined,
                     enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
                   },
-                })
-              }
+                });
+              }}
               size="small"
               type="button"
               variant="secondary"
@@ -125,27 +130,41 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
           </HStack>
         }
         left={
-          <VStack gap="space-12">
-            <Heading size="small">{props.brev.info.brevtittel}</Heading>
-            <VStack gap="space-16">
-              <OppsummeringAvMottaker mottaker={props.brev.info.mottaker ?? null} saksId={props.saksId} withTitle />
-              <VStack gap="space-4">
-                <Label size="small">Distribusjonstype</Label>
-                <BodyShort size="small">{distribusjonstypeTilText(props.brev.info.distribusjonstype)}</BodyShort>
-                {props.brev.info.distribusjonstype === "LOKALPRINT" && (
-                  <Alert size="small" variant="warning">
-                    Du må åpne PDF og skrive ut brevet etter du har trykket på send brev.
-                  </Alert>
-                )}
+          props.brev === undefined ? (
+            <VStack gap="space-12">
+              <Skeleton height={28} variant="rectangle" width="80%" />
+              <VStack gap="space-16">
+                <Skeleton height={96} variant="rectangle" width="100%" />
+                <VStack gap="space-4">
+                  <Skeleton height={20} variant="rectangle" width="50%" />
+                  <Skeleton height={20} variant="rectangle" width="70%" />
+                </VStack>
               </VStack>
             </VStack>
-          </VStack>
+          ) : (
+            <VStack gap="space-12">
+              <Heading size="small">{props.brev.info.brevtittel}</Heading>
+              <VStack gap="space-16">
+                <OppsummeringAvMottaker mottaker={props.brev.info.mottaker ?? null} saksId={props.saksId} withTitle />
+                <VStack gap="space-4">
+                  <Label size="small">Distribusjonstype</Label>
+                  <BodyShort size="small">{distribusjonstypeTilText(props.brev.info.distribusjonstype)}</BodyShort>
+                  {props.brev.info.distribusjonstype === "LOKALPRINT" && (
+                    <Alert size="small" variant="warning">
+                      Du må åpne PDF og skrive ut brevet etter du har trykket på send brev.
+                    </Alert>
+                  )}
+                </VStack>
+              </VStack>
+            </VStack>
+          )
         }
         right={
           <BrevForhåndsvisning
-            brevId={props.brev.info.id}
-            redigertBrevHash={props.brev.redigertBrevHash}
+            brevId={Number(brevId)}
+            redigertBrevHash={props.brev?.redigertBrevHash}
             saksId={props.saksId}
+            waitingForFreshBrev={!isBrevReady}
           />
         }
       />
