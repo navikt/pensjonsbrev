@@ -44,7 +44,7 @@ class AzureAdM2mTokenClient(
                 append("scope", scope)
             }
         ) {
-            headers { append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded.toString()) }
+            headers { contentType(ContentType.Application.FormUrlEncoded) }
         }
 
         if (!response.status.isSuccess()) {
