@@ -12,7 +12,6 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.Closeable
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
-import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brev.skribenten.services.ServiceStatus
@@ -45,7 +44,6 @@ class BrevmetadataServiceHttp(
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
-        install(CallIdFromContext)
     }
 
     override suspend fun getAllBrev(): List<BrevdataDto> {

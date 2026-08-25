@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.client.call.body
 import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.accept
@@ -24,7 +23,7 @@ import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brev.skribenten.services.ServiceException
-import no.nav.pensjon.brev.skribenten.services.callIdAndOnBehalfOfClient
+import no.nav.pensjon.brev.skribenten.services.onBehalfOfClient
 import no.nav.pensjon.brev.skribenten.services.installRetry
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import org.slf4j.LoggerFactory
@@ -49,7 +48,7 @@ class FoerstesidegeneratorClient(config: OboClientConfig, authService: AuthServi
             }
         }
         installRetry(logger)
-        callIdAndOnBehalfOfClient(foerstesidegeneratorScope, authService)
+        onBehalfOfClient(foerstesidegeneratorScope, authService)
 
     }
 
