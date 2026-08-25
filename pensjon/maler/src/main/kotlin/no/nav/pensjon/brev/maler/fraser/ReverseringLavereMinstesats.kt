@@ -74,7 +74,7 @@ object ReverseringLavereMinstesats {
                         }
                         row {
                             cell { text(bokmal { +"Din minstesats" }, nynorsk { +"Minstesatsen din" }) }
-                            cell { text(bokmal { +lopendeYtelse.brukersMinstesats.format() }, nynorsk { +lopendeYtelse.brukersMinstesats.format() }) }
+                            cell { text(bokmal { +lopendeYtelse.brukersMinstesats.format(3) }, nynorsk { +lopendeYtelse.brukersMinstesats.format(3) }) }
                         }
                         row {
                             cell { text(bokmal { +"Din etterbetaling" }, nynorsk { +"Etterbetalinga di" }) }
