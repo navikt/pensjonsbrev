@@ -19,6 +19,7 @@ import TilbakestillVedleggModal from "~/components/vedlegg/TilbakestillVedleggMo
 import { useDocumentAutosave } from "~/components/vedlegg/useDocumentAutosave";
 import { type BrevResponse, type EditAttachment } from "~/types/brev";
 import { type EditedDocument } from "~/types/brevbakerTypes";
+import { type Redigeringsflate } from "~/utils/editorTracking";
 
 /**
  * Editor session for one editable attachment. It reuses LetterEditorState so the existing
@@ -42,6 +43,7 @@ type VedleggEditorProps = {
   vedleggId: string;
   vedleggtittel: string;
   freeze: boolean;
+  redigeringsflate: Redigeringsflate;
 };
 
 export const ManagedVedleggEditor = (props: VedleggEditorProps) => {
@@ -141,7 +143,7 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
         editorState={editorState}
         error={lagringFeilet}
         freeze={props.freeze}
-        redigeringsflate="saksbehandler-redigering"
+        redigeringsflate={props.redigeringsflate}
         setEditorState={setEditorState}
         showDebug={false}
       />

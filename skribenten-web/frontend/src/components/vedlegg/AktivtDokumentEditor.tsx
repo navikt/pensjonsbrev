@@ -5,6 +5,7 @@ import { useAktivtDokument } from "~/components/vedlegg/AktivtDokumentContext";
 import { ManagedVedleggEditor } from "~/components/vedlegg/ManagedVedleggEditor";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
 import { type BrevResponse } from "~/types/brev";
+import { type Redigeringsflate } from "~/utils/editorTracking";
 
 /**
  * Renders the editor surface for whichever document is active. The letter renderer is passed in
@@ -14,6 +15,7 @@ export const AktivtDokumentEditor = (props: {
   saksId: string;
   brev: BrevResponse;
   freeze: boolean;
+  redigeringsflate: Redigeringsflate;
   renderBrev: () => ReactNode;
 }) => {
   const { aktivtDokument } = useAktivtDokument();
@@ -39,6 +41,7 @@ export const AktivtDokumentEditor = (props: {
     <ManagedVedleggEditor
       brev={props.brev}
       freeze={props.freeze}
+      redigeringsflate={props.redigeringsflate}
       saksId={props.saksId}
       vedleggId={vedlegg.vedleggId}
       vedleggtittel={vedlegg.tittel}

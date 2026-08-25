@@ -504,6 +504,7 @@ function RedigerBrev({
                   <AktivtDokumentEditor
                     brev={brev}
                     freeze={freeze}
+                    redigeringsflate="saksbehandler-redigering"
                     renderBrev={() => (
                       <InsertedTekstValgHighlightProvider ids={highlightedIds}>
                         <ManagedLetterEditor
