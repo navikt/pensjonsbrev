@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
+import no.nav.pensjon.brev.api.model.maler.legacy.FribelopPeriode
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktFribelopAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktFribelopData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmOktFribelopRedigerbarDto
@@ -18,7 +19,16 @@ fun createVedtakOmOktFribelopData() =
         pe = createPEgruppe10(),
         maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
         orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
-        datoOkningBunnfradrag = LocalDate.of(2026, 10, 1)
+        datoOkningBunnfradrag = LocalDate.of(2026, 10, 1),
+        vektetFribelop = 1.0,
+        fribelopPerioder = listOf(
+            FribelopPeriode(
+                fom = LocalDate.of(2026, 1, 1),
+                tom = LocalDate.of(2026, 12, 31),
+                uforegrad = 100,
+                faktor = 1.0
+            )
+        )
     )
 
 fun createVedtakOmOktFribelopAutoDto() =
