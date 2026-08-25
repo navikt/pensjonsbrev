@@ -130,7 +130,7 @@ object VedtakAfpPrivatEndringOpptjeningAuto : AutobrevTemplate<VedtakAfpPrivatEn
 
             includePhrase(AfpPrivatFraser.MaanedligUtbetaling)
 
-            showIf(borIForNorge) {
+            showIf(borINorge) {
                 includePhrase(AfpPrivatFraser.SkattINorge(beregning.kompensasjonstillegg))
             }
 
