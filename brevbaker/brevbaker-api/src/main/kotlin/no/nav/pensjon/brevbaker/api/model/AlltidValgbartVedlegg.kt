@@ -15,7 +15,7 @@ class AlltidValgbartVedleggBrevkode(
 
     override fun equals(other: Any?): Boolean {
         if (other !is AlltidValgbartVedleggKode) return false
-        return kode == other.kode && visningstekst == other.visningstekst && spraak == other.spraak && stoettedeBrevmaler == other.stoettedeBrevmaler
+        return kode == other.kode && visningstekst == other.visningstekst && spraak == other.spraak && stoettedeBrevmaler.toSet() == other.stoettedeBrevmaler.toSet()
     }
     override fun hashCode(): Int = Objects.hash(kode, visningstekst, spraak, stoettedeBrevmaler)
     override fun toString(): String = "AlltidValgbartVedleggKode(kode=$kode, visningstekst=$visningstekst, spraak=$spraak, stoettedeBrevmaler=$stoettedeBrevmaler)"
