@@ -16,6 +16,7 @@ dependencies {
     implementation(libs.ktlint.cli.ruleset.core)
     implementation(libs.ktlint.rule.engine.core)
 
+    testImplementation(platform(libs.log4j.bom))
     testImplementation(libs.bundles.junit)
     testImplementation(libs.ktlint.test)
     testImplementation(libs.log4j.slf4j2.impl)

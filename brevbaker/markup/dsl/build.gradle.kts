@@ -7,6 +7,11 @@ plugins {
     `maven-publish`
 }
 
+dependencyLocking {
+    lockAllConfigurations()
+    ignoredDependencies.add("no.nav.brev.brevbaker:markup-model")
+}
+
 group = "no.nav.brev.brevbaker"
 version = publishedLibs.versions.markupVersion.get()
 

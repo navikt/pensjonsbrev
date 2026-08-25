@@ -70,7 +70,9 @@ kotlin {
 }
 
 dependencies {
+    implementation(platform(libs.log4j.bom))
     implementation(libs.bundles.logging)
+    implementation(platform(libs.ktor.bom))
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.jackson)
@@ -101,6 +103,7 @@ dependencies {
 
     testImplementation(libs.pdfbox)
 
+    implementation(platform(libs.jackson.bom))
     implementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
     }
