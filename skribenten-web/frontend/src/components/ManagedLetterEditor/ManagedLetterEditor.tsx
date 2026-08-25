@@ -26,12 +26,12 @@ const ManagedLetterEditor = (props: {
       error={props.error || lagringFeilet}
       freeze={props.freeze}
       redigeringsflate={props.redigeringsflate}
-      renderTilbakestillModal={({ åpen, onClose }) => (
+      renderTilbakestillModal={({ open, onClose }) => (
         <TilbakestillMalModal
           brevId={props.brev.info.id}
           onClose={onClose}
           resetEditor={(brevResponse) => setEditorState(Actions.create(brevResponse))}
-          åpen={åpen}
+          åpen={open}
         />
       )}
       setEditorState={setEditorState}

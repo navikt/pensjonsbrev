@@ -33,12 +33,6 @@ export type Focus = LiteralIndex & {
 
 export type LetterEditorState = {
   info: BrevInfo;
-  /**
-   * The editable document payload. Widened from EditedLetter to EditedDocument so a redigerbart
-   * vedlegg (EditAttachment) can drive the same editor. The content engine only reads
-   * title/blocks/deletedBlocks; sakspart/signatur exist only when this is a letter (EditedLetter)
-   * and are accessed via the brev layer's render props / signatur action, never by content actions.
-   */
   redigertBrev: EditedDocument;
   redigertBrevHash: string;
   saksbehandlerValg: SaksbehandlerValg;

@@ -44,7 +44,7 @@ export const LetterEditor = ({
   showDebug: boolean;
   redigeringsflate: Redigeringsflate;
   /** Owned by the caller because what "tilbakestill" resets depends on the document being edited. */
-  renderTilbakestillModal?: (args: { åpen: boolean; onClose: () => void }) => React.ReactNode;
+  renderTilbakestillModal?: (args: { open: boolean; onClose: () => void }) => React.ReactNode;
 }) => {
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
@@ -208,8 +208,7 @@ export const LetterEditor = ({
           </Box>
         </VStack>
         {showDebug && <DebugPanel />}
-        {/* Åpner modal, tar ikke plass i DOM her */}
-        {vilTilbakestilleMal && renderTilbakestillModal?.({ åpen: true, onClose: () => setVilTilbakestilleMal(false) })}
+        {vilTilbakestilleMal && renderTilbakestillModal?.({ open: true, onClose: () => setVilTilbakestilleMal(false) })}
       </EditorStateContext.Provider>
     </VStack>
   );
