@@ -16,10 +16,3 @@ data class VedtakOmOktFribelopData(
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 )
-
-data class FribelopPeriode(
-    val fom: LocalDate,
-    val tom: LocalDate,
-    val uforegrad: Int,
-    val faktor: Double
-)
