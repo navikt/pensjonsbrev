@@ -8,8 +8,8 @@ import java.time.LocalDate
 
 data class VedtakOmOktBunnfradragData(
     val nettoInklTillegg: Kroner,
-    val uforetrygd: Kroner,                      
-    val barnetillegg: Kroner?,                   
+    val uforetrygd: Kroner,
+    val barnetillegg: Kroner?,
     val fribelop: Kroner,
     val bunnfradrag: Kroner,
     val bunnfradrag2027: Kroner,
@@ -36,6 +36,7 @@ data class Scenario2_1G_04G(
     val dato04G: LocalDate,
     val uforegradForOkning: Int,
 )
+
 data class Scenario4_04G_1G_04G(
     val dato04G: LocalDate,
     val uforegradForOkning: Int,
