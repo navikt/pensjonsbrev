@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_MEDLEMSKAP_12MND
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagDto
@@ -40,6 +41,9 @@ object UforeAvslagMedlemskapMindre12Mnd : RedigerbarTemplate<UforeAvslagDto> {
         ),
     )
     {
+        val ikkeYrkesaktiv = saksbehandlervalg("EttEllerTreAr", "Ikke vært yrkesaktiv i Norge eller andre EØS-land").bool()
+        val txtEttEllerTreAr = if (ikkeYrkesaktiv.equals(true)) "tre" else "ett"
+
         title {
             text (bokmal { + "Nav har avslått søknaden din om uføretrygd"})
         }
@@ -52,7 +56,7 @@ object UforeAvslagMedlemskapMindre12Mnd : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi du har vært medlem i folketrygden i mindre enn ett/tre år. " })
+                text(bokmal { +"Vi avslår søknaden din fordi du har vært medlem i folketrygden i mindre enn " + txtEttEllerTreAr + " år. " })
             }
             paragraph {
                 text(bokmal { +"For å ha rett til uføretrygd må du ha vært medlem i folketrygden eller i en trygdeordning i et annet EØS-land, i de siste fem årene frem til uføretidspunktet ditt, eller ha rett til uføretrygd som følge av en godkjent yrkesskade. " })
@@ -64,10 +68,10 @@ object UforeAvslagMedlemskapMindre12Mnd : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { +"Har du ikke vært yrkesaktiv i Norge eller andre EØS-land, må du ha minst tre års medlemskap i folketrygden før uføretidspunktet. " })
             }
             paragraph {
-                text(bokmal { +"Du bodde eller arbeidet i Norge fra <FRITEKST: FOM medlemsperiode> til <FRITEKST: TOM medlemsperiode>. " })
+                text(bokmal { +"Du bodde eller arbeidet i Norge fra " + fritekst("FOM medlemsperiode") + " til " + fritekst("TOM medlemsperiode") + ". " })
             }
             paragraph {
-                text(bokmal { +"Du har ikke vært medlem i folketrygden i minst ett/tre år, og fyller dermed ikke minstekravet til medlemskap i Norge. Vi avslår derfor søknaden din om uføretrygd. " })
+                text(bokmal { +"Du har ikke vært medlem i folketrygden i minst " + txtEttEllerTreAr + " år, og fyller dermed ikke minstekravet til medlemskap i Norge. Vi avslår derfor søknaden din om uføretrygd. " })
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter EØS-forordning 883/2004 artikkel 57. " })
@@ -77,7 +81,7 @@ object UforeAvslagMedlemskapMindre12Mnd : RedigerbarTemplate<UforeAvslagDto> {
                 text(bokmal { + "Vurdering av andre vilkår for uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Du har mindre enn ett/tre års medlemskap i folketrygden, og fyller ikke vilkårene for uføretrygd, uavhengig av når uføretidspunktet ditt er. Vi har derfor ikke vurdert andre vilkår, som for eksempel om alle medisinske og arbeidsrettede tiltak er utprøvd. " })
+                text(bokmal { +"Du har mindre enn " + txtEttEllerTreAr + " års medlemskap i folketrygden, og fyller ikke vilkårene for uføretrygd, uavhengig av når uføretidspunktet ditt er. Vi har derfor ikke vurdert andre vilkår, som for eksempel om alle medisinske og arbeidsrettede tiltak er utprøvd. " })
             }
 
             includePhrase(Felles.RettTilAKlageLang)
