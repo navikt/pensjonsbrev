@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.countLetter
 import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 
@@ -54,8 +55,8 @@ fun Route.redigerbarRoutes(
         }
 
         get("/alltidValgbareVedlegg") {
-            val sakstype = call.parameters["sakstype"]
-            call.respond(redigerbareBrev.alltidValgbareVedlegg.map { it.kode }.filter { sakstype == null || it.stoettedeSakstyper.map { it.kode }.contains(sakstype) })
+            val brevkode = call.parameters["brevkode"]?.let { RedigerbarBrevkode(it) }
+            call.respond(redigerbareBrev.alltidValgbareVedlegg.map { it.kode }.filter { it.stoetterBrevkode(brevkode) })
         }
     }
 }
