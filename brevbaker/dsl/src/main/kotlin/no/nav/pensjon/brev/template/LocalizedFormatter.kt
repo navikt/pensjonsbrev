@@ -28,14 +28,12 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
             first.format(dateFormatter(second, FormatStyle.LONG)).replace(' ', NON_BREAKING_SPACE) //space to non braking space
     }
 
-    class MonthYearFormatter(private val capitalize: Boolean? = false) : LocalizedFormatter<LocalDate>() {
+    object MonthYearFormatter : LocalizedFormatter<LocalDate>() {
         override fun apply(first: LocalDate, second: Language): String {
-            return first.format(DateTimeFormatter.ofPattern("MMMM yyyy", second.locale())).let {
-                if(capitalize ?: false) it.replaceFirstChar { c -> c.uppercase() } else it
-            }
+            return first.format(DateTimeFormatter.ofPattern("MMMM yyyy", second.locale()))
         }
 
-        override fun stableHashCode(): Int = "MaanedAarFormatter$capitalize".hashCode()
+        override fun stableHashCode(): Int = "MaanedAarFormatter".hashCode()
     }
 
     object MonthFormatter : LocalizedFormatter<Month>() {

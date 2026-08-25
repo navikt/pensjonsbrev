@@ -13,7 +13,7 @@ fun Expression<LocalDate?>.format(short: Boolean = false): Expression<String?> =
 private fun dateFormatter(short: Boolean): LocalizedFormatter<LocalDate> =
     if (short) LocalizedFormatter.ShortDateFormat else LocalizedFormatter.DateFormat
 
-fun Expression<LocalDate>.formatMonthYear(capitalize: Boolean? = false): Expression<String> = this.format(LocalizedFormatter.MonthYearFormatter(capitalize = capitalize))
+fun Expression<LocalDate>.formatMonthYear(): Expression<String> = this.format(LocalizedFormatter.MonthYearFormatter)
 
 fun Expression<Month>.format(short: Boolean = false): Expression<String> =
     if (short) this.format(LocalizedFormatter.MonthFormatterShort) else this.format(LocalizedFormatter.MonthFormatter)

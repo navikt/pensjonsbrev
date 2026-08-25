@@ -398,14 +398,14 @@ class Fribelopperioder(private val perioder: Expression<List<FribelopPeriode>>, 
                     row {
                         cell {
                             text(
-                                bokmal { +periode.fom.formatMonthYear(true) },
-                                nynorsk { +"" + periode.fom.formatMonthYear(true) }
+                                bokmal { +periode.fom.formatMonthYear() },
+                                nynorsk { +"" + periode.fom.formatMonthYear() }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +periode.tom.formatMonthYear(true) },
-                                nynorsk { +"" + periode.tom.formatMonthYear(true) }
+                                bokmal { +periode.tom.formatMonthYear() },
+                                nynorsk { +"" + periode.tom.formatMonthYear() }
                             )
                         }
                         cell {
