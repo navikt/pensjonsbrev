@@ -12,14 +12,14 @@ fun createVedtakAfpPrivatEndringDto(): VedtakAfpPrivatEndringDto =
         saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = VedtakAfpPrivatEndringDto.PesysData(
             virkningFom = LocalDate.of(2024, 5, 1),
-            brukerAlder = 65,
+            brukerUnder70Aar = true,
             beregning = AfpPrivatBeregningEndring(
                 livsvarig = Kroner(8_000),
                 kronetillegg = Kroner(1_500),
                 kompensasjonstillegg = Kroner(500),
                 sumAfpFoerSkatt = Kroner(10_000),
             ),
-            borIForNorge = true,
+            borINorge = true,
             oversiktOverPensjonen = createOversiktOverPensjonenAfpPrivatDto(),
         ),
     )

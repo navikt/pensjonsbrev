@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -123,7 +122,7 @@ object VedtakAfpPrivatEndringOpptjeningAuto : AutobrevTemplate<VedtakAfpPrivatEn
 
             includePhrase(AfpPrivatFraser.AfpOgAlderspensjon)
 
-            showIf(brukerAlder.lessThan(70)) {
+            showIf(brukerUnder70Aar) {
                 includePhrase(AfpPrivatFraser.OpptjeningEtter61Aar)
             }
 

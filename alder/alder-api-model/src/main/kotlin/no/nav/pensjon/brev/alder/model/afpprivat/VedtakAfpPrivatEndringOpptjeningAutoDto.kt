@@ -15,7 +15,7 @@ data class VedtakAfpPrivatEndringOpptjeningAutoDto(
     // PE_Vedtaksdata_VirkningFom
     val virkningFom: LocalDate,
     // PE_Vedtaksdata_BrukerAlder
-    val brukerAlder: Int,
+    val brukerUnder70Aar: Boolean,
     val beregning: AfpPrivatBeregningEndring,
     // PE_Grunnlag_Persongrunnlagsliste_Trygdeavtaler_Bostedsland[1] = "nor"
     val borIForNorge: Boolean,

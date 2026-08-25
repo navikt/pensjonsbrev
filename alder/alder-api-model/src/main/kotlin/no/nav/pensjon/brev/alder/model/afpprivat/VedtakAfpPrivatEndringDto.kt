@@ -21,10 +21,10 @@ data class VedtakAfpPrivatEndringDto(
         // PE_Vedtaksdata_VirkningFom
         val virkningFom: LocalDate,
         // PE_Vedtaksdata_BrukerAlder
-        val brukerAlder: Int,
+        val brukerUnder70Aar: Boolean,
         val beregning: AfpPrivatBeregningEndring,
         // PE_Grunnlag_Persongrunnlagsliste_Trygdeavtaler_Bostedsland[1] = "nor"
-        val borIForNorge: Boolean,
+        val borINorge: Boolean,
         // PE_AF_oversikt_over_pensjonen_RTF — inkluderes når BeregningAntallPerioder > 1
         val oversiktOverPensjonen: OversiktOverPensjonenAfpPrivatDto? = null,
     ) : FagsystemBrevdata
