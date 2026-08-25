@@ -15,13 +15,13 @@ import {
 import { attesteringBrevKeys, getBrev, oppdaterBrev, oppdaterBrevtekst } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import { normalizeDocumentForComparison } from "~/Brevredigering/LetterEditor/actions/common";
+import { isLetterDocument, normalizeDocumentForComparison } from "~/Brevredigering/LetterEditor/actions/common";
 import { addHistoryEntry, type HistoryEntry } from "~/Brevredigering/LetterEditor/history";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { type BrevResponse } from "~/types/brev";
-import { type EditedLetter, isLetterDocument } from "~/types/brevbakerTypes";
+import { type EditedLetter } from "~/types/brevbakerTypes";
 
 type SaveSuccessOptions = {
   createHistoryEntry?: (previousState: LetterEditorState, response: BrevResponse) => HistoryEntry | null;

@@ -33,23 +33,15 @@ export type Title3Block = generated.EditBlockTitle3;
 
 /**
  * The minimal editable document the letter editor engine operates on. Both EditedLetter
- * (the brev) and EditAttachment (a redigerbart vedlegg) satisfy this shape structurally, so the
+ * (brev) and EditAttachment (redigerbart vedlegg) satisfy this shape structurally, so the
  * block/title editing actions can be reused for both without either pretending to be the other.
- * Brev-only metadata (sakspart, signatur) is intentionally excluded — it is a render-time concern.
+ * Brev-only metadata (sakspart, signatur) is intentionally excluded because attachments do not own or edit them.
  */
 export type EditedDocument = {
   title: Title;
   blocks: AnyBlock[];
   deletedBlocks: number[];
 };
-
-/**
- * Narrows an EditedDocument to a full EditedLetter (which additionally has sakspart/signatur).
- * The `includeSakspart` check keeps this accurate even if EditAttachment later gains a `sakspart`
- * of its own — an attachment declares whether to render one, a letter carries the resolved value.
- */
-export const isLetterDocument = (doc: EditedDocument): doc is EditedLetter =>
-  "sakspart" in doc && "signatur" in doc && !("includeSakspart" in doc);
 
 export type TextContent = generated.EditParagraphContentText;
 export type Content = generated.EditParagraphContent;

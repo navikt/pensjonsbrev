@@ -5,10 +5,11 @@ import { Box, Button, Heading, HStack, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
 import React, { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useState } from "react";
 
+import { isLetterDocument } from "~/Brevredigering/LetterEditor/actions/common";
 import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
-import { isLetterDocument, TITLE_INDEX } from "~/types/brevbakerTypes";
+import { TITLE_INDEX } from "~/types/brevbakerTypes";
 import {
   type MissingFromTemplateEventName,
   type Redigeringsflate,

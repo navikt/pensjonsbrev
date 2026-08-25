@@ -18,6 +18,7 @@ import {
   type ColumnSpec,
   type Content,
   type EditedDocument,
+  type EditedLetter,
   type ElementTags,
   FontType,
   type Identifiable,
@@ -50,6 +51,10 @@ import {
 export function cleanseText(text: string): string {
   return text.replaceAll("<br>", "").replaceAll("&nbsp;", " ").replaceAll("\n", " ").replaceAll("\r", "");
 }
+
+/** Narrows a shared editor document to a full letter, excluding attachment-only metadata. */
+export const isLetterDocument = (doc: EditedDocument): doc is EditedLetter =>
+  "sakspart" in doc && "signatur" in doc && !("includeSakspart" in doc);
 
 export function isEditableContent(content: Content | undefined | null): boolean {
   return content != null && (content.type === "VARIABLE" || content.type === "ITEM_LIST");
