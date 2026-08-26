@@ -427,6 +427,7 @@ function RedigerBrev({
             <AktivtDokumentProvider
               aktivVedleggId={dokumentEditor.aktivVedleggId}
               onVelgDokument={dokumentEditor.velgDokument}
+              redigeringsflate="saksbehandler-redigering"
               registrerLagring={dokumentEditor.registrerLagring}
             >
               <ThreeSectionLayout
@@ -476,16 +477,9 @@ function RedigerBrev({
                   <AktivtDokumentEditor
                     brev={brev}
                     freeze={freeze}
-                    redigeringsflate="saksbehandler-redigering"
                     renderBrev={() => (
                       <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                        <ManagedLetterEditor
-                          brev={brev}
-                          error={error}
-                          freeze={freeze}
-                          redigeringsflate="saksbehandler-redigering"
-                          showDebug={showDebug}
-                        />
+                        <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
                       </InsertedTekstValgHighlightProvider>
                     )}
                     saksId={saksId}

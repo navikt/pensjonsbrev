@@ -380,6 +380,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         <AktivtDokumentProvider
           aktivVedleggId={dokumentEditor.aktivVedleggId}
           onVelgDokument={dokumentEditor.velgDokument}
+          redigeringsflate="attestant-redigering"
           registrerLagring={dokumentEditor.registrerLagring}
         >
           <ThreeSectionLayout
@@ -451,16 +452,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               <AktivtDokumentEditor
                 brev={props.brev}
                 freeze={freeze}
-                redigeringsflate="attestant-redigering"
                 renderBrev={() => (
                   <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
-                    <ManagedLetterEditor
-                      brev={props.brev}
-                      error={error}
-                      freeze={freeze}
-                      redigeringsflate="attestant-redigering"
-                      showDebug={showDebug}
-                    />
+                    <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
                   </InsertedTekstValgHighlightProvider>
                 )}
                 saksId={props.saksId}

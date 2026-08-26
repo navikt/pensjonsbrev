@@ -150,6 +150,21 @@ test.describe("attestant redigering", () => {
     expect(hendelser).toEqual(["vedlegg-lagring", "attestering"]);
   });
 
+  test("attestanten kan ikke tilbakestille brevet eller vedlegget", async ({ page }) => {
+    await setupVedlegg(page);
+    await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, (route) =>
+      route.fulfill({ json: vedlegg }),
+    );
+
+    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await expect(page.getByTestId("tilbakestill-mal-button")).toBeHidden();
+
+    await page.getByRole("tab", { name: "Vedlegg" }).click();
+    await expect(page.getByText(VEDLEGG_TEKST)).toBeVisible();
+    await expect(page.getByRole("button", { name: "Tilbakestill vedlegg" })).toBeHidden();
+    await expect(page.getByTestId("tilbakestill-mal-button")).toBeHidden();
+  });
+
   test("attesterer ikke når redigert vedlegg ikke kan lagres", async ({ page }) => {
     await setupVedlegg(page);
     let attesteringer = 0;
