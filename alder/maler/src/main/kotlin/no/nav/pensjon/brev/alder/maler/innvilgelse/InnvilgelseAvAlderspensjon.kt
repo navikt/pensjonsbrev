@@ -42,7 +42,6 @@ import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlders
 import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlderspensjonDto.inngangOgEksportVurdering.*
 import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlderspensjonDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlderspensjonDto.*
-import no.nav.pensjon.brev.aldersovergang.fraser.InfoPensjonFraAndreAP
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -433,7 +432,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 )
             )
 
-            includePhrase(InfoPensjonFraAndreAP)
+            includePhrase(InnvilgelseFelles.InfoPensjonFraAndreAP)
             includePhrase(MeldeFraOmEndringer)
             includePhrase(RettTilAAKlage)
 

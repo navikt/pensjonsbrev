@@ -40,7 +40,6 @@ import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlders
 import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlderspensjonTrygdeavtaleDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlderspensjonTrygdeavtaleDto.vedtaksresultatUtland.*
 import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlderspensjonTrygdeavtaleDto.*
-import no.nav.pensjon.brev.aldersovergang.fraser.InfoPensjonFraAndreAP
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -273,7 +272,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
 
             includePhrase(ArbeidsinntektOgAlderspensjon(innvilgetFor67, uttaksgrad, uforeKombinertMedAlder))
 
-            includePhrase(InfoPensjonFraAndreAP)
+            includePhrase(InnvilgelseFelles.InfoPensjonFraAndreAP)
             includePhrase(MeldeFraOmEndringer)
             includePhrase(RettTilAAKlage)
 
