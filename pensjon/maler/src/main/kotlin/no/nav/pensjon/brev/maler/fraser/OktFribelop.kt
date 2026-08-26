@@ -5,12 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktFribelopData
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.faktor
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.fom
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.tom
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.uforegrad
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.bunnfradrag
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.datoOkningBunnfradrag
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.fribelopPerioder
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.oktFribelopHeleAret
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.vektetFribelop
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -154,7 +149,6 @@ object OktFribelop {
                 table(header = {
                     column { text(bokmal { +"Fra" }, nynorsk { +"Frå" }) }
                     column { text(bokmal { +"Til" }, nynorsk { +"Til" }) }
-                    column { text(bokmal { +"Uføregrad" }, nynorsk { +"Uføregrad" }) }
                     column { text(bokmal { +"Fribeløp" }, nynorsk { +"Fribeløp" }) }
                 }) {
                     forEach(perioder) { periode ->
@@ -169,12 +163,6 @@ object OktFribelop {
                                 text(
                                     bokmal { +periode.tom.formatMonthYear() },
                                     nynorsk { +"" + periode.tom.formatMonthYear() }
-                                )
-                            }
-                            cell {
-                                text(
-                                    bokmal { +periode.uforegrad.format() + " prosent" },
-                                    nynorsk { +periode.uforegrad.format() + " prosent" }
                                 )
                             }
                             cell {
