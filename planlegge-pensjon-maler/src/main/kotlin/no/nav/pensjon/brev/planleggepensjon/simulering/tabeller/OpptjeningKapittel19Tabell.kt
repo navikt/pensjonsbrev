@@ -73,13 +73,13 @@ data class OpptjeningKapittel19Tabell(
                 ifNotNull(alderspensjon.poengaarTom1991) {
                     row {
                         cell { text(bokmal { +"Poengår før 1992 (45 %)" }) }
-                        cell { text(bokmal { +it.format() }) }
+                        cell { text(bokmal { +it.format() + " år" }) }
                     }
                 }
                 ifNotNull(alderspensjon.poengaarFom1992) {
                     row {
                         cell { text(bokmal { +"Poengår etter 1991 (42 %)" }) }
-                        cell { text(bokmal { +it.format() }) }
+                        cell { text(bokmal { +it.format() + " år" }) }
                     }
                 }
             }
