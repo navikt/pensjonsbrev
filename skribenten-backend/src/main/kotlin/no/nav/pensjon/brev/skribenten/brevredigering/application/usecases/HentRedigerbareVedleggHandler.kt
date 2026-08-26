@@ -31,7 +31,7 @@ class HentRedigerbareVedleggHandler(
         }
 
         val pesysdata = brevdataService.hentBrevdata(brev)
-        brev.mergeRendredeVedlegg(brevmalService.renderOverstyrteVedlegg(brev, pesysdata))
+        brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
 
         val vedlegg = brevmalService.hentRedigerbareVedleggTitler(brev, pesysdata)?.vedlegg
             ?.map { vedlegg ->

@@ -70,7 +70,7 @@ class HentEllerOpprettPdfHandler(
             val brevErEndret = brevmalService.renderMarkup(brev, pesysBrevdata).let { rendretBrev ->
                 brev.redigertBrev.updateEditedLetter(rendretBrev.markup).blocks != brev.redigertBrev.blocks
             }
-            val vedleggErEndret = brevmalService.renderOverstyrteVedlegg(brev, pesysBrevdata).any { (vedleggId, rendretVedlegg) ->
+            val vedleggErEndret = brevmalService.renderRedigerteVedlegg(brev, pesysBrevdata).any { (vedleggId, rendretVedlegg) ->
                 val lagret = brev.hentRedigertVedlegg(vedleggId)
                 lagret != null && lagret.updateEditedAttachment(rendretVedlegg).blocks != lagret.blocks
             }

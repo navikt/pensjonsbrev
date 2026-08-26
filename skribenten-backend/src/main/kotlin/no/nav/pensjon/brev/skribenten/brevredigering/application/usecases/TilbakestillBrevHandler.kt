@@ -37,7 +37,7 @@ class TilbakestillBrevHandler(
         val pesysdata = brevdataService.hentBrevdata(brev)
         val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
         brev.oppdaterRedigertBrev(rendretBrev.markup.toEdit(), principal.navIdent)
-        brev.mergeRendredeVedlegg(brevmalService.renderOverstyrteVedlegg(brev, pesysdata))
+        brev.mergeRendredeVedlegg(brevmalService.renderRedigerteVedlegg(brev, pesysdata))
 
         return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
     }
