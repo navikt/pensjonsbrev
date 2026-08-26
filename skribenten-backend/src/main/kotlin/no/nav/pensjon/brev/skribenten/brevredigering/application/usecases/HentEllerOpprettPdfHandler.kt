@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.PDFMerger
+import no.nav.pensjon.brev.skribenten.letter.updateEditedAttachment
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
@@ -66,9 +67,14 @@ class HentEllerOpprettPdfHandler(
         } else {
             // Sjekk om innholdet i brevet har endret seg. Kan skje om pesysdata har endret seg.
             // Grunnen til at vi kun sjekker blocks er at det er kun om det er endringer i selve innholdet at saksbehandler trenger å ta stilling til det.
-            val rendretBrevErEndret = brevmalService.renderMarkup(brev, pesysBrevdata).let { rendretBrev ->
+            val brevErEndret = brevmalService.renderMarkup(brev, pesysBrevdata).let { rendretBrev ->
                 brev.redigertBrev.updateEditedLetter(rendretBrev.markup).blocks != brev.redigertBrev.blocks
             }
+            val vedleggErEndret = brevmalService.renderOverstyrteVedlegg(brev, pesysBrevdata).any { (vedleggId, rendretVedlegg) ->
+                val lagret = brev.hentRedigertVedlegg(vedleggId)
+                lagret != null && lagret.updateEditedAttachment(rendretVedlegg).blocks != lagret.blocks
+            }
+            val rendretBrevErEndret = brevErEndret || vedleggErEndret
 
             val pdfVedlegg = vedleggsliste[brev.brevkode.kode()] ?: emptyList()
 

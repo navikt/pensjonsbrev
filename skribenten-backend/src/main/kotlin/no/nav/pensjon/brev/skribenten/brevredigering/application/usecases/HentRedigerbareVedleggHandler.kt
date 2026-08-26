@@ -31,23 +31,23 @@ class HentRedigerbareVedleggHandler(
         }
 
         val pesysdata = brevdataService.hentBrevdata(brev)
+        brev.mergeRendredeVedlegg(brevmalService.renderOverstyrteVedlegg(brev, pesysdata))
+
         val vedlegg = brevmalService.hentRedigerbareVedleggTitler(brev, pesysdata)?.vedlegg
             ?.map { vedlegg ->
-                // Bruk den redigerte tittelen dersom saksbehandler har overstyrt vedlegget, ellers maltittelen.
-                val redigertTittel = brev.hentRedigertVedlegg(vedlegg.id)?.title?.text
                 RedigerbartVedleggInfo(
                     vedleggId = vedlegg.id,
-                    tittel = redigertTittel?.format() ?: vedlegg.tittel,
+                    tittel = brev.hentRedigertVedlegg(vedlegg.id)?.title?.text?.format() ?: vedlegg.tittel,
                 )
-            }?: return null
+            } ?: return null
 
         return success(vedlegg)
     }
 }
 
-private fun List<Edit.ParagraphContent.Text>?.format() = this?.joinToString("") {
-    if (it is Edit.ParagraphContent.Text.Literal) it.editedText ?: it.text else it.text
-}
+private fun List<Edit.ParagraphContent.Text>.format(): String =
+    joinToString("") { if (it is Edit.ParagraphContent.Text.Literal) it.editedText ?: it.text else it.text }
+
 data class RedigerbartVedleggInfo(
     val vedleggId: VedleggId,
     val tittel: String,

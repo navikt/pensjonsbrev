@@ -84,6 +84,11 @@ class BrevmalService(
             vedleggId = vedleggId,
         )
 
+    suspend fun renderOverstyrteVedlegg(brev: Brevredigering, pesysData: BrevdataResponse.Data): Map<VedleggId, LetterMarkup.Attachment> =
+        brev.redigerteVedlegg.mapNotNull { lagret ->
+            renderRedigerbartVedlegg(brev, pesysData, lagret.vedleggId)?.let { lagret.vedleggId to it }
+        }.toMap()
+
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
         brevbakerService.getRedigerbarTemplate(brevkode)
 
