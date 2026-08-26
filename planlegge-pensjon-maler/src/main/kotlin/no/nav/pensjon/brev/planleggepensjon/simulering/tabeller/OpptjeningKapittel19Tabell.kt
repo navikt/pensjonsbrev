@@ -66,7 +66,7 @@ data class OpptjeningKapittel19Tabell(
                     ifNotNull(alderspensjon.poengaarFom1992) { fom1992 ->
                         row {
                             cell { text(bokmal { +"Poengår" }) }
-                            cell { text(bokmal { +(tom1991 + fom1992).format() }) }
+                            cell { text(bokmal { +(tom1991 + fom1992).format() + " år" }) }
                         }
                     }
                 }
