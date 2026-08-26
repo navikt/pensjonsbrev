@@ -37,7 +37,6 @@ import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.alder.model.BorI.AVTALELAND
 import no.nav.pensjon.brev.alder.model.BorI.NORGE
-import no.nav.pensjon.brev.aldersovergang.fraser.InfoPensjonFraAndreAP
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -239,7 +238,7 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
                         uforeKombinertMedAlder = alderspensjonVedVirk.uforeKombinertMedAlder
                     )
                 )
-                includePhrase(InfoPensjonFraAndreAP)
+                includePhrase(InnvilgelseFelles.InfoPensjonFraAndreAP)
                 includePhrase(MeldeFraOmEndringer)
                 includePhrase(RettTilAAKlage)
 
