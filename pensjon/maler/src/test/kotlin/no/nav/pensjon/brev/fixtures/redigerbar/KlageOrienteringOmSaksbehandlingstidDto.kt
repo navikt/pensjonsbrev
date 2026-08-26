@@ -6,5 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbeha
 
 fun createKlageOrienteringOmSaksbehandlingstidDto() = KlageOrienteringOmSaksbehandlingstidDto(
     pesysData = EmptyFagsystemdata,
-    saksbehandlerValg = lagSaksbehandlervalg()
+    saksbehandlerValg = lagSaksbehandlervalg(
+        "saksbehandlingstid" to KlageOrienteringOmSaksbehandlingstidDto.Saksbehandlingstid.SAKSBEHANDLINGSTID_VED_NFP_ELLER_NAY.name,
+    )
 )
