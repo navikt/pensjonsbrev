@@ -1,11 +1,6 @@
 import axios from "axios";
 
-import {
-  type BrevResponse,
-  type EditAttachment,
-  type RedigerbartVedleggInfo,
-  type RedigertVedleggRequest,
-} from "~/types/brev";
+import { type EditAttachment, type RedigerbartVedleggInfo, type RedigertVedleggRequest } from "~/types/brev";
 
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
 
@@ -55,11 +50,11 @@ export const lagreRedigerbartVedlegg = async (
   ).data;
 
 /**
- * Deletes the stored edited override for an attachment, reverting it to the template attachment.
- * This is a reset, not a removal — the template attachment still exists afterwards.
+ * Discards the stored edits for an attachment and returns it as the template renders it now.
+ * This is a reset, not a removal — the attachment itself comes from the mal and stays in the letter.
  */
 export const tilbakestillRedigerbartVedlegg = async (
   saksId: string,
   brevId: number | string,
   vedleggId: string,
-): Promise<BrevResponse> => (await axios.delete<BrevResponse>(`${vedleggUrl(saksId, brevId)}/${vedleggId}`)).data;
+): Promise<EditAttachment> => (await axios.delete<EditAttachment>(`${vedleggUrl(saksId, brevId)}/${vedleggId}`)).data;

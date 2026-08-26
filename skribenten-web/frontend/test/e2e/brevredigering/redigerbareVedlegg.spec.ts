@@ -433,7 +433,7 @@ test.describe("Redigerbare vedlegg", () => {
       }
       if (metode === "DELETE") {
         listetittel = VEDLEGG_TITTEL;
-        return route.fulfill({ json: brevResponse });
+        return route.fulfill({ json: vedlegg });
       }
       return route.fulfill({ json: vedlegg });
     });
@@ -464,7 +464,7 @@ test.describe("Redigerbare vedlegg", () => {
       }
       if (metode === "DELETE") {
         hendelser.push("tilbakestilling");
-        return route.fulfill({ json: brevResponse });
+        return route.fulfill({ json: vedlegg });
       }
       return route.fulfill({ json: vedlegg });
     });
