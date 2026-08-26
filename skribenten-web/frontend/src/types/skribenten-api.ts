@@ -1384,7 +1384,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["ApiBrevResponse"];
+                        "application/json": components["schemas"]["EditAttachment"];
                     };
                 };
                 400: {

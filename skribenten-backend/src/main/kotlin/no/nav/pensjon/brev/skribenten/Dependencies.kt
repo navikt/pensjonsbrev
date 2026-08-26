@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.zaxxer.hikari.HikariDataSource
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
 import io.ktor.server.application.Application
 import io.ktor.server.config.getAs
@@ -27,7 +28,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBr
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevInfoHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigerbareVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentRedigertVedleggHandler
-import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SlettRedigertVedleggHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.TilbakestillRedigertVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.EndreValgteVedleggHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.FrigiReservasjonHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.GenererFoerstesideHandler
@@ -47,6 +48,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.FerdigRedigertPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.SendBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.SlettBrevPolicy
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.cacheFactory
 import no.nav.pensjon.brev.skribenten.db.dataSourceFactory
@@ -94,7 +96,9 @@ fun Application.configureDependencies() {
 
         provide<FeatureToggleService>(UnleashService::class)
 
-        provide(NaisLeaderService::class)
+        // Gjort her og ikke i NaisLeaderService med vilje. Siden configen her er nullable, vil Ktor DI bruke
+        // feil konstruktør hvis vi gjør det likt som elles
+        provide { engine: HttpClientEngine -> NaisLeaderService(skribentenConfig.services.leader, engine) }
 
         provide(SafServiceHttp::class)
         provide(PentHttpClient::class)
@@ -126,6 +130,7 @@ fun Application.configureDependencies() {
         provide(OpprettBrevPolicy::class)
         provide(RedigerBrevPolicy::class)
         provide(SendBrevPolicy::class)
+        provide(SlettBrevPolicy::class)
 
         provide(AttesterBrevHandler::class)
         provide(DiffBrevHandler::class)
@@ -155,7 +160,7 @@ fun Application.configureDependencies() {
         provide(SendBrevHandler::class)
         provide(LeggVedFoerstesideHandler::class)
         provide(SlettBrevHandler::class)
-        provide(SlettRedigertVedleggHandler::class)
+        provide(TilbakestillRedigertVedleggHandler::class)
         provide(TilbakestillBrevHandler::class)
         provide(VeksleKlarStatusHandler::class)
 

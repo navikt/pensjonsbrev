@@ -194,17 +194,17 @@ fun Route.sakBrev() =
                         respondOutcome(dto2ApiService, result) { respond(it) }
                     }
 
-                    val slettRedigertVedlegg: SlettRedigertVedleggHandler by app.dependencies
+                    val tilbakestillRedigertVedlegg: TilbakestillRedigertVedleggHandler by app.dependencies
                     delete {
                         val brevId = call.parameters.brevId()
                         val vedleggId = call.parameters.vedleggId()
                         val sak: Fagsak = call.attributes[SakKey]
 
-                        val brev = slettRedigertVedlegg(
-                            SlettRedigertVedleggHandler.Request(brevId = brevId, saksId = sak.saksId, vedleggId = vedleggId)
+                        val result = tilbakestillRedigertVedlegg(
+                            TilbakestillRedigertVedleggHandler.Request(brevId = brevId, saksId = sak.saksId, vedleggId = vedleggId)
                         )
 
-                        apiRespond(dto2ApiService, brev)
+                        respondOutcome(dto2ApiService, result) { respond(it) }
                     }
                 }
             }

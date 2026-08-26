@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
 import no.nav.pensjon.brev.skribenten.vedlegg.P1Data
 import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import java.time.Instant
@@ -51,6 +52,7 @@ open class BrevredigeringStub : Brevredigering {
     override fun markerSomKladd(): Unit = notYetStubbed()
     override fun attester(avNavIdent: NavIdent, attesterendeSignatur: String): Unit = notYetStubbed()
     override fun mergeRendretBrev(rendretBrev: LetterMarkup): Unit = notYetStubbed()
+    override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>): Unit = notYetStubbed()
     override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?) = notYetStubbed()
     override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) = notYetStubbed()
     override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering = notYetStubbed()
