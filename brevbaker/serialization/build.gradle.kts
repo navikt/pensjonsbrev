@@ -15,6 +15,7 @@ dependencies {
     // Konsumenter deklarerer dem selv.
     implementation(publishedLibs.brevbaker.api)
     implementation(publishedLibs.markup.model)
+    implementation(platform(libs.jackson.bom))
     implementation(libs.jackson.databind)
     implementation(libs.jackson.annotations)
     implementation(libs.jackson.datatype.jsr310) {

@@ -23,7 +23,7 @@ fun createReverseringLavereMinstesatsData() =
             nettoBarnetillegg = Kroner(4000),
             nettoGjenlevendetillegg = Kroner(2000),
             reduksjonsprosent = 50.0,
-            brukersMinstesats = 300000.0,
+            brukersMinstesats = 0.237,
             avkortetPgaRedusertTrygdetid = true,
             harGradertUfoeretrygd = true
         ),

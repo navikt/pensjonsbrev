@@ -70,7 +70,7 @@ class SafServiceHttp(config: SafConfig, authService: AuthService, engine: HttpCl
         install(ContentNegotiation) {
             jackson()
         }
-        callIdAndOnBehalfOfClient(safScope, authService)
+        onBehalfOfClient(safScope, authService)
     }
 
     data class HentJournalStatusResponse(val data: HentJournalpostData?, val errors: JsonNode?)
