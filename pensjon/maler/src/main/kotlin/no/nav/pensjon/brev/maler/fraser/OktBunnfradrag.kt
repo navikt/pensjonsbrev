@@ -18,7 +18,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradr
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.fribelopPerioder
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.manedligOkningUforetrygdUtAret
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.nettoHarBlittLikBrutto
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.nettoInklTillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.okningUt
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.redusertBtfb
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.scenario1_1G
@@ -28,6 +27,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradr
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.uforegrad
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.uforetrygd
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.vektetFribelop
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.vektetFribelopKr
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -209,7 +209,7 @@ object OktBunnfradrag {
                         nynorsk { +"1. januar 2026 har du hatt " + data.uforegrad.format() + " prosent uføretrygd i 2 år eller lenger. Derfor aukar fribeløpet ditt til 1 G for heile 2026. " },
                     )
                 }
-                includePhrase(PengerTilGode(data.nettoInklTillegg, data.nettoHarBlittLikBrutto))
+                includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
             }.orIfNotNull(data.scenario2_1G_04G) { scenario2 ->
                 paragraph {
                     text(
@@ -217,8 +217,8 @@ object OktBunnfradrag {
                         nynorsk { +"Du endra uføregrad frå " + scenario2.uforegradForOkning.format() + " prosent til " + data.uforegrad.format() + " prosent den " + scenario2.dato04G.format() + ". Frå 1. januar 2026 fram til " + scenario2.dato04G.format() + ", er ditt fribeløp 1 G. Etter " + scenario2.dato04G.format() + " er ditt fribeløp 0,4 G, fordi auke i uføregrad utløyser ny periode på 2 år der fribeløpet er 0,4 G. " },
                     )
                 }
-                includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop))
-                includePhrase(PengerTilGode(data.nettoInklTillegg, data.nettoHarBlittLikBrutto))
+                includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
+                includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
                 paragraph {
                     text(
                         bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 0,4 G som fribeløp hele året. Bunnfradraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
@@ -233,8 +233,8 @@ object OktBunnfradrag {
                         nynorsk { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Frå og med " + data.datoOkningBunnfradrag.format() + " har du hatt " + data.uforegrad.format() + " prosent uføretrygd i 2 år, og fribeløpet skal auke til 1G." },
                     )
                 }
-                includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop))
-                includePhrase(PengerTilGode(data.nettoInklTillegg, data.nettoHarBlittLikBrutto))
+                includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
+                includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
                 paragraph {
                     text(
                         bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 1 G som fribeløp hele året. Bunnfradraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
@@ -248,8 +248,8 @@ object OktBunnfradrag {
                         nynorsk { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Frå og med " + data.datoOkningBunnfradrag.format() + " har du hatt " + scenario4.uforegradForOkning.format() + " prosent uføretrygd i 2 år, og fribeløpet ditt aukar til 1G. Sidan du har fått auka uføregrad frå " + scenario4.dato04G.format() + ", endrar fribeløpet ditt seg igjen til 0,4G. " },
                     )
                 }
-                includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop))
-                includePhrase(PengerTilGode(data.nettoInklTillegg, data.nettoHarBlittLikBrutto))
+                includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
+                includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
                 paragraph {
                     text(
                         bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 0,4 G som fribeløp hele året. Bunnfradraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
@@ -348,7 +348,7 @@ object OktBunnfradrag {
     }
 }
 
-class PengerTilGode(private val nettoInklTillegg: Expression<BrevbakerType.Kroner>, private val nettoHarBlittLikBrutto: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorsk>() {
+class PengerTilGode(private val nettoUt: Expression<BrevbakerType.Kroner>, private val nettoHarBlittLikBrutto: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {
             text(
@@ -363,8 +363,8 @@ class PengerTilGode(private val nettoInklTillegg: Expression<BrevbakerType.Krone
                         bokmal { +"Resten av året: " }, nynorsk { +"Resten av året:" }, FontType.BOLD
                     )
                     text(
-                        bokmal { +"Vi øker de månedlige utbetalingene dine ut 2026. Vi kan ikke utbetale mer enn " + nettoInklTillegg.format() + " i måneden før skatt. Dette er uføretrygden din før inntektsavkorting. " },
-                        nynorsk { +"Vi aukar dei månadlege utbetalingane dine ut 2026. Vi kan ikkje utbetale meir enn " + nettoInklTillegg.format() + " i månaden før skatt. Dette er uføretrygda di før inntektsavkorting. " },
+                        bokmal { +"Vi øker de månedlige utbetalingene dine ut 2026. Vi kan ikke utbetale mer enn " + nettoUt.format() + " i uføretrygd i måneden før skatt. Dette er uføretrygden din før inntektsavkorting. " },
+                        nynorsk { +"Vi aukar dei månadlege utbetalingane dine ut 2026. Vi kan ikkje utbetale meir enn " + nettoUt.format() + " i uføretrygd i månaden før skatt. Dette er uføretrygda di før inntektsavkorting. " },
                     )
                 }
                 showIf(nettoHarBlittLikBrutto) {
@@ -385,7 +385,7 @@ class PengerTilGode(private val nettoInklTillegg: Expression<BrevbakerType.Krone
 }
 
 
-class Fribelopperioder(private val perioder: Expression<List<FribelopPeriode>>, private val vektetFribelop: Expression<Double>) : OutlinePhrase<LangBokmalNynorsk>() {
+class Fribelopperioder(private val perioder: Expression<List<FribelopPeriode>>, private val vektetFribelop: Expression<Double>, private val vektetFribelopKr: Expression<BrevbakerType.Kroner>) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {
             table(header = {
@@ -426,8 +426,8 @@ class Fribelopperioder(private val perioder: Expression<List<FribelopPeriode>>, 
         }
         paragraph {
             text(
-                bokmal { +"Når fribeløpet endres i løpet av året, beregnes et gjennomsnitt av periodene du har hatt med ulikt fribeløp. Gjennomsnittlig fribeløp i år blir " + vektetFribelop.format() + " G." },
-                nynorsk { +"Når fribeløpet endrar seg i løpet av året, vert det rekna ut eit gjennomsnitt av periodane du har hatt med ulikt fribeløp. Gjennomsnittleg fribeløp i år vert " + vektetFribelop.format() + " G." },
+                bokmal { +"Når fribeløpet endres i løpet av året, beregnes et gjennomsnitt av periodene du har hatt med ulikt fribeløp. Gjennomsnittlig fribeløp i år blir " + vektetFribelop.format() + " G, som er " + vektetFribelopKr.format() + "." },
+                nynorsk { +"Når fribeløpet endrar seg i løpet av året, vert det rekna ut eit gjennomsnitt av periodane du har hatt med ulikt fribeløp. Gjennomsnittleg fribeløp i år vert " + vektetFribelop.format() + " G, som er " + vektetFribelopKr.format() + "." },
             )
         }
     }

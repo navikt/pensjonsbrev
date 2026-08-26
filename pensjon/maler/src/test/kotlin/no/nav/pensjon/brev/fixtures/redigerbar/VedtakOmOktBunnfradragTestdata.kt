@@ -24,10 +24,10 @@ fun createVedtakOmOktBunnfradragData() =
         datoOkningBunnfradrag = LocalDate.of(2026, 6, 1),
         redusertBtfb = true,
         bunnfradrag2027 = Kroner(240000),
-        nettoInklTillegg = Kroner(30000),
         nettoHarBlittLikBrutto = true,
 
         vektetFribelop = 0.7,
+        vektetFribelopKr = Kroner(95584),
         scenario1_1G = false,
         scenario2_1G_04G = null,/*Scenario2_1G_04G(
             dato04G = LocalDate.of(2026, 6, 1),
