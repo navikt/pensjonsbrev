@@ -9,7 +9,7 @@ import {
   tilbakestillRedigerbartVedlegg,
 } from "~/api/redigerbareVedlegg-endpoints";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
-import { normalizeDocumentForComparison } from "~/Brevredigering/LetterEditor/actions/common";
+import { normalizeDocumentForComparison, text } from "~/Brevredigering/LetterEditor/actions/common";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { ApiError } from "~/components/ApiError";
@@ -17,9 +17,13 @@ import { CenteredLoader } from "~/components/CenteredLoader";
 import { useAktivtDokument } from "~/components/vedlegg/AktivtDokumentContext";
 import TilbakestillVedleggModal from "~/components/vedlegg/TilbakestillVedleggModal";
 import { useDocumentAutosave } from "~/components/vedlegg/useDocumentAutosave";
-import { type BrevResponse, type EditAttachment } from "~/types/brev";
+import { type BrevResponse, type EditAttachment, type RedigerbartVedleggInfo } from "~/types/brev";
 import { type EditedDocument } from "~/types/brevbakerTypes";
 import { type Redigeringsflate } from "~/utils/editorTracking";
+
+/** Mirrors how the backend renders the list title, so the cached title matches a refetched one. */
+const formaterVedleggtittel = (vedlegg: EditAttachment): string =>
+  vedlegg.title.text.map((innhold) => text(innhold) ?? "").join("");
 
 /**
  * Editor session for one editable attachment. It reuses LetterEditorState so the existing
@@ -81,6 +85,13 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
   const settVedleggICache = (oppdatert: EditAttachment) =>
     queryClient.setQueryData(redigerbareVedleggKeys.vedlegg(brev.info.id, vedleggId), oppdatert);
 
+  // The side panel list only carries the title, and fetching it makes the backend re-render every
+  // stored vedlegg — far too heavy to repeat on each autosave. Patch the cached title instead.
+  const settTittelICache = (oppdatert: EditAttachment) =>
+    queryClient.setQueryData<RedigerbartVedleggInfo[]>(redigerbareVedleggKeys.liste(brev.info.id), (liste) =>
+      liste?.map((v) => (v.vedleggId === vedleggId ? { ...v, tittel: formaterVedleggtittel(oppdatert) } : v)),
+    );
+
   const { lagringFeilet, lagreNaa, medLagringPaaPause } = useDocumentAutosave<EditedDocument, EditAttachment>({
     content: editorState.redigertBrev,
     saveStatus: editorState.saveStatus,
@@ -107,8 +118,8 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
         };
       });
       settVedleggICache(lagretVedlegg);
-      // The edited title may have changed, and the vedlegg is part of the rendered letter PDF.
-      queryClient.invalidateQueries({ queryKey: redigerbareVedleggKeys.liste(brev.info.id) });
+      settTittelICache(lagretVedlegg);
+      // The vedlegg is part of the rendered letter PDF.
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brev.info.id) });
     },
     onSaveError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
@@ -131,7 +142,7 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
       const tilbakestilt = await tilbakestillRedigerbartVedlegg(saksId, brev.info.id, vedleggId);
       settVedleggICache(tilbakestilt);
       // The title reverts to the template's, which the side panel list also shows.
-      queryClient.invalidateQueries({ queryKey: redigerbareVedleggKeys.liste(brev.info.id) });
+      settTittelICache(tilbakestilt);
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brev.info.id) });
       return tilbakestilt;
     });

@@ -420,19 +420,18 @@ test.describe("Redigerbare vedlegg", () => {
 
   test("tilbakestilling setter tittelen i vedleggslisten tilbake til malens", async ({ page }) => {
     const ENDRET_TITTEL = "Mine opplysninger";
-    let listetittel = VEDLEGG_TITTEL;
 
     await page.route(VEDLEGGLISTE_URL, (route) =>
-      route.fulfill({ json: [{ vedleggId: VEDLEGG_ID, tittel: listetittel }] }),
+      route.fulfill({ json: [{ vedleggId: VEDLEGG_ID, tittel: VEDLEGG_TITTEL }] }),
     );
     await page.route(vedleggUrl(VEDLEGG_ID), (route) => {
       const metode = route.request().method();
+      // Tittelen i listen skal følge svaret fra backend, ikke en ny henting av listen.
       if (metode === "PUT") {
-        listetittel = ENDRET_TITTEL;
-        return route.fulfill({ json: route.request().postDataJSON().redigertVedlegg });
+        const lagret = route.request().postDataJSON().redigertVedlegg;
+        return route.fulfill({ json: { ...lagret, title: { ...lagret.title, text: [literal(ENDRET_TITTEL, 901)] } } });
       }
       if (metode === "DELETE") {
-        listetittel = VEDLEGG_TITTEL;
         return route.fulfill({ json: vedlegg });
       }
       return route.fulfill({ json: vedlegg });
