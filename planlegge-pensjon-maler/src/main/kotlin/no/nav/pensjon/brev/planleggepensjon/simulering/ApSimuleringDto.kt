@@ -204,7 +204,7 @@ data class SimuleringV1MaanedligAlderspensjon(
     @DisplayText("Garantipensjonsnivå beløp")
     val garantipensjonsnivaaBeloep: Kroner?,
     @DisplayText("Garantipensjon sats")
-    val garantipensjonSats: Double?,
+    val garantipensjonSats: Kroner?,
     @DisplayText("Garantitillegg beløp")
     val garantitilleggBeloep: Kroner?,
     @DisplayText("Grunnbeløp")

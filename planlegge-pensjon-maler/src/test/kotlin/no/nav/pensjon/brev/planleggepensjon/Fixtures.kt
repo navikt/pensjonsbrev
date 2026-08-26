@@ -260,6 +260,7 @@ object Fixtures : LetterDataFactory {
                 tilleggspensjonBeloep = Kroner(3100),
                 pensjonstillegg = Kroner(2800),
                 garantipensjonBeloep = Kroner(2400),
+                garantipensjonSats = Kroner(2020)
             ),
             vedHeltUttak = createSimuleringV1MaanedligAlderspensjon(),
             vedNormertPensjonsalder = createSimuleringV1MaanedligAlderspensjon(),
