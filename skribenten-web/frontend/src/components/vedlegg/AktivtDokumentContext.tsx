@@ -1,5 +1,7 @@
 import { createContext, type ReactNode, useCallback, useContext, useMemo, useRef } from "react";
 
+import { type Redigeringsflate } from "~/utils/editorTracking";
+
 /**
  * Which document the editor surface is currently showing. The brev is the default; a redigerbart
  * vedlegg is identified by its vedleggId.
@@ -8,6 +10,9 @@ export type AktivtDokument = { type: "brev" } | { type: "vedlegg"; vedleggId: st
 
 type AktivtDokumentContextValue = {
   aktivtDokument: AktivtDokument;
+  redigeringsflate: Redigeringsflate;
+  /** Attestanten skal godkjenne brevet, ikke forkaste saksbehandlerens arbeid. */
+  kanTilbakestille: boolean;
   velgBrev: () => Promise<boolean>;
   velgVedlegg: (vedleggId: string) => Promise<boolean>;
   tilbakestillAktivtVedlegg: () => void;
@@ -28,11 +33,12 @@ const AktivtDokumentContext = createContext<AktivtDokumentContextValue | null>(n
  */
 export const AktivtDokumentProvider = (props: {
   aktivVedleggId: string | undefined;
+  redigeringsflate: Redigeringsflate;
   onVelgDokument: (vedleggId: string | undefined) => Promise<boolean>;
   registrerLagring: (lagreNaa: (() => Promise<void>) | null) => void;
   children: ReactNode;
 }) => {
-  const { aktivVedleggId, onVelgDokument, registrerLagring } = props;
+  const { aktivVedleggId, redigeringsflate, onVelgDokument, registrerLagring } = props;
   const tilbakestillAktivtVedleggRef = useRef<(() => void) | null>(null);
 
   const velgBrev = useCallback(() => onVelgDokument(undefined), [onVelgDokument]);
@@ -45,13 +51,23 @@ export const AktivtDokumentProvider = (props: {
   const value = useMemo<AktivtDokumentContextValue>(
     () => ({
       aktivtDokument: aktivVedleggId === undefined ? { type: "brev" } : { type: "vedlegg", vedleggId: aktivVedleggId },
+      redigeringsflate: redigeringsflate,
+      kanTilbakestille: redigeringsflate === "saksbehandler-redigering",
       velgBrev: velgBrev,
       velgVedlegg: velgVedlegg,
       tilbakestillAktivtVedlegg: tilbakestillAktivtVedlegg,
       registrerTilbakestilling: registrerTilbakestilling,
       registrerLagring: registrerLagring,
     }),
-    [aktivVedleggId, velgBrev, velgVedlegg, tilbakestillAktivtVedlegg, registrerTilbakestilling, registrerLagring],
+    [
+      aktivVedleggId,
+      redigeringsflate,
+      velgBrev,
+      velgVedlegg,
+      tilbakestillAktivtVedlegg,
+      registrerTilbakestilling,
+      registrerLagring,
+    ],
   );
 
   return <AktivtDokumentContext.Provider value={value}>{props.children}</AktivtDokumentContext.Provider>;

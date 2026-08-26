@@ -9,7 +9,7 @@ import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedleg
  * vedlegg and P1 are still managed from brevbehandler.
  */
 export const VedleggPanel = (props: { saksId: string; brevId: number }) => {
-  const { aktivtDokument, tilbakestillAktivtVedlegg, velgBrev, velgVedlegg } = useAktivtDokument();
+  const { aktivtDokument, kanTilbakestille, tilbakestillAktivtVedlegg, velgBrev, velgVedlegg } = useAktivtDokument();
   const vedleggQuery = useRedigerbareVedlegg({ saksId: props.saksId, brevId: props.brevId });
 
   if (vedleggQuery.isPending) {
@@ -49,17 +49,20 @@ export const VedleggPanel = (props: { saksId: string; brevId: number }) => {
                   <BodyShort size="small">
                     Dette vedlegget er redigerbart. Innholdet vises i redigeringsflaten og kan redigeres der.
                   </BodyShort>
-                  <HStack>
-                    <Button
-                      data-color="danger"
-                      onClick={tilbakestillAktivtVedlegg}
-                      size="small"
-                      type="button"
-                      variant="secondary"
-                    >
-                      Tilbakestill vedlegg
-                    </Button>
-                  </HStack>
+                  {/* Kun det aktive vedlegget kan tilbakestilles, så knappen hører hjemme der. */}
+                  {erAktivt && kanTilbakestille && (
+                    <HStack>
+                      <Button
+                        data-color="danger"
+                        onClick={tilbakestillAktivtVedlegg}
+                        size="small"
+                        type="button"
+                        variant="secondary"
+                      >
+                        Tilbakestill vedlegg
+                      </Button>
+                    </HStack>
+                  )}
                 </VStack>
               </ExpansionCard.Content>
             </ExpansionCard>
