@@ -53,7 +53,6 @@ open class BrevredigeringStub : Brevredigering {
     override fun attester(avNavIdent: NavIdent, attesterendeSignatur: String): Unit = notYetStubbed()
     override fun mergeRendretBrev(rendretBrev: LetterMarkup): Unit = notYetStubbed()
     override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>): Unit = notYetStubbed()
-    override fun overstyrteVedleggErUtdaterte(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>): Boolean = notYetStubbed()
     override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?) = notYetStubbed()
     override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) = notYetStubbed()
     override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering = notYetStubbed()
