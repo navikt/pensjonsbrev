@@ -48,7 +48,7 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<KlageOrienterin
         )
 
     ) {
-        val saksbehandlingstid = saksbehandlervalg("saksbehnadlingstid", "Saksbehandlingstid").enum<Saksbehandlingstid>()
+        val saksbehandlingstid = saksbehandlervalg("saksbehandlingstid", "Saksbehandlingstid").enum<Saksbehandlingstid>()
 
         title {
             text(
