@@ -342,7 +342,6 @@ object Fixtures : LetterDataFactory {
         kapittel20AndelTeller = 9,
         kapittel20Trygdetid = 40,
         garantipensjonBeloep = Kroner(3390),
-        garantipensjonsnivaaBeloep = Kroner(224248),
         garantipensjonSats = null,
         garantitilleggBeloep = Kroner(34223),
         grunnbeloep = Kroner(130160),
