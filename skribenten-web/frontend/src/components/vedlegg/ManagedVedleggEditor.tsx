@@ -128,8 +128,7 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
 
   const tilbakestill = () =>
     medLagringPaaPause(async () => {
-      await tilbakestillRedigerbartVedlegg(saksId, brev.info.id, vedleggId);
-      const tilbakestilt = await getRedigerbartVedlegg.queryFn(saksId, brev.info.id, vedleggId);
+      const tilbakestilt = await tilbakestillRedigerbartVedlegg(saksId, brev.info.id, vedleggId);
       settVedleggICache(tilbakestilt);
       // The title reverts to the template's, which the side panel list also shows.
       queryClient.invalidateQueries({ queryKey: redigerbareVedleggKeys.liste(brev.info.id) });
