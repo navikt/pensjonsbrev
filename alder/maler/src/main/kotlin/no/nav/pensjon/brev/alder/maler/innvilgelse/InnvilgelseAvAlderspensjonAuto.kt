@@ -27,7 +27,6 @@ import no.nav.pensjon.brev.alder.maler.felles.Skatteplikt
 import no.nav.pensjon.brev.alder.maler.felles.SkjermingstilleggHjemmel
 import no.nav.pensjon.brev.alder.maler.felles.SoktAFPPrivatInfo
 import no.nav.pensjon.brev.alder.maler.felles.SupplerendeStoenadAP
-import no.nav.pensjon.brev.alder.maler.felles.Utbetalingsinformasjon
 import no.nav.pensjon.brev.alder.maler.felles.Vedtak
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlderAP2025
@@ -142,7 +141,7 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
 
                 ifNotNull(faktiskBostedsland) { faktiskBostedsland ->
                     includePhrase(
-                        HvisFlytetFaktiskBostedsland(
+                        InnvilgelseFelles.HvisFlytetFaktiskBostedsland(
                             eksportTrygdeavtaleAvtaleland = inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland,
                             eksportTrygdeavtaleEOS = inngangOgEksportVurdering.eksportTrygdeavtaleEOS,
                             faktiskBostedsland = faktiskBostedsland
@@ -209,7 +208,7 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
                         )
                     )
                 }
-                includePhrase(Utbetalingsinformasjon)
+                includePhrase(InnvilgelseFelles.Utbetalingsinformasjon)
                 paragraph {
                     text(
                         bokmal { +"Du finner informasjon om utbetalingene dine på $DITT_NAV. Her kan du også endre kontonummeret ditt." },

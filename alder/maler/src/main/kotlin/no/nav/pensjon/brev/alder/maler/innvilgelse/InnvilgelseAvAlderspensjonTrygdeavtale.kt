@@ -23,7 +23,6 @@ import no.nav.pensjon.brev.alder.maler.felles.Skatteplikt
 import no.nav.pensjon.brev.alder.maler.felles.SkjermingstilleggHjemmel
 import no.nav.pensjon.brev.alder.maler.felles.SoktAFPPrivatInfo
 import no.nav.pensjon.brev.alder.maler.felles.SupplerendeStoenadAP
-import no.nav.pensjon.brev.alder.maler.felles.Utbetalingsinformasjon
 import no.nav.pensjon.brev.alder.maler.felles.Vedtak
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlderAP2025
@@ -221,7 +220,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
 
             showIf(afpPrivatResultatFellesKontoret) { includePhrase(SoktAFPPrivatInfo) }
 
-            includePhrase(Utbetalingsinformasjon)
+            includePhrase(InnvilgelseFelles.Utbetalingsinformasjon)
 
             includePhrase(FlereBeregningsperioder(harFlereBeregningsperioder, totalPensjon))
 
