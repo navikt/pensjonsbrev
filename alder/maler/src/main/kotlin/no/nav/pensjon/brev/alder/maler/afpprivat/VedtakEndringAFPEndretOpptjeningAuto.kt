@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.alder.maler.aldersovergang
+package no.nav.pensjon.brev.alder.maler.afpprivat
 
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
@@ -7,11 +7,19 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggDineRettigheterOgMulighetT
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAFP
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.BeloepEndring
-import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.aFPPrivatBeregning.*
-import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.opptjeningInfo.*
-import no.nav.pensjon.brev.alder.model.aldersovergang.OpptjeningType
-import no.nav.pensjon.brev.alder.model.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDto
-import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.vedtakEndringAFPEndretOpptjeningAutoDto.*
+import no.nav.pensjon.brev.alder.model.afpprivat.OpptjeningType
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakEndringAFPEndretOpptjeningAutoDto
+import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.aFPPrivatBeregning.totalPensjon
+import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.opptjeningInfo.antallAarEndretOpptjening
+import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.opptjeningInfo.endretOpptjeningsAar
+import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.opptjeningInfo.sisteGyldigeOpptjeningsAar
+import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.vedtakEndringAFPEndretOpptjeningAutoDto.afpPrivatBeregningGjeldende
+import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.vedtakEndringAFPEndretOpptjeningAutoDto.afpPrivatBeregningVedVirk
+import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.vedtakEndringAFPEndretOpptjeningAutoDto.belopEndring
+import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.vedtakEndringAFPEndretOpptjeningAutoDto.endretOpptjening
+import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.vedtakEndringAFPEndretOpptjeningAutoDto.maanedligPensjonFoerSkattAFP
+import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.vedtakEndringAFPEndretOpptjeningAutoDto.opptjeningType
+import no.nav.pensjon.brev.alder.model.aldersovergang.selectors.vedtakEndringAFPEndretOpptjeningAutoDto.virkFom
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language

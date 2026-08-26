@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.alder.model.aldersovergang
+package no.nav.pensjon.brev.alder.model.afpprivat
 
 import no.nav.pensjon.brev.alder.model.BeloepEndring
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDto
