@@ -130,7 +130,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev?: BrevResponse; i
           </HStack>
         }
         left={
-          props.brev === undefined ? (
+          !isBrevReady || props.brev === undefined ? (
             <VStack gap="space-12">
               <Skeleton height={28} variant="rectangle" width="80%" />
               <VStack gap="space-16">
