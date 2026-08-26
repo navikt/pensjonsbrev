@@ -2,7 +2,7 @@
   "collection": "(à la carte)",
   "version": "2026.08.24-215218-154e33d",
   "scope": "repo",
-  "source_sha": "154e33d",
+  "source_sha": "b790ecb",
   "installed_at": "2026-07-15T14:11:15Z",
   "files": [
     {
@@ -44,6 +44,22 @@
     {
       "path": ".github/skills/observability-debugging/",
       "hash": "107a99f70451c01b"
+    },
+    {
+      "path": ".github/agents/research.agent.md",
+      "hash": "90b7a1685788c5a4"
+    },
+    {
+      "path": ".github/agents/security-champion.agent.md",
+      "hash": "5ccba48b66938fd0"
+    },
+    {
+      "path": ".github/agents/aksel.agent.md",
+      "hash": "d190246642818387"
+    },
+    {
+      "path": ".github/agents/observability.agent.md",
+      "hash": "790f7e03f52e44d8"
     }
   ]
 }
