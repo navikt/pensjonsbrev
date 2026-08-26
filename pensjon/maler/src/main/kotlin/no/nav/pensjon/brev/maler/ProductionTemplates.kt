@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.maler.adhoc.AdhocVarselOpphoerMedHvilendeRett
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
 import no.nav.pensjon.brev.maler.alder.EndringAvUttaksgradAuto
-import no.nav.pensjon.brev.maler.alder.InnvilgelseAvAlderspensjonAuto
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
 import no.nav.pensjon.brev.maler.klageOgAnke.AnkeTilsvarTilAnkendePart
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmOversendelseTilKlageinstans
@@ -72,8 +71,6 @@ import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstidUT
 import no.nav.pensjon.brev.maler.redigerbar.InnhentingDokumentasjonFraBruker
 import no.nav.pensjon.brev.maler.redigerbar.InnhentingInformasjonFraBruker
 import no.nav.pensjon.brev.maler.redigerbar.InnhentingOpplysningerFraBruker
-import no.nav.pensjon.brev.maler.redigerbar.InnvilgelseAvAlderspensjon
-import no.nav.pensjon.brev.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtale
 import no.nav.pensjon.brev.maler.redigerbar.OmsorgEgenManuell
 import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmForlengetSaksbehandlingstid
 import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstid
@@ -126,7 +123,6 @@ object ProductionTemplates : AllTemplates {
         VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto,
         EtteroppgjoerEtterbetalingAutoLegacy,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
-        InnvilgelseAvAlderspensjonAuto,
         OmsorgEgenAuto,
         OpphoerBarnetilleggAuto,
         OpptjeningVedForhoeyetHjelpesats,
@@ -172,8 +168,6 @@ object ProductionTemplates : AllTemplates {
         InnhentingDokumentasjonFraBruker,
         InnhentingInformasjonFraBruker,
         InnhentingOpplysningerFraBruker,
-        InnvilgelseAvAlderspensjon,
-        InnvilgelseAvAlderspensjonTrygdeavtale,
         InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
         InnvilgelseUforetrygd,
         InnvilgelseUforetrygdUtland,

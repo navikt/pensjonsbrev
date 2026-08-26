@@ -71,13 +71,12 @@ object Utbetalingsinformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 class FlereBeregningsperioder(
-    val antallPerioder: Expression<Int>,
+    val harFlerePerioder: Expression<Boolean>,
     val totalPensjon: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     // flereBeregningsperioderVedlegg_001
-    // TODO: Bør vi ikke heller her sjekke om dataene til vedlegget er med?
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(antallPerioder.greaterThan(1) and totalPensjon.greaterThan(0)) {
+        showIf(harFlerePerioder and totalPensjon.greaterThan(0)) {
             paragraph {
                 text(
                     bokmal { +"Du kan lese mer om andre beregningsperioder i vedlegget." },
