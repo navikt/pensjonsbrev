@@ -24,7 +24,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 @TemplateModelHelpers
 object UforeAvslagMedlemskapMindre12Mnd : RedigerbarTemplate<UforeAvslagDto> {
 
-    override val featureToggle = FeatureToggles.avslagMedlemskapUtland.toggle
+    override val featureToggle = FeatureToggles.avslagMedlemskapUtland12mnd.toggle
 
     override val kode = UT_AVSLAG_MEDLEMSKAP_12MND
     override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
