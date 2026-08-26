@@ -82,6 +82,16 @@ test.describe("Redigerbare vedlegg", () => {
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeHidden();
   });
 
+  test("viser ingen faner når brevet ikke har redigerbare vedlegg", async ({ page }) => {
+    await page.route(VEDLEGGLISTE_URL, (route) => route.fulfill({ json: [] }));
+
+    await page.goto("/saksnummer/123456/brev/1");
+
+    await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();
+    await expect(page.getByRole("tab", { name: "Brevmal" })).toBeHidden();
+    await expect(page.getByRole("tab", { name: "Vedlegg" })).toBeHidden();
+  });
+
   test("åpner det første vedlegget i redigeringsfeltet når vedlegg-fanen velges", async ({ page }) => {
     await page.goto("/saksnummer/123456/brev/1");
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();

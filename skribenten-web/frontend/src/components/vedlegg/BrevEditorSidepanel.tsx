@@ -37,7 +37,6 @@ export const BrevEditorSidepanel = (props: { saksId: string; brevId: number; bre
   const { aktivtDokument, velgBrev, velgVedlegg } = useAktivtDokument();
   const vedleggQuery = useRedigerbareVedlegg({ saksId: props.saksId, brevId: props.brevId });
   const [aktivTab, setAktivTab] = useState(aktivtDokument.type === "vedlegg" ? VEDLEGG_TAB : BREVMAL_TAB);
-  const [venterPaaFoersteVedlegg, setVenterPaaFoersteVedlegg] = useState(false);
 
   // A deep link straight to a vedlegg (?vedlegg=…) must open on the tab that shows it.
   useEffect(() => {
@@ -46,39 +45,30 @@ export const BrevEditorSidepanel = (props: { saksId: string; brevId: number; bre
     }
   }, [aktivtDokument.type]);
 
-  useEffect(() => {
-    const foersteVedlegg = vedleggQuery.data?.[0];
-    if (venterPaaFoersteVedlegg && foersteVedlegg) {
-      void velgVedlegg(foersteVedlegg.vedleggId).then((valgt) => {
-        if (valgt) {
-          setVenterPaaFoersteVedlegg(false);
-        }
-      });
-    }
-  }, [vedleggQuery.data, velgVedlegg, venterPaaFoersteVedlegg]);
-
   // The brevmal controls edit the letter, so going back to that tab also brings the letter back into
   // the editor — otherwise they would be changing a document the user cannot see.
   const velgTab = async (tab: string) => {
     if (tab === BREVMAL_TAB) {
-      setVenterPaaFoersteVedlegg(false);
       if (await velgBrev()) {
         setAktivTab(tab);
       }
-    } else {
-      const foersteVedlegg = vedleggQuery.data?.[0];
-      if (foersteVedlegg) {
-        if (await velgVedlegg(foersteVedlegg.vedleggId)) {
-          setAktivTab(tab);
-        }
-      } else {
-        setAktivTab(tab);
-        if (vedleggQuery.isPending) {
-          setVenterPaaFoersteVedlegg(true);
-        }
-      }
+      return;
+    }
+
+    const foersteVedlegg = vedleggQuery.data?.[0];
+    if (!foersteVedlegg) {
+      setAktivTab(tab);
+    } else if (await velgVedlegg(foersteVedlegg.vedleggId)) {
+      setAktivTab(tab);
     }
   };
+
+  // Fanene finnes bare når brevet faktisk har redigerbare vedlegg. Ved feil viser vi dem likevel,
+  // slik at feilen blir synlig i stedet for at funksjonen forsvinner i stillhet.
+  const visFaner = (vedleggQuery.data?.length ?? 0) > 0 || vedleggQuery.isError;
+  if (!visFaner) {
+    return props.brevmalPanel;
+  }
 
   return (
     <Tabs css={sidepanelStyle} onChange={(tab) => void velgTab(tab)} size="small" value={aktivTab}>
