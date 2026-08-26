@@ -2,6 +2,7 @@ import { BodyLong, Button, HStack, Modal } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { getBrev, tilbakestillBrev } from "~/api/brev-queries";
+import { redigerbareVedleggKeys } from "~/api/redigerbareVedlegg-endpoints";
 import { type BrevResponse } from "~/types/brev";
 
 const TilbakestillMalModal = (props: {
@@ -15,6 +16,8 @@ const TilbakestillMalModal = (props: {
     mutationFn: () => tilbakestillBrev(props.brevId),
     onSuccess: (response) => {
       queryClient.setQueryData(getBrev.queryKey(props.brevId), response);
+      // Tilbakestilling av brevet merger også inn malendringer i vedleggene, så de kan ha endret seg.
+      queryClient.invalidateQueries({ queryKey: redigerbareVedleggKeys.all });
       props.resetEditor(response);
       props.onClose();
     },
