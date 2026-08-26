@@ -65,6 +65,7 @@ import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaPensjon
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaUfoeretrygd
 import no.nav.pensjon.brev.maler.redigerbar.BrukerTestBrev
+import no.nav.pensjon.brev.maler.redigerbar.BrukerTestVedtaksbrev
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeAlder
 import no.nav.pensjon.brev.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmGjenlevenderettigheter
@@ -163,6 +164,7 @@ object ProductionTemplates : AllTemplates {
         BekreftelsePaaPensjon,
         BekreftelsePaaUfoeretrygd,
         BrukerTestBrev,
+        BrukerTestVedtaksbrev,
         DelvisEksportAvUforetrygd,
         EndringUforetrygd,
         VedtakOmEtterbetalingOpphor2026Redigerbar,
