@@ -28,47 +28,43 @@ export const VedleggPanel = (props: { saksId: string; brevId: number }) => {
 
   return (
     <VStack gap="space-12">
-      {vedlegg.length === 0 ? (
-        <BodyShort size="small">Dette brevet har ingen vedlegg.</BodyShort>
-      ) : (
-        vedlegg.map((v) => {
-          const erAktivt = aktivtDokument.type === "vedlegg" && aktivtDokument.vedleggId === v.vedleggId;
-          return (
-            <ExpansionCard
-              aria-label={v.tittel}
-              key={v.vedleggId}
-              onToggle={(open) => void (open ? velgVedlegg(v.vedleggId) : velgBrev())}
-              open={erAktivt}
-              size="small"
-            >
-              <ExpansionCard.Header>
-                <ExpansionCard.Title size="small">{v.tittel}</ExpansionCard.Title>
-              </ExpansionCard.Header>
-              <ExpansionCard.Content>
-                <VStack gap="space-32">
-                  <BodyShort size="small">
-                    Dette vedlegget er redigerbart. Innholdet vises i redigeringsflaten og kan redigeres der.
-                  </BodyShort>
-                  {/* Kun det aktive vedlegget kan tilbakestilles, så knappen hører hjemme der. */}
-                  {erAktivt && kanTilbakestille && (
-                    <HStack>
-                      <Button
-                        data-color="danger"
-                        onClick={tilbakestillAktivtVedlegg}
-                        size="small"
-                        type="button"
-                        variant="secondary"
-                      >
-                        Tilbakestill vedlegg
-                      </Button>
-                    </HStack>
-                  )}
-                </VStack>
-              </ExpansionCard.Content>
-            </ExpansionCard>
-          );
-        })
-      )}
+      {vedlegg.map((v) => {
+        const erAktivt = aktivtDokument.type === "vedlegg" && aktivtDokument.vedleggId === v.vedleggId;
+        return (
+          <ExpansionCard
+            aria-label={v.tittel}
+            key={v.vedleggId}
+            onToggle={(open) => void (open ? velgVedlegg(v.vedleggId) : velgBrev())}
+            open={erAktivt}
+            size="small"
+          >
+            <ExpansionCard.Header>
+              <ExpansionCard.Title size="small">{v.tittel}</ExpansionCard.Title>
+            </ExpansionCard.Header>
+            <ExpansionCard.Content>
+              <VStack gap="space-32">
+                <BodyShort size="small">
+                  Dette vedlegget er redigerbart. Innholdet vises i redigeringsflaten og kan redigeres der.
+                </BodyShort>
+                {/* Kun det aktive vedlegget kan tilbakestilles, så knappen hører hjemme der. */}
+                {erAktivt && kanTilbakestille && (
+                  <HStack>
+                    <Button
+                      data-color="danger"
+                      onClick={tilbakestillAktivtVedlegg}
+                      size="small"
+                      type="button"
+                      variant="secondary"
+                    >
+                      Tilbakestill vedlegg
+                    </Button>
+                  </HStack>
+                )}
+              </VStack>
+            </ExpansionCard.Content>
+          </ExpansionCard>
+        );
+      })}
     </VStack>
   );
 };
