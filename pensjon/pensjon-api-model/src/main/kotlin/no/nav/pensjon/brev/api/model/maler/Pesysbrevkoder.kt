@@ -115,7 +115,8 @@ object Pesysbrevkoder {
         UP_AVSLAG_UFOEREPENSJON,
         UT_VEDTAK_ETTERBETALING_OPPHOR_2026_RED,
         UT_VEDTAK_OKT_BUNNFRADRAG_2026_RED,
-        UT_VEDTAK_OKT_FRIBELOP_2026_RED;
+        UT_VEDTAK_OKT_FRIBELOP_2026_RED,
+        UT_VEDTAK_ENDRING_BT_EPS_2026_RED;
 
         override fun kode(): String = this.name
     }

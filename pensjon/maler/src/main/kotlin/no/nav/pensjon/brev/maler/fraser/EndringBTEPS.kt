@@ -8,12 +8,15 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.RedigerbarOutlinePhrase
+import no.nav.pensjon.brev.template.RedigerbarPhraseBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.TableScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
-object EndringBTEPSOktober {
+object EndringBTEPS {
 
     data class Brevdata(
         val nettoUforetrygdUtenTillegg: Expression<Kroner>,
@@ -35,64 +38,7 @@ object EndringBTEPSOktober {
                     column { text(bokmal { +"Du får per måned før skatt fra 1. oktober:" }, nynorsk { +"Du får per månad før skatt frå 1. oktober:" }) }
                     column(alignment = RIGHT) { text(bokmal { +"Kroner" }, nynorsk { +"Kroner" }) }
                 }) {
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"Uføretrygd" },
-                                nynorsk { +"Uføretrygd" },
-                            )
-                        }
-                        cell {
-                            text(
-                                bokmal { +data.nettoUforetrygdUtenTillegg.format(false) },
-                                nynorsk { +data.nettoUforetrygdUtenTillegg.format(false) },
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"Barnetillegg fellesbarn" },
-                                nynorsk { +"Barnetillegg fellesbarn" },
-                            )
-                        }
-                        cell {
-                            text(
-                                bokmal { +data.nettoBarnetilleggFB.format(false) },
-                                nynorsk { +data.nettoBarnetilleggFB.format(false) },
-                            )
-                        }
-                    }
-                    showIf(data.barnetilleggSB) {
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"Barnetillegg særkullsbarn" },
-                                    nynorsk { +"Barnetillegg særkullsbarn" },
-                                )
-                            }
-                            cell {
-                                text(
-                                    bokmal { +data.nettoBarnetilleggSB.format(false) },
-                                    nynorsk { +data.nettoBarnetilleggSB.format(false) },
-                                )
-                            }
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                bokmal { +"Totalt" },
-                                nynorsk { +"Totalt" },
-                            )
-                        }
-                        cell {
-                            text(
-                                bokmal { +data.totalbelop.format(false) },
-                                nynorsk { +data.totalbelop.format(false) },
-                            )
-                        }
-                    }
+                    beloepsrader(data)
                 }
             }
 
@@ -116,6 +62,120 @@ object EndringBTEPSOktober {
                     nynorsk { +"Vi endrar barnetillegget i uføretrygda di på grunn av lovendringar Stortinget har vedteke. Endringane trer i kraft 1. oktober 2026, men gjeld frå 1. januar 2026. " },
                 )
             }
+
+            includePhrase(Begrunnelse(data))
+        }
+    }
+
+    data class OutlineRedigerbar(val data: Brevdata) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, RedigerbarPhraseBrevdata>.template() {
+
+            paragraph {
+                text(
+                    bokmal { +"Vi har endret barnetillegget i uføretrygden din. " },
+                    nynorsk { +"Vi har endra barnetillegget i uføretrygda di. " },
+                )
+                table(header = {
+                    column {
+                        text(
+                            bokmal { +"Du får per måned før skatt fra 1. " + fritekst("måned") + ":" },
+                            nynorsk { +"Du får per månad før skatt frå 1. " + fritekst("måned") + ":" },
+                        )
+                    }
+                    column(alignment = RIGHT) { text(bokmal { +"Kroner" }, nynorsk { +"Kroner" }) }
+                }) {
+                    beloepsrader(data)
+                }
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Uføretrygden blir fortsatt utbetalt senest den 20. hver måned." },
+                    nynorsk { +"Uføretrygda blir fortsatt utbetalt seinast den 20. kvar månad." },
+                )
+            }
+
+            title1 {
+                text(
+                    bokmal { +"Derfor har vi endret barnetillegget ditt " },
+                    nynorsk { +"Derfor har vi endra barnetillegget ditt " },
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Vi endrer barnetillegget i uføretrygden din på grunn av lovendringer Stortinget har vedtatt. Endringene trer i kraft 1. " + fritekst("måned år") + ", men gjelder fra 1. " + fritekst("måned år") + ". " },
+                    nynorsk { +"Vi endrar barnetillegget i uføretrygda di på grunn av lovendringar Stortinget har vedteke. Endringane trer i kraft 1. " + fritekst("måned år") + ", men gjeld frå 1. " + fritekst("måned år") + ". " },
+                )
+            }
+
+            includePhrase(Begrunnelse(data))
+        }
+    }
+
+    private fun <LetterData : Any> TableScope<LangBokmalNynorsk, LetterData>.beloepsrader(data: Brevdata) {
+        row {
+            cell {
+                text(
+                    bokmal { +"Uføretrygd" },
+                    nynorsk { +"Uføretrygd" },
+                )
+            }
+            cell {
+                text(
+                    bokmal { +data.nettoUforetrygdUtenTillegg.format(false) },
+                    nynorsk { +data.nettoUforetrygdUtenTillegg.format(false) },
+                )
+            }
+        }
+        row {
+            cell {
+                text(
+                    bokmal { +"Barnetillegg fellesbarn" },
+                    nynorsk { +"Barnetillegg fellesbarn" },
+                )
+            }
+            cell {
+                text(
+                    bokmal { +data.nettoBarnetilleggFB.format(false) },
+                    nynorsk { +data.nettoBarnetilleggFB.format(false) },
+                )
+            }
+        }
+        showIf(data.barnetilleggSB) {
+            row {
+                cell {
+                    text(
+                        bokmal { +"Barnetillegg særkullsbarn" },
+                        nynorsk { +"Barnetillegg særkullsbarn" },
+                    )
+                }
+                cell {
+                    text(
+                        bokmal { +data.nettoBarnetilleggSB.format(false) },
+                        nynorsk { +data.nettoBarnetilleggSB.format(false) },
+                    )
+                }
+            }
+        }
+        row {
+            cell {
+                text(
+                    bokmal { +"Totalt" },
+                    nynorsk { +"Totalt" },
+                )
+            }
+            cell {
+                text(
+                    bokmal { +data.totalbelop.format(false) },
+                    nynorsk { +data.totalbelop.format(false) },
+                )
+            }
+        }
+    }
+
+    private data class Begrunnelse(val data: Brevdata) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 text(
                     bokmal { +"Du får barnetillegg for fellesbarn fordi du bor sammen med barnets andre forelder. For fellesbarn bruker vi begge foreldrenes inntekt (inkludert uføretrygd) når vi beregner størrelsen på barnetillegg. Lovendringen har ført til en endring i den andre forelderens uføretrygd. Dette påvirker bare barnetillegg for fellesbarn, og ikke uføretrygden din. " },

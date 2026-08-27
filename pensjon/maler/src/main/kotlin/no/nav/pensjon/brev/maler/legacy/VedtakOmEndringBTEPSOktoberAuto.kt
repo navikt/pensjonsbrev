@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmEndringBarnetilleggEPSAutoDto.vedtakData
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmEndringBarnetilleggEPSData.*
-import no.nav.pensjon.brev.maler.fraser.EndringBTEPSOktober
+import no.nav.pensjon.brev.maler.fraser.EndringBTEPS
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
@@ -41,8 +41,8 @@ object VedtakOmEndringBTEPSOktoberAuto : AutobrevTemplate<VedtakOmEndringBarneti
         }
         outline {
             includePhrase(
-                EndringBTEPSOktober.Outline(
-                    EndringBTEPSOktober.Brevdata(
+                EndringBTEPS.Outline(
+                    EndringBTEPS.Brevdata(
                         nettoUforetrygdUtenTillegg = data.nettoUforetrygdUtenTillegg.ifNull(Kroner(0)),
                         nettoBarnetilleggFB = data.nettoBarnetilleggFB.ifNull(Kroner(0)),
                         nettoBarnetilleggSB = data.nettoBarnetilleggSB.ifNull(Kroner(0)),

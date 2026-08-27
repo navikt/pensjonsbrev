@@ -141,6 +141,7 @@ object Fixtures : LetterDataFactory {
             VedtakOmEndringBarnetilleggEPSAutoDto::class -> createVedtakOmEndringBarnetilleggEPSAutoDto() as T
             ReverseringLavereMinstesatsRedigerbarDto::class -> createReverseringLavereMinstesatsRedigerbarDto() as T
             ReverseringLavereMinstesatsAutoDto::class -> createReverseringLavereMinstesatsAutoDto() as T
+            VedtakOmEndringBarnetilleggEPSRedigerbarDto::class -> createVedtakOmEndringBarnetilleggEPSRedigerbarDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
