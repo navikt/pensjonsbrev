@@ -16,15 +16,17 @@ fun createVedtakOmOktBunnfradragData() =
     VedtakOmOktBunnfradragData(
         uforetrygd = Kroner(26000),
         barnetillegg = Kroner(4000),
+        gjenlevendetillegg = Kroner(2000),
         bunnfradrag = Kroner(200000),
         fribelop = Kroner(136549),
-        manedligOkningUforetrygdUtAret = Kroner(3500),
+        manedligOkningUforetrygdInklTilleggUtAret = Kroner(3500),
         uforegrad = 100,
         datoOkningBunnfradrag = LocalDate.of(2026, 6, 1),
         redusertBtfb = true,
         redusertBtsb = true,
         bunnfradrag2027 = Kroner(240000),
         nettoUtHarBlittLikBrutto = true,
+        btHarBlitt0 = true,
 
         vektetFribelop = 0.7,
         vektetFribelopKr = Kroner(95584),
