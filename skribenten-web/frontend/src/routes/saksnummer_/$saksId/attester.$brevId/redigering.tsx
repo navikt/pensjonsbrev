@@ -250,12 +250,16 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     defaultValues: defaultValuesModelEditor,
   });
 
-  const { getWarning } = useBrevEditorWarnings({
+  const { getWarning: getBrevWarning } = useBrevEditorWarnings({
     brevkode: props.brev.info.brevkode,
     form,
     redigertBrev: redigertBrev,
     propertyUsage: props.brev.propertyUsage ?? undefined,
   });
+  const getWarning = useCallback(
+    () => getBrevWarning() ?? dokumentEditor.getAktivtDokumentWarning(),
+    [dokumentEditor.getAktivtDokumentWarning, getBrevWarning],
+  );
 
   const { oppdaterBrevMutation } = useOppdaterBrevAutosave({
     saksId: props.saksId,
@@ -382,6 +386,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           aktivVedleggId={dokumentEditor.aktivVedleggId}
           onVelgDokument={dokumentEditor.velgDokument}
           redigeringsflate="attestant-redigering"
+          registrerAntallUhaandterteAvsnitt={dokumentEditor.registrerAntallUhaandterteAvsnitt}
           registrerLagring={dokumentEditor.registrerLagring}
         >
           <ThreeSectionLayout

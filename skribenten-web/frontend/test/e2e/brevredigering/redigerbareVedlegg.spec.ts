@@ -44,6 +44,10 @@ const lagVedlegg = (tittel: string, broedtekst: string, idBase: number) => ({
 
 const vedlegg = lagVedlegg(VEDLEGG_TITTEL, VEDLEGG_BROEDTEKST, 900);
 const annetVedlegg = lagVedlegg(ANNET_VEDLEGG_TITTEL, ANNET_VEDLEGG_BROEDTEKST, 920);
+const vedleggMedUhaandtertAvsnitt = {
+  ...vedlegg,
+  blocks: vedlegg.blocks.map((block, index) => (index === 0 ? { ...block, missingFromTemplate: true } : block)),
+};
 
 /** Åpner vedlegget og gjør en endring i brødteksten, uten å vente på autolagringen. */
 const endreVedlegg = async (page: import("@playwright/test").Page, tekst: string) => {
@@ -111,6 +115,18 @@ test.describe("Redigerbare vedlegg", () => {
 
     await expect(page.getByRole("tab", { name: "Vedlegg" })).toHaveAttribute("aria-selected", "true");
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
+  });
+
+  test("varsler om uhåndtert avsnitt i vedlegget ved klikk på Fortsett", async ({ page }) => {
+    await page.route(vedleggUrl(VEDLEGG_ID), (route) => route.fulfill({ json: vedleggMedUhaandtertAvsnitt }));
+
+    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+    await expect(page.locator(".missing-from-template-block")).toBeVisible();
+
+    await page.getByText("Fortsett", { exact: true }).click();
+
+    await expect(page.getByText("Du må velge om du vil beholde eller slette 1 avsnitt")).toBeVisible();
+    await expect(page.getByText(/Dette avsnittet er markert i vedlegget/)).toBeVisible();
   });
 
   test("går tilbake til brevet når vedlegget lukkes", async ({ page }) => {

@@ -27,6 +27,10 @@ const vedlegg = {
     },
   ],
 };
+const vedleggMedUhaandtertAvsnitt = {
+  ...vedlegg,
+  blocks: vedlegg.blocks.map((block, index) => (index === 0 ? { ...block, missingFromTemplate: true } : block)),
+};
 
 const setupVedlegg = async (page: import("@playwright/test").Page) => {
   await page.route("**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg", (route) =>
@@ -163,6 +167,23 @@ test.describe("attestant redigering", () => {
     await expect(page.getByText(VEDLEGG_TEKST)).toBeVisible();
     await expect(page.getByRole("button", { name: "Tilbakestill vedlegg" })).toBeHidden();
     await expect(page.getByTestId("tilbakestill-mal-button")).toBeHidden();
+  });
+
+  test("varsler om uhåndtert avsnitt i vedlegget før attestering", async ({ page }) => {
+    await setupVedlegg(page);
+    await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, (route) =>
+      route.fulfill({ json: vedleggMedUhaandtertAvsnitt }),
+    );
+
+    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await page.getByRole("textbox", { name: "Underskrift" }).fill("Attestant Testesen");
+    await page.getByRole("tab", { name: "Vedlegg" }).click();
+    await expect(page.locator(".missing-from-template-block")).toBeVisible();
+
+    await page.getByRole("button", { name: "Fortsett" }).click();
+
+    await expect(page.getByText("Du må velge om du vil beholde eller slette 1 avsnitt")).toBeVisible();
+    await expect(page.getByText(/Dette avsnittet er markert i vedlegget/)).toBeVisible();
   });
 
   test("attesterer ikke når redigert vedlegg ikke kan lagres", async ({ page }) => {

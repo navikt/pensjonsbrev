@@ -1,7 +1,12 @@
 import { BodyLong, Button, Modal } from "@navikt/ds-react";
 import type React from "react";
 
-export type WarnModalKind = "fritekst" | "tekstValg" | "fritekstOgTekstValg" | "avsnittIkkeIMal";
+export type WarnModalKind =
+  | "fritekst"
+  | "tekstValg"
+  | "fritekstOgTekstValg"
+  | "avsnittIkkeIMal"
+  | "avsnittIkkeIMalIVedlegg";
 
 // Used discriminated props so that only relevant props are required for each kind.
 // here in this case "count" is only relevant for "fritekst", "fritekstOgTekstValg" and "avsnittIkkeIMal" kinds.
@@ -19,6 +24,7 @@ type WarnModalProps = WarnModalCommonProps &
     | { kind: "fritekst"; count: number }
     | { kind: "fritekstOgTekstValg"; count: number }
     | { kind: "avsnittIkkeIMal"; count: number }
+    | { kind: "avsnittIkkeIMalIVedlegg"; count: number }
   );
 
 export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFortsett, fortsettLabel, ...rest }) => {
@@ -39,6 +45,7 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
       case "fritekstOgTekstValg":
         return `Du må fylle ut ${count} fritekstfelt og velge tekst`;
       case "avsnittIkkeIMal":
+      case "avsnittIkkeIMalIVedlegg":
         return `Du må velge om du vil beholde eller slette ${count} avsnitt`;
       default:
         return "";
@@ -58,6 +65,10 @@ export const WarnModal: React.FC<WarnModalProps> = ({ kind, open, onClose, onFor
         return count === 1
           ? "Dette avsnittet er markert i brevet. Velg «Behold» eller «Slett». Du kan fortsette, men brevet kan ikke sendes før dette er gjort."
           : "Disse avsnittene er markert i brevet. Velg «Behold» eller «Slett» for hvert av dem. Du kan fortsette, men brevet kan ikke sendes før dette er gjort.";
+      case "avsnittIkkeIMalIVedlegg":
+        return count === 1
+          ? "Dette avsnittet er markert i vedlegget. Velg «Behold» eller «Slett». Du kan fortsette, men brevet kan ikke sendes før dette er gjort."
+          : "Disse avsnittene er markert i vedlegget. Velg «Behold» eller «Slett» for hvert av dem. Du kan fortsette, men brevet kan ikke sendes før dette er gjort.";
     }
   })();
 

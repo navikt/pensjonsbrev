@@ -17,6 +17,7 @@ type AktivtDokumentContextValue = {
   velgVedlegg: (vedleggId: string) => Promise<boolean>;
   tilbakestillAktivtVedlegg: () => void;
   registrerTilbakestilling: (tilbakestill: (() => void) | null) => void;
+  registrerAntallUhaandterteAvsnitt: (tell: (() => number) | null) => void;
   /**
    * The mounted document editor registers how to persist its unsaved edits, so the page can await
    * that before it submits the brev and releases the reservation. Pass null on unmount.
@@ -36,9 +37,11 @@ export const AktivtDokumentProvider = (props: {
   redigeringsflate: Redigeringsflate;
   onVelgDokument: (vedleggId: string | undefined) => Promise<boolean>;
   registrerLagring: (lagreNaa: (() => Promise<void>) | null) => void;
+  registrerAntallUhaandterteAvsnitt: (tell: (() => number) | null) => void;
   children: ReactNode;
 }) => {
-  const { aktivVedleggId, redigeringsflate, onVelgDokument, registrerLagring } = props;
+  const { aktivVedleggId, redigeringsflate, onVelgDokument, registrerLagring, registrerAntallUhaandterteAvsnitt } =
+    props;
   const tilbakestillAktivtVedleggRef = useRef<(() => void) | null>(null);
 
   const velgBrev = useCallback(() => onVelgDokument(undefined), [onVelgDokument]);
@@ -58,6 +61,7 @@ export const AktivtDokumentProvider = (props: {
       tilbakestillAktivtVedlegg: tilbakestillAktivtVedlegg,
       registrerTilbakestilling: registrerTilbakestilling,
       registrerLagring: registrerLagring,
+      registrerAntallUhaandterteAvsnitt: registrerAntallUhaandterteAvsnitt,
     }),
     [
       aktivVedleggId,
@@ -67,6 +71,7 @@ export const AktivtDokumentProvider = (props: {
       tilbakestillAktivtVedlegg,
       registrerTilbakestilling,
       registrerLagring,
+      registrerAntallUhaandterteAvsnitt,
     ],
   );
 

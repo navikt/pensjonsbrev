@@ -11,10 +11,20 @@ export const useDokumentEditorController = (args: {
   const { saksId, brevId, aktivVedleggId, navigateToDocument } = args;
   const redigerbareVedleggQuery = useRedigerbareVedlegg({ saksId, brevId });
   const lagreAktivtDokumentRef = useRef<(() => Promise<void>) | null>(null);
+  const tellUhaandterteAvsnittRef = useRef<(() => number) | null>(null);
   const [lagrerAktivtDokument, setLagrerAktivtDokument] = useState(false);
 
   const registrerLagring = useCallback((lagreNaa: (() => Promise<void>) | null) => {
     lagreAktivtDokumentRef.current = lagreNaa;
+  }, []);
+
+  const registrerAntallUhaandterteAvsnitt = useCallback((tell: (() => number) | null) => {
+    tellUhaandterteAvsnittRef.current = tell;
+  }, []);
+
+  const getAktivtDokumentWarning = useCallback(() => {
+    const count = tellUhaandterteAvsnittRef.current?.() ?? 0;
+    return count > 0 ? ({ kind: "avsnittIkkeIMalIVedlegg", count } as const) : null;
   }, []);
 
   const lagreAktivtDokument = useCallback(async (): Promise<boolean> => {
@@ -54,6 +64,8 @@ export const useDokumentEditorController = (args: {
     aktivVedleggId: vedleggFinnes ? aktivVedleggId : undefined,
     lagreAktivtDokument,
     lagrerAktivtDokument,
+    getAktivtDokumentWarning,
+    registrerAntallUhaandterteAvsnitt,
     registrerLagring,
     velgDokument,
   };

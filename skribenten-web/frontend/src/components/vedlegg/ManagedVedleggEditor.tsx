@@ -9,7 +9,11 @@ import {
   tilbakestillRedigerbartVedlegg,
 } from "~/api/redigerbareVedlegg-endpoints";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
-import { normalizeDocumentForComparison, text } from "~/Brevredigering/LetterEditor/actions/common";
+import {
+  countMissingFromTemplateBlocks,
+  normalizeDocumentForComparison,
+  text,
+} from "~/Brevredigering/LetterEditor/actions/common";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { ApiError } from "~/components/ApiError";
@@ -71,7 +75,7 @@ export const ManagedVedleggEditor = (props: VedleggEditorProps) => {
 const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachment }) => {
   const { saksId, brev, vedleggId, vedlegg } = props;
   const queryClient = useQueryClient();
-  const { registrerLagring, registrerTilbakestilling } = useAktivtDokument();
+  const { registrerAntallUhaandterteAvsnitt, registrerLagring, registrerTilbakestilling } = useAktivtDokument();
   const [editorState, setEditorState] = useState<LetterEditorState>(() => createVedleggState(brev, vedlegg));
   const [vilTilbakestille, setVilTilbakestille] = useState(false);
 
@@ -129,6 +133,16 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
     registrerLagring(lagreNaa);
     return () => registrerLagring(null);
   }, [registrerLagring, lagreNaa]);
+
+  const tellUhaandterteAvsnitt = useCallback(
+    () => countMissingFromTemplateBlocks(editorState.redigertBrev),
+    [editorState.redigertBrev],
+  );
+
+  useEffect(() => {
+    registrerAntallUhaandterteAvsnitt(tellUhaandterteAvsnitt);
+    return () => registrerAntallUhaandterteAvsnitt(null);
+  }, [registrerAntallUhaandterteAvsnitt, tellUhaandterteAvsnitt]);
 
   const aapneTilbakestilling = useCallback(() => setVilTilbakestille(true), []);
 

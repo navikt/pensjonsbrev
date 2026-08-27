@@ -325,12 +325,16 @@ function RedigerBrev({
     defaultValues: defaultValuesModelEditor,
   });
 
-  const { getWarning } = useBrevEditorWarnings({
+  const { getWarning: getBrevWarning } = useBrevEditorWarnings({
     brevkode: brev.info.brevkode,
     form,
     redigertBrev: editorState.redigertBrev,
     propertyUsage: brev.propertyUsage ?? undefined,
   });
+  const getWarning = useCallback(
+    () => getBrevWarning() ?? dokumentEditor.getAktivtDokumentWarning(),
+    [dokumentEditor.getAktivtDokumentWarning, getBrevWarning],
+  );
 
   const onTekstValgAndOverstyringChange = () => {
     form.trigger().then((isValid) => {
@@ -429,6 +433,7 @@ function RedigerBrev({
               aktivVedleggId={dokumentEditor.aktivVedleggId}
               onVelgDokument={dokumentEditor.velgDokument}
               redigeringsflate="saksbehandler-redigering"
+              registrerAntallUhaandterteAvsnitt={dokumentEditor.registrerAntallUhaandterteAvsnitt}
               registrerLagring={dokumentEditor.registrerLagring}
             >
               <ThreeSectionLayout
