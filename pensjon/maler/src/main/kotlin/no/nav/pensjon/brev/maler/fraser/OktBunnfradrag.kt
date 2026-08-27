@@ -360,7 +360,7 @@ class PengerTilGode(private val nettoUt: Expression<BrevbakerType.Kroner>, priva
             list {
                 item {
                     text(
-                        bokmal { +"Resten av året: " }, nynorsk { +"Resten av året:" }, FontType.BOLD
+                        bokmal { +"Resten av året: " }, nynorsk { +"Resten av året: " }, FontType.BOLD
                     )
                     text(
                         bokmal { +"Vi øker de månedlige utbetalingene dine ut 2026. Vi kan ikke utbetale mer enn " + nettoUt.format() + " i uføretrygd i måneden før skatt. Dette er uføretrygden din før inntektsavkorting. " },
