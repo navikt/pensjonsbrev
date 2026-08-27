@@ -156,4 +156,47 @@ describe("search", () => {
     expect(byTitle.brev.map((hit) => hit.template.id)).toEqual(["PE_ETTER_01"]);
     expect(byBrevkode.brev.map((hit) => hit.template.id)).toEqual(["PE_INNV_01"]);
   });
+
+  describe("single-character terms", () => {
+    const templates = [
+      template({ id: "PARA_3", title: "Paragraf tre", lines: ["Dette følger av folketrygdloven paragraf 3."] }),
+      template({ id: "PARA_12", title: "Paragraf tolv", lines: ["Dette følger av folketrygdloven paragraf 12."] }),
+      template({ id: "NO_PARA", title: "Uten paragraf", lines: ["Helt urelatert tekst uten henvisning."] }),
+    ];
+
+    it("finds a line containing a single-digit term", () => {
+      const index = buildIndex(templates);
+
+      const { content } = search(index, "paragraf 3");
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["PARA_3"]);
+    });
+
+    it("finds a line containing a single-digit term when fuzzy is disabled", () => {
+      const index = buildIndex(templates, false);
+
+      const { content } = search(index, "paragraf 3");
+
+      expect(content.map((hit) => hit.template.id)).toEqual(["PARA_3"]);
+    });
+
+    it("requires a single-character term to occur verbatim, without fuzzy noise", () => {
+      const index = buildIndex(templates);
+
+      // "q" occurs in none of the lines; it must not fuzzy-match anything.
+      const { content } = search(index, "paragraf q");
+
+      expect(content).toEqual([]);
+    });
+
+    it("applies the same verbatim rule to brev (title/brevkode) hits", () => {
+      const index = buildIndex(templates);
+
+      const found = search(index, "paragraf 3");
+      const notFound = search(index, "paragraf q");
+
+      expect(found.brev.map((hit) => hit.template.id)).toEqual(["PARA_3"]);
+      expect(notFound.brev).toEqual([]);
+    });
+  });
 });

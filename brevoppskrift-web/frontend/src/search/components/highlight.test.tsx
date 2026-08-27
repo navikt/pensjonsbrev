@@ -56,4 +56,15 @@ describe("LineContent highlighting", () => {
     expect(marks(html)).toEqual([]);
     expect(html).toContain("helt urelatert tekst");
   });
+
+  it("highlights a single-character term where it occurs exactly", () => {
+    const html = render(textLine("etter folketrygdloven paragraf 3 gjelder dette"), "paragraf 3");
+    expect(marks(html)).toEqual(["paragraf", "3"]);
+  });
+
+  it("does not fuzzy-highlight a single-character term that is absent", () => {
+    // "3" must not smear onto some near-miss character elsewhere in the line.
+    const html = render(textLine("etter folketrygdloven paragraf tolv"), "paragraf 3");
+    expect(marks(html)).toEqual(["paragraf"]);
+  });
 });
