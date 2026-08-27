@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.alder.maler.afpprivat.AvslagAfpPrivat
 import no.nav.pensjon.brev.alder.maler.afp.AvslagAfpGammel
 import no.nav.pensjon.brev.alder.maler.afpprivat.AvslagAfpPrivatAuto
 import no.nav.pensjon.brev.alder.maler.afpprivat.VedtakAfpPrivatEndring
-import no.nav.pensjon.brev.alder.maler.afpprivat.VedtakAfpPrivatEndringOpptjeningAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndring
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEtterbetaling
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvik
@@ -134,7 +133,6 @@ object AlderTemplates : AllTemplates {
             VarselAfpEtteroppgjoerForeloepigAuto,
             VedtakAfpEtteroppgjoerIngenEndringAuto,
             AvslagAfpPrivatAuto,
-            VedtakAfpPrivatEndringOpptjeningAuto,
             VedtakAldersovergang67AarGarantitilleggAuto,
             VedtakEndringAFPEndretOpptjeningAuto,
             VedtakOmregningAFPTilEnsligPensjonistAuto,

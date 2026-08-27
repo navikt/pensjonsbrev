@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.alder.maler.afpprivat
 
-import no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpInnhold
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDto

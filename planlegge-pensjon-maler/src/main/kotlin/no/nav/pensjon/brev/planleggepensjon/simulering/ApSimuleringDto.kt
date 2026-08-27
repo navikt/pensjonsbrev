@@ -201,10 +201,8 @@ data class SimuleringV1MaanedligAlderspensjon(
     val kapittel20Trygdetid: Int?,
     @DisplayText("Garantipensjon beløp")
     val garantipensjonBeloep: Kroner?,
-    @DisplayText("Garantipensjonsnivå beløp")
-    val garantipensjonsnivaaBeloep: Kroner?,
     @DisplayText("Garantipensjon sats")
-    val garantipensjonSats: Double?,
+    val garantipensjonSats: Kroner?,
     @DisplayText("Garantitillegg beløp")
     val garantitilleggBeloep: Kroner?,
     @DisplayText("Grunnbeløp")

@@ -37,7 +37,7 @@ class KrrService(config: OboClientConfig, authService: AuthService, engine: Http
             }
         }
         installRetry(logger)
-        callIdAndOnBehalfOfClient(config.scope, authService)
+        onBehalfOfClient(config.scope, authService)
     }
 
     @Suppress("EnumEntryName")

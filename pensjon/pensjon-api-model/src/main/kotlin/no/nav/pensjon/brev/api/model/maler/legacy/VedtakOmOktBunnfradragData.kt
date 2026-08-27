@@ -9,17 +9,45 @@ import java.time.LocalDate
 data class VedtakOmOktBunnfradragData(
     val uforetrygd: Kroner,
     val barnetillegg: Kroner?,
-    val bunnfradrag: Kroner,
+    val gjenlevendetillegg: Kroner?,
     val fribelop: Kroner,
-    val ekstraManedligUfoeretrygdUtAret: Kroner?,
+    val bunnfradrag: Kroner,
+    val bunnfradrag2027: Kroner,
     val uforegrad: Int,
-    val oktFribelopHeleAret: Boolean,
-    val datoOkning: LocalDate,
-    val ieu: Kroner,
-    val antallMnd1g: Int,
-    val oktUforetrygd: Boolean,
-    val redusertBarnetillegg: Boolean,
+    val manedligOkningUforetrygdInklTilleggUtAret: Kroner,
+    val okningUt: Boolean,
+    val redusertBtfb: Boolean,
+    val redusertBtsb: Boolean,
+    val datoOkningBunnfradrag: LocalDate,
+    val nettoUtHarBlittLikBrutto: Boolean,
+    val btHarBlitt0: Boolean,
+    val vektetFribelop: Double,
+    val vektetFribelopKr: Kroner,
+    val fribelopPerioder: List<FribelopPeriode>,
+
+    val scenario1_1G: Boolean,
+    val scenario2_1G_04G: Scenario2_1G_04G?,
+    val scenario4_04G_1G_04G: Scenario4_04G_1G_04G?,
+    val scenario3_04G_1G: Boolean,
     val pe: PEgruppe10,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
+)
+
+
+data class Scenario2_1G_04G(
+    val dato04G: LocalDate,
+    val uforegradForOkning: Int,
+)
+
+data class Scenario4_04G_1G_04G(
+    val dato04G: LocalDate,
+    val uforegradForOkning: Int,
+)
+
+data class FribelopPeriode(
+    val fom: LocalDate,
+    val tom: LocalDate,
+    val uforegrad: Int,
+    val faktor: Double
 )

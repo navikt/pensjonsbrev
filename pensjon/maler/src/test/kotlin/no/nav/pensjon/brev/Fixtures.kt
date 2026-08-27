@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEtterbetalingOpphor202
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktBunnfradragAutoDto
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktFribelopAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.*
@@ -67,6 +68,7 @@ object Fixtures : LetterDataFactory {
             BekreftelsePaaPensjonDto::class -> createBekreftelsePaaPensjonDto() as T
             BekreftelsePaaUfoeretrygdDto::class -> createBekreftelsePaaUfoeretrygdDto() as T
             BrukerTestBrevDto::class -> createBrukerTestBrevDto() as T
+            BrukerTestVedtaksbrevDto::class -> createBrukerTestVedtaksbrevDto() as T
             EksempelRedigerbartDto::class -> createEksempelbrevRedigerbartDto() as T
             EmptyAutobrevdata::class -> EmptyAutobrevdata as T
             EmptyRedigerbarBrevdataMedSaksbehandlerValg::class -> EmptyRedigerbarBrevdataMedSaksbehandlerValg(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
@@ -94,7 +96,6 @@ object Fixtures : LetterDataFactory {
             OpptjeningVedForhoeyetHjelpesatsDto::class -> OpptjeningVedForhoeyetHjelpesatsDto(Year(2021), false) as T
             OrienteringOmSaksbehandlingstidDto::class -> createOrienteringOmSaksbehandlingstidDto() as T
             PEgruppe10::class -> createPEgruppe10() as T
-            SamletMeldingOmPensjonsvedtakDto::class -> createSamletMeldingOmPensjonsvedtakDto() as T
             SamletMeldingOmPensjonsvedtakV2Dto::class -> createSamletMeldingOmPensjonsvedtakV2Dto() as T
             TilbakekrevingAvFeilutbetaltBeloepDto::class -> createTilbakekrevingAvFeilutbetaltBeloepDto() as T
             UfoerOmregningEnsligDto::class -> createUfoerOmregningEnsligDto() as T
@@ -126,10 +127,12 @@ object Fixtures : LetterDataFactory {
             AvslagGjenlevendepensjonUtlandDto::class -> createAvslagGjenlevendepensjonUtlandDto() as T
             VedtakOmLavereMinstesatsAutoDto::class -> createVedtakOmLavereMinstesatsAutoDto() as T
             VedtakOmOktBunnfradragAutoDto::class -> createVedtakOmOktBunnfradragAutoDto() as T
+            VedtakOmOktFribelopAutoDto::class -> createVedtakOmOktFribelopAutoDto() as T
             VedtakOmIFUReduksjonsprosentRedigerbarDto::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
             VedtakOmIFUReduksjonsprosentAutoDto::class -> createVedtakOmIFUReduksjonsprosentAutoDto() as T
             VedtakOmLavereMinstesatsRedigerbarDto::class -> createVedtakOmLavereMinstesatsRedigerbarDto() as T
             VedtakOmOktBunnfradragRedigerbarDto::class -> createVedtakOmOktBunnfradragRedigerbarDto() as T
+            VedtakOmOktFribelopRedigerbarDto::class -> createVedtakOmOktFribelopRedigerbarDto() as T
             InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto::class -> createInnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto() as T
             HvilendeRettUforetrygdDto::class -> createHvilendeRettUforetrygdDto() as T
             AvslagUfoerepensjonDto::class -> createAvslagUfoerepensjonDto() as T
@@ -138,6 +141,7 @@ object Fixtures : LetterDataFactory {
             VedtakOmEndringBarnetilleggEPSAutoDto::class -> createVedtakOmEndringBarnetilleggEPSAutoDto() as T
             ReverseringLavereMinstesatsRedigerbarDto::class -> createReverseringLavereMinstesatsRedigerbarDto() as T
             ReverseringLavereMinstesatsAutoDto::class -> createReverseringLavereMinstesatsAutoDto() as T
+            VedtakOmEndringBarnetilleggEPSRedigerbarDto::class -> createVedtakOmEndringBarnetilleggEPSRedigerbarDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

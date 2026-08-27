@@ -45,8 +45,8 @@ object VedtakOmOktBunnfradragRedigerbar : RedigerbarTemplate<VedtakOmOktBunnfrad
 
         title {
             text(
-                bokmal { +"Du får høyere bunnfradrag fordi fribeløpet øker" },
-                nynorsk { +"Du får høgare bunnfradrag fordi fribeløpet aukar" },
+                bokmal { +"Du kan nå ha høyere inntekt før vi reduserer uføretrygden din" },
+                nynorsk { +"Du kan no ha høgare inntekt før vi reduserer uføretrygda di" }
             )
         }
         outline {

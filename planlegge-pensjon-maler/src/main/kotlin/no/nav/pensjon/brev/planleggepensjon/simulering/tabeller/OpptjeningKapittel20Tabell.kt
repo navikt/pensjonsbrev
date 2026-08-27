@@ -37,15 +37,9 @@ data class OpptjeningKapittel20Tabell(
                         cell { text(bokmal { +it.format(2) }) }
                     }
                 }
-                ifNotNull(alderspensjon.garantipensjonsnivaaBeloep) {
+                ifNotNull(alderspensjon.garantipensjonSats) {
                     row {
                         cell { text(bokmal { +"Garantipensjonsnivå" }) }
-                        cell { text(bokmal { +it.format(denominator = false) + " kr" }) }
-                    }
-                }
-                ifNotNull(alderspensjon.garantipensjonBeloep) {
-                    row {
-                        cell { text(bokmal { +"Garantipensjon" }) }
                         cell { text(bokmal { +it.format(denominator = false) + " kr" }) }
                     }
                 }

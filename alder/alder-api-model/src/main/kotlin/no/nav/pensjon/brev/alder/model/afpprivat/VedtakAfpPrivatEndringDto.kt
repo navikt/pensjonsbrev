@@ -10,7 +10,7 @@ import java.time.LocalDate
  * Redigerbart vedtak — endring av AFP i privat sektor.
  *
  * Konvertert fra Exstream-malen `PE_AF_04_114`. Bokmål og nynorsk. Auto-varianten
- * er [VedtakAfpPrivatEndringOpptjeningAutoDto] (`PE_AF_04_113`).
+ * er VedtakEndringAFPEndretOpptjeningAutoDto (`PE_AF_04_113`, MF_000145).
  */
 data class VedtakAfpPrivatEndringDto(
     override val saksbehandlerValg: SaksbehandlervalgIDSL,
@@ -21,10 +21,10 @@ data class VedtakAfpPrivatEndringDto(
         // PE_Vedtaksdata_VirkningFom
         val virkningFom: LocalDate,
         // PE_Vedtaksdata_BrukerAlder
-        val brukerAlder: Int,
+        val brukerUnder70Aar: Boolean,
         val beregning: AfpPrivatBeregningEndring,
         // PE_Grunnlag_Persongrunnlagsliste_Trygdeavtaler_Bostedsland[1] = "nor"
-        val borIForNorge: Boolean,
+        val borINorge: Boolean,
         // PE_AF_oversikt_over_pensjonen_RTF — inkluderes når BeregningAntallPerioder > 1
         val oversiktOverPensjonen: OversiktOverPensjonenAfpPrivatDto? = null,
     ) : FagsystemBrevdata

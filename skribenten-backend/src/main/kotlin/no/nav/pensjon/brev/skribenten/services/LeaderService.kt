@@ -9,7 +9,6 @@ import io.ktor.client.request.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.Closeable
 import no.nav.pensjon.brev.skribenten.NoAuthClientConfig
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import java.net.InetAddress
 
@@ -26,9 +25,6 @@ class NaisLeaderService(
     clientEngine: HttpClientEngine,
 ) : LeaderService, Closeable {
     private val url: String? = config?.url
-
-    @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, clientEngine: HttpClientEngine) : this(config.services.leader, clientEngine)
 
     private val client = lagHttpClient(clientEngine) {
         install(ContentNegotiation) {

@@ -1,7 +1,8 @@
 import { expect, test } from "@playwright/test";
 
+import { setupSakStubs } from "~test/e2e/support/helpers";
+
 import sak from "../fixtures/sak.json" with { type: "json" };
-import { setupSakStubs } from "../utils/helpers";
 
 test.describe("Brevvelger spec", () => {
   test.beforeEach(async ({ page }) => {

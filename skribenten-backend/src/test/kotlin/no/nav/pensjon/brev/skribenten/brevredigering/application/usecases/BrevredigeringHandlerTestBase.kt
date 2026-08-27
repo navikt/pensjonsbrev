@@ -104,6 +104,7 @@ abstract class BrevredigeringHandlerTestBase {
     protected val attesterBrevPolicy = AttesterBrevPolicy()
     protected val ferdigRedigertPolicy = FerdigRedigertPolicy()
     protected val sendBrevPolicy = SendBrevPolicy(ferdigRedigertPolicy)
+    protected val slettBrevPolicy = SlettBrevPolicy()
     protected val reserverBrevHandler by lazy { ReserverBrevHandler(brevreservasjonPolicy, SharedPostgres.database) }
 
     protected val endreMottaker by lazy {
@@ -283,6 +284,7 @@ abstract class BrevredigeringHandlerTestBase {
     protected val slettBrevHandler by lazy {
         SlettBrevHandler(
             reserverBrevHandler = reserverBrevHandler,
+            slettBrevPolicy = slettBrevPolicy,
             database = SharedPostgres.database,
         )
     }

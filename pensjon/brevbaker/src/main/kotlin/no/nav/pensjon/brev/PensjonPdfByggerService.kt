@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev
 
 import com.fasterxml.jackson.databind.SerializationFeature
-import io.ktor.callid.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.network.sockets.*
 import io.ktor.client.plugins.*
+import io.ktor.client.plugins.callid.CallId
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.utils.*
@@ -45,6 +45,7 @@ class PensjonPdfByggerService(
                 disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             }
         }
+        install(CallId)
         HttpResponseValidator {
             validateResponse { validateResponse(it.status.value, { msg -> logger.warn(msg) }) { it.body<String>() } }
         }
@@ -94,7 +95,6 @@ class PensjonPdfByggerService(
                 url { parameters.append("typst", "true") }
                 contentType(ContentType.Application.Json)
                 accept(ContentType.Application.Json)
-                header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
                 bearerAuthHeader()
                 //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
                 // If the body is set using an object, it will use the content-negotiation strategy which also uses a jackson object-mapper
@@ -112,7 +112,6 @@ class PensjonPdfByggerService(
             httpClient.post("$pdfByggerUrl/v2/produserBrev") {
                 contentType(ContentType.Application.Json)
                 accept(ContentType.Application.Json)
-                header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
                 bearerAuthHeader()
                 setBody(objectmapper.writeValueAsBytes(pdfRequest))
             }.body()
