@@ -67,13 +67,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
     ifNotNull(simulering.afpOffentligTidsbegrenset) { afp ->
         ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
             title2 {
-                text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
-                showIf(informasjon.alder.maaneder greaterThan 1) {
-                    text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
-                }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
-                    text(bokmal { +" og 1 måned" })
-                }
-                text(bokmal { +" (" + informasjon.uttaksdato + ")" })
+                includePhrase(VedAlderPhrase(informasjon))
             }
         }.orShow {
             title2 {
@@ -84,17 +78,52 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         includePhrase(AfpOffentligTidsbegrensetTabell(afp))
     }
 
+    showIf(simuleringsinformasjon.simulererEndringMedAfpPrivat) {
+        ifNotNull(simulering.afpPrivat) { afp ->
+            ifNotNull(afp.vedGradertUttak) { gradertUttak ->
+                ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
+                    title2 {
+                        includePhrase(VedAlderPhrase(informasjon))
+                    }
+                }.orShow {
+                    title2 {
+                        text(bokmal { +"Ved gradert uttak" })
+                    }
+                }
+                includePhrase(AfpPrivatTabell(gradertUttak))
+            }
+            ifNotNull(afp.vedNormertPensjonsalder) { normertPensjonsalder ->
+                ifNotNull(simuleringsinformasjon.normertUttakInformasjon) { informasjon ->
+                    title2 {
+                        includePhrase(VedAlderPhrase(informasjon))
+                    }
+                }.orShow {
+                    title2 {
+                        text(bokmal { +"Ved 67 år" })
+                    }
+                }
+                includePhrase(AfpPrivatTabell(normertPensjonsalder))
+            }
+            ifNotNull(afp.vedHeltUttak) { heltUttak ->
+                ifNotNull(simuleringsinformasjon.heltUttakInformasjon) { informasjon ->
+                    title2 {
+                        includePhrase(VedAlderPhrase(informasjon))
+                    }
+                }.orShow {
+                    title2 {
+                        text(bokmal { +"Ved helt uttak" })
+                    }
+                }
+                includePhrase(AfpPrivatTabell(heltUttak))
+            }
+        }
+    }
+
     ifNotNull(simulering.maanedligAlderspensjonForKnekkpunkter) { knekkpunkter ->
         ifNotNull(knekkpunkter.vedGradertUttak) { gradertUttak ->
             ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
                 title2 {
-                    text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
-                    showIf(informasjon.alder.maaneder greaterThan 1) {
-                        text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
-                    }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
-                        text(bokmal { +" og 1 måned" })
-                    }
-                    text(bokmal { +" (" + informasjon.uttaksdato + ")" })
+                    includePhrase(VedAlderPhrase(informasjon))
                 }
                 includePhrase(AlderspensjonTabell(gradertUttak, informasjon.grad))
             }.orShow {
@@ -116,6 +145,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
                 }
             }
         }
+
 
         ifNotNull(knekkpunkter.vedNormertPensjonsalder) { normPensjonsalder ->
             ifNotNull(simuleringsinformasjon.normertPensjonsalderPlassering) { plassering ->
@@ -141,13 +171,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         }
 
         title2 {
-            text(bokmal { +"Ved " + simuleringsinformasjon.heltUttakInformasjon.alder.aar.format() + " år" })
-            showIf(simuleringsinformasjon.heltUttakInformasjon.alder.maaneder greaterThan 1) {
-                text(bokmal { +" og " + simuleringsinformasjon.heltUttakInformasjon.alder.maaneder.format() + " måneder" })
-            }.orShowIf(simuleringsinformasjon.heltUttakInformasjon.alder.maaneder greaterThan 0) {
-                text(bokmal { +" og 1 måned" })
-            }
-            text(bokmal { +" (" + simuleringsinformasjon.heltUttakInformasjon.uttaksdato + ")" })
+            includePhrase(VedAlderPhrase(simuleringsinformasjon.heltUttakInformasjon))
         }
         includePhrase(AlderspensjonTabell(knekkpunkter.vedHeltUttak, simuleringsinformasjon.heltUttakInformasjon.grad))
 
@@ -239,13 +263,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         ifNotNull(simulering.afpOffentligTidsbegrenset) { afp ->
             ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
                 title3 {
-                    text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
-                    showIf(informasjon.alder.maaneder greaterThan 1) {
-                        text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
-                    }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
-                        text(bokmal { +" og 1 måned" })
-                    }
-                    text(bokmal { +" (" + informasjon.uttaksdato + ")" })
+                    includePhrase(VedAlderPhrase(informasjon))
                 }
                 includePhrase(OpptjeningTidsbegrensetAFPTabell(afp))
             }
@@ -254,13 +272,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
         ifNotNull(knekkpunkter.vedGradertUttak) { alderspensjon ->
             ifNotNull(simuleringsinformasjon.gradertUttakInformasjon) { informasjon ->
                 title3 {
-                    text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
-                    showIf(informasjon.alder.maaneder greaterThan 1) {
-                        text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
-                    }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
-                        text(bokmal { +" og 1 måned" })
-                    }
-                    text(bokmal { +" (" + informasjon.uttaksdato + ")" })
+                    includePhrase(VedAlderPhrase(informasjon))
                 }
                 showIf(simuleringsinformasjon.kull.isOneOf(Kull.KAP19, Kull.OVERGANG)) {
                     includePhrase(OpptjeningKapittel19Tabell(alderspensjon))
@@ -274,13 +286,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
             showIf(simuleringsinformasjon.normertPensjonsalderPlassering.equalTo(NormertPensjonsalderPlassering.MELLOM_GRADERT_OG_HELT)) {
                 ifNotNull(simuleringsinformasjon.normertUttakInformasjon) { informasjon ->
                     title3 {
-                        text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
-                        showIf(informasjon.alder.maaneder greaterThan 1) {
-                            text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
-                        }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
-                            text(bokmal { +" og 1 måned" })
-                        }
-                        text(bokmal { +" (" + informasjon.uttaksdato + ")" })
+                        includePhrase(VedAlderPhrase(informasjon))
                     }
                 }
                 showIf(simuleringsinformasjon.kull.isOneOf(Kull.KAP19, Kull.OVERGANG)) {
@@ -294,13 +300,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
 
         ifNotNull(simuleringsinformasjon.heltUttakInformasjon) { informasjon ->
             title3 {
-                text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
-                showIf(informasjon.alder.maaneder greaterThan 1) {
-                    text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
-                }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
-                    text(bokmal { +" og 1 måned" })
-                }
-                text(bokmal { +" (" + informasjon.uttaksdato + ")" })
+                includePhrase(VedAlderPhrase(informasjon))
             }
         }
         showIf(simuleringsinformasjon.kull.isOneOf(Kull.KAP19, Kull.OVERGANG)) {
@@ -313,13 +313,7 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
             showIf(simuleringsinformasjon.normertPensjonsalderPlassering.equalTo(NormertPensjonsalderPlassering.ETTER_HELT)) {
                 ifNotNull(simuleringsinformasjon.normertUttakInformasjon) { informasjon ->
                     title3 {
-                        text(bokmal { +"Ved " + informasjon.alder.aar.format() + " år" })
-                        showIf(informasjon.alder.maaneder greaterThan 1) {
-                            text(bokmal { +" og " + informasjon.alder.maaneder.format() + " måneder" })
-                        }.orShowIf(informasjon.alder.maaneder greaterThan 0) {
-                            text(bokmal { +" og 1 måned" })
-                        }
-                        text(bokmal { +" (" + informasjon.uttaksdato + ")" })
+                        includePhrase(VedAlderPhrase(informasjon))
                     }
                 }
                 showIf(simuleringsinformasjon.kull.isOneOf(Kull.KAP19, Kull.OVERGANG)) {
