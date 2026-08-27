@@ -47,8 +47,6 @@ object VedtakOmEndringBTEPSOktoberAuto : AutobrevTemplate<VedtakOmEndringBarneti
                         nettoBarnetilleggFB = data.nettoBarnetilleggFB.ifNull(Kroner(0)),
                         nettoBarnetilleggSB = data.nettoBarnetilleggSB.ifNull(Kroner(0)),
                         totalbelop = data.totalbelop.ifNull(Kroner(0)),
-                        samletInntektsgrenseBarnetillegg = data.samletInntektsgrenseBarnetillegg.ifNull(Kroner(0)),
-                        fribelop = data.fribelop.ifNull(Kroner(0)),
                         barnetilleggSB = data.barnetilleggSB,
                     )
                 )

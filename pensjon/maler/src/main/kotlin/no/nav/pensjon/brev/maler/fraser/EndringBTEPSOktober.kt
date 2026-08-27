@@ -20,8 +20,6 @@ object EndringBTEPSOktober {
         val nettoBarnetilleggFB: Expression<Kroner>,
         val nettoBarnetilleggSB: Expression<Kroner>,
         val totalbelop: Expression<Kroner>,
-        val samletInntektsgrenseBarnetillegg: Expression<Kroner>,
-        val fribelop: Expression<Kroner>,
         val barnetilleggSB: Expression<Boolean>,
     )
 
