@@ -11,13 +11,15 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.scenario2_1G_04G.ufo
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.scenario4_04G_1G_04G.dato04G
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.scenario4_04G_1G_04G.uforegradForOkning
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.barnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.btHarBlitt0
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.bunnfradrag
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.bunnfradrag2027
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.datoOkningBunnfradrag
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.fribelop
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.fribelopPerioder
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.manedligOkningUforetrygdUtAret
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.nettoHarBlittLikBrutto
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.gjenlevendetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.manedligOkningUforetrygdInklTilleggUtAret
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.nettoUtHarBlittLikBrutto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.okningUt
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.redusertBtsb
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.redusertBtfb
@@ -40,12 +42,15 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 object OktBunnfradrag {
 
@@ -128,6 +133,22 @@ object OktBunnfradrag {
                             }
                         }
                     }
+                    ifNotNull(data.gjenlevendetillegg) { gjt ->
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Gjenlevendetillegg" },
+                                    nynorsk { +"Attlevandetillegg" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +gjt.format() },
+                                    nynorsk { +gjt.format() },
+                                )
+                            }
+                        }
+                    }
                     row {
                         cell {
                             text(
@@ -156,18 +177,25 @@ object OktBunnfradrag {
                             )
                         }
                     }
-                    ifNotNull(data.manedligOkningUforetrygdUtAret) { manedligOkningUforetrygdUtAret ->
+                    showIf(data.manedligOkningUforetrygdInklTilleggUtAret.notEqualTo(0)) {
                         row {
                             cell {
-                                text(
-                                    bokmal { +"Månedlig økning i uføretrygd ut 2026" },
-                                    nynorsk { +"Månadleg auke i uføretrygd ut 2026" },
-                                )
+                                showIf(data.manedligOkningUforetrygdInklTilleggUtAret.greaterThan(0)) {
+                                    text(
+                                        bokmal { +"Månedlig økning i uføretrygd og barnetillegg ut 2026" },
+                                        nynorsk { +"Månadleg auke i uføretrygd og barnetillegg ut 2026" },
+                                    )
+                                }.orShow {
+                                    text(
+                                        bokmal { +"Månedlig reduksjon i uføretrygd og barnetillegg ut 2026" },
+                                        nynorsk { +"Månadleg reduksjon i uføretrygd og barnetillegg ut 2026" },
+                                    )
+                                }
                             }
                             cell {
                                 text(
-                                    bokmal { +manedligOkningUforetrygdUtAret.format() },
-                                    nynorsk { +manedligOkningUforetrygdUtAret.format() },
+                                    bokmal { +data.manedligOkningUforetrygdInklTilleggUtAret.format() },
+                                    nynorsk { +data.manedligOkningUforetrygdInklTilleggUtAret.format() },
                                 )
                             }
                         }
@@ -211,8 +239,8 @@ object OktBunnfradrag {
                         nynorsk { +"1. januar 2026 har du hatt " + data.uforegrad.format() + " prosent uføretrygd i 2 år eller lenger. Derfor aukar fribeløpet ditt til 1 G for heile 2026. " },
                     )
                 }
-                ifNotNull(data.manedligOkningUforetrygdUtAret) {
-                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                showIf(data.manedligOkningUforetrygdInklTilleggUtAret.notEqualTo(0)) {
+                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoUtHarBlittLikBrutto, data.btHarBlitt0))
                 }
             }.orIfNotNull(data.scenario2_1G_04G) { scenario2 ->
                 paragraph {
@@ -222,8 +250,8 @@ object OktBunnfradrag {
                     )
                 }
                 includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
-                ifNotNull(data.manedligOkningUforetrygdUtAret) {
-                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                showIf(data.manedligOkningUforetrygdInklTilleggUtAret.notEqualTo(0)) {
+                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoUtHarBlittLikBrutto, data.btHarBlitt0))
                 }
                 paragraph {
                     text(
@@ -240,8 +268,8 @@ object OktBunnfradrag {
                     )
                 }
                 includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
-                ifNotNull(data.manedligOkningUforetrygdUtAret) {
-                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                showIf(data.manedligOkningUforetrygdInklTilleggUtAret.notEqualTo(0)) {
+                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoUtHarBlittLikBrutto, data.btHarBlitt0))
                 }
                 paragraph {
                     text(
@@ -257,8 +285,8 @@ object OktBunnfradrag {
                     )
                 }
                 includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
-                ifNotNull(data.manedligOkningUforetrygdUtAret) {
-                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                showIf(data.manedligOkningUforetrygdInklTilleggUtAret.notEqualTo(0)) {
+                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoUtHarBlittLikBrutto, data.btHarBlitt0))
                 }
                 paragraph {
                     text(
@@ -358,12 +386,12 @@ object OktBunnfradrag {
     }
 }
 
-class PengerTilGode(private val nettoUt: Expression<BrevbakerType.Kroner>, private val nettoHarBlittLikBrutto: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorsk>() {
+class PengerTilGode(private val nettoUt: Expression<Kroner>, private val nettoUtHarBlittLikBrutto: Expression<Boolean>, private val btHarBlitt0: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {
             text(
-                bokmal { +"Dersom du har penger til gode gjør vi følgende: " },
-                nynorsk { +"Dersom du har pengar til gode gjer vi følgjande: " },
+                bokmal { +"Dersom du har penger til gode eller har fått for mye utbetalt, gjør vi følgende: " },
+                nynorsk { +"Dersom du har pengar til gode eller har fått for mykje utbetalt, gjer vi følgjande: " },
             )
         }
         paragraph {
@@ -373,15 +401,15 @@ class PengerTilGode(private val nettoUt: Expression<BrevbakerType.Kroner>, priva
                         bokmal { +"Resten av året: " }, nynorsk { +"Resten av året: " }, FontType.BOLD
                     )
                     text(
-                        bokmal { +"Vi øker de månedlige utbetalingene dine ut 2026. Vi kan ikke utbetale mer enn " + nettoUt.format() + " i uføretrygd i måneden før skatt. Dette er uføretrygden din før inntektsavkorting. " },
-                        nynorsk { +"Vi aukar dei månadlege utbetalingane dine ut 2026. Vi kan ikkje utbetale meir enn " + nettoUt.format() + " i uføretrygd i månaden før skatt. Dette er uføretrygda di før inntektsavkorting. " },
+                        bokmal { +"Vi justerer de månedlige utbetalingene dine ut 2026. Vi kan ikke utbetale mer enn " + nettoUt.format() + " i uføretrygd i måneden før skatt. Dette er uføretrygden din før inntektsavkorting. " },
+                        nynorsk { +"Vi justerer dei månadlege utbetalingane dine ut 2026. Vi kan ikkje utbetale meir enn " + nettoUt.format() + " i uføretrygd i månaden før skatt. Dette er uføretrygda di før inntektsavkorting. " },
                     )
                 }
-                showIf(nettoHarBlittLikBrutto) {
+                showIf(nettoUtHarBlittLikBrutto or btHarBlitt0) {
                     item {
                         text(
-                            bokmal { +"Hvis du fortsatt har penger til gode etter at året er ferdig, får du resten utbetalt i etteroppgjøret for 2026. " },
-                            nynorsk { +"Om du framleis har pengar til gode etter at året er ferdig, får du resten utbetalt i etteroppgjeret for 2026. " },
+                            bokmal { +"Hvis du fortsatt har penger til gode eller har fått for mye utbetalt, vil dette bli justert i etteroppgjøret for 2026. " },
+                            nynorsk { +"Om du framleis har pengar til gode eller har fått for mykje utbetalt, vil dette bli justert i etteroppgjeret for 2026. " },
                         )
                         text(
                             bokmal { +"Vi vet ikke hvor mye dette blir før etteroppgjøret er klart. Grunnen til det, er at endringer i inntekt, sivilstatus, uføregrad, barnetillegg og andre endringer i din situasjon kan påvirke etteroppgjøret. Etteroppgjøret gjennomføres alltid på høsten, etter at alle inntektsopplysningene for kalenderåret foreligger fra Skatteetaten. " },
@@ -395,7 +423,7 @@ class PengerTilGode(private val nettoUt: Expression<BrevbakerType.Kroner>, priva
 }
 
 
-class Fribelopperioder(private val perioder: Expression<List<FribelopPeriode>>, private val vektetFribelop: Expression<Double>, private val vektetFribelopKr: Expression<BrevbakerType.Kroner>) : OutlinePhrase<LangBokmalNynorsk>() {
+class Fribelopperioder(private val perioder: Expression<List<FribelopPeriode>>, private val vektetFribelop: Expression<Double>, private val vektetFribelopKr: Expression<Kroner>) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {
             table(header = {

@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.legacy.FribelopPeriode
-import no.nav.pensjon.brev.api.model.maler.legacy.Scenario2_1G_04G
 import no.nav.pensjon.brev.api.model.maler.legacy.Scenario4_04G_1G_04G
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktBunnfradragAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktBunnfradragData
@@ -25,7 +24,7 @@ fun createVedtakOmOktBunnfradragData() =
         redusertBtfb = true,
         redusertBtsb = true,
         bunnfradrag2027 = Kroner(240000),
-        nettoHarBlittLikBrutto = true,
+        nettoUtHarBlittLikBrutto = true,
 
         vektetFribelop = 0.7,
         vektetFribelopKr = Kroner(95584),
