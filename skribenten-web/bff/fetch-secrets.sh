@@ -16,5 +16,5 @@ fi
 
 # AzureAD
 secret_name="$(nais app env skribenten-web --environment $KUBE_CLUSTER --team pensjonsbrev --verbose --output=json | jq -r '[.[] | select(.source.kind=="SECRET") | .source.name] | unique | .[] | select(startswith("azure-skribenten-web"))')"
-nais secret get "${secret_name}" --environment $KUBE_CLUSTER --with-values --reason "local development" --output json | jq '.data | from_entries' | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' > .env
+nais secret get "${secret_name}" -t pensjonsbrev --environment $KUBE_CLUSTER --with-values --reason "local development" --output json | jq '.data | from_entries' | jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' > .env
 echo ".env file created."
