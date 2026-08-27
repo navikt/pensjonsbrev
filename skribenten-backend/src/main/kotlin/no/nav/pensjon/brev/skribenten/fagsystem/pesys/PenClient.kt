@@ -69,7 +69,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
-        callIdAndOnBehalfOfClient(penScope, authService)
+        onBehalfOfClient(penScope, authService)
     }
 
     private suspend inline fun <reified T> HttpResponse.bodyOrThrow(): T? =

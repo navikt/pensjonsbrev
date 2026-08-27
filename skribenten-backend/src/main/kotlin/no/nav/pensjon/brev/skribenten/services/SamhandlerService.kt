@@ -54,7 +54,7 @@ class SamhandlerServiceHttp(
                 disable(FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
-        callIdAndOnBehalfOfClient(samhandlerProxyScope, authService)
+        onBehalfOfClient(samhandlerProxyScope, authService)
     }
 
     private val logger = LoggerFactory.getLogger(SamhandlerServiceHttp::class.java)

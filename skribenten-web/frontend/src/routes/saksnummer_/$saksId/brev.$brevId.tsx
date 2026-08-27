@@ -262,7 +262,8 @@ function RedigerBrev({
     navigateToDocument,
   });
 
-  const { editorState, redigertBrev, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registrerNullstillLagringsfeil } =
+    useManagedLetterEditorContext();
 
   const { highlightedIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
     lagretRedigertBrev: brev.redigertBrev,
@@ -305,6 +306,12 @@ function RedigerBrev({
   });
   const { oppdaterBrevMutation } = oppdaterBrevAutosave;
 
+  // Autolagringen bor i editor-konteksten, så den må få vite hvordan rutens lagringsfeil nullstilles.
+  useEffect(() => {
+    registrerNullstillLagringsfeil(oppdaterBrevMutation.reset);
+    return () => registrerNullstillLagringsfeil(null);
+  }, [registrerNullstillLagringsfeil, oppdaterBrevMutation.reset]);
+
   const defaultValuesModelEditor = useMemo(
     () => ({
       saksbehandlerValg: {
@@ -330,6 +337,7 @@ function RedigerBrev({
       if (isValid) {
         const updatedValg = form.getValues().saksbehandlerValg;
         beforeTekstvalgChange(updatedValg, redigertBrev);
+        oppdaterBrevMutation.reset();
         oppdaterBrevMutation.mutate({
           redigertBrev: redigertBrev,
           saksbehandlerValg: updatedValg,
@@ -345,6 +353,7 @@ function RedigerBrev({
     // reservation and navigating away from edits we never managed to store.
     if (!(await dokumentEditor.lagreAktivtDokument())) return;
 
+    oppdaterBrevMutation.reset();
     oppdaterBrevMutation.mutate(
       {
         redigertBrev: redigertBrev,

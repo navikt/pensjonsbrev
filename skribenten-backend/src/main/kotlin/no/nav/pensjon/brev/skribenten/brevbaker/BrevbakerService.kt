@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.brevbaker
 
-import com.fasterxml.jackson.databind.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
@@ -96,7 +95,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         install(ContentNegotiation) {
             jackson { internalJacksonConfig() }
         }
-        callIdAndOnBehalfOfClient(scope, authService)
+        onBehalfOfClient(scope, authService)
     }
 
     /**
