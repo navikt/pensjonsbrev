@@ -209,7 +209,9 @@ object OktBunnfradrag {
                         nynorsk { +"1. januar 2026 har du hatt " + data.uforegrad.format() + " prosent uføretrygd i 2 år eller lenger. Derfor aukar fribeløpet ditt til 1 G for heile 2026. " },
                     )
                 }
-                includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                ifNotNull(data.manedligOkningUforetrygdUtAret) {
+                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                }
             }.orIfNotNull(data.scenario2_1G_04G) { scenario2 ->
                 paragraph {
                     text(
@@ -218,7 +220,9 @@ object OktBunnfradrag {
                     )
                 }
                 includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
-                includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                ifNotNull(data.manedligOkningUforetrygdUtAret) {
+                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                }
                 paragraph {
                     text(
                         bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 0,4 G som fribeløp hele året. Bunnfradraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
@@ -234,7 +238,9 @@ object OktBunnfradrag {
                     )
                 }
                 includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
-                includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                ifNotNull(data.manedligOkningUforetrygdUtAret) {
+                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                }
                 paragraph {
                     text(
                         bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 1 G som fribeløp hele året. Bunnfradraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
@@ -249,7 +255,9 @@ object OktBunnfradrag {
                     )
                 }
                 includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
-                includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                ifNotNull(data.manedligOkningUforetrygdUtAret) {
+                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                }
                 paragraph {
                     text(
                         bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 0,4 G som fribeløp hele året. Bunnfradraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
@@ -360,7 +368,7 @@ class PengerTilGode(private val nettoUt: Expression<BrevbakerType.Kroner>, priva
             list {
                 item {
                     text(
-                        bokmal { +"Resten av året: " }, nynorsk { +"Resten av året:" }, FontType.BOLD
+                        bokmal { +"Resten av året: " }, nynorsk { +"Resten av året: " }, FontType.BOLD
                     )
                     text(
                         bokmal { +"Vi øker de månedlige utbetalingene dine ut 2026. Vi kan ikke utbetale mer enn " + nettoUt.format() + " i uføretrygd i måneden før skatt. Dette er uføretrygden din før inntektsavkorting. " },
