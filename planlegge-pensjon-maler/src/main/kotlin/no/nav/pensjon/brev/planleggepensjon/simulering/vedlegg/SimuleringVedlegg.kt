@@ -1,22 +1,34 @@
 package no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg
 
 import no.nav.brev.InternKonstruktoer
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpOffentligLivsvarigSimulering.*
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.*
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.alder.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDto
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringDto.*
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdInnhold.*
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdSeksjon.*
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.kortforbehold.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.Kull
 import no.nav.pensjon.brev.planleggepensjon.simulering.NormertPensjonsalderPlassering
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.*
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringUtenlandsperiode.*
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringV1MaanedligAlderspensjonForKnekkpunkter.*
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringsinformasjon.*
 import no.nav.pensjon.brev.planleggepensjon.simulering.Sivilstatus
-import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.uttaksinformasjon.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpOffentligLivsvarigSimulering.vedGradertUttak
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpOffentligLivsvarigSimulering.vedHeltUttak
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.vedGradertUttak
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.vedHeltUttak
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.afpPrivatSimulering.vedNormertPensjonsalder
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.apSimuleringDto.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdInnhold.seksjoner
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdSeksjon.avsnitt
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.forbeholdSeksjon.tittel
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.kortforbehold.avsnitt
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.afpOffentligLivsvarig
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.afpOffentligTidsbegrenset
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.afpPrivat
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simulering.maanedligAlderspensjonForKnekkpunkter
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringUtenlandsperiode.arbeidetUtenlands
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringUtenlandsperiode.fom
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringUtenlandsperiode.landkode
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringUtenlandsperiode.tom
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringV1MaanedligAlderspensjonForKnekkpunkter.vedGradertUttak
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringV1MaanedligAlderspensjonForKnekkpunkter.vedHeltUttak
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringV1MaanedligAlderspensjonForKnekkpunkter.vedNormertPensjonsalder
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.simuleringsinformasjon.*
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.uttaksinformasjon.grad
+import no.nav.pensjon.brev.planleggepensjon.simulering.selectors.uttaksinformasjon.uttaksdato
 import no.nav.pensjon.brev.planleggepensjon.simulering.tabeller.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
@@ -93,28 +105,20 @@ val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
                 includePhrase(AfpPrivatTabell(gradertUttak))
             }
             ifNotNull(afp.vedNormertPensjonsalder) { normertPensjonsalder ->
-                ifNotNull(simuleringsinformasjon.normertUttakInformasjon) { informasjon ->
-                    title2 {
-                        includePhrase(VedAlderPhrase(informasjon))
-                    }
-                }.orShow {
-                    title2 {
-                        text(bokmal { +"Ved 67 år" })
-                    }
-                }
-                includePhrase(AfpPrivatTabell(normertPensjonsalder))
-            }
-            ifNotNull(afp.vedHeltUttak) { heltUttak ->
-                ifNotNull(simuleringsinformasjon.heltUttakInformasjon) { informasjon ->
-                    title2 {
-                        includePhrase(VedAlderPhrase(informasjon))
-                    }
-                }.orShow {
-                    title2 {
-                        text(bokmal { +"Ved helt uttak" })
+                ifNotNull(simuleringsinformasjon.normertPensjonsalderPlassering) { plassering ->
+                    showIf(plassering.isOneOf(NormertPensjonsalderPlassering.MELLOM_GRADERT_OG_HELT)) {
+                        ifNotNull(simuleringsinformasjon.normertUttakInformasjon) { informasjon ->
+                            title2 {
+                                includePhrase(VedAlderPhrase(informasjon))
+                            }
+                        }.orShow {
+                            title2 {
+                                text(bokmal { +"Ved 67 år" })
+                            }
+                        }
+                        includePhrase(AfpPrivatTabell(normertPensjonsalder))
                     }
                 }
-                includePhrase(AfpPrivatTabell(heltUttak))
             }
         }
     }
