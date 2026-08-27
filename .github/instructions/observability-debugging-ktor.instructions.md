@@ -33,6 +33,18 @@ Alle tre tjenester setter `distributionStatisticConfig` med `percentilesHistogra
 `serviceLevelObjectives(...)`, så `_bucket`-serien finnes og `histogram_quantile()` kan brukes som
 i skillen.
 
+### `k8s_cluster_name`-verdier i Mimir
+
+Skillens eksempler antar cluster-navn som `dev-gcp` / `prod-gcp`. For `ktor_http_server_requests_*`
+i Mimir er den faktiske `k8s_cluster_name`-verdien kortformen **`dev`** / **`prod`** (ikke
+`dev-gcp`/`prod-gcp`). En spørring med `-gcp`-suffiks gir et tomt resultat (`"result":[]`) uten
+feilmelding, så sjekk alltid label-verdiene først, f.eks.:
+
+```bash
+curl -s -H "User-Agent: nav-pilot/observability-debugging" -H "X-Scope-OrgID: tenant" \
+  "https://mimir.nav.cloud.nais.io/prometheus/api/v1/query?query=count(ktor_http_server_requests_seconds_count%7Bapp=%22$APP%22%7D)by(k8s_cluster_name)" | jq .
+```
+
 ## Korrigerte eksempler
 
 Erstatt skillens Mimir-spørringer med disse (samme `$CLUSTER`/`$APP`-plassholdere og headere som
@@ -59,6 +71,8 @@ curl -s -H "User-Agent: nav-pilot/observability-debugging" -H "X-Scope-OrgID: te
 - Oversett `uri` → `route`, `exception` → `throwable`, og dropp `outcome`-baserte spørringer til
   fordel for `status=~"..."` når du bruker `observability-debugging`-skillen mot
   `pensjon/brevbaker`, `brevbaker/pdf-bygger` eller `skribenten-backend`.
+- Bruk `k8s_cluster_name="dev"` / `"prod"` (ikke `-gcp`-suffiks) i Mimir-spørringer for disse
+  appene, og verifiser label-verdien først dersom en spørring uventet gir tomt resultat.
 
 ### 🚫 Never
 
