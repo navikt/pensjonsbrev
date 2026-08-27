@@ -285,14 +285,14 @@ object OktBunnfradrag {
 
             //BARNETILLEGG
             ifNotNull(data.barnetillegg) { bt ->
-                showIf(data.redusertBtfb) {
+                showIf(data.redusertBtfb or data.redusertBtsb) {
                     title1 {
                         text(
                             bokmal { +"Endring i barnetillegg" },
                             nynorsk { +"Endring i barnetillegg" },
                         )
                     }
-                    showIf(data.okningUt) {
+                    showIf(data.redusertBtsb or data.okningUt) {
                         paragraph {
                             text(
                                 bokmal { +"Regelverksendringene fører til at du får en høyere utbetaling av uføretrygd. Uføretrygden regnes med som inntekt når vi beregner barnetillegg. Derfor får du en lavere utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er " + bt.format() + ". " },
