@@ -67,6 +67,14 @@ import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUnder5AartrygdetidAuto
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjonsalderAP2016
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjonsalderAP2016Auto
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjonsalderAuto
+import no.nav.pensjon.brev.alder.maler.endring.EndringAvUttaksgradAuto
+import no.nav.pensjon.brev.alder.maler.endring.EndringPgaOpptjeningAuto
+import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvAlderspensjonFordiOpptjeningErEndret
+import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvAlderspensjonInstitusjonsopphold
+import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvUttaksgrad
+import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge
+import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge
+import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringVedFlyttingMellomLand
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonAvdodAuto
 import no.nav.pensjon.brev.alder.maler.info.BekreftelseAvUtsendtKravTilUtlandet
 import no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygd
@@ -113,6 +121,8 @@ object AlderTemplates : AllTemplates {
             EndringAvAlderspensjonAvdodAuto,
             EndringAvAlderspensjonSivilstandAuto,
             EndringAvAlderspensjonFordiDuFyller75AarAuto,
+            EndringAvUttaksgradAuto,
+            EndringPgaOpptjeningAuto,
             OmregningAlderUfore2016Auto,
             FeilUtsendingAvGjenlevenderett,
             InnvilgelseAvAfpAuto,
@@ -177,6 +187,12 @@ object AlderTemplates : AllTemplates {
             VedtakAfpEtteroppgjoerIngenEndring,
             VedtakAfpPrivatEndring,
             VedtakEndringAfpOffentligSektor,
+            VedtakEndringAvAlderspensjonFordiOpptjeningErEndret,
+            VedtakEndringAvAlderspensjonInstitusjonsopphold,
+            VedtakEndringAvUttaksgrad,
+            VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
+            VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
+            VedtakEndringVedFlyttingMellomLand,
             VedtakStansAlderspensjonFlyttingMellomLand,
         )
 

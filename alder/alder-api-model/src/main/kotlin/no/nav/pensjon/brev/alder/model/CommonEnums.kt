@@ -10,6 +10,15 @@ enum class AlderspensjonRegelverkType {
     AP2025,
 }
 
+enum class KravInitiertAv {
+    BRUKER,
+    NAV,
+    VERGE,
+    SOSIALKONTOR,
+    KONV,
+    ADVOKAT
+}
+
 enum class Sivilstand {
     ENSLIG,
     ENKE,

@@ -115,7 +115,7 @@ object VedtakEndringAfpOffentligSektor : RedigerbarTemplate<VedtakEndringAfpOffe
                 )
             )
 
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
 
             paragraph {
                 text(

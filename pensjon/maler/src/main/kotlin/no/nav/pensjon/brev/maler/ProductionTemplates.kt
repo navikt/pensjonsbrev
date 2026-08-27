@@ -13,8 +13,6 @@ import no.nav.pensjon.brev.maler.adhoc.AdhocUfoeretrygdVarselOpphoerEktefelletil
 import no.nav.pensjon.brev.maler.adhoc.AdhocVarselOpphoerMedHvilendeRett
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
-import no.nav.pensjon.brev.maler.alder.EndringAvUttaksgradAuto
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
 import no.nav.pensjon.brev.maler.klageOgAnke.AnkeTilsvarTilAnkendePart
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmOversendelseTilKlageinstans
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmSaksbehandlingstid
@@ -51,7 +49,6 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.OmregningUfoerepensjonTilUfoe
 import no.nav.pensjon.brev.maler.legacy.redigerbar.OpphoerGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.ReverseringLavereMinstesatsRedigerbar
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheter
-import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmLavereMinstesatsRedigerbar
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmOktBunnfradragRedigerbar
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmLavereReduksjonsprosentRedigerbar
@@ -80,11 +77,6 @@ import no.nav.pensjon.brev.maler.redigerbar.VarselOmMuligAvslag
 import no.nav.pensjon.brev.maler.redigerbar.VarselRevurderingAvPensjon
 import no.nav.pensjon.brev.maler.redigerbar.VarselTilbakekrevingAvFeilutbetaltBeloep
 import no.nav.pensjon.brev.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjening
-import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndret
-import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvAlderspensjonInstitusjonsopphold
-import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge
-import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge
-import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringVedFlyttingMellomLand
 import no.nav.pensjon.brev.maler.redigerbar.VedtakOmFjerningAvOmsorgsopptjening
 import no.nav.pensjon.brev.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoeng
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntektV2
@@ -116,8 +108,6 @@ object ProductionTemplates : AllTemplates {
         EndretUfoeretrygdPGAInntektV2,
         EndretUforetrygdPGAInntektNesteAr,
         EndretUforetrygdPGAOpptjeningLegacy,
-        EndringPgaOpptjeningAuto,
-        EndringAvUttaksgradAuto,
         VedtakOmEtterbetalingOpphor2026Auto,
         VedtakOmEtterbetalingOpphor2026OktIfuAuto,
         VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto,
@@ -189,13 +179,7 @@ object ProductionTemplates : AllTemplates {
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
         VedtakAvslagPaaOmsorgsopptjening,
-        VedtakEndringAvAlderspensjonFordiOpptjeningErEndret,
         VedtakEndringAvAlderspensjonGjenlevenderettigheter,
-        VedtakEndringAvAlderspensjonInstitusjonsopphold,
-        VedtakEndringAvUttaksgrad,
-        VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
-        VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
-        VedtakEndringVedFlyttingMellomLand,
         VedtakOmFjerningAvOmsorgsopptjening,
         VedtakOmInnvilgelseAvOmsorgspoeng,
         VedtakOmLavereMinstesatsRedigerbar,
