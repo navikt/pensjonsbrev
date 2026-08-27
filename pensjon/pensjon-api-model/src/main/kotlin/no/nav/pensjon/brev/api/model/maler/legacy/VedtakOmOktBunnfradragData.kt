@@ -16,6 +16,7 @@ data class VedtakOmOktBunnfradragData(
     val manedligOkningUforetrygdUtAret: Kroner?,
     val okningUt: Boolean,
     val redusertBtfb: Boolean,
+    val redusertBtsb: Boolean,
     val datoOkningBunnfradrag: LocalDate,
     val nettoHarBlittLikBrutto: Boolean,
     val vektetFribelop: Double,
