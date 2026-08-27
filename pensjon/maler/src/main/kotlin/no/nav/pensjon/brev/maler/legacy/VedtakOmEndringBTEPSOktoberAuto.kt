@@ -21,7 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object VedtakOmEndringBTEPSOktoberAuto : AutobrevTemplate<VedtakOmEndringBarnetilleggEPSAutoDto> {
 
-    override val kode = Pesysbrevkoder.AutoBrev.UT_VEDTAK_ENDRING_BT_EPS_2026_REV_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.UT_VEDTAK_ENDRING_BT_EPS_2026_OKT_AUTO
 
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk),
