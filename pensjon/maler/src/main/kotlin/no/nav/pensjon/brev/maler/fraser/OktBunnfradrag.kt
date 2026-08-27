@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradr
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.manedligOkningUforetrygdUtAret
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.nettoHarBlittLikBrutto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.okningUt
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.redusertBtsb
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.redusertBtfb
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.scenario1_1G
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.scenario2_1G_04G
@@ -41,6 +42,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
@@ -209,7 +211,9 @@ object OktBunnfradrag {
                         nynorsk { +"1. januar 2026 har du hatt " + data.uforegrad.format() + " prosent uføretrygd i 2 år eller lenger. Derfor aukar fribeløpet ditt til 1 G for heile 2026. " },
                     )
                 }
-                includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                ifNotNull(data.manedligOkningUforetrygdUtAret) {
+                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                }
             }.orIfNotNull(data.scenario2_1G_04G) { scenario2 ->
                 paragraph {
                     text(
@@ -218,7 +222,9 @@ object OktBunnfradrag {
                     )
                 }
                 includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
-                includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                ifNotNull(data.manedligOkningUforetrygdUtAret) {
+                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                }
                 paragraph {
                     text(
                         bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 0,4 G som fribeløp hele året. Bunnfradraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
@@ -234,7 +240,9 @@ object OktBunnfradrag {
                     )
                 }
                 includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
-                includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                ifNotNull(data.manedligOkningUforetrygdUtAret) {
+                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                }
                 paragraph {
                     text(
                         bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 1 G som fribeløp hele året. Bunnfradraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
@@ -249,7 +257,9 @@ object OktBunnfradrag {
                     )
                 }
                 includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
-                includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                ifNotNull(data.manedligOkningUforetrygdUtAret) {
+                    includePhrase(PengerTilGode(data.uforetrygd, data.nettoHarBlittLikBrutto))
+                }
                 paragraph {
                     text(
                         bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 0,4 G som fribeløp hele året. Bunnfradraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
@@ -275,21 +285,21 @@ object OktBunnfradrag {
 
             //BARNETILLEGG
             ifNotNull(data.barnetillegg) { bt ->
-                showIf(data.okningUt) {
+                showIf(data.redusertBtfb or data.redusertBtsb) {
                     title1 {
                         text(
                             bokmal { +"Endring i barnetillegg" },
                             nynorsk { +"Endring i barnetillegg" },
                         )
                     }
-                    showIf(data.redusertBtfb) {
+                    showIf(data.redusertBtsb or data.okningUt) {
                         paragraph {
                             text(
                                 bokmal { +"Regelverksendringene fører til at du får en høyere utbetaling av uføretrygd. Uføretrygden regnes med som inntekt når vi beregner barnetillegg. Derfor får du en lavere utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er " + bt.format() + ". " },
                                 nynorsk { +"Regelverksendringane fører til at du får ei høgare utbetaling av uføretrygd. Uføretrygda vert rekna med som inntekt når vi bereknar barnetillegg. Derfor får du ei lågare utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er " + bt.format() + ". " },
                             )
                         }
-                    }.orShow {
+                    }.orShow {//redusert fb uten økning i ut betyr eps sin sak har økt ut
                         paragraph {
                             text(
                                 bokmal { +"Regelverksendringene fører til at barnetillegg for fellesbarn endres fordi begge foreldres inntekt regnes med. Derfor får du en lavere utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er " + bt.format() + ". " },
@@ -360,7 +370,7 @@ class PengerTilGode(private val nettoUt: Expression<BrevbakerType.Kroner>, priva
             list {
                 item {
                     text(
-                        bokmal { +"Resten av året: " }, nynorsk { +"Resten av året:" }, FontType.BOLD
+                        bokmal { +"Resten av året: " }, nynorsk { +"Resten av året: " }, FontType.BOLD
                     )
                     text(
                         bokmal { +"Vi øker de månedlige utbetalingene dine ut 2026. Vi kan ikke utbetale mer enn " + nettoUt.format() + " i uføretrygd i måneden før skatt. Dette er uføretrygden din før inntektsavkorting. " },
