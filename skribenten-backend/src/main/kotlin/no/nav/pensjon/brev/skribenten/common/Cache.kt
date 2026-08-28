@@ -65,7 +65,7 @@ class Valkey(config: ValkeyConfig) : Cache() {
     } catch (e: Exception) {
         if (e is CancellationException) throw e
         logger.info("Fikk feilmelding fra Valkey under forsøk på å hente verdi, returnerer null", e)
-        null
+            null
     }
 
     override suspend fun update(key: String, value: String, ttl: Duration) {
@@ -88,7 +88,12 @@ class Valkey(config: ValkeyConfig) : Cache() {
     }
 
     private fun setupJedis(config: ValkeyConfig): JedisPool = with(config) {
+        val poolConfig = JedisPoolConfig().apply {
+            testOnBorrow = true
+            testWhileIdle = true
+        }
         return JedisPool(
+            poolConfig,
             HostAndPort(host, port),
             DefaultJedisClientConfig.builder()
                 .ssl(ssl)

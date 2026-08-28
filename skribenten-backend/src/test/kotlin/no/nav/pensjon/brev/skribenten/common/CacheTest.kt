@@ -88,6 +88,21 @@ class CacheTest {
         }
     }
 
+    @Test
+    fun `henter fortsatt verdi etter at tilkoblinger droppes server-side`() {
+        val cache = Valkey(valkeyConfig)
+        val key = "gjenoppretting"
+        runBlocking {
+            cache.update(key, "verdi", 10.minutes)
+            assertEquals("verdi", cache.read(key))
+
+            // Simulerer en Aiven-failover/nodebytte
+            valkeyContainer.execInContainer("valkey-cli", "CLIENT", "KILL", "TYPE", "normal")
+
+            assertEquals("verdi", cache.read(key))
+        }
+    }
+
 
     companion object {
         @JvmStatic
