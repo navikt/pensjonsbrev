@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.saksbehandlervalg
@@ -44,9 +43,9 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<BrevdataMedSaks
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
 
+
     ) {
-        val saksbehandlingstidVedNFPellerNAY = saksbehandlervalg("saksbehandlingstidVedNFPellerNAY", "SaksbehandlingstidVedNFPellerNAY").bool()
-        val saksbehandlingstidVedNavKlageinstans = saksbehandlervalg("saksbehandlingstidVedNavKlageinstans", "SaksbehandlingstidVedNavKlageinstans").bool()
+        val saksbehandlingstid = saksbehandlervalg("saksbehandlingstid", "Saksbehandlingstid").enum<Saksbehandlingstid>()
 
         title {
             text(
@@ -66,7 +65,7 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<BrevdataMedSaks
                 text(bokmal { +felles.avsenderEnhet.navn }, english { +felles.avsenderEnhet.navn })
             }
 
-            showIf(saksbehandlingstidVedNFPellerNAY) {
+            showIf(Saksbehandlingstid_ved_NFP_eller_NAY) {
                 paragraph {
                     text(
                         bokmal { +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over " + felles.avsenderEnhet.navn + " vedtak av " + fritekst("vedtaksdato") + "." },
@@ -101,5 +100,9 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<BrevdataMedSaks
                 )
             }
         }
+    }
+    enum class Saksbehandlingstid {
+        Saksbehandlingstid_ved_NFP_eller_NAY,
+        Saksbehandlingstid_ved_Nav_Klageinstans
     }
 }
