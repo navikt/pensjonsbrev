@@ -114,7 +114,6 @@ object ProductionTemplates : AllTemplates {
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
         VedtakAvslagPaaOmsorgsopptjening,
-        VedtakEndringAvAlderspensjonGjenlevenderettigheter,
         VedtakOmFjerningAvOmsorgsopptjening,
         VedtakOmInnvilgelseAvOmsorgspoeng,
         VedtakOmLavereMinstesatsRedigerbar,

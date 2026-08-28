@@ -99,6 +99,7 @@ import no.nav.pensjon.brev.alder.model.endring.EndringPgaOpptjeningAutoDto
 import no.nav.pensjon.brev.alder.model.endring.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto
 import no.nav.pensjon.brev.alder.model.endring.OpplysningerBruktIBeregningenEndretUttaksgradDto
 import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
+import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
 import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvAlderspensjonInstitusjonsoppholdDto
 import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvUttaksgradDto
 import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvUttaksgradStansBrukerEllerVergeDto
@@ -137,6 +138,7 @@ import no.nav.pensjon.brev.fixtures.alder.*
 import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagForLiteTrygdetidAPDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseAvAlderspensjonDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseAvAlderspensjonTrygdeavtaleDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto
 import kotlin.reflect.KClass
 
 object Fixtures : LetterDataFactory {
@@ -198,6 +200,7 @@ object Fixtures : LetterDataFactory {
             OmregningAlderUfore2016Dto::class -> createOmregningAlderUfore2016Dto() as T
             OmregningAlderUfore2016RedigerbarDto::class -> createOmregningAlderUfore2016RedigerbarDto() as T
             VedtakAldersovergang67AarGarantitilleggAutoDto::class -> createVedtakAldersovergang67AarGarantitilleggAutoDto() as T
+            VedtakEndringAvAlderspensjonGjenlevenderettigheterDto::class -> createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() as T
             VedtakEndringAvAlderspensjonInstitusjonsoppholdDto::class -> createVedtakEndringAvAlderspensjonInstitusjonsoppholdDto() as T
             VedtakEndringAFPEndretOpptjeningAutoDto::class -> createVedtakEndringAFPEndretOpptjeningAutoDto() as T
             VedtakEndringAvUttaksgradDto::class -> createVedtakEndringAvUttaksgradDto() as T

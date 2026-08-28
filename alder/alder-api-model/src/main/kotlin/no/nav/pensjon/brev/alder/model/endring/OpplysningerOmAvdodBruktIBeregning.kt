@@ -1,7 +1,9 @@
-package no.nav.pensjon.brev.api.model.vedlegg
+package no.nav.pensjon.brev.alder.model.endring
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.Beregningsmetode
+import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.alder.model.Beregningsmetode
+import no.nav.pensjon.brev.alder.model.vedlegg.Pensjonspoeng
+import no.nav.pensjon.brev.alder.model.vedlegg.Trygdetid
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Broek
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer

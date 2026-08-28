@@ -69,6 +69,7 @@ import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.alder.maler.endring.EndringAvUttaksgradAuto
 import no.nav.pensjon.brev.alder.maler.endring.EndringPgaOpptjeningAuto
 import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvAlderspensjonFordiOpptjeningErEndret
+import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvAlderspensjonGjenlevenderettigheter
 import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvAlderspensjonInstitusjonsopphold
 import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge
@@ -186,6 +187,7 @@ object AlderTemplates : AllTemplates {
             VedtakAfpPrivatEndring,
             VedtakEndringAfpOffentligSektor,
             VedtakEndringAvAlderspensjonFordiOpptjeningErEndret,
+            VedtakEndringAvAlderspensjonGjenlevenderettigheter,
             VedtakEndringAvAlderspensjonInstitusjonsopphold,
             VedtakEndringAvUttaksgrad,
             VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
