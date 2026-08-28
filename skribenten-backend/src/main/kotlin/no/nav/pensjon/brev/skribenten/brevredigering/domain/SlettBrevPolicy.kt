@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 
-class SlettBrevPolicy(val pdlService: PdlService) {
+class SlettBrevPolicy(private val pdlService: PdlService) {
     suspend fun kanSlette(
         brev: Brevredigering,
         pid: BrevbakerType.Pid,
