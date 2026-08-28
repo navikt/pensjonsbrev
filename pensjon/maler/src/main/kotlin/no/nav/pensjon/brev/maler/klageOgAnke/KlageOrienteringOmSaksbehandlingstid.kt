@@ -2,12 +2,9 @@ package no.nav.pensjon.brev.maler.klageOgAnke
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValgUtenFagsystemdata
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDto.Saksbehandlingstid
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDto.Saksbehandlingstid.SAKSBEHANDLINGSTID_VED_NAV_KLAGEINSTANS
-import no.nav.pensjon.brev.api.model.maler.redigerbar.KlageOrienteringOmSaksbehandlingstidDto.Saksbehandlingstid.SAKSBEHANDLINGSTID_VED_NFP_ELLER_NAY
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.model.Brevkategori.*
@@ -30,7 +27,7 @@ import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.nav
 // Erstatte PE_IY_03_153 Klage - orientering om saksbehandlingstid, og PE_IY_03_162 Klage - orientering om saksbehandlingstid ved Nav Klageinstans.
 
 @TemplateModelHelpers
-object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<KlageOrienteringOmSaksbehandlingstidDto> {
+object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<BrevdataMedSaksbehandlerValgUtenFagsystemdata> {
 
     override val featureToggle = FeatureToggles.brevmalKlageOrienteringOmSaksbehandlingstid.toggle
 
@@ -48,7 +45,8 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<KlageOrienterin
         )
 
     ) {
-        val saksbehandlingstid = saksbehandlervalg("saksbehandlingstid", "Saksbehandlingstid").enum<Saksbehandlingstid>()
+        val saksbehandlingstidVedNFPellerNAY = saksbehandlervalg("saksbehandlingstidVedNFPellerNAY", "SaksbehandlingstidVedNFPellerNAY").bool()
+        val saksbehandlingstidVedNavKlageinstans = saksbehandlervalg("saksbehandlingstidVedNavKlageinstans", "SaksbehandlingstidVedNavKlageinstans").bool()
 
         title {
             text(
@@ -68,14 +66,14 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<KlageOrienterin
                 text(bokmal { +felles.avsenderEnhet.navn }, english { +felles.avsenderEnhet.navn })
             }
 
-            showIf(saksbehandlingstid.equalTo(SAKSBEHANDLINGSTID_VED_NFP_ELLER_NAY)) {
+            showIf(saksbehandlingstidVedNFPellerNAY) {
                 paragraph {
                     text(
                         bokmal { +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over " + felles.avsenderEnhet.navn + " vedtak av " + fritekst("vedtaksdato") + "." },
                         english { +"On " + fritekst("mottaksdato for klagen") + " we received an appeal about " + felles.avsenderEnhet.navn + " decision of " + fritekst("vedtaksdato") + "." }
                     )
                 }
-            }.orShowIf(saksbehandlingstid.equalTo(SAKSBEHANDLINGSTID_VED_NAV_KLAGEINSTANS)) {
+            }.orShowIf(saksbehandlingstidVedNavKlageinstans) {
                 paragraph {
                     text(
                         bokmal { +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over " + fritekst("Nav saksbehandlingsenhet") + " vedtak av " + fritekst("vedtaksdato") + "." },

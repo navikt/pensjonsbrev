@@ -89,7 +89,6 @@ object Fixtures : LetterDataFactory {
             InnvilgelseAvAlderspensjonDto::class -> createInnvilgelseAvAlderspensjonDto() as T
             InnvilgelseAvAlderspensjonAutoDto::class -> createInnvilgelseAvAlderspensjonAutoDto() as T
             InnvilgelseAvAlderspensjonTrygdeavtaleDto::class -> createInnvilgelseAvAlderspensjonTrygdeavtaleDto() as T
-            KlageOrienteringOmSaksbehandlingstidDto::class -> createKlageOrienteringOmSaksbehandlingstidDto() as T
             LetterExampleDto::class -> createLetterExampleDto() as T
             OmsorgEgenAutoDto::class -> createOmsorgEgenAutoDto() as T
             OmsorgEgenManuellDto::class -> createOmsorgManuellDto() as T
