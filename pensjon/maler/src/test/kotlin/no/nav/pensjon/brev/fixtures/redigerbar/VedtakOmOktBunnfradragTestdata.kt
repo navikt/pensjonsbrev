@@ -27,7 +27,7 @@ fun createVedtakOmOktBunnfradragData() =
         bunnfradrag2027 = Kroner(240000),
         nettoUtHarBlittLikBrutto = true,
         btHarBlitt0 = true,
-
+        venteperiodeEtterGradsokning = true,
         vektetFribelop = 0.7,
         vektetFribelopKr = Kroner(95584),
         scenario1_1G = false,
