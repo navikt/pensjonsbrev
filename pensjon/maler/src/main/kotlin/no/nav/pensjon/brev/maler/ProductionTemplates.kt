@@ -84,7 +84,6 @@ object ProductionTemplates : AllTemplates {
         DelvisEksportAvUforetrygd,
         EndringUforetrygd,
         VedtakOmEtterbetalingOpphor2026Redigerbar,
-        ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
         InformasjonOmGjenlevenderettigheter,
         InformasjonOmSaksbehandlingstid,

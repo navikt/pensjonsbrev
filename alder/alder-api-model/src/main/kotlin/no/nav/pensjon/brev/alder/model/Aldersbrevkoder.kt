@@ -103,7 +103,8 @@ object Aldersbrevkoder {
         PE_AP_INNVILGELSE,
         PE_AP_INNVILGELSE_TRYGDEAVTALE,
         PE_AP_OMREGNING_ALDER_UFORE_2016,
-        PE_AP_STANS_FLYTTING_MELLOM_LAND
+        PE_AP_STANS_FLYTTING_MELLOM_LAND,
+        PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER
         ;
 
         override fun kode(): String = this.name
