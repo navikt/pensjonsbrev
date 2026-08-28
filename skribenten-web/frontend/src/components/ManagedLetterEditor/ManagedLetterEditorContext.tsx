@@ -22,7 +22,7 @@ import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/stat
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { type BrevResponse } from "~/types/brev";
-import { type EditedLetter } from "~/types/brevbakerTypes";
+import { type EditedDocument, type EditedLetter } from "~/types/brevbakerTypes";
 
 type SaveSuccessOptions = {
   createHistoryEntry?: (previousState: LetterEditorState, response: BrevResponse) => HistoryEntry | null;
@@ -42,6 +42,13 @@ interface ManagedLetterEditorContextValue {
   lagringFeilet: boolean;
   registrerNullstillLagringsfeil: (nullstill: (() => void) | null) => void;
 }
+
+const requireLetterDocument = (document: EditedDocument): EditedLetter => {
+  if (!isLetterDocument(document)) {
+    throw new Error("ManagedLetterEditorContextProvider received a non-letter document");
+  }
+  return document;
+};
 
 const resolveHistoryAfterSave = (
   previousState: LetterEditorState,
@@ -99,7 +106,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
     [queryClient, props.brev.info.id],
   );
 
-  const redigertBrev = isLetterDocument(editorState.redigertBrev) ? editorState.redigertBrev : props.brev.redigertBrev;
+  const redigertBrev = requireLetterDocument(editorState.redigertBrev);
 
   const {
     mutate: lagreBrevtekst,
@@ -108,9 +115,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
   } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
     mutationFn: (state) => {
       const stateWithCursor = Actions.cursorPosition(state, getCursorOffset());
-      const redigertBrevMedMarkoer = isLetterDocument(stateWithCursor.redigertBrev)
-        ? stateWithCursor.redigertBrev
-        : props.brev.redigertBrev;
+      const redigertBrevMedMarkoer = requireLetterDocument(stateWithCursor.redigertBrev);
 
       setEditorState((previousState) => ({ ...previousState, saveStatus: "SAVE_PENDING" }));
 
