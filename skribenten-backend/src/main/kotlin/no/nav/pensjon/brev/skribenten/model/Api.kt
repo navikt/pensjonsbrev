@@ -23,6 +23,8 @@ object Api {
 
     data class UserInfo(val name: String, val navident: NavIdent, val erAttestant: Boolean)
 
+    data class FeatureToggleResponse(val enabled: Boolean)
+
     data class OpprettBrevRequest(
         val brevkode: RedigerbarBrevkode,
         val spraak: SpraakKode,
