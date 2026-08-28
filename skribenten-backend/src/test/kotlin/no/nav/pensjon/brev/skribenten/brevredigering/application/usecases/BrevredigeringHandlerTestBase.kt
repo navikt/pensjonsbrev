@@ -95,6 +95,7 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected val brevbakerService = BrevredigeringFakeBrevbakerService()
     protected val penService = FakePenClient()
+    protected val pdlService = FakePDLService()
     protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
     protected val brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService())
     protected val brevdataService = BrevdataService(penService, samhandlerService)
@@ -104,7 +105,7 @@ abstract class BrevredigeringHandlerTestBase {
     protected val attesterBrevPolicy = AttesterBrevPolicy()
     protected val ferdigRedigertPolicy = FerdigRedigertPolicy()
     protected val sendBrevPolicy = SendBrevPolicy(ferdigRedigertPolicy)
-    protected val slettBrevPolicy = SlettBrevPolicy()
+    protected val slettBrevPolicy = SlettBrevPolicy(pdlService)
     protected val reserverBrevHandler by lazy { ReserverBrevHandler(brevreservasjonPolicy, SharedPostgres.database) }
 
     protected val endreMottaker by lazy {
@@ -497,7 +498,14 @@ abstract class BrevredigeringHandlerTestBase {
         principal: UserPrincipal = saksbehandler1Principal,
         saksId: SaksId = sak1.saksId,
     ): Outcome<Unit, BrevredigeringError>? = withPrincipal(principal) {
-        slettBrevHandler(SlettBrevHandler.Request(brevId = brevId, saksId = saksId))
+        slettBrevHandler(
+            SlettBrevHandler.Request(
+                brevId = brevId,
+                saksId = saksId,
+                pid = if (saksId == sak1.saksId) sak1.pid else error("Ukjent saksId i test: $saksId"),
+                behandlingsnumre = if (saksId == sak1.saksId) sak1.behandlingsnumre else error("Ukjent saksId i test: $saksId")
+            )
+        )
     }
 
     protected suspend fun attester(
@@ -708,6 +716,14 @@ abstract class BrevredigeringHandlerTestBase {
             sendRedigerbartBrevRequest: Pen.SendRedigerbartBrevRequest, distribuer: Boolean
         ) {
             assertThat(utfoerteSendBrevKall.distinct()).contains(Pair(sendRedigerbartBrevRequest, distribuer))
+        }
+    }
+    protected class FakePDLService : PdlServiceStub() {
+        override suspend fun hentBrukerContext(
+            ident: Pid,
+            behandlingsnumre: List<Behandlingsnummer>,
+        ): Pdl.PersonContext? {
+            return null
         }
     }
 }
