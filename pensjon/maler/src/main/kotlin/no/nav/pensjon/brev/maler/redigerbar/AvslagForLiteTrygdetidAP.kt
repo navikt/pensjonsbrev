@@ -342,9 +342,15 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                     //norskTTInfoGenerell_001
                     paragraph {
                         text(
-                            bokmal { + "Trygdetid er perioder du har vært medlem i folketrygden. Som hovedregel er dette perioder du har bodd eller arbeidet i Norge. Trygdetid har betydning for beregning av pensjonen din. Full trygdetid er 40 år." },
-                            nynorsk { + "Trygdetid er periodar du har vore medlem i folketrygda. Som hovudregel er dette periodar du har budd eller arbeidd i Noreg. Trygdetid har betydning for berekninga av pensjonen din. Full trygdetid er 40 år." },
-                            english { + "The period of national insurance coverage is the periods in which you have been a member of the Norwegian National Insurance Scheme. As a general rule, these are periods when you have been registered as living or working in Norway. The period of national insurance coverage affects the calculation of your pension. The full insurance period is 40 years." },
+                            bokmal { + "Trygdetid er perioder du har vært medlem i folketrygden. Som hovedregel er dette perioder du har bodd eller arbeidet i Norge. " +
+                                    "Trygdetid i alderspensjonen regnes med fra 1. januar året etter at skatteoppgjøret er klart."+
+                                    "Trygdetid har betydning for beregning av pensjonen din. Full trygdetid er 40 år." },
+                            nynorsk { + "Trygdetid er periodar du har vore medlem i folketrygda. Som hovudregel er dette periodar du har budd eller arbeidd i Noreg. " +
+                                    "Trygdetid i alderspensjonen blir rekna med frå 1. januar året etter at skatteoppgjeret er klart."+
+                                    "Trygdetid har betydning for berekninga av pensjonen din. Full trygdetid er 40 år." },
+                            english { + "The period of national insurance coverage is the periods in which you have been a member of the Norwegian National Insurance Scheme. " +
+                                    "The coverage period for retirement pension is included from 1 January of the year following the completion of the tax assessment."+
+                                    "As a general rule, these are periods when you have been registered as living or working in Norway. The period of national insurance coverage affects the calculation of your pension. The full insurance period is 40 years." },
                         )
                     }
                     paragraph {
