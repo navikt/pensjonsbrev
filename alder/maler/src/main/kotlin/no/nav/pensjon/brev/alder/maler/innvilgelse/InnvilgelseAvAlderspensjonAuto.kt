@@ -1,40 +1,42 @@
-package no.nav.pensjon.brev.maler.alder
+package no.nav.pensjon.brev.alder.maler.innvilgelse
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
-import no.nav.pensjon.brev.api.model.BorI.*
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.selectors.innvilgelseAvAlderspensjonAutoDto.alderspensjonVedVirk.*
-import no.nav.pensjon.brev.api.model.maler.alderApi.selectors.innvilgelseAvAlderspensjonAutoDto.inngangOgEksportVurdering.*
-import no.nav.pensjon.brev.api.model.maler.alderApi.selectors.innvilgelseAvAlderspensjonAutoDto.*
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AP2025TidligUttakHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.BilateralAvtaleHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.EOSLandAvtaleHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.GarantitilleggHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.HjemlerInnvilgelseForAP2011AP2016
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.HvisFlytetFaktiskBostedsland
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPForeloepigBeregning
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPUttakEndr
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvAlderspensjon
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilKlageUtland
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SkattAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.Skatteplikt
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SkjermingstilleggHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SoktAFPPrivatInfo
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenadAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
-import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.common.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
+import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
+import no.nav.pensjon.brev.alder.model.innvilgelse.InnvilgelseAvAlderspensjonAutoDto
+import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlderspensjonAutoDto.alderspensjonVedVirk.*
+import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlderspensjonAutoDto.inngangOgEksportVurdering.*
+import no.nav.pensjon.brev.alder.model.innvilgelse.selectors.innvilgelseAvAlderspensjonAutoDto.*
+import no.nav.pensjon.brev.alder.maler.felles.AP2025TidligUttakHjemmel
+import no.nav.pensjon.brev.alder.maler.felles.AfpPrivatErBrukt
+import no.nav.pensjon.brev.alder.maler.felles.ArbeidsinntektOgAlderspensjon
+import no.nav.pensjon.brev.alder.maler.felles.BilateralAvtaleHjemmel
+import no.nav.pensjon.brev.alder.maler.felles.Constants.DITT_NAV
+import no.nav.pensjon.brev.alder.maler.felles.EOSLandAvtaleHjemmel
+import no.nav.pensjon.brev.alder.maler.felles.FlereBeregningsperioder
+import no.nav.pensjon.brev.alder.maler.felles.GarantitilleggHjemmel
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.felles.HjemlerInnvilgelseForAP2011AP2016
+import no.nav.pensjon.brev.alder.maler.felles.InnvilgelseAPForeloepigBeregning
+import no.nav.pensjon.brev.alder.maler.felles.InnvilgelseAPUttakEndr
+import no.nav.pensjon.brev.alder.maler.felles.MeldeFraOmEndringer
+import no.nav.pensjon.brev.alder.maler.felles.ReguleringAvAlderspensjon
+import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
+import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
+import no.nav.pensjon.brev.alder.maler.felles.RettTilKlageUtland
+import no.nav.pensjon.brev.alder.maler.felles.SkattAP
+import no.nav.pensjon.brev.alder.maler.felles.Skatteplikt
+import no.nav.pensjon.brev.alder.maler.felles.SkjermingstilleggHjemmel
+import no.nav.pensjon.brev.alder.maler.felles.SoktAFPPrivatInfo
+import no.nav.pensjon.brev.alder.maler.felles.SupplerendeStoenadAP
+import no.nav.pensjon.brev.alder.maler.felles.Vedtak
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlderAP2025
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
+import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP2011
+import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP2016
+import no.nav.pensjon.brev.alder.model.BorI.AVTALELAND
+import no.nav.pensjon.brev.alder.model.BorI.NORGE
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -45,7 +47,6 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -61,7 +62,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
 @TemplateModelHelpers
 object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspensjonAutoDto> {
-    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_INNVILGELSE_AUTO
+    override val kode = Aldersbrevkoder.AutoBrev.PE_AP_INNVILGELSE_AUTO
 
     override val template =
         createTemplate(
@@ -125,9 +126,7 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
 
                 showIf(afpPrivatResultatFellesKontoret.ifNull(then = false)) { includePhrase(SoktAFPPrivatInfo) }
 
-                showIf(harFlereBeregningsperioder and alderspensjonVedVirk.totalPensjon.greaterThan(0)) {
-                    includePhrase(Felles.FlereBeregningsperioder)
-                }
+                includePhrase(FlereBeregningsperioder(harFlereBeregningsperioder, alderspensjonVedVirk.totalPensjon))
 
                 showIf(alderspensjonVedVirk.uttaksgrad.lessThan(100)) {
                     paragraph {
@@ -141,7 +140,7 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
 
                 ifNotNull(faktiskBostedsland) { faktiskBostedsland ->
                     includePhrase(
-                        HvisFlytetFaktiskBostedsland(
+                        InnvilgelseFelles.HvisFlytetFaktiskBostedsland(
                             eksportTrygdeavtaleAvtaleland = inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland,
                             eksportTrygdeavtaleEOS = inngangOgEksportVurdering.eksportTrygdeavtaleEOS,
                             faktiskBostedsland = faktiskBostedsland
@@ -150,7 +149,7 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
 
                 // eksportAPunder20aar (NB! Finnes ikke i det manuelle brevet)
                 showIf((regelverkType.equalTo(AP2011) and alderspensjonVedVirk.erEksportberegnet) or (regelverkType.equalTo(
-                        AP2016)
+                    AP2016)
                             and alderspensjonVedVirk.erEksportberegnet or inngangOgEksportVurdering.eksportBeregnetUtenGarantipensjon)) {
                     paragraph {
                         text(
@@ -208,7 +207,7 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
                         )
                     )
                 }
-                includePhrase(Utbetalingsinformasjon)
+                includePhrase(InnvilgelseFelles.Utbetalingsinformasjon)
                 paragraph {
                     text(
                         bokmal { +"Du finner informasjon om utbetalingene dine på $DITT_NAV. Her kan du også endre kontonummeret ditt." },
@@ -239,14 +238,14 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
                         uforeKombinertMedAlder = alderspensjonVedVirk.uforeKombinertMedAlder
                     )
                 )
-                includePhrase(InfoPensjonFraAndreAP)
+                includePhrase(InnvilgelseFelles.InfoPensjonFraAndreAP)
                 includePhrase(MeldeFraOmEndringer)
-                includePhrase(Felles.RettTilAAKlage)
+                includePhrase(RettTilAAKlage)
 
                 showIf(borI.equalTo(AVTALELAND)) { includePhrase(RettTilKlageUtland) }
 
-                includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggOrienteringOmRettigheterOgPlikter))
-                includePhrase(Felles.HarDuSpoersmaal.alder)
+                includePhrase(RettTilInnsyn(vedlegg = vedleggOrienteringOmRettigheterOgPlikter))
+                includePhrase(HarDuSpoersmaal.alder)
             }
             includeAttachment(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikterDto)
             includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)

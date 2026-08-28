@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
 import no.nav.pensjon.brev.maler.alder.EndringAvUttaksgradAuto
-import no.nav.pensjon.brev.maler.alder.InnvilgelseAvAlderspensjonAuto
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
 import no.nav.pensjon.brev.maler.klageOgAnke.AnkeTilsvarTilAnkendePart
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmOversendelseTilKlageinstans
@@ -51,7 +50,6 @@ object ProductionTemplates : AllTemplates {
         VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto,
         EtteroppgjoerEtterbetalingAutoLegacy,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
-        InnvilgelseAvAlderspensjonAuto,
         OmsorgEgenAuto,
         OpphoerBarnetilleggAuto,
         OpptjeningVedForhoeyetHjelpesats,
@@ -99,8 +97,6 @@ object ProductionTemplates : AllTemplates {
         InnhentingDokumentasjonFraBruker,
         InnhentingInformasjonFraBruker,
         InnhentingOpplysningerFraBruker,
-        InnvilgelseAvAlderspensjon,
-        InnvilgelseAvAlderspensjonTrygdeavtale,
         InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
         InnvilgelseUforetrygd,
         InnvilgelseUforetrygdUtland,

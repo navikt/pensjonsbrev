@@ -70,6 +70,9 @@ import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonAvdodAut
 import no.nav.pensjon.brev.alder.maler.info.BekreftelseAvUtsendtKravTilUtlandet
 import no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygd
 import no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev.UforetrygdSokerAfpPrivat
+import no.nav.pensjon.brev.alder.maler.innvilgelse.InnvilgelseAvAlderspensjon
+import no.nav.pensjon.brev.alder.maler.innvilgelse.InnvilgelseAvAlderspensjonAuto
+import no.nav.pensjon.brev.alder.maler.innvilgelse.InnvilgelseAvAlderspensjonTrygdeavtale
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonPgaGarantitillegg
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilstand
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilstandAuto
@@ -112,6 +115,7 @@ object AlderTemplates : AllTemplates {
             OmregningAlderUfore2016Auto,
             FeilUtsendingAvGjenlevenderett,
             InnvilgelseAvAfpAuto,
+            InnvilgelseAvAlderspensjonAuto,
             VarselGjpForlengetArskull6061,
             VarselGjpForlengetArskull6061Utland,
             VarselGjpForlengetArskull6270,
@@ -157,6 +161,8 @@ object AlderTemplates : AllTemplates {
             EndringAvAlderspensjonSivilstandSaerskiltSats,
             InnvilgelseAvAfp,
             InnvilgelseAvAfpOffentligSektor,
+            InnvilgelseAvAlderspensjon,
+            InnvilgelseAvAlderspensjonTrygdeavtale,
             OmregningAlderUfore2016,
             UforetrygdSokerAfpPrivat,
             VarselAfpEtteroppgjoerForeloepig,
