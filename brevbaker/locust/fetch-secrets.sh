@@ -16,5 +16,5 @@ fi
 
 mkdir -p secrets
 
-nais secret get azure-locust --environment $KUBE_CLUSTER --with-values --reason "local development" --output json | jq '.data | from_entries' > secrets/azuread.json
+nais secret get azure-locust -t pensjonsbrev --environment $KUBE_CLUSTER --with-values --reason "local development" --output json | jq '.data | from_entries' > secrets/azuread.json
 echo "All secrets are fetched and stored in the \"secrets\" folder."

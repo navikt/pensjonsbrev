@@ -19,7 +19,7 @@ function getSecret() {
   local output_name="$2"
 
   echo ""
-  nais secret get "${secret_name}" --environment $KUBE_CLUSTER --with-values --reason "local development" --output json | jq '.data | from_entries' > secrets/"${output_name}".json
+  nais secret get "${secret_name}" -t pensjonsbrev --environment $KUBE_CLUSTER --with-values --reason "local development" --output json | jq '.data | from_entries' > secrets/"${output_name}".json
 
   echo "Creating ${output_name}.env file from ${output_name}.json..."
   jq -r 'to_entries|map("\(.key)=\(.value|tostring)")|.[]' secrets/"${output_name}".json > secrets/"${output_name}".env

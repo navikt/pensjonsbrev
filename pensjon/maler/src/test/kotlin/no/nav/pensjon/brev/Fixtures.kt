@@ -56,6 +56,7 @@ object Fixtures : LetterDataFactory {
             BekreftelsePaaPensjonDto::class -> createBekreftelsePaaPensjonDto() as T
             BekreftelsePaaUfoeretrygdDto::class -> createBekreftelsePaaUfoeretrygdDto() as T
             BrukerTestBrevDto::class -> createBrukerTestBrevDto() as T
+            BrukerTestVedtaksbrevDto::class -> createBrukerTestVedtaksbrevDto() as T
             EksempelRedigerbartDto::class -> createEksempelbrevRedigerbartDto() as T
             EmptyAutobrevdata::class -> EmptyAutobrevdata as T
             EmptyRedigerbarBrevdataMedSaksbehandlerValg::class -> EmptyRedigerbarBrevdataMedSaksbehandlerValg(saksbehandlerValg = SaksbehandlervalgIDSLTestImpl()) as T
@@ -117,6 +118,7 @@ object Fixtures : LetterDataFactory {
             VedtakOmEndringBarnetilleggEPSAutoDto::class -> createVedtakOmEndringBarnetilleggEPSAutoDto() as T
             ReverseringLavereMinstesatsRedigerbarDto::class -> createReverseringLavereMinstesatsRedigerbarDto() as T
             ReverseringLavereMinstesatsAutoDto::class -> createReverseringLavereMinstesatsAutoDto() as T
+            VedtakOmEndringBarnetilleggEPSRedigerbarDto::class -> createVedtakOmEndringBarnetilleggEPSRedigerbarDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

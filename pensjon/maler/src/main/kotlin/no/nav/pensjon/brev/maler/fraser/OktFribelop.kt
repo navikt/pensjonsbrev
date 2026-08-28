@@ -5,12 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktFribelopData
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.faktor
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.fom
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.tom
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.uforegrad
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.bunnfradrag
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.datoOkningBunnfradrag
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.fribelopPerioder
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.oktFribelopHeleAret
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.vektetFribelop
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -26,6 +21,7 @@ import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 object OktFribelop {
 
@@ -34,8 +30,8 @@ object OktFribelop {
 
             paragraph {
                 text(
-                    bokmal { +"Fra 1. oktober øker fribeløpet for uføretrygd til 1 ganger folketrygdens grunnbeløp (G). Dette er per i dag 136 549 kroner. Det betyr at du kan ha inntekt på " + data.bunnfradrag.format() + ", før vi begynner å redusere uføretrygden din. Fribeløpet ble tidligere omtalt som inntektsgrense. Grunnbeløpet (G) justeres i mai hvert år. " },
-                    nynorsk { +"Frå 1. oktober aukar fribeløpet for uføretrygd til 1 gonger folketrygdens grunnbeløp (G). Dette er per i dag 136 549 kroner. Det tyder at du kan ha inntekt på " + data.bunnfradrag.format() + ", før vi byrjar å redusere uføretrygda di. Fribeløpet vart tidlegare omtala som inntektsgrense. Grunnbeløpet (G) vert justert i mai kvart år. " },
+                    bokmal { +"Stortinget har vedtatt en lovendring som trer i kraft fra 1. oktober 2026 med virkning fra 1. januar 2026. Lovendringen sier at fribeløpet øker fra 0,4 G til 1 G for de som har hatt uføretrygd i 2 år eller mer, uten økning i uføregraden. " },
+                    nynorsk { +"Stortinget har vedteke ei lovendring som trer i kraft frå 1. oktober 2026 med verknad frå 1. januar 2026. Lovendringa seier at fribeløpet aukar frå 0,4 G til 1 G for dei som har hatt uføretrygd i 2 år eller meir, utan auke i uføregraden. " },
                 )
             }
             paragraph {
@@ -48,20 +44,6 @@ object OktFribelop {
                 text(
                     bokmal { +"Har du uføretrygd, kan du jobbe så mye du har mulighet til. Et høyere fribeløp kan føre til at det blir mer lønnsomt for deg å kombinere jobb og uføretrygd. " },
                     nynorsk { +"Har du uføretrygd, kan du jobbe så mykje du har moglegheit til. Eit høgare fribeløp kan føre til at det vert meir lønsamt for deg å kombinere jobb og uføretrygd. " },
-                )
-            }
-
-            title1 {
-                text(
-                    bokmal { +"Derfor får du høyere fribeløp" },
-                    nynorsk { +"Derfor får du høgare fribeløp" },
-                )
-            }
-
-            paragraph {
-                text(
-                    bokmal { +"Stortinget har vedtatt en lovendring som trer i kraft fra 1. oktober 2026 med virkning fra 1. januar 2026. Lovendringen sier at fribeløpet øker fra 0,4 til 1 G for de som har hatt uføretrygd i 2 år eller mer, uten økning i uføregraden. " },
-                    nynorsk { +"Stortinget har vedteke ei lovendring som trer i kraft frå 1. oktober 2026 med verknad frå 1. januar 2026. Lovendringen seier at fribeløpet aukar frå 0,4 til 1 G for dei som har hatt uføretrygd i 2 år eller meir, utan auke i uføregraden. " },
                 )
             }
 
@@ -88,7 +70,7 @@ object OktFribelop {
                         nynorsk { +"Frå og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år og fribeløpet skal auke til 1G. " },
                     )
                 }
-                includePhrase(FribelopPerioder(data.fribelopPerioder, data.vektetFribelop))
+                includePhrase(FribelopPerioder(data.fribelopPerioder, data.vektetFribelop, data.bunnfradrag))
                 paragraph {
                     text(
                         bokmal { +"Neste år: " },
@@ -111,6 +93,19 @@ object OktFribelop {
                 text(
                     bokmal { +" kan du se hvordan vi har beregnet uføretrygden din." },
                     nynorsk { +" kan du sjå korleis vi har berekna uføretrygda di." },
+                )
+            }
+
+            title1 {
+                text(
+                    bokmal { +"Hva er fribeløp og bunnfradrag?" },
+                    nynorsk { +"Kva er fribeløp og botnfrådrag?" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Bunnfradrag er hvor mye inntekt du kan ha før vi begynner å redusere uføretrygden din. Bunnfradraget består av fribeløpet pluss  inntekt etter uførhet. Dette ble tidligere omtaltsom inntektsgrense. " },
+                    nynorsk { +"Bunnfrådrag er kor mykje inntekt du kan ha før vi byrjar å redusere uføretrygda di. Bunnfrådraget består av fribeløpet pluss inntekt etter uførleik. Dette vart tidlegare omtalt som inntektsgrense. " },
                 )
             }
 
@@ -148,13 +143,12 @@ object OktFribelop {
         }
     }
 
-    class FribelopPerioder(private val perioder: Expression<List<FribelopPeriode>>, private val vektetFribelop: Expression<Double>) : OutlinePhrase<LangBokmalNynorsk>() {
+    class FribelopPerioder(private val perioder: Expression<List<FribelopPeriode>>, private val vektetFribelop: Expression<Double>, private val bunnfradrag: Expression<Kroner>) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 table(header = {
                     column { text(bokmal { +"Fra" }, nynorsk { +"Frå" }) }
                     column { text(bokmal { +"Til" }, nynorsk { +"Til" }) }
-                    column { text(bokmal { +"Uføregrad" }, nynorsk { +"Uføregrad" }) }
                     column { text(bokmal { +"Fribeløp" }, nynorsk { +"Fribeløp" }) }
                 }) {
                     forEach(perioder) { periode ->
@@ -173,12 +167,6 @@ object OktFribelop {
                             }
                             cell {
                                 text(
-                                    bokmal { +periode.uforegrad.format() + " prosent" },
-                                    nynorsk { +periode.uforegrad.format() + " prosent" }
-                                )
-                            }
-                            cell {
-                                text(
                                     bokmal { +periode.faktor.format() + " G" },
                                     nynorsk { +periode.faktor.format() + " G" }
                                 )
@@ -189,8 +177,8 @@ object OktFribelop {
             }
             paragraph {
                 text(
-                    bokmal { +"Når fribeløpet endres i løpet av året, beregnes et gjennomsnitt av periodene du har hatt med ulikt fribeløp. Gjennomsnittlig fribeløp i år blir " + vektetFribelop.format() + " G." },
-                    nynorsk { +"Når fribeløpet endrar seg i løpet av året, vert det rekna ut eit gjennomsnitt av periodane du har hatt med ulikt fribeløp. Gjennomsnittleg fribeløp i år vert " + vektetFribelop.format() + " G." },
+                    bokmal { +"Når fribeløpet endres i løpet av året, beregnes et gjennomsnitt av periodene du har hatt med ulikt fribeløp. Gjennomsnittlig fribeløp i år blir " + vektetFribelop.format() + " G, som er " + bunnfradrag.format() + "." },
+                    nynorsk { +"Når fribeløpet endrar seg i løpet av året, vert det rekna ut eit gjennomsnitt av periodane du har hatt med ulikt fribeløp. Gjennomsnittleg fribeløp i år vert " + vektetFribelop.format() + " G, som er " + bunnfradrag.format() + "." },
                 )
             }
         }

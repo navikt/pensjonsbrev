@@ -40,7 +40,7 @@ private val Expression<Sivilstatus>.value: Expression<String>
 @TemplateModelHelpers
 val simuleringVedlegg = createAttachment<LangBokmal, ApSimuleringDto>(
     title = {
-        text(bokmal { +"Pensjonsberegningen din med detaljer" })
+        text(bokmal { +"Pensjonsberegningen din med detaljer og forbehold" })
     },
     includeSakspart = false,
 ) {

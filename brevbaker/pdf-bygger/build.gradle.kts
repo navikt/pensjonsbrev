@@ -53,6 +53,8 @@ dependencies {
     implementation(libs.bundles.logging)
     implementation(platform(libs.ktor.bom))
     implementation(libs.ktor.serialization.jackson)
+    implementation(libs.ktor.server.auth)
+    implementation(libs.ktor.server.auth.jwt)
     implementation(libs.ktor.server.callId)
     implementation(libs.ktor.server.callLogging)
     implementation(libs.ktor.server.content.negotiation)
