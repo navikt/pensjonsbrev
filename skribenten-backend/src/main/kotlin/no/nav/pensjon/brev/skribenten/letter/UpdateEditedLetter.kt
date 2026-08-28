@@ -26,6 +26,27 @@ fun Edit.Attachment.updateEditedAttachment(renderedAttachment: LetterMarkup.Atta
         UpdateEditedLetter(rendered.variablesValueMap()).mergeAttachment(this, rendered)
     }
 
+/**
+ * Oppdaterer kun de delene av brevet som ikke er saksbehandlers innhold: sakspart og de malstyrte
+ * feltene i signaturen. Tittel og blokker beholdes slik de er lagret, slik at innholdet i brevet
+ * fryses etter at det er overlevert til attestering.
+ */
+fun Edit.Letter.updateSakspartOgSignatur(renderedLetter: LetterMarkup): Edit.Letter =
+    copy(
+        sakspart = renderedLetter.sakspart,
+        signatur = mergeSignatur(edited = signatur, rendered = renderedLetter.signatur),
+    )
+
+private fun mergeSignatur(edited: LetterMarkup.Signatur, rendered: LetterMarkup.Signatur): LetterMarkup.Signatur =
+    LetterMarkupImpl.SignaturImpl(
+        // Template-controlled fields: always use rendered values
+        hilsenTekst = rendered.hilsenTekst,
+        navAvsenderEnhet = rendered.navAvsenderEnhet,
+        // User-editable fields: preserve edited values
+        saksbehandlerNavn = edited.saksbehandlerNavn,
+        attesterendeSaksbehandlerNavn = edited.attesterendeSaksbehandlerNavn,
+    )
+
 class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
 
     fun mergeLetter(edited: Edit.Letter, rendered: Edit.Letter): Edit.Letter =
@@ -111,16 +132,6 @@ class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
         }
         addAll(remainingRendered)
     }
-
-    private fun mergeSignatur(edited: LetterMarkup.Signatur, rendered: LetterMarkup.Signatur): LetterMarkup.Signatur =
-        LetterMarkupImpl.SignaturImpl(
-            // Template-controlled fields: always use rendered values
-            hilsenTekst = rendered.hilsenTekst,
-            navAvsenderEnhet = rendered.navAvsenderEnhet,
-            // User-editable fields: preserve edited values
-            saksbehandlerNavn = edited.saksbehandlerNavn,
-            attesterendeSaksbehandlerNavn = edited.attesterendeSaksbehandlerNavn,
-        )
 
     private fun mergeTitle(edited: Edit.Title, rendered: Edit.Title): Edit.Title =
         edited.copy(

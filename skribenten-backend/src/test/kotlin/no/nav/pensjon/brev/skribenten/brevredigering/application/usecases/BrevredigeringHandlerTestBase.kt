@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevPdfService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
@@ -250,8 +251,8 @@ abstract class BrevredigeringHandlerTestBase {
             database = SharedPostgres.database,
         )
     }
-    protected val hentEllerOpprettPdf by lazy {
-        HentEllerOpprettPdfHandler(
+    protected val brevPdfService by lazy {
+        BrevPdfService(
             brevdataService = brevdataService,
             renderService = RenderService(brevbakerService),
             brevmalService = brevmalService,
@@ -266,10 +267,32 @@ abstract class BrevredigeringHandlerTestBase {
                     clientEngine = MockEngine { respond("", HttpStatusCode.OK) },
                 )
             ),
-            database = SharedPostgres.database,
             pdfVedleggAppender = object : PDFVedleggAppender {
                 override fun leggPaaVedlegg(pdfCompilationOutput: ByteArray, vedlegg: List<() -> PDDocument>) = pdfCompilationOutput
             }
+        )
+    }
+    protected val hentEllerOpprettPdf by lazy {
+        HentEllerOpprettPdfHandler(
+            brevPdfService = brevPdfService,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val hentEllerOpprettAttesteringPdf by lazy {
+        HentEllerOpprettAttesteringPdfHandler(
+            brevPdfService = brevPdfService,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val lagreAttestertBrev by lazy {
+        LagreAttestertBrevHandler(
+            attesterBrevPolicy = attesterBrevPolicy,
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+            brevreservasjonPolicy = brevreservasjonPolicy,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
         )
     }
     protected val sendBrevHandler by lazy {
@@ -504,7 +527,6 @@ abstract class BrevredigeringHandlerTestBase {
         brev: Dto.Brevredigering,
         attestant: UserPrincipal = attestant1Principal,
         frigiReservasjon: Boolean = false,
-        nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
         nyttRedigertbrev: Edit.Letter? = null,
         saksId: SaksId = sak1.saksId,
     ) = withPrincipal(attestant) {
@@ -513,8 +535,24 @@ abstract class BrevredigeringHandlerTestBase {
                 brevId = brev.info.id,
                 saksId = saksId,
                 frigiReservasjon = frigiReservasjon,
-                nyeSaksbehandlerValg = nyeSaksbehandlerValg,
                 nyttRedigertbrev = nyttRedigertbrev,
+            )
+        )
+    }
+
+    protected suspend fun lagreAttestertBrev(
+        brev: Dto.Brevredigering,
+        nyttRedigertbrev: Edit.Letter,
+        attestant: UserPrincipal = attestant1Principal,
+        frigiReservasjon: Boolean = false,
+        saksId: SaksId = sak1.saksId,
+    ) = withPrincipal(attestant) {
+        lagreAttestertBrev(
+            LagreAttestertBrevHandler.Request(
+                brevId = brev.info.id,
+                saksId = saksId,
+                nyttRedigertbrev = nyttRedigertbrev,
+                frigiReservasjon = frigiReservasjon,
             )
         )
     }
@@ -559,6 +597,38 @@ abstract class BrevredigeringHandlerTestBase {
     ): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
         withPrincipal(principal) {
             handler(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id, saksId = saksId, fagsak = fagsak1))
+        }
+
+    /**
+     * Endrer malen slik at både innhold (blocks), sakspart og malstyrt signatur blir forskjellig fra
+     * det som allerede er lagret på brevet.
+     */
+    protected fun stagEndretMal() {
+        brevbakerService.renderMarkupResultat = {
+            letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill"))))
+                .let { endret ->
+                    endret.copy(
+                        sakspart = (endret.sakspart as LetterMarkupImpl.SakspartImpl).copy(gjelderNavn = "Nytt Navn"),
+                        signatur = (endret.signatur as SignaturImpl).copy(
+                            hilsenTekst = "Ny hilsen",
+                            navAvsenderEnhet = "Ny avsenderenhet",
+                            saksbehandlerNavn = "Endret Saksbehandler",
+                            attesterendeSaksbehandlerNavn = "Endret Attestant",
+                        ),
+                    )
+                }
+        }
+    }
+
+    protected suspend fun hentEllerOpprettAttesteringPdf(
+        brev: Dto.Brevredigering,
+        principal: UserPrincipal = attestant1Principal,
+        saksId: SaksId = sak1.saksId,
+    ): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
+        withPrincipal(principal) {
+            hentEllerOpprettAttesteringPdf(
+                HentEllerOpprettAttesteringPdfHandler.Request(brevId = brev.info.id, saksId = saksId, fagsak = fagsak1)
+            )
         }
 
     protected suspend fun endreDistribusjonstype(

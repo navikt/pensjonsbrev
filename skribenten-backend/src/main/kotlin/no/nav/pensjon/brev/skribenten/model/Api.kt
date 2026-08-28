@@ -43,7 +43,6 @@ object Api {
     )
 
     data class OppdaterAttesteringRequest(
-        val saksbehandlerValg: RedigerbarSaksbehandlervalgMap,
         val redigertBrev: Edit.Letter,
     )
 

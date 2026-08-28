@@ -10,10 +10,15 @@ import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.jetbrains.exposed.v1.jdbc.Database
 
-class HentEllerOpprettPdfHandler(
+/**
+ * PDF for attestanten. Ikke-redigerbart innhold rendres fra ferske pesysdata, mens det redigerbare
+ * brevet brukes slik det er lagret. Attesteringsflyten merger ikke mot malen, og derfor er det
+ * heller ikke relevant å varsle om at en fersk rendring ville endret innholdet.
+ */
+class HentEllerOpprettAttesteringPdfHandler(
     private val brevPdfService: BrevPdfService,
     database: Database,
-) : TransactionHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult, IngenFoersteside>(database) {
+) : TransactionHandler<HentEllerOpprettAttesteringPdfHandler.Request, Dto.HentDocumentResult, IngenFoersteside>(database) {
 
     data class Request(
         override val brevId: BrevId,
@@ -24,10 +29,6 @@ class HentEllerOpprettPdfHandler(
     override suspend fun execute(request: Request): Outcome<Dto.HentDocumentResult, IngenFoersteside>? {
         val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
-        return brevPdfService.hentEllerOpprett(brev, request.fagsak, sjekkOmRendretBrevErEndret = true)
+        return brevPdfService.hentEllerOpprett(brev, request.fagsak, sjekkOmRendretBrevErEndret = false)
     }
 }
-
-// Disse må være i sync med api-modellen
-const val P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2"
-const val P1_VEDLEGG_KEY = "p1Vedlegg"
