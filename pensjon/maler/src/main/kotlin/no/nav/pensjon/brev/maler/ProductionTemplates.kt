@@ -90,7 +90,6 @@ object ProductionTemplates : AllTemplates {
         InformasjonOmSaksbehandlingstid,
         InformasjonOmSaksbehandlingstidUT,
         InnhentingDokumentasjonFraBruker,
-        InnhentingInformasjonFraBruker,
         InnhentingOpplysningerFraBruker,
         InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
         InnvilgelseUforetrygd,

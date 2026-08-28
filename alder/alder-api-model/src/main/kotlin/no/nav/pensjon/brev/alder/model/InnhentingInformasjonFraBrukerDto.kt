@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model.maler.redigerbar
+package no.nav.pensjon.brev.alder.model
 
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValgUtenFagsystemdata

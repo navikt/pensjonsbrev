@@ -67,6 +67,7 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregning
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brev.alder.model.InnhentingInformasjonFraBrukerDto
 import no.nav.pensjon.brev.alder.model.adhoc.AdhocAlderspensjonGjtOppryddingAutoDto
 import no.nav.pensjon.brev.alder.model.adhoc.AdhocTidligereUfoereGradertAPAutoDto
 import no.nav.pensjon.brev.alder.model.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
@@ -137,6 +138,7 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.fixtures.alder.*
 import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagForLiteTrygdetidAPDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createInnhentingInformasjonFraBrukerDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseAvAlderspensjonDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseAvAlderspensjonTrygdeavtaleDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto
@@ -172,6 +174,7 @@ object Fixtures : LetterDataFactory {
             EndringAvAlderspensjonSivilstandSaerskiltSatsDto::class -> createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() as T
             EndringAvUttaksgradAutoDto::class -> createEndringAvUttaksgradAutoDto() as T
             EndringPgaOpptjeningAutoDto::class -> createEndringPgaOpptjeningAutoDto() as T
+            InnhentingInformasjonFraBrukerDto::class -> createInnhentingInformasjonFraBrukerDto() as T
             InnvilgelseAvAfpAutoDto::class -> createInnvilgelseAvAfpAutoDto() as T
             AvslagAfpPrivatDto::class -> createAvslagAfpPrivatDto() as T
             AvslagAfpPrivatAutoDto::class -> createAvslagAfpPrivatAutoDto() as T

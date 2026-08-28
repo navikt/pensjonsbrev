@@ -172,6 +172,7 @@ object AlderTemplates : AllTemplates {
             EndringAvAlderspensjonPgaGarantitillegg,
             EndringAvAlderspensjonSivilstand,
             EndringAvAlderspensjonSivilstandSaerskiltSats,
+            InnhentingInformasjonFraBruker,
             InnvilgelseAvAfp,
             InnvilgelseAvAfpOffentligSektor,
             InnvilgelseAvAlderspensjon,
