@@ -14,9 +14,7 @@ fun Route.featureToggleRoute() {
     val featureToggleService: FeatureToggleService by app.dependencies
 
     route("/features") {
-        // Tar imot toggle-navnet uten prefiks ("featureName"). UnleashService legger på
-        // "pensjonsbrev.skribenten."-prefikset, så frontend skal ikke ha noe forhold til det.
-        // Det finnes bevisst ingen statisk liste over gyldige toggles her: hvilke toggles som
+        // UnleashService legger automatisk på "pensjonsbrev.skribenten."-prefikset
         get("/{featureName}") {
             val featureName = call.parameters["featureName"]
             if (featureName.isNullOrBlank()) {
