@@ -5,6 +5,8 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.JacksonConverter
 import io.ktor.server.application.*
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.authenticate
 import io.ktor.server.config.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.BadRequestException
@@ -96,30 +98,40 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         verify { it.isNotEmpty() }
     }
 
+    val jwtConfig = if (!developmentMode) {
+        val config = JwtConfig.requireAzureADConfig(environment.config.config("pdfbygger.azureAD"))
+        install(Authentication) {
+            pdfByggerJwt(config)
+        }
+        config
+    } else null
+
     routing {
 
-        post("/produserBrev") {
-            val request = call.receive<PDFRequest>()
-            val result = typstCompileService.createLetter {
-                TypstLetterRenderer.render(request, it)
+        authenticateIfConfigured(jwtConfig?.name) {
+            post("/produserBrev") {
+                val request = call.receive<PDFRequest>()
+                val result = typstCompileService.createLetter {
+                    TypstLetterRenderer.render(request, it)
+                }
+                handleResult(result, call.application.environment.log)
             }
-            handleResult(result, call.application.environment.log)
-        }
 
-        post("/v2/produserBrev") {
-            val request = call.receive<LetterPDFRequest>()
-            val result = typstCompileService.createLetter {
-                TypstLetterRendererV2.render(request, it)
+            post("/v2/produserBrev") {
+                val request = call.receive<LetterPDFRequest>()
+                val result = typstCompileService.createLetter {
+                    TypstLetterRendererV2.render(request, it)
+                }
+                handleResult(result, call.application.environment.log)
             }
-            handleResult(result, call.application.environment.log)
-        }
 
-        post("/produserDokument") {
-            val request = call.receive<DocumentPDFRequest>()
-            val result = typstCompileService.createLetter {
-                TypstDocumentRenderer.render(request, it)
+            post("/produserDokument") {
+                val request = call.receive<DocumentPDFRequest>()
+                val result = typstCompileService.createLetter {
+                    TypstDocumentRenderer.render(request, it)
+                }
+                handleResult(result, call.application.environment.log)
             }
-            handleResult(result, call.application.environment.log)
         }
 
         get("/isAlive") {
@@ -131,6 +143,14 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         }
     }
 
+}
+
+private fun Routing.authenticateIfConfigured(name: String?, build: Route.() -> Unit) {
+    if (name != null) {
+        authenticate(name, optional =false, build = build)
+    } else {
+        build()
+    }
 }
 
 private suspend fun RoutingContext.handleResult(

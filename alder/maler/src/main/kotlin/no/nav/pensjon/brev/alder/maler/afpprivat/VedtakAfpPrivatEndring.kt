@@ -27,8 +27,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * Redigerbart vedtak — endring av AFP i privat sektor.
  *
  * Konvertert fra Exstream-malen `PE_AF_04_114`. Brevet har bokmål og nynorsk
- * i originalen. Auto-varianten er [VedtakAfpPrivatEndringOpptjeningAuto]
- * (`PE_AF_04_113`).
+ * i originalen. Auto-varianten er VedtakEndringAFPEndretOpptjeningAutoDto
+ * (`PE_AF_04_113`, MF_000145).
  */
 @TemplateModelHelpers
 object VedtakAfpPrivatEndring : RedigerbarTemplate<VedtakAfpPrivatEndringDto> {
