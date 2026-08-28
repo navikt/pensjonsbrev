@@ -31,8 +31,7 @@ object EndringBTEPS {
 
             paragraph {
                 text(
-                    bokmal { +"Vi har endret barnetillegget i uføretrygden din fra 1.oktober. " },
-                    nynorsk { +"Vi har endra barnetillegget i uføretrygda di frå 1. oktober. " },
+                    bokmal { +"Vi har endret barnetillegget i uføretrygden din fra 1. oktober. " }
                 )
                 table(header = {
                     column { text(
