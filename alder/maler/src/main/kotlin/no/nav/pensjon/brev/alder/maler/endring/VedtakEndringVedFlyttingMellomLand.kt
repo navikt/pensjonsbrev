@@ -170,7 +170,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                     }
                 }
 
-                val showIf = showIf(eksportForbudKodeAvdoed.equalTo(FLYKT_ALDER)) {
+                showIf(eksportForbudKodeAvdoed.equalTo(FLYKT_ALDER)) {
                     // eksportFlyktningAvdod_001
                     paragraph {
                         text(
