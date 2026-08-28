@@ -502,10 +502,9 @@ abstract class BrevredigeringHandlerTestBase {
             SlettBrevHandler.Request(
                 brevId = brevId,
                 saksId = saksId,
-                pid = sak1.pid,
-                behandlingsnumre = sak1.behandlingsnumre
+                pid = if (saksId == sak1.saksId) sak1.pid else error("Ukjent saksId i test: $saksId"),
+                behandlingsnumre = if (saksId == sak1.saksId) sak1.behandlingsnumre else error("Ukjent saksId i test: $saksId")
             )
-        )
     }
 
     protected suspend fun attester(
