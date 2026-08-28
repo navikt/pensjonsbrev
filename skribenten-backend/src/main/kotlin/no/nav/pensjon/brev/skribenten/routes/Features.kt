@@ -14,7 +14,7 @@ fun Route.featureToggleRoute() {
     val featureToggleService: FeatureToggleService by app.dependencies
 
     route("/features") {
-        // UnleashService legger automatisk på pensjonsbrev.skribenten.-prefikset
+        // UnleashService legger automatisk på "pensjonsbrev.skribenten."-prefikset
         get("/{featureName}") {
             val featureName = call.parameters["featureName"]
             if (featureName.isNullOrBlank()) {
