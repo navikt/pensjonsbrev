@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.ufor
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.scenario2_1G_04G.dato04G
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.scenario2_1G_04G.uforegradForOkning
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.scenario4_04G_1G_04G.dato04G
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.scenario4_04G_1G_04G.uforegradForOkning
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.barnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.btHarBlitt0
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.bunnfradrag
@@ -31,6 +30,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradr
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.uforetrygd
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.vektetFribelop
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.vektetFribelopKr
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.venteperiodeEtterGradsokning
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -42,7 +42,6 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
@@ -100,7 +99,7 @@ object OktBunnfradrag {
 
             paragraph {
                 table(header = {
-                    column { text(bokmal { +"Beregning" }, nynorsk { +"" }) }
+                    column { text(bokmal { +"Beregning" }, nynorsk { +"Berekning" }) }
                     column(alignment = RIGHT) { text(bokmal { +"" }, nynorsk { +"" }) }
                 }) {
                     row {
@@ -234,10 +233,17 @@ object OktBunnfradrag {
             }
             showIf(data.scenario1_1G) {
                 paragraph {
-                    text(
-                        bokmal { +"1. januar 2026 har du hatt " + data.uforegrad.format() + " prosent uføretrygd i 2 år eller lenger. Derfor øker fribeløpet ditt til 1 G for hele 2026. " },
-                        nynorsk { +"1. januar 2026 har du hatt " + data.uforegrad.format() + " prosent uføretrygd i 2 år eller lenger. Derfor aukar fribeløpet ditt til 1 G for heile 2026. " },
-                    )
+                    showIf(data.venteperiodeEtterGradsokning) {
+                        text(
+                            bokmal { +"1. januar 2026 er det 2 år eller lenger siden din uføregrad økte. Derfor øker fribeløpet ditt til 1 G for hele 2026. " },
+                            nynorsk { +"1. januar 2026 er det 2 år eller lenger sidan di uføregrad auka. Derfor aukar fribeløpet ditt til 1 G for heile 2026. " },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"1. januar 2026 har du hatt uføretrygd i 2 år eller lenger. Derfor øker fribeløpet ditt til 1 G for hele 2026. " },
+                            nynorsk { +"1. januar 2026 har du hatt uføretrygd i 2 år eller lenger. Derfor aukar fribeløpet ditt til 1 G for heile 2026. " },
+                        )
+                    }
                 }
                 showIf(data.manedligOkningUforetrygdInklTilleggUtAret.notEqualTo(0)) {
                     includePhrase(PengerTilGode(data.uforetrygd, data.nettoUtHarBlittLikBrutto, data.btHarBlitt0))
@@ -249,6 +255,7 @@ object OktBunnfradrag {
                         nynorsk { +"Du endra uføregrad frå " + scenario2.uforegradForOkning.format() + " prosent til " + data.uforegrad.format() + " prosent den " + scenario2.dato04G.format() + ". Frå 1. januar 2026 fram til " + scenario2.dato04G.format() + ", er ditt fribeløp 1 G. Etter " + scenario2.dato04G.format() + " er ditt fribeløp 0,4 G, fordi auke i uføregrad utløyser ny periode på 2 år der fribeløpet er 0,4 G. " },
                     )
                 }
+
                 includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
                 showIf(data.manedligOkningUforetrygdInklTilleggUtAret.notEqualTo(0)) {
                     includePhrase(PengerTilGode(data.uforetrygd, data.nettoUtHarBlittLikBrutto, data.btHarBlitt0))
@@ -262,10 +269,18 @@ object OktBunnfradrag {
 
             }.orShowIf(data.scenario3_04G_1G) {
                 paragraph {
-                    text(
-                        bokmal { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Fra og med " + data.datoOkningBunnfradrag.format() + " har du hatt " + data.uforegrad.format() + " prosent uføretrygd i 2 år, og fribeløpet skal øke til 1G." },
-                        nynorsk { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Frå og med " + data.datoOkningBunnfradrag.format() + " har du hatt " + data.uforegrad.format() + " prosent uføretrygd i 2 år, og fribeløpet skal auke til 1G." },
-                    )
+                    showIf(data.venteperiodeEtterGradsokning) {
+                        text(
+                            bokmal { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Fra og med " + data.datoOkningBunnfradrag.format() + " er det 2 år eller lenger siden din uføregrad økte, og fribeløpet skal øke til 1 G." },
+                            nynorsk { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Frå og med " + data.datoOkningBunnfradrag.format() + " er det 2 år eller lenger sidan di uføregrad auka, og fribeløpet skal auke til 1 G." }
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Fra og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år eller lenger, og fribeløpet skal øke til 1G." },
+                            nynorsk { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Frå og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år eller lenger, og fribeløpet skal auke til 1G." }
+                        )
+
+                    }
                 }
                 includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
                 showIf(data.manedligOkningUforetrygdInklTilleggUtAret.notEqualTo(0)) {
@@ -279,10 +294,17 @@ object OktBunnfradrag {
                 }
             }.orIfNotNull(data.scenario4_04G_1G_04G) { scenario4 ->
                 paragraph {
-                    text(
-                        bokmal { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Fra og med " + data.datoOkningBunnfradrag.format() + " har du hatt " + scenario4.uforegradForOkning.format() + " prosent uføretrygd i 2 år, og fribeløpet ditt øker til 1G. Siden du har fått økt uføregrad fra " + scenario4.dato04G.format() + ", endres fribeløpet ditt igjen til 0,4G. " },
-                        nynorsk { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Frå og med " + data.datoOkningBunnfradrag.format() + " har du hatt " + scenario4.uforegradForOkning.format() + " prosent uføretrygd i 2 år, og fribeløpet ditt aukar til 1G. Sidan du har fått auka uføregrad frå " + scenario4.dato04G.format() + ", endrar fribeløpet ditt seg igjen til 0,4G. " },
-                    )
+                    showIf(data.venteperiodeEtterGradsokning) {
+                        text(
+                            bokmal { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Fra og med " + data.datoOkningBunnfradrag.format() + " er det 2 år eller lenger siden din uføregrad økte, og fribeløpet ditt øker til 1G. Siden du igjen har fått økt uføregrad fra " + scenario4.dato04G.format() + ", endres fribeløpet ditt igjen til 0,4G. " },
+                            nynorsk { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Frå og med " + data.datoOkningBunnfradrag.format() + " er det 2 år eller lenger sidan di uføregrad auka, og fribeløpet ditt aukar til 1G. Sidan du igjen har fått auka uføregrad frå " + scenario4.dato04G.format() + ", endrar fribeløpet ditt seg igjen til 0,4G. " },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Fra og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år eller lenger, og fribeløpet ditt øker til 1G. Siden du igjen har fått økt uføregrad fra " + scenario4.dato04G.format() + ", endres fribeløpet ditt igjen til 0,4G. " },
+                            nynorsk { +"Før " + data.datoOkningBunnfradrag.format() + " var fribeløpet ditt 0,4 G. Frå og med " + data.datoOkningBunnfradrag.format() + " har du hatt uføretrygd i 2 år eller lenger, og fribeløpet ditt aukar til 1G. Sidan du igjen har fått auka uføregrad frå " + scenario4.dato04G.format() + ", endrar fribeløpet ditt seg igjen til 0,4G. " },
+                        )
+                    }
                 }
                 includePhrase(Fribelopperioder(data.fribelopPerioder, data.vektetFribelop, data.vektetFribelopKr))
                 showIf(data.manedligOkningUforetrygdInklTilleggUtAret.notEqualTo(0)) {
