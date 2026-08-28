@@ -74,7 +74,6 @@ object ProductionTemplates : AllTemplates {
         AnkeTilsvarTilAnkendePart,
         AvslagGjenlevendepensjon,
         AvslagGjenlevendepensjonUtland,
-        AvslagPaaGjenlevenderettIAlderspensjon,
         AvslagUfoerepensjon,
         AvslagUfoeretrygd,
         BekreftelsePaaFlyktningstatus,

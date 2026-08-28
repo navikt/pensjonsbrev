@@ -51,7 +51,6 @@ object Fixtures : LetterDataFactory {
         when (letterDataType) {
             FullmektigBprofAutoDto::class -> createFullmektigBprofAutoDto() as T
             FullmaktsgiverBprofAutoDto::class -> createFullmaktsgiverBprofAutoDto() as T
-            AvslagPaaGjenlevenderettIAlderspensjonDto::class -> createAvslagPaaGjenlevenderettIAlderspensjon() as T
             AvslagUfoeretrygdDto::class -> createAvslagUfoeretrygdDto() as T
             BekreftelsePaaPensjonDto::class -> createBekreftelsePaaPensjonDto() as T
             BekreftelsePaaUfoeretrygdDto::class -> createBekreftelsePaaUfoeretrygdDto() as T

@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.alder.maler.aldersovergang.createVedtakEndringAFPEndr
 import no.nav.pensjon.brev.alder.maler.aldersovergang.createVedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.createOmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.createOmregningAlderUfore2016RedigerbarDto
+import no.nav.pensjon.brev.alder.maler.avslag.createAvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.createUnder5AarTrygdetidAutoDto
 import no.nav.pensjon.brev.alder.maler.endring.createEndringAvUttaksgradAutoDto
 import no.nav.pensjon.brev.alder.maler.endring.createEndringPgaOpptjeningAutoDto
@@ -155,6 +156,7 @@ object Fixtures : LetterDataFactory {
             AvslagForLiteTrygdetidAPDto::class -> createAvslagForLiteTrygdetidAPDto() as T
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto() as T
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto() as T
+            AvslagPaaGjenlevenderettIAlderspensjonDto::class -> createAvslagPaaGjenlevenderettIAlderspensjon() as T
             AvslagUttakFoerNormertPensjonsalderAP2016AutoDto::class -> createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() as T
             AvslagUttakFoerNormertPensjonsalderAP2016Dto::class -> createAvslagUttakFoerNormertPensjonsalderAP2016Dto() as T
             AvslagUttakFoerNormertPensjonsalderAutoDto::class -> createAvslagUttakFoerNormertPensjonsalderAutoDto() as T

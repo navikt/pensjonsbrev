@@ -56,6 +56,7 @@ import no.nav.pensjon.brev.alder.maler.aldersovergang.VedtakOmregningGjenlevende
 import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.OmregningAlderUfore2016
 import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.OmregningAlderUfore2016Auto
 import no.nav.pensjon.brev.alder.maler.avslag.AvslagForLiteTrygdetidAP
+import no.nav.pensjon.brev.alder.maler.avslag.AvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder2016Auto
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderAP2016
@@ -164,6 +165,7 @@ object AlderTemplates : AllTemplates {
             AvslagGradsendringFoerNormertPensjonsalder,
             AvslagGradsendringFoerNormertPensjonsalderAP2016,
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
+            AvslagPaaGjenlevenderettIAlderspensjon,
             AvslagUttakFoerNormertPensjonsalder,
             AvslagUttakFoerNormertPensjonsalderAP2016,
             BekreftelseAvUtsendtKravTilUtlandet,
