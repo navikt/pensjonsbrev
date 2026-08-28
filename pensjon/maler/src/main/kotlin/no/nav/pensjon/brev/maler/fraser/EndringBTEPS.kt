@@ -31,11 +31,13 @@ object EndringBTEPS {
 
             paragraph {
                 text(
-                    bokmal { +"Vi har endret barnetillegget i uføretrygden din. " },
-                    nynorsk { +"Vi har endra barnetillegget i uføretrygda di. " },
+                    bokmal { +"Vi har endret barnetillegget i uføretrygden din fra 1. oktober. " },
+                    nynorsk { +"Vi har endra barnetillegget i uføretrygda di frå 1. oktober. " },
                 )
                 table(header = {
-                    column { text(bokmal { +"Du får per måned før skatt fra 1. oktober:" }, nynorsk { +"Du får per månad før skatt frå 1. oktober:" }) }
+                    column { text(
+                        bokmal { +"Din ytelse per måned" },
+                        nynorsk { +"Din ytelse per månad" }) }
                     column(alignment = RIGHT) { text(bokmal { +"Kroner" }, nynorsk { +"Kroner" }) }
                 }) {
                     beloepsrader(data)
@@ -72,14 +74,14 @@ object EndringBTEPS {
 
             paragraph {
                 text(
-                    bokmal { +"Vi har endret barnetillegget i uføretrygden din. " },
-                    nynorsk { +"Vi har endra barnetillegget i uføretrygda di. " },
+                    bokmal { +"Vi har endret barnetillegget i uføretrygden din fra " + fritekst("måned") + "."},
+                    nynorsk { +"Vi har endra barnetillegget i uføretrygda di frå " + fritekst("måned") + "."},
                 )
                 table(header = {
                     column {
                         text(
-                            bokmal { +"Du får per måned før skatt fra 1. " + fritekst("måned") + ":" },
-                            nynorsk { +"Du får per månad før skatt frå 1. " + fritekst("måned") + ":" },
+                            bokmal { +"Din ytelse per måned" },
+                            nynorsk { +"Din ytelse per månad" },
                         )
                     }
                     column(alignment = RIGHT) { text(bokmal { +"Kroner" }, nynorsk { +"Kroner" }) }
