@@ -78,7 +78,6 @@ object ProductionTemplates : AllTemplates {
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AnkeTilsvarTilAnkendePart,
-        AvslagForLiteTrygdetidAP,
         AvslagGjenlevendepensjon,
         AvslagGjenlevendepensjonUtland,
         AvslagPaaGjenlevenderettIAlderspensjon,
