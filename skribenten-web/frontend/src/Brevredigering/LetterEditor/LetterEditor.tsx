@@ -172,7 +172,7 @@ export const LetterEditor = ({
                   className={getBlockClassName(block, isTekstValgHighlighted(highlightedIds, block))}
                   key={blockIndex}
                 >
-                  {block.missingFromTemplate && (
+                  {redigeringsflate === "saksbehandler-redigering" && block.missingFromTemplate && (
                     <HStack className="missing-from-template-actions" gap="space-4" justify="end">
                       <Button
                         icon={<CheckmarkIcon aria-hidden />}

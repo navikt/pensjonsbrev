@@ -250,16 +250,12 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     defaultValues: defaultValuesModelEditor,
   });
 
-  const { getWarning: getBrevWarning } = useBrevEditorWarnings({
+  const { getWarning } = useBrevEditorWarnings({
     brevkode: props.brev.info.brevkode,
     form,
     redigertBrev: redigertBrev,
     propertyUsage: props.brev.propertyUsage ?? undefined,
   });
-  const getWarning = useCallback(
-    () => getBrevWarning() ?? dokumentEditor.getAktivtDokumentWarning(),
-    [dokumentEditor.getAktivtDokumentWarning, getBrevWarning],
-  );
 
   const { oppdaterBrevMutation } = useOppdaterBrevAutosave({
     saksId: props.saksId,

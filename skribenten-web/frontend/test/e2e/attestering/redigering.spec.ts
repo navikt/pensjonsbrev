@@ -169,21 +169,27 @@ test.describe("attestant redigering", () => {
     await expect(page.getByTestId("tilbakestill-mal-button")).toBeHidden();
   });
 
-  test("varsler om uhåndtert avsnitt i vedlegget før attestering", async ({ page }) => {
+  test("krever ikke håndtering av avsnitt som mangler fra vedleggsmalen", async ({ page }) => {
     await setupVedlegg(page);
     await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, (route) =>
       route.fulfill({ json: vedleggMedUhaandtertAvsnitt }),
     );
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?frigiReservasjon=true", (route) => {
+      const body = route.request().postDataJSON();
+      return route.fulfill({ json: { ...defaultBrev, ...body } });
+    });
 
     await page.goto("/saksnummer/123456/attester/1/redigering");
     await page.getByRole("textbox", { name: "Underskrift" }).fill("Attestant Testesen");
     await page.getByRole("tab", { name: "Vedlegg" }).click();
     await expect(page.locator(".missing-from-template-block")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Behold" })).toBeHidden();
+    await expect(page.getByRole("button", { name: "Slett" })).toBeHidden();
 
     await page.getByRole("button", { name: "Fortsett" }).click();
 
-    await expect(page.getByText("Du må velge om du vil beholde eller slette 1 avsnitt")).toBeVisible();
-    await expect(page.getByText(/Dette avsnittet er markert i vedlegget/)).toBeVisible();
+    await expect(page.getByText("Du må velge om du vil beholde eller slette 1 avsnitt")).toBeHidden();
+    await expect(page).toHaveURL(/\/attester\/1\/forhandsvisning/, { timeout: 15_000 });
   });
 
   test("attesterer ikke når redigert vedlegg ikke kan lagres", async ({ page }) => {
