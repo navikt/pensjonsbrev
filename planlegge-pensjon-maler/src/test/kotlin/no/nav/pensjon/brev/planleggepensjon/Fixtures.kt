@@ -113,6 +113,15 @@ object Fixtures : LetterDataFactory {
         pesysData = EmptyFagsystemdata,
     )
 
+    fun createBrevDtoMedEndringAfpPrivat() = ApSimuleringBrevDto(
+        saksbehandlerValg = createLagreSimuleringDto().copy(
+            simuleringsinformasjon = createSimuleringsinformasjon().copy(
+                simulererEndringMedAfpPrivat = true,
+            ),
+        ),
+        pesysData = EmptyFagsystemdata,
+    )
+
     fun createBrevDtoMedAfpOffentligTidsbegrenset() = ApSimuleringBrevDto(
         saksbehandlerValg = createLagreSimuleringDto().copy(
             simuleringsinformasjon = createSimuleringsinformasjon().copy(
@@ -316,6 +325,7 @@ object Fixtures : LetterDataFactory {
         ),
         kull = Kull.OVERGANG,
         normertPensjonsalderPlassering = NormertPensjonsalderPlassering.MELLOM_GRADERT_OG_HELT,
+        simulererEndringMedAfpPrivat = false,
     )
 
     private fun createSimuleringV1MaanedligAlderspensjon() = SimuleringV1MaanedligAlderspensjon(

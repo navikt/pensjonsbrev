@@ -25,6 +25,15 @@ class AfpVarianterPdfTest {
 
     @Tag(TestTags.MANUAL_TEST)
     @Test
+    fun `pdf med endring AFP privat`() {
+        FeatureToggleSingleton.init(FeatureToggleDummy)
+        val brevDto = Fixtures.createBrevDtoMedEndringAfpPrivat()
+        LetterTestImpl(ApSimuleringBrev.template, brevDto, Language.Bokmal, FellesFactory.felles)
+            .renderTestPDF("AP_SIMULERING_ENDRING_AFP_PRIVAT", pdfByggerService = PdfByggerTestService())
+    }
+
+    @Tag(TestTags.MANUAL_TEST)
+    @Test
     fun `pdf med AFP offentlig livsvarig`() {
         FeatureToggleSingleton.init(FeatureToggleDummy)
         val brevDto = Fixtures.createBrevDtoMedAfpOffentligLivsvarig()
