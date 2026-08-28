@@ -113,6 +113,15 @@ test.describe("Redigerbare vedlegg", () => {
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
   });
 
+  test("ukjent vedlegg i dyplenke går tilbake til brevet og brevmal-fanen", async ({ page }) => {
+    await page.goto("/saksnummer/123456/brev/1?vedlegg=finnes-ikke");
+
+    await expect(page).not.toHaveURL(/vedlegg=/);
+    await expect(page.getByRole("tab", { name: "Brevmal" })).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();
+    await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeHidden();
+  });
+
   test("går tilbake til brevet når vedlegget lukkes", async ({ page }) => {
     await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
     await expect(page.getByText(VEDLEGG_BROEDTEKST)).toBeVisible();
@@ -279,6 +288,58 @@ test.describe("Redigerbare vedlegg", () => {
 
     await expect(page).toHaveURL(/brevbehandler/, { timeout: 20_000 });
     expect(hendelser).toEqual(["vedlegg-lagring-start", "vedlegg-lagring-slutt", "brev-lagring"]);
+  });
+
+  test("lagrer endringer skrevet mens Fortsett-lagringen pågår før brevet lagres", async ({ page }) => {
+    const lagringer: string[] = [];
+    const hendelser: string[] = [];
+
+    await page.route(vedleggUrl(VEDLEGG_ID), async (route) => {
+      if (route.request().method() !== "PUT") {
+        return route.fulfill({ json: vedlegg });
+      }
+      const redigertVedlegg = route.request().postDataJSON().redigertVedlegg;
+      lagringer.push(JSON.stringify(redigertVedlegg));
+      hendelser.push(`vedlegg-${lagringer.length}`);
+      if (lagringer.length === 1) {
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+      }
+      return route.fulfill({ json: redigertVedlegg });
+    });
+
+    await page.route(
+      (url) => url.pathname.endsWith("/sak/123456/brev/1") && !url.search.includes("reserver"),
+      (route) => {
+        if (route.request().method() !== "PUT") {
+          return route.fallback();
+        }
+        hendelser.push("brev-lagring");
+        return route.fulfill({ json: brevResponse });
+      },
+    );
+
+    await page.goto(`/saksnummer/123456/brev/1?vedlegg=${VEDLEGG_ID}`);
+    await endreVedlegg(page, " AAA");
+    await page.getByText("Fortsett", { exact: true }).click();
+    const bekreftIModal = page.getByText("Fortsett til brevbehandler");
+    await bekreftIModal
+      .waitFor({ state: "visible", timeout: 1000 })
+      .then(() => bekreftIModal.click())
+      .catch(() => undefined);
+
+    await expect.poll(() => lagringer.length, { timeout: 10_000 }).toBe(1);
+    const redigerbarTekst = page.locator("span[contenteditable='true']", { hasText: "AAA" });
+    await redigerbarTekst.focus();
+    await redigerbarTekst.press("End");
+    await redigerbarTekst.pressSequentially("BBB");
+
+    await expect(page).toHaveURL(/brevbehandler/, { timeout: 20_000 });
+    expect(lagringer).toHaveLength(2);
+    expect(lagringer[0]).toContain("AAA");
+    expect(lagringer[0]).not.toContain("BBB");
+    expect(lagringer[1]).toContain("AAA");
+    expect(lagringer[1]).toContain("BBB");
+    expect(hendelser).toEqual(["vedlegg-1", "vedlegg-2", "brev-lagring"]);
   });
 
   test("Fortsett lagrer ikke brevet når vedlegget ikke lot seg lagre", async ({ page }) => {

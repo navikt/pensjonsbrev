@@ -38,11 +38,9 @@ export const BrevEditorSidepanel = (props: { saksId: string; brevId: number; bre
   const vedleggQuery = useRedigerbareVedlegg({ saksId: props.saksId, brevId: props.brevId });
   const [aktivTab, setAktivTab] = useState(aktivtDokument.type === "vedlegg" ? VEDLEGG_TAB : BREVMAL_TAB);
 
-  // A deep link straight to a vedlegg (?vedlegg=…) must open on the tab that shows it.
+  // Keep the tab aligned with URL-driven document changes, including normalization of an unknown vedlegg.
   useEffect(() => {
-    if (aktivtDokument.type === "vedlegg") {
-      setAktivTab(VEDLEGG_TAB);
-    }
+    setAktivTab(aktivtDokument.type === "vedlegg" ? VEDLEGG_TAB : BREVMAL_TAB);
   }, [aktivtDokument.type]);
 
   // The brevmal controls edit the letter, so going back to that tab also brings the letter back into

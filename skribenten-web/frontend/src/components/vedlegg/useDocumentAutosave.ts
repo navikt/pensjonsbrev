@@ -100,7 +100,12 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
   }, []);
 
   // Background saves report failure through onSaveError/lagringFeilet; only lagreNaa() propagates it.
-  const lagreNaa = useCallback(() => koeLagring(true), [koeLagring]);
+  const lagreNaa = useCallback(async () => {
+    await koeLagring(true);
+    while (stateRef.current.saveStatus === "DIRTY") {
+      await koeLagring(true);
+    }
+  }, [koeLagring]);
 
   const medLagringPaaPause = useCallback(async <T>(arbeid: () => Promise<T>): Promise<T> => {
     pausetRef.current = true;
