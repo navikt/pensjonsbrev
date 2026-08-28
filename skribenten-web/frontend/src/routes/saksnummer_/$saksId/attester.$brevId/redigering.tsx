@@ -194,7 +194,8 @@ const VedtakWrapper = () => {
 const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const { vedlegg: aktivVedlegg } = Route.useSearch();
-  const { editorState, redigertBrev, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registrerNullstillLagringsfeil } =
+    useManagedLetterEditorContext();
   const attesteringStartTime = useRef(Date.now());
   const currentUser = useUserInfo();
 
@@ -286,6 +287,8 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const onSubmit = async (values: VedtakSidemenyFormData, onSuccess?: () => void) => {
     if (!(await dokumentEditor.lagreAktivtDokument())) return;
 
+    attesterMutation.reset();
+    oppdaterBrevMutation.reset();
     attesterMutation.mutate(
       {
         saksbehandlerValg: values.saksbehandlerValg,
@@ -297,6 +300,16 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   const freeze = oppdaterBrevMutation.isPending || attesterMutation.isPending;
   const error = oppdaterBrevMutation.isError || attesterMutation.isError;
+
+  const resetSaveErrors = useCallback(() => {
+    attesterMutation.reset();
+    oppdaterBrevMutation.reset();
+  }, [attesterMutation.reset, oppdaterBrevMutation.reset]);
+
+  useEffect(() => {
+    registrerNullstillLagringsfeil(resetSaveErrors);
+    return () => registrerNullstillLagringsfeil(null);
+  }, [registrerNullstillLagringsfeil, resetSaveErrors]);
 
   // TODO: disable BrevmalAlternativer during SAVE_PENDING
 

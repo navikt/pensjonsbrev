@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { expect, test } from "@playwright/test";
 
-import { setupSakStubs } from "../utils/helpers";
+import { setupSakStubs } from "~test/e2e/support/helpers";
 
 const brevResponse = JSON.parse(fs.readFileSync(path.resolve("test/e2e/fixtures/brevResponse.json"), "utf-8"));
 

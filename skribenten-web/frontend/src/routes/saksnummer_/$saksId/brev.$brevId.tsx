@@ -262,7 +262,8 @@ function RedigerBrev({
     navigateToDocument,
   });
 
-  const { editorState, redigertBrev, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+  const { editorState, redigertBrev, setEditorState, onSaveSuccess, registrerNullstillLagringsfeil } =
+    useManagedLetterEditorContext();
 
   const { highlightedIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
     lagretRedigertBrev: brev.redigertBrev,
@@ -330,6 +331,7 @@ function RedigerBrev({
       if (isValid) {
         const updatedValg = form.getValues().saksbehandlerValg;
         beforeTekstvalgChange(updatedValg, redigertBrev);
+        oppdaterBrevMutation.reset();
         oppdaterBrevMutation.mutate({
           redigertBrev: redigertBrev,
           saksbehandlerValg: updatedValg,
@@ -345,6 +347,7 @@ function RedigerBrev({
     // reservation and navigating away from edits we never managed to store.
     if (!(await dokumentEditor.lagreAktivtDokument())) return;
 
+    oppdaterBrevMutation.reset();
     oppdaterBrevMutation.mutate(
       {
         redigertBrev: redigertBrev,
@@ -402,6 +405,11 @@ function RedigerBrev({
 
   const freeze = oppdaterBrevMutation.isPending;
   const error = oppdaterBrevMutation.isError;
+
+  useEffect(() => {
+    registrerNullstillLagringsfeil(oppdaterBrevMutation.reset);
+    return () => registrerNullstillLagringsfeil(null);
+  }, [oppdaterBrevMutation.reset, registrerNullstillLagringsfeil]);
 
   // TODO: disable SaksbehandlerValgModelEditor during SAVE_PENDING
 

@@ -10,6 +10,14 @@ plugins {
     alias(libs.plugins.ksp) apply true
 }
 
+dependencyLocking {
+    lockAllConfigurations()
+    ignoredDependencies.add("no.nav.brev.brevbaker:brevbaker-api")
+    ignoredDependencies.add("no.nav.brev.brevbaker:brevdata")
+    ignoredDependencies.add("no.nav.brev.brevbaker:markup-dsl")
+    ignoredDependencies.add("no.nav.brev.brevbaker:markup-model")
+}
+
 group = "no.nav.brev.brevbaker"
 version = "0.0.1-SNAPSHOT"
 
@@ -47,6 +55,7 @@ dependencies {
     testFixturesApi(publishedLibs.brevbaker.api)
     testFixturesImplementation(project(":brevbaker:serialization"))
     // Testfixturene bygger PDF-forespørsler slik en ekstern konsument ville gjort det.
+    testFixturesImplementation(platform(libs.ktor.bom))
     testFixturesImplementation(libs.ktor.serialization.jackson)
     testFixturesImplementation(libs.ktor.client.cio)
     testFixturesImplementation(libs.ktor.client.content.negotiation)
@@ -55,6 +64,7 @@ dependencies {
     testFixturesImplementation(libs.bundles.junit)
     testFixturesApi(libs.testcontainers.core)
 
+    testFixturesImplementation(platform(libs.jackson.bom))
     testFixturesImplementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
     }

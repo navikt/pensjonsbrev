@@ -26,42 +26,55 @@ export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/forh
 
 const VedtakForhåndsvisningWrapper = () => {
   const { saksId, brevId } = Route.useParams();
-  const hentBrevQuery = useQuery({
-    ...getBrevAttestering(saksId, Number(brevId)),
-    refetchOnMount: "always",
-  });
+  const hentBrevQuery = useQuery(getBrevAttestering(saksId, Number(brevId)));
 
-  const hasFetchedBrevAfterMount = hentBrevQuery.isFetchedAfterMount;
+  // Brevet hentes alltid på nytt ved mount, og vi venter på det ferske svaret før pdf-en hentes,
+  // slik at pdf-en alltid samsvarer med gjeldende redigertBrevHash.
+  //
+  // Dette hviler på at spørringen bruker standard staleTime (0): dataen er stale med én gang, og
+  // React Querys standard refetchOnMount henter derfor på nytt ved hver mount. staleTime løses per
+  // observer, så `staleTime: Number.POSITIVE_INFINITY` i redigering.tsx - som deler queryKey med
+  // denne - påvirker oss ikke her.
+  //
+  // ADVARSEL: setter noen en staleTime for denne spørringen (i getBrevAttestering,
+  // queryClient.setQueryDefaults eller defaultOptions.queries på klienten i main.tsx), slutter
+  // refetchOnMount å utløses. Da kan isFetchedAfterMount bli true på cachet data, og vi risikerer å
+  // sende en pdf som hører til en utdatert redigertBrevHash.
+  const showLoading = (
+    <Box asChild background="default" paddingBlock="space-32 space-0">
+      <CenteredLoader label="Henter brev..." verticalStrategy="flexGrow" />
+    </Box>
+  );
 
   return queryFold({
     query: hentBrevQuery,
     initial: () => null,
-    pending: () => (
-      <Box asChild background="default" paddingBlock="space-32 space-0">
-        <CenteredLoader label="Henter brev..." verticalStrategy="flexGrow" />
-      </Box>
-    ),
+    pending: () => showLoading,
     error: (err) => <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />,
     success: (brev) =>
-      hasFetchedBrevAfterMount ? (
-        <VedtaksForhåndsvisning brev={brev} saksId={saksId} />
-      ) : (
-        <Box asChild background="default" paddingBlock="space-32 space-0">
-          <CenteredLoader label="Henter brev..." verticalStrategy="flexGrow" />
-        </Box>
-      ),
+      hentBrevQuery.isFetchedAfterMount ? <VedtaksForhåndsvisning brev={brev} saksId={saksId} /> : showLoading,
   });
 };
+
+type PdfStatus = "ready" | "fetching" | "unavailable";
 
 const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const [vilSendeBrev, setVilSendeBrev] = useState(false);
   const hentPdfQuery = useQuery({
-    queryKey: hentPdfForBrev.queryKey(props.brev.info.id),
+    queryKey: hentPdfForBrev.queryKey(props.brev.info.id, props.brev.redigertBrevHash),
     queryFn: () => hentPdfForBrev.queryFn(props.saksId, props.brev.info.id),
     refetchOnWindowFocus: false,
   });
-  const pdfIsReady = hentPdfQuery.isSuccess && !hentPdfQuery.isFetching && hentPdfQuery.data !== null;
+  // "fetching" må sjekkes først: ved en bakgrunns-refetch ligger forrige pdf fortsatt i data.
+  // isSuccess trengs i tillegg til null-sjekken, fordi React Query beholder forrige data når en
+  // refetch feiler (status blir "error") - da viser forhåndsvisningen feil, og vi skal ikke kunne sende.
+  // data === null betyr at brevet ikke har noen pdf (queryFn gir null ved 404).
+  const pdfStatus: PdfStatus = hentPdfQuery.isFetching
+    ? "fetching"
+    : hentPdfQuery.isSuccess && hentPdfQuery.data !== null
+      ? "ready"
+      : "unavailable";
 
   return (
     <VStack height="100%">
@@ -69,8 +82,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
         <SendBrevModal
           brevId={props.brev.info.id.toString()}
           onClose={() => setVilSendeBrev(false)}
-          pdfIsFetching={hentPdfQuery.isFetching}
-          pdfIsReady={pdfIsReady}
+          pdfStatus={pdfStatus}
           saksId={props.saksId}
           åpen={vilSendeBrev}
         />
@@ -100,10 +112,10 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
               Tilbake til redigering
             </Button>
             <Button
-              disabled={!pdfIsReady}
+              disabled={pdfStatus !== "ready"}
               icon={<ArrowRightIcon />}
               iconPosition="right"
-              loading={hentPdfQuery.isFetching}
+              loading={pdfStatus === "fetching"}
               onClick={() => setVilSendeBrev(true)}
               size="small"
               type="button"
@@ -129,7 +141,13 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
             </VStack>
           </VStack>
         }
-        right={<BrevForhåndsvisning brevId={props.brev.info.id} saksId={props.saksId} />}
+        right={
+          <BrevForhåndsvisning
+            brevId={props.brev.info.id}
+            redigertBrevHash={props.brev.redigertBrevHash}
+            saksId={props.saksId}
+          />
+        }
       />
     </VStack>
   );
@@ -138,8 +156,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
 const SendBrevModal = (props: {
   saksId: string;
   brevId: string;
-  pdfIsFetching: boolean;
-  pdfIsReady: boolean;
+  pdfStatus: PdfStatus;
   åpen: boolean;
   onClose: () => void;
 }) => {
@@ -210,8 +227,8 @@ const SendBrevModal = (props: {
             Avbryt
           </Button>
           <Button
-            disabled={!props.pdfIsReady}
-            loading={sendBrevMutation.isPending || props.pdfIsFetching}
+            disabled={props.pdfStatus !== "ready"}
+            loading={sendBrevMutation.isPending || props.pdfStatus === "fetching"}
             onClick={() => sendBrevMutation.mutate()}
             type="button"
           >

@@ -8,6 +8,13 @@ plugins {
     id("java-test-fixtures")
 }
 
+dependencyLocking {
+    lockAllConfigurations()
+    ignoredDependencies.add("no.nav.brev.brevbaker:brevbaker-api")
+    ignoredDependencies.add("no.nav.brev.brevbaker:brevdata")
+    ignoredDependencies.add("no.nav.brev.brevbaker:markup-model")
+}
+
 group = "no.nav.brev.brevbaker"
 version = "0.0.1-SNAPSHOT"
 
@@ -23,6 +30,7 @@ repositories {
 
 dependencies {
     api(publishedLibs.brevbaker.api)
+    implementation(platform(libs.log4j.bom))
     implementation(libs.bundles.logging)
 
     testImplementation(libs.bundles.junit)

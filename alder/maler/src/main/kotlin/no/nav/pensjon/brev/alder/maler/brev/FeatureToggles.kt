@@ -11,14 +11,6 @@ enum class FeatureToggles(
     innvilgelseAvAfp("innvilgelseAvAfp"),
     innvilgelseAvAfpOffentligSektor("innvilgelseAvAfpOffentligSektor"),
     omregningAlderUfore2016("omregningAlderUfore2016"),
-    varselAfpEtteroppgjoerForeloepig("varselAfpEtteroppgjoerForeloepig"),
-    vedtakAfpEtteroppgjoerEtterbetaling("vedtakAfpEtteroppgjoerEtterbetaling"),
-    vedtakAfpEtteroppgjoerEtterbetalingEtterSvar("vedtakAfpEtteroppgjoerEtterbetalingEtterSvar"),
-    vedtakAfpEtteroppgjoerIngenEndring("vedtakAfpEtteroppgjoerIngenEndring"),
-    vedtakAfpEtteroppgjoerIngenEndringEtterSvar("vedtakAfpEtteroppgjoerIngenEndringEtterSvar"),
-    vedtakAfpEtteroppgjoerIngenEndringNyeOpplysninger("vedtakAfpEtteroppgjoerIngenEndringNyeOpplysninger"),
-    vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger("vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger"),
-    vedtakAfpEtteroppgjoerToleransebeloep("vedtakAfpEtteroppgjoerToleransebeloep"),
     vedtakAfpPrivatEndring("vedtakAfpPrivatEndring"),
     vedtakEndringAfpOffentligSektor("vedtakEndringAfpOffentligSektor");
 

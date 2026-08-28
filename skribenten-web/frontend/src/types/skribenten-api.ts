@@ -3011,6 +3011,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/features/{featureName}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tar imot toggle-navnet uten prefiks ("featureName"). UnleashService legger på
+         *     pensjonsbrev.skribenten.-prefikset, så frontend skal ikke ha noe forhold til det.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    featureName: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiFeatureToggleResponse"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/metrics": {
         parameters: {
             query?: never;
@@ -3955,6 +4003,10 @@ export interface components {
             id: string;
             navn: string;
         };
+        /** ApiFeatureToggleResponse */
+        ApiFeatureToggleResponse: {
+            enabled: boolean;
+        };
     };
     responses: never;
     parameters: never;
@@ -4088,5 +4140,6 @@ export type HentSamhandlerAdresseResponseDto = components['schemas']['HentSamhan
 export type ApiUserInfo = components['schemas']['ApiUserInfo'];
 export type Unit = components['schemas']['Unit'];
 export type NavAnsattEnhet = components['schemas']['NAVAnsattEnhet'];
+export type ApiFeatureToggleResponse = components['schemas']['ApiFeatureToggleResponse'];
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

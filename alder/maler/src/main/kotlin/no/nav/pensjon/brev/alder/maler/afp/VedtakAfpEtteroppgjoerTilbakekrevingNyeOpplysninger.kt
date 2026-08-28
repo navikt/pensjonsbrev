@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerForklaringer
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpTilbakekrevingBody
-import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggDineRettigheterAfpEo
@@ -46,8 +45,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto> {
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_TILBAKEKREV_NYE_OPPL
-
-    override val featureToggle = FeatureToggles.vedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger.toggle
 
     override val kategori = Brevkategori.ETTEROPPGJOER
 

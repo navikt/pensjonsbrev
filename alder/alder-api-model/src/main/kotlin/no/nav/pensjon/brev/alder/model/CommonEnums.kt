@@ -104,6 +104,28 @@ enum class Beregningsmetode {
 
 enum class PoengTallsType { FPP, G, H, IFUT, J, K, L, PI }
 
+enum class VedtaksBegrunnelse{
+    ANNEN_HAR_ET,
+    ANNULERING,
+    BRUKER_HAR_GJP,
+    BRUKERINITIERT,
+    FAMPL_OG_AP,
+    FOR_LAV_UTG,
+    GRAD_TILB_I_TID,
+    LAVT_TIDLIG_UTTAK,
+    OFFAFP_OG_ALDER,
+    TOT_UTGRD_OVER_100,
+    UTG_MINDRE_ETT_AR,
+    UNDER_1_AR_TT,
+    UNDER_3_AR_TT,
+    UNDER_5_AR_TT,
+    UNDER_20_AR_BO,
+    UNDER_20_AR_BO_2016,
+    UNDER_62,
+    VIRKFOM_FOR_2011,
+    VIRK_FOR_LANGT_FREM
+}
+
 enum class InformasjonOmMedlemskap {
     EOES,
     UTENFOR_EOES,
@@ -124,6 +146,12 @@ enum class YtelseForAldersovergangKode {
     UT,
     UT_AP_GRAD,
     UT_GRAD,
+}
+
+enum class BorI {
+    AVTALELAND, // v3.Person - if borIAvtaleland is true and borIEOS is false and borINorge is false
+    EOS, // v3.Person - if borIEOS is true and borIAvaleland i false and borINorge is false
+    NORGE, // v3.Person - if BorI Norge is true and borIAvtaleland is false and borIEOS is false
 }
 
 enum class Sakstype : ISakstype {
