@@ -41,7 +41,6 @@ import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
 
 const brevRedigeringSearchSchema = baseSearchSchema.extend({
-  /** The vedlegg shown in the editor. Absent means the brev itself. */
   vedlegg: z.coerce.string().optional(),
 });
 
@@ -343,8 +342,7 @@ function RedigerBrev({
 
   const onSubmit = async (values: RedigerBrevSidemenyFormData, navigateDone?: () => void) => {
     // A vedlegg is saved through its own endpoint, so it must be persisted while the reservation is
-    // still held — the submit below releases it. If it fails we stay put rather than releasing the
-    // reservation and navigating away from edits we never managed to store.
+    // still held. The final submit releases the reservation, so a failed vedlegg save must stop it.
     if (!(await dokumentEditor.lagreAktivtDokument())) return;
 
     oppdaterBrevMutation.reset();
@@ -352,8 +350,6 @@ function RedigerBrev({
       {
         redigertBrev: redigertBrev,
         saksbehandlerValg: values.saksbehandlerValg,
-        // This is the final "done editing" submit (navigates to brevbehandler), so release the
-        // reservation lock — unlike the tekstvalg/overstyring autosave, which must keep it held.
         frigiReservasjon: true,
       },
       {

@@ -29,7 +29,6 @@ export type DokumentLagring = {
 export function useDocumentAutosave<TDoc, TResponse>(args: {
   content: TDoc;
   saveStatus: SaveStatus;
-  /** Persist the current document content. Called when state is DIRTY. */
   mutationFn: (doc: TDoc) => Promise<TResponse>;
   onSaveStart: () => void;
   onSaveSuccess: (response: TResponse) => void;
@@ -117,7 +116,6 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
     }
   }, []);
 
-  // Autosave: when the content becomes DIRTY, persist after a debounce.
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (skalLagre(content, saveStatus)) {

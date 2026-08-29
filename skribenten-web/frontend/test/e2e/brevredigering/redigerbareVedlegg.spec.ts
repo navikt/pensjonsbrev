@@ -151,7 +151,6 @@ test.describe("Redigerbare vedlegg", () => {
     expect(lagringer).toHaveLength(1);
     expect(lagringer[0]).toContain("endret!");
 
-    // Ingen ny lagring uten nye endringer.
     await page.waitForTimeout(AUTOSAVE_DEBOUNCE_MS + 2000);
     expect(lagringer).toHaveLength(1);
   });
@@ -378,7 +377,6 @@ test.describe("Redigerbare vedlegg", () => {
       .then(() => bekreftIModal.click())
       .catch(() => undefined);
 
-    // Saksbehandler blir stående i redigeringen med reservasjonen i behold.
     await expect.poll(() => lagringsforsoek, { timeout: 10_000 }).toBe(2);
     await expect(page).toHaveURL(new RegExp(`vedlegg=${VEDLEGG_ID}`));
     expect(brevLagret).toBe(false);

@@ -18,8 +18,8 @@ type VedleggEditorContextValue = {
   tilbakestillAktivtVedlegg: () => void;
   registrerTilbakestilling: (tilbakestill: (() => void) | null) => void;
   /**
-   * The mounted document editor registers how to persist its unsaved edits, so the page can await
-   * that before it submits the brev and releases the reservation. Pass null on unmount.
+   * The active vedlegg editor registers its save function so navigation and submission can wait
+   * for unsaved changes before leaving the editing session.
    */
   registrerVedleggslagring: (lagreNaa: (() => Promise<void>) | null) => void;
 };
@@ -27,9 +27,8 @@ type VedleggEditorContextValue = {
 const VedleggEditorContext = createContext<VedleggEditorContextValue | null>(null);
 
 /**
- * Owns "which document is being edited" for the brev editor page. It is route-agnostic: the route
- * supplies the current vedleggId (from the `?vedlegg=` search param) and the navigation callback,
- * so the URL stays the single source of truth and the selection survives reload and back/forward.
+ * Coordinates switching between the brev and its editable vedlegg. The route owns aktivVedleggId,
+ * keeping the URL as the source of truth across reload and browser navigation.
  */
 export const VedleggEditorProvider = (props: {
   aktivVedleggId: string | undefined;

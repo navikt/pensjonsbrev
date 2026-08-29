@@ -7,8 +7,7 @@ import { useVedleggEditor } from "~/components/vedlegg/VedleggEditorContext";
 import { type BrevResponse } from "~/types/brev";
 
 /**
- * Renders the editor surface for whichever document is active. The letter renderer is passed in
- * because it owns the letter's editor session; an attachment gets its own session here.
+ * Keeps the letter editor session separate from the active vedlegg editor session.
  */
 export const BrevOgVedleggEditor = (props: {
   saksId: string;
@@ -30,7 +29,6 @@ export const BrevOgVedleggEditor = (props: {
   }
 
   const vedlegg = vedleggQuery.data?.find((v) => v.vedleggId === aktivtDokument.vedleggId);
-  // The route clears an unknown ?vedlegg= value; this also covers a failed list request.
   if (!vedlegg) {
     return props.renderBrev();
   }

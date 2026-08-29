@@ -119,7 +119,6 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
       });
       settVedleggICache(lagretVedlegg);
       settTittelICache(lagretVedlegg);
-      // The vedlegg is part of the rendered letter PDF.
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brev.info.id) });
     },
     onSaveError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
@@ -141,7 +140,6 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
     medLagringPaaPause(async () => {
       const tilbakestilt = await tilbakestillRedigerbartVedlegg(saksId, brev.info.id, vedleggId);
       settVedleggICache(tilbakestilt);
-      // The title reverts to the template's, which the side panel list also shows.
       settTittelICache(tilbakestilt);
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brev.info.id) });
       return tilbakestilt;

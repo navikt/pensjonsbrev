@@ -14,9 +14,6 @@ export const redigerbareVedleggKeys = {
     [...redigerbareVedleggKeys.all, "vedlegg", brevId, vedleggId] as const,
 };
 
-/**
- * Lightweight list of the letter's editable attachments (vedleggId + title). Used to build tabs.
- */
 export const getRedigerbareVedlegg = {
   queryKey: redigerbareVedleggKeys.liste,
   queryFn: async (saksId: string, brevId: number | string) =>

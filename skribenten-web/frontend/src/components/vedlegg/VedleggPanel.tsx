@@ -46,7 +46,6 @@ export const VedleggPanel = (props: { saksId: string; brevId: number }) => {
                 <BodyShort size="small">
                   Dette vedlegget er redigerbart. Innholdet vises i redigeringsflaten og kan redigeres der.
                 </BodyShort>
-                {/* Kun det aktive vedlegget kan tilbakestilles, så knappen hører hjemme der. */}
                 {erAktivt && kanTilbakestille && (
                   <HStack>
                     <Button
