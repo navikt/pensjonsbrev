@@ -32,10 +32,10 @@ import { UnderskriftTextField } from "~/components/ManagedLetterEditor/Underskri
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
-import { AktivtDokumentProvider } from "~/components/vedlegg/AktivtDokumentContext";
-import { AktivtDokumentEditor } from "~/components/vedlegg/AktivtDokumentEditor";
 import { BrevEditorSidepanel } from "~/components/vedlegg/BrevEditorSidepanel";
-import { useDokumentEditorController } from "~/components/vedlegg/useDokumentEditorController";
+import { BrevOgVedleggEditor } from "~/components/vedlegg/BrevOgVedleggEditor";
+import { useVedleggEditorController } from "~/components/vedlegg/useVedleggEditorController";
+import { VedleggEditorProvider } from "~/components/vedlegg/VedleggEditorContext";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
@@ -206,7 +206,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     (vedleggId: string | undefined) => navigate({ search: (prev) => ({ ...prev, vedlegg: vedleggId }), replace: true }),
     [navigate],
   );
-  const dokumentEditor = useDokumentEditorController({
+  const dokumentEditor = useVedleggEditorController({
     saksId: props.saksId,
     brevId: props.brev.info.id,
     aktivVedleggId: aktivVedlegg,
@@ -377,11 +377,11 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
         {unexpectedError && <ApiError error={unexpectedError} title="Uventet feil ved attestering" />}
 
-        <AktivtDokumentProvider
+        <VedleggEditorProvider
           aktivVedleggId={dokumentEditor.aktivVedleggId}
           onVelgDokument={dokumentEditor.velgDokument}
           redigeringsflate="attestant-redigering"
-          registrerLagring={dokumentEditor.registrerLagring}
+          registrerVedleggslagring={dokumentEditor.registrerVedleggslagring}
         >
           <ThreeSectionLayout
             bottom={
@@ -449,7 +449,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               />
             }
             right={
-              <AktivtDokumentEditor
+              <BrevOgVedleggEditor
                 brev={props.brev}
                 freeze={freeze}
                 renderBrev={() => (
@@ -476,7 +476,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
             }
             reservasjon={reservasjonQuery.data}
           />
-        </AktivtDokumentProvider>
+        </VedleggEditorProvider>
       </form>
     </VStack>
   );

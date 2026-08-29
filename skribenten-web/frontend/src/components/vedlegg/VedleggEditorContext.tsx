@@ -8,7 +8,7 @@ import { type Redigeringsflate } from "~/utils/editorTracking";
  */
 export type AktivtDokument = { type: "brev" } | { type: "vedlegg"; vedleggId: string };
 
-type AktivtDokumentContextValue = {
+type VedleggEditorContextValue = {
   aktivtDokument: AktivtDokument;
   redigeringsflate: Redigeringsflate;
   /** Attestanten skal godkjenne brevet, ikke forkaste saksbehandlerens arbeid. */
@@ -21,24 +21,24 @@ type AktivtDokumentContextValue = {
    * The mounted document editor registers how to persist its unsaved edits, so the page can await
    * that before it submits the brev and releases the reservation. Pass null on unmount.
    */
-  registrerLagring: (lagreNaa: (() => Promise<void>) | null) => void;
+  registrerVedleggslagring: (lagreNaa: (() => Promise<void>) | null) => void;
 };
 
-const AktivtDokumentContext = createContext<AktivtDokumentContextValue | null>(null);
+const VedleggEditorContext = createContext<VedleggEditorContextValue | null>(null);
 
 /**
  * Owns "which document is being edited" for the brev editor page. It is route-agnostic: the route
  * supplies the current vedleggId (from the `?vedlegg=` search param) and the navigation callback,
  * so the URL stays the single source of truth and the selection survives reload and back/forward.
  */
-export const AktivtDokumentProvider = (props: {
+export const VedleggEditorProvider = (props: {
   aktivVedleggId: string | undefined;
   redigeringsflate: Redigeringsflate;
   onVelgDokument: (vedleggId: string | undefined) => Promise<boolean>;
-  registrerLagring: (lagreNaa: (() => Promise<void>) | null) => void;
+  registrerVedleggslagring: (lagreNaa: (() => Promise<void>) | null) => void;
   children: ReactNode;
 }) => {
-  const { aktivVedleggId, redigeringsflate, onVelgDokument, registrerLagring } = props;
+  const { aktivVedleggId, redigeringsflate, onVelgDokument, registrerVedleggslagring } = props;
   const tilbakestillAktivtVedleggRef = useRef<(() => void) | null>(null);
 
   const velgBrev = useCallback(() => onVelgDokument(undefined), [onVelgDokument]);
@@ -48,7 +48,7 @@ export const AktivtDokumentProvider = (props: {
     tilbakestillAktivtVedleggRef.current = tilbakestill;
   }, []);
 
-  const value = useMemo<AktivtDokumentContextValue>(
+  const value = useMemo<VedleggEditorContextValue>(
     () => ({
       aktivtDokument: aktivVedleggId === undefined ? { type: "brev" } : { type: "vedlegg", vedleggId: aktivVedleggId },
       redigeringsflate: redigeringsflate,
@@ -57,7 +57,7 @@ export const AktivtDokumentProvider = (props: {
       velgVedlegg: velgVedlegg,
       tilbakestillAktivtVedlegg: tilbakestillAktivtVedlegg,
       registrerTilbakestilling: registrerTilbakestilling,
-      registrerLagring: registrerLagring,
+      registrerVedleggslagring: registrerVedleggslagring,
     }),
     [
       aktivVedleggId,
@@ -66,17 +66,17 @@ export const AktivtDokumentProvider = (props: {
       velgVedlegg,
       tilbakestillAktivtVedlegg,
       registrerTilbakestilling,
-      registrerLagring,
+      registrerVedleggslagring,
     ],
   );
 
-  return <AktivtDokumentContext.Provider value={value}>{props.children}</AktivtDokumentContext.Provider>;
+  return <VedleggEditorContext.Provider value={value}>{props.children}</VedleggEditorContext.Provider>;
 };
 
-export const useAktivtDokument = (): AktivtDokumentContextValue => {
-  const context = useContext(AktivtDokumentContext);
+export const useVedleggEditor = (): VedleggEditorContextValue => {
+  const context = useContext(VedleggEditorContext);
   if (!context) {
-    throw new Error("useAktivtDokument must be used within an <AktivtDokumentProvider>");
+    throw new Error("useVedleggEditor must be used within a <VedleggEditorProvider>");
   }
   return context;
 };

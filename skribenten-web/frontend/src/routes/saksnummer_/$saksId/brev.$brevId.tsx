@@ -26,10 +26,10 @@ import {
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
-import { AktivtDokumentProvider } from "~/components/vedlegg/AktivtDokumentContext";
-import { AktivtDokumentEditor } from "~/components/vedlegg/AktivtDokumentEditor";
 import { BrevEditorSidepanel } from "~/components/vedlegg/BrevEditorSidepanel";
-import { useDokumentEditorController } from "~/components/vedlegg/useDokumentEditorController";
+import { BrevOgVedleggEditor } from "~/components/vedlegg/BrevOgVedleggEditor";
+import { useVedleggEditorController } from "~/components/vedlegg/useVedleggEditorController";
+import { VedleggEditorProvider } from "~/components/vedlegg/VedleggEditorContext";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
@@ -255,7 +255,7 @@ function RedigerBrev({
     (vedleggId: string | undefined) => navigate({ search: (prev) => ({ ...prev, vedlegg: vedleggId }), replace: true }),
     [navigate],
   );
-  const dokumentEditor = useDokumentEditorController({
+  const dokumentEditor = useVedleggEditorController({
     saksId,
     brevId: brev.info.id,
     aktivVedleggId: aktivVedlegg,
@@ -424,11 +424,11 @@ function RedigerBrev({
               onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
               reservasjon={reservasjonQuery.data}
             />
-            <AktivtDokumentProvider
+            <VedleggEditorProvider
               aktivVedleggId={dokumentEditor.aktivVedleggId}
               onVelgDokument={dokumentEditor.velgDokument}
               redigeringsflate="saksbehandler-redigering"
-              registrerLagring={dokumentEditor.registrerLagring}
+              registrerVedleggslagring={dokumentEditor.registrerVedleggslagring}
             >
               <ThreeSectionLayout
                 bottom={
@@ -474,7 +474,7 @@ function RedigerBrev({
                   />
                 }
                 right={
-                  <AktivtDokumentEditor
+                  <BrevOgVedleggEditor
                     brev={brev}
                     freeze={freeze}
                     renderBrev={() => (
@@ -487,7 +487,7 @@ function RedigerBrev({
                 }
                 rightColumnWidth="minmax(640px, 694px)"
               />
-            </AktivtDokumentProvider>
+            </VedleggEditorProvider>
           </form>
         </VStack>
       </Box>

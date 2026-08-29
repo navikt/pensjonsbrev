@@ -1,22 +1,22 @@
 import { type ReactNode } from "react";
 
 import { CenteredLoader } from "~/components/CenteredLoader";
-import { useAktivtDokument } from "~/components/vedlegg/AktivtDokumentContext";
 import { ManagedVedleggEditor } from "~/components/vedlegg/ManagedVedleggEditor";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
+import { useVedleggEditor } from "~/components/vedlegg/VedleggEditorContext";
 import { type BrevResponse } from "~/types/brev";
 
 /**
  * Renders the editor surface for whichever document is active. The letter renderer is passed in
  * because it owns the letter's editor session; an attachment gets its own session here.
  */
-export const AktivtDokumentEditor = (props: {
+export const BrevOgVedleggEditor = (props: {
   saksId: string;
   brev: BrevResponse;
   freeze: boolean;
   renderBrev: () => ReactNode;
 }) => {
-  const { aktivtDokument, redigeringsflate } = useAktivtDokument();
+  const { aktivtDokument, redigeringsflate } = useVedleggEditor();
   const vedleggQuery = useRedigerbareVedlegg({ saksId: props.saksId, brevId: props.brev.info.id });
 
   if (aktivtDokument.type === "brev") {

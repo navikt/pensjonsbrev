@@ -15,8 +15,8 @@ import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { ApiError } from "~/components/ApiError";
 import { CenteredLoader } from "~/components/CenteredLoader";
-import { useAktivtDokument } from "~/components/vedlegg/AktivtDokumentContext";
 import TilbakestillVedleggModal from "~/components/vedlegg/TilbakestillVedleggModal";
+import { useVedleggEditor } from "~/components/vedlegg/VedleggEditorContext";
 import { type BrevResponse, type EditAttachment, type RedigerbartVedleggInfo } from "~/types/brev";
 import { type EditedDocument } from "~/types/brevbakerTypes";
 import { type Redigeringsflate } from "~/utils/editorTracking";
@@ -71,7 +71,7 @@ export const ManagedVedleggEditor = (props: VedleggEditorProps) => {
 const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachment }) => {
   const { saksId, brev, vedleggId, vedlegg } = props;
   const queryClient = useQueryClient();
-  const { registrerLagring, registrerTilbakestilling } = useAktivtDokument();
+  const { registrerVedleggslagring, registrerTilbakestilling } = useVedleggEditor();
   const [editorState, setEditorState] = useState<LetterEditorState>(() => createVedleggState(brev, vedlegg));
   const [vilTilbakestille, setVilTilbakestille] = useState(false);
 
@@ -126,9 +126,9 @@ const VedleggEditorSession = (props: VedleggEditorProps & { vedlegg: EditAttachm
   });
 
   useEffect(() => {
-    registrerLagring(lagreNaa);
-    return () => registrerLagring(null);
-  }, [registrerLagring, lagreNaa]);
+    registrerVedleggslagring(lagreNaa);
+    return () => registrerVedleggslagring(null);
+  }, [registrerVedleggslagring, lagreNaa]);
 
   const aapneTilbakestilling = useCallback(() => setVilTilbakestille(true), []);
 

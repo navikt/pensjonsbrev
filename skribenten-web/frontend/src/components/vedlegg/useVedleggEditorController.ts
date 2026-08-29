@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
 
-export const useDokumentEditorController = (args: {
+export const useVedleggEditorController = (args: {
   saksId: string;
   brevId: number;
   aktivVedleggId: string | undefined;
@@ -10,17 +10,17 @@ export const useDokumentEditorController = (args: {
 }) => {
   const { saksId, brevId, aktivVedleggId, navigateToDocument } = args;
   const redigerbareVedleggQuery = useRedigerbareVedlegg({ saksId, brevId });
-  const lagreAktivtDokumentRef = useRef<(() => Promise<void>) | null>(null);
+  const lagreAktivtVedleggRef = useRef<(() => Promise<void>) | null>(null);
   const [lagrerAktivtDokument, setLagrerAktivtDokument] = useState(false);
 
-  const registrerLagring = useCallback((lagreNaa: (() => Promise<void>) | null) => {
-    lagreAktivtDokumentRef.current = lagreNaa;
+  const registrerVedleggslagring = useCallback((lagreNaa: (() => Promise<void>) | null) => {
+    lagreAktivtVedleggRef.current = lagreNaa;
   }, []);
 
   const lagreAktivtDokument = useCallback(async (): Promise<boolean> => {
     setLagrerAktivtDokument(true);
     try {
-      await lagreAktivtDokumentRef.current?.();
+      await lagreAktivtVedleggRef.current?.();
       return true;
     } catch {
       return false;
@@ -54,7 +54,7 @@ export const useDokumentEditorController = (args: {
     aktivVedleggId: vedleggFinnes ? aktivVedleggId : undefined,
     lagreAktivtDokument,
     lagrerAktivtDokument,
-    registrerLagring,
+    registrerVedleggslagring,
     velgDokument,
   };
 };

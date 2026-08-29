@@ -2,7 +2,7 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import TilbakestillMalModal from "~/components/TilbakestillMalModal";
-import { useAktivtDokument } from "~/components/vedlegg/AktivtDokumentContext";
+import { useVedleggEditor } from "~/components/vedlegg/VedleggEditorContext";
 import { type BrevResponse } from "~/types/brev";
 
 /**
@@ -13,7 +13,7 @@ import { type BrevResponse } from "~/types/brev";
  */
 const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error: boolean; showDebug?: boolean }) => {
   const { editorState, setEditorState, lagringFeilet } = useManagedLetterEditorContext();
-  const { redigeringsflate, kanTilbakestille } = useAktivtDokument();
+  const { redigeringsflate, kanTilbakestille } = useVedleggEditor();
 
   return (
     <LetterEditor

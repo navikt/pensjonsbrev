@@ -1,7 +1,7 @@
 import { Alert, BodyShort, Button, ExpansionCard, HStack, Loader, VStack } from "@navikt/ds-react";
 
-import { useAktivtDokument } from "~/components/vedlegg/AktivtDokumentContext";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
+import { useVedleggEditor } from "~/components/vedlegg/VedleggEditorContext";
 
 /**
  * The "Vedlegg" side panel: the letter's vedlegg, where opening a redigerbart vedlegg also makes it
@@ -9,7 +9,7 @@ import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedleg
  * vedlegg and P1 are still managed from brevbehandler.
  */
 export const VedleggPanel = (props: { saksId: string; brevId: number }) => {
-  const { aktivtDokument, kanTilbakestille, tilbakestillAktivtVedlegg, velgBrev, velgVedlegg } = useAktivtDokument();
+  const { aktivtDokument, kanTilbakestille, tilbakestillAktivtVedlegg, velgBrev, velgVedlegg } = useVedleggEditor();
   const vedleggQuery = useRedigerbareVedlegg({ saksId: props.saksId, brevId: props.brevId });
 
   if (vedleggQuery.isPending) {
