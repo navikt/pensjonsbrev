@@ -10,13 +10,13 @@ import {
 } from "~/api/redigerbareVedlegg-endpoints";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { normalizeDocumentForComparison, text } from "~/Brevredigering/LetterEditor/actions/common";
+import { useDocumentAutosave } from "~/Brevredigering/LetterEditor/hooks/useDocumentAutosave";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { ApiError } from "~/components/ApiError";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import { useAktivtDokument } from "~/components/vedlegg/AktivtDokumentContext";
 import TilbakestillVedleggModal from "~/components/vedlegg/TilbakestillVedleggModal";
-import { useDocumentAutosave } from "~/components/vedlegg/useDocumentAutosave";
 import { type BrevResponse, type EditAttachment, type RedigerbartVedleggInfo } from "~/types/brev";
 import { type EditedDocument } from "~/types/brevbakerTypes";
 import { type Redigeringsflate } from "~/utils/editorTracking";
