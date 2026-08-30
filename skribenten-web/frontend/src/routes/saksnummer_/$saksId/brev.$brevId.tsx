@@ -341,8 +341,8 @@ function RedigerBrev({
   };
 
   const onSubmit = async (values: RedigerBrevSidemenyFormData, navigateDone?: () => void) => {
-    // A vedlegg is saved through its own endpoint, so it must be persisted while the reservation is
-    // still held. The final submit releases the reservation, so a failed vedlegg save must stop it.
+    // An attachment is saved through its own endpoint, so it must be persisted while the reservation is
+    // still held. The final submit releases the reservation, so a failed attachment save must stop it.
     if (!(await dokumentEditor.lagreAktivtDokument())) return;
 
     oppdaterBrevMutation.reset();

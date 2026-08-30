@@ -2,6 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
 
+/**
+ * Handles document switching and ensures the active vedlegg is saved before navigation.
+ */
 export const useVedleggEditorController = (args: {
   saksId: string;
   brevId: number;

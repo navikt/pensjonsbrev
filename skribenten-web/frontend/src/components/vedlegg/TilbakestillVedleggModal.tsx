@@ -3,10 +3,6 @@ import { useMutation } from "@tanstack/react-query";
 
 import { type EditAttachment } from "~/types/brev";
 
-/**
- * Resets one redigerbart vedlegg back to its template content. This deletes the saved override, it
- * does not remove the vedlegg from the letter — hence "tilbakestill", not "slett".
- */
 const TilbakestillVedleggModal = (props: {
   vedleggtittel: string;
   åpen: boolean;

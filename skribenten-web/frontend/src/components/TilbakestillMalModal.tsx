@@ -16,7 +16,7 @@ const TilbakestillMalModal = (props: {
     mutationFn: () => tilbakestillBrev(props.brevId),
     onSuccess: (response) => {
       queryClient.setQueryData(getBrev.queryKey(props.brevId), response);
-      // Tilbakestilling av brevet merger også inn malendringer i vedleggene, så de kan ha endret seg.
+      // Resetting the letter may also update related vedlegg on the backend, so their cached data must be refreshed.
       queryClient.invalidateQueries({ queryKey: redigerbareVedleggKeys.all });
       props.resetEditor(response);
       props.onClose();

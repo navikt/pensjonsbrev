@@ -32,7 +32,7 @@ export type Title2Block = generated.EditBlockTitle2;
 export type Title3Block = generated.EditBlockTitle3;
 
 /**
- * Shared editable structure for brev and vedlegg. Letter-only metadata such as sakspart and
+ * Shared editable structure for letter and attachment. Letter-only data such as sakspart and
  * signatur is excluded so block and title actions can operate on both document types.
  */
 export type EditedDocument = {

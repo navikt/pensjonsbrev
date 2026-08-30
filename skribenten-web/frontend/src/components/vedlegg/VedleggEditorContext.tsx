@@ -3,15 +3,14 @@ import { createContext, type ReactNode, useCallback, useContext, useMemo, useRef
 import { type Redigeringsflate } from "~/utils/editorTracking";
 
 /**
- * Which document the editor surface is currently showing. The brev is the default; a redigerbart
- * vedlegg is identified by its vedleggId.
+ * Which document the editor surface is currently showing. The letter is the default; 
+ * an editable attachment is identified by its vedleggId.
  */
 export type AktivtDokument = { type: "brev" } | { type: "vedlegg"; vedleggId: string };
 
 type VedleggEditorContextValue = {
   aktivtDokument: AktivtDokument;
   redigeringsflate: Redigeringsflate;
-  /** Attestanten skal godkjenne brevet, ikke forkaste saksbehandlerens arbeid. */
   kanTilbakestille: boolean;
   velgBrev: () => Promise<boolean>;
   velgVedlegg: (vedleggId: string) => Promise<boolean>;

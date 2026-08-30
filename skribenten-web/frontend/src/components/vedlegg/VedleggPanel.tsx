@@ -4,9 +4,7 @@ import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedleg
 import { useVedleggEditor } from "~/components/vedlegg/VedleggEditorContext";
 
 /**
- * The "Vedlegg" side panel: the letter's vedlegg, where opening a redigerbart vedlegg also makes it
- * the document shown in the editor. Only redigerbare vedlegg are listed for now — alltid valgbare
- * vedlegg and P1 are still managed from brevbehandler.
+ * Lists editable vedlegg and switches the editor to the selected one.
  */
 export const VedleggPanel = (props: { saksId: string; brevId: number }) => {
   const { aktivtDokument, kanTilbakestille, tilbakestillAktivtVedlegg, velgBrev, velgVedlegg } = useVedleggEditor();

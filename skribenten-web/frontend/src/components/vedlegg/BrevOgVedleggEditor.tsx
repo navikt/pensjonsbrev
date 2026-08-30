@@ -7,7 +7,7 @@ import { useVedleggEditor } from "~/components/vedlegg/VedleggEditorContext";
 import { type BrevResponse } from "~/types/brev";
 
 /**
- * Keeps the letter editor session separate from the active vedlegg editor session.
+ * Renders either the letter editor or the active vedlegg editor.
  */
 export const BrevOgVedleggEditor = (props: {
   saksId: string;
@@ -22,7 +22,7 @@ export const BrevOgVedleggEditor = (props: {
     return props.renderBrev();
   }
 
-  // The attachment's title comes from the list, so a deep link has to wait for it rather than flash
+  // The attachment's title comes from the vedlegg-list, so a deep link has to wait for it rather than flash
   // the letter on the way to the attachment.
   if (vedleggQuery.isPending) {
     return <CenteredLoader label="Henter vedlegg..." verticalStrategy="height" />;

@@ -6,10 +6,11 @@ import { useVedleggEditor } from "~/components/vedlegg/VedleggEditorContext";
 import { type BrevResponse } from "~/types/brev";
 
 /**
- * Redigeringsflaten for selve brevet.
+ * Renders the editor for the letter.
  *
- * Autolagringen bor i <ManagedLetterEditorContextProvider />, ikke her, slik at den overlever at
- * denne komponenten avmonteres når saksbehandler bytter til et vedlegg.
+ * Autosave lives in <ManagedLetterEditorContextProvider /> so it stays active when this component
+ * unmounts while switching to a vedlegg. If autosave lived here, unmounting could cancel a pending
+ * debounced save and leave letter changes unsaved.
  */
 const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error: boolean; showDebug?: boolean }) => {
   const { editorState, setEditorState, lagringFeilet } = useManagedLetterEditorContext();

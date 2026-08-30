@@ -20,20 +20,12 @@ export const getRedigerbareVedlegg = {
     (await axios.get<RedigerbartVedleggInfo[]>(vedleggUrl(saksId, brevId))).data,
 };
 
-/**
- * Full editable content of one attachment. Backend falls back to the template attachment when
- * no saved override exists, so no edited-vs-original branching is needed here.
- */
 export const getRedigerbartVedlegg = {
   queryKey: redigerbareVedleggKeys.vedlegg,
   queryFn: async (saksId: string, brevId: number | string, vedleggId: string) =>
     (await axios.get<EditAttachment>(`${vedleggUrl(saksId, brevId)}/${vedleggId}`)).data,
 };
 
-/**
- * Saves the edited attachment and returns the stored result, so the caller can refresh from the
- * response instead of assuming its local state matches what the backend persisted.
- */
 export const lagreRedigerbartVedlegg = async (
   saksId: string,
   brevId: number | string,
@@ -46,10 +38,6 @@ export const lagreRedigerbartVedlegg = async (
     } satisfies RedigertVedleggRequest)
   ).data;
 
-/**
- * Discards the stored edits for an attachment and returns it as the template renders it now.
- * This is a reset, not a removal — the attachment itself comes from the mal and stays in the letter.
- */
 export const tilbakestillRedigerbartVedlegg = async (
   saksId: string,
   brevId: number | string,

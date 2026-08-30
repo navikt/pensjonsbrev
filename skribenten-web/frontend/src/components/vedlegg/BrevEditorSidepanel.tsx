@@ -38,8 +38,7 @@ export const BrevEditorSidepanel = (props: { saksId: string; brevId: number; bre
     setAktivTab(aktivtDokument.type === "vedlegg" ? VEDLEGG_TAB : BREVMAL_TAB);
   }, [aktivtDokument.type]);
 
-  // The brevmal controls edit the letter, so going back to that tab also brings the letter back into
-  // the editor — otherwise they would be changing a document the user cannot see.
+  // Switching tabs also switches the active document shown in the editor.
   const velgTab = async (tab: string) => {
     if (tab === BREVMAL_TAB) {
       if (await velgBrev()) {
@@ -56,8 +55,7 @@ export const BrevEditorSidepanel = (props: { saksId: string; brevId: number; bre
     }
   };
 
-  // Fanene finnes bare når brevet faktisk har redigerbare vedlegg. Ved feil viser vi dem likevel,
-  // slik at feilen blir synlig i stedet for at funksjonen forsvinner i stillhet.
+  // Show the tabs only when the letter has editable attachments, but keep them visible on error so the issue can be shown.
   const visFaner = (vedleggQuery.data?.length ?? 0) > 0 || vedleggQuery.isError;
   if (!visFaner) {
     return props.brevmalPanel;

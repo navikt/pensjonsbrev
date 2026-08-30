@@ -30,16 +30,16 @@ type SaveSuccessOptions = {
 
 interface ManagedLetterEditorContextValue {
   editorState: LetterEditorState;
-  /**
-   * Letter-specific view of `editorState.redigertBrev` for consumers that need `sakspart` or
-   * `signatur`. `LetterEditorState` uses the shared `EditedDocument` shape to also support
-   * attachments, but this provider is initialized and updated exclusively with letter data.
-   */
+
+  /** Letter-specific view of the edited document for consumers that need `sakspart` or `signatur`. */
   redigertBrev: EditedLetter;
+
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   onSaveSuccess: (response: BrevResponse, options?: SaveSuccessOptions) => void;
-  /** Whether the letter's own autosave last failed. */
+
+  /** Whether autosaving the letter has failed. */
   lagringFeilet: boolean;
+
   registrerNullstillLagringsfeil: (nullstill: (() => void) | null) => void;
 }
 
@@ -82,9 +82,10 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
     (response: BrevResponse, options?: SaveSuccessOptions) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       queryClient.setQueryData(attesteringBrevKeys.id(response.info.id), response);
-      //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
-      //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
+
+      // Ensure the PDF is fetched again after the letter content changes.
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.info.id) });
+
       setEditorState((previousState) => {
         if (previousState.saveStatus === "DIRTY") {
           return previousState;
@@ -119,7 +120,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
 
       setEditorState((previousState) => ({ ...previousState, saveStatus: "SAVE_PENDING" }));
 
-      // Autolagring skal aldri frigi reservasjonen saksbehandler har på brevet.
+      // Autosave must never release the user's reservation on the letter.
       if (isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
         return oppdaterBrevtekst({
           brevId: props.brev.info.id,
@@ -127,7 +128,8 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
           frigiReservasjon: false,
         });
       }
-      // Tekstvalg er endret, og de lagres ikke av redigertBrev-endepunktet.
+
+      // Save the full letter when tekstvalg has changed
       return oppdaterBrev({
         saksId: stateWithCursor.info.saksId,
         brevId: stateWithCursor.info.id,
@@ -150,8 +152,10 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
         lagreBrevtekst(editorState);
       }
     }, AUTOSAVE_TIMER);
+
     return () => clearTimeout(timeoutId);
-    // Only content changes may restart the debounce; caret/focus activity must not postpone a save.
+
+    // Only content changes should restart the debounce; caret and focus changes should not delay saving.
   }, [
     editorState.saveStatus,
     editorState.redigertBrev,

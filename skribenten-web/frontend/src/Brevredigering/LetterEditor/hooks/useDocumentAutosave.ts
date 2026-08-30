@@ -8,20 +8,14 @@ export type SaveStatus = "DIRTY" | "SAVE_PENDING" | "SAVED";
 
 export type DokumentLagring = {
   lagringFeilet: boolean;
-  /**
-   * Persist any unsaved edits and resolve once nothing is in flight. Rejects if the save fails, so
-   * callers that are about to leave the editing session can stop instead of discarding the edits.
-   */
+  /** Saves all pending edits and rejects if saving fails. */
   lagreNaa: () => Promise<void>;
-  /**
-   * Run `arbeid` with autosave suspended and no save in flight, so a destructive operation
-   * (e.g. tilbakestilling) cannot be overtaken by a save that was already on its way.
-   */
+  /** Pauses autosave while the provided operation runs(arbeid), after waiting for any active save to finish. */
   medLagringPaaPause: <T>(arbeid: () => Promise<T>) => Promise<T>;
 };
 
 /**
- * Generic autosave engine, decoupled from any specific document type. The caller owns the editor
+ * Generic autosave, decoupled from any specific document type. The caller owns the editor
  * session state and supplies a TanStack mutationFn plus lifecycle callbacks; this hook watches
  * `saveStatus`/`content`, debounces, and persists DIRTY content. It deliberately knows nothing about
  * any specific document, response shape, or query caches — those belong to the caller.
@@ -36,22 +30,19 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
 }): DokumentLagring {
   const { content, saveStatus, mutationFn, onSaveStart, onSaveSuccess, onSaveError } = args;
 
-  // Keep latest callbacks/values in refs so the debounce effect does not re-subscribe on every render.
+  // Keep the latest callbacks without restarting the debounce effect.
   const latest = useRef({ mutationFn, onSaveStart, onSaveSuccess, onSaveError });
   latest.current = { mutationFn, onSaveStart, onSaveSuccess, onSaveError };
 
-  // The freshest content/saveStatus, so an unmount flush captures edits made after the last render's
-  // debounce was scheduled. Mutated every render; read only outside the render pass.
+  // Keep the latest content/status available to queued saves and unmount cleanup.
   const stateRef = useRef({ content, saveStatus });
   stateRef.current = { content, saveStatus };
 
-  // A failed save leaves the content DIRTY, which would otherwise re-arm the debounce and retry the
-  // exact same payload forever. This holds the payload that actually failed — not the current
-  // content, which may already have moved on while the failing request was in flight.
+  // Prevent automatic retries of the exact payload that just failed.
   const feiletInnholdRef = useRef<TDoc | null>(null);
   const pausetRef = useRef(false);
-  // Saves run strictly one at a time: two PUTs in flight for the same document can be applied by the
-  // server in the wrong order, so a slow save must delay the next one rather than overlap it.
+
+  // Serialize saves so an older request cannot finish after and overwrite a newer one.
   const koeRef = useRef<Promise<void>>(Promise.resolve());
 
   const { mutateAsync, isError } = useMutation<TResponse, AxiosError, TDoc>({
@@ -75,22 +66,19 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
   const skalLagre = (doc: TDoc, status: SaveStatus) =>
     !pausetRef.current && status === "DIRTY" && doc !== feiletInnholdRef.current;
 
-  /**
-   * Queues one save turn. The turn reads the newest content when it finally runs, so edits made
-   * while an earlier save was in flight are covered by the next turn instead of a second, competing
-   * request — and a turn that has been superseded does nothing.
-   */
+  // Queue a save using the latest content when its turn starts.
   const koeLagring = useCallback((eksplisitt: boolean) => {
     const tur = koeRef.current.then(async () => {
       const { content: sisteInnhold, saveStatus: sisteStatus } = stateRef.current;
-      // An explicit save deliberately ignores `feiletInnhold`: that guard only exists to stop the
-      // automatic retry loop, and a user-initiated save must retry rather than report false success.
+
+      // Explicit saves may retry content that previously failed.
       const skal = eksplisitt ? !pausetRef.current && sisteStatus === "DIRTY" : skalLagre(sisteInnhold, sisteStatus);
       if (skal) {
         await mutateAsyncRef.current(sisteInnhold);
       }
     });
-    // The queue has to survive a failed turn, so the tail never carries a rejection.
+
+    // Keep the queue usable even if one save fails.
     koeRef.current = tur.then(
       () => undefined,
       () => undefined,
@@ -98,7 +86,7 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
     return tur;
   }, []);
 
-  // Background saves report failure through onSaveError/lagringFeilet; only lagreNaa() propagates it.
+  // Explicit saves propagate failures to the caller.
   const lagreNaa = useCallback(async () => {
     await koeLagring(true);
     while (stateRef.current.saveStatus === "DIRTY") {
@@ -125,8 +113,7 @@ export function useDocumentAutosave<TDoc, TResponse>(args: {
     return () => clearTimeout(timeoutId);
   }, [saveStatus, content, koeLagring]);
 
-  // Flush on unmount (e.g. switching to another document): if there are unsaved edits when the
-  // editor unmounts, save them immediately instead of dropping them with the cleared debounce timer.
+  // Save dirty content immediately when this editor session unmounts.
   useEffect(
     () => () => {
       const { content: sisteInnhold, saveStatus: sisteStatus } = stateRef.current;
