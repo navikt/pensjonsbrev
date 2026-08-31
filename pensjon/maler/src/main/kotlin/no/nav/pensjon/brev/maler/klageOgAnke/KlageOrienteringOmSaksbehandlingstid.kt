@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
+import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmSaksbehandlingstid.Saksbehandlingstid.*
 import no.nav.pensjon.brev.model.Brevkategori.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
@@ -14,6 +15,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.saksbehandlervalg
@@ -65,14 +67,14 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<BrevdataMedSaks
                 text(bokmal { +felles.avsenderEnhet.navn }, english { +felles.avsenderEnhet.navn })
             }
 
-            showIf(Saksbehandlingstid_ved_NFP_eller_NAY) {
+            showIf(saksbehandlingstid.isOneOf(SaksbehandlingstidVedNFPellerNAY)) {
                 paragraph {
                     text(
                         bokmal { +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over " + felles.avsenderEnhet.navn + " vedtak av " + fritekst("vedtaksdato") + "." },
                         english { +"On " + fritekst("mottaksdato for klagen") + " we received an appeal about " + felles.avsenderEnhet.navn + " decision of " + fritekst("vedtaksdato") + "." }
                     )
                 }
-            }.orShowIf(saksbehandlingstidVedNavKlageinstans) {
+            }.orShowIf(saksbehandlingstid.isOneOf(SaksbehandlingstidVedNavKlageinstans)) {
                 paragraph {
                     text(
                         bokmal { +"Vi har " + fritekst("mottaksdato for klagen") + " mottatt klagen over " + fritekst("Nav saksbehandlingsenhet") + " vedtak av " + fritekst("vedtaksdato") + "." },
@@ -102,7 +104,7 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<BrevdataMedSaks
         }
     }
     enum class Saksbehandlingstid {
-        Saksbehandlingstid_ved_NFP_eller_NAY,
-        Saksbehandlingstid_ved_Nav_Klageinstans
+        SaksbehandlingstidVedNFPellerNAY,
+        SaksbehandlingstidVedNavKlageinstans
     }
 }
