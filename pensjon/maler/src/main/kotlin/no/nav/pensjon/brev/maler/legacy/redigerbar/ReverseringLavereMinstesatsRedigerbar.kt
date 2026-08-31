@@ -38,7 +38,7 @@ object ReverseringLavereMinstesatsRedigerbar : RedigerbarTemplate<ReverseringLav
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - omgjøring av kutt i minstesats",
+            displayTitle = "Vedtak - omgjøring av reduksjon i minstesats",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -47,8 +47,8 @@ object ReverseringLavereMinstesatsRedigerbar : RedigerbarTemplate<ReverseringLav
 
         title {
             text(
-                bokmal { +"Vedtaksbrev - Omgjøring av kutt i minstesats" },
-                nynorsk { +"Vedtaksbrev - Omgjering av kutt i minstesats" },
+                bokmal { +"Vedtaksbrev - Omgjøring av reduksjon i minstesats" },
+                nynorsk { +"Vedtaksbrev - Omgjering av reduksjon i minstesats" },
             )
         }
         outline {
