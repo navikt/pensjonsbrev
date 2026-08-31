@@ -20,7 +20,8 @@ class BrevdataService(private val penClient: PenClient, private val samhandlerSe
         brevkode: Brevkode.Redigerbart,
         avsenderEnhetsId: EnhetId,
         mottaker: Dto.Mottaker?,
-        signatur: SignerendeSaksbehandlere
+        signatur: SignerendeSaksbehandlere,
+        fagsystemBrevdata: no.nav.pensjon.brev.skribenten.brevredigering.application.FagsystemBrevdata?,
     ): BrevdataResponse.Data {
         val pesysData = penClient.hentPesysBrevdata(
             saksId = saksId,
@@ -34,7 +35,8 @@ class BrevdataService(private val penClient: PenClient, private val samhandlerSe
                 .medSignerendeSaksbehandlere(signatur)
                 .let {
                     if (mottaker != null) it.medAnnenMottakerNavn(mottaker.annenMottakerNavn()) else it
-                }
+                },
+            brevdata = fagsystemBrevdata ?: pesysData.brevdata
         )
     }
 
@@ -50,6 +52,7 @@ class BrevdataService(private val penClient: PenClient, private val samhandlerSe
                 saksbehandler = brev.redigertBrev.signatur.saksbehandlerNavn!!,
                 attesterendeSaksbehandler = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
             ),
+            fagsystemBrevdata = brev.fagsystemBrevdata,
         )
 
     // TODO: Jeg føler ikke helt at denne hører til her.
