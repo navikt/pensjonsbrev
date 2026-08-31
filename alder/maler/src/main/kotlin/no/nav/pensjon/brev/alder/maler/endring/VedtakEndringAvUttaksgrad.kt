@@ -40,6 +40,7 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
@@ -167,7 +168,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                 )
             }
 
-            includePhrase(FlereBeregningsperioder(/*pesysData.beregnetPensjonPerManed.antallBeregningsperioderPensjon.greaterThan(1)*/ true.expr(), pesysData.alderspensjonVedVirk.totalPensjon))
+            includePhrase(FlereBeregningsperioder(pesysData.beregnetPensjonPerManed.antallBeregningsperioderPensjon.greaterThan(1), pesysData.alderspensjonVedVirk.totalPensjon))
 
             showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2011)) {
                 //  endrUtaksgradAP2011_001
