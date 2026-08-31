@@ -58,6 +58,19 @@ export const favoritterKeys = {
   all: ["FAVORITTER"] as const,
 };
 
+export const featureToggleKeys = {
+  all: ["FEATURE_TOGGLE"] as const,
+  name: (featureName: string) => [...featureToggleKeys.all, featureName] as const,
+};
+
+export const getFeatureToggle = (featureName: string) => ({
+  queryKey: featureToggleKeys.name(featureName),
+  queryFn: async () =>
+    (await axios.get<{ enabled: boolean }>(`${SKRIBENTEN_API_BASE_PATH}/features/${encodeURIComponent(featureName)}`))
+      .data,
+  staleTime: Number.POSITIVE_INFINITY,
+});
+
 export const avtalelandKeys = {
   all: ["AVTALE_LAND"] as const,
 };

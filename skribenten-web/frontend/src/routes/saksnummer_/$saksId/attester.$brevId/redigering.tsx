@@ -22,6 +22,7 @@ import { z } from "zod";
 
 import { getBrevAttestering, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
+import { getFeatureToggle } from "~/api/skribenten-api-endpoints";
 import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import { AttestantDiffProvider } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
@@ -207,6 +208,8 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     strict: false,
     select: (search: Record<string, unknown>) => search?.debug === "true" || search?.debug === true,
   });
+
+  const diffFeatureToggle = useQuery(getFeatureToggle("diff"));
 
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(props.brev.info.id),
@@ -469,45 +472,49 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   <Hide above="sm" asChild>
                     <Switch size="small">Vis slettet tekst</Switch>
                   </Hide>
-                  <Switch
-                    checked={attestantDiff.enabled}
-                    onChange={(event) => attestantDiff.setEnabled(event.target.checked)}
-                    size="small"
-                  >
-                    Marker tekst som er lagt til og slettet
-                  </Switch>
-                  {attestantDiff.status === "ready" && (
-                    <VStack gap="space-4">
-                      <BodyShort size="small">
-                        <span className="attestant-diff-inserted">Lagt til manuelt</span>
-                      </BodyShort>
-                      <BodyShort size="small">
-                        <span className="attestant-diff-deleted">Slettet manuelt</span>
-                      </BodyShort>
-                    </VStack>
-                  )}
-                  {attestantDiff.status === "loading" && (
-                    <HStack align="center" gap="space-8">
-                      <Loader size="small" title="Markerer endringer" />
-                      <BodyShort size="small">Markerer endringer ...</BodyShort>
-                    </HStack>
-                  )}
-                  {attestantDiff.status === "error" && (
-                    <LocalAlert size="small" status="error">
-                      <LocalAlert.Header>
-                        <LocalAlert.Title>Endringene kunne ikke vises</LocalAlert.Title>
-                      </LocalAlert.Header>
-                      <LocalAlert.Content>
-                        Brevet kan fortsatt gjennomgås, men markeringene er utilgjengelige.
-                      </LocalAlert.Content>
-                    </LocalAlert>
-                  )}
-                  {attestantDiff.status === "empty" && (
-                    <LocalAlert size="small" status="warning">
-                      <LocalAlert.Header>
-                        <LocalAlert.Title>Ingen endringer fra malen ble funnet</LocalAlert.Title>
-                      </LocalAlert.Header>
-                    </LocalAlert>
+                  {diffFeatureToggle.data?.enabled === true && (
+                    <>
+                      <Switch
+                        checked={attestantDiff.enabled}
+                        onChange={(event) => attestantDiff.setEnabled(event.target.checked)}
+                        size="small"
+                      >
+                        Marker tekst som er lagt til og slettet
+                      </Switch>
+                      {attestantDiff.status === "ready" && (
+                        <VStack gap="space-4">
+                          <BodyShort size="small">
+                            <span className="attestant-diff-inserted">Lagt til manuelt</span>
+                          </BodyShort>
+                          <BodyShort size="small">
+                            <span className="attestant-diff-deleted">Slettet manuelt</span>
+                          </BodyShort>
+                        </VStack>
+                      )}
+                      {attestantDiff.status === "loading" && (
+                        <HStack align="center" gap="space-8">
+                          <Loader size="small" title="Markerer endringer" />
+                          <BodyShort size="small">Markerer endringer ...</BodyShort>
+                        </HStack>
+                      )}
+                      {attestantDiff.status === "error" && (
+                        <LocalAlert size="small" status="error">
+                          <LocalAlert.Header>
+                            <LocalAlert.Title>Endringene kunne ikke vises</LocalAlert.Title>
+                          </LocalAlert.Header>
+                          <LocalAlert.Content>
+                            Brevet kan fortsatt gjennomgås, men markeringene er utilgjengelige.
+                          </LocalAlert.Content>
+                        </LocalAlert>
+                      )}
+                      {attestantDiff.status === "empty" && (
+                        <LocalAlert size="small" status="warning">
+                          <LocalAlert.Header>
+                            <LocalAlert.Title>Ingen endringer fra malen ble funnet</LocalAlert.Title>
+                          </LocalAlert.Header>
+                        </LocalAlert>
+                      )}
+                    </>
                   )}
                   <Divider />
                   <UnderskriftTextField
