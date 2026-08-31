@@ -104,8 +104,8 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
             }
         }
     }
-    enum class Saksbehandlingstid : SaksbehandlerValgEnum {
-        SaksbehandlingstidVedNFPellerNAY,
-        SaksbehandlingstidVedNavKlageinstans
+    enum class Saksbehandlingstid(override val displayText: String): SaksbehandlerValgEnum {
+        SaksbehandlingstidVedNFPellerNAY("Saksbehandlingstid ved NFP eller NAY"),
+        SaksbehandlingstidVedNavKlageinstans("Saksbehandlingstid ved Nav Klageinstans")
     }
 }
