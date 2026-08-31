@@ -1,9 +1,10 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.brev.brevbaker.*
-import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.alder.Fixtures
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
