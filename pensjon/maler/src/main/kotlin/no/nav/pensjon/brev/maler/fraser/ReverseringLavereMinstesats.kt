@@ -25,7 +25,9 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 
@@ -86,10 +88,25 @@ object ReverseringLavereMinstesats {
                     list {
                         item {
                             text(
-                                bokmal { +"Du får " + lopendeYtelse.nettoTotal.format() + " i uføretrygd, barnetillegg og gjenlevendetillegg per måned før skatt fra 1. oktober 2026." },
-                                nynorsk { +"Du får " + lopendeYtelse.nettoTotal.format() + " i uføretrygd, barnetillegg og attlevandetillegg per månad før skatt frå 1. oktober 2026." },
+                                bokmal { +"Du får " + lopendeYtelse.nettoTotal.format() + " i " },
+                                nynorsk { +"Du får " + lopendeYtelse.nettoTotal.format() + " i " },
                             )
+                            showIf(lopendeYtelse.nettoBarnetillegg.isNull() and lopendeYtelse.nettoGjenlevendetillegg.isNull()) {
+                                text(
+                                    bokmal { +"uføretrygd " },
+                                    nynorsk { +"uføretrygd " },
+                                )
 
+                            }.orShow {
+                                text(
+                                    bokmal { +"uføretrygd og tillegg " },
+                                    nynorsk { +"uføretrygd og tillegg " },
+                                )
+                            }
+                            text(
+                                bokmal { +"per måned før skatt fra 1. oktober 2026." },
+                                nynorsk { +"per månad før skatt frå 1. oktober 2026." },
+                            )
                         }
                         item {
                             text(
