@@ -98,6 +98,7 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
 
             get("/alltidValgbareVedlegg") {
                 val template = resource.getTemplate(call.kode(resource))
+                // TODO: Smartcasting her er avhengig av at vi endrer getTemplate til å returnere generics
                 if (template != null && template is RedigerbarTemplate<*>) {
                     call.respond(template.valgbareVedlegg)
                 } else {
