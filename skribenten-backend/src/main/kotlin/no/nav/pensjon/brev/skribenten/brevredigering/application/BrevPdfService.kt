@@ -37,11 +37,6 @@ class BrevPdfService(
     private val pdfVedleggAppender: PDFVedleggAppender,
 ) {
 
-    /**
-     * @param sjekkOmRendretBrevErEndret angir om vi skal simulere en merge mot en fersk rendring av
-     * malen for å svare på om innholdet i brevet ville endret seg. Attesteringsflyten merger ikke, og
-     * skal derfor alltid få `false`.
-     */
     suspend fun hentEllerOpprett(
         brev: BrevredigeringEntity,
         fagsak: Fagsak,

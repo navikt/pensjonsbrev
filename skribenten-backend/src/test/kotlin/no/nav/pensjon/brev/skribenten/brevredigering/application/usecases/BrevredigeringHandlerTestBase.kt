@@ -599,10 +599,6 @@ abstract class BrevredigeringHandlerTestBase {
             handler(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id, saksId = saksId, fagsak = fagsak1))
         }
 
-    /**
-     * Endrer malen slik at både innhold (blocks), sakspart og malstyrt signatur blir forskjellig fra
-     * det som allerede er lagret på brevet.
-     */
     protected fun stagEndretMal() {
         brevbakerService.renderMarkupResultat = {
             letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill"))))

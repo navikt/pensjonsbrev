@@ -10,11 +10,6 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.*
 import org.jetbrains.exposed.v1.jdbc.Database
 
-/**
- * Lagrer attestantens endringer i brevet. Til forskjell fra [OppdaterBrevHandler] merges ikke det
- * lagrede brevet med en fersk rendring av malen: etter at saksbehandler har overlevert brevet skal
- * innholdet fryses. Kun sakspart og de malstyrte feltene i signaturen oppdateres.
- */
 class LagreAttestertBrevHandler(
     private val attesterBrevPolicy: AttesterBrevPolicy,
     private val redigerBrevPolicy: RedigerBrevPolicy,

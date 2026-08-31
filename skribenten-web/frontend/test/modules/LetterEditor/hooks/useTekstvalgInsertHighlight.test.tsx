@@ -109,7 +109,9 @@ function renderHarness() {
 
   const wrapper = (props: { children: ReactNode }) => (
     <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
-      <ManagedLetterEditorContextProvider brev={lagretBrev}>{props.children}</ManagedLetterEditorContextProvider>
+      <ManagedLetterEditorContextProvider brev={lagretBrev} redigeringsflate="saksbehandler-redigering">
+        {props.children}
+      </ManagedLetterEditorContextProvider>
     </QueryClientProvider>
   );
 

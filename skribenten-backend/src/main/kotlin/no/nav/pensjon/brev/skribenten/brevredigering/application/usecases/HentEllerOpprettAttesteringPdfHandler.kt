@@ -10,11 +10,6 @@ import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.jetbrains.exposed.v1.jdbc.Database
 
-/**
- * PDF for attestanten. Ikke-redigerbart innhold rendres fra ferske pesysdata, mens det redigerbare
- * brevet brukes slik det er lagret. Attesteringsflyten merger ikke mot malen, og derfor er det
- * heller ikke relevant å varsle om at en fersk rendring ville endret innholdet.
- */
 class HentEllerOpprettAttesteringPdfHandler(
     private val brevPdfService: BrevPdfService,
     database: Database,

@@ -128,6 +128,7 @@ export const LetterEditor = ({
         <EditorMenu
           canRedo={canRedo}
           canUndo={canUndo}
+          redigeringsflate={redigeringsflate}
           redo={redo}
           setVilTilbakestilleMal={setVilTilbakestilleMal}
           undo={undo}

@@ -26,11 +26,6 @@ fun Edit.Attachment.updateEditedAttachment(renderedAttachment: LetterMarkup.Atta
         UpdateEditedLetter(rendered.variablesValueMap()).mergeAttachment(this, rendered)
     }
 
-/**
- * Oppdaterer kun de delene av brevet som ikke er saksbehandlers innhold: sakspart og de malstyrte
- * feltene i signaturen. Tittel og blokker beholdes slik de er lagret, slik at innholdet i brevet
- * fryses etter at det er overlevert til attestering.
- */
 fun Edit.Letter.updateSakspartOgSignatur(renderedLetter: LetterMarkup): Edit.Letter =
     copy(
         sakspart = renderedLetter.sakspart,

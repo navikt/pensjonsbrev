@@ -9,10 +9,12 @@ export const EnumEditor = ({
   fieldName,
   spec,
   submitOnChange,
+  readOnly,
 }: {
   fieldName: string;
   spec: TEnum;
   submitOnChange?: () => void;
+  readOnly?: boolean;
 }) => {
   const { control } = useFormContext();
 
@@ -34,6 +36,7 @@ export const EnumEditor = ({
             field.onChange(value);
             submitOnChange?.();
           }}
+          readOnly={readOnly}
           size="small"
         >
           {values.map((value) => (
