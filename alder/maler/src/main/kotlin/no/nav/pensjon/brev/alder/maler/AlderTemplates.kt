@@ -51,7 +51,7 @@ import no.nav.pensjon.brev.alder.maler.aldersovergang.InfoAldersovergangEps60Aar
 import no.nav.pensjon.brev.alder.maler.aldersovergang.InfoAldersovergangEps62AarAuto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.InfoFyller67AarSaerskiltSats
 import no.nav.pensjon.brev.alder.maler.aldersovergang.VedtakAldersovergang67AarGarantitilleggAuto
-import no.nav.pensjon.brev.alder.maler.aldersovergang.VedtakEndringAFPEndretOpptjeningAuto
+import no.nav.pensjon.brev.alder.maler.afpprivat.VedtakEndringAFPEndretOpptjeningAuto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.VedtakOmregningGjenlevendepensjonTilAlderspensjonAuto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.OmregningAlderUfore2016
 import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.OmregningAlderUfore2016Auto

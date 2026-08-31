@@ -1,10 +1,10 @@
-package no.nav.pensjon.brev.alder.maler.aldersovergang
+package no.nav.pensjon.brev.alder.maler.afpprivat
 
 import no.nav.pensjon.brev.alder.model.BeloepEndring
-import no.nav.pensjon.brev.alder.model.aldersovergang.AFPPrivatBeregning
-import no.nav.pensjon.brev.alder.model.aldersovergang.OpptjeningInfo
-import no.nav.pensjon.brev.alder.model.aldersovergang.OpptjeningType
-import no.nav.pensjon.brev.alder.model.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDto
+import no.nav.pensjon.brev.alder.model.afpprivat.AFPPrivatBeregning
+import no.nav.pensjon.brev.alder.model.afpprivat.OpptjeningInfo
+import no.nav.pensjon.brev.alder.model.afpprivat.OpptjeningType
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakEndringAFPEndretOpptjeningAutoDto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
