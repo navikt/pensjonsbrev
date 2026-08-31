@@ -38,7 +38,7 @@ object VedtakOmOktFribelopRedigerbar : RedigerbarTemplate<VedtakOmOktFribelopRed
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - økt fribeløp",
+            displayTitle = "Vedtak – Økning fribeløp - uføretrygden påvirkes ikke",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )

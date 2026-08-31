@@ -36,7 +36,7 @@ object VedtakOmOktBunnfradragRedigerbar : RedigerbarTemplate<VedtakOmOktBunnfrad
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - økt bunnfradrag",
+            displayTitle = "Vedtak - Økning fribeløp med endring",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
