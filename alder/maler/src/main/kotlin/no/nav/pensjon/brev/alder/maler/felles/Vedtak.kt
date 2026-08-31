@@ -29,10 +29,10 @@ object Vedtak {
             }
     }
 
-    object BegrunnelseOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    data class BegrunnelseOverskrift(val uniqueness: String? = null) : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
-            title1 {
+            title1(uniqueness = uniqueness) {
                 text(
                     bokmal { + "Begrunnelse for vedtaket" },
                     nynorsk { + "Grunngiving for vedtaket" },

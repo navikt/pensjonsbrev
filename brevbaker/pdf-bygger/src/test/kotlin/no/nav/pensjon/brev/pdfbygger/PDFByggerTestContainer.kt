@@ -47,7 +47,7 @@ object PDFByggerTestContainer {
             .withLogConsumer(Slf4jLogConsumer(LoggerFactory.getLogger("pdf-bygger")))
             .withEnv(
                 "JAVA_TOOL_OPTIONS",
-                "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016",
+                "-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016",
             )
             .withEnv("PDF_BYGGER_COMPILE_TMP_DIR", "/tmp")
             .withEnv("PDF_COMPILE_TIMEOUT_SECONDS", "200")

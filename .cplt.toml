@@ -30,8 +30,7 @@ allow_jvm_attach = true
 allow_localhost_any = true
 
 [propose.allow]
-ports = [5015, 5016, 5017, 5432, 8080, 8081, 8082, 8083, 8084, 8088, 8089, 20080]
-localhost = [8080]
+localhost = [8080, 5015, 5016, 5017, 5432, 8081, 8082, 8083, 8084, 8088, 8089, 20080]
 
 [propose.proxy]
-allow_private_domains = ["mimir.nav.cloud.nais.io", "loki.nav.cloud.nais.io", "tempo.prod-gcp.nav.cloud.nais.io"]
+allow_private_domains = ["pensjon-brevbaker.intern.dev.nav.no", "pensjon-pdf-bygger.intern.dev.nav.no", "pensjon-skribenten-api.intern.nav.no", "mimir.nav.cloud.nais.io", "loki.nav.cloud.nais.io", "tempo.prod-gcp.nav.cloud.nais.io"]
