@@ -6,9 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
-import no.nav.pensjon.brev.maler.alder.EndringAvUttaksgradAuto
-import no.nav.pensjon.brev.maler.alder.InnvilgelseAvAlderspensjonAuto
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
 import no.nav.pensjon.brev.maler.klageOgAnke.AnkeTilsvarTilAnkendePart
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmOversendelseTilKlageinstans
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmSaksbehandlingstid
@@ -44,14 +41,11 @@ object ProductionTemplates : AllTemplates {
         EndretUfoeretrygdPGAInntektV2,
         EndretUforetrygdPGAInntektNesteAr,
         EndretUforetrygdPGAOpptjeningLegacy,
-        EndringPgaOpptjeningAuto,
-        EndringAvUttaksgradAuto,
         VedtakOmEtterbetalingOpphor2026Auto,
         VedtakOmEtterbetalingOpphor2026OktIfuAuto,
         VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto,
         EtteroppgjoerEtterbetalingAutoLegacy,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
-        InnvilgelseAvAlderspensjonAuto,
         OmsorgEgenAuto,
         OpphoerBarnetilleggAuto,
         OpptjeningVedForhoeyetHjelpesats,
@@ -78,7 +72,6 @@ object ProductionTemplates : AllTemplates {
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AnkeTilsvarTilAnkendePart,
-        AvslagForLiteTrygdetidAP,
         AvslagGjenlevendepensjon,
         AvslagGjenlevendepensjonUtland,
         AvslagPaaGjenlevenderettIAlderspensjon,
@@ -100,8 +93,6 @@ object ProductionTemplates : AllTemplates {
         InnhentingDokumentasjonFraBruker,
         InnhentingInformasjonFraBruker,
         InnhentingOpplysningerFraBruker,
-        InnvilgelseAvAlderspensjon,
-        InnvilgelseAvAlderspensjonTrygdeavtale,
         InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
         InnvilgelseUforetrygd,
         InnvilgelseUforetrygdUtland,
@@ -123,13 +114,7 @@ object ProductionTemplates : AllTemplates {
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
         VedtakAvslagPaaOmsorgsopptjening,
-        VedtakEndringAvAlderspensjonFordiOpptjeningErEndret,
         VedtakEndringAvAlderspensjonGjenlevenderettigheter,
-        VedtakEndringAvAlderspensjonInstitusjonsopphold,
-        VedtakEndringAvUttaksgrad,
-        VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
-        VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
-        VedtakEndringVedFlyttingMellomLand,
         VedtakOmFjerningAvOmsorgsopptjening,
         VedtakOmInnvilgelseAvOmsorgspoeng,
         VedtakOmLavereMinstesatsRedigerbar,

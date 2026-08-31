@@ -24,6 +24,7 @@ data class VedtakOmOktBunnfradragData(
     val vektetFribelop: Double,
     val vektetFribelopKr: Kroner,
     val fribelopPerioder: List<FribelopPeriode>,
+    val venteperiodeEtterGradsokning: Boolean,
 
     val scenario1_1G: Boolean,
     val scenario2_1G_04G: Scenario2_1G_04G?,
@@ -49,5 +50,5 @@ data class FribelopPeriode(
     val fom: LocalDate,
     val tom: LocalDate,
     val uforegrad: Int,
-    val faktor: Double
+    val faktor: Double,
 )
