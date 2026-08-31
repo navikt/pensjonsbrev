@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
@@ -206,7 +205,7 @@ data class ArbeidsinntektOgAlderspensjon(
                     },
                 )
             }
-        }.orShowIf(uttaksgrad.lessThan(100) and not(uforeKombinertMedAlder)) {
+        }.orShowIf(uttaksgrad.lessThan(100)) {
             // nyOpptjeningGradertAP
             paragraph {
                 text(
