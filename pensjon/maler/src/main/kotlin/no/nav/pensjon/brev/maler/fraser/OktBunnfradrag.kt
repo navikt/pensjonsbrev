@@ -40,9 +40,11 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
@@ -179,13 +181,24 @@ object OktBunnfradrag {
                             cell {
                                 showIf(data.manedligOkningUforetrygdInklTilleggUtAret.greaterThan(0)) {
                                     text(
-                                        bokmal { +"Månedlig økning i uføretrygd og barnetillegg ut 2026" },
-                                        nynorsk { +"Månadleg auke i uføretrygd og barnetillegg ut 2026" },
+                                        bokmal { +"Månedlig økning " },
+                                        nynorsk { +"Månadleg auke " },
                                     )
                                 }.orShow {
                                     text(
-                                        bokmal { +"Månedlig reduksjon i uføretrygd og barnetillegg ut 2026" },
-                                        nynorsk { +"Månadleg reduksjon i uføretrygd og barnetillegg ut 2026" },
+                                        bokmal { +"Månedlig reduksjon " },
+                                        nynorsk { +"Månadleg reduksjon " },
+                                    )
+                                }
+                                showIf(data.barnetillegg.isNull() and data.gjenlevendetillegg.isNull()) {
+                                    text(
+                                        bokmal { +"i uføretrygd ut 2026 " },
+                                        nynorsk { +"i uføretrygd ut 2026 " },
+                                    )
+                                }.orShow {
+                                    text(
+                                        bokmal { +"i uføretrygd og tillegg ut 2026 " },
+                                        nynorsk { +"i uføretrygd og tillegg ut 2026 " },
                                     )
                                 }
                             }
