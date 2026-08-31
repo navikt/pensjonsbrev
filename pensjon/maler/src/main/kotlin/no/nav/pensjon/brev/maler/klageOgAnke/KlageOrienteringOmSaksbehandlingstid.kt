@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.klageOgAnke
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
 import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValgUtenFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
 import no.nav.pensjon.brev.maler.FeatureToggles
@@ -28,7 +29,7 @@ import no.nav.pensjon.brevbaker.api.model.selectors.brevbakerFelles.navEnhet.nav
 // Erstatte PE_IY_03_153 Klage - orientering om saksbehandlingstid, og PE_IY_03_162 Klage - orientering om saksbehandlingstid ved Nav Klageinstans.
 
 @TemplateModelHelpers
-object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<BrevdataMedSaksbehandlerValgUtenFagsystemdata> {
+object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
 
     override val featureToggle = FeatureToggles.brevmalKlageOrienteringOmSaksbehandlingstid.toggle
 
