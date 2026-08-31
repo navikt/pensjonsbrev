@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.fom
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.tom
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.fribelopPeriode.uforegrad
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.scenario2_1G_04G.dato04G
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.scenario2_1G_04G.uforegradForOkning
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.scenario4_04G_1G_04G.dato04G
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.barnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.btHarBlitt0
@@ -26,7 +25,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradr
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.scenario2_1G_04G
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.scenario3_04G_1G
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.scenario4_04G_1G_04G
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.uforegrad
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.uforetrygd
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.vektetFribelop
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.vektetFribelopKr
@@ -251,8 +249,8 @@ object OktBunnfradrag {
             }.orIfNotNull(data.scenario2_1G_04G) { scenario2 ->
                 paragraph {
                     text(
-                        bokmal { +"Du endret uføregrad fra " + scenario2.uforegradForOkning.format() + " prosent til " + data.uforegrad.format() + " prosent den " + scenario2.dato04G.format() + ". Fra 1. januar 2026 frem til " + scenario2.dato04G.format() + ", er ditt fribeløp 1 G. Etter " + scenario2.dato04G.format() + " er ditt fribeløp 0,4 G, fordi økning i uføregrad utløser ny periode på 2 år hvor fribeløpet er 0,4 G. " },
-                        nynorsk { +"Du endra uføregrad frå " + scenario2.uforegradForOkning.format() + " prosent til " + data.uforegrad.format() + " prosent den " + scenario2.dato04G.format() + ". Frå 1. januar 2026 fram til " + scenario2.dato04G.format() + ", er ditt fribeløp 1 G. Etter " + scenario2.dato04G.format() + " er ditt fribeløp 0,4 G, fordi auke i uføregrad utløyser ny periode på 2 år der fribeløpet er 0,4 G. " },
+                        bokmal { +"Din uføregrad økte den " + scenario2.dato04G.format() + ". Fra 1. januar 2026 frem til " + scenario2.dato04G.format() + ", er ditt fribeløp 1 G. Etter " + scenario2.dato04G.format() + " er ditt fribeløp 0,4 G, fordi økning i uføregrad utløser ny periode på 2 år hvor fribeløpet er 0,4 G. " },
+                        nynorsk { +"Di uføregrad auka den " + scenario2.dato04G.format() + ". Frå 1. januar 2026 fram til " + scenario2.dato04G.format() + ", er ditt fribeløp 1 G. Etter " + scenario2.dato04G.format() + " er ditt fribeløp 0,4 G, fordi auke i uføregrad utløyser ny periode på 2 år der fribeløpet er 0,4 G. " }
                     )
                 }
 
