@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.alder.maler.endring
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.felles.ArbeidsinntektOgAlderspensjonKort
 import no.nav.pensjon.brev.alder.maler.felles.BeregnaPaaNytt
-import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.alder.maler.felles.FeilutbetalingAP
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.InformasjonOmAlderspensjon
@@ -11,9 +10,9 @@ import no.nav.pensjon.brev.alder.maler.felles.MeldFraOmEndringer2
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
 import no.nav.pensjon.brev.alder.maler.felles.UfoereAlder
-import no.nav.pensjon.brev.alder.maler.felles.Utbetalingsinformasjon
 import no.nav.pensjon.brev.alder.maler.felles.Vedtak
 import no.nav.pensjon.brev.alder.maler.felles.VedtakAlderspensjon
+import no.nav.pensjon.brev.alder.maler.innvilgelse.InnvilgelseFelles
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningeromavdodbruktiberegningen.vedleggOpplysningerOmAvdoedBruktIBeregning
@@ -24,7 +23,6 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkattA
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.BeloepEndring
-import no.nav.pensjon.brev.alder.model.EksportForbudKode
 import no.nav.pensjon.brev.alder.model.EksportForbudKode.DOD26_ALDER
 import no.nav.pensjon.brev.alder.model.EksportForbudKode.FLYKT_ALDER
 import no.nav.pensjon.brev.alder.model.EksportForbudKode.UFOR25_ALDER
@@ -476,7 +474,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
-            includePhrase(Utbetalingsinformasjon)
+            includePhrase(InnvilgelseFelles.Utbetalingsinformasjon)
 
             showIf(pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleEOES and pesysData.bruker.borIEOES) {
                 // hvisFlyttetBosattEØS_001
