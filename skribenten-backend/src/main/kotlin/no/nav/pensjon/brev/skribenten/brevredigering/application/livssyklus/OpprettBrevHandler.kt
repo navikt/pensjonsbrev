@@ -4,6 +4,8 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.UseCaseHandler
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.hentSignatur
+import no.nav.pensjon.brev.skribenten.brevredigering.application.FagsystemBrevdata
+import no.nav.pensjon.brev.skribenten.brevredigering.application.OpprettBrevService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
@@ -43,6 +45,7 @@ class OpprettBrevHandler(
         val avsenderEnhetsId: EnhetId,
         val saksbehandlerValg: SaksbehandlervalgMap,
         val reserverForRedigering: Boolean = false,
+        val fagsystemBrevdata: FagsystemBrevdata? = null,
         val mottaker: Dto.Mottaker? = null,
     )
 
