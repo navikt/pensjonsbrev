@@ -41,6 +41,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object InnvilgelseAvAfpOffentligSektor : RedigerbarTemplate<InnvilgelseAvAfpOffentligSektorDto> {
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AF_INNVILGELSE_OFFENTLIG
+    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val featureToggle = FeatureToggles.innvilgelseAvAfpOffentligSektor.toggle
 

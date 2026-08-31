@@ -59,6 +59,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_ENDRET_UTTAKSGRAD
+    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(

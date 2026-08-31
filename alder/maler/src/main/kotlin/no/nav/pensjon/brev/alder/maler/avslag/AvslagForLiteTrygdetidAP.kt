@@ -35,6 +35,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto> {
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_AVSLAG_FOR_LITE_TRYGDETID
+    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
     override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(ALDER)

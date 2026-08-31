@@ -34,6 +34,7 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
     override val featureToggle = FeatureToggles.omregningAlderUfore2016.toggle
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_OMREGNING_ALDER_UFORE_2016
+    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),

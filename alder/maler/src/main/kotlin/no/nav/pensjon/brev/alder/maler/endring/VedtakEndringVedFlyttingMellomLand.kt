@@ -73,6 +73,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.ALDER)
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_ENDRING_FLYTTING_MELLOM_LAND
+    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
     override val template = createTemplate(
         languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(

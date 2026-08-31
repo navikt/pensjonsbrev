@@ -19,6 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object BekreftelseAvUtsendtKravTilUtlandet : RedigerbarTemplate<EmptyRedigerbarBrevdataMedSaksbehandlerValg> {
     override val kode = Aldersbrevkoder.Redigerbar.INFO_BEKREFTELSE_UTSENDING_KRAV_TIL_UTLANDET
+    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),

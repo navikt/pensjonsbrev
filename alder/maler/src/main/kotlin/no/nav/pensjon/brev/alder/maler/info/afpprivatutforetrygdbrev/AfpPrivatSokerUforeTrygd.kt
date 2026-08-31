@@ -30,6 +30,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
     override val featureToggle: FeatureToggle = FeatureToggles.afpPrivatUfore.toggle
 
     override val kode = Aldersbrevkoder.Redigerbar.INFO_BRUKER_AFP_PRIVAT_SOKER_UFORETRYGD
+    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val kategori = Brevkategori.INFORMASJONSBREV
 

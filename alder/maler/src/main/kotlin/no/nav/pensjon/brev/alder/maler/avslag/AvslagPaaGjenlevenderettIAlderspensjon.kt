@@ -67,6 +67,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.ALDER)
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_AVSLAG_GJENLEVENDERETT
+    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),

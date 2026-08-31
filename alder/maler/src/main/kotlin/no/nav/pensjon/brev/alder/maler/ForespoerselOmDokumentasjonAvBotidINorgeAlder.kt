@@ -25,6 +25,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<Foresp
 
     // PE_IY_03_167 - dette er delen for alder
     override val kode = Aldersbrevkoder.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER
+    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
     override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)

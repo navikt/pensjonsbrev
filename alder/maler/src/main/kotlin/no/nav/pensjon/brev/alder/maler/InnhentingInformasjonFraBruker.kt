@@ -27,6 +27,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_INNHENTING_INFORMASJON_FRA_BRUKER //MF_000133
+    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
     override val template: LetterTemplate<*, InnhentingInformasjonFraBrukerDto> = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(

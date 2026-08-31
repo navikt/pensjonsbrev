@@ -34,6 +34,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object VarselAfpEtteroppgjoerForeloepig : RedigerbarTemplate<VarselAfpEtteroppgjoerForeloepigDto> {
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_VARSEL_FORELOEPIG
+    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val kategori = Brevkategori.ETTEROPPGJOER
 

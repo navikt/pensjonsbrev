@@ -41,6 +41,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object EndringAvAlderspensjonPgaGarantitillegg :
     RedigerbarTemplate<EndringAvAlderspensjonGarantitilleggDto> {
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_GARANTITILLEGG
+    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = Sakstype.pensjon

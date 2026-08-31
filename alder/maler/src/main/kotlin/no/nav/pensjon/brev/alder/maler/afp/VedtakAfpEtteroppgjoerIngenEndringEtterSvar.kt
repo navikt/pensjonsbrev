@@ -37,6 +37,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object VedtakAfpEtteroppgjoerIngenEndringEtterSvar : RedigerbarTemplate<VedtakAfpEtteroppgjoerIngenEndringEtterSvarDto> {
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_INGEN_ENDR_ETTER_SVAR
+    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val kategori = Brevkategori.ETTEROPPGJOER
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK

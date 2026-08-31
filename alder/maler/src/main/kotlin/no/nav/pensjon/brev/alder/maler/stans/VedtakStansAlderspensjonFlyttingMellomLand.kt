@@ -41,6 +41,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakStansAlderspensjonFlyttingMellomLandDto> {
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_STANS_FLYTTING_MELLOM_LAND
+    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
     override val kategori = Brevkategori.VEDTAK_FLYTTE_MELLOM_LAND
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.ALDER)

@@ -20,6 +20,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object AvslagGradsendringFoerNormertPensjonsalderFoerEttAar : RedigerbarTemplate<AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto> {
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_ETT_AAR
+    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
