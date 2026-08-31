@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.*
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder.Redigerbar.*
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmSaksbehandlingstid.Saksbehandlingstid.*
@@ -103,7 +104,7 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
             }
         }
     }
-    enum class Saksbehandlingstid {
+    enum class Saksbehandlingstid : SaksbehandlerValgEnum {
         SaksbehandlingstidVedNFPellerNAY,
         SaksbehandlingstidVedNavKlageinstans
     }
