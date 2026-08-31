@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.BrevbakerDSLInternal
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.TemplateModelSpecificationFactory
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -90,6 +91,15 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
 
                 if (template != null) {
                     call.respond(template.harRedigerbareVedlegg())
+                } else {
+                    call.respond(HttpStatusCode.NotFound)
+                }
+            }
+
+            get("/alltidValgbareVedlegg") {
+                val template = resource.getTemplate(call.kode(resource))
+                if (template != null && template is RedigerbarTemplate<*>) {
+                    call.respond(template.valgbareVedlegg)
                 } else {
                     call.respond(HttpStatusCode.NotFound)
                 }

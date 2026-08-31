@@ -53,6 +53,7 @@ fun Route.redigerbarRoutes(
             countLetter(brevbestilling.kode)
         }
 
+        // TODO: Slett denne etter utrulling er ferdig
         get("/alltidValgbareVedlegg") {
             call.respond(redigerbareBrev.alltidValgbareVedlegg.map { it.kode })
         }

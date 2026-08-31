@@ -647,7 +647,7 @@ abstract class BrevredigeringHandlerTestBase {
         }
 
         override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
-        override suspend fun getAlltidValgbareVedlegg() = alltidValgbareVedleggResultat
+        override suspend fun getAlltidValgbareVedlegg(brevkode: Brevkode.Redigerbart) = alltidValgbareVedleggResultat
 
         override suspend fun hentRedigerbareVedleggTitler(
             brevkode: Brevkode.Redigerbart,

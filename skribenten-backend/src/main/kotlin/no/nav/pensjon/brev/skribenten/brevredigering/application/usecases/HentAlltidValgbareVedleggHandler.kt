@@ -20,9 +20,10 @@ class HentAlltidValgbareVedleggHandler(
     ) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<List<ValgbartVedlegg>, Nothing>? {
-        val spraakIBrevet = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId)?.spraak ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId)
+        val spraakIBrevet = brev?.spraak ?: return null
 
-        val vedlegg = brevmalService.getAlltidValgbareVedlegg().map {
+        val vedlegg = brevmalService.getAlltidValgbareVedlegg(brev.brevkode).map {
             ValgbartVedlegg(
                 kode = it.kode,
                 visningstekst = it.visningstekst,

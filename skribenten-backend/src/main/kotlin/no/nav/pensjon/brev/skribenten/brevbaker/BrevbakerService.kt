@@ -72,7 +72,7 @@ interface BrevbakerService {
 
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
-    suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode>
+    suspend fun getAlltidValgbareVedlegg(brevkode: Brevkode.Redigerbart): Set<AlltidValgbartVedleggBrevkode>
 }
 
 class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, val cache: Cache, engine: HttpClientEngine) : BrevbakerService, ServiceStatus, Closeable {
@@ -279,9 +279,9 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             }
         }
 
-    override suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode> =
-        cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, "alltidValgbareVedlegg") {
-            val response = client.get("/letter/redigerbar/alltidValgbareVedlegg")
+    override suspend fun getAlltidValgbareVedlegg(brevkode: Brevkode.Redigerbart): Set<AlltidValgbartVedleggBrevkode> =
+        cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, brevkode) {
+            val response = client.get("/templates/redigerbar/${brevkode.kode()}/alltidValgbareVedlegg")
 
             if (response.status.isSuccess()) {
                 response.body()
