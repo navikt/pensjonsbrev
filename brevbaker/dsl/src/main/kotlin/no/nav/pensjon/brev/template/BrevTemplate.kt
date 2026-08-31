@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.template.Expression.Literal
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brev.template.validation.validator
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
@@ -52,6 +53,8 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
     val kategori: IBrevkategori
     val brevkontekst: TemplateDescription.Brevkontekst
     val sakstyper: Set<ISakstype>
+    val valgbareVedlegg: Set<AlltidValgbartVedleggKode>
+        get() = emptySet()
 
     override fun description(): TemplateDescription.Redigerbar =
         TemplateDescription.Redigerbar(
