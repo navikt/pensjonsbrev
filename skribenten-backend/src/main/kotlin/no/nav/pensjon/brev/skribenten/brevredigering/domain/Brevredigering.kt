@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brev.skribenten.brevredigering.application.FagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -30,6 +31,7 @@ interface Brevredigering {
     val spraak: LanguageCode
     val avsenderEnhetId: EnhetId
     val saksbehandlerValg: SaksbehandlervalgMap
+    val fagsystemBrevdata: FagsystemBrevdata?
     val redigertBrev: Edit.Letter
     val redigertBrevHash: Hash<Edit.Letter>
 
@@ -92,6 +94,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
         private set
     override var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
+    override var fagsystemBrevdata by BrevredigeringTable.fagsystemBrevdata
     override var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
         private set
     override val redigertBrevHash by BrevredigeringTable.redigertBrevKryptertHash
@@ -170,6 +173,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             spraak: LanguageCode,
             avsenderEnhetId: EnhetId,
             saksbehandlerValg: SaksbehandlervalgMap,
+            fagsystemBrevdata: FagsystemBrevdata? = null,
             redigertBrev: Edit.Letter,
             brevtype: LetterMetadata.Brevtype,
             timestamp: Instant = Instant.now(),
@@ -182,6 +186,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             this.spraak = spraak
             this.avsenderEnhetId = avsenderEnhetId
             this.saksbehandlerValg = saksbehandlerValg
+            this.fagsystemBrevdata = fagsystemBrevdata
             this.laastForRedigering = false
             this.distribusjonstype = distribusjonstype
             this.opprettet = timestamp
