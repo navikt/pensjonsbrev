@@ -8,9 +8,9 @@ import no.nav.pensjon.brev.alder.maler.felles.MeldFraOmEndringer2
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
 import no.nav.pensjon.brev.alder.maler.felles.UfoereAlder
-import no.nav.pensjon.brev.alder.maler.felles.Utbetalingsinformasjon
 import no.nav.pensjon.brev.alder.maler.felles.Vedtak
 import no.nav.pensjon.brev.alder.maler.felles.VedtakAlderspensjon
+import no.nav.pensjon.brev.alder.maler.innvilgelse.InnvilgelseFelles
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
@@ -104,7 +104,7 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                     }
 
                    // utbetalingsInfoMndUtbet
-                    includePhrase(Utbetalingsinformasjon)
+                    includePhrase(InnvilgelseFelles.Utbetalingsinformasjon)
 
                    // flereBeregningsperioderVedlegg
                     includePhrase(FlereBeregningsperioder(harFlereBeregningsperioder,alderspensjonVedVirk.totalPensjon))
