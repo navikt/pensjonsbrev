@@ -26,7 +26,7 @@ object ReverseringLavereMinstesatsAuto : AutobrevTemplate<ReverseringLavereMinst
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - omgjøring av kutt i minstesats",
+            displayTitle = "Vedtak - omgjøring av reduksjon i minstesats",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
@@ -35,8 +35,8 @@ object ReverseringLavereMinstesatsAuto : AutobrevTemplate<ReverseringLavereMinst
         val data = this.data
         title {
             text(
-                bokmal { +"Vedtaksbrev - Omgjøring av kutt i minstesats" },
-                nynorsk { +"Vedtaksbrev - Omgjering av kutt i minstesats" },
+                bokmal { +"Vedtaksbrev - Omgjøring av reduksjon i minstesats" },
+                nynorsk { +"Vedtaksbrev - Omgjering av reduksjon i minstesats" },
             )
         }
         outline {

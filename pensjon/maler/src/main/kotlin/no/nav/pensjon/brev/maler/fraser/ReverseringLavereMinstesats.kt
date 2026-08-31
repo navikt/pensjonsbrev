@@ -35,8 +35,8 @@ object ReverseringLavereMinstesats {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 text(
-                    bokmal { +"Vi viser til varselbrev av 2. juli 2026 om reversering av kutt i minstesats, og tidligere vedtak om kutt i minstesats den 25. mai 2026." },
-                    nynorsk { +"Vi viser til varselbrev av 2. juli 2026 om reversering av kutt i minstesats, og tidlegare vedtak om kutt i minstesats den 25. mai 2026." },
+                    bokmal { +"Vi viser til varselbrev av 2. juli 2026 om reversering av reduksjon i minstesats, og tidligere vedtak om reduksjon i minstesats den 25. mai 2026." },
+                    nynorsk { +"Vi viser til varselbrev av 2. juli 2026 om reversering av reduksjon i minstesats, og tidlegare vedtak om reduksjon i minstesats den 25. mai 2026." },
                 )
             }
 
@@ -120,8 +120,8 @@ object ReverseringLavereMinstesats {
             }
             paragraph {
                 text(
-                    bokmal { +"I forhandlingene om revidert statsbudsjett i juni, vedtok Stortinget at minstesatsen likevel ikke skal kuttes, og at denne loven trer i kraft 1. oktober 2026. Fra 1. oktober er minstesatsen 2.379 G (324 850 kroner), med tilbakevirkende kraft fra 1. juli 2026." },
-                    nynorsk { +"I forhandlingane om revidert statsbudsjett i juni, vedtok Stortinget at minstesatsen likevel ikkje skal kuttast, og at denne lova trer i kraft 1. oktober 2026. Frå 1. oktober er minstesatsen 2.379 G (324 850 kroner), med tilbakeverkande kraft frå 1. juli 2026." },
+                    bokmal { +"I forhandlingene om revidert statsbudsjett i juni, vedtok Stortinget at minstesatsen likevel ikke skal reduseres, og at denne loven trer i kraft 1. oktober 2026. Fra 1. oktober er minstesatsen 2.379 G (324 850 kroner), med tilbakevirkende kraft fra 1. juli 2026." },
+                    nynorsk { +"I forhandlingane om revidert statsbudsjett i juni, vedtok Stortinget at minstesatsen likevel ikkje skal reduserast, og at denne lova trer i kraft 1. oktober 2026. Frå 1. oktober er minstesatsen 2.379 G (324 850 kroner), med tilbakeverknad frå 1. juli 2026." },
                 )
             }
 
