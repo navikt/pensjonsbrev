@@ -1304,7 +1304,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["ApiBrevResponse"];
+                        "application/json": components["schemas"]["EditAttachment"];
                     };
                 };
                 400: {
@@ -3011,6 +3011,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/features/{featureName}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Tar imot toggle-navnet uten prefiks ("featureName"). UnleashService legger på
+         *     pensjonsbrev.skribenten.-prefikset, så frontend skal ikke ha noe forhold til det.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    featureName: string;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ApiFeatureToggleResponse"];
+                    };
+                };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": string;
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/metrics": {
         parameters: {
             query?: never;
@@ -3387,6 +3435,7 @@ export interface components {
             distribusjonstype: components["schemas"]["Distribusjon"];
             id: number;
             journalpostId?: number | null;
+            leggVedFoersteside?: boolean | null;
             mottaker?: components["schemas"]["ApiOverstyrtMottaker"] | null;
             /** Format: date-time */
             opprettet: string;
@@ -3399,6 +3448,8 @@ export interface components {
             status: components["schemas"]["ApiBrevStatus"];
             vedtaksId?: number | null;
         };
+        /** SaksbehandlervalgVerdi */
+        SaksbehandlervalgVerdi: boolean | number | string | null;
         /** ApiOpprettBrevRequest */
         ApiOpprettBrevRequest: {
             avsenderEnhetsId: string;
@@ -3406,7 +3457,7 @@ export interface components {
             mottaker?: components["schemas"]["ApiOverstyrtMottaker"] | null;
             reserverForRedigering?: boolean | null;
             saksbehandlerValg: {
-                [key: string]: unknown;
+                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
             };
             spraak: components["schemas"]["SpraakKode"];
             vedtaksId?: number | null;
@@ -3649,8 +3700,6 @@ export interface components {
             signatur: components["schemas"]["LetterMarkupSignatur"];
             title: components["schemas"]["EditTitle"];
         };
-        /** SaksbehandlerValgBrevdata */
-        SaksbehandlerValgBrevdata: Record<string, never>;
         /** AlltidValgbartVedleggBrevkode */
         AlltidValgbartVedleggBrevkode: {
             kode: string;
@@ -3663,14 +3712,16 @@ export interface components {
             propertyUsage?: components["schemas"]["LetterMarkupWithDataUsageProperty"][] | null;
             redigertBrev: components["schemas"]["EditLetter"];
             redigertBrevHash: string;
-            saksbehandlerValg: components["schemas"]["SaksbehandlerValgBrevdata"];
+            saksbehandlerValg: {
+                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
+            };
             valgteVedlegg?: components["schemas"]["AlltidValgbartVedleggBrevkode"][] | null;
         };
         /** ApiOppdaterBrevRequest */
         ApiOppdaterBrevRequest: {
             redigertBrev: components["schemas"]["EditLetter"];
             saksbehandlerValg: {
-                [key: string]: unknown;
+                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
             };
         };
         /** ApiDelvisOppdaterBrevRequest */
@@ -3725,7 +3776,7 @@ export interface components {
         ApiOppdaterAttesteringRequest: {
             redigertBrev: components["schemas"]["EditLetter"];
             saksbehandlerValg: {
-                [key: string]: unknown;
+                [key: string]: components["schemas"]["SaksbehandlervalgVerdi"];
             };
         };
         /**
@@ -3952,6 +4003,10 @@ export interface components {
             id: string;
             navn: string;
         };
+        /** ApiFeatureToggleResponse */
+        ApiFeatureToggleResponse: {
+            enabled: boolean;
+        };
     };
     responses: never;
     parameters: never;
@@ -4007,6 +4062,7 @@ export type ApiBrevStatusKlar = components['schemas']['ApiBrevStatusKlar'];
 export type ApiBrevStatusUnderRedigering = components['schemas']['ApiBrevStatusUnderRedigering'];
 export type ApiBrevStatus = components['schemas']['ApiBrevStatus'];
 export type ApiBrevInfo = components['schemas']['ApiBrevInfo'];
+export type SaksbehandlervalgVerdi = components['schemas']['SaksbehandlervalgVerdi'];
 export type ApiOpprettBrevRequest = components['schemas']['ApiOpprettBrevRequest'];
 export type BrevExceptionDto = components['schemas']['BrevExceptionDto'];
 export type LetterMarkupWithDataUsageProperty = components['schemas']['LetterMarkupWithDataUsageProperty'];
@@ -4037,7 +4093,6 @@ export type LetterMarkupSakspart = components['schemas']['LetterMarkupSakspart']
 export type LetterMarkupSignatur = components['schemas']['LetterMarkupSignatur'];
 export type EditTitle = components['schemas']['EditTitle'];
 export type EditLetter = components['schemas']['EditLetter'];
-export type SaksbehandlerValgBrevdata = components['schemas']['SaksbehandlerValgBrevdata'];
 export type AlltidValgbartVedleggBrevkode = components['schemas']['AlltidValgbartVedleggBrevkode'];
 export type ApiBrevResponse = components['schemas']['ApiBrevResponse'];
 export type ApiOppdaterBrevRequest = components['schemas']['ApiOppdaterBrevRequest'];
@@ -4085,5 +4140,6 @@ export type HentSamhandlerAdresseResponseDto = components['schemas']['HentSamhan
 export type ApiUserInfo = components['schemas']['ApiUserInfo'];
 export type Unit = components['schemas']['Unit'];
 export type NavAnsattEnhet = components['schemas']['NAVAnsattEnhet'];
+export type ApiFeatureToggleResponse = components['schemas']['ApiFeatureToggleResponse'];
 export type $defs = Record<string, never>;
 export type operations = Record<string, never>;

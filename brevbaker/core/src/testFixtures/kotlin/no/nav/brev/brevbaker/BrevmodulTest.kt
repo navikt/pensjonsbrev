@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
@@ -105,7 +104,7 @@ abstract class BrevmodulTest(
     @Test
     fun `alle maler med brevdata har annotasjon som gjoer at vi genererer selectors`() {
         (templates.hentAutobrevmaler() + templates.hentRedigerbareMaler())
-            .filterNot { it.template.letterDataType in setOf(EmptyAutobrevdata::class, EmptyRedigerbarBrevdata::class) }
+            .filterNot { it.template.letterDataType in setOf(EmptyAutobrevdata::class) }
             .forEach {
                 assertTrue(
                     it.javaClass.declaredAnnotations.any { annotation -> annotation.annotationClass == TemplateModelHelpers::class },

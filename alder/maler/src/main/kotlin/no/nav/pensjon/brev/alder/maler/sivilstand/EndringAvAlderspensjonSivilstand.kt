@@ -32,16 +32,16 @@ import no.nav.pensjon.brev.alder.model.BeloepEndring
 import no.nav.pensjon.brev.alder.model.KravArsakType
 import no.nav.pensjon.brev.alder.model.MetaforceSivilstand
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDto
-import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDto.SaksbehandlerValg.Sivilstandsendringsaarsak
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDto.Sivilstandsendringsaarsak
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandDto.alderspensjonVedVirk.*
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandDto.beregnetPensjonPerManedVedVirk.*
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandDto.epsVedVirk.*
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandDto.pesysData.*
-import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandDto.saksbehandlerValg.*
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonSivilstandDto.*
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -78,6 +78,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),
         ) {
+            val sivilstandsendringsaarsak = saksbehandlervalg("sivilstandsendringsaarsak", "Årsak til sivilstandsendringen").enum<Sivilstandsendringsaarsak>()
+            val feilutbetaling = saksbehandlervalg("feilutbetaling", "Hvis reduksjon tilbake i tid").bool()
+            val etterbetaling = saksbehandlervalg("etterbetaling", "Hvis etterbetaling").bool()
 
             val alderspensjonVedVirk = pesysData.alderspensjonVedVirk
             val garantipensjonInnvilget = alderspensjonVedVirk.garantipensjonInnvilget
@@ -312,7 +315,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         ),
                 ) {
                     showIf(
-                        saksbehandlerValg.sivilstandsendringsaarsak.equalTo(
+                        sivilstandsendringsaarsak.equalTo(
                             Sivilstandsendringsaarsak.fraFlyttet,
                         ),
                     ) {
@@ -325,7 +328,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                             )
                         }
                     }.orShowIf(
-                        saksbehandlerValg.sivilstandsendringsaarsak.equalTo(
+                        sivilstandsendringsaarsak.equalTo(
                             Sivilstandsendringsaarsak.giftBorIkkeSammen,
                         ),
                     ) {
@@ -558,10 +561,10 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     // hjemmelSivilstandAP2025
                     paragraph {
                         text(
-                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 20-9, 20-17 femte avsnitt og 22-12." },
-                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 20-9, 20-17 femte avsnitt og 22-12." },
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 20-9, 20-17 femte avsnitt, 22-12 og 22-13." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 20-9, 20-17 femte avsnitt, 22-12 og 22-13." },
                             english {
-                                +"This decision was made pursuant to the provisions of §§ 20-9, 20-17 fifth paragraph, and 22-12 of the National Insurance Act."
+                                +"This decision was made pursuant to the provisions of §§ 20-9, 20-17 fifth paragraph, 22-12 and 22-13 of the National Insurance Act."
                             },
                         )
                     }
@@ -614,15 +617,15 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                             )
                         }
                         text(
-                            bokmal { +" og 22-12." },
-                            nynorsk { +" og 22-12." },
-                            english { +" and 22-12." },
+                            bokmal { +", 22-12 og 22-13." },
+                            nynorsk { +", 22-12 og 22-13." },
+                            english { +", 22-12 and 22-13." },
                         )
                     }
                 }
 
                 // Selectable - Hvis reduksjon tilbake i tid - feilutbetalingAP
-                showIf(saksbehandlerValg.feilutbetaling.ifNull(false)) {
+                showIf(feilutbetaling) {
                     includePhrase(FeilutbetalingAP)
                 }
 
@@ -632,7 +635,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
 
                 // Hvis etterbetaling (Selectable) - etterbetalingAP_002
-                showIf(saksbehandlerValg.etterbetaling.ifNull(false)) {
+                showIf(etterbetaling) {
                     includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
                 }
 

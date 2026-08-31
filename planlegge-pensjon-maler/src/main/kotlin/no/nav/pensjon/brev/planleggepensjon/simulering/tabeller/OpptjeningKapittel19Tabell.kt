@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 
 data class OpptjeningKapittel19Tabell(
@@ -33,19 +34,19 @@ data class OpptjeningKapittel19Tabell(
                 ifNotNull(alderspensjon.grunnbeloep) {
                     row {
                         cell { text(bokmal { +"Grunnbeløp (G)" }) }
-                        cell { text(bokmal { +it.format() }) }
+                        cell { text(bokmal { +it.format(denominator = false) + " kr" }) }
                     }
                 }
                 ifNotNull(alderspensjon.minstePensjonsnivaaBeloep) {
                     row {
                         cell { text(bokmal { +"Minste pensjonsnivå" }) }
-                        cell { text(bokmal { +it.format() }) }
+                        cell { text(bokmal { +it.format(denominator = false) + " kr" }) }
                     }
                 }
                 ifNotNull(alderspensjon.forholdstall) {
                     row {
                         cell { text(bokmal { +"Forholdstall ved uttak" }) }
-                        cell { text(bokmal { +it.format(2) }) }
+                        cell { text(bokmal { +it.format(3) }) }
                     }
                 }
                 ifNotNull(alderspensjon.sluttpoengtall) {
@@ -60,16 +61,25 @@ data class OpptjeningKapittel19Tabell(
                         cell { text(bokmal { +it.format() + " år" }) }
                     }
                 }
-                ifNotNull(alderspensjon.poengaarFom1992) {
-                    row {
-                        cell { text(bokmal { +"Poengår etter 1991" }) }
-                        cell { text(bokmal { +it.format() }) }
+
+                ifNotNull(alderspensjon.poengaarTom1991) { tom1991 ->
+                    ifNotNull(alderspensjon.poengaarFom1992) { fom1992 ->
+                        row {
+                            cell { text(bokmal { +"Poengår" }) }
+                            cell { text(bokmal { +(tom1991 + fom1992).format() + " år" }) }
+                        }
                     }
                 }
                 ifNotNull(alderspensjon.poengaarTom1991) {
                     row {
-                        cell { text(bokmal { +"Poengår før 1992" }) }
-                        cell { text(bokmal { +it.format() }) }
+                        cell { text(bokmal { +"Poengår før 1992 (45 %)" }) }
+                        cell { text(bokmal { +it.format() + " år" }) }
+                    }
+                }
+                ifNotNull(alderspensjon.poengaarFom1992) {
+                    row {
+                        cell { text(bokmal { +"Poengår etter 1991 (42 %)" }) }
+                        cell { text(bokmal { +it.format() + " år" }) }
                     }
                 }
             }

@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolic
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.jetbrains.exposed.v1.jdbc.Database
 import org.slf4j.LoggerFactory
 
@@ -15,10 +16,10 @@ class FrigiReservasjonHandler(
     database: Database,
 ) : TransactionHandler<FrigiReservasjonHandler.Request, Unit, BrevredigeringError>(database) {
 
-    data class Request(override val brevId: BrevId) : BrevredigeringRequest
+    data class Request(override val brevId: BrevId, override val saksId: SaksId) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Unit, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
         val principal = PrincipalInContext.require()
         val reservasjon = brev.gjeldendeReservasjon(brevreservasjonPolicy) ?: return success(Unit)
 

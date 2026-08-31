@@ -3,3 +3,8 @@ brevbaker-app: "pensjon-brevbaker"
 minReplicas: 6
 ingresses:
   - "https://pensjon-pdf-bygger.intern.dev.nav.no"
+
+inbound:
+  - name: pensjon-selvbetjening-soknad-alder-backend
+    namespace: pensjonselvbetjening
+    cluster: dev-gcp

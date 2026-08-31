@@ -5,7 +5,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
 import io.ktor.client.engine.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -13,17 +12,19 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.utils.io.core.Closeable
+import kotlinx.io.IOException
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
+import java.nio.channels.UnresolvedAddressException
 
-class KrrService(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine = CIO.create()) : ServiceStatus, Closeable {
+class KrrService(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine) : ServiceStatus, Closeable {
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService): this(config.services.krr, authService)
+    constructor(config: SkribentenConfig, authService: AuthService, engine: HttpClientEngine): this(config.services.krr, authService, engine)
 
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val client = lagHttpClient(engine) {
@@ -36,7 +37,7 @@ class KrrService(config: OboClientConfig, authService: AuthService, engine: Http
             }
         }
         installRetry(logger)
-        callIdAndOnBehalfOfClient(config.scope, authService)
+        onBehalfOfClient(config.scope, authService)
     }
 
     @Suppress("EnumEntryName")
@@ -77,10 +78,18 @@ class KrrService(config: OboClientConfig, authService: AuthService, engine: Http
     }
 
     suspend fun getPreferredLocale(pid: Pid): KontaktinfoResponse {
-        val response = client.post("/rest/v1/personer") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            setBody(KontaktinfoRequest(listOf(pid.value)))
+        val response = try {
+            client.post("/rest/v1/personer") {
+                contentType(ContentType.Application.Json)
+                accept(ContentType.Application.Json)
+                setBody(KontaktinfoRequest(listOf(pid.value)))
+            }
+        } catch (e: IOException) {
+            logger.warn("IO-feil ved kall mot KRR: ${e.message}", e)
+            return KontaktinfoResponse(KontaktinfoResponse.FailureType.ERROR)
+        } catch (e: UnresolvedAddressException) {
+            logger.warn("IO-feil ved kall mot KRR: ${e.message}", e)
+            return KontaktinfoResponse(KontaktinfoResponse.FailureType.ERROR)
         }
         return if (response.status.isSuccess()) {
             val body = response.body<KontaktinfoKRRResponse>()

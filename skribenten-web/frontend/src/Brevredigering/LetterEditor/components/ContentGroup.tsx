@@ -35,6 +35,7 @@ import { type Focus, type LiteralIndex } from "~/Brevredigering/LetterEditor/mod
 import {
   areAnyContentEditableSiblingsPlacedHigher,
   areAnyContentEditableSiblingsPlacedLower,
+  ensureVisibleInScrollContainer,
   findOnLineAbove,
   findOnLineBelow,
   focusAtOffset,
@@ -54,6 +55,7 @@ import {
   type LiteralValue,
   TITLE_INDEX,
 } from "~/types/brevbakerTypes";
+import { getPasteMetadata } from "~/utils/pasteTracking";
 import { trackEvent } from "~/utils/umami";
 
 import { updateFocus } from "../actions/cursorPosition";
@@ -517,9 +519,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const next = findOnLineAbove(element);
 
       if (next) {
+        // The line above may be outside the visible scroll area. Coordinate-based caret placement
+        // only hits elements inside the scroll area, so scroll it into view first.
+        ensureVisibleInScrollContainer(next);
         gotoCoordinates({
           x: caretCoordinates.x,
-          y: next.bottom - Y_COORD_SAFETY_MARGIN,
+          y: next.getBoundingClientRect().bottom - Y_COORD_SAFETY_MARGIN,
         });
         event.preventDefault();
       }
@@ -574,9 +579,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const next = findOnLineBelow(element);
 
       if (next) {
+        // The line below may be outside the visible scroll area. Coordinate-based caret placement
+        // only hits elements inside the scroll area, so scroll it into view first.
+        ensureVisibleInScrollContainer(next);
         gotoCoordinates({
           x: caretCoordinates.x,
-          y: next.top + Y_COORD_SAFETY_MARGIN,
+          y: next.getBoundingClientRect().top + Y_COORD_SAFETY_MARGIN,
         });
         event.preventDefault();
       }
@@ -644,11 +652,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const pastedText = event.clipboardData.getData("text/plain");
       const pasteLength = pastedText.length;
       if (pasteLength > 0) {
+        const pasteMetadata = getPasteMetadata(event.clipboardData);
         trackEvent("tekst limt inn", {
           brevkode: editorState.info.brevkode,
           antallTegn: pasteLength,
           merEnn200: pasteLength > 200,
           limInnMetode,
+          ...pasteMetadata,
         });
       }
 
@@ -660,11 +670,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         const pastedText = event.clipboardData.getData("text/plain");
         const pasteLength = pastedText.length;
         if (pasteLength > 0) {
+          const pasteMetadata = getPasteMetadata(event.clipboardData);
           trackEvent("tekst erstattet", {
             brevkode: editorState.info.brevkode,
             antallTegn: pasteLength,
             merEnn200: pasteLength > 200,
             limInnMetode,
+            ...pasteMetadata,
           });
         }
 

@@ -10,7 +10,7 @@ import {
   type BrevInfo,
   type BrevResponse,
   type DistribusjonstypeRequest,
-  type OppdaterBrevRequest,
+  type OppdaterAttesteringRequest,
   type OppdaterKlarStatusRequest,
   type OppdaterMottakerRequest,
   type ValgteVedleggRequest,
@@ -40,7 +40,9 @@ export const getBrevVedlegg = {
 };
 
 export const hentPdfForBrev = {
-  queryKey: (brevId: number) => ["hentPdfForBrev", brevId],
+  // Når redigertBrevHash er satt, sørger den for at en cachet PDF ikke gjenbrukes for en annen versjon av brevet.
+  queryKey: (brevId: number, redigertBrevHash?: string) =>
+    redigertBrevHash === undefined ? ["hentPdfForBrev", brevId] : ["hentPdfForBrev", brevId, redigertBrevHash],
   queryFn: async (saksId: string, brevId: string | number) => {
     const response = await axios
       .get<PdfResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/pdf`, {
@@ -101,7 +103,7 @@ export const attesterBrev = async (args: {
   saksId: string;
   brevId: string | number;
   frigiReservasjon?: boolean;
-  request: OppdaterBrevRequest;
+  request: OppdaterAttesteringRequest;
 }) => {
   const frigiReservasjon = args.frigiReservasjon ?? true;
 

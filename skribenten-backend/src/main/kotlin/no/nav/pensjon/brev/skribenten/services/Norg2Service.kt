@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.databind.DeserializationFeature
 import no.nav.pensjon.brev.skribenten.NoAuthClientConfig
 import io.ktor.client.call.*
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -14,7 +15,6 @@ import no.nav.pensjon.brev.skribenten.SkribentenConfig
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.common.cached
-import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import org.slf4j.LoggerFactory
 
@@ -23,15 +23,15 @@ interface Norg2Service {
 }
 
 // docs: https://confluence.adeo.no/display/FEL/NORG2+-+Teknisk+beskrivelse - trykk på droppdown
-class Norg2ServiceHttp(config: NoAuthClientConfig, val cache: Cache) : Norg2Service, Closeable {
+class Norg2ServiceHttp(config: NoAuthClientConfig, val cache: Cache, engine: HttpClientEngine) : Norg2Service, Closeable {
     private val logger = LoggerFactory.getLogger(Norg2ServiceHttp::class.java)
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, cache: Cache): this(config.services.norg2, cache)
+    constructor(config: SkribentenConfig, cache: Cache, engine: HttpClientEngine): this(config.services.norg2, cache, engine)
 
     private val norgUrl = config.url
 
-    private val client = lagHttpClient {
+    private val client = lagHttpClient(engine) {
         defaultRequest {
             url(norgUrl)
         }
@@ -40,7 +40,6 @@ class Norg2ServiceHttp(config: NoAuthClientConfig, val cache: Cache) : Norg2Serv
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
-        install(CallIdFromContext)
     }
 
     override suspend fun getEnhet(enhetId: EnhetId): NavEnhet =

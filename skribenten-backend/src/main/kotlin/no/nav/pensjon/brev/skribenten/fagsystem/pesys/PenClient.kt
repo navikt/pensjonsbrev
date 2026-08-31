@@ -2,30 +2,29 @@ package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.*
+import io.ktor.client.engine.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import io.ktor.utils.io.core.Closeable
+import io.ktor.utils.io.core.*
 import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.SkribentenConfig
+import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
+import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
-import no.nav.pensjon.brev.skribenten.model.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.HttpClientFactory.lagHttpClient
 import no.nav.pensjon.brev.skribenten.vedlegg.P1RedigerbarDto
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
+import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 
@@ -47,18 +46,19 @@ interface PenClient {
     )
 }
 
+class PenAdresseManglerException : ServiceException("Adresse mangler", status = HttpStatusCode.UnprocessableEntity)
 class PenServiceException(message: String) : ServiceException(message)
 class PenDataException(val feil: BrevExceptionDto) : ServiceException("${feil.tittel}: ${feil.melding}", status = HttpStatusCode.UnprocessableEntity)
 class PenFeilIDatabyggerException(message: String) : ServiceException(message)
 
-class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenClient, ServiceStatus, Closeable {
+class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: HttpClientEngine) : PenClient, ServiceStatus, Closeable {
     private val penUrl = config.url
     private val penScope = config.scope
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService): this(config.services.pen, authService)
+    constructor(config: SkribentenConfig, authService: AuthService, engine: HttpClientEngine): this(config.services.pen, authService, engine)
 
-    private val client = lagHttpClient {
+    private val client = lagHttpClient(engine) {
         defaultRequest {
             url(penUrl)
         }
@@ -69,13 +69,21 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenCli
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
-        callIdAndOnBehalfOfClient(penScope, authService)
+        onBehalfOfClient(penScope, authService)
     }
 
     private suspend inline fun <reified T> HttpResponse.bodyOrThrow(): T? =
         when {
             status.isSuccess() -> body()
             status == HttpStatusCode.NotFound -> null
+            status == HttpStatusCode.UnprocessableEntity -> {
+                val parsed = body<Pen.BestillBrevResponse>()
+                if (parsed.error?.tekniskgrunn == "AdresseMangler") {
+                    throw PenAdresseManglerException()
+                } else {
+                    throw PenServiceException("Feil ved kall til PEN som ga unprocessable entity: $parsed")
+                }
+            }
             else -> throw PenServiceException("Feil ved kall til PEN: ${bodyAsText()}")
         }
 
@@ -88,6 +96,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenCli
                 sakType = it.sakType,
                 pid = it.pid,
                 behandlingsnumre = it.behandlingsnumre,
+                tema = it.tema,
             )
         }
 
@@ -184,6 +193,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService) : PenCli
         val enhetId: String?,
         val pid: Pid,
         val behandlingsnumre: List<Behandlingsnummer>,
+        val tema: Tema,
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }

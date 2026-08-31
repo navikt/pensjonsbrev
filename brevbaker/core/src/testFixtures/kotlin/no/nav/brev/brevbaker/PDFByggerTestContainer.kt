@@ -37,7 +37,7 @@ object PDFByggerTestContainer {
             .withLogConsumer(Slf4jLogConsumer(LoggerFactory.getLogger("pdf-bygger")))
             .withEnv(
                 "JAVA_TOOL_OPTIONS",
-                "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Djdk.lang.Process.launchMechanism=vfork"
+                "-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016"
             )
             // bakover-ompatibilitet med pdf-bygger (brukt i integrasjonstester i brevbaker på github actions).
             .withEnv("PDF_BYGGER_COMPILE_TMP_DIR", "/tmp")

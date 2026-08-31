@@ -1,49 +1,18 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { SpraakKode } from "~/types/apiTypes";
 import { type EditedLetter, type LiteralValue } from "~/types/brevbakerTypes";
-
+import { baseSakspart, baseSignatur, editorInfo } from "~test/e2e/support/editorFixtures";
+import { setupSakStubs } from "~test/e2e/support/helpers";
+import { brevResponse, editedLetter } from "~test/support/brevFixtures";
 import {
   literal as _literal,
   variable as _variable,
-  brevInfo,
-  brevResponse,
-  editedLetter,
   item,
   itemList,
   paragraph,
-  signatur,
   title1,
   title2,
-} from "../../utils/letterEditorTestUtils";
-import { setupSakStubs } from "../utils/helpers";
-
-const baseSakspart = {
-  gjelderNavn: "Test Testeson",
-  gjelderFoedselsnummer: "12345678910",
-  saksnummer: "1234",
-  dokumentDato: "2024-03-15",
-};
-
-const baseSignatur = signatur({
-  hilsenTekst: "Med vennlig hilsen",
-  saksbehandlerNavn: "Ole Saksbehandler",
-  attesterendeSaksbehandlerNavn: "",
-  navAvsenderEnhet: "Nav Familie- og pensjonsytelser Porsgrunn",
-});
-
-const editorInfo = brevInfo({
-  brevkode: "BREV1",
-  brevtittel: "Brev 1",
-  opprettet: "2024-01-01",
-  sistredigert: "2024-01-01",
-  sistredigertAv: { id: "Z123", navn: "Z entotre" },
-  opprettetAv: { id: "Z123", navn: "Z entotre" },
-  status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
-  avsenderEnhet: { enhetNr: "0001", navn: "NAV Familie- og pensjonsytelser" },
-  spraak: SpraakKode.Bokmaal,
-  saksId: 22981081,
-});
+} from "~test/support/letterEditorTestUtils";
 
 function makeLiteral(id: number, parentId: number | null, text: string) {
   return { ..._literal({ id, text }), parentId };
@@ -58,7 +27,7 @@ const exampleLetter1 = editedLetter({
     text: [makeLiteral(1, null, "Informasjon om saksbehandlingstiden vår")],
     deletedContent: [],
   },
-  sakspart: baseSakspart,
+  sakspart: baseSakspart(),
   blocks: [
     paragraph({
       id: 1,
@@ -141,11 +110,11 @@ const exampleLetter1 = editedLetter({
       content: [makeLiteral(71, 7, "Siste avsnitt for å teste at pil ned tar oss til end of line.[CP4-1]")],
     }),
   ],
-  signatur: baseSignatur,
+  signatur: baseSignatur(),
 }) as EditedLetter;
 
 function makeBrevResponse(redigertBrev: EditedLetter) {
-  return brevResponse({ info: editorInfo, redigertBrev });
+  return brevResponse({ info: editorInfo(), redigertBrev });
 }
 
 async function setupBrevRoute(page: Page, brevResponse: object) {
@@ -548,5 +517,53 @@ test.describe("LetterEditor", () => {
       await expect(page.getByText("Test Testeson")).toBeVisible();
       await expect(page.getByText("Saken gjelder:")).not.toBeVisible();
     });
+  });
+});
+
+test.describe("LetterEditor scrolling navigation", () => {
+  const padded = (n: number) => String(n).padStart(2, "0");
+  const paragraphText = (n: number) => `Avsnitt nummer ${n} [P${padded(n)}]`;
+
+  const longLetter = editedLetter({
+    title: {
+      text: [makeLiteral(1, null, "Langt brev som ikke får plass på én skjerm")],
+      deletedContent: [],
+    },
+    sakspart: baseSakspart(),
+    blocks: Array.from({ length: 40 }, (_, i) =>
+      paragraph({
+        id: 100 + i,
+        content: [makeLiteral(1000 + i, 100 + i, paragraphText(i + 1))],
+      }),
+    ),
+    signatur: baseSignatur(),
+  }) as EditedLetter;
+
+  test.beforeEach(async ({ page }) => {
+    await setupBrevRoute(page, makeBrevResponse(longLetter));
+    await navigateToEditor(page);
+  });
+
+  test("ArrowDown keeps the caret and scrolls when the next line is below the visible area", async ({ page }) => {
+    await page.getByText(paragraphText(1), { exact: true }).click();
+    await assertCaret(page, "[P01]", 0);
+
+    await move(page, "ArrowDown", 30);
+
+    // The caret must survive the trip past the bottom edge of the visible area ...
+    await assertCaret(page, "[P31]", 0);
+
+    // ... and the editor must actually have scrolled to keep the caret visible
+    const scrollTop = await page.locator(".editor").evaluate((el) => el.parentElement?.scrollTop ?? -1);
+    expect(scrollTop).toBeGreaterThan(0);
+  });
+
+  test("ArrowUp keeps the caret and scrolls when the next line is above the visible area", async ({ page }) => {
+    await page.getByText(paragraphText(35), { exact: true }).click();
+    await assertCaret(page, "[P35]", 0);
+
+    await move(page, "ArrowUp", 30);
+
+    await assertCaret(page, "[P05]", 0);
   });
 });

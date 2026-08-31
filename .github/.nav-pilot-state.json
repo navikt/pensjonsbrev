@@ -1,13 +1,61 @@
 {
   "collection": "(à la carte)",
-  "version": "2026.07.14-203640-7b8f3d5",
+  "version": "2026.08.27-085149-2c9bf30",
   "scope": "repo",
-  "source_sha": "ef10a76",
+  "source_sha": "2c9bf30",
   "installed_at": "2026-07-15T14:11:15Z",
   "files": [
     {
       "path": ".github/skills/aksel-builder/",
-      "hash": "8093294c605378e1"
+      "hash": "3075f3a92c2eb6fc"
+    },
+    {
+      "path": ".github/agents/nav-pilot.agent.md",
+      "hash": "6ae2b1bab2466968"
+    },
+    {
+      "path": ".github/agents/forfatter.agent.md",
+      "hash": "3dd47103e9bf04a8"
+    },
+    {
+      "path": ".github/skills/nav-deep-interview/",
+      "hash": "eeb3399ecd4e352c"
+    },
+    {
+      "path": ".github/skills/nav-plan/",
+      "hash": "0a160744cf2b4e82"
+    },
+    {
+      "path": ".github/skills/nav-troubleshoot/",
+      "hash": "e9900d58d91ee0ee"
+    },
+    {
+      "path": ".github/skills/security-review/",
+      "hash": "c74a83a4e61fbf58"
+    },
+    {
+      "path": ".github/skills/security-owasp/",
+      "hash": "6b06f512092bde91"
+    },
+    {
+      "path": ".github/skills/api-design/",
+      "hash": "a353aded69a4bd4c"
+    },
+    {
+      "path": ".github/skills/observability-debugging/",
+      "hash": "107a99f70451c01b"
+    },
+    {
+      "path": ".github/agents/research.agent.md",
+      "hash": "90b7a1685788c5a4"
+    },
+    {
+      "path": ".github/agents/security-champion.agent.md",
+      "hash": "5ccba48b66938fd0"
+    },
+    {
+      "path": ".github/agents/aksel.agent.md",
+      "hash": "d190246642818387"
     }
   ]
 }

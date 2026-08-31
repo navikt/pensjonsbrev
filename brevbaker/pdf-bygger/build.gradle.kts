@@ -4,6 +4,7 @@ val javaTarget: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
+    alias(libs.plugins.kotlin.serialization)
     application
 }
 
@@ -13,6 +14,12 @@ version="0.0.1-SNAPSHOT"
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.fromTarget(javaTarget))
+    }
+}
+
+sourceSets {
+    main {
+        resources.srcDir(rootProject.layout.projectDirectory.dir("resources"))
     }
 }
 
@@ -31,7 +38,7 @@ tasks {
 tasks {
     test {
         useJUnitPlatform {
-            excludeTags = setOf("integration-test", "manual-test")
+            excludeTags = setOf("integration-test")
         }
     }
     val test by testing.suites.existing(JvmTestSuite::class)
@@ -39,17 +46,15 @@ tasks {
         testClassesDirs = files(test.map { it.sources.output.classesDirs })
         classpath = files(test.map { it.sources.runtimeClasspath })
     }
-
-    named<Test>("manualTest") {
-        testClassesDirs = files(test.map { it.sources.output.classesDirs })
-        classpath = files(test.map { it.sources.runtimeClasspath })
-    }
 }
 
 dependencies {
+    implementation(platform(libs.log4j.bom))
     implementation(libs.bundles.logging)
-    implementation(libs.kotlinx.coroutines.slf4j)
+    implementation(platform(libs.ktor.bom))
     implementation(libs.ktor.serialization.jackson)
+    implementation(libs.ktor.server.auth)
+    implementation(libs.ktor.server.auth.jwt)
     implementation(libs.ktor.server.callId)
     implementation(libs.ktor.server.callLogging)
     implementation(libs.ktor.server.content.negotiation)
@@ -58,21 +63,19 @@ dependencies {
     implementation(libs.ktor.server.status.pages)
     implementation(libs.bundles.metrics)
 
-    implementation(project(":brevbaker:dsl"))
-    implementation(project(":brevbaker:markup"))
-    implementation(libs.brevbaker.common)
+    implementation(publishedLibs.brevbaker.api) // trengs fortsatt fordi gammel letterMarkup ligger her. Kan fjernes når den er borte.
+    implementation(publishedLibs.markup.model)
+    implementation(project(":brevbaker:serialization"))
     implementation(libs.kotlinx.serialization.json)
-
-    implementation(libs.jackson.datatype.jsr310) {
-        because("we require deserialization/serialization of java.time.LocalDate")
-    }
 
     testImplementation(libs.bundles.junit)
     testImplementation(libs.ktor.server.test.host) {
         exclude("org.jetbrains.kotlin", "kotlin-test")
     }
-    testImplementation(testFixtures(project(":brevbaker:core")))
-    testImplementation(testFixtures(project(":brevbaker:dsl")))
+    testImplementation(libs.ktor.client.cio)
+    testImplementation(libs.ktor.client.content.negotiation)
+    testImplementation(publishedLibs.markup.dsl)
+    testImplementation(libs.testcontainers.core)
 }
 
 application {

@@ -2,18 +2,21 @@ package no.nav.pensjon.brev.api
 
 import no.nav.brev.brevbaker.Brevbaker
 import no.nav.brev.brevbaker.PDFByggerService
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
+import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppenderImpl
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.VedleggId
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.RedigerbareVedleggTitler
+import no.nav.brev.brevbaker.markup.LetterMarkup as MarkupLetterMarkup
+import no.nav.brev.brevbaker.markup.Attachment as MarkupAttachment
+import no.nav.brev.brevbaker.markup.LetterMarkupWithDataUsage as MarkupLetterMarkupWithDataUsage
 
 class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
     override val name: String,
@@ -21,14 +24,20 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     pdfByggerService: PDFByggerService,
     val alltidValgbareVedlegg: Set<AlltidValgbartVedlegg<*>>,
 ) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>, TemplateLibrary<Kode, T> by TemplateLibraryImpl(templates) {
-    private val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl)
+    private val brevbaker = Brevbaker(pdfByggerService)
     private val letterFactory: LetterFactory<Kode> = LetterFactory(alltidValgbareVedlegg)
 
     override fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         brevbaker.renderLetterMarkup(createLetter(brevbestilling))
 
+    fun renderLetterMarkupV2(brevbestilling: BestillBrevRequest<Kode>): MarkupLetterMarkup =
+        brevbaker.renderLetterMarkupV2(createLetter(brevbestilling))
+
     fun renderLetterMarkupWithDataUsage(brevbestilling: BestillBrevRequest<Kode>): LetterMarkupWithDataUsage =
         brevbaker.renderLetterMarkupWithDataUsage(createLetter(brevbestilling))
+
+    fun renderLetterMarkupWithDataUsageV2(brevbestilling: BestillBrevRequest<Kode>): MarkupLetterMarkupWithDataUsage =
+        brevbaker.renderLetterMarkupWithDataUsageV2(createLetter(brevbestilling))
 
     fun renderRedigerbareVedleggTitler(brevbestilling: BestillBrevRequest<Kode>): RedigerbareVedleggTitler =
         RedigerbareVedleggTitler(
@@ -38,11 +47,25 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
                 }
         )
 
+    fun renderRedigerbareVedleggV2Titler(brevbestilling: BestillBrevRequest<Kode>): RedigerbareVedleggTitler =
+        RedigerbareVedleggTitler(
+            brevbaker.renderRedigerbartVedleggV2Titler(createLetter(brevbestilling))
+                .map { (vedleggId, tittel) ->
+                    RedigerbareVedleggTitler.Vedlegg(vedleggId, tittel.joinToString("") { it.text })
+                }
+        )
+
     fun renderRedigerbartVedleggMarkup(brevbestilling: BestillBrevRequest<Kode>, vedleggId: String): LetterMarkup.Attachment? =
         brevbaker.renderRedigerbartVedleggMarkup(createLetter(brevbestilling), VedleggId(vedleggId))
 
+    fun renderRedigerbartVedleggV2Markup(brevbestilling: BestillBrevRequest<Kode>, vedleggId: String): MarkupAttachment? =
+        brevbaker.renderRedigerbartVedleggV2Markup(createLetter(brevbestilling), VedleggId(vedleggId))
+
     override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         brevbaker.renderRedigertBrevPDF(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg, brevbestilling.pdfVedlegg)
+
+    suspend fun renderPDFV2(brevbestilling: BestillRedigertBrevRequestV2<Kode>): LetterResponse =
+        brevbaker.renderRedigertBrevV2PDF(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg, brevbestilling.pdfVedlegg)
 
     override fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         brevbaker.renderRedigertBrevHTML(createLetter(brevbestilling), brevbestilling.letterMarkup, brevbestilling.redigerteVedlegg)
@@ -51,5 +74,8 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
         letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))
 
     private fun createLetter(brevbestilling: BestillRedigertBrevRequest<Kode>) =
+        letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))
+
+    private fun createLetter(brevbestilling: BestillRedigertBrevRequestV2<Kode>) =
         letterFactory.createLetter(brevbestilling, getTemplate(brevbestilling.kode))
 }

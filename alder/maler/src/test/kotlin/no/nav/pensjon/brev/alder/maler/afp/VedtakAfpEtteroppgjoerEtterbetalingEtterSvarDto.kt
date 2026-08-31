@@ -1,14 +1,14 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 
 fun createVedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto(): VedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto =
     VedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = lagSaksbehandlervalg(),
         pesysData = VedtakAfpEtteroppgjoerEtterbetalingEtterSvarDto.PesysData(
             oppgjoersAar = Year(2024),
             forlitebetalt = Kroner(28_500),

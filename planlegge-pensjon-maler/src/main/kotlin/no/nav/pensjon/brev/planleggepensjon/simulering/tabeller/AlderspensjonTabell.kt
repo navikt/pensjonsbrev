@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -16,12 +17,13 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 
 data class AlderspensjonTabell(
     val alderspensjon: Expression<SimuleringV1MaanedligAlderspensjon>,
+    val grad: Expression<Int>,
 ) : OutlinePhrase<LangBokmal>() {
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         paragraph {
             table(header = {
                 column(columnSpan = 3) {
-                    text(bokmal { +"100 % alderspensjon" })
+                    text(bokmal { +grad.format() + " % alderspensjon" })
                 }
                 column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT, columnSpan = 1) {
                     text(bokmal { +"Kr per måned" })
@@ -31,7 +33,7 @@ data class AlderspensjonTabell(
                     showIf(it.greaterThan(0)) {
                         row {
                             cell { text(bokmal { +"Grunnpensjon (kap. 19)" }) }
-                            cell { text(bokmal { +it.format() }) }
+                            cell { text(bokmal { +it.format(denominator = false) }) }
                         }
                     }
                 }
@@ -39,7 +41,7 @@ data class AlderspensjonTabell(
                     showIf(it.greaterThan(0)) {
                         row {
                             cell { text(bokmal { +"Tilleggspensjon (kap. 19)" }) }
-                            cell { text(bokmal { +it.format() }) }
+                            cell { text(bokmal { +it.format(denominator = false) }) }
                         }
                     }
                 }
@@ -47,21 +49,21 @@ data class AlderspensjonTabell(
                     showIf(it.greaterThan(0)) {
                         row {
                             cell { text(bokmal { +"Pensjonstillegg (kap. 19)" }) }
-                            cell { text(bokmal { +it.format() }) }
+                            cell { text(bokmal { +it.format(denominator = false) }) }
                         }
                     }
                 }
                 ifNotNull(alderspensjon.gjenlevendetillegg) {
                     row {
                         cell { text(bokmal { +"Gjenlevendetillegg (kap. 19)" }) }
-                        cell { text(bokmal { +it.format() }) }
+                        cell { text(bokmal { +it.format(denominator = false) }) }
                     }
                 }
                 ifNotNull(alderspensjon.inntektspensjonBeloep) {
                     showIf(it.greaterThan(0)) {
                         row {
                             cell { text(bokmal { +"Inntektspensjon (kap. 20)" }) }
-                            cell { text(bokmal { +it.format() }) }
+                            cell { text(bokmal { +it.format(denominator = false) }) }
                         }
                     }
                 }
@@ -69,7 +71,7 @@ data class AlderspensjonTabell(
                     showIf(it.greaterThan(0)) {
                         row {
                             cell { text(bokmal { +"Garantipensjon (kap. 20)" }) }
-                            cell { text(bokmal { +it.format() }) }
+                            cell { text(bokmal { +it.format(denominator = false) }) }
                         }
                     }
                 }
@@ -77,7 +79,7 @@ data class AlderspensjonTabell(
                     showIf(it.greaterThan(0)) {
                         row {
                             cell { text(bokmal { +"Garantitillegg (kap. 20)" }) }
-                            cell { text(bokmal { +it.format() }) }
+                            cell { text(bokmal { +it.format(denominator = false) }) }
                         }
                     }
                 }
@@ -85,7 +87,7 @@ data class AlderspensjonTabell(
                     showIf(it.greaterThan(0)) {
                         row {
                             cell { text(bokmal { +"Skjermingstillegg" }) }
-                            cell { text(bokmal { +it.format() }) }
+                            cell { text(bokmal { +it.format(denominator = false) }) }
                         }
                     }
                 }
@@ -101,7 +103,7 @@ data class AlderspensjonTabell(
                                 alderspensjon.garantitilleggBeloep.ifNull(BrevbakerType.Kroner(0)) +
                                 alderspensjon.skjermingstillegg.ifNull(BrevbakerType.Kroner(0)) +
                                 alderspensjon.gjenlevendetillegg.ifNull(BrevbakerType.Kroner(0))
-                        text(bokmal { +sum.format() }, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)
+                        text(bokmal { +sum.format(denominator = false) }, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)
                     }
                 }
             }

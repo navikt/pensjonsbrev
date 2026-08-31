@@ -1,10 +1,11 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import no.nav.pensjon.brev.api.model.IBrevkategori
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.BrevdataMedSaksbehandlerValgUtenFagsystemdata
 import no.nav.pensjon.brev.template.BrevTemplateTest.EksempelBrev.fritekst
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -13,7 +14,6 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -27,7 +27,7 @@ private enum class RedigerbarBrevkode : Brevkode.Redigerbart {
 private class BrevTemplateTest {
     private val testExpressionScope = ExpressionScope(EmptyAutobrevdata, FellesFactory.felles, Language.Bokmal)
 
-    private object EksempelBrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+    private object EksempelBrev : RedigerbarTemplate<BrevdataMedSaksbehandlerValgUtenFagsystemdata> {
         override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
         override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
         override val sakstyper = setOf(object : ISakstype {
@@ -52,7 +52,7 @@ private class BrevTemplateTest {
     @Test
     fun `kan bruke fritekst som ifNull`() {
         with(EksempelBrev.template) {
-            with(TemplateRootScope<LangBokmal, EmptyRedigerbarBrevdata>()) {
+            with(TemplateRootScope<LangBokmal, BrevdataMedSaksbehandlerValgUtenFagsystemdata>()) {
                 val text = "fritekst"
                 assertThat(
                     null.expr<String?>().ifNull(fritekst(text))
@@ -65,7 +65,7 @@ private class BrevTemplateTest {
     @Test
     fun `kan ikke ha fritekst uten tekst`() {
         with(EksempelBrev.template) {
-            with(TemplateRootScope<LangBokmal, EmptyRedigerbarBrevdata>()) {
+            with(TemplateRootScope<LangBokmal, BrevdataMedSaksbehandlerValgUtenFagsystemdata>()) {
                     assertThrows<IllegalArgumentException> { fritekst("       ") }
             }
         }
@@ -75,7 +75,7 @@ private class BrevTemplateTest {
     @Test
     fun `kan ha fritekst med mellomrom foerst og sist`() {
         with(EksempelBrev.template) {
-            with(TemplateRootScope<LangBokmal, EmptyRedigerbarBrevdata>()) {
+            with(TemplateRootScope<LangBokmal, BrevdataMedSaksbehandlerValgUtenFagsystemdata>()) {
                 assertDoesNotThrow{ fritekst(" hei ") }
             }
         }
@@ -84,7 +84,7 @@ private class BrevTemplateTest {
     @Test
     fun `gir ikke fritekst om verdi er satt`() {
         with(EksempelBrev.template) {
-            with(TemplateRootScope<LangBokmal, EmptyRedigerbarBrevdata>()) {
+            with(TemplateRootScope<LangBokmal, BrevdataMedSaksbehandlerValgUtenFagsystemdata>()) {
                 val text = "ikkeFriTekst"
                 assertThat(
                     text.expr<String?>().ifNull(fritekst("bla"))
@@ -97,7 +97,7 @@ private class BrevTemplateTest {
 }
 
 
-enum class Brevkategori : TemplateDescription.IBrevkategori {
+enum class Brevkategori : IBrevkategori {
     INNHENTE_OPPLYSNINGER;
 
     override val kode: String = name

@@ -16,19 +16,33 @@ class UpdateEditedLetterException(message: String) : RuntimeException(message)
  * present.
  */
 fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup): Edit.Letter =
-    UpdateEditedLetter(this, renderedLetter).build()
+    renderedLetter.toEdit().let { rendered ->
+        UpdateEditedLetter(rendered.variablesValueMap()).mergeLetter(this, rendered)
+    }
 
-class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup) {
-    private val rendered = rendered.toEdit()
-    private val variableValues = this.rendered.variablesValueMap()
 
-    fun build(): Edit.Letter =
+fun Edit.Attachment.updateEditedAttachment(renderedAttachment: LetterMarkup.Attachment): Edit.Attachment =
+    renderedAttachment.toEdit().let { rendered ->
+        UpdateEditedLetter(rendered.variablesValueMap()).mergeAttachment(this, rendered)
+    }
+
+class UpdateEditedLetter(private val variableValues: Map<Int, String>) {
+
+    fun mergeLetter(edited: Edit.Letter, rendered: Edit.Letter): Edit.Letter =
         edited.copy(
             title = mergeTitle(edited.title, rendered.title),
             sakspart = rendered.sakspart,
             signatur = mergeSignatur(edited.signatur, rendered.signatur),
             blocks = mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock, ::updateVariableValues, ::setMissing),
             deletedBlocks = edited.deletedBlocks.filter { id -> rendered.blocks.any { it.id == id } }.toSet(),
+        )
+
+    fun mergeAttachment(edited: Edit.Attachment, rendered: Edit.Attachment): Edit.Attachment =
+        edited.copy(
+            title = mergeTitle(edited.title, rendered.title),
+            blocks = mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock, ::updateVariableValues, ::setMissing),
+            deletedBlocks = edited.deletedBlocks.filter { id -> rendered.blocks.any { it.id == id } }.toSet(),
+            includeSakspart = rendered.includeSakspart,
         )
 
     /**

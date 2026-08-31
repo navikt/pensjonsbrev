@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.alder.maler.afpprivat.AvslagAfpPrivat
 import no.nav.pensjon.brev.alder.maler.afp.AvslagAfpGammel
 import no.nav.pensjon.brev.alder.maler.afpprivat.AvslagAfpPrivatAuto
 import no.nav.pensjon.brev.alder.maler.afpprivat.VedtakAfpPrivatEndring
-import no.nav.pensjon.brev.alder.maler.afpprivat.VedtakAfpPrivatEndringOpptjeningAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndring
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEtterbetaling
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvik
@@ -52,10 +51,11 @@ import no.nav.pensjon.brev.alder.maler.aldersovergang.InfoAldersovergangEps60Aar
 import no.nav.pensjon.brev.alder.maler.aldersovergang.InfoAldersovergangEps62AarAuto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.InfoFyller67AarSaerskiltSats
 import no.nav.pensjon.brev.alder.maler.aldersovergang.VedtakAldersovergang67AarGarantitilleggAuto
-import no.nav.pensjon.brev.alder.maler.aldersovergang.VedtakEndringAFPEndretOpptjeningAuto
+import no.nav.pensjon.brev.alder.maler.afpprivat.VedtakEndringAFPEndretOpptjeningAuto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.VedtakOmregningGjenlevendepensjonTilAlderspensjonAuto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.OmregningAlderUfore2016
 import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.OmregningAlderUfore2016Auto
+import no.nav.pensjon.brev.alder.maler.avslag.AvslagForLiteTrygdetidAP
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder2016Auto
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderAP2016
@@ -66,10 +66,21 @@ import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUnder5AartrygdetidAuto
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjonsalderAP2016
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjonsalderAP2016Auto
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjonsalderAuto
+import no.nav.pensjon.brev.alder.maler.endring.EndringAvUttaksgradAuto
+import no.nav.pensjon.brev.alder.maler.endring.EndringPgaOpptjeningAuto
+import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvAlderspensjonFordiOpptjeningErEndret
+import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvAlderspensjonInstitusjonsopphold
+import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvUttaksgrad
+import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge
+import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge
+import no.nav.pensjon.brev.alder.maler.endring.VedtakEndringVedFlyttingMellomLand
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonAvdodAuto
 import no.nav.pensjon.brev.alder.maler.info.BekreftelseAvUtsendtKravTilUtlandet
 import no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygd
 import no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev.UforetrygdSokerAfpPrivat
+import no.nav.pensjon.brev.alder.maler.innvilgelse.InnvilgelseAvAlderspensjon
+import no.nav.pensjon.brev.alder.maler.innvilgelse.InnvilgelseAvAlderspensjonAuto
+import no.nav.pensjon.brev.alder.maler.innvilgelse.InnvilgelseAvAlderspensjonTrygdeavtale
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonPgaGarantitillegg
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilstand
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilstandAuto
@@ -109,9 +120,12 @@ object AlderTemplates : AllTemplates {
             EndringAvAlderspensjonAvdodAuto,
             EndringAvAlderspensjonSivilstandAuto,
             EndringAvAlderspensjonFordiDuFyller75AarAuto,
+            EndringAvUttaksgradAuto,
+            EndringPgaOpptjeningAuto,
             OmregningAlderUfore2016Auto,
             FeilUtsendingAvGjenlevenderett,
             InnvilgelseAvAfpAuto,
+            InnvilgelseAvAlderspensjonAuto,
             VarselGjpForlengetArskull6061,
             VarselGjpForlengetArskull6061Utland,
             VarselGjpForlengetArskull6270,
@@ -134,7 +148,6 @@ object AlderTemplates : AllTemplates {
             VarselAfpEtteroppgjoerForeloepigAuto,
             VedtakAfpEtteroppgjoerIngenEndringAuto,
             AvslagAfpPrivatAuto,
-            VedtakAfpPrivatEndringOpptjeningAuto,
             VedtakAldersovergang67AarGarantitilleggAuto,
             VedtakEndringAFPEndretOpptjeningAuto,
             VedtakOmregningAFPTilEnsligPensjonistAuto,
@@ -146,6 +159,7 @@ object AlderTemplates : AllTemplates {
             AfpPrivatSokerUforeTrygd,
             AvslagAfpGammel,
             AvslagAfpPrivat,
+            AvslagForLiteTrygdetidAP,
             AvslagGradsendringFoerNormertPensjonsalder,
             AvslagGradsendringFoerNormertPensjonsalderAP2016,
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
@@ -157,6 +171,8 @@ object AlderTemplates : AllTemplates {
             EndringAvAlderspensjonSivilstandSaerskiltSats,
             InnvilgelseAvAfp,
             InnvilgelseAvAfpOffentligSektor,
+            InnvilgelseAvAlderspensjon,
+            InnvilgelseAvAlderspensjonTrygdeavtale,
             OmregningAlderUfore2016,
             UforetrygdSokerAfpPrivat,
             VarselAfpEtteroppgjoerForeloepig,
@@ -169,17 +185,23 @@ object AlderTemplates : AllTemplates {
             VedtakAfpEtteroppgjoerIngenEndring,
             VedtakAfpPrivatEndring,
             VedtakEndringAfpOffentligSektor,
+            VedtakEndringAvAlderspensjonFordiOpptjeningErEndret,
+            VedtakEndringAvAlderspensjonInstitusjonsopphold,
+            VedtakEndringAvUttaksgrad,
+            VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
+            VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
+            VedtakEndringVedFlyttingMellomLand,
             VedtakStansAlderspensjonFlyttingMellomLand,
         )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf(
         AlltidValgbartVedlegg(
             skjemaForBankopplysninger,
-            Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
+            Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER,
         ),
         AlltidValgbartVedlegg(
             uttaksskjema,
-            Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA
-        )
+            Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA,
+        ),
     )
 }

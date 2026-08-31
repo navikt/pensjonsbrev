@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDto
 import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakEndringAfpOffentligSektorDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.afp.selectors.vedtakEndringAfpOffentligSektorDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -115,7 +115,7 @@ object VedtakEndringAfpOffentligSektor : RedigerbarTemplate<VedtakEndringAfpOffe
                 )
             )
 
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
 
             paragraph {
                 text(

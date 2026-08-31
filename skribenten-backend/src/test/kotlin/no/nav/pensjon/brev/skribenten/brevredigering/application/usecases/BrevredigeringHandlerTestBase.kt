@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.*
+import no.nav.pensjon.brev.skribenten.fagsystem.domain.Tema
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.*
@@ -68,6 +69,8 @@ abstract class BrevredigeringHandlerTestBase {
         brevbakerService.redigerbareMaler[Testbrevkoder.VEDTAKSBREV] = vedtaksbrev
         brevbakerService.redigerbareMaler[Testbrevkoder.VARSELBREV] = varselbrevIVedtakskontekst
         brevbakerService.alltidValgbareVedleggResultat = emptySet()
+        brevbakerService.renderRedigerbareVedleggResultat = emptyMap()
+        brevbakerService.harRedigerbareVedleggResultat = null
         stagePdf(stagetPDF)
 
         penService.pesysBrevdata = brevdataResponseData
@@ -92,6 +95,7 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected val brevbakerService = BrevredigeringFakeBrevbakerService()
     protected val penService = FakePenClient()
+    protected val pdlService = FakePDLService()
     protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
     protected val brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService())
     protected val brevdataService = BrevdataService(penService, samhandlerService)
@@ -101,6 +105,7 @@ abstract class BrevredigeringHandlerTestBase {
     protected val attesterBrevPolicy = AttesterBrevPolicy()
     protected val ferdigRedigertPolicy = FerdigRedigertPolicy()
     protected val sendBrevPolicy = SendBrevPolicy(ferdigRedigertPolicy)
+    protected val slettBrevPolicy = SlettBrevPolicy(pdlService)
     protected val reserverBrevHandler by lazy { ReserverBrevHandler(brevreservasjonPolicy, SharedPostgres.database) }
 
     protected val endreMottaker by lazy {
@@ -217,7 +222,8 @@ abstract class BrevredigeringHandlerTestBase {
     protected val endreRedigertVedlegg by lazy {
         EndreRedigertVedleggHandler(
             redigerBrevPolicy = redigerBrevPolicy,
-            brevreservasjonPolicy = brevreservasjonPolicy,
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
             reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
@@ -279,6 +285,7 @@ abstract class BrevredigeringHandlerTestBase {
     protected val slettBrevHandler by lazy {
         SlettBrevHandler(
             reserverBrevHandler = reserverBrevHandler,
+            slettBrevPolicy = slettBrevPolicy,
             database = SharedPostgres.database,
         )
     }
@@ -303,6 +310,7 @@ abstract class BrevredigeringHandlerTestBase {
             sakType = Sakstype("ALDER"),
             pid = Pid("12345678910"),
             behandlingsnumre = listOf(),
+            tema = Tema("tema1"),
         )
 
         val fagsak1 = Fagsak(
@@ -417,7 +425,7 @@ abstract class BrevredigeringHandlerTestBase {
         principal: UserPrincipal = saksbehandler1Principal,
         reserverForRedigering: Boolean = false,
         mottaker: Dto.Mottaker? = null,
-        saksbehandlerValg: SaksbehandlerValg = SaksbehandlerValg().apply { put("valg", true) },
+        saksbehandlerValg: SaksbehandlervalgMap = SaksbehandlervalgMap().apply { put("valg", true) },
         brevkode: RedigerbarBrevkode = Testbrevkoder.INFORMASJONSBREV,
         vedtaksId: VedtaksId? = null,
         sak: Pen.SakSelection = sak1,
@@ -439,14 +447,16 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected suspend fun oppdaterBrev(
         brevId: BrevId,
-        nyeSaksbehandlerValg: SaksbehandlerValg? = null,
+        nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
         nyttRedigertbrev: Edit.Letter? = null,
         frigiReservasjon: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
         oppdaterBrev.invoke(
             OppdaterBrevHandler.Request(
                 brevId = brevId,
+                saksId = saksId,
                 nyeSaksbehandlerValg = nyeSaksbehandlerValg,
                 nyttRedigertbrev = nyttRedigertbrev,
                 frigiReservasjon = frigiReservasjon
@@ -458,10 +468,12 @@ abstract class BrevredigeringHandlerTestBase {
         brevId: BrevId,
         reserverForRedigering: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
         hentBrev(
             HentBrevHandler.Request(
                 brevId = brevId,
+                saksId = saksId,
                 reserverForRedigering = reserverForRedigering,
             )
         )
@@ -484,20 +496,30 @@ abstract class BrevredigeringHandlerTestBase {
     protected suspend fun slettBrev(
         brevId: BrevId,
         principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
     ): Outcome<Unit, BrevredigeringError>? = withPrincipal(principal) {
-        slettBrevHandler(SlettBrevHandler.Request(brevId = brevId))
+        slettBrevHandler(
+            SlettBrevHandler.Request(
+                brevId = brevId,
+                saksId = saksId,
+                pid = if (saksId == sak1.saksId) sak1.pid else error("Ukjent saksId i test: $saksId"),
+                behandlingsnumre = if (saksId == sak1.saksId) sak1.behandlingsnumre else error("Ukjent saksId i test: $saksId")
+            )
+        )
     }
 
     protected suspend fun attester(
         brev: Dto.Brevredigering,
         attestant: UserPrincipal = attestant1Principal,
         frigiReservasjon: Boolean = false,
-        nyeSaksbehandlerValg: SaksbehandlerValg? = null,
+        nyeSaksbehandlerValg: RedigerbarSaksbehandlervalgMap? = null,
         nyttRedigertbrev: Edit.Letter? = null,
+        saksId: SaksId = sak1.saksId,
     ) = withPrincipal(attestant) {
         attesterBrev(
             AttesterBrevHandler.Request(
                 brevId = brev.info.id,
+                saksId = saksId,
                 frigiReservasjon = frigiReservasjon,
                 nyeSaksbehandlerValg = nyeSaksbehandlerValg,
                 nyttRedigertbrev = nyttRedigertbrev,
@@ -509,10 +531,12 @@ abstract class BrevredigeringHandlerTestBase {
         brev: Dto.Brevredigering,
         klar: Boolean,
         principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
     ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
         veksleKlarStatus(
             VeksleKlarStatusHandler.Request(
                 brevId = brev.info.id,
+                saksId = saksId,
                 klar = klar
             )
         )
@@ -539,19 +563,22 @@ abstract class BrevredigeringHandlerTestBase {
         brev: Dto.Brevredigering,
         principal: UserPrincipal = saksbehandler1Principal,
         handler: HentEllerOpprettPdfHandler = hentEllerOpprettPdf,
+        saksId: SaksId = sak1.saksId,
     ): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
         withPrincipal(principal) {
-            handler(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id, fagsak = fagsak1))
+            handler(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id, saksId = saksId, fagsak = fagsak1))
         }
 
     protected suspend fun endreDistribusjonstype(
         brevId: BrevId,
         nyDistribusjonstype: Distribusjon,
         principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
     ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
         endreDistribusjonstype(
             EndreDistribusjonstypeHandler.Request(
                 brevId = brevId,
+                saksId = saksId,
                 type = nyDistribusjonstype,
             )
         )
@@ -561,13 +588,14 @@ abstract class BrevredigeringHandlerTestBase {
         brevId: BrevId,
         leggVedFoersteside: Boolean,
         principal: UserPrincipal = saksbehandler1Principal,
+        saksId: SaksId = sak1.saksId,
     ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
-        leggVedFoersteside(LeggVedFoerstesideHandler.Request(brevId = brevId, leggVedFoersteside = leggVedFoersteside))
+        leggVedFoersteside(LeggVedFoerstesideHandler.Request(brevId = brevId, saksId = saksId, leggVedFoersteside = leggVedFoersteside))
     }
 
     protected suspend fun sendBrev(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.SendBrevResult, BrevredigeringError>? =
         withPrincipal(principal) {
-            sendBrevHandler(SendBrevHandler.Request(brevId = brev.info.id))
+            sendBrevHandler(SendBrevHandler.Request(brevId = brev.info.id, saksId = sak1.saksId))
         }
 
     protected fun stagePdf(pdf: ByteArray) {
@@ -688,6 +716,14 @@ abstract class BrevredigeringHandlerTestBase {
             sendRedigerbartBrevRequest: Pen.SendRedigerbartBrevRequest, distribuer: Boolean
         ) {
             assertThat(utfoerteSendBrevKall.distinct()).contains(Pair(sendRedigerbartBrevRequest, distribuer))
+        }
+    }
+    protected class FakePDLService : PdlServiceStub() {
+        override suspend fun hentBrukerContext(
+            ident: Pid,
+            behandlingsnumre: List<Behandlingsnummer>,
+        ): Pdl.PersonContext? {
+            return null
         }
     }
 }

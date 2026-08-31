@@ -4,7 +4,7 @@ import path from "node:path";
 import { expect, test } from "@playwright/test";
 import { formatISO } from "date-fns";
 
-import { setupSakStubs } from "../utils/helpers";
+import { setupSakStubs } from "~test/e2e/support/helpers";
 
 const fixturesDir = path.resolve("test/e2e/fixtures");
 const brevResponseEtterLagring = JSON.parse(
@@ -48,6 +48,37 @@ test.describe("Brevredigering", () => {
   test("Åpne brevredigering", async ({ page }) => {
     await page.goto("/saksnummer/123456/brev/1");
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();
+  });
+
+  test("kan gå til brevbehandler når henting av brev feiler", async ({ page }) => {
+    let requestCount = 0;
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) => {
+      requestCount++;
+      return route.fulfill({ status: 500 });
+    });
+
+    await page.goto("/saksnummer/123456/brev/1");
+
+    await expect(page.getByText("En feil skjedde ved henting av brev")).toBeVisible({ timeout: 15_000 });
+    expect(requestCount).toBe(4);
+    await expect(page.getByRole("button", { name: "Gå til brevvelger" })).toBeVisible();
+    await page.getByRole("button", { name: "Gå til brevbehandler" }).click();
+    await expect(page).toHaveURL(/\/saksnummer\/123456\/brevbehandler\?brevId=1/);
+  });
+
+  test("kan gå til brevvelger når henting av brev feiler", async ({ page }) => {
+    let requestCount = 0;
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) => {
+      requestCount++;
+      return route.fulfill({ status: 500 });
+    });
+
+    await page.goto("/saksnummer/123456/brev/1");
+
+    await expect(page.getByText("En feil skjedde ved henting av brev")).toBeVisible({ timeout: 15_000 });
+    expect(requestCount).toBe(4);
+    await page.getByRole("button", { name: "Gå til brevvelger" }).click();
+    await expect(page).toHaveURL(/\/saksnummer\/123456\/brevvelger\?brevId=1/);
   });
 
   test("Autolagrer etter redigering", async ({ page }) => {

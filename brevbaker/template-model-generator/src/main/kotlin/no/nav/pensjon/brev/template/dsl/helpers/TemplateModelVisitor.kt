@@ -7,8 +7,6 @@ import com.google.devtools.ksp.symbol.ClassKind.INTERFACE
 import com.google.devtools.ksp.visitor.KSDefaultVisitor
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 
@@ -16,8 +14,6 @@ private val SKIPPED_NO_WARN_PACKAGES: Set<String> = setOf("kotlin", "java.util",
 internal val SKIPPED_NO_WARN_CLASSES: Set<String> = setOf(
     EmptyAutobrevdata::class,
     EmptyFagsystemdata::class,
-    EmptyRedigerbarBrevdata::class,
-    EmptySaksbehandlerValg::class,
     EmptyVedleggData::class,
     SaksbehandlervalgIDSL::class
 ).map { it.qualifiedName!! }.toSet()

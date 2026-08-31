@@ -12,17 +12,6 @@ plugins {
 }
 
 allprojects {
-
-    // Sikrer at alle jackson-*, ktor-*, log4j-* og exposed-* avhengigheter i hele prosjektet
-    // resolver til samme versjon, uten at hver modul må deklarere platform(...) selv.
-    configurations.matching { it.name in setOf("implementation", "testImplementation", "testFixturesImplementation") }
-        .configureEach {
-            project.dependencies.add(name, project.dependencies.platform(libs.jackson.bom))
-            project.dependencies.add(name, project.dependencies.platform(libs.ktor.bom))
-            project.dependencies.add(name, project.dependencies.platform(libs.log4j.bom))
-            project.dependencies.add(name, project.dependencies.platform(libs.exposed.bom))
-        }
-
     repositories {
         mavenCentral()
         mavenLocal()
@@ -33,7 +22,7 @@ allprojects {
                 includeGroup("no.nav.pensjon.alder.brev")
                 includeGroup("no.nav.pensjon.ufoere.brev")
                 includeGroup("no.nav.pensjon.brev")
-                // api-model-common
+                // brevbaker-api m.fl.
                 includeGroup("no.nav.brev.brevbaker")
             }
         }

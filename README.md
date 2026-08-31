@@ -32,12 +32,10 @@ docker-compose up -d --build
 ### Lokal kjøring av skribenten backend/front-end og brevbaker/pdf-bygger
 
 1. For å hente alle secrets må du ha installert:
-   - kubectl
-   - python
-   - vault
    - gcloud cli
    - kjørende docker/colima
    - naisdevice med standard dev-miljø tilganger
+   - nais-cli (cli.nais.io)
 2. Hent alle secrets:
    ```bash
    ./fetch-secrets.sh
@@ -112,11 +110,21 @@ npm login --registry=https://npm.pkg.github.com --auth-type=legacy
 
 ### Endringer i biblioteks-koden
 
-Vi bruker Kotlin Gradle-pluginens innebygde ABI-validering (`abiValidation`) for å se etter endringer i koden i modulene som inngår i biblioteket (per nå `brevbaker:api-model-common`, `brevbaker:dsl` og `brevbaker:core`). Denne holder oversikt representert i .api-filer i disse modulene.
+Vi bruker Kotlin Gradle-pluginens innebygde ABI-validering (`abiValidation`) for å se etter endringer i koden i modulene som inngår i biblioteket (per nå `brevbaker:brevdata`, `brevbaker:brevbaker-api`, `brevbaker:markup-model`, `brevbaker:markup-dsl`, `brevbaker:dsl` og `brevbaker:core`). Denne holder oversikt representert i .api-filer i disse modulene.
 
 Ved endringer av public-kode i disse modulene - inkludert sletting av metoder eller nye metoder - må du huske å kjøre `gradle updateKotlinAbi` og sjekke inn de oppdaterte .api-filene. Glemmer du dette vil bygget feile - det kjører automatisk `gradle checkKotlinAbi`-kommandoen.
 
 Mer om dette på https://kotlinlang.org/docs/api-guidelines-backward-compatibility.html
+
+### Låsing av avhengigheter i biblioteksmodulene
+
+De samme modulene (`brevbaker:brevdata`, `brevbaker:brevbaker-api`, `brevbaker:markup-model`, `brevbaker:markup-dsl`, `brevbaker:dsl` og `brevbaker:core`) bruker Gradles innebygde dependency locking (`dependencyLocking { lockAllConfigurations() }`) for å liste opp avhengigheter i hver sin `gradle.lockfile`.
+
+Bygget feiler ved avvik fra det som er låst i `gradle.lockfile`. Endrer du en avhengighet i en av disse modulene (f.eks. ved å bumpe en versjon i `gradle/libs.versions.toml`) må du regenerere lockfilen for den aktuelle modulen og sjekke inn den oppdaterte filen:
+
+```bash
+./gradlew :brevbaker:brevdata:dependencies --write-locks
+```
 
 ### Ytelsestesting med locust
 

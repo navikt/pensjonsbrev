@@ -1,76 +1,134 @@
 @startuml
 
-object "pensjon-brevbaker" as brevbaker
-brevbaker : dagens applikasjon
+legend top left
+  |<#pink><color:#pink>WWWWWWWWWW</color> | publisert artefakt konsumenten deklarerer selv |
+  |<#mistyrose><color:#mistyrose>WWWWWWWWWW</color> | publisert artefakt, men kun ment som\ntransitiv avhengighet av et av de over |
+  |<#lightskyblue><color:#lightskyblue>WWWWWWWWWW</color> | våre applikasjoner (kjørende tjenester) |
+  |<#yellow><color:#yellow>WWWWWWWWWW</color> | eksternt system |
+endlegend
 
-object pensjonsmalene #pink
-pensjonsmalene : - her ligger malene og malkodene. \n denne skal bort
+package "brevbaker" {
 
-object ufoeremalene #pink
-ufoeremalene : - her ligger malene og malkodene
+  object "brevbaker:brevdata" as brevdata #mistyrose
+  brevdata : - vokabularet en *bestiller* trenger for å\n  beskrive brevdata
+  brevdata : - BrevbakerType, DisplayText, LanguageCode,\n  BrevLandmodell, Brevkode, LetterMetadata,\n  BrevbakerBrevdata-familien, SaksbehandlerValg,\n  IBrevkategori/ISakstype
+  brevdata : - null avhengigheter, endres sjelden
+  brevdata : - dette er alt PENs api-modeller kompilerer mot
+  brevdata : - publiseres med egen versjon (brevdataVersion),\n  men konsumenter får den via api-modellene\n  og brevbaker-api
 
-object aldersmalene #pink
-aldersmalene : - her ligger malene og malkodene
+  object "brevbaker:brevbaker-api" as brevbakerapi #pink
+  brevbakerapi : - brevbakers HTTP-kontrakt (tidligere api-model-common)
+  brevbakerapi : - alle DTOer bestillere trenger:\n  BestillBrevRequest, LetterResponse,\n  TemplateDescription, BrevbakerFelles,\n  TemplateModelSpecification, AlltidValgbartVedlegg
+  brevbakerapi : - BestillRedigertBrevRequest V1/V2 —\n  derfor avhengig av markup:model
+  brevbakerapi : - egen versjon (brevbakerApiVersion)
+  brevbakerapi : - brevinnhold v1 i eget pakkenavn (LetterMarkup(+Impl),\n  LetterMarkupWithDataUsage(+Impl), Listetype,\n  ElementTags, AttachmentTitle) — slettes samlet når\n  siste konsument er over på markup v2
 
-object "etterlattemaler" as etterlatte #pink
+  package "brevbaker:markup" {
+    object "brevbaker:markup:model" as markupModel #mistyrose
+    markupModel : - ren datamodell for markup, ingen DSL
+    markupModel : - inneholder ogsaa kontrakten mot pdf-bygger\n  (LetterPDFRequest, PDFCompilationOutput,\n  HttpStatusCodes) — den er uttrykt utelukkende\n  i markup-modellen, saa et eget artefakt hadde\n  bare vaert en ekstra versjonsakse
+    markupModel : - ingen runtime-avhengigheter
+    markupModel : - konstruktørene forblir internal\n  (@ConsistentCopyVisibility), så copy() er skjult\n  og valideringen kan ikke omgås
+    markupModel : - eneste vei inn utenfra er en smal fabrikkflate\n  merket @MarkupModelApi (RequiresOptIn)
+    markupModel : - eget versjonert artefakt fordi typene inngår i\n  signaturen til brevbaker-api ogsaa: ABI-validert
+    markupModel : - deler versjon med markup:dsl\n  (markupVersion i libs.versions.toml)
+    markupModel : - konsumenter får den transitivt, ikke ved\n  å deklarere den selv
 
-object "pensjon-brevbaker-api-model" as pensjonapimodel #pink
-pensjonapimodel : denne skal bort
+    object "brevbaker:markup:dsl" as markupDsl #pink
+    markupDsl : - både den offentlige authoring-DSLen og den\n  utvidede (eksplisitte ids, variable,\n  editBehaviour) — én modul
+    markupDsl : - den utvidede flaten er gatet med\n  @ExtendedMarkupDsl (RequiresOptIn) og ligger i\n  egne pakker, ikke skilt ut i egen modul
+    markupDsl : - derfor forblir alle builder-sømmer internal:\n  ingen associateWith, ingen lekkasje av\n  texts/blocks/contentFactory/build()
+    markupDsl : - her ligger ogsaa DSL-en for aa bygge en\n  komplett bestilling til pdf-bygger
+    markupDsl : - dette er artefaktet en ekstern konsument\n  deklarerer selv
+  }
 
-object "alder:api-model" as alderapimodel #pink
-alderapimodel : som i dag
+  object "brevbaker:serialization" as serialization
+  serialization : - Jackson-serialisering av intern trafikk\n  (internalObjectMapper, MarkupJacksonModule)
+  serialization : - re-eksporterer ingen modeller; konsumenter\n  deklarerer dem selv
+  serialization : - publiseres aldri
 
-object ":ufoere:api-model" as ufoereapimodel #pink
-ufoereapimodel : som i dag
+  object "brevbaker:dsl" as dsl
+  dsl : - det som trengs for å lage en mal
 
-object "brevbaker:dsl" as dsl
-dsl : - ny modul
-dsl : - det som trengs for å lage en mal
+  object "brevbaker:core" as core
+  core : - rendringsmotor, Letter2Markup
+  core : - PDFByggerService-grensesnittet
+  core : - bygger LetterPDFRequest direkte via fabrikken\n  i markup:model (opt-in @MarkupModelApi)
 
-object "brevbaker-bibliotek" as bibliotek
-bibliotek : skal eksponeres
+  object "brevbaker:template-model-generator" as tmg
+  tmg : - KSP: genererer *Selectors\n  fra @TemplateModelHelpers
 
+  object "brevbaker:pdf-bygger" as pdfbygger #lightskyblue
+  pdfbygger : - egen tjeneste
+  pdfbygger : - kompilerer Typst til PDF
+}
+
+package "maler" {
+  object "pensjon:maler" as pensjonsmalene
+  object "alder:maler" as aldersmalene
+  object "ufoere:maler" as ufoeremalene
+  object "etterlattemaler" as etterlatte
+  object "planlegge-pensjon-maler" as planlegge
+}
+
+package "api-model" {
+  object "pensjon:api-model" as pensjonapimodel #pink
+  object "alder:api-model" as alderapimodel #pink
+  object "ufoere:api-model" as ufoereapimodel #pink
+}
+
+object "pensjon:brevbaker" as brevbakerApp #lightskyblue
+brevbakerApp : - applikasjonen som samler alle malene\n  og eksponerer dem via API
+
+object "skribenten-backend" as skribenten #lightskyblue
+object PEN #yellow
 object Gjenny #yellow
 
-object "brevbaker-model" as modelcommon
-modelcommon : - som i dag
-modelcommon : - dagens brevbaker-api-model-common
+' brevbaker-modulene
+markupDsl --> markupModel
+brevbakerapi --> brevdata
+brevbakerapi --> markupModel : BestillRedigertBrevRequest v1/v2
+serialization --> brevbakerapi
+dsl --> brevbakerapi
+core --> dsl
+core --> serialization
+core --> markupDsl : opt-in @ExtendedMarkupDsl
+tmg --> dsl
+pdfbygger --> serialization
 
-object "brevbaker-selector-generator" as tmg
-tmg : dagens template-model-generator
+' malmoduler
+pensjonsmalene --> core
+aldersmalene --> core
+ufoeremalene --> core
+etterlatte --> core
+planlegge --> core
 
-object PEN #yellow
-
-object Skribenten
-Skribenten : som i dag
-
-bibliotek --> dsl
-brevbaker --> pensjonsmalene
-brevbaker --> aldersmalene
-brevbaker --> ufoeremalene
-brevbaker --> etterlatte
 pensjonsmalene --> pensjonapimodel
-
 aldersmalene --> alderapimodel
 ufoeremalene --> ufoereapimodel
 
-pensjonsmalene -> bibliotek
-etterlatte --> bibliotek
-pensjonapimodel --> modelcommon
-alderapimodel --> modelcommon
-ufoereapimodel --> modelcommon
-dsl --> modelcommon
-tmg --> dsl
-etterlatte ..> tmg
-pensjonsmalene ..> tmg
-ufoeremalene ..> tmg
-bibliotek ..> tmg
+pensjonapimodel --> brevdata
+alderapimodel --> brevdata
+ufoereapimodel --> brevdata
 
+' applikasjonen
+brevbakerApp --> pensjonsmalene
+brevbakerApp --> aldersmalene
+brevbakerApp --> ufoeremalene
+brevbakerApp --> etterlatte
+brevbakerApp --> planlegge
+brevbakerApp ..> pdfbygger : HTTP
+PEN ..> brevbakerApp : HTTP
+Gjenny ..> brevbakerApp : HTTP
+skribenten ..> brevbakerApp : HTTP
+
+
+' konsumenter
+skribenten --> serialization
 PEN --> pensjonapimodel
 PEN --> alderapimodel
 PEN --> ufoereapimodel
-Gjenny --> modelcommon
-
-Skribenten --> modelcommon
+PEN --> brevbakerapi
+Gjenny --> brevbakerapi
 
 @enduml

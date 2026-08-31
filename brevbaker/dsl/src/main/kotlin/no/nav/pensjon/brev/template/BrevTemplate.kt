@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.FeatureToggle
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import no.nav.pensjon.brev.api.model.IBrevkategori
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
@@ -37,7 +38,7 @@ sealed interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkod
         init: TemplateRootScope<Lang, LetterData>.() -> Unit
     ): LetterTemplate<Lang, LetterData> =
         with(TemplateRootScope<Lang, LetterData>(validator = validator()).apply(init)) {
-            return LetterTemplate(title, letterDataType, languages, outline, attachments, pdfAttachments, saksbehandlervalg, letterMetadata)
+            return LetterTemplate(title, letterDataType, languages, outline, attachments, saksbehandlervalg, letterMetadata)
         }
 }
 
@@ -48,7 +49,7 @@ inline fun <Kode : Brevkode<Kode>, Lang : LanguageSupport, reified LetterData : 
 ): LetterTemplate<Lang, LetterData> = createTemplate(LetterData::class, languages, letterMetadata, init)
 
 interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerValgBrevdata, out FagsystemBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart>, DslExtensionForRedigerbareBrev {
-    val kategori: TemplateDescription.IBrevkategori
+    val kategori: IBrevkategori
     val brevkontekst: TemplateDescription.Brevkontekst
     val sakstyper: Set<ISakstype>
 
@@ -73,16 +74,16 @@ internal fun SpesialkonstruksjonIMal.somExpression() = when (this) {
 }
 
 @JvmInline
-value class Fritekst internal constructor(val str: String) : SpesialkonstruksjonIMal {
+value class Fritekst internal constructor(internal val str: String) : SpesialkonstruksjonIMal {
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
 @JvmInline
-value class RedigerbarData internal constructor(val variabel: StringExpression) : SpesialkonstruksjonIMal {
+value class RedigerbarData internal constructor(internal val variabel: StringExpression) : SpesialkonstruksjonIMal {
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
-class BrevdataEllerFritekst internal constructor(val tekst: Expression<String?>, val fritekst: Expression<String>) : SpesialkonstruksjonIMal {
+class BrevdataEllerFritekst internal constructor(internal val tekst: Expression<String?>, internal val fritekst: Expression<String>) : SpesialkonstruksjonIMal {
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 

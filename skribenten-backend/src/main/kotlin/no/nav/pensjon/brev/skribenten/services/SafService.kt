@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.databind.JsonNode
 import no.nav.pensjon.brev.skribenten.SafConfig
 import io.ktor.client.call.body
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -53,23 +54,23 @@ interface SafService {
 
 class SafServiceException(message: String) : ServiceException(message)
 
-class SafServiceHttp(config: SafConfig, authService: AuthService) : SafService, ServiceStatus, Closeable {
+class SafServiceHttp(config: SafConfig, authService: AuthService, engine: HttpClientEngine) : SafService, ServiceStatus, Closeable {
     private val safUrl = config.url
     private val safRestUrl = config.restUrl
     private val safScope = config.scope
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService): this(config.services.saf, authService)
+    constructor(config: SkribentenConfig, authService: AuthService, engine: HttpClientEngine): this(config.services.saf, authService, engine)
 
-    private val client = lagHttpClient {
+    private val client = lagHttpClient(engine) {
         defaultRequest {
             url(safUrl)
         }
         install(ContentNegotiation) {
             jackson()
         }
-        callIdAndOnBehalfOfClient(safScope, authService)
+        onBehalfOfClient(safScope, authService)
     }
 
     data class HentJournalStatusResponse(val data: HentJournalpostData?, val errors: JsonNode?)

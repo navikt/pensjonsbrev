@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDto.Begrunnelse
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.avslagAfpPrivatDto.pesysData.*
 import no.nav.pensjon.brev.alder.model.afpprivat.selectors.avslagAfpPrivatDto.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -85,7 +85,7 @@ object AvslagAfpPrivat : RedigerbarTemplate<AvslagAfpPrivatDto> {
                 )
             }
 
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
 
             paragraph {
                 text(

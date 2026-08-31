@@ -1,21 +1,22 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDto
 import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
 fun createVedtakAvslagPaaOmsorgsopptjeningDto() =
     VedtakAvslagPaaOmsorgsopptjeningDto(
-        saksbehandlerValg = VedtakAvslagPaaOmsorgsopptjeningDto.SaksbehandlerValg(
-            omsorgsarbeidFoer1992 = false,
-            omsorgsarbeidEtter69Aar = true,
-            omsorgsarbeidMindreEnn22TimerOgMindreEnn6Maaneder = false,
-            omsorgsarbeidMindreEnn22Timer = false,
-            omsorgsarbeidMindreEnn6Maaneder = false,
-            privatAFPavslaat = false,
-            omsorgsarbeidForBarnUnder7aarFoer1992 = false,
-            omsorgsopptjeningenGodskrevetEktefellen = false,
-            brukerFoedtFoer1948 = false
+        saksbehandlerValg = lagSaksbehandlervalg(
+            "omsorgsarbeidFoer1992" to false,
+            "omsorgsarbeidEtter69Aar" to true,
+            "omsorgsarbeidMindreEnn22TimerOgMindreEnn6Maaneder" to false,
+            "omsorgsarbeidMindreEnn22Timer" to false,
+            "omsorgsarbeidMindreEnn6Maaneder" to false,
+            "privatAFPavslaat" to false,
+            "omsorgsarbeidForBarnUnder7aarFoer1992" to false,
+            "omsorgsopptjeningenGodskrevetEktefellen" to false,
+            "brukerFoedtFoer1948" to false,
         ),
         pesysData = VedtakAvslagPaaOmsorgsopptjeningDto.PesysData(
             navEnhet = "Nav Enhet",

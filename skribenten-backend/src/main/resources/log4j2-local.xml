@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Local-only log config for docker-compose, activated via -Dlog4j2.configurationFile=log4j2-local.xml.
+     Same as log4j2.xml, but with @timestamp/message first for easier reading in raw console output. -->
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="stdout_json" target="SYSTEM_OUT">
+            <JsonTemplateLayout eventTemplateUri="classpath:NavJsonEventLayout.json"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="org.eclipse.jetty" level="INFO"/>
+        <Logger name="io.netty" level="INFO"/>
+        <Logger name="io.getunleash.repository.PollingFeatureFetcher" level="ERROR"/>
+        <Root level="INFO">
+            <AppenderRef ref="stdout_json"/>
+        </Root>
+    </Loggers>
+</Configuration>

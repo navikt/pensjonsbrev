@@ -1,10 +1,9 @@
 package no.nav.pensjon.etterlatte
 
-import io.ktor.util.reflect.instanceOf
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.BrevmodulTest
-import no.nav.brev.brevbaker.jacksonObjectMapper
+import no.nav.brev.brevbaker.writeJsonToFile
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.Language
@@ -41,8 +40,6 @@ class EtterlatteTemplatesTest : BrevmodulTest(
         assertEquals(ubrukteKoder, listOf<Brevkode.Automatisk>())
     }
 
-    private val objectMapper = jacksonObjectMapper()
-
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
     fun <T : BrevbakerBrevdata> jsontest(
@@ -51,11 +48,11 @@ class EtterlatteTemplatesTest : BrevmodulTest(
         fixtures: T,
         spraak: Language,
     ) {
-        val erHovedmal = fixtures.instanceOf(BrevDTO::class) && !listOf(
+        val erHovedmal = fixtures::class.java.isAssignableFrom(BrevDTO::class.java) && !listOf(
             Delmal::class,
             Vedlegg::class,
             ManueltBrevDTO::class
-        ).any { fixtures.instanceOf(it) }
+        ).any { fixtures::class.java.isAssignableFrom(it.java) }
         // Hovedmalar skal ikkje redigerast i Gjenny, så dei treng vi ikkje å lage JSON av.
         // I tillegg er det per no ein mangel i brevbakeren at han ikkje klarer å lage JSON av tabellar, som vi bruker i ein del hovedmalar
         if (erHovedmal) {
@@ -71,7 +68,7 @@ class EtterlatteTemplatesTest : BrevmodulTest(
                 Paths.get("build/test_json")
                     .also { Files.createDirectories(it) }
                     .resolve((Paths.get("${filnavn(etterlatteBrevKode, spraak)}.json")))
-                    .let { Files.writeString(it, objectMapper.writeValueAsString(json)) }
+                    .let { writeJsonToFile(it, json) }
             }
     }
 }

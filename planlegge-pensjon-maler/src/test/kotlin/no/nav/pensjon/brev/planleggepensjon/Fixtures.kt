@@ -4,7 +4,8 @@ import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrevDto
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimulering
@@ -14,11 +15,13 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdAvsnitt
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdInnhold
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdSeksjon
+import no.nav.pensjon.brev.planleggepensjon.simulering.Kortforbehold
 import no.nav.pensjon.brev.planleggepensjon.simulering.LivsvarigOffentligAfp
 import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfp
 import no.nav.pensjon.brev.planleggepensjon.simulering.Simulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.Kull
 import no.nav.pensjon.brev.planleggepensjon.simulering.NormertPensjonsalderPlassering
+import no.nav.pensjon.brev.planleggepensjon.simulering.Pensjonsopptjening
 import no.nav.pensjon.brev.planleggepensjon.simulering.Simuleringsinformasjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringUtenlandsperiode
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjon
@@ -29,6 +32,7 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.Uttaksinformasjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.Vilkaarsproevingsresultat
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 import kotlin.reflect.KClass
 
@@ -42,7 +46,7 @@ object Fixtures : LetterDataFactory {
     override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
             ApSimuleringBrevDto::class -> createSimuleringBrevDto() as T
-            EmptyRedigerbarBrevdata::class -> EmptyRedigerbarBrevdata as T
+            ServiceberegningBrevDto::class -> createServiceberegningBrevDto() as T
             EmptyAutobrevdata::class -> EmptyAutobrevdata as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
@@ -56,6 +60,32 @@ object Fixtures : LetterDataFactory {
     }
 
     private fun createSimuleringBrevDto() = createBrevDtoMedAfpPrivat()
+
+    fun createServiceberegningBrevDto() = ServiceberegningBrevDto(
+        saksbehandlerValg = ServiceberegningDto(
+            uttaksalder = Alder(62, 10),
+            uttaksdato = "01.02.2027",
+            forventetFremtidigInntekt = Kroner(158000),
+            afp = TidsbegrensetOffentligAfp(
+                alderAar = 62,
+                totaltAfpBeloep = Kroner(31353),
+                tidligereArbeidsinntekt = Kroner(550000),
+                grunnbeloep = Kroner(130160),
+                sluttpoengtall = 4.73,
+                trygdetid = 40,
+                poengaarTom1991 = 4,
+                poengaarFom1992 = 36,
+                grunnpensjon = Kroner(10847),
+                tilleggspensjon = Kroner(17667),
+                afpTillegg = Kroner(1700),
+                saertillegg = Kroner(1139),
+                afpGrad = Percent(100),
+                erAvkortet = true,
+            ),
+            alt1 = true,
+            alt2 = false,
+        )
+    )
 
     fun createBrevDtoMedAfpPrivat() = ApSimuleringBrevDto(
         saksbehandlerValg = createLagreSimuleringDto(),
@@ -83,11 +113,20 @@ object Fixtures : LetterDataFactory {
         pesysData = EmptyFagsystemdata,
     )
 
+    fun createBrevDtoMedEndringAfpPrivat() = ApSimuleringBrevDto(
+        saksbehandlerValg = createLagreSimuleringDto().copy(
+            simuleringsinformasjon = createSimuleringsinformasjon().copy(
+                simulererEndringMedAfpPrivat = true,
+            ),
+        ),
+        pesysData = EmptyFagsystemdata,
+    )
+
     fun createBrevDtoMedAfpOffentligTidsbegrenset() = ApSimuleringBrevDto(
         saksbehandlerValg = createLagreSimuleringDto().copy(
             simuleringsinformasjon = createSimuleringsinformasjon().copy(
-                heltUttakInformasjon = Uttaksinformasjon(alder = Alder(67, 0), uttaksdato = "01.02.2030"),
-                gradertUttakInformasjon = Uttaksinformasjon(alder = Alder(63, 2), uttaksdato = "01.04.2026"),
+                heltUttakInformasjon = Uttaksinformasjon(alder = Alder(67, 0), uttaksdato = "01.02.2030", grad = 100),
+                gradertUttakInformasjon = Uttaksinformasjon(alder = Alder(63, 2), uttaksdato = "01.04.2026", grad = 40),
             ),
             simulering = createSimulering().copy(
                 maanedligAlderspensjonForKnekkpunkter = SimuleringV1MaanedligAlderspensjonForKnekkpunkter(
@@ -137,15 +176,36 @@ object Fixtures : LetterDataFactory {
                     pensjonsgivendeInntekt = Kroner(550000),
                 ),
                 AarligInntektOgPensjon(
-                    alderLabel = "67 år",
+                    alderLabel = "Livsvarig fra 67 år",
                     alderspensjon = Kroner(29133),
                     avtalefestetPensjon = Kroner(5000),
                     pensjonsgivendeInntekt = Kroner(0),
                 ),
             ),
+            pensjonsopptjeningListe = listOf(
+                Pensjonsopptjening(
+                    aarstall = Year(2024),
+                    pensjonsgivendeInntekt = Kroner(550000),
+                    pensjonspoeng = 4.73,
+                    pensjonsbeholdning = Kroner(1092923),
+                    merknad = "Eksempel",
+                ),
+            ),
             simuleringsinformasjon = createSimuleringsinformasjon(),
             trygdetid = null,
             forbehold = createForbeholdInnhold(),
+            kortforbehold = Kortforbehold(
+                avsnitt = listOf(
+                    ForbeholdAvsnitt(
+                        tekst = "Dette er et kort forbehold som vises i brevet.",
+                        punktliste = null,
+                    ),
+                    ForbeholdAvsnitt(
+                        tekst = "Dette er et kort forbehold i brevet.",
+                        punktliste = null,
+                    )
+                ),
+            ),
         )
 
     private fun createForbeholdInnhold() = ForbeholdInnhold(
@@ -209,6 +269,7 @@ object Fixtures : LetterDataFactory {
                 tilleggspensjonBeloep = Kroner(3100),
                 pensjonstillegg = Kroner(2800),
                 garantipensjonBeloep = Kroner(2400),
+                garantipensjonSats = Kroner(2020)
             ),
             vedHeltUttak = createSimuleringV1MaanedligAlderspensjon(),
             vedNormertPensjonsalder = createSimuleringV1MaanedligAlderspensjon(),
@@ -244,9 +305,9 @@ object Fixtures : LetterDataFactory {
     )
 
     private fun createSimuleringsinformasjon() = Simuleringsinformasjon(
-        gradertUttakInformasjon = Uttaksinformasjon(alder = Alder(aar = 62, maaneder = 0), uttaksdato = "01.02.2025"),
-        heltUttakInformasjon = Uttaksinformasjon(alder = Alder(aar = 70, maaneder = 2), uttaksdato = "01.04.2033"),
-        normertUttakInformasjon = Uttaksinformasjon(alder = Alder(aar = 67, maaneder = 2), uttaksdato = "01.04.2030"),
+        gradertUttakInformasjon = Uttaksinformasjon(alder = Alder(aar = 62, maaneder = 0), uttaksdato = "01.02.2025", grad = 40),
+        heltUttakInformasjon = Uttaksinformasjon(alder = Alder(aar = 70, maaneder = 2), uttaksdato = "01.04.2033", grad = 100),
+        normertUttakInformasjon = Uttaksinformasjon(alder = Alder(aar = 67, maaneder = 2), uttaksdato = "01.04.2030", grad = 100),
         sivilstatus = Sivilstatus.UGIFT,
         utenlandsperioder = listOf(
             SimuleringUtenlandsperiode(
@@ -264,6 +325,7 @@ object Fixtures : LetterDataFactory {
         ),
         kull = Kull.OVERGANG,
         normertPensjonsalderPlassering = NormertPensjonsalderPlassering.MELLOM_GRADERT_OG_HELT,
+        simulererEndringMedAfpPrivat = false,
     )
 
     private fun createSimuleringV1MaanedligAlderspensjon() = SimuleringV1MaanedligAlderspensjon(
@@ -290,7 +352,6 @@ object Fixtures : LetterDataFactory {
         kapittel20AndelTeller = 9,
         kapittel20Trygdetid = 40,
         garantipensjonBeloep = Kroner(3390),
-        garantipensjonsnivaaBeloep = Kroner(224248),
         garantipensjonSats = null,
         garantitilleggBeloep = Kroner(34223),
         grunnbeloep = Kroner(130160),

@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.zaxxer.hikari.HikariDataSource
+import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.cio.CIO
 import io.ktor.server.application.Application
 import io.ktor.server.config.getAs
 import io.ktor.server.plugins.di.dependencies
@@ -46,6 +48,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.FerdigRedigertPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.SendBrevPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.SlettBrevPolicy
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.common.cacheFactory
 import no.nav.pensjon.brev.skribenten.db.dataSourceFactory
@@ -89,10 +92,13 @@ fun Application.configureDependencies() {
         provide { datasource: HikariDataSource ->
             Database.connect(datasource).also { databaseReady.set(true) }
         }
+        provide(CIO::create)
 
         provide<FeatureToggleService>(UnleashService::class)
 
-        provide(NaisLeaderService::class)
+        // Gjort her og ikke i NaisLeaderService med vilje. Siden configen her er nullable, vil Ktor DI bruke
+        // feil konstruktør hvis vi gjør det likt som elles
+        provide { engine: HttpClientEngine -> NaisLeaderService(skribentenConfig.services.leader, engine) }
 
         provide(SafServiceHttp::class)
         provide(PentHttpClient::class)
@@ -124,6 +130,7 @@ fun Application.configureDependencies() {
         provide(OpprettBrevPolicy::class)
         provide(RedigerBrevPolicy::class)
         provide(SendBrevPolicy::class)
+        provide(SlettBrevPolicy::class)
 
         provide(AttesterBrevHandler::class)
         provide(DiffBrevHandler::class)

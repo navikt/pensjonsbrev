@@ -2,12 +2,12 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { type BrevResponse } from "~/types/brev";
+import { setupSakStubs } from "~test/e2e/support/helpers";
+import { brevInfo, brevResponse } from "~test/support/brevFixtures";
 
-import { brevInfo, brevResponse } from "../../utils/letterEditorTestUtils";
 import brev from "../fixtures/bekreftelsePåFlyktningstatus/brev.json" with { type: "json" };
-import { setupSakStubs } from "../utils/helpers";
 
-const defaultBrev = brevResponse({});
+const defaultBrev = brevResponse();
 const bekreftelsePaaFlyktningstatusBrev = brev as unknown as BrevResponse;
 const vedtaksBrev = brevResponse({
   ...bekreftelsePaaFlyktningstatusBrev,
@@ -263,6 +263,95 @@ test.describe("attestering", () => {
     await expect(page.getByText("Sentral print")).toBeVisible();
     await expect(page.getByText("Journalpost")).toBeVisible();
     await expect(page.getByText("9908")).toBeVisible();
+  });
+
+  test("kan ikke sende cachet PDF mens en ny PDF hentes", async ({ page }) => {
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true", (route) => {
+      if (route.request().method() === "GET") {
+        return route.fulfill({ json: defaultBrev });
+      }
+      return route.fallback();
+    });
+
+    const pdfBase64 = (await import("node:fs")).readFileSync("test/e2e/fixtures/helloWorldPdf.txt", "base64");
+    let pdfRequestCount = 0;
+    let releaseSecondPdf: () => void = () => {};
+    const secondPdfGate = new Promise<void>((resolve) => {
+      releaseSecondPdf = resolve;
+    });
+
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/pdf", async (route) => {
+      if (route.request().method() !== "GET") {
+        return route.fallback();
+      }
+
+      pdfRequestCount++;
+      if (pdfRequestCount === 2) {
+        await secondPdfGate;
+      }
+
+      return route.fulfill({
+        json: { pdf: pdfBase64, rendretBrevErEndret: false },
+      });
+    });
+
+    await page.goto("/saksnummer/123456/attester/1/forhandsvisning?enhetsId=0001");
+
+    const sendBrevButton = page.getByRole("button", { name: "Send brev" });
+    await expect(sendBrevButton).toBeEnabled();
+
+    await page.getByRole("button", { name: "Tilbake til redigering" }).click();
+    await expect(page).toHaveURL(/\/saksnummer\/123456\/attester\/1\/redigering/);
+
+    const secondPdfRequest = page.waitForRequest(
+      (request) => request.url().includes("/brev/1/pdf") && request.method() === "GET",
+    );
+    await page.goBack();
+    await secondPdfRequest;
+
+    await expect(page.getByRole("button", { name: "Venter…" })).toBeDisabled();
+
+    releaseSecondPdf();
+    await expect(sendBrevButton).toBeEnabled();
+  });
+
+  test("gjenbruker ikke cachet PDF for en eldre versjon av brevet", async ({ page }) => {
+    let brevRequestCount = 0;
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true", (route) => {
+      if (route.request().method() !== "GET") {
+        return route.fallback();
+      }
+
+      // Hver henting remerger brevet på nytt og kan gi en ny versjon
+      brevRequestCount++;
+      return route.fulfill({ json: { ...defaultBrev, redigertBrevHash: `hash-${brevRequestCount}` } });
+    });
+
+    const pdfBase64 = (await import("node:fs")).readFileSync("test/e2e/fixtures/helloWorldPdf.txt", "base64");
+    let pdfRequestCount = 0;
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1/pdf", (route) => {
+      if (route.request().method() !== "GET") {
+        return route.fallback();
+      }
+
+      pdfRequestCount++;
+      return route.fulfill({ json: { pdf: pdfBase64, rendretBrevErEndret: false } });
+    });
+
+    const sendBrevButton = page.getByRole("button", { name: "Send brev" });
+
+    await page.goto("/saksnummer/123456/attester/1/forhandsvisning?enhetsId=0001");
+    await expect(sendBrevButton).toBeEnabled();
+    expect(pdfRequestCount).toBe(brevRequestCount);
+
+    await page.getByRole("button", { name: "Tilbake til redigering" }).click();
+    await expect(page).toHaveURL(/\/saksnummer\/123456\/attester\/1\/redigering/);
+    await page.goBack();
+    await expect(sendBrevButton).toBeEnabled();
+
+    // Ny brevversjon må gi en ny PDF, ikke den cachede fra forrige versjon
+    expect(brevRequestCount).toBeGreaterThan(1);
+    expect(pdfRequestCount).toBe(brevRequestCount);
   });
 
   test("kan slette brev til attestering", async ({ page }) => {

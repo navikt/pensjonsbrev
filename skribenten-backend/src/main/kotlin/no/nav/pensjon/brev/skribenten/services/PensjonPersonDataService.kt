@@ -5,7 +5,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.engine.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -53,12 +52,12 @@ interface PensjonPersonDataService {
 class PensjonPersonDataServiceImpl(
     config: OboClientConfig,
     authService: AuthService,
-    clientEngine: HttpClientEngine = CIO.create(),
+    clientEngine: HttpClientEngine,
     private val cache: Cache,
 ): ServiceStatus, PensjonPersonDataService, Closeable {
 
     @Suppress("unused") // Brukes av ktor-di
-    constructor(config: SkribentenConfig, authService: AuthService, clientEngine: HttpClientEngine = CIO.create(), cache: Cache):
+    constructor(config: SkribentenConfig, authService: AuthService, clientEngine: HttpClientEngine, cache: Cache):
             this(config.services.pensjonPersondata, authService, clientEngine, cache)
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -74,7 +73,7 @@ class PensjonPersonDataServiceImpl(
                 registerModule(JavaTimeModule())
             }
         }
-        callIdAndOnBehalfOfClient(scope, authService)
+        onBehalfOfClient(scope, authService)
     }
 
     override suspend fun hentKontaktadresse(pid: Pid): KontaktAdresseResponseDto? = cache.cached(

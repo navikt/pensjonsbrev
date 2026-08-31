@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.jetbrains.exposed.v1.jdbc.Database
 
@@ -15,10 +16,11 @@ class HentAlltidValgbareVedleggHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
     ) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<List<ValgbartVedlegg>, Nothing>? {
-        val spraakIBrevet = BrevredigeringEntity.findById(request.brevId)?.spraak ?: return null
+        val spraakIBrevet = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId)?.spraak ?: return null
 
         val vedlegg = brevmalService.getAlltidValgbareVedlegg().map {
             ValgbartVedlegg(

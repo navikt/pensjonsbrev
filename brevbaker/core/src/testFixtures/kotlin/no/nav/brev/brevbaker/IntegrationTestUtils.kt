@@ -9,10 +9,9 @@ import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.render.Letter2MarkupV2
 import no.nav.brev.brevbaker.template.render.toMarkup
 import no.nav.brev.brevbaker.template.toScope
-import no.nav.pensjon.brev.PDFRequest
-import no.nav.brev.brevbaker.markup.dsl.letterPDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.letterPDFRequest
 import no.nav.pensjon.brev.api.FeatureToggleService
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -59,7 +58,6 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
     pdfFileName: String,
     path: Path = Path.of("build", "test_pdf"),
     pdfByggerService: PDFByggerService? = null,
-    pdfVedleggAppender: PDFVedleggAppender? = null,
 ): Letter<ParameterType> {
     if (!FeatureToggleSingleton.isInitialized) {
         FeatureToggleSingleton.init(object : FeatureToggleService {
@@ -79,19 +77,10 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
                         it.attachments,
                         language.toCode(),
                         template.letterMetadata.brevtype,
-                        Letter2Markup.renderPDFTitlesOnly(this@renderTestPDF.toScope(), this@renderTestPDF.template)
+                        Letter2Markup.renderPDFTitle(this@renderTestPDF.toScope(), listOf())
                     ),
                 )
             }
-        }
-        .let {
-            pdfVedleggAppender?.leggPaaVedlegg(
-                it,
-                this.template.pdfAttachments
-                    .filter { a-> a.predicate.eval(this.toScope()) }
-                    .map { a -> a.eval(this.toScope()) },
-                this.language.toCode()
-            ) ?: it
         }
         .also { writeTestPDF(pdfFileName, it.bytes, path) }
     return this
@@ -101,7 +90,6 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDFV2(
     pdfFileName: String,
     path: Path = Path.of("build", "test_pdf"),
     pdfByggerService: PDFByggerService? = null,
-    pdfVedleggAppender: PDFVedleggAppender? = null,
 ): Letter<ParameterType> {
     if (!FeatureToggleSingleton.isInitialized) {
         FeatureToggleSingleton.init(object : FeatureToggleService {
@@ -117,25 +105,14 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDFV2(
             runBlocking {
                 pdfBygger.producePDFV2(
                     letterPDFRequest(
+                        letterMarkup = rendered.letterMarkup,
                         spraak = language.toCode().toMarkup(),
                         brevtype = template.letterMetadata.brevtype.toMarkup(),
-                        letter = rendered.letterMarkup,
-                    ) {
-                        rendered.attachments.forEach { a -> attachment(a) }
-                        Letter2MarkupV2.renderPDFTitlesOnly(this@renderTestPDFV2.toScope(), this@renderTestPDFV2.template)
-                            .forEach { t -> pdfVedlegg(t) }
-                    },
+                        attachments = rendered.attachments,
+                        pdfVedlegg = Letter2MarkupV2.renderPDFTitle(this@renderTestPDFV2.toScope(), listOf()),
+                    ),
                 )
             }
-        }
-        .let {
-            pdfVedleggAppender?.leggPaaVedlegg(
-                it,
-                this.template.pdfAttachments
-                    .filter { a -> a.predicate.eval(this.toScope()) }
-                    .map { a -> a.eval(this.toScope()) },
-                this.language.toCode()
-            ) ?: it
         }
         .also { writeTestPDF(pdfFileName, it.bytes, path) }
     return this
@@ -212,52 +189,3 @@ val testLetterMetadata = LetterMetadata(
     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
 )
-
-object VedleggPDFTestUtils {
-    fun renderTestVedleggPdf(
-        testName: String,
-        title: String? = null,
-        includeSakspart: Boolean,
-        outputFolder: String,
-        felles: BrevbakerFelles? = null,
-        pdfByggerService: PDFByggerService,
-        outlineInit: OutlineOnlyScope<LangBokmal, *>.() -> Unit,
-    ) {
-        val vedlegg: AttachmentTemplate<LangBokmal, EmptyVedleggData> = createAttachment(
-            title = { text(bokmal { +(title ?: testName) }) },
-            includeSakspart = includeSakspart,
-        ) {
-            outlineInit()
-        }
-        renderTestPdfOutline(attachments = listOf(vedlegg), outputFolder = outputFolder, testName = testName, title = title, felles = felles, pdfByggerService = pdfByggerService) {}
-    }
-
-    fun renderTestPdfOutline(
-        outputFolder: String,
-        testName: String,
-        felles: BrevbakerFelles? = null,
-        brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        attachments: List<AttachmentTemplate<LangBokmal, EmptyVedleggData>> = emptyList(),
-        title: String? = null,
-        pdfByggerService: PDFByggerService,
-        outlineInit: OutlineOnlyScope<LangBokmal, EmptyAutobrevdata>.() -> Unit,
-    ) {
-        val template = createTemplate(
-            EmptyAutobrevdata::class,
-            languages(Bokmal),
-            LetterMetadata(
-                testName,
-                LetterMetadata.Distribusjonstype.VEDTAK,
-                brevtype
-            )
-        ) {
-            title {
-                text(bokmal { +(title ?: testName) })
-            }
-            outline { outlineInit() }
-            attachments.forEach { includeAttachment(it) }
-        }
-        val letter = LetterImpl(template, EmptyAutobrevdata, Bokmal, felles ?: FellesFactory.fellesAuto)
-        letter.renderTestPDF(testName, Path.of("build/$outputFolder"), pdfByggerService)
-    }
-}

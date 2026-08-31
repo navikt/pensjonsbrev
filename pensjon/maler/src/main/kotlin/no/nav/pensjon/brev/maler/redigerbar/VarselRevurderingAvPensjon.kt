@@ -5,9 +5,10 @@ import no.nav.pensjon.brev.api.model.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto.TittelValg.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.varselRevurderingAvPensjonDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.varselRevurderingAvPensjonDto.saksbehandlerValg.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.varselRevurderingAvPensjonDto.*
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.maler.fraser.common.Constants.BESKJED_TIL_NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ETTERSENDELSE_URL
@@ -20,7 +21,6 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -44,16 +44,18 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
+        val tittelValg = saksbehandlervalg("tittelValg", "Tittelvalg").enum<VarselRevurderingAvPensjonDto.TittelValg>()
+
         val sakstype = pesysData.sakstype
         val sakstypeText = sakstype.format().ifNull(fritekst("ytelse"))
         title {
-            showIf(saksbehandlerValg.tittelValg.isOneOf(VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett)) {
+            showIf(tittelValg.equalTo(RevurderingAvRett)) {
                 text(
                     bokmal { + "Vi vurderer om du fortsatt har rett til " + sakstypeText },
                     nynorsk { + "Vi vurderer om du framleis har rett til " + sakstypeText },
                     english { + "We are considering if you are still entitled to " + sakstypeText },
                 )
-            }.orShowIf(saksbehandlerValg.tittelValg.isOneOf(VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon)) {
+            }.orShowIf(tittelValg.equalTo(RevurderingReduksjon)) {
                 text(
                     bokmal { + "Vi vurderer om pensjonen din skal reduseres" },
                     nynorsk { + "Vi vurderer om pensjonen din skal reduserast" },
@@ -63,7 +65,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
         }
 
         outline {
-            showIf(saksbehandlerValg.tittelValg.isOneOf(VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett)) {
+            showIf(tittelValg.equalTo(RevurderingAvRett)) {
                 paragraph {
                     text(
                         bokmal { + "Dette er et varsel om at vi vurderer om du fortsatt har rett til " .expr() + sakstypeText + "." },
@@ -73,7 +75,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
 
                 }
             }
-            showIf(saksbehandlerValg.tittelValg.isOneOf(VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon)) {
+            showIf(tittelValg.equalTo(RevurderingReduksjon)) {
                 paragraph {
                     text(
                         bokmal { + "Dette er et varsel om at vi vurderer om din " + sakstypeText + " skal beregnes på nytt på grunn av nye opplysninger." },

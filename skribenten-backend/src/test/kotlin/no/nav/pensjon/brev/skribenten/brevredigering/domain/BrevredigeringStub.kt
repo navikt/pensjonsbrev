@@ -20,7 +20,7 @@ open class BrevredigeringStub : Brevredigering {
     override val brevkode: RedigerbarBrevkode get() = notYetStubbed()
     override val spraak: LanguageCode get() = notYetStubbed()
     override val avsenderEnhetId: EnhetId get() = notYetStubbed()
-    override val saksbehandlerValg: SaksbehandlerValg get() = notYetStubbed()
+    override val saksbehandlerValg: SaksbehandlervalgMap get() = notYetStubbed()
     override val redigertBrev: Edit.Letter get() = notYetStubbed()
     override val redigertBrevHash: Hash<Edit.Letter> get() = notYetStubbed()
     override val laastForRedigering: Boolean get() = notYetStubbed()
@@ -31,7 +31,7 @@ open class BrevredigeringStub : Brevredigering {
     override val opprettet: Instant get() = notYetStubbed()
     override val sistredigert: Instant get() = notYetStubbed()
     override val sistReservert: Instant get() = notYetStubbed()
-    override val journalpostId: JournalpostId get() = notYetStubbed()
+    override val journalpostId: JournalpostId? get() = notYetStubbed()
     override var document: Dto.Document? = null
     override val mottaker: Dto.Mottaker get() = notYetStubbed()
     override val p1Data: P1Data get() = notYetStubbed()

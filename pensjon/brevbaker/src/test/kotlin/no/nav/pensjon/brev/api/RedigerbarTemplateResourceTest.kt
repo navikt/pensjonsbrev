@@ -1,13 +1,19 @@
 package no.nav.pensjon.brev.api
 
+import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.PDFByggerService
-import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
 import no.nav.brev.brevbaker.vilkaarligDato
-import no.nav.pensjon.brev.PDFRequest
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
+import no.nav.brev.brevbaker.PDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
+import no.nav.brev.brevbaker.markup.dsl.letterMarkup
+import no.nav.brev.brevbaker.markup.dsl.saksinformasjon
+import no.nav.brev.brevbaker.markup.dsl.signatur
+import no.nav.brev.brevbaker.markup.dsl.title1
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
+import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequestV2
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.Testmaler
@@ -62,6 +68,29 @@ class RedigerbarTemplateResourceTest {
         redigerteVedlegg = emptyMap(),
     )
 
+    private val validRedigertBrevRequestV2 = BestillRedigertBrevRequestV2(
+        EksempelbrevRedigerbart.kode,
+        createEksempelbrevRedigerbartDto(),
+        FellesFactory.felles,
+        LanguageCode.BOKMAL,
+        letterMarkup(
+            saksinformasjon = saksinformasjon(
+                gjelderNavn = "gjelder bruker",
+                gjelderPersonidentifikator = "123abc",
+                saksnummer = "001",
+                dokumentDato = vilkaarligDato,
+            ),
+            signatur = signatur(
+                navAvsenderEnhet = "Akersgata",
+                saksbehandlerNavn = "Saksbehandlersen",
+            ),
+        ) {
+            title1("redigert markup v2")
+        },
+        alltidValgbareVedlegg = listOf(),
+        redigerteVedlegg = emptyMap(),
+    )
+
     @Test
     fun `renderHTML redigertBrev uses letterMarkup from argument and includes attachments`() {
         val result = String(redigerbar.renderHTML(validRedigertBrevRequest).file)
@@ -74,5 +103,12 @@ class RedigerbarTemplateResourceTest {
         assertThat(result).contains(letterTitle)
 
         assertThat(result).contains(anAttachmentTitle)
+    }
+
+    @Test
+    fun `renderPDFV2 redigertBrev uses letterMarkup (v2) from argument`(): Unit = runBlocking {
+        val result = redigerbar.renderPDFV2(validRedigertBrevRequestV2)
+
+        assertThat(String(result.file)).isEqualTo(pdfInnhold)
     }
 }

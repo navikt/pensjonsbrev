@@ -293,10 +293,10 @@ object EndringAvAlderspensjonSivilstandAuto :
                     // hjemmelSivilstandAP2025
                     paragraph {
                         text(
-                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 20-9, 20-17 femte avsnitt og 22-12." },
-                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 20-9, 20-17 femte avsnitt og 22-12." },
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 20-9, 20-17 femte avsnitt, 22-12 og 22-13." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 20-9, 20-17 femte avsnitt, 22-12 og 22-13." },
                             english {
-                                +"This decision was made pursuant to the provisions of §§ 20-9, 20-17 fifth paragraph, and 22-12 of the National Insurance Act."
+                                +"This decision was made pursuant to the provisions of §§ 20-9, 20-17 fifth paragraph, 22-12 and 22-13 of the National Insurance Act."
                             },
                         )
                     }
@@ -352,9 +352,9 @@ object EndringAvAlderspensjonSivilstandAuto :
                             )
                         }
                         text(
-                            bokmal { +" og 22-12." },
-                            nynorsk { +" og 22-12." },
-                            english { +" and 22-12." },
+                            bokmal { +", 22-12 og 22-13." },
+                            nynorsk { +", 22-12 og 22-13." },
+                            english { +", 22-12 and 22-13." },
                         )
                     }
                 }

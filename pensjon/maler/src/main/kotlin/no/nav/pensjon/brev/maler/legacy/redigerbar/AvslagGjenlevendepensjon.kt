@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDto.FolketrygdlovenParagraf.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagGjenlevendepensjonDto.pesysData.*
-import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagGjenlevendepensjonDto.saksbehandlerValg.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.selectors.avslagGjenlevendepensjonDto.*
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -16,10 +16,11 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 //PE_GP_04_010 Vedtak - avslag av gjenlevendepensjon
@@ -43,6 +44,7 @@ override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjon.togg
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
+        val folketrygdlovenParagraf = saksbehandlervalg("folketrygdlovenParagraf", "Velg folketrygdloven paragraf:").enum<AvslagGjenlevendepensjonDto.FolketrygdlovenParagraf>()
         title {
             text(
                 bokmal { +"Gjenlevendepensjon - melding om vedtak" },
@@ -59,7 +61,7 @@ override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjon.togg
                 )
             }
 
-            showIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(AvslagGjenlevendepensjonDto.SaksbehandlerValg.FolketrygdlovenParagraf.paragraf17_2_foersteEllerTredje_ledd)) {
+            showIf(folketrygdlovenParagraf.equalTo(paragraf17_2_foersteEllerTredje_ledd)) {
                 paragraph {
                     text(
                         bokmal {
@@ -79,7 +81,7 @@ override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjon.togg
                         }
                     )
                 }
-            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(AvslagGjenlevendepensjonDto.SaksbehandlerValg.FolketrygdlovenParagraf.paragraf17_2_andre_ledd)) {
+            }.orShowIf(folketrygdlovenParagraf.equalTo(paragraf17_2_andre_ledd)) {
                 paragraph {
                     text(
                         bokmal {
@@ -99,7 +101,7 @@ override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjon.togg
                         }
                     )
                 }
-            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(AvslagGjenlevendepensjonDto.SaksbehandlerValg.FolketrygdlovenParagraf.paragraf17_3)) {
+            }.orShowIf(folketrygdlovenParagraf.equalTo(paragraf17_3)) {
                 paragraph {
                     text(
                         bokmal {
@@ -129,7 +131,7 @@ override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjon.togg
                         }
                     )
                 }
-            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(AvslagGjenlevendepensjonDto.SaksbehandlerValg.FolketrygdlovenParagraf.paragraf17_5)) {
+            }.orShowIf(folketrygdlovenParagraf.equalTo(paragraf17_5)) {
                 paragraph {
                     text(
                         bokmal {
@@ -160,7 +162,7 @@ override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjon.togg
                         }
                     )
                 }
-            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(AvslagGjenlevendepensjonDto.SaksbehandlerValg.FolketrygdlovenParagraf.paragraf17_10)) {
+            }.orShowIf(folketrygdlovenParagraf.equalTo(paragraf17_10)) {
                 paragraph {
                     text(
                         bokmal {

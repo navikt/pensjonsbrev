@@ -54,6 +54,7 @@ Step-by-step recipes for common authoring tasks live under [`.github/skills/`](.
 | Deltas specific to a `RedigerbarTemplate` — `Saksbehandlervalg` / fagsystem split, `kategori` / `brevkontekst` / `sakstyper`, `fritekst(...)` | [`.github/skills/write-template/write-redigerbar-template.md`](.github/skills/write-template/write-redigerbar-template.md) |
 | Write or refactor LetterEditor actions in `skribenten-web/frontend/src/Brevredigering/LetterEditor/actions` — focus/index safety, `deleted*` bookkeeping, table/list invariants, utility-first edits | [`.github/skills/letter-editor-actions/SKILL.md`](.github/skills/letter-editor-actions/SKILL.md) |
 | Size a route component or layout correctly against `.page-margins`' bounded, non-scrolling height — `height`/`flexGrow`/`minHeight`/`overflowY` choices | [`.github/skills/page-layout-height/SKILL.md`](.github/skills/page-layout-height/SKILL.md) |
+| Debug production issues with Mimir/Loki/Tempo (`observability-debugging` skill). **Note:** the skill assumes Spring Boot Actuator metric names; this repo's Kotlin backends (`pensjon/brevbaker`, `brevbaker/pdf-bygger`, `skribenten-backend`) use Ktor + Micrometer instead — read [`.github/instructions/observability-debugging-ktor.instructions.md`](.github/instructions/observability-debugging-ktor.instructions.md) first for the correct metric/tag names (`ktor_http_server_requests_seconds_*`, `route` instead of `uri`, `throwable` instead of `exception`, no `outcome` tag) | [`.github/skills/observability-debugging/SKILL.md`](.github/skills/observability-debugging/SKILL.md) |
 
 ## Do NOT Edit By Hand
 
@@ -74,8 +75,15 @@ If the agent finds itself about to write to one of these, stop and change the up
 - `pensjon/brevbaker` - Entry point app combining all templates
 - `brevbaker/dsl` - Template DSL library
 - `brevbaker/core` - Rendering engine
-- `brevbaker/api-model-common` - Shared API models (published artifact)
-- `brevbaker/markup` - Markup model & DSL (published artifact)
+- `brevbaker/brevdata` - Bestiller vocabulary (published, **dependency-free**)
+- `brevbaker/brevbaker-api` - Shared API models, bestiller-DTOs (published)
+- `brevbaker/markup/model` + `brevbaker/markup/dsl` - Markup model (incl. the pdf-bygger wire
+  contract) and its DSL (published, **model is dependency-free**)
+- `brevbaker/serialization` (`internalObjectMapper()`) and `brevbaker/pdf-bygger/client` - never published
+
+Published versions live in `gradle/libs.versions.toml` (`brevdataVersion`, `markupVersion` covers both
+markup modules, `brevbakerApiVersion`); consumers use the catalog aliases, and a bump requires
+`publishToMavenLocal` before building them.
 
 ### Critical Build Commands
 ```bash
@@ -85,9 +93,9 @@ If the agent finds itself about to write to one of these, stop and change the up
 ./gradlew manualTest               # Visual tests tagged @Tag("manual-test")
 ```
 
-**Binary compatibility validation** (Kotlin Gradle plugin's built-in `abiValidation`): Public API changes in `brevbaker:api-model-common`, `brevbaker:dsl`, `brevbaker:core` require running `./gradlew updateKotlinAbi` to update `.api` files or build fails (`checkKotlinAbi` runs as part of `check`).
+**Binary compatibility validation** (Kotlin Gradle plugin's built-in `abiValidation`): Public API changes in `brevbaker:brevdata`, `brevbaker:brevbaker-api`, `brevbaker:markup-model`, `brevbaker:markup-dsl`, `brevbaker:dsl` and `brevbaker:core` require running `./gradlew updateKotlinAbi` to update `.api` files or build fails (`checkKotlinAbi` runs as part of `check`).
 
-**Published-artifact version bumps**: `brevbaker:api-model-common` (`brevbaker/api-model-common/gradle.properties`) and `brevbaker:markup` (`brevbaker/markup/gradle.properties`) are published artifacts. Bump their `version` whenever their public API/model changes so consumers resolve the new release. When bumping `api-model-common`, also update `commonVersion` in `gradle/libs.versions.toml` (the `brevbaker-common` catalog entry) so in-repo consumers pick up the new version.
+**Published-artifact version bumps**: the three version axes live in separate files so that a bump of one artifact doesn't trigger a release of the others — `gradle/published/brevdata.properties` (`brevdataVersion`), `gradle/published/markup.properties` (`markupVersion`, shared by `markup-model` and `markup-dsl`) and `gradle/published/brevbaker-api.properties` (`brevbakerApiVersion`). Bump the relevant one whenever that artifact's public API/models change, then run `publishToMavenLocal` for the library modules before building their consumers.
 
 ## Code Generation (KSP)
 
@@ -173,7 +181,7 @@ Conversion: `letterMarkup.toEdit()` → edit → `editLetter.toMarkup()` → ren
 
 ## API Compatibility Strategy
 
-When changing required fields in published API models (e.g., `brevbaker:api-model-common`):
+When changing required fields in published API models (e.g., `brevbaker:brevbaker-api`):
 1. Add new field alongside old field (both required) and publish new version of API model
 2. Update consumers to send both fields (Brevbaker ignores unknown fields, so this is safe)
 3. Remove the old field from API model and publish new version

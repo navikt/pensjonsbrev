@@ -1,0 +1,18 @@
+{
+  "navnprefix": "Name:",
+  "annenmottakerprefix": "Recipient:",
+  "vedlegggjeldernavnprefix": "Attachment regarding:",
+  "gjeldernavnprefix": "Case regarding:",
+  "saksnummerprefix": "Case number:",
+  "foedselsnummerprefix": "National identity number:",
+  "sidesaksnummerprefix": "Case number: ",
+  "sideprefix": "page",
+  "sideinfix": "of",
+  "closinggreeting": "Sincerely",
+  "closingautomatisktextinfobrev": "This letter has been processed automatically and is therefore not signed by an assessor.",
+  "closingautomatisktextvedtaksbrev": "Your case has been processed automatically. The decision letter has therefore not been signed by an assessor.",
+  "closingvedleggprefix": "Attachments:",
+  "tablenextpagecontinuation": "Continued on next page",
+  "tablecontinuedfrompreviouspage": "Continuation from previous page",
+  "alttextlogo": "Nav logo"
+}

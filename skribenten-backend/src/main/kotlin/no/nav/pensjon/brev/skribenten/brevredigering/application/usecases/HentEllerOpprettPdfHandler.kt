@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.skribenten.foerstesidegenerator.PDFMerger
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brev.skribenten.vedlegg.PDFVedleggSkribenten
@@ -38,11 +39,12 @@ class HentEllerOpprettPdfHandler(
 
     data class Request(
         override val brevId: BrevId,
+        override val saksId: SaksId,
         val fagsak: Fagsak,
     ) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Dto.HentDocumentResult, IngenFoersteside>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
         val document = brev.document
 
         val pesysBrevdata = brevdataService.hentBrevdata(brev).let { brevdata ->
@@ -68,20 +70,14 @@ class HentEllerOpprettPdfHandler(
                 brev.redigertBrev.updateEditedLetter(rendretBrev.markup).blocks != brev.redigertBrev.blocks
             }
 
-            val medPDFVedlegg = Features.pdfvedleggISkribenten.isEnabled()
-
-            val pdfVedlegg = if (medPDFVedlegg) vedleggsliste[brev.brevkode.kode()] ?: emptyList() else emptyList()
+            val pdfVedlegg = vedleggsliste[brev.brevkode.kode()] ?: emptyList()
 
             val pdfBytes = renderService.renderPdf(
                 brev,
                 pesysBrevdata,
                 pdfVedlegg = pdfVedlegg.mapNotNull { v -> v.tittel[brev.spraak]?.let { PDFVedleggTittel(it) }}
             ).let {
-                if (medPDFVedlegg) {
-                    leggVedPDFVedlegg(pdfVedlegg, pesysBrevdata, it, brev)
-                } else {
-                    it.file
-                }
+                leggVedPDFVedlegg(pdfVedlegg, pesysBrevdata, it, brev)
             }.let { rendretBrev ->
                 if (Features.foersteside.isEnabled() && brev.leggVedFoersteside == true) {
                     genererFoersteside(request, brev, rendretBrev) ?: return Outcome.failure(IngenFoersteside(request.brevId))
@@ -126,6 +122,7 @@ class HentEllerOpprettPdfHandler(
     ): ByteArray? = genererFoerstesideHandler(
         request = GenererFoerstesideHandler.Request(
             brevId = request.brevId,
+            saksId = request.saksId,
             pid = request.fagsak.pid,
             sakstype = request.fagsak.sakType,
             tema = request.fagsak.tema,

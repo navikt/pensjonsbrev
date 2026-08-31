@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
+import no.nav.brev.brevbaker.lagSaksbehandlervalg
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDto
@@ -10,18 +11,18 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 
 fun createAvslagPaaGjenlevenderettIAlderspensjon() = AvslagPaaGjenlevenderettIAlderspensjonDto(
-    saksbehandlerValg = AvslagPaaGjenlevenderettIAlderspensjonDto.SaksbehandlerValg(
-        samboerUtenFellesBarn = false,
-        avdoedNavn = "Peder Ås",
-        underEttAarsMedlemstidEOESEllerAvtaleland = true,
-        underTreFemAarsMedlemstidNasjonalSak = false,
-        underTreFemAarsMedlemstidEOESSak = false,
-        underTrefemAarsMedlemstidAvtalesak = true,
-        under20AarBotid = true,
-        ekteskapUnderFemAar = true,
-        hjemmelEOES = true,
-        hjemmelAvtaleland = false,
-        harTrygdetid = true
+    saksbehandlerValg = lagSaksbehandlervalg(
+        "samboerUtenFellesBarn" to false,
+        "avdoedNavn" to "Peder Ås",
+        "underEttAarsMedlemstidEOESEllerAvtaleland" to true,
+        "underTreFemAarsMedlemstidNasjonalSak" to false,
+        "underTreFemAarsMedlemstidEOESSak" to false,
+        "underTrefemAarsMedlemstidAvtalesak" to true,
+        "under20AarBotid" to true,
+        "ekteskapUnderFemAar" to true,
+        "hjemmelEOES" to true,
+        "hjemmelAvtaleland" to false,
+        "harTrygdetid" to true,
     ),
     pesysData = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData(
         alderspensjonVedVirk = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.AlderspensjonVedVirk(

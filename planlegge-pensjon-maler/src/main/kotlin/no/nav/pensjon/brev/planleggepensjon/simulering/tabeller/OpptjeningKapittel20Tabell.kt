@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 
 data class OpptjeningKapittel20Tabell(
@@ -36,28 +37,22 @@ data class OpptjeningKapittel20Tabell(
                         cell { text(bokmal { +it.format(2) }) }
                     }
                 }
-                ifNotNull(alderspensjon.garantipensjonsnivaaBeloep) {
+                ifNotNull(alderspensjon.garantipensjonSats) {
                     row {
                         cell { text(bokmal { +"Garantipensjonsnivå" }) }
-                        cell { text(bokmal { +it.format() }) }
-                    }
-                }
-                ifNotNull(alderspensjon.garantipensjonBeloep) {
-                    row {
-                        cell { text(bokmal { +"Garantipensjon" }) }
-                        cell { text(bokmal { +it.format() }) }
+                        cell { text(bokmal { +it.format(denominator = false) + " kr" }) }
                     }
                 }
                 ifNotNull(alderspensjon.pensjonsbeholdningFoerUttakBeloep) {
                     row {
                         cell { text(bokmal { +"Pensjonsbeholdning før uttak" }) }
-                        cell { text(bokmal { +it.format() }) }
+                        cell { text(bokmal { +it.format(denominator = false) + " kr" }) }
                     }
                 }
                 ifNotNull(alderspensjon.pensjonsbeholdningEtterUttakBeloep) {
                     row {
                         cell { text(bokmal { +"Pensjonsbeholdning etter uttak" }) }
-                        cell { text(bokmal { +it.format() }) }
+                        cell { text(bokmal { +it.format(denominator = false) + " kr" }) }
                     }
                 }
                 ifNotNull(alderspensjon.kapittel20Trygdetid) {

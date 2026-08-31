@@ -41,13 +41,13 @@ data class SumOffentligTidsbegrensetTabell(
                                 alderspensjon.garantitilleggBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.skjermingstillegg.ifNull(Kroner(0)) +
                                 alderspensjon.gjenlevendetillegg.ifNull(Kroner(0))
-                        text(bokmal { +sumAlderspensjon.format() })
+                        text(bokmal { +sumAlderspensjon.format(denominator = false) })
                     }
                 }
                 row {
                     cell { text(bokmal { +"AFP i offentlig sektor" }) }
                     cell {
-                        text(bokmal { +afp.totaltAfpBeloep.format() })
+                        text(bokmal { +afp.totaltAfpBeloep.format(denominator = false) })
                     }
                 }
                 row {
@@ -62,7 +62,7 @@ data class SumOffentligTidsbegrensetTabell(
                                 alderspensjon.skjermingstillegg.ifNull(Kroner(0)) +
                                 alderspensjon.gjenlevendetillegg.ifNull(Kroner(0))
                         val sumPensjon = sumAlderspensjon + afp.totaltAfpBeloep
-                        text(bokmal { +sumPensjon.format() }, fontType = BOLD)
+                        text(bokmal { +sumPensjon.format(denominator = false) }, fontType = BOLD)
                     }
                 }
             }

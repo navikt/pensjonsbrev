@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggMedSammeBegrunnelsePaSammeTidDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode
 import no.nav.pensjon.brev.template.Language
@@ -20,25 +22,40 @@ object BarnetilleggFormatter : LocalizedFormatter<BarnetilleggUTDto>() {
         return when (second) {
             Bokmal -> "${AntallBarnFormatter().apply(first, second)}${periodetekst}"
             Nynorsk -> "${AntallBarnFormatter().apply(first, second)}${periodetekstNn}"
-            English -> throw Exception()
+            English -> ""
         }
     }
 
-    override fun stableHashCode(): Int = "BarnetilleggFormatter".hashCode()
+    override fun stableHashCode(): Int = "BarnetilleggFormatter2".hashCode()
 }
 
-object BarnetilleggOpphorFormatter : LocalizedFormatter<BarnetilleggUTDto>() {
-    override fun apply(first: BarnetilleggUTDto, second: Language): String {
-        val fratekst = first.fom.let { ", opphørt fra  ${first.fom.format(second)}" }
-        val fratekstNn = first.fom.let { ", stansa frå  ${first.fom.format(second)}" }
+object BarnetilleggFlereBarnFormatter : LocalizedFormatter<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>() {
+    override fun apply(first: BarnetilleggMedSammeBegrunnelsePaSammeTidDto, second: Language): String {
+        val periodetekst = first.tom?.let { " i perioden fra ${first.fom.format(second)} til ${it.format(second)}" } ?: if(first.begrunnelse == BtBegrunnelseCode.INNVILGET) " fra ${first.fom.format(second)}" else ""
+        val periodetekstNn = first.tom?.let { " i perioden frå ${first.fom.format(second)} til ${it.format(second)}" } ?: if(first.begrunnelse == BtBegrunnelseCode.INNVILGET) " frå ${first.fom.format(second)}" else ""
+
         return when (second) {
-            Bokmal -> "${AntallBarnFormatter().apply(first, second)}${fratekst}"
-            Nynorsk -> "${AntallBarnFormatter().apply(first, second)}${fratekstNn}"
-            English -> throw Exception()
+            Bokmal -> "${first.barn.map { AntallBarnFormatter2().apply(it, second) }.kommaseparertMedOg(second)}${periodetekst}"
+            Nynorsk -> "${first.barn.map { AntallBarnFormatter2().apply(it, second) }.kommaseparertMedOg(second)}${periodetekstNn}"
+            English -> ""
         }
     }
 
-    override fun stableHashCode(): Int = "BarnetilleggOpphorFormatter".hashCode()
+    override fun stableHashCode(): Int = "BarnetilleggFlereBarnFormatter2".hashCode()
+}
+
+object BarnetilleggOpphorFormatter : LocalizedFormatter<BarnetilleggMedSammeBegrunnelsePaSammeTidDto>() {
+    override fun apply(first: BarnetilleggMedSammeBegrunnelsePaSammeTidDto, second: Language): String {
+        val fratekst = ", opphørt fra  ${first.fom.format(second)}"
+        val fratekstNn = ", stansa frå  ${first.fom.format(second)}"
+        return when (second) {
+            Bokmal -> "${first.barn.map { AntallBarnFormatter2().apply(it, second)}.kommaseparertMedOg(second)}${fratekst}"
+            Nynorsk -> "${first.barn.map { AntallBarnFormatter2().apply(it, second)}.kommaseparertMedOg(second)}${fratekstNn}"
+            English -> ""
+        }
+    }
+
+    override fun stableHashCode(): Int = "BarnetilleggOpphorFormatter2".hashCode()
 }
 
 class AntallBarnFormatter(private val storBokstav: Boolean = false) : LocalizedFormatter<BarnetilleggUTDto>() {
@@ -48,12 +65,27 @@ class AntallBarnFormatter(private val storBokstav: Boolean = false) : LocalizedF
         val tekst = when (second) {
             Bokmal -> "${antall}barn født ${dato}"
             Nynorsk -> "${antall}barn fødd ${dato}"
-            English -> throw Exception()
+            English -> ""
         }
         return if(storBokstav) tekst.replaceFirstChar { it.uppercase() } else tekst
     }
 
-    override fun stableHashCode(): Int = "AntallBarnFormatter($storBokstav)".hashCode()
+    override fun stableHashCode(): Int = "AntallBarnFormatter0($storBokstav)".hashCode()
+}
+
+class AntallBarnFormatter2(private val storBokstav: Boolean = false) : LocalizedFormatter<BarnDto>() {
+    override fun apply(first: BarnDto, second: Language): String {
+        val antall = antallBarnTekst(first.antallBarn)
+        val dato = first.fodselsdato.format(dateFormatter(second, FormatStyle.LONG))
+        val tekst = when (second) {
+            Bokmal -> "${antall}barn født ${dato}"
+            Nynorsk -> "${antall}barn fødd ${dato}"
+            English -> ""
+        }
+        return if(storBokstav) tekst.replaceFirstChar { it.uppercase() } else tekst
+    }
+
+    override fun stableHashCode(): Int = "AntallBarnFormatter2($storBokstav)".hashCode()
 }
 
 object UTOgTilleggMapper : LocalizedFormatter<Collection<UTTillegg>>() {
@@ -62,13 +94,13 @@ object UTOgTilleggMapper : LocalizedFormatter<Collection<UTTillegg>>() {
             when (second) {
                 Bokmal -> it.bokmal
                 Nynorsk -> it.nynorsk
-                English -> throw Exception()
+                English -> ""
             }.lowercase()
         }
-        return CollectionFormat.apply(listOf("uføretrygd") + tillegg, second)
+        return (listOf("uføretrygd") + tillegg).kommaseparertMedOg(second)
     }
 
-    override fun stableHashCode(): Int = "UTOgTilleggMapper".hashCode()
+    override fun stableHashCode(): Int = "UTOgTilleggMapper2".hashCode()
 }
 
 class HjemmelFormatter(private val avsluttMedOg: Boolean) : LocalizedFormatter<Collection<String>>() {
@@ -130,3 +162,18 @@ private fun antallBarnTekst(antall: Int) =
     }
 
 private fun LocalDate.format(lang: Language) = this.format(dateFormatter(lang, FormatStyle.LONG))
+
+private fun Collection<String>.kommaseparertMedOg(sprak: Language): String {
+    return if (this.isEmpty()) {
+        ""
+    } else if (this.size == 1) {
+        this.first()
+    } else {
+        val lastSeparator = when (sprak) {
+            Bokmal -> " og "
+            Nynorsk -> " og "
+            English -> " and "
+        }
+        this.take(this.size - 1).joinToString(", ") + lastSeparator + this.last()
+    }
+}

@@ -151,12 +151,12 @@ class OmstillingsstoenadForhaandsvarselFraser {
 
             paragraph {
                 text(
-                    bokmal { +"Vi vil vurdere om det er særlige grunner til å redusere kravet. " +
-                            "Da legger vi vekt på" },
-                    nynorsk { +"Vi vil vurdere om det er særlege grunnar til å redusere kravet. " +
-                            "Her legg vi vekt på" },
-                    english { +"We will evaluate whether there are special grounds to reduce the " +
-                            "repayment demand. In such case, we will place emphasis on" },
+                    bokmal { +"Vi vil vurdere om det er særlige grunner til å frafalle eller redusere kravet. " +
+                            "Da legger vi blant annet vekt på" },
+                    nynorsk { +"Vi vil vurdere om det ligg føre særlege grunnar til å fråfalle eller redusere kravet. " +
+                            "Då legg vi mellom anna vekt på" },
+                    english { +"We will assess whether there are special reasons to waive or reduce the claim. " +
+                            "In doing so, we will, among other things, place emphasis on" },
                 )
                 list {
                     item {
@@ -196,37 +196,6 @@ class OmstillingsstoenadForhaandsvarselFraser {
                     nynorsk { +"Dette går fram av folketrygdlova § 22-15 og rettspraksis." },
                     english { +"This as stated in the National Insurance Act Section 22-15 and " +
                             "legal practice." },
-                )
-            }
-
-            title2 {
-                text(
-                    bokmal { +"Foreløpig vurdering" },
-                    nynorsk { +"Førebels vurdering" },
-                    english { +"Provisional assessment" },
-                )
-            }
-
-            paragraph {
-                text(
-                    bokmal { +"Vår foreløpige vurdering er at du < forstod eller burde forstått at " +
-                            "beløpet du fikk, skyldtes en feil. // ikke forstod eller burde forstått at beløpet du " +
-                            "fikk, skyldtes en feil. // har gitt oss mangelfulle opplysninger // har gitt oss " +
-                            "feil opplysninger // har gitt oss nødvendige opplysninger for sent ///, selv om du " +
-                            "har fått god informasjon fra oss. //, fordi du ikke har fått god nok informasjon " +
-                            "fra oss.> " },
-                    nynorsk { +"Vurderinga vår så langt er at du < forstod eller burde ha forstått " +
-                            "at beløpet du fekk, skuldast ein feil. // ikkje forstod eller kunne forventast å " +
-                            "forstå at beløpet du fekk, skuldast ein feil. // har gitt oss mangelfulle " +
-                            "opplysningar // har gitt oss feil opplysningar // ga oss dei nødvendige opplysningane " +
-                            "for seint ///, sjølv om du har fått god informasjon frå oss. //, fordi du ikkje fekk " +
-                            "god nok informasjon frå oss.> " },
-                    english { +"Our provisional assessment is that you < understood or should have " +
-                            "understood that the amount you received was due to an error. // not understood or " +
-                            "should have understood that the amount you received was due to an error. // have given " +
-                            "us insufficient information // have given us incorrect information // have given us " +
-                            "the necessary information to late ///, even after receiving adequate information from " +
-                            "us. //, because you have not received adequate information from us. > " },
                 )
             }
         }

@@ -1,18 +1,7 @@
 import { css } from "@emotion/react";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
-import {
-  Alert,
-  BodyShort,
-  Button,
-  Checkbox,
-  Heading,
-  HStack,
-  Link,
-  TextField,
-  UNSAFE_Combobox,
-  VStack,
-} from "@navikt/ds-react";
-import { type AxiosError } from "axios";
+import { Alert, BodyShort, Button, Checkbox, HStack, Link, TextField, UNSAFE_Combobox, VStack } from "@navikt/ds-react";
+import { useMemo } from "react";
 import { type Control, Controller, useFormContext, useWatch } from "react-hook-form";
 
 import { ApiError } from "~/components/ApiError";
@@ -22,26 +11,58 @@ import { type Nullable } from "~/types/Nullable";
 
 import { type CombinedFormData } from "./EndreMottakerUtils";
 
+const NORGE = "NO";
+
 const UtfyllingAvManuellAdresseForm = (properties: {
   control: Control<CombinedFormData>;
   onCloseIntent: () => void;
-  error: Nullable<AxiosError>;
+  error: Nullable<Error>;
   isPending: Nullable<boolean>;
 }) => {
   const { data: landData, isLoading, isError, isSuccess } = useLandData();
-  const { resetField } = useFormContext<CombinedFormData>();
+  const { resetField, clearErrors } = useFormContext<CombinedFormData>();
 
   const land = useWatch({
     control: properties.control,
     name: "manuellAdresse.adresse.land",
   });
-  const isNorge = typeof land === "string" && land === "NO";
+
+  /*
+  Land er gating-feltet: før saksbehandler har valgt land skal ingen av de andre feltene kunne fylles ut.
+  Vi bruker readOnly framfor disabled fordi disabled-felter ikke kan få fokus og hoppes over av skjermlesere,
+  slik at forklaringen på hvorfor skjemaet er låst aldri når fram.
+  */
+  const harValgtLand = land !== null;
+  const isNorge = land === NORGE;
+  //postnummer og poststed er kun relevant for norske adresser, men vises (låst) før land er valgt
+  const visPostnummerOgPoststed = !harValgtLand || isNorge;
+
+  /*
+  Listen er alfabetisk, men Norge løftes til toppen. Aksel sin combobox har ingen gruppering -
+  options er en flat liste som rendres i den rekkefølgen den kommer inn, og filtreringen ved søk
+  beholder rekkefølgen. Derfor holder det å legge på sortering her.
+  */
+  const landOptions = useMemo(() => {
+    const alfabetisk = (landData ?? [])
+      .toSorted((a, b) => a.navn.localeCompare(b.navn, "no"))
+      .map((land) => ({ label: land.navn, value: land.kode }));
+
+    return alfabetisk.toSorted((a, b) => Number(b.value === NORGE) - Number(a.value === NORGE));
+  }, [landData]);
+
+  const nullstillAdressefelter = () => {
+    resetField("manuellAdresse.adresse.navn", { defaultValue: "" });
+    resetField("manuellAdresse.adresse.linje1", { defaultValue: "" });
+    resetField("manuellAdresse.adresse.linje2", { defaultValue: "" });
+    resetField("manuellAdresse.adresse.linje3", { defaultValue: "" });
+    resetField("manuellAdresse.adresse.postnr", { defaultValue: null });
+    resetField("manuellAdresse.adresse.poststed", { defaultValue: null });
+  };
 
   return (
     <VStack gap="space-24">
       <VStack gap="space-16">
         <Alert size="small" variant="warning">
-          <Heading size="xsmall">Rutine for adresseendring</Heading>
           <Link
             href="https://navno.sharepoint.com/sites/fag-og-ytelser-pensjon-alderspensjon/SitePages/Maler/Mal-for-rutiner.aspx "
             target="_blank"
@@ -54,25 +75,82 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           control={properties.control}
           name="manuellAdresse.adresse.manueltAdressertTil"
           render={({ field }) => (
+            /*
+            Avkrysset = BRUKER: brevet går til bruker selv, bare på en annen adresse enn den registrerte.
+            Uavkrysset (standard) = ANNEN: adressen tilhører noen andre enn bruker. Da sendes navnet videre
+            som annenMottakerNavn, og sakspart-blokken i brevet får «Mottaker: <navn>» + «Saken gjelder:
+            <bruker>» i stedet for «Navn: <bruker>».
+            */
             <Checkbox
               {...field}
-              checked={field.value === ManueltAdressertTil.ANNEN}
-              description="Brevet skal til en annen mottaker enn bruker"
+              checked={field.value === ManueltAdressertTil.BRUKER}
+              description="Kryss av hvis bruker skal motta brevet på en annen adresse"
               onChange={(event) =>
-                field.onChange(event.target.checked ? ManueltAdressertTil.ANNEN : ManueltAdressertTil.BRUKER)
+                field.onChange(event.target.checked ? ManueltAdressertTil.BRUKER : ManueltAdressertTil.ANNEN)
               }
               size="small"
             >
-              Annen mottaker
+              Overstyring av brukers adresse
             </Checkbox>
           )}
         />
+
+        <div>
+          {isLoading && <BodyShort size="small">Laster inn land...</BodyShort>}
+          {isError && <BodyShort size="small">Kunne ikke laste inn land</BodyShort>}
+          {isSuccess && (
+            <Controller
+              control={properties.control}
+              name="manuellAdresse.adresse.land"
+              render={({ field, fieldState }) => (
+                <UNSAFE_Combobox
+                  css={css`
+                    align-self: flex-start;
+                    width: 60%;
+                  `}
+                  data-testid="land-combobox"
+                  description="Du må velge land før resten kan fylles ut."
+                  error={fieldState.error?.message}
+                  label="Land"
+                  onToggleSelected={(option, isSelected) => {
+                    if (!isSelected) {
+                      //fjernes landet er vi tilbake til utgangspunktet, og alt som er fylt ut nedenfor låses igjen
+                      field.onChange(null);
+                      nullstillAdressefelter();
+                      clearErrors("manuellAdresse.adresse");
+                      return;
+                    }
+
+                    field.onChange(option);
+                    if (option !== NORGE) {
+                      resetField("manuellAdresse.adresse.postnr", { defaultValue: null });
+                      resetField("manuellAdresse.adresse.poststed", { defaultValue: null });
+                    }
+                    //feilmeldinger på felter som nå er skjult eller låst skal ikke kunne blokkere lagring
+                    clearErrors("manuellAdresse.adresse");
+                  }}
+                  options={landOptions}
+                  placeholder="Velg"
+                  selectedOptions={landOptions.filter((option) => option.value === field.value)}
+                  shouldAutocomplete
+                  size="small"
+                />
+              )}
+            />
+          )}
+        </div>
 
         <Controller
           control={properties.control}
           name="manuellAdresse.adresse.navn"
           render={({ field, fieldState }) => (
-            <TextField label="Navn" {...field} error={fieldState.error?.message} size="small" />
+            <TextField
+              label="Navn"
+              {...field}
+              error={fieldState.error?.message}
+              readOnly={!harValgtLand}
+              size="small"
+            />
           )}
         />
 
@@ -80,7 +158,13 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           control={properties.control}
           name="manuellAdresse.adresse.linje1"
           render={({ field, fieldState }) => (
-            <TextField label="Adresselinje 1" {...field} error={fieldState.error?.message} size="small" />
+            <TextField
+              label="Adresselinje 1"
+              {...field}
+              error={fieldState.error?.message}
+              readOnly={!harValgtLand}
+              size="small"
+            />
           )}
         />
 
@@ -88,7 +172,13 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           control={properties.control}
           name="manuellAdresse.adresse.linje2"
           render={({ field, fieldState }) => (
-            <TextField label="Adresselinje 2" {...field} error={fieldState.error?.message} size="small" />
+            <TextField
+              label="Adresselinje 2"
+              {...field}
+              error={fieldState.error?.message}
+              readOnly={!harValgtLand}
+              size="small"
+            />
           )}
         />
 
@@ -96,10 +186,17 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           control={properties.control}
           name="manuellAdresse.adresse.linje3"
           render={({ field, fieldState }) => (
-            <TextField label="Adresselinje 3" {...field} error={fieldState.error?.message} size="small" />
+            <TextField
+              label="Adresselinje 3"
+              {...field}
+              error={fieldState.error?.message}
+              readOnly={!harValgtLand}
+              size="small"
+            />
           )}
         />
-        {isNorge && (
+
+        {visPostnummerOgPoststed && (
           <HStack align="start" gap="space-16">
             <Controller
               control={properties.control}
@@ -110,6 +207,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                   label="Postnummer"
                   {...field}
                   error={fieldState.error?.message}
+                  readOnly={!harValgtLand}
                   size="small"
                   value={field.value ?? ""}
                 />
@@ -124,6 +222,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                   label="Poststed"
                   {...field}
                   error={fieldState.error?.message}
+                  readOnly={!harValgtLand}
                   size="small"
                   value={field.value ?? ""}
                 />
@@ -131,44 +230,6 @@ const UtfyllingAvManuellAdresseForm = (properties: {
             />
           </HStack>
         )}
-        <div>
-          {isLoading && <BodyShort size="small">Laster inn land...</BodyShort>}
-          {/* TODO - hvis en eller annen feil skjer, vil vi gi dem et input felt der dem kan skrive in koden selv? */}
-          {isError && <BodyShort size="small">Kunne ikke laste inn land</BodyShort>}
-          {isSuccess && (
-            <Controller
-              control={properties.control}
-              name="manuellAdresse.adresse.land"
-              render={({ field, fieldState }) => {
-                const options = landData
-                  .toSorted((a, b) => (a.navn > b.navn ? 1 : -1))
-                  .map((land) => ({ label: land.navn, value: land.kode }));
-                return (
-                  <UNSAFE_Combobox
-                    css={css`
-                      align-self: flex-start;
-                      width: 60%;
-                    `}
-                    data-testid="land-combobox"
-                    error={fieldState.error?.message}
-                    label="Land *"
-                    onToggleSelected={(option) => {
-                      field.onChange(option);
-                      if (option !== "NO") {
-                        resetField("manuellAdresse.adresse.postnr", { defaultValue: null });
-                        resetField("manuellAdresse.adresse.poststed", { defaultValue: null });
-                      }
-                    }}
-                    options={options}
-                    selectedOptions={options.filter((option) => option.value === field.value) ?? undefined}
-                    shouldAutocomplete
-                    size="small"
-                  />
-                );
-              }}
-            />
-          )}
-        </div>
       </VStack>
       <HStack gap="space-16" justify="space-between">
         <Button onClick={properties.onCloseIntent} size="small" type="button" variant="tertiary">

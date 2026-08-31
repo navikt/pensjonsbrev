@@ -17,6 +17,12 @@ spec:
     port: 8080
     initialDelay: 20
     timeout: 60
+    # Under surge kan mange pdf-bygger-poder bli skedulert samtidig på nyoppskalerte
+    # noder, og konkurrere om CPU under oppstart (JVM + typst). Samme resonnement som
+    # readiness under: gi liveness et bredere feilbudsjett i stedet for å øke initialDelay,
+    # slik at oppskalering ikke blir tregere enn nødvendig.
+    periodSeconds: 10
+    failureThreshold: 10
   readiness:
     path: "/isReady"
     port: 8080
@@ -48,8 +54,17 @@ spec:
       memory: "256Mi"
     limits:
       memory: "2Gi"
+  azure:
+    application:
+      enabled: true
+      allowAllUsers: true
   accessPolicy:
     inbound:
       rules:
         - application: {{brevbaker-app}}
+{{#each inbound as |app|}}
+        - application: {{app.name}}
+          namespace: {{app.namespace}}
+          cluster: {{app.cluster}}
+{{/each}}
   ingresses: [{{#each ingresses as |url|}}{{url}},{{/each}}]

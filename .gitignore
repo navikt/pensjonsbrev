@@ -30,8 +30,9 @@ hs_err_pid*
 ##asciidoc
 docs/.asciidoctor
 
-
+# Build files
 build
+
 # Gradle
 .gradle
 !gradle/wrapper/gradle-wrapper.jar
@@ -47,3 +48,6 @@ node_modules/
 build/
 .DS_Store
 /gradle-user-home/
+
+# Playwright-mcp
+.playwright-mcp

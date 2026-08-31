@@ -17,10 +17,10 @@ class VeksleKlarStatusHandler(
     database: Database,
 ) : ReservertBrevHandler<VeksleKlarStatusHandler.Request, Dto.BrevInfo>(database, reserverBrevHandler) {
 
-    data class Request(override val brevId: BrevId, val klar: Boolean) : BrevredigeringRequest
+    data class Request(override val brevId: BrevId, override val saksId: SaksId, val klar: Boolean) : BrevredigeringRequest
 
     override suspend fun execute(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
-        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
         // Om ingen endring, returner vellykket uten å gjøre noe
         if (brev.laastForRedigering == request.klar) {

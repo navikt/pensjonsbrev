@@ -19,7 +19,7 @@ class HentAlltidValgbareVedleggHandlerTest : BrevredigeringHandlerTestBase() {
             AlltidValgbartVedleggBrevkode("kode-3", "C vedlegg", setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH)),
         )
 
-        assertThat(handler(HentAlltidValgbareVedleggHandler.Request(brev.info.id))).isSuccess {
+        assertThat(handler(HentAlltidValgbareVedleggHandler.Request(brev.info.id, sak1.saksId))).isSuccess {
             assertThat(it).containsExactly(
                 ValgbartVedlegg("kode-1", "A vedlegg", setOf(LanguageCode.BOKMAL), false),
                 ValgbartVedlegg("kode-2", "B vedlegg", setOf(LanguageCode.ENGLISH), true),

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.fagsystem
 
+import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -36,7 +37,7 @@ class BrevmalService(
     suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
-        saksbehandlerValg: SaksbehandlerValg,
+        saksbehandlerValg: SaksbehandlervalgMap,
         pesysData: BrevdataResponse.Data
     ): LetterMarkupWithDataUsage =
         brevbakerService.renderMarkup(

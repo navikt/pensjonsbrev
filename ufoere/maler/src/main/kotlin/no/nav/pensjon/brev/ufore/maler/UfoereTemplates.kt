@@ -61,6 +61,7 @@ object UfoereTemplates : AllTemplates {
         VedtakIngenTilbakekrevingForeldelse,
         UforeAvslagMedlemskap,
         UforeAvslagMedlemskapUtland,
+        UforeAvslagMedlemskapMindre12Mnd,
         VarselBtBarnetFlytter12_15,
         VarselBtBarnUtland12_15,
         VarselDodsbo,

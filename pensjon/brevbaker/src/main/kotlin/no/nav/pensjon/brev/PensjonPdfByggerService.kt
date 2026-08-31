@@ -1,27 +1,28 @@
 package no.nav.pensjon.brev
 
 import com.fasterxml.jackson.databind.SerializationFeature
-import io.ktor.callid.*
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.network.sockets.*
 import io.ktor.client.plugins.*
+import io.ktor.client.plugins.callid.CallId
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.utils.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import kotlinx.coroutines.CancellationException
+import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.IOException
-import kotlinx.serialization.json.Json
 import no.nav.brev.brevbaker.PDFByggerService
-import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
+import no.nav.brev.brevbaker.PDFRequest
 import no.nav.brev.brevbaker.PDFTimeoutException
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
-import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
+import no.nav.brev.brevbaker.serialization.internalObjectMapper
 import org.slf4j.LoggerFactory
+import java.io.Closeable
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -32,16 +33,19 @@ private val RETRY_MAX_DELAY = 2.seconds
 
 class PensjonPdfByggerService(
     private val pdfByggerUrl: String,
+    pdfByggerScope: String,
     private val timeout: Duration = 300.seconds,
-) : PDFByggerService {
+    azureADConfig: ApplicationConfig? = null,
+) : PDFByggerService, Closeable {
     private val logger = LoggerFactory.getLogger(this::class.java)
-    private val objectmapper = brevbakerJacksonObjectMapper()
+    private val objectmapper = internalObjectMapper()
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             jackson {
                 disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             }
         }
+        install(CallId)
         HttpResponseValidator {
             validateResponse { validateResponse(it.status.value, { msg -> logger.warn(msg) }) { it.body<String>() } }
         }
@@ -82,7 +86,7 @@ class PensjonPdfByggerService(
         }
     }
 
-    override suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput = try {
+    override suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput =
         withTimeoutOrNull(timeout) {
             httpClient.post("$pdfByggerUrl/produserBrev") {
                 // Bakoverkompatibilitet: pdf-bygger <= main ruter til LaTeX uten dette flagget.
@@ -91,7 +95,7 @@ class PensjonPdfByggerService(
                 url { parameters.append("typst", "true") }
                 contentType(ContentType.Application.Json)
                 accept(ContentType.Application.Json)
-                header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
+                bearerAuthHeader()
                 //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
                 // If the body is set using an object, it will use the content-negotiation strategy which also uses a jackson object-mapper
                 // for some unknown reason, this results in all requests being halted for around 5 minutes.
@@ -101,23 +105,35 @@ class PensjonPdfByggerService(
                 // this needs further investigation
                 setBody(objectmapper.writeValueAsBytes(pdfRequest))
             }.body()
-        }
-    } catch (e: CancellationException) {
-        throw PDFTimeoutException("Spent more than $timeout trying to compile pdf", e)
-    } ?: throw PDFTimeoutException("Spent more than $timeout trying to compile pdf")
+        } ?: throw PDFTimeoutException("Spent more than $timeout trying to compile pdf")
 
-    override suspend fun producePDFV2(pdfRequest: LetterPDFRequest): PDFCompilationOutput = try {
+    override suspend fun producePDFV2(pdfRequest: LetterPDFRequest): PDFCompilationOutput =
         withTimeoutOrNull(timeout) {
             httpClient.post("$pdfByggerUrl/v2/produserBrev") {
                 contentType(ContentType.Application.Json)
                 accept(ContentType.Application.Json)
-                header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
-                setBody(Json.encodeToString(pdfRequest))
+                bearerAuthHeader()
+                setBody(objectmapper.writeValueAsBytes(pdfRequest))
             }.body()
-        }
-    } catch (e: CancellationException) {
-        throw PDFTimeoutException("Spent more than $timeout trying to compile pdf", e)
-    } ?: throw PDFTimeoutException("Spent more than $timeout trying to compile pdf")
+        } ?: throw PDFTimeoutException("Spent more than $timeout trying to compile pdf")
 
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
+
+    private suspend fun HttpRequestBuilder.bearerAuthHeader() {
+        azureAdTokenClient?.let { header(HttpHeaders.Authorization, "Bearer ${it.getToken()}") }
+    }
+
+    private val azureAdTokenClient = azureADConfig?.let {
+        AzureAdM2mTokenClient(
+            tokenEndpoint = it.property("tokenEndpoint").getString(),
+            clientId = it.property("clientId").getString(),
+            clientSecret = it.property("clientSecret").getString(),
+            scope = pdfByggerScope,
+        )
+    }
+
+    override fun close() {
+        azureAdTokenClient?.close()
+        httpClient.close()
+    }
 }

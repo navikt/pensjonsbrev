@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
-import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.NavansattService
@@ -41,7 +41,7 @@ class OpprettBrevHandler(
         val brevkode: RedigerbarBrevkode,
         val spraak: LanguageCode,
         val avsenderEnhetsId: EnhetId,
-        val saksbehandlerValg: SaksbehandlerValg,
+        val saksbehandlerValg: SaksbehandlervalgMap,
         val reserverForRedigering: Boolean = false,
         val mottaker: Dto.Mottaker? = null,
     )

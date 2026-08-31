@@ -70,14 +70,19 @@ kotlin {
 }
 
 dependencies {
+    implementation(platform(libs.log4j.bom))
     implementation(libs.bundles.logging)
+    implementation(platform(libs.ktor.bom))
+    implementation(libs.ktor.client.call.id)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.jackson)
     implementation(libs.ktor.server.auth)
     implementation(libs.ktor.server.auth.jwt)
+    implementation(libs.ktor.server.caching.headers)
     implementation(libs.ktor.server.callId)
     implementation(libs.ktor.server.callLogging)
+    implementation(libs.ktor.server.conditional.headers)
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
@@ -90,11 +95,16 @@ dependencies {
     implementation(project(":ufoere:maler"))
     implementation(project(":etterlattemaler"))
     implementation(project(":brevbaker:core"))
+    implementation(publishedLibs.brevbaker.api)
+    implementation(project(":brevbaker:serialization")) {
+        because("bruker internalObjectMapper for serialisering av intern trafikk")
+    }
     ksp(project(":brevbaker:template-model-generator"))
     kspTest(project(":brevbaker:template-model-generator"))
 
-    implementation(libs.pdfbox)
+    testImplementation(libs.pdfbox)
 
+    implementation(platform(libs.jackson.bom))
     implementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
     }
@@ -112,4 +122,3 @@ dependencies {
     testImplementation(testFixtures(project(":brevbaker:dsl")))
     testImplementation(libs.jsoup)
 }
-

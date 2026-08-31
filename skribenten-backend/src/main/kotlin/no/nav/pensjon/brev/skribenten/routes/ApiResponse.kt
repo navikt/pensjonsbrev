@@ -110,6 +110,12 @@ suspend inline fun <T> RoutingContext.respondOutcome(
                 is RedigerBrevPolicy.KanIkkeRedigere.IkkeReservert ->
                     call.respond(HttpStatusCode.Conflict, "Brev er ikke reservert for redigering av deg")
 
+                is SlettBrevPolicy.KanIkkeSlette.ArkivertBrev ->
+                    call.respond(
+                        HttpStatusCode.Conflict,
+                        "Dette brevet er arkivert (journalpostId: ${outcome.error.journalpostId}), men består i Skribenten fordi vi ikke klarte å sende brevet. For å fjerne dette brevet fra skribenten så må du forsøke å sende brevet på nytt."
+                    )
+
                 is RedigerBrevPolicy.KanIkkeRedigere.LaastBrev ->
                     call.respond(HttpStatusCode.Locked, "Brev er låst for redigering")
 
@@ -175,6 +181,14 @@ suspend inline fun <T> RoutingContext.respondOutcome(
                 is IngenFoersteside -> call.respond(
                     status = HttpStatusCode.InternalServerError,
                     message = "Klarte ikke generere førsteside for ${outcome.error.brevId}"
+                )
+
+                is VedleggFinnesIkkeIMal -> call.respond(
+                    status = HttpStatusCode.Conflict,
+                    message = BrevExceptionDto(
+                        tittel = "Vedlegget finnes ikke lenger",
+                        melding = "Vedlegget du redigerer er ikke lenger en del av brevet. Last inn siden på nytt."
+                    )
                 )
             }
         }

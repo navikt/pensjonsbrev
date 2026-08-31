@@ -5,10 +5,10 @@ import io.ktor.http.withCharset
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.PDFByggerService
-import no.nav.brev.brevbaker.PDFCompilationOutput
-import no.nav.pensjon.brev.PDFRequest
-import no.nav.brev.brevbaker.markup.LetterPDFRequest
-import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.brev.brevbaker.pdfbygger.api.PDFCompilationOutput
+import no.nav.brev.brevbaker.PDFRequest
+import no.nav.brev.brevbaker.pdfbygger.api.LetterPDFRequest
+import no.nav.pensjon.brev.api.model.maler.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -81,6 +81,28 @@ class TemplateResourceTest {
     fun `fails renderHTML with invalid letterData`() {
         assertThrows<ParseLetterDataException> {
             autobrev.renderHTML(validAutobrevRequest.copy(letterData = SampleLetterData(true)))
+        }
+    }
+
+    @Test
+    fun `can renderPDFV2 with valid letterData`(): Unit = runBlocking {
+        val result = autobrev.renderPDFV2(validAutobrevRequest)
+        assertEquals(
+            LetterResponse(pdfInnhold.encodeToByteArray(), ContentType.Application.Pdf.toString(), LetterExample.template.letterMetadata),
+            result
+        )
+    }
+
+    @Test
+    fun `can renderLetterMarkupV2 with valid letterData`() {
+        val result = autobrev.renderLetterMarkupV2(validAutobrevRequest)
+        assertEquals(true, result.title1.isNotEmpty())
+    }
+
+    @Test
+    fun `fails renderPDFV2 with invalid letterData`(): Unit = runBlocking {
+        assertThrows<ParseLetterDataException> {
+            autobrev.renderPDFV2(validAutobrevRequest.copy(letterData = SampleLetterData(true)))
         }
     }
 }
