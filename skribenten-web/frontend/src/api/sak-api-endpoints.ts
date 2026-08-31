@@ -111,7 +111,6 @@ export const attesterBrev = async (args: {
     await axios.put<BrevResponse>(
       `${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}/attestering?frigiReservasjon=${frigiReservasjon}`,
       {
-        saksbehandlerValg: args.request.saksbehandlerValg,
         redigertBrev: args.request.redigertBrev,
       },
     )

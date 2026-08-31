@@ -59,7 +59,7 @@ object BrukerTestVedtaksbrev : RedigerbarTemplate<BrukerTestVedtaksbrevDto> {
             }
             paragraph {
                 text(
-                    bokmal { + "Vi har " + fritekst("dato") + " mottatt søknaden din om " + fritekst("ytelse") + ". Eller kanskje ikke. Dette er nemlig bare et testbrev." },
+                    bokmal { + "Vi har " + fritekst("dato") + " kasta søknaden din om " + fritekst("ytelse") + ". Eller kanskje ikke. Dette er nemlig bare et testbrev." },
                 )
             }
             title1 {

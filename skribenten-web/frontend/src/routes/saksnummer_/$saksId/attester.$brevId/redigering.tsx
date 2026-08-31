@@ -261,12 +261,11 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     },
   });
 
-  const onSubmit = (values: VedtakSidemenyFormData, onSuccess?: () => void) => {
+  const onSubmit = (_values: VedtakSidemenyFormData, onSuccess?: () => void) => {
     attesterMutation.reset();
     oppdaterBrevMutation.reset();
     attesterMutation.mutate(
       {
-        saksbehandlerValg: values.saksbehandlerValg,
         redigertBrev: editorState.redigertBrev,
       },
       { onSuccess: onSuccess },
