@@ -85,7 +85,7 @@ object AvslagAfpPrivat : RedigerbarTemplate<AvslagAfpPrivatDto> {
                 )
             }
 
-            includePhrase(Vedtak.BegrunnelseOverskrift)
+            includePhrase(Vedtak.BegrunnelseOverskrift())
 
             paragraph {
                 text(
