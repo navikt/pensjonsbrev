@@ -484,10 +484,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                       {attestantDiff.status === "ready" && (
                         <VStack gap="space-4">
                           <BodyShort size="small">
-                            <span className="attestant-diff-inserted">Lagt til manuelt</span>
+                            <span className="attestant-diff-inserted">Slik vises ord som er lagt til manuelt</span>
                           </BodyShort>
                           <BodyShort size="small">
-                            <span className="attestant-diff-deleted">Slettet manuelt</span>
+                            <span className="attestant-diff-deleted">Slik vises ord som er slettet manuelt</span>
                           </BodyShort>
                         </VStack>
                       )}
