@@ -454,7 +454,14 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 freeze={freeze}
                 renderBrev={() => (
                   <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
-                    <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
+                    <ManagedLetterEditor
+                      brev={props.brev}
+                      error={error}
+                      freeze={freeze}
+                      kanTilbakestille={false}
+                      redigeringsflate="attestant-redigering"
+                      showDebug={showDebug}
+                    />
                   </InsertedTekstValgHighlightProvider>
                 )}
                 saksId={props.saksId}

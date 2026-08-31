@@ -69,6 +69,12 @@ const resolveHistoryAfterSave = (
 
 const ManagedLetterEditorContext = createContext<ManagedLetterEditorContextValue | null>(null);
 
+/**
+ * Autosave lives in this provider so it survives when `ManagedLetterEditor`
+ * unmounts while switching to a vedlegg. If autosave lived in the editor,
+ * unmounting would clean up the autosave effect and cancel a pending debounce,
+ * potentially leaving letter changes unsaved.
+ */
 export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; children: ReactNode }) => {
   const queryClient = useQueryClient();
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(props.brev));
@@ -154,8 +160,6 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
     }, AUTOSAVE_TIMER);
 
     return () => clearTimeout(timeoutId);
-
-    // Only content changes should restart the debounce; caret and focus changes should not delay saving.
   }, [
     editorState.saveStatus,
     editorState.redigertBrev,

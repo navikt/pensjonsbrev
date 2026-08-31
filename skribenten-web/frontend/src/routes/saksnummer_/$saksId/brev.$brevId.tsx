@@ -475,7 +475,14 @@ function RedigerBrev({
                     freeze={freeze}
                     renderBrev={() => (
                       <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                        <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
+                        <ManagedLetterEditor
+                          brev={brev}
+                          error={error}
+                          freeze={freeze}
+                          kanTilbakestille
+                          redigeringsflate="saksbehandler-redigering"
+                          showDebug={showDebug}
+                        />
                       </InsertedTekstValgHighlightProvider>
                     )}
                     saksId={saksId}

@@ -2,8 +2,8 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import TilbakestillMalModal from "~/components/TilbakestillMalModal";
-import { useVedleggEditor } from "~/components/vedlegg/VedleggEditorContext";
 import { type BrevResponse } from "~/types/brev";
+import { type Redigeringsflate } from "~/utils/editorTracking";
 
 /**
  * Renders the editor for the letter.
@@ -12,18 +12,24 @@ import { type BrevResponse } from "~/types/brev";
  * unmounts while switching to a vedlegg. If autosave lived here, unmounting could cancel a pending
  * debounced save and leave letter changes unsaved.
  */
-const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error: boolean; showDebug?: boolean }) => {
+const ManagedLetterEditor = (props: {
+  brev: BrevResponse;
+  freeze: boolean;
+  error: boolean;
+  redigeringsflate: Redigeringsflate;
+  kanTilbakestille: boolean;
+  showDebug?: boolean;
+}) => {
   const { editorState, setEditorState, lagringFeilet } = useManagedLetterEditorContext();
-  const { redigeringsflate, kanTilbakestille } = useVedleggEditor();
 
   return (
     <LetterEditor
       editorState={editorState}
       error={props.error || lagringFeilet}
       freeze={props.freeze}
-      redigeringsflate={redigeringsflate}
+      redigeringsflate={props.redigeringsflate}
       renderTilbakestillModal={
-        kanTilbakestille
+        props.kanTilbakestille
           ? ({ open, onClose }) => (
               <TilbakestillMalModal
                 brevId={props.brev.info.id}
