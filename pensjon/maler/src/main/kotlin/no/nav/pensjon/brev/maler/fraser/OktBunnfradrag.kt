@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradr
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.gjenlevendetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.manedligOkningUforetrygdInklTilleggUtAret
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.nettoUtHarBlittLikBrutto
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.normertPensjonsdatoFor2028
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.okningUt
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.redusertBtsb
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.redusertBtfb
@@ -45,6 +46,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.isNull
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
@@ -271,11 +273,13 @@ object OktBunnfradrag {
                 showIf(data.manedligOkningUforetrygdInklTilleggUtAret.notEqualTo(0)) {
                     includePhrase(PengerTilGode(data.uforetrygd, data.nettoUtHarBlittLikBrutto, data.btHarBlitt0))
                 }
-                paragraph {
-                    text(
-                        bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 0,4 G som fribeløp hele året. Bunnfradraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
-                        nynorsk { +"Frå 2027 vil du få nytt botnfrådrag med 0,4 G som fribeløp heile året. Botnfrådraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
-                    )
+                showIf(not(data.normertPensjonsdatoFor2028)) {
+                    paragraph {
+                        text(
+                            bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 0,4 G som fribeløp hele året. Bunnfradraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
+                            nynorsk { +"Frå 2027 vil du få nytt botnfrådrag med 0,4 G som fribeløp heile året. Botnfrådraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
+                        )
+                    }
                 }
 
             }.orShowIf(data.scenario3_04G_1G) {
@@ -297,11 +301,13 @@ object OktBunnfradrag {
                 showIf(data.manedligOkningUforetrygdInklTilleggUtAret.notEqualTo(0)) {
                     includePhrase(PengerTilGode(data.uforetrygd, data.nettoUtHarBlittLikBrutto, data.btHarBlitt0))
                 }
-                paragraph {
-                    text(
-                        bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 1 G som fribeløp hele året. Bunnfradraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
-                        nynorsk { +"Frå 2027 vil du få nytt botnfrådrag med 1 G som fribeløp heile året. Botnfrådraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
-                    )
+                showIf(not(data.normertPensjonsdatoFor2028)) {
+                    paragraph {
+                        text(
+                            bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 1 G som fribeløp hele året. Bunnfradraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
+                            nynorsk { +"Frå 2027 vil du få nytt botnfrådrag med 1 G som fribeløp heile året. Botnfrådraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
+                        )
+                    }
                 }
             }.orIfNotNull(data.scenario4_04G_1G_04G) { scenario4 ->
                 paragraph {
@@ -321,13 +327,14 @@ object OktBunnfradrag {
                 showIf(data.manedligOkningUforetrygdInklTilleggUtAret.notEqualTo(0)) {
                     includePhrase(PengerTilGode(data.uforetrygd, data.nettoUtHarBlittLikBrutto, data.btHarBlitt0))
                 }
-                paragraph {
-                    text(
-                        bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 0,4 G som fribeløp hele året. Bunnfradraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
-                        nynorsk { +"Frå 2027 vil du få nytt botnfrådrag med 0,4 G som fribeløp heile året. Botnfrådraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
-                    )
+                showIf(not(data.normertPensjonsdatoFor2028)) {
+                    paragraph {
+                        text(
+                            bokmal { +"Fra 2027 vil du få nytt bunnfradrag med 0,4 G som fribeløp hele året. Bunnfradraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
+                            nynorsk { +"Frå 2027 vil du få nytt botnfrådrag med 0,4 G som fribeløp heile året. Botnfrådraget ditt i 2027 blir " + data.bunnfradrag2027.format() + ". " },
+                        )
+                    }
                 }
-
             }
 
 

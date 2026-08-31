@@ -71,16 +71,18 @@ object OktFribelop {
                     )
                 }
                 includePhrase(FribelopPerioder(data.fribelopPerioder, data.vektetFribelop, data.bunnfradrag))
-                paragraph {
-                    text(
-                        bokmal { +"Neste år: " },
-                        nynorsk { +"Neste år: " },
-                        FontType.BOLD
-                    )
-                    text(
-                        bokmal { +"Fra 2027 vil ditt fribeløp være 1G hele året. " },
-                        nynorsk { +"Frå 2027 vil fribeløpet ditt vere 1G heile året. " },
-                    )
+                showIf(not(data.normertPensjonsdatoFor2028)) {
+                    paragraph {
+                        text(
+                            bokmal { +"Neste år: " },
+                            nynorsk { +"Neste år: " },
+                            FontType.BOLD
+                        )
+                        text(
+                            bokmal { +"Fra 2027 vil ditt fribeløp være 1G hele året. " },
+                            nynorsk { +"Frå 2027 vil fribeløpet ditt vere 1G heile året. " },
+                        )
+                    }
                 }
             }
 
