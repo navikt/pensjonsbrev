@@ -1,5 +1,12 @@
 import { type DiffSegment } from "./diffModel";
 
+// Diff segments are rendered directly into contentEditable elements so deleted text can remain visible
+// without becoming part of the editable letter content.
+
+// Standard parameters for the 32-bit FNV-1a hash algorithm.
+const FNV_1A_OFFSET_BASIS = 0x811c9dc5;
+const FNV_1A_PRIME = 0x01000193;
+
 function createSegmentNode(segment: DiffSegment): HTMLSpanElement {
   const span = document.createElement("span");
   span.textContent = segment.text;
@@ -19,13 +26,13 @@ function createSegmentNode(segment: DiffSegment): HTMLSpanElement {
 }
 
 export const diffSegmentSignature = (segments: DiffSegment[]) => {
-  let hash = 0x811c9dc5;
+  let hash = FNV_1A_OFFSET_BASIS;
 
   for (const segment of segments) {
     const value = `${segment.type.length}:${segment.type}${segment.text.length}:${segment.text}`;
     for (let index = 0; index < value.length; index++) {
       hash ^= value.charCodeAt(index);
-      hash = Math.imul(hash, 0x01000193);
+      hash = Math.imul(hash, FNV_1A_PRIME);
     }
   }
 
