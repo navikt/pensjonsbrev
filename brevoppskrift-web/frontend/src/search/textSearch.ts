@@ -128,15 +128,24 @@ function exactPhraseFieldQuery(field: string, query: string): { [field: string]:
   return { [field]: exactPhraseQuery(query) };
 }
 
+function sanitizeExactPhraseQuery(query: string): string {
+  return query.replace(/["\\|]/g, "").trim();
+}
+
 export function search(index: SearchIndex, rawQuery: string, exactOnly = false): SearchResults {
   const query = rawQuery.trim();
   if (!query) {
     return { content: [], brev: [] };
   }
 
-  const contentQuery = exactOnly ? exactPhraseFieldQuery("text", query) : query;
+  const searchQuery = exactOnly ? sanitizeExactPhraseQuery(query) : query;
+  if (!searchQuery) {
+    return { content: [], brev: [] };
+  }
+
+  const contentQuery = exactOnly ? exactPhraseFieldQuery("text", searchQuery) : query;
   const brevQuery = exactOnly
-    ? { $or: [exactPhraseFieldQuery("title", query), exactPhraseFieldQuery("id", query)] }
+    ? { $or: [exactPhraseFieldQuery("title", searchQuery), exactPhraseFieldQuery("id", searchQuery)] }
     : query;
   const contentByTemplate = new Map<string, ContentHit>();
   for (const { item, score } of index.contentFuse.search(contentQuery)) {

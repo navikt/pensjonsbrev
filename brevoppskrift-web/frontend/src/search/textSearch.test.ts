@@ -171,4 +171,26 @@ describe("search", () => {
 
     expect(search(index, "the grey fo", true).content).toHaveLength(1);
   });
+
+  it("ignores Fuse extended-search syntax in exact phrases", () => {
+    const templates = [
+      template({ id: "A1", title: "The grey fox", lines: ["The grey fox jumped over the fence."] }),
+    ];
+    const index = buildIndex(templates);
+
+    const { content, brev } = search(index, 'the \\"grey\\" \\\\|fox', true);
+
+    expect(content.map((hit) => hit.template.id)).toEqual(["A1"]);
+    expect(brev.map((hit) => hit.template.id)).toEqual(["A1"]);
+  });
+
+  it("returns no results when an exact phrase contains only Fuse delimiters", () => {
+    const templates = [template({ id: "A1", title: "Alderspensjon", lines: ["Litt tekst her."] })];
+    const index = buildIndex(templates);
+
+    const { content, brev } = search(index, ' "\\\\| " ', true);
+
+    expect(content).toEqual([]);
+    expect(brev).toEqual([]);
+  });
 });
