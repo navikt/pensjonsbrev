@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import {
@@ -70,6 +71,10 @@ const vedtakSidemenySchema = z.object({
 });
 
 type VedtakSidemenyFormData = z.infer<typeof vedtakSidemenySchema>;
+
+const diffAlertTitleStyle = css`
+  font-size: var(--ax-font-size-small);
+`;
 
 const queryRetries = 3;
 const shouldSkipRetry = (status: number | undefined) =>
@@ -430,7 +435,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                       {attestantDiff.status === "error" && (
                         <LocalAlert size="small" status="error">
                           <LocalAlert.Header>
-                            <LocalAlert.Title>Endringene kunne ikke vises</LocalAlert.Title>
+                            <LocalAlert.Title css={diffAlertTitleStyle}>Endringene kunne ikke vises</LocalAlert.Title>
                           </LocalAlert.Header>
                           <LocalAlert.Content>
                             Brevet kan fortsatt gjennomgås, men markeringene er utilgjengelige.
@@ -440,7 +445,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                       {attestantDiff.status === "empty" && (
                         <LocalAlert size="small" status="warning">
                           <LocalAlert.Header>
-                            <LocalAlert.Title>Ingen endringer fra malen ble funnet</LocalAlert.Title>
+                            <LocalAlert.Title css={diffAlertTitleStyle}>
+                              Ingen endringer fra malen ble funnet
+                            </LocalAlert.Title>
                           </LocalAlert.Header>
                         </LocalAlert>
                       )}
