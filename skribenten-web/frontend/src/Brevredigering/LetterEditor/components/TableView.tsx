@@ -4,6 +4,7 @@ import { ActionMenu } from "@navikt/ds-react";
 import React, { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { useAttestantDiff } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
 import { DeletedCellContentAt, DeletedCellsAt, DeletedRowsAt } from "~/Brevredigering/LetterEditor/diff/DeletedMarkup";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -84,6 +85,7 @@ const TableView: React.FC<{
   contentIndex: number;
 }> = ({ node, blockIndex, contentIndex }) => {
   const { setEditorState } = useEditor();
+  const { diffHash, disableDiff } = useAttestantDiff();
   const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null);
   const [highlight, setHighlight] = useState<{ row: number; col: number } | null>(null);
 
@@ -105,6 +107,10 @@ const TableView: React.FC<{
         data-testid="letter-table"
         onContextMenu={(e) => {
           e.preventDefault();
+          if (diffHash !== undefined) {
+            disableDiff();
+            return;
+          }
 
           const cell = (e.target as HTMLElement).closest("td,th") as HTMLTableCellElement | null;
           if (!cell) return;
