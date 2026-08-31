@@ -24,7 +24,7 @@ object VedtakOmOktBunnfradragAuto : AutobrevTemplate<VedtakOmOktBunnfradragAutoD
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - økt bunnfradrag",
+            displayTitle = "Vedtak - Økning fribeløp med endring",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )

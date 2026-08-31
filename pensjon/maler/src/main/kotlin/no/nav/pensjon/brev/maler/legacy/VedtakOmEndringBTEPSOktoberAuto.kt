@@ -26,7 +26,7 @@ object VedtakOmEndringBTEPSOktoberAuto : AutobrevTemplate<VedtakOmEndringBarneti
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - endring barnetillegg berørt sak ved regelendringer 1. oktober 2026",
+            displayTitle = "Vedtak - Endring barnetillegg pga lovendring annen forelder",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )

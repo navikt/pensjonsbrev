@@ -24,7 +24,7 @@ object VedtakOmOktFribelopAuto : AutobrevTemplate<VedtakOmOktFribelopAutoDto> {
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - økt fribeløp",
+            displayTitle = "Vedtak – Økning fribeløp - uføretrygden påvirkes ikke",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )

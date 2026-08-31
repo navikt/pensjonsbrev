@@ -38,7 +38,7 @@ object VedtakOmEndringBTEPSRedigerbar : RedigerbarTemplate<VedtakOmEndringBarnet
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - endring barnetillegg berørt sak ved regelendringer",
+            displayTitle = "Vedtak - Endring barnetillegg pga lovendring annen forelder",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
