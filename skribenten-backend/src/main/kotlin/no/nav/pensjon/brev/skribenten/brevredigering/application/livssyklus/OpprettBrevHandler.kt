@@ -66,6 +66,7 @@ class OpprettBrevHandler(
             avsenderEnhetsId = request.avsenderEnhetsId,
             mottaker = request.mottaker,
             signatur = SignerendeSaksbehandlere(saksbehandler = principal.hentSignatur(navansattService)),
+            fagsystemBrevdata = request.fagsystemBrevdata,
         )
 
         val rendretBrev = brevmalService.renderMarkup(
