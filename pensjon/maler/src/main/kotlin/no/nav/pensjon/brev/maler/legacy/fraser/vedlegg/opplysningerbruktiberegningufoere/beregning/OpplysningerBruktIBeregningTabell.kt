@@ -145,24 +145,6 @@ data class OpplysningerBruktIBeregningTabell(val pe: Expression<PEgruppe10>) : O
 
                 }
 
-                showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().greaterThan(0))){
-                    row {
-                        cell {
-                            text(
-                                bokmal { + "Inntektsgrense" },
-                                nynorsk { + "Inntektsgrense" },
-                            )
-                        }
-                        cell {
-                            text(
-                                bokmal { + pe.ut_inntektsgrense_faktisk().format(false) + " kr" },
-                                nynorsk { + pe.ut_inntektsgrense_faktisk().format(false) + " kr" },
-                            )
-                        }
-
-                    }
-                }
-
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().greaterThan(0))){
                     row {
                         cell {
