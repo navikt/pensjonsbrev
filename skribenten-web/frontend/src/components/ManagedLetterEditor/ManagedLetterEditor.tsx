@@ -17,7 +17,8 @@ import { AUTOSAVE_TIMER } from "./autosave_timer";
 /**
  * Wrapper av <LetterEditor /> som håndterer lagring av brevtekst.
  *
- * <ManagedLetterEditor /> krever at har <ManagedLetterEditorContextProvider /> som parent.
+ * <ManagedLetterEditor /> krever <RedigeringsflateProvider /> og
+ * <ManagedLetterEditorContextProvider /> i komponenttreet.
  */
 const ManagedLetterEditor = (props: {
   brev: BrevResponse;
