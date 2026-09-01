@@ -3,15 +3,16 @@ package no.nav.pensjon.brev.planleggepensjon
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningBrevDto
 import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningDto
+import no.nav.pensjon.brev.planleggepensjon.serviceberegning.ServiceberegningDtoData
 import no.nav.pensjon.brev.planleggepensjon.simulering.AarligInntektOgPensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpOffentligLivsvarigSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.AfpPrivatSimulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.Alder
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDto
+import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoData
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdAvsnitt
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdInnhold
 import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdSeksjon
@@ -61,8 +62,8 @@ object Fixtures : LetterDataFactory {
 
     private fun createSimuleringBrevDto() = createBrevDtoMedAfpPrivat()
 
-    fun createServiceberegningBrevDto() = ServiceberegningBrevDto(
-        saksbehandlerValg = ServiceberegningDto(
+    fun createServiceberegningBrevDto(): ServiceberegningBrevDto {
+        val saksbehandlerValg = ServiceberegningDto(
             uttaksalder = Alder(62, 10),
             uttaksdato = "01.02.2027",
             forventetFremtidigInntekt = Kroner(158000),
@@ -85,11 +86,20 @@ object Fixtures : LetterDataFactory {
             alt1 = true,
             alt2 = false,
         )
-    )
+        return ServiceberegningBrevDto(
+            saksbehandlerValg = saksbehandlerValg,
+            pesysData = ServiceberegningDtoData(
+                uttaksalder = saksbehandlerValg.uttaksalder,
+                uttaksdato = saksbehandlerValg.uttaksdato,
+                forventetFremtidigInntekt = saksbehandlerValg.forventetFremtidigInntekt,
+                afp = saksbehandlerValg.afp,
+            )
+        )
+    }
 
     fun createBrevDtoMedAfpPrivat() = ApSimuleringBrevDto(
         saksbehandlerValg = createLagreSimuleringDto(),
-        pesysData = EmptyFagsystemdata,
+        pesysData = createFagsystemdata(),
     )
 
     fun createBrevDtoMedAfpOffentligLivsvarig() = ApSimuleringBrevDto(
@@ -110,7 +120,7 @@ object Fixtures : LetterDataFactory {
                 ),
             ),
         ),
-        pesysData = EmptyFagsystemdata,
+        pesysData = createFagsystemdata(),
     )
 
     fun createBrevDtoMedEndringAfpPrivat() = ApSimuleringBrevDto(
@@ -119,7 +129,7 @@ object Fixtures : LetterDataFactory {
                 simulererEndringMedAfpPrivat = true,
             ),
         ),
-        pesysData = EmptyFagsystemdata,
+        pesysData = createFagsystemdata(),
     )
 
     fun createBrevDtoMedAfpOffentligTidsbegrenset() = ApSimuleringBrevDto(
@@ -154,7 +164,7 @@ object Fixtures : LetterDataFactory {
                     ),
                 ),
             ),
-        pesysData = EmptyFagsystemdata,
+        pesysData = createFagsystemdata(),
     )
 
     private fun createLagreSimuleringDto() =
@@ -207,6 +217,20 @@ object Fixtures : LetterDataFactory {
                 ),
             ),
         )
+
+    private fun createFagsystemdata() = createLagreSimuleringDto().let {
+        ApSimuleringDtoData(
+            simulering = it.simulering,
+            simuleringsinformasjon = it.simuleringsinformasjon,
+            vilkaarsproevingsresultat = it.vilkaarsproevingsresultat,
+            trygdetid = it.trygdetid,
+            pensjonsgivendeInntektListe = it.pensjonsgivendeInntektListe,
+            aarligInntektOgPensjonListe = it.aarligInntektOgPensjonListe,
+            pensjonsopptjeningListe = it.pensjonsopptjeningListe,
+            forbehold = it.forbehold,
+            kortforbehold = it.kortforbehold
+        )
+    }
 
     private fun createForbeholdInnhold() = ForbeholdInnhold(
         seksjoner = listOf(
