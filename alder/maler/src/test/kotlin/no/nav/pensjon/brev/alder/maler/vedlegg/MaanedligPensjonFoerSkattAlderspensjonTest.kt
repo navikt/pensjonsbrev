@@ -3,11 +3,12 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.createVedleggTestTemplate
 import no.nav.brev.brevbaker.renderTestHtml
-import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.alder.Fixtures
+import no.nav.pensjon.brev.alder.maler.vedlegg.createAlderspensjonPerManed
+import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkattAlderspensjon
+import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDto
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDto
-import no.nav.pensjon.brev.fixtures.createAlderspensjonPerManed
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
@@ -60,5 +61,9 @@ fun createMaanedligPensjonFoerSkattAlderspensjonDto(regelverkType: Alderspensjon
         alderspensjonGjeldende = MaanedligPensjonFoerSkattAlderspensjonDto.AlderspensjonGjeldende(
             regelverkType = regelverkType
         ),
-        alderspensjonPerManed = listOf(createAlderspensjonPerManed(), createAlderspensjonPerManed(), createAlderspensjonPerManed()),
+        alderspensjonPerManed = listOf(
+            createAlderspensjonPerManed(),
+            createAlderspensjonPerManed(),
+            createAlderspensjonPerManed()
+        ),
     )
