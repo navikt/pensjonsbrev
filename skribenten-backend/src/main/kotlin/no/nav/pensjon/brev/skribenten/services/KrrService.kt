@@ -80,6 +80,7 @@ class KrrService(config: OboClientConfig, authService: AuthService, engine: Http
     suspend fun getPreferredLocale(pid: Pid): KontaktinfoResponse {
         val response = try {
             client.post("/rest/v1/personer") {
+                metricsRoute("/rest/v1/personer")
                 contentType(ContentType.Application.Json)
                 accept(ContentType.Application.Json)
                 setBody(KontaktinfoRequest(listOf(pid.value)))
@@ -124,7 +125,7 @@ class KrrService(config: OboClientConfig, authService: AuthService, engine: Http
     }
 
     override suspend fun ping() =
-        ping("KRR") { client.get("/internal/health/readiness") }
+        ping("KRR") { client.get("/internal/health/readiness") { metricsRoute("/internal/health/readiness") } }
 
     override fun close() { client.close() }
 }

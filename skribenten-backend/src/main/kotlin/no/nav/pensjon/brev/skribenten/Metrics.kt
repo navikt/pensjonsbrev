@@ -5,6 +5,7 @@ import io.ktor.server.metrics.micrometer.*
 import io.ktor.server.request.path
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.micrometer.core.instrument.Meter
 import io.micrometer.core.instrument.config.MeterFilter
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig
 import io.micrometer.prometheusmetrics.PrometheusConfig
@@ -13,7 +14,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 object Metrics {
-    private val prometheusRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
+    val registry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
 
     // Helsesjekker og metrikkendepunktet kalles av kubernetes og prometheus uavhengig av last
     // (~0,25 req/s per pod). De holdes derfor utenfor både access-loggen og metrikkene:
@@ -45,7 +46,7 @@ object Metrics {
     // (/external/api/v1/brev), altså over timeouten mot brevbaker, så uten denne ville halen
     // havnet i +Inf. Grenser over ytterpunktet tas med av micrometer uten at det genereres tett
     // bucket-oppløsning i et område vi sjelden er i.
-    private val latencyBuckets = listOf(
+    private val latencyBucketDurations = listOf(
         50.milliseconds,
         100.milliseconds,
         250.milliseconds,
@@ -57,15 +58,32 @@ object Metrics {
         30.seconds,
         60.seconds,
         120.seconds,
-    ).map { it.inWholeNanoseconds.toDouble() }
+    )
+    private val latencyBuckets = latencyBucketDurations.map { it.inWholeNanoseconds.toDouble() }
+
+    const val clientMetricName = "skribenten_http_client_requests_seconds"
+    private val clientDistributionStatisticConfig = DistributionStatisticConfig.Builder()
+        .percentilesHistogram(true)
+        .minimumExpectedValue(forventetLavest.inWholeNanoseconds.toDouble())
+        .maximumExpectedValue(90.seconds.inWholeNanoseconds.toDouble())
+        .serviceLevelObjectives(*(latencyBuckets + 90.seconds.inWholeNanoseconds.toDouble()).toDoubleArray())
+        .build()
 
     fun Application.configureMetrics() {
         // Ktor tagger hver request med address=<podnavn>:<port>. Det er redundant med labelene
         // nais legger på ved scraping, og gir nye tidsserier for hver deploy.
-        prometheusRegistry.config().meterFilter(MeterFilter.ignoreTags("address"))
+        registry.config().meterFilter(MeterFilter.ignoreTags("address"))
+
+        // MeterFilter for klientmetrikken (samme mønster som Ktors egen MicrometerMetrics-plugin
+        // bruker internt), i stedet for å konfigurere distribusjonsstatistikk per Timer.builder()
+        // i HttpClientMetrics.kt.
+        registry.config().meterFilter(object : MeterFilter {
+            override fun configure(id: Meter.Id, config: DistributionStatisticConfig): DistributionStatisticConfig =
+                if (id.name == clientMetricName) clientDistributionStatisticConfig.merge(config) else config
+        })
 
         install(MicrometerMetrics) {
-            registry = prometheusRegistry
+            registry = Metrics.registry
             filter(::skalObserveres)
             // Ktor eksporterer som standard latens som en summary med klientside-kvantiler, og de
             // kan ikke aggregeres på tvers av poder - en p99 fra én pod sier ingenting om p99 for
@@ -86,7 +104,7 @@ object Metrics {
         }
         routing {
             get("/metrics") {
-                call.respond(prometheusRegistry.scrape())
+                call.respond(registry.scrape())
             }
         }
     }

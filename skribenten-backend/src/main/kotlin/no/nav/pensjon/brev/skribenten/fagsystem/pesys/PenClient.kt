@@ -88,7 +88,9 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         }
 
     override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? =
-        client.get("brev/skribenten/sak/${saksId.id}").bodyOrThrow<SakResponseDto>()?.let {
+        client.get("brev/skribenten/sak/${saksId.id}") {
+            metricsRoute("brev/skribenten/sak/{saksId}")
+        }.bodyOrThrow<SakResponseDto>()?.let {
             Pen.SakSelection(
                 saksId = it.saksId,
                 foedselsdato = it.foedselsdato,
@@ -102,6 +104,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
 
     override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse {
         val response = client.post("brev/pjoark030/bestillbrev") {
+            metricsRoute("brev/pjoark030/bestillbrev")
             setBody(bestillExstreamBrevRequest)
             contentType(ContentType.Application.Json)
         }
@@ -124,21 +127,27 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
     }
 
     override suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Pen.RedigerDokumentResponse? =
-        client.get("brev/dokument/exstream/${journalpostId.id}")
-            .bodyOrThrow()
+        client.get("brev/dokument/exstream/${journalpostId.id}") {
+            metricsRoute("brev/dokument/exstream/{journalpostId}")
+        }.bodyOrThrow()
 
     override suspend fun hentAvtaleland(): List<Pen.Avtaleland> =
-        client.get("brev/skribenten/avtaleland").bodyOrThrow() ?: emptyList()
+        client.get("brev/skribenten/avtaleland") {
+            metricsRoute("brev/skribenten/avtaleland")
+        }.bodyOrThrow() ?: emptyList()
 
     override suspend fun ping() =
-        ping("PEN") { client.get("/pen/actuator/health/readiness") }
+        ping("PEN") { client.get("/pen/actuator/health/readiness") { metricsRoute("/pen/actuator/health/readiness") } }
 
     override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean? =
-        client.get("brev/skribenten/vedtak/${vedtaksId.id}/isKravPaaGammeltRegelverk")
-            .bodyOrThrow()
+        client.get("brev/skribenten/vedtak/${vedtaksId.id}/isKravPaaGammeltRegelverk") {
+            metricsRoute("brev/skribenten/vedtak/{vedtaksId}/isKravPaaGammeltRegelverk")
+        }.bodyOrThrow()
 
     override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): PenClient.KravStoettetAvDatabyggerResult? =
-        client.get("brev/skribenten/vedtak/${vedtaksId.id}/isKravStoettetAvDatabygger").bodyOrThrow()
+        client.get("brev/skribenten/vedtak/${vedtaksId.id}/isKravStoettetAvDatabygger") {
+            metricsRoute("brev/skribenten/vedtak/{vedtaksId}/isKravStoettetAvDatabygger")
+        }.bodyOrThrow()
 
     override suspend fun hentPesysBrevdata(
         saksId: SaksId,
@@ -147,6 +156,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
         avsenderEnhetsId: EnhetId
     ): BrevdataResponse.Data =
         client.get("brev/skribenten/sak/${saksId.id}/brevdata/${brevkode.kode()}") {
+            metricsRoute("brev/skribenten/sak/{saksId}/brevdata/{brevkode}")
             mapOf(
                 "enhetsId" to avsenderEnhetsId.value,
                 "vedtaksId" to vedtaksId?.id?.toString(),
@@ -162,6 +172,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
 
     override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1RedigerbarDto =
         client.get("brev/skribenten/sak/${saksId.id}/p1data") {
+            metricsRoute("brev/skribenten/sak/{saksId}/p1data")
             url {
                 parameters.append("spraak", spraak.name)
             }
@@ -177,6 +188,7 @@ class PentHttpClient(config: OboClientConfig, authService: AuthService, engine: 
 
     override suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse =
         client.post("brev/skribenten/sendbrev") {
+            metricsRoute("brev/skribenten/sendbrev")
             setBody(sendRedigerbartBrevRequest)
             contentType(ContentType.Application.Json)
             url { parameters.append("distribuer", distribuer.toString()) }
