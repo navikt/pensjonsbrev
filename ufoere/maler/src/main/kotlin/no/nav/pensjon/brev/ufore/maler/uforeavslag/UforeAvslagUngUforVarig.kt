@@ -10,10 +10,10 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagForverrelseEtter26Dto
 import no.nav.pensjon.brev.template.saksbehandlervalg
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagForverrelseEtter26Dto.uforeAvslagPendata.*
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagForverrelseEtter26Dto.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.uforeAvslagPendata.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.selectors.uforeAvslagEnkelDto.*
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
@@ -21,7 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagForverrelseEtter26Dto> {
+object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
     override val kode = Ufoerebrevkoder.Redigerbar.UT_AVSLAG_UNG_UFOR_VARIG
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING

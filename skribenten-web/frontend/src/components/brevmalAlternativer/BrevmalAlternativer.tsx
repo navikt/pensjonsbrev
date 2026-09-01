@@ -19,6 +19,8 @@ const BrevmalAlternativer = (props: {
    * Kan velge hvilke felter som skal vises. Default er at begge vises (dersom dem finnes, ellers bare den som finnes)
    */
   onlyShowRequired?: boolean;
+
+  readOnly?: boolean;
 }) => {
   const specificationFormElements = usePartitionedModelSpecification(props.brevkode, props.propertyUsage);
 
@@ -51,6 +53,7 @@ const BrevmalAlternativer = (props: {
             <SaksbehandlerValgModelEditor
               brevkode={props.brevkode}
               fieldsToRender="required"
+              readOnly={props.readOnly}
               specificationFormElements={specificationFormElements}
               submitOnChange={props.submitOnChange}
             />
@@ -64,6 +67,7 @@ const BrevmalAlternativer = (props: {
               <SaksbehandlerValgModelEditor
                 brevkode={props.brevkode}
                 fieldsToRender="required"
+                readOnly={props.readOnly}
                 specificationFormElements={specificationFormElements}
                 submitOnChange={props.submitOnChange}
               />
@@ -78,6 +82,7 @@ const BrevmalAlternativer = (props: {
               <SaksbehandlerValgModelEditor
                 brevkode={props.brevkode}
                 fieldsToRender="optional"
+                readOnly={props.readOnly}
                 specificationFormElements={specificationFormElements}
                 submitOnChange={props.submitOnChange}
               />
@@ -113,6 +118,7 @@ const BrevmalAlternativer = (props: {
                 <SaksbehandlerValgModelEditor
                   brevkode={props.brevkode}
                   fieldsToRender="optional"
+                  readOnly={props.readOnly}
                   specificationFormElements={specificationFormElements}
                   submitOnChange={props.submitOnChange}
                 />
@@ -128,6 +134,7 @@ const BrevmalAlternativer = (props: {
                 <SaksbehandlerValgModelEditor
                   brevkode={props.brevkode}
                   fieldsToRender="required"
+                  readOnly={props.readOnly}
                   specificationFormElements={specificationFormElements}
                   submitOnChange={props.submitOnChange}
                 />

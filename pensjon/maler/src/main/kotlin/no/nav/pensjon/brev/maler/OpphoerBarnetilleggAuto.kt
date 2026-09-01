@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDto
 import no.nav.pensjon.brev.api.model.maler.selectors.opphoerBarnetilleggAutoDto.*
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.selectors.ufoeretrygd.*
-import no.nav.pensjon.brev.maler.fraser.OpphoerBarnetillegg
+import no.nav.pensjon.brev.maler.fraser.ufoer.OpphoerBarnetillegg
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg

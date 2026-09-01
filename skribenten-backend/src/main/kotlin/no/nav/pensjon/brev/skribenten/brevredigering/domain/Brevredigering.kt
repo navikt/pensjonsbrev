@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.letter.updateSakspartOgSignatur
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.vedlegg.P1Data
@@ -69,6 +70,7 @@ interface Brevredigering {
     fun markerSomKladd()
     fun attester(avNavIdent: NavIdent, attesterendeSignatur: String)
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
+    fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
     fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
     fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
@@ -241,6 +243,10 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
 
     override fun mergeRendretBrev(rendretBrev: LetterMarkup) {
         redigertBrev = redigertBrev.updateEditedLetter(rendretBrev)
+    }
+
+    override fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup) {
+        redigertBrev = redigertBrev.updateSakspartOgSignatur(rendretBrev)
     }
 
     override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) {

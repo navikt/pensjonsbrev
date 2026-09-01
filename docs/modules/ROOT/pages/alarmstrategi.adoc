@@ -347,6 +347,13 @@ Det er `requestTimeout` på 60s mot brevbaker som slår inn — altså kall som 
 Dette er ikke et hull i alarmdekningen, men verdt å kjenne til: en latensalarm på disse rutene vil se en hale som er avkortet av timeouten, og en økning i feilrate kan like gjerne skyldes treghet nedstrøms som feil hos oss.
 ====
 
+[NOTE]
+====
+Alle nedstrøms HTTP-kall instrumenteres av `services/HttpClientMetrics.kt` og eksponeres som `skribenten_http_client_requests_seconds`, med labels `downstream_host` (tjenesten, fra kallets URL), `route` (endepunktet, satt av kallstedet) og `outcome` (`success`/`client_error`/`server_error`/`timeout`/`connection_error`/`exception`).
+
+Retries telles separat per forsøk, ikke bare det endelige utfallet. `NaisLeaderService` sitt kall mot nais' lokale leader-election-sidecar (`downstream_host="localhost"`) er ekskludert i PromQL-en under, siden det ikke er en ekte nedstrøms tjeneste.
+====
+
 [cols="2,3,1,3", options="header"]
 |===
 | Alarm | Utløser | Nivå | Begrunnelse
@@ -360,6 +367,16 @@ Dette er ikke et hull i alarmdekningen, men verdt å kjenne til: en latensalarm 
 | Andel 4xx utenom `401`/`403`/`404` over 10 % *og* minst 3 feil, i 15 min
 | `warning`
 | Tyder på brutt API-kontrakt mot skribenten-web, typisk etter en deploy av én av dem. `401`/`403` er normal drift fra Wonderwall, og `404` er for støyende til å si noe, jf. <<ikke-alarmer, Bevisste ikke-alarmer>>.
+
+| `SkribentenNedstroemsHoeyFeilrate`
+| Andel kall per `downstream_host` som ender i `server_error`/`timeout`/`connection_error`/`exception` over 5 % *og* minst 3 feil, i 10 min
+| `critical`
+| Skiller «PEN er nede» fra «SAF er nede» osv. uten å måtte lese logger. Terskelen gjenbruker samme nivå som `SkribentenHoeyFeilrate` siden konsekvensen er lik: saksbehandlere blokkeres i handlinger som avhenger av den tjenesten.
+
+| `SkribentenNedstroemsHoeyLatens`
+| p95-latens per `downstream_host` over 10s, i 15 min
+| `warning`
+| Fanger opp treg nedstrøms tjeneste før den ender som timeout og dermed som feilrate. Terskelen er satt lavt sammenlignet med `requestTimeout` (60s mot brevbaker) med vilje: den skal varsle *før* kall begynner å timeoute, ikke samtidig med det.
 |===
 
 [[skribenten-web]]
@@ -540,51 +557,46 @@ Disse er bevisste, prioriterte oppgaver — ikke forglemmelser — og listes her
 | # | Hull | Tiltak | Prioritet
 
 | 1
-| Ingen metrikker på nedstrøms kall fra skribenten-backend. Vi kan ikke skille «PEN er nede» fra «SAF er nede» uten å lese logger.
-| Instrumentér Ktor-klientene med et eget metrikk-plugin. Ktor 3.5 har ingen klientside-metrikkplugin, men alle klientene går gjennom `HttpClientFactory.lagHttpClient`, så instrumenteringen kan legges ett sted.
-| Middels
-
-| 2
 | pdf-bygger har ingen domenemetrikker. Typst-feil og kompileringstid er kun synlig i logg.
 | Legg til teller for typst-resultat (suksess/kompileringsfeil/eksekveringsfeil) og timer for kompileringstid.
 | Middels
 
-| 3
+| 2
 | Retry-logikken i brevbaker mot pdf-bygger er usynlig i metrikker. Vi ser ikke at systemet sliter før det feiler helt.
 | Legg til teller for antall retries og for oppbrukte retries.
 | Middels
 
-| 4
+| 3
 | Ingen metrikker på database og connection pool i skribenten-backend.
 | Bind HikariCP-metrikker til meter-registeret.
 | Middels
 
-| 5
+| 4
 | Ingen måte å varsle på manglende brevbestillinger når Pesys kjører store behandlinger.
 | Ingen god løsning på dette, med mindre man kan avklare når alle disse jobbene kjører
 | Middels
 
-| 6
+| 5
 | *Ingen loggbaserte alarmer er mulige.* `PrometheusRule` evalueres mot Mimir og kan ikke spørre Loki. Fire ønskede alarmer er derfor udekket, hvorav to var eneste signal for sin feilmodus: `Error executing one-shot job` (jobb feiler stille ved hver oppstart) og `Alle toggles må være definert i Unleash` (brevmal blir stille utilgjengelig).
 | Instrumenter metrikk tellere for feilede engangsjobber og for maler med udefinert toggle.
 | Middels
 
-| 7
+| 6
 | Fall i `pensjon_brevbaker_letter_request_count_total` for en enkelt `brevkode` (`warning`). Kan bety at én brevmal er ødelagt selv om totalen ser normal ut.
 | Hent ut forventede tall for hver brevmal basert på metrikk-historikk.
 | Middels
 
-| 8
+| 7
 | Ingen alarm på brå økning i 4xx for brevbaker og pdf-bygger, slik `SkribentenOektAndelKlientfeil` gir for skribenten-backend. Begge har kun maskinelle konsumenter — Pesys og brevbaker — så en 4xx er ikke en bruker som taster feil, men en konsument som sender noe vi ikke lenger godtar. Typisk et kontraktsbrudd etter deploy av én av partene, jf. <<prinsipper, prinsipp 6>>. I dag er dette usynlig: 4xx teller ikke i 5xx-alarmene, og et avvist kall gir heller ingen `throwable`.
 | Legg til `BrevbakerOektAndelKlientfeil` og `PdfByggerOektAndelKlientfeil` etter mønster av `SkribentenOektAndelKlientfeil`, på `ktor_http_server_requests_seconds_count` med `status=~"4.."`. Unntakslisten må settes per app framfor å arves: `401`/`403` er maskinell autentisering som ikke skal feile jevnt, og bør trolig telle med. Terskelen må leses av faktisk 4xx-nivå i prod først, siden normalnivået for maskinell trafikk er et annet enn for skribenten.
 | Middels
 
-| 9
+| 8
 | pdf-bygger og skribenten-backend kan være blinde over tid uten at noe sier fra, siden `PrometheusKlarerIkkeAScrape` bevisst er `warning`. Brevbaker er dekket ved at `BrevbakerIngenBrevProdusert` bruker `absent()` og dermed utløser når serien forsvinner.
 | Legg til en dødmannsknapp per app: en `absent()`-basert regel på en metrikk appen alltid produserer. Bedre enn å heve `PrometheusKlarerIkkeAScrape` til `critical`, fordi det alarmerer på at signalet er borte framfor på selve scrape-mekanismen.
 | Middels
 
-| 10
+| 9
 | BrevbakerKoeBunnerSegOpp: terskelen på 10 er ikke kalibrert mot prod.
 | Må justeres når vi har observert den over en stor behandling som produserer mange brev.
 | Middels
