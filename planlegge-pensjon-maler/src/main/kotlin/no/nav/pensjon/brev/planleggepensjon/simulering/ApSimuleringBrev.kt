@@ -66,6 +66,7 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
             }
         }
 
+        // TODO: endre fra å sende saksbehandlerValg til å sende pesysData når alle brev i databasen har pesysData lagra
         includeAttachment(
             simuleringVedlegg,
             saksbehandlerValg,
