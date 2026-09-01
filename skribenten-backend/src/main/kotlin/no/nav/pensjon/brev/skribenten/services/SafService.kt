@@ -84,6 +84,7 @@ class SafServiceHttp(config: SafConfig, authService: AuthService, engine: HttpCl
 
     private suspend fun getStatus(journalpostId: JournalpostId): JournalpostLoadingResult {
         val response = client.post("") {
+            metricsRoute("graphql/hentJournalpostStatus")
             contentType(ContentType.Application.Json)
             setBody(
                 JournalQuery(
@@ -131,6 +132,7 @@ class SafServiceHttp(config: SafConfig, authService: AuthService, engine: HttpCl
 
     private suspend fun getDocumentsInJournal(journalpostId: JournalpostId): HentDokumenterResponse {
         val response = client.post("") {
+            metricsRoute("graphql/hentDokumenter")
             contentType(ContentType.Application.Json)
             setBody(
                 JournalQuery(
@@ -158,7 +160,9 @@ class SafServiceHttp(config: SafConfig, authService: AuthService, engine: HttpCl
     override suspend fun hentPdfForJournalpostId(journalpostId: JournalpostId): ByteArray? {
         val dokumentInfoId = hentFoersteDokumentInfoIdFraJournalpost(journalpostId)
         return if (dokumentInfoId != null) {
-            val response = client.get("$safRestUrl/hentdokument/${journalpostId.id}/$dokumentInfoId/ARKIV")
+            val response = client.get("$safRestUrl/hentdokument/${journalpostId.id}/$dokumentInfoId/ARKIV") {
+                metricsRoute("hentdokument/{journalpostId}/{dokumentInfoId}/ARKIV")
+            }
             if (response.status.isSuccess()) {
                 response.body()
             } else {
@@ -179,7 +183,7 @@ class SafServiceHttp(config: SafConfig, authService: AuthService, engine: HttpCl
         getDocumentsInJournal(journalpostId).data?.journalpost?.dokumenter?.firstOrNull()?.dokumentInfoId
 
     override suspend fun ping() =
-        ping("SAF") { client.options("") }
+        ping("SAF") { client.options("") { metricsRoute("graphql") } }
 
     override fun close() { client.close() }
 }

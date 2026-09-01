@@ -69,6 +69,7 @@ class PensjonRepresentasjonService(
         ){
             try {
                 val response = client.post("/representasjon/hasRepresentant") {
+                    metricsRoute("representasjon/hasRepresentant")
                     contentType(ContentType.Application.Json)
                     setBody(HasRepresentantRequest(pid, RelevanteRepresentasjonstyper.entries))
                 }

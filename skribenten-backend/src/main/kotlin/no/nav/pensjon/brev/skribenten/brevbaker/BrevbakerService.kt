@@ -102,7 +102,9 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
      * Get model specification for a template.
      */
     override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification? {
-        val response = client.get("/templates/redigerbar/${brevkode.kode()}/modelSpecification")
+        val response = client.get("/templates/redigerbar/${brevkode.kode()}/modelSpecification") {
+            metricsRoute("templates/redigerbar/{brevkode}/modelSpecification")
+        }
 
         return when (response.status) {
             HttpStatusCode.OK -> response.body()
@@ -122,6 +124,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         felles: BrevbakerFelles,
     ): LetterMarkupWithDataUsage {
         val response = client.post("/letter/redigerbar/markup-usage") {
+            metricsRoute("letter/redigerbar/markup-usage")
             contentType(ContentType.Application.Json)
             setBody(
                 BestillBrevRequest(
@@ -154,6 +157,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         pdfVedlegg: List<PDFVedleggTittel>,
     ): LetterResponse {
         val response = client.post("/letter/redigerbar/pdf") {
+            metricsRoute("letter/redigerbar/pdf")
             timeout { requestTimeoutMillis = 60.seconds.inWholeMilliseconds }
             contentType(ContentType.Application.Json)
             setBody(
@@ -187,6 +191,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         felles: BrevbakerFelles,
     ): RedigerbareVedleggTitler? {
         val response = client.post("/letter/redigerbar/redigerbare-vedlegg/titler") {
+            metricsRoute("letter/redigerbar/redigerbare-vedlegg/titler")
             contentType(ContentType.Application.Json)
             setBody(
                 BestillBrevRequest(
@@ -210,7 +215,9 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
 
     override suspend fun harRedigerbareVedlegg(brevkode: Brevkode.Redigerbart): Boolean =
         cache.cached(Cacheomraade.HAR_REDIGERBARE_VEDLEGG, brevkode) {
-            val response = client.get("/templates/redigerbar/${brevkode.kode()}/har-redigerbare-vedlegg")
+            val response = client.get("/templates/redigerbar/${brevkode.kode()}/har-redigerbare-vedlegg") {
+                metricsRoute("templates/redigerbar/{brevkode}/har-redigerbare-vedlegg")
+            }
 
             when {
                 response.status.isSuccess() -> response.body<Boolean>()
@@ -230,6 +237,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
         vedleggId: VedleggId,
     ): LetterMarkup.Attachment? {
         val response = client.post("/letter/redigerbar/redigerbare-vedlegg/${vedleggId.id}") {
+            metricsRoute("letter/redigerbar/redigerbare-vedlegg/{vedleggId}")
             contentType(ContentType.Application.Json)
             setBody(
                 BestillBrevRequest(
@@ -253,6 +261,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
 
     override suspend fun getTemplates(): List<TemplateDescription.Redigerbar>? {
         val response = client.get("/templates/redigerbar") {
+            metricsRoute("templates/redigerbar")
             url {
                 parameters.append("includeMetadata", "true")
             }
@@ -267,7 +276,9 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
 
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
         cache.cached(Cacheomraade.REDIGERBAR_MAL, brevkode) {
-            val response = client.get("/templates/redigerbar/${brevkode.kode()}")
+            val response = client.get("/templates/redigerbar/${brevkode.kode()}") {
+                metricsRoute("templates/redigerbar/{brevkode}")
+            }
 
             if (response.status.isSuccess()) {
                 response.body()
@@ -281,7 +292,9 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
 
     override suspend fun getAlltidValgbareVedlegg(): Set<AlltidValgbartVedleggBrevkode> =
         cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, "alltidValgbareVedlegg") {
-            val response = client.get("/letter/redigerbar/alltidValgbareVedlegg")
+            val response = client.get("/letter/redigerbar/alltidValgbareVedlegg") {
+                metricsRoute("letter/redigerbar/alltidValgbareVedlegg")
+            }
 
             if (response.status.isSuccess()) {
                 response.body()
@@ -293,7 +306,7 @@ class BrevbakerServiceHttp(config: OboClientConfig, authService: AuthService, va
             }
         }
 
-    override suspend fun ping() = ping("Brevbaker") { client.get("/ping_authorized") }
+    override suspend fun ping() = ping("Brevbaker") { client.get("/ping_authorized") { metricsRoute("ping_authorized") } }
     override fun close() { client.close() }
 }
 

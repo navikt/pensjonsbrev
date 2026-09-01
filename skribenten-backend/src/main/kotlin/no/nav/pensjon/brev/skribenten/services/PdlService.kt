@@ -113,6 +113,7 @@ class PdlServiceHttp(config: OboClientConfig, authService: AuthService, engine: 
         postQuery<DataWrapperPersonMedAdressebeskyttelse>(
             query = PDLQuery<IdentVariables>(hentAdressebeskyttelseQuery, IdentVariables(ident.value)),
             behandlingsnumre = behandlingsnumre,
+            routeLabel = "graphql/hentAdressebeskyttelse",
         ).handleGraphQLErrors()
             ?.let {
                 it.hentPerson?.adressebeskyttelse?.map { b -> b.gradering }
@@ -122,6 +123,7 @@ class PdlServiceHttp(config: OboClientConfig, authService: AuthService, engine: 
         postQuery<DataWrapperPersonSakKontekst>(
             query = PDLQuery(query = hentBrukerContextQuery, variables = IdentVariables(ident.value)),
             behandlingsnumre = behandlingsnumre,
+            routeLabel = "graphql/hentBrukerContext",
         ).handleGraphQLErrors()
             ?.let { response ->
                 val person = response.hentPerson
@@ -131,8 +133,9 @@ class PdlServiceHttp(config: OboClientConfig, authService: AuthService, engine: 
                 )
             }
 
-    private suspend inline fun <reified T : Any> postQuery(query: PDLQuery<*>, behandlingsnumre: List<Behandlingsnummer>): PDLResponse<T> {
+    private suspend inline fun <reified T : Any> postQuery(query: PDLQuery<*>, behandlingsnumre: List<Behandlingsnummer>, routeLabel: String): PDLResponse<T> {
         val response = client.post("") {
+            metricsRoute(routeLabel)
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             setBody(query)
@@ -174,7 +177,7 @@ class PdlServiceHttp(config: OboClientConfig, authService: AuthService, engine: 
     }
 
     override suspend fun ping() =
-        ping("PDL") { client.options("") }
+        ping("PDL") { client.options("") { metricsRoute("graphql") } }
 
     override fun close() { client.close() }
 
