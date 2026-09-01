@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
-import no.nav.pensjon.brev.skribenten.auth.*
+import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
@@ -8,25 +8,22 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.*
-import no.nav.pensjon.brev.skribenten.services.NavansattService
 import org.jetbrains.exposed.v1.jdbc.Database
 
-class AttesterBrevHandler(
+class LagreAttestertBrevHandler(
     private val attesterBrevPolicy: AttesterBrevPolicy,
-    private val ferdigRedigertPolicy: FerdigRedigertPolicy,
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
-    private val navansattService: NavansattService,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
     reserverBrevHandler: ReserverBrevHandler,
     database: Database,
-) : ReservertBrevHandler<AttesterBrevHandler.Request, Dto.Brevredigering>(database, reserverBrevHandler) {
+) : ReservertBrevHandler<LagreAttestertBrevHandler.Request, Dto.Brevredigering>(database, reserverBrevHandler) {
 
     data class Request(
         override val brevId: BrevId,
         override val saksId: SaksId,
-        val nyttRedigertbrev: Edit.Letter? = null,
+        val nyttRedigertbrev: Edit.Letter,
         val frigiReservasjon: Boolean = false,
     ) : BrevredigeringRequest
 
@@ -37,23 +34,11 @@ class AttesterBrevHandler(
         attesterBrevPolicy.kanAttestere(brev, principal).onError { return failure(it) }
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
 
-        if (request.nyttRedigertbrev != null) {
-            brev.oppdaterRedigertBrev(request.nyttRedigertbrev, principal.navIdent)
-        }
+        brev.oppdaterRedigertBrev(request.nyttRedigertbrev, principal.navIdent)
 
         val pesysdata = brevdataService.hentBrevdata(brev)
         val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
         brev.oppdaterSakspartOgSignatur(rendretBrev.markup)
-
-        ferdigRedigertPolicy.erFerdigRedigert(brev).onError { return failure(it) }
-
-        if (!brev.laastForRedigering) {
-            brev.markerSomKlar()
-        }
-
-        val attestantSignatur = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn
-            ?: principal.hentSignatur(navansattService)
-        brev.attester(principal.navIdent, attestantSignatur)
 
         if (request.frigiReservasjon) {
             brev.frigiReservasjon()
@@ -62,4 +47,3 @@ class AttesterBrevHandler(
         return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
     }
 }
-

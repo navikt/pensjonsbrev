@@ -10,10 +10,10 @@ import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.jetbrains.exposed.v1.jdbc.Database
 
-class HentEllerOpprettPdfHandler(
+class HentEllerOpprettAttesteringPdfHandler(
     private val brevPdfService: BrevPdfService,
     database: Database,
-) : TransactionHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult, IngenFoersteside>(database) {
+) : TransactionHandler<HentEllerOpprettAttesteringPdfHandler.Request, Dto.HentDocumentResult, IngenFoersteside>(database) {
 
     data class Request(
         override val brevId: BrevId,
@@ -24,10 +24,6 @@ class HentEllerOpprettPdfHandler(
     override suspend fun execute(request: Request): Outcome<Dto.HentDocumentResult, IngenFoersteside>? {
         val brev = BrevredigeringEntity.findByIdAndSaksId(request.brevId, request.saksId) ?: return null
 
-        return brevPdfService.hentEllerOpprett(brev, request.fagsak, sjekkOmRendretBrevErEndret = true)
+        return brevPdfService.hentEllerOpprett(brev, request.fagsak, sjekkOmRendretBrevErEndret = false)
     }
 }
-
-// Disse må være i sync med api-modellen
-const val P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2"
-const val P1_VEDLEGG_KEY = "p1Vedlegg"

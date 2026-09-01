@@ -25,13 +25,9 @@ import { getBrevAttestering, getBrevReservasjon } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
 import { getFeatureToggle } from "~/api/skribenten-api-endpoints";
 import { useGuardedFormSubmit } from "~/Brevredigering/hooks/useGuardedFormSubmit";
-import { useOppdaterBrevAutosave } from "~/Brevredigering/hooks/useOppdaterBrevAutosave";
 import { findFirstUneditedFritekstFocus } from "~/Brevredigering/LetterEditor/actions/common";
 import { WarnModal } from "~/Brevredigering/LetterEditor/components/warnModal";
 import { AttestantDiffProvider } from "~/Brevredigering/LetterEditor/diff/AttestantDiffContext";
-import { createLetterSnapshot } from "~/Brevredigering/LetterEditor/history";
-import { useTekstvalgInsertHighlight } from "~/Brevredigering/LetterEditor/hooks/useTekstvalgInsertHighlight";
-import { InsertedTekstValgHighlightProvider } from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
@@ -193,7 +189,7 @@ const VedtakWrapper = () => {
         },
       };
       return (
-        <ManagedLetterEditorContextProvider brev={brevUtenAttestantSignatur}>
+        <ManagedLetterEditorContextProvider brev={brevUtenAttestantSignatur} redigeringsflate="attestant-redigering">
           <Vedtak brev={brevUtenAttestantSignatur} doReload={hentBrevQuery.refetch} saksId={saksId} />
         </ManagedLetterEditorContextProvider>
       );
@@ -209,12 +205,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   const [forbidReason, setForbidReason] = useState<AttestForbiddenReason | null>(null);
   const [unexpectedError, setUnexpectedError] = useState<AxiosError | null>(null);
-
-  const { highlightedIds: highlightedInsertedTekstvalgIds, beforeTekstvalgChange } = useTekstvalgInsertHighlight({
-    lagretRedigertBrev: props.brev.redigertBrev,
-    editorState,
-    setEditorState,
-  });
 
   const showDebug = useSearch({
     strict: false,
@@ -269,13 +259,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     propertyUsage: props.brev.propertyUsage ?? undefined,
   });
 
-  const { oppdaterBrevMutation } = useOppdaterBrevAutosave({
-    saksId: props.saksId,
-    brevId: props.brev.info.id,
-    setEditorState,
-    onSaveSuccess,
-  });
-
   const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterAttesteringRequest>({
     mutationFn: (requestData) =>
       attesterBrev({
@@ -296,27 +279,22 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     },
   });
 
-  const onSubmit = (values: VedtakSidemenyFormData, onSuccess?: () => void) => {
+  const onSubmit = (onSuccess?: () => void) => {
     attesterMutation.reset();
-    oppdaterBrevMutation.reset();
     attesterMutation.mutate(
       {
-        saksbehandlerValg: values.saksbehandlerValg,
         redigertBrev: editorState.redigertBrev,
       },
       { onSuccess: onSuccess },
     );
   };
 
-  const freeze = oppdaterBrevMutation.isPending || attesterMutation.isPending;
-  const error = oppdaterBrevMutation.isError || attesterMutation.isError;
+  const freeze = attesterMutation.isPending;
+  const error = attesterMutation.isError;
 
   const resetSaveErrors = useCallback(() => {
     attesterMutation.reset();
-    oppdaterBrevMutation.reset();
-  }, [attesterMutation.reset, oppdaterBrevMutation.reset]);
-
-  // TODO: disable BrevmalAlternativer during SAVE_PENDING
+  }, [attesterMutation.reset]);
 
   useEffect(() => {
     form.reset({
@@ -358,7 +336,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     });
   };
 
-  const submitAttest = (values: VedtakSidemenyFormData) => onSubmit(values, proceedToForhandsvisning);
+  const submitAttest = () => onSubmit(proceedToForhandsvisning);
 
   const { guardedSubmit, warnModalProps } = useGuardedFormSubmit({
     form,
@@ -465,15 +443,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   <BrevmalAlternativer
                     brevkode={props.brev.info.brevkode}
                     propertyUsage={props.brev.propertyUsage ?? undefined}
-                    submitOnChange={() => {
-                      const updatedValg = form.getValues("saksbehandlerValg");
-                      beforeTekstvalgChange(updatedValg, editorState.redigertBrev);
-                      oppdaterBrevMutation.mutate({
-                        redigertBrev: editorState.redigertBrev,
-                        saksbehandlerValg: updatedValg,
-                        historySnapshot: createLetterSnapshot(editorState),
-                      });
-                    }}
+                    readOnly
                   />
                 </VStack>
               </VStack>
@@ -486,17 +456,16 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 diffHash={attestantDiff.diffHash}
                 disableDiff={attestantDiff.disableDiff}
               >
-                <InsertedTekstValgHighlightProvider ids={highlightedInsertedTekstvalgIds}>
-                  <ManagedLetterEditor
-                    brev={props.brev}
-                    error={error}
-                    freeze={freeze}
-                    redigeringsflate="attestant-redigering"
-                    resetParentSaveError={resetSaveErrors}
-                    showDebug={showDebug}
-                  />
-                </InsertedTekstValgHighlightProvider>
+                <ManagedLetterEditor
+                  brev={props.brev}
+                  error={error}
+                  freeze={freeze}
+                  redigeringsflate="attestant-redigering"
+                  resetParentSaveError={resetSaveErrors}
+                  showDebug={showDebug}
+                />
               </AttestantDiffProvider>
+
               {/* Modal som ikke tar opp plass i DOM her */}
               <ReservertBrevError
                 doRetry={props.doReload}

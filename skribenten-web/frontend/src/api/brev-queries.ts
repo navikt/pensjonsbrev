@@ -114,6 +114,21 @@ export async function oppdaterBrevtekst(args: {
   ).data;
 }
 
+export async function lagreAttestertBrevtekst(args: {
+  saksId: string;
+  brevId: number;
+  redigertBrev: EditedLetter;
+  /** Required on purpose — see `oppdaterBrev`. */
+  frigiReservasjon: boolean;
+}) {
+  return (
+    await axios.put<BrevResponse>(
+      `${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}/attestering/redigertBrev?frigiReservasjon=${args.frigiReservasjon}`,
+      args.redigertBrev,
+    )
+  ).data;
+}
+
 export async function tilbakestillBrev(brevId: number) {
   return (await axios.post<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/tilbakestill`)).data;
 }
