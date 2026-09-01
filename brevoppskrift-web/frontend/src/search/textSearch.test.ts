@@ -173,9 +173,7 @@ describe("search", () => {
   });
 
   it("ignores Fuse extended-search syntax in exact phrases", () => {
-    const templates = [
-      template({ id: "A1", title: "The grey fox", lines: ["The grey fox jumped over the fence."] }),
-    ];
+    const templates = [template({ id: "A1", title: "The grey fox", lines: ["The grey fox jumped over the fence."] })];
     const index = buildIndex(templates);
 
     const { content, brev } = search(index, 'the \\"grey\\" \\\\|fox', true);
