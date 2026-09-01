@@ -26,7 +26,7 @@ data class LopendeYtelse(
     val avkortetPgaRedusertTrygdetid: Boolean,
     val harGradertUfoeretrygd: Boolean,
     val endringBt: Boolean = true,
-    )
+)
 
 data class OpphortYtelse(
     val opphorsdato: LocalDate
