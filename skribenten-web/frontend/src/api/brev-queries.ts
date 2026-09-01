@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios, { type AxiosResponse } from "axios";
 
 import { SKRIBENTEN_API_BASE_PATH } from "~/api/skribenten-api-endpoints";
+import { type UnifiedLetterDiff } from "~/Brevredigering/LetterEditor/diff/diffModel";
 import { type LetterMetadata } from "~/types/apiTypes";
 import {
   type BrevInfo,
@@ -131,6 +132,16 @@ export async function lagreAttestertBrevtekst(args: {
 export async function tilbakestillBrev(brevId: number) {
   return (await axios.post<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/tilbakestill`)).data;
 }
+
+export const brevDiffKeys = {
+  id: (brevId: number, redigertBrevHash: string) => ["BREV_DIFF", brevId, redigertBrevHash] as const,
+};
+
+export const getBrevDiff = {
+  queryKey: brevDiffKeys.id,
+  queryFn: async (brevId: number, redigertBrev: EditedLetter) =>
+    (await axios.post<UnifiedLetterDiff>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/diff`, redigertBrev)).data,
+};
 
 export const getBrevReservasjon = {
   querykey: brevKeys.reservasjon,

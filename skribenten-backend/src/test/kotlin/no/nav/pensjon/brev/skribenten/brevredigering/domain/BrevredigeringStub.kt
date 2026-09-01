@@ -31,7 +31,7 @@ open class BrevredigeringStub : Brevredigering {
     override val opprettet: Instant get() = notYetStubbed()
     override val sistredigert: Instant get() = notYetStubbed()
     override val sistReservert: Instant get() = notYetStubbed()
-    override val journalpostId: JournalpostId get() = notYetStubbed()
+    override val journalpostId: JournalpostId? get() = notYetStubbed()
     override var document: Dto.Document? = null
     override val mottaker: Dto.Mottaker get() = notYetStubbed()
     override val p1Data: P1Data get() = notYetStubbed()

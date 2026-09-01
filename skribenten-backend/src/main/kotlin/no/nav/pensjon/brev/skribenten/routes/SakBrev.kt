@@ -231,7 +231,14 @@ fun Route.sakBrev() =
                 val brevId = call.parameters.brevId()
                 val sak: Fagsak = call.attributes[SakKey]
 
-                val result = slettBrev(SlettBrevHandler.Request(brevId = brevId, saksId = sak.saksId))
+                val result = slettBrev(
+                    SlettBrevHandler.Request(
+                        brevId = brevId,
+                        saksId = sak.saksId,
+                        pid = sak.pid,
+                        behandlingsnumre = sak.behandlingsnumre
+                    )
+                )
                 apiRespond(dto2ApiService, result)
             }
 
