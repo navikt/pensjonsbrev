@@ -48,7 +48,7 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
 
 
     ) {
-        val saksbehandlingstid = saksbehandlervalg("saksbehandlingstid", "Saksbehandlingstid").enum<Saksbehandlingstid>()
+        val saksbehandlingstid = saksbehandlervalg("saksbehandlingstid", "Velg saksbehandlingstid ved:").enum<Saksbehandlingstid>()
 
         title {
             text(
@@ -105,7 +105,7 @@ object KlageOrienteringOmSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbar
         }
     }
     enum class Saksbehandlingstid(override val displayText: String): SaksbehandlerValgEnum {
-        SaksbehandlingstidVedNFPellerNAY("Saksbehandlingstid ved NFP eller NAY"),
-        SaksbehandlingstidVedNavKlageinstans("Saksbehandlingstid ved Nav Klageinstans")
+        SaksbehandlingstidVedNFPellerNAY("NFP eller NAY"),
+        SaksbehandlingstidVedNavKlageinstans("Nav Klageinstans")
     }
 }
