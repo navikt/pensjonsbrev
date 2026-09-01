@@ -120,7 +120,9 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev?: BrevResponse; i
               disabled={pdfStatus !== "ready"}
               icon={<ArrowRightIcon />}
               iconPosition="right"
-              loading={pdfStatus === "fetching"}
+              // Kun spinner når pdf-en faktisk hentes. pdfStatus er "fetching" allerede fra første
+              // paint mens brevet lastes, og da ville knappen snurret gjennom hele innlastingen.
+              loading={isBrevReady && hentPdfQuery.isFetching}
               onClick={() => setVilSendeBrev(true)}
               size="small"
               type="button"
