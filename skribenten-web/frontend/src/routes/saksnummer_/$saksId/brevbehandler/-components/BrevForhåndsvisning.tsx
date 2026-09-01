@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { getBrevInfo } from "~/api/brev-queries";
-import { hentPdfForBrev, veksleKlarStatus } from "~/api/sak-api-endpoints";
+import { hentPdfForAttestering, hentPdfForBrev, veksleKlarStatus } from "~/api/sak-api-endpoints";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import { getErrorMessage, getErrorTitle } from "~/utils/errorUtils";
 import { queryFold } from "~/utils/tanstackUtils";
@@ -18,14 +18,17 @@ const BrevForhåndsvisning = (properties: {
   brevId: number;
   redigertBrevHash?: string;
   waitingForFreshBrev?: boolean;
+  pdfKilde?: "saksbehandler" | "attestering";
 }) => {
   const [showBrevDataEndringAlert, setShowBrevDataEndringAlert] = useState(true);
   const [oppdaterError, setOppdaterError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  const pdfQuery = properties.pdfKilde === "attestering" ? hentPdfForAttestering : hentPdfForBrev;
+
   const hentPdfQuery = useQuery({
-    queryKey: hentPdfForBrev.queryKey(properties.brevId, properties.redigertBrevHash),
-    queryFn: () => hentPdfForBrev.queryFn(properties.saksId, properties.brevId),
+    queryKey: pdfQuery.queryKey(properties.brevId, properties.redigertBrevHash),
+    queryFn: () => pdfQuery.queryFn(properties.saksId, properties.brevId),
     enabled: !properties.waitingForFreshBrev,
     refetchOnWindowFocus: false,
   });

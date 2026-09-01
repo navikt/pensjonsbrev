@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion = 407
+val apiModelVersion = 421
 
 val apiModelJavaTarget: String by System.getProperties()
 
@@ -25,7 +25,6 @@ dependencies {
     api("no.nav.pensjon.brev:pensjon-api-model:$apiModelVersion")
 
     testImplementation(libs.bundles.junit)
-    testImplementation(kotlin("reflect")) // TODO: midlertidig fram til vi har migrert ferdig til saksbehandlervalgidsl
     testImplementation(testFixtures(project(":brevbaker:core")))
     testImplementation(testFixtures(project(":brevbaker:dsl")))
 }

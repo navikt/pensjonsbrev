@@ -10,6 +10,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDa
 import no.nav.pensjon.brev.fixtures.createDineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.fixtures.createMaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.fixtures.createPEgruppe10
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmLavereReduksjonsprosentAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmOktMinsteIFUAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmOktMinsteIFULavereReduksjonsprosentAuto
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import org.junit.jupiter.api.Tag

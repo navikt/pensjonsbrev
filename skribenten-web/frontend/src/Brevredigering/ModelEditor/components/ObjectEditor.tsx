@@ -19,12 +19,14 @@ export const FieldEditor = ({
   field,
   fieldType,
   submitOnChange,
+  readOnly,
 }: {
   prependedName?: string;
   brevkode: string;
   field: string;
   fieldType: FieldType;
   submitOnChange?: () => void;
+  readOnly?: boolean;
 }) => {
   switch (fieldType.type) {
     case "object": {
@@ -33,6 +35,7 @@ export const FieldEditor = ({
           brevkode={brevkode}
           fieldType={fieldType}
           parentFieldName={prependedName ? `${prependedName}.${field}` : field}
+          readOnly={readOnly}
           submitOnChange={submitOnChange}
           typeName={fieldType.typeName}
         />
@@ -40,6 +43,7 @@ export const FieldEditor = ({
         <ObjectEditor
           brevkode={brevkode}
           parentFieldName={prependedName ? `${prependedName}.${field}` : field}
+          readOnly={readOnly}
           submitOnChange={submitOnChange}
           typeName={fieldType.typeName}
         />
@@ -47,7 +51,13 @@ export const FieldEditor = ({
     }
     case "scalar": {
       return (
-        <ScalarEditor field={field} fieldType={fieldType} prependName={prependedName} submitOnChange={submitOnChange} />
+        <ScalarEditor
+          field={field}
+          fieldType={fieldType}
+          prependName={prependedName}
+          readOnly={readOnly}
+          submitOnChange={submitOnChange}
+        />
       );
     }
     case "array": {
@@ -57,6 +67,7 @@ export const FieldEditor = ({
       return (
         <EnumEditor
           fieldName={prependedName ? `${prependedName}.${field}` : field}
+          readOnly={readOnly}
           spec={fieldType}
           submitOnChange={submitOnChange}
         />
@@ -70,9 +81,16 @@ export type ObjectEditorProperties = {
   typeName: string;
   parentFieldName?: string;
   submitOnChange?: () => void;
+  readOnly?: boolean;
 };
 
-export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChange }: ObjectEditorProperties) => {
+export const ObjectEditor = ({
+  brevkode,
+  typeName,
+  parentFieldName,
+  submitOnChange,
+  readOnly,
+}: ObjectEditorProperties) => {
   const { specification: objectTypeSpecification } = useModelSpecification(brevkode, (s) => s.types[typeName]);
 
   return (
@@ -87,6 +105,7 @@ export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChan
               field={fieldName}
               fieldType={fieldType}
               key={field}
+              readOnly={readOnly}
               submitOnChange={submitOnChange}
             />
           );
@@ -101,6 +120,7 @@ function ToggleableObjectEditor({
   typeName,
   fieldType,
   submitOnChange,
+  readOnly,
 }: ObjectEditorProperties & { parentFieldName: string; fieldType: FieldType }) {
   const {
     formState: { defaultValues },
@@ -122,7 +142,7 @@ function ToggleableObjectEditor({
 
   return (
     <>
-      <Switch checked={open} onChange={handleToggle}>
+      <Switch checked={open} onChange={handleToggle} readOnly={readOnly}>
         {fieldType.displayText ?? convertFieldToReadableLabel(parentFieldName)}
       </Switch>
 
@@ -139,6 +159,7 @@ function ToggleableObjectEditor({
           <ObjectEditor
             brevkode={brevkode}
             parentFieldName={parentFieldName}
+            readOnly={readOnly}
             submitOnChange={submitOnChange}
             typeName={typeName}
           />

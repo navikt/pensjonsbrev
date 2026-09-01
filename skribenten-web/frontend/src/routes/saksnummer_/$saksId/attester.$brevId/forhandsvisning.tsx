@@ -6,7 +6,7 @@ import { type AxiosError } from "axios";
 import { useState } from "react";
 
 import { attesteringBrevKeys, getBrevAttestering } from "~/api/brev-queries";
-import { hentPdfForBrev, sendBrev } from "~/api/sak-api-endpoints";
+import { hentPdfForAttestering, sendBrev } from "~/api/sak-api-endpoints";
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
 import { ApiError } from "~/components/ApiError";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
@@ -58,14 +58,14 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev?: BrevResponse; i
   // en pdf som hører til en utdatert redigertBrevHash.
   const isBrevReady = props.brev !== undefined && props.isBrevFresh;
   const hentPdfQuery = useQuery({
-    queryKey: hentPdfForBrev.queryKey(Number(brevId), props.brev?.redigertBrevHash),
-    queryFn: () => hentPdfForBrev.queryFn(props.saksId, Number(brevId)),
+    queryKey: hentPdfForAttestering.queryKey(Number(brevId), props.brev?.redigertBrevHash),
+    queryFn: () => hentPdfForAttestering.queryFn(props.saksId, Number(brevId)),
     enabled: isBrevReady,
     refetchOnWindowFocus: false,
   });
 
-  // !isBrevReady må sjekkes aller først. Uten hash blir nøkkelen ["hentPdfForBrev", brevId] -
-  // nøyaktig den brevbehandler/route.tsx bruker - så det kan allerede ligge en pdf i cachen der.
+  // !isBrevReady må sjekkes aller først. Uten hash blir nøkkelen ["hentPdfForAttestering", brevId], og
+  // det kan allerede ligge en pdf i cachen der fra et tidligere besøk på denne siden.
   // `enabled: false` hindrer at vi henter, men ikke at hentPdfQuery.data leser den cachede verdien.
   // Deretter "fetching": ved en bakgrunns-refetch ligger forrige pdf fortsatt i data.
   // isSuccess trengs i tillegg til null-sjekken, fordi React Query beholder forrige data når en
@@ -162,6 +162,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev?: BrevResponse; i
         right={
           <BrevForhåndsvisning
             brevId={Number(brevId)}
+            pdfKilde="attestering"
             redigertBrevHash={props.brev?.redigertBrevHash}
             saksId={props.saksId}
             waitingForFreshBrev={!isBrevReady}

@@ -18,13 +18,16 @@ test.describe("attestant redigering", () => {
       return route.fallback();
     });
 
-    await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", async (route) => {
-      if (route.request().method() === "PUT") {
-        const body = route.request().postDataJSON();
-        return route.fulfill({ json: { ...defaultBrev, redigertBrev: body } });
-      }
-      return route.fallback();
-    });
+    await page.route(
+      "**/bff/skribenten-backend/sak/123456/brev/1/attestering/redigertBrev?frigiReservasjon=*",
+      async (route) => {
+        if (route.request().method() === "PUT") {
+          const body = route.request().postDataJSON();
+          return route.fulfill({ json: { ...defaultBrev, redigertBrev: body } });
+        }
+        return route.fallback();
+      },
+    );
   });
 
   test("kan gå til brevbehandler når henting av vedtaksbrev feiler", async ({ page }) => {
@@ -45,19 +48,22 @@ test.describe("attestant redigering", () => {
   test("Autolagrer brev etter redigering", async ({ page }) => {
     const hurtiglagreTidspunkt = formatISO(new Date());
 
-    await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=false", async (route) => {
-      if (route.request().method() === "PUT") {
-        const body = route.request().postDataJSON();
-        return route.fulfill({
-          json: {
-            ...defaultBrev,
-            info: { ...defaultBrev.info, sistredigert: hurtiglagreTidspunkt },
-            redigertBrev: body,
-          },
-        });
-      }
-      return route.fallback();
-    });
+    await page.route(
+      "**/bff/skribenten-backend/sak/123456/brev/1/attestering/redigertBrev?frigiReservasjon=false",
+      async (route) => {
+        if (route.request().method() === "PUT") {
+          const body = route.request().postDataJSON();
+          return route.fulfill({
+            json: {
+              ...defaultBrev,
+              info: { ...defaultBrev.info, sistredigert: hurtiglagreTidspunkt },
+              redigertBrev: body,
+            },
+          });
+        }
+        return route.fallback();
+      },
+    );
 
     await page.goto("/saksnummer/123456/attester/1/redigering");
     await expect(page.getByText("Lagret")).toBeVisible();
@@ -73,16 +79,26 @@ test.describe("attestant redigering", () => {
     await expect(page.getByText("hello!")).toBeVisible();
   });
 
+  test("attestanten kan ikke tilbakestille brevet til malen", async ({ page }) => {
+    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await expect(page.getByText("Underskrift")).toBeVisible();
+
+    await expect(page.getByTestId("tilbakestill-mal-button")).toBeHidden();
+  });
+
   test("lagrer underskrift", async ({ page }) => {
-    await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=false", async (route) => {
-      if (route.request().method() === "PUT") {
-        const body = route.request().postDataJSON();
-        return route.fulfill({
-          json: { ...defaultBrev, redigertBrev: body },
-        });
-      }
-      return route.fallback();
-    });
+    await page.route(
+      "**/bff/skribenten-backend/sak/123456/brev/1/attestering/redigertBrev?frigiReservasjon=false",
+      async (route) => {
+        if (route.request().method() === "PUT") {
+          const body = route.request().postDataJSON();
+          return route.fulfill({
+            json: { ...defaultBrev, redigertBrev: body },
+          });
+        }
+        return route.fallback();
+      },
+    );
 
     await page.goto("/saksnummer/123456/attester/1/redigering");
     await page.clock.install();
