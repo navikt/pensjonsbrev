@@ -53,7 +53,7 @@ type EditorMenuProps = {
   redo: () => void;
   canUndo: boolean;
   canRedo: boolean;
-  setVilTilbakestilleMal: (state: boolean) => void;
+  setVilTilbakestilleMal?: (state: boolean) => void;
   redigeringsflate: Redigeringsflate;
 };
 
@@ -91,7 +91,7 @@ export const EditorMenu = ({
 
         <HStack align="center" gap="space-16">
           <LagringStatus />
-          {redigeringsflate !== "attestant-redigering" && (
+          {setVilTilbakestilleMal && redigeringsflate !== "attestant-redigering" && (
             <Tooltip content={tooltipText.tilbakestill}>
               <Button
                 aria-label="Tilbakestill mal"

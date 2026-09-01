@@ -177,7 +177,8 @@ fun Route.sakBrev() =
                     }
 
                     val endreRedigertVedlegg: EndreRedigertVedleggHandler by app.dependencies
-                    put<Api.RedigertVedleggRequest> { request ->
+                    put {
+                        val request = call.receive<Api.RedigertVedleggRequest>()
                         val brevId = call.parameters.brevId()
                         val vedleggId = call.parameters.vedleggId()
                         val sak: Fagsak = call.attributes[SakKey]

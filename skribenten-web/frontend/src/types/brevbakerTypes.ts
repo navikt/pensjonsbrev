@@ -31,6 +31,16 @@ export type Title1Block = generated.EditBlockTitle1;
 export type Title2Block = generated.EditBlockTitle2;
 export type Title3Block = generated.EditBlockTitle3;
 
+/**
+ * Shared editable structure for letter and attachment. Letter-only data such as sakspart and
+ * signatur is excluded so block and title actions can operate on both document types.
+ */
+export type EditedDocument = {
+  title: Title;
+  blocks: AnyBlock[];
+  deletedBlocks: number[];
+};
+
 export type TextContent = generated.EditParagraphContentText;
 export type Content = generated.EditParagraphContent;
 
