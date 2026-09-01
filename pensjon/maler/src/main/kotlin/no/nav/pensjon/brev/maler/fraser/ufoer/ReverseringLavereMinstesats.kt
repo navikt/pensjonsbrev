@@ -24,7 +24,6 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.text
@@ -234,44 +233,44 @@ object ReverseringLavereMinstesats {
                         )
                     }
                 }
-
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket har vi gjort etter " + data.hjemmeltekst + "." },
-                        nynorsk { +"Vedtaket har vi gjort etter " + data.hjemmeltekst + "." },
-                    )
-                }
-
-                title1 {
-                    text(
-                        bokmal { +"Du har rett til å klage" },
-                        nynorsk { +"Du har rett til å klage" },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen vedtaket har kommet fram til deg. Du finner skjema og informasjon på " + "${Constants.KLAGE_URL}."
-                        },
-                        nynorsk {
-                            +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen vedtaket har kome fram til deg. Du finn skjema og informasjon på " + "${Constants.KLAGE_URL}."
-                        },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"I vedlegget " },
-                        nynorsk { +"I vedlegget " },
-                    )
-                    namedReference(vedleggDineRettigheterOgPlikterUfore)
-                    text(
-                        bokmal { +" får du vite mer om hvordan du går fram for å klage." },
-                        nynorsk { +" får du vite meir om korleis du går fram for å klage." },
-                    )
-                }
-                includePhrase(Ufoeretrygd.RettTilInnsyn)
-                includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
             }
+
+            paragraph {
+                text(
+                    bokmal { +"Vedtaket har vi gjort etter " + data.hjemmeltekst + "." },
+                    nynorsk { +"Vedtaket har vi gjort etter " + data.hjemmeltekst + "." },
+                )
+            }
+
+            title1 {
+                text(
+                    bokmal { +"Du har rett til å klage" },
+                    nynorsk { +"Du har rett til å klage" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen vedtaket har kommet fram til deg. Du finner skjema og informasjon på " + "${Constants.KLAGE_URL}."
+                    },
+                    nynorsk {
+                        +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen vedtaket har kome fram til deg. Du finn skjema og informasjon på " + "${Constants.KLAGE_URL}."
+                    },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"I vedlegget " },
+                    nynorsk { +"I vedlegget " },
+                )
+                namedReference(vedleggDineRettigheterOgPlikterUfore)
+                text(
+                    bokmal { +" får du vite mer om hvordan du går fram for å klage." },
+                    nynorsk { +" får du vite meir om korleis du går fram for å klage." },
+                )
+            }
+            includePhrase(Ufoeretrygd.RettTilInnsyn)
+            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
     }
 }
