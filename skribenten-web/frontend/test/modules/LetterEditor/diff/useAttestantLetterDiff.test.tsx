@@ -16,11 +16,12 @@ const letterFor = (text: string) =>
 const diffWithEdit: UnifiedLetterDiff = {
   editedBlocks: {
     0: {
-      contentEdits: { 0: { edit: { inserts: [{ startOffset: 0, endOffset: 3 }], deletes: [] } } },
+      contentEdits: { 0: { type: "TEXT", edit: { inserts: [{ startOffset: 0, endOffset: 3 }], deletes: [] } } },
       deletedContent: {},
     },
   },
   deletedBlocks: {},
+  type: "UNIFIED",
 };
 
 const wrapper = ({ children }: { children: ReactNode }) => {
