@@ -84,7 +84,7 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMa
 
         <HStack align="center" gap="space-16">
           <LagringStatus />
-          {redigeringsflate !== "attestant-redigering" && (
+          {redigeringsflate === "saksbehandler-redigering" && (
             <Tooltip content={tooltipText.tilbakestill}>
               <Button
                 aria-label="Tilbakestill mal"
