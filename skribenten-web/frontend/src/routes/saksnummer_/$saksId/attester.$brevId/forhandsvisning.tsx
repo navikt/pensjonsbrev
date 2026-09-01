@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Button, Heading, HStack, Label, Modal, Skeleton, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, Box, Button, Heading, HStack, Label, Modal, Skeleton, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
@@ -130,34 +130,42 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev?: BrevResponse; i
           </HStack>
         }
         left={
-          !isBrevReady || props.brev === undefined ? (
-            <VStack gap="space-12">
-              <Skeleton height={28} variant="rectangle" width="80%" />
-              <VStack gap="space-16">
-                <Skeleton height={96} variant="rectangle" width="100%" />
-                <VStack gap="space-4">
-                  <Skeleton height={20} variant="rectangle" width="50%" />
-                  <Skeleton height={20} variant="rectangle" width="70%" />
+          // Aksel-Skeleton setter aria-hidden internt, så venstre kolonne er usynlig for skjermlesere
+          // mens den laster. aria-busy + status-regionen under gir den en stemme. Regionen må rendres
+          // i begge tilstander, ellers finnes den ikke i DOM-en når teksten endres og annonseres ikke.
+          <Box aria-busy={!isBrevReady}>
+            <span className="aksel-sr-only" role="status">
+              {isBrevReady ? "Brevinformasjon lastet" : "Henter brevinformasjon…"}
+            </span>
+            {!isBrevReady || props.brev === undefined ? (
+              <VStack gap="space-12">
+                <Skeleton height={28} variant="rectangle" width="80%" />
+                <VStack gap="space-16">
+                  <Skeleton height={96} variant="rectangle" width="100%" />
+                  <VStack gap="space-4">
+                    <Skeleton height={20} variant="rectangle" width="50%" />
+                    <Skeleton height={20} variant="rectangle" width="70%" />
+                  </VStack>
                 </VStack>
               </VStack>
-            </VStack>
-          ) : (
-            <VStack gap="space-12">
-              <Heading size="small">{props.brev.info.brevtittel}</Heading>
-              <VStack gap="space-16">
-                <OppsummeringAvMottaker mottaker={props.brev.info.mottaker ?? null} saksId={props.saksId} withTitle />
-                <VStack gap="space-4">
-                  <Label size="small">Distribusjonstype</Label>
-                  <BodyShort size="small">{distribusjonstypeTilText(props.brev.info.distribusjonstype)}</BodyShort>
-                  {props.brev.info.distribusjonstype === "LOKALPRINT" && (
-                    <Alert size="small" variant="warning">
-                      Du må åpne PDF og skrive ut brevet etter du har trykket på send brev.
-                    </Alert>
-                  )}
+            ) : (
+              <VStack gap="space-12">
+                <Heading size="small">{props.brev.info.brevtittel}</Heading>
+                <VStack gap="space-16">
+                  <OppsummeringAvMottaker mottaker={props.brev.info.mottaker ?? null} saksId={props.saksId} withTitle />
+                  <VStack gap="space-4">
+                    <Label size="small">Distribusjonstype</Label>
+                    <BodyShort size="small">{distribusjonstypeTilText(props.brev.info.distribusjonstype)}</BodyShort>
+                    {props.brev.info.distribusjonstype === "LOKALPRINT" && (
+                      <Alert size="small" variant="warning">
+                        Du må åpne PDF og skrive ut brevet etter du har trykket på send brev.
+                      </Alert>
+                    )}
+                  </VStack>
                 </VStack>
               </VStack>
-            </VStack>
-          )
+            )}
+          </Box>
         }
         right={
           <BrevForhåndsvisning
