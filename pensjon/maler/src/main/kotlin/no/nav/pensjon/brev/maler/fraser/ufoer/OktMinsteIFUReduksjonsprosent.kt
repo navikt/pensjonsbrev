@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser
+package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
 import no.nav.pensjon.brev.maler.fraser.common.Constants

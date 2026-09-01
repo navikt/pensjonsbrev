@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmLavereMinstesatsAutoDto.*
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmLavereMinstesatsData.*
-import no.nav.pensjon.brev.maler.fraser.LavereMinstesats
+import no.nav.pensjon.brev.maler.fraser.ufoer.LavereMinstesats
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt

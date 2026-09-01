@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser
+package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.maler.legacy.ReverseringLavereMinstesatsDto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.avkortetPgaRedusertTrygdetid
@@ -16,7 +16,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMin
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.opphortYtelse
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.model.format

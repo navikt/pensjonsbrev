@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmL
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmLavereMinstesatsRedigerbarDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmLavereMinstesatsData.*
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.LavereMinstesats
+import no.nav.pensjon.brev.maler.fraser.ufoer.LavereMinstesats
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere

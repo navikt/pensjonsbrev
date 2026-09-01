@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopD
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.pe
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.OktFribelop
+import no.nav.pensjon.brev.maler.fraser.ufoer.OktFribelop
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere

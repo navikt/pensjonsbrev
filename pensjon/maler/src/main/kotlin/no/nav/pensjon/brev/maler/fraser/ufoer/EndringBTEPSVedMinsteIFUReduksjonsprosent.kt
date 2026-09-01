@@ -1,7 +1,6 @@
-package no.nav.pensjon.brev.maler.fraser
+package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -14,7 +13,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
-object EndringBTEPSVedMinsteIFUReduksjonsprosentRev {
+object EndringBTEPSVedMinsteIFUReduksjonsprosent {
 
     data class Brevdata(
         val nettoUforetrygdUtenTillegg: Expression<Kroner>,
@@ -38,7 +37,7 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosentRev {
                         nynorsk { +"Vi har endra barnetillegget i uføretrygda di. " },
                     )
                     table(header = {
-                        column { text(bokmal { +"Du får per måned før skatt fra 1. oktober:" }, nynorsk { +"Du får per månad før skatt frå 1. oktober:" }) }
+                        column { text(bokmal { +"Du får per måned før skatt:" }, nynorsk { +"Du får per månad før skatt:" }) }
                         column(alignment = RIGHT) { text(bokmal { +"Kroner" }, nynorsk { +"Kroner" }) }
                     }) {
                         row {
@@ -113,8 +112,8 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosentRev {
             showIf(data.opphortUforetrygdEllerBTFB) {
                 paragraph {
                     text(
-                        bokmal { +"Vi endrer barnetillegget i uføretrygden din på grunn av lovendringer Stortinget har vedtatt. Endringene trer i kraft 1. oktober 2026, men gjelder fra 1. juli 2026. " },
-                        nynorsk { +"Vi endrar barnetillegget i uføretrygda di på grunn av lovendringar Stortinget har vedteke. Endringane trer i kraft 1. oktober 2026, men gjeld frå 1. juli 2026. " },
+                        bokmal { +"Vi endrer barnetillegget i uføretrygden din på grunn av lovendringer Stortinget har vedtatt. Endringene trer i kraft 1. juli 2026, men gjelder fra 1. januar 2026. " },
+                        nynorsk { +"Vi endrar barnetillegget i uføretrygda di på grunn av lovendringar Stortinget har vedteke. Endringane trer i kraft 1. juli 2026, men gjeld frå 1. januar 2026. " },
                     )
                 }
                 paragraph {
@@ -139,8 +138,8 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosentRev {
 
                 paragraph {
                     text(
-                        bokmal { +"Vi endrer barnetillegget i uføretrygden din på grunn av lovendringer Stortinget har vedtatt. Endringene trer i kraft 1. oktober 2026, men gjelder fra 1. juli 2026. " },
-                        nynorsk { +"Vi endrar barnetillegget i uføretrygda di på grunn av lovendringar Stortinget har vedteke. Endringane trer i kraft 1. oktober 2026, men gjeld frå 1. juli 2026. " },
+                        bokmal { +"Vi endrer barnetillegget i uføretrygden din på grunn av lovendringer Stortinget har vedtatt. Endringene trer i kraft 1. juli 2026, men gjelder fra 1. januar 2026. " },
+                        nynorsk { +"Vi endrar barnetillegget i uføretrygda di på grunn av lovendringar Stortinget har vedteke. Endringane trer i kraft 1. juli 2026, men gjeld frå 1. januar 2026. " },
                     )
                 }
                 paragraph {
@@ -176,8 +175,22 @@ object EndringBTEPSVedMinsteIFUReduksjonsprosentRev {
             }.orShow {
                 paragraph {
                     text(
-                        bokmal { +"Regelverksendringene fører til at beregnet barnetillegg for fellesbarn endres. Dersom vi i år allerede har utbetalt for mye barnetillegg, vil dette bli regulert i etteroppgjøret neste år. " },
-                        nynorsk { +"Regelverksendringane fører til at berekna barnetillegg for fellesbarn endras. Dersom vi i år allereie har utbetalt for mykje barnetillegg, vil dette bli regulert i etteroppgjeret neste år. " },
+                        bokmal { +"Regelverksendringene fører til at beregnet barnetillegg for fellesbarn i én eller flere perioder blir endret, fordi den samlede inntekten til deg og barnets andre forelder er høyere enn fribeløpet på " + data.fribelop.format() + ". " },
+                        nynorsk { +"Regelverksendringane fører til at berekna barnetillegg for fellesbarn i éin eller fleire periodar blir endra, fordi den samla inntekta til deg og barnets andre forelder er høgare enn fribeløpet på " + data.fribelop.format() + ". " },
+                    )
+                }
+
+                paragraph {
+                    text(
+                        bokmal { +"Ny beregning av barnetillegg fra 1. juli (før skatt) er " + data.nettoBarnetilleggFB.format() + ". " },
+                        nynorsk { +"Ny berekning av barnetillegg frå 1. juli (før skatt) er " + data.nettoBarnetilleggFB.format() + ". " },
+                    )
+                }
+
+                paragraph {
+                    text(
+                        bokmal { +"Dersom du i perioden 1. januar til 1. juli 2026, har fått for mye utbetalt barnetillegg, vil dette bli regulert i etteroppgjøret neste år. " },
+                        nynorsk { +"Dersom du i perioden 1. januar til 1. juli 2026, har fått for mykje utbetalt barnetillegg, vil dette bli regulert i etteroppgjeret neste år. " },
                     )
                 }
             }

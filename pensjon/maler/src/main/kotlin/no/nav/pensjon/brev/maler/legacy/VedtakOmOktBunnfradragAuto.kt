@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktBunnfradragAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragAutoDto.*
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.*
-import no.nav.pensjon.brev.maler.fraser.OktBunnfradrag
+import no.nav.pensjon.brev.maler.fraser.ufoer.OktBunnfradrag
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt

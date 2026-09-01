@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmO
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmOktBunnfradragRedigerbarDto.pesysData.*
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktBunnfradragData.*
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.OktBunnfradrag
+import no.nav.pensjon.brev.maler.fraser.ufoer.OktBunnfradrag
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere

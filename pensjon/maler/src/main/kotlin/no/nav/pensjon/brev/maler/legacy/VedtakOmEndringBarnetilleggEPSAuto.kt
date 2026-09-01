@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmEndringBarnetilleggEPSAutoDto.*
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmEndringBarnetilleggEPSData.*
-import no.nav.pensjon.brev.maler.fraser.EndringBTEPSVedMinsteIFUReduksjonsprosent
+import no.nav.pensjon.brev.maler.fraser.ufoer.EndringBTEPSVedMinsteIFUReduksjonsprosent
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt

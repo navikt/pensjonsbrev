@@ -1,10 +1,9 @@
-package no.nav.pensjon.brev.maler.fraser
+package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.legacy.UTOgTilleggMapper
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
@@ -18,7 +17,6 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan

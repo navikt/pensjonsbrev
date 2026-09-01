@@ -1,7 +1,6 @@
-package no.nav.pensjon.brev.maler.fraser
+package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT

@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmE
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmEndringBarnetilleggEPSRedigerbarDto.pesysData.vedtakData
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmEndringBarnetilleggEPSData.*
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.EndringBTEPS
+import no.nav.pensjon.brev.maler.fraser.ufoer.EndringBTEPS
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore

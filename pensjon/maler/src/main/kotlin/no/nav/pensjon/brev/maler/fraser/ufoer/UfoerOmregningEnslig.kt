@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser
+package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
@@ -7,18 +7,13 @@ import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg.DuHarFaattUtbetaltBar
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate

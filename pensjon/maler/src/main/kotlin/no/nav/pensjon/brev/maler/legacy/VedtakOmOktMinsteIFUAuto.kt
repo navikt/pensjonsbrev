@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmIFUReduksjonsprosentAutoDto.*
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmIFUReduksjonsprosentData.*
-import no.nav.pensjon.brev.maler.fraser.OktMinsteIFUReduksjonsprosent
+import no.nav.pensjon.brev.maler.fraser.ufoer.OktMinsteIFUReduksjonsprosent
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt

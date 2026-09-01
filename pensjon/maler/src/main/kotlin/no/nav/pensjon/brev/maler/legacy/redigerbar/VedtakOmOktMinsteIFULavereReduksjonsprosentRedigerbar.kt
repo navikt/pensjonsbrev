@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmIFUReduksjo
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmIFUReduksjonsprosentRedigerbarDto.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmIFUReduksjonsprosentRedigerbarDto.pesysData.*
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.OktMinsteIFUReduksjonsprosent
+import no.nav.pensjon.brev.maler.fraser.ufoer.OktMinsteIFUReduksjonsprosent
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore

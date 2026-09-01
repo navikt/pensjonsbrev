@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMin
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.pe
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.ReverseringLavereMinstesats
+import no.nav.pensjon.brev.maler.fraser.ufoer.ReverseringLavereMinstesats
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere

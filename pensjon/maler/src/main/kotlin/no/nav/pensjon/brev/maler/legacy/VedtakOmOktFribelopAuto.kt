@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopAutoDto.*
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.*
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktFribelopAutoDto
-import no.nav.pensjon.brev.maler.fraser.OktFribelop
+import no.nav.pensjon.brev.maler.fraser.ufoer.OktFribelop
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
