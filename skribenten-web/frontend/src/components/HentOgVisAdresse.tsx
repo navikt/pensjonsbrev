@@ -1,4 +1,4 @@
-import { BodyShort, VStack } from "@navikt/ds-react";
+import { HStack, Skeleton, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 
 import { getKontaktAdresse, hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
@@ -27,6 +27,20 @@ function mapSamhandlerAdresseLinjer(adresse: SamhandlerPostadresse): string[] {
   return [adresse.linje1, `${postLinje}${landSuffix}`].filter((l): l is string => !!l);
 }
 
+// Speiler formen til AdresseVisning, slik at innholdet ikke kollapser til én linje mens adressen
+// hentes og deretter spretter ut igjen når den er på plass.
+const AdresseSkeleton = ({ withTitle }: { withTitle?: boolean }) => (
+  <VStack>
+    {withTitle && <Skeleton variant="text" width="30%" />}
+    <Skeleton variant="text" width="60%" />
+    <Skeleton variant="text" width="75%" />
+    <Skeleton variant="text" width="45%" />
+    <HStack marginBlock="space-4 space-0">
+      <Skeleton height={20} variant="rounded" width={72} />
+    </HStack>
+  </VStack>
+);
+
 /**
   En basic HentOgVis-komponent som henter og viser adresseinformasjon for en sak eller samhandler.
  */
@@ -45,7 +59,7 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
     <VStack>
       {!properties.samhandlerId && (
         <>
-          {adresseQuery.isPending && <BodyShort size="small">Henter...</BodyShort>}
+          {adresseQuery.isPending && <AdresseSkeleton withTitle={properties.showMottakerTitle} />}
           {adresseQuery.error && <ApiError error={adresseQuery.error} title="Fant ikke adresse" />}
           {adresseQuery.isSuccess && (
             <ResolvedAdresse
@@ -59,7 +73,7 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
       )}
       {properties.samhandlerId && (
         <>
-          {samhandlerAdresse.isPending && <BodyShort size="small">Henter...</BodyShort>}
+          {samhandlerAdresse.isPending && <AdresseSkeleton withTitle={properties.showMottakerTitle} />}
           {samhandlerAdresse.error && <ApiError error={samhandlerAdresse.error} title="Fant ikke adresse" />}
           {samhandlerAdresse.isSuccess && (
             <ResolvedAdresse
