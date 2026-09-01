@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.foerstesidegenerator.FoerstesidegeneratorClient
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevPdfService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.RedigerbareVedleggService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
@@ -71,6 +72,7 @@ abstract class BrevredigeringHandlerTestBase {
         brevbakerService.redigerbareMaler[Testbrevkoder.VARSELBREV] = varselbrevIVedtakskontekst
         brevbakerService.alltidValgbareVedleggResultat = emptySet()
         brevbakerService.renderRedigerbareVedleggResultat = emptyMap()
+        brevbakerService.renderRedigerbartVedleggKall.clear()
         brevbakerService.harRedigerbareVedleggResultat = null
         stagePdf(stagetPDF)
 
@@ -220,35 +222,60 @@ abstract class BrevredigeringHandlerTestBase {
             database = SharedPostgres.database,
         )
     }
+    protected val redigerbareVedleggService by lazy {
+        RedigerbareVedleggService(
+            brevmalService = brevmalService,
+            brevdataService = brevdataService,
+        )
+    }
     protected val endreRedigertVedlegg by lazy {
         EndreRedigertVedleggHandler(
             redigerBrevPolicy = redigerBrevPolicy,
-            brevmalService = brevmalService,
-            brevdataService = brevdataService,
+            redigerbareVedleggService = redigerbareVedleggService,
             reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
-    protected val slettRedigertVedlegg by lazy {
-        SlettRedigertVedleggHandler(
+    protected val tilbakestillRedigertVedlegg by lazy {
+        TilbakestillRedigertVedleggHandler(
             redigerBrevPolicy = redigerBrevPolicy,
-            brevreservasjonPolicy = brevreservasjonPolicy,
+            redigerbareVedleggService = redigerbareVedleggService,
             reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
     protected val hentRedigertVedlegg by lazy {
         HentRedigertVedleggHandler(
-            brevmalService = brevmalService,
-            brevdataService = brevdataService,
+            redigerbareVedleggService = redigerbareVedleggService,
             reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
     protected val hentRedigerbareVedlegg by lazy {
         HentRedigerbareVedleggHandler(
-            brevmalService = brevmalService,
-            brevdataService = brevdataService,
+            redigerbareVedleggService = redigerbareVedleggService,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val hentRedigertVedleggAttestering by lazy {
+        HentRedigertVedleggAttesteringHandler(
+            redigerbareVedleggService = redigerbareVedleggService,
+            reserverBrevHandler = reserverBrevHandler,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val hentRedigerbareVedleggAttestering by lazy {
+        HentRedigerbareVedleggAttesteringHandler(
+            redigerbareVedleggService = redigerbareVedleggService,
+            database = SharedPostgres.database,
+        )
+    }
+    protected val lagreAttestertVedlegg by lazy {
+        LagreAttestertVedleggHandler(
+            attesterBrevPolicy = attesterBrevPolicy,
+            redigerBrevPolicy = redigerBrevPolicy,
+            redigerbareVedleggService = redigerbareVedleggService,
+            reserverBrevHandler = reserverBrevHandler,
             database = SharedPostgres.database,
         )
     }
@@ -686,6 +713,7 @@ abstract class BrevredigeringHandlerTestBase {
         val renderPdfKall = mutableListOf<LetterMarkup>()
         val renderPdfRedigerteVedleggKall = mutableListOf<Map<VedleggId, LetterMarkup.Attachment>>()
         var renderRedigerbareVedleggResultat: Map<VedleggId, LetterMarkup.Attachment> = emptyMap()
+        val renderRedigerbartVedleggKall = mutableListOf<VedleggId>()
         var harRedigerbareVedleggResultat: Boolean? = null
 
         override suspend fun renderMarkup(
@@ -737,6 +765,7 @@ abstract class BrevredigeringHandlerTestBase {
             felles: BrevbakerFelles,
             vedleggId: VedleggId,
         ): LetterMarkup.Attachment? = renderRedigerbareVedleggResultat[vedleggId]
+            .also { renderRedigerbartVedleggKall.add(vedleggId) }
 
         override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart) = modelSpecificationResultat
     }

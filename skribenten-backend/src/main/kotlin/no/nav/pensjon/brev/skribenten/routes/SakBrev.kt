@@ -194,17 +194,17 @@ fun Route.sakBrev() =
                         respondOutcome(dto2ApiService, result) { respond(it) }
                     }
 
-                    val slettRedigertVedlegg: SlettRedigertVedleggHandler by app.dependencies
+                    val tilbakestillRedigertVedlegg: TilbakestillRedigertVedleggHandler by app.dependencies
                     delete {
                         val brevId = call.parameters.brevId()
                         val vedleggId = call.parameters.vedleggId()
                         val sak: Fagsak = call.attributes[SakKey]
 
-                        val brev = slettRedigertVedlegg(
-                            SlettRedigertVedleggHandler.Request(brevId = brevId, saksId = sak.saksId, vedleggId = vedleggId)
+                        val result = tilbakestillRedigertVedlegg(
+                            TilbakestillRedigertVedleggHandler.Request(brevId = brevId, saksId = sak.saksId, vedleggId = vedleggId)
                         )
 
-                        apiRespond(dto2ApiService, brev)
+                        respondOutcome(dto2ApiService, result) { respond(it) }
                     }
                 }
             }
@@ -353,6 +353,52 @@ fun Route.sakBrev() =
                     )
 
                     apiRespond(dto2ApiService, resultat)
+                }
+
+                route("/redigerbareVedlegg") {
+                    val hentRedigerbareVedleggAttestering: HentRedigerbareVedleggAttesteringHandler by app.dependencies
+                    get {
+                        val brevId = call.parameters.brevId()
+                        val sak: Fagsak = call.attributes[SakKey]
+
+                        val result = hentRedigerbareVedleggAttestering(
+                            HentRedigerbareVedleggAttesteringHandler.Request(brevId = brevId, saksId = sak.saksId)
+                        )
+
+                        respondSuccess(result?.asSuccess()) { respond(it) }
+                    }
+                    route("{vedleggId}") {
+                        val hentRedigertVedleggAttestering: HentRedigertVedleggAttesteringHandler by app.dependencies
+                        get {
+                            val brevId = call.parameters.brevId()
+                            val vedleggId = call.parameters.vedleggId()
+                            val sak: Fagsak = call.attributes[SakKey]
+
+                            val result = hentRedigertVedleggAttestering(
+                                HentRedigertVedleggAttesteringHandler.Request(brevId = brevId, saksId = sak.saksId, vedleggId = vedleggId)
+                            )
+
+                            respondOutcome(dto2ApiService, result) { respond(it) }
+                        }
+
+                        val lagreAttestertVedlegg: LagreAttestertVedleggHandler by app.dependencies
+                        put<Api.RedigertVedleggRequest> { request ->
+                            val brevId = call.parameters.brevId()
+                            val vedleggId = call.parameters.vedleggId()
+                            val sak: Fagsak = call.attributes[SakKey]
+
+                            val result = lagreAttestertVedlegg(
+                                LagreAttestertVedleggHandler.Request(
+                                    brevId = brevId,
+                                    saksId = sak.saksId,
+                                    vedleggId = vedleggId,
+                                    redigertVedlegg = request.redigertVedlegg,
+                                )
+                            )
+
+                            respondOutcome(dto2ApiService, result) { respond(it) }
+                        }
+                    }
                 }
             }
 
