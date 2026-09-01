@@ -10,6 +10,8 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggInformasjonOmAfp
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOpplysningerOmBeregningenAfp
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOversiktOverPensjonenAfp
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
+import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
+import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.selectors.afpOffentligSektor.beregning.*
 import no.nav.pensjon.brev.alder.model.afp.selectors.afpOffentligSektor.ektefelletillegg.*
@@ -46,7 +48,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object VedtakEndringAfpOffentligSektor : RedigerbarTemplate<VedtakEndringAfpOffentligSektorDto> {
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AF_VEDTAK_ENDRING_OFFENTLIG
-    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
+    override val valgbareVedlegg = setOf(UTTAKSSKJEMA, SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val featureToggle = FeatureToggles.vedtakEndringAfpOffentligSektor.toggle
 

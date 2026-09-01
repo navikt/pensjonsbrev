@@ -5,6 +5,8 @@ import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggFolketrygden
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
+import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
+import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.AvslagAfpGammelDto
 import no.nav.pensjon.brev.alder.model.afp.selectors.avslagAfpGammelDto.pesysData.*
@@ -35,7 +37,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object AvslagAfpGammel : RedigerbarTemplate<AvslagAfpGammelDto> {
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_AVSLAG_GAMMEL
-    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
+    override val valgbareVedlegg = setOf(UTTAKSSKJEMA, SKJEMA_FOR_BANKOPPLYSNINGER)
 
     override val featureToggle = FeatureToggles.avslagAfpGammel.toggle
 

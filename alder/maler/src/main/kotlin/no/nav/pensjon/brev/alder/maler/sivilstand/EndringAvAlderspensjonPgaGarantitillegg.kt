@@ -19,6 +19,8 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOrienteringOmRettigheterOg
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
+import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER
+import no.nav.pensjon.brev.alder.model.Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonGarantitilleggDto
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonGarantitilleggDto.alderspensjonVedVirk.*
 import no.nav.pensjon.brev.alder.model.sivilstand.selectors.endringAvAlderspensjonGarantitilleggDto.beregnetPensjonPerManedVedVirk.*
@@ -41,7 +43,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object EndringAvAlderspensjonPgaGarantitillegg :
     RedigerbarTemplate<EndringAvAlderspensjonGarantitilleggDto> {
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_GARANTITILLEGG
-    override val valgbareVedlegg = setOf(Aldersbrevkoder.AlltidValgbareVedlegg.UTTAKSSKJEMA, Aldersbrevkoder.AlltidValgbareVedlegg.SKJEMA_FOR_BANKOPPLYSNINGER)
+    override val valgbareVedlegg = setOf(UTTAKSSKJEMA, SKJEMA_FOR_BANKOPPLYSNINGER)
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = Sakstype.pensjon
