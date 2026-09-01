@@ -150,6 +150,20 @@ test.describe("attestant redigering", () => {
     expect(hendelser).toEqual(["vedlegg-lagring", "attestering"]);
   });
 
+  test("viser manglende underskrift når Fortsett klikkes fra vedlegg", async ({ page }) => {
+    await setupVedlegg(page);
+    await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, (route) =>
+      route.fulfill({ json: vedlegg }),
+    );
+
+    await page.goto("/saksnummer/123456/attester/1/redigering");
+    await page.getByRole("tab", { name: "Vedlegg" }).click();
+    await page.getByRole("button", { name: "Fortsett" }).click();
+
+    await expect(page.getByRole("tab", { name: "Brevmal" })).toHaveAttribute("aria-selected", "true");
+    await expect(page.getByText("Underskrift må oppgis")).toBeVisible();
+  });
+
   test("attestanten kan ikke tilbakestille brevet eller vedlegget", async ({ page }) => {
     await setupVedlegg(page);
     await page.route(`**/bff/skribenten-backend/sak/123456/brev/1/redigerbareVedlegg/${VEDLEGG_ID}`, (route) =>

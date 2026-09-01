@@ -359,6 +359,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     form,
     getWarning,
     onConfirmedSubmit: submitAttest,
+    onInvalidSubmit: () => void dokumentEditor.velgDokument(undefined),
     onWarnModalClosed: (warn) => {
       if (warn?.kind === "fritekst" || warn?.kind === "fritekstOgTekstValg") {
         const focus = findFirstUneditedFritekstFocus(editorState.redigertBrev);
