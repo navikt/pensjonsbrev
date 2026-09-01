@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.ReverseringLavereMinstesatsDto
 import no.nav.pensjon.brev.fixtures.createMaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.fixtures.createOrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.fixtures.createPEgruppe10
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.ReverseringLavereMinstesatsAuto
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import org.junit.jupiter.api.Tag
