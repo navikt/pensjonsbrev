@@ -34,8 +34,8 @@ import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import { BrevEditorSidepanel } from "~/components/vedlegg/BrevEditorSidepanel";
 import { BrevOgVedleggEditor } from "~/components/vedlegg/BrevOgVedleggEditor";
+import { BrevOgVedleggEditorProvider } from "~/components/vedlegg/BrevOgVedleggEditorContext";
 import { useVedleggEditorController } from "~/components/vedlegg/useVedleggEditorController";
-import { VedleggEditorProvider } from "~/components/vedlegg/VedleggEditorContext";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
@@ -377,7 +377,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
         {unexpectedError && <ApiError error={unexpectedError} title="Uventet feil ved attestering" />}
 
-        <VedleggEditorProvider
+        <BrevOgVedleggEditorProvider
           aktivVedleggId={dokumentEditor.aktivVedleggId}
           onVelgDokument={dokumentEditor.velgDokument}
           redigeringsflate="attestant-redigering"
@@ -483,7 +483,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
             }
             reservasjon={reservasjonQuery.data}
           />
-        </VedleggEditorProvider>
+        </BrevOgVedleggEditorProvider>
       </form>
     </VStack>
   );

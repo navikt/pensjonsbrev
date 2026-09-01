@@ -28,8 +28,8 @@ import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import { BrevEditorSidepanel } from "~/components/vedlegg/BrevEditorSidepanel";
 import { BrevOgVedleggEditor } from "~/components/vedlegg/BrevOgVedleggEditor";
+import { BrevOgVedleggEditorProvider } from "~/components/vedlegg/BrevOgVedleggEditorContext";
 import { useVedleggEditorController } from "~/components/vedlegg/useVedleggEditorController";
-import { VedleggEditorProvider } from "~/components/vedlegg/VedleggEditorContext";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { useReleaseReservationOnPageExit } from "~/hooks/useReleaseReservationOnPageExit";
 import { useUserInfo } from "~/hooks/useUserInfo";
@@ -420,7 +420,7 @@ function RedigerBrev({
               onNeiClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
               reservasjon={reservasjonQuery.data}
             />
-            <VedleggEditorProvider
+            <BrevOgVedleggEditorProvider
               aktivVedleggId={dokumentEditor.aktivVedleggId}
               onVelgDokument={dokumentEditor.velgDokument}
               redigeringsflate="saksbehandler-redigering"
@@ -490,7 +490,7 @@ function RedigerBrev({
                 }
                 rightColumnWidth="minmax(640px, 694px)"
               />
-            </VedleggEditorProvider>
+            </BrevOgVedleggEditorProvider>
           </form>
         </VStack>
       </Box>

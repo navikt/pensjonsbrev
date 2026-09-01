@@ -1,9 +1,9 @@
 import { type ReactNode } from "react";
 
 import { CenteredLoader } from "~/components/CenteredLoader";
+import { useBrevOgVedleggEditor } from "~/components/vedlegg/BrevOgVedleggEditorContext";
 import { ManagedVedleggEditor } from "~/components/vedlegg/ManagedVedleggEditor";
 import { useRedigerbareVedlegg } from "~/components/vedlegg/useRedigerbareVedlegg";
-import { useVedleggEditor } from "~/components/vedlegg/VedleggEditorContext";
 import { type BrevResponse } from "~/types/brev";
 
 /**
@@ -15,7 +15,7 @@ export const BrevOgVedleggEditor = (props: {
   freeze: boolean;
   renderBrev: () => ReactNode;
 }) => {
-  const { aktivtDokument, redigeringsflate } = useVedleggEditor();
+  const { aktivtDokument, redigeringsflate } = useBrevOgVedleggEditor();
   const vedleggQuery = useRedigerbareVedlegg({ saksId: props.saksId, brevId: props.brev.info.id });
 
   if (aktivtDokument.type === "brev") {

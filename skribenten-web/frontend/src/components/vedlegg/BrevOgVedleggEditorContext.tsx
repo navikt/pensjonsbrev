@@ -8,7 +8,7 @@ import { type Redigeringsflate } from "~/utils/editorTracking";
  */
 export type AktivtDokument = { type: "brev" } | { type: "vedlegg"; vedleggId: string };
 
-type VedleggEditorContextValue = {
+type BrevOgVedleggEditorContextValue = {
   aktivtDokument: AktivtDokument;
   redigeringsflate: Redigeringsflate;
   kanTilbakestille: boolean;
@@ -23,13 +23,13 @@ type VedleggEditorContextValue = {
   registrerVedleggslagring: (lagreNaa: (() => Promise<void>) | null) => void;
 };
 
-const VedleggEditorContext = createContext<VedleggEditorContextValue | null>(null);
+const BrevOgVedleggEditorContext = createContext<BrevOgVedleggEditorContextValue | null>(null);
 
 /**
  * Coordinates switching between the brev and its editable vedlegg. The route owns aktivVedleggId,
  * keeping the URL as the source of truth across reload and browser navigation.
  */
-export const VedleggEditorProvider = (props: {
+export const BrevOgVedleggEditorProvider = (props: {
   aktivVedleggId: string | undefined;
   redigeringsflate: Redigeringsflate;
   onVelgDokument: (vedleggId: string | undefined) => Promise<boolean>;
@@ -46,7 +46,7 @@ export const VedleggEditorProvider = (props: {
     tilbakestillAktivtVedleggRef.current = tilbakestill;
   }, []);
 
-  const value = useMemo<VedleggEditorContextValue>(
+  const value = useMemo<BrevOgVedleggEditorContextValue>(
     () => ({
       aktivtDokument: aktivVedleggId === undefined ? { type: "brev" } : { type: "vedlegg", vedleggId: aktivVedleggId },
       redigeringsflate: redigeringsflate,
@@ -68,13 +68,13 @@ export const VedleggEditorProvider = (props: {
     ],
   );
 
-  return <VedleggEditorContext.Provider value={value}>{props.children}</VedleggEditorContext.Provider>;
+  return <BrevOgVedleggEditorContext.Provider value={value}>{props.children}</BrevOgVedleggEditorContext.Provider>;
 };
 
-export const useVedleggEditor = (): VedleggEditorContextValue => {
-  const context = useContext(VedleggEditorContext);
+export const useBrevOgVedleggEditor = (): BrevOgVedleggEditorContextValue => {
+  const context = useContext(BrevOgVedleggEditorContext);
   if (!context) {
-    throw new Error("useVedleggEditor must be used within a <VedleggEditorProvider>");
+    throw new Error("useBrevOgVedleggEditor must be used within a <BrevOgVedleggEditorProvider>");
   }
   return context;
 };
