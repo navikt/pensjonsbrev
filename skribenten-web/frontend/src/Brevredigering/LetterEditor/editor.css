@@ -46,6 +46,23 @@
   box-shadow: none;
 }
 
+.attestant-diff-inserted,
+.attestant-diff-deleted {
+  border-radius: var(--ax-radius-2);
+  font-weight: var(--ax-font-weight-bold);
+}
+
+.attestant-diff-inserted {
+  color: var(--ax-text-meta-lime);
+  background: var(--ax-bg-meta-lime-moderate);
+}
+
+.attestant-diff-deleted {
+  color: var(--ax-text-danger);
+  background: var(--ax-bg-danger-moderate);
+  text-decoration-line: line-through;
+}
+
 .TITLE1 {
   margin-bottom: var(--ax-space-6);
   font-size: 19.5px;

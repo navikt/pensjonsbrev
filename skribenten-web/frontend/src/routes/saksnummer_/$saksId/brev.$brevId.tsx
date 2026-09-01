@@ -222,7 +222,7 @@ function RedigerBrevPage() {
       return <ApiError error={error} title="En feil skjedde ved henting av brev" />;
     },
     success: (brev) => (
-      <ManagedLetterEditorContextProvider brev={brev}>
+      <ManagedLetterEditorContextProvider brev={brev} redigeringsflate="saksbehandler-redigering">
         <RedigerBrev brev={brev} doReload={brevQuery.refetch} saksId={saksId} vedtaksId={vedtaksId} />
       </ManagedLetterEditorContextProvider>
     ),

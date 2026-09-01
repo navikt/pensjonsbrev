@@ -17,7 +17,7 @@ const ManagedLetterEditor = (props: {
   freeze: boolean;
   error: boolean;
   redigeringsflate: Redigeringsflate;
-  kanTilbakestille: boolean;
+  kanTilbakestille?: boolean;
   showDebug?: boolean;
 }) => {
   const { editorState, setEditorState, lagringFeilet } = useManagedLetterEditorContext();

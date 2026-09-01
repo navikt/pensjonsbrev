@@ -13,8 +13,14 @@ import {
   useState,
 } from "react";
 
-import { attesteringBrevKeys, getBrev, oppdaterBrev, oppdaterBrevtekst } from "~/api/brev-queries";
-import { hentPdfForBrev } from "~/api/sak-api-endpoints";
+import {
+  attesteringBrevKeys,
+  getBrev,
+  lagreAttestertBrevtekst,
+  oppdaterBrev,
+  oppdaterBrevtekst,
+} from "~/api/brev-queries";
+import { hentPdfForAttestering, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { isLetterDocument, normalizeDocumentForComparison } from "~/Brevredigering/LetterEditor/actions/common";
 import { addHistoryEntry, type HistoryEntry } from "~/Brevredigering/LetterEditor/history";
@@ -23,6 +29,7 @@ import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUti
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 import { type BrevResponse } from "~/types/brev";
 import { type EditedDocument, type EditedLetter } from "~/types/brevbakerTypes";
+import { type Redigeringsflate } from "~/utils/editorTracking";
 
 type SaveSuccessOptions = {
   createHistoryEntry?: (previousState: LetterEditorState, response: BrevResponse) => HistoryEntry | null;
@@ -75,7 +82,11 @@ const ManagedLetterEditorContext = createContext<ManagedLetterEditorContextValue
  * unmounting would clean up the autosave effect and cancel a pending debounce,
  * potentially leaving letter changes unsaved.
  */
-export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; children: ReactNode }) => {
+export const ManagedLetterEditorContextProvider = (props: {
+  brev: BrevResponse;
+  redigeringsflate: Redigeringsflate;
+  children: ReactNode;
+}) => {
   const queryClient = useQueryClient();
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(props.brev));
   const nullstillLagringsfeilFraRutenRef = useRef<(() => void) | null>(null);
@@ -88,10 +99,8 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
     (response: BrevResponse, options?: SaveSuccessOptions) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       queryClient.setQueryData(attesteringBrevKeys.id(response.info.id), response);
-
-      // Ensure the PDF is fetched again after the letter content changes.
-      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.info.id) });
-
+      const pdfQuery = props.redigeringsflate === "attestant-redigering" ? hentPdfForAttestering : hentPdfForBrev;
+      queryClient.resetQueries({ queryKey: pdfQuery.queryKey(props.brev.info.id) });
       setEditorState((previousState) => {
         if (previousState.saveStatus === "DIRTY") {
           return previousState;
@@ -110,7 +119,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
         };
       });
     },
-    [queryClient, props.brev.info.id],
+    [queryClient, props.brev.info.id, props.redigeringsflate],
   );
 
   const redigertBrev = requireLetterDocument(editorState.redigertBrev);
@@ -127,6 +136,15 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
       setEditorState((previousState) => ({ ...previousState, saveStatus: "SAVE_PENDING" }));
 
       // Autosave must never release the user's reservation on the letter.
+      if (props.redigeringsflate === "attestant-redigering") {
+        return lagreAttestertBrevtekst({
+          saksId: String(stateWithCursor.info.saksId),
+          brevId: props.brev.info.id,
+          redigertBrev: redigertBrevMedMarkoer,
+          frigiReservasjon: false,
+        });
+      }
+
       if (isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
         return oppdaterBrevtekst({
           brevId: props.brev.info.id,

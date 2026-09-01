@@ -25,6 +25,8 @@ data class VedtakOmOktBunnfradragData(
     val vektetFribelopKr: Kroner,
     val fribelopPerioder: List<FribelopPeriode>,
     val venteperiodeEtterGradsokning: Boolean,
+    val normertPensjonsdatoFor2028: Boolean,
+
 
     val scenario1_1G: Boolean,
     val scenario2_1G_04G: Scenario2_1G_04G?,

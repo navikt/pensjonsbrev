@@ -10,14 +10,11 @@ import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.toEdit
-import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlervalgMap
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -180,7 +177,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
-    suspend fun `hent brev for attestering med reservasjon merger inn rendret brev`() {
+    suspend fun `hent brev for attestering merger ikke inn rendret brev, men oppdaterer sakspart og malstyrt signatur`() {
         val opprettet = opprettBrev(
             vedtaksId = VedtaksId(1234),
             brevkode = Testbrevkoder.VEDTAKSBREV,
@@ -188,10 +185,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringHandlerTestBase() {
         ).resultOrFail()
         veksleKlarStatus(opprettet, klar = true, principal = saksbehandler1Principal).resultOrFail()
 
-        val freshRender = letter.copy(
-            blocks = letter.blocks + ParagraphImpl(2, true, listOf(VariableImpl(21, "ny paragraph")))
-        )
-        brevbakerService.renderMarkupResultat = { freshRender }
+        stagEndretMal()
 
         val hentet = hentBrevAttestering(
             brevId = opprettet.info.id,
@@ -200,9 +194,13 @@ class HentBrevAttesteringHandlerTest : BrevredigeringHandlerTestBase() {
         )
 
         assertThat(hentet).isSuccess {
-            // Attestant signatur blir forhåndsutfylt fra principal og deretter merget med fersk render
-            val withPrefilled = opprettet.redigertBrev.withSignaturAttestant(attestant1Principal.fullName)
-            assertThat(it.redigertBrev).isEqualTo(withPrefilled.updateEditedLetter(freshRender))
+            assertThat(it.redigertBrev.blocks).isEqualTo(opprettet.redigertBrev.blocks)
+            assertThat(it.redigertBrev.title).isEqualTo(opprettet.redigertBrev.title)
+            assertThat(it.redigertBrev.sakspart.gjelderNavn).isEqualTo("Nytt Navn")
+            assertThat(it.redigertBrev.signatur.hilsenTekst).isEqualTo("Ny hilsen")
+            assertThat(it.redigertBrev.signatur.navAvsenderEnhet).isEqualTo("Ny avsenderenhet")
+            assertThat(it.redigertBrev.signatur.saksbehandlerNavn).isEqualTo(opprettet.redigertBrev.signatur.saksbehandlerNavn)
+            assertThat(it.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
         }
     }
 

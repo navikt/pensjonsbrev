@@ -6,8 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
-import no.nav.pensjon.brev.maler.alder.EndringAvUttaksgradAuto
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
 import no.nav.pensjon.brev.maler.klageOgAnke.AnkeTilsvarTilAnkendePart
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmOversendelseTilKlageinstans
 import no.nav.pensjon.brev.maler.klageOgAnke.KlageOrienteringOmSaksbehandlingstid
@@ -23,6 +21,24 @@ import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettInfo4Aar
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettMidlertidigOppHoer
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettOppHoer
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettVarselOpphoer
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.ReverseringLavereMinstesatsAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmEndringBTEPSOktoberAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmEndringBarnetilleggEPSAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmEndringBarnetilleggEPSRevAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmLavereMinstesatsAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmLavereReduksjonsprosentAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmOktBunnfradragAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmOktFribelopAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmOktMinsteIFUAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto.VedtakOmOktMinsteIFULavereReduksjonsprosentAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.ReverseringLavereMinstesatsRedigerbar
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.VedtakOmEndringBTEPSRedigerbar
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.VedtakOmLavereMinstesatsRedigerbar
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.VedtakOmLavereReduksjonsprosentRedigerbar
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.VedtakOmOktBunnfradragRedigerbar
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.VedtakOmOktFribelopRedigerbar
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar
+import no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red.VedtakOmOktMinsteIFURedigerbar
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -43,8 +59,6 @@ object ProductionTemplates : AllTemplates {
         EndretUfoeretrygdPGAInntektV2,
         EndretUforetrygdPGAInntektNesteAr,
         EndretUforetrygdPGAOpptjeningLegacy,
-        EndringPgaOpptjeningAuto,
-        EndringAvUttaksgradAuto,
         VedtakOmEtterbetalingOpphor2026Auto,
         VedtakOmEtterbetalingOpphor2026OktIfuAuto,
         VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto,
@@ -78,7 +92,6 @@ object ProductionTemplates : AllTemplates {
         AnkeTilsvarTilAnkendePart,
         AvslagGjenlevendepensjon,
         AvslagGjenlevendepensjonUtland,
-        AvslagPaaGjenlevenderettIAlderspensjon,
         AvslagUfoerepensjon,
         AvslagUfoeretrygd,
         BekreftelsePaaFlyktningstatus,
@@ -89,13 +102,11 @@ object ProductionTemplates : AllTemplates {
         DelvisEksportAvUforetrygd,
         EndringUforetrygd,
         VedtakOmEtterbetalingOpphor2026Redigerbar,
-        ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
         InformasjonOmGjenlevenderettigheter,
         InformasjonOmSaksbehandlingstid,
         InformasjonOmSaksbehandlingstidUT,
         InnhentingDokumentasjonFraBruker,
-        InnhentingInformasjonFraBruker,
         InnhentingOpplysningerFraBruker,
         InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
         InnvilgelseUforetrygd,
@@ -118,13 +129,6 @@ object ProductionTemplates : AllTemplates {
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
         VedtakAvslagPaaOmsorgsopptjening,
-        VedtakEndringAvAlderspensjonFordiOpptjeningErEndret,
-        VedtakEndringAvAlderspensjonGjenlevenderettigheter,
-        VedtakEndringAvAlderspensjonInstitusjonsopphold,
-        VedtakEndringAvUttaksgrad,
-        VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
-        VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
-        VedtakEndringVedFlyttingMellomLand,
         VedtakOmFjerningAvOmsorgsopptjening,
         VedtakOmInnvilgelseAvOmsorgspoeng,
         VedtakOmLavereMinstesatsRedigerbar,

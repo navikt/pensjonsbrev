@@ -26,13 +26,25 @@ import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerTilbakekr
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakEndringAfpOffentligSektorDto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.createEndringAvAlderspensjonFordiDuFyller75AarAutoDto
-import no.nav.pensjon.brev.alder.maler.aldersovergang.createMaanedligPensjonFoerSkattAFPDto
+import no.nav.pensjon.brev.alder.maler.afpprivat.createMaanedligPensjonFoerSkattAFPDto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.createVedtakAldersovergang67AarGarantitilleggAutoDto
-import no.nav.pensjon.brev.alder.maler.aldersovergang.createVedtakEndringAFPEndretOpptjeningAutoDto
+import no.nav.pensjon.brev.alder.maler.afpprivat.createVedtakEndringAFPEndretOpptjeningAutoDto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.createVedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.createOmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.createOmregningAlderUfore2016RedigerbarDto
+import no.nav.pensjon.brev.alder.maler.avslag.createAvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.createUnder5AarTrygdetidAutoDto
+import no.nav.pensjon.brev.alder.maler.createForespoerselOmDokumentasjonAvBotidINorgeAlderDto
+import no.nav.pensjon.brev.alder.maler.endring.createEndringAvUttaksgradAutoDto
+import no.nav.pensjon.brev.alder.maler.endring.createEndringPgaOpptjeningAutoDto
+import no.nav.pensjon.brev.alder.maler.endring.createOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto
+import no.nav.pensjon.brev.alder.maler.endring.createOpplysningerBruktIBeregningenEndretUttaksgradDto
+import no.nav.pensjon.brev.alder.maler.endring.createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
+import no.nav.pensjon.brev.alder.maler.endring.createVedtakEndringAvAlderspensjonInstitusjonsoppholdDto
+import no.nav.pensjon.brev.alder.maler.endring.createVedtakEndringAvUttaksgradDto
+import no.nav.pensjon.brev.alder.maler.endring.createVedtakEndringAvUttaksgradStansBrukerEllerVergeDto
+import no.nav.pensjon.brev.alder.maler.endring.createVedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto
+import no.nav.pensjon.brev.alder.maler.endring.createVedtakEndringVedFlyttingMellomLandDto
 import no.nav.pensjon.brev.alder.maler.info.afpprivatuforetrygdbrev.createAfpPrivatSokerUforeTrygdDto
 import no.nav.pensjon.brev.alder.maler.info.afpprivatuforetrygdbrev.createAfpPrivatSokerUforeTrygdVedleggDto
 import no.nav.pensjon.brev.alder.maler.info.afpprivatuforetrygdbrev.createUforeTrygdSokerAfpPrivatDto
@@ -56,6 +68,8 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregning
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brev.alder.model.ForespoerselOmDokumentasjonAvBotidINorgeAlderDto
+import no.nav.pensjon.brev.alder.model.InnhentingInformasjonFraBrukerDto
 import no.nav.pensjon.brev.alder.model.adhoc.AdhocAlderspensjonGjtOppryddingAutoDto
 import no.nav.pensjon.brev.alder.model.adhoc.AdhocTidligereUfoereGradertAPAutoDto
 import no.nav.pensjon.brev.alder.model.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
@@ -80,10 +94,22 @@ import no.nav.pensjon.brev.alder.model.afp.VarselAfpEtteroppgjoerForeloepigDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDto
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakEndringAFPEndretOpptjeningAutoDto
 import no.nav.pensjon.brev.alder.model.aldersovergang.*
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016RedigerbarDto
 import no.nav.pensjon.brev.alder.model.avslag.*
+import no.nav.pensjon.brev.alder.model.endring.EndringAvUttaksgradAutoDto
+import no.nav.pensjon.brev.alder.model.endring.EndringPgaOpptjeningAutoDto
+import no.nav.pensjon.brev.alder.model.endring.OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto
+import no.nav.pensjon.brev.alder.model.endring.OpplysningerBruktIBeregningenEndretUttaksgradDto
+import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
+import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
+import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvAlderspensjonInstitusjonsoppholdDto
+import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvUttaksgradDto
+import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvUttaksgradStansBrukerEllerVergeDto
+import no.nav.pensjon.brev.alder.model.endring.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto
+import no.nav.pensjon.brev.alder.model.endring.VedtakEndringVedFlyttingMellomLandDto
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDto
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AFpPrivatSokerUforeTrygdVedleggDto
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.UforeTrygdSokerAfpPrivatDto
@@ -115,8 +141,10 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.fixtures.alder.*
 import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagForLiteTrygdetidAPDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createInnhentingInformasjonFraBrukerDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseAvAlderspensjonDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseAvAlderspensjonTrygdeavtaleDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto
 import kotlin.reflect.KClass
 
 object Fixtures : LetterDataFactory {
@@ -133,6 +161,7 @@ object Fixtures : LetterDataFactory {
             AvslagForLiteTrygdetidAPDto::class -> createAvslagForLiteTrygdetidAPDto() as T
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto() as T
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto() as T
+            AvslagPaaGjenlevenderettIAlderspensjonDto::class -> createAvslagPaaGjenlevenderettIAlderspensjon() as T
             AvslagUttakFoerNormertPensjonsalderAP2016AutoDto::class -> createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() as T
             AvslagUttakFoerNormertPensjonsalderAP2016Dto::class -> createAvslagUttakFoerNormertPensjonsalderAP2016Dto() as T
             AvslagUttakFoerNormertPensjonsalderAutoDto::class -> createAvslagUttakFoerNormertPensjonsalderAutoDto() as T
@@ -146,6 +175,10 @@ object Fixtures : LetterDataFactory {
             EndringAvAlderspensjonSivilstandAutoDto::class -> createEndringAvAlderspensjonSivilstandAutoDto() as T
             EndringAvAlderspensjonSivilstandDto::class -> createEndringAvAlderspensjonSivilstandDto() as T
             EndringAvAlderspensjonSivilstandSaerskiltSatsDto::class -> createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() as T
+            EndringAvUttaksgradAutoDto::class -> createEndringAvUttaksgradAutoDto() as T
+            EndringPgaOpptjeningAutoDto::class -> createEndringPgaOpptjeningAutoDto() as T
+            ForespoerselOmDokumentasjonAvBotidINorgeAlderDto::class -> createForespoerselOmDokumentasjonAvBotidINorgeAlderDto() as T
+            InnhentingInformasjonFraBrukerDto::class -> createInnhentingInformasjonFraBrukerDto() as T
             InnvilgelseAvAfpAutoDto::class -> createInnvilgelseAvAfpAutoDto() as T
             AvslagAfpPrivatDto::class -> createAvslagAfpPrivatDto() as T
             AvslagAfpPrivatAutoDto::class -> createAvslagAfpPrivatAutoDto() as T
@@ -176,7 +209,14 @@ object Fixtures : LetterDataFactory {
             OmregningAlderUfore2016Dto::class -> createOmregningAlderUfore2016Dto() as T
             OmregningAlderUfore2016RedigerbarDto::class -> createOmregningAlderUfore2016RedigerbarDto() as T
             VedtakAldersovergang67AarGarantitilleggAutoDto::class -> createVedtakAldersovergang67AarGarantitilleggAutoDto() as T
+            VedtakEndringAvAlderspensjonGjenlevenderettigheterDto::class -> createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() as T
+            VedtakEndringAvAlderspensjonInstitusjonsoppholdDto::class -> createVedtakEndringAvAlderspensjonInstitusjonsoppholdDto() as T
             VedtakEndringAFPEndretOpptjeningAutoDto::class -> createVedtakEndringAFPEndretOpptjeningAutoDto() as T
+            VedtakEndringAvUttaksgradDto::class -> createVedtakEndringAvUttaksgradDto() as T
+            VedtakEndringAvUttaksgradStansBrukerEllerVergeDto::class -> createVedtakEndringAvUttaksgradStansBrukerEllerVergeDto() as T
+            VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto::class -> createVedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto() as T
+            VedtakEndringVedFlyttingMellomLandDto::class -> createVedtakEndringVedFlyttingMellomLandDto() as T
+            VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto::class -> createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() as T
             VedtakStansAlderspensjonFlyttingMellomLandDto::class -> createVedtakStansAlderspensjonFlyttingMellomLandDto() as T
             VedtakOmregningAFPTilEnsligPensjonistAutoDto::class -> createVedtakOmregningAFPTilEnsligPensjonistAutoDto() as T
             VedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto::class -> createVedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto() as T
@@ -201,6 +241,8 @@ object Fixtures : LetterDataFactory {
         OpplysningerBruktIBeregningen::class -> createOpplysningerBruktIBeregningen() as T
         OpplysningerBruktIBeregningenAlderDto::class -> createOpplysningerBruktIBeregningAlderDto() as T
         OpplysningerBruktIBeregningenAlderAP2025Dto::class -> createOpplysningerBruktIBeregningAlderAP2025Dto() as T
+        OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto::class -> createOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto() as T
+        OpplysningerBruktIBeregningenEndretUttaksgradDto::class -> createOpplysningerBruktIBeregningenEndretUttaksgradDto() as T
         OpplysningerOmAvdoedBruktIBeregningDto::class -> createOpplysningerOmAvdoedBruktIBeregningDto() as T
         OrienteringOmRettigheterOgPlikterDto::class -> createOrienteringOmRettigheterOgPlikterDto() as T
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
