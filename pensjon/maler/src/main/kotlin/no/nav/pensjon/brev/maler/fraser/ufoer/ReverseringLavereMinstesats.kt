@@ -90,7 +90,7 @@ object ReverseringLavereMinstesats {
                                 bokmal { +"Du får " + lopendeYtelse.nettoTotal.format() + " i " },
                                 nynorsk { +"Du får " + lopendeYtelse.nettoTotal.format() + " i " },
                             )
-                            showIf(lopendeYtelse.nettoBarnetillegg.isNull() and lopendeYtelse.nettoGjenlevendetillegg.isNull()) {
+                            showIf(lopendeYtelse.nettoBarnetillegg.isNull()) {
                                 text(
                                     bokmal { +"uføretrygd " },
                                     nynorsk { +"uføretrygd " },
@@ -98,8 +98,8 @@ object ReverseringLavereMinstesats {
 
                             }.orShow {
                                 text(
-                                    bokmal { +"uføretrygd og tillegg " },
-                                    nynorsk { +"uføretrygd og tillegg " },
+                                    bokmal { +"uføretrygd og barnetillegg " },
+                                    nynorsk { +"uføretrygd og barnetillegg " },
                                 )
                             }
                             text(
