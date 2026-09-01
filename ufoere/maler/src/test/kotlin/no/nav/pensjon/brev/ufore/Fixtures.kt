@@ -28,11 +28,8 @@ object Fixtures : LetterDataFactory {
             UforeAvslagTestmalDto::class -> lagUforeAvslagTestmalDto() as T
             UforeAvslagEnkelDto::class -> lagUforeAvslagEnkelDto() as T
             UforeAvslagInntektDto::class -> lagUforeAvslagInntektDto() as T
-            UforeAvslagUforetidspunkt26Dto::class -> lagUforeAvslagUforetidspunkt26Dto() as T
-            UforeAvslagForverrelseEtter26Dto::class -> lagUforeAvslagForverrelseEtter26Dto() as T
             UforeAvslagUtlandDto::class -> lagUforeAvslagUtlandDto() as T
             UforeAvslagDto::class -> lagUforeAvslagDto() as T
-            UforeAvslagSupplerendeStonadEnkelDto::class -> lagUforeAvslagSupplerendeStonadEnkelDto() as T
             VarselFeilutbetalingUforeDto::class -> lagVarselFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeDto::class -> lagVedtakFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeIngenTilbakekrevingDto::class -> lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() as T
@@ -80,27 +77,6 @@ object Fixtures : LetterDataFactory {
         saksbehandlerValg = lagSaksbehandlervalg(),
     )
 
-    private fun lagUforeAvslagUforetidspunkt26Dto() = UforeAvslagUforetidspunkt26Dto(
-        pesysData = UforeAvslagUforetidspunkt26Dto.UforeAvslagPendata(
-            kravMottattDato = vilkaarligDato,
-            vurdering = "Vurdering 1"
-        ),
-        saksbehandlerValg = lagSaksbehandlervalg(
-            "VisVurderingFraVilkarvedtak" to true,
-        )
-    )
-
-    private fun lagUforeAvslagForverrelseEtter26Dto() = UforeAvslagForverrelseEtter26Dto(
-        pesysData = UforeAvslagForverrelseEtter26Dto.UforeAvslagPendata(
-            kravMottattDato = vilkaarligDato,
-            vurdering = "Vurdering 1"
-        ),
-        saksbehandlerValg = lagSaksbehandlervalg(
-            "VisVurderingFraVilkarvedtak" to true,
-            "visForverrelseEtter26" to true
-        )
-    )
-
     private fun lagUforeAvslagEnkelDto() = UforeAvslagEnkelDto(
         pesysData = UforeAvslagEnkelDto.UforeAvslagPendata(
             kravMottattDato = vilkaarligDato,
@@ -119,17 +95,6 @@ object Fixtures : LetterDataFactory {
         ),
         saksbehandlerValg = lagSaksbehandlervalg(
             "VisVurderingFraVilkarvedtak" to true
-        )
-    )
-
-    private fun lagUforeAvslagSupplerendeStonadEnkelDto() = UforeAvslagSupplerendeStonadEnkelDto(
-        pesysData = UforeAvslagSupplerendeStonadEnkelDto.UforeAvslagPendata(
-            kravMottattDato = vilkaarligDato,
-            vurdering = "Vurdering 1"
-        ),
-        saksbehandlerValg = lagSaksbehandlervalg(
-            "VisVurderingFraVilkarvedtak" to true,
-            "visSupplerendeStonadUforeFlykninger" to true,
         )
     )
 
