@@ -76,6 +76,7 @@ export const createFormElementsFromSpecification = (args: {
   };
   brevkode: string;
   submitOnChange?: () => void;
+  readOnly?: boolean;
 }) => {
   const optionalFields = args.specificationFormElements.optionalFields.map(([field, fieldType]) => ({
     field: field,
@@ -87,7 +88,8 @@ export const createFormElementsFromSpecification = (args: {
         fieldType={fieldType}
         key={field}
         prependedName="saksbehandlerValg"
-        submitOnChange={args.submitOnChange}
+        readOnly={args.readOnly}
+        submitOnChange={args.readOnly ? undefined : args.submitOnChange}
       />
     ),
   }));
@@ -102,7 +104,8 @@ export const createFormElementsFromSpecification = (args: {
         fieldType={fieldType}
         key={field}
         prependedName="saksbehandlerValg"
-        submitOnChange={args.submitOnChange}
+        readOnly={args.readOnly}
+        submitOnChange={args.readOnly ? undefined : args.submitOnChange}
       />
     ),
   }));
@@ -121,12 +124,14 @@ export const SaksbehandlerValgModelEditor = (props: {
   };
   fieldsToRender: "required" | "optional";
   submitOnChange?: () => void;
+  readOnly?: boolean;
 }) => {
   const { register } = useFormContext();
   const fieldsWithElements = createFormElementsFromSpecification({
     specificationFormElements: props.specificationFormElements,
     brevkode: props.brevkode,
     submitOnChange: props.submitOnChange,
+    readOnly: props.readOnly,
   });
 
   if (props.fieldsToRender === "required") {

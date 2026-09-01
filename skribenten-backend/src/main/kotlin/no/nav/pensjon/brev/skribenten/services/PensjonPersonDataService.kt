@@ -5,7 +5,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import no.nav.pensjon.brev.skribenten.OboClientConfig
 import io.ktor.client.call.body
 import io.ktor.client.engine.*
-import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
@@ -74,7 +73,7 @@ class PensjonPersonDataServiceImpl(
                 registerModule(JavaTimeModule())
             }
         }
-        callIdAndOnBehalfOfClient(scope, authService)
+        onBehalfOfClient(scope, authService)
     }
 
     override suspend fun hentKontaktadresse(pid: Pid): KontaktAdresseResponseDto? = cache.cached(

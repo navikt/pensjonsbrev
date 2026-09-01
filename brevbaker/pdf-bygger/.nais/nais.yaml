@@ -54,6 +54,10 @@ spec:
       memory: "256Mi"
     limits:
       memory: "2Gi"
+  azure:
+    application:
+      enabled: true
+      allowAllUsers: true
   accessPolicy:
     inbound:
       rules:

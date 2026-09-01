@@ -12,23 +12,6 @@ plugins {
 }
 
 allprojects {
-
-    // Sikrer at alle jackson-*, ktor-*, log4j-* og exposed-* avhengigheter i hele prosjektet
-    // resolver til samme versjon, uten at hver modul må deklarere platform(...) selv.
-    // Dekker compile-/runtimeClasspath-variantene (inkl. test/testFixtures) og KSP sine
-    // *ProcessorClasspath-konfigurasjoner, uten å matche plugin-interne konfigurasjoner
-    // (f.eks. ktlint sin egen "ktlint"-konfigurasjon) som ikke nødvendigvis har tilgang på
-    // versjonskatalogen "libs" når de opprettes.
-    configurations.matching {
-        val name = it.name.lowercase()
-        name.endsWith("compileclasspath") || name.endsWith("runtimeclasspath") || name.endsWith("processorclasspath")
-    }.configureEach {
-        project.dependencies.add(name, project.dependencies.platform(libs.jackson.bom))
-        project.dependencies.add(name, project.dependencies.platform(libs.ktor.bom))
-        project.dependencies.add(name, project.dependencies.platform(libs.log4j.bom))
-        project.dependencies.add(name, project.dependencies.platform(libs.exposed.bom))
-    }
-
     repositories {
         mavenCentral()
         mavenLocal()

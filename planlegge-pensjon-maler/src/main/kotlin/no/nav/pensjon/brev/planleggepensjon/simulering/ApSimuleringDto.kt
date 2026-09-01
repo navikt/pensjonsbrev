@@ -137,7 +137,8 @@ data class Simuleringsinformasjon(
     val sivilstatus: Sivilstatus,
     val utenlandsperioder: List<SimuleringUtenlandsperiode>?,
     val kull: Kull,
-    val normertPensjonsalderPlassering: NormertPensjonsalderPlassering?
+    val normertPensjonsalderPlassering: NormertPensjonsalderPlassering?,
+    val simulererEndringMedAfpPrivat: Boolean,
 ) : VedleggData
 
 enum class NormertPensjonsalderPlassering {
@@ -201,10 +202,8 @@ data class SimuleringV1MaanedligAlderspensjon(
     val kapittel20Trygdetid: Int?,
     @DisplayText("Garantipensjon beløp")
     val garantipensjonBeloep: Kroner?,
-    @DisplayText("Garantipensjonsnivå beløp")
-    val garantipensjonsnivaaBeloep: Kroner?,
     @DisplayText("Garantipensjon sats")
-    val garantipensjonSats: Double?,
+    val garantipensjonSats: Kroner?,
     @DisplayText("Garantitillegg beløp")
     val garantitilleggBeloep: Kroner?,
     @DisplayText("Grunnbeløp")

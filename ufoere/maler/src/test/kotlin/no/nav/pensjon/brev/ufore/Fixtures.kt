@@ -1,10 +1,6 @@
 package no.nav.pensjon.brev.ufore
 
-import no.nav.brev.brevbaker.FellesFactory
-import no.nav.brev.brevbaker.LetterDataFactory
-import no.nav.brev.brevbaker.SaksbehandlervalgIDSLTestImpl
-import no.nav.brev.brevbaker.lagSaksbehandlervalg
-import no.nav.brev.brevbaker.vilkaarligDato
+import no.nav.brev.brevbaker.*
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.ufore.api.model.maler.EmptyRedigerbarBrevdataMedSaksbehandlerValg
@@ -35,6 +31,7 @@ object Fixtures : LetterDataFactory {
             UforeAvslagUforetidspunkt26Dto::class -> lagUforeAvslagUforetidspunkt26Dto() as T
             UforeAvslagForverrelseEtter26Dto::class -> lagUforeAvslagForverrelseEtter26Dto() as T
             UforeAvslagUtlandDto::class -> lagUforeAvslagUtlandDto() as T
+            UforeAvslagDto::class -> lagUforeAvslagDto() as T
             UforeAvslagSupplerendeStonadEnkelDto::class -> lagUforeAvslagSupplerendeStonadEnkelDto() as T
             VarselFeilutbetalingUforeDto::class -> lagVarselFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeDto::class -> lagVedtakFeilutbetalingUforeDto() as T
@@ -74,6 +71,13 @@ object Fixtures : LetterDataFactory {
         saksbehandlerValg = lagSaksbehandlervalg(
             "ukjentSamboer" to false
         )
+    )
+
+    private fun lagUforeAvslagDto() = UforeAvslagDto(
+        pesysData = UforeAvslagDto.UforeAvslagPendata(
+            kravMottattDato = vilkaarligDato,
+        ),
+        saksbehandlerValg = lagSaksbehandlervalg(),
     )
 
     private fun lagUforeAvslagUforetidspunkt26Dto() = UforeAvslagUforetidspunkt26Dto(

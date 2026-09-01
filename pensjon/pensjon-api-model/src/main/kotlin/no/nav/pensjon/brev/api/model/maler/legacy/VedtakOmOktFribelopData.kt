@@ -1,0 +1,19 @@
+package no.nav.pensjon.brev.api.model.maler.legacy
+
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import java.time.LocalDate
+
+data class VedtakOmOktFribelopData(
+    val bunnfradrag: Kroner,
+    val oktFribelopHeleAret: Boolean,
+    val datoOkningBunnfradrag: LocalDate,
+    val vektetFribelop: Double,
+    val fribelopPerioder: List<FribelopPeriode>,
+    val normertPensjonsdatoFor2028: Boolean,
+    val pe: PEgruppe10,
+    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
+    val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
+)

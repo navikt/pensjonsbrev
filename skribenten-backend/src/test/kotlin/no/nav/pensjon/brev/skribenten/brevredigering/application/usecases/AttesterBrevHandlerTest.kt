@@ -151,6 +151,24 @@ class AttesterBrevHandlerTest : BrevredigeringHandlerTestBase() {
             assertThat(it.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isEqualTo("Ny attestant signatur")
         }
     }
+
+    @Test
+    suspend fun `attestering merger ikke inn endringer fra malen, men oppdaterer sakspart og malstyrt signatur`() {
+        val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = VedtaksId(1234)).resultOrFail()
+        veksleKlarStatus(brev, klar = true).resultOrFail()
+
+        stagEndretMal()
+
+        assertThat(attester(brev, attestant = attestant1Principal)).isSuccess {
+            assertThat(it.redigertBrev.blocks).isEqualTo(brev.redigertBrev.blocks)
+            assertThat(it.redigertBrev.title).isEqualTo(brev.redigertBrev.title)
+            assertThat(it.redigertBrev.sakspart.gjelderNavn).isEqualTo("Nytt Navn")
+            assertThat(it.redigertBrev.signatur.hilsenTekst).isEqualTo("Ny hilsen")
+            assertThat(it.redigertBrev.signatur.navAvsenderEnhet).isEqualTo("Ny avsenderenhet")
+            assertThat(it.redigertBrev.signatur.saksbehandlerNavn).isEqualTo(brev.redigertBrev.signatur.saksbehandlerNavn)
+            assertThat(it.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
+        }
+    }
 }
 
 

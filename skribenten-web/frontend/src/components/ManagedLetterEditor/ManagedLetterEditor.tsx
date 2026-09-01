@@ -3,7 +3,7 @@ import { type AxiosError } from "axios";
 import isEqual from "lodash/isEqual";
 import { useEffect } from "react";
 
-import { oppdaterBrev, oppdaterBrevtekst } from "~/api/brev-queries";
+import { lagreAttestertBrevtekst, oppdaterBrev, oppdaterBrevtekst } from "~/api/brev-queries";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
@@ -23,12 +23,14 @@ const ManagedLetterEditor = (props: {
   brev: BrevResponse;
   freeze: boolean;
   error: boolean;
+  resetParentSaveError?: () => void;
   showDebug?: boolean;
   redigeringsflate: Redigeringsflate;
 }) => {
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+  const { resetParentSaveError } = props;
 
-  const { mutate, isError } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
+  const { mutate, isError, reset } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
     mutationFn: (state) => {
       const stateWithCursor = Actions.cursorPosition(state, getCursorOffset());
 
@@ -38,6 +40,15 @@ const ManagedLetterEditor = (props: {
       }));
 
       // Autolagring skal aldri frigi reservasjonen saksbehandler har på brevet.
+      if (props.redigeringsflate === "attestant-redigering") {
+        return lagreAttestertBrevtekst({
+          saksId: String(stateWithCursor.info.saksId),
+          brevId: props.brev.info.id,
+          redigertBrev: stateWithCursor.redigertBrev,
+          frigiReservasjon: false,
+        });
+      }
+
       if (isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
         return oppdaterBrevtekst({
           brevId: props.brev.info.id,
@@ -61,13 +72,15 @@ const ManagedLetterEditor = (props: {
   });
 
   useEffect(() => {
-    const timoutId = setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       if (editorState.saveStatus === "DIRTY") {
+        reset();
+        resetParentSaveError?.();
         mutate(editorState);
       }
     }, AUTOSAVE_TIMER);
-    return () => clearTimeout(timoutId);
-  }, [editorState.saveStatus, editorState.redigertBrev, mutate]);
+    return () => clearTimeout(timeoutId);
+  }, [editorState.saveStatus, editorState.redigertBrev, mutate, reset, resetParentSaveError]);
 
   useEffect(() => {
     if (editorState.saveStatus === "SAVED" && editorState.redigertBrevHash !== props.brev.redigertBrevHash) {

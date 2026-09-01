@@ -32,7 +32,7 @@ open class BrevredigeringStub : Brevredigering {
     override val opprettet: Instant get() = notYetStubbed()
     override val sistredigert: Instant get() = notYetStubbed()
     override val sistReservert: Instant get() = notYetStubbed()
-    override val journalpostId: JournalpostId get() = notYetStubbed()
+    override val journalpostId: JournalpostId? get() = notYetStubbed()
     override var document: Dto.Document? = null
     override val mottaker: Dto.Mottaker get() = notYetStubbed()
     override val p1Data: P1Data get() = notYetStubbed()
@@ -53,6 +53,7 @@ open class BrevredigeringStub : Brevredigering {
     override fun attester(avNavIdent: NavIdent, attesterendeSignatur: String): Unit = notYetStubbed()
     override fun mergeRendretBrev(rendretBrev: LetterMarkup): Unit = notYetStubbed()
     override fun mergeRendredeVedlegg(rendredeVedlegg: Map<VedleggId, LetterMarkup.Attachment>): Unit = notYetStubbed()
+    override fun oppdaterSakspartOgSignatur(rendretBrev: LetterMarkup): Unit = notYetStubbed()
     override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?) = notYetStubbed()
     override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) = notYetStubbed()
     override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering = notYetStubbed()

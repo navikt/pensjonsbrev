@@ -18,6 +18,7 @@ ktor {
         codeInferenceEnabled = true
     }
 }
+
 fun Project.nodeVersionFromToolVersions(): String {
     val toolVersions = rootProject.file(".tool-versions")
     require(toolVersions.exists()) { "Mangler .tool-versions i ${rootProject.projectDir}" }
@@ -126,7 +127,9 @@ sourceSets {
 
 dependencies {
     // Ktor
+    implementation(platform(libs.ktor.bom))
     implementation(libs.ktor.client.auth)
+    implementation(libs.ktor.client.call.id)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.jackson)
@@ -145,6 +148,7 @@ dependencies {
     implementation(libs.ktor.openapi.schema.reflect)
 
     // Exposed
+    implementation(platform(libs.exposed.bom))
     implementation(libs.exposed.core)
     implementation(libs.exposed.dao)
     implementation(libs.exposed.jdbc)
@@ -168,9 +172,12 @@ dependencies {
     // For å merge førsteside med resten av pdf-en
     implementation(libs.pdfbox)
 
+    implementation(platform(libs.log4j.bom))
     implementation(libs.bundles.logging)
 
     // Necessary for java.time.LocalDate
+    // TODO transitivt?
+    implementation(platform(libs.jackson.bom))
     implementation(libs.jackson.datatype.jsr310)
 
     // Hashing

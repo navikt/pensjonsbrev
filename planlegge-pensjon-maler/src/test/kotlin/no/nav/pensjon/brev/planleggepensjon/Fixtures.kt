@@ -113,6 +113,15 @@ object Fixtures : LetterDataFactory {
         pesysData = EmptyFagsystemdata,
     )
 
+    fun createBrevDtoMedEndringAfpPrivat() = ApSimuleringBrevDto(
+        saksbehandlerValg = createLagreSimuleringDto().copy(
+            simuleringsinformasjon = createSimuleringsinformasjon().copy(
+                simulererEndringMedAfpPrivat = true,
+            ),
+        ),
+        pesysData = EmptyFagsystemdata,
+    )
+
     fun createBrevDtoMedAfpOffentligTidsbegrenset() = ApSimuleringBrevDto(
         saksbehandlerValg = createLagreSimuleringDto().copy(
             simuleringsinformasjon = createSimuleringsinformasjon().copy(
@@ -260,6 +269,7 @@ object Fixtures : LetterDataFactory {
                 tilleggspensjonBeloep = Kroner(3100),
                 pensjonstillegg = Kroner(2800),
                 garantipensjonBeloep = Kroner(2400),
+                garantipensjonSats = Kroner(2020)
             ),
             vedHeltUttak = createSimuleringV1MaanedligAlderspensjon(),
             vedNormertPensjonsalder = createSimuleringV1MaanedligAlderspensjon(),
@@ -315,6 +325,7 @@ object Fixtures : LetterDataFactory {
         ),
         kull = Kull.OVERGANG,
         normertPensjonsalderPlassering = NormertPensjonsalderPlassering.MELLOM_GRADERT_OG_HELT,
+        simulererEndringMedAfpPrivat = false,
     )
 
     private fun createSimuleringV1MaanedligAlderspensjon() = SimuleringV1MaanedligAlderspensjon(
@@ -341,7 +352,6 @@ object Fixtures : LetterDataFactory {
         kapittel20AndelTeller = 9,
         kapittel20Trygdetid = 40,
         garantipensjonBeloep = Kroner(3390),
-        garantipensjonsnivaaBeloep = Kroner(224248),
         garantipensjonSats = null,
         garantitilleggBeloep = Kroner(34223),
         grunnbeloep = Kroner(130160),
