@@ -1,22 +1,16 @@
-package no.nav.pensjon.brev.maler.legacy.redigerbar
+package no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto
 
-import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmLavereMinstesatsRedigerbarDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmLavereMinstesatsRedigerbarDto.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.selectors.vedtakOmLavereMinstesatsRedigerbarDto.pesysData.*
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsAutoDto
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmLavereMinstesatsAutoDto.*
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmLavereMinstesatsData.*
-import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.ufoer.LavereMinstesats
 import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.model.Brevkategori
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -24,24 +18,19 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object VedtakOmLavereMinstesatsRedigerbar : RedigerbarTemplate<VedtakOmLavereMinstesatsRedigerbarDto> {
+object VedtakOmLavereMinstesatsAuto : AutobrevTemplate<VedtakOmLavereMinstesatsAutoDto> {
 
-    override val featureToggle = FeatureToggles.vedtakOmLavereMinstesats.toggle
-
-    override val kode = Pesysbrevkoder.Redigerbar.UT_VEDTAK_OM_LAVERE_MINSTESATS_2026
-    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
-    override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
-    override val sakstyper = setOf(Sakstype.UFOREP)
+    override val kode = Pesysbrevkoder.AutoBrev.UT_VEDTAK_LAVERE_MINSTESATS_2026
 
     override val template = createTemplate(
-        languages = languages(Bokmal, Nynorsk),
+        languages = languages(Language.Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av minstesats fom 1. juli 2026",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
-        val data = pesysData.vedtakData
+        val data = vedtakData
 
         title {
             text(

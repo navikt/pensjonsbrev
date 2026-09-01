@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.legacy.redigerbar
+package no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription

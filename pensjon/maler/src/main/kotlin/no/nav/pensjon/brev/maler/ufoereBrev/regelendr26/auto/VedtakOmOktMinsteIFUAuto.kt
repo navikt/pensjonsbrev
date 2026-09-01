@@ -1,10 +1,11 @@
-package no.nav.pensjon.brev.maler.legacy
+package no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmIFUReduksjonsprosentAutoDto.*
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmIFUReduksjonsprosentData.*
 import no.nav.pensjon.brev.maler.fraser.ufoer.OktMinsteIFUReduksjonsprosent
+import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
@@ -23,14 +24,14 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object VedtakOmLavereReduksjonsprosentAuto : AutobrevTemplate<VedtakOmIFUReduksjonsprosentAutoDto> {
+object VedtakOmOktMinsteIFUAuto : AutobrevTemplate<VedtakOmIFUReduksjonsprosentAutoDto> {
 
-    override val kode = Pesysbrevkoder.AutoBrev.UT_VEDTAK_REDUKSJONSPROSENT_2026_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.UT_VEDTAK_MINSTE_IFU_2026_AUTO
 
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtaksbrev - lavere reduksjonsprosent",
+            displayTitle = "Vedtaksbrev - økt minste IFU",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
@@ -66,6 +67,7 @@ object VedtakOmLavereReduksjonsprosentAuto : AutobrevTemplate<VedtakOmIFUReduksj
                         nettoBarnetillegg = data.nettoBarnetillegg,
                         nettoGjenlevendetillegg = data.nettoGjenlevendetillegg,
                         etterbetalingJuli = data.etterbetalingJuli,
+                        uforegrad = data.uforegrad,
                         reduksjonsprosent = data.reduksjonsprosent,
                         inntektstak = data.inntektstak,
                         ifu = data.ifu,
@@ -76,11 +78,10 @@ object VedtakOmLavereReduksjonsprosentAuto : AutobrevTemplate<VedtakOmIFUReduksj
                         harBelopsendring = data.erInntektsavkortet,
                         tillegg = data.tillegg,
                         hjemler = data.hjemler,
-                        visOktMinsteIFU = false.expr(),
-                        visReduksjonsprosent = true.expr(),
+                        visOktMinsteIFU = true.expr(),
+                        visReduksjonsprosent = false.expr(),
                         inntektsgrense = data.inntektsgrense,
                         endringInntektsgrense = data.endringInntektsgrense,
-                        uforegrad = data.uforegrad,
                         endringUforegrad = data.endringUforegrad
                     )
                 )

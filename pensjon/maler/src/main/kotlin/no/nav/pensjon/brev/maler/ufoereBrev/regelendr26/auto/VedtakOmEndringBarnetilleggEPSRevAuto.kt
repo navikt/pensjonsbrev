@@ -1,10 +1,11 @@
-package no.nav.pensjon.brev.maler.legacy
+package no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmEndringBarnetilleggEPSAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmEndringBarnetilleggEPSAutoDto.*
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmEndringBarnetilleggEPSData.*
-import no.nav.pensjon.brev.maler.fraser.ufoer.EndringBTEPSVedMinsteIFUReduksjonsprosent
+import no.nav.pensjon.brev.maler.fraser.ufoer.EndringBTEPSVedMinsteIFUReduksjonsprosentRev
+import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
@@ -19,14 +20,14 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object VedtakOmEndringBarnetilleggEPSAuto : AutobrevTemplate<VedtakOmEndringBarnetilleggEPSAutoDto> {
+object VedtakOmEndringBarnetilleggEPSRevAuto : AutobrevTemplate<VedtakOmEndringBarnetilleggEPSAutoDto> {
 
-    override val kode = Pesysbrevkoder.AutoBrev.UT_VEDTAK_ENDRING_BT_EPS_2026_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.UT_VEDTAK_ENDRING_BT_EPS_2026_REV_AUTO
 
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - endring barnetillegg berørt sak ved regelendringer 1. juli 2026",
+            displayTitle = "Vedtak - endring barnetillegg berørt sak ved regelendringer 1. oktober 2026",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
@@ -35,14 +36,14 @@ object VedtakOmEndringBarnetilleggEPSAuto : AutobrevTemplate<VedtakOmEndringBarn
 
         title {
             text(
-                bokmal { +"Nav har endret utbetalingen av barnetillegg i uføretrygden din" },
-                nynorsk { +"Nav har endra utbetalinga av barnetillegg i uføretrygda di" },
+                bokmal { +"Nav har endret barnetillegg i uføretrygden din" },
+                nynorsk { +"Nav har endra barnetillegg i uføretrygda di" },
             )
         }
         outline {
             includePhrase(
-                EndringBTEPSVedMinsteIFUReduksjonsprosent.Outline(
-                    EndringBTEPSVedMinsteIFUReduksjonsprosent.Brevdata(
+                EndringBTEPSVedMinsteIFUReduksjonsprosentRev.Outline(
+                    EndringBTEPSVedMinsteIFUReduksjonsprosentRev.Brevdata(
                         nettoUforetrygdUtenTillegg = data.nettoUforetrygdUtenTillegg.ifNull(Kroner(0)),
                         nettoBarnetilleggFB = data.nettoBarnetilleggFB.ifNull(Kroner(0)),
                         nettoBarnetilleggSB = data.nettoBarnetilleggSB.ifNull(Kroner(0)),

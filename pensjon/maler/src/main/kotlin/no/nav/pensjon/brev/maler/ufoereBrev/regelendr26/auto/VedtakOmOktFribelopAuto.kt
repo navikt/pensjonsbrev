@@ -1,12 +1,11 @@
-package no.nav.pensjon.brev.maler.legacy
+package no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.auto
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.legacy.ReverseringLavereMinstesatsAutoDto
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsAutoDto.data
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.orienteringOmRettigheterUfoere
-import no.nav.pensjon.brev.api.model.maler.legacy.selectors.reverseringLavereMinstesatsDto.pe
-import no.nav.pensjon.brev.maler.fraser.ufoer.ReverseringLavereMinstesats
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopAutoDto.*
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.vedtakOmOktFribelopData.*
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmOktFribelopAutoDto
+import no.nav.pensjon.brev.maler.fraser.ufoer.OktFribelop
+import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
@@ -19,30 +18,28 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object ReverseringLavereMinstesatsAuto : AutobrevTemplate<ReverseringLavereMinstesatsAutoDto> {
+object VedtakOmOktFribelopAuto : AutobrevTemplate<VedtakOmOktFribelopAutoDto> {
 
-    override val kode = Pesysbrevkoder.AutoBrev.UT_REVERSERING_LAVERE_MINSTESATS_2026
+    override val kode = Pesysbrevkoder.AutoBrev.UT_VEDTAK_OKT_FRIBELOP_2026
 
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - omgjøring av reduksjon i minstesats",
+            displayTitle = "Vedtak – Økning fribeløp - uføretrygden påvirkes ikke",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
+        val data = vedtakData
 
-        val data = this.data
         title {
             text(
-                bokmal { +"Vedtaksbrev - Omgjøring av reduksjon i minstesats" },
-                nynorsk { +"Vedtaksbrev - Omgjering av reduksjon i minstesats" },
+                bokmal { +"Du kan nå ha høyere inntekt før vi reduserer uføretrygden din" },
+                nynorsk { +"Du kan no ha høgare inntekt før vi reduserer uføretrygda di" }
             )
         }
         outline {
-            includePhrase(
-                ReverseringLavereMinstesats.Outline(data)
-            )
+            includePhrase(OktFribelop.Outline(data))
         }
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, data.maanedligUfoeretrygdFoerSkatt)
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, data.pe, data.pe.inkluderopplysningerbruktiberegningen())

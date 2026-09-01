@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.legacy.redigerbar
+package no.nav.pensjon.brev.maler.ufoereBrev.regelendr26.red
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -30,11 +30,11 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar : RedigerbarTemplate<VedtakOmIFUReduksjonsprosentRedigerbarDto> {
+object VedtakOmLavereReduksjonsprosentRedigerbar : RedigerbarTemplate<VedtakOmIFUReduksjonsprosentRedigerbarDto> {
 
     override val featureToggle = FeatureToggles.vedtakOmOktMinsteIFUOgReduksjonsprosent.toggle
 
-    override val kode = Pesysbrevkoder.Redigerbar.UT_VEDTAK_MINSTE_IFU_REDUKSJONSPROSENT_2026_RED
+    override val kode = Pesysbrevkoder.Redigerbar.UT_VEDTAK_REDUKSJONSPROSENT_2026_RED
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -42,7 +42,7 @@ object VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar : RedigerbarTemplat
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtaksbrev - økt minste IFU og lavere reduksjonsprosent",
+            displayTitle = "Vedtaksbrev - lavere reduksjonsprosent",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -89,7 +89,7 @@ object VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar : RedigerbarTemplat
                         harBelopsendring = data.erInntektsavkortet,
                         tillegg = data.tillegg,
                         hjemler = data.hjemler,
-                        visOktMinsteIFU = true.expr(),
+                        visOktMinsteIFU = false.expr(),
                         visReduksjonsprosent = true.expr(),
                         inntektsgrense = data.inntektsgrense,
                         endringInntektsgrense = data.endringInntektsgrense,
