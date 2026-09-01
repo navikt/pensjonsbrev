@@ -65,8 +65,8 @@ object Metrics {
     private val clientDistributionStatisticConfig = DistributionStatisticConfig.Builder()
         .percentilesHistogram(true)
         .minimumExpectedValue(forventetLavest.inWholeNanoseconds.toDouble())
-        .maximumExpectedValue(90.seconds.inWholeNanoseconds.toDouble())
-        .serviceLevelObjectives(*(latencyBuckets + 90.seconds.inWholeNanoseconds.toDouble()).toDoubleArray())
+        .maximumExpectedValue(latencyBuckets.max())
+        .serviceLevelObjectives(*latencyBuckets.toDoubleArray())
         .build()
 
     fun Application.configureMetrics() {
