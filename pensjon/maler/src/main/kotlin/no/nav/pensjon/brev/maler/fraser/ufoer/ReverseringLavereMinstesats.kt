@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.fraser.ufoer
 import no.nav.pensjon.brev.api.model.maler.legacy.ReverseringLavereMinstesatsDto
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.avkortetPgaRedusertTrygdetid
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.brukersMinstesats
+import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.endringBt
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.harGradertUfoeretrygd
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.nettoBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.selectors.lopendeYtelse.nettoGjenlevendetillegg
@@ -220,17 +221,19 @@ object ReverseringLavereMinstesats {
 
             ifNotNull(data.lopendeYtelse) { lopendeYtelse ->
                 ifNotNull(lopendeYtelse.nettoBarnetillegg) { bt ->
-                    title1 {
-                        text(
-                            bokmal { +"Endring i barnetillegg" },
-                            nynorsk { +"Endring i barnetillegg" },
-                        )
-                    }
-                    paragraph {
-                        text(
-                            bokmal { +"Endring i minstesatsen fører til at du får en høyere utbetaling av uføretrygd. Uføretrygden regnes med som inntekt når vi beregner barnetillegg. Derfor får du en lavere utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er " + bt.format() + "." },
-                            nynorsk { +"Endring i minstesatsen fører til at du får ei høgare utbetaling av uføretrygd. Uføretrygda blir rekna med som inntekt når vi reknar ut barnetillegg. Derfor får du ei lågare utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er " + bt.format() + "." },
-                        )
+                    showIf(lopendeYtelse.endringBt) {
+                        title1 {
+                            text(
+                                bokmal { +"Endring i barnetillegg" },
+                                nynorsk { +"Endring i barnetillegg" },
+                            )
+                        }
+                        paragraph {
+                            text(
+                                bokmal { +"Endring i minstesatsen fører til at du får en høyere utbetaling av uføretrygd. Uføretrygden regnes med som inntekt når vi beregner barnetillegg. Derfor får du en lavere utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er " + bt.format() + "." },
+                                nynorsk { +"Endring i minstesatsen fører til at du får ei høgare utbetaling av uføretrygd. Uføretrygda blir rekna med som inntekt når vi reknar ut barnetillegg. Derfor får du ei lågare utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er " + bt.format() + "." },
+                            )
+                        }
                     }
                 }
             }
