@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Redigerbar
 import no.nav.pensjon.brev.skribenten.ExternalApiConfig
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.SkribentenConfig
+import no.nav.pensjon.brev.skribenten.brevredigering.application.StatiskFagsystemBrevdata
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -106,8 +107,16 @@ class ExternalAPIService(
                 spraak = request.spraak.toLanguageCode(),
                 avsenderEnhetsId = request.avsenderEnhetsId,
                 saksbehandlerValg = request.saksbehandlerValg ?: SaksbehandlervalgMap(),
-                statiskFagsystemBrevdata = request.statiskFagsystemBrevdata,
+                statiskFagsystemBrevdata = request.statiskFagsystemBrevdata ?: tilStatiskFagsystemBrevdata(request.saksbehandlerValg),
                 reserverForRedigering = request.reserverForRedigering ?: true
             )
         )
+
+    // TODO: Denne metoden skal bare leve fram til pensjonskalkulator-backend sender inn sin input som statiskFagsystemBrevdata
+    private fun tilStatiskFagsystemBrevdata(saksbehandlerValg: SaksbehandlervalgMap?): StatiskFagsystemBrevdata? {
+        if (saksbehandlerValg == null) return null
+        val statiskFagsystemBrevdata = StatiskFagsystemBrevdata()
+        saksbehandlerValg.entries.forEach { statiskFagsystemBrevdata[it.key] = it.value }
+        return statiskFagsystemBrevdata
+    }
 }
